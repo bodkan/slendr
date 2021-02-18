@@ -1,0 +1,302 @@
+initialize() {
+	initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
+	initializeTreeSeq();
+	initializeMutationRate(0.0);
+	initializeMutationType("m0", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m0, 1.0);
+	initializeGenomicElement(g1, 0, 1e8 - 1);
+	initializeRecombinationRate(1e-8);
+	
+	// spatial competition
+	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = 30.0);
+	i1.setInteractionFunction("n", 5.0, 10.0);
+	
+	// spatial mate choice
+	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = 30.0);
+	i2.setInteractionFunction("n", 1.0, 10.0);
+	
+	defineConstant("POP_TABLE", read_table("~/projects/stcoal/data/models/discrete_pops_splits.tsv"));
+	defineConstant("ADMIX_TABLE", read_table("~/projects/stcoal/data/models/discrete_pops_admixtures.tsv"));
+	defineConstant("IMG", Image("~/Google/postdoc/data/maps/discrete_pops_modif.png"));
+	
+	// define output files
+	defineConstant("prefix", "~/projects/stcoal/data/slim/discrete_pops_admixture_cleanups_ancient");
+	defineConstant("output_loc", paste(prefix, "loc.tsv.gz", sep="_"));
+	defineConstant("output_tseq", paste(prefix, "tseq.trees", sep="_"));
+	
+	defineConstant("GEN_TIME", 30);
+	
+	defineConstant("T_BURNIN", 200); // length of the burnin phase (in generations)
+	defineConstant("T_OFFSET", 100); // how soon to start the sampling?
+	
+	// absolute split times
+	defineConstant("T_ABS_SPLITS", asInteger(pop_param("tsplit") / GEN_TIME));
+	// split times relative to the start of the simulation
+	defineConstant("T_SPLITS", T_BURNIN + max(T_ABS_SPLITS) - T_ABS_SPLITS);
+	
+	// absolute admixture times
+	defineConstant("T_ABS_ADMIX", asInteger(admix_param("tstart") / GEN_TIME));
+	// admixture times relative to the start of the simulation
+	// (add one generation to force admixture only after each split)
+	defineConstant("T_ADMIX", T_BURNIN + (max(T_ABS_SPLITS) - T_ABS_ADMIX) + 1);
+	
+	// absolute times of population cleanup
+	defineConstant("T_ABS_CLEANUPS", asInteger(pop_param("tremove") / GEN_TIME));
+	// cleanup times relative to the start of the simulation
+	// (add one generation to force cleanup only after each split)
+	defineConstant("T_CLEANUPS", T_BURNIN + (max(T_ABS_SPLITS) - T_ABS_CLEANUPS) + 1);
+	
+	catn("T_BURNIN: " + T_BURNIN);
+	catn("T_SPLITS: " + paste(T_SPLITS));
+	catn("T_ADMIX: " + paste(T_ADMIX));
+	catn("T_CLEANUPS: " + paste(T_CLEANUPS));
+	
+	write_header(output_loc);
+}
+
+1 early() {
+	i = 0;
+	sim.addSubpop(i, pop_param("Ne", i));
+	set_bounds(i);
+	set_map(i);
+	lon = pop_param("lon", i);
+	lat = pop_param("lat", i);
+	set_coords(get_pop(i).individuals, lon, lat);
+	
+	// population split and admixture callbacks - unique() is called
+	// in case multiple events are scheduled at once (this is not allowed
+	// in SLiM, and each callback needs to detect it and execute
+	// everything in a for loop)
+	sim.rescheduleScriptBlock(s1, generations = unique(T_SPLITS));
+	sim.rescheduleScriptBlock(s2, generations = unique(T_ADMIX));
+	sim.rescheduleScriptBlock(s3, generations = unique(T_ADMIX + 1));
+	sim.rescheduleScriptBlock(s4, generations = unique(T_ADMIX + 1));
+	
+	// population cleanups
+	sim.rescheduleScriptBlock(s5, generations = unique(T_CLEANUPS + 1));
+	
+	// output callbacks
+	sim.rescheduleScriptBlock(s99, start = T_BURNIN - T_OFFSET, end = T_BURNIN + max(T_ABS_SPLITS));
+	sim.rescheduleScriptBlock(s999, generations = T_BURNIN + max(T_ABS_SPLITS));
+}
+
+// Population splits
+s1 late() {
+	// get the ID of populations splitting in the current generation
+	// from the table of splits
+	pop_ids = pop_param("pop", present = "tsplit")[sim.generation == T_SPLITS];
+	for (i in pop_ids) {
+		split_pop(i);
+		set_bounds(i);
+		set_map(i);
+		lon = pop_param("lon", i);
+		lat = pop_param("lat", i);
+		set_coords(get_pop(i).individuals, lon, lat);
+	}
+}
+
+// Admixture events
+s2 late() {
+	// iterate over all admixture events scheduled for this generation
+	// and set them accordingly
+	for (i in which(sim.generation == T_ADMIX)) {
+		from = admix_param("source", i);
+		to = admix_param("target", i);
+		rate = admix_param("rate", i);
+		set_migration(from, to, rate);
+	}
+}
+
+// Stopping admixture
+s3 late() {
+	// iterate over all admixture events scheduled for this generation
+	// and set them back to 0.0
+	for (i in which(sim.generation - 1 == T_ADMIX)) {
+		from = admix_param("source", i);
+		to = admix_param("target", i);
+		set_migration(from, to, 0.0);
+	}
+}
+
+// Set the location of migrants to that of the receiving population
+s4 late() {
+	// get the new migrants in all populations that recently arrived
+	// and re-set their coordinates
+	for (i in which(sim.generation - 1 == T_ADMIX)) {
+		pop = admix_param("target", i);
+		status = get_pop(pop).individuals.migrant;
+		migrants = get_pop(pop).individuals[status];
+		lon = pop_param("lon", pop);
+		lat = pop_param("lat", pop);
+		set_coords(migrants, lon, lat);
+	}
+}
+
+// Remove populations which are no longer necessary
+s5 late() {
+	// get the ID of the target population from the table
+	// of admixture events and remove them
+	pop_ids = pop_param("pop", present = "tremove")[sim.generation - 1 == T_CLEANUPS];
+	for (i in pop_ids) {
+		catn("[CLEANUP] removing population " + i + " in generation " + sim.generation);
+		get_pop(i).setSubpopulationSize(0);
+	}
+}
+
+// Saving locations and remembering ancient individuals
+s99 late() {
+	// explicitly sample individuals for later tree sequence analysis
+	// (one individual from each population)
+	if (sim.generation % 10 == 0) {
+		inds = sapply(sim.subpopulations, "sample(applyValue.individuals, 1);");
+		inds.setValue("sampled", 1);
+		sim.treeSeqRememberIndividuals(inds);
+	}
+	// save location of each individual present
+	for (ind in sim.subpopulations.individuals) {
+		write_ind(ind, output_loc);
+	}
+}
+
+// Saving tree sequences at the end of the simulation
+s999 late() {
+	catn("[INFO] simulation finished in generation " + sim.generation);
+	sim.treeSeqOutput(output_tseq);
+	sim.simulationFinished();
+}
+
+modifyChild() {
+	do pos = parent1.spatialPosition + rnorm(2, 0, 20);
+	while (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0);
+	
+	child.setSpatialPosition(pos);
+	return T;
+}
+
+// Read table of population splits, migrations, etc.
+function (i) read_table(s$ path) {
+	lines = readFile(path);
+	matrix = sapply(
+		lines[1 : (size(lines) - 1)], "asInteger(strsplit(applyValue, '\t'));",
+		simplify="matrix"
+		);
+	return(t(matrix));
+}
+
+// Concatenate information about a given individual into a single
+// tab-separated string
+function (string) concat_ind_info(lifso<Individual>$ ind) {
+	ind_str = paste(
+		abs(sim.generation - T_BURNIN - max(T_ABS_SPLITS)),
+		ind.subpopulation.id,
+		ind.pedigreeID,
+		ind.spatialPosition,
+		asInteger(!isNULL(ind.getValue("sampled"))),
+		sep = "\t"
+		);
+	return ind_str;
+}
+
+// Write a header of a locations table to a locations file
+function (void) write_header(string$ filename) {
+	header_str = "t\tpop\tind\tx\ty\tsampled";
+	writeFile(filename, header_str, compress = T);
+}
+
+// Write information about a given individual to a locations file
+function(void) write_ind(lifso<Individual>$ ind, string$ filename) {
+	ind_str = concat_ind_info(ind);
+	writeFile(filename, ind_str, append = T, compress = T);
+}
+
+// Set spatial bounds of a given population
+function (void) set_bounds(i$ i) {
+	get_pop(i).setSpatialBounds(c(0.0, 0.0, asFloat(IMG.width) - 1, asFloat(IMG.height) - 1));
+}
+
+// Assign a spatial map to a given population
+function (void) set_map(i$ i) {
+	get_pop(i).defineSpatialMap("world", "xy", 1.0 - IMG.floatK,
+		valueRange=c(min(IMG.floatK), max(IMG.floatK)), colors=c("#000000", "#FFFFFF"));
+}
+
+// Split population from the source specified in an input table
+function (void) split_pop(i$ i) {
+	source = pop_param("source", i);
+	Ne= pop_param("Ne", i);
+	catn("[SPLIT] of " + i + " from " + source + " in generation " + sim.generation);
+	sim.addSubpopSplit(i, Ne, get_pop(source));
+}
+
+// Set the migration rate from a populaion 'from' to a population 'to'
+// (also used for resetting the migration back to zero)
+function (void) set_migration(i$ from, i$ to, f$ rate) {
+	catn("[ADMIXTURE] from " + from + " into " + to + " at " + rate * 100 + "% in generation " + sim.generation);
+	source = get_pop(from);
+	target = get_pop(to);
+	target.setMigrationRates(source, rate);
+}
+
+// Distribute the set of individuals around specified coordinates
+function (void) set_coords(lifso<Individual> inds, i lon, i lat) {
+	catn("[INFO] setting coordinates in generation " + sim.generation);
+	for (ind in inds) {
+		ind.x = rnorm(1, lon, 1.0);
+		ind.y = rnorm(1, lat, 1.0);
+	}
+}
+
+// Get subpopulation based on a given ID
+function (lifso<Subpopulation>$) get_pop(i$ i) {
+	return(sim.subpopulations[i == sim.subpopulations.id]);
+}
+
+// Get a value of a column from a populations table belonging
+// to the i-th population
+function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
+	if (!isNULL(pop_i) & !isNULL(present))
+		stop("Both population ID and filtering criterion cannot be specified.");
+
+	// column names allowed
+	columns = c("pop", "Ne", "lon", "lat", "source", "tsplit", "tremove");
+
+	// lookup column name number for indexing into a populations matrix
+	col_i = which(columns == col) ;
+	if (length(col_i) != 1)
+		stop("Incorrect specification of a column in a populations table");
+
+	// in some cases we want all values, even the NA ones
+	if (!isNULL(present)) {
+		// lookup column name number for indexing into a populations matrix
+		present_i = which(columns == present);
+		if (length(present_i) != 1)
+			stop("Incorrect specification of a column in a populations table");
+		table = POP_TABLE[drop(POP_TABLE[, present_i]) != -1, ];
+	} else {
+		table = POP_TABLE;
+	}
+		
+	if (isNULL(pop_i)) pop_i = seqLen(nrow(table));
+	val = drop(table[pop_i, col_i]);
+
+	return(val[which(val != -1)]);
+}
+
+// Get a value of a column from the table of admixture events
+function (numeric) admix_param(s$ col, [Ni$ admix_i = NULL]) {
+	// column names allowed
+	columns = c("source", "target", "tstart", "tend", "rate");
+	
+	// lookup column name number for indexing into a populations matrix
+	col_i = which(columns == col) ;
+	if (length(col_i) != 1)
+		stop("Incorrect specification of a column in a populations table");
+
+	if (isNULL(admix_i)) pop_i = seqLen(nrow(ADMIX_TABLE));
+
+	// extract the value and convert it if necessary
+	val = drop(ADMIX_TABLE[admix_i, col_i]);
+	if (col == "rate") val = val / 100;
+	
+	return(val);
+}
