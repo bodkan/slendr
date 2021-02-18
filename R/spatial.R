@@ -1,12 +1,3 @@
-library(ggplot2)
-library(ggspatial)
-library(sf)
-library(patchwork)
-
-library(rnaturalearth)
-library(rnaturalearthdata)
-
-
 create_polygon <- function(coords, world, source_crs = "EPSG:4326") {
   target_crs <- sf::st_crs(world)
 
