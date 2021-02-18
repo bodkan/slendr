@@ -1,2 +1,1 @@
-# spamr
-# spamr
+# spamr: Spatiotemporal Population Admixture Models in R
