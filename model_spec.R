@@ -1,4 +1,4 @@
-source(here::here("R/spatial.R"))
+devtools::load_all(".")
 
 ## map of the world
 world <- make_world(
@@ -65,7 +65,7 @@ yamigr <- circ_range(
 
 anaexp <- expand(ana, by = 5000, duration = 5000, snapshots = 10)
 
-plot_ranges(world, region_weur)
+plot_ranges(world, europe)
 
 plot_ranges(world)
 plot_ranges(world, whg)
