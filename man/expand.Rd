@@ -4,7 +4,7 @@
 \alias{expand}
 \title{Expand population radius by a given factor in a given time}
 \usage{
-expand(region, by, duration, snapshots)
+expand(pop, by, duration, snapshots, region = NULL)
 }
 \description{
 Expand population radius by a given factor in a given time

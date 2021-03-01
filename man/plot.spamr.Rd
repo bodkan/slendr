@@ -4,7 +4,7 @@
 \alias{plot.spamr}
 \title{Plot spatio-temporal population distributions}
 \usage{
-\method{plot}{spamr}(..., split_pop = FALSE, rendering = F)
+\method{plot}{spamr}(..., facets = TRUE, rendering = TRUE)
 }
 \arguments{
 \item{...}{Population/geographic region objects of the 'spamr'
