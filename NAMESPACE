@@ -2,6 +2,7 @@
 
 S3method(plot,spamr)
 export("%>%")
+export(migrate)
 export(population)
 export(region)
 export(world_map)

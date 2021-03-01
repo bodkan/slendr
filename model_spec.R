@@ -41,6 +41,8 @@ whg <- population(
   center = c(-1, 47), # (longitude, latitude)
   radius = 1300       # radius of a circle in km
 )
+
+plot(whg, rendering = F)
 plot(whg)
 
 whg <- population(
@@ -49,14 +51,20 @@ whg <- population(
   world,              # world map 'context' for the population
   region = europe     # geographic boundary
 )
+
+plot(whg, rendering = F)
 plot(whg)
 
 ana <- population(
   name = "ANA",
   time = 9000,
   world,
+  center = c(34, 38),
+  radius = 700,
   region = anatolia
 )
+
+plot(ana, rendering = F)
 plot(ana)
 
 yam <- population(
@@ -68,6 +76,8 @@ yam <- population(
     c(48, 56), c(38, 59), c(26, 56)
   )
 )
+
+plot(yam, rendering = F)
 plot(yam)
 
 neol <- population(
@@ -77,6 +87,8 @@ neol <- population(
   center = c(10, 48),
   radius = 800
 )
+
+plot(neol, rendering = F)
 plot(neol)
 
 yam_migr <- population(
@@ -91,9 +103,10 @@ yam_migr <- population(
     duration = 1000,      # how many years does the migration take?
     snapshots = 15        # how many discrete snapshots should it take?
   )
-plot(yam_migr)
 
-ana_migr <- ana %>%
+plot(yam_migr, rendering = F)
+
+ana_exp <- ana %>%
   expand(
     by = 2500,
     duration = 5000,
@@ -101,9 +114,10 @@ ana_migr <- ana %>%
     region = europe_anatolia
   )
 
-plot(whg, ana_migr)
+plot(ana_exp, rendering = F)
+plot(ana_exp)
 
-plot(whg, ana, neol, yam_migr)
+plot(whg, neol, yam, yam_migr, ana_exp)
 
 plot(whg, ana, neol, yam_migr, ana_exp, facets = T, rendering = F)
 

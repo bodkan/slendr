@@ -5,7 +5,7 @@
 \title{Take a list of all population regions and intersect them with the
 set of underlying world map}
 \usage{
-render(population)
+render(pop)
 }
 \description{
 Take a list of all population regions and intersect them with the
