@@ -4,7 +4,15 @@
 \alias{population}
 \title{Define a population range}
 \usage{
-population(name, time, world, center = NULL, radius = NULL, coords = NULL)
+population(
+  name,
+  time,
+  world,
+  center = NULL,
+  radius = NULL,
+  coords = NULL,
+  region = NULL
+)
 }
 \arguments{
 \item{name}{Name of the population}

@@ -1,3 +1,10 @@
+#' Set spamr classes (or fix their priorities if already present)
+set_class <- function(x, type) {
+  other_classes <- class(x) %>% .[!grepl("^spamr", .)]
+  c("spamr", paste0("spamr_", type), other_classes)
+}
+
+
 #' Define a population range
 #'
 #' @param name Name of the population
@@ -8,12 +15,17 @@
 #' @param coords List of vector pairs, defining corners of the range
 #'
 #' @export
-population <- function(name, time, world, center = NULL, radius = NULL, coords = NULL) {
+population <- function(name, time, world, center = NULL, radius = NULL, coords = NULL,
+                       region = NULL) {
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
+  if (!is.null(region))
+    range <- sf::st_sfc(sf::st_geometry(europe))
+  else
+    range <- spatial_range(world, center, radius, coords)
   pop_range <- sf::st_sf(
     data.frame(pop = name, time = time),
-    geometry = spatial_range(world, center, radius, coords)
+    geometry = range
   )
 
   sf::st_agr(pop_range) <- "constant"
@@ -21,7 +33,7 @@ population <- function(name, time, world, center = NULL, radius = NULL, coords =
   # keep the world as an internal attribute
   attr(pop_range, "world") <- world
 
-  class(pop_range) <- c("spamr", "spamr_pop", class(pop_range))
+  class(pop_range) <- set_class(pop_range, "pop")
   pop_range
 }
 
@@ -43,7 +55,7 @@ region <- function(name, world, coords) {
   # keep the world as an internal attribute
   attr(region, "world") <- world
 
-  class(region) <- c("spamr", "spamr_region", class(region))
+  class(region) <- set_class(region, "region")
   region
 }
 
@@ -153,7 +165,8 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 
   sf::st_agr(world_zoom) <- "constant"
 
-  class(world_zoom) <- c("spamr", "spamr_world", class(world_zoom))
+  class(world_zoom) <- set_class(world_zoom, "world")
+
   world_zoom
 }
 
@@ -161,13 +174,20 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 
 #' Plot spatio-temporal population distributions
 #'
-#' @param ... Population range objects
+#' Plot the spatio-temporal distributions of populations and
+#' geographic regions across a map.
+#'
+#' If only geographic regions are given, they are colored. If both
+#' them and populations are given, only populations are specified.
+#'
+#' @param ... Population/geographic region objects of the 'spamr'
+#'   class
 #' @param snapshots Plot time snapshots in individual panels?
 #'
 #' @export
 #'
 #' @import ggplot2
-plot.spamr <- function(..., snapshots = F) {
+plot.spamr <- function(..., snapshots = F, rendering = F) {
   args <- list(...)
   # only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
@@ -184,18 +204,35 @@ plot.spamr <- function(..., snapshots = F) {
   }
   
   regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
-  populations <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$pop)) i))
-  
+  populations <- do.call(rbind, lapply(list(...), function(i) {
+    if (!is.null(i$pop)) {
+      if (rendering)
+        render(i)
+      else
+        i
+    }
+  }))
+
+  # plot the world map
   p_map <-  ggplot() +
     geom_sf(data = world, fill = NA, color = "black") +
     theme_bw()
 
+  # plot geographic region boundaries, if present
   if (!is.null(regions)) {
-    p_map <- p_map +
-      geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.5) +
-      geom_sf_label(data = regions, aes(label = region))
+    # plot in colors only when no populations are present
+    if (is.null(populations)) {
+      p_map <- p_map +
+        geom_sf(data = regions, aes(fill = region), linetype = 2, alpha = 0.5) +
+        geom_sf_label(data = regions, aes(label = region, color = region))
+    } else {
+      p_map <- p_map +
+        geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.5) +
+        geom_sf_label(data = regions, aes(label = region))
+    }
   }
 
+  # plot population ranges, if present
   if (!is.null(populations)) {
     if (snapshots)
       p_map <- p_map +
@@ -206,21 +243,23 @@ plot.spamr <- function(..., snapshots = F) {
         geom_sf(data = populations, aes(fill = pop, alpha = time), color = NA, alpha = 0.5)
   }
 
+  # add graticules
   p_map + coord_sf(crs = sf::st_crs(world)) #, datum = sf::st_crs(world))
 }
 
 
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
-render_ranges <- function(ranges, world, boundary = NULL) {
-  rendered <- sf::st_intersection(ranges, sf::st_geometry(world))
-  if (!is.null(boundary)) {
-    sf::st_agr(rendered) <- "constant"
-    rendered <- sf::st_intersection(rendered, sf::st_geometry(boundary))
-  }
-  ## add a small tag signifying that the ranges have been processed
-  ## and intersected over the map of the world
+render <- function(population) {
+  world <- attr(population, "world")
+  rendered <- sf::st_intersection(population, sf::st_geometry(world))
+  # add a small tag signifying that the ranges have been processed
+  # and intersected over the map of the world
   attr(rendered, "rendered") <- TRUE
+  # add back the world attribute
+  attr(rendered, "world") <- world
+  
+  class(rendered) <- set_class(rendered, "pop")
   rendered
 }
 
@@ -250,16 +289,10 @@ expand <- function(region, by, duration, snapshots) {
   # keep the world as an internal attribute
   attr(inter_regions, "world") <- attr(region, "world")
   
-  # reorganize the order of class attributes, prioritizing the package
-  # classes
-  classes <- class(inter_regions)
-  class(inter_regions) <- classes %>% {c(
-    .[grepl("^spamr", .)],
-    .[!grepl("^spamr", .)]
-  )}
-  
+  class(inter_regions) <- set_class(inter_regions, "region")
   inter_regions
 }
+
 
 check_not_rendered <- function(region) {
   if (!is.null(attr(region, "rendered")))
@@ -320,7 +353,7 @@ migrate <- function(region, lon, lat, duration, snapshots = 5,
   # keep the world as an internal attribute
   attr(inter_regions, "world") <- attr(region, "world")
 
-  class(inter_regions) <- c(class(inter_regions), "spamr_pop")
+  class(inter_regions) <- set_class(inter_regions, "pop")
   
   inter_regions
 }

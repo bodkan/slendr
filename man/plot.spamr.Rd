@@ -4,13 +4,19 @@
 \alias{plot.spamr}
 \title{Plot spatio-temporal population distributions}
 \usage{
-\method{plot}{spamr}(..., snapshots = F)
+\method{plot}{spamr}(..., snapshots = F, rendering = F)
 }
 \arguments{
-\item{...}{Population range objects}
+\item{...}{Population/geographic region objects of the 'spamr'
+class}
 
 \item{snapshots}{Plot time snapshots in individual panels?}
 }
 \description{
-Plot spatio-temporal population distributions
+Plot the spatio-temporal distributions of populations and
+geographic regions across a map.
+}
+\details{
+If only geographic regions are given, they are colored. If both
+them and populations are given, only populations are specified.
 }
