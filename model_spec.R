@@ -1,67 +1,78 @@
-devtools::load_all(".")
-
-## map of the world
-world <- make_world(
-  lon = c(-15, 60),
-  lat = c(20, 65),
-  target_crs = "EPSG:3035"
+# define a section of the map of the world
+world <- world_map(
+  lon = c(-15, 60),  # min-max longitude
+  lat = c(20, 65),   # min-max latitude
+  crs = "EPSG:3035"  # real projected CRS used internally
 )
 
-## boundary of West Eurasia
-region_weur <- make_region(
+# boundary of West Eurasia
+west_eurasia <- region(
   "West Eurasia",
+  world,
   coords = list(
     c(-10, 35), c(-5, 35), c(10, 38), c(20, 35), c(38, 35),
     c(40, 40), c(30, 45), c(20, 58), c(-5, 60), c(-15, 50)
-  ),
-  world
+  )
 )
 
-whg <- circ_range(
-  pop = "WHG",
-  time = 25000,
-  lon = -1, lat = 47,
-  radius = 1300,
-  world
+anatolia <- region(
+  "Anatolia",
+  world,
+  coords = list(
+    c(28, 35), c(45, 35),
+    c(46, 40), c(30, 43), c(27, 40), c(25, 38)
+  )
 )
 
-ana <- circ_range(
-  pop = "ANA",
+whg <- population(
+  name = "WHG",       # population identifier
+  time = 25000,       # time in years ago
+  world,              # world map 'context' for the population
+  center = c(-1, 47), # (longitude, latitude)
+  radius = 1300,      # radius of a circle in km
+)
+
+ana <- population(
+  name = "ANA",
   time = 9000,
-  lon = 34, lat = 38,
-  radius = 600,
-  world
+  world,
+  center = c(34, 38),
+  radius = 600
 )
 
-yam <- poly_range(
-  pop = "YAM",
+yam <- population(
+  name = "YAM",
   time = 7000,
+  world,
   coords = list(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
-  ),
-  world
+  )
 )
 
-neol <- circ_range(
-  pop = "NEOL",
+neol <- population(
+  name= "NEOL",
   time = 7000,
-  lon = -1, lat = 47,
-  radius = 800,
-  world
+  world,
+  center = c(-1, 47),
+  radius = 800
 )
 
-yamigr <- circ_range(
+yamigr <- population(
   "YAM_migr",
-  lon = 30, lat = 52,
-  time = 5000, radius = 200,
-  world
+  time = 5000,
+  world,
+  center = c(30, 52),
+  radius = 200,
 ) %>%
   migrate(
     lon = 9, lat = 48,
     duration = 1000,
-    nslices = 4
+    snapshots = 10
   )
+
+plot_ranges(whg, ana, neol, yamigr, snapshots = T)
+
 
 anaexp <- expand(ana, by = 5000, duration = 5000, snapshots = 10)
 

@@ -1,31 +1,105 @@
-create_polygon <- function(coords, world, source_crs = "EPSG:4326") {
-  target_crs <- sf::st_crs(world)
+#' Define a population range
+#'
+#' @param name Name of the population
+#' @param time Time of the population appearance
+#' @param world Object of the type 'sf' which defines the world
+#' @param center Vector of two elements defining a center of a circular range
+#' @param radius Scalar defining a radius of a range in kilometers
+#' @param coords List of vector pairs, defining corners of the range
+#'
+#' @export
+population <- function(name, time, world, center = NULL, radius = NULL, coords = NULL) {
+  # define the population range as a simple geometry object
+  # and bind it with the annotation info into an sf object
+  pop_range <- sf::st_sf(
+    data.frame(pop = name, time = time),
+    geometry = spatial_range(world, center, radius, coords)
+  )
 
-  ## "loop-back" to the last point to close the polygon
-  coords <- c(coords, coords[1])
-  coords_mat <- do.call(rbind, coords)
+  sf::st_agr(pop_range) <- "constant"
 
-  ## polygon in the WGS84 geographic CRS
-  polygon_wgs84 <-
-    sf::st_polygon(list(coords_mat)) %>%
-    sf::st_sfc(crs = source_crs) %>%
-    sf::st_sf(geometry = .)
+  # keep the world as an internal attribute
+  attr(pop_range, "world") <- world
 
-  ## transform into target CRS
-  polygon <- sf::st_transform(polygon_wgs84, target_crs)
-
-  sf::st_agr(polygon) <- "constant"
-
-  polygon
+  class(pop_range) <- c("spamr", "spamr_pop", class(pop_range))
+  pop_range
 }
 
 
-make_region <- function(name, coords, world, source_crs = "EPSG:4326") {
-  region <- create_polygon(coords, world, source_crs) %>%
-    sf::st_sf(region = name, geometry = sf::st_geometry(.))
-  ## set attributes as constant throughout the geometry
+#' Define a geographic region
+#'
+#' @param name Name of the geographic region
+#' @param world Object of the type 'sf' which defines the world
+#' @param coords List of vector pairs, defining corners of the range
+#'
+#' @export
+region <- function(name, world, coords) {
+  region <- sf::st_sf(
+    region = name,
+    geometry = spatial_range(world, coords = coords)
+  )
   sf::st_agr(region) <- "constant"
+  
+  # keep the world as an internal attribute
+  attr(region, "world") <- world
+
+  class(region) <- c("spamr", "spamr_region", class(region))
   region
+}
+
+
+#' Define a range (simple geometry object) for a population or a
+#' geographic region
+#'
+#' @param world Object of type 'sf' defining the context (world) for
+#'   each object
+spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
+  # check function arguments
+  if (!is.null(center) & !is.null(coords))
+    stop("Either a circular range (center and radius) or the corners of a polygon need to be specified, not both.", call. = F)
+  if (!is.null(center) & is.null(radius))
+    stop("Missing radius argument when defining a circular population range", call. = F)
+  if (!is.null(coords) & length(coords) < 3)
+    stop("Polygon range needs to have at least three corners")
+
+  # circular population range or polygon range?
+  if (!is.null(center)) {
+    # point in the WGS-84 geographic CRS
+    point_wgs84 <- sf::st_sfc(sf::st_point(center), crs = "EPSG:4326")
+
+    # transform into target CRS
+    point <- sf::st_transform(point_wgs84, sf::st_crs(world))
+    # expand range into desired radius
+    range <- sf::st_buffer(point, radius * 1000)
+  } else {
+    range <- sf::st_geometry(create_polygon(coords, world)) %>%
+      sf::st_transform(crs = sf::st_crs(world))
+  }
+
+  range
+}
+
+
+
+
+
+#' Create a simple geometry polygon object from the list of
+#' coordinates
+#'
+#' @param coords List of vectors (pairs of longitude and latitude values)
+#' @param world Object of the type 'sf' which defines the world
+create_polygon <- function(coords, world) {
+  # "loop-back" to the last point to close the polygon
+  coords <- c(coords, coords[1])
+  coords_mat <- do.call(rbind, coords)
+
+  # polygon in the WGS-84 geographic CRS
+  polygon <-
+    sf::st_polygon(list(coords_mat)) %>%
+    sf::st_sfc(crs = "EPSG:4326") %>%
+    sf::st_sf(geometry = .)
+
+  polygon
 }
 
 
@@ -39,33 +113,49 @@ define_zoom <- function(lon, lat, source_crs = "EPSG:4326") {
   ))), crs = source_crs)
 }
 
-#' Download Natural Earth land area map data, crop it to a given
-#' boundary and transform to a specified projection CRS
-#' downloaded to ~/projects/ with:
-#' rnaturalearth::ne_download(scale = "small", type = "land", category = "physical", load = F, destdir = "~/projects/")
-make_world <- function(lon, lat, target_crs) {
+#' Define a world map for all spatial operations
+#'
+#' Download Natural Earth land area map data, zoom on a given window
+#' determined by longitude and latitude coordinates and transform to a
+#' specified projection
+#'
+#' @param lon Numeric vector with minimum and maximum longitude
+#' @param lat Numeric vector with minimum and maximum latitude
+#' @param crs Coordinate Reference System to use for all spatial
+#'   operations (default is WGS-84 or EPSG:4326 CRS)
+#'
+#' @export
+world_map <- function(lon, lat, crs = "EPSG:4326") {
   ## load the map data (either from a cache location on disk or from
   ## the server)
-  world <- rnaturalearth::ne_load(
+  ## world <- rnaturalearth::ne_load(
+  ##   scale = "small",
+  ##   type = "land",
+  ##   category = "physical",
+  ##   destdir = "~/projects/ne_data",
+  ##   returnclass = "sf"
+  ## )
+  world <- rnaturalearth::ne_download(
     scale = "small",
     type = "land",
     category = "physical",
-    destdir = "~/projects/ne_data",
     returnclass = "sf"
   )
   sf::st_agr(world) <- "constant"
 
-  ## transform the map (until now in lat/lon CRS) into the target CRS
-  world_transf <- sf::st_transform(world, target_crs)
+  ## transform the map (default geographic CRS) into the target CRS
+  world_transf <- sf::st_transform(world, crs)
 
   ## define boundary coordinates in the target CRS
-  zoom_bounds <- define_zoom(lon, lat, 4326)
-  zoom_transf <- sf::st_transform(zoom_bounds, target_crs)
+  zoom_bounds <- define_zoom(lon, lat, "EPSG:4326")
+  zoom_transf <- sf::st_transform(zoom_bounds, crs)
 
   ## crop the map to the boundary coordinates
   world_zoom <- sf::st_crop(world_transf, zoom_transf)
 
   sf::st_agr(world_zoom) <- "constant"
+
+  class(world_zoom) <- c("spamr", "spamr_world", class(world_zoom))
   world_zoom
 }
 
@@ -82,39 +172,6 @@ render_ranges <- function(ranges, world, boundary = NULL) {
   ## and intersected over the map of the world
   attr(rendered, "rendered") <- TRUE
   rendered
-}
-
-
-#' Define circular range for a population at a given time
-circ_range <- function(pop, time, lon, lat, radius, world) {
-  pop_info <- data.frame(pop = pop, time = time)
-
-  # point in the WGS84 geographic CRS
-  point_wgs84 <- sf::st_sf(
-    pop_info,
-    geometry = sf::st_sfc(sf::st_point(c(lon, lat))),
-    crs = 4326
-  )
-
-  # transform into target CRS
-  point <- sf::st_transform(point_wgs84, sf::st_crs(world))
-  # expand range into desired radius
-  range <- sf::st_buffer(point, radius * 1000)
-
-  # set attributes as constant throughout the geometry
-  st_agr(range) <- "constant"
-
-  range
-}
-
-#' Define polygon range for a population at a given time
-poly_range <- function(pop, time, coords, world, source_crs = "EPSG:4326") {
-  pop_info <- data.frame(pop = pop, time = time)
-  range <- create_polygon(coords, world, source_crs) %>%
-    sf::st_sf(pop_info, geometry = sf::st_geometry(.))
-  ## set attributes as constant throughout the geometry
-  sf::st_agr(range) <- "constant"
-  range
 }
 
 #' Expand population radius by a given factor in a given time
@@ -151,7 +208,7 @@ call. = FALSE)
 
 
 #' Move population to a new location in a given amount of time
-migrate <- function(region, lon, lat, duration, nslices = 5,
+migrate <- function(region, lon, lat, duration, snapshots = 5,
                     source_crs = "EPSG:4326") {
   check_not_rendered(region)
 
@@ -172,7 +229,7 @@ migrate <- function(region, lon, lat, duration, nslices = 5,
 
   # trajectory of population range shift
   traj <- sf::st_linestring(rbind(start_point_geom, end_point_geom))
-  traj_segments <- sf::st_segmentize(traj, sf::st_length(traj) / nslices)
+  traj_segments <- sf::st_segmentize(traj, sf::st_length(traj) / snapshots)
 
   traj_segments <- sf::st_sf(geometry = sf::st_sfc(traj_segments), crs = target_crs)
   #traj_segments <- sf::st_transform(traj_segments, crs = target_crs)
@@ -181,7 +238,7 @@ migrate <- function(region, lon, lat, duration, nslices = 5,
   traj_points_coords <- sf::st_coordinates(traj_points)
   traj_diffs <- diff(traj_points_coords)
   
-  time_slices <- seq(start_time, start_time - duration, length.out = nslices + 1)[-1]
+  time_slices <- seq(start_time, start_time - duration, length.out = snapshots + 1)[-1]
   traj_diffs <- cbind(traj_diffs, time = time_slices)
   
   inter_regions <- list()
@@ -197,31 +254,60 @@ migrate <- function(region, lon, lat, duration, nslices = 5,
 
   inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
+  
+  # keep the world as an internal attribute
+  attr(inter_regions, "world") <- attr(region, "world")
 
+  class(inter_regions) <- c(class(inter_regions), "population")
+  
   inter_regions
 }
 
-#' Plot population regions
-plot_ranges <- function(..., world, snapshots = F) {
-  ranges <- do.call(rbind, list(...))
+#' Plot spatio-temporal population distributions
+#'
+#' @param ... Population range objects
+#' @param snapshots Plot time snapshots in individual panels?
+#'
+#' @export
+#'
+#' @import ggplot2
+plot.spamr <- function(..., snapshots = F) {
+  args <- list(...)
+  # only the world object being plotted?
+  if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
+    world <- args[[1]]
+  else {
+    # extract the world component underlying each population object
+    # and make sure they are all the same with no conflicts
+    world <- unique(lapply(args, function(i) attr(i, "world")))
+    if (length(world) != 1) {
+      stop("Population objects do not share the same world component", call. = F)
+    } else {
+      world <- world[[1]]
+    }
+  }
+  
+  regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
+  populations <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$pop)) i))
   
   p_map <-  ggplot() +
     geom_sf(data = world, fill = NA, color = "black") +
     theme_bw()
 
-  if (!is.null(ranges$pop)) {
+  if (!is.null(regions)) {
+    p_map <- p_map +
+      geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.2) +
+      geom_sf_label(data = regions, aes(label = region))
+  }
+
+  if (!is.null(populations)) {
     if (snapshots)
       p_map <- p_map +
-        geom_sf(data = ranges, aes(fill = factor(time)), color = NA) +
+        geom_sf(data = populations, aes(fill = factor(time)), color = NA) +
         facet_wrap(~ -time)
     else
       p_map <- p_map +
-        geom_sf(data = ranges, aes(fill = factor(time)), color = NA, alpha = 0.2)
-  }
-  if (!is.null(ranges$region)) {
-    p_map <- p_map +
-      geom_sf(data = ranges, fill = "lightgray", color = NA, alpha = 0.5) +
-      geom_sf_label(data = ranges, aes(label = region))
+        geom_sf(data = populations, aes(fill = factor(time)), color = NA, alpha = 0.2)
   }
 
   p_map + coord_sf(crs = sf::st_crs(world)) #, datum = sf::st_crs(world))
