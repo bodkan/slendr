@@ -19,10 +19,11 @@ population <- function(name, time, world, center = NULL, radius = NULL, coords =
                        region = NULL) {
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
-  if (!is.null(region))
+  if (!is.null(region) & is.null(center)) {
     range <- sf::st_sfc(sf::st_geometry(region))
-  else
+  } else {
     range <- spatial_range(world, center, radius, coords)
+  }
   pop_range <- sf::st_sf(
     data.frame(pop = name, time = time),
     geometry = range
@@ -32,6 +33,9 @@ population <- function(name, time, world, center = NULL, radius = NULL, coords =
 
   # keep the world as an internal attribute
   attr(pop_range, "world") <- world
+  # optionally, keep a restricted population region
+  if (!is.null(region) & !is.null(center))
+    attr(pop_range, "region") <- region
 
   class(pop_range) <- set_class(pop_range, "pop")
   pop_range
@@ -267,7 +271,17 @@ plot.spamr <- function(..., split_pop = FALSE, rendering = F) {
 #' set of underlying world map
 render <- function(population) {
   world <- attr(population, "world")
+  region <- attr(population, "region")
+
+  # restrict the population range to the landscape features
   rendered <- sf::st_intersection(population, sf::st_geometry(world))
+
+  # restrict further to the geographic boundary, if given
+  if (!is.null(region)) {
+    sf::st_agr(rendered) <- "constant"
+    rendered <- sf::st_intersection(rendered, sf::st_geometry(region))
+  }
+
   # add a small tag signifying that the ranges have been processed
   # and intersected over the map of the world
   attr(rendered, "rendered") <- TRUE
@@ -280,10 +294,10 @@ render <- function(population) {
 
 
 #' Expand population radius by a given factor in a given time
-expand <- function(region, by, duration, snapshots) {
-  check_not_rendered(region)
+expand <- function(population, by, duration, snapshots, region = NULL) {
+  check_not_rendered(population)
 
-  start_time <- region$time
+  start_time <- population$time
   times <- seq(
     start_time,
     start_time - duration,
@@ -291,7 +305,7 @@ expand <- function(region, by, duration, snapshots) {
   )[-1]
 
   inter_regions <- list()
-  inter_regions[[1]] <- region
+  inter_regions[[1]] <- population
   for (i in seq_along(times)) {
     exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / snapshots) * 1000)
     exp_region$time <- times[i]
@@ -302,8 +316,10 @@ expand <- function(region, by, duration, snapshots) {
   sf::st_agr(inter_regions) <- "constant"
 
   # keep the world as an internal attribute
-  attr(inter_regions, "world") <- attr(region, "world")
-  
+  attr(inter_regions, "world") <- attr(population, "world")
+  # optionally, add a migration boundary
+  attr(inter_regions, "region") <- region
+
   class(inter_regions) <- set_class(inter_regions, "region")
   inter_regions
 }
@@ -318,16 +334,18 @@ call. = FALSE)
 
 
 #' Move population to a new location in a given amount of time
-migrate <- function(region, towards, duration, snapshots = 5) {
-  check_not_rendered(region)
+#'
+#' @param
+migrate <- function(population, towards, duration, snapshots = 5) {
+  check_not_rendered(population)
 
-  region_start <- region[nrow(region), ]
+  region_start <- population[nrow(population), ]
   start_time <- region_start$time
   end_lon <- towards[1]
   end_lat <- towards[2]
 
   source_crs <- "EPSG:4326"
-  target_crs <- sf::st_crs(region)
+  target_crs <- sf::st_crs(population)
   
   end_point <- sf::st_sf(
     geometry = sf::st_sfc(sf::st_point(c(end_lon, end_lat))),
@@ -366,7 +384,7 @@ migrate <- function(region, towards, duration, snapshots = 5) {
   sf::st_agr(inter_regions) <- "constant"
   
   # keep the world as an internal attribute
-  attr(inter_regions, "world") <- attr(region, "world")
+  attr(inter_regions, "world") <- attr(population, "world")
 
   class(inter_regions) <- set_class(inter_regions, "pop")
   
