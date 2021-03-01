@@ -187,7 +187,7 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 #' @export
 #'
 #' @import ggplot2
-plot.spamr <- function(..., snapshots = F, rendering = F) {
+plot.spamr <- function(..., split_pop = FALSE, rendering = F) {
   args <- list(...)
   # only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
@@ -231,20 +231,35 @@ plot.spamr <- function(..., snapshots = F, rendering = F) {
         geom_sf_label(data = regions, aes(label = region))
     }
   }
-
+  
   # plot population ranges, if present
   if (!is.null(populations)) {
-    if (snapshots)
-      p_map <- p_map +
-        geom_sf(data = populations, aes(fill = pop), color = NA, alpha = 0.5) +
-        facet_wrap(~ -time)
+    populations$pop <- factor(populations$pop)
+    
+    if (split_pop)
+      pop_ids <- as.list(unique(populations$pop))
     else
-      p_map <- p_map +
-        geom_sf(data = populations, aes(fill = pop, alpha = time), color = NA, alpha = 0.5)
+      pop_ids <- list(unique(populations$pop))
+
+    rows <- lapply(pop_ids, function(id) {
+      p_map +
+        geom_sf(data = populations[populations$pop %in% id, ],
+                aes(fill = pop, alpha = -time), color = NA) +
+        scale_fill_discrete(drop = FALSE) +
+        ggtitle(sprintf("population: %s", id)) +
+        guides(fill = FALSE, alpha = guide_legend("time")) +
+        coord_sf(crs = sf::st_crs(world)) #, datum = sf::st_crs(world))
+    })
+    
+    if (length(rows) == 1)
+      p_map <- rows[[1]] +
+        guides(fill = guide_legend("population")) +
+        theme(plot.title = element_blank())
+    else
+      p_map <- patchwork::wrap_plots(rows)
   }
 
-  # add graticules
-  p_map + coord_sf(crs = sf::st_crs(world)) #, datum = sf::st_crs(world))
+  p_map
 }
 
 
