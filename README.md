@@ -1,6 +1,6 @@
-# spamr: *S*patiotemporal *P*opulation *A*dmixture *M*odels in *R*
+## spamr: *S*patiotemporal *P*opulation *A*dmixture *M*odels in *R*
 
-## ⚠️⚠️⚠️ WARNING ⚠️⚠️⚠️
+### ⚠️⚠️⚠️ WARNING ⚠️⚠️⚠️
 
 **This software is not even in an alpha stage yet.** The only reason
 this repository is public is because I wanted to share it with
