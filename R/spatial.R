@@ -318,15 +318,15 @@ call. = FALSE)
 
 
 #' Move population to a new location in a given amount of time
-migrate <- function(region, lon, lat, duration, snapshots = 5,
-                    source_crs = "EPSG:4326") {
+migrate <- function(region, towards, duration, snapshots = 5) {
   check_not_rendered(region)
 
   region_start <- region[nrow(region), ]
   start_time <- region_start$time
-  end_lon <- lon
-  end_lat <- lat
+  end_lon <- towards[1]
+  end_lat <- towards[2]
 
+  source_crs <- "EPSG:4326"
   target_crs <- sf::st_crs(region)
   
   end_point <- sf::st_sf(
