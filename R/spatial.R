@@ -208,7 +208,7 @@ plot.spamr <- function(..., facets = TRUE, rendering = TRUE) {
   }
   
   regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
-  populations <- do.call(rbind, lapply(list(...), function(i) {
+  pops <- do.call(rbind, lapply(list(...), function(i) {
     if (!is.null(i$pop)) {
       if (rendering)
         render(i)
@@ -225,7 +225,7 @@ plot.spamr <- function(..., facets = TRUE, rendering = TRUE) {
   # plot geographic region boundaries, if present
   if (!is.null(regions)) {
     # plot in colors only when no populations are present
-    if (is.null(populations)) {
+    if (is.null(pops)) {
       p_map <- p_map +
         geom_sf(data = regions, aes(fill = region), linetype = 2, alpha = 0.5) +
         geom_sf_label(data = regions, aes(label = region, color = region))
@@ -237,19 +237,19 @@ plot.spamr <- function(..., facets = TRUE, rendering = TRUE) {
   }
   
   # plot population ranges, if present
-  if (!is.null(populations)) {
-    populations$pop <- factor(populations$pop)
+  if (!is.null(pops)) {
+    pops$pop <- factor(pops$pop)
     
     if (facets)
-      pop_ids <- as.list(unique(populations$pop))
+      pop_ids <- as.list(unique(pops$pop))
     else
-      pop_ids <- list(unique(populations$pop))
+      pop_ids <- list(unique(pops$pop))
 
     rows <- lapply(pop_ids, function(id) {
       p_map +
-        geom_sf(data = populations[populations$pop %in% id, ],
+        geom_sf(data = pops[pops$pop %in% id, ],
                 aes(fill = pop, alpha = -time), color = NA) +
-        geom_sf(data = populations[populations$pop %in% id, ],
+        geom_sf(data = pops[pops$pop %in% id, ],
                 fill = NA, color = "black", size = 0.1) +
         scale_fill_discrete(drop = FALSE) +
         scale_alpha(range = c(1, 0.1)) +
@@ -272,12 +272,12 @@ plot.spamr <- function(..., facets = TRUE, rendering = TRUE) {
 
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
-render <- function(population) {
-  world <- attr(population, "world")
-  region <- attr(population, "region")
+render <- function(pop) {
+  world <- attr(pop, "world")
+  region <- attr(pop, "region")
 
   # restrict the population range to the landscape features
-  rendered <- sf::st_intersection(population, sf::st_geometry(world))
+  rendered <- sf::st_intersection(pop, sf::st_geometry(world))
 
   # restrict further to the geographic boundary, if given
   if (!is.null(region)) {
@@ -297,10 +297,10 @@ render <- function(population) {
 
 
 #' Expand population radius by a given factor in a given time
-expand <- function(population, by, duration, snapshots, region = NULL) {
-  check_not_rendered(population)
+expand <- function(pop, by, duration, snapshots, region = NULL) {
+  check_not_rendered(pop)
 
-  start_time <- population$time
+  start_time <- pop$time
   times <- seq(
     start_time,
     start_time - duration,
@@ -308,7 +308,7 @@ expand <- function(population, by, duration, snapshots, region = NULL) {
   )[-1]
 
   inter_regions <- list()
-  inter_regions[[1]] <- population
+  inter_regions[[1]] <- pop
   for (i in seq_along(times)) {
     exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / snapshots) * 1000)
     exp_region$time <- times[i]
@@ -319,7 +319,7 @@ expand <- function(population, by, duration, snapshots, region = NULL) {
   sf::st_agr(inter_regions) <- "constant"
 
   # keep the world as an internal attribute
-  attr(inter_regions, "world") <- attr(population, "world")
+  attr(inter_regions, "world") <- attr(pop, "world")
   # optionally, add a migration boundary
   attr(inter_regions, "region") <- region
 
@@ -328,8 +328,11 @@ expand <- function(population, by, duration, snapshots, region = NULL) {
 }
 
 
-check_not_rendered <- function(region) {
-  if (!is.null(attr(region, "rendered")))
+#' Check whether given population region has not yet been rendered
+#'
+#' @param pop Spatial population object of the 'spamr_pop' class
+check_not_rendered <- function(pop) {
+  if (!is.null(attr(pop, "rendered")))
     stop("An already rendered population range object was provided.
 Please provide a range object before it was rendered against a map.",
 call. = FALSE)
@@ -338,17 +341,23 @@ call. = FALSE)
 
 #' Move population to a new location in a given amount of time
 #'
-#' @param
-migrate <- function(population, towards, duration, snapshots = 5) {
-  check_not_rendered(population)
+#' @param pop Spatial population object of 'spamr_pop' class
+#' @param towards Numeric vector specifying target (lon, lat)
+#'   coordinates of the population movement
+#' @param duration Duration of the population movement
+#' @param snapshots Number of time slices to split the movement into
+#'
+#' @export
+migrate <- function(pop, towards, duration, snapshots = 5) {
+  check_not_rendered(pop)
 
-  region_start <- population[nrow(population), ]
+  region_start <- pop[nrow(pop), ]
   start_time <- region_start$time
   end_lon <- towards[1]
   end_lat <- towards[2]
 
   source_crs <- "EPSG:4326"
-  target_crs <- sf::st_crs(population)
+  target_crs <- sf::st_crs(pop)
   
   end_point <- sf::st_sf(
     geometry = sf::st_sfc(sf::st_point(c(end_lon, end_lat))),
@@ -387,16 +396,11 @@ migrate <- function(population, towards, duration, snapshots = 5) {
   sf::st_agr(inter_regions) <- "constant"
   
   # keep the world as an internal attribute
-  attr(inter_regions, "world") <- attr(population, "world")
+  attr(inter_regions, "world") <- attr(pop, "world")
 
   class(inter_regions) <- set_class(inter_regions, "pop")
   
   inter_regions
-}
-
-
-region_center <- function(region, x = NULL) {
-  as.vector(sf::st_coordinates(sf::st_transform(sf::st_centroid(region), source_crs)$geometry[[1]]))
 }
 
 
