@@ -58,7 +58,7 @@ neol <- population(
   radius = 800
 )
 
-yamigr <- population(
+yam_migr <- population(
   "YAM_migr",
   time = 5000,
   world,
@@ -66,17 +66,18 @@ yamigr <- population(
   radius = 200,
 ) %>%
   migrate(
-    lon = 9, lat = 48,
-    duration = 1000,
-    snapshots = 10
+    lon = 9, lat = 48, # migrate towards this point
+    duration = 1000,   # how many years does the migration take?
+    snapshots = 10     # how many discrete snapshots should it take?
   )
 
-plot_ranges(whg, ana, neol, yamigr, snapshots = T)
+plot(whg, ana, neol, yam_migr)
+plot(whg, ana, neol, yam_migr, snapshots = T)
 
 
-anaexp <- expand(ana, by = 5000, duration = 5000, snapshots = 10)
+ana_exp <- expand(ana, by = 5000, duration = 5000, snapshots = 10)
 
-plot_ranges(world, europe)
+plot(ana_exp)
 
 plot_ranges(world)
 plot_ranges(world, whg)
