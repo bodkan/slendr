@@ -5,9 +5,8 @@ world <- world_map(
   crs = "EPSG:3035"  # real projected CRS used internally
 )
 
-# boundary of West Eurasia
-west_eurasia <- region(
-  "West Eurasia",
+europe_anatolia <- region(
+  "Western Europe & Anatolia",
   world,
   coords = list(
     c(-10, 35), c(-5, 35), c(10, 38), c(20, 35), c(38, 35),
@@ -15,13 +14,33 @@ west_eurasia <- region(
   )
 )
 
+europe <- region(
+  "Western Europe",
+  world,
+  coords = list(
+    c(-8, 35), c(-5, 36), c(10, 38), c(20, 35), c(25, 35),
+    c(28, 45), c(20, 58), c(-5, 60), c(-15, 50)
+  )
+)
+
 anatolia <- region(
   "Anatolia",
   world,
   coords = list(
-    c(28, 35), c(45, 35),
-    c(46, 40), c(30, 43), c(27, 40), c(25, 38)
+    c(28, 35), c(40, 35),
+    c(42, 40), c(30, 43), c(27, 40), c(25, 38)
   )
+)
+
+plot(europe_anatolia, europe, anatolia)
+
+whg <- population(
+  name = "WHG",       # population identifier
+  time = 25000,       # time in years ago
+  world,              # world map 'context' for the population
+  center = c(-1, 47), # (longitude, latitude)
+  radius = 1300,      # radius of a circle in km
+  region = west_eurasia
 )
 
 whg <- population(
@@ -30,6 +49,7 @@ whg <- population(
   world,              # world map 'context' for the population
   center = c(-1, 47), # (longitude, latitude)
   radius = 1300,      # radius of a circle in km
+  region = europe
 )
 
 ana <- population(
@@ -78,6 +98,8 @@ plot(whg, ana, neol, yam_migr, snapshots = T)
 ana_exp <- expand(ana, by = 5000, duration = 5000, snapshots = 10)
 
 plot(ana_exp)
+
+
 
 plot_ranges(world)
 plot_ranges(world, whg)
