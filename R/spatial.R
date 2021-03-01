@@ -191,7 +191,7 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 #' @export
 #'
 #' @import ggplot2
-plot.spamr <- function(..., split_pop = FALSE, rendering = F) {
+plot.spamr <- function(..., facets = TRUE, rendering = TRUE) {
   args <- list(...)
   # only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
@@ -240,7 +240,7 @@ plot.spamr <- function(..., split_pop = FALSE, rendering = F) {
   if (!is.null(populations)) {
     populations$pop <- factor(populations$pop)
     
-    if (split_pop)
+    if (facets)
       pop_ids <- as.list(unique(populations$pop))
     else
       pop_ids <- list(unique(populations$pop))
