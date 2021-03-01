@@ -4,7 +4,7 @@
 \alias{migrate}
 \title{Move population to a new location in a given amount of time}
 \usage{
-migrate(region, lon, lat, duration, snapshots = 5, source_crs = "EPSG:4326")
+migrate(region, towards, duration, snapshots = 5)
 }
 \description{
 Move population to a new location in a given amount of time
