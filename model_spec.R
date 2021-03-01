@@ -56,8 +56,6 @@ ana <- population(
   time = 9000,
   world,
   region = anatolia
-  #center = c(34, 38),
-  #radius = 600
 )
 plot(ana)
 
@@ -95,47 +93,25 @@ yam_migr <- population(
   )
 plot(yam_migr)
 
+ana_migr <- ana %>%
+  expand(
+    by = 2500,
+    duration = 5000,
+    snapshots = 10,
+    region = europe_anatolia
+  )
+
+plot(whg, ana_migr)
+
 plot(whg, ana, neol, yam_migr)
 
-plot(whg, ana, neol, yam_migr, split_pop = T)
-
-
-ana_exp <- expand(ana, by = 5000, duration = 5000, snapshots = 10)
+plot(whg, ana, neol, yam_migr, ana_exp, facets = T, rendering = F)
 
 plot(ana_exp)
 
 
 
-plot_ranges(world)
-plot_ranges(world, whg)
-plot_ranges(world, ana)
-plot_ranges(world, neol)
-plot_ranges(world, yam)
-plot_ranges(world, yamigr)
-plot_ranges(world, anaexp)
-
-whg2 <- render_ranges(whg, world)
-ana2 <- render_ranges(ana, world)
-neol2 <- render_ranges(neol, world)
-yam2 <- render_ranges(yam, world)
-yamigr2 <- render_ranges(yamigr, world)
-anaexp2 <- render_ranges(anaexp, world, region_weur)
-
-plot_ranges(world)
-plot_ranges(world, whg2)
-plot_ranges(world, ana2)
-plot_ranges(world, neol2)
-plot_ranges(world, yam2)
-plot_ranges(world, yamigr2)
-plot_ranges(world, anaexp2)
-
-plot_ranges(world, whg, ana, neol, yam, yamigr, anaexp)
-plot_ranges(world, whg2, ana2, neol2, yam2, yamigr2, anaexp2) + facet_wrap(~ pop)
-
-
-
-plot_ranges(world, anamigr2)
 
 x <- anamigr2
 anamigr2@bbox <- st_bbox(world)
-plot(st_rasterize(anamigr2))
+plot(stars::st_rasterize(ana_migr))
