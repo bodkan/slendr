@@ -17,4 +17,5 @@ Imports:
     ggplot2,
     sf,
     rnaturalearth,
-    rnaturalearthdata
+    rnaturalearthdata,
+    magrittr
