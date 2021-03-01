@@ -1,5 +1,5 @@
-Package: spamr
-Title: Spatiotemporal Population Admixture Models in R
+Package: spammr
+Title: Spatiotemporal Population Admixture and Migration Models in R
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Martin",
