@@ -1,4 +1,4 @@
-# spamr: ~S~patiotemporal ~P~opulation ~A~dmixture ~M~odels in ~R~
+# spamr: *S*patiotemporal *P*opulation *A*dmixture *M*odels in *R*
 
 ## ⚠️⚠️⚠️ WARNING ⚠️⚠️⚠️
 
