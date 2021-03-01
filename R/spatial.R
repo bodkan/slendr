@@ -80,9 +80,6 @@ spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
 }
 
 
-
-
-
 #' Create a simple geometry polygon object from the list of
 #' coordinates
 #'
@@ -112,6 +109,7 @@ define_zoom <- function(lon, lat, source_crs = "EPSG:4326") {
     c(y1, y1, y2, y2, y1)
   ))), crs = source_crs)
 }
+
 
 #' Define a world map for all spatial operations
 #'
@@ -160,6 +158,58 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 }
 
 
+
+#' Plot spatio-temporal population distributions
+#'
+#' @param ... Population range objects
+#' @param snapshots Plot time snapshots in individual panels?
+#'
+#' @export
+#'
+#' @import ggplot2
+plot.spamr <- function(..., snapshots = F) {
+  args <- list(...)
+  # only the world object being plotted?
+  if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
+    world <- args[[1]]
+  else {
+    # extract the world component underlying each population object
+    # and make sure they are all the same with no conflicts
+    world <- unique(lapply(args, function(i) attr(i, "world")))
+    if (length(world) != 1) {
+      stop("Population objects do not share the same world component", call. = F)
+    } else {
+      world <- world[[1]]
+    }
+  }
+  
+  regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
+  populations <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$pop)) i))
+  
+  p_map <-  ggplot() +
+    geom_sf(data = world, fill = NA, color = "black") +
+    theme_bw()
+
+  if (!is.null(regions)) {
+    p_map <- p_map +
+      geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.5) +
+      geom_sf_label(data = regions, aes(label = region))
+  }
+
+  if (!is.null(populations)) {
+    if (snapshots)
+      p_map <- p_map +
+        geom_sf(data = populations, aes(fill = pop), color = NA, alpha = 0.5) +
+        facet_wrap(~ -time)
+    else
+      p_map <- p_map +
+        geom_sf(data = populations, aes(fill = pop, alpha = time), color = NA, alpha = 0.5)
+  }
+
+  p_map + coord_sf(crs = sf::st_crs(world)) #, datum = sf::st_crs(world))
+}
+
+
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
 render_ranges <- function(ranges, world, boundary = NULL) {
@@ -173,6 +223,7 @@ render_ranges <- function(ranges, world, boundary = NULL) {
   attr(rendered, "rendered") <- TRUE
   rendered
 }
+
 
 #' Expand population radius by a given factor in a given time
 expand <- function(region, by, duration, snapshots) {
@@ -196,6 +247,17 @@ expand <- function(region, by, duration, snapshots) {
   inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
 
+  # keep the world as an internal attribute
+  attr(inter_regions, "world") <- attr(region, "world")
+  
+  # reorganize the order of class attributes, prioritizing the package
+  # classes
+  classes <- class(inter_regions)
+  class(inter_regions) <- classes %>% {c(
+    .[grepl("^spamr", .)],
+    .[!grepl("^spamr", .)]
+  )}
+  
   inter_regions
 }
 
@@ -258,60 +320,11 @@ migrate <- function(region, lon, lat, duration, snapshots = 5,
   # keep the world as an internal attribute
   attr(inter_regions, "world") <- attr(region, "world")
 
-  class(inter_regions) <- c(class(inter_regions), "population")
+  class(inter_regions) <- c(class(inter_regions), "spamr_pop")
   
   inter_regions
 }
 
-#' Plot spatio-temporal population distributions
-#'
-#' @param ... Population range objects
-#' @param snapshots Plot time snapshots in individual panels?
-#'
-#' @export
-#'
-#' @import ggplot2
-plot.spamr <- function(..., snapshots = F) {
-  args <- list(...)
-  # only the world object being plotted?
-  if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
-    world <- args[[1]]
-  else {
-    # extract the world component underlying each population object
-    # and make sure they are all the same with no conflicts
-    world <- unique(lapply(args, function(i) attr(i, "world")))
-    if (length(world) != 1) {
-      stop("Population objects do not share the same world component", call. = F)
-    } else {
-      world <- world[[1]]
-    }
-  }
-  
-  regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
-  populations <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$pop)) i))
-  
-  p_map <-  ggplot() +
-    geom_sf(data = world, fill = NA, color = "black") +
-    theme_bw()
-
-  if (!is.null(regions)) {
-    p_map <- p_map +
-      geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.2) +
-      geom_sf_label(data = regions, aes(label = region))
-  }
-
-  if (!is.null(populations)) {
-    if (snapshots)
-      p_map <- p_map +
-        geom_sf(data = populations, aes(fill = factor(time)), color = NA) +
-        facet_wrap(~ -time)
-    else
-      p_map <- p_map +
-        geom_sf(data = populations, aes(fill = factor(time)), color = NA, alpha = 0.2)
-  }
-
-  p_map + coord_sf(crs = sf::st_crs(world)) #, datum = sf::st_crs(world))
-}
 
 region_center <- function(region, x = NULL) {
   as.vector(sf::st_coordinates(sf::st_transform(sf::st_centroid(region), source_crs)$geometry[[1]]))
