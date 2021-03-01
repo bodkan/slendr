@@ -249,7 +249,10 @@ plot.spamr <- function(..., facets = TRUE, rendering = TRUE) {
       p_map +
         geom_sf(data = populations[populations$pop %in% id, ],
                 aes(fill = pop, alpha = -time), color = NA) +
+        geom_sf(data = populations[populations$pop %in% id, ],
+                fill = NA, color = "black", size = 0.1) +
         scale_fill_discrete(drop = FALSE) +
+        scale_alpha(range = c(1, 0.1)) +
         ggtitle(sprintf("population: %s", id)) +
         guides(fill = FALSE, alpha = guide_legend("time")) +
         coord_sf(crs = sf::st_crs(world)) #, datum = sf::st_crs(world))
