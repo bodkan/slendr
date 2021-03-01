@@ -20,7 +20,7 @@ population <- function(name, time, world, center = NULL, radius = NULL, coords =
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
   if (!is.null(region))
-    range <- sf::st_sfc(sf::st_geometry(europe))
+    range <- sf::st_sfc(sf::st_geometry(region))
   else
     range <- spatial_range(world, center, radius, coords)
   pop_range <- sf::st_sf(
