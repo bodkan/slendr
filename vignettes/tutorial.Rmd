@@ -1,10 +1,13 @@
 ---
-title: "Defining population boundaries and movement in space and time"
+title: "spammr: Introduction and tutorial"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Defining population boundaries and movement in space and time}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{spammr: Introduction and tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, include = FALSE}
@@ -14,10 +17,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(spammr)
+First, let's install the latest version of the package and load it:
+
+```{r installation, eval=FALSE}
+devtools::install_github("bodkan/spammr")
 ```
 
+Now we can load it with other R package dependencies:
+
+```{r setup}
+library(spammr)
+library(ggplot2)
+```
+
+### Defining the overall world map
 
 First we want to define a section of the map of the world which will
 provide context for all downstream spatio-temporal manipulation of
@@ -35,10 +48,18 @@ world <- world_map(
 )
 ```
 
-In addition to the overal spatial map context, we can also define
+The `spammr` package implements a [generic
+method](https://adv-r.hadley.nz/s3.html#s3-methods) called `plot()`,
+which overrides the default `plot()` function used for [simple
+features](https://r-spatial.github.io/sf/index.html) `sf` objects.
+
+The `spammr` package is designed for reproducible specification of population models in a spatio-temporal context. Lot of its utility comes being able to iterative specification of information visually. The `plot()` function is smart in handling various `spammr` classes described below and is designed for convenient iterative building of more complex models.
+
+### Defining smaller geographic regions
+
+In addition to the overall spatial map context, we can also define
 smaller geographic boundaries. This is useful whenever we want to
-restrict a population movement (such as spatial population expansion)
-to a smaller region of the map.
+restrict a population movement (such as spatial population expansion) to a smaller region of the map that has some intuitive geographic meaning (i.e. Anatolia, West Eurasia, etc.).
 
 ```{r}
 europe_anatolia <- region(
@@ -69,8 +90,32 @@ anatolia <- region(
 )
 ```
 
-plot(europe_anatolia, europe, anatolia)
+The object returned by the `region()` function is a normal `sf` object, with some additional annotation such as the name of the region (here "Anatolia"):
 
+```{r}
+anatolia
+```
+
+However, the object also carries additional class annotations for the purpose of internal `spammr` machinery:
+
+```{r}
+class(anatolia)
+```
+
+Furthermore, note that in all `region()` calls we specified the `world` object defined at the very beginning. This object is added as a hidden attribute to each `spammr` object and represents the context for all geospatial transformations, expansions, and plotting.
+
+Speaking about plotting, we can use the generic `plot()` function to plot both geographic regions in the context of the defined section of the world map:
+
+```{r}
+plot(europe, anatolia, title = "Geographic regions")
+```
+Why are these objects useful will become clearer later.
+
+### Defining spatial population boundaries
+
+The whole point of `spammr` is formalizing the specification of spatio-temporal population boundaries. The core function is `population()`. Together with the population `name` and the `time` in which the population range is relevant, as well as the `world` object described above, this function accepts a `center` and `radius` arguments:
+
+```{r}
 whg <- population(
   name = "WHG",       # population identifier
   time = 25000,       # time in years ago
@@ -78,86 +123,132 @@ whg <- population(
   center = c(-1, 47), # (longitude, latitude)
   radius = 1300       # radius of a circle in km
 )
+```
 
-plot(whg, rendering = F)
-plot(whg)
+If we call the `plot()` function of the object, we can either plot the population range in its "raw" form or in its "rendered" form, in which case the raw boundary is intersected with spatial landscape (removing large bodies of water, etc.). The 'rendered' form is what is ultimately exported in a serialized form (see below) to be loaded as a spatial map into SLiM. This is why the `plot()` function renderes population ranges by default.
 
+```{r}
+plot(whg, rendering = F, title = "'Raw' population range")
+plot(whg, title = "'Rendered' population range")
+```
+
+Alternatively, it is also possible to define finer population boundaries using a polygon geometry object (`coords=` argument) or a region object created by the `region()` function above. Again, as a reminder, note that all coordinates are described in the context of the geographic CRS.
+
+```{r}
 whg <- population(
-  name = "WHG",       # population identifier
-  time = 25000,       # time in years ago
-  world,              # world map 'context' for the population
-  region = europe     # geographic boundary
+  name = "WHG",   # population identifier
+  time = 25000,   # time in years ago
+  world,          # world map 'context' for the population
+  region = europe # geographic region object
 )
+```
 
-plot(whg, rendering = F)
-plot(whg)
+```{r}
+plot(whg, rendering = F, title = "'Raw' population range")
+plot(whg, title = "'Rendered' population range")
+```
 
+Let's create more population regions:
+
+```{r}
 ana <- population(
-  name = "ANA",
-  time = 9000,
-  world,
-  center = c(34, 38),
-  radius = 700,
+  name = "ANA", time = 9000, world,
+  center = c(34, 38), radius = 700,
   region = anatolia
 )
 
-plot(ana, rendering = F)
-plot(ana)
-
 yam <- population(
-  name = "YAM",
-  time = 7000,
-  world,
-  coords = list(
+  name = "YAM", time = 7000, world,
+  coords = list(   # polygon specified using coordinates of vertices
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
   )
 )
 
-plot(yam, rendering = F)
-plot(yam)
-
 neol <- population(
-  name= "NEOL",
-  time = 7000,
-  world,
-  center = c(10, 48),
-  radius = 800
+  name= "NEOL", time = 7000, world,
+  center = c(10, 48), radius = 800
 )
+```
 
-plot(neol, rendering = F)
-plot(neol)
+### Population migration across the landscape
 
-yam_migr <- population(
-  "YAM_migr",
-  time = 5000,
-  world,
-  center = c(30, 52),
-  radius = 200,
-) %>%
+To specify an explicit population movement, we can use the function `migrate()`, which accepts the coordinates of the destination point `towards`, `duration` of the migration, and the number of individual spatial maps to save during export `snapshots`:
+
+```{r}
+yam <- yam %>%
   migrate(
-    towards = c(10, 48),  # migrate towards this point
-    duration = 1000,      # how many years does the migration take?
-    snapshots = 15        # how many discrete snapshots should it take?
-  )
+    towards = c(10, 48), # migrate towards this point
+    duration = 1000,     # how many years does the migration take?
+    snapshots = 10       # how many intermediate maps should be saved?
+)
+```
 
-plot(yam_migr, rendering = F)
+We can inspect the object returned by the `migrate()` function and see that it contains not just the first YAM population range at 7000 years ago, but also the ranges of the intermediate locations:
 
-ana_exp <- ana %>%
+```{r}
+yam
+```
+
+Checking the result visually, we see:
+
+```{r}
+plot(yam, title = "Intermediate migration maps")
+```
+
+### Spatial population expansion
+
+We can simulate the increasing range of the population using the function `expand()`, which accepts a parameter specifying by how many kilometers should the boundary expand (the `by=` argument), how long should the expansion take (the `duration=` argument) and, again, how many intermediate spatial map snapshots should be exported.
+
+For instance, the expansion of Anatolian farmers (which uses an optional parameter `region=` which restricts the expansion only to Europe):
+
+```{r}
+ana <- ana %>%
   expand(
     by = 2500,
     duration = 5000,
     snapshots = 10,
     region = europe_anatolia
   )
+```
 
-plot(ana_exp, rendering = F)
-plot(ana_exp)
-plot(whg, neol, yam, yam_migr, ana_exp)
-plot(whg, ana, neol, yam_migr, ana_exp, facets = T, rendering = F)
-plot(ana_exp)
+Checking the results visually (just the rendered form):
 
+```{r}
+plot(ana)
+```
+### Plotting the combined population ranges
 
+The generic function `plot()` can handle a combination of population ranges, and can partition them in individual facets. This is very useful for visual inspection of the specified model and for looking for potential issues.
 
+```{r}
+plot(whg, neol, yam, ana)
+```
 
-rasterize(ana)
+# Rasterization
+
+The ultimate goal of `spammr` is formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the `spammr` R package with SLiM is an Eidos function called `defineSpatialMap()` which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape.
+
+How do we link the visual (vectorized!) maps shown above to SLiM? The key is a `spammr` function `rasterize()`.
+
+```{r}
+x = rasterize(ana, whg)
+```
+
+### TODO and open questions
+
+1. How to tie the visual configuration to an explicit admixture graph?
+
+I.e., a population _A_ splitting from a population _B_ at a time _t_, with a _Ne_ of X.
+
+2. How to validate the entire model?
+
+Currently, the "compilation" procedure dumps the spatial maps in a given format on disk. Presumably (having solved item 1. above), we would also save the table of split times, as well as the table of admixture edges _and_ a table of spatial maps.
+
+The compilation process should validate that the configured visual/split/admixture model is meaningful:
+
+a) Population migration maps should overlap to a reasonable degree? I.e. there should be a continuity/overlap between consecutive maps
+
+b) The overlap model should form a directed acyclic graph - there should be no "unreachable" population states.
+
+3. How to actually implement admixture in a spatial context? How to enforce, for instance, that a population _C_ contributed 60% of its ancestry to a population _D_? What sort of meaning does it actually have in the context of spatial maps and how they will be utilized by the backend SLiM script?
