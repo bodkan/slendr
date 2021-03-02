@@ -112,8 +112,29 @@
     <p>Move population to a new location in a given amount of time</p>
     </div>
 
-    <pre class="usage"><span class='fu'>migrate</span><span class='op'>(</span><span class='va'>region</span>, <span class='va'>towards</span>, <span class='va'>duration</span>, snapshots <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>migrate</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>towards</span>, <span class='va'>duration</span>, snapshots <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>pop</th>
+      <td><p>Spatial population object of 'spamr_pop' class</p></td>
+    </tr>
+    <tr>
+      <th>towards</th>
+      <td><p>Numeric vector specifying target (lon, lat)
+coordinates of the population movement</p></td>
+    </tr>
+    <tr>
+      <th>duration</th>
+      <td><p>Duration of the population movement</p></td>
+    </tr>
+    <tr>
+      <th>snapshots</th>
+      <td><p>Number of time slices to split the movement into</p></td>
+    </tr>
+    </table>
 
 
   </div>
