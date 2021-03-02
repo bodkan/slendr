@@ -7,7 +7,7 @@
 migrate(pop, towards, duration, snapshots = 5)
 }
 \arguments{
-\item{pop}{Spatial population object of 'spamr_pop' class}
+\item{pop}{Spatial population object of 'spammr_pop' class}
 
 \item{towards}{Numeric vector specifying target (lon, lat)
 coordinates of the population movement}
