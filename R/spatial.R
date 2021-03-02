@@ -48,7 +48,7 @@ population <- function(name, time, world, center = NULL, radius = NULL, coords =
   # keep the world as an internal attribute
   attr(pop_range, "world") <- world
   # optionally, keep a restricted population region
-  if (!is.null(region) & !is.null(center))
+g  if (!is.null(region) & !is.null(center))
     attr(pop_range, "region") <- region
 
   class(pop_range) <- set_class(pop_range, "pop")
@@ -69,7 +69,7 @@ region <- function(name, world, coords) {
     geometry = spatial_range(world, coords = coords)
   )
   sf::st_agr(region) <- "constant"
-  
+
   # keep the world as an internal attribute
   attr(region, "world") <- world
 
@@ -206,20 +206,20 @@ render <- function(pop) {
   }
 
   sf::st_agr(rendered) <- "constant"
-  
+
   # add a small tag signifying that the ranges have been processed
   # and intersected over the map of the world
   attr(rendered, "rendered") <- TRUE
   # add back the world attribute
   attr(rendered, "world") <- world
-  
+
   class(rendered) <- set_class(rendered, "pop")
   rendered
 }
 
 
 #' Expand population radius by a given factor in a given time
-#' 
+#'
 #' @param pop Spatial population object of 'spammr_pop' class
 #' @param by How many kilometers to expand by?
 #' @param duration Duration of the spatial population expansion
@@ -277,7 +277,7 @@ migrate <- function(pop, towards, duration, snapshots = 5) {
 
   source_crs <- "EPSG:4326"
   target_crs <- sf::st_crs(pop)
-  
+
   end_point <- sf::st_sf(
     geometry = sf::st_sfc(sf::st_point(c(end_lon, end_lat))),
     crs = source_crs
@@ -296,10 +296,10 @@ migrate <- function(pop, towards, duration, snapshots = 5) {
   traj_points <- sf::st_cast(traj_segments, "POINT")
   traj_points_coords <- sf::st_coordinates(traj_points)
   traj_diffs <- diff(traj_points_coords)
-  
+
   time_slices <- seq(start_time, start_time - duration, length.out = snapshots + 1)[-1]
   traj_diffs <- cbind(traj_diffs, time = time_slices)
-  
+
   inter_regions <- list()
   inter_regions[[1]] <- region_start
   for (i in seq_len(nrow(traj_diffs))) {
@@ -313,12 +313,12 @@ migrate <- function(pop, towards, duration, snapshots = 5) {
 
   inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
-  
+
   # keep the world as an internal attribute
   attr(inter_regions, "world") <- attr(pop, "world")
 
   class(inter_regions) <- set_class(inter_regions, "pop")
-  
+
   inter_regions
 }
 
@@ -341,7 +341,7 @@ migrate <- function(pop, towards, duration, snapshots = 5) {
 #' @export
 #'
 #' @import ggplot2
-plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE) {
+plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE, title = NULL) {
   args <- list(...)
   # only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spammr_world"))
@@ -356,7 +356,7 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
       world <- world[[1]]
     }
   }
-  
+
   regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
   pops <- do.call(rbind, lapply(list(...), function(i) {
     if (!is.null(i$pop)) {
@@ -394,7 +394,7 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
   # plot population ranges, if present
   if (!is.null(pops)) {
     pops$pop <- factor(pops$pop)
-    
+
     if (facets)
       pop_ids <- as.list(unique(pops$pop))
     else
@@ -411,14 +411,17 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
         ggtitle(sprintf("population: %s", id)) +
         guides(fill = FALSE, alpha = guide_legend("time"))
     })
-    
-    if (length(rows) == 1)
+
+    if (length(rows) == 1) {
       p_map <- rows[[1]] +
         guides(fill = guide_legend("population")) +
         theme(plot.title = element_blank())
-    else
+    } else
       p_map <- patchwork::wrap_plots(rows)
   }
+
+  if (!is.null(title))
+    p_map <- p_map + ggtitle(title)
 
   p_map + coord_sf(
     crs = sf::st_crs(world),
@@ -430,7 +433,7 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
 
 #' Render the population boundary to a black-and-white rasterized
 #' spatial map
-#' 
+#'
 #' @param ... Spatial population objects of the 'spammr_pop' class
 #' @param rendering Render the population boundaries against landscape
 #'   and other geographic boundaries?
@@ -442,14 +445,14 @@ rasterize <- function(..., rendering = TRUE) {
     # render the population if needed
     if (is.null(attr(pop, "rendered")) & rendering)
       pop <- render(pop)
-    
+
     # convert from vectorized representation to a raster and back to
     # a sf object with all the annotations
     ras <- stars::st_rasterize(pop)
     ras_sf <- sf::st_as_sf(ras)
     ras_sf$pop <- pop$pop[1]
     ras_sf$time <- pop$time[1]
-    
+
     bbox <- sf::st_bbox(attr(pop, "world"))
     ggplot() +
       geom_sf(data = ras_sf, color = "white") +
