@@ -36,8 +36,23 @@ knitr::opts_chunk$set(
 
 ![](../reference/figures/simdata.png){ width=80% }
 
-This is possible to do in SLiM using its `defineSpatialMap()` functionality. However, there is currently no way to define spatial maps programmatically, let alone build spatio-temporal models which include population splits, admixture, migration, and expansion. The package `spammr` is designed to do exactly this, and feed the generated spatial maps into a dedicated back-end SLiM script.
+This is possible to do in [SLiM](https://messerlab.org/slim/) using its `defineSpatialMap()` functionality. However, there is currently no way to define spatial maps programmatically, let alone build spatio-temporal models which include population splits, admixture, migration, and expansion. The package `spammr` is designed to do exactly this, and feed the generated spatial maps into a dedicated back-end SLiM script.
 
+
+
+
+
+
+
+## Philosophy
+
+Geospatial analysiss is a deep and complex topic, with many dozen libraries and programs designed to deal with the annoying fact that the Earth is a sphere but we often have no other choice but to plot things (and simulate things in our case!) on a two-dimensional plane.
+
+Luckily, most of the technical issues with [Coordinate Reference Systems](https://en.wikipedia.org/wiki/Spatial_reference_system), transformations between them and manipulation of geometric objects are pretty much solved now. Unfortunately, dealing with these issues in practice is quite challenging and requires non-trivial amount of domain expertise. Programming even a simple task in this context also requires a lot of code and there are no tools available for programming population genetic simulations which are explicitly spatial in nature.
+
+This R package is designed to provide a collection of primitives (a [Domain Specific Language](https://en.wikipedia.org/wiki/Domain-specific_language) of sorts) for encoding migration and spatial boundaries of populations across space and time _without having to explicitly deal with many of the challenges inherent to geospatial analyses_.
+
+Another goal is to make these spatio-temporal models fully reproducible, easy to write and debug by inspecting each step of the configuration visually, and finally to allow automated feeding of defined spatial maps into the [SLiM](https://messerlab.org/slim/) population genetics simulation framework.
 
 
 
