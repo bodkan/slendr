@@ -85,12 +85,17 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>What we ultimately want to be able to do is to simulate this kind of population history (splits and admixture events)</p>
-<p><a href="admixture_graph.png">admixture graph</a></p>
-<p>in the context of this</p>
-<p><a href="haak_map.png">haak</a></p>
-<p>to produce this kind of data</p>
-<p><a href="simdata.png">simulated data</a></p>
+</div>
+<div id="motivation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#motivation" class="anchor"></a>Motivation</h2>
+<p><strong>What we want to do is simulate this kind of population history (splits and admixture events):</strong></p>
+<p><img src="../reference/figures/admixture_graph.png" style="width:80.0%"></p>
+<p><strong>in the context of this:</strong></p>
+<p><img src="../reference/figures/haak_map.png" style="width:80.0%"></p>
+<p><strong>to produce this kind of data:</strong></p>
+<p><img src="../reference/figures/simdata.png" style="width:80.0%"></p>
+<p>This is possible to do in SLiM using its <code>defineSpatialMap()</code> functionality. However, there is currently no way to define spatial maps programmatically, let alone build spatio-temporal models which include population splits, admixture, migration, and expansion. The package <code>spammr</code> is designed to do exactly this, and feed the generated spatial maps into a dedicated back-end SLiM script.</p>
 </div>
 <div id="installation-and-setup" class="section level2">
 <h2 class="hasAnchor">
@@ -119,7 +124,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpzbAXwC", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp5Lz2Hh", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
