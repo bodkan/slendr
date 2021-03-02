@@ -8,7 +8,7 @@ spatial map}
 rasterize(..., rendering = TRUE)
 }
 \arguments{
-\item{...}{Spatial population objects of the 'spamr_pop' class}
+\item{...}{Spatial population objects of the 'spammr_pop' class}
 
 \item{rendering}{Render the population boundaries against landscape
 and other geographic boundaries?}

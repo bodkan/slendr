@@ -7,7 +7,7 @@
 check_not_rendered(pop)
 }
 \arguments{
-\item{pop}{Spatial population object of the 'spamr_pop' class}
+\item{pop}{Spatial population object of the 'spammr_pop' class}
 }
 \description{
 Check whether given population region has not yet been rendered

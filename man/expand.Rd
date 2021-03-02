@@ -7,7 +7,7 @@
 expand(pop, by, duration, snapshots, region = NULL)
 }
 \arguments{
-\item{pop}{Spatial population object of 'spamr_pop' class}
+\item{pop}{Spatial population object of 'spammr_pop' class}
 
 \item{by}{How many kilometers to expand by?}
 
