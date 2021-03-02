@@ -46,7 +46,7 @@ This is possible to do in [SLiM](https://messerlab.org/slim/) using its `defineS
 
 ## Philosophy
 
-Geospatial analysiss is a deep and complex topic, with many dozen libraries and programs designed to deal with the annoying fact that the Earth is a sphere but we often have no other choice but to plot things (and simulate things in our case!) on a two-dimensional plane.
+Geospatial analysis is a deep and complex topic, with many dozen libraries and programs designed to deal with the annoying fact that the Earth is a sphere but we often have no other choice but to plot things (and simulate things in our case!) on a two-dimensional plane.
 
 Luckily, most of the technical issues with [Coordinate Reference Systems](https://en.wikipedia.org/wiki/Spatial_reference_system), transformations between them and manipulation of geometric objects are pretty much solved now. Unfortunately, dealing with these issues in practice is quite challenging and requires non-trivial amount of domain expertise. Programming even a simple task in this context also requires a lot of code and there are no tools available for programming population genetic simulations which are explicitly spatial in nature.
 
