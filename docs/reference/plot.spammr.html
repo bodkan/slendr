@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a simple geometry polygon object from the list of
-coordinates — create_polygon • spammr</title>
+<title>Plot spatio-temporal population distributions — plot.spammr • spammr</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,9 @@ coordinates — create_polygon • spammr</title>
 
 
 
-<meta property="og:title" content="Create a simple geometry polygon object from the list of
-coordinates — create_polygon" />
-<meta property="og:description" content="Create a simple geometry polygon object from the list of
-coordinates" />
+<meta property="og:title" content="Plot spatio-temporal population distributions — plot.spammr" />
+<meta property="og:description" content="Plot the spatio-temporal distributions of populations and
+geographic regions across a map." />
 
 
 
@@ -118,32 +116,46 @@ coordinates" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a simple geometry polygon object from the list of
-coordinates</h1>
+    <h1>Plot spatio-temporal population distributions</h1>
     
-    <div class="hidden name"><code>create_polygon.Rd</code></div>
+    <div class="hidden name"><code>plot.spammr.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create a simple geometry polygon object from the list of
-coordinates</p>
+    <p>Plot the spatio-temporal distributions of populations and
+geographic regions across a map.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>create_polygon</span><span class='op'>(</span><span class='va'>coords</span>, <span class='va'>world</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for spammr</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>...</span>, facets <span class='op'>=</span> <span class='cn'>TRUE</span>, rendering <span class='op'>=</span> <span class='cn'>TRUE</span>, geo_graticules <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>coords</th>
-      <td><p>List of vectors (pairs of longitude and latitude values)</p></td>
+      <th>...</th>
+      <td><p>Population/geographic region objects of the 'spammr'
+class</p></td>
     </tr>
     <tr>
-      <th>world</th>
-      <td><p>Object of the type 'sf' which defines the world</p></td>
+      <th>facets</th>
+      <td><p>Plot populations in individual panels?</p></td>
+    </tr>
+    <tr>
+      <th>rendering</th>
+      <td><p>Render the population boundaries against landscape
+and other geographic boundaries?</p></td>
+    </tr>
+    <tr>
+      <th>geo_graticules</th>
+      <td><p>Plot axies with lon/lat graticules?</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If only geographic regions are given, they are colored. If both
+them and populations are given, only populations are specified.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
