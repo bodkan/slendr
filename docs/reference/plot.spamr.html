@@ -115,7 +115,7 @@ geographic regions across a map.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for spamr</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>...</span>, split_pop <span class='op'>=</span> <span class='cn'>FALSE</span>, rendering <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>...</span>, facets <span class='op'>=</span> <span class='cn'>TRUE</span>, rendering <span class='op'>=</span> <span class='cn'>TRUE</span>, geo_graticules <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -126,8 +126,17 @@ geographic regions across a map.</p>
 class</p></td>
     </tr>
     <tr>
-      <th>snapshots</th>
-      <td><p>Plot time snapshots in individual panels?</p></td>
+      <th>facets</th>
+      <td><p>Plot populations in individual panels?</p></td>
+    </tr>
+    <tr>
+      <th>rendering</th>
+      <td><p>Render the population boundaries against landscape
+and other geographic boundaries?</p></td>
+    </tr>
+    <tr>
+      <th>geo_graticules</th>
+      <td><p>Plot axies with lon/lat graticules?</p></td>
     </tr>
     </table>
 

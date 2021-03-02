@@ -30,3 +30,21 @@ website](https://www.github.com/bodkan/spammr).
 
 2. Follow me on [Twitter](https://www.twitter.com/fleventy5). I might
 post some updates once the software is a bit more ready.
+
+### Installation
+
+You can install the package from Github using the `devtools` package:
+
+```{r}
+install.packages("devtools")
+devtools::install_github("bodkan/spammr")
+```
+
+The package internally uses some of R's geospatial and geostatistical
+libraries for geometric manipulation of population ranges, which
+depend on external software. I have no way to test the installation on
+a fresh system at the moment. It's possible the
+`devtools::install_github()` procedure will crash on your machine. If
+that happens, look for warnings of missing dependencies and install
+them using your own system's package manager (for Mac users I
+recommend [Homebrew](https://brew.sh/).
