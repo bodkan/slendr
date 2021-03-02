@@ -1,6 +1,6 @@
 #' Check whether given population region has not yet been rendered
 #'
-#' @param pop Spatial population object of the 'spamr_pop' class
+#' @param pop Spatial population object of the 'spammr_pop' class
 check_not_rendered <- function(pop) {
   if (!is.null(attr(pop, "rendered")))
     stop("An already rendered population range object was provided.
@@ -9,13 +9,13 @@ call. = FALSE)
 }
 
 
-#' Set spamr classes (or fix their priorities if already present)
+#' Set spammr classes (or fix their priorities if already present)
 #'
-#' @param x Object of the 'spamr' class
-#' @param type Character scalar with the 'spamr' subtype name
+#' @param x Object of the 'spammr' class
+#' @param type Character scalar with the 'spammr' subtype name
 set_class <- function(x, type) {
-  other_classes <- class(x) %>% .[!grepl("^spamr", .)]
-  c("spamr", paste0("spamr_", type), other_classes)
+  other_classes <- class(x) %>% .[!grepl("^spammr", .)]
+  c("spammr", paste0("spammr_", type), other_classes)
 }
 
 
@@ -189,7 +189,7 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
 #'
-#' @param pop Spatial population object of the 'spamr_pop' class
+#' @param pop Spatial population object of the 'spammr_pop' class
 #'
 #' @export
 render <- function(pop) {
@@ -220,7 +220,7 @@ render <- function(pop) {
 
 #' Expand population radius by a given factor in a given time
 #' 
-#' @param pop Spatial population object of 'spamr_pop' class
+#' @param pop Spatial population object of 'spammr_pop' class
 #' @param by How many kilometers to expand by?
 #' @param duration Duration of the spatial population expansion
 #' @param snapshots Number of time slices to split the movement into
@@ -260,7 +260,7 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
 
 #' Move population to a new location in a given amount of time
 #'
-#' @param pop Spatial population object of 'spamr_pop' class
+#' @param pop Spatial population object of 'spammr_pop' class
 #' @param towards Numeric vector specifying target (lon, lat)
 #'   coordinates of the population movement
 #' @param duration Duration of the population movement
@@ -331,7 +331,7 @@ migrate <- function(pop, towards, duration, snapshots = 5) {
 #' If only geographic regions are given, they are colored. If both
 #' them and populations are given, only populations are specified.
 #'
-#' @param ... Population/geographic region objects of the 'spamr'
+#' @param ... Population/geographic region objects of the 'spammr'
 #'   class
 #' @param facets Plot populations in individual panels?
 #' @param rendering Render the population boundaries against landscape
@@ -341,10 +341,10 @@ migrate <- function(pop, towards, duration, snapshots = 5) {
 #' @export
 #'
 #' @import ggplot2
-plot.spamr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE) {
+plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE) {
   args <- list(...)
   # only the world object being plotted?
-  if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
+  if (length(args) == 1 & inherits(args[[1]], "spammr_world"))
     world <- args[[1]]
   else {
     # extract the world component underlying each population object
@@ -431,7 +431,7 @@ plot.spamr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = TR
 #' Render the population boundary to a black-and-white rasterized
 #' spatial map
 #' 
-#' @param ... Spatial population objects of the 'spamr_pop' class
+#' @param ... Spatial population objects of the 'spammr_pop' class
 #' @param rendering Render the population boundaries against landscape
 #'   and other geographic boundaries?
 #'

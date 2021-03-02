@@ -8,7 +8,7 @@ set of underlying world map}
 render(pop)
 }
 \arguments{
-\item{pop}{Spatial population object of the 'spamr_pop' class}
+\item{pop}{Spatial population object of the 'spammr_pop' class}
 }
 \description{
 Take a list of all population regions and intersect them with the
