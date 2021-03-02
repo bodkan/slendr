@@ -18,4 +18,5 @@ Imports:
     sf,
     rnaturalearth,
     rnaturalearthdata,
-    magrittr
+    magrittr,
+    stars
