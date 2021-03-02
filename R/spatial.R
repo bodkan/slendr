@@ -201,6 +201,8 @@ render <- function(pop) {
     rendered <- sf::st_intersection(rendered, sf::st_geometry(region))
   }
 
+  sf::st_agr(rendered) <- "constant"
+  
   # add a small tag signifying that the ranges have been processed
   # and intersected over the map of the world
   attr(rendered, "rendered") <- TRUE
