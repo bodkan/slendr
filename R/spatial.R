@@ -440,27 +440,29 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
 #' @export
 rasterize <- function(..., rendering = TRUE) {
   pops <- list(...)
-  rasters <- lapply(pops, function(pop) {
-    # render the population if needed
-    if (is.null(attr(pop, "rendered")) & rendering)
-      pop <- render(pop)
+  raster_list <- lapply(pops, function(pop) {
+    times <- unique(pop$time)
+    snapshots <- lapply(times, function(t) {
+      snapshot <- pop[pop$time == t, ]
+      class(snapshot) <- set_class(snapshot, "pop")
 
-    # convert from vectorized representation to a raster and back to
-    # a sf object with all the annotations
-    ras <- stars::st_rasterize(pop)
-    ras_sf <- sf::st_as_sf(ras)
-    ras_sf$pop <- pop$pop[1]
-    ras_sf$time <- pop$time[1]
+      # render the population if needed
+      if (is.null(attr(pop, "rendered")) & rendering)
+        snapshot <- render(snapshot)
 
-    bbox <- sf::st_bbox(attr(pop, "world"))
-    ggplot() +
-      geom_sf(data = ras_sf, color = "white") +
-      coord_sf(xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], expand = FALSE) +
-      cowplot::theme_nothing() +
-      theme(plot.background = element_rect(fill = "black"))
+      bbox <- sf::st_bbox(attr(snapshot, "world"))
+      ggplot() +
+        geom_sf(data = snapshot, fill = "white", color = NA) +
+        coord_sf(xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], expand = FALSE) +
+        theme_void() +
+        theme(plot.background = element_rect(fill = "black"))
+    })
+    names(snapshots) <- paste(pop$pop, times, sep = "_")
+    snapshots
   })
-  if (length(rasters) == 1)
-    return(rasters[[1]])
-  else
-    return(rasters)
+
+  # flatten the list of ggplot objects
+  rasters <- do.call(c, raster_list)
+
+  rasters
 }
