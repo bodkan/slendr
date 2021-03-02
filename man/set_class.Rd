@@ -6,6 +6,11 @@
 \usage{
 set_class(x, type)
 }
+\arguments{
+\item{x}{Object of the 'spamr' class}
+
+\item{type}{Character scalar with the 'spamr' subtype name}
+}
 \description{
 Set spamr classes (or fix their priorities if already present)
 }

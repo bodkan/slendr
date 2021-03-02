@@ -2,9 +2,12 @@
 
 S3method(plot,spamr)
 export("%>%")
+export(expand)
 export(migrate)
 export(population)
+export(rasterize)
 export(region)
+export(render)
 export(world_map)
 import(ggplot2)
 importFrom(magrittr,"%>%")

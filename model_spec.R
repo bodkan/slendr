@@ -116,95 +116,11 @@ ana_exp <- ana %>%
 
 plot(ana_exp, rendering = F)
 plot(ana_exp)
-
 plot(whg, neol, yam, yam_migr, ana_exp)
-
 plot(whg, ana, neol, yam_migr, ana_exp, facets = T, rendering = F)
-
 plot(ana_exp)
 
 
 
-# define a section of the map of the world
-world <- world_map(
-  lon = c(-15, 60),  # min-max longitude
-  lat = c(20, 65),   # min-max latitude
-  crs = "EPSG:3035"  # real projected CRS used internally
-)
 
-anatolia <- region(
-  "Anatolia",
-  world,
-  coords = list(
-    c(28, 35), c(40, 35),
-    c(42, 40), c(30, 43), c(27, 40), c(25, 38)
-  )
-)
-
-ana <- population(
-  name = "ANA",
-  time = 9000,
-  world,
-  center = c(34, 38),
-  radius = 700,
-  region = anatolia
-)
-
-pop <- render(ana)
-
-pop_info <- data.frame(
-  pop = pop$pop[1],
-  time = pop$time[1]
-)
-
-ras <- stars::st_rasterize(pop)
-ras_sf <- sf::st_as_sf(ras)
-ras_sf$pop <- pop$pop
-attr(ras_sf, "world") <- world
-class(ras_sf) <- set_class(ras_sf, "pop")
-
-bbox <- sf::st_bbox(world)
-ggplot() +
-  geom_sf(data = world) +
-  geom_sf(data = ras_sf, fill = "white") +
-  coord_sf(xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)])
-
-x <- yam
-x@bbox <- sf::st_bbox(world)
-plot(stars::st_rasterize(yam))
-
-pdf("test1.pdf")
-pop <- world
-raster <- stars::st_rasterize(pop)
-bbox <- sf::st_bbox(world)
-plot(raster, xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)])
-pop <- render(ana[2, ])
-raster <- stars::st_rasterize(pop)
-bbox <- sf::st_bbox(world)
-plot(raster, xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)])
-box(lty = '1373', col = 'red')
-class(pop) <- set_class(pop, "pop")
-plot(pop, geo_graticules = F) +
-  geom_vline(xintercept = bbox[c(1, 3)]) +
-  geom_hline(yintercept = bbox[c(2, 4)])
-dev.off()
-
-
-
-pop <- render(ana[2, ])
-pop <- world
-raster <- stars::st_rasterize(pop)
-bbox <- sf::st_bbox(world)
-plot(raster, xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)])
-
-pop <- render(ana[2, ])
-raster <- stars::st_rasterize(pop)
-bbox <- sf::st_bbox(world)
-plot(sf::st_crop(raster, box), xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)])
-
-sf::st_crop(raster, box)
-
-class(pop) <- set_class(pop, "pop")
-plot(pop, geo_graticules = F) +
-  geom_vline(xintercept = bbox[c(1, 3)]) +
-  geom_hline(yintercept = bbox[c(2, 4)])
+rasterize(ana)
