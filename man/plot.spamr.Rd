@@ -4,13 +4,18 @@
 \alias{plot.spamr}
 \title{Plot spatio-temporal population distributions}
 \usage{
-\method{plot}{spamr}(..., facets = TRUE, rendering = TRUE)
+\method{plot}{spamr}(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE)
 }
 \arguments{
 \item{...}{Population/geographic region objects of the 'spamr'
 class}
 
-\item{snapshots}{Plot time snapshots in individual panels?}
+\item{facets}{Plot populations in individual panels?}
+
+\item{rendering}{Render the population boundaries against landscape
+and other geographic boundaries?}
+
+\item{geo_graticules}{Plot axies with lon/lat graticules?}
 }
 \description{
 Plot the spatio-temporal distributions of populations and
