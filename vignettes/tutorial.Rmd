@@ -362,7 +362,11 @@ plot(ana, title = "Anatolian expansion into Europe (not rendered)", rendering = 
 
 ## Population migration across the landscape
 
-To specify an explicit population movement (not expansion from a single starting location), we can use the function `migrate()`. This accepts the coordinates of the destination point (`towards`), the `duration` of the migration, and the number of individual spatial maps to save during export (`snapshots`, same as the `expand()` function above):
+To specify an explicit population movement (not expansion from a single starting location), we can use the function `migrate()`. This accepts the coordinates of the destination point (`towards`), the `duration` of the migration, and the number of individual spatial maps to save during export (`snapshots`, same as the `expand()` function above).
+
+```{r}
+plot(yam, title = "Yamnaya range")
+```
 
 ```{r}
 yam <- yam %>%
@@ -424,7 +428,7 @@ plot(whg, neol, yam, ana)
 
 
 
-# Rasterization and export
+## Rasterization and export
 
 OK, so far so good. We have nice and fancy way to plot colorful shapes on a map, representing spatio-temporal population dynamics.
 
@@ -437,20 +441,20 @@ How do we link the visual (still vectorized!) spatial population ranges shown ab
 Without any arguments, the function simply generates a (named) list of ggplot2 objects:
 
 ```{r}
-raster_ana <- rasterize(ana)
-names(raster_ana)
+raster_maps <- rasterize(whg, ana, neol, yam)
+names(raster_maps)
 ```
 
 Each of these objects contains a black-and-white rasterized version of the population range at a particular snapshot in time. Let's plot one of them (representing the spatial range of the Anatolian farmers 5,500 thousand years ago - already at the stage in which they migrated to central Europe):
 
 ```{r}
-raster_ana[["ANA_5500"]]
+raster_maps[["ANA_5500"]]
 ```
 
 And here's the whole series:
 
 ```{r}
-patchwork::wrap_plots(raster_ana)
+patchwork::wrap_plots(raster_maps)
 ```
 
 This is what will be ultimately loaded into SLiM, using our back-end SLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation.
@@ -482,9 +486,9 @@ unlink("~/projects/spammr/vignettes/model", recursive = TRUE, force = FALSE)
 
 
 
-### TODO and open questions
+## TODO and open questions
 
-#### 1. How to tie the visual configuration to an explicit admixture graph?
+### 1. How to tie the visual configuration to an explicit admixture graph?
 
 I.e., a population _A_ splitting from a population _B_ at a time _t_, with a _Ne_ of X.
 
@@ -492,7 +496,7 @@ Should this be represented as columns in the annotation data frame in each `sf` 
 
 Should this be encoded in a separate table?
 
-#### 2. How to validate the entire model?
+### 2. How to validate the entire model?
 
 Currently, the "compilation" procedure dumps the spatial maps in a given format on disk. Presumably (having solved item 1. above), we would also save the table of split times, as well as the table of admixture edges _and_ a table of spatial maps.
 
@@ -502,11 +506,11 @@ i) Population migration maps should overlap to a reasonable degree? I.e. there s
 
 ii) The overlap model should form a directed acyclic graph - there should be no "unreachable" population states.
 
-#### 3. How to actually implement admixture in a spatial context?
+### 3. How to actually implement admixture in a spatial context?
 
 For instance, how to enforce that a population _C_ contributes 60% of its ancestry to a population _D_? What sort of meaning does it actually have in the context of spatial maps and how they will be utilized by the back-end SLiM script?
 
-#### 4. At which stage should the the user specify SLiM bits relevant to their work?
+### 4. At which stage should the the user specify SLiM bits relevant to their work?
 
 There's a clear conflict between every SLiM script being tailored to each specific use-case and the fact that I want to make things as reproducible and automatic as possible.
 

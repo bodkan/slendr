@@ -132,7 +132,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpE36BmP", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpgDpNPE", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -340,8 +340,11 @@
 <div id="population-migration-across-the-landscape" class="section level2">
 <h2 class="hasAnchor">
 <a href="#population-migration-across-the-landscape" class="anchor"></a>Population migration across the landscape</h2>
-<p>To specify an explicit population movement (not expansion from a single starting location), we can use the function <code><a href="../reference/migrate.html">migrate()</a></code>. This accepts the coordinates of the destination point (<code>towards</code>), the <code>duration</code> of the migration, and the number of individual spatial maps to save during export (<code>snapshots</code>, same as the <code><a href="../reference/expand.html">expand()</a></code> function above):</p>
+<p>To specify an explicit population movement (not expansion from a single starting location), we can use the function <code><a href="../reference/migrate.html">migrate()</a></code>. This accepts the coordinates of the destination point (<code>towards</code>), the <code>duration</code> of the migration, and the number of individual spatial maps to save during export (<code>snapshots</code>, same as the <code><a href="../reference/expand.html">expand()</a></code> function above).</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">yam</span>, title <span class="op">=</span> <span class="st">"Yamnaya range"</span><span class="op">)</span></code></pre></div>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">yam</span> <span class="op">&lt;-</span> <span class="va">yam</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/migrate.html">migrate</a></span><span class="op">(</span>
     towards <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">48</span><span class="op">)</span>, <span class="co"># migrate towards this point</span>
@@ -349,7 +352,7 @@
     snapshots <span class="op">=</span> <span class="fl">8</span>        <span class="co"># how many intermediate maps should be saved?</span>
 <span class="op">)</span></code></pre></div>
 <p>We can inspect the object returned by the <code><a href="../reference/migrate.html">migrate()</a></code> function and see that it contains not just the first YAM population range at 7000 years ago, but also the ranges of the intermediate locations:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">yam</span>
 <span class="co">#&gt; Simple feature collection with 9 features and 2 fields</span>
 <span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
@@ -368,42 +371,44 @@
 <span class="co">#&gt; 8 YAM 6125 POLYGON ((3936349 2271616, ...</span>
 <span class="co">#&gt; 9 YAM 6000 POLYGON ((3718998 2151529, ...</span></code></pre></div>
 <p>Checking the result visually again, we see:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">yam</span>, title <span class="op">=</span> <span class="st">"Intermediate migration maps"</span><span class="op">)</span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-22-1.png" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
 </div>
 <div id="plotting-the-combined-population-ranges" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-the-combined-population-ranges" class="anchor"></a>Plotting the combined population ranges</h2>
 <p>The generic function <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> can handle a combination of population ranges, and can partition them in individual facets. This is very useful for visual inspection of the specified model and for looking for potential issues before the export of individual spatio-temporal maps.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">neol</span>, <span class="va">yam</span>, <span class="va">ana</span><span class="op">)</span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-24-1.png" width="700"></p>
 </div>
-<div id="rasterization-and-export" class="section level1">
-<h1 class="hasAnchor">
-<a href="#rasterization-and-export" class="anchor"></a>Rasterization and export</h1>
+<div id="rasterization-and-export" class="section level2">
+<h2 class="hasAnchor">
+<a href="#rasterization-and-export" class="anchor"></a>Rasterization and export</h2>
 <p>OK, so far so good. We have nice and fancy way to plot colorful shapes on a map, representing spatio-temporal population dynamics.</p>
 <p>The ultimate goal of <code>spammr</code> is a formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the <code>spammr</code> R package with SLiM is an Eidos function called <code>defineSpatialMap()</code> which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.</p>
 <p><strong>TODO: write a short tutorial on the SLiM side of the problem too.</strong></p>
 <p>How do we link the visual (still vectorized!) spatial population ranges shown above to SLiM? We need to export them in a rasterized form as greyscale bitmaps The key is a <code>spammr</code> function <code><a href="../reference/rasterize.html">rasterize()</a></code>.</p>
 <p>Without any arguments, the function simply generates a (named) list of ggplot2 objects:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">raster_ana</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">ana</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">raster_ana</span><span class="op">)</span>
-<span class="co">#&gt;  [1] "ANA_9000" "ANA_8500" "ANA_8000" "ANA_7500" "ANA_7000" "ANA_6500"</span>
-<span class="co">#&gt;  [7] "ANA_6000" "ANA_5500" "ANA_5000" "ANA_4500" "ANA_4000"</span></code></pre></div>
-<p>Each of these objects contains a black-and-white rasterized version of the population range at a particular snapshot in time. Let’s plot one of them (representing the spatial range of the Anatolian farmers 5,500 thousand years ago - already at the stage in which they migrated to central Europe):</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">raster_ana</span><span class="op">[[</span><span class="st">"ANA_5500"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
-<p>And here’s the whole series:</p>
+<code class="sourceCode R"><span class="va">raster_maps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">ana</span>, <span class="va">neol</span>, <span class="va">yam</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">raster_maps</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "WHG_25000" "ANA_9000"  "ANA_8500"  "ANA_8000"  "ANA_7500"  "ANA_7000" </span>
+<span class="co">#&gt;  [7] "ANA_6500"  "ANA_6000"  "ANA_5500"  "ANA_5000"  "ANA_4500"  "ANA_4000" </span>
+<span class="co">#&gt; [13] "NEOL_7000" "YAM_7000"  "YAM_6875"  "YAM_6750"  "YAM_6625"  "YAM_6500" </span>
+<span class="co">#&gt; [19] "YAM_6375"  "YAM_6250"  "YAM_6125"  "YAM_6000"</span></code></pre></div>
+<p>Each of these objects contains a black-and-white rasterized version of the population range at a particular snapshot in time. Let’s plot one of them (representing the spatial range of the Anatolian farmers 5,500 thousand years ago - already at the stage in which they migrated to central Europe):</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html">wrap_plots</a></span><span class="op">(</span><span class="va">raster_ana</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">raster_maps</span><span class="op">[[</span><span class="st">"ANA_5500"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
+<p>And here’s the whole series:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html">wrap_plots</a></span><span class="op">(</span><span class="va">raster_maps</span><span class="op">)</span></code></pre></div>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-27-1.png" width="700"></p>
 <p>This is what will be ultimately loaded into SLiM, using our back-end SLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation.</p>
 <p>Normally, we will save each spatial map into a directory, to which we will then direct the backend SLiM script. The same directory will also contain other information about population splits, admixture events, etc.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/rasterize.html">rasterize</a></span><span class="op">(</span>
   <span class="va">whg</span>, <span class="va">ana</span>, <span class="va">neol</span>, <span class="va">yam</span>,
   outdir <span class="op">=</span> <span class="st">"~/projects/spammr/vignettes/model"</span>
@@ -431,7 +436,7 @@
 <span class="co">#&gt; Saving 7 x 5 in image</span>
 <span class="co">#&gt; Saving 7 x 5 in image</span></code></pre></div>
 <p>Let’s check the contents of the directory:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/projects/spammr/vignettes/model"</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "ANA_4000.png"  "ANA_4500.png"  "ANA_5000.png"  "ANA_5500.png" </span>
 <span class="co">#&gt;  [5] "ANA_6000.png"  "ANA_6500.png"  "ANA_7000.png"  "ANA_7500.png" </span>
@@ -439,19 +444,20 @@
 <span class="co">#&gt; [13] "WHG_25000.png" "YAM_6000.png"  "YAM_6125.png"  "YAM_6250.png" </span>
 <span class="co">#&gt; [17] "YAM_6375.png"  "YAM_6500.png"  "YAM_6625.png"  "YAM_6750.png" </span>
 <span class="co">#&gt; [21] "YAM_6875.png"  "YAM_7000.png"</span></code></pre></div>
-<div id="todo-and-open-questions" class="section level3">
+</div>
+<div id="todo-and-open-questions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#todo-and-open-questions" class="anchor"></a>TODO and open questions</h2>
+<div id="how-to-tie-the-visual-configuration-to-an-explicit-admixture-graph" class="section level3">
 <h3 class="hasAnchor">
-<a href="#todo-and-open-questions" class="anchor"></a>TODO and open questions</h3>
-<div id="how-to-tie-the-visual-configuration-to-an-explicit-admixture-graph" class="section level4">
-<h4 class="hasAnchor">
-<a href="#how-to-tie-the-visual-configuration-to-an-explicit-admixture-graph" class="anchor"></a>1. How to tie the visual configuration to an explicit admixture graph?</h4>
+<a href="#how-to-tie-the-visual-configuration-to-an-explicit-admixture-graph" class="anchor"></a>1. How to tie the visual configuration to an explicit admixture graph?</h3>
 <p>I.e., a population <em>A</em> splitting from a population <em>B</em> at a time <em>t</em>, with a <em>Ne</em> of X.</p>
 <p>Should this be represented as columns in the annotation data frame in each <code>sf</code> object?</p>
 <p>Should this be encoded in a separate table?</p>
 </div>
-<div id="how-to-validate-the-entire-model" class="section level4">
-<h4 class="hasAnchor">
-<a href="#how-to-validate-the-entire-model" class="anchor"></a>2. How to validate the entire model?</h4>
+<div id="how-to-validate-the-entire-model" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-to-validate-the-entire-model" class="anchor"></a>2. How to validate the entire model?</h3>
 <p>Currently, the “compilation” procedure dumps the spatial maps in a given format on disk. Presumably (having solved item 1. above), we would also save the table of split times, as well as the table of admixture edges <em>and</em> a table of spatial maps.</p>
 <p>The compilation process should validate that the configured visual/split/admixture model is meaningful:</p>
 <ol style="list-style-type: lower-roman">
@@ -459,17 +465,16 @@
 <li><p>The overlap model should form a directed acyclic graph - there should be no “unreachable” population states.</p></li>
 </ol>
 </div>
-<div id="how-to-actually-implement-admixture-in-a-spatial-context" class="section level4">
-<h4 class="hasAnchor">
-<a href="#how-to-actually-implement-admixture-in-a-spatial-context" class="anchor"></a>3. How to actually implement admixture in a spatial context?</h4>
+<div id="how-to-actually-implement-admixture-in-a-spatial-context" class="section level3">
+<h3 class="hasAnchor">
+<a href="#how-to-actually-implement-admixture-in-a-spatial-context" class="anchor"></a>3. How to actually implement admixture in a spatial context?</h3>
 <p>For instance, how to enforce that a population <em>C</em> contributes 60% of its ancestry to a population <em>D</em>? What sort of meaning does it actually have in the context of spatial maps and how they will be utilized by the back-end SLiM script?</p>
 </div>
-<div id="at-which-stage-should-the-the-user-specify-slim-bits-relevant-to-their-work" class="section level4">
-<h4 class="hasAnchor">
-<a href="#at-which-stage-should-the-the-user-specify-slim-bits-relevant-to-their-work" class="anchor"></a>4. At which stage should the the user specify SLiM bits relevant to their work?</h4>
+<div id="at-which-stage-should-the-the-user-specify-slim-bits-relevant-to-their-work" class="section level3">
+<h3 class="hasAnchor">
+<a href="#at-which-stage-should-the-the-user-specify-slim-bits-relevant-to-their-work" class="anchor"></a>4. At which stage should the the user specify SLiM bits relevant to their work?</h3>
 <p>There’s a clear conflict between every SLiM script being tailored to each specific use-case and the fact that I want to make things as reproducible and automatic as possible.</p>
 <p>I have a nice generic SLiM back-end that slurps in the spatial maps, defines population splits and migrations… but that’s just the demographic part. Should the user modify that script in SLiM GUI (which is awesome and a big reason to use SLiM in the first place)? This hurts the reproducibility, but I can’t reasonably implement an R interface to every possible SLiM use-case.</p>
-</div>
 </div>
 </div>
   </div>
