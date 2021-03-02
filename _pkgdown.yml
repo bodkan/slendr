@@ -1,3 +1,21 @@
 home:
   - text: Learn more
     href: http://bodkan.net/admixr/articles/tutorial.html
+
+reference:
+  - title: Geographic features
+    contents:
+    - world_map
+    - region
+
+  - title: Population ranges
+    contents:
+    - population
+    - expand
+    - migrate
+
+  - title: Processing, plotting, and export
+    contents:
+    - render
+    - plot.spammr
+    - rasterize

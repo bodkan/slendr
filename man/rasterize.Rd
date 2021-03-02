@@ -5,10 +5,12 @@
 \title{Render the population boundary to a black-and-white rasterized
 spatial map}
 \usage{
-rasterize(..., rendering = TRUE)
+rasterize(..., outdir = NULL, rendering = TRUE)
 }
 \arguments{
 \item{...}{Spatial population objects of the 'spammr_pop' class}
+
+\item{outdir}{Output directory to save all spatial maps}
 
 \item{rendering}{Render the population boundaries against landscape
 and other geographic boundaries?}
