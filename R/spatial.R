@@ -10,6 +10,9 @@ call. = FALSE)
 
 
 #' Set spamr classes (or fix their priorities if already present)
+#'
+#' @param x Object of the 'spamr' class
+#' @param type Character scalar with the 'spamr' subtype name
 set_class <- function(x, type) {
   other_classes <- class(x) %>% .[!grepl("^spamr", .)]
   c("spamr", paste0("spamr_", type), other_classes)
@@ -77,9 +80,6 @@ region <- function(name, world, coords) {
 
 #' Define a range (simple geometry object) for a population or a
 #' geographic region
-#'
-#' @param world Object of type 'sf' defining the context (world) for
-#'   each object
 spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
   # check function arguments
   if (!is.null(center) & !is.null(coords))
@@ -188,6 +188,10 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
+#'
+#' @param pop Spatial population object of the 'spamr_pop' class
+#'
+#' @export
 render <- function(pop) {
   world <- attr(pop, "world")
   region <- attr(pop, "region")
@@ -215,6 +219,14 @@ render <- function(pop) {
 
 
 #' Expand population radius by a given factor in a given time
+#' 
+#' @param pop Spatial population object of 'spamr_pop' class
+#' @param by How many kilometers to expand by?
+#' @param duration Duration of the spatial population expansion
+#' @param snapshots Number of time slices to split the movement into
+#' @param region Geographic region to restrict the expansion to
+#'
+#' @export
 expand <- function(pop, by, duration, snapshots, region = NULL) {
   check_not_rendered(pop)
 
@@ -309,7 +321,6 @@ migrate <- function(pop, towards, duration, snapshots = 5) {
   
   inter_regions
 }
-
 
 
 #' Plot spatio-temporal population distributions
@@ -414,4 +425,40 @@ plot.spamr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = TR
     datum = graticule_crs,
     expand = 0
   )
+}
+
+
+#' Render the population boundary to a black-and-white rasterized
+#' spatial map
+#' 
+#' @param ... Spatial population objects of the 'spamr_pop' class
+#' @param rendering Render the population boundaries against landscape
+#'   and other geographic boundaries?
+#'
+#' @export
+rasterize <- function(..., rendering = TRUE) {
+  pops <- list(...)
+  rasters <- lapply(pops, function(pop) {
+    # render the population if needed
+    if (is.null(attr(pop, "rendered")) & rendering)
+      pop <- render(pop)
+    
+    # convert from vectorized representation to a raster and back to
+    # a sf object with all the annotations
+    ras <- stars::st_rasterize(pop)
+    ras_sf <- sf::st_as_sf(ras)
+    ras_sf$pop <- pop$pop[1]
+    ras_sf$time <- pop$time[1]
+    
+    bbox <- sf::st_bbox(attr(pop, "world"))
+    ggplot() +
+      geom_sf(data = ras_sf, color = "white") +
+      coord_sf(xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], expand = FALSE) +
+      cowplot::theme_nothing() +
+      theme(plot.background = element_rect(fill = "black"))
+  })
+  if (length(rasters) == 1)
+    return(rasters[[1]])
+  else
+    return(rasters)
 }

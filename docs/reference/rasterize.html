@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Set spamr classes (or fix their priorities if already present) — set_class • spammr</title>
+<title>Render the population boundary to a black-and-white rasterized
+spatial map — rasterize • spammr</title>
 
 
 <!-- jquery -->
@@ -39,8 +40,10 @@
 
 
 
-<meta property="og:title" content="Set spamr classes (or fix their priorities if already present) — set_class" />
-<meta property="og:description" content="Set spamr classes (or fix their priorities if already present)" />
+<meta property="og:title" content="Render the population boundary to a black-and-white rasterized
+spatial map — rasterize" />
+<meta property="og:description" content="Render the population boundary to a black-and-white rasterized
+spatial map" />
 
 
 
@@ -103,27 +106,30 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Set spamr classes (or fix their priorities if already present)</h1>
+    <h1>Render the population boundary to a black-and-white rasterized
+spatial map</h1>
     
-    <div class="hidden name"><code>set_class.Rd</code></div>
+    <div class="hidden name"><code>rasterize.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Set spamr classes (or fix their priorities if already present)</p>
+    <p>Render the population boundary to a black-and-white rasterized
+spatial map</p>
     </div>
 
-    <pre class="usage"><span class='fu'>set_class</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>type</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>rasterize</span><span class='op'>(</span><span class='va'>...</span>, rendering <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>Object of the 'spamr' class</p></td>
+      <th>...</th>
+      <td><p>Spatial population objects of the 'spamr_pop' class</p></td>
     </tr>
     <tr>
-      <th>type</th>
-      <td><p>Character scalar with the 'spamr' subtype name</p></td>
+      <th>rendering</th>
+      <td><p>Render the population boundaries against landscape
+and other geographic boundaries?</p></td>
     </tr>
     </table>
 
