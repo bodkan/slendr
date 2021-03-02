@@ -22,21 +22,21 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
+## Motivation
 
-What we ultimately want to be able to do is to simulate this kind of population history (splits and admixture events)
+**What we want to do is simulate this kind of population history (splits and admixture events):**
 
-[admixture graph](admixture_graph.png)
+![](../reference/figures/admixture_graph.png){ width=80% }
 
-in the context of this
+**in the context of this:**
 
-[haak](haak_map.png)
+![](../reference/figures/haak_map.png){ width=80% }
 
-to produce this kind of data
+**to produce this kind of data:**
 
-[simulated data](simdata.png)
+![](../reference/figures/simdata.png){ width=80% }
 
-
-
+This is possible to do in SLiM using its `defineSpatialMap()` functionality. However, there is currently no way to define spatial maps programmatically, let alone build spatio-temporal models which include population splits, admixture, migration, and expansion. The package `spammr` is designed to do exactly this, and feed the generated spatial maps into a dedicated back-end SLiM script.
 
 
 
