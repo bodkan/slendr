@@ -4,7 +4,7 @@
 \alias{plot.spammr}
 \title{Plot spatio-temporal population distributions}
 \usage{
-\method{plot}{spammr}(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE)
+\method{plot}{spammr}(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE, title = NULL)
 }
 \arguments{
 \item{...}{Population/geographic region objects of the 'spammr'

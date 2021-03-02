@@ -20,9 +20,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Introduction and motivation
+## Introduction
 
 
+What we ultimately want to be able to do is to simulate this kind of population history (splits and admixture events)
+
+[admixture graph](admixture_graph.png)
+
+in the context of this
+
+[haak](haak_map.png)
+
+to produce this kind of data
+
+[simulated data](simdata.png)
 
 
 
@@ -398,15 +409,53 @@ plot(whg, neol, yam, ana)
 
 OK, so far so good. We have nice and fancy way to plot colorful shapes on a map, representing spatio-temporal population dynamics.
 
-The ultimate goal of `spammr` is formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the `spammr` R package with SLiM is an Eidos function called `defineSpatialMap()` which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.
+The ultimate goal of `spammr` is a formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the `spammr` R package with SLiM is an Eidos function called `defineSpatialMap()` which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.
 
 **TODO: write a short tutorial on the SLiM side of the problem too.**
 
-How do we link the visual (still vectorized!) maps shown above to SLiM? The key is a `spammr` function `rasterize()`.
+How do we link the visual (still vectorized!) spatial population ranges shown above to SLiM? We need to export them in a rasterized form as greyscale bitmaps The key is a `spammr` function `rasterize()`.
+
+Without any arguments, the function simply generates a (named) list of ggplot2 objects:
 
 ```{r}
-x = rasterize(ana, whg)
+raster_ana <- rasterize(ana)
+names(raster_ana)
 ```
+
+Each of these objects contains a black-and-white rasterized version of the population range at a particular snapshot in time. Let's plot one of them (representing the spatial range of the Anatolian farmers 5,500 thousand years ago - already at the stage in which they migrated to central Europe):
+
+```{r}
+raster_ana[["ANA_5500"]]
+```
+
+This is what will be ultimately loaded into SLiM, using our back-end SLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation.
+
+Normally, we will save each spatial map into a directory, to which we will then direct the backend SLiM script. The same directory will also contain other information about population splits, admixture events, etc.
+
+```{r}
+rasterize(
+  whg, ana, neol, yam,
+  outdir = "~/projects/spammr/vignettes/model"
+)
+```
+
+Let's check the contents of the directory:
+
+```{r}
+list.files("~/projects/spammr/vignettes/model")
+```
+
+
+```{r, include=FALSE}
+unlink("~/projects/spammr/vignettes/model", recursive = TRUE, force = FALSE)
+```
+
+
+
+
+
+
+
 
 ### TODO and open questions
 
