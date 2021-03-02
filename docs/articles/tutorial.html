@@ -132,7 +132,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmpn3sjJB", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpE36BmP", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -251,9 +251,9 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, title <span class="op">=</span> <span class="st">"'Rendered' population range"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-11-2.png" width="700"></p>
 </div>
-<div id="polygonic-population-ranges" class="section level3">
+<div id="polygon-population-ranges" class="section level3">
 <h3 class="hasAnchor">
-<a href="#polygonic-population-ranges" class="anchor"></a>Polygonic population ranges</h3>
+<a href="#polygon-population-ranges" class="anchor"></a>Polygon population ranges</h3>
 <p>Alternatively, it is also possible to define finer population boundaries using a polygon geometry object (<code>coords=</code> argument) or a region object created by the <code><a href="../reference/region.html">region()</a></code> function above. Again, as a reminder, note that all coordinates are described in the context of the geographic CRS.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">whg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
