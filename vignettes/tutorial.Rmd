@@ -313,7 +313,11 @@ neol <- population(
 
 We can simulate the expanding range of a population using the function `expand()`, which accepts a parameter specifying by how many kilometers should the boundary expand (the `by` argument), how long should the expansion take (the `duration` argument) and how many intermediate spatial map snapshots should be exported representing this expansion (the `snapshots` argument).
 
-For instance, let's represent the expansion of Anatolian farmers (this uses an optional parameter `region` which restricts the expansion only to Europe, instead of all around Anatolia):
+For instance, let's represent the expansion of Anatolian farmers (this uses an optional parameter `region` which restricts the expansion only to Europe, instead of all around Anatolia).
+
+```{r}
+plot(ana, title = "Anatolian farmer population")
+```
 
 ```{r}
 ana <- ana %>%
@@ -441,6 +445,12 @@ Each of these objects contains a black-and-white rasterized version of the popul
 
 ```{r}
 raster_ana[["ANA_5500"]]
+```
+
+And here's the whole series:
+
+```{r}
+patchwork::wrap_plots(raster_ana)
 ```
 
 This is what will be ultimately loaded into SLiM, using our back-end SLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation.
