@@ -48,7 +48,7 @@ population <- function(name, time, world, center = NULL, radius = NULL, coords =
   # keep the world as an internal attribute
   attr(pop_range, "world") <- world
   # optionally, keep a restricted population region
-g  if (!is.null(region) & !is.null(center))
+  if (!is.null(region) & !is.null(center))
     attr(pop_range, "region") <- region
 
   class(pop_range) <- set_class(pop_range, "pop")
@@ -414,8 +414,7 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
 
     if (length(rows) == 1) {
       p_map <- rows[[1]] +
-        guides(fill = guide_legend("population")) +
-        theme(plot.title = element_blank())
+        guides(fill = guide_legend("population"))
     } else
       p_map <- patchwork::wrap_plots(rows)
   }
