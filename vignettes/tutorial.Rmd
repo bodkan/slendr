@@ -256,7 +256,7 @@ plot(whg, rendering = F, title = "'Raw' population range")
 plot(whg, title = "'Rendered' population range")
 ```
 
-### Polygonic population ranges
+### Polygon population ranges
 
 Alternatively, it is also possible to define finer population boundaries using a polygon geometry object (`coords=` argument) or a region object created by the `region()` function above. Again, as a reminder, note that all coordinates are described in the context of the geographic CRS.
 
