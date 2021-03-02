@@ -7,10 +7,6 @@ geographic region}
 \usage{
 spatial_range(world, center = NULL, radius = NULL, coords = NULL)
 }
-\arguments{
-\item{world}{Object of type 'sf' defining the context (world) for
-each object}
-}
 \description{
 Define a range (simple geometry object) for a population or a
 geographic region
