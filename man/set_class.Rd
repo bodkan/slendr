@@ -2,15 +2,15 @@
 % Please edit documentation in R/spatial.R
 \name{set_class}
 \alias{set_class}
-\title{Set spamr classes (or fix their priorities if already present)}
+\title{Set spammr classes (or fix their priorities if already present)}
 \usage{
 set_class(x, type)
 }
 \arguments{
-\item{x}{Object of the 'spamr' class}
+\item{x}{Object of the 'spammr' class}
 
-\item{type}{Character scalar with the 'spamr' subtype name}
+\item{type}{Character scalar with the 'spammr' subtype name}
 }
 \description{
-Set spamr classes (or fix their priorities if already present)
+Set spammr classes (or fix their priorities if already present)
 }
