@@ -14,9 +14,9 @@ editor_options:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 8,
-  fig.height = 6,
-  dpi = 150
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 100
 )
 ```
 
@@ -394,11 +394,15 @@ plot(whg, neol, yam, ana)
 
 
 
-# Rasterization
+# Rasterization and export
 
-The ultimate goal of `spammr` is formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the `spammr` R package with SLiM is an Eidos function called `defineSpatialMap()` which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape.
+OK, so far so good. We have nice and fancy way to plot colorful shapes on a map, representing spatio-temporal population dynamics.
 
-How do we link the visual (vectorized!) maps shown above to SLiM? The key is a `spammr` function `rasterize()`.
+The ultimate goal of `spammr` is formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the `spammr` R package with SLiM is an Eidos function called `defineSpatialMap()` which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.
+
+**TODO: write a short tutorial on the SLiM side of the problem too.**
+
+How do we link the visual (still vectorized!) maps shown above to SLiM? The key is a `spammr` function `rasterize()`.
 
 ```{r}
 x = rasterize(ana, whg)
@@ -410,18 +414,26 @@ x = rasterize(ana, whg)
 
 I.e., a population _A_ splitting from a population _B_ at a time _t_, with a _Ne_ of X.
 
+Should this be represented as columns in the annotation data frame in each `sf` object?
+
+Should this be encoded in a separate table?
+
 #### 2. How to validate the entire model?
 
 Currently, the "compilation" procedure dumps the spatial maps in a given format on disk. Presumably (having solved item 1. above), we would also save the table of split times, as well as the table of admixture edges _and_ a table of spatial maps.
 
 The compilation process should validate that the configured visual/split/admixture model is meaningful:
 
-a) Population migration maps should overlap to a reasonable degree? I.e. there should be a continuity/overlap between consecutive maps
+i) Population migration maps should overlap to a reasonable degree? I.e. there should be a sufficient continuity/overlap between consecutive spatial maps over time.
 
-b) The overlap model should form a directed acyclic graph - there should be no "unreachable" population states.
+ii) The overlap model should form a directed acyclic graph - there should be no "unreachable" population states.
 
-#### 3. How to actually implement admixture in a spatial context? How to enforce, for instance, that a population _C_ contributed 60% of its ancestry to a population _D_? What sort of meaning does it actually have in the context of spatial maps and how they will be utilized by the backend SLiM script?
+#### 3. How to actually implement admixture in a spatial context?
+
+For instance, how to enforce that a population _C_ contributes 60% of its ancestry to a population _D_? What sort of meaning does it actually have in the context of spatial maps and how they will be utilized by the back-end SLiM script?
 
 #### 4. At which stage should the the user specify SLiM bits relevant to their work?
 
-There's a clear conflict between every SLiM script being tailored to each specific use-case. I will have a nice generic SLiM backend that slurps in the spatial maps, defines population splits and migrations... but that's just the demographic part. Should the user modify that script in SLiM GUI (which is awesome and a big reason to use SLiM in the first place)? This hurts the reproducibility, but I can't reasonably implement an R interface to every possible SLiM use-case.
+There's a clear conflict between every SLiM script being tailored to each specific use-case and the fact that I want to make things as reproducible and automatic as possible.
+
+I have a nice generic SLiM back-end that slurps in the spatial maps, defines population splits and migrations... but that's just the demographic part. Should the user modify that script in SLiM GUI (which is awesome and a big reason to use SLiM in the first place)? This hurts the reproducibility, but I can't reasonably implement an R interface to every possible SLiM use-case.
