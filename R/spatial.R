@@ -1,3 +1,14 @@
+#' Check whether given population region has not yet been rendered
+#'
+#' @param pop Spatial population object of the 'spamr_pop' class
+check_not_rendered <- function(pop) {
+  if (!is.null(attr(pop, "rendered")))
+    stop("An already rendered population range object was provided.
+Please provide a range object before it was rendered against a map.",
+call. = FALSE)
+}
+
+
 #' Set spamr classes (or fix their priorities if already present)
 set_class <- function(x, type) {
   other_classes <- class(x) %>% .[!grepl("^spamr", .)]
@@ -175,101 +186,6 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 }
 
 
-
-#' Plot spatio-temporal population distributions
-#'
-#' Plot the spatio-temporal distributions of populations and
-#' geographic regions across a map.
-#'
-#' If only geographic regions are given, they are colored. If both
-#' them and populations are given, only populations are specified.
-#'
-#' @param ... Population/geographic region objects of the 'spamr'
-#'   class
-#' @param snapshots Plot time snapshots in individual panels?
-#'
-#' @export
-#'
-#' @import ggplot2
-plot.spamr <- function(..., facets = TRUE, rendering = TRUE) {
-  args <- list(...)
-  # only the world object being plotted?
-  if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
-    world <- args[[1]]
-  else {
-    # extract the world component underlying each population object
-    # and make sure they are all the same with no conflicts
-    world <- unique(lapply(args, function(i) attr(i, "world")))
-    if (length(world) != 1) {
-      stop("Population objects do not share the same world component", call. = F)
-    } else {
-      world <- world[[1]]
-    }
-  }
-  
-  regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
-  pops <- do.call(rbind, lapply(list(...), function(i) {
-    if (!is.null(i$pop)) {
-      if (rendering)
-        render(i)
-      else
-        i
-    }
-  }))
-
-  # plot the world map
-  p_map <-  ggplot() +
-    geom_sf(data = world, fill = NA, color = "black") +
-    theme_bw()
-
-  # plot geographic region boundaries, if present
-  if (!is.null(regions)) {
-    # plot in colors only when no populations are present
-    if (is.null(pops)) {
-      p_map <- p_map +
-        geom_sf(data = regions, aes(fill = region), linetype = 2, alpha = 0.5) +
-        geom_sf_label(data = regions, aes(label = region, color = region))
-    } else {
-      p_map <- p_map +
-        geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.5) +
-        geom_sf_label(data = regions, aes(label = region))
-    }
-  }
-  
-  # plot population ranges, if present
-  if (!is.null(pops)) {
-    pops$pop <- factor(pops$pop)
-    
-    if (facets)
-      pop_ids <- as.list(unique(pops$pop))
-    else
-      pop_ids <- list(unique(pops$pop))
-
-    rows <- lapply(pop_ids, function(id) {
-      p_map +
-        geom_sf(data = pops[pops$pop %in% id, ],
-                aes(fill = pop, alpha = -time), color = NA) +
-        geom_sf(data = pops[pops$pop %in% id, ],
-                fill = NA, color = "black", size = 0.1) +
-        scale_fill_discrete(drop = FALSE) +
-        scale_alpha(range = c(1, 0.1)) +
-        ggtitle(sprintf("population: %s", id)) +
-        guides(fill = FALSE, alpha = guide_legend("time")) +
-        coord_sf(crs = sf::st_crs(world)) #, datum = sf::st_crs(world))
-    })
-    
-    if (length(rows) == 1)
-      p_map <- rows[[1]] +
-        guides(fill = guide_legend("population")) +
-        theme(plot.title = element_blank())
-    else
-      p_map <- patchwork::wrap_plots(rows)
-  }
-
-  p_map
-}
-
-
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
 render <- function(pop) {
@@ -325,17 +241,6 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
 
   class(inter_regions) <- set_class(inter_regions, "region")
   inter_regions
-}
-
-
-#' Check whether given population region has not yet been rendered
-#'
-#' @param pop Spatial population object of the 'spamr_pop' class
-check_not_rendered <- function(pop) {
-  if (!is.null(attr(pop, "rendered")))
-    stop("An already rendered population range object was provided.
-Please provide a range object before it was rendered against a map.",
-call. = FALSE)
 }
 
 
@@ -404,3 +309,107 @@ migrate <- function(pop, towards, duration, snapshots = 5) {
 }
 
 
+
+#' Plot spatio-temporal population distributions
+#'
+#' Plot the spatio-temporal distributions of populations and
+#' geographic regions across a map.
+#'
+#' If only geographic regions are given, they are colored. If both
+#' them and populations are given, only populations are specified.
+#'
+#' @param ... Population/geographic region objects of the 'spamr'
+#'   class
+#' @param facets Plot populations in individual panels?
+#' @param rendering Render the population boundaries against landscape
+#'   and other geographic boundaries?
+#' @param geo_graticules Plot axies with lon/lat graticules?
+#'
+#' @export
+#'
+#' @import ggplot2
+plot.spamr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE) {
+  args <- list(...)
+  # only the world object being plotted?
+  if (length(args) == 1 & inherits(args[[1]], "spamr_world"))
+    world <- args[[1]]
+  else {
+    # extract the world component underlying each population object
+    # and make sure they are all the same with no conflicts
+    world <- unique(lapply(args, function(i) attr(i, "world")))
+    if (length(world) != 1) {
+      stop("Population objects do not share the same world component", call. = F)
+    } else {
+      world <- world[[1]]
+    }
+  }
+  
+  regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
+  pops <- do.call(rbind, lapply(list(...), function(i) {
+    if (!is.null(i$pop)) {
+      if (rendering)
+        render(i)
+      else
+        i
+    }
+  }))
+
+  # plot the world map
+  p_map <-  ggplot() +
+    geom_sf(data = world, fill = NA, color = "black") +
+    theme_bw()
+
+  # plot geographic region boundaries, if present
+  if (!is.null(regions)) {
+    # plot in colors only when no populations are present
+    if (is.null(pops)) {
+      p_map <- p_map +
+        geom_sf(data = regions, aes(fill = region), linetype = 2, alpha = 0.5) +
+        geom_sf_label(data = regions, aes(label = region, color = region))
+    } else {
+      p_map <- p_map +
+        geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.5) +
+        geom_sf_label(data = regions, aes(label = region))
+    }
+  }
+
+  if (geo_graticules)
+    graticule_crs <- "EPSG:4326"
+  else
+    graticule_crs <- sf::st_crs(world)
+
+  # plot population ranges, if present
+  if (!is.null(pops)) {
+    pops$pop <- factor(pops$pop)
+    
+    if (facets)
+      pop_ids <- as.list(unique(pops$pop))
+    else
+      pop_ids <- list(unique(pops$pop))
+
+    rows <- lapply(pop_ids, function(id) {
+      p_map +
+        geom_sf(data = pops[pops$pop %in% id, ],
+                aes(fill = pop, alpha = -time), color = NA) +
+        geom_sf(data = pops[pops$pop %in% id, ],
+                fill = NA, color = "black", size = 0.1) +
+        scale_fill_discrete(drop = FALSE) +
+        scale_alpha(range = c(1, 0.1)) +
+        ggtitle(sprintf("population: %s", id)) +
+        guides(fill = FALSE, alpha = guide_legend("time"))
+    })
+    
+    if (length(rows) == 1)
+      p_map <- rows[[1]] +
+        guides(fill = guide_legend("population")) +
+        theme(plot.title = element_blank())
+    else
+      p_map <- patchwork::wrap_plots(rows)
+  }
+
+  p_map + coord_sf(
+    crs = sf::st_crs(world),
+    datum = graticule_crs,
+    expand = 0
+  )
+}
