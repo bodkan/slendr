@@ -434,11 +434,13 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
 #' spatial map
 #'
 #' @param ... Spatial population objects of the 'spammr_pop' class
+#' @param outdir Output directory to save all spatial maps
 #' @param rendering Render the population boundaries against landscape
 #'   and other geographic boundaries?
 #'
+#' @import ggplot2
 #' @export
-rasterize <- function(..., rendering = TRUE) {
+rasterize <- function(..., outdir = NULL, rendering = TRUE) {
   pops <- list(...)
   raster_list <- lapply(pops, function(pop) {
     times <- unique(pop$time)
@@ -464,5 +466,13 @@ rasterize <- function(..., rendering = TRUE) {
   # flatten the list of ggplot objects
   rasters <- do.call(c, raster_list)
 
-  rasters
+  if (is.null(outdir))
+    return(rasters)
+  else {
+    for (i in names(rasters)) {
+      if (!dir.exists(outdir)) dir.create(outdir, showWarnings = FALSE)
+      path <- file.path(outdir, paste0(i, ".png"))
+      ggsave(path, rasters[[i]])
+    }
+  }
 }
