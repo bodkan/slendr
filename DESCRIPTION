@@ -20,3 +20,7 @@ Imports:
     rnaturalearthdata,
     magrittr,
     stars
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
