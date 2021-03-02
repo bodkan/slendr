@@ -82,9 +82,15 @@
 
     
     
-<div id="introduction-and-motivation" class="section level2">
+<div id="introduction" class="section level2">
 <h2 class="hasAnchor">
-<a href="#introduction-and-motivation" class="anchor"></a>Introduction and motivation</h2>
+<a href="#introduction" class="anchor"></a>Introduction</h2>
+<p>What we ultimately want to be able to do is to simulate this kind of population history (splits and admixture events)</p>
+<p><a href="admixture_graph.png">admixture graph</a></p>
+<p>in the context of this</p>
+<p><a href="haak_map.png">haak</a></p>
+<p>to produce this kind of data</p>
+<p><a href="simdata.png">simulated data</a></p>
 </div>
 <div id="installation-and-setup" class="section level2">
 <h2 class="hasAnchor">
@@ -113,7 +119,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpKDq66j", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpzbAXwC", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -358,13 +364,61 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">neol</span>, <span class="va">yam</span>, <span class="va">ana</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-22-1.png" width="700"></p>
 </div>
-<div id="rasterization" class="section level1">
+<div id="rasterization-and-export" class="section level1">
 <h1 class="hasAnchor">
-<a href="#rasterization" class="anchor"></a>Rasterization</h1>
-<p>The ultimate goal of <code>spammr</code> is formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the <code>spammr</code> R package with SLiM is an Eidos function called <code>defineSpatialMap()</code> which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape.</p>
-<p>How do we link the visual (vectorized!) maps shown above to SLiM? The key is a <code>spammr</code> function <code><a href="../reference/rasterize.html">rasterize()</a></code>.</p>
+<a href="#rasterization-and-export" class="anchor"></a>Rasterization and export</h1>
+<p>OK, so far so good. We have nice and fancy way to plot colorful shapes on a map, representing spatio-temporal population dynamics.</p>
+<p>The ultimate goal of <code>spammr</code> is a formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the <code>spammr</code> R package with SLiM is an Eidos function called <code>defineSpatialMap()</code> which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.</p>
+<p><strong>TODO: write a short tutorial on the SLiM side of the problem too.</strong></p>
+<p>How do we link the visual (still vectorized!) spatial population ranges shown above to SLiM? We need to export them in a rasterized form as greyscale bitmaps The key is a <code>spammr</code> function <code><a href="../reference/rasterize.html">rasterize()</a></code>.</p>
+<p>Without any arguments, the function simply generates a (named) list of ggplot2 objects:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">ana</span>, <span class="va">whg</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">raster_ana</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">ana</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">raster_ana</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "ANA_9000" "ANA_8500" "ANA_8000" "ANA_7500" "ANA_7000" "ANA_6500"</span>
+<span class="co">#&gt;  [7] "ANA_6000" "ANA_5500" "ANA_5000" "ANA_4500" "ANA_4000"</span></code></pre></div>
+<p>Each of these objects contains a black-and-white rasterized version of the population range at a particular snapshot in time. Let’s plot one of them (representing the spatial range of the Anatolian farmers 5,500 thousand years ago - already at the stage in which they migrated to central Europe):</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">raster_ana</span><span class="op">[[</span><span class="st">"ANA_5500"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-24-1.png" width="700"></p>
+<p>This is what will be ultimately loaded into SLiM, using our back-end SLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation.</p>
+<p>Normally, we will save each spatial map into a directory, to which we will then direct the backend SLiM script. The same directory will also contain other information about population splits, admixture events, etc.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/rasterize.html">rasterize</a></span><span class="op">(</span>
+  <span class="va">whg</span>, <span class="va">ana</span>, <span class="va">neol</span>, <span class="va">yam</span>,
+  outdir <span class="op">=</span> <span class="st">"~/projects/spammr/vignettes/model"</span>
+<span class="op">)</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span>
+<span class="co">#&gt; Saving 7 x 5 in image</span></code></pre></div>
+<p>Let’s check the contents of the directory:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/projects/spammr/vignettes/model"</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "ANA_4000.png"  "ANA_4500.png"  "ANA_5000.png"  "ANA_5500.png" </span>
+<span class="co">#&gt;  [5] "ANA_6000.png"  "ANA_6500.png"  "ANA_7000.png"  "ANA_7500.png" </span>
+<span class="co">#&gt;  [9] "ANA_8000.png"  "ANA_8500.png"  "ANA_9000.png"  "NEOL_7000.png"</span>
+<span class="co">#&gt; [13] "WHG_25000.png" "YAM_6000.png"  "YAM_6125.png"  "YAM_6250.png" </span>
+<span class="co">#&gt; [17] "YAM_6375.png"  "YAM_6500.png"  "YAM_6625.png"  "YAM_6750.png" </span>
+<span class="co">#&gt; [21] "YAM_6875.png"  "YAM_7000.png"</span></code></pre></div>
 <div id="todo-and-open-questions" class="section level3">
 <h3 class="hasAnchor">
 <a href="#todo-and-open-questions" class="anchor"></a>TODO and open questions</h3>
