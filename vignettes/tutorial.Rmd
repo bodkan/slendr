@@ -56,6 +56,15 @@ Another goal is to make these spatio-temporal models fully reproducible, easy to
 
 
 
+```{r, echo = FALSE}
+ggplot2::ggplot() +
+    ggplot2::geom_sf(data = rnaturalearth::ne_coastline("small", "sf"), fill = NA, color = "black") +
+    ggplot2::theme_bw() + ggplot2::coord_sf(crs = "EPSG:4326")
+```
+
+
+
+
 
 
 ## Installation and setup
