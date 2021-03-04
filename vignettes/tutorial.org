@@ -2,7 +2,7 @@
 #+author: Martin Petr
 #+date: March 3, 2021
 #+property: header-args:R :session *R:tutorial* :exports both
-#+property: header-args:R+ :output-dir figures
+#+property: header-args:R+ :output-dir tutorial :width 1000 :height 600
 
 #+begin_comment
 #+property: header-args:R+ :eval no-export
@@ -12,21 +12,27 @@
 
 * Introduction
 
+#+BEGIN_SRC R
+getwd()
+#+END_SRC
+
+#+RESULTS:
+: /Users/martin_petr/projects/spammr/vignettes
 
 * Motivation
 
 **What we want to do is simulate this kind of population history
 (splits and admixture events):**
 
-[[~/projects/spammr/docs/reference/figures/admixture_graph.png]]
+[[file:figures/admixture_graph.png]]
 
 **in the context of this:**
 
-[[~/projects/spammr/docs/reference/figures/haak_map.png]]
+[[file:figures/haak_map.png]]
 
 **to produce this kind of data:**
 
-[[~/projects/spammr/docs/reference/figures/simdata.png]]
+[[file:figures/sim_data.png]]
 
 This is possible to do in [[https://messerlab.org/slim/][SLiM]] using its =defineSpatialMap()=
 functionality. However, there is currently no way to define spatial
@@ -71,14 +77,14 @@ framework.
 
 
 
-#+begin_src R :results output file graphics :file world.pdf :width 10 :height 6
+#+BEGIN_SRC R
 ggplot2::ggplot() +
     ggplot2::geom_sf(data = rnaturalearth::ne_coastline("small", "sf"), fill = NA, color = "black") +
     ggplot2::theme_bw() + ggplot2::coord_sf(crs = "EPSG:4326")
-#+end_src
+#+END_SRC
 
 #+RESULTS:
-[[file:figures/world.pdf]]
+[[file:tutorial/world.png]]
 
 
 
@@ -89,17 +95,17 @@ ggplot2::ggplot() +
 
 First, let's install the latest version of the package and load it:
 
-#+begin_src R :eval no
+#+BEGIN_SRC R
 devtools::install_github("bodkan/spammr")
-#+end_src
+#+END_SRC
 
 
 Now we can load it with other R package dependencies:
 
-#+begin_src R :exports code :results none
+#+BEGIN_SRC R
 #library(spammr)
 devtools::load_all("~/projects/spammr")
-#+end_src
+#+END_SRC
 
 
 
@@ -161,35 +167,18 @@ world <- world_map(
 )
 #+end_src
 
-Internally, the =world= object is a normal =sf= class object without additional components. This is unlike other =spammr= object described below, which are also =sf= objects but which carry additional internal components.
+Internally, the =world= object is a normal =sf= class object without
+additional components. This is unlike other =spammr= object described
+below, which are also =sf= objects but which carry additional internal
+components.
 
-Note that the summary of the object says "projected CRS:  ETRS89-extended / LAEA Europe". This means that the world map has indeed been transformed in the projected CRS we specified above.
+Note that the summary of the object says "projected CRS:
+ETRS89-extended / LAEA Europe". This means that the world map has
+indeed been transformed in the projected CRS we specified above.
 
 #+begin_src R :results output
 world
 #+end_src
-
-#+RESULTS:
-#+begin_example
-Simple feature collection with 11 features and 3 fields
-Attribute-geometry relationship: 3 constant, 0 aggregate, 0 identity
-geometry type:  GEOMETRY
-dimension:      XY
-bbox:           xmin: 1647066 ymin: 117021.7 xmax: 9388657 ymax: 5472983
-projected CRS:  ETRS89-extended / LAEA Europe
-First 10 features:
-    featurecla scalerank min_zoom                       geometry
-67        Land         1        1 POLYGON ((6525593 1757679, ...
-68        Land         1        1 POLYGON ((5565717 1516191, ...
-69        Land         1        1 POLYGON ((4807248 1700842, ...
-70        Land         1        1 POLYGON ((4254466 2012545, ...
-72        Land         1        1 POLYGON ((4284507 2116582, ...
-80        Land         0        0 POLYGON ((3186404 3370661, ...
-81        Land         1        1 POLYGON ((4490573 3614884, ...
-83        Land         0        0 POLYGON ((3569195 4017097, ...
-89        Land         0        0 POLYGON ((3246220 5008504, ...
-112       Land         0        0 POLYGON ((9388657 2071395, ...
-#+end_example
 
 
 
@@ -217,12 +206,9 @@ on the lower-level mechanisms of the =sf= package.
 More on that below, but here we will just plot the world context we
 just created:
 
-#+begin_src R :results output file graphics :file zoom.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file zoom.png
 plot(world, title = "Zoomed-in world map context")
 #+end_src
-
-#+RESULTS:
-[[file:figures/zoom.pdf]]
 
 
 
@@ -281,25 +267,12 @@ the name of the region (here "Anatolia"):
 anatolia
 #+end_src
 
-#+RESULTS:
-: Simple feature collection with 1 feature and 1 field
-: Attribute-geometry relationship: 1 constant, 0 aggregate, 0 identity
-: geometry type:  POLYGON
-: dimension:      XY
-: bbox:           xmin: 5638478 ymin: 1520500 xmax: 7011451 ymax: 2451987
-: projected CRS:  ETRS89-extended / LAEA Europe
-:     region                       geometry
-: 1 Anatolia POLYGON ((5965149 1520500, ...
-
 However, the object also carries additional class annotations for the
 purpose of internal =spammr= machinery:
 
 #+begin_src R :results output
 class(anatolia)
 #+end_src
-
-#+RESULTS:
-: [1] "spammr"        "spammr_region" "sf"            "data.frame"
 
 
 Furthermore, note that in all =region()= calls we specified the
@@ -311,12 +284,9 @@ Again, we can use the generic =plot()= function to plot both
 geographic regions in the context of the defined section of the world
 map:
 
-#+begin_src R :results output file graphics :file regions.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file regions.png
 plot(europe, anatolia, title = "Geographic regions")
 #+end_src
-
-#+RESULTS:
-[[file:figures/regions.pdf]]
 
 Note that the =world= object is no longer explicitly specified. It is
 not needed, because each other class of objects provided to the
@@ -331,10 +301,6 @@ indeed is the same as the world object we created at the beginning:
 all(attr(europe, "world") == world)
 all(attr(anatolia, "world") == world)
 #+end_src
-
-#+RESULTS:
-: [1] TRUE
-: [1] TRUE
 
 
 
@@ -354,7 +320,13 @@ all(attr(anatolia, "world") == world)
 
 ** Circular population ranges
 
-The whole point of =spammr= is formalizing the specification of spatial population boundaries and their changes over time. The core function for this is =population()=, which accepts the population =name= and the =time= in which we want to enforce that population's boundary, as well as the =world= object described above. Finally, this function accepts a =center= and =radius= arguments (in case of circular population boundaries):
+The whole point of =spammr= is formalizing the specification of
+spatial population boundaries and their changes over time. The core
+function for this is =population()=, which accepts the population
+=name= and the =time= in which we want to enforce that population's
+boundary, as well as the =world= object described above. Finally, this
+function accepts a =center= and =radius= arguments (in case of
+circular population boundaries):
 
 #+begin_src R :results none
 whg <- population(
@@ -366,27 +338,30 @@ whg <- population(
 )
 #+end_src
 
-If we call the =plot()= function on the returned object, we have the option to either plot the population range in its "raw" form or in its "rendered" form, in which case the raw boundary is intersected with spatial landscape (removing large bodies of water, etc.).
+If we call the =plot()= function on the returned object, we have the
+option to either plot the population range in its "raw" form or in its
+"rendered" form, in which case the raw boundary is intersected with
+spatial landscape (removing large bodies of water, etc.).
 
-The 'rendered' form is what is ultimately exported in a serialized form (see below) to be loaded as a spatial map into SLiM. This is why the =plot()= function renders population ranges by default.
+The 'rendered' form is what is ultimately exported in a serialized
+form (see below) to be loaded as a spatial map into SLiM. This is why
+the =plot()= function renders population ranges by default.
 
-#+begin_src R :results output file graphics :file circle-raw.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file circle-raw.png
 plot(whg, rendering = F, title = "'Raw' population range")
 #+end_src
 
-#+RESULTS:
-[[file:figures/circle-raw.pdf]]
-
-#+begin_src R :results output file graphics :file circle-rendered.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file circle-rendered.png
 plot(whg, title = "'Rendered' population range")
 #+end_src
 
-#+RESULTS:
-[[file:figures/circle-rendered.pdf]]
-
 ** Polygon population ranges
 
-Alternatively, it is also possible to define finer population boundaries using a polygon geometry object (=coords== argument) or a region object created by the =region()= function above. Again, as a reminder, note that all coordinates are described in the context of the geographic CRS.
+Alternatively, it is also possible to define finer population
+boundaries using a polygon geometry object (=coords== argument) or a
+region object created by the =region()= function above. Again, as a
+reminder, note that all coordinates are described in the context of
+the geographic CRS.
 
 #+begin_src R :results none
 whg <- population(
@@ -397,19 +372,13 @@ whg <- population(
 )
 #+end_src
 
-#+begin_src R :results output file graphics :file poly-raw.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file poly-raw.png
 plot(whg, rendering = F, title = "'Raw' population range")
 #+end_src
 
-#+RESULTS:
-[[file:figures/poly-raw.pdf]]
-
-#+begin_src R :results output file graphics :file poly-rendered.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file poly-rendered.png
 plot(whg, title = "'Rendered' population range")
 #+end_src
-
-#+RESULTS:
-[[file:figures/poly-rendered.pdf]]
 
 Let's create more populations and their boundaries:
 
@@ -448,16 +417,20 @@ neol <- population(
 
 * Spatial population expansion
 
-We can simulate the expanding range of a population using the function =expand()=, which accepts a parameter specifying by how many kilometers should the boundary expand (the =by= argument), how long should the expansion take (the =duration= argument) and how many intermediate spatial map snapshots should be exported representing this expansion (the =snapshots= argument).
+We can simulate the expanding range of a population using the function
+=expand()=, which accepts a parameter specifying by how many
+kilometers should the boundary expand (the =by= argument), how long
+should the expansion take (the =duration= argument) and how many
+intermediate spatial map snapshots should be exported representing
+this expansion (the =snapshots= argument).
 
-For instance, let's represent the expansion of Anatolian farmers (this uses an optional parameter =region= which restricts the expansion only to Europe, instead of all around Anatolia).
+For instance, let's represent the expansion of Anatolian farmers (this
+uses an optional parameter =region= which restricts the expansion only
+to Europe, instead of all around Anatolia).
 
-#+begin_src R :results output file graphics :file ana.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file ana.png
 plot(ana, title = "Anatolian farmer population")
 #+end_src
-
-#+RESULTS:
-[[file:figures/ana.pdf]]
 
 #+begin_src R :results none
 ana <- ana %>%
@@ -469,53 +442,30 @@ ana <- ana %>%
   )
 #+end_src
 
-Note that in principle, you could specify the entire spatio-temporal history of a population in a single pipeline using the pipe operator =%>%=.
+Note that in principle, you could specify the entire spatio-temporal
+history of a population in a single pipeline using the pipe operator
+=%>%=.
 
-We can inspect the object returned by the =expand()= function and see that it contains he spatial maps ("snapshots") of the expansion process across time:
+We can inspect the object returned by the =expand()= function and see
+that it contains he spatial maps ("snapshots") of the expansion
+process across time:
 
 #+begin_src R :results output
 ana
 #+end_src
 
-#+RESULTS:
-#+begin_example
-Simple feature collection with 11 features and 2 fields
-Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity
-geometry type:  POLYGON
-dimension:      XY
-bbox:           xmin: 3205946 ymin: -1210009 xmax: 9604233 ymax: 5188278
-projected CRS:  ETRS89-extended / LAEA Europe
-First 10 features:
-   pop time                       geometry
-1  ANA 9000 POLYGON ((7105089 1989134, ...
-2  ANA 8500 POLYGON ((7355004 1995678, ...
-3  ANA 8000 POLYGON ((7604918 2002223, ...
-4  ANA 7500 POLYGON ((7854832 2008767, ...
-5  ANA 7000 POLYGON ((8104747 2015311, ...
-6  ANA 6500 POLYGON ((8354661 2021855, ...
-7  ANA 6000 POLYGON ((8604575 2028400, ...
-8  ANA 5500 POLYGON ((8854490 2034944, ...
-9  ANA 5000 POLYGON ((9104404 2041488, ...
-10 ANA 4500 POLYGON ((9354318 2048032, ...
-#+end_example
-
 We can (and should) check the results visually:
 
-#+begin_src R :results output file graphics :file anaexp.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file anaexp.png
 plot(ana, title = "Anatolian expansion into Europe")
 #+end_src
 
-#+RESULTS:
-[[file:figures/anaexp.pdf]]
+To visually see what is really going on behind the scene, we can
+produce the complete, unrendered form of the expansion:
 
-To visually see what is really going on behind the scene, we can produce the complete, unrendered form of the expansion:
-
-#+begin_src R :results output file graphics :file anaexp-raw.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file anaexp-raw.png
 plot(ana, title = "Anatolian expansion into Europe (not rendered)", rendering = F)
 #+end_src
-
-#+RESULTS:
-[[file:figures/anaexp-raw.pdf]]
 
 
 
@@ -530,14 +480,16 @@ plot(ana, title = "Anatolian expansion into Europe (not rendered)", rendering = 
 
 * Population migration across the landscape
 
-To specify an explicit population movement (not expansion from a single starting location), we can use the function =migrate()=. This accepts the coordinates of the destination point (=towards=), the =duration= of the migration, and the number of individual spatial maps to save during export (=snapshots=, same as the =expand()= function above).
+To specify an explicit population movement (not expansion from a
+single starting location), we can use the function =migrate()=. This
+accepts the coordinates of the destination point (=towards=), the
+=duration= of the migration, and the number of individual spatial maps
+to save during export (=snapshots=, same as the =expand()= function
+above).
 
-#+begin_src R :results output file graphics :file yam.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file yam.png
 plot(yam, title = "Yamnaya range")
 #+end_src
-
-#+RESULTS:
-[[file:figures/yam.pdf]]
 
 #+begin_src R :results none
 yam <- yam %>%
@@ -548,40 +500,19 @@ yam <- yam %>%
 )
 #+end_src
 
-We can inspect the object returned by the =migrate()= function and see that it contains not just the first YAM population range at 7000 years ago, but also the ranges of the intermediate locations:
+We can inspect the object returned by the =migrate()= function and see
+that it contains not just the first YAM population range at 7000 years
+ago, but also the ranges of the intermediate locations:
 
 #+begin_src R :results output
 yam
 #+end_src
 
-#+RESULTS:
-#+begin_example
-Simple feature collection with 9 features and 2 fields
-Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity
-geometry type:  POLYGON
-dimension:      XY
-bbox:           xmin: 3571561 ymin: 2151529 xmax: 6905444 ymax: 4302658
-projected CRS:  ETRS89-extended / LAEA Europe
-  pop time                       geometry
-1 YAM 7000 POLYGON ((5457801 3112225, ...
-2 YAM 6875 POLYGON ((5240450 2992138, ...
-3 YAM 6750 POLYGON ((5023100 2872051, ...
-4 YAM 6625 POLYGON ((4805750 2751964, ...
-5 YAM 6500 POLYGON ((4588399 2631877, ...
-6 YAM 6375 POLYGON ((4371049 2511790, ...
-7 YAM 6250 POLYGON ((4153699 2391703, ...
-8 YAM 6125 POLYGON ((3936349 2271616, ...
-9 YAM 6000 POLYGON ((3718998 2151529, ...
-#+end_example
-
 Checking the result visually again, we see:
 
-#+begin_src R :results output file graphics :file migr.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file migr.png
 plot(yam, title = "Intermediate migration maps")
 #+end_src
-
-#+RESULTS:
-[[file:figures/migr.pdf]]
 
 
 
@@ -609,12 +540,9 @@ useful for visual inspection of the specified model and for looking
 for potential issues before the export of individual spatio-temporal
 maps.
 
-#+begin_src R :results output file graphics :file allpops.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file allpops.png
 plot(whg, neol, yam, ana)
 #+end_src
-
-#+RESULTS:
-[[file:figures/allpops.pdf]]
 
 
 
@@ -657,33 +585,21 @@ raster_maps <- rasterize(whg, ana, neol, yam)
 names(raster_maps)
 #+end_src
 
-#+RESULTS:
-:  [1] "WHG_25000" "ANA_9000"  "ANA_8500"  "ANA_8000"  "ANA_7500"  "ANA_7000" 
-:  [7] "ANA_6500"  "ANA_6000"  "ANA_5500"  "ANA_5000"  "ANA_4500"  "ANA_4000" 
-: [13] "NEOL_7000" "YAM_7000"  "YAM_6875"  "YAM_6750"  "YAM_6625"  "YAM_6500" 
-: [19] "YAM_6375"  "YAM_6250"  "YAM_6125"  "YAM_6000"
-
 Each of these objects contains a black-and-white rasterized version of
 the population range at a particular snapshot in time. Let's plot one
 of them (representing the spatial range of the Anatolian farmers 5,500
 thousand years ago - already at the stage in which they migrated to
 central Europe):
 
-#+begin_src R :results output file graphics :file raster_one.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file raster_one.png
 raster_maps[["ANA_5500"]]
 #+end_src
 
-#+RESULTS:
-[[file:figures/raster_one.pdf]]
-
 And here's the whole series:
 
-#+begin_src R :results output file graphics :file raster_all.pdf :width 10 :height 6
+#+begin_src R :results output file graphics :file raster_all.png
 patchwork::wrap_plots(raster_maps)
 #+end_src
-
-#+RESULTS:
-[[file:figures/raster_all.pdf]]
 
 This is what will be ultimately loaded into SLiM, using our back-end
 SLiM script which will swap different spatial maps in and out, as
