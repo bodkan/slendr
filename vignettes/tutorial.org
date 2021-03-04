@@ -7,10 +7,6 @@
 
 * Introduction
 
-#+BEGIN_SRC R
-getwd()
-#+END_SRC
-
 * Motivation
 
 **What we want to do is simulate this kind of population history
