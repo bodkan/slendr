@@ -149,8 +149,7 @@ using the [simple features (sf)](https://r-spatial.github.io/sf/)
 infrastructure could be used. For now the `spammr` package implicitly
 uses the [Natural Earth](https://www.naturalearthdata.com/) project data
 (in it's vectorizes form!), which it internally loads using the
-[rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/README.html)
-interface.
+[rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/README.html) interface.
 
 The first function we will look at is `world_map()`, which will load the
 map of the entire world in a vectorized format and zoom in (in fact,
@@ -175,8 +174,8 @@ proportions.
 
 ```{r}
 world <- world_map(
-  lon = c(-15, 60),  # min-max longitude
-  lat = c(20, 65),   # min-max latitude
+  lon_range = c(-15, 60),  # min-max longitude
+  lat_range = c(20, 65),   # min-max latitude
   crs = "EPSG:3035"  # real projected CRS used internally
 )
 ```
@@ -364,16 +363,16 @@ whg <- population(
 
 If we call the `plot()` function on the returned object, we have the
 option to either plot the population range in its "raw" form or in its
-"rendered" form, in which case the raw boundary is intersected with
+interected form, in which case the raw boundary is intersected with
 spatial landscape (removing large bodies of water, etc.).
 
-The 'rendered' form is what is ultimately exported in a serialized form
+The intersected form is what is ultimately exported in a serialized form
 (see below) to be loaded as a spatial map into SLiM. This is why the
 `plot()` function renders population ranges by default.
 
 ```{r}
-plot(whg, rendering = F, title = "'Raw' population range")
-plot(whg, title = "'Rendered' population range")
+plot(whg, intersect = F, title = "'Raw' population range")
+plot(whg, title = "'Intersected' population range")
 ```
 
 ### Polygon population ranges
@@ -393,8 +392,8 @@ whg <- population(
 ```
 
 ```{r}
-plot(whg, rendering = F, title = "'Raw' population range")
-plot(whg, title = "'Rendered' population range")
+plot(whg, intersect = F, title = "'Raw' population range")
+plot(whg, title = "'Intersected' population range")
 ```
 
 Let's create more populations and their boundaries:
@@ -483,11 +482,11 @@ We can (and should) check the results visually:
 plot(ana, title = "Anatolian expansion into Europe")
 ```
 
-To visually see what is really going on behind the scene, we can produce
-the complete, unrendered form of the expansion:
+To visually see what is really going on behind the scene, we can plot
+the raw form of the expansion:
 
 ```{r}
-plot(ana, title = "Anatolian expansion into Europe (not rendered)", rendering = F)
+plot(ana, title = "Anatolian expansion into Europe (not intersected)", intersect = F)
 ```
 
 
@@ -551,7 +550,7 @@ population(
     duration = 100,
     snapshots = 50
   ) %>%
-  plot(rendering = F, title = "Migration along a trajectory")
+  plot(intersect = F, title = "Migration along a trajectory")
 ```
 
 
@@ -586,31 +585,26 @@ plot(whg, neol, yam, ana)
 
 
 
-## Rasterization and export
+## Rendering and export
 
 OK, so far so good. We have nice and fancy way to plot colorful shapes
 on a map, representing spatio-temporal population dynamics.
 
 The ultimate goal of `spammr` is a formal specification of
-spatio-temporal population models for the purpose of forward simulations
-in SLiM. The crucial piece of machinery which connects the `spammr` R
-package with SLiM is an Eidos function called `defineSpatialMap()`
-which, among other parameters, accepts a two-dimensional matrix
-(essentially, a raster image) describing a spatial simulation landscape.
-See SLiM manual for more information.
+spatio-temporal population boundaries for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the `spammr` R package with SLiM is an Eidos function called `defineSpatialMap()` which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.
 
 **TODO: write a short tutorial on the SLiM side of the problem too.**
 
 How do we link the visual (still vectorized!) spatial population ranges
 shown above to SLiM? We need to export them in a rasterized form as
-greyscale bitmaps The key is a `spammr` function `rasterize()`.
+greyscale bitmaps The key is a `spammr` function `render`()`.
 
 Without any arguments, the function simply generates a (named) list of
 ggplot2 objects:
 
 ```{r}
-raster_maps <- rasterize(whg, ana, neol, yam)
-names(raster_maps)
+maps <- render(whg, ana, neol, yam)
+names(maps)
 ```
 
 Each of these objects contains a black-and-white rasterized version of
@@ -620,49 +614,18 @@ thousand years ago - already at the stage in which they migrated to
 central Europe):
 
 ```{r}
-raster_maps[["ANA_5500"]]
+maps[["ANA_5500"]]
 ```
 
 And here's the whole series:
 
 ```{r}
-patchwork::wrap_plots(raster_maps)
+cowplot::plot_grid(plotlist = maps)
 ```
 
 This is what will be ultimately loaded into SLiM, using our back-end
 SLiM script which will swap different spatial maps in and out, as needed
 throughout the course of the simulation.
-
-Normally, we will save each spatial map into a directory, to which we
-will then direct the backend SLiM script. The same directory will also
-contain other information about population splits, admixture events,
-etc.
-
-```{r}
-rasterize(
-  whg, ana, neol, yam,
-  outdir = "/tmp/model"
-)
-```
-
-Let's check the contents of the directory:
-
-```{r, eval = F}
-list.files("/tmp/model")
-```
-
-```{r, include=FALSE}
-unlink("/tmp/model", recursive = TRUE, force = FALSE)
-```
-
-
-
-
-
-
-
-
-
 
 
 
