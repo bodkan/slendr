@@ -128,36 +128,21 @@
 <p>This is the current approach of <code>spammr</code>: let the user specify everything in an easy to understand longitude/latitude geographical CRS. However, in case it is necessary, the internal data structures and the final exported spatial maps can be internally handled in a realistic projected CRS which is better for ensuring undistorted distances and proportions.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">world</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world_map.html">world_map</a></span><span class="op">(</span>
-  lon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>,  <span class="co"># min-max longitude</span>
-  lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,   <span class="co"># min-max latitude</span>
+  lon_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>,  <span class="co"># min-max longitude</span>
+  lat_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,   <span class="co"># min-max latitude</span>
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpEb1mhR", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpegtQaP", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
 <p>Note that the summary of the object says “projected CRS: ETRS89-extended / LAEA Europe”. This means that the world map has indeed been transformed in the projected CRS we specified above.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">world</span>
-<span class="co">#&gt; Simple feature collection with 11 features and 3 fields</span>
-<span class="co">#&gt; Attribute-geometry relationship: 3 constant, 0 aggregate, 0 identity</span>
-<span class="co">#&gt; geometry type:  GEOMETRY</span>
-<span class="co">#&gt; dimension:      XY</span>
-<span class="co">#&gt; bbox:           xmin: 1647066 ymin: 117021.7 xmax: 9388657 ymax: 5472983</span>
-<span class="co">#&gt; projected CRS:  ETRS89-extended / LAEA Europe</span>
-<span class="co">#&gt; First 10 features:</span>
-<span class="co">#&gt;     featurecla scalerank min_zoom                       geometry</span>
-<span class="co">#&gt; 67        Land         1        1 POLYGON ((6525593 1757679, ...</span>
-<span class="co">#&gt; 68        Land         1        1 POLYGON ((5565717 1516191, ...</span>
-<span class="co">#&gt; 69        Land         1        1 POLYGON ((4807248 1700842, ...</span>
-<span class="co">#&gt; 70        Land         1        1 POLYGON ((4254466 2012545, ...</span>
-<span class="co">#&gt; 72        Land         1        1 POLYGON ((4284507 2116582, ...</span>
-<span class="co">#&gt; 80        Land         0        0 POLYGON ((3186404 3370661, ...</span>
-<span class="co">#&gt; 81        Land         1        1 POLYGON ((4490573 3614884, ...</span>
-<span class="co">#&gt; 83        Land         0        0 POLYGON ((3569195 4017097, ...</span>
-<span class="co">#&gt; 89        Land         0        0 POLYGON ((3246220 5008504, ...</span>
-<span class="co">#&gt; 112       Land         0        0 POLYGON ((9388657 2071395, ...</span></code></pre></div>
+<span class="co">#&gt; spammr 'world' object </span>
+<span class="co">#&gt; --------------------- </span>
+<span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
 </div>
 <div id="plotting-geographical-features-and-population-ranges" class="section level2">
 <h2 class="hasAnchor">
@@ -203,14 +188,9 @@
 <p>Again, the object returned by the <code><a href="../reference/region.html">region()</a></code> function is actually a normal <code>sf</code> object, but carrying some additional annotation such as the name of the region (here “Anatolia”):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">anatolia</span>
-<span class="co">#&gt; Simple feature collection with 1 feature and 1 field</span>
-<span class="co">#&gt; Attribute-geometry relationship: 1 constant, 0 aggregate, 0 identity</span>
-<span class="co">#&gt; geometry type:  POLYGON</span>
-<span class="co">#&gt; dimension:      XY</span>
-<span class="co">#&gt; bbox:           xmin: 5638478 ymin: 1520500 xmax: 7011451 ymax: 2451987</span>
-<span class="co">#&gt; projected CRS:  ETRS89-extended / LAEA Europe</span>
-<span class="co">#&gt;     region                       geometry</span>
-<span class="co">#&gt; 1 Anatolia POLYGON ((5965149 1520500, ...</span></code></pre></div>
+<span class="co">#&gt; spammr 'region' object </span>
+<span class="co">#&gt; ---------------------- </span>
+<span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
 <p>However, the object also carries additional class annotations for the purpose of internal <code>spammr</code> machinery:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">anatolia</span><span class="op">)</span>
@@ -243,13 +223,13 @@
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">47</span><span class="op">)</span>, <span class="co"># (longitude, latitude)</span>
   radius <span class="op">=</span> <span class="fl">1300</span>       <span class="co"># radius of a circle in km</span>
 <span class="op">)</span></code></pre></div>
-<p>If we call the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function on the returned object, we have the option to either plot the population range in its “raw” form or in its “rendered” form, in which case the raw boundary is intersected with spatial landscape (removing large bodies of water, etc.).</p>
-<p>The ‘rendered’ form is what is ultimately exported in a serialized form (see below) to be loaded as a spatial map into SLiM. This is why the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function renders population ranges by default.</p>
+<p>If we call the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function on the returned object, we have the option to either plot the population range in its “raw” form or in its interected form, in which case the raw boundary is intersected with spatial landscape (removing large bodies of water, etc.).</p>
+<p>The intersected form is what is ultimately exported in a serialized form (see below) to be loaded as a spatial map into SLiM. This is why the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function renders population ranges by default.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, rendering <span class="op">=</span> <span class="cn">F</span>, title <span class="op">=</span> <span class="st">"'Raw' population range"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, intersect <span class="op">=</span> <span class="cn">F</span>, title <span class="op">=</span> <span class="st">"'Raw' population range"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, title <span class="op">=</span> <span class="st">"'Rendered' population range"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, title <span class="op">=</span> <span class="st">"'Intersected' population range"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-12-2.png" width="700"></p>
 </div>
 <div id="polygon-population-ranges" class="section level3">
@@ -264,10 +244,10 @@
   region <span class="op">=</span> <span class="va">europe</span> <span class="co"># geographic region object</span>
 <span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, rendering <span class="op">=</span> <span class="cn">F</span>, title <span class="op">=</span> <span class="st">"'Raw' population range"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, intersect <span class="op">=</span> <span class="cn">F</span>, title <span class="op">=</span> <span class="st">"'Raw' population range"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, title <span class="op">=</span> <span class="st">"'Rendered' population range"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, title <span class="op">=</span> <span class="st">"'Intersected' population range"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-14-2.png" width="700"></p>
 <p>Let’s create more populations and their boundaries:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -311,31 +291,16 @@
 <p>We can inspect the object returned by the <code><a href="../reference/expand.html">expand()</a></code> function and see that it contains he spatial maps (“snapshots”) of the expansion process across time:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ana</span>
-<span class="co">#&gt; Simple feature collection with 11 features and 2 fields</span>
-<span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
-<span class="co">#&gt; geometry type:  POLYGON</span>
-<span class="co">#&gt; dimension:      XY</span>
-<span class="co">#&gt; bbox:           xmin: 3205946 ymin: -1210009 xmax: 9604233 ymax: 5188278</span>
-<span class="co">#&gt; projected CRS:  ETRS89-extended / LAEA Europe</span>
-<span class="co">#&gt; First 10 features:</span>
-<span class="co">#&gt;    pop time                       geometry</span>
-<span class="co">#&gt; 1  ANA 9000 POLYGON ((7105089 1989134, ...</span>
-<span class="co">#&gt; 2  ANA 8500 POLYGON ((7355004 1995678, ...</span>
-<span class="co">#&gt; 3  ANA 8000 POLYGON ((7604918 2002223, ...</span>
-<span class="co">#&gt; 4  ANA 7500 POLYGON ((7854832 2008767, ...</span>
-<span class="co">#&gt; 5  ANA 7000 POLYGON ((8104747 2015311, ...</span>
-<span class="co">#&gt; 6  ANA 6500 POLYGON ((8354661 2021855, ...</span>
-<span class="co">#&gt; 7  ANA 6000 POLYGON ((8604575 2028400, ...</span>
-<span class="co">#&gt; 8  ANA 5500 POLYGON ((8854490 2034944, ...</span>
-<span class="co">#&gt; 9  ANA 5000 POLYGON ((9104404 2041488, ...</span>
-<span class="co">#&gt; 10 ANA 4500 POLYGON ((9354318 2048032, ...</span></code></pre></div>
+<span class="co">#&gt; spammr 'region' object </span>
+<span class="co">#&gt; ---------------------- </span>
+<span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
 <p>We can (and should) check the results visually:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ana</span>, title <span class="op">=</span> <span class="st">"Anatolian expansion into Europe"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
-<p>To visually see what is really going on behind the scene, we can produce the complete, unrendered form of the expansion:</p>
+<p>To visually see what is really going on behind the scene, we can plot the raw form of the expansion:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ana</span>, title <span class="op">=</span> <span class="st">"Anatolian expansion into Europe (not rendered)"</span>, rendering <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ana</span>, title <span class="op">=</span> <span class="st">"Anatolian expansion into Europe (not intersected)"</span>, intersect <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
 </div>
 <div id="population-migration-across-a-landscape" class="section level2">
@@ -355,22 +320,13 @@
 <p>We can inspect the object returned by the <code><a href="../reference/migrate.html">migrate()</a></code> function and see that it contains not just the first YAM population range at 7000 years ago, but also the ranges of the intermediate locations:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">yam</span>
-<span class="co">#&gt; Simple feature collection with 9 features and 2 fields</span>
-<span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
-<span class="co">#&gt; geometry type:  POLYGON</span>
-<span class="co">#&gt; dimension:      XY</span>
-<span class="co">#&gt; bbox:           xmin: 3571561 ymin: 2151529 xmax: 6905444 ymax: 4302658</span>
-<span class="co">#&gt; projected CRS:  ETRS89-extended / LAEA Europe</span>
-<span class="co">#&gt;   pop time                       geometry</span>
-<span class="co">#&gt; 1 YAM 7000 POLYGON ((5457801 3112225, ...</span>
-<span class="co">#&gt; 2 YAM 6875 POLYGON ((5240450 2992138, ...</span>
-<span class="co">#&gt; 3 YAM 6750 POLYGON ((5023100 2872051, ...</span>
-<span class="co">#&gt; 4 YAM 6625 POLYGON ((4805750 2751964, ...</span>
-<span class="co">#&gt; 5 YAM 6500 POLYGON ((4588399 2631877, ...</span>
-<span class="co">#&gt; 6 YAM 6375 POLYGON ((4371049 2511790, ...</span>
-<span class="co">#&gt; 7 YAM 6250 POLYGON ((4153699 2391703, ...</span>
-<span class="co">#&gt; 8 YAM 6125 POLYGON ((3936349 2271616, ...</span>
-<span class="co">#&gt; 9 YAM 6000 POLYGON ((3718998 2151529, ...</span></code></pre></div>
+<span class="co">#&gt; spammr 'population' object </span>
+<span class="co">#&gt; -------------------------- </span>
+<span class="co">#&gt; name: YAM </span>
+<span class="co">#&gt; split from: </span>
+<span class="co">#&gt; snapshots at: 7000, 6875, 6750, 6625, 6500, 6375, 6250, 6125, 6000 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
 <p>Checking the result visually again, we see:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">yam</span>, title <span class="op">=</span> <span class="st">"Intermediate migration maps"</span><span class="op">)</span></code></pre></div>
@@ -387,7 +343,7 @@
     duration <span class="op">=</span> <span class="fl">100</span>,
     snapshots <span class="op">=</span> <span class="fl">50</span>
   <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>rendering <span class="op">=</span> <span class="cn">F</span>, title <span class="op">=</span> <span class="st">"Migration along a trajectory"</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>intersect <span class="op">=</span> <span class="cn">F</span>, title <span class="op">=</span> <span class="st">"Migration along a trajectory"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
 </div>
 <div id="plotting-multiple-spammr-objects" class="section level2">
@@ -398,61 +354,30 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">neol</span>, <span class="va">yam</span>, <span class="va">ana</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
 </div>
-<div id="rasterization-and-export" class="section level2">
+<div id="rendering-and-export" class="section level2">
 <h2 class="hasAnchor">
-<a href="#rasterization-and-export" class="anchor"></a>Rasterization and export</h2>
+<a href="#rendering-and-export" class="anchor"></a>Rendering and export</h2>
 <p>OK, so far so good. We have nice and fancy way to plot colorful shapes on a map, representing spatio-temporal population dynamics.</p>
-<p>The ultimate goal of <code>spammr</code> is a formal specification of spatio-temporal population models for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the <code>spammr</code> R package with SLiM is an Eidos function called <code>defineSpatialMap()</code> which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.</p>
+<p>The ultimate goal of <code>spammr</code> is a formal specification of spatio-temporal population boundaries for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the <code>spammr</code> R package with SLiM is an Eidos function called <code>defineSpatialMap()</code> which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.</p>
 <p><strong>TODO: write a short tutorial on the SLiM side of the problem too.</strong></p>
-<p>How do we link the visual (still vectorized!) spatial population ranges shown above to SLiM? We need to export them in a rasterized form as greyscale bitmaps The key is a <code>spammr</code> function <code><a href="../reference/rasterize.html">rasterize()</a></code>.</p>
+<p>How do we link the visual (still vectorized!) spatial population ranges shown above to SLiM? We need to export them in a rasterized form as greyscale bitmaps The key is a <code>spammr</code> function <code>render</code>()`.</p>
 <p>Without any arguments, the function simply generates a (named) list of ggplot2 objects:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">raster_maps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">ana</span>, <span class="va">neol</span>, <span class="va">yam</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">raster_maps</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">maps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/render.html">render</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">ana</span>, <span class="va">neol</span>, <span class="va">yam</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">maps</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "WHG_25000" "ANA_9000"  "ANA_8500"  "ANA_8000"  "ANA_7500"  "ANA_7000" </span>
 <span class="co">#&gt;  [7] "ANA_6500"  "ANA_6000"  "ANA_5500"  "ANA_5000"  "ANA_4500"  "ANA_4000" </span>
 <span class="co">#&gt; [13] "NEOL_7000" "YAM_7000"  "YAM_6875"  "YAM_6750"  "YAM_6625"  "YAM_6500" </span>
 <span class="co">#&gt; [19] "YAM_6375"  "YAM_6250"  "YAM_6125"  "YAM_6000"</span></code></pre></div>
 <p>Each of these objects contains a black-and-white rasterized version of the population range at a particular snapshot in time. Let’s plot one of them (representing the spatial range of the Anatolian farmers 5,500 thousand years ago - already at the stage in which they migrated to central Europe):</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">raster_maps</span><span class="op">[[</span><span class="st">"ANA_5500"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span class="va">maps</span><span class="op">[[</span><span class="st">"ANA_5500"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
 <p>And here’s the whole series:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html">wrap_plots</a></span><span class="op">(</span><span class="va">raster_maps</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">maps</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
 <p>This is what will be ultimately loaded into SLiM, using our back-end SLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation.</p>
-<p>Normally, we will save each spatial map into a directory, to which we will then direct the backend SLiM script. The same directory will also contain other information about population splits, admixture events, etc.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/rasterize.html">rasterize</a></span><span class="op">(</span>
-  <span class="va">whg</span>, <span class="va">ana</span>, <span class="va">neol</span>, <span class="va">yam</span>,
-  outdir <span class="op">=</span> <span class="st">"/tmp/model"</span>
-<span class="op">)</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span>
-<span class="co">#&gt; Saving 7 x 5 in image</span></code></pre></div>
-<p>Let’s check the contents of the directory:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"/tmp/model"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="todo-and-open-questions" class="section level2">
 <h2 class="hasAnchor">
