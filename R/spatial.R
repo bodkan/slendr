@@ -230,7 +230,9 @@ render <- function(pop) {
 expand <- function(pop, by, duration, snapshots, region = NULL) {
   check_not_rendered(pop)
 
-  start_time <- pop$time
+  region_start <- pop[nrow(pop), ]
+
+  start_time <- region_start$time
   times <- seq(
     start_time,
     start_time - duration,
@@ -238,14 +240,14 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
   )[-1]
 
   inter_regions <- list()
-  inter_regions[[1]] <- pop
+  inter_regions[[1]] <- region_start
   for (i in seq_along(times)) {
     exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / snapshots) * 1000)
     exp_region$time <- times[i]
     inter_regions[[i + 1]] <- exp_region
   }
 
-  inter_regions <- do.call(rbind, inter_regions)
+  inter_regions <- rbind(pop[-nrow(pop), ], do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
   # keep the world as an internal attribute
