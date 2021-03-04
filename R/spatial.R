@@ -312,7 +312,7 @@ migrate <- function(pop, trajectory, duration, snapshots) {
     )
   }
 
-  inter_regions <- do.call(rbind, inter_regions)
+  inter_regions <- rbind(pop[-nrow(pop), ], do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
   # keep the world as an internal attribute
