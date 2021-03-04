@@ -1,24 +1,3 @@
-#' Check whether given population region has not yet been rendered
-#'
-#' @param pop Spatial population object of the 'spammr_pop' class
-check_not_rendered <- function(pop) {
-  if (!is.null(attr(pop, "rendered")))
-    stop("An already rendered population range object was provided.
-Please provide a range object before it was rendered against a map.",
-call. = FALSE)
-}
-
-
-#' Set spammr classes (or fix their priorities if already present)
-#'
-#' @param x Object of the 'spammr' class
-#' @param type Character scalar with the 'spammr' subtype name
-set_class <- function(x, type) {
-  other_classes <- class(x) %>% .[!grepl("^spammr", .)]
-  c("spammr", paste0("spammr_", type), other_classes)
-}
-
-
 #' Define a population range
 #'
 #' @param name Name of the population
@@ -77,80 +56,19 @@ region <- function(name, world, coords) {
   region
 }
 
-
-#' Define a range (simple geometry object) for a population or a
-#' geographic region
-spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
-  # check function arguments
-  if (!is.null(center) & !is.null(coords))
-    stop("Either a circular range (center and radius) or the corners of a polygon need to be specified, not both.", call. = F)
-  if (!is.null(center) & is.null(radius))
-    stop("Missing radius argument when defining a circular population range", call. = F)
-  if (!is.null(coords) & length(coords) < 3)
-    stop("Polygon range needs to have at least three corners")
-
-  # circular population range or polygon range?
-  if (!is.null(center)) {
-    # point in the WGS-84 geographic CRS
-    point_wgs84 <- sf::st_sfc(sf::st_point(center), crs = "EPSG:4326")
-
-    # transform into target CRS
-    point <- sf::st_transform(point_wgs84, sf::st_crs(world))
-    # expand range into desired radius
-    range <- sf::st_buffer(point, radius * 1000)
-  } else {
-    range <- sf::st_geometry(create_polygon(coords, world)) %>%
-      sf::st_transform(crs = sf::st_crs(world))
-  }
-
-  range
-}
-
-
-#' Create a simple geometry polygon object from the list of
-#' coordinates
-#'
-#' @param coords List of vectors (pairs of longitude and latitude values)
-#' @param world Object of the type 'sf' which defines the world
-create_polygon <- function(coords, world) {
-  # "loop-back" to the last point to close the polygon
-  coords <- c(coords, coords[1])
-  coords_mat <- do.call(rbind, coords)
-
-  # polygon in the WGS-84 geographic CRS
-  polygon <-
-    sf::st_polygon(list(coords_mat)) %>%
-    sf::st_sfc(crs = "EPSG:4326") %>%
-    sf::st_sf(geometry = .)
-
-  polygon
-}
-
-
-#' Define a rectangular region for zooming in on a part of the world
-define_zoom <- function(lon, lat, source_crs = "EPSG:4326") {
-  x1 <- lon[1]; x2 <- lon[2]
-  y1 <- lat[1]; y2 <- lat[2]
-  sf::st_sfc(sf::st_polygon(list(cbind(
-    c(x1, x2, x2, x1, x1),
-    c(y1, y1, y2, y2, y1)
-  ))), crs = source_crs)
-}
-
-
 #' Define a world map for all spatial operations
 #'
 #' Download Natural Earth land area map data, zoom on a given window
 #' determined by longitude and latitude coordinates and transform to a
 #' specified projection
 #'
-#' @param lon Numeric vector with minimum and maximum longitude
-#' @param lat Numeric vector with minimum and maximum latitude
+#' @param lon_range Numeric vector with minimum and maximum longitude
+#' @param lat_range Numeric vector with minimum and maximum latitude
 #' @param crs Coordinate Reference System to use for all spatial
 #'   operations (default is WGS-84 or EPSG:4326 CRS)
 #'
 #' @export
-world_map <- function(lon, lat, crs = "EPSG:4326") {
+world_map <- function(lon_range, lat_range, crs = "EPSG:4326") {
   ## load the map data (either from a cache location on disk or from
   ## the server)
   ## world <- rnaturalearth::ne_load(
@@ -172,7 +90,7 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
   world_transf <- sf::st_transform(world, crs)
 
   ## define boundary coordinates in the target CRS
-  zoom_bounds <- define_zoom(lon, lat, "EPSG:4326")
+  zoom_bounds <- define_zoom(lon_range, lat_range, "EPSG:4326")
   zoom_transf <- sf::st_transform(zoom_bounds, crs)
 
   ## crop the map to the boundary coordinates
@@ -186,38 +104,6 @@ world_map <- function(lon, lat, crs = "EPSG:4326") {
 }
 
 
-#' Take a list of all population regions and intersect them with the
-#' set of underlying world map
-#'
-#' @param pop Spatial population object of the 'spammr_pop' class
-#'
-#' @export
-render <- function(pop) {
-  world <- attr(pop, "world")
-  region <- attr(pop, "region")
-
-  # restrict the population range to the landscape features
-  rendered <- sf::st_intersection(pop, sf::st_geometry(world))
-
-  # restrict further to the geographic boundary, if given
-  if (!is.null(region)) {
-    sf::st_agr(rendered) <- "constant"
-    rendered <- sf::st_intersection(rendered, sf::st_geometry(region))
-  }
-
-  sf::st_agr(rendered) <- "constant"
-
-  # add a small tag signifying that the ranges have been processed
-  # and intersected over the map of the world
-  attr(rendered, "rendered") <- TRUE
-  # add back the world attribute
-  attr(rendered, "world") <- world
-
-  class(rendered) <- set_class(rendered, "pop")
-  rendered
-}
-
-
 #' Expand population radius by a given factor in a given time
 #'
 #' @param pop Spatial population object of 'spammr_pop' class
@@ -228,7 +114,7 @@ render <- function(pop) {
 #'
 #' @export
 expand <- function(pop, by, duration, snapshots, region = NULL) {
-  check_not_rendered(pop)
+  check_not_intersected(pop)
 
   region_start <- pop[nrow(pop), ]
 
@@ -270,7 +156,7 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
 #'
 #' @export
 migrate <- function(pop, trajectory, duration, snapshots) {
-  check_not_rendered(pop)
+  check_not_intersected(pop)
 
   # take care of just a single destination point being specified
   if (!is.list(trajectory) & length(trajectory) == 2)
@@ -337,14 +223,14 @@ migrate <- function(pop, trajectory, duration, snapshots) {
 #' @param ... Population/geographic region objects of the 'spammr'
 #'   class
 #' @param facets Plot populations in individual panels?
-#' @param rendering Render the population boundaries against landscape
+#' @param intersect intersect the population boundaries against landscape
 #'   and other geographic boundaries?
 #' @param geo_graticules Plot axies with lon/lat graticules?
 #'
 #' @export
 #'
 #' @import ggplot2
-plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = TRUE, title = NULL) {
+plot.spammr <- function(..., facets = TRUE, intersect = TRUE, geo_graticules = TRUE, title = NULL) {
   args <- list(...)
   # only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spammr_world"))
@@ -363,8 +249,8 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
   regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
   pops <- do.call(rbind, lapply(list(...), function(i) {
     if (!is.null(i$pop)) {
-      if (rendering)
-        render(i)
+      if (intersect)
+        intersect_features(i)
       else
         i
     }
@@ -430,52 +316,4 @@ plot.spammr <- function(..., facets = TRUE, rendering = TRUE, geo_graticules = T
     datum = graticule_crs,
     expand = 0
   )
-}
-
-
-#' Render the population boundary to a black-and-white rasterized
-#' spatial map
-#'
-#' @param ... Spatial population objects of the 'spammr_pop' class
-#' @param outdir Output directory to save all spatial maps
-#' @param rendering Render the population boundaries against landscape
-#'   and other geographic boundaries?
-#'
-#' @import ggplot2
-#' @export
-rasterize <- function(..., outdir = NULL, rendering = TRUE) {
-  pops <- list(...)
-  raster_list <- lapply(pops, function(pop) {
-    times <- unique(pop$time)
-    snapshots <- lapply(times, function(t) {
-      snapshot <- pop[pop$time == t, ]
-      class(snapshot) <- set_class(snapshot, "pop")
-
-      # render the population if needed
-      if (is.null(attr(pop, "rendered")) & rendering)
-        snapshot <- render(snapshot)
-
-      bbox <- sf::st_bbox(attr(snapshot, "world"))
-      ggplot() +
-        geom_sf(data = snapshot, fill = "white", color = NA) +
-        coord_sf(xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], expand = FALSE) +
-        theme_void() +
-        theme(plot.background = element_rect(fill = "black"))
-    })
-    names(snapshots) <- paste(pop$pop, times, sep = "_")
-    snapshots
-  })
-
-  # flatten the list of ggplot objects
-  rasters <- do.call(c, raster_list)
-
-  if (is.null(outdir))
-    return(rasters)
-  else {
-    for (i in names(rasters)) {
-      if (!dir.exists(outdir)) dir.create(outdir, showWarnings = FALSE)
-      path <- file.path(outdir, paste0(i, ".png"))
-      ggsave(path, rasters[[i]])
-    }
-  }
 }
