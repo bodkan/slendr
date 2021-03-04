@@ -4,13 +4,13 @@
 \alias{migrate}
 \title{Move population to a new location in a given amount of time}
 \usage{
-migrate(pop, towards, duration, snapshots = 5)
+migrate(pop, trajectory, duration, snapshots)
 }
 \arguments{
 \item{pop}{Spatial population object of 'spammr_pop' class}
 
-\item{towards}{Numeric vector specifying target (lon, lat)
-coordinates of the population movement}
+\item{trajectory}{List of two-dimensional vectors \link{(longitude, latitude)}
+specifying the trajectory of the population movement}
 
 \item{duration}{Duration of the population movement}
 

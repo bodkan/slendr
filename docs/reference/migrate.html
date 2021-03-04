@@ -124,7 +124,7 @@
     <p>Move population to a new location in a given amount of time</p>
     </div>
 
-    <pre class="usage"><span class='fu'>migrate</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>towards</span>, <span class='va'>duration</span>, snapshots <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>migrate</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>trajectory</span>, <span class='va'>duration</span>, <span class='va'>snapshots</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,9 +134,9 @@
       <td><p>Spatial population object of 'spammr_pop' class</p></td>
     </tr>
     <tr>
-      <th>towards</th>
-      <td><p>Numeric vector specifying target (lon, lat)
-coordinates of the population movement</p></td>
+      <th>trajectory</th>
+      <td><p>List of two-dimensional vectors (longitude, latitude)
+specifying the trajectory of the population movement</p></td>
     </tr>
     <tr>
       <th>duration</th>
