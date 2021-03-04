@@ -7,6 +7,7 @@
 population(
   name,
   time,
+  parent,
   world,
   center = NULL,
   radius = NULL,
@@ -18,6 +19,8 @@ population(
 \item{name}{Name of the population}
 
 \item{time}{Time of the population appearance}
+
+\item{parent}{Parent population object or "ancestor" character scalar}
 
 \item{world}{Object of the type 'sf' which defines the world}
 
