@@ -77,7 +77,7 @@ framework.
 
 
 
-#+BEGIN_SRC R
+#+begin_src R :results output file graphics :file world.png
 ggplot2::ggplot() +
     ggplot2::geom_sf(data = rnaturalearth::ne_coastline("small", "sf"), fill = NA, color = "black") +
     ggplot2::theme_bw() + ggplot2::coord_sf(crs = "EPSG:4326")
@@ -95,7 +95,7 @@ ggplot2::ggplot() +
 
 First, let's install the latest version of the package and load it:
 
-#+BEGIN_SRC R
+#+BEGIN_SRC R :export code :eval no
 devtools::install_github("bodkan/spammr")
 #+END_SRC
 
