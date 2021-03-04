@@ -1,18 +1,3 @@
-#' Check whether given population region has not yet been intersected
-check_not_intersected <- function(pop) {
-  if (!is.null(attr(pop, "intersected")))
-    stop("An already intersected population range object was provided.
-Please provide a range object before it was intersected against a map.",
-         call. = FALSE)
-}
-
-
-#' Set spammr classes (or fix their priorities if already present)
-set_class <- function(x, type) {
-  other_classes <- class(x) %>% .[!grepl("^spammr", .)]
-  c("spammr", paste0("spammr_", type), other_classes)
-}
-
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
 intersect_features <- function(pop) {

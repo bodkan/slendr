@@ -17,4 +17,5 @@ reference:
   - title: Processing, plotting, and export
     contents:
     - plot.spammr
+    - print.spammr
     - render
