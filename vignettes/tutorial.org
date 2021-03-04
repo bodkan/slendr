@@ -11,9 +11,6 @@
 getwd()
 #+END_SRC
 
-#+RESULTS:
-: /Users/martin_petr/projects/spammr/vignettes
-
 * Motivation
 
 **What we want to do is simulate this kind of population history
@@ -78,9 +75,6 @@ ggplot2::ggplot() +
     ggplot2::theme_bw() + ggplot2::coord_sf(crs = "EPSG:4326")
 #+END_SRC
 
-#+RESULTS:
-[[file:tutorial/world.png]]
-
 
 
 
@@ -90,7 +84,7 @@ ggplot2::ggplot() +
 
 First, let's install the latest version of the package and load it:
 
-#+BEGIN_SRC R :export code :eval no
+#+BEGIN_SRC R
 devtools::install_github("bodkan/spammr")
 #+END_SRC
 
@@ -633,29 +627,42 @@ unlink("/tmp/spammr-model", recursive = TRUE, force = FALSE)
 
 ** 1. How to tie the visual configuration to an explicit admixture graph?
 
-I.e., a population _A_ splitting from a population _B_ at a time _t_, with a _Ne_ of X.
+I.e., a population _A_ splitting from a population _B_ at a time _t_,
+with a _Ne_ of X.
 
-Should this be represented as columns in the annotation data frame in each =sf= object?
+Should this be represented as columns in the annotation data frame in
+each =sf= object?
 
 Should this be encoded in a separate table?
 
 ** 2. How to validate the entire model?
 
-Currently, the "compilation" procedure dumps the spatial maps in a given format on disk. Presumably (having solved item 1. above), we would also save the table of split times, as well as the table of admixture edges _and_ a table of spatial maps.
+Currently, the "compilation" procedure dumps the spatial maps in a
+given format on disk. Presumably (having solved item 1. above), we
+would also save the table of split times, as well as the table of
+admixture edges _and_ a table of spatial maps.
 
-The compilation process should validate that the configured visual/split/admixture model is meaningful:
+The compilation process should validate that the configured
+visual/split/admixture model is meaningful:
 
-i) Population migration maps should overlap to a reasonable degree? I.e. there should be a sufficient continuity/overlap between consecutive spatial maps over time.
+i) Population migration maps should overlap to a reasonable degree?
+I.e. there should be a sufficient continuity/overlap between
+consecutive spatial maps over time.
 
 ii) The overlap model should form a directed acyclic graph - there should be no "unreachable" population states.
 
 ** 3. How to actually implement admixture in a spatial context?
 
-For instance, how to enforce that a population _C_ contributes 60% of its ancestry to a population _D_? What sort of meaning does it actually have in the context of spatial maps and how they will be utilized by the back-end SLiM script?
+For instance, how to enforce that a population _C_ contributes 60% of
+its ancestry to a population _D_? What sort of meaning does it
+actually have in the context of spatial maps and how they will be
+utilized by the back-end SLiM script?
 
 ** 4. At which stage should the the user specify SLiM bits relevant to their work?
 
-There's a clear conflict between every SLiM script being tailored to each specific use-case and the fact that I want to make things as reproducible and automatic as possible.
+There's a clear conflict between every SLiM script being tailored to
+each specific use-case and the fact that I want to make things as
+reproducible and automatic as possible.
 
 I have a nice generic SLiM back-end that slurps in the spatial maps,
 defines population splits and migrations... but that's just the
