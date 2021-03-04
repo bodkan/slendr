@@ -16,6 +16,5 @@ reference:
 
   - title: Processing, plotting, and export
     contents:
-    - render
     - plot.spammr
-    - rasterize
+    - render

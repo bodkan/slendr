@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Take a list of all population regions and intersect them with the
-set of underlying world map — render • spammr</title>
+<title>Render population boundaries to black-and-white spatial maps — render • spammr</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ set of underlying world map — render • spammr</title>
 
 
 
-<meta property="og:title" content="Take a list of all population regions and intersect them with the
-set of underlying world map — render" />
-<meta property="og:description" content="Take a list of all population regions and intersect them with the
-set of underlying world map" />
+<meta property="og:title" content="Render population boundaries to black-and-white spatial maps — render" />
+<meta property="og:description" content="Render population boundaries to black-and-white spatial maps" />
 
 
 
@@ -118,25 +115,32 @@ set of underlying world map" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Take a list of all population regions and intersect them with the
-set of underlying world map</h1>
+    <h1>Render population boundaries to black-and-white spatial maps</h1>
     
     <div class="hidden name"><code>render.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Take a list of all population regions and intersect them with the
-set of underlying world map</p>
+    <p>Render population boundaries to black-and-white spatial maps</p>
     </div>
 
-    <pre class="usage"><span class='fu'>render</span><span class='op'>(</span><span class='va'>pop</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>render</span><span class='op'>(</span><span class='va'>...</span>, outdir <span class='op'>=</span> <span class='cn'>NULL</span>, intersect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>pop</th>
-      <td><p>Spatial population object of the 'spammr_pop' class</p></td>
+      <th>...</th>
+      <td><p>Spatial population objects of the 'spammr_pop' class</p></td>
+    </tr>
+    <tr>
+      <th>outdir</th>
+      <td><p>Output directory to save all spatial maps</p></td>
+    </tr>
+    <tr>
+      <th>rendering</th>
+      <td><p>Render the population boundaries against landscape
+and other geographic boundaries?</p></td>
     </tr>
     </table>
 
