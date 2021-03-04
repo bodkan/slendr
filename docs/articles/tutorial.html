@@ -133,7 +133,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpegtQaP", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp4XaMSX", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -216,9 +216,18 @@
 <a href="#circular-population-ranges" class="anchor"></a>Circular population ranges</h3>
 <p>The whole point of <code>spammr</code> is formalizing the specification of spatial population boundaries and their changes over time. The core function for this is <code><a href="../reference/population.html">population()</a></code>, which accepts the population <code>name</code> and the <code>time</code> in which we want to enforce that population’s boundary, as well as the <code>world</code> object described above. Finally, this function accepts a <code>center</code> and <code>radius</code> arguments (in case of circular population boundaries):</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">whg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
+  <span class="st">"Out-of-Africa migrants"</span>,
+  time <span class="op">=</span> <span class="fl">55000</span>,
+  parent <span class="op">=</span> <span class="st">"ancestor"</span>,
+  <span class="va">world</span>,
+  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">65</span>, <span class="fl">45</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">500</span>
+<span class="op">)</span>
+
+<span class="va">whg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
   name <span class="op">=</span> <span class="st">"WHG"</span>,       <span class="co"># population identifier</span>
   time <span class="op">=</span> <span class="fl">25000</span>,       <span class="co"># time in years ago</span>
+  parent <span class="op">=</span> <span class="va">ooa</span>,
   <span class="va">world</span>,              <span class="co"># world map 'context' for the population</span>
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">47</span><span class="op">)</span>, <span class="co"># (longitude, latitude)</span>
   radius <span class="op">=</span> <span class="fl">1300</span>       <span class="co"># radius of a circle in km</span>
@@ -240,6 +249,7 @@
 <code class="sourceCode R"><span class="va">whg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
   name <span class="op">=</span> <span class="st">"WHG"</span>,   <span class="co"># population identifier</span>
   time <span class="op">=</span> <span class="fl">25000</span>,   <span class="co"># time in years ago</span>
+  parent <span class="op">=</span> <span class="va">ooa</span>,
   <span class="va">world</span>,          <span class="co"># world map 'context' for the population</span>
   region <span class="op">=</span> <span class="va">europe</span> <span class="co"># geographic region object</span>
 <span class="op">)</span></code></pre></div>
@@ -252,13 +262,14 @@
 <p>Let’s create more populations and their boundaries:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ana</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"ANA"</span>, time <span class="op">=</span> <span class="fl">9000</span>, <span class="va">world</span>,
-  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">34</span>, <span class="fl">38</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">700</span>,
+  name <span class="op">=</span> <span class="st">"ANA"</span>, time <span class="op">=</span> <span class="fl">9000</span>, parent <span class="op">=</span> <span class="va">ooa</span>,
+  <span class="va">world</span>,center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">34</span>, <span class="fl">38</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">700</span>,
   region <span class="op">=</span> <span class="va">anatolia</span>
 <span class="op">)</span>
 
 <span class="va">yam</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"YAM"</span>, time <span class="op">=</span> <span class="fl">7000</span>, <span class="va">world</span>,
+  name <span class="op">=</span> <span class="st">"YAM"</span>, time <span class="op">=</span> <span class="fl">7000</span>, parent <span class="op">=</span> <span class="va">ooa</span>,
+  <span class="va">world</span>,
   coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>   <span class="co"># polygon specified using coordinates of vertices</span>
     <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">49</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">50</span><span class="op">)</span>,
     <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">56</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">59</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">56</span><span class="op">)</span>
@@ -266,8 +277,8 @@
 <span class="op">)</span>
 
 <span class="va">neol</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
-  name<span class="op">=</span> <span class="st">"NEOL"</span>, time <span class="op">=</span> <span class="fl">7000</span>, <span class="va">world</span>,
-  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">48</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">800</span>
+  name<span class="op">=</span> <span class="st">"NEOL"</span>, time <span class="op">=</span> <span class="fl">7000</span>, parent <span class="op">=</span> <span class="va">whg</span>,
+  <span class="va">world</span>,center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">48</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">800</span>
 <span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -291,8 +302,12 @@
 <p>We can inspect the object returned by the <code><a href="../reference/expand.html">expand()</a></code> function and see that it contains he spatial maps (“snapshots”) of the expansion process across time:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ana</span>
-<span class="co">#&gt; spammr 'region' object </span>
-<span class="co">#&gt; ---------------------- </span>
+<span class="co">#&gt; spammr 'population' object </span>
+<span class="co">#&gt; -------------------------- </span>
+<span class="co">#&gt; name: ANA </span>
+<span class="co">#&gt; split from: Out-of-Africa migrants </span>
+<span class="co">#&gt; snapshots at: 9000, 8500, 8000, 7500, 7000, 6500, 6000, 5500, 5000, 4500, 4000 </span>
+<span class="co">#&gt; </span>
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
 <p>We can (and should) check the results visually:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -323,7 +338,7 @@
 <span class="co">#&gt; spammr 'population' object </span>
 <span class="co">#&gt; -------------------------- </span>
 <span class="co">#&gt; name: YAM </span>
-<span class="co">#&gt; split from: </span>
+<span class="co">#&gt; split from: Out-of-Africa migrants </span>
 <span class="co">#&gt; snapshots at: 7000, 6875, 6750, 6625, 6500, 6375, 6250, 6125, 6000 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
@@ -334,7 +349,9 @@
 <p>The migration trajectory can be much more complicated, however. Imagine this:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
-  <span class="st">"nomadic population"</span>, time <span class="op">=</span> <span class="fl">10000</span>, <span class="va">world</span>,
+  <span class="st">"nomadic population"</span>, time <span class="op">=</span> <span class="fl">10000</span>,
+  parent <span class="op">=</span> <span class="va">ooa</span>,
+  <span class="va">world</span>,
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">60</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">350</span>
 <span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/migrate.html">migrate</a></span><span class="op">(</span>
@@ -351,7 +368,7 @@
 <a href="#plotting-multiple-spammr-objects" class="anchor"></a>Plotting multiple <code>spammr</code> objects</h2>
 <p>In addition to plotting individual population ranges, the generic function <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> can handle a combination of population ranges, and can also partition them in individual facets. This is very useful for visual inspection of the specified model and for looking for potential issues before the export of individual spatio-temporal maps.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">neol</span>, <span class="va">yam</span>, <span class="va">ana</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="va">whg</span>, <span class="va">neol</span>, <span class="va">yam</span>, <span class="va">ana</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
 </div>
 <div id="rendering-and-export" class="section level2">
