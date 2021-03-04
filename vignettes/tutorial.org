@@ -1,14 +1,9 @@
 #+title: spammr: Introduction and tutorial
 #+author: Martin Petr
 #+date: March 3, 2021
+#+options: toc:nil
 #+property: header-args:R :session *R:tutorial* :exports both
 #+property: header-args:R+ :output-dir tutorial :width 1000 :height 600
-
-#+begin_comment
-#+property: header-args:R+ :eval no-export
-#+property: header-args:ditaa :eval no-export
-#+end_comment
-
 
 * Introduction
 
