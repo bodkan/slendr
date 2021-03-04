@@ -261,43 +261,44 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
 #' Move population to a new location in a given amount of time
 #'
 #' @param pop Spatial population object of 'spammr_pop' class
-#' @param towards Numeric vector specifying target (lon, lat)
-#'   coordinates of the population movement
+#' @param trajectory List of two-dimensional vectors [(longitude, latitude)]
+#'   specifying the trajectory of the population movement
 #' @param duration Duration of the population movement
 #' @param snapshots Number of time slices to split the movement into
 #'
 #' @export
-migrate <- function(pop, towards, duration, snapshots = 5) {
+migrate <- function(pop, trajectory, duration, snapshots) {
   check_not_rendered(pop)
+
+  # take care of just a single destination point being specified
+  if (!is.list(trajectory) & length(trajectory) == 2)
+    trajectory <- list(trajectory)
 
   region_start <- pop[nrow(pop), ]
   start_time <- region_start$time
-  end_lon <- towards[1]
-  end_lat <- towards[2]
 
   source_crs <- "EPSG:4326"
   target_crs <- sf::st_crs(pop)
 
-  end_point <- sf::st_sf(
-    geometry = sf::st_sfc(sf::st_point(c(end_lon, end_lat))),
-    crs = source_crs
-  ) %>% sf::st_transform(crs = target_crs)
+  # prepend the coordinates of the first region to the list of "checkpoints"
+  # along the way of the migration
+  start_coords <- sf::st_centroid(region_start) %>%
+    sf::st_transform(crs = source_crs) %>%
+    sf::st_coordinates()
+  checkpoints <- c(list(as.vector(start_coords)), trajectory)
 
-  start_point_geom <- sf::st_geometry(sf::st_centroid(region_start))[[1]]
-  end_point_geom <- sf::st_geometry(end_point)[[1]]
+  traj <- sf::st_linestring(do.call(rbind, checkpoints)) %>%
+    sf::st_sfc() %>%
+    sf::st_sf(crs = source_crs) %>%
+    sf::st_transform(crs = target_crs)
 
-  # trajectory of population range shift
-  traj <- sf::st_linestring(rbind(start_point_geom, end_point_geom))
   traj_segments <- sf::st_segmentize(traj, sf::st_length(traj) / snapshots)
-
-  traj_segments <- sf::st_sf(geometry = sf::st_sfc(traj_segments), crs = target_crs)
-  #traj_segments <- sf::st_transform(traj_segments, crs = target_crs)
 
   traj_points <- sf::st_cast(traj_segments, "POINT")
   traj_points_coords <- sf::st_coordinates(traj_points)
   traj_diffs <- diff(traj_points_coords)
 
-  time_slices <- seq(start_time, start_time - duration, length.out = snapshots + 1)[-1]
+  time_slices <- seq(start_time, start_time - duration, length.out = nrow(traj_points))[-1]
   traj_diffs <- cbind(traj_diffs, time = time_slices)
 
   inter_regions <- list()
