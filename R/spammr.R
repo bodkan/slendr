@@ -16,7 +16,7 @@
 #' @export
 #'
 #' @import ggplot2
-plot.spammr <- function(..., facets = TRUE, intersect = TRUE, geo_graticules = TRUE, title = NULL) {
+plot.spammr <- function(..., snapshot = NULL, facets = TRUE, intersect = TRUE, geo_graticules = TRUE, title = NULL) {
   args <- list(...)
   # only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spammr_world"))
@@ -68,6 +68,8 @@ plot.spammr <- function(..., facets = TRUE, intersect = TRUE, geo_graticules = T
 
   # plot population ranges, if present
   if (!is.null(pops)) {
+    # plot only specified snapshots
+    if (!is.null(snapshot)) pops <- pops[pops$time %in% snapshots, ]
     pops$pop <- factor(pops$pop)
 
     if (facets)
@@ -129,7 +131,10 @@ print.spammr <- function(x, sf = FALSE) {
 
     if (type == "population") {
       cat("name:", unique(x$pop), "\n")
-      cat("split from:", x$parent, "\n")
+      if (attr(x, "parent") == "ancestor")
+        cat("split from: this is an ancestral population\n")
+      else
+        cat("split from:", attr(x, "parent"), "\n")
       cat("snapshots at:", paste(x$time, collapse = ", "), "\n\n")
     }
 

@@ -2,13 +2,15 @@
 #'
 #' @param name Name of the population
 #' @param time Time of the population appearance
+#' @param parent Parent population object or "ancestor" character scalar
 #' @param world Object of the type 'sf' which defines the world
 #' @param center Vector of two elements defining a center of a circular range
 #' @param radius Scalar defining a radius of a range in kilometers
 #' @param coords List of vector pairs, defining corners of the range
 #'
 #' @export
-population <- function(name, time, world, center = NULL, radius = NULL, coords = NULL,
+population <- function(name, time, parent,
+                       world, center = NULL, radius = NULL, coords = NULL,
                        region = NULL) {
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
@@ -29,6 +31,14 @@ population <- function(name, time, world, center = NULL, radius = NULL, coords =
   # optionally, keep a restricted population region
   if (!is.null(region) & !is.null(center))
     attr(pop_range, "region") <- region
+
+  # keep a record of the parent population
+  if (inherits(parent, "spammr_pop"))
+    attr(pop_range, "parent") <- unique(parent$pop)
+  else if (is.character(parent) & parent == "ancestor")
+    attr(pop_range, "parent") <- "ancestor"
+  else
+    stop("Suspicious parental population specified", call. = FALSE)
 
   class(pop_range) <- set_class(pop_range, "pop")
   pop_range
@@ -138,10 +148,12 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
 
   # keep the world as an internal attribute
   attr(inter_regions, "world") <- attr(pop, "world")
+  # propagate the information about the parental population
+  attr(inter_regions, "parent") <- attr(pop, "parent")
   # optionally, add a migration boundary
   attr(inter_regions, "region") <- region
 
-  class(inter_regions) <- set_class(inter_regions, "region")
+  class(inter_regions) <- set_class(inter_regions, "pop")
   inter_regions
 }
 
@@ -205,6 +217,8 @@ migrate <- function(pop, trajectory, duration, snapshots) {
 
   # keep the world as an internal attribute
   attr(inter_regions, "world") <- attr(pop, "world")
+  # propagate the information about the parental population
+  attr(inter_regions, "parent") <- attr(pop, "parent")
 
   class(inter_regions) <- set_class(inter_regions, "pop")
 

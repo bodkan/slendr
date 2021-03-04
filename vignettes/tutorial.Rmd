@@ -352,9 +352,18 @@ as the `world` object described above. Finally, this function accepts a
 boundaries):
 
 ```{r}
+ooa <- population(
+  "Out-of-Africa migrants",
+  time = 55000,
+  parent = "ancestor",
+  world,
+  center = c(65, 45), radius = 500
+)
+
 whg <- population(
   name = "WHG",       # population identifier
   time = 25000,       # time in years ago
+  parent = ooa,
   world,              # world map 'context' for the population
   center = c(-1, 47), # (longitude, latitude)
   radius = 1300       # radius of a circle in km
@@ -386,6 +395,7 @@ that all coordinates are described in the context of the geographic CRS.
 whg <- population(
   name = "WHG",   # population identifier
   time = 25000,   # time in years ago
+  parent = ooa,
   world,          # world map 'context' for the population
   region = europe # geographic region object
 )
@@ -400,13 +410,14 @@ Let's create more populations and their boundaries:
 
 ```{r}
 ana <- population(
-  name = "ANA", time = 9000, world,
-  center = c(34, 38), radius = 700,
+  name = "ANA", time = 9000, parent = ooa,
+  world,center = c(34, 38), radius = 700,
   region = anatolia
 )
 
 yam <- population(
-  name = "YAM", time = 7000, world,
+  name = "YAM", time = 7000, parent = ooa,
+  world,
   coords = list(   # polygon specified using coordinates of vertices
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
@@ -414,8 +425,8 @@ yam <- population(
 )
 
 neol <- population(
-  name= "NEOL", time = 7000, world,
-  center = c(10, 48), radius = 800
+  name= "NEOL", time = 7000, parent = whg,
+  world,center = c(10, 48), radius = 800
 )
 ```
 
@@ -541,7 +552,9 @@ this:
 
 ```{r}
 population(
-  "nomadic population", time = 10000, world,
+  "nomadic population", time = 10000,
+  parent = ooa,
+  world,
   center = c(40, 60), radius = 350
 ) %>%
   migrate(
@@ -570,7 +583,7 @@ population(
 In addition to plotting individual population ranges, the generic function `plot()` can handle a combination of population ranges, and can also partition them in individual facets. This is very useful for visual inspection of the specified model and for looking for potential issues before the export of individual spatio-temporal maps.
 
 ```{r}
-plot(whg, neol, yam, ana)
+plot(ooa, whg, neol, yam, ana)
 ```
 
 
