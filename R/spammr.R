@@ -131,11 +131,15 @@ print.spammr <- function(x, sf = FALSE) {
 
     if (type == "population") {
       cat("name:", unique(x$pop), "\n")
-      if (attr(x, "parent") == "ancestor")
+      cat("Ne:", unique(x$Ne), "\n")
+      parent <- attr(x, "parent")
+      if (is.character(parent) && parent == "ancestor")
         cat("split from: this is an ancestral population\n")
-      else
-        cat("split from:", attr(x, "parent"), "\n")
-      cat("snapshots at:", paste(x$time, collapse = ", "), "\n\n")
+      else {
+        cat("split from:", parent$pop, "\n")
+        cat("split time:", x$time[1], "\n")
+      }
+      cat("spatial snapshots at:", paste(x$time, collapse = ", "), "\n\n")
     }
 
     # extract projection type and name using the internal sf plumbing
@@ -145,15 +149,6 @@ print.spammr <- function(x, sf = FALSE) {
     else
       cat(paste0("projected CRS: ", crs_info$Name, "\n"))
   }
-}
-
-
-#' Check whether given population region has not yet been intersected
-check_not_intersected <- function(pop) {
-  if (!is.null(attr(pop, "intersected")))
-    stop("An already intersected population range object was provided.
-Please provide a range object before it was intersected against a map.",
-         call. = FALSE)
 }
 
 
