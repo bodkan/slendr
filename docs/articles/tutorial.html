@@ -133,7 +133,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpQZgi9F", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpC5vcYZ", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -389,17 +389,79 @@
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">maps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/render.html">render</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">ana</span>, <span class="va">neol</span>, <span class="va">yam</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">maps</span><span class="op">)</span>
-<span class="co">#&gt;  [1] "WHG_25000" "ANA_9000"  "ANA_8500"  "ANA_8000"  "ANA_7500"  "ANA_7000" </span>
-<span class="co">#&gt;  [7] "ANA_6500"  "ANA_6000"  "ANA_5500"  "ANA_5000"  "ANA_4500"  "ANA_4000" </span>
-<span class="co">#&gt; [13] "NEOL_7000" "YAM_7000"  "YAM_6875"  "YAM_6750"  "YAM_6625"  "YAM_6500" </span>
-<span class="co">#&gt; [19] "YAM_6375"  "YAM_6250"  "YAM_6125"  "YAM_6000"</span></code></pre></div>
+<span class="co">#&gt; NULL</span></code></pre></div>
 <p>Each of these objects contains a black-and-white rasterized version of the population range at a particular snapshot in time. Let’s plot one of them (representing the spatial range of the Anatolian farmers 5,500 thousand years ago - already at the stage in which they migrated to central Europe):</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">maps</span><span class="op">[[</span><span class="st">"ANA_5500"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
+<code class="sourceCode R"><span class="va">maps</span><span class="op">[[</span><span class="st">"ANA_5500"</span><span class="op">]</span><span class="op">]</span>
+<span class="co">#&gt; NULL</span></code></pre></div>
 <p>And here’s the whole series:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">maps</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">maps</span><span class="op">)</span>
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span>
+
+<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
+<span class="co">#&gt; grob.</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
 <p>This is what will be ultimately loaded into SLiM, using our back-end SLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation.</p>
 </div>
