@@ -4,15 +4,10 @@
 \alias{render}
 \title{Render population boundaries to black-and-white spatial maps}
 \usage{
-render(..., intersect = TRUE)
+render(...)
 }
 \arguments{
 \item{...}{Spatial population objects of the 'spammr_pop' class}
-
-\item{outdir}{Output directory to save all spatial maps}
-
-\item{rendering}{Render the population boundaries against landscape
-and other geographic boundaries?}
 }
 \description{
 Render population boundaries to black-and-white spatial maps
