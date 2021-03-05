@@ -154,3 +154,12 @@ define_zoom <- function(lon, lat, source_crs = "EPSG:4326") {
     c(y1, y1, y2, y2, y1)
   ))), crs = source_crs)
 }
+
+
+#' Check whether given population region has not yet been intersected
+check_not_intersected <- function(pop) {
+  if (!is.null(attr(pop, "intersected")))
+    stop("An already intersected population range object was provided.
+Please provide a range object before it was intersected against a map.",
+         call. = FALSE)
+}
