@@ -10,9 +10,21 @@
 #' @param coords List of vector pairs, defining corners of the range
 #'
 #' @export
-population <- function(name, time, Ne, parent,
-                       world, center = NULL, radius = NULL, coords = NULL,
+population <- function(name, parent, Ne, time = NULL, world = NULL,
+                       center = NULL, radius = NULL, coords = NULL,
                        region = NULL) {
+  # is this the first population defined in the model?
+  if (is.character(parent) && parent == "ancestor") {
+    time <- -1
+    if (is.null(world))
+      stop("Ancestral population is required to specify its 'world' context",
+           call. = FALSE)
+  } else if (!is.character(parent) & is.null(time)) {
+    stop("The split time of each population (except for the ancestral population) needs to be specified",
+         call. = FALSE)
+  } else {
+    world <- attr(parent[nrow(parent), ], "world")
+  }
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
   if (!is.null(region) & is.null(center)) {
@@ -27,18 +39,19 @@ population <- function(name, time, Ne, parent,
 
   sf::st_agr(pop_range) <- "constant"
 
-  # keep the world as an internal attribute
-  attr(pop_range, "world") <- world
   # optionally, keep a restricted population region
   if (!is.null(region) & !is.null(center))
     attr(pop_range, "region") <- region
 
   # keep a record of the parent population
-  if (inherits(parent, "spammr_pop"))
+  if (inherits(parent, "spammr_pop")) {
     attr(pop_range, "parent") <- parent[nrow(parent), ]
-  else if (is.character(parent) & parent == "ancestor")
+    # keep the world as an internal attribute
+    attr(pop_range, "world") <- world
+  } else if (is.character(parent) & parent == "ancestor") {
     attr(pop_range, "parent") <- "ancestor"
-  else
+    attr(pop_range, "world") <- world
+  } else
     stop("Suspicious parental population specified", call. = FALSE)
 
   class(pop_range) <- set_class(pop_range, "pop")
