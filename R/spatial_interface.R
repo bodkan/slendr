@@ -2,6 +2,7 @@
 #'
 #' @param name Name of the population
 #' @param time Time of the population appearance
+#' @param Ne Effective population size at the time of split
 #' @param parent Parent population object or "ancestor" character scalar
 #' @param world Object of the type 'sf' which defines the world
 #' @param center Vector of two elements defining a center of a circular range
@@ -9,7 +10,7 @@
 #' @param coords List of vector pairs, defining corners of the range
 #'
 #' @export
-population <- function(name, time, parent,
+population <- function(name, time, Ne, parent,
                        world, center = NULL, radius = NULL, coords = NULL,
                        region = NULL) {
   # define the population range as a simple geometry object
@@ -20,7 +21,7 @@ population <- function(name, time, parent,
     range <- spatial_range(world, center, radius, coords)
   }
   pop_range <- sf::st_sf(
-    data.frame(pop = name, time = time),
+    data.frame(pop = name, time = time, Ne = Ne),
     geometry = range
   )
 
@@ -34,7 +35,7 @@ population <- function(name, time, parent,
 
   # keep a record of the parent population
   if (inherits(parent, "spammr_pop"))
-    attr(pop_range, "parent") <- unique(parent$pop)
+    attr(pop_range, "parent") <- parent[nrow(parent), ]
   else if (is.character(parent) & parent == "ancestor")
     attr(pop_range, "parent") <- "ancestor"
   else
@@ -42,75 +43,6 @@ population <- function(name, time, parent,
 
   class(pop_range) <- set_class(pop_range, "pop")
   pop_range
-}
-
-
-#' Define a geographic region
-#'
-#' @param name Name of the geographic region
-#' @param world Object of the type 'sf' which defines the world
-#' @param coords List of vector pairs, defining corners of the range
-#'
-#' @export
-region <- function(name, world, coords) {
-  region <- sf::st_sf(
-    region = name,
-    geometry = spatial_range(world, coords = coords)
-  )
-  sf::st_agr(region) <- "constant"
-
-  # keep the world as an internal attribute
-  attr(region, "world") <- world
-
-  class(region) <- set_class(region, "region")
-  region
-}
-
-#' Define a world map for all spatial operations
-#'
-#' Download Natural Earth land area map data, zoom on a given window
-#' determined by longitude and latitude coordinates and transform to a
-#' specified projection
-#'
-#' @param lon_range Numeric vector with minimum and maximum longitude
-#' @param lat_range Numeric vector with minimum and maximum latitude
-#' @param crs Coordinate Reference System to use for all spatial
-#'   operations (default is WGS-84 or EPSG:4326 CRS)
-#'
-#' @export
-world_map <- function(lon_range, lat_range, crs = "EPSG:4326") {
-  ## load the map data (either from a cache location on disk or from
-  ## the server)
-  ## world <- rnaturalearth::ne_load(
-  ##   scale = "small",
-  ##   type = "land",
-  ##   category = "physical",
-  ##   destdir = "~/projects/ne_data",
-  ##   returnclass = "sf"
-  ## )
-  world <- rnaturalearth::ne_download(
-    scale = "small",
-    type = "land",
-    category = "physical",
-    returnclass = "sf"
-  )
-  sf::st_agr(world) <- "constant"
-
-  ## transform the map (default geographic CRS) into the target CRS
-  world_transf <- sf::st_transform(world, crs)
-
-  ## define boundary coordinates in the target CRS
-  zoom_bounds <- define_zoom(lon_range, lat_range, "EPSG:4326")
-  zoom_transf <- sf::st_transform(zoom_bounds, crs)
-
-  ## crop the map to the boundary coordinates
-  world_zoom <- sf::st_crop(world_transf, zoom_transf)
-
-  sf::st_agr(world_zoom) <- "constant"
-
-  class(world_zoom) <- set_class(world_zoom, "world")
-
-  world_zoom
 }
 
 
@@ -206,7 +138,11 @@ migrate <- function(pop, trajectory, duration, snapshots) {
   for (i in seq_len(nrow(traj_diffs))) {
     shifted_region <- sf::st_geometry(inter_regions[[i]]) + traj_diffs[i, c("X", "Y")]
     inter_regions[[i + 1]] <- sf::st_sf(
-      data.frame(pop = region_start$pop, time = traj_diffs[i, "time"]),
+      data.frame(
+        pop = region_start$pop,
+        time = traj_diffs[i, "time"],
+        Ne = region_start$Ne
+      ),
       geometry = shifted_region,
       crs = sf::st_crs(inter_regions[[i]])
     )
@@ -223,4 +159,73 @@ migrate <- function(pop, trajectory, duration, snapshots) {
   class(inter_regions) <- set_class(inter_regions, "pop")
 
   inter_regions
+}
+
+
+#' Define a geographic region
+#'
+#' @param name Name of the geographic region
+#' @param world Object of the type 'sf' which defines the world
+#' @param coords List of vector pairs, defining corners of the range
+#'
+#' @export
+region <- function(name, world, coords) {
+  region <- sf::st_sf(
+    region = name,
+    geometry = spatial_range(world, coords = coords)
+  )
+  sf::st_agr(region) <- "constant"
+
+  # keep the world as an internal attribute
+  attr(region, "world") <- world
+
+  class(region) <- set_class(region, "region")
+  region
+}
+
+#' Define a world map for all spatial operations
+#'
+#' Download Natural Earth land area map data, zoom on a given window
+#' determined by longitude and latitude coordinates and transform to a
+#' specified projection
+#'
+#' @param lon_range Numeric vector with minimum and maximum longitude
+#' @param lat_range Numeric vector with minimum and maximum latitude
+#' @param crs Coordinate Reference System to use for all spatial
+#'   operations (default is WGS-84 or EPSG:4326 CRS)
+#'
+#' @export
+world_map <- function(lon_range, lat_range, crs = "EPSG:4326") {
+  ## load the map data (either from a cache location on disk or from
+  ## the server)
+  ## world <- rnaturalearth::ne_load(
+  ##   scale = "small",
+  ##   type = "land",
+  ##   category = "physical",
+  ##   destdir = "~/projects/ne_data",
+  ##   returnclass = "sf"
+  ## )
+  world <- rnaturalearth::ne_download(
+    scale = "small",
+    type = "land",
+    category = "physical",
+    returnclass = "sf"
+  )
+  sf::st_agr(world) <- "constant"
+
+  ## transform the map (default geographic CRS) into the target CRS
+  world_transf <- sf::st_transform(world, crs)
+
+  ## define boundary coordinates in the target CRS
+  zoom_bounds <- define_zoom(lon_range, lat_range, "EPSG:4326")
+  zoom_transf <- sf::st_transform(zoom_bounds, crs)
+
+  ## crop the map to the boundary coordinates
+  world_zoom <- sf::st_crop(world_transf, zoom_transf)
+
+  sf::st_agr(world_zoom) <- "constant"
+
+  class(world_zoom) <- set_class(world_zoom, "world")
+
+  world_zoom
 }
