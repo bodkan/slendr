@@ -2,8 +2,7 @@
 % Please edit documentation in R/compilation.R
 \name{compile}
 \alias{compile}
-\title{Compile the entire model into spatial maps and population split and admixture
-tables}
+\title{Compile the spatial maps and split/admixture tables}
 \usage{
 compile(..., dry_run = T)
 }
@@ -14,6 +13,5 @@ compile(..., dry_run = T)
 disk?}
 }
 \description{
-Compile the entire model into spatial maps and population split and admixture
-tables
+Compile the spatial maps and split/admixture tables
 }

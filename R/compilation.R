@@ -1,5 +1,4 @@
-#' Compile the entire model into spatial maps and population split and admixture
-#' tables
+#' Compile the spatial maps and split/admixture tables
 #'
 #' @param ... Population object of the 'spammr_pop' class
 #' @param dry_run Return the compiled model components without saving them to
@@ -94,5 +93,3 @@ render <- function(..., intersect = TRUE) {
   #   }
   # }
 }
-
-
