@@ -14,8 +14,9 @@ reference:
     - expand
     - migrate
 
-  - title: Processing, plotting, and export
+  - title: Plotting, compilation, export
     contents:
     - plot.spammr
     - print.spammr
-    - render
+    - compile
+    - run_slimgui
