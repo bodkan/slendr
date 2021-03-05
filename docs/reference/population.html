@@ -126,10 +126,10 @@
 
     <pre class="usage"><span class='fu'>population</span><span class='op'>(</span>
   <span class='va'>name</span>,
-  <span class='va'>time</span>,
-  <span class='va'>Ne</span>,
   <span class='va'>parent</span>,
-  <span class='va'>world</span>,
+  <span class='va'>Ne</span>,
+  time <span class='op'>=</span> <span class='cn'>NULL</span>,
+  world <span class='op'>=</span> <span class='cn'>NULL</span>,
   center <span class='op'>=</span> <span class='cn'>NULL</span>,
   radius <span class='op'>=</span> <span class='cn'>NULL</span>,
   coords <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -144,16 +144,16 @@
       <td><p>Name of the population</p></td>
     </tr>
     <tr>
-      <th>time</th>
-      <td><p>Time of the population appearance</p></td>
+      <th>parent</th>
+      <td><p>Parent population object or "ancestor" character scalar</p></td>
     </tr>
     <tr>
       <th>Ne</th>
       <td><p>Effective population size at the time of split</p></td>
     </tr>
     <tr>
-      <th>parent</th>
-      <td><p>Parent population object or "ancestor" character scalar</p></td>
+      <th>time</th>
+      <td><p>Time of the population appearance</p></td>
     </tr>
     <tr>
       <th>world</th>

@@ -4,13 +4,18 @@
 \alias{compile}
 \title{Compile the spatial maps and split/admixture tables}
 \usage{
-compile(..., dry_run = T)
+compile(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE)
 }
 \arguments{
 \item{...}{Population object of the 'spammr_pop' class}
 
+\item{outdir}{Directory to which to save the entire model}
+
 \item{dry_run}{Return the compiled model components without saving them to
 disk?}
+
+\item{overwrite}{Overwrite the contents of the output directory (in case it
+already exists)?}
 }
 \description{
 Compile the spatial maps and split/admixture tables
