@@ -15,7 +15,7 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
                        region = NULL) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
-    time <- -1
+    time <- Inf
     if (is.null(world))
       stop("Ancestral population is required to specify its 'world' context",
            call. = FALSE)
