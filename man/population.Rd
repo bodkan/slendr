@@ -6,10 +6,10 @@
 \usage{
 population(
   name,
-  time,
-  Ne,
   parent,
-  world,
+  Ne,
+  time = NULL,
+  world = NULL,
   center = NULL,
   radius = NULL,
   coords = NULL,
@@ -19,11 +19,11 @@ population(
 \arguments{
 \item{name}{Name of the population}
 
-\item{time}{Time of the population appearance}
+\item{parent}{Parent population object or "ancestor" character scalar}
 
 \item{Ne}{Effective population size at the time of split}
 
-\item{parent}{Parent population object or "ancestor" character scalar}
+\item{time}{Time of the population appearance}
 
 \item{world}{Object of the type 'sf' which defines the world}
 
