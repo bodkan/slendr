@@ -106,6 +106,7 @@ plot.spammr <- function(..., snapshot = NULL, facets = TRUE, intersect = TRUE, g
   )
 }
 
+
 #' Print a spammr object
 #'
 #' @param x Object of a class spammr
