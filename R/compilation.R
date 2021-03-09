@@ -20,33 +20,30 @@ compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
   # into a data frame
   splits_table <- lapply(pops, function(p) {
     parent <- attr(p, "parent")
-   if (is.character(parent) && parent == "ancestor") {
-     parent_name <- parent
-   } else {
-     parent_name <- unique(attr(p, "parent")$pop)
-   }
+    if (is.character(parent) && parent == "ancestor") {
+      parent_name <- parent
+    } else {
+      parent_name <- unique(attr(p, "parent")$pop)
+    }
 
     data.frame(
       pop = unique(p$pop),
       parent = parent_name,
-      time = p$time[1],
+      tsplit = p$time[1],
       Ne = unique(p$Ne)
     )
   }) %>% do.call(rbind, .)
 
   # order populations by split time and assign a numeric identifier to each
   splits_table <- splits_table[
-    order(splits_table$time, decreasing = TRUE, na.last = FALSE), ]
+    order(splits_table$tsplit, decreasing = TRUE, na.last = FALSE), ]
   splits_table$pop_id <- 1:nrow(splits_table) - 1
   splits_table$parent_id <- lapply(
     splits_table$parent,
     function(i) splits_table[splits_table$pop == i, ]$pop_id
   ) %>% unlist() %>% c(NA, .)
-  # take care of Inf/NA values for downstream SLiM processing
-  splits_table$time <- ifelse(splits_table$time == Inf, -1, splits_table$time)
-  splits_table$parent_id <- ifelse(is.na(splits_table$parent_id), -1, splits_table$parent_id)
 
-  # generate spatial bit maps
+  # generate rasterized maps
   maps <- render(...)
 
   # convert list of rasters into data frame, adding the spatial
@@ -61,7 +58,6 @@ compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
     function(i) splits_table[splits_table$pop == i, ]$pop_id
   ))
   maps_table$map <- I(lapply(maps, function(m) m$map))
-
 
   # return the finalized model specification without saving it to disk
   if (dry_run) {
@@ -87,28 +83,52 @@ compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
     map_row <- maps_table[i, ]
     # the first spatial map has necessarily a nonsensical time stamp,
     # so let's take care of that first
-    if (map_row$time == Inf) {
-      time <- "ancestor"
-      maps_table[i, "time"] <- -1
-    } else {
-      time <- map_row$time
-    }
+    time <- ifelse(map_row$time == Inf, "ancestor", map_row$time)
+
     filename <- sprintf("map_%d_%s_%s.png", i, map_row$pop, time)
     path <- file.path(outdir, filename)
-    ggsave(path, map_row$map[[1]])
+
+    save_png(map_row$map[[1]], path)
+
     maps_table[i, "file"] <- path
   }
+  
+  # get pixel coordinates of population centers based on the first
+  # spatial map defined for each population
+  centers_table <- lapply(1:nrow(splits_table), function(i) {
+    pop_name <- splits_table[i, "pop"]
+    time <- splits_table[i, "tsplit"]
+    # get the first spatial map object of the current population
+    pop <- Filter(function(i) unique(i$pop == pop_name), pops)[[1]][1, ]
+    
+    # get center point and the raster of the first spatial map
+    raster <- maps_table[maps_table$pop == pop_name & maps_table$time == time, ]$map[[1]]
+    coords <- raster_center(pop, raster)
+ 
+    data.frame(pop = pop_name, x = coords[1], y = coords[2])
+  }) %>% do.call(rbind, .)
 
+  # merge splits table with the pixel locations of population centers
+  splits_table <- merge(splits_table, centers_table, by = "pop")
+
+  # take care of Inf/NA values for downstream SLiM processing
+  splits_table$tsplit <- ifelse(splits_table$tsplit == Inf, -1, splits_table$tsplit)
+  maps_table$time <- ifelse(maps_table$time == Inf, -1, maps_table$time)
+  splits_table$parent_id <- ifelse(is.na(splits_table$parent_id), -1, splits_table$parent_id)
+
+  # TODO population removal time
+  splits_table$tremove <- -1
+  
   # save the table with spatial map paths
   write.table(
     maps_table[, c("pop", "pop_id", "time", "file")],
     file.path(outdir, "spatial_maps.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
-
+  
   # save the population splits table
   write.table(
-    splits_table,
+    splits_table[, c("pop", "Ne", "x", "y", "parent", "tsplit", "tremove")],
     file.path(outdir, "population_splits.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
@@ -132,13 +152,7 @@ render <- function(...) {
       if (is.null(attr(pop, "intersected")))
         snapshot <- intersect_features(snapshot)
 
-      # plot the spatial map, using the 'world' context as a bounding box
-      bbox <- sf::st_bbox(attr(snapshot, "world"))
-      p_map <- ggplot() +
-        geom_sf(data = snapshot, fill = "white", color = NA) +
-        coord_sf(xlim = bbox[c(1, 3)], ylim = bbox[c(2, 4)], expand = FALSE) +
-        theme_void() +
-        theme(plot.background = element_rect(fill = "black"))
+      raster_map <- rasterize(snapshot)
 
       # return the rendered spatial map with the population name and the
       # appropriate time stamp (unique-ing because intersecting splits
@@ -146,7 +160,7 @@ render <- function(...) {
       list(
         pop = unique(snapshot$pop),
         time = unique(snapshot$time),
-        map = p_map
+        map = raster_map
       )
     })
     snapshots
@@ -159,13 +173,32 @@ render <- function(...) {
 }
 
 
-#' Get the centroid of the first population range
-get_centroids <- function(pop) {
-  first_range <- pop[1, ]
-  sf::st_agr(first_range) <- "constant"
-  first_range %>%
-    sf::st_centroid() %>%
-    sf::st_geometry()
+#' Calculate pixel location of a spatial point (sf object) on a given
+#' raster
+#'
+#' @param x Point object of the sf type (see `get_centroid`)
+#' @param raster Raster object of the class 'stars'
+#' @param world Underlying world object
+#'
+#' @return Two-dimensional numeric vector of pixel coordinates
+raster_center <- function(pop, raster) {
+  # get the dimension of the whole world raster bitmap
+  raster_width <- dim(raster)["x"]
+  raster_height <- dim(raster)["y"]
+
+  # get the dimension of the world in the real CRS units
+  bbox <- sf::st_bbox(attr(pop, "world"))
+  world_width <- bbox["xmax"] - bbox["xmin"]
+  world_height <- bbox["ymax"] - bbox["ymin"]
+
+  center <- sf::st_coordinates(sf::st_centroid(pop))
+  xpoint <- as.integer(center[1] - bbox["xmin"])
+  ypoint <- as.integer(center[2] - bbox["ymin"])
+
+  coords <- as.integer(c(xpoint / world_width * raster_width,
+                         ypoint / world_height * raster_height))
+
+  coords
 }
 
 
@@ -180,7 +213,7 @@ get_centroids <- function(pop) {
 rasterize <- function(x, pixel_dim = c(10000, 10000), raster_dim = NULL) {
   # add a dummy variable for plotting the bi-color map
   x$fill <- factor(1)
-
+  
   # create a template object for rasterization (i.e. size of the final raster)
   bbox <- sf::st_bbox(attr(x, "world"))
   if (length(pixel_dim) == 2) {
@@ -190,13 +223,12 @@ rasterize <- function(x, pixel_dim = c(10000, 10000), raster_dim = NULL) {
   } else {
     template <- stars::st_as_stars(bbox)
   }
-
+  
   # perform the rasterization using the dummy single-value factor column
   raster <- stars::st_rasterize(x["fill"], template)
 
   raster
 }
-
 
 
 #' Save the rasterized stars object to a PNG file
@@ -205,18 +237,26 @@ rasterize <- function(x, pixel_dim = c(10000, 10000), raster_dim = NULL) {
 #' @param path Full path of an output PNG file
 save_png <- function(raster, path) {
   tmp_tiff <- paste0(tempfile(), ".tiff")
-
+  
   # write stars raster as a TIFF format
   stars::write_stars(raster, tmp_tiff)
 
   # convert the stars TIFF into a PNG (the only format SLiM supports)
   img <- ijtiff::read_tif(tmp_tiff, msg = FALSE)
+  unlink(tmp_tiff)
 
   # subset the multidimensional array only to pixel two-dimensional matrix
   img_matrix <- img[, , 1, 1]
-  png::writePNG(img_matrix, path)
 
-  unlink(tmp_tiff)
+  # binarize the matrix (st_rasterize somehow assigns a different
+  # color to each fragmented spatial feature after
+  # intersect_features() call)
+  img_matrix[img_matrix > 0] <- 1
+
+  ## plot(as.raster(img_matrix))
+  ## coords <- raster_location(get_centroid(afr), raster, world)
+  
+  png::writePNG(img_matrix, path)
 }
 
 
@@ -228,4 +268,3 @@ run_slimgui <- function() {
   backend_script <- "~/projects/spammr/inst/extdata/backend.slim"
   system(sprintf("open -a SLiMgui %s", backend_script))
 }
-
