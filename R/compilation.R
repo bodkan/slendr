@@ -115,15 +115,6 @@ compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
 }
 
 
-#' Get the centroid of the first population range
-get_centroids <- function(pop) {
-  pop[1, ] %>%
-    sf::st_centroid() %>%
-    sf::st_coordinates() %>%
-    as.vector
-}
-
-
 #' Render population boundaries to black-and-white spatial maps
 #'
 #' @param ... Spatial population objects of the 'spammr_pop' class
@@ -165,6 +156,67 @@ render <- function(...) {
   rasters <- do.call(c, raster_list)
 
   rasters
+}
+
+
+#' Get the centroid of the first population range
+get_centroids <- function(pop) {
+  first_range <- pop[1, ]
+  sf::st_agr(first_range) <- "constant"
+  first_range %>%
+    sf::st_centroid() %>%
+    sf::st_geometry()
+}
+
+
+#' Rasterize the vector form of a population spatial boundary
+#'
+#' @param x Object of the 'spammr_pop' class
+#' @param pixel_dim Two-dimensional numeric vector specifying pixel
+#'   dimension (in units of the CRS used in the definition of the
+#'   world)
+#' @param raster_dim Two-dimendional numeric vectory specifying the
+#'   absolute dimension of the raster map
+rasterize <- function(x, pixel_dim = c(10000, 10000), raster_dim = NULL) {
+  # add a dummy variable for plotting the bi-color map
+  x$fill <- factor(1)
+
+  # create a template object for rasterization (i.e. size of the final raster)
+  bbox <- sf::st_bbox(attr(x, "world"))
+  if (length(pixel_dim) == 2) {
+    template <- stars::st_as_stars(bbox, dx = pixel_dim[1], dy = pixel_dim[2])
+  } else if (length(raster_dim) == 2) {
+    template <- stars::st_as_stars(bbox, nx = raster_dim[1], ny = raster_dim[2])
+  } else {
+    template <- stars::st_as_stars(bbox)
+  }
+
+  # perform the rasterization using the dummy single-value factor column
+  raster <- stars::st_rasterize(x["fill"], template)
+
+  raster
+}
+
+
+
+#' Save the rasterized stars object to a PNG file
+#'
+#' @param raster Object of a stars type
+#' @param path Full path of an output PNG file
+save_png <- function(raster, path) {
+  tmp_tiff <- paste0(tempfile(), ".tiff")
+
+  # write stars raster as a TIFF format
+  stars::write_stars(raster, tmp_tiff)
+
+  # convert the stars TIFF into a PNG (the only format SLiM supports)
+  img <- ijtiff::read_tif(tmp_tiff, msg = FALSE)
+
+  # subset the multidimensional array only to pixel two-dimensional matrix
+  img_matrix <- img[, , 1, 1]
+  png::writePNG(img_matrix, path)
+
+  unlink(tmp_tiff)
 }
 
 
