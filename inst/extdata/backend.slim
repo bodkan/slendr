@@ -26,7 +26,7 @@ initialize() {
 	defineConstant("HEIGHT", MAPS[0].height);
 	
 	// define output files
-	defineConstant("prefix", "~/projects/stcoal/data/slim/discrete_pops_admixture_cleanups_ancient");
+	defineConstant("prefix", "~/projects/spammr/tests/model/output");
 	defineConstant("output_loc", paste(prefix, "loc.tsv.gz", sep="_"));
 	defineConstant("output_tseq", paste(prefix, "tseq.trees", sep="_"));
 	
@@ -200,8 +200,8 @@ s99 late() {
 // Saving tree sequences at the end of the simulation
 s999 late() {
 	catn("[INFO] simulation finished in generation " + sim.generation);
-	sim.treeSeqOutput(output_tseq);
-	sim.simulationFinished();
+//	sim.treeSeqOutput(output_tseq);
+//	sim.simulationFinished();
 }
 
 modifyChild() {
