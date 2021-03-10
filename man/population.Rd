@@ -13,7 +13,8 @@ population(
   center = NULL,
   radius = NULL,
   coords = NULL,
-  region = NULL
+  region = NULL,
+  remove = NULL
 )
 }
 \arguments{
@@ -32,6 +33,10 @@ population(
 \item{radius}{Scalar defining a radius of a range in kilometers}
 
 \item{coords}{List of vector pairs, defining corners of the range}
+
+\item{region}{Geographic region of the class 'spammr_region'}
+
+\item{remove}{Time at which the population should be removed}
 }
 \description{
 Define a population range

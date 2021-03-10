@@ -4,12 +4,12 @@
 \alias{compile}
 \title{Compile the spatial maps and split/admixture tables}
 \usage{
-compile(..., outdir, overwrite = FALSE)
+compile(..., output_dir, overwrite = FALSE)
 }
 \arguments{
 \item{...}{Population object of the 'spammr_pop' class}
 
-\item{outdir}{Directory to which to save the entire model}
+\item{output_dir}{Directory to which to save the entire model}
 
 \item{overwrite}{Overwrite the contents of the output directory (in case it
 already exists)?}

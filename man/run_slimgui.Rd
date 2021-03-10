@@ -4,7 +4,7 @@
 \alias{run_slimgui}
 \title{Open the SLiM backend script in the SLiM gui}
 \usage{
-run_slimgui()
+run_slimgui(model_dir, gen_time, burnin)
 }
 \description{
 Open the SLiM backend script in the SLiM gui
