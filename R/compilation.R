@@ -2,17 +2,11 @@
 #'
 #' @param ... Population object of the 'spammr_pop' class
 #' @param outdir Directory to which to save the entire model
-#' @param dry_run Return the compiled model components without saving them to
-#'   disk?
 #' @param overwrite Overwrite the contents of the output directory (in case it
 #'   already exists)?
 #'
 #' @export
-compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
-  if (is.null(outdir) & !dry_run)
-    stop("Output directory for the model specification files missing",
-         call. = FALSE)
-
+compile <- function(..., outdir, overwrite = FALSE) {
   pops <- list(...)
 
   # iterate over all spammr population objects and extract
@@ -58,14 +52,7 @@ compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
     function(i) splits_table[splits_table$pop == i, ]$pop_id
   ))
   maps_table$map <- I(lapply(maps, function(m) m$map))
-
-  # return the finalized model specification without saving it to disk
-  if (dry_run) {
-    return(list(
-      splits = splits_table,
-      maps = maps_table
-    ))
-  }
+  maps_table <- maps_table[order(maps_table$time, decreasing = TRUE, na.last = FALSE), ]
 
   # prepare the model output directory
   if (dir.exists(outdir)) {
@@ -85,14 +72,13 @@ compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
     # so let's take care of that first
     time <- ifelse(map_row$time == Inf, "ancestor", map_row$time)
 
-    filename <- sprintf("map_%d_%s_%s.png", i, map_row$pop, time)
+    ## filename <- sprintf("map_%d_%s_%s.png", i, map_row$pop, time)
+    filename <- sprintf("%d.png", i)
     path <- file.path(outdir, filename)
 
     save_png(map_row$map[[1]], path)
-
-    maps_table[i, "file"] <- path
   }
-  
+
   # get pixel coordinates of population centers based on the first
   # spatial map defined for each population
   centers_table <- lapply(1:nrow(splits_table), function(i) {
@@ -100,16 +86,17 @@ compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
     time <- splits_table[i, "tsplit"]
     # get the first spatial map object of the current population
     pop <- Filter(function(i) unique(i$pop == pop_name), pops)[[1]][1, ]
-    
+
     # get center point and the raster of the first spatial map
     raster <- maps_table[maps_table$pop == pop_name & maps_table$time == time, ]$map[[1]]
     coords <- raster_center(pop, raster)
- 
+
     data.frame(pop = pop_name, x = coords[1], y = coords[2])
   }) %>% do.call(rbind, .)
 
   # merge splits table with the pixel locations of population centers
   splits_table <- merge(splits_table, centers_table, by = "pop")
+  splits_table <- splits_table[order(splits_table$tsplit, decreasing = TRUE, na.last = FALSE), ]
 
   # take care of Inf/NA values for downstream SLiM processing
   splits_table$tsplit <- ifelse(splits_table$tsplit == Inf, -1, splits_table$tsplit)
@@ -118,18 +105,26 @@ compile <- function(..., outdir = NULL, dry_run = FALSE, overwrite = FALSE) {
 
   # TODO population removal time
   splits_table$tremove <- -1
-  
+
   # save the table with spatial map paths
   write.table(
-    maps_table[, c("pop", "pop_id", "time", "file")],
-    file.path(outdir, "spatial_maps.tsv"),
+    maps_table[, c("pop_id", "time")],
+    file.path(outdir, "maps.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
-  
+
   # save the population splits table
   write.table(
-    splits_table[, c("pop", "Ne", "x", "y", "parent", "tsplit", "tremove")],
-    file.path(outdir, "population_splits.tsv"),
+    splits_table[, c("pop_id", "Ne", "x", "y", "parent_id", "tsplit", "tremove")],
+    file.path(outdir, "splits.tsv"),
+    sep = "\t", quote = FALSE, row.names = FALSE
+  )
+
+  # save the admixture table
+  admix_table <- data.frame(from = NULL, to = NULL, tstart = NULL, tend = NULL, rate = NULL)
+  write.table(
+    admix_table,
+    file.path(outdir, "admixtures.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
 }
@@ -213,7 +208,7 @@ raster_center <- function(pop, raster) {
 rasterize <- function(x, pixel_dim = c(10000, 10000), raster_dim = NULL) {
   # add a dummy variable for plotting the bi-color map
   x$fill <- factor(1)
-  
+
   # create a template object for rasterization (i.e. size of the final raster)
   bbox <- sf::st_bbox(attr(x, "world"))
   if (length(pixel_dim) == 2) {
@@ -223,7 +218,7 @@ rasterize <- function(x, pixel_dim = c(10000, 10000), raster_dim = NULL) {
   } else {
     template <- stars::st_as_stars(bbox)
   }
-  
+
   # perform the rasterization using the dummy single-value factor column
   raster <- stars::st_rasterize(x["fill"], template)
 
@@ -237,7 +232,7 @@ rasterize <- function(x, pixel_dim = c(10000, 10000), raster_dim = NULL) {
 #' @param path Full path of an output PNG file
 save_png <- function(raster, path) {
   tmp_tiff <- paste0(tempfile(), ".tiff")
-  
+
   # write stars raster as a TIFF format
   stars::write_stars(raster, tmp_tiff)
 
@@ -255,7 +250,7 @@ save_png <- function(raster, path) {
 
   ## plot(as.raster(img_matrix))
   ## coords <- raster_location(get_centroid(afr), raster, world)
-  
+
   png::writePNG(img_matrix, path)
 }
 
