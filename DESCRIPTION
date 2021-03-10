@@ -19,7 +19,8 @@ Imports:
     rnaturalearth,
     rnaturalearthdata,
     magrittr,
-    stars
+    stars,
+    whisker
 Suggests: 
     knitr,
     rmarkdown

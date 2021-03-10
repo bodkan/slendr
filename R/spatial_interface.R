@@ -8,11 +8,13 @@
 #' @param center Vector of two elements defining a center of a circular range
 #' @param radius Scalar defining a radius of a range in kilometers
 #' @param coords List of vector pairs, defining corners of the range
+#' @param region Geographic region of the class 'spammr_region'
+#' @param remove Time at which the population should be removed
 #'
 #' @export
 population <- function(name, parent, Ne, time = NULL, world = NULL,
                        center = NULL, radius = NULL, coords = NULL,
-                       region = NULL) {
+                       region = NULL, remove = NULL) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
     time <- Inf
@@ -42,6 +44,9 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
   # optionally, keep a restricted population region
   if (!is.null(region) & !is.null(center))
     attr(pop_range, "region") <- region
+
+  # when to clean up the population?
+  if (!is.null(remove)) attr(pop_range, "remove") <- remove
 
   # keep a record of the parent population
   if (inherits(parent, "spammr_pop")) {
@@ -97,6 +102,8 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
   attr(inter_regions, "parent") <- attr(pop, "parent")
   # optionally, add a migration boundary
   attr(inter_regions, "region") <- region
+  # retain the cleanup time
+  attr(inter_regions, "remove") <- attr(pop, "remove")
 
   class(inter_regions) <- set_class(inter_regions, "pop")
   inter_regions
@@ -168,6 +175,8 @@ migrate <- function(pop, trajectory, duration, snapshots) {
   attr(inter_regions, "world") <- attr(pop, "world")
   # propagate the information about the parental population
   attr(inter_regions, "parent") <- attr(pop, "parent")
+  # retain the cleanup time
+  attr(inter_regions, "remove") <- attr(pop, "remove")
 
   class(inter_regions) <- set_class(inter_regions, "pop")
 
