@@ -15,30 +15,36 @@ initialize() {
 	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = 30.0);
 	i2.setInteractionFunction("n", 1.0, 10.0);
 	
-	defineConstant("MODEL_DIR", "~/projects/spammr/tests/model/");
-	defineConstant("SPLIT_TABLE", read_table(paste0(MODEL_DIR, "splits.tsv")));
-	defineConstant("ADMIX_TABLE", read_table(paste0(MODEL_DIR, "admixtures.tsv")));
-	defineConstant("MAPS_TABLE", read_table(paste0(MODEL_DIR, "maps.tsv")));
+	defineConstant("MODEL_DIR", "{{model_dir}}");
+	// load model definition tables
+	defineConstant("SPLIT_TABLE", read_table(paste0(MODEL_DIR, "/splits.tsv")));
+	defineConstant("ADMIX_TABLE", read_table(paste0(MODEL_DIR, "/admixtures.tsv")));
+	defineConstant("MAPS_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));
 	// load all spatial maps
 	defineConstant("MAPS", sapply(1:nrow(MAPS_TABLE), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
 
+	// world dimensions in pixels
 	defineConstant("WIDTH", MAPS[0].width);
 	defineConstant("HEIGHT", MAPS[0].height);
 	
 	// define output files
-	defineConstant("prefix", "~/projects/spammr/tests/model/output");
-	defineConstant("output_loc", paste(prefix, "loc.tsv.gz", sep="_"));
-	defineConstant("output_tseq", paste(prefix, "tseq.trees", sep="_"));
+	defineConstant("prefix", paste0(MODEL_DIR, "/output"));
+	defineConstant("output_loc", paste(prefix, "_locations.tsv.gz", sep="_"));
+	defineConstant("output_tseq", paste(prefix, "_treeseq.trees", sep="_"));
 	
-	defineConstant("GEN_TIME", 30);
+	defineConstant("GEN_TIME", {{gen_time}});
 	
-	defineConstant("T_BURNIN", 110); // length of the burnin phase (in generations)
+	defineConstant("T_BURNIN", {{burnin}});
 	defineConstant("T_OFFSET", 100); // how soon to start the sampling?
-	
+
+	catn("T_BURNIN: " + T_BURNIN);
+
 	// absolute split times
 	defineConstant("T_ABS_SPLITS", asInteger(pop_param("tsplit") / GEN_TIME));
 	// split times relative to the start of the simulation
 	defineConstant("T_SPLITS", T_BURNIN + max(T_ABS_SPLITS) - T_ABS_SPLITS);
+
+	catn("T_SPLITS: " + paste(T_SPLITS));
 	
 	// absolute admixture times
 	if (length(ADMIX_TABLE)) {
@@ -46,6 +52,8 @@ initialize() {
 		// admixture times relative to the start of the simulation
 		// (add one generation to force admixture only after each split)
 		defineConstant("T_ADMIX", T_BURNIN + (max(T_ABS_SPLITS) - T_ABS_ADMIX) + 1);
+
+		catn("T_ADMIX: " + paste(T_ADMIX));
 	}
 	
 	if (length(pop_param("tremove"))) {
@@ -54,6 +62,8 @@ initialize() {
 		// cleanup times relative to the start of the simulation
 		// (add one generation to force cleanup only after each split)
 		defineConstant("T_CLEANUPS", T_BURNIN + (max(T_ABS_SPLITS) - T_ABS_CLEANUPS) + 1);
+
+		catn("T_CLEANUPS: " + paste(T_CLEANUPS));
 	}
 
 	// absolute times of spatial map changes
@@ -61,13 +71,9 @@ initialize() {
 	// admixture times relative to the start of the simulation
 	// (add one generation to force admixture only after each split)
 	defineConstant("T_MAPS", c(1, T_BURNIN + (max(T_ABS_SPLITS) - T_ABS_MAPS)));
-	
-//	catn("T_BURNIN: " + T_BURNIN);
-//	catn("T_SPLITS: " + paste(T_SPLITS));
-//	catn("T_ADMIX: " + paste(T_ADMIX));
-//	catn("T_CLEANUPS: " + paste(T_CLEANUPS));
-//	catn("T_MAPS: " + paste(T_MAPS));
-	
+
+	catn("T_MAPS: " + paste(T_MAPS));
+
 	write_header(output_loc);
 }
 

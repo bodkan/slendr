@@ -1,12 +1,12 @@
 #' Compile the spatial maps and split/admixture tables
 #'
 #' @param ... Population object of the 'spammr_pop' class
-#' @param outdir Directory to which to save the entire model
+#' @param output_dir Directory to which to save the entire model
 #' @param overwrite Overwrite the contents of the output directory (in case it
 #'   already exists)?
 #'
 #' @export
-compile <- function(..., outdir, overwrite = FALSE) {
+compile <- function(..., output_dir, overwrite = FALSE) {
   pops <- list(...)
 
   # iterate over all spammr population objects and extract
@@ -20,11 +20,14 @@ compile <- function(..., outdir, overwrite = FALSE) {
       parent_name <- unique(attr(p, "parent")$pop)
     }
 
+    tremove <- unique(attr(p, "remove"))
+
     data.frame(
       pop = unique(p$pop),
       parent = parent_name,
       tsplit = p$time[1],
-      Ne = unique(p$Ne)
+      Ne = unique(p$Ne),
+      tremove = ifelse(!is.null(tremove), tremove, -1)
     )
   }) %>% do.call(rbind, .)
 
@@ -55,15 +58,15 @@ compile <- function(..., outdir, overwrite = FALSE) {
   maps_table <- maps_table[order(maps_table$time, decreasing = TRUE, na.last = FALSE), ]
 
   # prepare the model output directory
-  if (dir.exists(outdir)) {
+  if (dir.exists(output_dir)) {
     if (!overwrite)
       stop("Output directory already exists - either delete it or set 'overwrite = TRUE'",
            call. = FALSE)
     else
-      unlink(outdir, recursive = TRUE, force = TRUE)
+      unlink(output_dir, recursive = TRUE, force = TRUE)
 
   }
-  dir.create(outdir)
+  dir.create(output_dir)
 
   # save the rasterized spatial maps
   for (i in seq_len(nrow(maps_table))) {
@@ -74,7 +77,7 @@ compile <- function(..., outdir, overwrite = FALSE) {
 
     ## filename <- sprintf("map_%d_%s_%s.png", i, map_row$pop, time)
     filename <- sprintf("%d.png", i)
-    path <- file.path(outdir, filename)
+    path <- file.path(output_dir, filename)
 
     save_png(map_row$map[[1]], path)
   }
@@ -103,20 +106,17 @@ compile <- function(..., outdir, overwrite = FALSE) {
   maps_table$time <- ifelse(maps_table$time == Inf, -1, maps_table$time)
   splits_table$parent_id <- ifelse(is.na(splits_table$parent_id), -1, splits_table$parent_id)
 
-  # TODO population removal time
-  splits_table$tremove <- -1
-
   # save the table with spatial map paths
   write.table(
     maps_table[, c("pop_id", "time")],
-    file.path(outdir, "maps.tsv"),
+    file.path(output_dir, "maps.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
 
   # save the population splits table
   write.table(
     splits_table[, c("pop_id", "Ne", "x", "y", "parent_id", "tsplit", "tremove")],
-    file.path(outdir, "splits.tsv"),
+    file.path(output_dir, "splits.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
 
@@ -124,7 +124,7 @@ compile <- function(..., outdir, overwrite = FALSE) {
   admix_table <- data.frame(from = NULL, to = NULL, tstart = NULL, tend = NULL, rate = NULL)
   write.table(
     admix_table,
-    file.path(outdir, "admixtures.tsv"),
+    file.path(output_dir, "admixtures.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
 }
@@ -243,13 +243,9 @@ save_png <- function(raster, path) {
   # subset the multidimensional array only to pixel two-dimensional matrix
   img_matrix <- img[, , 1, 1]
 
-  # binarize the matrix (st_rasterize somehow assigns a different
-  # color to each fragmented spatial feature after
-  # intersect_features() call)
+  # binarize the matrix (st_rasterize assigns a different color to each
+  # fragmented spatial feature after intersect_features() call)
   img_matrix[img_matrix > 0] <- 1
-
-  ## plot(as.raster(img_matrix))
-  ## coords <- raster_location(get_centroid(afr), raster, world)
 
   png::writePNG(img_matrix, path)
 }
@@ -258,8 +254,21 @@ save_png <- function(raster, path) {
 #' Open the SLiM backend script in the SLiM gui
 #'
 #' @export
-run_slimgui <- function() {
-  # backend_script <- system.file("backend.slim", package = "spammr")
-  backend_script <- "~/projects/spammr/inst/extdata/backend.slim"
-  system(sprintf("open -a SLiMgui %s", backend_script))
+run_slimgui <- function(model_dir, gen_time, burnin) {
+  if (!dir.exists(model_dir))
+    stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
+
+  # compile the SLiM backend script
+  template <- readLines("~/projects/spammr/inst/extdata/backend.slim")
+  subst <- list(
+    model_dir = normalizePath(model_dir),
+    gen_time = gen_time,
+    burnin = burnin
+  )
+  rendered <- whisker::whisker.render(template, subst)
+
+  script <- file.path(subst[["model_dir"]], "script.slim")
+  writeLines(rendered, script)
+
+  system(sprintf("open -a SLiMgui %s", script))
 }
