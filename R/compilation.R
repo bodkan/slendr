@@ -96,7 +96,7 @@ compile <- function(..., outdir, overwrite = FALSE) {
 
   # merge splits table with the pixel locations of population centers
   splits_table <- merge(splits_table, centers_table, by = "pop")
-  splits_table <- splits_table[order(splits_table$tsplit, decreasing = TRUE, na.last = FALSE), ]
+  splits_table <- splits_table[order(splits_table$pop_id), ]
 
   # take care of Inf/NA values for downstream SLiM processing
   splits_table$tsplit <- ifelse(splits_table$tsplit == Inf, -1, splits_table$tsplit)
