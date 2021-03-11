@@ -8,15 +8,20 @@
 #'
 #' @param ... Population/geographic region objects of the 'spammr'
 #'   class
+#' @param snapshots Which time points to plot?
 #' @param facets Plot populations in individual panels?
 #' @param intersect intersect the population boundaries against landscape
 #'   and other geographic boundaries?
 #' @param geo_graticules Plot axies with lon/lat graticules?
+#' @param title Plot title
+#' @param nrow,ncol Number of columns or rows in the facet plot
 #'
 #' @export
 #'
 #' @import ggplot2
-plot.spammr <- function(..., snapshot = NULL, facets = TRUE, intersect = TRUE, geo_graticules = TRUE, title = NULL) {
+plot.spammr <- function(..., snapshots = NULL, facets = TRUE,
+                        intersect = TRUE, geo_graticules = TRUE,
+                        title = NULL, nrow = NULL, ncol = NULL) {
   args <- list(...)
   # only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spammr_world"))
@@ -69,7 +74,7 @@ plot.spammr <- function(..., snapshot = NULL, facets = TRUE, intersect = TRUE, g
   # plot population ranges, if present
   if (!is.null(pops)) {
     # plot only specified snapshots
-    if (!is.null(snapshot)) pops <- pops[pops$time %in% snapshots, ]
+    if (!is.null(snapshots)) pops <- pops[pops$time %in% snapshots, ]
     pops$pop <- factor(pops$pop)
 
     if (facets)
@@ -93,7 +98,7 @@ plot.spammr <- function(..., snapshot = NULL, facets = TRUE, intersect = TRUE, g
       p_map <- rows[[1]] +
         guides(fill = guide_legend("population"))
     } else
-      p_map <- patchwork::wrap_plots(rows, ncol = 2)
+      p_map <- patchwork::wrap_plots(rows, ncol = ncol, nrow = nrow)
   }
 
   if (!is.null(title))
