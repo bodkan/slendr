@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compile the spatial maps and split/admixture tables — compile • spammr</title>
+<title>Calculate pixel location of a spatial point (sf object) on a given
+raster — raster_center • spammr</title>
 
 
 <!-- jquery -->
@@ -39,8 +40,10 @@
 
 
 
-<meta property="og:title" content="Compile the spatial maps and split/admixture tables — compile" />
-<meta property="og:description" content="Compile the spatial maps and split/admixture tables" />
+<meta property="og:title" content="Calculate pixel location of a spatial point (sf object) on a given
+raster — raster_center" />
+<meta property="og:description" content="Calculate pixel location of a spatial point (sf object) on a given
+raster" />
 
 
 
@@ -118,35 +121,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compile the spatial maps and split/admixture tables</h1>
+    <h1>Calculate pixel location of a spatial point (sf object) on a given
+raster</h1>
     
-    <div class="hidden name"><code>compile.Rd</code></div>
+    <div class="hidden name"><code>raster_center.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compile the spatial maps and split/admixture tables</p>
+    <p>Calculate pixel location of a spatial point (sf object) on a given
+raster</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compile</span><span class='op'>(</span><span class='va'>...</span>, <span class='va'>output_dir</span>, overwrite <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>raster_center</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>raster</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Population object of the 'spammr_pop' class</p></td>
+      <th>raster</th>
+      <td><p>Raster object of the class 'stars'</p></td>
     </tr>
     <tr>
-      <th>output_dir</th>
-      <td><p>Directory to which to save the entire model</p></td>
+      <th>x</th>
+      <td><p>Point object of the sf type (see <code>get_centroid</code>)</p></td>
     </tr>
     <tr>
-      <th>overwrite</th>
-      <td><p>Overwrite the contents of the output directory (in case it
-already exists)?</p></td>
+      <th>world</th>
+      <td><p>Underlying world object</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Two-dimensional numeric vector of pixel coordinates</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
