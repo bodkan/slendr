@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compile the spatial maps and split/admixture tables — compile • spammr</title>
+<title>Save the rasterized stars object to a PNG file — save_png • spammr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Compile the spatial maps and split/admixture tables — compile" />
-<meta property="og:description" content="Compile the spatial maps and split/admixture tables" />
+<meta property="og:title" content="Save the rasterized stars object to a PNG file — save_png" />
+<meta property="og:description" content="Save the rasterized stars object to a PNG file" />
 
 
 
@@ -118,32 +118,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compile the spatial maps and split/admixture tables</h1>
+    <h1>Save the rasterized stars object to a PNG file</h1>
     
-    <div class="hidden name"><code>compile.Rd</code></div>
+    <div class="hidden name"><code>save_png.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compile the spatial maps and split/admixture tables</p>
+    <p>Save the rasterized stars object to a PNG file</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compile</span><span class='op'>(</span><span class='va'>...</span>, <span class='va'>output_dir</span>, overwrite <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>save_png</span><span class='op'>(</span><span class='va'>raster</span>, <span class='va'>path</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Population object of the 'spammr_pop' class</p></td>
+      <th>raster</th>
+      <td><p>Object of a stars type</p></td>
     </tr>
     <tr>
-      <th>output_dir</th>
-      <td><p>Directory to which to save the entire model</p></td>
-    </tr>
-    <tr>
-      <th>overwrite</th>
-      <td><p>Overwrite the contents of the output directory (in case it
-already exists)?</p></td>
+      <th>path</th>
+      <td><p>Full path of an output PNG file</p></td>
     </tr>
     </table>
 
