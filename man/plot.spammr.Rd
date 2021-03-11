@@ -6,16 +6,20 @@
 \usage{
 \method{plot}{spammr}(
   ...,
-  snapshot = NULL,
+  snapshots = NULL,
   facets = TRUE,
   intersect = TRUE,
   geo_graticules = TRUE,
-  title = NULL
+  title = NULL,
+  nrow = NULL,
+  ncol = NULL
 )
 }
 \arguments{
 \item{...}{Population/geographic region objects of the 'spammr'
 class}
+
+\item{snapshots}{Which time points to plot?}
 
 \item{facets}{Plot populations in individual panels?}
 
@@ -23,6 +27,10 @@ class}
 and other geographic boundaries?}
 
 \item{geo_graticules}{Plot axies with lon/lat graticules?}
+
+\item{title}{Plot title}
+
+\item{nrow, ncol}{Number of columns or rows in the facet plot}
 }
 \description{
 Plot the spatio-temporal distributions of populations and
