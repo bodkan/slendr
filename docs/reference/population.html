@@ -95,6 +95,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/example.html">Full example of a spatial model definition and compilation</a>
+    </li>
+    <li>
       <a href="../articles/tutorial.html">spammr: Introduction and tutorial</a>
     </li>
   </ul>
@@ -133,7 +136,8 @@
   center <span class='op'>=</span> <span class='cn'>NULL</span>,
   radius <span class='op'>=</span> <span class='cn'>NULL</span>,
   coords <span class='op'>=</span> <span class='cn'>NULL</span>,
-  region <span class='op'>=</span> <span class='cn'>NULL</span>
+  region <span class='op'>=</span> <span class='cn'>NULL</span>,
+  remove <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -170,6 +174,14 @@
     <tr>
       <th>coords</th>
       <td><p>List of vector pairs, defining corners of the range</p></td>
+    </tr>
+    <tr>
+      <th>region</th>
+      <td><p>Geographic region of the class 'spammr_region'</p></td>
+    </tr>
+    <tr>
+      <th>remove</th>
+      <td><p>Time at which the population should be removed</p></td>
     </tr>
     </table>
 

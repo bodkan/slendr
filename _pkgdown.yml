@@ -1,6 +1,8 @@
 home:
   - text: Learn more
     href: http://bodkan.net/admixr/articles/tutorial.html
+  - text: Learn more        
+    href: http://bodkan.net/admixr/articles/example.html
 
 reference:
   - title: Geographic features
