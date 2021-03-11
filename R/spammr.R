@@ -93,7 +93,7 @@ plot.spammr <- function(..., snapshot = NULL, facets = TRUE, intersect = TRUE, g
       p_map <- rows[[1]] +
         guides(fill = guide_legend("population"))
     } else
-      p_map <- patchwork::wrap_plots(rows)
+      p_map <- patchwork::wrap_plots(rows, ncol = 2)
   }
 
   if (!is.null(title))
