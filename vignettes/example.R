@@ -143,3 +143,11 @@ compile(
 #' Generate a SLiM script simulation and open it in SLiMgui
 
 run_slimgui(model_dir = "model/", gen_time = 30, burnin = 200, sim_length = 70000)
+
+
+animate(
+  locations = "model/output_locations.tsv.gz",
+  gif = "model/output_anim.gif",
+  gen_time = 30,
+  nframes = 200
+)
