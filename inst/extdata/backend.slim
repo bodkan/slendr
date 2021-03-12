@@ -19,9 +19,9 @@ initialize() {
 	// load model definition tables
 	defineConstant("SPLIT_TABLE", read_table(paste0(MODEL_DIR, "/splits.tsv")));
 	defineConstant("ADMIX_TABLE", read_table(paste0(MODEL_DIR, "/admixtures.tsv")));
-	defineConstant("MAPS_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));
+	defineConstant("MAP_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));
 	// load all spatial maps
-	defineConstant("MAPS", sapply(1:nrow(MAPS_TABLE), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
+	defineConstant("MAPS", sapply(1:nrow(MAP_TABLE), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
 
 	// world dimensions in pixels
 	defineConstant("WIDTH", MAPS[0].width);
@@ -29,29 +29,31 @@ initialize() {
 	
 	// define output files
 	defineConstant("prefix", paste0(MODEL_DIR, "/output"));
-	defineConstant("output_loc", paste(prefix, "_locations.tsv.gz", sep="_"));
-	defineConstant("output_tseq", paste(prefix, "_treeseq.trees", sep="_"));
+	defineConstant("output_loc", paste(prefix, "locations.tsv.gz", sep="_"));
+	defineConstant("output_tseq", paste(prefix, "treeseq.trees", sep="_"));
 	
 	defineConstant("GEN_TIME", {{gen_time}});
+	defineConstant("T_BURNIN", asInteger({{burnin}}));
+	defineConstant("T_LENGTH", asInteger({{sim_length}} / GEN_TIME));
 	
-	defineConstant("T_BURNIN", {{burnin}});
-	defineConstant("T_OFFSET", 100); // how soon to start the sampling?
-
 	catn("T_BURNIN: " + T_BURNIN);
+	catn("T_LENGTH: " + T_LENGTH);
 
 	// absolute split times
-	defineConstant("T_ABS_SPLITS", asInteger(pop_param("tsplit") / GEN_TIME));
-	// split times relative to the start of the simulation
-	defineConstant("T_SPLITS", T_BURNIN + max(T_ABS_SPLITS) - T_ABS_SPLITS);
+	if (length(SPLIT_TABLE)) {
+		defineConstant("T_ABS_SPLITS", asInteger(pop_param("tsplit") / GEN_TIME));
+		// split times relative to the start of the simulation
+		defineConstant("T_SPLITS", T_BURNIN + (T_LENGTH - T_ABS_SPLITS));
 
-	catn("T_SPLITS: " + paste(T_SPLITS));
+		catn("T_SPLITS: " + paste(T_SPLITS));
+	}
 	
-	// absolute admixture times
 	if (length(ADMIX_TABLE)) {
+		// absolute admixture times
 		defineConstant("T_ABS_ADMIX", asInteger(admix_param("tstart") / GEN_TIME));
 		// admixture times relative to the start of the simulation
 		// (add one generation to force admixture only after each split)
-		defineConstant("T_ADMIX", T_BURNIN + (max(T_ABS_SPLITS) - T_ABS_ADMIX) + 1);
+		defineConstant("T_ADMIX", T_BURNIN + (T_LENGTH - T_ABS_ADMIX) + 1);
 
 		catn("T_ADMIX: " + paste(T_ADMIX));
 	}
@@ -61,18 +63,18 @@ initialize() {
 		defineConstant("T_ABS_CLEANUPS", asInteger(pop_param("tremove") / GEN_TIME));
 		// cleanup times relative to the start of the simulation
 		// (add one generation to force cleanup only after each split)
-		defineConstant("T_CLEANUPS", T_BURNIN + (max(T_ABS_SPLITS) - T_ABS_CLEANUPS) + 1);
+		defineConstant("T_CLEANUPS", T_BURNIN + (T_LENGTH - T_ABS_CLEANUPS) + 1);
 
 		catn("T_CLEANUPS: " + paste(T_CLEANUPS));
 	}
 
-	// absolute times of spatial map changes
-	defineConstant("T_ABS_MAPS", asInteger(maps_param("time") / GEN_TIME));
-	// admixture times relative to the start of the simulation
-	// (add one generation to force admixture only after each split)
-	defineConstant("T_MAPS", c(1, T_BURNIN + (max(T_ABS_SPLITS) - T_ABS_MAPS)));
-
-	catn("T_MAPS: " + paste(T_MAPS));
+	if (length(MAPS) > 1) {
+		// absolute times of spatial map changes
+		defineConstant("T_ABS_MAPS", asInteger(maps_param("time") / GEN_TIME));
+		// times relative to the start of the simulation
+		defineConstant("T_MAPS", c(1, T_BURNIN + (T_LENGTH - T_ABS_MAPS)));
+		catn("T_MAPS: " + paste(T_MAPS));
+	}
 
 	write_header(output_loc);
 }
@@ -90,7 +92,12 @@ initialize() {
 	// in case multiple events are scheduled at once (this is not allowed
 	// in SLiM, and each callback needs to detect it and execute
 	// everything in a for loop)
-	sim.rescheduleScriptBlock(s1, generations = unique(T_SPLITS));
+
+	if (exists("T_SPLITS"))
+		sim.rescheduleScriptBlock(s1, generations = unique(T_SPLITS));
+	else
+		sim.deregisterScriptBlock(s1);
+
 	if (exists("T_ADMIX")) {
 		sim.rescheduleScriptBlock(s2, generations = unique(T_ADMIX));
 		sim.rescheduleScriptBlock(s3, generations = unique(T_ADMIX + 1));
@@ -108,11 +115,14 @@ initialize() {
 		sim.deregisterScriptBlock(s5);
 	
 	// spatial map changes
-	sim.rescheduleScriptBlock(s6, generations = unique(T_MAPS));
+	if (exists("T_MAPS"))
+		sim.rescheduleScriptBlock(s6, generations = unique(T_MAPS));
+	else
+		sim.deregisterScriptBlock(s6);
 	
 	// output callbacks
-	sim.rescheduleScriptBlock(s99, start = T_BURNIN - T_OFFSET, end = T_BURNIN + max(T_ABS_SPLITS));
-	sim.rescheduleScriptBlock(s999, generations = T_BURNIN + max(T_ABS_SPLITS));
+	sim.rescheduleScriptBlock(s99, start = T_BURNIN, end = T_BURNIN + T_LENGTH);
+	sim.rescheduleScriptBlock(s999, generations = T_BURNIN + T_LENGTH);
 }
 
 // Population splits
@@ -206,8 +216,8 @@ s99 late() {
 // Saving tree sequences at the end of the simulation
 s999 late() {
 	catn("[INFO] simulation finished in generation " + sim.generation);
-//	sim.treeSeqOutput(output_tseq);
-//	sim.simulationFinished();
+	//	sim.treeSeqOutput(output_tseq);
+	//	sim.simulationFinished();
 }
 
 modifyChild() {
@@ -234,7 +244,7 @@ function (i) read_table(s$ path) {
 // tab-separated string
 function (string) concat_ind_info(lifso<Individual>$ ind) {
 	ind_str = paste(
-		abs(sim.generation - T_BURNIN - max(T_ABS_SPLITS)),
+		abs(sim.generation - T_BURNIN - T_LENGTH),
 		ind.subpopulation.id,
 		ind.pedigreeID,
 		ind.spatialPosition,
@@ -263,7 +273,10 @@ function (void) set_bounds(i$ i) {
 
 // Assign a spatial map to a given population
 function (void) set_map(i$ i, i$ generation) {
-	img = MAPS[maps_param("pop") == i & T_MAPS == generation];
+	if (sim.generation == 1)
+		img = MAPS[0];
+	else
+		img = MAPS[maps_param("pop") == i & T_MAPS == generation];
 	get_pop(i).defineSpatialMap("world", "xy", 1.0 - img.floatK,
 		valueRange=c(min(img.floatK), max(img.floatK)), colors=c("#000000", "#FFFFFF"));
 }
@@ -323,7 +336,7 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
 	} else {
 		table = SPLIT_TABLE;
 	}
-		
+
 	if (isNULL(pop_i)) pop_i = seqLen(nrow(table));
 	val = drop(table[pop_i, col_i]);
 
@@ -346,7 +359,7 @@ function (numeric) admix_param(s$ col, [Ni$ admix_i = NULL]) {
 	// extract the value and convert it if necessary
 	val = drop(ADMIX_TABLE[admix_i, col_i]);
 	if (col == "rate") val = val / 100;
-	
+
 	return(val);
 }
 
@@ -360,14 +373,14 @@ function (numeric) maps_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
 	if (length(col_i) != 1)
 		stop("Incorrect specification of a column in the spatial maps table");
 
-	indices = rep(T, nrow(MAPS_TABLE));
+	indices = rep(T, nrow(MAP_TABLE));
 	if (!isNULL(pop_i)) {
-		indices = indices & (drop(MAPS_TABLE[, 0]) == pop_i);
+		indices = indices & (drop(MAP_TABLE[, 0]) == pop_i);
 	}
 	if (!isNULL(time)) {
 		indices = indices & (T_MAPS == time);
 	}
-	val = drop(MAPS_TABLE[indices, col_i]);
+	val = drop(MAP_TABLE[indices, col_i]);
 
 	return(val[which(val != -1)]);
 }
