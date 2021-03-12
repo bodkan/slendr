@@ -23,8 +23,6 @@ devtools::load_all("~/projects/spammr")
 #+ eval = FALSE
 library(spammr)
 
-
-
 #' Define the world context
 
 world <- world_map(
@@ -34,8 +32,6 @@ world <- world_map(
 )
 
 plot(world)
-
-
 
 #' Define some useful geographic regions
 
@@ -64,8 +60,6 @@ anatolia <- region(
   coords = list(c(28, 35), c(40, 35), c(42, 40),
                 c(30, 43), c(27, 40), c(25, 38))
 )
-
-
 
 #' Define population splits and spatial ranges
 
@@ -116,11 +110,11 @@ plot(ana)
 
 yam <- population(
   name = "YAM", time = 7000, Ne = 600, parent = ehg,
-  world,
-  coords = list(
+  world, coords = list(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
-  )
+  ),
+  remove = 4000
 ) %>%
   migrate(
     trajectory = c(10, 48), # migrate to this point
@@ -135,26 +129,17 @@ neol <- population(
 )
 plot(neol)
 
-
-
 #' Complete model of spatial boundaries
-#+ fig.width = 8, fig.height = 12
 plot(afr, ooa, ehg, whg, ana, yam, neol)
-
-
 
 #' Compile all maps in a bitmap rasterized form
 
-#+ eval = FALSE
 compile(
   afr, ooa, ehg, whg, ana, yam, neol,
   output_dir = "model/",
   overwrite = TRUE
 )
 
-
-
 #' Generate a SLiM script simulation and open it in SLiMgui
 
-#+ run_slimgui, eval = FALSE
-run_slimgui(model_dir = "model/", gen_time = 30, burnin = 200)
+run_slimgui(model_dir = "model/", gen_time = 30, burnin = 200, sim_length = 70000)

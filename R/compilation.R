@@ -254,7 +254,7 @@ save_png <- function(raster, path) {
 #' Open the SLiM backend script in the SLiM gui
 #'
 #' @export
-run_slimgui <- function(model_dir, gen_time, burnin) {
+run_slimgui <- function(model_dir, gen_time, burnin, sim_length) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
 
@@ -263,7 +263,8 @@ run_slimgui <- function(model_dir, gen_time, burnin) {
   subst <- list(
     model_dir = normalizePath(model_dir),
     gen_time = gen_time,
-    burnin = burnin
+    burnin = burnin,
+    sim_length = sim_length
   )
   rendered <- whisker::whisker.render(template, subst)
 
