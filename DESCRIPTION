@@ -20,7 +20,9 @@ Imports:
     rnaturalearthdata,
     magrittr,
     stars,
-    whisker
+    whisker,
+    gganimate,
+    png
 Suggests: 
     knitr,
     rmarkdown

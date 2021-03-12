@@ -3,6 +3,7 @@
 S3method(plot,spammr)
 S3method(print,spammr)
 export("%>%")
+export(animate)
 export(compile)
 export(expand)
 export(migrate)

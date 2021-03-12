@@ -210,7 +210,10 @@ rasterize <- function(x, pixel_dim = c(10000, 10000), raster_dim = NULL) {
   x$fill <- factor(1)
 
   # create a template object for rasterization (i.e. size of the final raster)
-  bbox <- sf::st_bbox(attr(x, "world"))
+  if (inherits(x, "spammr_world"))
+    bbox <- sf::st_bbox(x)
+  else
+    bbox <- sf::st_bbox(attr(x, "world"))
   if (length(pixel_dim) == 2) {
     template <- stars::st_as_stars(bbox, dx = pixel_dim[1], dy = pixel_dim[2])
   } else if (length(raster_dim) == 2) {
