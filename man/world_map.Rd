@@ -4,15 +4,18 @@
 \alias{world_map}
 \title{Define a world map for all spatial operations}
 \usage{
-world_map(lon_range, lat_range, crs = "EPSG:4326")
+world_map(xrange, yrange, crs = "EPSG:4326")
 }
 \arguments{
-\item{lon_range}{Numeric vector with minimum and maximum longitude}
+\item{xrange}{Numeric vector with minimum and maximum longitude}
 
-\item{lat_range}{Numeric vector with minimum and maximum latitude}
+\item{yrange}{Numeric vector with minimum and maximum latitude}
 
 \item{crs}{Coordinate Reference System to use for all spatial
 operations (default is WGS-84 or EPSG:4326 CRS)}
+}
+\value{
+Object of the \code{spammr_world} (and \code{sf}) class
 }
 \description{
 Download Natural Earth land area map data, zoom on a given window

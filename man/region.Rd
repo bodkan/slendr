@@ -9,9 +9,12 @@ region(name, world, coords)
 \arguments{
 \item{name}{Name of the geographic region}
 
-\item{world}{Object of the type 'sf' which defines the world}
+\item{world}{Object of the type \code{sf} which defines the world}
 
 \item{coords}{List of vector pairs, defining corners of the range}
+}
+\value{
+Object of the \code{spammr_region} (and \code{sf}) class
 }
 \description{
 Define a geographic region

@@ -7,7 +7,7 @@
 migrate(pop, trajectory, duration, snapshots)
 }
 \arguments{
-\item{pop}{Spatial population object of 'spammr_pop' class}
+\item{pop}{Spatial population object of \code{spammr_pop} class}
 
 \item{trajectory}{List of two-dimensional vectors \link{(longitude, latitude)}
 specifying the trajectory of the population movement}
@@ -15,6 +15,9 @@ specifying the trajectory of the population movement}
 \item{duration}{Duration of the population movement}
 
 \item{snapshots}{Number of time slices to split the movement into}
+}
+\value{
+Object of the \code{spammr_pop} (and \code{sf}) class
 }
 \description{
 Move population to a new location in a given amount of time
