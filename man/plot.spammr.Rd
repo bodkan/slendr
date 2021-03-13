@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{spammr}(
   ...,
-  snapshots = NULL,
-  facets = TRUE,
+  pop_facets = TRUE,
+  time_facets = FALSE,
   intersect = TRUE,
   geo_graticules = TRUE,
   title = NULL,
@@ -19,9 +19,9 @@
 \item{...}{Population/geographic region objects of the 'spammr'
 class}
 
-\item{snapshots}{Which time points to plot?}
+\item{pop_facets}{Plot populations in individual panels?}
 
-\item{facets}{Plot populations in individual panels?}
+\item{time_facets}{Plot time snapshots in individual panels?}
 
 \item{intersect}{intersect the population boundaries against landscape
 and other geographic boundaries?}
