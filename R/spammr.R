@@ -137,7 +137,6 @@ print.spammr <- function(x, sf = FALSE) {
 
     if (type == "population") {
       cat("name:", unique(x$pop), "\n")
-      cat("Ne:", unique(x$Ne), "\n")
       parent <- attr(x, "parent")
       if (is.character(parent) && parent == "ancestor")
         cat("split from: this is an ancestral population\n")
@@ -145,7 +144,20 @@ print.spammr <- function(x, sf = FALSE) {
         cat("split from:", parent$pop, "\n")
         cat("split time:", x$time[1], "\n")
       }
-      cat("spatial snapshots at:", paste(x$time, collapse = ", "), "\n\n")
+      # pretty print the sf data as a simplified table
+      cat("snapshots:\n")
+      snapshots_df <- as.data.frame(x)
+      snapshots_df$`#` <- 1:nrow(snapshots_df)
+      # determine which maps over time are new and which are re-used from the
+      # previous time point (we do this because the raw spatial geometry
+      # representation is hard to read)
+      runs <- rle(sapply(x$geometry, tracemem))
+      snapshots_df$map <- c("new", rep("same", nrow(snapshots_df) - 1))
+      if (length(runs$lengths) > 1)
+        snapshots_df$map[cumsum(runs$lengths)] <- "new"
+
+      print(snapshots_df[, c("#", "time", "Ne", "map")], row.names = FALSE)
+      cat("\n")
     }
 
     # extract projection type and name using the internal sf plumbing
