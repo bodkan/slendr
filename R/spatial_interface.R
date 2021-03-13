@@ -114,6 +114,7 @@ update <- function(pop, time, Ne = NULL,
 
   class(res) <- class(pop)
   attr(res, "parent") <- attr(pop, "parent")
+  attr(res, "remove") <- attr(pop, "remove")
   attr(res, "world") <- world
   sf::st_agr(res) <- "constant"
 
