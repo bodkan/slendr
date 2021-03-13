@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rasterize the vector form of a population spatial boundary — rasterize • spammr</title>
+<title>Add a new time snapshot for an already defined population — update • spammr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Rasterize the vector form of a population spatial boundary — rasterize" />
-<meta property="og:description" content="Rasterize the vector form of a population spatial boundary" />
+<meta property="og:title" content="Add a new time snapshot for an already defined population — update" />
+<meta property="og:description" content="This function allows a more manual control of spatial map changes in addition
+to the expand and migrate functions" />
 
 
 
@@ -115,37 +116,62 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Rasterize the vector form of a population spatial boundary</h1>
+    <h1>Add a new time snapshot for an already defined population</h1>
     
-    <div class="hidden name"><code>rasterize.Rd</code></div>
+    <div class="hidden name"><code>update.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Rasterize the vector form of a population spatial boundary</p>
+    <p>This function allows a more manual control of spatial map changes in addition
+to the <code>expand</code> and <code>migrate</code> functions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rasterize</span><span class='op'>(</span><span class='va'>x</span>, pixel_dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10000</span>, <span class='fl'>10000</span><span class='op'>)</span>, raster_dim <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>update</span><span class='op'>(</span>
+  <span class='va'>pop</span>,
+  <span class='va'>time</span>,
+  Ne <span class='op'>=</span> <span class='cn'>NULL</span>,
+  center <span class='op'>=</span> <span class='cn'>NULL</span>,
+  radius <span class='op'>=</span> <span class='cn'>NULL</span>,
+  coords <span class='op'>=</span> <span class='cn'>NULL</span>,
+  region <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>Object of the 'spammr_pop' class</p></td>
+      <th>pop</th>
+      <td><p>Population object of the <code>spammr</code> class</p></td>
     </tr>
     <tr>
-      <th>pixel_dim</th>
-      <td><p>Two-dimensional numeric vector specifying pixel
-dimension (in units of the CRS used in the definition of the
-world)</p></td>
+      <th>time</th>
+      <td><p>Time of the current snapshot that is being defined</p></td>
     </tr>
     <tr>
-      <th>raster_dim</th>
-      <td><p>Two-dimendional numeric vectory specifying the
-absolute dimension of the raster map</p></td>
+      <th>Ne</th>
+      <td><p>Effective population size (stays the same by default)</p></td>
+    </tr>
+    <tr>
+      <th>center</th>
+      <td><p>Vector of two elements defining a center of a circular range</p></td>
+    </tr>
+    <tr>
+      <th>radius</th>
+      <td><p>Scalar defining a radius of a range in kilometers</p></td>
+    </tr>
+    <tr>
+      <th>coords</th>
+      <td><p>List of vector pairs, defining corners of the range</p></td>
+    </tr>
+    <tr>
+      <th>region</th>
+      <td><p>Geographic region of the class <code>spammr_region</code></p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Object of the <code>spammr_pop</code> (and <code>sf</code>) class</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
