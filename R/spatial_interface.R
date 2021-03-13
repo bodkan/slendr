@@ -4,12 +4,14 @@
 #' @param time Time of the population appearance
 #' @param Ne Effective population size at the time of split
 #' @param parent Parent population object or "ancestor" character scalar
-#' @param world Object of the type 'sf' which defines the world
+#' @param world Object of the type \code{sf} which defines the world
 #' @param center Vector of two elements defining a center of a circular range
 #' @param radius Scalar defining a radius of a range in kilometers
 #' @param coords List of vector pairs, defining corners of the range
-#' @param region Geographic region of the class 'spammr_region'
+#' @param region Geographic region of the class \code{spammr_region}
 #' @param remove Time at which the population should be removed
+#'
+#' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
 population <- function(name, parent, Ne, time = NULL, world = NULL,
@@ -63,14 +65,64 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
   pop_range
 }
 
+#' Add a new time snapshot for an already defined population
+#'
+#' This function allows a more manual control of spatial map changes in addition
+#' to the \code{expand} and \code{migrate} functions
+#'
+#' @param pop Population object of the \code{spammr} class
+#' @param time Time of the current snapshot that is being defined
+#' @param Ne Effective population size (stays the same by default)
+#' @param center Vector of two elements defining a center of a circular range
+#' @param radius Scalar defining a radius of a range in kilometers
+#' @param coords List of vector pairs, defining corners of the range
+#' @param region Geographic region of the class \code{spammr_region}
+#'
+#' @return Object of the \code{spammr_pop} (and \code{sf}) class
+#'
+#' @export
+update <- function(pop, time, Ne = NULL,
+                   center = NULL, radius = NULL, coords = NULL,
+                   region = NULL) {
+  if (time %in% pop$time)
+    stop("Time point already defined", call. = FALSE)
+
+  if (time < attr(pop, "remove"))
+    stop("Cannot update population status after its removal")
+
+  # define the new population range or re-use the old one
+  if (!is.null(region)) {
+    range <- sf::st_sfc(sf::st_geometry(region))
+  } else if (!is.null(center) & !is.null(radius)){
+    range <- spatial_range(world, center, radius, coords)
+  } else
+    range <- sf::st_geometry(pop[nrow(pop), ])
+
+  if (is.null(Ne)) Ne <- pop[nrow(pop), ]$Ne
+
+  updated <- sf::st_sf(
+    data.frame(pop = unique(pop$pop), time = time, Ne = Ne),
+    geometry = range
+  )
+
+  res <- rbind(pop, updated)
+
+  class(res) <- class(pop)
+  attr(res, "parent") <- attr(pop, "parent")
+
+  res
+}
+
 
 #' Expand population radius by a given factor in a given time
 #'
-#' @param pop Spatial population object of 'spammr_pop' class
+#' @param pop Spatial population object of \code{spammr_pop} class
 #' @param by How many kilometers to expand by?
 #' @param duration Duration of the spatial population expansion
 #' @param snapshots Number of time slices to split the movement into
 #' @param region Geographic region to restrict the expansion to
+#'
+#' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
 expand <- function(pop, by, duration, snapshots, region = NULL) {
@@ -112,11 +164,13 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
 
 #' Move population to a new location in a given amount of time
 #'
-#' @param pop Spatial population object of 'spammr_pop' class
+#' @param pop Spatial population object of \code{spammr_pop} class
 #' @param trajectory List of two-dimensional vectors [(longitude, latitude)]
 #'   specifying the trajectory of the population movement
 #' @param duration Duration of the population movement
 #' @param snapshots Number of time slices to split the movement into
+#'
+#' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
 migrate <- function(pop, trajectory, duration, snapshots) {
@@ -187,8 +241,10 @@ migrate <- function(pop, trajectory, duration, snapshots) {
 #' Define a geographic region
 #'
 #' @param name Name of the geographic region
-#' @param world Object of the type 'sf' which defines the world
+#' @param world Object of the type \code{sf} which defines the world
 #' @param coords List of vector pairs, defining corners of the range
+#'
+#' @return Object of the \code{spammr_region} (and \code{sf}) class
 #'
 #' @export
 region <- function(name, world, coords) {
@@ -211,13 +267,15 @@ region <- function(name, world, coords) {
 #' determined by longitude and latitude coordinates and transform to a
 #' specified projection
 #'
-#' @param lon_range Numeric vector with minimum and maximum longitude
-#' @param lat_range Numeric vector with minimum and maximum latitude
+#' @param xrange Numeric vector with minimum and maximum longitude
+#' @param yrange Numeric vector with minimum and maximum latitude
 #' @param crs Coordinate Reference System to use for all spatial
 #'   operations (default is WGS-84 or EPSG:4326 CRS)
 #'
+#' @return Object of the \code{spammr_world} (and \code{sf}) class
+#'
 #' @export
-world_map <- function(lon_range, lat_range, crs = "EPSG:4326") {
+world_map <- function(xrange, yrange, crs = "EPSG:4326") {
   ## load the map data (either from a cache location on disk or from
   ## the server)
   ## world <- rnaturalearth::ne_load(
@@ -239,7 +297,7 @@ world_map <- function(lon_range, lat_range, crs = "EPSG:4326") {
   world_transf <- sf::st_transform(world, crs)
 
   ## define boundary coordinates in the target CRS
-  zoom_bounds <- define_zoom(lon_range, lat_range, "EPSG:4326")
+  zoom_bounds <- define_zoom(xrange, yrange, "EPSG:4326")
   zoom_transf <- sf::st_transform(zoom_bounds, crs)
 
   ## crop the map to the boundary coordinates
