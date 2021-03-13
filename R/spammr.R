@@ -8,8 +8,8 @@
 #'
 #' @param ... Population/geographic region objects of the 'spammr'
 #'   class
-#' @param snapshots Which time points to plot?
-#' @param facets Plot populations in individual panels?
+#' @param pop_facets Plot populations in individual panels?
+#' @param time_facets Plot time snapshots in individual panels?
 #' @param intersect intersect the population boundaries against landscape
 #'   and other geographic boundaries?
 #' @param geo_graticules Plot axies with lon/lat graticules?
@@ -19,7 +19,7 @@
 #' @export
 #'
 #' @import ggplot2
-plot.spammr <- function(..., snapshots = NULL, facets = TRUE,
+plot.spammr <- function(..., pop_facets = TRUE, time_facets = FALSE,
                         intersect = TRUE, geo_graticules = TRUE,
                         title = NULL, nrow = NULL, ncol = NULL) {
   args <- list(...)
@@ -73,14 +73,18 @@ plot.spammr <- function(..., snapshots = NULL, facets = TRUE,
 
   # plot population ranges, if present
   if (!is.null(pops)) {
-    # plot only specified snapshots
-    if (!is.null(snapshots)) pops <- pops[pops$time %in% snapshots, ]
+    pops <- pops[order(pops$time, decreasing = TRUE), ]
     pops$pop <- factor(pops$pop)
 
-    if (facets)
+    if (pop_facets)
       pop_ids <- as.list(unique(pops$pop))
     else
       pop_ids <- list(unique(pops$pop))
+
+    if (time_facets)
+      time_facet <- facet_wrap(~ time)
+    else
+      time_facet <- NULL
 
     rows <- lapply(pop_ids, function(id) {
       p_map +
@@ -91,7 +95,8 @@ plot.spammr <- function(..., snapshots = NULL, facets = TRUE,
         scale_fill_discrete(drop = FALSE) +
         scale_alpha(range = c(1, 0.1)) +
         ggtitle(sprintf("population: %s", id)) +
-        guides(fill = FALSE, alpha = guide_legend("time"))
+        guides(fill = FALSE, alpha = guide_legend("time")) +
+        time_facet
     })
 
     if (length(rows) == 1) {
