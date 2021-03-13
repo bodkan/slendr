@@ -174,8 +174,8 @@ proportions.
 
 ```{r}
 world <- world_map(
-  lon_range = c(-15, 60),  # min-max longitude
-  lat_range = c(20, 65),   # min-max latitude
+  xrange = c(-15, 60),  # min-max longitude
+  yrange = c(20, 65),   # min-max latitude
   crs = "EPSG:3035"  # real projected CRS used internally
 )
 ```

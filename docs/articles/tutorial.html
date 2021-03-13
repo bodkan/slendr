@@ -54,9 +54,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/example.html">Full example of a spatial model definition and compilation</a>
-    </li>
-    <li>
       <a href="../articles/tutorial.html">spammr: Introduction and tutorial</a>
     </li>
   </ul>
@@ -131,12 +128,12 @@
 <p>This is the current approach of <code>spammr</code>: let the user specify everything in an easy to understand longitude/latitude geographical CRS. However, in case it is necessary, the internal data structures and the final exported spatial maps can be internally handled in a realistic projected CRS which is better for ensuring undistorted distances and proportions.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">world</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world_map.html">world_map</a></span><span class="op">(</span>
-  lon_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>,  <span class="co"># min-max longitude</span>
-  lat_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,   <span class="co"># min-max latitude</span>
+  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>,  <span class="co"># min-max longitude</span>
+  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,   <span class="co"># min-max latitude</span>
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpImldPL", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpKRTx4w", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -311,10 +308,21 @@
 <span class="co">#&gt; spammr 'population' object </span>
 <span class="co">#&gt; -------------------------- </span>
 <span class="co">#&gt; name: ANA </span>
-<span class="co">#&gt; Ne: 8000 </span>
 <span class="co">#&gt; split from: OOA </span>
 <span class="co">#&gt; split time: 9000 </span>
-<span class="co">#&gt; spatial snapshots at: 9000, 8500, 8000, 7500, 7000, 6500, 6000, 5500, 5000, 4500, 4000 </span>
+<span class="co">#&gt; snapshots:</span>
+<span class="co">#&gt;   # time   Ne map</span>
+<span class="co">#&gt;   1 9000 8000 new</span>
+<span class="co">#&gt;   2 8500 8000 new</span>
+<span class="co">#&gt;   3 8000 8000 new</span>
+<span class="co">#&gt;   4 7500 8000 new</span>
+<span class="co">#&gt;   5 7000 8000 new</span>
+<span class="co">#&gt;   6 6500 8000 new</span>
+<span class="co">#&gt;   7 6000 8000 new</span>
+<span class="co">#&gt;   8 5500 8000 new</span>
+<span class="co">#&gt;   9 5000 8000 new</span>
+<span class="co">#&gt;  10 4500 8000 new</span>
+<span class="co">#&gt;  11 4000 8000 new</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
 <p>We can (and should) check the results visually:</p>
@@ -346,10 +354,19 @@
 <span class="co">#&gt; spammr 'population' object </span>
 <span class="co">#&gt; -------------------------- </span>
 <span class="co">#&gt; name: YAM </span>
-<span class="co">#&gt; Ne: 6000 </span>
 <span class="co">#&gt; split from: OOA </span>
 <span class="co">#&gt; split time: 7000 </span>
-<span class="co">#&gt; spatial snapshots at: 7000, 6875, 6750, 6625, 6500, 6375, 6250, 6125, 6000 </span>
+<span class="co">#&gt; snapshots:</span>
+<span class="co">#&gt;  # time   Ne map</span>
+<span class="co">#&gt;  1 7000 6000 new</span>
+<span class="co">#&gt;  2 6875 6000 new</span>
+<span class="co">#&gt;  3 6750 6000 new</span>
+<span class="co">#&gt;  4 6625 6000 new</span>
+<span class="co">#&gt;  5 6500 6000 new</span>
+<span class="co">#&gt;  6 6375 6000 new</span>
+<span class="co">#&gt;  7 6250 6000 new</span>
+<span class="co">#&gt;  8 6125 6000 new</span>
+<span class="co">#&gt;  9 6000 6000 new</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
 <p>Checking the result visually again, we see:</p>

@@ -26,8 +26,8 @@ library(spammr)
 #' Define the world context
 
 world <- world_map(
-  lon_range = c(-15, 60),  # min-max longitude
-  lat_range = c(20, 65),   # min-max latitude
+  xrange = c(-15, 60),  # min-max longitude
+  yrange = c(20, 65),   # min-max latitude
   crs = "EPSG:3035"  # real projected CRS used internally
 )
 
@@ -143,7 +143,6 @@ compile(
 #' Generate a SLiM script simulation and open it in SLiMgui
 
 run_slimgui(model_dir = "model/", gen_time = 30, burnin = 200, sim_length = 70000)
-
 
 animate(
   locations = "model/output_locations.tsv.gz",
