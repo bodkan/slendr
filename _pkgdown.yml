@@ -1,7 +1,7 @@
 home:
   - text: Learn more
     href: http://bodkan.net/admixr/articles/tutorial.html
-  - text: Learn more        
+  - text: Learn more
     href: http://bodkan.net/admixr/articles/example.html
 
 reference:
@@ -13,6 +13,7 @@ reference:
   - title: Population ranges
     contents:
     - population
+    - update
     - expand
     - migrate
 
@@ -22,3 +23,4 @@ reference:
     - print.spammr
     - compile
     - run_slimgui
+    - animate

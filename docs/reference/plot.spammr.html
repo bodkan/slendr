@@ -96,9 +96,6 @@ geographic regions across a map." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/example.html">Full example of a spatial model definition and compilation</a>
-    </li>
-    <li>
       <a href="../articles/tutorial.html">spammr: Introduction and tutorial</a>
     </li>
   </ul>
@@ -132,11 +129,13 @@ geographic regions across a map.</p>
     <pre class="usage"><span class='co'># S3 method for spammr</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
   <span class='va'>...</span>,
-  snapshot <span class='op'>=</span> <span class='cn'>NULL</span>,
+  snapshots <span class='op'>=</span> <span class='cn'>NULL</span>,
   facets <span class='op'>=</span> <span class='cn'>TRUE</span>,
   intersect <span class='op'>=</span> <span class='cn'>TRUE</span>,
   geo_graticules <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  title <span class='op'>=</span> <span class='cn'>NULL</span>
+  title <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nrow <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ncol <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -146,6 +145,10 @@ geographic regions across a map.</p>
       <th>...</th>
       <td><p>Population/geographic region objects of the 'spammr'
 class</p></td>
+    </tr>
+    <tr>
+      <th>snapshots</th>
+      <td><p>Which time points to plot?</p></td>
     </tr>
     <tr>
       <th>facets</th>
@@ -159,6 +162,14 @@ and other geographic boundaries?</p></td>
     <tr>
       <th>geo_graticules</th>
       <td><p>Plot axies with lon/lat graticules?</p></td>
+    </tr>
+    <tr>
+      <th>title</th>
+      <td><p>Plot title</p></td>
+    </tr>
+    <tr>
+      <th>nrow, ncol</th>
+      <td><p>Number of columns or rows in the facet plot</p></td>
     </tr>
     </table>
 
