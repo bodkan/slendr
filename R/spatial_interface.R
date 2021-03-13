@@ -87,6 +87,10 @@ update <- function(pop, time, Ne = NULL,
   if (time %in% pop$time)
     stop("Time point already defined", call. = FALSE)
 
+  if (time > pop[nrow(pop), ]$time)
+    warning("Specifying a spatial map at a time point prior to the last spatial map present for the population",
+            call. = FALSE)
+
   if (time < attr(pop, "remove"))
     stop("Cannot update population status after its removal")
 
