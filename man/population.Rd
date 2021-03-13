@@ -26,7 +26,7 @@ population(
 
 \item{time}{Time of the population appearance}
 
-\item{world}{Object of the type 'sf' which defines the world}
+\item{world}{Object of the type \code{sf} which defines the world}
 
 \item{center}{Vector of two elements defining a center of a circular range}
 
@@ -34,9 +34,12 @@ population(
 
 \item{coords}{List of vector pairs, defining corners of the range}
 
-\item{region}{Geographic region of the class 'spammr_region'}
+\item{region}{Geographic region of the class \code{spammr_region}}
 
 \item{remove}{Time at which the population should be removed}
+}
+\value{
+Object of the \code{spammr_pop} (and \code{sf}) class
 }
 \description{
 Define a population range
