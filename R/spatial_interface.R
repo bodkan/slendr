@@ -92,7 +92,7 @@ update <- function(pop, time, Ne = NULL,
             call. = FALSE)
 
   if (time < attr(pop, "remove"))
-    stop("Cannot update population status after its removal")
+    stop("Cannot update population status after it has been removed")
 
   world <- attr(pop, "world")
   # define the new population range or re-use the old one

@@ -143,19 +143,27 @@ print.spammr <- function(x, sf = FALSE) {
     if (type == "population") {
       cat("name:", unique(x$pop), "\n")
       parent <- attr(x, "parent")
+      cat("split from: ")
       if (is.character(parent) && parent == "ancestor")
-        cat("split from: this is an ancestral population\n")
+        cat("[this is an ancestral population]\n")
       else {
-        cat("split from:", parent$pop, "\n")
+        cat(parent$pop, "\n")
         cat("split time:", x$time[1], "\n")
       }
-      # pretty print the sf data as a simplified table
+      cat("removed at: ")
+      if (attr(x, "remove") == -1)
+        cat("[will not be removed]\n")
+      else
+        cat((attr(x, "remove")), "\n")
+
+      # pretty print the raw sf data as a simplified table
       cat("snapshots:\n")
       snapshots_df <- as.data.frame(x)
       snapshots_df$`#` <- 1:nrow(snapshots_df)
       # determine which maps over time are new and which are re-used from the
       # previous time point (we do this because the raw spatial geometry
-      # representation is hard to read)
+      # representation is hard to read and not useful for seeing what changes
+      # when)
       runs <- rle(sapply(x$geometry, tracemem))
       snapshots_df$map <- c("new", rep("same", nrow(snapshots_df) - 1))
       if (length(runs$lengths) > 1)
