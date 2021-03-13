@@ -6,15 +6,15 @@ initialize() {
 	initializeGenomicElementType("g1", m0, 1.0);
 	initializeGenomicElement(g1, 0, 1e8 - 1);
 	initializeRecombinationRate(1e-8);
-	
+
 	// spatial competition
 	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = 30.0);
 	i1.setInteractionFunction("n", 5.0, 10.0);
-	
+
 	// spatial mate choice
 	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = 30.0);
 	i2.setInteractionFunction("n", 1.0, 10.0);
-	
+
 	defineConstant("MODEL_DIR", "{{model_dir}}");
 	// load model definition tables
 	defineConstant("SPLIT_TABLE", read_table(paste0(MODEL_DIR, "/splits.tsv")));
@@ -26,16 +26,16 @@ initialize() {
 	// world dimensions in pixels
 	defineConstant("WIDTH", MAPS[0].width);
 	defineConstant("HEIGHT", MAPS[0].height);
-	
+
 	// define output files
 	defineConstant("prefix", paste0(MODEL_DIR, "/output"));
 	defineConstant("output_loc", paste(prefix, "locations.tsv.gz", sep="_"));
 	defineConstant("output_tseq", paste(prefix, "treeseq.trees", sep="_"));
-	
+
 	defineConstant("GEN_TIME", {{gen_time}});
 	defineConstant("T_BURNIN", asInteger({{burnin}}));
 	defineConstant("T_LENGTH", asInteger({{sim_length}} / GEN_TIME));
-	
+
 	catn("T_BURNIN: " + T_BURNIN);
 	catn("T_LENGTH: " + T_LENGTH);
 
@@ -47,7 +47,7 @@ initialize() {
 
 		catn("T_SPLITS: " + paste(T_SPLITS));
 	}
-	
+
 	if (length(ADMIX_TABLE)) {
 		// absolute admixture times
 		defineConstant("T_ABS_ADMIX", asInteger(admix_param("tstart") / GEN_TIME));
@@ -57,7 +57,7 @@ initialize() {
 
 		catn("T_ADMIX: " + paste(T_ADMIX));
 	}
-	
+
 	if (length(pop_param("tremove"))) {
 		// absolute times of population cleanup
 		defineConstant("T_ABS_CLEANUPS", asInteger(pop_param("tremove") / GEN_TIME));
@@ -87,7 +87,7 @@ initialize() {
 	x = pop_param("x", i);
 	y = pop_param("y", i);
 	set_coords(get_pop(i).individuals, x, y);
-	
+
 	// population split and admixture callbacks - unique() is called
 	// in case multiple events are scheduled at once (this is not allowed
 	// in SLiM, and each callback needs to detect it and execute
@@ -107,19 +107,19 @@ initialize() {
 		sim.deregisterScriptBlock(s3);
 		sim.deregisterScriptBlock(s4);
 	}
-	
+
 	// population cleanups
 	if (exists("T_CLEANUPS"))
 		sim.rescheduleScriptBlock(s5, generations = unique(T_CLEANUPS + 1));
 	else
 		sim.deregisterScriptBlock(s5);
-	
+
 	// spatial map changes
 	if (exists("T_MAPS"))
 		sim.rescheduleScriptBlock(s6, generations = unique(T_MAPS));
 	else
 		sim.deregisterScriptBlock(s6);
-	
+
 	// output callbacks
 	sim.rescheduleScriptBlock(s99, start = T_BURNIN, end = T_BURNIN + T_LENGTH);
 	sim.rescheduleScriptBlock(s999, generations = T_BURNIN + T_LENGTH);
@@ -223,7 +223,7 @@ s999 late() {
 modifyChild() {
 	do pos = parent1.spatialPosition + rnorm(2, 0, 20);
 	while (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0);
-	
+
 	child.setSpatialPosition(pos);
 	return T;
 }
@@ -348,7 +348,7 @@ function (numeric) admix_param(s$ col, [Ni$ admix_i = NULL]) {
 	if (isNULL(ADMIX_TABLE)) return(NULL);
 	// column names allowed
 	columns = c("source", "target", "tstart", "tend", "rate");
-	
+
 	// lookup column name number for indexing into a populations matrix
 	col_i = which(columns == col) ;
 	if (length(col_i) != 1)
@@ -367,7 +367,7 @@ function (numeric) admix_param(s$ col, [Ni$ admix_i = NULL]) {
 function (numeric) maps_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
 	// column names allowed
 	columns = c("pop", "time");
-	
+
 	// lookup column name number for indexing into a populations matrix
 	col_i = which(columns == col) ;
 	if (length(col_i) != 1)
