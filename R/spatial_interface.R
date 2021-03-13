@@ -48,7 +48,7 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
     attr(pop_range, "region") <- region
 
   # when to clean up the population?
-  if (!is.null(remove)) attr(pop_range, "remove") <- remove
+  attr(pop_range, "remove") <- ifelse(!is.null(remove), remove, -1)
 
   # keep a record of the parent population
   if (inherits(parent, "spammr_pop")) {
@@ -90,6 +90,7 @@ update <- function(pop, time, Ne = NULL,
   if (time < attr(pop, "remove"))
     stop("Cannot update population status after its removal")
 
+  world <- attr(pop, "world")
   # define the new population range or re-use the old one
   if (!is.null(region)) {
     range <- sf::st_sfc(sf::st_geometry(region))
@@ -109,6 +110,8 @@ update <- function(pop, time, Ne = NULL,
 
   class(res) <- class(pop)
   attr(res, "parent") <- attr(pop, "parent")
+  attr(res, "world") <- world
+  sf::st_agr(res) <- "constant"
 
   res
 }

@@ -133,7 +133,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpKRTx4w", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpYay3Nk", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -390,100 +390,74 @@
   <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span>intersect <span class="op">=</span> <span class="cn">F</span>, title <span class="op">=</span> <span class="st">"Migration along a trajectory"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
 </div>
+<div id="updating-population-manually" class="section level2">
+<h2 class="hasAnchor">
+<a href="#updating-population-manually" class="anchor"></a>Updating population manually</h2>
+<p>In case we need a more fine-grained control over a population boundary, we can use the function <code><a href="../reference/update.html">update()</a></code>. Calling this function on a previously defined <code>spammr_pop</code> object, we can update the effective population size of the population at that point such as in this example:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">whg</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/update.html">update</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">20000</span>, Ne <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span>
+<span class="co">#&gt; spammr 'population' object </span>
+<span class="co">#&gt; -------------------------- </span>
+<span class="co">#&gt; name: WHG </span>
+<span class="co">#&gt; split from: OOA </span>
+<span class="co">#&gt; split time: 25000 </span>
+<span class="co">#&gt; snapshots:</span>
+<span class="co">#&gt;  #  time   Ne  map</span>
+<span class="co">#&gt;  1 25000 4000  new</span>
+<span class="co">#&gt;  2 20000 3000 same</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
+<p>Alternatively, we can also specify a new spatial population boundary, using the same arguments used for defining population boundaries in general. Of course, the <code>Ne</code> parameter does not have to be specified.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">whg</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/update.html">update</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">7000</span>, Ne <span class="op">=</span> <span class="fl">3000</span>,
+         center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">40</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
+<span class="co">#&gt; spammr 'population' object </span>
+<span class="co">#&gt; -------------------------- </span>
+<span class="co">#&gt; name: WHG </span>
+<span class="co">#&gt; split from: OOA </span>
+<span class="co">#&gt; split time: 25000 </span>
+<span class="co">#&gt; snapshots:</span>
+<span class="co">#&gt;  #  time   Ne map</span>
+<span class="co">#&gt;  1 25000 4000 new</span>
+<span class="co">#&gt;  2  7000 3000 new</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span></code></pre></div>
+</div>
 <div id="plotting-multiple-spammr-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-multiple-spammr-objects" class="anchor"></a>Plotting multiple <code>spammr</code> objects</h2>
 <p>In addition to plotting individual population ranges, the generic function <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> can handle a combination of population ranges, and can also partition them in individual facets. This is very useful for visual inspection of the specified model and for looking for potential issues before the export of individual spatio-temporal maps.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="va">whg</span>, <span class="va">neol</span>, <span class="va">yam</span>, <span class="va">ana</span><span class="op">)</span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
 </div>
-<div id="rendering-and-export" class="section level2">
+<div id="model-compilation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#rendering-and-export" class="anchor"></a>Rendering and export</h2>
+<a href="#model-compilation" class="anchor"></a>Model compilation</h2>
 <p>OK, so far so good. We have nice and fancy way to plot colorful shapes on a map, representing spatio-temporal population dynamics.</p>
 <p>The ultimate goal of <code>spammr</code> is a formal specification of spatio-temporal population boundaries for the purpose of forward simulations in SLiM. The crucial piece of machinery which connects the <code>spammr</code> R package with SLiM is an Eidos function called <code>defineSpatialMap()</code> which, among other parameters, accepts a two-dimensional matrix (essentially, a raster image) describing a spatial simulation landscape. See SLiM manual for more information.</p>
-<p><strong>TODO: write a short tutorial on the SLiM side of the problem too.</strong></p>
-<p>How do we link the visual (still vectorized!) spatial population ranges shown above to SLiM? We need to export them in a rasterized form as greyscale bitmaps The key is a <code>spammr</code> function <code>render</code>()`.</p>
-<p>Without any arguments, the function simply generates a (named) list of ggplot2 objects:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">maps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/render.html">render</a></span><span class="op">(</span><span class="va">whg</span>, <span class="va">ana</span>, <span class="va">neol</span>, <span class="va">yam</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">maps</span><span class="op">)</span>
-<span class="co">#&gt; NULL</span></code></pre></div>
-<p>Each of these objects contains a black-and-white rasterized version of the population range at a particular snapshot in time. Let’s plot one of them (representing the spatial range of the Anatolian farmers 5,500 thousand years ago - already at the stage in which they migrated to central Europe):</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">maps</span><span class="op">[[</span><span class="st">"ANA_5500"</span><span class="op">]</span><span class="op">]</span>
-<span class="co">#&gt; NULL</span></code></pre></div>
-<p>And here’s the whole series:</p>
+<p>How do we link the visual (still vectorized!) spatial population ranges shown above to SLiM? We need to export them in a rasterized form as greyscale bitmaps. But not only that: we also need to save all the information about population splits, effective population changes, and admixture events. The key here is the function <code><a href="../reference/compile.html">compile()</a></code>. Its sole purpose is to compile the entire model specification and save it in a format which can be loaded by a SLiM backend script provided by the <code>spammr</code> package. To compile the model specified in this vignette, we would run:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">maps</span><span class="op">)</span>
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span>
-
-<span class="co">#&gt; Warning in as_grob.default(plot): Cannot convert object of class list into a</span>
-<span class="co">#&gt; grob.</span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
-<p>This is what will be ultimately loaded into SLiM, using our back-end SLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation.</p>
+<code class="sourceCode R"><span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
+  <span class="va">ooa</span>, <span class="va">whg</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">neol</span>,
+  output_dir <span class="op">=</span> <span class="st">"model/"</span>,
+  overwrite <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span></code></pre></div>
+<p>This function converts all vector spatial maps defined above into a rasterized bitmap form and saves all additional information as tables into a directory “model/”. If we look into this directory, we will see the following files:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"model/"</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "1.png"          "10.png"         "11.png"         "12.png"        </span>
+<span class="co">#&gt;  [5] "13.png"         "14.png"         "15.png"         "16.png"        </span>
+<span class="co">#&gt;  [9] "17.png"         "18.png"         "19.png"         "2.png"         </span>
+<span class="co">#&gt; [13] "20.png"         "21.png"         "22.png"         "23.png"        </span>
+<span class="co">#&gt; [17] "3.png"          "4.png"          "5.png"          "6.png"         </span>
+<span class="co">#&gt; [21] "7.png"          "8.png"          "9.png"          "admixtures.tsv"</span>
+<span class="co">#&gt; [25] "maps.tsv"       "splits.tsv"</span></code></pre></div>
+<p>All the numbered PNG files represent rasterized spatial maps, numbered based on their occurence during the simultion, and the TSV files in the directory represent information about population splits, admixture events, and times at which spatial maps should be updated. In practice, you don’t have to worry about these details, but it might be instructive to take a look at the generated files and see the immediate connection to the models we defined in the vignette above.</p>
+<p>The bottom line is that all these files is what will be ultimately loaded into SLiM, using our back-endSLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation. We can automatically feed this information into this SLiM script by running the following, which will also pop up the SLiMgui program ready to start the simulation:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/run_slimgui.html">run_slimgui</a></span><span class="op">(</span>model_dir <span class="op">=</span> <span class="st">"model/"</span>, gen_time <span class="op">=</span> <span class="fl">30</span>, burnin <span class="op">=</span> <span class="fl">200</span>, sim_length <span class="op">=</span> <span class="fl">70000</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="todo-and-open-questions" class="section level2">
 <h2 class="hasAnchor">
