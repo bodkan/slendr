@@ -53,7 +53,7 @@ initialize() {
 		catn("T_SPLITS: " + paste(T_SPLITS));
 	}
 
-	if (length(ADMIX_TABLE)) {
+	if (!isNULL(ADMIX_TABLE)) {
 		// absolute admixture times
 		defineConstant("T_ABS_ADMIX", asInteger(admix_param("tstart") / GEN_TIME));
 		// admixture times relative to the start of the simulation
