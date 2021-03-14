@@ -4,15 +4,18 @@ initialize() {
 	initializeMutationRate(0.0);
 	initializeMutationType("m0", 0.5, "f", 0.0);
 	initializeGenomicElementType("g1", m0, 1.0);
-	initializeGenomicElement(g1, 0, 1e8 - 1);
-	initializeRecombinationRate(1e-8);
+	initializeGenomicElement(g1, 0, asInteger({{seq_length}}) - 1);
+	initializeRecombinationRate({{recomb_rate}});
+
+  // interaction/competition/offspring distance
+  defineConstant("DISTANCE", asFloat({{distance}}));
 
 	// spatial competition
-	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = 30.0);
+	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = DISTANCE);
 	i1.setInteractionFunction("n", 5.0, 10.0);
 
 	// spatial mate choice
-	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = 30.0);
+	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = DISTANCE);
 	i2.setInteractionFunction("n", 1.0, 10.0);
 
 	defineConstant("MODEL_DIR", "{{model_dir}}");
@@ -221,7 +224,7 @@ s999 late() {
 }
 
 modifyChild() {
-	do pos = parent1.spatialPosition + rnorm(2, 0, 20);
+	do pos = parent1.spatialPosition + rnorm(2, 0, DISTANCE);
 	while (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0);
 
 	child.setSpatialPosition(pos);

@@ -256,8 +256,16 @@ save_png <- function(raster, path) {
 
 #' Open the SLiM backend script in the SLiM gui
 #'
+#' @param gen_time Conversion rate from model time units into generations
+#' @param burnin Length of the burnin (in model time units)
+#' @param sim_length Total length of the simulation (in model time units)
+#' @param seq_length Length of the simulated sequence
+#' @param distance Spatial interaction/mate choice/offspring position distance
+#'   parameter
+#'
 #' @export
-run_slimgui <- function(model_dir, gen_time, burnin, sim_length) {
+run_slimgui <- function(model_dir, gen_time, burnin, sim_length,
+                        distance, seq_length, recomb_rate) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
 
@@ -267,7 +275,10 @@ run_slimgui <- function(model_dir, gen_time, burnin, sim_length) {
     model_dir = normalizePath(model_dir),
     gen_time = gen_time,
     burnin = burnin,
-    sim_length = sim_length
+    sim_length = sim_length,
+    distance = distance,
+    seq_length = seq_length,
+    recomb_rate = recomb_rate
   )
   rendered <- whisker::whisker.render(template, subst)
 
