@@ -4,7 +4,29 @@
 \alias{run_slimgui}
 \title{Open the SLiM backend script in the SLiM gui}
 \usage{
-run_slimgui(model_dir, gen_time, burnin, sim_length)
+run_slimgui(
+  model_dir,
+  gen_time,
+  burnin,
+  sim_length,
+  interaction,
+  spread,
+  seq_length,
+  recomb_rate
+)
+}
+\arguments{
+\item{gen_time}{Conversion rate from model time units into generations}
+
+\item{burnin}{Length of the burnin (in model time units)}
+
+\item{sim_length}{Total length of the simulation (in model time units)}
+
+\item{interaction}{Spatial interaction/mate choice distance parameter}
+
+\item{spread}{Sigma parameter of the offspring spread normal distribution}
+
+\item{seq_length}{Length of the simulated sequence}
 }
 \description{
 Open the SLiM backend script in the SLiM gui
