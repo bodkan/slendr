@@ -145,12 +145,12 @@ compile(
 run_slimgui(
   model_dir = "model/",
   gen_time = 30, burnin = 200, sim_length = 70000,
-  distance = 30, seq_length = 1e6, recomb_rate = 1e-8
+  interaction = 30, spread = 10, seq_length = 1e6, recomb_rate = 1e-8
 )
 
-animate(
-  locations = "model/output_locations.tsv.gz",
-  gif = "model/output_anim.gif",
-  gen_time = 30,
-  nframes = 200
-)
+# animate(
+#   locations = "model/output_locations.tsv.gz",
+#   gif = "model/output_anim.gif",
+#   gen_time = 30,
+#   nframes = 200
+# )
