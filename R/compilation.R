@@ -260,12 +260,12 @@ save_png <- function(raster, path) {
 #' @param burnin Length of the burnin (in model time units)
 #' @param sim_length Total length of the simulation (in model time units)
 #' @param seq_length Length of the simulated sequence
-#' @param distance Spatial interaction/mate choice/offspring position distance
-#'   parameter
+#' @param interaction Spatial interaction/mate choice distance parameter
+#' @param spread Sigma parameter of the offspring spread normal distribution
 #'
 #' @export
 run_slimgui <- function(model_dir, gen_time, burnin, sim_length,
-                        distance, seq_length, recomb_rate) {
+                        interaction, spread, seq_length, recomb_rate) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
 
@@ -276,7 +276,8 @@ run_slimgui <- function(model_dir, gen_time, burnin, sim_length,
     gen_time = gen_time,
     burnin = burnin,
     sim_length = sim_length,
-    distance = distance,
+    interaction = interaction,
+    spread = spread,
     seq_length = seq_length,
     recomb_rate = recomb_rate
   )
