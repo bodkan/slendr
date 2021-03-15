@@ -10,12 +10,13 @@ reference:
     - world_map
     - region
 
-  - title: Population ranges
+  - title: Population configuration
     contents:
     - population
     - update
     - expand
     - migrate
+  - admixture
 
   - title: Plotting, compilation, export
     contents:
