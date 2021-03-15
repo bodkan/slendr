@@ -106,12 +106,12 @@ initialize() {
 	if (exists("T_ADMIX")) {
 		sim.rescheduleScriptBlock(s2, generations = unique(T_ADMIX));
 		sim.rescheduleScriptBlock(s3, generations = unique(T_ADMIX + 1));
-		sim.rescheduleScriptBlock(s4, generations = unique(T_ADMIX + 1));
+//		sim.rescheduleScriptBlock(s4, generations = unique(T_ADMIX + 1));
 	} else {
 		sim.deregisterScriptBlock(s2);
 		sim.deregisterScriptBlock(s3);
-		sim.deregisterScriptBlock(s4);
 	}
+	sim.deregisterScriptBlock(s4);
 
 	// population cleanups
 	if (exists("T_CLEANUPS"))
