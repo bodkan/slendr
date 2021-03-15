@@ -385,8 +385,8 @@ function (numeric) maps_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
 }
 
 modifyChild() {
-	do pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
-	while (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0);
+	pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
+	if (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0) return F;
 
 	child.setSpatialPosition(pos);
 	return T;
