@@ -126,22 +126,25 @@ update <- function(pop, time, Ne = NULL,
 #'
 #' @param pop Spatial population object of \code{spammr_pop} class
 #' @param by How many kilometers to expand by?
-#' @param duration Duration of the spatial population expansion
+#' @param start,end When does the spatial population expansion start/end?
 #' @param snapshots Number of time slices to split the movement into
 #' @param region Geographic region to restrict the expansion to
 #'
 #' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
-expand <- function(pop, by, duration, snapshots, region = NULL) {
+expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
   check_not_intersected(pop)
 
   region_start <- pop[nrow(pop), ]
 
+  if (!is.null(start))
+    region_start$time <- start
+
   start_time <- region_start$time
   times <- seq(
-    start_time,
-    start_time - duration,
+    start,
+    end,
     length.out = snapshots + 1
   )[-1]
 
@@ -153,7 +156,7 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
     inter_regions[[i + 1]] <- exp_region
   }
 
-  inter_regions <- rbind(pop[-nrow(pop), ], do.call(rbind, inter_regions))
+  inter_regions <- rbind(pop, do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
   # keep the world as an internal attribute
@@ -175,13 +178,13 @@ expand <- function(pop, by, duration, snapshots, region = NULL) {
 #' @param pop Spatial population object of \code{spammr_pop} class
 #' @param trajectory List of two-dimensional vectors [(longitude, latitude)]
 #'   specifying the trajectory of the population movement
-#' @param duration Duration of the population movement
+#' @param start,end Start/end points of the population movement
 #' @param snapshots Number of time slices to split the movement into
 #'
 #' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
-migrate <- function(pop, trajectory, duration, snapshots) {
+migrate <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
 
   # take care of just a single destination point being specified
@@ -189,6 +192,10 @@ migrate <- function(pop, trajectory, duration, snapshots) {
     trajectory <- list(trajectory)
 
   region_start <- pop[nrow(pop), ]
+  if (!is.null(start)) {
+    region_start$time <- start
+    sf::st_agr(region_start) <- "constant"
+  }
   start_time <- region_start$time
 
   source_crs <- "EPSG:4326"
@@ -212,7 +219,7 @@ migrate <- function(pop, trajectory, duration, snapshots) {
   traj_points_coords <- sf::st_coordinates(traj_points)
   traj_diffs <- diff(traj_points_coords)
 
-  time_slices <- seq(start_time, start_time - duration, length.out = nrow(traj_points))[-1]
+  time_slices <- seq(start_time, end, length.out = nrow(traj_points))[-1]
   traj_diffs <- cbind(traj_diffs, time = time_slices)
 
   inter_regions <- list()
@@ -230,7 +237,7 @@ migrate <- function(pop, trajectory, duration, snapshots) {
     )
   }
 
-  inter_regions <- rbind(pop[-nrow(pop), ], do.call(rbind, inter_regions))
+  inter_regions <- rbind(pop, do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
   # keep the world as an internal attribute

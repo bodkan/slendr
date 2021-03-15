@@ -4,16 +4,16 @@
 \alias{expand}
 \title{Expand population radius by a given factor in a given time}
 \usage{
-expand(pop, by, duration, snapshots, region = NULL)
+expand(pop, by, end, snapshots, start = NULL, region = NULL)
 }
 \arguments{
 \item{pop}{Spatial population object of \code{spammr_pop} class}
 
 \item{by}{How many kilometers to expand by?}
 
-\item{duration}{Duration of the spatial population expansion}
-
 \item{snapshots}{Number of time slices to split the movement into}
+
+\item{start, end}{When does the spatial population expansion start/end?}
 
 \item{region}{Geographic region to restrict the expansion to}
 }
