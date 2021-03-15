@@ -23,5 +23,5 @@ reference:
     - plot.spammr
     - print.spammr
     - compile
-    - run_slimgui
+    - run_slim
     - animate
