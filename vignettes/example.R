@@ -29,7 +29,7 @@ world <- world_map(
   yrange = c(20, 65),   # min-max latitude
   crs = "EPSG:3035"  # real projected CRS used internally
 )
-plot(world)
+# plot(world)
 
 #' ## Define some useful geographic regions
 
@@ -50,7 +50,7 @@ europe_anatolia <-region(
 europe <- region(
   "Western Europe", world,
   coords = list(c(-8, 35), c(-5, 36), c(10, 38), c(20, 35), c(25, 35),
-                c(28, 45), c(20, 58), c(-5, 60), c(-15, 50))
+                c(32, 45), c(20, 58), c(-5, 60), c(-15, 50))
 )
 
 anatolia <- region(
@@ -65,7 +65,7 @@ afr <- population(
   "AFR", parent = "ancestor", Ne = 1000,
   world = world, region = africa
 )
-plot(afr)
+# plot(afr)
 afr
 
 ooa <- population(
@@ -77,7 +77,7 @@ ooa <- population(
   end = 40000,
   snapshots = 30
 )
-plot(ooa)
+# plot(ooa)
 ooa
 
 ehg <- population(
@@ -89,28 +89,28 @@ ehg <- population(
   ),
   remove = 6000
 )
-plot(ehg)
+# plot(ehg)
 ehg
 
 eur <- population(
   name = "EUR", time = 25000, Ne = 300, parent = ehg,
   world, region = europe
 )
-plot(eur)
+# plot(eur)
 eur
 
 ana <- population(
   name = "ANA", time = 28000, Ne = 800, parent = ooa,
   world, center = c(34, 38), radius = 700,
-  region = anatolia, remove = 7000
+  region = anatolia, remove = 6000
 ) %>% expand(
   by = 2500,
   start = 10000,
-  end = 8000,
-  snapshots = 20,
+  end = 7000,
+  snapshots = 10,
   region = europe_anatolia
 )
-plot(ana)
+# plot(ana)
 ana
 
 yam <- population(
@@ -121,11 +121,11 @@ yam <- population(
   ),
   remove = 2000
 )
-plot(yam)
+# plot(yam)
 yam
 
 yam_migr <- population(
-  name = "YAM_migr", time = 5000, Ne = 600, parent = yam,
+  name = "YAM_migr", time = 6000, Ne = 1000, parent = yam,
   world, coords = list(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
@@ -133,31 +133,37 @@ yam_migr <- population(
   remove = 2900
 ) %>%
   migrate(
-    trajectory = c(22, 50),
-    start = 4000,
+    trajectory = c(15, 50),
+    start = 5000,
     end = 3000,
     snapshots = 8
   )
-plot(yam_migr)
+# plot(yam_migr)
 yam_migr
 
-#' Complete model of spatial boundaries
-plot(afr, ooa, ehg, eur, ana, yam, yam_migr)
+#' ## Complete summary of spatial boundaries
+# plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
 
-#' Compile all maps in a bitmap rasterized form
+#' ## Define admixture events
+
+admixtures <- list(
+  admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 7000),
+  admixture(from = yam_migr, to = eur, rate = 0.7, start = 4000, end = 3000)
+)
+
+#' ## Compile the whole model and load it in SLiM
 
 compile(
-  afr, ooa, ehg, eur, ana, yam, yam_migr,
+  maps = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
+  admixtures = admixtures,
   output_dir = "/tmp/test-model/",
   overwrite = TRUE
 )
 
-#' Generate a SLiM script simulation and open it in SLiMgui
-
 run_slim(
   model_dir = "/tmp/test-model/",
   gen_time = 30, burnin = 200, sim_length = 70000,
-  interaction = 30, spread = 10, seq_length = 100, recomb_rate = 0
+  interaction = 30, spread = 20, seq_length = 100, recomb_rate = 0
 )
 
 # animate(
