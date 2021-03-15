@@ -325,6 +325,15 @@ admixture <- function(from, to, rate, start, end) {
   region_from <- from[from$time >= start, ] %>% .[nrow(.), ]
   region_to <- to[to$time >= start, ] %>% .[nrow(.), ]
 
+  if (nrow(region_from) == 0)
+    stop(sprintf("No spatial map defined for %s at/before the time %d",
+                 from_name, start),
+         call. = FALSE)
+  if (nrow(region_to) == 0)
+    stop(sprintf("No spatial map defined for %s at/before the time %d",
+                 to_name, start),
+         call. = FALSE)
+
   # calculate the overlap of spatial ranges between source and target
   overlap <- sf::st_intersection(region_from, region_to)
   area_overlap <- sf::st_area(overlap)
