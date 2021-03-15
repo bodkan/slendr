@@ -26,51 +26,44 @@ afr <- population(
 )
 
 neol <- population(
-  name = "NEOL", time = 100, Ne = 300, parent = afr,
+  name = "NEOL", time = 1000, Ne = 300, parent = afr,
   world, region = europe
 )
 
 yam <- population(
-  name = "YAM", time = 100, Ne = 600, parent = afr,
+  name = "YAM", time = 800, Ne = 600, parent = afr,
   world, coords = list(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
   )
 )
 
-yam_migr1 <- population(
-  name = "YAM_migr1", parent = yam, time = 50, Ne = 600,
+yam_migr <- population(
+  name = "YAM_migr", parent = yam, time = 700, Ne = 600,
   center = c(42, 50), radius = 200
 ) %>%
   migrate(
-    trajectory = c(35, 48),
-    duration = 10,
-    snapshots = 10
+    trajectory = list(c(28, 45), c(21, 36)),
+    duration = 200,
+    snapshots = 20
   )
+plot(yam_migr)
 
-yam_migr2 <- population(
-  name = "YAM_migr2", parent = yam, time = 50, Ne = 600,
-  center = c(42, 50), radius = 200
-) %>%
-  migrate(
-    trajectory = c(10, 48),
-    duration = 10,
-    snapshots = 10
-  )
-
-plot(afr, neol, yam_migr2)
+plot(afr, neol, yam_migr)
+plot(afr, neol, yam_migr, pop_facets = F)
 
 admixtures <- list(
-  admixture(from = yam_migr2, to = neol, rate = 0.8,  start = 30, end = 31)
+  admixture(from = yam_migr, to = neol, rate = 0.1,  start = 500, end = 510)
 )
 
 compile(
-  afr, neol, yam, yam_migr2,
+  afr, neol, yam, yam_migr,
   output_dir = "admixture/",
   admixtures = admixtures,
   overwrite = TRUE
 )
 
 run_slimgui(model_dir = "admixture/", gen_time = 1, burnin = 10,
-            sim_length = 150, seq_length = 100, interaction = 20,
+            sim_length = 1000, seq_length = 100, interaction = 20,
             spread = 10, recomb_rate = 0)
+
