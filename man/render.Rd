@@ -4,10 +4,10 @@
 \alias{render}
 \title{Render population boundaries to black-and-white spatial maps}
 \usage{
-render(...)
+render(pops)
 }
 \arguments{
-\item{...}{Spatial population objects of the 'spammr_pop' class}
+\item{pops}{Spatial population objects of the 'spammr_pop' class}
 }
 \description{
 Render population boundaries to black-and-white spatial maps
