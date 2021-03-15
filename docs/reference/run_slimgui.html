@@ -124,8 +124,45 @@
     <p>Open the SLiM backend script in the SLiM gui</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_slimgui</span><span class='op'>(</span><span class='va'>model_dir</span>, <span class='va'>gen_time</span>, <span class='va'>burnin</span>, <span class='va'>sim_length</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>run_slimgui</span><span class='op'>(</span>
+  <span class='va'>model_dir</span>,
+  <span class='va'>gen_time</span>,
+  <span class='va'>burnin</span>,
+  <span class='va'>sim_length</span>,
+  <span class='va'>interaction</span>,
+  <span class='va'>spread</span>,
+  <span class='va'>seq_length</span>,
+  <span class='va'>recomb_rate</span>
+<span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>gen_time</th>
+      <td><p>Conversion rate from model time units into generations</p></td>
+    </tr>
+    <tr>
+      <th>burnin</th>
+      <td><p>Length of the burnin (in model time units)</p></td>
+    </tr>
+    <tr>
+      <th>sim_length</th>
+      <td><p>Total length of the simulation (in model time units)</p></td>
+    </tr>
+    <tr>
+      <th>interaction</th>
+      <td><p>Spatial interaction/mate choice distance parameter</p></td>
+    </tr>
+    <tr>
+      <th>spread</th>
+      <td><p>Sigma parameter of the offspring spread normal distribution</p></td>
+    </tr>
+    <tr>
+      <th>seq_length</th>
+      <td><p>Length of the simulated sequence</p></td>
+    </tr>
+    </table>
 
 
   </div>
