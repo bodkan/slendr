@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  dpi = 100
+  dpi = 100,
+  eval = F
 )
 ```
 
@@ -31,16 +32,14 @@ knitr::opts_chunk$set(
 
 
 
+<font color = "red"><b>This vignette has not yet been updated to the latest `spammr` version</b></font>
+
+
+
+
 
 
 ## Introduction
-
-
-
-
-
-
-
 
 
 

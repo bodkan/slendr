@@ -17,23 +17,21 @@ knitr::opts_chunk$set(
   dpi = 100
 )
 
-#+ include = FALSE
-devtools::load_all("~/projects/spammr")
-
 #+ eval = FALSE
-library(spammr)
+#devtools::install_github("bodkan/spammr")
+#library(spammr)
+devtools::load_all(".")
 
-#' Define the world context
+#' ## Define the world context
 
 world <- world_map(
   xrange = c(-15, 60),  # min-max longitude
   yrange = c(20, 65),   # min-max latitude
   crs = "EPSG:3035"  # real projected CRS used internally
 )
-
 plot(world)
 
-#' Define some useful geographic regions
+#' ## Define some useful geographic regions
 
 africa <- region(
   "Africa", world,
@@ -61,23 +59,26 @@ anatolia <- region(
                 c(30, 43), c(27, 40), c(25, 38))
 )
 
-#' Define population splits and spatial ranges
+#' ## Define population dynamics
 
 afr <- population(
   "AFR", parent = "ancestor", Ne = 1000,
   world = world, region = africa
 )
 plot(afr)
+afr
 
 ooa <- population(
-  "OOA", parent = afr, time = 65000, Ne = 200,
+  "OOA", parent = afr, time = 51000, Ne = 200,
   center = c(30, 30), radius = 300, remove = 27000
 ) %>% migrate(
   trajectory = list(c(40, 30), c(50, 30), c(60, 40), c(70, 40)),
-  duration = 10000,
-  snapshots = 50
+  start = 50000,
+  end = 40000,
+  snapshots = 30
 )
 plot(ooa)
+ooa
 
 ehg <- population(
   "EHG", time = 28000, Ne = 400, parent = ooa,
@@ -89,12 +90,14 @@ ehg <- population(
   remove = 6000
 )
 plot(ehg)
+ehg
 
-whg <- population(
-  name = "WHG", time = 25000, Ne = 300, parent = ehg,
-  world, region = europe, remove = 7000,
+eur <- population(
+  name = "EUR", time = 25000, Ne = 300, parent = ehg,
+  world, region = europe
 )
-plot(whg)
+plot(eur)
+eur
 
 ana <- population(
   name = "ANA", time = 28000, Ne = 800, parent = ooa,
@@ -102,11 +105,13 @@ ana <- population(
   region = anatolia, remove = 7000
 ) %>% expand(
   by = 2500,
-  duration = 5000,
+  start = 10000,
+  end = 8000,
   snapshots = 20,
   region = europe_anatolia
 )
 plot(ana)
+ana
 
 yam <- population(
   name = "YAM", time = 7000, Ne = 600, parent = ehg,
@@ -114,38 +119,45 @@ yam <- population(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
   ),
-  remove = 4000
+  remove = 2000
+)
+plot(yam)
+yam
+
+yam_migr <- population(
+  name = "YAM_migr", time = 5000, Ne = 600, parent = yam,
+  world, coords = list(
+    c(26, 50), c(38, 49), c(48, 50),
+    c(48, 56), c(38, 59), c(26, 56)
+  ),
+  remove = 2900
 ) %>%
   migrate(
-    trajectory = c(10, 48), # migrate to this point
-    duration = 1000,        # how many years does the migration take?
-    snapshots = 8           # how many intermediate maps should be saved?
+    trajectory = c(22, 50),
+    start = 4000,
+    end = 3000,
+    snapshots = 8
   )
-plot(yam)
-
-neol <- population(
-  name= "NEOL", time = 8000, Ne = 1000, parent = whg,
-  world, region = europe
-)
-plot(neol)
+plot(yam_migr)
+yam_migr
 
 #' Complete model of spatial boundaries
-plot(afr, ooa, ehg, whg, ana, yam, neol)
+plot(afr, ooa, ehg, eur, ana, yam, yam_migr)
 
 #' Compile all maps in a bitmap rasterized form
 
 compile(
-  afr, ooa, ehg, whg, ana, yam, neol,
-  output_dir = "model/",
+  afr, ooa, ehg, eur, ana, yam, yam_migr,
+  output_dir = "/tmp/test-model/",
   overwrite = TRUE
 )
 
 #' Generate a SLiM script simulation and open it in SLiMgui
 
-run_slimgui(
-  model_dir = "model/",
+run_slim(
+  model_dir = "/tmp/test-model/",
   gen_time = 30, burnin = 200, sim_length = 70000,
-  interaction = 30, spread = 10, seq_length = 1e6, recomb_rate = 1e-8
+  interaction = 30, spread = 10, seq_length = 100, recomb_rate = 0
 )
 
 # animate(

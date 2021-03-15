@@ -25,7 +25,12 @@ afr <- population(
   world = world, region = africa
 )
 
-neol <- population(
+ooa <- population(
+  "OOA", parent = afr, Ne = 2000,
+  world = world, center = c()
+)
+
+eur <- population(
   name = "NEOL", time = 1000, Ne = 300, parent = afr,
   world, region = europe
 )
@@ -43,27 +48,27 @@ yam_migr <- population(
   center = c(42, 50), radius = 200
 ) %>%
   migrate(
-    trajectory = list(c(28, 45), c(21, 36)),
-    duration = 200,
+    trajectory = list(c(20, 50), c(10, 48)),
+    duration = 800,
     snapshots = 20
   )
 plot(yam_migr)
 
-plot(afr, neol, yam_migr)
-plot(afr, neol, yam_migr, pop_facets = F)
+plot(afr, eur, yam, yam_migr)
+plot(afr, eur, yam, yam_migr, pop_facets = F)
 
 admixtures <- list(
-  admixture(from = yam_migr, to = neol, rate = 0.1,  start = 500, end = 510)
+  admixture(from = yam_migr, to = eur, rate = 0.7,  start = 500, end = 510)
 )
 
 compile(
   afr, neol, yam, yam_migr,
-  output_dir = "admixture/",
+  output_dir = "/tmp/admixture/",
   admixtures = admixtures,
   overwrite = TRUE
 )
 
-run_slimgui(model_dir = "admixture/", gen_time = 1, burnin = 10,
+run_slimgui(model_dir = "/tmp/admixture/", gen_time = 1, burnin = 10,
             sim_length = 1000, seq_length = 100, interaction = 20,
             spread = 10, recomb_rate = 0)
 
