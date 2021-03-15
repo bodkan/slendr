@@ -45,7 +45,7 @@ initialize() {
 	catn("T_LENGTH: " + T_LENGTH);
 
 	// absolute split times
-	if (length(SPLIT_TABLE)) {
+	if (nrow(SPLIT_TABLE) > 1) {
 		defineConstant("T_ABS_SPLITS", asInteger(pop_param("tsplit") / GEN_TIME));
 		// split times relative to the start of the simulation
 		defineConstant("T_SPLITS", T_BURNIN + (T_LENGTH - T_ABS_SPLITS));
@@ -225,14 +225,6 @@ s999 late() {
 	//	sim.simulationFinished();
 }
 
-modifyChild() {
-	do pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
-	while (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0);
-
-	child.setSpatialPosition(pos);
-	return T;
-}
-
 // Read table of population splits, migrations, etc.
 function (i) read_table(s$ path) {
 	lines = readFile(path);
@@ -292,6 +284,8 @@ function (void) split_pop(i$ i) {
 	Ne= pop_param("Ne", i);
 	catn("[SPLIT] of " + i + " from " + source + " in generation " + sim.generation);
 	sim.addSubpopSplit(i, Ne, get_pop(source));
+	if (i  == 2)
+		p2.genomes.addNewMutation(m0, 0.0, 50);
 }
 
 // Set the migration rate from a populaion 'from' to a population 'to'
@@ -388,4 +382,12 @@ function (numeric) maps_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
 	val = drop(MAP_TABLE[indices, col_i]);
 
 	return(val[which(val != -1)]);
+}
+
+modifyChild() {
+	do pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
+	while (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0);
+
+	child.setSpatialPosition(pos);
+	return T;
 }

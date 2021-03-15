@@ -133,7 +133,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>  <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp4SJJI1", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpllAD96", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -462,38 +462,6 @@
 <p>The bottom line is that all these files is what will be ultimately loaded into SLiM, using our back-endSLiM script which will swap different spatial maps in and out, as needed throughout the course of the simulation. We can automatically feed this information into this SLiM script by running the following, which will also pop up the SLiMgui program ready to start the simulation:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_slimgui.html">run_slimgui</a></span><span class="op">(</span>model_dir <span class="op">=</span> <span class="st">"model/"</span>, gen_time <span class="op">=</span> <span class="fl">30</span>, burnin <span class="op">=</span> <span class="fl">200</span>, sim_length <span class="op">=</span> <span class="fl">70000</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="todo-and-open-questions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#todo-and-open-questions" class="anchor"></a>TODO and open questions</h2>
-<div id="how-to-tie-the-visual-configuration-to-an-explicit-admixture-graph" class="section level3">
-<h3 class="hasAnchor">
-<a href="#how-to-tie-the-visual-configuration-to-an-explicit-admixture-graph" class="anchor"></a>1. How to tie the visual configuration to an explicit admixture graph?</h3>
-<p>I.e., a population <em>A</em> splitting from a population <em>B</em> at a time <em>t</em>, with a <em>Ne</em> of X.</p>
-<p>Should this be represented as columns in the annotation data frame in each <code>sf</code> object?</p>
-<p>Should this be encoded in a separate table?</p>
-</div>
-<div id="how-to-validate-the-entire-model" class="section level3">
-<h3 class="hasAnchor">
-<a href="#how-to-validate-the-entire-model" class="anchor"></a>2. How to validate the entire model?</h3>
-<p>Currently, the “compilation” procedure dumps the spatial maps in a given format on disk. Presumably (having solved item 1. above), we would also save the table of split times, as well as the table of admixture edges <em>and</em> a table of spatial maps.</p>
-<p>The compilation process should validate that the configured visual/split/admixture model is meaningful:</p>
-<ol style="list-style-type: lower-roman">
-<li><p>Population migration maps should overlap to a reasonable degree? I.e. there should be a sufficient continuity/overlap between consecutive spatial maps over time.</p></li>
-<li><p>The overlap model should form a directed acyclic graph - there should be no “unreachable” population states.</p></li>
-</ol>
-</div>
-<div id="how-to-actually-implement-admixture-in-a-spatial-context" class="section level3">
-<h3 class="hasAnchor">
-<a href="#how-to-actually-implement-admixture-in-a-spatial-context" class="anchor"></a>3. How to actually implement admixture in a spatial context?</h3>
-<p>For instance, how to enforce that a population <em>C</em> contributes 60% of its ancestry to a population <em>D</em>? What sort of meaning does it actually have in the context of spatial maps and how they will be utilized by the back-end SLiM script?</p>
-</div>
-<div id="at-which-stage-should-the-the-user-specify-slim-bits-relevant-to-their-work" class="section level3">
-<h3 class="hasAnchor">
-<a href="#at-which-stage-should-the-the-user-specify-slim-bits-relevant-to-their-work" class="anchor"></a>4. At which stage should the the user specify SLiM bits relevant to their work?</h3>
-<p>There’s a clear conflict between every SLiM script being tailored to each specific use-case and the fact that I want to make things as reproducible and automatic as possible.</p>
-<p>I have a nice generic SLiM back-end that slurps in the spatial maps, defines population splits and migrations… but that’s just the demographic part. Should the user modify that script in SLiM GUI (which is awesome and a big reason to use SLiM in the first place)? This hurts the reproducibility, but I can’t reasonably implement an R interface to every possible SLiM use-case.</p>
-</div>
 </div>
   </div>
 
