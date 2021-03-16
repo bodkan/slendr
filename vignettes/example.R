@@ -267,7 +267,7 @@ plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
 
 #' ## Define admixture events
 #'
-#' The way `spammr` implements admixture events is by calling an `admixture()`
+#' The way `spammr` implements admixture events is by calling the `admixture()`
 #' function. This function has a very obvious interface which you will be able
 #' to read from the example below without any issues.
 #'
