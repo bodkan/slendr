@@ -325,7 +325,7 @@ admixtures
 #' below).
 
 compile(
-  maps = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
+  populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
   output_dir = "~/Desktop/test-model/",
   overwrite = TRUE
