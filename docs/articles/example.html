@@ -111,7 +111,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpQeQpzX", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmpkm6fdd", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span></code></pre></div>
@@ -186,6 +186,7 @@
 </li>
 </ul>
 <p>Look for the use of these functions for defining different spatio-temporal population boundaries below.</p>
+<p>Note that the <span class="math inline">\(N_e\)</span> values are very small - this is on purpose, to make the simulations run faster for demonstration purposes.</p>
 <div id="african-population-of-modern-human-ancestors" class="section level3">
 <h3 class="hasAnchor">
 <a href="#african-population-of-modern-human-ancestors" class="anchor"></a>African population of modern human ancestors:</h3>
@@ -496,7 +497,8 @@ the specified time point.</code></pre>
 <p>And it also contains a series of tab-separated configuration tables:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/Desktop/test-model"</span>, pattern <span class="op">=</span> <span class="st">"*.tsv"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "admixtures.tsv" "maps.tsv"       "splits.tsv"</span></code></pre></div>
+<span class="co">#&gt; [1] "admixtures.tsv"          "maps.tsv"               </span>
+<span class="co">#&gt; [3] "output_locations.tsv.gz" "splits.tsv"</span></code></pre></div>
 <p>These tables contain summaries of the model parameters which we defined graphically above, namely:</p>
 <ul>
 <li>the table of population splits:</li>
