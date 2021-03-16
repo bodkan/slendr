@@ -40,6 +40,12 @@ Note that this example script is supposed to demonstrate all the features of
 `spammr` but its aim is not to be particularly realistic. Some migration
 aspects are overly dramatic, but that's just for demonstration purposes.
 
+The raw script behind this vignette can be found
+[here](https://raw.githubusercontent.com/bodkan/spammr/main/vignettes/example.R).
+You might want to load this in RStudio to run the commands manually, instead
+of copy-pasting individual pieces of the code from this website to the R
+console yourself. The Markdown comments are still present in that script.
+
 ## Requirements
 
 The last stage of this demo (simulating spatial maps and admixture models
@@ -403,6 +409,13 @@ The way we feed the entire serialized model into SLiM is through the
 created by the `compile()` function and generates a SLiM script (using a
 backend skeleton script which is a part of this package and can be found by
 calling `r system.file("inst/extdata/backend.slim", package = "spammr")`).
+
+Note that when you run this model in SLiMgui (which should automatically open
+by calling the command below), you will see populations pop up in individual
+panels. This is how SLiMgui tracks spatial ranges of different populations.
+_Everyone is still simulated in the same world_, it's just that the
+simulation visualizes individual population ranges separately to reduce
+clutter.
 
 ````{r eval = FALSE}
 run_slim(
