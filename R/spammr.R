@@ -121,9 +121,11 @@ plot.spammr <- function(..., pop_facets = TRUE, time_facets = FALSE,
 #'
 #' @param x Object of a class spammr
 #' @param sf Print the low-level 'sf' object information?
+#' @param full Print all snapshots? (too many can be bothersome and require
+#'   extensive scrolling)
 #'
 #' @export
-print.spammr <- function(x, sf = FALSE) {
+print.spammr <- function(x, sf = FALSE, full = FALSE) {
   if (sf) {
     sf:::print.sf(x)
   } else {
@@ -169,7 +171,13 @@ print.spammr <- function(x, sf = FALSE) {
       if (length(runs$lengths) > 1)
         snapshots_df$map[cumsum(runs$lengths)] <- "new"
 
-      print(snapshots_df[, c("#", "time", "Ne", "map")], row.names = FALSE)
+      snapshots_df <- snapshots_df[, c("#", "time", "Ne", "map")]
+      if (nrow(snapshots_df) > 15 & !full) {
+        print(head(snapshots_df, 5), row.names = FALSE)
+        cat("         ...\n")
+        print(tail(snapshots_df, 5), row.names = FALSE)
+      } else
+        print(snapshots_df, row.names = FALSE)
       cat("\n")
     }
 

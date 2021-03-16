@@ -4,12 +4,15 @@
 \alias{print.spammr}
 \title{Print a spammr object}
 \usage{
-\method{print}{spammr}(x, sf = FALSE)
+\method{print}{spammr}(x, sf = FALSE, full = FALSE)
 }
 \arguments{
 \item{x}{Object of a class spammr}
 
 \item{sf}{Print the low-level 'sf' object information?}
+
+\item{full}{Print all snapshots? (too many can be bothersome and require
+extensive scrolling)}
 }
 \description{
 Print a spammr object
