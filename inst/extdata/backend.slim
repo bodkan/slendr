@@ -284,8 +284,6 @@ function (void) split_pop(i$ i) {
 	Ne= pop_param("Ne", i);
 	catn("[SPLIT] of " + i + " from " + source + " in generation " + sim.generation);
 	sim.addSubpopSplit(i, Ne, get_pop(source));
-	if (i  == 2)
-		p2.genomes.addNewMutation(m0, 0.0, 50);
 }
 
 // Set the migration rate from a populaion 'from' to a population 'to'
