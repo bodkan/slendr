@@ -14,9 +14,8 @@ migration over given time period}
 
 \item{start, end}{Start and end of the admixture event}
 
-\item{minimum}{Proportion of the spatial range of the \em{migrating}
-population \code{from} required to overlap with the range of the \code{to}
-population}
+\item{minimum}{Proportion of the spatial range of the migrating population
+\code{from} required to overlap with the range of the \code{to} population}
 }
 \value{
 Object of the class data.frame

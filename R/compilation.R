@@ -316,9 +316,8 @@ run_slim <- function(model_dir, gen_time, burnin, sim_length,
 #' @param rate Scalar value in the range (0, 1] specifying the proportion of
 #'   migration over given time period
 #' @param start,end Start and end of the admixture event
-#' @param minimum Proportion of the spatial range of the \em{migrating}
-#'   population \code{from} required to overlap with the range of the \code{to}
-#'   population
+#' @param minimum Proportion of the spatial range of the migrating population
+#'   \code{from} required to overlap with the range of the \code{to} population
 #'
 #' @return Object of the class data.frame
 #'
