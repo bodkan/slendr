@@ -122,6 +122,10 @@ compile <- function(populations, output_dir, admixtures = NULL, overwrite = FALS
     sep = "\t", quote = FALSE, row.names = FALSE
   )
 
+  # save the population names (SLiM doesn't do data frames with mixed numeric
+  # and character types, so this needs to be saved separately)
+  writeLines(splits_table$pop, con = file.path(output_dir, "names.txt"))
+
   # save the admixture table
   if (is.null(admixtures))
     admix_table <- data.frame(from = NULL, to = NULL, tstart = NULL, tend = NULL, rate = NULL)
