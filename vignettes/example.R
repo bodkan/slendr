@@ -121,6 +121,9 @@ plot(europe_anatolia)
 #' Look for the use of these functions for defining different spatio-temporal
 #' population boundaries below.
 #'
+#' Note that the $N_e$ values are very small - this is on purpose, to make the
+#' simulations run faster for demonstration purposes.
+#'
 #' ### African population of modern human ancestors:
 
 afr <- population(
