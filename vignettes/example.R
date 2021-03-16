@@ -45,10 +45,17 @@ devtools::load_all(".")
 #'
 #' ## Requirements
 #'
-#' The last stage of this demo (simulating spatial maps and admixture models
-#' with SLiM) requires SLiM **version 3.6**. The `spammr` package uses the
-#' latest bleeding-edge features of SLiM and unfortunately will not work with
-#' anything but the latest SLiM release.
+#' **This R package requires SLiM version 3.6** and will not work with an older
+#' release. You can find the latest version [here](https://messerlab.org/slim/).
+#'
+#' **Also, please make sure to always install the latest version from Github
+#' before trying out the package by running:**
+
+#+ eval = F
+devtools::install_github("bodkan/spammr")
+
+#' I'm adding bugfixes and new features every couple of hours and it's always
+#' worth updating to the latest version.
 #'
 #' ## Define the world context
 

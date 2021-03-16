@@ -24,7 +24,7 @@ post some updates once the software is a bit more ready.
 
 You can install the package from Github using the `devtools` package:
 
-```{r}
+```
 install.packages("devtools")
 devtools::install_github("bodkan/spammr")
 ```
