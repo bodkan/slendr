@@ -342,10 +342,16 @@ admixture <- function(from, to, rate, start, end) {
   area_overlap <- sf::st_area(overlap)
   area_from <- sf::st_area(region_from)
 
-  if (length(area_overlap) == 0 || as.numeric(area_overlap) == 0)
+  if (length(area_overlap) == 0 || as.numeric(area_overlap) == 0) {
     stop(sprintf("\nNo overlap between population ranges of %s and %s at time %d!
-SLiM will freeze when running this model (it won't be able to satisfy spatial requirements of migrant individuals). Please check the spatial maps at the specified time point.",
-                 from_name, to_name, start), call. = FALSE)
+This means that SLiM would freeze when running this model as it would
+not be able to satisfy spatial requirements of migrant individuals.
+Please check the spatial maps of both populations at the specified time
+point by running `plot(%s, %s, pop_facets = F)`.",
+                 from_name, to_name, start,
+                 deparse(substitute(from)),
+                 deparse(substitute(to)), call. = FALSE))
+  }
 
   data.frame(
     from_name = from_name,
