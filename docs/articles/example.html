@@ -111,7 +111,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpNbUCv6", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpQeQpzX", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span></code></pre></div>
@@ -477,7 +477,7 @@ the specified time point.</code></pre>
 <p>The most crucial function of <code>spammr</code> is <code><a href="../reference/compile.html">compile()</a></code>. It takes all population ranges defined across space and time together with list of admixture events (this is optional, of course, as some models won’t include admixture), and then proceeds by converting all vectorized spatial ranges to a raster bitmap form. Furthermore, it compiles all information about split times, <span class="math inline">\(N_e\)</span> values, admixture directions, times and rates, to a series of tables. All of that will be saved automatically in a dedicated directory in a format that is understood by the backend SLiM script provided by <code>spammr</code> (more on that below).</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
-  maps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span><span class="op">)</span>,
+  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span><span class="op">)</span>,
   admixtures <span class="op">=</span> <span class="va">admixtures</span>,
   output_dir <span class="op">=</span> <span class="st">"~/Desktop/test-model/"</span>,
   overwrite <span class="op">=</span> <span class="cn">TRUE</span>
