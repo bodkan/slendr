@@ -192,7 +192,7 @@ s5 late() {
 	// of admixture events and remove them
 	pop_ids = pop_param("pop", present = "tremove")[sim.generation - 1 == T_CLEANUPS];
 	for (i in pop_ids) {
-		catn("Cleanup of " + pop_name(i) + " in generation " + sim.generation);
+		catn("Generation " + sim.generation + ": cleanup of " + pop_name(i));
 		get_pop(i).setSubpopulationSize(0);
 	}
 }
@@ -202,7 +202,7 @@ s6 late() {
 	// get populations whose spatial maps should be updated
 	pop_ids = maps_param("pop")[sim.generation == T_MAPS];
 	for (i in pop_ids) {
-		catn("Updating map for " + pop_name(i) + " in generation " + sim.generation);
+		catn("Generation " + sim.generation + ": updating map for " + pop_name(i));
 		set_map(i, sim.generation);
 	}
 }
@@ -229,7 +229,7 @@ s99 late() {
 // Saving tree sequences at the end of the simulation
 s999 late() {
   catn("--------------------------------------------------------");
-	catn("Simulation finished in generation " + sim.generation);
+	catn("Generation " + sim.generation + ": simulation finished");
 	sim.treeSeqOutput(output_tseq);
 	sim.simulationFinished();
 }
@@ -306,14 +306,14 @@ function (void) set_map(i$ i, i$ generation) {
 function (void) split_pop(i$ i) {
 	source = pop_param("source", i);
 	Ne= pop_param("Ne", i);
-	catn("Split of " + pop_name(i) + " from " + pop_name(source) + " in generation " + sim.generation);
+	catn("Generation " + sim.generation + ": split of " + pop_name(i) + " from " + pop_name(source));
 	sim.addSubpopSplit(i, Ne, get_pop(source));
 }
 
 // Set the migration rate from a populaion 'from' to a population 'to'
 // (also used for resetting the migration back to zero)
 function (void) set_migration(i$ from, i$ to, f$ rate) {
-	catn("Admixture from " + pop_name(from) + " into " + pop_name(to) + " at " + rate * 100 + "% in generation " + sim.generation);
+	catn("Generation " + sim.generation + ": admixture from " + pop_name(from) + " into " + pop_name(to) + " at " + rate * 100 + "%");
 	source = get_pop(from);
 	target = get_pop(to);
 	target.setMigrationRates(source, rate);
@@ -321,7 +321,7 @@ function (void) set_migration(i$ from, i$ to, f$ rate) {
 
 // Distribute the set of individuals around specified coordinates
 function (void) set_coords(lifso<Individual> inds, i x, i y) {
-	catn("Setting coordinates in generation " + sim.generation);
+	catn("Generation " + sim.generation + ": setting coordinates");
 	for (ind in inds) {
 		ind.x = rnorm(1, x, 1.0);
 		ind.y = rnorm(1, y, 1.0);
