@@ -380,7 +380,7 @@ run_slim(
 #'
 #' As you could see when you ran the `spammr` model in SLiMgui, it can be a bit
 #' hard to catch all that is going on visually during the simulation. To have a
-#' better idea about what is going on, `spammr` provides an anomation function,
+#' better idea about what is going on, `spammr` provides an animation function,
 #' which accepts one of the output files of the SLiM simulation backend script,
 #' and renders the individual movement over time as a GIF animation.
 
