@@ -339,9 +339,8 @@ admixture <- function(from, to, rate, start, end) {
   area_from <- sf::st_area(region_from)
 
   if (length(area_overlap) == 0 || as.numeric(area_overlap) == 0)
-    stop(sprintf("\tNo overlap between population ranges of %s and %s at time %d!
-\tSLiM will freeze when running this model.
-\tPlease check the spatial maps at the specified time point.",
+    stop(sprintf("\nNo overlap between population ranges of %s and %s at time %d!
+SLiM will freeze when running this model (it won't be able to satisfy spatial requirements of migrant individuals). Please check the spatial maps at the specified time point.",
                  from_name, to_name, start), call. = FALSE)
 
   data.frame(
