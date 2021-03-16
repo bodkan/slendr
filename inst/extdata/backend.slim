@@ -221,8 +221,8 @@ s99 late() {
 // Saving tree sequences at the end of the simulation
 s999 late() {
 	catn("[INFO] simulation finished in generation " + sim.generation);
-	//	sim.treeSeqOutput(output_tseq);
-	//	sim.simulationFinished();
+	sim.treeSeqOutput(output_tseq);
+	sim.simulationFinished();
 }
 
 // Read table of population splits, migrations, etc.
