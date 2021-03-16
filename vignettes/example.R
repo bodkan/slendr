@@ -113,10 +113,10 @@ plot(europe_anatolia)
 #'
 #' Again, we can't go into too much detail here but what we demonstrate is:
 #'
-#' - definition of population ranges - `population()` - migration of population
-#' through space - `migrate()` - expansion of a population from its current
-#' location outwards - `expand()` - changing a population spatial range at a
-#' certain time point - `update()`
+#' - definition of population ranges - `population()`
+#' - migration of population through space - `migrate()`
+#' - expansion of a population from its current location outwards - `expand()`
+#' - changing a population spatial range at a certain time point - `update()`
 #'
 #' Look for the use of these functions for defining different spatio-temporal
 #' population boundaries below.
