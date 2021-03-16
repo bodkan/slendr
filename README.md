@@ -2,28 +2,17 @@
 
 ### ⚠️⚠️⚠️ WARNING ⚠️⚠️⚠️
 
-**This software is not even in an alpha stage yet.** The only reason
-this repository is public is because I wanted to share it with my
-collaborators without too much hassle.
+**This software is still under heavy development!**
 
 If you are interested in realistic spatio-temporal population genetic
 simulations and somehow stumbled upon this repository then
 congratulations! Your google-fu is strong.
 
-I suspect the software is about 60% towards being in an alpha
-stage. It currently contains a draft implementation of visual
-specification of spatial population maps (read: functions for creating
-pretty and colorful geographic maps with population distributions). It
-also has a barebones backend for using those spatial maps in
-SLiM. Unfortunately, there is currently no or only very minimal
-connection between those two parts. There is also no documentation
-whatsoever and things tend to change several times during a week
-pretty drastically.
+The reason that this repository is even public is to share the results of
+my work with collaborators without too much hassle. It is definitely not ready
+for general usage.
 
-If the above is not completely clear: **DO NOT USE THIS SOFTWARE JUST
-YET**.
-
-That said, if you would like to stay updated with the developments:
+If you would like to stay updated with the developments:
 
 1. Click on the "Watch" button on the project's [Github
 website](https://www.github.com/bodkan/spammr).
@@ -48,3 +37,9 @@ a fresh system at the moment. It's possible the
 that happens, look for warnings of missing dependencies and install
 them using your own system's package manager (for Mac users I
 recommend [Homebrew](https://brew.sh/).
+
+Also, the software depends on the latest version of the [SLiM simulation
+framework](https://messerlab.org/slim/). To be specific, version 3.6 at the time
+of writing. Please make sure to have this version installed - the R package will
+not work otherwise.
+
