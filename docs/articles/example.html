@@ -111,7 +111,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpmU0HKd", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpNbUCv6", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span></code></pre></div>
@@ -440,7 +440,7 @@
 <div id="define-admixture-events" class="section level2">
 <h2 class="hasAnchor">
 <a href="#define-admixture-events" class="anchor"></a>Define admixture events</h2>
-<p>The way <code>spammr</code> implements admixture events is by calling an <code><a href="../reference/admixture.html">admixture()</a></code> function. This function has a very obvious interface which you will be able to read from the example below without any issues.</p>
+<p>The way <code>spammr</code> implements admixture events is by calling the <code><a href="../reference/admixture.html">admixture()</a></code> function. This function has a very obvious interface which you will be able to read from the example below without any issues.</p>
 <p>One thing to note, however, is the fact that it is crucial that the <code>from</code> and <code>to</code> populations have some sort of overlapping spatial range in order to simulate admixture. This is probably rather obvious, as populations can’t mix in space-time if they don’t overlap at a given point in space-time.</p>
 <p>For example, if you look at the spatial boundaries plotted above, you’ll see that the European and African populations don’t have any overlap in population ranges. If we try to instruct <code>spammr</code> to simulate admixture between them, we will get an error:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
