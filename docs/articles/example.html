@@ -95,6 +95,7 @@
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <p>This vignette presents a much more complete example of a spatio-temporal population model with admixture. Unlike the <a href="tutorial.html">main tutorial</a>, it doesn’t go into too much detail to explain the basic concepts. If you’re struggling with some of the features presented here, please take a look at the <a href="tutorial.html">tutorial</a> first.</p>
 <p>Note that this example script is supposed to demonstrate all the features of <code>spammr</code> but its aim is not to be particularly realistic. Some migration aspects are overly dramatic, but that’s just for demonstration purposes.</p>
+<p>The raw script behind this vignette can be found <a href="https://raw.githubusercontent.com/bodkan/spammr/main/vignettes/example.R">here</a>. You might want to load this in RStudio to run the commands manually, instead of copy-pasting individual pieces of the code from this website to the R console yourself. The Markdown comments are still present in that script.</p>
 <div id="requirements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#requirements" class="anchor"></a>Requirements</h2>
@@ -110,7 +111,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpuPihYZ", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpoZqLg8", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span></code></pre></div>
@@ -582,6 +583,7 @@ the specified time point.</code></pre>
 <h2 class="hasAnchor">
 <a href="#running-the-simulation" class="anchor"></a>Running the simulation</h2>
 <p>The way we feed the entire serialized model into SLiM is through the <code><a href="../reference/run_slim.html">run_slim()</a></code> function, which understands the format of the model directory created by the <code><a href="../reference/compile.html">compile()</a></code> function and generates a SLiM script (using a backend skeleton script which is a part of this package and can be found by calling /Users/martin_petr/projects/spammr/inst/extdata/backend.slim).</p>
+<p>Note that when you run this model in SLiMgui (which should automatically open by calling the command below), you will see populations pop up in individual panels. This is how SLiMgui tracks spatial ranges of different populations. <em>Everyone is still simulated in the same world</em>, it’s just that the simulation visualizes individual population ranges separately to reduce clutter.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run_slim.html">run_slim</a></span><span class="op">(</span>
   model_dir <span class="op">=</span> <span class="st">"~/Desktop/test-model/"</span>,
