@@ -26,7 +26,7 @@ initialize() {
 	defineConstant("ADMIX_TABLE", read_table(paste0(MODEL_DIR, "/admixtures.tsv")));
 	defineConstant("MAP_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));
 	// load all spatial maps
-	defineConstant("MAPS", sapply(1:nrow(MAP_TABLE), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
+	defineConstant("MAPS", sapply(maps_param("map"), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
 
 	// world dimensions in pixels
 	defineConstant("WIDTH", MAPS[0].width);
@@ -363,7 +363,7 @@ function (numeric) admix_param(s$ col, [Ni$ admix_i = NULL]) {
 // Get a value of a column from the table of admixture events
 function (numeric) maps_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
 	// column names allowed
-	columns = c("pop", "time");
+	columns = c("pop", "time", "map");
 
 	// lookup column name number for indexing into a populations matrix
 	col_i = which(columns == col) ;
