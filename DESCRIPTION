@@ -22,7 +22,8 @@ Imports:
     stars,
     whisker,
     gganimate,
-    png
+    png,
+    patchwork
 Suggests: 
     knitr,
     rmarkdown
