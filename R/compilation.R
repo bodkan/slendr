@@ -109,8 +109,9 @@ compile <- function(maps, output_dir, admixtures = NULL, overwrite = FALSE) {
   splits_table$parent_id <- ifelse(is.na(splits_table$parent_id), -1, splits_table$parent_id)
 
   # save the table with spatial map paths
+  maps_table$map <- seq_len(nrow(maps_table))
   write.table(
-    maps_table[, c("pop_id", "time")],
+    maps_table[, c("pop_id", "time", "map")],
     file.path(output_dir, "maps.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
