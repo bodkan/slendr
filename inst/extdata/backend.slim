@@ -56,12 +56,15 @@ initialize() {
 
 	if (!isNULL(ADMIX_TABLE)) {
 		// absolute admixture times
-		defineConstant("T_ABS_ADMIX", asInteger(admix_param("tstart") / GEN_TIME));
+		defineConstant("T_ABS_ADMIX_START", asInteger(admix_param("tstart") / GEN_TIME));
+		defineConstant("T_ABS_ADMIX_END", asInteger(admix_param("tend") / GEN_TIME));
 		// admixture times relative to the start of the simulation
 		// (add one generation to force admixture only after each split)
-		defineConstant("T_ADMIX", T_BURNIN + (T_LENGTH - T_ABS_ADMIX) + 1);
+		defineConstant("T_ADMIX_START", T_BURNIN + (T_LENGTH - T_ABS_ADMIX_START) + 1);
+		defineConstant("T_ADMIX_END", T_BURNIN + (T_LENGTH - T_ABS_ADMIX_END) + 1);
 
-		catn("T_ADMIX: " + paste(T_ADMIX));
+		catn("T_ADMIX_START: " + paste(T_ADMIX_START));
+		catn("T_ADMIX_END: " + paste(T_ADMIX_END));
 	}
 
 	if (length(pop_param("tremove"))) {
@@ -103,9 +106,9 @@ initialize() {
 	else
 		sim.deregisterScriptBlock(s1);
 
-	if (exists("T_ADMIX")) {
-		sim.rescheduleScriptBlock(s2, generations = unique(T_ADMIX));
-		sim.rescheduleScriptBlock(s3, generations = unique(T_ADMIX + 1));
+	if (exists("T_ADMIX_START")) {
+		sim.rescheduleScriptBlock(s2, generations = unique(T_ADMIX_START));
+		sim.rescheduleScriptBlock(s3, generations = unique(T_ADMIX_END));
 		//		sim.rescheduleScriptBlock(s4, generations = unique(T_ADMIX + 1));
 	} else {
 		sim.deregisterScriptBlock(s2);
@@ -153,7 +156,7 @@ s1 late() {
 s2 late() {
 	// iterate over all admixture events scheduled for this generation
 	// and set them accordingly
-	for (i in which(sim.generation == T_ADMIX)) {
+	for (i in which(sim.generation == T_ADMIX_START)) {
 		from = admix_param("source", i);
 		to = admix_param("target", i);
 		rate = admix_param("rate", i);
@@ -165,7 +168,7 @@ s2 late() {
 s3 late() {
 	// iterate over all admixture events scheduled for this generation
 	// and set them back to 0.0
-	for (i in which(sim.generation - 1 == T_ADMIX)) {
+	for (i in which(sim.generation  == T_ADMIX_END)) {
 		from = admix_param("source", i);
 		to = admix_param("target", i);
 		set_migration(from, to, 0.0);
