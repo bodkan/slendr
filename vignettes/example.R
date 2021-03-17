@@ -44,7 +44,7 @@ devtools::load_all(".") # general readers: ignore this (mp)
 #' **This R package requires SLiM version 3.6** and will not work with an older
 #' release. You can find the latest version [here](https://messerlab.org/slim/).
 #'
-#' **Also, please make sure to always install the latest version from Github
+#' ️⚠️**Also, please make sure to always install the latest version from Github
 #' before trying out the package by running:**
 
 #+ eval = F
@@ -59,10 +59,9 @@ devtools::install_github("bodkan/spammr")
 #+ eval = F
 library(spammr)
 
-
 #' ## Define the world context
 
-world <- world(
+world <- map(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
   crs = "EPSG:3035"    # real projected CRS used internally
