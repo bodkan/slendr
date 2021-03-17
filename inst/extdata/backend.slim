@@ -92,10 +92,7 @@ initialize() {
 	i = 0;
 	sim.addSubpop(i, pop_param("Ne", i));
 	set_map(i, sim.generation);
-	set_bounds(i);
-	x = pop_param("x", i);
-	y = pop_param("y", i);
-	set_coords(get_pop(i).individuals, x, y);
+	set_coords(get_pop(i).individuals);
 
 	// unique() is called in case multiple events are scheduled at once
 	// (this is not allowed in SLiM - each callback needs to detect this
@@ -144,11 +141,8 @@ s1 late() {
 	pop_ids = pop_param("pop", present = "tsplit")[sim.generation == T_SPLITS];
 	for (i in pop_ids) {
 		split_pop(i);
-		set_bounds(i);
 		set_map(i, sim.generation);
-		x = pop_param("x", i);
-		y = pop_param("y", i);
-		set_coords(get_pop(i).individuals, x, y);
+		set_coords(get_pop(i).individuals);
 	}
 }
 
@@ -183,8 +177,6 @@ s4 late() {
 		pop = admix_param("target", i);
 		status = get_pop(pop).individuals.migrant;
 		migrants = get_pop(pop).individuals[status];
-		x = pop_param("x", pop);
-		y = pop_param("y", pop);
 		set_coords(migrants, x, y);
 	}
 }
@@ -290,11 +282,6 @@ function(void) write_ind(lifso<Individual>$ ind, string$ filename) {
 // Simulation utility functions
 //////////////////////////////////////////////////////////////////////
 
-// Set spatial bounds of a given population
-function (void) set_bounds(i$ i) {
-	get_pop(i).setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
-}
-
 // Assign a spatial map to a given population
 function (void) set_map(i$ i, i$ generation) {
 	if (sim.generation == 1)
@@ -303,6 +290,7 @@ function (void) set_map(i$ i, i$ generation) {
 		img = MAPS[maps_param("pop") == i & T_MAPS == generation];
 	get_pop(i).defineSpatialMap("world", "xy", 1.0 - img.floatK,
 		valueRange=c(min(img.floatK), max(img.floatK)), colors=c("#000000", "#FFFFFF"));
+	get_pop(i).setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
 }
 
 // Split population from the source specified in an input table
@@ -323,11 +311,14 @@ function (void) set_migration(i$ from, i$ to, f$ rate) {
 }
 
 // Distribute the set of individuals around specified coordinates
-function (void) set_coords(lifso<Individual> inds, i x, i y) {
-	catn("Generation " + sim.generation + ": setting coordinates");
+function (void) set_coords(lifso<Individual> inds) {
+	catn("Generation " + sim.generation + ": distributing individuals");
 	for (ind in inds) {
-		ind.x = rnorm(1, x, 1.0);
-		ind.y = rnorm(1, y, 1.0);
+	    pop = ind.subpopulation;
+	    do pos = c(runif(1, 0, WIDTH), runif(1, 0, HEIGHT));
+	    while (!pop.pointInBounds(pos) | pop.spatialMapValue("world", pos) == 1.0);
+	    ind.x = pos[0];
+	    ind.y = pos[1];
 	}
 }
 
