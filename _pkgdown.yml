@@ -7,7 +7,7 @@ home:
 reference:
   - title: Geographic features
     contents:
-    - world_map
+    - world
     - region
 
   - title: Population configuration
