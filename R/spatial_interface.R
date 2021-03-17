@@ -290,7 +290,7 @@ region <- function(name, world, coords) {
 #' @return Object of the \code{spammr_world} (and \code{sf}) class
 #'
 #' @export
-world <- function(xrange, yrange, crs = "EPSG:4326") {
+map <- function(xrange, yrange, crs = "EPSG:4326") {
   ## load the map data (either from a cache location on disk or from
   ## the server)
   ## world <- rnaturalearth::ne_load(

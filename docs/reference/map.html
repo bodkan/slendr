@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • spammr</title>
+<title>Define a world map for all spatial operations — map • spammr</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Define a world map for all spatial operations — map" />
+<meta property="og:description" content="Download Natural Earth land area map data, zoom on a given window
+determined by longitude and latitude coordinates and transform to a
+specified projection" />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -115,134 +118,44 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Define a world map for all spatial operations</h1>
+    
+    <div class="hidden name"><code>map.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Download Natural Earth land area map data, zoom on a given window
+determined by longitude and latitude coordinates and transform to a
+specified projection</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>map</span><span class='op'>(</span><span class='va'>xrange</span>, <span class='va'>yrange</span>, crs <span class='op'>=</span> <span class='st'>"EPSG:4326"</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-geographic-features" class="hasAnchor"><a href="#section-geographic-features" class="anchor"></a>Geographic features</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="map.html">map()</a></code> </p>
-        </td>
-        <td><p>Define a world map for all spatial operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="region.html">region()</a></code> </p>
-        </td>
-        <td><p>Define a geographic region</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-population-configuration" class="hasAnchor"><a href="#section-population-configuration" class="anchor"></a>Population configuration</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="population.html">population()</a></code> </p>
-        </td>
-        <td><p>Define a population range</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="update.html">update()</a></code> </p>
-        </td>
-        <td><p>Add a new time snapshot for an already defined population</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="expand.html">expand()</a></code> </p>
-        </td>
-        <td><p>Expand population radius by a given factor in a given time</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="move.html">move()</a></code> </p>
-        </td>
-        <td><p>Move population to a new location in a given amount of time</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="admixture.html">admixture()</a></code> </p>
-        </td>
-        <td><p>Define an admixture event</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-plotting-compilation-export" class="hasAnchor"><a href="#section-plotting-compilation-export" class="anchor"></a>Plotting, compilation, export</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="plot.spammr.html">plot(<i>&lt;spammr&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Plot spatio-temporal population distributions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.spammr.html">print(<i>&lt;spammr&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Print a spammr object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="compile.html">compile()</a></code> </p>
-        </td>
-        <td><p>Compile the spatial maps and split/admixture tables</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="run_slim.html">run_slim()</a></code> </p>
-        </td>
-        <td><p>Open the SLiM backend script in the SLiM gui</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="animate.html">animate()</a></code> </p>
-        </td>
-        <td><p>Create an animation out of locations of simulated individuals over time</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>xrange</th>
+      <td><p>Numeric vector with minimum and maximum longitude</p></td>
+    </tr>
+    <tr>
+      <th>yrange</th>
+      <td><p>Numeric vector with minimum and maximum latitude</p></td>
+    </tr>
+    <tr>
+      <th>crs</th>
+      <td><p>Coordinate Reference System to use for all spatial
+operations (default is WGS-84 or EPSG:4326 CRS)</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Object of the <code>spammr_world</code> (and <code>sf</code>) class</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
