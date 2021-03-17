@@ -66,7 +66,7 @@ library(spammr)
 ## Define the world context
 
 ````{r }
-world <- world_map(
+world <- world(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
   crs = "EPSG:3035"    # real projected CRS used internally
