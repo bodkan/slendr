@@ -368,11 +368,11 @@ read.table("~/Desktop/test-model/maps.tsv", header = T)
 
 #' ## Running the simulation
 
-#' The way we feed the entire serialized model into SLiM is through the
-#' `run()` function, which understands the format of the model directory
-#' created by the `compile()` function and generates a SLiM script (using a
-#' backend skeleton script which is a part of this package and can be found by
-#' calling `system.file("inst/extdata/backend.slim", package = "spammr")`).
+#' The way we feed the entire serialized model into SLiM is through
+#' the `run()` function, which understands the format of the model
+#' directory created by the `compile()` function and generates a SLiM
+#' script (using a backend skeleton script which is a part of this
+#' package and can be found by calling `system.file("inst/extdata/backend.slim", package = "spammr")`).
 #'
 #' Note that when you run this model in SLiMgui (which should automatically open
 #' by calling the command below), you will see populations pop up in individual
