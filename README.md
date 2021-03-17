@@ -24,7 +24,7 @@ post some updates once the software is a bit more ready.
 
 You can install the package from Github using the `devtools` package:
 
-```
+```r
 install.packages("devtools")
 devtools::install_github("bodkan/spammr")
 ```
@@ -38,8 +38,8 @@ that happens, look for warnings of missing dependencies and install
 them using your own system's package manager (for Mac users I
 recommend [Homebrew](https://brew.sh/).
 
-Also, the software depends on the latest version of the [SLiM simulation
-framework](https://messerlab.org/slim/). To be specific, version 3.6 at the time
-of writing. Please make sure to have this version installed - the R package will
-not work otherwise.
+Also, the software depends on the latest version of the [SLiM
+simulation framework](https://messerlab.org/slim/). To be specific,
+version 3.6 at the time of writing. Please make sure to have this
+version installed - the R package will not work otherwise.
 
