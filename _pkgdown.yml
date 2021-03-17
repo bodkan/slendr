@@ -15,8 +15,8 @@ reference:
     - population
     - update
     - expand
-    - migrate
-  - admixture
+    - move
+    - admixture
 
   - title: Plotting, compilation, export
     contents:

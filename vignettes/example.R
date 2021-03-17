@@ -18,12 +18,8 @@ knitr::opts_chunk$set(
   dpi = 100
 )
 
-#+ eval = F
-devtools::install_github("bodkan/spammr")
-library(spammr)
-
 #+ include = F
-devtools::load_all(".")
+devtools::load_all(".") # general readers: ignore this (mp)
 
 #' # Introduction
 #'
@@ -57,6 +53,13 @@ devtools::install_github("bodkan/spammr")
 #' I'm adding bugfixes and new features every couple of hours and it's always
 #' worth updating to the latest version.
 #'
+#' After you have installed to the latest version, you can load the
+#' package by running:
+
+#+ eval = F
+library(spammr)
+
+
 #' ## Define the world context
 
 world <- world_map(
@@ -121,7 +124,7 @@ plot(europe_anatolia)
 #' Again, we can't go into too much detail here but what we demonstrate is:
 #'
 #' - definition of population ranges - `population()`
-#' - migration of population through space - `migrate()`
+#' - migration of population through space - `move()`
 #' - expansion of a population from its current location outwards - `expand()`
 #' - changing a population spatial range at a certain time point - `update()`
 #'
@@ -151,7 +154,7 @@ plot(afr)
 
 #' ### Out-of-Africa migrants
 #'
-#' This population starts in north east Africa and migrates in a deliberately
+#' This population starts in north east Africa and moves in a deliberately
 #' funny trajectory somewhere to central Eurasia (perhaps the Ust-Ishim
 #' population?). Note that the trajectory is specified using "checkpoints" -
 #' points along the way between which the population moves.
@@ -159,7 +162,7 @@ plot(afr)
 ooa <- population(
   "OOA", parent = afr, time = 51000, Ne = 200,
   center = c(30, 30), radius = 300, remove = 27000
-) %>% migrate(
+) %>% move(
   trajectory = list(c(40, 30), c(50, 30), c(60, 40), c(70, 40)),
   start = 50000,
   end = 40000,
@@ -252,7 +255,7 @@ yam_migr <- population(
   ),
   remove = 2900
 ) %>%
-  migrate(
+  move(
     trajectory = c(15, 50),
     start = 5000,
     end = 3000,

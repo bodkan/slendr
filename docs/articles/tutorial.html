@@ -295,17 +295,17 @@
 <div id="population-migration-across-a-landscape" class="section level2">
 <h2 class="hasAnchor">
 <a href="#population-migration-across-a-landscape" class="anchor"></a>Population migration across a landscape</h2>
-<p>To describe a a directional population movement, we can use the function <code><a href="../reference/migrate.html">migrate()</a></code>. This accepts the coordinates of the destination points along the way (<code>trajectory</code>), the <code>duration</code> of the migration, and the number of individual spatial maps to save during export (<code>snapshots</code>, same as the <code><a href="../reference/expand.html">expand()</a></code> function above).</p>
+<p>To describe a a directional population movement, we can use the function <code>migrate()</code>. This accepts the coordinates of the destination points along the way (<code>trajectory</code>), the <code>duration</code> of the migration, and the number of individual spatial maps to save during export (<code>snapshots</code>, same as the <code><a href="../reference/expand.html">expand()</a></code> function above).</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">yam</span>, title <span class="op">=</span> <span class="st">"Yamnaya range"</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">yam</span> <span class="op">&lt;-</span> <span class="va">yam</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/migrate.html">migrate</a></span><span class="op">(</span>
+  <span class="fu">migrate</span><span class="op">(</span>
     trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">48</span><span class="op">)</span>, <span class="co"># migrate to this point</span>
     duration <span class="op">=</span> <span class="fl">1000</span>,        <span class="co"># how many years does the migration take?</span>
     snapshots <span class="op">=</span> <span class="fl">8</span>           <span class="co"># how many intermediate maps should be saved?</span>
 <span class="op">)</span></code></pre></div>
-<p>We can inspect the object returned by the <code><a href="../reference/migrate.html">migrate()</a></code> function and see that it contains not just the first YAM population range at 7000 years ago, but also the ranges of the intermediate locations:</p>
+<p>We can inspect the object returned by the <code>migrate()</code> function and see that it contains not just the first YAM population range at 7000 years ago, but also the ranges of the intermediate locations:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">yam</span></code></pre></div>
 <p>Checking the result visually again, we see:</p>
@@ -319,7 +319,7 @@
   <span class="va">world</span>,
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">60</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">350</span>
 <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/migrate.html">migrate</a></span><span class="op">(</span>
+  <span class="fu">migrate</span><span class="op">(</span>
     trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span><span class="op">)</span>,
                       <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">60</span><span class="op">)</span><span class="op">)</span>,
     duration <span class="op">=</span> <span class="fl">100</span>,
