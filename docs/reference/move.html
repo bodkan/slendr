@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add a new time snapshot for an already defined population — update • spammr</title>
+<title>Move population to a new location in a given amount of time — move • spammr</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Add a new time snapshot for an already defined population — update" />
-<meta property="og:description" content="This function allows a more manual control of spatial map changes in addition
-to the expand and move functions" />
+<meta property="og:title" content="Move population to a new location in a given amount of time — move" />
+<meta property="og:description" content="Move population to a new location in a given amount of time" />
 
 
 
@@ -119,56 +118,36 @@ to the expand and move functions" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add a new time snapshot for an already defined population</h1>
+    <h1>Move population to a new location in a given amount of time</h1>
     
-    <div class="hidden name"><code>update.Rd</code></div>
+    <div class="hidden name"><code>move.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function allows a more manual control of spatial map changes in addition
-to the <code>expand</code> and <code>move</code> functions</p>
+    <p>Move population to a new location in a given amount of time</p>
     </div>
 
-    <pre class="usage"><span class='fu'>update</span><span class='op'>(</span>
-  <span class='va'>pop</span>,
-  <span class='va'>time</span>,
-  Ne <span class='op'>=</span> <span class='cn'>NULL</span>,
-  center <span class='op'>=</span> <span class='cn'>NULL</span>,
-  radius <span class='op'>=</span> <span class='cn'>NULL</span>,
-  coords <span class='op'>=</span> <span class='cn'>NULL</span>,
-  region <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>move</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>trajectory</span>, <span class='va'>end</span>, <span class='va'>snapshots</span>, start <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>pop</th>
-      <td><p>Population object of the <code>spammr</code> class</p></td>
+      <td><p>Spatial population object of <code>spammr_pop</code> class</p></td>
     </tr>
     <tr>
-      <th>time</th>
-      <td><p>Time of the current snapshot that is being defined</p></td>
+      <th>trajectory</th>
+      <td><p>List of two-dimensional vectors (longitude, latitude)
+specifying the trajectory of the population movement</p></td>
     </tr>
     <tr>
-      <th>Ne</th>
-      <td><p>Effective population size (stays the same by default)</p></td>
+      <th>snapshots</th>
+      <td><p>Number of time slices to split the movement into</p></td>
     </tr>
     <tr>
-      <th>center</th>
-      <td><p>Vector of two elements defining a center of a circular range</p></td>
-    </tr>
-    <tr>
-      <th>radius</th>
-      <td><p>Scalar defining a radius of a range in kilometers</p></td>
-    </tr>
-    <tr>
-      <th>coords</th>
-      <td><p>List of vector pairs, defining corners of the range</p></td>
-    </tr>
-    <tr>
-      <th>region</th>
-      <td><p>Geographic region of the class <code>spammr_region</code></p></td>
+      <th>start, end</th>
+      <td><p>Start/end points of the population movement</p></td>
     </tr>
     </table>
 
