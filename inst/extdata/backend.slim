@@ -170,6 +170,7 @@ s3 late() {
 }
 
 // Set the location of migrants to that of the receiving population
+// (this is only used for "instantaneous" admixture without spatial overlap)
 s4 late() {
 	// get the new migrants in all populations that recently arrived
 	// and re-set their coordinates
@@ -177,7 +178,7 @@ s4 late() {
 		pop = admix_param("target", i);
 		status = get_pop(pop).individuals.migrant;
 		migrants = get_pop(pop).individuals[status];
-		set_coords(migrants, x, y);
+		set_coords(migrants);
 	}
 }
 
