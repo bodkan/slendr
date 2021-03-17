@@ -50,6 +50,7 @@ compile <- function(populations, output_dir, admixtures = NULL, overwrite = FALS
     as.data.frame(m[c("pop", "time")])
   }) %>%
     do.call(rbind, .)
+  maps_table$time <- round(maps_table$time)
   # add column with a numeric population identifier (used later by SLiM)
   maps_table$pop_id <- unlist(lapply(
     maps_table$pop,
