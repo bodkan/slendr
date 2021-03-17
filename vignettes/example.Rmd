@@ -418,7 +418,7 @@ read.table("~/Desktop/test-model/maps.tsv", header = T)
 
 ## Running the simulation
 The way we feed the entire serialized model into SLiM is through the
-`run_slim()` function, which understands the format of the model directory
+`run()` function, which understands the format of the model directory
 created by the `compile()` function and generates a SLiM script (using a
 backend skeleton script which is a part of this package and can be found by
 calling `r system.file("inst/extdata/backend.slim", package = "spammr")`).
@@ -431,7 +431,7 @@ simulation visualizes individual population ranges separately to reduce
 clutter.
 
 ````{r eval = FALSE}
-run_slim(
+run(
   model_dir = "~/Desktop/test-model/",
   gen_time = 30, burnin = 200, sim_length = 70000,
   interaction = 30, spread = 20, seq_length = 100, recomb_rate = 0
