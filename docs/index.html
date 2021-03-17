@@ -94,8 +94,9 @@
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
 <p>You can install the package from Github using the <code>devtools</code> package:</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("devtools")
-devtools::install_github("bodkan/spammr")</a></code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bodkan/spammr"</span><span class="op">)</span></code></pre></div>
 <p>The package internally uses some of R’s geospatial and geostatistical libraries for geometric manipulation of population ranges, which depend on external software. I have no way to test the installation on a fresh system at the moment. It’s possible the <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github()</a></code> procedure will crash on your machine. If that happens, look for warnings of missing dependencies and install them using your own system’s package manager (for Mac users I recommend <a href="https://brew.sh/">Homebrew</a>.</p>
 <p>Also, the software depends on the latest version of the <a href="https://messerlab.org/slim/">SLiM simulation framework</a>. To be specific, version 3.6 at the time of writing. Please make sure to have this version installed - the R package will not work otherwise.</p>
 </div>
