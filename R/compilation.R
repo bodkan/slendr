@@ -283,8 +283,8 @@ save_png <- function(raster, path) {
 #' @param spread Sigma parameter of the offspring spread normal distribution
 #'
 #' @export
-run_slim <- function(model_dir, gen_time, burnin, sim_length,
-                     interaction, spread, seq_length, recomb_rate) {
+run <- function(model_dir, gen_time, burnin, sim_length,
+                interaction, spread, seq_length, recomb_rate) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
 
