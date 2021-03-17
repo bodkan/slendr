@@ -9,6 +9,9 @@
 #'
 #' @export
 compile <- function(populations, output_dir, admixtures = NULL, overwrite = FALSE) {
+  if (!is.null(admixtures) & is.data.frame(admixtures))
+    admixtures <- list(admixtures)
+
   pops <- populations
   # iterate over all spammr population objects and extract
   # information about population split hierarchy and split times
