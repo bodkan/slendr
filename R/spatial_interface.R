@@ -68,7 +68,7 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
 #' Add a new time snapshot for an already defined population
 #'
 #' This function allows a more manual control of spatial map changes in addition
-#' to the \code{expand} and \code{migrate} functions
+#' to the \code{expand} and \code{move} functions
 #'
 #' @param pop Population object of the \code{spammr} class
 #' @param time Time of the current snapshot that is being defined
@@ -163,7 +163,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
   attr(inter_regions, "world") <- attr(pop, "world")
   # propagate the information about the parental population
   attr(inter_regions, "parent") <- attr(pop, "parent")
-  # optionally, add a migration boundary
+  # optionally, add a movement boundary
   attr(inter_regions, "region") <- region
   # retain the cleanup time
   attr(inter_regions, "remove") <- attr(pop, "remove")
@@ -184,7 +184,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
 #' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
-migrate <- function(pop, trajectory, end, snapshots, start = NULL) {
+move <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
 
   # take care of just a single destination point being specified
@@ -202,7 +202,7 @@ migrate <- function(pop, trajectory, end, snapshots, start = NULL) {
   target_crs <- sf::st_crs(pop)
 
   # prepend the coordinates of the first region to the list of "checkpoints"
-  # along the way of the migration
+  # along the way of the movement
   start_coords <- sf::st_centroid(region_start) %>%
     sf::st_transform(crs = source_crs) %>%
     sf::st_coordinates()

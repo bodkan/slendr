@@ -34,5 +34,5 @@ Object of the \code{spammr_pop} (and \code{sf}) class
 }
 \description{
 This function allows a more manual control of spatial map changes in addition
-to the \code{expand} and \code{migrate} functions
+to the \code{expand} and \code{move} functions
 }
