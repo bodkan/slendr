@@ -315,14 +315,14 @@ plot(eur, afr, pop_facets = F)
 #' simple R list:
 
 admixtures <- list(
-  admixture(from = ana, to = eur, rate = 0.5, start = 8500, end = 7000),
+  admixture(from = ana, to = eur, rate = 0.1, start = 8500, end = 7000),
   admixture(from = yam_migr, to = eur, rate = 0.7, start = 4000, end = 3000)
 )
 
 #' Note that the `admixture()` function returns nothing else than a data frame
 #' collecting all the admixture parameters for the `compile()` step below:
 
-admixtures
+admixtures <- admixture(from = ooa, to = afr, rate = 0.1, start = 40000, end = 39000, minimum = 0)
 
 #' ## Compile the whole model and load it in SLiM
 
@@ -397,9 +397,9 @@ run(
 #' and renders the individual movement over time as a GIF animation.
 
 #+ eval = FALSE
-animate(
-  locations = "~/Desktop/test-model/output_locations.tsv.gz",
-  gif = "~/Desktop/test-model/output_anim.gif",
-  gen_time = 30,
-  nframes = 200
-)
+## animate(
+##   locations = "~/Desktop/test-model/output_locations.tsv.gz",
+##   gif = "~/Desktop/test-model/output_anim.gif",
+##   gen_time = 30,
+##   nframes = 200
+## )
