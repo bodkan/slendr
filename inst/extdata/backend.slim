@@ -35,8 +35,8 @@ initialize() {
 
 	// define output files
 	defineConstant("prefix", paste0(MODEL_DIR, "/output"));
-	defineConstant("output_loc", paste(prefix, "locations.tsv.gz", sep="_"));
-	defineConstant("output_tseq", paste(prefix, "treeseq.trees", sep="_"));
+	defineConstant("output_locations", paste0(prefix, "_locations.tsv.gz"));
+	defineConstant("output_treeseq", paste0(prefix, ".trees"));
 
 	defineConstant("GEN_TIME", {{gen_time}});
 	defineConstant("T_BURNIN", asInteger({{burnin}}));
@@ -85,7 +85,7 @@ initialize() {
 		catn("T_MAPS: " + paste(T_MAPS));
 	}
 
-	write_header(output_loc);
+	write_header(output_locations);
 }
 
 1 early() {
@@ -218,7 +218,7 @@ s99 late() {
 	}
 	// save location of each individual present
 	for (ind in sim.subpopulations.individuals) {
-		write_ind(ind, output_loc);
+		write_ind(ind, output_locations);
 	}
 }
 
@@ -226,7 +226,7 @@ s99 late() {
 s999 late() {
   catn("--------------------------------------------------------");
 	catn("Generation " + sim.generation + ": simulation finished");
-	sim.treeSeqOutput(output_tseq);
+	sim.treeSeqOutput(output_treeseq);
 	sim.simulationFinished();
 }
 
