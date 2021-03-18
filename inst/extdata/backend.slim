@@ -143,6 +143,7 @@ s1 late() {
 		split_pop(i);
 		set_map(i, sim.generation);
 		set_coords(get_pop(i).individuals);
+		if (i == 1) {p1.genomes.addNewMutation(m0, 0.0, 50); catn("adding to" + pop_name(1));}
 	}
 }
 
@@ -235,6 +236,7 @@ s999 late() {
 //////////////////////////////////////////////////////////////////////
 
 modifyChild() {
+if (child.migrant) catn("MIGRANT!!! " + child.subpopulation.id + " \t" + parent1.subpopulation.id + " x " + parent2.subpopulation.id);
 	pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
 	if (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0)
 		return F;
