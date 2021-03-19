@@ -413,5 +413,5 @@ function (numeric) maps_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
 }
 
 function (s) pop_name(i$ i) {
-  return NAMES[i];
+  return paste0(NAMES[i], "(", i, ")");
 }
