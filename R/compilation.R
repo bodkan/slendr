@@ -284,15 +284,20 @@ save_png <- function(raster, path) {
 #'   i.e. years)
 #' @param sim_length Total length of the simulation (in model's time
 #'   units, i.e. years)
-#' @param seq_length Total length of the simulated sequence in base-pairs
+#' @param seq_length Total length of the simulated sequence in
+#'   base-pairs
 #' @param interaction Spatial interaction/mate choice distance
 #'   parameter
 #' @param spread Sigma parameter of the offspring spread normal
 #'   distribution
+#' @param output_prefix Directory and shared prefix of all output
+#'   files (all output files will be placed into the model directory
+#'   by default)
 #'
 #' @export
 run <- function(model_dir, gen_time, burnin, sim_length,
-                interaction, spread, seq_length, recomb_rate) {
+                interaction, spread, seq_length, recomb_rate,
+                output_prefix = file.path(normalizePath(model_dir), "output_")) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
 
@@ -307,6 +312,7 @@ run <- function(model_dir, gen_time, burnin, sim_length,
 
   subst <- list(
     model_dir = normalizePath(model_dir),
+    output_prefix = output_prefix,
     gen_time = gen_time,
     burnin = burnin,
     sim_length = sim_length,
