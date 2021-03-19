@@ -1,11 +1,6 @@
 initialize() {
 	initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
 	initializeTreeSeq();
-	initializeMutationRate(0.0);
-	initializeMutationType("m0", 0.5, "f", 0.0);
-	initializeGenomicElementType("g1", m0, 1.0);
-	initializeGenomicElement(g1, 0, asInteger({{seq_length}}) - 1);
-	initializeRecombinationRate({{recomb_rate}});
 
 	// interaction/competition distance
 	defineConstant("INTERACTION", asFloat({{interaction}}));
@@ -85,7 +80,17 @@ initialize() {
 		catn("T_MAPS: " + paste(T_MAPS));
 	}
 
-	write_header(output_locations);
+	// mutation types of neutral ancestry informative markers
+	// for each admixing population
+	mut_ids = pop_param("pop");
+	for (i in mut_ids) initializeMutationType(i, 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", mut_ids, rep(1.0, length(mut_ids)));
+	g1.mutationTypes[mut_ids].convertToSubstitution = F;
+
+	initializeGenomicElement(g1, 0, asInteger({{seq_length}}) - 1);
+
+	initializeRecombinationRate({{recomb_rate}});
+	initializeMutationRate(0.0);
 }
 
 1 early() {
@@ -128,6 +133,8 @@ initialize() {
 	// output callbacks
 	sim.rescheduleScriptBlock(s99, start = T_BURNIN, end = T_BURNIN + T_LENGTH);
 	sim.rescheduleScriptBlock(s999, generations = T_BURNIN + T_LENGTH);
+
+	write_header(output_locations);
 }
 
 //////////////////////////////////////////////////////////////////////
