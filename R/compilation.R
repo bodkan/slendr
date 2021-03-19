@@ -279,18 +279,28 @@ save_png <- function(raster, path) {
 
 #' Open the SLiM backend script in the SLiM gui
 #'
-#' @param gen_time Conversion rate from model time units into generations
-#' @param burnin Length of the burnin (in model time units)
-#' @param sim_length Total length of the simulation (in model time units)
-#' @param seq_length Length of the simulated sequence
-#' @param interaction Spatial interaction/mate choice distance parameter
-#' @param spread Sigma parameter of the offspring spread normal distribution
+#' @param gen_time Generation time (in model's time units, i.e. years)
+#' @param burnin Length of the burnin (in model's time units,
+#'   i.e. years)
+#' @param sim_length Total length of the simulation (in model's time
+#'   units, i.e. years)
+#' @param seq_length Total length of the simulated sequence in base-pairs
+#' @param interaction Spatial interaction/mate choice distance
+#'   parameter
+#' @param spread Sigma parameter of the offspring spread normal
+#'   distribution
 #'
 #' @export
 run <- function(model_dir, gen_time, burnin, sim_length,
                 interaction, spread, seq_length, recomb_rate) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
+
+  if (!all(file.exists(file.path(model_dir, c("admixtures.tsv", "splits.tsv", "maps.tsv")))))
+    stop(sprintf("Directory '%s' does not contain spammr configuration files", model_dir), call. = FALSE)
+
+  if (!length(list.files(model_dir, pattern = "*.png") == 0))
+    stop(sprintf("Directory '%s' does not contain any spammr spatial raster maps", model_dir), call. = FALSE)
 
   # compile the SLiM backend script
   template <- readLines("~/projects/spammr/inst/extdata/backend.slim")
