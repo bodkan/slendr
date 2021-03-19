@@ -161,7 +161,8 @@ s2 late() {
 		from = admix_param("source", i);
 		to = admix_param("target", i);
 		rate = admix_param("rate", i);
-		set_migration(from, to, rate);
+		span = T_ADMIX_END[i] - T_ADMIX_START[i];
+		set_admixture(from, to, rate, span);
 		add_markers(from);
 	}
 }
@@ -170,10 +171,10 @@ s2 late() {
 s3 late() {
 	// iterate over all admixture events scheduled for this generation
 	// and set them back to 0.0
-	for (i in which(sim.generation  == T_ADMIX_END)) {
+	for (i in which(sim.generation == T_ADMIX_END)) {
 		from = admix_param("source", i);
 		to = admix_param("target", i);
-		set_migration(from, to, 0.0);
+		set_admixture(from, to, 0.0);
 	}
 }
 
@@ -312,11 +313,16 @@ function (void) split_pop(i$ i) {
 
 // Set the migration rate from a populaion 'from' to a population 'to'
 // (also used for resetting the migration back to zero)
-function (void) set_migration(i$ from, i$ to, f$ rate) {
-	catn("Generation " + sim.generation + ": admixture from " + pop_name(from) + " into " + pop_name(to) + " at " + rate * 100 + "%");
+function (void) set_admixture(i$ from, i$ to, f$ rate, [i$ span = 1]) {
+	if (rate == 0)
+		rate_str = " is set to zero";
+	else
+		rate_str = " (" + rate * 100 + "% over " + span + " generations)";
+	catn("Generation " + sim.generation + ": admixture " + pop_name(from) + " -> " + pop_name(to) + rate_str);
 	source = get_pop(from);
 	target = get_pop(to);
-	target.setMigrationRates(source, rate);
+	target.setMigrationRates(source, rate / span);
+}
 
 // Add ancestry informative markers specific to the given population
 function (void) add_markers(i$ pop) {
