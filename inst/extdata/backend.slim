@@ -162,6 +162,7 @@ s2 late() {
 		to = admix_param("target", i);
 		rate = admix_param("rate", i);
 		set_migration(from, to, rate);
+		add_markers(from);
 	}
 }
 
@@ -316,6 +317,11 @@ function (void) set_migration(i$ from, i$ to, f$ rate) {
 	source = get_pop(from);
 	target = get_pop(to);
 	target.setMigrationRates(source, rate);
+
+// Add ancestry informative markers specific to the given population
+function (void) add_markers(i$ pop) {
+	catn("Generation " + sim.generation + ": adding " + pop_name(pop) + " ancestry markers");
+	get_pop(pop).genomes.addNewMutation(pop, 0.0, seq(0, {{seq_length}} - 1, by = 10000));
 }
 
 // Distribute the set of individuals around specified coordinates
