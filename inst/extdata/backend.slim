@@ -35,7 +35,7 @@ initialize() {
 	defineConstant("T_BURNIN", asInteger({{burnin}}));
 	defineConstant("T_LENGTH", asInteger({{sim_length}} / GEN_TIME));
 
-	defineConstant("TRACE_ANCESTRY", T);
+	defineConstant("TRACK_ANCESTRY", {{track_ancestry}});
 
 	catn("T_BURNIN: " + T_BURNIN);
 	catn("T_LENGTH: " + T_LENGTH);
@@ -140,7 +140,7 @@ initialize() {
 	// output callbacks
 	sim.rescheduleScriptBlock(s99, start = T_BURNIN, end = T_BURNIN + T_LENGTH);
 	sim.rescheduleScriptBlock(s999, generations = T_BURNIN + T_LENGTH);
-	if (TRACE_ANCESTRY)
+	if (TRACK_ANCESTRY)
 		sim.rescheduleScriptBlock(s9999, generations = (T_BURNIN + 1):(T_BURNIN + T_LENGTH));
 	else
 		sim.deregisterScriptBlock(s9999);
