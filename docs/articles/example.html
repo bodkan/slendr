@@ -115,7 +115,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpAdU1yU", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmpn4PzOc", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span></code></pre></div>
@@ -180,16 +180,12 @@
 <a href="#define-population-dynamics" class="anchor"></a>Define population dynamics</h2>
 <p>Again, we can’t go into too much detail here but what we demonstrate is:</p>
 <ul>
-<li>definition of population ranges - <code><a href="../reference/population.html">population()</a></code>
-</li>
-<li>migration of population through space - <code><a href="../reference/move.html">move()</a></code>
-</li>
-<li>expansion of a population from its current location outwards - <code><a href="../reference/expand.html">expand()</a></code>
-</li>
-<li>changing a population spatial range at a certain time point - <code><a href="../reference/update.html">update()</a></code>
-</li>
+<li><p>definition of population ranges - <code><a href="../reference/population.html">population()</a></code></p></li>
+<li><p>migration of population through space - <code><a href="../reference/move.html">move()</a></code></p></li>
+<li><p>expansion from a current location outwards - <code><a href="../reference/expand.html">expand()</a></code></p></li>
+<li><p>changing a spatial range at a certain time point - <code><a href="../reference/update.html">update()</a></code></p></li>
 </ul>
-<p>Look for the use of these functions for defining different spatio-temporal population boundaries below.</p>
+<p>Look for the use of these functions for defining different spatio- temporal population boundaries below.</p>
 <p>Note that the <span class="math inline">\(N_e\)</span> values are very small - this is on purpose, to make the simulations run faster for demonstration purposes.</p>
 <div id="african-population-of-modern-human-ancestors" class="section level3">
 <h3 class="hasAnchor">
@@ -289,9 +285,9 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ehg</span><span class="op">)</span></code></pre></div>
 <p><img src="example_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 </div>
-<div id="western-hunter-gatherersneolithic-farmerspresent-day-europeans" class="section level3">
+<div id="western-hunter-gatherersfarmerspresent-day-europeans" class="section level3">
 <h3 class="hasAnchor">
-<a href="#western-hunter-gatherersneolithic-farmerspresent-day-europeans" class="anchor"></a>Western hunter-gatherers/Neolithic farmers/present-day Europeans</h3>
+<a href="#western-hunter-gatherersfarmerspresent-day-europeans" class="anchor"></a>Western hunter-gatherers/farmers/present-day Europeans</h3>
 <p>Those three populations were obviously very different from one another, but they broadly occupied the same geographic range. We’re clumping them here in a single spatial boundary called “EUR”, but they will obviously change over time through admixture with other populations.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
