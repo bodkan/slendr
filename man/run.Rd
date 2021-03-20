@@ -12,21 +12,32 @@ run(
   interaction,
   spread,
   seq_length,
-  recomb_rate
+  recomb_rate,
+  track_ancestry = FALSE,
+  output_prefix = file.path(normalizePath(model_dir), "output_")
 )
 }
 \arguments{
-\item{gen_time}{Conversion rate from model time units into generations}
+\item{gen_time}{Generation time (in model's time units, i.e. years)}
 
-\item{burnin}{Length of the burnin (in model time units)}
+\item{burnin}{Length of the burnin (in model's time units,
+i.e. years)}
 
-\item{sim_length}{Total length of the simulation (in model time units)}
+\item{sim_length}{Total length of the simulation (in model's time
+units, i.e. years)}
 
-\item{interaction}{Spatial interaction/mate choice distance parameter}
+\item{interaction}{Spatial interaction/mate choice distance
+parameter}
 
-\item{spread}{Sigma parameter of the offspring spread normal distribution}
+\item{spread}{Sigma parameter of the offspring spread normal
+distribution}
 
-\item{seq_length}{Length of the simulated sequence}
+\item{seq_length}{Total length of the simulated sequence in
+base-pairs}
+
+\item{output_prefix}{Directory and shared prefix of all output
+files (all output files will be placed into the model directory
+by default)}
 }
 \description{
 Open the SLiM backend script in the SLiM gui

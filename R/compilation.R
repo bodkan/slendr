@@ -297,6 +297,7 @@ save_png <- function(raster, path) {
 #' @export
 run <- function(model_dir, gen_time, burnin, sim_length,
                 interaction, spread, seq_length, recomb_rate,
+                track_ancestry = FALSE,
                 output_prefix = file.path(normalizePath(model_dir), "output_")) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
@@ -319,7 +320,8 @@ run <- function(model_dir, gen_time, burnin, sim_length,
     interaction = interaction,
     spread = spread,
     seq_length = seq_length,
-    recomb_rate = recomb_rate
+    recomb_rate = recomb_rate,
+    track_ancestry = if (track_ancestry) "T" else "F"
   )
   rendered <- whisker::whisker.render(template, subst)
 
