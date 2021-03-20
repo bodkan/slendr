@@ -136,7 +136,7 @@ plot(europe_anatolia)
 #' ### African population of modern human ancestors:
 
 afr <- population(
-  "AFR", parent = "ancestor", Ne = 1000,
+  "AFR", parent = "ancestor", Ne = 100,
   world = world, region = africa
 )
 
@@ -196,7 +196,7 @@ plot(ehg)
 #' time through admixture with other populations.
 
 eur <- population(
-  name = "EUR", time = 25000, Ne = 300, parent = ehg,
+  name = "EUR", time = 25000, Ne = 10000, parent = ehg,
   world, region = europe
 )
 
@@ -383,9 +383,9 @@ read.table("~/Desktop/test-model/maps.tsv", header = T)
 
 #+ eval = FALSE
 run(
-  model_dir = "~/Desktop/test-model/",
-  gen_time = 30, burnin = 200, sim_length = 70000,
-  interaction = 30, spread = 20, seq_length = 100, recomb_rate = 0
+  model_dir = "~/Desktop/test-model",
+  gen_time = 30, burnin = 200, sim_length = 70000, seq_length = 100, recomb_rate = 1e-7,
+  interaction = 30, spread = 20, track_ancestry = FALSE
 )
 
 #' ## Animating the population movement
