@@ -324,7 +324,7 @@ run <- function(model_dir, gen_time, burnin, sim_length, seq_length, recomb_rate
     stop(sprintf("Directory '%s' does not contain any spammr spatial raster maps", model_dir), call. = FALSE)
 
   # compile the SLiM backend script
-  template <- readLines("~/projects/spammr/inst/extdata/backend.slim")
+  template <- readLines(system.file("inst/extdata/backend.slim", package = "spammr"))
 
   subst <- list(
     model_dir = normalizePath(model_dir),
