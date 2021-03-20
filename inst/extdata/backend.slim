@@ -374,8 +374,10 @@ function (void) set_admixture(i$ from, i$ to, f$ rate, [i$ span = 1]) {
 
 // Add ancestry informative markers specific to the given population
 function (void) add_markers(i$ pop) {
-	catn("Generation " + sim.generation + ": adding " + NAMES[pop] + " ancestry markers");
-	get_pop(pop).genomes.addNewMutation(pop, 0.0, seq(0, {{seq_length}} - 1, by = asInteger({{seq_length}} / N_MARKERS)));
+	if (TRACK_ANCESTRY) {
+		catn("Generation " + sim.generation + ": adding " + NAMES[pop] + " ancestry markers");
+		get_pop(pop).genomes.addNewMutation(pop, 0.0, seq(0, {{seq_length}} - 1, by = asInteger({{seq_length}} / N_MARKERS)));
+	}
 }
 
 // Distribute the set of individuals around specified coordinates
