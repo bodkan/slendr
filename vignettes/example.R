@@ -297,11 +297,10 @@ plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
 admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
 
 #' ```
-#' Error:
-#' No overlap between population ranges of EUR and AFR at time 20000!
-#' SLiM will freeze when running this model (it won't be able to satisfy spatial
-#' requirements of migrant individuals). Please check the spatial maps at
-#' the specified time point.
+#' Not a sufficient overlap between population ranges of EUR and AFR
+#' at time 20000. The required overlap is 0.20, but the current overlap is
+#' 0.000000. Please check the spatial maps of both populations by running
+#' `plot(eur, afr, pop_facets = F)`.
 #' ```
 
 #' The reason for this is a lack of spatial overlap between the two populations.
@@ -343,13 +342,20 @@ compile(
   overwrite = TRUE
 )
 
-#' We can inspect the contents of the directory and see that it does, indeed,
-#' contain all defined spatial maps (now PNG files, which is what SLiM
-#' requires):
+#' What do the files in the model directory look like? In an ideal
+#' case, you as a user should never worry about these things. In fact,
+#' the whole purpose of `spammr` is to let you work on much higher
+#' level of abstraction without worrying about these low-level
+#' details. That said, you might find it useful to see how things are
+#' stored in the ackground...
+#' 
+#' First of all, we can inspect the contents of the directory and see
+#' that it does, indeed, contain all defined spatial maps (now PNG
+#' files, which is what SLiM requires).
 
 list.files("~/Desktop/test-model", pattern = "*.png")
 
-#' And it also contains a series of tab-separated configuration tables:
+#' It also contains a series of tab-separated configuration tables:
 
 list.files("~/Desktop/test-model", pattern = "*.tsv")
 
@@ -362,9 +368,12 @@ read.table("~/Desktop/test-model/splits.tsv", header = T)
 #' - the table of admixture events:
 read.table("~/Desktop/test-model/admixtures.tsv", header = T)
 
-#' - and finally, the table of populations whose spatial maps will be updated
-#' throughout the simulation, as well as the times of those updates:
-read.table("~/Desktop/test-model/maps.tsv", header = T)
+#' - and finally, the table of populations whose spatial maps will be
+#' updated throughout the simulation, as well as the times of those
+#' updates (this table is rather long, so we're taking a peek at only
+#' the first couple of lines):
+#' 
+head(read.table("~/Desktop/test-model/maps.tsv", header = T))
 
 #' ## Running the simulation
 
@@ -372,7 +381,9 @@ read.table("~/Desktop/test-model/maps.tsv", header = T)
 #' the `run()` function, which understands the format of the model
 #' directory created by the `compile()` function and generates a SLiM
 #' script (using a backend skeleton script which is a part of this
-#' package and can be found by calling `system.file("inst/extdata/backend.slim", package = "spammr")`).
+#' package and can be found by calling
+#' `system.file("inst/extdata/backend.slim", package = "spammr")`, in
+#' case you'd like to peek into its internals).
 #'
 #' Note that when you run this model in SLiMgui (which should automatically open
 #' by calling the command below), you will see populations pop up in individual
@@ -380,13 +391,49 @@ read.table("~/Desktop/test-model/maps.tsv", header = T)
 #' _Everyone is still simulated in the same world_, it's just that the
 #' simulation visualizes individual population ranges separately to reduce
 #' clutter.
+#'
+#' A couple of more things to note: notice that the function accepts
+#' several parameters determining the length of the simulated sequence
+#' and the recombination rate, as well as the length of the burnin
+#' period, the total time of the simulation run (excluding burnin),
+#' and generation time (which is used to convert all times defined
+#' during model specification above into SLiM's inetrnal units of
+#' generations).
+#'
+#' Finally, the parameter `ancestry_markers` determines whether we
+#' want our SLiM script to track ancestry proportion changes in all
+#' simulations using neutral markers uniformly distributed along each
+#' genome. If this parameter is set to 0, no ancestry tracking is
+#' done. Any other positive integer value specifies how many markers
+#' we want to use for tracking. Please note that a non-zero value
+#' *significantly* increases the simulation overhead, not only because
+#' the actual burden of mutation objects being simulated, but also
+#' because the ancestry is calculated in each generation for each
+#' simulated genome. In this case, we're tracking ancestry using a
+#' single non-recombining marker to minimize computational time for
+#' the purposes of this demo.
+#'
+#' Ancestry tracking is very useful to monitor that the spatial
+#' admixture model as defined in R really behaves as expected even on
+#' the SLiM side. This can be verified by inspecting files named as
+#' `output_ancestry_XXX.tsv` in the specified output directory. See
+#' the manpage of `run()` for more details.
 
 #+ eval = FALSE
 run(
   model_dir = "~/Desktop/test-model",
-  gen_time = 30, burnin = 200, sim_length = 70000, seq_length = 100, recomb_rate = 1e-7,
-  interaction = 30, spread = 20, track_ancestry = FALSE
+  gen_time = 30, burnin = 200, sim_length = 70000,
+  seq_length = 100, recomb_rate = 0,
+  interaction = 30, spread = 20, ancestry_markers = 1
 )
+
+#' In case we instructed `spammr` to track ancestry proportions, we
+#' can visualize them using the builtin `diagnostics()` function. This
+#' is quite barebones for now and the way diagnostics are generated is
+#' subject to change...
+
+#+ eval = FALSE
+diagnostics("~/Desktop/test-model")
 
 #' ## Animating the population movement
 #'

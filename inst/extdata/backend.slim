@@ -35,7 +35,8 @@ initialize() {
 	defineConstant("T_BURNIN", asInteger({{burnin}}));
 	defineConstant("T_LENGTH", asInteger({{sim_length}} / GEN_TIME));
 
-	defineConstant("TRACK_ANCESTRY", {{track_ancestry}});
+	defineConstant("N_MARKERS", {{ancestry_markers}});
+	defineConstant("TRACK_ANCESTRY", N_MARKERS > 0);
 
 	catn("T_BURNIN: " + T_BURNIN);
 	catn("T_LENGTH: " + T_LENGTH);
@@ -332,7 +333,7 @@ function (void) write_ancestries(void) {
 function (float) calc_ancestry(lifso<Subpopulation>$ pop) {
 	// mutation IDs of all populations' ancestry markers
 	mut_ids = pop_param("pop");
-	return sapply(mut_ids, "mean(pop.genomes.countOfMutationsOfType(applyValue) / 10);");
+	return sapply(mut_ids, "mean(pop.genomes.countOfMutationsOfType(applyValue) / N_MARKERS);");
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -374,7 +375,7 @@ function (void) set_admixture(i$ from, i$ to, f$ rate, [i$ span = 1]) {
 // Add ancestry informative markers specific to the given population
 function (void) add_markers(i$ pop) {
 	catn("Generation " + sim.generation + ": adding " + NAMES[pop] + " ancestry markers");
-	get_pop(pop).genomes.addNewMutation(pop, 0.0, seq(0, {{seq_length}} - 1, by = 10));
+	get_pop(pop).genomes.addNewMutation(pop, 0.0, seq(0, {{seq_length}} - 1, by = asInteger({{seq_length}} / N_MARKERS)));
 }
 
 // Distribute the set of individuals around specified coordinates

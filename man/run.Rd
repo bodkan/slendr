@@ -2,22 +2,25 @@
 % Please edit documentation in R/compilation.R
 \name{run}
 \alias{run}
-\title{Open the SLiM backend script in the SLiM gui}
+\title{Open the compiled spatial model in SLiM}
 \usage{
 run(
   model_dir,
   gen_time,
   burnin,
   sim_length,
-  interaction,
-  spread,
   seq_length,
   recomb_rate,
-  track_ancestry = FALSE,
+  interaction,
+  spread,
+  ancestry_markers = 0,
   output_prefix = file.path(normalizePath(model_dir), "output_")
 )
 }
 \arguments{
+\item{model_dir}{Directory where \code{compile} saved all spatial
+maps and other model configuration files}
+
 \item{gen_time}{Generation time (in model's time units, i.e. years)}
 
 \item{burnin}{Length of the burnin (in model's time units,
@@ -26,19 +29,33 @@ i.e. years)}
 \item{sim_length}{Total length of the simulation (in model's time
 units, i.e. years)}
 
+\item{seq_length}{Total length of the simulated sequence in
+base-pairs}
+
+\item{recomb_rate}{Recombination rate of the simulated sequence}
+
 \item{interaction}{Spatial interaction/mate choice distance
 parameter}
 
 \item{spread}{Sigma parameter of the offspring spread normal
 distribution}
 
-\item{seq_length}{Total length of the simulated sequence in
-base-pairs}
+\item{ancestry_markers}{Number of neutral ancestry markers to track
+ancestry in all populations. Note that this significantly
+increases the simulation overhead as it instructs SLiM to
+generate neutral mutations along each simulated genome. The value
+0 disables ancestry tracking (default).}
 
 \item{output_prefix}{Directory and shared prefix of all output
 files (all output files will be placed into the model directory
 by default)}
 }
 \description{
-Open the SLiM backend script in the SLiM gui
+When run, the compiled SLiM script will save the location of each
+individual that ever lived, and will also record a sample of
+ancient individuals from each population in a tree sequence data
+structure which will be saved for all "present-day" individuals at
+the end of the simulation. This obviously does not make sense for
+all potential uses and the exact specification of output formats
+will be changed at some point soon.
 }
