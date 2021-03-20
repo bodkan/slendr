@@ -1,0 +1,9 @@
+initialize() {
+             sim.rescheduleScriptBLock(s999999, generations = asInteger({{time}} / {{gen_time}}));
+}
+
+s999999 {
+        all_genomes = get_pop(i).genomes;
+        sampled_genomes = sample(all_genomes, length(all_genomes) * asFloat({{frequency}}));
+        sampled_genomes.addNewMutation(m0, {{sel_coeff}}, {{pos}});
+}
