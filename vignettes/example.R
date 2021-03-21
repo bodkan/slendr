@@ -13,9 +13,8 @@
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7,
-  fig.height = 5,
-  dpi = 100
+  fig.width = 5,
+  fig.height = 4
 )
 
 #+ include = F
@@ -129,11 +128,11 @@ plot(europe_anatolia)
 #' demonstrate is:
 #'
 #' - definition of population ranges - `population()`
-#' 
+#'
 #' - migration of population through space - `move()`
-#' 
+#'
 #' - expansion from a current location outwards - `expand()`
-#' 
+#'
 #' - changing a spatial range at a certain time point - `update()`
 #'
 #' Look for the use of these functions for defining different spatio-
@@ -365,7 +364,7 @@ compile(
 #' level of abstraction without worrying about these low-level
 #' details. That said, you might find it useful to see how things are
 #' stored in the ackground...
-#' 
+#'
 #' First of all, we can inspect the contents of the directory and see
 #' that it does, indeed, contain all defined spatial maps (now PNG
 #' files, which is what SLiM requires).
@@ -389,7 +388,7 @@ read.table("~/Desktop/test-model/admixtures.tsv", header = T)
 #' updated throughout the simulation, as well as the times of those
 #' updates (this table is rather long, so we're taking a peek at only
 #' the first couple of lines):
-#' 
+#'
 head(read.table("~/Desktop/test-model/maps.tsv", header = T))
 
 #' ## Running the simulation

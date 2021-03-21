@@ -58,7 +58,9 @@ plot.spammr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     if (is.null(pops)) {
       p_map <- p_map +
         geom_sf(data = regions, aes(fill = region), linetype = 2, alpha = 0.5) +
-        geom_sf_label(data = regions, aes(label = region, color = region))
+        geom_sf_label(data = regions, aes(label = region, color = region)) +
+        guides(color = FALSE, fill = FALSE) +
+        theme(axis.title = element_blank())
     } else {
       p_map <- p_map +
         geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.5) +
