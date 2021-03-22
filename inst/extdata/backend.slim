@@ -1,11 +1,6 @@
 initialize() {
 	initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
 	initializeTreeSeq();
-	initializeMutationRate(0.0);
-	initializeMutationType("m0", 0.5, "f", 0.0);
-	initializeGenomicElementType("g1", m0, 1.0);
-	initializeGenomicElement(g1, 0, asInteger({{seq_length}}) - 1);
-	initializeRecombinationRate({{recomb_rate}});
 
 	// interaction/competition distance
 	defineConstant("INTERACTION", asFloat({{interaction}}));
@@ -34,13 +29,14 @@ initialize() {
 	defineConstant("HEIGHT", MAPS[0].height);
 
 	// define output files
-	defineConstant("prefix", paste0(MODEL_DIR, "/output"));
-	defineConstant("output_loc", paste(prefix, "locations.tsv.gz", sep="_"));
-	defineConstant("output_tseq", paste(prefix, "treeseq.trees", sep="_"));
+	defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
 
 	defineConstant("GEN_TIME", {{gen_time}});
 	defineConstant("T_BURNIN", asInteger({{burnin}}));
 	defineConstant("T_LENGTH", asInteger({{sim_length}} / GEN_TIME));
+
+	defineConstant("N_MARKERS", {{ancestry_markers}});
+	defineConstant("TRACK_ANCESTRY", N_MARKERS > 0);
 
 	catn("T_BURNIN: " + T_BURNIN);
 	catn("T_LENGTH: " + T_LENGTH);
@@ -85,7 +81,23 @@ initialize() {
 		catn("T_MAPS: " + paste(T_MAPS));
 	}
 
-	write_header(output_loc);
+	// neutral markers specific for each population
+	// TODO: for performance reasons, only add markers for populations
+	// that contribute their ancestry to others
+	mut_ids = pop_param("pop");
+	for (i in mut_ids) initializeMutationType(i, 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", mut_ids, rep(1.0, length(mut_ids)));
+
+	// all ancestry markers have to be prevented from stacking and from
+	// disappearing once they become fixed in a population
+	g1.mutationTypes[mut_ids].convertToSubstitution = F;
+	g1.mutationTypes[mut_ids].mutationStackPolicy = "l";
+	g1.mutationTypes[mut_ids].mutationStackGroup = 0;
+
+	initializeGenomicElement(g1, 0, asInteger({{seq_length}}) - 1);
+
+	initializeRecombinationRate({{recomb_rate}});
+	initializeMutationRate(0.0);
 }
 
 1 early() {
@@ -93,6 +105,7 @@ initialize() {
 	sim.addSubpop(i, pop_param("Ne", i));
 	set_map(i, sim.generation);
 	set_coords(get_pop(i).individuals);
+	add_markers(i);
 
 	// unique() is called in case multiple events are scheduled at once
 	// (this is not allowed in SLiM - each callback needs to detect this
@@ -128,6 +141,13 @@ initialize() {
 	// output callbacks
 	sim.rescheduleScriptBlock(s99, start = T_BURNIN, end = T_BURNIN + T_LENGTH);
 	sim.rescheduleScriptBlock(s999, generations = T_BURNIN + T_LENGTH);
+	if (TRACK_ANCESTRY)
+		sim.rescheduleScriptBlock(s9999, generations = (T_BURNIN + 1):(T_BURNIN + T_LENGTH));
+	else
+		sim.deregisterScriptBlock(s9999);
+
+	write_locations_header();
+	write_ancestries_header();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -143,7 +163,11 @@ s1 late() {
 		split_pop(i);
 		set_map(i, sim.generation);
 		set_coords(get_pop(i).individuals);
+<<<<<<< HEAD
 		if (i == 1) {p1.genomes.addNewMutation(m0, 0.0, 50); catn("adding to" + pop_name(1));}
+=======
+		add_markers(i);
+>>>>>>> main
 	}
 }
 
@@ -155,7 +179,8 @@ s2 late() {
 		from = admix_param("source", i);
 		to = admix_param("target", i);
 		rate = admix_param("rate", i);
-		set_migration(from, to, rate);
+		span = T_ADMIX_END[i] - T_ADMIX_START[i];
+		set_admixture(from, to, rate, span);
 	}
 }
 
@@ -163,10 +188,10 @@ s2 late() {
 s3 late() {
 	// iterate over all admixture events scheduled for this generation
 	// and set them back to 0.0
-	for (i in which(sim.generation  == T_ADMIX_END)) {
+	for (i in which(sim.generation == T_ADMIX_END)) {
 		from = admix_param("source", i);
 		to = admix_param("target", i);
-		set_migration(from, to, 0.0);
+		set_admixture(from, to, 0.0);
 	}
 }
 
@@ -189,7 +214,7 @@ s5 late() {
 	// of admixture events and remove them
 	pop_ids = pop_param("pop", present = "tremove")[sim.generation - 1 == T_CLEANUPS];
 	for (i in pop_ids) {
-		catn("Generation " + sim.generation + ": cleanup of " + pop_name(i));
+		log_output("cleanup of " + NAMES[i]);
 		get_pop(i).setSubpopulationSize(0);
 	}
 }
@@ -199,7 +224,7 @@ s6 late() {
 	// get populations whose spatial maps should be updated
 	pop_ids = maps_param("pop")[sim.generation == T_MAPS];
 	for (i in pop_ids) {
-		catn("Generation " + sim.generation + ": updating map for " + pop_name(i));
+		log_output("updating map for " + NAMES[i]);
 		set_map(i, sim.generation);
 	}
 }
@@ -219,16 +244,21 @@ s99 late() {
 	}
 	// save location of each individual present
 	for (ind in sim.subpopulations.individuals) {
-		write_ind(ind, output_loc);
+		write_locations(ind);
 	}
 }
 
 // Saving tree sequences at the end of the simulation
 s999 late() {
-  catn("--------------------------------------------------------");
-	catn("Generation " + sim.generation + ": simulation finished");
-	sim.treeSeqOutput(output_tseq);
+  catn("--------------------------------------------------");
+	log_output("simulation finished");
+	filename = paste0(OUTPUT_PREFIX, "treeseq.trees");
+	sim.treeSeqOutput(filename);
 	sim.simulationFinished();
+}
+
+s9999 late() {
+	write_ancestries();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -262,15 +292,17 @@ function (i) read_table(s$ path) {
 }
 
 // Write a header of a locations table to a locations file
-function (void) write_header(string$ filename) {
+function (void) write_locations_header(void) {
+	filename = paste0(OUTPUT_PREFIX, "locations.tsv.gz");
 	header_str = "t\tpop\tind\tx\ty\tsampled";
 	writeFile(filename, header_str, compress = T);
 }
 
 // Write information about a given individual to a locations file
-function(void) write_ind(lifso<Individual>$ ind, string$ filename) {
+function(void) write_locations(lifso<Individual>$ ind) {
+	filename = paste0(OUTPUT_PREFIX, "locations.tsv.gz");
 	ind_str = paste(
-		abs(sim.generation - T_BURNIN - T_LENGTH),
+		T_BURNIN + T_LENGTH - sim.generation,
 		ind.subpopulation.id,
 		ind.pedigreeID,
 		ind.spatialPosition,
@@ -280,6 +312,39 @@ function(void) write_ind(lifso<Individual>$ ind, string$ filename) {
 	writeFile(filename, ind_str, append = T, compress = T);
 }
 
+// Write the headers of ancestry tables
+function (void) write_ancestries_header(void) {
+	for (pop in pop_param("pop")) {
+		header_str = paste(c("gen", NAMES[pop_param("pop")]), sep = "\t");
+		filename = paste0(OUTPUT_PREFIX, "ancestry_", NAMES[pop], ".tsv");
+		writeFile(filename, header_str);
+	}
+}
+
+// Write information about a given individual to a locations file
+function (void) write_ancestries(void) {
+	for (pop in sim.subpopulations) {
+		line = paste(
+			T_BURNIN + T_LENGTH - sim.generation,
+			calc_ancestry(pop),
+			sep = "\t"
+		);
+		filename = paste0(OUTPUT_PREFIX, "ancestry_", NAMES[pop.id], ".tsv");
+		writeFile(filename, line, append = T);
+	}
+}
+
+// Calculate a vector of ancestry proportions in a given population
+function (float) calc_ancestry(lifso<Subpopulation>$ pop) {
+	// mutation IDs of all populations' ancestry markers
+	mut_ids = pop_param("pop");
+	return sapply(mut_ids, "mean(pop.genomes.countOfMutationsOfType(applyValue) / N_MARKERS);");
+}
+
+// Write the given output string with the time stamp
+function (void) log_output(s$ str) {
+	catn("Generation " + sim.generation + ": " + str);
+}
 
 //////////////////////////////////////////////////////////////////////
 // Simulation utility functions
@@ -300,22 +365,34 @@ function (void) set_map(i$ i, i$ generation) {
 function (void) split_pop(i$ i) {
 	source = pop_param("source", i);
 	Ne= pop_param("Ne", i);
-	catn("Generation " + sim.generation + ": split of " + pop_name(i) + " from " + pop_name(source));
+	log_output("split of " + NAMES[i] + " from " + NAMES[source]);
 	sim.addSubpopSplit(i, Ne, get_pop(source));
 }
 
 // Set the migration rate from a populaion 'from' to a population 'to'
 // (also used for resetting the migration back to zero)
-function (void) set_migration(i$ from, i$ to, f$ rate) {
-	catn("Generation " + sim.generation + ": admixture from " + pop_name(from) + " into " + pop_name(to) + " at " + rate * 100 + "%");
+function (void) set_admixture(i$ from, i$ to, f$ rate, [i$ span = 1]) {
+	if (rate == 0)
+		rate_str = " set to 0%";
+	else
+		rate_str = " (" + rate * 100 + "% over " + span + " generations)";
+	log_output("admixture " + NAMES[from] + " -> " + NAMES[to] + rate_str);
 	source = get_pop(from);
 	target = get_pop(to);
-	target.setMigrationRates(source, rate);
+	target.setMigrationRates(source, rate / span);
+}
+
+// Add ancestry informative markers specific to the given population
+function (void) add_markers(i$ pop) {
+	if (TRACK_ANCESTRY) {
+		log_output("adding " + NAMES[pop] + " ancestry markers");
+		get_pop(pop).genomes.addNewMutation(pop, 0.0, seq(0, {{seq_length}} - 1, by = asInteger({{seq_length}} / N_MARKERS)));
+	}
 }
 
 // Distribute the set of individuals around specified coordinates
 function (void) set_coords(lifso<Individual> inds) {
-	catn("Generation " + sim.generation + ": distributing individuals");
+	log_output("distributing individuals");
 	for (ind in inds) {
 	    pop = ind.subpopulation;
 	    do pos = c(runif(1, 0, WIDTH), runif(1, 0, HEIGHT));
@@ -405,8 +482,4 @@ function (numeric) maps_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
 	val = drop(MAP_TABLE[indices, col_i]);
 
 	return val[which(val != -1)];
-}
-
-function (s) pop_name(i$ i) {
-  return NAMES[i];
 }
