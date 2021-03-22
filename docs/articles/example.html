@@ -98,12 +98,10 @@
 <a href="#requirements" class="anchor"></a>Requirements</h2>
 <p><strong>This R package requires SLiM version 3.6</strong> and will not work with an older release. You can find the latest version <a href="https://messerlab.org/slim/">here</a>.</p>
 <p>️⚠️<strong>Also, please make sure to always install the latest version from Github before trying out the package by running:</strong></p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bodkan/spammr"</span><span class="op">)</span></code></pre></div>
+<pre><code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("bodkan/spammr")</a></code></pre>
 <p>I’m adding bugfixes and new features every couple of hours and it’s always worth updating to the latest version.</p>
 <p>After you have installed to the latest version, you can load the package by running:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">spammr</span><span class="op">)</span></code></pre></div>
+<pre><code><a href="https://rdrr.io/r/base/library.html">library(spammr)</a></code></pre>
 </div>
 <div id="define-the-world-context" class="section level2">
 <h2 class="hasAnchor">
@@ -115,11 +113,11 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp1p9jnt", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpeikuWX", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-5-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-3-1.png" width="480"></p>
 </div>
 <div id="define-some-useful-geographic-regions" class="section level2">
 <h2 class="hasAnchor">
@@ -138,7 +136,7 @@
   <span class="op">)</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">africa</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-6-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-4-1.png" width="480"></p>
 </div>
 <div id="europe-and-anatolian-peninsula" class="section level3">
 <h3 class="hasAnchor">
@@ -150,7 +148,7 @@
                 <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">28</span>, <span class="fl">45</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">58</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">europe</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-7-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-5-1.png" width="480"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
 <span class="va">anatolia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/region.html">region</a></span><span class="op">(</span>
@@ -159,7 +157,7 @@
                 <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">43</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">27</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">38</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">anatolia</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-7-2.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-5-2.png" width="480"></p>
 </div>
 <div id="europe-and-anatolia" class="section level3">
 <h3 class="hasAnchor">
@@ -172,7 +170,7 @@
                 <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">45</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">58</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">europe_anatolia</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-8-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-6-1.png" width="480"></p>
 </div>
 </div>
 <div id="define-population-dynamics" class="section level2">
@@ -211,7 +209,7 @@
 <p>Obviously, we can also plot the population range in the context of the defined world:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-11-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-9-1.png" width="480"></p>
 </div>
 <div id="out-of-africa-migrants" class="section level3">
 <h3 class="hasAnchor">
@@ -253,7 +251,7 @@
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ooa</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-12-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
 </div>
 <div id="eastern-hunter-gatherers" class="section level3">
 <h3 class="hasAnchor">
@@ -283,7 +281,7 @@
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ehg</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-13-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-11-1.png" width="480"></p>
 </div>
 <div id="western-hunter-gatherersfarmerspresent-day-europeans" class="section level3">
 <h3 class="hasAnchor">
@@ -309,7 +307,7 @@
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">eur</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-14-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-12-1.png" width="480"></p>
 </div>
 <div id="caucasian-hunter-gatherersanatolian-farmers" class="section level3">
 <h3 class="hasAnchor">
@@ -353,7 +351,7 @@
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ana</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-15-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-13-1.png" width="480"></p>
 </div>
 <div id="yamnaya-steppe-people" class="section level3">
 <h3 class="hasAnchor">
@@ -382,7 +380,7 @@
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">yam</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-16-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-14-1.png" width="480"></p>
 </div>
 <div id="yamnaya-invading-europe" class="section level3">
 <h3 class="hasAnchor">
@@ -427,7 +425,7 @@
 <span class="co">#&gt; projected CRS: ETRS89-extended / LAEA Europe</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">yam_migr</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-17-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-15-1.png" width="480"></p>
 </div>
 </div>
 <div id="complete-summary-of-spatial-boundaries" class="section level2">
@@ -436,7 +434,7 @@
 <p>The overloaded <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> (in fact, <code><a href="../reference/plot.spammr.html">plot.spammr()</a></code>) function is reasonably smart in terms of plotting different geographic or population ranges at once. We can use this to summarize the entire model at once. Obviously, this is a lot of multi-dimensional information so the plot is definitely not perfect, but it should provide a reasonably compact overview of what we’ve built so far.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-18-1.png" width="672"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-16-1.png" width="672"></p>
 </div>
 <div id="define-admixture-events" class="section level2">
 <h2 class="hasAnchor">
@@ -453,7 +451,7 @@ at time 20000. The required overlap is 0.20, but the current overlap is
 <p>The reason for this is a lack of spatial overlap between the two populations. The error message instructs us to visually verify this, which can be done by <code>spammr</code>’s <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function and the optional parameter <code>pop_facets = F</code> (which is set to <code>TRUE</code> by default):</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">eur</span>, <span class="va">afr</span>, pop_facets <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
-<p><img src="example_files/figure-html/unnamed-chunk-20-1.png" width="480"></p>
+<p><img src="example_files/figure-html/unnamed-chunk-18-1.png" width="480"></p>
 <p>Many models will have several admixture events, which we can collect in a simple R list:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">admixtures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
