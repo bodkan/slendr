@@ -46,6 +46,8 @@ plot.spammr <- function(..., pop_facets = TRUE, time_facets = FALSE,
         i
     }
   }))
+  # replace the Inf split time in ancestral populations
+  if (any(pops$time == Inf)) pops[pops$time == Inf, ]$time = NA
 
   # plot the world map
   p_map <-  ggplot() +
@@ -58,7 +60,9 @@ plot.spammr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     if (is.null(pops)) {
       p_map <- p_map +
         geom_sf(data = regions, aes(fill = region), linetype = 2, alpha = 0.5) +
-        geom_sf_label(data = regions, aes(label = region, color = region))
+        geom_sf_label(data = regions, aes(label = region, color = region)) +
+        guides(color = FALSE, fill = FALSE) +
+        theme(axis.title = element_blank())
     } else {
       p_map <- p_map +
         geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.5) +
@@ -101,7 +105,8 @@ plot.spammr <- function(..., pop_facets = TRUE, time_facets = FALSE,
 
     if (length(rows) == 1) {
       p_map <- rows[[1]] +
-        guides(fill = guide_legend("population"))
+        guides(fill = guide_legend("population")) +
+        theme(plot.title = element_blank())
     } else
       p_map <- patchwork::wrap_plots(rows, ncol = ncol, nrow = nrow)
   }

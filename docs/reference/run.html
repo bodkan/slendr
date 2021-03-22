@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Open the SLiM backend script in the SLiM gui — run • spammr</title>
+<title>Open the compiled spatial model in SLiM — run • spammr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,14 @@
 
 
 
-<meta property="og:title" content="Open the SLiM backend script in the SLiM gui — run" />
-<meta property="og:description" content="Open the SLiM backend script in the SLiM gui" />
+<meta property="og:title" content="Open the compiled spatial model in SLiM — run" />
+<meta property="og:description" content="When run, the compiled SLiM script will save the location of each
+individual that ever lived, and will also record a sample of
+ancient individuals from each population in a tree sequence data
+structure which will be saved for all &quot;present-day&quot; individuals at
+the end of the simulation. This obviously does not make sense for
+all potential uses and the exact specification of output formats
+will be changed at some point soon." />
 
 
 
@@ -118,13 +124,19 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Open the SLiM backend script in the SLiM gui</h1>
+    <h1>Open the compiled spatial model in SLiM</h1>
     
     <div class="hidden name"><code>run.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Open the SLiM backend script in the SLiM gui</p>
+    <p>When run, the compiled SLiM script will save the location of each
+individual that ever lived, and will also record a sample of
+ancient individuals from each population in a tree sequence data
+structure which will be saved for all "present-day" individuals at
+the end of the simulation. This obviously does not make sense for
+all potential uses and the exact specification of output formats
+will be changed at some point soon.</p>
     </div>
 
     <pre class="usage"><span class='fu'>run</span><span class='op'>(</span>
@@ -132,38 +144,68 @@
   <span class='va'>gen_time</span>,
   <span class='va'>burnin</span>,
   <span class='va'>sim_length</span>,
+  <span class='va'>seq_length</span>,
+  <span class='va'>recomb_rate</span>,
   <span class='va'>interaction</span>,
   <span class='va'>spread</span>,
-  <span class='va'>seq_length</span>,
-  <span class='va'>recomb_rate</span>
+  ancestry_markers <span class='op'>=</span> <span class='fl'>0</span>,
+  output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/normalizePath.html'>normalizePath</a></span><span class='op'>(</span><span class='va'>model_dir</span><span class='op'>)</span>, <span class='st'>"output_"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>model_dir</th>
+      <td><p>Directory where <code>compile</code> saved all spatial
+maps and other model configuration files</p></td>
+    </tr>
+    <tr>
       <th>gen_time</th>
-      <td><p>Conversion rate from model time units into generations</p></td>
+      <td><p>Generation time (in model's time units, i.e. years)</p></td>
     </tr>
     <tr>
       <th>burnin</th>
-      <td><p>Length of the burnin (in model time units)</p></td>
+      <td><p>Length of the burnin (in model's time units,
+i.e. years)</p></td>
     </tr>
     <tr>
       <th>sim_length</th>
-      <td><p>Total length of the simulation (in model time units)</p></td>
-    </tr>
-    <tr>
-      <th>interaction</th>
-      <td><p>Spatial interaction/mate choice distance parameter</p></td>
-    </tr>
-    <tr>
-      <th>spread</th>
-      <td><p>Sigma parameter of the offspring spread normal distribution</p></td>
+      <td><p>Total length of the simulation (in model's time
+units, i.e. years)</p></td>
     </tr>
     <tr>
       <th>seq_length</th>
-      <td><p>Length of the simulated sequence</p></td>
+      <td><p>Total length of the simulated sequence in
+base-pairs</p></td>
+    </tr>
+    <tr>
+      <th>recomb_rate</th>
+      <td><p>Recombination rate of the simulated sequence</p></td>
+    </tr>
+    <tr>
+      <th>interaction</th>
+      <td><p>Spatial interaction/mate choice distance
+parameter</p></td>
+    </tr>
+    <tr>
+      <th>spread</th>
+      <td><p>Sigma parameter of the offspring spread normal
+distribution</p></td>
+    </tr>
+    <tr>
+      <th>ancestry_markers</th>
+      <td><p>Number of neutral ancestry markers to track
+ancestry in all populations. Note that this significantly
+increases the simulation overhead as it instructs SLiM to
+generate neutral mutations along each simulated genome. The value
+0 disables ancestry tracking (default).</p></td>
+    </tr>
+    <tr>
+      <th>output_prefix</th>
+      <td><p>Directory and shared prefix of all output
+files (all output files will be placed into the model directory
+by default)</p></td>
     </tr>
     </table>
 
