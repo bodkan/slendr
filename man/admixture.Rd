@@ -4,7 +4,7 @@
 \alias{admixture}
 \title{Define an admixture event}
 \usage{
-admixture(from, to, rate, start, end, minimum = 0.2)
+admixture(from, to, rate, start, end, overlap = 0.2)
 }
 \arguments{
 \item{from, to}{Population range objects of the class \code{spammr_pop}}
@@ -14,8 +14,10 @@ migration over given time period}
 
 \item{start, end}{Start and end of the admixture event}
 
-\item{minimum}{Proportion of the spatial range of the migrating population
-\code{from} required to overlap with the range of the \code{to} population}
+\item{overlap}{Proportion of the spatial range of the migrating population
+\code{from} required to overlap with the range of the \code{to} population.
+Value \code{FALSE} disables the overlap requirement, allowing admixture
+between non-overlapping populations.}
 }
 \value{
 Object of the class data.frame
