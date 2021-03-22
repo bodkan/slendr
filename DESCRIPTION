@@ -23,7 +23,8 @@ Imports:
     whisker,
     gganimate,
     png,
-    patchwork
+    patchwork,
+    ijtiff
 Suggests: 
     knitr,
     rmarkdown

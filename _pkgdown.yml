@@ -20,8 +20,9 @@ reference:
 
   - title: Plotting, compilation, export
     contents:
-    - plot.spammr
-    - print.spammr
     - compile
     - run
     - animate
+    - diagnostics
+    - plot.spammr
+    - print.spammr
