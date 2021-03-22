@@ -210,7 +210,7 @@ s5 late() {
 	// of admixture events and remove them
 	pop_ids = pop_param("pop", present = "tremove")[sim.generation - 1 == T_CLEANUPS];
 	for (i in pop_ids) {
-		catn("Generation " + sim.generation + ": cleanup of " + NAMES[i]);
+		log_output("cleanup of " + NAMES[i]);
 		get_pop(i).setSubpopulationSize(0);
 	}
 }
@@ -220,7 +220,7 @@ s6 late() {
 	// get populations whose spatial maps should be updated
 	pop_ids = maps_param("pop")[sim.generation == T_MAPS];
 	for (i in pop_ids) {
-		catn("Generation " + sim.generation + ": updating map for " + NAMES[i]);
+		log_output("updating map for " + NAMES[i]);
 		set_map(i, sim.generation);
 	}
 }
@@ -246,8 +246,8 @@ s99 late() {
 
 // Saving tree sequences at the end of the simulation
 s999 late() {
-  catn("--------------------------------------------------------");
-	catn("Generation " + sim.generation + ": simulation finished");
+  catn("--------------------------------------------------");
+	log_output("simulation finished");
 	filename = paste0(OUTPUT_PREFIX, "treeseq.trees");
 	sim.treeSeqOutput(filename);
 	sim.simulationFinished();
@@ -336,6 +336,11 @@ function (float) calc_ancestry(lifso<Subpopulation>$ pop) {
 	return sapply(mut_ids, "mean(pop.genomes.countOfMutationsOfType(applyValue) / N_MARKERS);");
 }
 
+// Write the given output string with the time stamp
+function (void) log_output(s$ str) {
+	catn("Generation " + sim.generation + ": " + str);
+}
+
 //////////////////////////////////////////////////////////////////////
 // Simulation utility functions
 //////////////////////////////////////////////////////////////////////
@@ -355,7 +360,7 @@ function (void) set_map(i$ i, i$ generation) {
 function (void) split_pop(i$ i) {
 	source = pop_param("source", i);
 	Ne= pop_param("Ne", i);
-	catn("Generation " + sim.generation + ": split of " + NAMES[i] + " from " + NAMES[source]);
+	log_output("split of " + NAMES[i] + " from " + NAMES[source]);
 	sim.addSubpopSplit(i, Ne, get_pop(source));
 }
 
@@ -363,10 +368,10 @@ function (void) split_pop(i$ i) {
 // (also used for resetting the migration back to zero)
 function (void) set_admixture(i$ from, i$ to, f$ rate, [i$ span = 1]) {
 	if (rate == 0)
-		rate_str = " is set to zero";
+		rate_str = " set to 0%";
 	else
 		rate_str = " (" + rate * 100 + "% over " + span + " generations)";
-	catn("Generation " + sim.generation + ": admixture " + NAMES[from] + " -> " + NAMES[to] + rate_str);
+	log_output("admixture " + NAMES[from] + " -> " + NAMES[to] + rate_str);
 	source = get_pop(from);
 	target = get_pop(to);
 	target.setMigrationRates(source, rate / span);
@@ -375,14 +380,14 @@ function (void) set_admixture(i$ from, i$ to, f$ rate, [i$ span = 1]) {
 // Add ancestry informative markers specific to the given population
 function (void) add_markers(i$ pop) {
 	if (TRACK_ANCESTRY) {
-		catn("Generation " + sim.generation + ": adding " + NAMES[pop] + " ancestry markers");
+		log_output("adding " + NAMES[pop] + " ancestry markers");
 		get_pop(pop).genomes.addNewMutation(pop, 0.0, seq(0, {{seq_length}} - 1, by = asInteger({{seq_length}} / N_MARKERS)));
 	}
 }
 
 // Distribute the set of individuals around specified coordinates
 function (void) set_coords(lifso<Individual> inds) {
-	catn("Generation " + sim.generation + ": distributing individuals");
+	log_output("distributing individuals");
 	for (ind in inds) {
 	    pop = ind.subpopulation;
 	    do pos = c(runif(1, 0, WIDTH), runif(1, 0, HEIGHT));
