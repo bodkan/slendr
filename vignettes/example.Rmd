@@ -9,7 +9,7 @@ vignette: >
  %\VignetteEngine{knitr::rmarkdown}
 ---
 
-````{r include = F}
+`````{r include = F}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -17,10 +17,10 @@ knitr::opts_chunk$set(
   fig.height = 4
 )
 
-````
-````{r include = F}
+`````
+`````{r include = F}
 devtools::load_all(".") # general readers: ignore this (mp)
-````
+`````
 
 # Introduction
 
@@ -50,31 +50,27 @@ release. You can find the latest version [here](https://messerlab.org/slim/).
 
 ️⚠️**Also, please make sure to always install the latest version from
 Github before trying out the package by running:**
-
-````{r eval = F}
+```
 devtools::install_github("bodkan/spammr")
 ````
-
 I'm adding bugfixes and new features every couple of hours and it's
 always worth updating to the latest version.
 
 After you have installed to the latest version, you can load the
 package by running:
-
-````{r eval = F}
+```
 library(spammr)
-````
-
+```
 ## Define the world context
 
-````{r }
+`````{r }
 world <- map(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
   crs = "EPSG:3035"    # real projected CRS used internally
 )
 plot(world)
-````
+`````
 
 ## Define some useful geographic regions
 
@@ -91,7 +87,7 @@ population at this point.
 
 ### Part of the African continent in our zoom of the world
 
-````{r }
+`````{r }
 africa <- region(
   "Africa", world,
   coords = list(
@@ -100,11 +96,11 @@ africa <- region(
   )
 )
 plot(africa)
-````
+`````
 
 ### Europe and Anatolian peninsula:
 
-````{r }
+`````{r }
 europe <- region(
   "Western Europe", world,
   coords = list(c(-8, 35), c(-5, 36), c(10, 38), c(20, 35), c(25, 35),
@@ -118,21 +114,21 @@ anatolia <- region(
                 c(30, 43), c(27, 40), c(25, 38))
 )
 plot(anatolia)
-````
+`````
 
 ### Europe _and_ Anatolia
 
 We use this region to restrict Anatolian "farmer" migration to
 Europe further down in this vignette:
 
-````{r }
+`````{r }
 europe_anatolia <-region(
   "Western Europe & Anatolia", world,
   coords = list(c(-10, 35), c(-5, 35), c(10, 38), c(20, 35), c(38, 35),
                 c(40, 40), c(30, 45), c(20, 58), c(-5, 60), c(-15, 50))
 )
 plot(europe_anatolia)
-````
+`````
 
 ## Define population dynamics
 
@@ -155,27 +151,27 @@ make the simulations run faster for demonstration purposes.
 
 ### African population of modern human ancestors:
 
-````{r }
+`````{r }
 afr <- population(
   "AFR", parent = "ancestor", Ne = 100,
   world = world, region = africa
 )
-````
+`````
 
 Below we can see how this object is represented when printed
 out. Under the hood it is much more complicated, but this serves as
 a easy-to-read summary for spotting obvious mistakes.
 
-````{r }
+`````{r }
 afr
-````
+`````
 
 Obviously, we can also plot the population range in the context of
 the defined world:
 
-````{r }
+`````{r }
 plot(afr)
-````
+`````
 
 ### Out-of-Africa migrants
 
@@ -185,7 +181,7 @@ the Ust-Ishim population?). Note that the trajectory is specified
 using "checkpoints" - points along the way between which the
 population moves.
 
-````{r }
+`````{r }
 ooa <- population(
   "OOA", parent = afr, time = 51000, Ne = 200,
   center = c(30, 30), radius = 300, remove = 27000
@@ -199,11 +195,11 @@ ooa <- population(
 ooa
 
 plot(ooa)
-````
+`````
 
 ### Eastern hunter-gatherers
 
-````{r }
+`````{r }
 ehg <- population(
   "EHG", time = 28000, Ne = 400, parent = ooa,
   world,
@@ -217,7 +213,7 @@ ehg <- population(
 ehg
 
 plot(ehg)
-````
+`````
 
 ### Western hunter-gatherers/farmers/present-day Europeans
 
@@ -227,7 +223,7 @@ clumping them here in a single spatial boundary called "EUR", but
 they will obviously change over time through admixture with other
 populations.
 
-````{r }
+`````{r }
 eur <- population(
   name = "EUR", time = 25000, Ne = 10000, parent = ehg,
   world, region = europe
@@ -236,13 +232,13 @@ eur <- population(
 eur
 
 plot(eur)
-````
+`````
 
 ### Caucasian hunter-gatherers/Anatolian farmers
 
 Again, we're oversimplifying here on purpose.
 
-````{r }
+`````{r }
 ana <- population(
   name = "ANA", time = 28000, Ne = 800, parent = ooa,
   world, center = c(34, 38), radius = 700,
@@ -258,11 +254,11 @@ ana <- population(
 ana
 
 plot(ana)
-````
+`````
 
 ### Yamnaya steppe people
 
-````{r }
+`````{r }
 yam <- population(
   name = "YAM", time = 7000, Ne = 600, parent = ehg,
   world, coords = list(
@@ -275,7 +271,7 @@ yam <- population(
 yam
 
 plot(yam)
-````
+`````
 
 ### Yamnaya invading Europe
 
@@ -285,7 +281,7 @@ will stay where it is, while the migrating population will start
 invading the spatial range of Europeans ("Neolithic" population at
 the time):
 
-````{r }
+`````{r }
 yam_migr <- population(
   name = "YAM_migr", time = 6000, Ne = 1000, parent = yam,
   world, coords = list(
@@ -304,7 +300,7 @@ yam_migr <- population(
 yam_migr
 
 plot(yam_migr)
-````
+`````
 
 ## Complete summary of spatial boundaries
 The overloaded `plot()` (in fact, `plot.spammr()`) function is
@@ -314,9 +310,9 @@ model at once. Obviously, this is a lot of multi-dimensional
 information so the plot is definitely not perfect, but it should
 provide a reasonably compact overview of what we've built so far.
 
-````{r fig.width = 7, fig.height = 9}
+`````{r fig.width = 7, fig.height = 9}
 plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
-````
+`````
 
 ## Define admixture events
 
@@ -336,9 +332,9 @@ you'll see that the European and African populations don't have any
 overlap in population ranges. If we try to instruct `spammr` to
 simulate admixture between them, we will get an error:
 
-````{r eval = F}
+`````{r eval = F}
 admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
-````
+`````
 
 ```
 Not a sufficient overlap between population ranges of EUR and AFR
@@ -352,27 +348,27 @@ this, which can be done by `spammr`'s `plot()` function and the
 optional parameter `pop_facets = F` (which is set to `TRUE` by
 default):
 
-````{r }
+`````{r }
 plot(eur, afr, pop_facets = F)
-````
+`````
 
 Many models will have several admixture events, which we can
 collect in a simple R list:
 
-````{r }
+`````{r }
 admixtures <- list(
   admixture(from = ana, to = eur, rate = 0.5, start = 8500, end = 7000),
   admixture(from = yam_migr, to = eur, rate = 0.7, start = 4000, end = 3000)
 )
-````
+`````
 
 Note that the `admixture()` function returns nothing else than a
 data frame collecting all the admixture parameters for the
 `compile()` step below:
 
-````{r }
+`````{r }
 admixtures
-````
+`````
 
 ## Compile the whole model and load it in SLiM
 The most crucial function of `spammr` is `compile()`. It takes all
@@ -386,14 +382,14 @@ will be saved automatically in a dedicated directory in a format
 that is understood by the backend SLiM script provided by `spammr`
 (more on that below).
 
-````{r }
+`````{r }
 compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
   output_dir = "~/Desktop/test-model/",
   overwrite = TRUE
 )
-````
+`````
 
 What do the files in the model directory look like? In an ideal
 case, you as a user should never worry about these things. In fact,
@@ -406,30 +402,30 @@ First of all, we can inspect the contents of the directory and see
 that it does, indeed, contain all defined spatial maps (now PNG
 files, which is what SLiM requires).
 
-````{r }
+`````{r }
 list.files("~/Desktop/test-model", pattern = "*.png")
-````
+`````
 
 It also contains a series of tab-separated configuration tables:
 
-````{r }
+`````{r }
 list.files("~/Desktop/test-model", pattern = "*.tsv")
-````
+`````
 
 These tables contain summaries of the model parameters which we
 defined graphically above, namely:
 
 - the table of population splits:
 
-````{r }
+`````{r }
 read.table("~/Desktop/test-model/splits.tsv", header = T)
-````
+`````
 
 - the table of admixture events:
 
-````{r }
+`````{r }
 read.table("~/Desktop/test-model/admixtures.tsv", header = T)
-````
+`````
 
 - and finally, the table of populations whose spatial maps will be
 updated throughout the simulation, as well as the times of those
@@ -437,9 +433,9 @@ updates (this table is rather long, so we're taking a peek at only
 the first couple of lines):
 
 
-````{r }
+`````{r }
 head(read.table("~/Desktop/test-model/maps.tsv", header = T))
-````
+`````
 
 ## Running the simulation
 The way we feed the entire serialized model into SLiM is through
@@ -485,23 +481,23 @@ the SLiM side. This can be verified by inspecting files named as
 `output_ancestry_XXX.tsv` in the specified output directory. See
 the manpage of `run()` for more details.
 
-````{r eval = FALSE}
+`````{r eval = FALSE}
 run(
   model_dir = "~/Desktop/test-model",
   gen_time = 30, burnin = 200, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
   interaction = 30, spread = 20, ancestry_markers = 1
 )
-````
+`````
 
 In case we instructed `spammr` to track ancestry proportions, we
 can visualize them using the builtin `diagnostics()` function. This
 is quite barebones for now and the way diagnostics are generated is
 subject to change...
 
-````{r eval = FALSE}
+`````{r eval = FALSE}
 diagnostics("~/Desktop/test-model")
-````
+`````
 
 ## Animating the population movement
 
@@ -512,12 +508,12 @@ provides an animation function, which accepts one of the output
 files of the SLiM simulation backend script, and renders the
 individual movement over time as a GIF animation.
 
-````{r eval = FALSE}
+`````{r eval = FALSE}
 animate(
   locations = "~/Desktop/test-model/output_locations.tsv.gz",
   gif = "~/Desktop/test-model/output_anim.gif",
   gen_time = 30,
   nframes = 200
 )
-````
+`````
 

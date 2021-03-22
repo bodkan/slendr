@@ -49,8 +49,9 @@ devtools::load_all(".") # general readers: ignore this (mp)
 #' ️⚠️**Also, please make sure to always install the latest version from
 #' Github before trying out the package by running:**
 
-#+ eval = F
-devtools::install_github("bodkan/spammr")
+#' ```
+#' devtools::install_github("bodkan/spammr")
+#' ````
 
 #' I'm adding bugfixes and new features every couple of hours and it's
 #' always worth updating to the latest version.
@@ -58,8 +59,9 @@ devtools::install_github("bodkan/spammr")
 #' After you have installed to the latest version, you can load the
 #' package by running:
 
-#+ eval = F
-library(spammr)
+#' ```
+#' library(spammr)
+#' ```
 
 #' ## Define the world context
 
