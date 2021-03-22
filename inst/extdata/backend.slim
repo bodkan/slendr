@@ -439,20 +439,22 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
 }
 
 // Get a value of a column from the table of admixture events
-function (numeric) admix_param(s$ col, [Ni$ admix_i = NULL]) {
+function (numeric) admix_param(s$ col, [Ni admix_i = NULL]) {
 	if (isNULL(ADMIX_TABLE)) return(NULL);
 	// column names allowed
-	columns = c("source", "target", "tstart", "tend", "rate");
+	columns = c("source", "target", "tstart", "tend", "rate", "overlap");
 
 	// lookup column name number for indexing into a populations matrix
 	col_i = which(columns == col) ;
 	if (length(col_i) != 1)
 		stop("Incorrect specification of a column in the table of admixture events");
 
-	if (isNULL(admix_i)) pop_i = seqLen(nrow(ADMIX_TABLE));
+	if (!isNULL(admix_i)) indices = which(seqAlong(nrow(ADMIX_TABLE)) == admix_i);
 
-	// extract the value and convert it if necessary
+	// extract the value
 	val = drop(ADMIX_TABLE[admix_i, col_i]);
+
+	// rate needs to be convered to float
 	if (col == "rate") val = val / 100;
 
 	return val;
