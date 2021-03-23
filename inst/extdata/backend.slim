@@ -417,7 +417,7 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
 		stop("Both population ID and filtering criterion cannot be specified.");
 
 	// column names allowed
-	columns = c("pop", "Ne", "x", "y", "source", "tsplit", "tremove");
+	columns = c("pop", "Ne", "source", "tsplit", "tremove");
 
 	// lookup column name number for indexing into a populations matrix
 	col_i = which(columns == col) ;
