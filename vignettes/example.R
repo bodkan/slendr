@@ -309,7 +309,7 @@ plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
 #' simulate admixture between them, we will get an error:
 
 #+ eval = F
-admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
+admixtures <- admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000, overlap = F)
 
 #' ```
 #' Not a sufficient overlap between population ranges of EUR and AFR
@@ -330,8 +330,8 @@ plot(eur, afr, pop_facets = F)
 #' collect in a simple R list:
 
 admixtures <- list(
-  admixture(from = ana, to = eur, rate = 0.5, start = 8500, end = 7000),
-  admixture(from = yam_migr, to = eur, rate = 0.7, start = 4000, end = 3000)
+  admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
+  admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000)
 )
 
 #' Note that the `admixture()` function returns nothing else than a
@@ -419,18 +419,18 @@ head(read.table("~/Desktop/test-model/maps.tsv", header = T))
 #' during model specification above into SLiM's inetrnal units of
 #' generations).
 #'
-#' Finally, the parameter `ancestry_markers` determines whether we
-#' want our SLiM script to track ancestry proportion changes in all
+#' Finally, the parameter `track_ancestry` determines whether we want
+#' our SLiM script to track ancestry proportion changes in all
 #' simulations using neutral markers uniformly distributed along each
-#' genome. If this parameter is set to 0, no ancestry tracking is
-#' done. Any other positive integer value specifies how many markers
-#' we want to use for tracking. Please note that a non-zero value
-#' *significantly* increases the simulation overhead, not only because
-#' the actual burden of mutation objects being simulated, but also
-#' because the ancestry is calculated in each generation for each
-#' simulated genome. In this case, we're tracking ancestry using a
-#' single non-recombining marker to minimize computational time for
-#' the purposes of this demo.
+#' genome. The default value of this parameter is `FALSE` and no
+#' ancestry tracking is performed. Any other non-zero, posititive
+#' integer value specifies how many markers we want to use for
+#' tracking. Please note that this *significantly* increases the
+#' simulation overhead, not only because the actual burden of mutation
+#' objects being simulated, but also because the ancestry is
+#' calculated in each generation for each simulated genome. In this
+#' case, we're tracking ancestry using a single non-recombining marker
+#' to minimize computational time for the purposes of this demo.
 #'
 #' Ancestry tracking is very useful to monitor that the spatial
 #' admixture model as defined in R really behaves as expected even on
@@ -443,7 +443,7 @@ run(
   model_dir = "~/Desktop/test-model",
   gen_time = 30, burnin = 200, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
-  interaction = 30, spread = 20, ancestry_markers = 1
+  interaction = 30, spread = 20, track_ancestry = 1
 )
 
 #' In case we instructed `spammr` to track ancestry proportions, we
@@ -453,20 +453,3 @@ run(
 
 #+ eval = FALSE
 diagnostics("~/Desktop/test-model")
-
-#' ## Animating the population movement
-#'
-#' As you could see when you ran the `spammr` model in SLiMgui, it can
-#' be a bit hard to catch all that is going on visually during the
-#' simulation. To have a better idea about what is going on, `spammr`
-#' provides an animation function, which accepts one of the output
-#' files of the SLiM simulation backend script, and renders the
-#' individual movement over time as a GIF animation.
-
-#+ eval = FALSE
-animate(
-  locations = "~/Desktop/test-model/output_locations.tsv.gz",
-  gif = "~/Desktop/test-model/output_anim.gif",
-  gen_time = 30,
-  nframes = 200
-)
