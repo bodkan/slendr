@@ -362,7 +362,8 @@ admixture <- function(from, to, rate, start, end, overlap = 0.2) {
   to_remove <- attr(to, "remove")
   if (from_remove > start | from_remove > end) {
     stop(sprintf(
-      "Population %s scheduled for removal at time %d, which is outside of the %d-%d admixture time range",
+      "Population %s scheduled for removal at time %d,
+which is outside of the %d-%d admixture time range",
       from_name, from_remove, start, end),
       call. = FALSE
     )
@@ -383,9 +384,13 @@ outside of the specified %d-%d admixture time window.",
   if (overlap != FALSE & (length(area_overlap) == 0 | area_overlap / area_from < overlap)) {
     stop(sprintf("
 Not a sufficient overlap between population ranges of %s and %s
-at time %d. The required overlap is %.2f, but the current overlap is
-%f. Please check the spatial maps of both populations by running
-`plot(%s, %s, pop_facets = F)`.",
+at time %d. The required overlap is %.2f but the current overlap is
+%f.
+
+Please check the spatial maps of both populations by running
+`plot(%s, %s, pop_facets = F)` and either adjust the admixture
+parameters or add `overlap = F` which will instruct spammr to simulate
+admixture without spatial overlap.",
       from_name, to_name, start, overlap, area_overlap / area_from,
       deparse(substitute(from)),
       deparse(substitute(to)), call. = FALSE))
@@ -397,6 +402,6 @@ at time %d. The required overlap is %.2f, but the current overlap is
     tstart = start,
     tend = end,
     rate = rate,
-    overlap = as.integer(overlap == TRUE)
+    overlap = as.integer(overlap == TRUE | overlap > 0)
   )
 }
