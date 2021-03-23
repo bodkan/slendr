@@ -78,7 +78,7 @@
       <h1 data-toc-skip>A full example of a spatial population model</h1>
                         <h4 class="author">Martin Petr</h4>
             
-            <h4 class="date">2021-03-22</h4>
+            <h4 class="date">2021-03-23</h4>
       
       
       <div class="hidden name"><code>example.Rmd</code></div>
@@ -113,7 +113,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpeikuWX", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp9Mpgo8", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span></code></pre></div>
@@ -443,7 +443,7 @@
 <p>One thing to note, however, is the fact that it is crucial that the <code>from</code> and <code>to</code> populations have some sort of overlapping spatial range in order to simulate admixture. This is probably rather obvious, as populations can’t mix in space-time if they don’t overlap at a given point in space-time.</p>
 <p>For example, if you look at the spatial boundaries plotted above, you’ll see that the European and African populations don’t have any overlap in population ranges. If we try to instruct <code>spammr</code> to simulate admixture between them, we will get an error:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">eur</span>, to <span class="op">=</span> <span class="va">afr</span>, rate <span class="op">=</span> <span class="fl">0.1</span>, start <span class="op">=</span> <span class="fl">20000</span>, end <span class="op">=</span> <span class="fl">15000</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">admixtures</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">eur</span>, to <span class="op">=</span> <span class="va">afr</span>, rate <span class="op">=</span> <span class="fl">0.1</span>, start <span class="op">=</span> <span class="fl">20000</span>, end <span class="op">=</span> <span class="fl">15000</span>, overlap <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <pre><code>Not a sufficient overlap between population ranges of EUR and AFR
 at time 20000. The required overlap is 0.20, but the current overlap is
 0.000000. Please check the spatial maps of both populations by running
@@ -455,19 +455,19 @@ at time 20000. The required overlap is 0.20, but the current overlap is
 <p>Many models will have several admixture events, which we can collect in a simple R list:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">admixtures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-  <span class="fu"><a href="../reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">8500</span>, end <span class="op">=</span> <span class="fl">7000</span><span class="op">)</span>,
-  <span class="fu"><a href="../reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam_migr</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.7</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span>
+  <span class="fu"><a href="../reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,
+  <span class="fu"><a href="../reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam_migr</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.75</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>Note that the <code><a href="../reference/admixture.html">admixture()</a></code> function returns nothing else than a data frame collecting all the admixture parameters for the <code><a href="../reference/compile.html">compile()</a></code> step below:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">admixtures</span>
 <span class="co">#&gt; [[1]]</span>
-<span class="co">#&gt;   from_name to_name tstart tend rate</span>
-<span class="co">#&gt; 1       ANA     EUR   8500 7000  0.5</span>
+<span class="co">#&gt;   from_name to_name tstart tend rate overlap</span>
+<span class="co">#&gt; 1       ANA     EUR   8000 6000  0.5       1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; [[2]]</span>
-<span class="co">#&gt;   from_name to_name tstart tend rate</span>
-<span class="co">#&gt; 1  YAM_migr     EUR   4000 3000  0.7</span></code></pre></div>
+<span class="co">#&gt;   from_name to_name tstart tend rate overlap</span>
+<span class="co">#&gt; 1  YAM_migr     EUR   4000 3000 0.75       1</span></code></pre></div>
 </div>
 <div id="compile-the-whole-model-and-load-it-in-slim" class="section level2">
 <h2 class="hasAnchor">
@@ -515,9 +515,9 @@ at time 20000. The required overlap is 0.20, but the current overlap is
 </ul>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"~/Desktop/test-model/admixtures.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="co">#&gt;   from to tstart tend rate</span>
-<span class="co">#&gt; 1    3  4   8500 7000   50</span>
-<span class="co">#&gt; 2    6  4   4000 3000   70</span></code></pre></div>
+<span class="co">#&gt;   from to tstart tend rate overlap</span>
+<span class="co">#&gt; 1    3  4   8000 6000   50       1</span>
+<span class="co">#&gt; 2    6  4   4000 3000   75       1</span></code></pre></div>
 <ul>
 <li>and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather long, so we’re taking a peek at only the first couple of lines):</li>
 </ul>
@@ -537,30 +537,18 @@ at time 20000. The required overlap is 0.20, but the current overlap is
 <p>The way we feed the entire serialized model into SLiM is through the <code><a href="../reference/run.html">run()</a></code> function, which understands the format of the model directory created by the <code><a href="../reference/compile.html">compile()</a></code> function and generates a SLiM script (using a backend skeleton script which is a part of this package and can be found by calling <code><a href="https://rdrr.io/r/base/system.file.html">system.file("inst/extdata/backend.slim", package = "spammr")</a></code>, in case you’d like to peek into its internals).</p>
 <p>Note that when you run this model in SLiMgui (which should automatically open by calling the command below), you will see populations pop up in individual panels. This is how SLiMgui tracks spatial ranges of different populations. <em>Everyone is still simulated in the same world</em>, it’s just that the simulation visualizes individual population ranges separately to reduce clutter.</p>
 <p>A couple of more things to note: notice that the function accepts several parameters determining the length of the simulated sequence and the recombination rate, as well as the length of the burnin period, the total time of the simulation run (excluding burnin), and generation time (which is used to convert all times defined during model specification above into SLiM’s inetrnal units of generations).</p>
-<p>Finally, the parameter <code>ancestry_markers</code> determines whether we want our SLiM script to track ancestry proportion changes in all simulations using neutral markers uniformly distributed along each genome. If this parameter is set to 0, no ancestry tracking is done. Any other positive integer value specifies how many markers we want to use for tracking. Please note that a non-zero value <em>significantly</em> increases the simulation overhead, not only because the actual burden of mutation objects being simulated, but also because the ancestry is calculated in each generation for each simulated genome. In this case, we’re tracking ancestry using a single non-recombining marker to minimize computational time for the purposes of this demo.</p>
+<p>Finally, the parameter <code>track_ancestry</code> determines whether we want our SLiM script to track ancestry proportion changes in all simulations using neutral markers uniformly distributed along each genome. The default value of this parameter is <code>FALSE</code> and no ancestry tracking is performed. Any other non-zero, posititive integer value specifies how many markers we want to use for tracking. Please note that this <em>significantly</em> increases the simulation overhead, not only because the actual burden of mutation objects being simulated, but also because the ancestry is calculated in each generation for each simulated genome. In this case, we’re tracking ancestry using a single non-recombining marker to minimize computational time for the purposes of this demo.</p>
 <p>Ancestry tracking is very useful to monitor that the spatial admixture model as defined in R really behaves as expected even on the SLiM side. This can be verified by inspecting files named as <code>output_ancestry_XXX.tsv</code> in the specified output directory. See the manpage of <code><a href="../reference/run.html">run()</a></code> for more details.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run.html">run</a></span><span class="op">(</span>
   model_dir <span class="op">=</span> <span class="st">"~/Desktop/test-model"</span>,
   gen_time <span class="op">=</span> <span class="fl">30</span>, burnin <span class="op">=</span> <span class="fl">200</span>, sim_length <span class="op">=</span> <span class="fl">70000</span>,
   seq_length <span class="op">=</span> <span class="fl">100</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>,
-  interaction <span class="op">=</span> <span class="fl">30</span>, spread <span class="op">=</span> <span class="fl">20</span>, ancestry_markers <span class="op">=</span> <span class="fl">1</span>
+  interaction <span class="op">=</span> <span class="fl">30</span>, spread <span class="op">=</span> <span class="fl">20</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
 <p>In case we instructed <code>spammr</code> to track ancestry proportions, we can visualize them using the builtin <code><a href="../reference/diagnostics.html">diagnostics()</a></code> function. This is quite barebones for now and the way diagnostics are generated is subject to change…</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span><span class="st">"~/Desktop/test-model"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="animating-the-population-movement" class="section level2">
-<h2 class="hasAnchor">
-<a href="#animating-the-population-movement" class="anchor"></a>Animating the population movement</h2>
-<p>As you could see when you ran the <code>spammr</code> model in SLiMgui, it can be a bit hard to catch all that is going on visually during the simulation. To have a better idea about what is going on, <code>spammr</code> provides an animation function, which accepts one of the output files of the SLiM simulation backend script, and renders the individual movement over time as a GIF animation.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span>
-  locations <span class="op">=</span> <span class="st">"~/Desktop/test-model/output_locations.tsv.gz"</span>,
-  gif <span class="op">=</span> <span class="st">"~/Desktop/test-model/output_anim.gif"</span>,
-  gen_time <span class="op">=</span> <span class="fl">30</span>,
-  nframes <span class="op">=</span> <span class="fl">200</span>
-<span class="op">)</span></code></pre></div>
 </div>
 </div>
   </div>
