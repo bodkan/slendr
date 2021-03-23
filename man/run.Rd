@@ -13,7 +13,7 @@ run(
   recomb_rate,
   interaction,
   spread,
-  ancestry_markers = 0,
+  track_ancestry = FALSE,
   output_prefix = file.path(normalizePath(model_dir), "output_")
 )
 }
@@ -40,11 +40,10 @@ parameter}
 \item{spread}{Sigma parameter of the offspring spread normal
 distribution}
 
-\item{ancestry_markers}{Number of neutral ancestry markers to track
-ancestry in all populations. Note that this significantly
-increases the simulation overhead as it instructs SLiM to
-generate neutral mutations along each simulated genome. The value
-0 disables ancestry tracking (default).}
+\item{track_ancestry}{Track ancestry proportion dynamics in all
+populations throughout the simulations (default FALSE)? If a
+non-zero integer is provided, ancestry will be tracked using the
+number number of neutral ancestry markers equal to this number.}
 
 \item{output_prefix}{Directory and shared prefix of all output
 files (all output files will be placed into the model directory
