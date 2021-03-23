@@ -309,7 +309,7 @@ plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
 #' simulate admixture between them, we will get an error:
 
 #+ eval = F
-admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
+admixtures <- admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000, overlap = F)
 
 #' ```
 #' Not a sufficient overlap between population ranges of EUR and AFR
@@ -338,7 +338,7 @@ admixtures <- list(
 #' data frame collecting all the admixture parameters for the
 #' `compile()` step below:
 
-admixtures <- admixture(from = ooa, to = afr, rate = 0.1, start = 40000, end = 39000, minimum = 0)
+admixtures
 
 #' ## Compile the whole model and load it in SLiM
 
@@ -443,7 +443,7 @@ run(
   model_dir = "~/Desktop/test-model",
   gen_time = 30, burnin = 200, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
-  interaction = 30, spread = 20, ancestry_markers = 1
+  interaction = 30, spread = 20, track_ancestry = F
 )
 
 #' In case we instructed `spammr` to track ancestry proportions, we
