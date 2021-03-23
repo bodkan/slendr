@@ -122,7 +122,7 @@ compile <- function(populations, output_dir, admixtures = NULL, overwrite = FALS
 
   # save the population splits table
   write.table(
-    splits_table[, c("pop_id", "Ne", "x", "y", "parent_id", "tsplit", "tremove")],
+    splits_table[, c("pop_id", "Ne", "parent_id", "tsplit", "tremove")],
     file.path(output_dir, "splits.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
