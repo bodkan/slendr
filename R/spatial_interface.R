@@ -332,13 +332,15 @@ map <- function(xrange, yrange, crs = "EPSG:4326") {
 #' @param rate Scalar value in the range (0, 1] specifying the proportion of
 #'   migration over given time period
 #' @param start,end Start and end of the admixture event
-#' @param minimum Proportion of the spatial range of the migrating population
-#'   \code{from} required to overlap with the range of the \code{to} population
+#' @param overlap Proportion of the spatial range of the migrating population
+#'   \code{from} required to overlap with the range of the \code{to} population.
+#'   Value \code{FALSE} disables the overlap requirement, allowing admixture
+#'   between non-overlapping populations.
 #'
 #' @return Object of the class data.frame
 #'
 #' @export
-admixture <- function(from, to, rate, start, end, minimum = 0.2) {
+admixture <- function(from, to, rate, start, end, overlap = 0.2) {
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
@@ -360,7 +362,8 @@ admixture <- function(from, to, rate, start, end, minimum = 0.2) {
   to_remove <- attr(to, "remove")
   if (from_remove > start | from_remove > end) {
     stop(sprintf(
-      "Population %s scheduled for removal at time %d, which is outside of the %d-%d admixture time range",
+      "Population %s scheduled for removal at time %d,
+which is outside of the %d-%d admixture time range",
       from_name, from_remove, start, end),
       call. = FALSE
     )
@@ -374,17 +377,21 @@ outside of the specified %d-%d admixture time window.",
   }
 
   # calculate the overlap of spatial ranges between source and target
-  overlap <- sf::st_intersection(region_from, region_to)
-  area_overlap <- as.numeric(sum(sf::st_area(overlap)))
+  region_overlap <- sf::st_intersection(region_from, region_to)
+  area_overlap <- as.numeric(sum(sf::st_area(region_overlap)))
   area_from <- as.numeric(sum(sf::st_area(region_from)))
 
-  if (length(area_overlap) == 0 || area_overlap / area_from < minimum) {
+  if (overlap != FALSE & (length(area_overlap) == 0 | area_overlap / area_from < overlap)) {
     stop(sprintf("
 Not a sufficient overlap between population ranges of %s and %s
-at time %d. The required overlap is %.2f, but the current overlap is
-%f. Please check the spatial maps of both populations by running
-`plot(%s, %s, pop_facets = F)`.",
-      from_name, to_name, start, minimum, area_overlap / area_from,
+at time %d. The required overlap is %.2f but the current overlap is
+%f.
+
+Please check the spatial maps of both populations by running
+`plot(%s, %s, pop_facets = F)` and either adjust the admixture
+parameters or add `overlap = F` which will instruct spammr to simulate
+admixture without spatial overlap.",
+      from_name, to_name, start, overlap, area_overlap / area_from,
       deparse(substitute(from)),
       deparse(substitute(to)), call. = FALSE))
   }
@@ -394,6 +401,7 @@ at time %d. The required overlap is %.2f, but the current overlap is
     to_name = to_name,
     tstart = start,
     tend = end,
-    rate = rate
+    rate = rate,
+    overlap = as.integer(overlap == TRUE | overlap > 0)
   )
 }
