@@ -302,18 +302,17 @@ save_png <- function(raster, path) {
 #'   parameter
 #' @param spread Sigma parameter of the offspring spread normal
 #'   distribution
-#' @param ancestry_markers Number of neutral ancestry markers to track
-#'   ancestry in all populations. Note that this significantly
-#'   increases the simulation overhead as it instructs SLiM to
-#'   generate neutral mutations along each simulated genome. The value
-#'   0 disables ancestry tracking (default).
+#' @param track_ancestry Track ancestry proportion dynamics in all
+#'   populations throughout the simulations (default FALSE)? If a
+#'   non-zero integer is provided, ancestry will be tracked using the
+#'   number number of neutral ancestry markers equal to this number.
 #' @param output_prefix Directory and shared prefix of all output
 #'   files (all output files will be placed into the model directory
 #'   by default)
 #'
 #' @export
 run <- function(model_dir, gen_time, burnin, sim_length, seq_length, recomb_rate,
-                interaction, spread, ancestry_markers = 0,
+                interaction, spread, track_ancestry = FALSE,
                 output_prefix = file.path(normalizePath(model_dir), "output_")) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
@@ -323,6 +322,12 @@ run <- function(model_dir, gen_time, burnin, sim_length, seq_length, recomb_rate
 
   if (!length(list.files(model_dir, pattern = "*.png") == 0))
     stop(sprintf("Directory '%s' does not contain any spammr spatial raster maps", model_dir), call. = FALSE)
+
+  if (!is.logical(track_ancestry) & !is.numeric(track_ancestry))
+    stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
+a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
+  else
+    markers_count <- as.integer(track_ancestry)
 
   # compile the SLiM backend script
   template <- readLines(system.file("inst/extdata/backend.slim", package = "spammr"))
@@ -337,7 +342,7 @@ run <- function(model_dir, gen_time, burnin, sim_length, seq_length, recomb_rate
     spread = spread,
     seq_length = seq_length,
     recomb_rate = recomb_rate,
-    ancestry_markers = ancestry_markers
+    ancestry_markers = markers_count
   )
   rendered <- whisker::whisker.render(template, subst)
 
