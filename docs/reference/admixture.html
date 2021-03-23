@@ -127,7 +127,7 @@
     <p>Define an admixture event</p>
     </div>
 
-    <pre class="usage"><span class='fu'>admixture</span><span class='op'>(</span><span class='va'>from</span>, <span class='va'>to</span>, <span class='va'>rate</span>, <span class='va'>start</span>, <span class='va'>end</span>, minimum <span class='op'>=</span> <span class='fl'>0.2</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>admixture</span><span class='op'>(</span><span class='va'>from</span>, <span class='va'>to</span>, <span class='va'>rate</span>, <span class='va'>start</span>, <span class='va'>end</span>, overlap <span class='op'>=</span> <span class='fl'>0.2</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,9 +146,11 @@ migration over given time period</p></td>
       <td><p>Start and end of the admixture event</p></td>
     </tr>
     <tr>
-      <th>minimum</th>
+      <th>overlap</th>
       <td><p>Proportion of the spatial range of the migrating population
-<code>from</code> required to overlap with the range of the <code>to</code> population</p></td>
+<code>from</code> required to overlap with the range of the <code>to</code> population.
+Value <code>FALSE</code> disables the overlap requirement, allowing admixture
+between non-overlapping populations.</p></td>
     </tr>
     </table>
 

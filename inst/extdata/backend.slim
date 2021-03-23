@@ -104,7 +104,7 @@ initialize() {
 	i = 0;
 	sim.addSubpop(i, pop_param("Ne", i));
 	set_map(i, sim.generation);
-	set_coords(get_pop(i).individuals);
+	set_coordinates(get_pop(i).individuals, i);
 	add_markers(i);
 
 	// unique() is called in case multiple events are scheduled at once
@@ -119,24 +119,22 @@ initialize() {
 	if (exists("T_ADMIX_START")) {
 		sim.rescheduleScriptBlock(s2, generations = unique(T_ADMIX_START));
 		sim.rescheduleScriptBlock(s3, generations = unique(T_ADMIX_END));
-		//		sim.rescheduleScriptBlock(s4, generations = unique(T_ADMIX + 1));
 	} else {
 		sim.deregisterScriptBlock(s2);
 		sim.deregisterScriptBlock(s3);
 	}
-	sim.deregisterScriptBlock(s4);
 
 	// population cleanups
 	if (exists("T_CLEANUPS"))
-		sim.rescheduleScriptBlock(s5, generations = unique(T_CLEANUPS + 1));
+		sim.rescheduleScriptBlock(s4, generations = unique(T_CLEANUPS + 1));
 	else
-		sim.deregisterScriptBlock(s5);
+		sim.deregisterScriptBlock(s4);
 
 	// spatial map changes
 	if (exists("T_MAPS"))
-		sim.rescheduleScriptBlock(s6, generations = unique(T_MAPS));
+		sim.rescheduleScriptBlock(s5, generations = unique(T_MAPS));
 	else
-		sim.deregisterScriptBlock(s6);
+		sim.deregisterScriptBlock(s5);
 
 	// output callbacks
 	sim.rescheduleScriptBlock(s99, start = T_BURNIN, end = T_BURNIN + T_LENGTH);
@@ -162,7 +160,7 @@ s1 late() {
 	for (i in pop_ids) {
 		split_pop(i);
 		set_map(i, sim.generation);
-		set_coords(get_pop(i).individuals);
+		set_coordinates(get_pop(i).individuals, i);
 		add_markers(i);
 	}
 }
@@ -191,21 +189,8 @@ s3 late() {
 	}
 }
 
-// Set the location of migrants to that of the receiving population
-// (this is only used for "instantaneous" admixture without spatial overlap)
-s4 late() {
-	// get the new migrants in all populations that recently arrived
-	// and re-set their coordinates
-	for (i in which(sim.generation - 1 == T_ADMIX)) {
-		pop = admix_param("target", i);
-		status = get_pop(pop).individuals.migrant;
-		migrants = get_pop(pop).individuals[status];
-		set_coords(migrants);
-	}
-}
-
 // Remove populations which are no longer necessary
-s5 late() {
+s4 late() {
 	// get the ID of the target population from the table
 	// of admixture events and remove them
 	pop_ids = pop_param("pop", present = "tremove")[sim.generation - 1 == T_CLEANUPS];
@@ -216,7 +201,7 @@ s5 late() {
 }
 
 // Update population spatial maps
-s6 late() {
+s5 late() {
 	// get populations whose spatial maps should be updated
 	pop_ids = maps_param("pop")[sim.generation == T_MAPS];
 	for (i in pop_ids) {
@@ -262,12 +247,33 @@ s9999 late() {
 //////////////////////////////////////////////////////////////////////
 
 modifyChild() {
-	pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
-	if (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0)
-		return F;
+	// in spatially non-overlapping admixture, assign offspring locations uniformly
+	if (child.migrant) {
+		// get indices of currently active admixture events
+		active = T_ADMIX_START <= sim.generation & sim.generation <= T_ADMIX_END;
+		// get population of the offspring's parents (i.e. the source of admixture)
+		source = sourceSubpop.id == admix_param("source");
+		// get the offspring's new population(i.e. the target of admixture)
+		target = subpop.id == admix_param("target");
+		// get the index of the single matching admixture event
+		index = admix_param("overlap", which(active & target & source));
 
-	child.setSpatialPosition(pos);
-	return T;
+		if (!admix_param("overlap", index)) {
+			set_coordinates(child, subpop.id, log = F);
+			return T;
+		}
+	}
+
+	// for spatially overlapping admixture and non-migrant offspring,
+	// propose location based on one of its parents
+	pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
+
+	if (subpop.spatialMapValue("world", pos) == 1.0) {
+		return F;
+	} else {
+		child.setSpatialPosition(pos);
+		return T;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -385,15 +391,13 @@ function (void) add_markers(i$ pop) {
 	}
 }
 
-// Distribute the set of individuals around specified coordinates
-function (void) set_coords(lifso<Individual> inds) {
-	log_output("distributing individuals");
+// Distribute individuals uniformly within the boundary of the given population
+function (void) set_coordinates(lifso<Individual> inds, i$ pop, [l$ log = T]) {
+	if (log) log_output("distributing individuals");
 	for (ind in inds) {
-	    pop = ind.subpopulation;
 	    do pos = c(runif(1, 0, WIDTH), runif(1, 0, HEIGHT));
-	    while (!pop.pointInBounds(pos) | pop.spatialMapValue("world", pos) == 1.0);
-	    ind.x = pos[0];
-	    ind.y = pos[1];
+	    while (get_pop(pop).spatialMapValue("world", pos) == 1.0);
+	    ind.setSpatialPosition(pos);
 	}
 }
 
@@ -438,20 +442,22 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
 }
 
 // Get a value of a column from the table of admixture events
-function (numeric) admix_param(s$ col, [Ni$ admix_i = NULL]) {
+function (numeric) admix_param(s$ col, [Ni admix_i = NULL]) {
 	if (isNULL(ADMIX_TABLE)) return(NULL);
 	// column names allowed
-	columns = c("source", "target", "tstart", "tend", "rate");
+	columns = c("source", "target", "tstart", "tend", "rate", "overlap");
 
 	// lookup column name number for indexing into a populations matrix
 	col_i = which(columns == col) ;
 	if (length(col_i) != 1)
 		stop("Incorrect specification of a column in the table of admixture events");
 
-	if (isNULL(admix_i)) pop_i = seqLen(nrow(ADMIX_TABLE));
+	if (!isNULL(admix_i)) indices = which(seqAlong(nrow(ADMIX_TABLE)) == admix_i);
 
-	// extract the value and convert it if necessary
+	// extract the value
 	val = drop(ADMIX_TABLE[admix_i, col_i]);
+
+	// rate needs to be convered to float
 	if (col == "rate") val = val / 100;
 
 	return val;
