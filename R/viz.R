@@ -157,7 +157,7 @@ get_intermediate_edges <- function(split_edges, admixture_edges) {
 
   hanging_nodes <- unique(edges$x[!edges$x %in% edges$y])[-1]
 
-  intermediate_edges <- lapply(hanging_nodes, function(node) {
+  for (node in hanging_nodes) {
     # get population name of the node and the time of the corresponding
     # admixture or split event
     pop <- gsub("-\\d+$", "", node)
@@ -169,16 +169,16 @@ get_intermediate_edges <- function(split_edges, admixture_edges) {
       .$y
     prev_node
 
-    data.frame(
+    edges <- rbind(edges, data.frame(
       x = prev_node,
       y = node,
       type = "intermediate",
       time = time,
       rate = NA
-    )
-  }) %>% do.call(rbind, .)
+    ))
+  }
 
-  intermediate_edges
+  edges
 }
 
 #' Plot admixture graph based on given model configuration
