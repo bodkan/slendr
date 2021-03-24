@@ -75,11 +75,13 @@ read_ancestries <- function(model_dir) {
   }) %>% do.call(rbind, .)
 }
 
-#' Plot simulation diagnostics
+#' Plot simulated ancestry proportions
+#'
+#' @param output_dir Directory with simulation output files
 #'
 #' @export
-diagnostics <- function(model_dir, gen_time = NULL) {
-  anc_wide <- read_ancestries(model_dir)
+ancestries <- function(output_dir, gen_time = NULL) {
+  anc_wide <- read_ancestries(output_dir)
 
   # thank god for tidyverse, base R reshaping is truly awful...  but
   # it's not worth dragging along a huge dependency if we can do this
@@ -114,4 +116,105 @@ diagnostics <- function(model_dir, gen_time = NULL) {
     coord_cartesian(ylim = c(0, 1)) +
     ggtitle("Ancestry proportions in populations during the course of their existence") +
     theme_minimal()
+}
+
+
+#' Create a table of population split edges for graph visualization
+get_split_edges <- function(split_table) {
+  split_edges <- split_table[split_table$parent != "ancestor",
+                             c("parent", "pop", "tsplit")]
+  names(split_edges) <- c("from", "to", "time")
+  split_edges$type <- "split"
+  split_edges$rate <- NA
+  split_edges$x <- paste0(split_edges$from, "-", split_edges$time)
+  split_edges$y <- paste0(split_edges$to, "-", split_edges$time)
+
+  split_edges <- split_edges[, c("x", "y", "type", "time", "rate")]
+  rownames(split_edges) <- NULL
+
+  split_edges
+}
+
+#' Create a table of population admixture edges for graph visualization
+get_admixture_edges <- function(admix_table) {
+  admix_edges <- admix_table[, c("from_name", "to_name", "rate", "tstart")]
+  names(admix_edges) <- c("from", "to", "rate", "time")
+  admix_edges$type <- "admixture"
+  admix_edges$rate <- sprintf("%.1f%%", admix_edges$rate * 100)
+  admix_edges$x <- paste0(admix_edges$from, "-", admix_edges$time)
+  admix_edges$y <- paste0(admix_edges$to, "-", admix_edges$time)
+
+  admix_edges[, c("x", "y", "type", "time", "rate")]
+}
+
+#' Create a table of 'intermediate' edges for graph visualization
+get_intermediate_edges <- function(split_edges, admix_edges) {
+  # get intermediate admixture nodes
+  admix_nodes <- unique(c(admix_edges$x, admix_edges$y))
+
+  intermediate_edges <- lapply(admix_nodes, function(admix_node) {
+    # get population name of this admixture node and the time of the
+    # corresponding admixture event
+    pop <- gsub("-\\d+$", "", admix_node)
+    time <- admix_edges[admix_edges$x == admix_node |
+                          admix_edges$y == admix_node, ]$time
+
+    # get the previous most population split node
+    prev_node <- split_edges[
+      (grepl(pop, split_edges$x) | grepl(pop, split_edges$y)) &
+        (split_edges$time >= time | time <= split_edges$time), c("x", "y")] %>%
+      unlist %>%
+      .[grepl(pop, .)]
+
+    data.frame(
+      x = prev_node,
+      y = admix_node,
+      type = "intermediate",
+      time = NA,
+      rate = NA
+    )
+  }) %>% do.call(rbind, .)
+
+  rownames(intermediate_edges) <- NULL
+
+  intermediate_edges
+}
+
+#' Plot admixture graph based on given model configuration
+#'
+#' @param populations List of \code{spammr_pop} objects
+#' @param admixtures List of admixture events created by the
+#'   \code{admixture} function
+#'
+#' @import ggplot2 ggraph
+#' @export
+graph <- function(populations, admixtures) {
+  # summarise model configuration into a tabular form
+  split_table <- compile_splits(populations)
+  admix_table <- do.call(rbind, admixtures)
+
+  split_edges <- get_split_edges(split_table)
+  admixture_edges <- get_admixture_edges(admix_table)
+  intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges)
+
+  edges <- rbind(split_edges, admixture_edges, intermediate_edges)
+  nodes <- data.frame(name = unique(c(edges$x, edges$y)))
+
+  g <- tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
+
+  ggraph(g) +
+    # admixture edges along with admixture rates
+    geom_edge_diagonal(
+      aes(filter = !is.na(rate), linetype = type, label = rate,
+          start_cap = label_rect(node1.name),
+          end_cap = label_rect(node2.name)),
+      angle_calc = "along",
+      label_dodge = unit(2.5, "mm"),
+      arrow = arrow(length = unit(4, "mm"))
+    ) +
+    # population split edges (no rates labeled)
+    geom_edge_diagonal(aes(filter = is.na(rate), linetype = type),
+                           arrow = arrow(length = unit(4, "mm"))) +
+    geom_node_label(aes(label = name)) +
+    scale_linetype_manual(values = c(3, 0))
 }
