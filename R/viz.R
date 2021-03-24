@@ -151,34 +151,32 @@ get_admixture_edges <- function(admix_table) {
 #'
 #' For plotting the entire admixture graph, just nodes representing population
 #' splits are not enough. We also need nodes (population states) which are not
-#' explicitly simulated, but we need them to plot admixture edges appropriately.
+#' explicitly simulated as separate population, but they represent time points
+#' needed to plot admixture edges.
 get_intermediate_edges <- function(split_edges, admixture_edges) {
   edges <- rbind(split_edges, admixture_edges)
 
-  hanging_nodes <- unique(edges$x[!edges$x %in% edges$y])[-1]
+  all_nodes <- c(edges$x, edges$y)
 
-  for (node in hanging_nodes) {
-    # get population name of the node and the time of the corresponding
-    # admixture or split event
-    pop <- gsub("-\\d+$", "", node)
-    time <- as.integer(gsub(paste0(pop, "-"), "", node))
+  intermediate_nodes <- lapply(
+    unique(gsub("-\\d+", "", all_nodes)),
+    function(i) {
+      nodes <- all_nodes[grepl(paste0(i, "-"), all_nodes)]
+      times <- as.integer(gsub(".*-", "", nodes))
+      unique(nodes[order(times, decreasing = TRUE)])
+    }
+  )
 
-    # get the previous most population split node
-    prev_node <- edges[grepl(pop, edges$y) & edges$time > time, ] %>%
-      .[nrow(.), ] %>%
-      .$y
-    prev_node
-
-    edges <- rbind(edges, data.frame(
-      x = prev_node,
-      y = node,
-      type = "intermediate",
-      time = time,
-      rate = NA
-    ))
-  }
-
-  edges
+  lapply(intermediate_nodes, function(nodes) {
+    if (length(nodes) == 1) return(NULL)
+    pairs <- cbind(nodes[-length(nodes)], nodes[-1]) %>%
+      as.data.frame %>%
+      setNames(c("x", "y"))
+    pairs$type <- "intermediate"
+    pairs$time <- as.integer(gsub(".*-", "", pairs$y))
+    pairs$rate <- NA
+    pairs
+  }) %>% do.call(rbind, .)
 }
 
 #' Plot admixture graph based on given model configuration
@@ -216,6 +214,5 @@ graph <- function(populations, admixtures) {
     # population split edges (no rates labeled)
     geom_edge_diagonal(aes(filter = is.na(rate), linetype = type),
                            arrow = arrow(length = unit(4, "mm"))) +
-    geom_node_label(aes(label = name)) +
-    scale_linetype_manual(values = c(3, 0))
+    geom_node_label(aes(label = name))
 }

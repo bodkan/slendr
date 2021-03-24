@@ -9,5 +9,6 @@ get_intermediate_edges(split_edges, admixture_edges)
 \description{
 For plotting the entire admixture graph, just nodes representing population
 splits are not enough. We also need nodes (population states) which are not
-explicitly simulated, but we need them to plot admixture edges appropriately.
+explicitly simulated as separate population, but they represent time points
+needed to plot admixture edges.
 }
