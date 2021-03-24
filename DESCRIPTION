@@ -24,7 +24,8 @@ Imports:
     gganimate,
     png,
     patchwork,
-    ijtiff
+    ijtiff,
+    ggraph
 Suggests: 
     knitr,
     rmarkdown
