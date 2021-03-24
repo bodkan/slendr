@@ -148,34 +148,35 @@ get_admixture_edges <- function(admix_table) {
 }
 
 #' Create a table of 'intermediate' edges for graph visualization
-get_intermediate_edges <- function(split_edges, admix_edges) {
-  # get intermediate admixture nodes
-  admix_nodes <- unique(c(admix_edges$x, admix_edges$y))
+#'
+#' For plotting the entire admixture graph, just nodes representing population
+#' splits are not enough. We also need nodes (population states) which are not
+#' explicitly simulated, but we need them to plot admixture edges appropriately.
+get_intermediate_edges <- function(split_edges, admixture_edges) {
+  edges <- rbind(split_edges, admixture_edges)
 
-  intermediate_edges <- lapply(admix_nodes, function(admix_node) {
-    # get population name of this admixture node and the time of the
-    # corresponding admixture event
-    pop <- gsub("-\\d+$", "", admix_node)
-    time <- admix_edges[admix_edges$x == admix_node |
-                          admix_edges$y == admix_node, ]$time
+  hanging_nodes <- unique(edges$x[!edges$x %in% edges$y])[-1]
+
+  intermediate_edges <- lapply(hanging_nodes, function(node) {
+    # get population name of the node and the time of the corresponding
+    # admixture or split event
+    pop <- gsub("-\\d+$", "", node)
+    time <- as.integer(gsub(paste0(pop, "-"), "", node))
 
     # get the previous most population split node
-    prev_node <- split_edges[
-      (grepl(pop, split_edges$x) | grepl(pop, split_edges$y)) &
-        (split_edges$time >= time | time <= split_edges$time), c("x", "y")] %>%
-      unlist %>%
-      .[grepl(pop, .)]
+    prev_node <- edges[grepl(pop, edges$y) & edges$time > time, ] %>%
+      .[nrow(.), ] %>%
+      .$y
+    prev_node
 
     data.frame(
       x = prev_node,
-      y = admix_node,
+      y = node,
       type = "intermediate",
-      time = NA,
+      time = time,
       rate = NA
     )
   }) %>% do.call(rbind, .)
-
-  rownames(intermediate_edges) <- NULL
 
   intermediate_edges
 }
@@ -191,10 +192,10 @@ get_intermediate_edges <- function(split_edges, admix_edges) {
 graph <- function(populations, admixtures) {
   # summarise model configuration into a tabular form
   split_table <- compile_splits(populations)
-  admix_table <- do.call(rbind, admixtures)
+  admixture_table <- do.call(rbind, admixtures)
 
   split_edges <- get_split_edges(split_table)
-  admixture_edges <- get_admixture_edges(admix_table)
+  admixture_edges <- get_admixture_edges(admixture_table)
   intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges)
 
   edges <- rbind(split_edges, admixture_edges, intermediate_edges)

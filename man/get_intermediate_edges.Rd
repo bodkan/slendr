@@ -4,8 +4,10 @@
 \alias{get_intermediate_edges}
 \title{Create a table of 'intermediate' edges for graph visualization}
 \usage{
-get_intermediate_edges(split_edges, admix_edges)
+get_intermediate_edges(split_edges, admixture_edges)
 }
 \description{
-Create a table of 'intermediate' edges for graph visualization
+For plotting the entire admixture graph, just nodes representing population
+splits are not enough. We also need nodes (population states) which are not
+explicitly simulated, but we need them to plot admixture edges appropriately.
 }
