@@ -153,22 +153,29 @@ get_admixture_edges <- function(admix_table) {
 #' splits are not enough. We also need nodes (population states) which are not
 #' explicitly simulated as separate population, but they represent time points
 #' needed to plot admixture edges.
-get_intermediate_edges <- function(split_edges, admixture_edges) {
-  edges <- rbind(split_edges, admixture_edges)
+get_intermediate_edges <- function(split_edges, admixture_edges, ancestral_edges) {
+  edges <- rbind(split_edges, admixture_edges, ancestral_edges)
 
   all_nodes <- c(edges$x, edges$y)
 
   intermediate_nodes <- lapply(
-    unique(gsub("-\\d+", "", all_nodes)),
+    unique(gsub("-.*$", "", all_nodes)),
     function(i) {
+      # grab all nodes and their times belonging to the current population i
       nodes <- all_nodes[grepl(paste0(i, "-"), all_nodes)]
-      times <- as.integer(gsub(".*-", "", nodes))
-      unique(nodes[order(times, decreasing = TRUE)])
+      times <- gsub(".*-", "", nodes)
+      # leave out the ancestral node/time from the sorting (in case it is even
+      # present as a node with a non-integer "ancestral" time)
+      ancestor <- nodes[times == "ancestral"]
+      nodes <- nodes[times != "ancestral"]
+      times <- as.integer(times[times != "ancestral"])
+      c(ancestor, unique(nodes[order(times, decreasing = TRUE)]))
     }
   )
 
   lapply(intermediate_nodes, function(nodes) {
     if (length(nodes) == 1) return(NULL)
+    # construct data frame of consecutive, linked pairs of nodes
     pairs <- cbind(nodes[-length(nodes)], nodes[-1]) %>%
       as.data.frame %>%
       setNames(c("x", "y"))
@@ -176,6 +183,83 @@ get_intermediate_edges <- function(split_edges, admixture_edges) {
     pairs$time <- as.integer(gsub(".*-", "", pairs$y))
     pairs$rate <- NA
     pairs
+  }) %>% do.call(rbind, .)
+}
+
+#' Get table of node labels in the graph
+get_nodes <- function(edges) {
+  nodes <- unique(c(edges$x, edges$y))
+
+  # find the first occurrence of a population in the model based
+  # on the time label
+  pops <- gsub("-.*$", "", nodes)
+  times <- gsub("^.*-", "", nodes)
+
+  ancestral_nodes <- nodes[times == "ancestral"]
+  ancestral_pops <- pops[times == "ancestral"]
+
+  nonancestral_pops <- pops[times != "ancestral"]
+  nonancestral_nodes <- nodes[times != "ancestral"]
+  nonancestral_times <- as.integer(times[times != "ancestral"])
+
+  ordered <- order(nonancestral_times, decreasing = TRUE)
+
+  # non-duplicated elements in the vector of population names
+  # indicate the first position of such element
+  nodes <- data.frame(
+    name = c(ancestral_nodes, nonancestral_nodes[ordered]),
+    pop = c(ancestral_pops, nonancestral_pops[ordered]),
+    time = c(rep("ancestral", times = length(ancestral_nodes)),
+             nonancestral_times[ordered]),
+    first = !duplicated(c(ancestral_pops, nonancestral_pops[ordered]))
+  )
+  nodes$type <- sapply(nodes$name, function(i) {
+    type <- grep("intermediate", edges[edges$y == i, ]$type, invert = TRUE, value = TRUE)
+    if (length(type) > 0)
+      return(type)
+    else
+      return("intermediate")
+  })
+  nodes$type <- ifelse(nodes$time == "ancestral", "split", nodes$type)
+  nodes
+}
+
+get_ancestral_edges <- function(split_edges, split_table) {
+  ancestral_pops <- split_table[split_table$tsplit == Inf, ]$pop
+  lapply(ancestral_pops, function(i) {
+    # get the first non-ancestral node of this population
+    next_node <- split_edges[grepl(i, split_edges$x), ]
+    if (length(next_node)) {
+      data.frame(
+        x = paste0(i, "-ancestral"),
+        y = next_node$x,
+        type = "ancestral",
+        time = next_node$time,
+        rate = NA
+      )
+    } else {
+      return(NULL)
+    }
+  }) %>% do.call(rbind, .)
+}
+
+
+get_terminal_edges <- function(split_edges, admixture_edges, split_table) {
+  edges <- rbind(split_edges, admixture_edges)
+  lapply(1:nrow(split_table), function(i) {
+    pop <- split_table[i, ]
+
+    prev_time <- max(edges[grepl(pop$pop, edges$x) | grepl(pop$pop, edges$y), ]$time)
+    prev_node <- paste0(pop$pop, "-", prev_time)
+    tremove <- if (pop$tremove == -1) 0 else pop$tremove
+
+    data.frame(
+      x = prev_node,
+      y = paste0(pop$pop, "-", tremove),
+      type = "terminal",
+      time = tremove,
+      rate = NA
+    )
   }) %>% do.call(rbind, .)
 }
 
@@ -194,25 +278,50 @@ graph <- function(populations, admixtures) {
 
   split_edges <- get_split_edges(split_table)
   admixture_edges <- get_admixture_edges(admixture_table)
-  intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges)
+  ancestral_edges <- get_ancestral_edges(split_edges, split_table)
+  terminal_edges <- get_terminal_edges(split_edges, admixture_edges, split_table)
+  intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges, ancestral_edges)
 
-  edges <- rbind(split_edges, admixture_edges, intermediate_edges)
-  nodes <- data.frame(name = unique(c(edges$x, edges$y)))
+  edges <- rbind(
+    split_edges,
+    admixture_edges,
+    ancestral_edges,
+    terminal_edges,
+    intermediate_edges
+  )
+  nodes <- get_nodes(edges)
 
   g <- tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
 
-  ggraph(g) +
+  ggraph(g, layout = "kk") +
     # admixture edges along with admixture rates
-    geom_edge_diagonal(
-      aes(filter = !is.na(rate), linetype = type, label = rate,
+    geom_edge_link(
+      aes(filter = type == "admixture", label = rate,
           start_cap = label_rect(node1.name),
           end_cap = label_rect(node2.name)),
       angle_calc = "along",
-      label_dodge = unit(2.5, "mm"),
+      label_dodge = unit(5, "mm"),
       arrow = arrow(length = unit(4, "mm"))
     ) +
-    # population split edges (no rates labeled)
-    geom_edge_diagonal(aes(filter = is.na(rate), linetype = type),
-                           arrow = arrow(length = unit(4, "mm"))) +
-    geom_node_label(aes(label = name))
+    # population split/continuation edges (no rates labeled)
+    geom_edge_link(aes(filter = type != "admixture",
+                       start_cap = label_rect(node1.name),
+                       end_cap = label_rect(node2.name)),
+                       label_dodge = unit(10, "mm"),
+                   arrow = arrow(length = unit(4, "mm"))) +
+
+    geom_node_label(aes(filter = type == "split", fill = pop,
+                        label = sprintf("%s split\nat %s", pop, time))) +
+
+    geom_node_label(aes(filter = type == "admixture", fill = pop,
+                        label = sprintf("admixture\nat %s", time))) +
+
+    geom_node_label(aes(filter = type == "terminal",
+                        label = sprintf("removed at %s", time)),
+                    alpha = 0.5, fill = "white") +
+
+    geom_node_label(aes(filter = type == "intermediate", fill = pop,
+                        label = name)) +
+
+    theme(legend.position = "right")
 }
