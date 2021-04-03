@@ -108,21 +108,25 @@ graph(
  admixtures = admixtures
 )
 
-# compile(
-#   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
-#   admixtures = admixtures,
-#   output_dir = "~/Desktop/test-model/",
-#   overwrite = TRUE
+compile(
+ populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
+ admixtures = admixtures,
+ output_dir = "~/Desktop/test-model/",
+ overwrite = TRUE
+)
+
+run(
+ model_dir = "~/Desktop/test-model",
+ gen_time = 30, burnin = 200, sim_length = 70000,
+ seq_length = 1e7, recomb_rate = 1e-7,
+ interaction = 30, spread = 20, track_ancestry = T
+)
+
+ancestries("~/Desktop/test-model/", gen_time = 30)
+
+# animate(
+#   "~/Desktop/test-model/output_locations.tsv.gz",
+#   "~/Desktop/test-model/output.gif",
+#   nframes = 200
 # )
-
-## run(
-##   model_dir = "~/Desktop/test-model",
-##   gen_time = 30, burnin = 200, sim_length = 70000,
-##   seq_length = 1e7, recomb_rate = 1e-7,
-##   interaction = 30, spread = 20, track_ancestry = T
-## )
-
-#diagnostics("~/Desktop/test-model/", gen_time = 30)
-#
-# #
 
