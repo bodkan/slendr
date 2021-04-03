@@ -153,8 +153,8 @@ get_admixture_edges <- function(admix_table) {
 #' splits are not enough. We also need nodes (population states) which are not
 #' explicitly simulated as separate population, but they represent time points
 #' needed to plot admixture edges.
-get_intermediate_edges <- function(split_edges, admixture_edges, ancestral_edges) {
-  edges <- rbind(split_edges, admixture_edges, ancestral_edges)
+get_intermediate_edges <- function(split_edges, admixture_edges) {
+  edges <- rbind(split_edges, admixture_edges)
 
   all_nodes <- c(edges$x, edges$y)
 
@@ -263,12 +263,12 @@ graph <- function(populations, admixtures, removals = TRUE) {
   split_edges <- get_split_edges(split_table)
   admixture_edges <- get_admixture_edges(admixture_table)
   terminal_edges <- get_terminal_edges(split_edges, admixture_edges, split_table)
-  intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges, ancestral_edges)
+  intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges)
 
   edges <- rbind(
     split_edges,
     admixture_edges,
-      terminal_edges,
+    terminal_edges,
     intermediate_edges
   )
   nodes <- get_nodes(edges)
