@@ -4,7 +4,7 @@
 \alias{get_intermediate_edges}
 \title{Create a table of 'intermediate' edges for graph visualization}
 \usage{
-get_intermediate_edges(split_edges, admixture_edges)
+get_intermediate_edges(split_edges, admixture_edges, ancestral_edges)
 }
 \description{
 For plotting the entire admixture graph, just nodes representing population
