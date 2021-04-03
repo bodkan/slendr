@@ -187,7 +187,8 @@ graph <- function(populations, admixtures, removals = TRUE) {
                                           "continuation" = "solid",
                                           "admixture" = "solid")) +
 
-    guides(fill = guide_legend("population")) +
+    guides(fill = guide_legend("population"),
+           edge_linetype = FALSE) +
 
     theme_void() +
     theme(legend.position = "right",
