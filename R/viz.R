@@ -111,12 +111,11 @@ ancestries <- function(output_dir, gen_time = NULL) {
 #' @param populations List of \code{spammr_pop} objects
 #' @param admixtures List of admixture events created by the
 #'   \code{admixture} function
-#' @param removals Plot population removals?
 #'
 #' @import ggplot2 ggraph
 #' @export
-graph <- function(populations, admixtures, removals = TRUE) {
-  # summarise model configuration into a tabular form
+graph <- function(populations, admixtures) {
+  # summarize model configuration into a tabular form
   split_table <- compile_splits(populations)
   admixture_table <- do.call(rbind, admixtures)
 
