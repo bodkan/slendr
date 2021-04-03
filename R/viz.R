@@ -135,7 +135,7 @@ graph <- function(populations, admixtures, removals = TRUE) {
 
   g <- tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
 
-  ggraph(g) +
+  ggraph(g, layout = "sugiyama") +
 
     # admixture edges along with admixture rates
     geom_edge_link(
@@ -176,15 +176,18 @@ graph <- function(populations, admixtures, removals = TRUE) {
                         label = sprintf("admixture at %s", time))) +
 
     geom_node_label(aes(filter = type == "intermediate", fill = pop,
-                        label = pop)) +
+                        label = sprintf("from %s", pop))) +
 
     geom_node_label(aes(filter = type == "terminal",
                         label = sprintf("removed\nat %s",
                                         ifelse(time == 0, "the end", time))),
                     fill = "white") +
 
-    guides(fill = guide_legend("population"),
-           linetype = guide_legend("edge")) +
+    scale_edge_linetype_manual(values = c("split" = "solid",
+                                          "continuation" = "solid",
+                                          "admixture" = "solid")) +
+
+    guides(fill = guide_legend("population")) +
 
     theme_void() +
     theme(legend.position = "right",
