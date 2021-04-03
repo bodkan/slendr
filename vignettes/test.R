@@ -103,8 +103,6 @@ admixtures <- list(
   admixture(from = yam_migr, to = eur, rate = 0.7, start = 4000, end = 3000)
 )
 
-populations <- list(afr, ooa, ehg, eur, ana, yam, yam_migr)
-
 graph(
  populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
  admixtures = admixtures
