@@ -308,11 +308,9 @@ One of the aims of the _spammr_ package is formalizing the specification of spat
 
 ### Polygon population ranges
 
-We can define fine population boundaries using a polygon geometry object (`coords = ` argument) or a region object created by the `region()` function above. Again, as a reminder, note that all coordinates are described in the context of the geographic CRS:
+We can define fine population boundaries using a polygon geometry object (`coords = ` argument) or a region object created by the `region()` function above. Again, as a reminder, note that all coordinates are described in the context of the geographic CRS.
 
-#### African population of modern human ancestors
-
-We restrict the spatial boundary of the African population to the `africa` region defined above:
+First, let's create the African ancestors of modern humans. We restrict the spatial boundary of the African population to the `africa` region defined above:
 
 ```{r}
 afr <- population(
