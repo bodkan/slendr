@@ -282,39 +282,34 @@ save_png <- function(raster, path) {
 
 #' Open the compiled spatial model in SLiM
 #'
-#' When run, the compiled SLiM script will save the location of each
-#' individual that ever lived, and will also record a sample of
-#' ancient individuals from each population in a tree sequence data
-#' structure which will be saved for all "present-day" individuals at
-#' the end of the simulation. This obviously does not make sense for
-#' all potential uses and the exact specification of output formats
-#' will be changed at some point soon.
+#' When run, the compiled SLiM script will save the location of each individual
+#' that ever lived, and will also record a sample of ancient individuals from
+#' each population in a tree sequence data structure which will be saved for all
+#' "present-day" individuals at the end of the simulation. This obviously does
+#' not make sense for all potential uses and the exact specification of output
+#' formats will be changed at some point soon.
 #'
-#' @param model_dir Directory where \code{compile} saved all spatial
-#'   maps and other model configuration files
+#' @param model_dir Directory where \code{compile} saved all spatial maps and
+#'   other model configuration files
 #' @param gen_time Generation time (in model's time units, i.e. years)
-#' @param burnin Length of the burnin (in model's time units,
-#'   i.e. years)
-#' @param sim_length Total length of the simulation (in model's time
-#'   units, i.e. years)
-#' @param seq_length Total length of the simulated sequence in
-#'   base-pairs
+#' @param burnin Length of the burnin (in model's time units, i.e. years)
+#' @param sim_length Total length of the simulation (in model's time units, i.e.
+#'   years)
+#' @param seq_length Total length of the simulated sequence in base-pairs
 #' @param recomb_rate Recombination rate of the simulated sequence
-#' @param interaction Spatial interaction/mate choice distance
-#'   parameter
-#' @param spread Sigma parameter of the offspring spread normal
-#'   distribution
-#' @param track_ancestry Track ancestry proportion dynamics in all
-#'   populations throughout the simulations (default FALSE)? If a
-#'   non-zero integer is provided, ancestry will be tracked using the
-#'   number number of neutral ancestry markers equal to this number.
-#' @param output_prefix Directory and shared prefix of all output
-#'   files (all output files will be placed into the model directory
-#'   by default)
+#' @param interaction,max_interaction Standard deviation of the spatial interaction/mate choice
+#'   Gaussian distance kernel and the maximum interaction distance
+#' @param spread Sigma parameter of the offspring spread normal distribution
+#' @param track_ancestry Track ancestry proportion dynamics in all populations
+#'   throughout the simulations (default FALSE)? If a non-zero integer is
+#'   provided, ancestry will be tracked using the number number of neutral
+#'   ancestry markers equal to this number.
+#' @param output_prefix Directory and shared prefix of all output files (all
+#'   output files will be placed into the model directory by default)
 #'
 #' @export
 run <- function(model_dir, gen_time, burnin, sim_length, seq_length, recomb_rate,
-                competition, mate_choice, spread, track_ancestry = FALSE,
+                interaction, max_interaction = interaction * 3, spread, track_ancestry = FALSE,
                 output_prefix = file.path(normalizePath(model_dir), "output_"),
                 ..., include = NULL) {
   if (!dir.exists(model_dir))
@@ -341,14 +336,15 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     gen_time = gen_time,
     burnin = burnin,
     sim_length = sim_length,
-    competition = competition,
-    mate_choice = mate_choice,
+    interaction = interaction,
+    max_interaction = max_interaction,
     spread = spread,
     seq_length = seq_length,
     recomb_rate = recomb_rate,
     ancestry_markers = markers_count
   )
   if (length(list(...)) > 0 ) subst <- c(subst, list(...))
+  print(subst)
   if (!is.null(include)) {
     template <- c(template, sapply(include, readLines))
   }
