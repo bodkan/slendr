@@ -148,7 +148,7 @@ git clone https://github.com/bodkan/spammr</code></pre>
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpIw7z4N", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpIAnPNa", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -239,11 +239,8 @@ git clone https://github.com/bodkan/spammr</code></pre>
 <div id="polygon-population-ranges" class="section level3">
 <h3 class="hasAnchor">
 <a href="#polygon-population-ranges" class="anchor"></a>Polygon population ranges</h3>
-<p>We can define fine population boundaries using a polygon geometry object (<code>coords =</code> argument) or a region object created by the <code><a href="../reference/region.html">region()</a></code> function above. Again, as a reminder, note that all coordinates are described in the context of the geographic CRS:</p>
-<div id="african-population-of-modern-human-ancestors" class="section level4">
-<h4 class="hasAnchor">
-<a href="#african-population-of-modern-human-ancestors" class="anchor"></a>African population of modern human ancestors</h4>
-<p>We restrict the spatial boundary of the African population to the <code>africa</code> region defined above:</p>
+<p>We can define fine population boundaries using a polygon geometry object (<code>coords =</code> argument) or a region object created by the <code><a href="../reference/region.html">region()</a></code> function above. Again, as a reminder, note that all coordinates are described in the context of the geographic CRS.</p>
+<p>First, let’s create the African ancestors of modern humans. We restrict the spatial boundary of the African population to the <code>africa</code> region defined above:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
   <span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, Ne <span class="op">=</span> <span class="fl">100</span>,
@@ -252,7 +249,6 @@ git clone https://github.com/bodkan/spammr</code></pre>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
-</div>
 </div>
 <div id="circular-population-ranges" class="section level3">
 <h3 class="hasAnchor">
