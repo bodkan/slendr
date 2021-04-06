@@ -77,7 +77,7 @@ ggplot2::ggplot() +
 
 ## Installation and setup
 
-First, let's install the latest version of the package and load it. The package carries some SLiM dependencies which makes the installation procedure a little cumbersome. This will be fixed soon, but for now you have to first:
+First, let's install the latest version of the package and load it. The package carries some SLiM dependencies which makes the installation procedure a little cumbersome. This will be fixed soon, but for now you have to do the following stepd:
 
 1. Fetch the current version from Github:
 
@@ -86,7 +86,19 @@ cd <directory of choice>
 git clone https://github.com/bodkan/spammr
 ```
 
-2. Load the package into R:
+2. Install the `devtools` package (unless you already have it, of course):
+
+```{r eval = F}
+install.packages("devtools")
+```
+
+3. Install _spammr_'s R dependencies:
+
+```{r eval = F}
+devtools::install_deps("<directory of choice>/spammr")
+```
+
+4. Load the _spammr_ package into R:
 
 ```{r eval = F}
 devtools::load_all("<directory of choice>/spammr")
