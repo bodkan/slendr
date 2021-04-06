@@ -1,8 +1,6 @@
 home:
   - text: Learn more
     href: http://bodkan.net/admixr/articles/tutorial.html
-  - text: Learn more
-    href: http://bodkan.net/admixr/articles/example.html
 
 reference:
   - title: Geographic features
@@ -18,12 +16,15 @@ reference:
     - move
     - admixture
 
-  - title: Plotting, compilation, export
+  - title: Model visualisation and diagnostics
     contents:
-    - compile
-    - graph
-    - run
-    - animate
-    - diagnostics
     - plot.spammr
     - print.spammr
+    - graph
+    - animate
+    - ancestries
+
+  - title: Model compilation and simulation
+    contents:
+    - compile
+    - run

@@ -1,8 +1,5 @@
 #' Plot spatio-temporal population distributions
 #'
-#' Plot the spatio-temporal distributions of populations and
-#' geographic regions across a map.
-#'
 #' If only geographic regions are given, they are colored. If both
 #' them and populations are given, only populations are specified.
 #'

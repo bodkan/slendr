@@ -33,10 +33,6 @@ and other geographic boundaries?}
 \item{nrow, ncol}{Number of columns or rows in the facet plot}
 }
 \description{
-Plot the spatio-temporal distributions of populations and
-geographic regions across a map.
-}
-\details{
 If only geographic regions are given, they are colored. If both
 them and populations are given, only populations are specified.
 }
