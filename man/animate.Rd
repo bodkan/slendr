@@ -2,9 +2,9 @@
 % Please edit documentation in R/viz.R
 \name{animate}
 \alias{animate}
-\title{Create an animation out of locations of simulated individuals over time}
+\title{Animate the simulated population dynamics}
 \usage{
-animate(locations, gif = NULL, gen_time = NULL, nframes)
+animate(locations, gif = NULL, gen_time = NULL, nframes = 100)
 }
 \arguments{
 \item{locations}{Tab-separated table with locations of individuals throughout
@@ -21,5 +21,5 @@ If \code{gif = NULL}, return gganimate animation object. Otherwise a GIF
 file is saved and no value is returned.
 }
 \description{
-Create an animation out of locations of simulated individuals over time
+Animate the simulated population dynamics
 }

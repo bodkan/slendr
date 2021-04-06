@@ -1,4 +1,4 @@
-#' Create an animation out of locations of simulated individuals over time
+#' Animate the simulated population dynamics
 #'
 #' @param locations Tab-separated table with locations of individuals throughout
 #'   the simulation saved by the backend SLiM script
@@ -11,7 +11,7 @@
 #'
 #' @import ggplot2
 #' @export
-animate <- function(locations, gif = NULL, gen_time = NULL, nframes) {
+animate <- function(locations, gif = NULL, gen_time = NULL, nframes = 100) {
   locs <- read.table(locations, header = TRUE)
   locs$pop <- factor(locs$pop)
   locs$popname <- paste0("pop", locs$pop)
@@ -30,7 +30,7 @@ animate <- function(locations, gif = NULL, gen_time = NULL, nframes) {
   locs$tblock <- factor(locs$tblock, levels = ordered)
 
   # lower sample density for plotting
-  locs <- dplyr::sample_n(locs, 10000)
+  #locs <- dplyr::sample_n(locs, 10000)
 
   p <- ggplot(locs, aes(x, y, color = popname)) +
     geom_point(alpha = 0.5) +
