@@ -7,20 +7,23 @@ vignette: >
  %\VignetteEncoding{UTF-8}
  %\VignetteIndexEntry{A full example of a spatial population model}
  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-`````{r include = F}
+```{r include = F}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 5,
   fig.height = 4
 )
+```
 
-`````
-`````{r include = F}
+```{r include = F}
 devtools::load_all(".") # general readers: ignore this (mp)
-`````
+```
 
 # Introduction
 
@@ -45,12 +48,12 @@ are still present in that script.
 
 ## Requirements
 
-**This R package requires SLiM version 3.6** and will not work with an older
-release. You can find the latest version [here](https://messerlab.org/slim/).
+**This R package requires SLiM version 3.6** and will not work with an older release. You can find the latest version [here](https://messerlab.org/slim/).
 
 ️⚠️**Also, please make sure to always install the latest version from
 Github before trying out the package by running:**
-```
+
+```{r eval = F}
 devtools::install_github("bodkan/spammr")
 ````
 I'm adding bugfixes and new features every couple of hours and it's
@@ -58,27 +61,26 @@ always worth updating to the latest version.
 
 After you have installed to the latest version, you can load the
 package by running:
-```
+
+```{r eval = F}
 library(spammr)
 ```
+
 ## Define the world context
 
-`````{r }
+```{r}
 world <- map(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
   crs = "EPSG:3035"    # real projected CRS used internally
 )
+
 plot(world)
-`````
+```
 
 ## Define some useful geographic regions
 
-As we will se below and in the [tutorial](tutorial.html), there are
-several options to define population spatial ranges using geometric
-objects (circles, arbitrary polygons, etc.). Defining a population
-range using a geographic region object such as those we create here
-is another useful option.
+As we will se below and in the [tutorial](tutorial.html), there are several options to define population spatial ranges using geometric objects (circles, arbitrary polygons, etc.). Defining a population range using a geographic region object such as those we create here is another useful option.
 
 Note that these are _not_ population boundaries (not yet anyway)!
 These mean nothing else but labeling some generic geographic
@@ -87,7 +89,7 @@ population at this point.
 
 ### Part of the African continent in our zoom of the world
 
-`````{r }
+```{r }
 africa <- region(
   "Africa", world,
   coords = list(
@@ -96,11 +98,11 @@ africa <- region(
   )
 )
 plot(africa)
-`````
+```
 
 ### Europe and Anatolian peninsula:
 
-`````{r }
+```{r }
 europe <- region(
   "Western Europe", world,
   coords = list(c(-8, 35), c(-5, 36), c(10, 38), c(20, 35), c(25, 35),
@@ -114,21 +116,22 @@ anatolia <- region(
                 c(30, 43), c(27, 40), c(25, 38))
 )
 plot(anatolia)
-`````
+```
 
 ### Europe _and_ Anatolia
 
 We use this region to restrict Anatolian "farmer" migration to
 Europe further down in this vignette:
 
-`````{r }
+```{r }
 europe_anatolia <-region(
   "Western Europe & Anatolia", world,
-  coords = list(c(-10, 35), c(-5, 35), c(10, 38), c(20, 35), c(38, 35),
-                c(40, 40), c(30, 45), c(20, 58), c(-5, 60), c(-15, 50))
+  coords = list(c(-10, 35), c(-5, 35), c(10, 38), c(20, 35),
+                c(38, 35), c(40, 40), c(30, 45), c(20, 58),
+                c(-5, 60), c(-15, 50))
 )
 plot(europe_anatolia)
-`````
+```
 
 ## Define population dynamics
 
@@ -151,37 +154,34 @@ make the simulations run faster for demonstration purposes.
 
 ### African population of modern human ancestors:
 
-`````{r }
+```{r }
 afr <- population(
   "AFR", parent = "ancestor", Ne = 100,
   world = world, region = africa
 )
-`````
+```
 
 Below we can see how this object is represented when printed
 out. Under the hood it is much more complicated, but this serves as
 a easy-to-read summary for spotting obvious mistakes.
 
-`````{r }
+```{r }
 afr
-`````
+```
 
 Obviously, we can also plot the population range in the context of
 the defined world:
 
-`````{r }
+```{r }
 plot(afr)
-`````
+```
 
 ### Out-of-Africa migrants
 
 This population starts in north east Africa and moves in a
-deliberately funny trajectory somewhere to central Eurasia (perhaps
-the Ust-Ishim population?). Note that the trajectory is specified
-using "checkpoints" - points along the way between which the
-population moves.
+deliberately funny trajectory somewhere to central Eurasia (perhaps the Ust-Ishim population?). Note that the trajectory is specified using "checkpoints" - points along the way between which the population moves.
 
-`````{r }
+```{r }
 ooa <- population(
   "OOA", parent = afr, time = 51000, Ne = 200,
   center = c(30, 30), radius = 300, remove = 27000
@@ -195,11 +195,11 @@ ooa <- population(
 ooa
 
 plot(ooa)
-`````
+```
 
 ### Eastern hunter-gatherers
 
-`````{r }
+```{r }
 ehg <- population(
   "EHG", time = 28000, Ne = 400, parent = ooa,
   world,
@@ -213,32 +213,29 @@ ehg <- population(
 ehg
 
 plot(ehg)
-`````
+```
 
 ### Western hunter-gatherers/farmers/present-day Europeans
 
 Those three populations were obviously very different from one
-another, but they broadly occupied the same geographic range. We're
-clumping them here in a single spatial boundary called "EUR", but
-they will obviously change over time through admixture with other
-populations.
+another, but they broadly occupied the same geographic range. We're clumping them here in a single spatial boundary called "EUR", but they will obviously change over time through admixture with other populations.
 
-`````{r }
+```{r }
 eur <- population(
-  name = "EUR", time = 25000, Ne = 10000, parent = ehg,
+  name = "EUR", time = 25000, Ne = 1000, parent = ehg,
   world, region = europe
 )
 
 eur
 
 plot(eur)
-`````
+```
 
 ### Caucasian hunter-gatherers/Anatolian farmers
 
 Again, we're oversimplifying here on purpose.
 
-`````{r }
+```{r }
 ana <- population(
   name = "ANA", time = 28000, Ne = 800, parent = ooa,
   world, center = c(34, 38), radius = 700,
@@ -254,11 +251,11 @@ ana <- population(
 ana
 
 plot(ana)
-`````
+```
 
 ### Yamnaya steppe people
 
-`````{r }
+```{r }
 yam <- population(
   name = "YAM", time = 7000, Ne = 600, parent = ehg,
   world, coords = list(
@@ -271,17 +268,13 @@ yam <- population(
 yam
 
 plot(yam)
-`````
+```
 
 ### Yamnaya invading Europe
 
-To model the migration of the Yamnaya into Europe, we're splitting
-a new "YAM_migr" population from the original Yamnaya. The latter
-will stay where it is, while the migrating population will start
-invading the spatial range of Europeans ("Neolithic" population at
-the time):
+To model the migration of the Yamnaya into Europe, we're splitting a new "YAM_migr" population from the original Yamnaya. The latter will stay where it is, while the migrating population will start invading the spatial range of Europeans ("Neolithic" population at the time):
 
-`````{r }
+```{r }
 yam_migr <- population(
   name = "YAM_migr", time = 6000, Ne = 1000, parent = yam,
   world, coords = list(
@@ -300,236 +293,181 @@ yam_migr <- population(
 yam_migr
 
 plot(yam_migr)
-`````
+```
 
 ## Complete summary of spatial boundaries
+
 The overloaded `plot()` (in fact, `plot.spammr()`) function is
 reasonably smart in terms of plotting different geographic or
-population ranges at once.  We can use this to summarize the entire
-model at once. Obviously, this is a lot of multi-dimensional
-information so the plot is definitely not perfect, but it should
-provide a reasonably compact overview of what we've built so far.
+population ranges at once.  We can use this to summarize the entire model at once. Obviously, this is a lot of multi-dimensional information so the plot is definitely not perfect, but it should provide a reasonably compact overview of what we've built so far.
 
-`````{r fig.width = 7, fig.height = 9}
+```{r fig.width = 7, fig.height = 9}
 plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
-`````
+```
 
 ## Define admixture events
 
 The way `spammr` implements admixture events is by calling the
-`admixture()` function. This function has a very obvious interface
-which you will be able to read from the example below without any
-issues.
+`admixture()` function. This function has a very obvious interface which you will be able to read from the example below without any issues.
 
-One thing to note, however, is the fact that it is crucial that the
-`from` and `to` populations have some sort of overlapping spatial
-range in order to simulate admixture. This is probably rather
-obvious, as populations can't mix in space-time if they don't
-overlap at a given point in space-time.
+One thing to note, however, is the fact that it is crucial that the `from` and `to` populations have some sort of overlapping spatial range in order to simulate admixture. This is probably rather obvious, as populations can't mix in space-time if they don't overlap at a given point in space-time.
 
 For example, if you look at the spatial boundaries plotted above,
-you'll see that the European and African populations don't have any
-overlap in population ranges. If we try to instruct `spammr` to
-simulate admixture between them, we will get an error:
+you'll see that the European and African populations don't have any overlap in population ranges. If we try to instruct `spammr` to simulate admixture between them, we will get an error:
 
-`````{r eval = F}
-admixtures <- admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000, overlap = F)
-`````
+```{r eval = F}
+admixtures <- admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
+```
 
 ```
 Not a sufficient overlap between population ranges of EUR and AFR
-at time 20000. The required overlap is 0.20, but the current overlap is
-0.000000. Please check the spatial maps of both populations by running
-`plot(eur, afr, pop_facets = F)`.
+at time 20000. The required overlap is 0.20 but the current overlap is
+0.000000.
+
+Please check the spatial maps of both populations by running
+`plot(eur, afr, pop_facets = F)` and either adjust the admixture
+parameters or add `overlap = F` which will instruct spammr to simulate
+admixture without spatial overlap.
 ```
+
 The reason for this is a lack of spatial overlap between the two
 populations.  The error message instructs us to visually verify
 this, which can be done by `spammr`'s `plot()` function and the
 optional parameter `pop_facets = F` (which is set to `TRUE` by
 default):
 
-`````{r }
+```{r}
 plot(eur, afr, pop_facets = F)
-`````
+```
 
-Many models will have several admixture events, which we can
+Many models will include multiple admixture events, which we can
 collect in a simple R list:
 
-`````{r }
+```{r}
 admixtures <- list(
   admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
   admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000)
 )
-`````
+```
 
-Note that the `admixture()` function returns nothing else than a
+The `admixture()` function returns nothing else than a
 data frame collecting all the admixture parameters for the
 `compile()` step below:
 
-`````{r }
+```{r}
 admixtures
-`````
+```
 
 ## Visualize the entire history of splits and admixtures
 
-With the couple of code snippets above, we have defined a simple history of
-European populations over the last 50 thousand years. This history includes
-population splits and admixture events as well as other demographic changes.
-While _spammr_ tries to make the formal specification of spatio-temporal
-population dynamics as concise as possible, in the hope to increase
-reproducibility and minimize errors, because the admixture history can be
-very complex and occurs both across space and time, it is hard to really
-visualize everything that will happen on the SLiM side after the simulation
-starts just from the code alone.
+With the couple of code snippets above, we have defined a simple history of European populations over the last 50 thousand years. This history includes population splits and admixture events as well as other demographic changes. While _spammr_ tries to make the formal specification of spatio-temporal population dynamics as concise as possible, in the hope to increase reproducibility and minimize errors, because the admixture history can be very complex and occurs both across space and time, it is hard to really visualize everything that will happen on the SLiM side after the simulation starts just from the code alone.
 
-For this purpose, the package includes a function `graph()` which takes in
-all the information about the relationships between populations (i.e., the
-population and admixture objects we defined above) and plots it all in the
-form of a so-called _admixture graph_ (see
-[here](https://academic.oup.com/genetics/article/192/3/1065/5935193) for a
-discussion of the admixture graph concept).
+For this purpose, the package includes a function `graph()` which takes in all the information about the relationships between populations (i.e., the population and admixture objects we defined above) and plots it all in the form of a so-called _admixture graph_ (see [here](https://academic.oup.com/genetics/article/192/3/1065/5935193) for a discussion of the admixture graph concept).
 
-One important thing to note here is that unlike traditional admixture graphs
-where each node/population is present only once, in the full _spammr_ graph,
-a single population can participate in many admixture events over the course
-of history. This is visualized by assigning a color to each population, and
-different nodes of the same color representing snapshots in time when a
-demographic event affecting that population happens.
+One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full _spammr_ graph, a single population can participate in many admixture events over the course of history. This is visualized by assigning a color to each population, and different nodes of the same color representing snapshots in time when a demographic event affecting that population happens.
 
-`````{r fig.width = 11, fig.height = 12}
+```{r fig.width = 11, fig.height = 12}
 graph(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures
 )
-`````
+```
 
 ## Compile the whole model and load it in SLiM
 
-The most crucial function of `spammr` is `compile()`. It takes all
-population ranges defined across space and time together with list
-of admixture events (this is optional, of course, as some models
-won't include admixture), and then proceeds by converting all
-vectorized spatial ranges to a raster bitmap form. Furthermore, it
-compiles all information about split times, $N_e$ values, admixture
-directions, times and rates, to a series of tables. All of that
-will be saved automatically in a dedicated directory in a format
-that is understood by the backend SLiM script provided by `spammr`
-(more on that below).
+The most crucial function of `spammr` is `compile()`. It takes all population ranges defined across space and time together with list of admixture events (this is optional, of course, as some models won't include admixture), and then proceeds by converting all vectorized spatial ranges to a raster bitmap form. Furthermore, it compiles all information about split times, $N_e$ values, admixture directions, times and rates, to a series of tables. All of that will be saved automatically in a dedicated directory in a format that is understood by the backend SLiM script provided by `spammr` (more on that below).
 
-`````{r }
+```{r eval = F}
 compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  output_dir = "~/Desktop/test-model/",
+  output_dir = "/tmp/test-model",
   overwrite = TRUE
 )
-`````
+```
 
 What do the files in the model directory look like? In an ideal
-case, you as a user should never worry about these things. In fact,
-the whole purpose of `spammr` is to let you work on much higher
-level of abstraction without worrying about these low-level
-details. That said, you might find it useful to see how things are
-stored in the ackground...
+case, you as a user should never worry about these things. In fact, the whole purpose of `spammr` is to let you work on much higher level of abstraction without worrying about these low-level details. That said, you might find it useful to see how things are stored in the background...
 
-First of all, we can inspect the contents of the directory and see
-that it does, indeed, contain all defined spatial maps (now PNG
-files, which is what SLiM requires).
+First of all, we can inspect the contents of the directory and see that it does, indeed, contain all defined spatial maps (now PNG files, which is what SLiM requires).
 
 `````{r }
-list.files("~/Desktop/test-model", pattern = "*.png")
+list.files("/tmp/test-model", pattern = "*.png")
 `````
 
 It also contains a series of tab-separated configuration tables:
 
-`````{r }
-list.files("~/Desktop/test-model", pattern = "*.tsv")
-`````
+```{r}
+list.files("/tmp/test-model", pattern = "*.tsv")
+```
 
 These tables contain summaries of the model parameters which we
 defined graphically above, namely:
 
 - the table of population splits:
 
-`````{r }
-read.table("~/Desktop/test-model/splits.tsv", header = T)
-`````
+```{r}
+read.table("/tmp/test-model/splits.tsv", header = T)
+```
 
 - the table of admixture events:
 
-`````{r }
-read.table("~/Desktop/test-model/admixtures.tsv", header = T)
-`````
+```{r}
+read.table("/tmp/test-model/admixtures.tsv", header = T)
+```
 
-- and finally, the table of populations whose spatial maps will be
-updated throughout the simulation, as well as the times of those
-updates (this table is rather long, so we're taking a peek at only
-the first couple of lines):
+- and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather long, so we're taking a peek at only the first couple of lines):
 
-
-`````{r }
-head(read.table("~/Desktop/test-model/maps.tsv", header = T))
-`````
+```{r}
+head(read.table("/tmp/test-model/maps.tsv", header = T))
+```
 
 ## Running the simulation
+
 The way we feed the entire serialized model into SLiM is through
 the `run()` function, which understands the format of the model
-directory created by the `compile()` function and generates a SLiM
-script (using a backend skeleton script which is a part of this
-package and can be found by calling
-`system.file("inst/extdata/backend.slim", package = "spammr")`, in
-case you'd like to peek into its internals).
+directory created by the `compile()` function and generates a SLiM script (using a backend skeleton script which is a part of this package and can be found by calling
+`system.file("inst/extdata/backend.slim", package = "spammr")`, in case you'd like to peek into its internals).
 
 Note that when you run this model in SLiMgui (which should
 automatically open by calling the command below), you will see
-populations pop up in individual panels. This is how SLiMgui tracks
-spatial ranges of different populations.  _Everyone is still
-simulated in the same world_, it's just that the simulation
+populations pop up in individual panels. This is how SLiMgui tracks spatial ranges of different populations.  _Everyone is still simulated in the same world_, it's just that the simulation
 visualizes individual population ranges separately to reduce
 clutter.
 
 A couple of more things to note: notice that the function accepts
-several parameters determining the length of the simulated sequence
-and the recombination rate, as well as the length of the burnin
-period, the total time of the simulation run (excluding burnin),
-and generation time (which is used to convert all times defined
-during model specification above into SLiM's inetrnal units of
-generations).
+several parameters determining the length of the simulated sequence and the recombination rate, as well as the length of the burnin period, the total time of the simulation run (excluding burnin), and generation time (which is used to convert all times defined during model specification above into SLiM's inetrnal units of generations).
 
-Finally, the parameter `track_ancestry` determines whether we want
-our SLiM script to track ancestry proportion changes in all
-simulations using neutral markers uniformly distributed along each
-genome. The default value of this parameter is `FALSE` and no
-ancestry tracking is performed. Any other non-zero, posititive
+Finally, the parameter `track_ancestry` determines whether we want our SLiM script to track ancestry proportion changes in all
+simulations using neutral markers uniformly distributed along each genome. The default value of this parameter is `FALSE` and no ancestry tracking is performed. Any other non-zero, posititive
 integer value specifies how many markers we want to use for
 tracking. Please note that this *significantly* increases the
-simulation overhead, not only because the actual burden of mutation
-objects being simulated, but also because the ancestry is
-calculated in each generation for each simulated genome. In this
-case, we're tracking ancestry using a single non-recombining marker
-to minimize computational time for the purposes of this demo.
+simulation overhead, not only because the actual burden of mutation objects being simulated, but also because the ancestry is calculated in each generation for each simulated genome. In this case, we're tracking ancestry using a single non-recombining marker to minimize computational time for the purposes of this demo.
 
 Ancestry tracking is very useful to monitor that the spatial
-admixture model as defined in R really behaves as expected even on
-the SLiM side. This can be verified by inspecting files named as
-`output_ancestry_XXX.tsv` in the specified output directory. See
-the manpage of `run()` for more details.
+admixture model as defined in R really behaves as expected even on the SLiM side. This can be verified by inspecting files named as `output_ancestry_XXX.tsv` in the specified output directory. See the manpage of `run()` for more details.
 
 `````{r eval = FALSE}
 run(
-  model_dir = "~/Desktop/test-model",
-  gen_time = 30, burnin = 200, sim_length = 70000,
+  model_dir = "/tmp/test-model",
+  gen_time = 30, burnin = 10, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
   interaction = 30, spread = 20, track_ancestry = 1
 )
 `````
 
-In case we instructed `spammr` to track ancestry proportions, we can
-visualize them after the simulation is over using the built-in
-`diagnostics()` function. This is quite barebones for now and the way
-diagnostics are generated is subject to change...
+## Post-simulation diagnostics
 
-`````{r eval = FALSE}
-ancestries("~/Desktop/test-model")
-`````
+In case we instructed `spammr` to track ancestry proportions, we can visualize them after the simulation is over using the built-in `diagnostics()` function. This is quite barebones for now and the way diagnostics are generated is subject to change...
 
+```{r}
+ancestries("/tmp/test-model")
+```
+
+Similarly, we can re-capitulate the spatial dynamics with the _spammr_ function `animate()`:
+
+```{r}
+animate("/tmp/test-model/output_locations.tsv.gz", gen_time = 30, nframes = 200)
+```
+
+In case an argument `gif = ...` was provided, the function will save the animation as a GIF to the specified location.
