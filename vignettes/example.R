@@ -344,13 +344,27 @@ admixtures
 #'
 #' With the couple of code snippets above, we have defined a simple history of
 #' European populations over the last 50 thousand years. This history includes
-#' population splits and admixture events, and other demographic changes. While
-#' _spammr_ tries to make the formal specification as concise as possible, in
-#' the hope to increase reproducibility and minimize errors, because the
-#' admixture history can be very complex and occurs both across space and time,
-#' the package includes a function `graph()` which takes in all the information
-#' about the relationship between populations and plots it as a so-called
-#' _admixture graph_.
+#' population splits and admixture events as well as other demographic changes.
+#' While _spammr_ tries to make the formal specification of spatio-temporal
+#' population dynamics as concise as possible, in the hope to increase
+#' reproducibility and minimize errors, because the admixture history can be
+#' very complex and occurs both across space and time, it is hard to really
+#' visualize everything that will happen on the SLiM side after the simulation
+#' starts just from the code alone.
+#'
+#' For this purpose, the package includes a function `graph()` which takes in
+#' all the information about the relationships between populations (i.e., the
+#' population and admixture objects we defined above) and plots it all in the
+#' form of a so-called _admixture graph_ (see
+#' [here](https://academic.oup.com/genetics/article/192/3/1065/5935193) for a
+#' discussion of the admixture graph concept).
+#'
+#' One important thing to note here is that unlike traditional admixture graphs
+#' where each node/population is present only once, in the full _spammr_ graph,
+#' a single population can participate in many admixture events over the course
+#' of history. This is visualized by assigning a color to each population, and
+#' different nodes of the same color representing snapshots in time when a
+#' demographic event affecting that population happens.
 
 #+ fig.width = 11, fig.height = 12
 graph(
