@@ -4,7 +4,7 @@
 \alias{animate}
 \title{Animate the simulated population dynamics}
 \usage{
-animate(locations, gif = NULL, gen_time = NULL, nframes)
+animate(locations, gif = NULL, gen_time = NULL, nframes = 100)
 }
 \arguments{
 \item{locations}{Tab-separated table with locations of individuals throughout
