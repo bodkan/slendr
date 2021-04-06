@@ -11,8 +11,8 @@ run(
   sim_length,
   seq_length,
   recomb_rate,
-  competition,
-  mate_choice,
+  interaction,
+  max_interaction = interaction * 3,
   spread,
   track_ancestry = FALSE,
   output_prefix = file.path(normalizePath(model_dir), "output_"),
@@ -21,43 +21,38 @@ run(
 )
 }
 \arguments{
-\item{model_dir}{Directory where \code{compile} saved all spatial
-maps and other model configuration files}
+\item{model_dir}{Directory where \code{compile} saved all spatial maps and
+other model configuration files}
 
 \item{gen_time}{Generation time (in model's time units, i.e. years)}
 
-\item{burnin}{Length of the burnin (in model's time units,
-i.e. years)}
+\item{burnin}{Length of the burnin (in model's time units, i.e. years)}
 
-\item{sim_length}{Total length of the simulation (in model's time
-units, i.e. years)}
+\item{sim_length}{Total length of the simulation (in model's time units, i.e.
+years)}
 
-\item{seq_length}{Total length of the simulated sequence in
-base-pairs}
+\item{seq_length}{Total length of the simulated sequence in base-pairs}
 
 \item{recomb_rate}{Recombination rate of the simulated sequence}
 
-\item{spread}{Sigma parameter of the offspring spread normal
-distribution}
+\item{interaction, max_interaction}{Standard deviation of the spatial interaction/mate choice
+Gaussian distance kernel and the maximum interaction distance}
 
-\item{track_ancestry}{Track ancestry proportion dynamics in all
-populations throughout the simulations (default FALSE)? If a
-non-zero integer is provided, ancestry will be tracked using the
-number number of neutral ancestry markers equal to this number.}
+\item{spread}{Sigma parameter of the offspring spread normal distribution}
 
-\item{output_prefix}{Directory and shared prefix of all output
-files (all output files will be placed into the model directory
-by default)}
+\item{track_ancestry}{Track ancestry proportion dynamics in all populations
+throughout the simulations (default FALSE)? If a non-zero integer is
+provided, ancestry will be tracked using the number number of neutral
+ancestry markers equal to this number.}
 
-\item{interaction}{Spatial interaction/mate choice distance
-parameter}
+\item{output_prefix}{Directory and shared prefix of all output files (all
+output files will be placed into the model directory by default)}
 }
 \description{
-When run, the compiled SLiM script will save the location of each
-individual that ever lived, and will also record a sample of
-ancient individuals from each population in a tree sequence data
-structure which will be saved for all "present-day" individuals at
-the end of the simulation. This obviously does not make sense for
-all potential uses and the exact specification of output formats
-will be changed at some point soon.
+When run, the compiled SLiM script will save the location of each individual
+that ever lived, and will also record a sample of ancient individuals from
+each population in a tree sequence data structure which will be saved for all
+"present-day" individuals at the end of the simulation. This obviously does
+not make sense for all potential uses and the exact specification of output
+formats will be changed at some point soon.
 }
