@@ -3,17 +3,17 @@ initialize() {
 	initializeTreeSeq();
 
 	// interaction/competition distance
-	defineConstant("COMPETITION", asFloat({{competition}}));
-	defineConstant("MATE_CHOICE", asFloat({{mate_choice}}));
+	defineConstant("INTERACTION", asFloat({{interaction}}));
+	defineConstant("MAX_INTERACTION", asFloat({{max_interaction}}));
 	// offspring spread
 	defineConstant("SPREAD", asFloat({{spread}}));
 
 	// spatial competition
-	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = COMPETITION);
-//	i1.setInteractionFunction("n", COMPETITION, COMPETITION / 3);
+	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
+	i1.setInteractionFunction("n", 1.0, INTERACTION);
 
 	// spatial mate choice
-	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MATE_CHOICE);
+//	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
 
 	defineConstant("MODEL_DIR", "{{model_dir}}");
 	// load model definition tables
@@ -25,8 +25,8 @@ initialize() {
 	defineConstant("MAPS", sapply(maps_param("map"), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
 
 	// world dimensions in pixels
-	defineConstant("WIDTH", MAPS[0].width);
-	defineConstant("HEIGHT", MAPS[0].height);
+	defineConstant("WIDTH", MAPS[0].width); catn("WIDTH: " + WIDTH);
+	defineConstant("HEIGHT", MAPS[0].height); catn("HEIGHT: " + HEIGHT);
 
 	// define output files
 	defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
@@ -100,11 +100,7 @@ initialize() {
 	initializeMutationRate(0.0);
 }
 
-1: late() {
-         i1.evaluate();
-}
-
-1 early() {
+1 {
 	i = 0;
 	sim.addSubpop(i, pop_param("Ne", i));
 	set_map(i, sim.generation);
@@ -150,6 +146,17 @@ initialize() {
 
 	write_locations_header();
 	write_ancestries_header();
+}
+
+1: late() {
+	// evaluate interactions before fitness calculations
+	i1.evaluate();
+}
+
+fitness(NULL) {
+	// spatial competition
+	totalStrength = i1.totalOfNeighborStrengths(individual);
+	return 1.1 - totalStrength / subpop.individualCount;
 }
 
 //////////////////////////////////////////////////////////////////////
