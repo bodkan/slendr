@@ -5,7 +5,7 @@
 \title{Process vectorized population boundaries into a table with
 rasterized map objects}
 \usage{
-compile_maps(populations, splits_table)
+compile_maps(populations, splits_table, pixel)
 }
 \description{
 Process vectorized population boundaries into a table with
