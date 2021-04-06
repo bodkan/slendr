@@ -4,16 +4,12 @@
 \alias{rasterize}
 \title{Rasterize the vector form of a population spatial boundary}
 \usage{
-rasterize(x, pixel_dim = c(10000, 10000), raster_dim = NULL)
+rasterize(x, pixel)
 }
 \arguments{
 \item{x}{Object of the 'spammr_pop' class}
 
-\item{pixel_dim}{Two-dimensional numeric vector specifying pixel
-dimension (in units of the CRS used in the definition of the
-world)}
-
-\item{raster_dim}{Two-dimendional numeric vectory specifying the
+\item{pixel}{Two-dimensional numeric vector specifying the
 absolute dimension of the raster map}
 }
 \description{
