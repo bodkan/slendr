@@ -11,10 +11,13 @@ run(
   sim_length,
   seq_length,
   recomb_rate,
-  interaction,
+  competition,
+  mate_choice,
   spread,
   track_ancestry = FALSE,
-  output_prefix = file.path(normalizePath(model_dir), "output_")
+  output_prefix = file.path(normalizePath(model_dir), "output_"),
+  ...,
+  include = NULL
 )
 }
 \arguments{
@@ -34,9 +37,6 @@ base-pairs}
 
 \item{recomb_rate}{Recombination rate of the simulated sequence}
 
-\item{interaction}{Spatial interaction/mate choice distance
-parameter}
-
 \item{spread}{Sigma parameter of the offspring spread normal
 distribution}
 
@@ -48,6 +48,9 @@ number number of neutral ancestry markers equal to this number.}
 \item{output_prefix}{Directory and shared prefix of all output
 files (all output files will be placed into the model directory
 by default)}
+
+\item{interaction}{Spatial interaction/mate choice distance
+parameter}
 }
 \description{
 When run, the compiled SLiM script will save the location of each
