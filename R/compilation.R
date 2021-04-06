@@ -314,8 +314,9 @@ save_png <- function(raster, path) {
 #'
 #' @export
 run <- function(model_dir, gen_time, burnin, sim_length, seq_length, recomb_rate,
-                interaction, spread, track_ancestry = FALSE,
-                output_prefix = file.path(normalizePath(model_dir), "output_")) {
+                competition, mate_choice, spread, track_ancestry = FALSE,
+                output_prefix = file.path(normalizePath(model_dir), "output_"),
+                ..., include = NULL) {
   if (!dir.exists(model_dir))
     stop(sprintf("Directory '%s' does not exist", model_dir), call. = FALSE)
 
@@ -340,12 +341,17 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     gen_time = gen_time,
     burnin = burnin,
     sim_length = sim_length,
-    interaction = interaction,
+    competition = competition,
+    mate_choice = mate_choice,
     spread = spread,
     seq_length = seq_length,
     recomb_rate = recomb_rate,
     ancestry_markers = markers_count
   )
+  if (length(list(...)) > 0 ) subst <- c(subst, list(...))
+  if (!is.null(include)) {
+    template <- c(template, sapply(include, readLines))
+  }
   rendered <- whisker::whisker.render(template, subst)
 
   script <- file.path(subst[["model_dir"]], "script.slim")

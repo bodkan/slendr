@@ -3,17 +3,17 @@ initialize() {
 	initializeTreeSeq();
 
 	// interaction/competition distance
-	defineConstant("INTERACTION", asFloat({{interaction}}));
+	defineConstant("COMPETITION", asFloat({{competition}}));
+	defineConstant("MATE_CHOICE", asFloat({{mate_choice}}));
 	// offspring spread
 	defineConstant("SPREAD", asFloat({{spread}}));
 
 	// spatial competition
-	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = INTERACTION);
-	i1.setInteractionFunction("n", 5.0, 10.0);
+	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = COMPETITION);
+//	i1.setInteractionFunction("n", COMPETITION, COMPETITION / 3);
 
 	// spatial mate choice
-	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = INTERACTION);
-	i2.setInteractionFunction("n", 1.0, 10.0);
+	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MATE_CHOICE);
 
 	defineConstant("MODEL_DIR", "{{model_dir}}");
 	// load model definition tables
@@ -98,6 +98,10 @@ initialize() {
 
 	initializeRecombinationRate({{recomb_rate}});
 	initializeMutationRate(0.0);
+}
+
+1: late() {
+         i1.evaluate();
 }
 
 1 early() {
@@ -266,7 +270,7 @@ modifyChild() {
 
 	// for spatially overlapping admixture and non-migrant offspring,
 	// propose location based on one of its parents
-	pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
+	pos = parent1.spatialPosition + runif(2, -SPREAD / 2, SPREAD / 2);
 
 	if (subpop.spatialMapValue("world", pos) == 1.0) {
 		return F;
