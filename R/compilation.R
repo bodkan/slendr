@@ -16,7 +16,8 @@ compile_splits <- function(populations) {
       parent = parent_name,
       tsplit = p$time[1],
       Ne = unique(p$Ne),
-      tremove = ifelse(!is.null(tremove), tremove, -1)
+      tremove = ifelse(!is.null(tremove), tremove, -1),
+      stringsAsFactors = FALSE
     )
   }) %>% do.call(rbind, .)
 
@@ -41,7 +42,7 @@ compile_maps <- function(populations, splits_table, pixel) {
   # convert list of rasters into data frame, adding the spatial
   # maps themselves as a list column
   maps_table <- lapply(maps, function(m) {
-    as.data.frame(m[c("pop", "time")])
+    as.data.frame(m[c("pop", "time")], stringsAsFactors = FALSE)
   }) %>%
     do.call(rbind, .)
   maps_table$time <- round(maps_table$time)
@@ -143,7 +144,7 @@ compile <- function(populations, output_dir, admixtures = NULL, pixel, overwrite
 
   # save the admixture table
   if (is.null(admixtures))
-    admix_table <- data.frame(from = NULL, to = NULL, tstart = NULL, tend = NULL, rate = NULL, overlap = NULL)
+    admix_table <- data.frame(from = NULL, to = NULL, tstart = NULL, tend = NULL, rate = NULL, overlap = NULL, stringsAsFactors = FALSE)
   else {
     admix_table <- do.call(rbind, admixtures)
     admix_table$rate <- as.integer(admix_table$rate * 100)
