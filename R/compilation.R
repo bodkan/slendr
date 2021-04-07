@@ -291,7 +291,7 @@ save_png <- function(raster, path) {
 #' the end of the simulation. This obviously does not make sense for
 #' all potential uses and the exact specification of output formats
 #' will be changed at some point soon.
-#' 
+#'
 #' @param model_dir Directory where \code{compile} saved all spatial
 #'   maps and other model configuration files
 #' @param gen_time Generation time (in model's time units, i.e. years)
@@ -334,7 +334,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     markers_count <- as.integer(track_ancestry)
 
   # compile the SLiM backend script
-  template <- readLines(system.file("inst/extdata/backend.slim", package = "spammr"))
+  template <- readLines(system.file("extdata", "backend.slim", package = "spammr"))
 
   subst <- list(
     model_dir = normalizePath(model_dir),
