@@ -77,39 +77,35 @@ ggplot2::ggplot() +
 
 ## Installation and setup
 
-First, let's install the latest version of the package and load it. The package carries some SLiM dependencies which makes the installation procedure a little cumbersome. This will be fixed soon, but for now you have to do the following stepd:
+First, let's install the latest version of the package and load it. _spammr_ is not yet on CRAN (but will be soon!), so you will need to install the development version from Github using `devtools`.
 
-1. Fetch the current version from Github:
+Here are the installation steps:
 
-```
-cd <directory of choice>
-git clone https://github.com/bodkan/spammr
-```
-
-2. Install the `devtools` package (unless you already have it, of course):
+1. Install the `devtools` package (unless you already have it, of course):
 
 ```{r eval = F}
 install.packages("devtools")
 ```
 
-3. Install _spammr_'s R dependencies:
+2. Install _spammr_:
 
 ```{r eval = F}
-devtools::install_deps("<directory of choice>/spammr")
+devtools::install_github("bodkan/spammr")
 ```
 
-4. Load the _spammr_ package into R:
+3. That's it! You can now load the package with the usual:
 
 ```{r eval = F}
-devtools::load_all("<directory of choice>/spammr")
+library(spammr)
 ```
 
-```{r echo = F}
-devtools::load_all("~/projects/spammr")
+```{r include = F}
+devtools::load_all("~/projects/spammr") # users, please ignore this (mp)
 ```
 
-Note that the package relies on several R packages for geospatial analyses which, in turn, depend on other software. In case the loading procedure fails, inspect the error logs and install the software dependencies manually (on a Mac, use a tool such as `homebrew`). If that happens, I'd appreciate if you could submit an issue on [Github](https://github.com/bodkan/spammr/issues). Thank you!
+Note that the package relies on several R packages for geospatial analyses which, in turn, depend on other software. In case the installation procedure in step #3 fails, inspect the error logs and install the software dependencies manually (on a Mac, use a tool such as `homebrew`). If that happens, I'd appreciate if you could submit an issue on [Github](https://github.com/bodkan/spammr/issues). Thank you!
 
+Finally, because the package is actively being worked on, improvements and bug fixes are being added every couple of hours. Make sure to install the development version each time you're about to test some things (such as the examples in this vignette).
 
 
 
@@ -161,19 +157,6 @@ Note that the summary of the object says "projected CRS: ETRS89-extended / LAEA 
 ```{r}
 world
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -668,24 +651,24 @@ simulation overhead, not only because the actual burden of mutation objects bein
 Ancestry tracking is very useful to monitor that the spatial
 admixture model as defined in R really behaves as expected even on the SLiM side. This can be verified by inspecting files named as `output_ancestry_XXX.tsv` in the specified output directory. See the manpage of `run()` for more details.
 
-`````{r eval = FALSE}
+```{r eval = FALSE}
 run(
   model_dir = "/tmp/test-model",
   gen_time = 30, burnin = 10, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
   interaction = 30, spread = 20, track_ancestry = 1
 )
-`````
+```
 
 ## Post-simulation diagnostics
 
-In case we instructed `spammr` to track ancestry proportions, we can visualize them after the simulation is over using the built-in `diagnostics()` function. This is quite barebones for now and the way diagnostics are generated is subject to change...
+In case we instructed `spammr` to track ancestry proportions, we can visualize them after the simulation is over using the built-in `diagnostics()` function. This is quite bare-bones for now and the way diagnostics are generated is subject to change...
 
 ```{r}
 ancestries("/tmp/test-model")
 ```
 
-Similarly, we can re-capitulate the spatial dynamics with the _spammr_ function `animate()`:
+Similarly, we can re-capitulate the spatial dynamics with the _spammr_ function `animate()` (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):
 
 ```{r}
 animate("/tmp/test-model/output_locations.tsv.gz", gen_time = 30, nframes = 200)
