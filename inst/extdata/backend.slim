@@ -149,7 +149,6 @@ initialize() {
 }
 
 1: late() {
-	// evaluate interactions before fitness calculations
 	i1.evaluate();
 }
 
@@ -164,7 +163,7 @@ fitness(NULL) {
 //////////////////////////////////////////////////////////////////////
 
 // Population splits
-s1 late() {
+s1 {
 	// get the ID of populations splitting in the current generation
 	// from the table of splits
 	pop_ids = pop_param("pop", present = "tsplit")[sim.generation == T_SPLITS];
@@ -177,7 +176,7 @@ s1 late() {
 }
 
 // Admixture events
-s2 late() {
+s2 {
 	// iterate over all admixture events scheduled for this generation
 	// and set them accordingly
 	for (i in which(sim.generation == T_ADMIX_START)) {
@@ -190,7 +189,7 @@ s2 late() {
 }
 
 // Stopping admixture
-s3 late() {
+s3 {
 	// iterate over all admixture events scheduled for this generation
 	// and set them back to 0.0
 	for (i in which(sim.generation == T_ADMIX_END)) {
@@ -201,7 +200,7 @@ s3 late() {
 }
 
 // Remove populations which are no longer necessary
-s4 late() {
+s4 {
 	// get the ID of the target population from the table
 	// of admixture events and remove them
 	pop_ids = pop_param("pop", present = "tremove")[sim.generation - 1 == T_CLEANUPS];
@@ -212,7 +211,7 @@ s4 late() {
 }
 
 // Update population spatial maps
-s5 late() {
+s5 {
 	// get populations whose spatial maps should be updated
 	pop_ids = maps_param("pop")[sim.generation == T_MAPS];
 	for (i in pop_ids) {
