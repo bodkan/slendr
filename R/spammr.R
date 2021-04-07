@@ -162,7 +162,7 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
 
       # pretty print the raw sf data as a simplified table
       cat("snapshots:\n")
-      snapshots_df <- as.data.frame(x)
+      snapshots_df <- as.data.frame(x, stringsAsFactors = FALSE)
       snapshots_df$`#` <- 1:nrow(snapshots_df)
       # determine which maps over time are new and which are re-used from the
       # previous time point (we do this because the raw spatial geometry
