@@ -282,15 +282,16 @@ save_png <- function(raster, path) {
 
 #' Open the compiled spatial model in SLiM
 #'
-#' When run, the compiled SLiM script will save the location of each individual
-#' that ever lived, and will also record a sample of ancient individuals from
-#' each population in a tree sequence data structure which will be saved for all
-#' "present-day" individuals at the end of the simulation. This obviously does
-#' not make sense for all potential uses and the exact specification of output
-#' formats will be changed at some point soon.
+#' When run, the compiled SLiM script will save the location of each
+#' individual that ever lived, and will also record a sample of
+#' ancient individuals from each population in a tree sequence data
+#' structure which will be saved for all "present-day" individuals at
+#' the end of the simulation. This obviously does not make sense for
+#' all potential uses and the exact specification of output formats
+#' will be changed at some point soon.
 #'
-#' @param model_dir Directory where \code{compile} saved all spatial maps and
-#'   other model configuration files
+#' @param model_dir Directory where \code{compile} saved all spatial
+#'   maps and other model configuration files
 #' @param gen_time Generation time (in model's time units, i.e. years)
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param sim_length Total length of the simulation (in model's time units, i.e.
@@ -328,7 +329,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     markers_count <- as.integer(track_ancestry)
 
   # compile the SLiM backend script
-  template <- readLines(system.file("inst/extdata/backend.slim", package = "spammr"))
+  template <- readLines(system.file("extdata", "backend.slim", package = "spammr"))
 
   subst <- list(
     model_dir = normalizePath(model_dir),
