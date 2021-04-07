@@ -83,24 +83,20 @@ Here are the installation steps:
 
 1. Install the `devtools` package (unless you already have it, of course):
 
-```{r eval = F}
+```{r}
 install.packages("devtools")
 ```
 
 2. Install _spammr_:
 
-```{r eval = F}
+```{r}
 devtools::install_github("bodkan/spammr")
 ```
 
 3. That's it! You can now load the package with the usual:
 
-```{r eval = F}
+```{r}
 library(spammr)
-```
-
-```{r include = F}
-devtools::load_all("~/projects/spammr") # users, please ignore this (mp)
 ```
 
 Note that the package relies on several R packages for geospatial analyses which, in turn, depend on other software. In case the installation procedure in step #3 fails, inspect the error logs and install the software dependencies manually (on a Mac, use a tool such as `homebrew`). If that happens, I'd appreciate if you could submit an issue on [Github](https://github.com/bodkan/spammr/issues). Thank you!
