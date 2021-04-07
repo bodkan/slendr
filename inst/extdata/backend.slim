@@ -278,6 +278,12 @@ modifyChild() {
 	// propose location based on one of its parents
 	pos = parent1.spatialPosition + runif(2, -SPREAD / 2, SPREAD / 2);
 
+	child.setSpatialPosition(pos);
+	child.setValue("p1x", parent1.spatialPosition[0]);
+	child.setValue("p1y", parent1.spatialPosition[0]);
+	child.setValue("p2x", parent2.spatialPosition[1]);
+	child.setValue("p2y", parent2.spatialPosition[1]);
+
 	if (subpop.spatialMapValue("world", pos) == 1.0) {
 		return F;
 	} else {
