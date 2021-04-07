@@ -506,9 +506,9 @@ plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
 ## Define admixture events
 
 The way `spammr` implements admixture events is by calling the
-`admixture()` function. This function has a very obvious interface which you will be able to read from the example below without any issues.
+`admixture()` function. This function has a very straightforward interface which you should be able to understand from the examples below.
 
-One thing to note, however, is the fact that it is crucial that the `from` and `to` populations have some sort of overlapping spatial range in order to simulate admixture. This is probably rather obvious, as populations can't mix in space-time if they don't overlap at a given point in space-time.
+One thing to note is that the `from` and `to` populations must have overlapping spatial ranges in order to simulate admixture. This is probably rather obvious, as populations can't mix in space-time if they don't overlap at a given point in space-time.
 
 For example, if you look at the spatial boundaries plotted above,
 you'll see that the European and African populations don't have any overlap in population ranges. If we try to instruct `spammr` to simulate admixture between them, we will get an error:
@@ -528,9 +528,8 @@ parameters or add `overlap = F` which will instruct spammr to simulate
 admixture without spatial overlap.
 ```
 
-The reason for this is a lack of spatial overlap between the two
-populations.  The error message instructs us to visually verify
-this, which can be done by `spammr`'s `plot()` function and the
+The error message instructs us to visually verify
+that this is the case, which can be done by `spammr`'s `plot()` function and the
 optional parameter `pop_facets = F` (which is set to `TRUE` by
 default):
 
