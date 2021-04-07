@@ -268,7 +268,7 @@ get_intermediate_edges <- function(split_edges, admixture_edges) {
     if (length(nodes) == 1) return(NULL)
     # construct data frame of consecutive, linked pairs of nodes
     pairs <- cbind(nodes[-length(nodes)], nodes[-1]) %>%
-      as.data.frame %>%
+      as.data.frame(stringsAsFactors = FALSE) %>%
       setNames(c("x", "y"))
     pairs$type <- "intermediate"
     pairs$time <- as.integer(gsub(".*-", "", pairs$y))
@@ -297,7 +297,8 @@ get_terminal_edges <- function(split_edges, admixture_edges, split_table) {
       y = paste0(pop$pop, "-", tremove),
       type = "terminal",
       time = tremove,
-      rate = NA
+      rate = NA,
+      stringsAsFactors = FALSE
     )
   }) %>% do.call(rbind, .)
 
@@ -322,7 +323,8 @@ get_nodes <- function(edges) {
     name = nodes[ordered],
     pop = pops[ordered],
     time = times[ordered],
-    first = !duplicated(pops[ordered])
+    first = !duplicated(pops[ordered]),
+    stringsAsFactors = FALSE
   )
   # assign a type to each node based on the corresponding edge type
   nodes$type <- sapply(nodes$name, function(i) {

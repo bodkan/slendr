@@ -11,10 +11,10 @@ reference:
   - title: Population configuration
     contents:
     - population
-    - update
     - expand
     - move
     - admixture
+    - change
 
   - title: Model visualisation and diagnostics
     contents:

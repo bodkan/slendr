@@ -87,7 +87,7 @@ Some of the R libraries that _spammr_ uses internally rely on non-R software tha
 
 2. Install the `devtools` package:
 
-```{r}
+```{r, message = F}
 install.packages("devtools")
 ```
 
@@ -95,13 +95,13 @@ On some systems, `devtools` installation fails because of missing libgit depende
 
 3. Install _spammr_:
 
-```{r}
+```{r, message = F}
 devtools::install_github("bodkan/spammr")
 ```
 
 4. That's it! You can now load the package with the usual:
 
-```{r}
+```{r, message = F}
 library(spammr)
 ```
 

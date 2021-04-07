@@ -37,7 +37,7 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
     range <- spatial_range(world, center, radius, coords)
   }
   pop_range <- sf::st_sf(
-    data.frame(pop = name, time = time, Ne = Ne),
+    data.frame(pop = name, time = time, Ne = Ne, stringsAsFactors = FALSE),
     geometry = range
   )
 
@@ -81,7 +81,7 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
 #' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
-update <- function(pop, time, Ne = NULL,
+change <- function(pop, time, Ne = NULL,
                    center = NULL, radius = NULL, coords = NULL,
                    region = NULL) {
   if (time %in% pop$time)
@@ -106,7 +106,7 @@ update <- function(pop, time, Ne = NULL,
   if (is.null(Ne)) Ne <- pop[nrow(pop), ]$Ne
 
   updated <- sf::st_sf(
-    data.frame(pop = unique(pop$pop), time = time, Ne = Ne),
+    data.frame(pop = unique(pop$pop), time = time, Ne = Ne, stringsAsFactors = FALSE),
     geometry = range
   )
 
@@ -230,7 +230,8 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
       data.frame(
         pop = region_start$pop,
         time = traj_diffs[i, "time"],
-        Ne = region_start$Ne
+        Ne = region_start$Ne,
+        stringsAsFactors = FALSE
       ),
       geometry = shifted_region,
       crs = sf::st_crs(inter_regions[[i]])
@@ -402,6 +403,7 @@ admixture without spatial overlap.",
     tstart = start,
     tend = end,
     rate = rate,
-    overlap = as.integer(overlap == TRUE | overlap > 0)
+    overlap = as.integer(overlap == TRUE | overlap > 0),
+    stringsAsFactors = FALSE
   )
 }
