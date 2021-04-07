@@ -25,7 +25,8 @@ Imports:
     png,
     patchwork,
     ijtiff,
-    ggraph
+    ggraph,
+    rgdal
 Suggests: 
     knitr,
     rmarkdown
