@@ -81,26 +81,28 @@ First, let's install the latest version of the package and load it. _spammr_ is 
 
 Here are the installation steps:
 
-1. Install the `devtools` package (unless you already have it, of course):
+1. Install non-R software dependencies
 
-```{r eval = F}
+Some of the R libraries that _spammr_ uses internally rely on non-R software that needs to be installed before doing anything else. At the very least, you should make sure to install `udunits` and `gdal` on your system (if you're on a Mac, I recommend [homebrew](https://brew.sh/)). In my experience, some early users had those already installed without even knowing it (perhaps because they already used tools or R packages depend)
+
+2. Install the `devtools` package:
+
+```{r, message = F}
 install.packages("devtools")
 ```
 
-2. Install _spammr_:
+On some systems, `devtools` installation fails because of missing libgit dependency. If that happens, please install `libgit2` first (on a Mac, you can use homebrew again).
 
-```{r eval = F}
+3. Install _spammr_:
+
+```{r, message = F}
 devtools::install_github("bodkan/spammr")
 ```
 
-3. That's it! You can now load the package with the usual:
+4. That's it! You can now load the package with the usual:
 
-```{r eval = F}
+```{r, message = F}
 library(spammr)
-```
-
-```{r include = F}
-devtools::load_all("~/projects/spammr") # users, please ignore this (mp)
 ```
 
 Note that the package relies on several R packages for geospatial analyses which, in turn, depend on other software. In case the installation procedure in step #3 fails, inspect the error logs and install the software dependencies manually (on a Mac, use a tool such as `homebrew`). If that happens, I'd appreciate if you could submit an issue on [Github](https://github.com/bodkan/spammr/issues). Thank you!
