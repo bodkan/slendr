@@ -281,25 +281,24 @@ save_png <- function(raster, path) {
 
 #' Open the compiled spatial model in SLiM
 #'
-#' When run, the compiled SLiM script will save the location of each
-#' individual that ever lived, and will also record a sample of
-#' ancient individuals from each population in a tree sequence data
-#' structure which will be saved for all "present-day" individuals at
-#' the end of the simulation. This obviously does not make sense for
-#' all potential uses and the exact specification of output formats
-#' will be changed at some point soon.
+#' When run, the compiled SLiM script will save the location of each individual
+#' that ever lived, and will also record a sample of ancient individuals from
+#' each population in a tree sequence data structure which will be saved for all
+#' "present-day" individuals at the end of the simulation. This obviously does
+#' not make sense for all potential uses and the exact specification of output
+#' formats will be changed at some point soon.
 #'
-#' @param model_dir Directory where \code{compile} saved all spatial
-#'   maps and other model configuration files
+#' @param model_dir Directory where \code{compile} saved all spatial maps and
+#'   other model configuration files
 #' @param gen_time Generation time (in model's time units, i.e. years)
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param sim_length Total length of the simulation (in model's time units, i.e.
 #'   years)
 #' @param seq_length Total length of the simulated sequence in base-pairs
 #' @param recomb_rate Recombination rate of the simulated sequence
-#' @param interaction,max_interaction Standard deviation of the spatial interaction/mate choice
-#'   Gaussian distance kernel and the maximum interaction distance
-#' @param spread Sigma parameter of the offspring spread normal distribution
+#' @param max_distance,max_spread Maximum values for spatial interaction and
+#'   mating choice (max_distance) and maximum distance for offspring from its
+#'   parents (max_spread)
 #' @param track_ancestry Track ancestry proportion dynamics in all populations
 #'   throughout the simulations (default FALSE)? If a non-zero integer is
 #'   provided, ancestry will be tracked using the number number of neutral
