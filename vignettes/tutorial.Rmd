@@ -372,7 +372,7 @@ restrict the spatial boundary of the African population to the
 
 ```{r}
 afr <- population(
-  "AFR", parent = "ancestor", Ne = 100,
+  "AFR", parent = "ancestor", Ne = 1000,
   world = world, region = africa
 )
 
@@ -833,7 +833,7 @@ run(
   model_dir = "/tmp/test-model",
   gen_time = 30, burnin = 10, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
-  interaction = 30, spread = 20, track_ancestry = 1
+  max_distance = 30, max_spread = 30, track_ancestry = 1
 )
 ```
 

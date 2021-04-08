@@ -309,7 +309,7 @@ save_png <- function(raster, path) {
 #'
 #' @export
 run <- function(model_dir, gen_time, burnin, sim_length, seq_length, recomb_rate,
-                interaction, max_interaction = interaction * 3, spread, track_ancestry = FALSE,
+                max_distance, max_spread, track_ancestry = FALSE,
                 output_prefix = file.path(normalizePath(model_dir), "output_"),
                 ..., include = NULL) {
   if (!dir.exists(model_dir))
@@ -336,9 +336,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     gen_time = gen_time,
     burnin = burnin,
     sim_length = sim_length,
-    interaction = interaction,
-    max_interaction = max_interaction,
-    spread = spread,
+    max_distance = max_distance,
+    max_spread = max_spread,
     seq_length = seq_length,
     recomb_rate = recomb_rate,
     ancestry_markers = markers_count
