@@ -184,11 +184,7 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
     }
 
     # extract projection type and name using the internal sf plumbing
-    crs_info <- sf:::CPL_crs_parameters(sf::st_crs(x))
-    if (crs_info$IsGeographic)
-      cat(paste0("geographic CRS: ", crs_info$Name, "\n"))
-    else
-      cat(paste0("projected CRS: ", crs_info$Name, "\n"))
+    cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg)
   }
 }
 
