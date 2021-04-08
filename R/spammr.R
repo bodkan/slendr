@@ -184,7 +184,7 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
     }
 
     # extract projection type and name using the internal sf plumbing
-    cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg)
+    cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg, "\n")
   }
 }
 
