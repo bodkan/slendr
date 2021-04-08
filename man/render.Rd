@@ -4,7 +4,7 @@
 \alias{render}
 \title{Render population boundaries to black-and-white spatial maps}
 \usage{
-render(pops, pixel)
+render(pops, resolution)
 }
 \arguments{
 \item{pops}{Spatial population objects of the 'spammr_pop' class}
