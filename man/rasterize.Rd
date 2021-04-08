@@ -4,13 +4,11 @@
 \alias{rasterize}
 \title{Rasterize the vector form of a population spatial boundary}
 \usage{
-rasterize(x, pixel)
+rasterize(x, resolution)
 }
 \arguments{
 \item{x}{Object of the 'spammr_pop' class}
-
-\item{pixel}{Two-dimensional numeric vector specifying the
-absolute dimension of the raster map}
+\item{resolution}{How many kilometers per pixel?}
 }
 \description{
 Rasterize the vector form of a population spatial boundary
