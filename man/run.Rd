@@ -11,9 +11,8 @@ run(
   sim_length,
   seq_length,
   recomb_rate,
-  interaction,
-  max_interaction = interaction * 3,
-  spread,
+  max_distance,
+  max_spread,
   track_ancestry = FALSE,
   output_prefix = file.path(normalizePath(model_dir), "output_"),
   ...,
@@ -35,10 +34,9 @@ years)}
 
 \item{recomb_rate}{Recombination rate of the simulated sequence}
 
-\item{interaction, max_interaction}{Standard deviation of the spatial interaction/mate choice
-Gaussian distance kernel and the maximum interaction distance}
-
-\item{spread}{Sigma parameter of the offspring spread normal distribution}
+\item{max_distance, max_spread}{Maximum values for spatial interaction and
+mating choice (max_distance) and maximum distance for offspring from its
+parents (max_spread)}
 
 \item{track_ancestry}{Track ancestry proportion dynamics in all populations
 throughout the simulations (default FALSE)? If a non-zero integer is
