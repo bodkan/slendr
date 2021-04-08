@@ -344,7 +344,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     ancestry_markers = markers_count
   )
   if (length(list(...)) > 0 ) subst <- c(subst, list(...))
-  print(subst)
+
   if (!is.null(include)) {
     template <- c(template, sapply(include, readLines))
   }
