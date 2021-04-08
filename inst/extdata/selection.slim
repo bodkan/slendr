@@ -1,9 +1,15 @@
-initialize() {
-             sim.rescheduleScriptBLock(s999999, generations = asInteger({{time}} / {{gen_time}}));
+1 early() {
+  defineConstant("SEL_POS", c(asFloat({{sel_x}}), asFloat({{sel_y}})));
+             //sim.rescheduleScriptBlock(s999999, generations = asInteger({{sel_time}} / {{gen_time}}));
 }
 
-s999999 {
-        all_genomes = get_pop(i).genomes;
-        sampled_genomes = sample(all_genomes, length(all_genomes) * asFloat({{frequency}}));
-        sampled_genomes.addNewMutation(m0, {{sel_coeff}}, {{pos}});
+2 {
+  log_output("Adding a mutation");
+//  if (get_pop(0).spatialMapValue("world", SEL_POS) == 0.0)
+//    stop("Location of selection start outside of the population boundary!\n");
+
+        all_genomes = get_pop(0).genomes;
+        sampled_genomes = sample(all_genomes, asInteger(length(all_genomes) * asFloat({{frequency}})));
+        sampled_genomes.addNewMutation(m0, {{sel_coef}}, 50);
+        sampled_genomes.individual.setSpatialPosition(SEL_POS + runif(2, -SPREAD / 2, SPREAD / 2));
 }
