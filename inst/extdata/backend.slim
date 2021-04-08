@@ -13,7 +13,8 @@ initialize() {
 	i1.setInteractionFunction("n", 1.0, INTERACTION);
 
 	// spatial mate choice
-//	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
+	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
+	i2.setInteractionFunction("n", 1.0, INTERACTION);
 
 	defineConstant("MODEL_DIR", "{{model_dir}}");
 	// load model definition tables
@@ -150,12 +151,26 @@ initialize() {
 
 1: late() {
 	i1.evaluate();
+	i2.evaluate();
 }
 
-fitness(NULL) {
+
+2: fitness(NULL) {
 	// spatial competition
 	totalStrength = i1.totalOfNeighborStrengths(individual);
 	return 1.1 - totalStrength / subpop.individualCount;
+}
+
+2: mateChoice() {
+ return i2.strength(individual);
+}
+
+2: late() {
+  for (p in sim.subpopulations) {
+  	distances = sqrt((p.individuals.getValue("p1x") - p.individuals.getValue("p2x"))^2 +
+           					  (p.individuals.getValue("p1y") - p.individuals.getValue("p2y"))^2);
+  	log_output("p" + p.id + "\t" + paste(c(min(distances), max(distances), mean(distances)), sep = " "));
+  }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -211,7 +226,7 @@ s4 {
 }
 
 // Update population spatial maps
-s5 {
+s5 late() {
 	// get populations whose spatial maps should be updated
 	pop_ids = maps_param("pop")[sim.generation == T_MAPS];
 	for (i in pop_ids) {
@@ -280,8 +295,8 @@ modifyChild() {
 
 	child.setSpatialPosition(pos);
 	child.setValue("p1x", parent1.spatialPosition[0]);
-	child.setValue("p1y", parent1.spatialPosition[0]);
-	child.setValue("p2x", parent2.spatialPosition[1]);
+	child.setValue("p1y", parent1.spatialPosition[1]);
+	child.setValue("p2x", parent2.spatialPosition[0]);
 	child.setValue("p2y", parent2.spatialPosition[1]);
 
 	if (subpop.spatialMapValue("world", pos) == 1.0) {
