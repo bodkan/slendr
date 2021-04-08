@@ -39,11 +39,14 @@ initialize() {
 	catn("T_BURNIN: " + T_BURNIN);
 	catn("T_LENGTH: " + T_LENGTH);
 
+	defineConstant("SIM_START", T_BURNIN);
+	defineConstant("SIM_END", T_BURNIN + T_LENGTH);
+
 	if (nrow(SPLIT_TABLE) > 1) {
 		// absolute split times
 		defineConstant("T_ABS_SPLITS", asInteger(pop_param("tsplit") / GEN_TIME));
 		// split times relative to the start of the simulation
-		defineConstant("T_SPLITS", T_BURNIN + (T_LENGTH - T_ABS_SPLITS));
+		defineConstant("T_SPLITS", SIM_END - T_ABS_SPLITS);
 
 		catn("T_SPLITS: " + paste(T_SPLITS));
 	}
@@ -54,8 +57,8 @@ initialize() {
 		defineConstant("T_ABS_ADMIX_END", asInteger(admix_param("tend") / GEN_TIME));
 		// admixture times relative to the start of the simulation
 		// (add one generation to force admixture only after each split)
-		defineConstant("T_ADMIX_START", T_BURNIN + (T_LENGTH - T_ABS_ADMIX_START) + 1);
-		defineConstant("T_ADMIX_END", T_BURNIN + (T_LENGTH - T_ABS_ADMIX_END) + 1);
+		defineConstant("T_ADMIX_START", SIM_END - T_ABS_ADMIX_START + 1);
+		defineConstant("T_ADMIX_END", SIM_END - T_ABS_ADMIX_END + 1);
 
 		catn("T_ADMIX_START: " + paste(T_ADMIX_START));
 		catn("T_ADMIX_END: " + paste(T_ADMIX_END));
@@ -66,7 +69,7 @@ initialize() {
 		defineConstant("T_ABS_CLEANUPS", asInteger(pop_param("tremove") / GEN_TIME));
 		// cleanup times relative to the start of the simulation
 		// (add one generation to force cleanup only after each split)
-		defineConstant("T_CLEANUPS", T_BURNIN + (T_LENGTH - T_ABS_CLEANUPS) + 1);
+		defineConstant("T_CLEANUPS", SIM_END - T_ABS_CLEANUPS + 1);
 
 		catn("T_CLEANUPS: " + paste(T_CLEANUPS));
 	}
@@ -75,7 +78,7 @@ initialize() {
 		// absolute times of spatial map changes
 		defineConstant("T_ABS_MAPS", asInteger(maps_param("time") / GEN_TIME));
 		// times relative to the start of the simulation
-		defineConstant("T_MAPS", c(1, T_BURNIN + (T_LENGTH - T_ABS_MAPS)));
+		defineConstant("T_MAPS", c(1, SIM_END - T_ABS_MAPS));
 		catn("T_MAPS: " + paste(T_MAPS));
 	}
 
@@ -135,10 +138,10 @@ initialize() {
 		sim.deregisterScriptBlock(s5);
 
 	// output callbacks
-	sim.rescheduleScriptBlock(s99, start = T_BURNIN, end = T_BURNIN + T_LENGTH);
-	sim.rescheduleScriptBlock(s999, generations = T_BURNIN + T_LENGTH);
+	sim.rescheduleScriptBlock(s99, start = SIM_START, end = SIM_END);
+	sim.rescheduleScriptBlock(s999, generations = SIM_END);
 	if (TRACK_ANCESTRY)
-		sim.rescheduleScriptBlock(s9999, generations = (T_BURNIN + 1):(T_BURNIN + T_LENGTH));
+		sim.rescheduleScriptBlock(s9999, generations = SIM_START:SIM_END);
 	else
 		sim.deregisterScriptBlock(s9999);
 
@@ -209,7 +212,7 @@ s3 {
 s4 {
 	// get the ID of the target population from the table
 	// of admixture events and remove them
-	pop_ids = pop_param("pop", present = "tremove")[sim.generation - 1 == T_CLEANUPS];
+	pop_ids = pop_param("pop", present = "tremove")[sim.generation == T_CLEANUPS + 1];
 	for (i in pop_ids) {
 		log_output("cleanup of " + NAMES[i]);
 		get_pop(i).setSubpopulationSize(0);
@@ -341,11 +344,7 @@ function (void) write_ancestries_header(void) {
 // Write information about a given individual to a locations file
 function (void) write_ancestries(void) {
 	for (pop in sim.subpopulations) {
-		line = paste(
-			T_BURNIN + T_LENGTH - sim.generation,
-			calc_ancestry(pop),
-			sep = "\t"
-		);
+		line = paste(SIM_END - sim.generation, calc_ancestry(pop), sep = "\t");
 		filename = paste0(OUTPUT_PREFIX, "ancestry_", NAMES[pop.id], ".tsv");
 		writeFile(filename, line, append = T);
 	}
