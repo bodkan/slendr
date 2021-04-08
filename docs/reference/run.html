@@ -40,13 +40,12 @@
 
 
 <meta property="og:title" content="Open the compiled spatial model in SLiM — run" />
-<meta property="og:description" content="When run, the compiled SLiM script will save the location of each
-individual that ever lived, and will also record a sample of
-ancient individuals from each population in a tree sequence data
-structure which will be saved for all &quot;present-day&quot; individuals at
-the end of the simulation. This obviously does not make sense for
-all potential uses and the exact specification of output formats
-will be changed at some point soon." />
+<meta property="og:description" content="When run, the compiled SLiM script will save the location of each individual
+that ever lived, and will also record a sample of ancient individuals from
+each population in a tree sequence data structure which will be saved for all
+&quot;present-day&quot; individuals at the end of the simulation. This obviously does
+not make sense for all potential uses and the exact specification of output
+formats will be changed at some point soon." />
 
 
 
@@ -127,13 +126,12 @@ will be changed at some point soon." />
     </div>
 
     <div class="ref-description">
-    <p>When run, the compiled SLiM script will save the location of each
-individual that ever lived, and will also record a sample of
-ancient individuals from each population in a tree sequence data
-structure which will be saved for all "present-day" individuals at
-the end of the simulation. This obviously does not make sense for
-all potential uses and the exact specification of output formats
-will be changed at some point soon.</p>
+    <p>When run, the compiled SLiM script will save the location of each individual
+that ever lived, and will also record a sample of ancient individuals from
+each population in a tree sequence data structure which will be saved for all
+"present-day" individuals at the end of the simulation. This obviously does
+not make sense for all potential uses and the exact specification of output
+formats will be changed at some point soon.</p>
     </div>
 
     <pre class="usage"><span class='fu'>run</span><span class='op'>(</span>
@@ -143,10 +141,12 @@ will be changed at some point soon.</p>
   <span class='va'>sim_length</span>,
   <span class='va'>seq_length</span>,
   <span class='va'>recomb_rate</span>,
-  <span class='va'>interaction</span>,
-  <span class='va'>spread</span>,
+  <span class='va'>max_distance</span>,
+  <span class='va'>max_spread</span>,
   track_ancestry <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/normalizePath.html'>normalizePath</a></span><span class='op'>(</span><span class='va'>model_dir</span><span class='op'>)</span>, <span class='st'>"output_"</span><span class='op'>)</span>
+  output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/normalizePath.html'>normalizePath</a></span><span class='op'>(</span><span class='va'>model_dir</span><span class='op'>)</span>, <span class='st'>"output_"</span><span class='op'>)</span>,
+  <span class='va'>...</span>,
+  include <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -154,8 +154,8 @@ will be changed at some point soon.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>model_dir</th>
-      <td><p>Directory where <code>compile</code> saved all spatial
-maps and other model configuration files</p></td>
+      <td><p>Directory where <code>compile</code> saved all spatial maps and
+other model configuration files</p></td>
     </tr>
     <tr>
       <th>gen_time</th>
@@ -163,45 +163,38 @@ maps and other model configuration files</p></td>
     </tr>
     <tr>
       <th>burnin</th>
-      <td><p>Length of the burnin (in model's time units,
-i.e. years)</p></td>
+      <td><p>Length of the burnin (in model's time units, i.e. years)</p></td>
     </tr>
     <tr>
       <th>sim_length</th>
-      <td><p>Total length of the simulation (in model's time
-units, i.e. years)</p></td>
+      <td><p>Total length of the simulation (in model's time units, i.e.
+years)</p></td>
     </tr>
     <tr>
       <th>seq_length</th>
-      <td><p>Total length of the simulated sequence in
-base-pairs</p></td>
+      <td><p>Total length of the simulated sequence in base-pairs</p></td>
     </tr>
     <tr>
       <th>recomb_rate</th>
       <td><p>Recombination rate of the simulated sequence</p></td>
     </tr>
     <tr>
-      <th>interaction</th>
-      <td><p>Spatial interaction/mate choice distance
-parameter</p></td>
-    </tr>
-    <tr>
-      <th>spread</th>
-      <td><p>Sigma parameter of the offspring spread normal
-distribution</p></td>
+      <th>max_distance, max_spread</th>
+      <td><p>Maximum values for spatial interaction and
+mating choice (max_distance) and maximum distance for offspring from its
+parents (max_spread)</p></td>
     </tr>
     <tr>
       <th>track_ancestry</th>
-      <td><p>Track ancestry proportion dynamics in all
-populations throughout the simulations (default FALSE)? If a
-non-zero integer is provided, ancestry will be tracked using the
-number number of neutral ancestry markers equal to this number.</p></td>
+      <td><p>Track ancestry proportion dynamics in all populations
+throughout the simulations (default FALSE)? If a non-zero integer is
+provided, ancestry will be tracked using the number number of neutral
+ancestry markers equal to this number.</p></td>
     </tr>
     <tr>
       <th>output_prefix</th>
-      <td><p>Directory and shared prefix of all output
-files (all output files will be placed into the model directory
-by default)</p></td>
+      <td><p>Directory and shared prefix of all output files (all
+output files will be placed into the model directory by default)</p></td>
     </tr>
     </table>
 
