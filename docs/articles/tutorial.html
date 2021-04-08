@@ -149,7 +149,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpPP3SkZ", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpJkOZZ3", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -244,7 +244,7 @@
 <p>First, let’s create the African ancestors of modern humans. We restrict the spatial boundary of the African population to the <code>africa</code> region defined above:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
-  <span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, Ne <span class="op">=</span> <span class="fl">100</span>,
+  <span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, Ne <span class="op">=</span> <span class="fl">1000</span>,
   world <span class="op">=</span> <span class="va">world</span>, region <span class="op">=</span> <span class="va">africa</span>
 <span class="op">)</span>
 
@@ -510,7 +510,7 @@ admixture without spatial overlap.</code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/splits.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
 <span class="co">#&gt;   pop_id   Ne parent_id tsplit tremove</span>
-<span class="co">#&gt; 1      0  100        -1     -1      -1</span>
+<span class="co">#&gt; 1      0 1000        -1     -1      -1</span>
 <span class="co">#&gt; 2      1  200         0  51000   27000</span>
 <span class="co">#&gt; 3      2  400         1  28000    6000</span>
 <span class="co">#&gt; 4      3  800         1  28000    6000</span>
@@ -551,7 +551,7 @@ admixture without spatial overlap.</code></pre>
   model_dir <span class="op">=</span> <span class="st">"/tmp/test-model"</span>,
   gen_time <span class="op">=</span> <span class="fl">30</span>, burnin <span class="op">=</span> <span class="fl">10</span>, sim_length <span class="op">=</span> <span class="fl">70000</span>,
   seq_length <span class="op">=</span> <span class="fl">100</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>,
-  interaction <span class="op">=</span> <span class="fl">30</span>, spread <span class="op">=</span> <span class="fl">20</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>
+  max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
 </div>
 <div id="post-simulation-diagnostics" class="section level2">
