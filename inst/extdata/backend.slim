@@ -3,18 +3,15 @@ initialize() {
 	initializeTreeSeq();
 
 	// interaction/competition distance
-	defineConstant("INTERACTION", asFloat({{interaction}}));
-	defineConstant("MAX_INTERACTION", asFloat({{max_interaction}}));
+	defineConstant("MAX_DISTANCE", asFloat({{max_distance}}));
 	// offspring spread
-	defineConstant("SPREAD", asFloat({{spread}}));
+	defineConstant("MAX_SPREAD", asFloat({{max_spread}}));
 
 	// spatial competition
-	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
-	i1.setInteractionFunction("n", 1.0, INTERACTION);
+	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = MAX_DISTANCE);
 
 	// spatial mate choice
-	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
-	i2.setInteractionFunction("n", 1.0, INTERACTION);
+	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_DISTANCE);
 
 	defineConstant("MODEL_DIR", "{{model_dir}}");
 	// load model definition tables
@@ -149,28 +146,20 @@ initialize() {
 	write_ancestries_header();
 }
 
+// re-evaluate interaction strengths
 1: late() {
 	i1.evaluate();
 	i2.evaluate();
 }
 
-
-2: fitness(NULL) {
-	// spatial competition
+// spatial competition
+1: fitness(NULL) {
 	totalStrength = i1.totalOfNeighborStrengths(individual);
 	return 1.1 - totalStrength / subpop.individualCount;
 }
 
 2: mateChoice() {
  return i2.strength(individual);
-}
-
-2: late() {
-  for (p in sim.subpopulations) {
-  	distances = sqrt((p.individuals.getValue("p1x") - p.individuals.getValue("p2x"))^2 +
-           					  (p.individuals.getValue("p1y") - p.individuals.getValue("p2y"))^2);
-  	log_output("p" + p.id + "\t" + paste(c(min(distances), max(distances), mean(distances)), sep = " "));
-  }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -187,6 +176,8 @@ s1 {
 		set_map(i, sim.generation);
 		set_coordinates(get_pop(i).individuals, i);
 		add_markers(i);
+		// evaluate mating interactions
+		i2.evaluate(get_pop(i));
 	}
 }
 
@@ -291,13 +282,7 @@ modifyChild() {
 
 	// for spatially overlapping admixture and non-migrant offspring,
 	// propose location based on one of its parents
-	pos = parent1.spatialPosition + runif(2, -SPREAD / 2, SPREAD / 2);
-
-	child.setSpatialPosition(pos);
-	child.setValue("p1x", parent1.spatialPosition[0]);
-	child.setValue("p1y", parent1.spatialPosition[1]);
-	child.setValue("p2x", parent2.spatialPosition[0]);
-	child.setValue("p2y", parent2.spatialPosition[1]);
+	pos = parent1.spatialPosition + runif(2, -MAX_SPREAD / 2, MAX_SPREAD / 2);
 
 	if (subpop.spatialMapValue("world", pos) == 1.0) {
 		return F;
