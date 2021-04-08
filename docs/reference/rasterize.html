@@ -124,7 +124,7 @@
     <p>Rasterize the vector form of a population spatial boundary</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rasterize</span><span class='op'>(</span><span class='va'>x</span>, pixel_dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10000</span>, <span class='fl'>10000</span><span class='op'>)</span>, raster_dim <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>rasterize</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>resolution</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,15 +134,8 @@
       <td><p>Object of the 'spammr_pop' class</p></td>
     </tr>
     <tr>
-      <th>pixel_dim</th>
-      <td><p>Two-dimensional numeric vector specifying pixel
-dimension (in units of the CRS used in the definition of the
-world)</p></td>
-    </tr>
-    <tr>
-      <th>raster_dim</th>
-      <td><p>Two-dimendional numeric vectory specifying the
-absolute dimension of the raster map</p></td>
+      <th>resolution</th>
+      <td><p>How many kilometers per pixel?</p></td>
     </tr>
     </table>
 

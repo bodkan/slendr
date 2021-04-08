@@ -108,7 +108,7 @@ already used tools or R packages depend)
 
 2. Install the `devtools` package:
 
-```{r, message = F}
+```{r, eval = F}
 install.packages("devtools")
 ```
 
@@ -118,14 +118,18 @@ a Mac, you can use homebrew again).
 
 3. Install _spammr_:
 
-```{r, message = F}
+```{r, eval = F}
 devtools::install_github("bodkan/spammr")
 ```
 
 4. That's it! You can now load the package with the usual:
 
-```{r, message = F}
+```{r, eval = F}
 library(spammr)
+```
+
+```{r, echo = F, message = F}
+devtools::load_all(".")
 ```
 
 Note that the package relies on several R packages for geospatial
