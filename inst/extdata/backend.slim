@@ -3,17 +3,15 @@ initialize() {
 	initializeTreeSeq();
 
 	// interaction/competition distance
-	defineConstant("INTERACTION", asFloat({{interaction}}));
+	defineConstant("MAX_DISTANCE", asFloat({{max_distance}}));
 	// offspring spread
-	defineConstant("SPREAD", asFloat({{spread}}));
+	defineConstant("MAX_SPREAD", asFloat({{max_spread}}));
 
 	// spatial competition
-	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = INTERACTION);
-	i1.setInteractionFunction("n", 5.0, 10.0);
+	initializeInteractionType(1, "xy", reciprocal = T, maxDistance = MAX_DISTANCE);
 
 	// spatial mate choice
-	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = INTERACTION);
-	i2.setInteractionFunction("n", 1.0, 10.0);
+	initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_DISTANCE);
 
 	defineConstant("MODEL_DIR", "{{model_dir}}");
 	// load model definition tables
@@ -25,8 +23,8 @@ initialize() {
 	defineConstant("MAPS", sapply(maps_param("map"), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
 
 	// world dimensions in pixels
-	defineConstant("WIDTH", MAPS[0].width);
-	defineConstant("HEIGHT", MAPS[0].height);
+	defineConstant("WIDTH", MAPS[0].width); catn("WIDTH: " + WIDTH);
+	defineConstant("HEIGHT", MAPS[0].height); catn("HEIGHT: " + HEIGHT);
 
 	// define output files
 	defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
@@ -100,7 +98,7 @@ initialize() {
 	initializeMutationRate(0.0);
 }
 
-1 early() {
+1 {
 	i = 0;
 	sim.addSubpop(i, pop_param("Ne", i));
 	set_map(i, sim.generation);
@@ -148,12 +146,28 @@ initialize() {
 	write_ancestries_header();
 }
 
+// re-evaluate interaction strengths
+1: late() {
+	i1.evaluate();
+	i2.evaluate();
+}
+
+// spatial competition
+1: fitness(NULL) {
+	totalStrength = i1.totalOfNeighborStrengths(individual);
+	return 1.1 - totalStrength / subpop.individualCount;
+}
+
+2: mateChoice() {
+ return i2.strength(individual);
+}
+
 //////////////////////////////////////////////////////////////////////
 // Demography script blocks
 //////////////////////////////////////////////////////////////////////
 
 // Population splits
-s1 late() {
+s1 {
 	// get the ID of populations splitting in the current generation
 	// from the table of splits
 	pop_ids = pop_param("pop", present = "tsplit")[sim.generation == T_SPLITS];
@@ -162,11 +176,13 @@ s1 late() {
 		set_map(i, sim.generation);
 		set_coordinates(get_pop(i).individuals, i);
 		add_markers(i);
+		// evaluate mating interactions
+		i2.evaluate(get_pop(i));
 	}
 }
 
 // Admixture events
-s2 late() {
+s2 {
 	// iterate over all admixture events scheduled for this generation
 	// and set them accordingly
 	for (i in which(sim.generation == T_ADMIX_START)) {
@@ -179,7 +195,7 @@ s2 late() {
 }
 
 // Stopping admixture
-s3 late() {
+s3 {
 	// iterate over all admixture events scheduled for this generation
 	// and set them back to 0.0
 	for (i in which(sim.generation == T_ADMIX_END)) {
@@ -190,7 +206,7 @@ s3 late() {
 }
 
 // Remove populations which are no longer necessary
-s4 late() {
+s4 {
 	// get the ID of the target population from the table
 	// of admixture events and remove them
 	pop_ids = pop_param("pop", present = "tremove")[sim.generation - 1 == T_CLEANUPS];
@@ -266,7 +282,7 @@ modifyChild() {
 
 	// for spatially overlapping admixture and non-migrant offspring,
 	// propose location based on one of its parents
-	pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
+	pos = parent1.spatialPosition + runif(2, -MAX_SPREAD / 2, MAX_SPREAD / 2);
 
 	if (subpop.spatialMapValue("world", pos) == 1.0) {
 		return F;
