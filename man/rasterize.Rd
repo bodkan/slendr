@@ -8,6 +8,7 @@ rasterize(x, resolution)
 }
 \arguments{
 \item{x}{Object of the 'spammr_pop' class}
+
 \item{resolution}{How many kilometers per pixel?}
 }
 \description{
