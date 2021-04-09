@@ -5,8 +5,7 @@
 \title{Open the compiled spatial model in SLiM}
 \usage{
 run(
-  model_dir,
-  gen_time,
+  model,
   burnin,
   sim_length,
   seq_length,
@@ -20,10 +19,7 @@ run(
 )
 }
 \arguments{
-\item{model_dir}{Directory where \code{compile} saved all spatial maps and
-other model configuration files}
-
-\item{gen_time}{Generation time (in model's time units, i.e. years)}
+\item{model}{Compiled model object}
 
 \item{burnin}{Length of the burnin (in model's time units, i.e. years)}
 
@@ -45,6 +41,8 @@ ancestry markers equal to this number.}
 
 \item{output_prefix}{Directory and shared prefix of all output files (all
 output files will be placed into the model directory by default)}
+
+\item{gen_time}{Generation time (in model's time units, i.e. years)}
 }
 \description{
 When run, the compiled SLiM script will save the location of each individual

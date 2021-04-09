@@ -29,9 +29,8 @@ initialize() {
 	// define output files
 	defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
 
-	defineConstant("GEN_TIME", {{gen_time}});
-	defineConstant("T_BURNIN", asInteger({{burnin}}));
-	defineConstant("T_LENGTH", asInteger({{sim_length}} / GEN_TIME));
+	defineConstant("T_BURNIN", {{burnin}});
+	defineConstant("T_LENGTH", {{sim_length}});
 
 	defineConstant("N_MARKERS", {{ancestry_markers}});
 	defineConstant("TRACK_ANCESTRY", N_MARKERS > 0);
@@ -44,7 +43,7 @@ initialize() {
 
 	if (nrow(SPLIT_TABLE) > 1) {
 		// absolute split times
-		defineConstant("T_ABS_SPLITS", asInteger(pop_param("tsplit") / GEN_TIME));
+		defineConstant("T_ABS_SPLITS", pop_param("tsplit"));
 		// split times relative to the start of the simulation
 		defineConstant("T_SPLITS", SIM_END - T_ABS_SPLITS);
 
@@ -53,8 +52,8 @@ initialize() {
 
 	if (!isNULL(ADMIX_TABLE)) {
 		// absolute admixture times
-		defineConstant("T_ABS_ADMIX_START", asInteger(admix_param("tstart") / GEN_TIME));
-		defineConstant("T_ABS_ADMIX_END", asInteger(admix_param("tend") / GEN_TIME));
+		defineConstant("T_ABS_ADMIX_START", admix_param("tstart"));
+		defineConstant("T_ABS_ADMIX_END", admix_param("tend"));
 		// admixture times relative to the start of the simulation
 		// (add one generation to force admixture only after each split)
 		defineConstant("T_ADMIX_START", SIM_END - T_ABS_ADMIX_START + 1);
@@ -66,7 +65,7 @@ initialize() {
 
 	if (length(pop_param("tremove"))) {
 		// absolute times of population cleanup
-		defineConstant("T_ABS_CLEANUPS", asInteger(pop_param("tremove") / GEN_TIME));
+		defineConstant("T_ABS_CLEANUPS", pop_param("tremove"));
 		// cleanup times relative to the start of the simulation
 		// (add one generation to force cleanup only after each split)
 		defineConstant("T_CLEANUPS", SIM_END - T_ABS_CLEANUPS + 1);
@@ -76,7 +75,7 @@ initialize() {
 
 	if (length(MAPS) > 1) {
 		// absolute times of spatial map changes
-		defineConstant("T_ABS_MAPS", asInteger(maps_param("time") / GEN_TIME));
+		defineConstant("T_ABS_MAPS", maps_param("time"));
 		// times relative to the start of the simulation
 		defineConstant("T_MAPS", c(1, SIM_END - T_ABS_MAPS));
 		catn("T_MAPS: " + paste(T_MAPS));

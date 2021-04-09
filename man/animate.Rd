@@ -4,17 +4,13 @@
 \alias{animate}
 \title{Animate the simulated population dynamics}
 \usage{
-animate(locations, gif = NULL, gen_time = NULL, nframes = 100)
+animate(model, gif = NULL, nframes = 100)
 }
 \arguments{
-\item{locations}{Tab-separated table with locations of individuals throughout
-the simulation saved by the backend SLiM script}
+\item{model}{Compiled model object}
 
-\item{gif}{Path to an output GIF (animation object returned by default)}
-
-\item{gen_time}{Generation time to translate generations into years}
-
-\item{nframes}{Number of frames of the animation}
+\item{gif}{Path to an output GIF (animation object returned by default)
+#' @param nframes Number of frames of the animation}
 }
 \value{
 If \code{gif = NULL}, return gganimate animation object. Otherwise a GIF

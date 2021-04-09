@@ -341,7 +341,7 @@ map <- function(xrange, yrange, crs = "EPSG:4326") {
 #' @return Object of the class data.frame
 #'
 #' @export
-admixture <- function(from, to, rate, start, end, overlap = 0.2) {
+admixture <- function(from, to, rate, start, end, overlap = 0.1) {
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
