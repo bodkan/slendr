@@ -74,7 +74,6 @@ plot.spammr <- function(..., pop_facets = TRUE, time_facets = FALSE,
 
   # plot population ranges, if present
   if (!is.null(pops)) {
-    pops <- pops[order(pops$time, decreasing = TRUE), ]
     pops$pop <- factor(pops$pop)
 
     if (pop_facets)
