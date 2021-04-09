@@ -35,7 +35,7 @@ compile_splits <- function(populations) {
 
 #' Process vectorized population boundaries into a table with
 #' rasterized map objects
-compile_maps <- function(populations, splits_table, resolution, gen_time) {
+compile_maps <- function(populations, splits_table, resolution) {
   # generate rasterized maps
   maps <- render(populations, resolution)
 
@@ -109,7 +109,7 @@ compile <- function(populations, model_dir, admixtures = NULL, gen_time, resolut
   splits_table <- res_splits
   splits_table$tsplit <- round(splits_table$tsplit / gen_time)
   splits_table$tremove <- round(splits_table$tremove / gen_time)
-  maps_table <- compile_maps(populations, splits_table, resolution * 1000, gen_time)
+  maps_table <- compile_maps(populations, splits_table, resolution * 1000)
 
   # prepare the model output directory
   if (dir.exists(model_dir)) {
@@ -131,6 +131,9 @@ compile <- function(populations, model_dir, admixtures = NULL, gen_time, resolut
   splits_table$parent_id <- ifelse(is.na(splits_table$parent_id), -1, splits_table$parent_id)
 
   # save the table with spatial map paths
+  res_maps <- maps_table
+  maps_table$time <- round(maps_table$time / gen_time)
+  maps_table$time[res_maps$time == -1] <- -1
   write.table(
     maps_table[, c("pop_id", "time", "map_number")],
     file.path(model_dir, "maps.tsv"),
@@ -181,7 +184,6 @@ compile <- function(populations, model_dir, admixtures = NULL, gen_time, resolut
     res_admixtures$overlap <- as.logical(res_admixtures$overlap)
   }
 
-  res_maps <- maps_table
   res_maps$map <- file.path(model_dir, paste0(res_maps$map_number, ".png"))
   result <- list(
     path = model_dir,
@@ -332,14 +334,12 @@ save_png <- function(raster, path) {
 #'   throughout the simulations (default FALSE)? If a non-zero integer is
 #'   provided, ancestry will be tracked using the number number of neutral
 #'   ancestry markers equal to this number.
-#' @param output_prefix Directory and shared prefix of all output files (all
-#'   output files will be placed into the model directory by default)
+#' @param gui Run in SLiM GUI instead of command-line? (default)
 #'
 #' @export
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
-                max_distance, max_spread, track_ancestry = FALSE,
-                output_prefix = file.path(normalizePath(model_dir), "output_"),
-                ..., include = NULL) {
+                max_distance, max_spread, track_ancestry = FALSE, gui = TRUE,
+                include = NULL, ...) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
