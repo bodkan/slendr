@@ -16,7 +16,7 @@ animate <- function(model, nframes, gif = NULL) {
   locs$pop <- factor(
     locs$pop,
     levels = sort(unique(locs$pop)),
-    labels = scan(file.path(model$path, "names.txt"), what = "character")
+    labels = scan(file.path(model$path, "names.txt"), what = "character", quiet = TRUE)
   )
   locs$tyears <- as.integer(locs$t * model$gen_time)
 
