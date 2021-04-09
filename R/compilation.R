@@ -359,6 +359,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   # compile the SLiM backend script
   template <- readLines(system.file("extdata", "backend.slim", package = "spammr"))
 
+  output_prefix = file.path(normalizePath(model_dir), "output_")
+
   subst <- list(
     model_dir = normalizePath(model_dir),
     output_prefix = output_prefix,
@@ -380,5 +382,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   script <- file.path(subst[["model_dir"]], "script.slim")
   writeLines(rendered, script)
 
-  system(sprintf("open -a SLiMgui %s", script))
+  if (gui)
+    system(sprintf("open -a SLiMgui %s", script))
+  else
+    system(sprintf("slim %s", script), ignore.stdout = TRUE)
 }
