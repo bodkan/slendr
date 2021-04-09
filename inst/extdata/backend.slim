@@ -95,7 +95,8 @@ initialize() {
 	g1.mutationTypes[mut_ids].mutationStackPolicy = "l";
 	g1.mutationTypes[mut_ids].mutationStackGroup = 0;
 
-	initializeGenomicElement(g1, 0, asInteger({{seq_length}}) - 1);
+        defineConstant("SEQ_LENGTH", asInteger({{seq_length}}));
+	initializeGenomicElement(g1, 0, SEQ_LENGTH - 1);
 
 	initializeRecombinationRate({{recomb_rate}});
 	initializeMutationRate(0.0);
@@ -137,13 +138,17 @@ initialize() {
 	else
 		sim.deregisterScriptBlock(s5);
 
-	// output callbacks
-	sim.rescheduleScriptBlock(s99, start = SIM_START, end = SIM_END);
-	sim.rescheduleScriptBlock(s999, generations = SIM_END);
+        // output locations
+	sim.rescheduleScriptBlock(s90, start = SIM_START, end = SIM_END);
+
+        // output tree sequence data
+	sim.rescheduleScriptBlock(s91, generations = SIM_END);
+
+        // output ancestry proportions
 	if (TRACK_ANCESTRY)
-		sim.rescheduleScriptBlock(s9999, generations = SIM_START:SIM_END);
+		sim.rescheduleScriptBlock(s92, generations = SIM_START:SIM_END);
 	else
-		sim.deregisterScriptBlock(s9999);
+		sim.deregisterScriptBlock(s92);
 
 	write_locations_header();
 	write_ancestries_header();
@@ -170,7 +175,7 @@ initialize() {
 //////////////////////////////////////////////////////////////////////
 
 // Population splits
-s1 {
+s1 late() {
 	// get the ID of populations splitting in the current generation
 	// from the table of splits
 	pop_ids = pop_param("pop", present = "tsplit")[sim.generation == T_SPLITS];
@@ -185,7 +190,7 @@ s1 {
 }
 
 // Admixture events
-s2 {
+s2 late() {
 	// iterate over all admixture events scheduled for this generation
 	// and set them accordingly
 	for (i in which(sim.generation == T_ADMIX_START)) {
@@ -198,7 +203,7 @@ s2 {
 }
 
 // Stopping admixture
-s3 {
+s3 late() {
 	// iterate over all admixture events scheduled for this generation
 	// and set them back to 0.0
 	for (i in which(sim.generation == T_ADMIX_END)) {
@@ -209,7 +214,7 @@ s3 {
 }
 
 // Remove populations which are no longer necessary
-s4 {
+s4 late() {
 	// get the ID of the target population from the table
 	// of admixture events and remove them
 	pop_ids = pop_param("pop", present = "tremove")[sim.generation == T_CLEANUPS + 1];
@@ -234,7 +239,7 @@ s5 late() {
 //////////////////////////////////////////////////////////////////////
 
 // Saving locations and remembering ancient individuals
-s99 late() {
+s90 late() {
 	// explicitly sample individuals for later tree sequence analysis
 	// (one individual from each population)
 	if (sim.generation % 10 == 0) {
@@ -249,7 +254,7 @@ s99 late() {
 }
 
 // Saving tree sequences at the end of the simulation
-s999 late() {
+s91 late() {
   catn("--------------------------------------------------");
 	log_output("simulation finished");
 	filename = paste0(OUTPUT_PREFIX, "treeseq.trees");
@@ -257,9 +262,10 @@ s999 late() {
 	sim.simulationFinished();
 }
 
-s9999 late() {
+s92 late() {
 	write_ancestries();
 }
+
 
 //////////////////////////////////////////////////////////////////////
 // Callbacks
