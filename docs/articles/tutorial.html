@@ -149,7 +149,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpGwHYuz", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpY2rpU2", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -466,34 +466,22 @@ admixture without spatial overlap.</code></pre>
 <span class="co">#&gt;   from_name to_name tstart tend rate overlap</span>
 <span class="co">#&gt; 1  YAM_migr     EUR   4000 3000 0.75       1</span></code></pre></div>
 </div>
-<div id="visualize-the-entire-history-of-splits-and-admixtures" class="section level2">
-<h2 class="hasAnchor">
-<a href="#visualize-the-entire-history-of-splits-and-admixtures" class="anchor"></a>Visualize the entire history of splits and admixtures</h2>
-<p>With the couple of code snippets above, we have defined a simple history of European populations over the last 50 thousand years. This history includes population splits and admixture events as well as other demographic changes. While <em>spammr</em> tries to make the formal specification of spatio-temporal population dynamics as concise as possible, in the hope to increase reproducibility and minimize errors, because the admixture history can be very complex and occurs both across space and time, it is hard to really visualize everything that will happen on the SLiM side after the simulation starts just from the code alone.</p>
-<p>For this purpose, the package includes a function <code><a href="../reference/graph.html">graph()</a></code> which takes in all the information about the relationships between populations (i.e., the population and admixture objects we defined above) and plots it all in the form of a so-called <em>admixture graph</em> (see <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193">here</a> for a discussion of the admixture graph concept).</p>
-<p>One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full <em>spammr</em> graph, a single population can participate in many admixture events over the course of history. This is visualized by assigning a color to each population, and different nodes of the same color representing snapshots in time when a demographic event affecting that population happens.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/graph.html">graph</a></span><span class="op">(</span>
-  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span><span class="op">)</span>,
-  admixtures <span class="op">=</span> <span class="va">admixtures</span>
-<span class="op">)</span></code></pre></div>
-<p><img src="tutorial_files/figure-html/unnamed-chunk-34-1.png" width="1100"></p>
-</div>
 <div id="compile-the-whole-model-and-load-it-in-slim" class="section level2">
 <h2 class="hasAnchor">
 <a href="#compile-the-whole-model-and-load-it-in-slim" class="anchor"></a>Compile the whole model and load it in SLiM</h2>
 <p>The most crucial function of <code>spammr</code> is <code><a href="../reference/compile.html">compile()</a></code>. It takes all population ranges defined across space and time together with list of admixture events (this is optional, of course, as some models won’t include admixture), and then proceeds by converting all vectorized spatial ranges to a raster bitmap form. Furthermore, it compiles all information about split times, <span class="math inline">\(N_e\)</span> values, admixture directions, times and rates, to a series of tables. All of that will be saved automatically in a dedicated directory in a format that is understood by the backend SLiM script provided by <code>spammr</code> (more on that below).</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span><span class="op">)</span>,
   admixtures <span class="op">=</span> <span class="va">admixtures</span>,
-  output_dir <span class="op">=</span> <span class="st">"/tmp/test-model"</span>,
+  model_dir <span class="op">=</span> <span class="st">"/tmp/test-model"</span>,
+  gen_time <span class="op">=</span> <span class="fl">30</span>,
   resolution <span class="op">=</span> <span class="fl">10</span>,
   overwrite <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 <p>What do the files in the model directory look like? In an ideal case, you as a user should never worry about these things. In fact, the whole purpose of <code>spammr</code> is to let you work on much higher level of abstraction without worrying about these low-level details. That said, you might find it useful to see how things are stored in the background…</p>
 <p>First of all, we can inspect the contents of the directory and see that it does, indeed, contain all defined spatial maps (now PNG files, which is what SLiM requires).</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"/tmp/test-model"</span>, pattern <span class="op">=</span> <span class="st">"*.png"</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "1.png"  "10.png" "11.png" "12.png" "13.png" "14.png" "15.png" "16.png"</span>
 <span class="co">#&gt;  [9] "17.png" "18.png" "19.png" "2.png"  "20.png" "21.png" "22.png" "23.png"</span>
@@ -507,36 +495,47 @@ admixture without spatial overlap.</code></pre>
 <ul>
 <li>the table of population splits:</li>
 </ul>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/splits.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
 <span class="co">#&gt;   pop_id   Ne parent_id tsplit tremove</span>
-<span class="co">#&gt; 1      0 1000        -1     -1      -1</span>
-<span class="co">#&gt; 2      1  200         0  51000   27000</span>
-<span class="co">#&gt; 3      2  400         1  28000    6000</span>
-<span class="co">#&gt; 4      3  800         1  28000    6000</span>
-<span class="co">#&gt; 5      4 1000         2  25000      -1</span>
-<span class="co">#&gt; 6      5  600         2   7000    2000</span>
-<span class="co">#&gt; 7      6 1000         5   6000    2900</span></code></pre></div>
+<span class="co">#&gt; 1      0 1000        -1     -1       0</span>
+<span class="co">#&gt; 2      1  200         0   1700     900</span>
+<span class="co">#&gt; 3      2  400         1    933     200</span>
+<span class="co">#&gt; 4      3  800         1    933     200</span>
+<span class="co">#&gt; 5      4 1000         2    833       0</span>
+<span class="co">#&gt; 6      5  600         2    233      67</span>
+<span class="co">#&gt; 7      6 1000         5    200      97</span></code></pre></div>
 <ul>
 <li>the table of admixture events:</li>
 </ul>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/admixtures.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
 <span class="co">#&gt;   from to tstart tend rate overlap</span>
-<span class="co">#&gt; 1    3  4   8000 6000   50       1</span>
-<span class="co">#&gt; 2    6  4   4000 3000   75       1</span></code></pre></div>
+<span class="co">#&gt; 1    3  4    267  200   50       1</span>
+<span class="co">#&gt; 2    6  4    133  100   75       1</span></code></pre></div>
 <ul>
 <li>and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather long, so we’re taking a peek at only the first couple of lines):</li>
 </ul>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/maps.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;   pop_id  time map_number</span>
-<span class="co">#&gt; 1      0    -1          1</span>
-<span class="co">#&gt; 2      1 51000          2</span>
-<span class="co">#&gt; 3      1 50000          3</span>
-<span class="co">#&gt; 4      1 49697          4</span>
-<span class="co">#&gt; 5      1 49394          5</span>
-<span class="co">#&gt; 6      1 49091          6</span></code></pre></div>
+<span class="co">#&gt;   pop_id time map_number</span>
+<span class="co">#&gt; 1      0   -1          1</span>
+<span class="co">#&gt; 2      1 1700          2</span>
+<span class="co">#&gt; 3      1 1667          3</span>
+<span class="co">#&gt; 4      1 1657          4</span>
+<span class="co">#&gt; 5      1 1646          5</span>
+<span class="co">#&gt; 6      1 1636          6</span></code></pre></div>
+<p>The object returned by the <code><a href="../reference/compile.html">compile()</a></code> function (called <code>model</code> here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list <code>model$splits</code>, <code>model$admixtures</code>, etc.</p>
+</div>
+<div id="visualize-the-entire-history-of-splits-and-admixtures" class="section level2">
+<h2 class="hasAnchor">
+<a href="#visualize-the-entire-history-of-splits-and-admixtures" class="anchor"></a>Visualize the entire history of splits and admixtures</h2>
+<p>With the couple of code snippets above, we have defined a simple history of European populations over the last 50 thousand years. This history includes population splits and admixture events as well as other demographic changes. While <em>spammr</em> tries to make the formal specification of spatio-temporal population dynamics as concise as possible, in the hope to increase reproducibility and minimize errors, because the admixture history can be very complex and occurs both across space and time, it is hard to really visualize everything that will happen on the SLiM side after the simulation starts just from the code alone.</p>
+<p>For this purpose, the package includes a function <code><a href="../reference/graph.html">graph()</a></code> which takes in all the information about the relationships between populations (i.e., the population and admixture objects we defined above) and plots it all in the form of a so-called <em>admixture graph</em> (see <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193">here</a> for a discussion of the admixture graph concept).</p>
+<p>One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full <em>spammr</em> graph, a single population can participate in many admixture events over the course of history. This is visualized by assigning a color to each population, and different nodes of the same color representing snapshots in time when a demographic event affecting that population happens.</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/graph.html">graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-39-1.png" width="1100"></p>
 </div>
 <div id="running-the-simulation" class="section level2">
 <h2 class="hasAnchor">
@@ -548,10 +547,10 @@ admixture without spatial overlap.</code></pre>
 <p>Ancestry tracking is very useful to monitor that the spatial admixture model as defined in R really behaves as expected even on the SLiM side. This can be verified by inspecting files named as <code>output_ancestry_XXX.tsv</code> in the specified output directory. See the manpage of <code><a href="../reference/run.html">run()</a></code> for more details.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/run.html">run</a></span><span class="op">(</span>
-  model_dir <span class="op">=</span> <span class="st">"/tmp/test-model"</span>,
-  gen_time <span class="op">=</span> <span class="fl">30</span>, burnin <span class="op">=</span> <span class="fl">10</span>, sim_length <span class="op">=</span> <span class="fl">70000</span>,
+  <span class="va">model</span>, burnin <span class="op">=</span> <span class="fl">30</span>, sim_length <span class="op">=</span> <span class="fl">70000</span>,
   seq_length <span class="op">=</span> <span class="fl">100</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>,
-  max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>
+  max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>,
+  track_ancestry <span class="op">=</span> <span class="fl">1</span>, gui <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
 </div>
 <div id="post-simulation-diagnostics" class="section level2">
@@ -559,11 +558,11 @@ admixture without spatial overlap.</code></pre>
 <a href="#post-simulation-diagnostics" class="anchor"></a>Post-simulation diagnostics</h2>
 <p>In case we instructed <code>spammr</code> to track ancestry proportions, we can visualize them after the simulation is over using the built-in <code>diagnostics()</code> function. This is quite bare-bones for now and the way diagnostics are generated is subject to change…</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/ancestries.html">ancestries</a></span><span class="op">(</span><span class="st">"/tmp/test-model"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/ancestries.html">ancestries</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-41-1.png" width="700"></p>
 <p>Similarly, we can re-capitulate the spatial dynamics with the <em>spammr</em> function <code><a href="../reference/animate.html">animate()</a></code> (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="st">"/tmp/test-model/output_locations.tsv.gz"</span>, gen_time <span class="op">=</span> <span class="fl">30</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-42-1.gif"><!-- --></p>
 <p>In case an argument <code>gif = ...</code> was provided, the function will save the animation to the specified location as a GIF file. Note that unless your simulation is very short and/or involves only a small population, rendering of the animation can take several minutes.</p>
 </div>
