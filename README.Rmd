@@ -136,8 +136,8 @@ p5 <- population(
 
 3. Visualize the defined spatial maps of each population:
 
-```{r fig.width = 7, fig.height = 9}
-plot(p1, p2, p3, p4, p5)
+```{r fig.width = 12, fig.height = 12}
+plot(p1, p2, p3, p4, p5, ncol = 2)
 ```
 
 4. Define admixture between some populations:
