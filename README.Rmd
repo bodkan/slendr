@@ -175,7 +175,7 @@ graph(model)
 ```{r}
 run(
   model,
-  burnin = 1000, sim_length = 31000, # total running length
+  burnin = 1000, sim_length = 31000,
   seq_length = 1, recomb_rate = 0, track_ancestry = 1, # one locus only
   max_distance = 30, max_spread = 30,
   gui = FALSE
@@ -196,7 +196,7 @@ ancestries(model)
 9. Re-capitulate the SLiM run as an individual-based animation:
 
 ```{r, message = F}
-animate(model, nframes = 300)
+animate(model, nframes = 200)
 ```
 
 Note that it is possible to simulate population splits and admixture

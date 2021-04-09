@@ -80,7 +80,7 @@
 <a href="#%EF%B8%8F%EF%B8%8F%EF%B8%8F-warning-%EF%B8%8F%EF%B8%8F%EF%B8%8F" class="anchor"></a>⚠️⚠️⚠️ WARNING ⚠️⚠️⚠️</h3>
 <p><strong>This software is still under heavy development!</strong></p>
 <p>If you are interested in realistic spatio-temporal population genetic simulations and somehow stumbled upon this repository then congratulations! Your google-fu is strong.</p>
-<p>This repository is public mostly so that I can share the results of my work with collaborators without too much hassle. I have been making good progress towards a first beta version, but the package still has some way to go before being production ready.</p>
+<p>I have been making good progress towards a first beta version, but the package still has some way to go before being production ready.</p>
 <p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at the <a href="https://bodkan.net/spammr/articles/tutorial.html">tutorial</a>. Note that getting it installed with all the geospatial dependencies can be a little bit tricky at this point (see the relevant section in the tutorial). If loading the package fails, check the error messages for missing software and install it using the package manager of your choice (on a Mac I recommend <em>homebrew</em>).</p>
 <p>If you would like to stay updated with the developments:</p>
 <ol>
@@ -91,107 +91,128 @@
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
-<p>For installation instructions, please take a look at the installation section <a href="https://bodkan.net/spammr/articles/tutorial.html#installation-and-setup-1">of the tutorial</a>. Note that you might need to install some additional non-R software dependencies first.</p>
+<p>For installation instructions, please take a look at the installation section <a href="https://bodkan.net/spammr/articles/tutorial.html#installation-and-setup-1">of the tutorial</a>. Note that you might need to install some non-R software dependencies first. At the very least, you will need the most recent version of the <a href="https://messerlab.org/slim/">SLiM software</a> (version 3.6).</p>
 </div>
 <div id="example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h3>
-<p>Here is a very brief visual example of what <em>spammr</em> is designed to do. We want to simulate a demographic history of several populations, including splits and admixture events, defining spatial population boundaries and their dynamics over time, feeding the spatial model definition into SLiM and instructing it to simulate data according to the spatio-temporal configuration in R.</p>
+<p>Here is a small demonstration of what <em>spammr</em> is designed to do.</p>
+<p>We’re going to simulate a demographic history of several populations, including splits and admixture events, defining the spatial boundaries of populations as well as their changing dynamics over time (steps 1-6). We will then feed model defined in R into SLiM and instruct it (using a back-end SLiM script provided by this package) to simulate data based on the model specification (step 7). Finally, we will generate some visualizations to make sure that the simulation proceeded as we wanted to (steps 8 and 9).</p>
 <ol>
-<li>Setup the simulation context (“the world”):</li>
+<li>Setup the spatial context (the world inhabited by the populations):</li>
 </ol>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<!-- --><div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpirJCSk", layer: "ne_110m_land"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; with 127 features</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; It has 3 fields</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">spammr</span><span class="op">)</span>
 
-<span class="va">world</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/map.html">map</a></span><span class="op">(</span>
+<span class="va">world</span> <span class="op">&lt;-</span> <span class="fu">map</span><span class="op">(</span>
   xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>, <span class="co"># min-max longitude</span>
   yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,  <span class="co"># min-max latitude</span>
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span></code></pre></div>
 <ol>
-<li>Define population splits and spatial boundaries (times in years ago, distances in kilometers):</li>
+<li>Define demographic history and spatial boundaries of populations (times are given in “units before present”, distances in kilometers):</li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"pop1"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, Ne <span class="op">=</span> <span class="fl">1000</span>,
-  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">25</span><span class="op">)</span>, <span class="co"># (latitude, longitude)</span>
-  radius <span class="op">=</span> <span class="fl">600</span>,
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">population</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"pop1"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, Ne <span class="op">=</span> <span class="fl">700</span>,
+  radius <span class="op">=</span> <span class="fl">600</span>,       <span class="co"># radius of the circular range</span>
+  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">25</span><span class="op">)</span>, <span class="co"># latitude, longitude coordinates of the center</span>
   world <span class="op">=</span> <span class="va">world</span>
 <span class="op">)</span>
 
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"pop2"</span>, parent <span class="op">=</span> <span class="va">p1</span>, time <span class="op">=</span> <span class="fl">30000</span>, Ne <span class="op">=</span> <span class="fl">100</span>,
+<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">population</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"pop2"</span>, parent <span class="op">=</span> <span class="va">p1</span>, time <span class="op">=</span> <span class="fl">30000</span>, Ne <span class="op">=</span> <span class="fl">500</span>,
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">25</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">300</span>
 <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span>
-    trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,
-    start <span class="op">=</span> <span class="fl">29000</span>, end <span class="op">=</span> <span class="fl">25000</span>, snapshots <span class="op">=</span> <span class="fl">20</span>
+  <span class="fu">move</span><span class="op">(</span>
+    trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">30</span><span class="op">)</span>, <span class="co"># trajectory of movement</span>
+                      <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,
+    start <span class="op">=</span> <span class="fl">29000</span>, end <span class="op">=</span> <span class="fl">25000</span>, snapshots <span class="op">=</span> <span class="fl">30</span>
   <span class="op">)</span>
 
-<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"pop3"</span>, parent <span class="op">=</span> <span class="va">p2</span>, time <span class="op">=</span> <span class="fl">20000</span>, Ne <span class="op">=</span> <span class="fl">3000</span>,
-  coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">53</span><span class="op">)</span>, <span class="co"># trajectory "checkpoints"</span>
+<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu">population</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"pop3"</span>, parent <span class="op">=</span> <span class="va">p2</span>, time <span class="op">=</span> <span class="fl">20000</span>, Ne <span class="op">=</span> <span class="fl">2000</span>,
+  coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">53</span><span class="op">)</span>, <span class="co"># polygon range</span>
                 <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">70</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">65</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
 
-<span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"pop4"</span>, parent <span class="op">=</span> <span class="va">p2</span>, time <span class="op">=</span> <span class="fl">15000</span>, Ne <span class="op">=</span> <span class="fl">3000</span>,
+<span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu">population</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"pop4"</span>, parent <span class="op">=</span> <span class="va">p2</span>, time <span class="op">=</span> <span class="fl">15000</span>, Ne <span class="op">=</span> <span class="fl">2000</span>,
   coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">37</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">40</span><span class="op">)</span>,
                 <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">45</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">45</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
 
-<span class="co"># expand the ancestral population further</span>
-<span class="va">p5</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"pop5"</span>, parent <span class="op">=</span> <span class="va">p1</span>, time <span class="op">=</span> <span class="fl">700</span>, Ne <span class="op">=</span> <span class="fl">100</span>,
+<span class="va">p5</span> <span class="op">&lt;-</span> <span class="fu">population</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"pop5"</span>, parent <span class="op">=</span> <span class="va">p1</span>, time <span class="op">=</span> <span class="fl">10000</span>, Ne <span class="op">=</span> <span class="fl">3000</span>,
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">25</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">300</span>
 <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span>
+  <span class="fu">move</span><span class="op">(</span> <span class="co"># population migration...</span>
     trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">33</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">40</span><span class="op">)</span><span class="op">)</span>,
-    start <span class="op">=</span> <span class="fl">10000</span>, end <span class="op">=</span> <span class="fl">8000</span>,
+    start <span class="op">=</span> <span class="fl">9000</span>, end <span class="op">=</span> <span class="fl">8000</span>,
     snapshots <span class="op">=</span> <span class="fl">20</span>
-  <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="reference/expand.html">expand</a></span><span class="op">(</span>by <span class="op">=</span> <span class="fl">2000</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">2000</span>, snapshots <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+  <span class="op">)</span> <span class="op">%&gt;%</span> <span class="co"># ... followed by expansion</span>
+  <span class="fu">expand</span><span class="op">(</span>by <span class="op">=</span> <span class="fl">2000</span>, start <span class="op">=</span> <span class="fl">7000</span>, end <span class="op">=</span> <span class="fl">2000</span>, snapshots <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <ol>
-<li>Visualize the (still vectorized) spatial maps:</li>
-</ol>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span><span class="op">)</span></code></pre></div>
-<ol>
-<li>Define admixture between populations:</li>
+<li>Visualize the defined spatial maps of each population:</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png"><!-- --></p>
+<ol>
+<li>Define admixture between some populations:</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">admixtures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-  <span class="fu"><a href="reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p4</span>, rate <span class="op">=</span> <span class="fl">0.2</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,
-  <span class="fu"><a href="reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p3</span>, rate <span class="op">=</span> <span class="fl">0.2</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+  <span class="fu">admixture</span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p4</span>, rate <span class="op">=</span> <span class="fl">0.2</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,
+  <span class="fu">admixture</span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p3</span>, rate <span class="op">=</span> <span class="fl">0.3</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <ol>
 <li>Compile the model:</li>
 </ol>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span><span class="op">(</span><span class="st">"/tmp/example-model"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/compile.html">compile</a></span><span class="op">(</span>
-  model_dir <span class="op">=</span> <span class="st">"/tmp/example-model"</span>,  <span class="co"># where to put all compiled data</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">compile</span><span class="op">(</span>
+  model_dir <span class="op">=</span> <span class="st">"/tmp/example-model"</span>, <span class="co"># location of serialized model data</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span><span class="op">)</span>,
   admixtures <span class="op">=</span> <span class="va">admixtures</span>,
   gen_time <span class="op">=</span> <span class="fl">30</span>,
   resolution <span class="op">=</span> <span class="fl">10</span>  <span class="co"># how many km per pixel?</span>
 <span class="op">)</span></code></pre></div>
 <ol>
-<li>Visualize the admixture graph arising from our model:</li>
-</ol>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/graph.html">graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
-<ol>
-<li>Run the model in SLiM in batch mode using a built-in backend script:</li>
+<li>Visualize the admixture graph implied by our model configuration:</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/run.html">run</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="fu">graph</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-8-1.png"><!-- --></p>
+<ol>
+<li>Run the model in SLiM in batch mode:</li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">run</span><span class="op">(</span>
   <span class="va">model</span>,
-  burnin <span class="op">=</span> <span class="fl">1000</span>,
-  sim_length <span class="op">=</span> <span class="fl">35000</span>, <span class="co"># total length of the simulation</span>
-  seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>, <span class="co"># simulate just a single locus</span>
-  max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>
+  burnin <span class="op">=</span> <span class="fl">1000</span>, sim_length <span class="op">=</span> <span class="fl">31000</span>,
+  seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>, <span class="co"># one locus only</span>
+  max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>,
+  gui <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
+<p>As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.</p>
+<ol>
+<li>Verify that the simulated ancestry proportions correspond to what we have specified:</li>
+</ol>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">ancestries</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-10-1.png"><!-- --></p>
+<ol>
+<li>Re-capitulate the SLiM run as an individual-based animation:</li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">animate</span><span class="op">(</span><span class="va">model</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-11-1.gif"><!-- --></p>
+<p>Note that it is possible to simulate population splits and admixture both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>
+<p>In this case, we simulated the split of populations <em>pop3</em> and <em>pop4</em> from <em>pop2</em> instantaneously, without explicitly tracing their movement. Compare this to the split of <em>pop5</em> from <em>pop1</em>, where we defined the population movement explicitly.</p>
 </div>
 </div>
   </div>
