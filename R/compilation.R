@@ -190,6 +190,7 @@ compile <- function(populations, model_dir, admixtures = NULL, gen_time, resolut
     splits = res_splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
     admixtures = res_admixtures,
     maps = res_maps[, c("pop", "time", "map")],
+    populations = populations,
     gen_time = gen_time
   )
 
