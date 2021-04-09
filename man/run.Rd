@@ -13,9 +13,9 @@ run(
   max_distance,
   max_spread,
   track_ancestry = FALSE,
-  output_prefix = file.path(normalizePath(model_dir), "output_"),
-  ...,
-  include = NULL
+  gui = TRUE,
+  include = NULL,
+  ...
 )
 }
 \arguments{
@@ -39,8 +39,7 @@ throughout the simulations (default FALSE)? If a non-zero integer is
 provided, ancestry will be tracked using the number number of neutral
 ancestry markers equal to this number.}
 
-\item{output_prefix}{Directory and shared prefix of all output files (all
-output files will be placed into the model directory by default)}
+\item{gui}{Run in SLiM GUI instead of command-line? (default)}
 
 \item{gen_time}{Generation time (in model's time units, i.e. years)}
 }

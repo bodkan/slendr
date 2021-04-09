@@ -689,7 +689,7 @@ times and rates, to a series of tables. All of that will be saved
 automatically in a dedicated directory in a format that is understood
 by the backend SLiM script provided by `spammr` (more on that below).
 
-```{r eval = F}
+```{r}
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
@@ -740,7 +740,7 @@ read.table("/tmp/test-model/admixtures.tsv", header = T)
 head(read.table("/tmp/test-model/maps.tsv", header = T))
 ```
 
-
+The object returned by the `compile()` function (called `model` here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list `model$splits`, `model$admixtures`, etc.
 
 
 
@@ -774,7 +774,7 @@ color to each population, and different nodes of the same color
 representing snapshots in time when a demographic event affecting that
 population happens.
 
-```{r fig.width = 11, fig.height = 12}
+```{r, fig.width = 11, fig.height = 12}
 graph(model)
 ```
 
@@ -824,11 +824,13 @@ side. This can be verified by inspecting files named as
 `output_ancestry_XXX.tsv` in the specified output directory. See the
 manpage of `run()` for more details.
 
-```{r eval = FALSE}
+```{r}
 run(
   model, burnin = 30, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
-  max_distance = 30, max_spread = 30, track_ancestry = 1
+  max_distance = 30, max_spread = 30,
+  track_ancestry = 1,
+  gui = FALSE # run the model in batch mode
 )
 ```
 
