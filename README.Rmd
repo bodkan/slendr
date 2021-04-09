@@ -51,7 +51,9 @@ post some updates once the software is a bit more ready.
 For installation instructions, please take a look at the installation
 section [of the
 tutorial](https://bodkan.net/spammr/articles/tutorial.html#installation-and-setup-1). Note
-that you might need to install some non-R software dependencies first. At the very least, you will need the most recent version of the [SLiM software](https://messerlab.org/slim/) (version 3.6).
+that you might need to install some non-R software dependencies
+first. At the very least, you will need the most recent version of the
+[SLiM software](https://messerlab.org/slim/) (version 3.6).
 
 ### Example
 
@@ -60,10 +62,11 @@ Here is a small demonstration of what _spammr_ is designed to do.
 We're going to simulate a demographic history of several populations,
 including splits and admixture events, defining the spatial boundaries
 of populations as well as their changing dynamics over time (steps
-1-6). We will then feed model defined in R into SLiM and instruct it (using a back-end SLiM script provided by this package) to simulate
+1-6). We will then feed model defined in R into SLiM and instruct it
+(using a back-end SLiM script provided by this package) to simulate
 data based on the model specification (step 7). Finally, we will
-generate some visualizations to make sure that the simulation proceeded
-as we wanted to (steps 8 and 9).
+generate some visualizations to make sure that the simulation
+proceeded as we wanted to (steps 8 and 9).
 
 1. Setup the spatial context (the world inhabited by the populations):
 
@@ -179,9 +182,12 @@ run(
 )
 ```
 
-As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.
+As specified, the SLiM run will save ancestry proportions in each
+population over time as well as the location of every individual who
+ever lived.
 
-8. Verify that the simulated ancestry proportions correspond to what we have specified:
+8. Verify that the simulated ancestry proportions correspond to what
+   we have specified:
 
 ```{r}
 ancestries(model)
@@ -190,11 +196,17 @@ ancestries(model)
 9. Re-capitulate the SLiM run as an individual-based animation:
 
 ```{r, message = F}
-animate(model, nframes = 100)
+animate(model, nframes = 300)
 ```
 
 Note that it is possible to simulate population splits and admixture
 both by "physically" moving individuals of a population from one
-destination to the next across spacem but it is also possible to do
-this more abstractly (in "jumps") in situations where this is more
-appropriate.
+destination to the next across space but it is also possible to do
+this more abstractly (in instantaneous "jumps") in situations where
+this is more appropriate or where simulating accurate movement is not
+necessary.
+
+In this case, we simulated the split of populations _pop3_ and _pop4_
+from _pop2_ instantaneously, without explicitly tracing their
+movement. Compare this to the split of _pop5_ from _pop1_, where we
+defined the population movement explicitly.
