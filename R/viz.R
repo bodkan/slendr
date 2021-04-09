@@ -94,7 +94,7 @@ ancestries <- function(model, gen_time = FALSE) {
   else
     anc_long$time <- anc_long$gen * model$gen_time
 
-  anc_long[anc_long$pop != anc_long$ancestry, ] %>%
+  anc_long %>%
   ggplot(aes(-time, prop, color = ancestry)) +
     geom_line() +
     facet_wrap(~ pop) +
