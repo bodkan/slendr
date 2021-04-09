@@ -23,35 +23,18 @@ pop <- population(
 )
 plot(pop)
 
-compile(pop, output_dir = "~/Desktop/europe", pixel = 10000, overwrite = TRUE)
+compile(pop, output_dir = "~/Desktop/europe", resolution = 10, overwrite = TRUE)
 
-run("~/Desktop/europe/", gen_time = 1, burnin = 1, seq_length = 100,
-    recomb_rate = 0, sim_length = 10000,
-    interaction = 70, max_interaction = 100, spread = 5)
+run("~/Desktop/europe/", gen_time = 1, burnin = 1, seq_length = 1,
+    recomb_rate = 0, sim_length = 100,
+    max_distance = 50, max_spread = 5)
 
-# run("~/Desktop/europe/", gen_time = 1, burnin = 1, seq_length = 100,
-#     recomb_rate = 0, sim_length = 1000,
-#     competition = 50, mate_choice = 50, spread = 5,
-#     frequency = 0.1, sel_x = 428, sel_y = 319, sel_coef = 0.1, sel_time = 2,
-#     include = "~/projects/spammr/inst/extdata/selection.slim")
+sel_pos <- c(428, 319)
+sel_pos <- c(680, 220)
 
-# "blank" simulation
-
-world <- map(
-  xrange = c(0, 5),  # min-max longitude
-  yrange = c(44, 47),   # min-max latitude
-  crs = "EPSG:3035"  # real projected CRS used internally
-)
-plot(world)
-
-pop <- population(
-  "pop", parent = "ancestor", Ne = 20000,
-  world = world, coords = list(c(0, 44), c(5, 44.2), c(5, 47), c(0, 47))
-)
-plot(pop)
-
-compile(pop, output_dir = "~/Desktop/blank", pixel = 500, overwrite = TRUE)
-
-run("~/Desktop/blank/", gen_time = 1, burnin = 1, seq_length = 100,
-    recomb_rate = 0, sim_length = 10000,
-    interaction = 70, max_interaction = 100, spread = 5)
+run("~/Desktop/europe/", gen_time = 1, burnin = 1, seq_length = 1,
+    recomb_rate = 0, sim_length = 100,
+    max_distance = 50, max_spread = 5,
+    sel_freq = 0.1, sel_coef = 0.5, sel_time = 10,
+    sel_pop = "pop", sel_x = sel_pos[1], sel_y = sel_pos[2],
+    include = "~/projects/spammr/inst/extdata/selection.slim")
