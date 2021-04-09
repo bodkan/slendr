@@ -139,35 +139,19 @@ initialize() {
 		sim.deregisterScriptBlock(s5);
 
         // output locations
-	sim.rescheduleScriptBlock(s90, start = SIM_START, end = SIM_END);
+	sim.rescheduleScriptBlock(s6, start = SIM_START, end = SIM_END);
 
         // output tree sequence data
-	sim.rescheduleScriptBlock(s91, generations = SIM_END);
+	sim.rescheduleScriptBlock(s7, generations = SIM_END);
 
         // output ancestry proportions
 	if (TRACK_ANCESTRY)
-		sim.rescheduleScriptBlock(s92, generations = SIM_START:SIM_END);
+		sim.rescheduleScriptBlock(s8, generations = SIM_START:SIM_END);
 	else
-		sim.deregisterScriptBlock(s92);
+		sim.deregisterScriptBlock(s8);
 
 	write_locations_header();
 	write_ancestries_header();
-}
-
-// re-evaluate interaction strengths
-1: late() {
-	i1.evaluate();
-	i2.evaluate();
-}
-
-// spatial competition
-1: fitness(NULL) {
-	totalStrength = i1.totalOfNeighborStrengths(individual);
-	return 1.1 - totalStrength / subpop.individualCount;
-}
-
-2: mateChoice() {
- return i2.strength(individual);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -184,7 +168,8 @@ s1 late() {
 		set_map(i, sim.generation);
 		set_coordinates(get_pop(i).individuals, i);
 		add_markers(i);
-		// evaluate mating interactions
+		// evaluate interactions
+                i1.evaluate(get_pop(i));
 		i2.evaluate(get_pop(i));
 	}
 }
@@ -239,7 +224,7 @@ s5 late() {
 //////////////////////////////////////////////////////////////////////
 
 // Saving locations and remembering ancient individuals
-s90 late() {
+s6 late() {
 	// explicitly sample individuals for later tree sequence analysis
 	// (one individual from each population)
 	if (sim.generation % 10 == 0) {
@@ -254,7 +239,7 @@ s90 late() {
 }
 
 // Saving tree sequences at the end of the simulation
-s91 late() {
+s7 late() {
   catn("--------------------------------------------------");
 	log_output("simulation finished");
 	filename = paste0(OUTPUT_PREFIX, "treeseq.trees");
@@ -262,14 +247,28 @@ s91 late() {
 	sim.simulationFinished();
 }
 
-s92 late() {
+s8 late() {
 	write_ancestries();
 }
 
 
 //////////////////////////////////////////////////////////////////////
-// Callbacks
+// Callbacks and interaction evaluations
 //////////////////////////////////////////////////////////////////////
+
+1: late() {
+	i1.evaluate();
+	i2.evaluate();
+}
+
+2: fitness(NULL) {
+	totalStrength = i1.totalOfNeighborStrengths(individual);
+	return 1.1 - totalStrength / subpop.individualCount;
+}
+
+2: mateChoice() {
+	return i2.strength(individual);
+}
 
 modifyChild() {
 	// in spatially non-overlapping admixture, assign offspring locations uniformly
