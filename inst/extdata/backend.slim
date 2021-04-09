@@ -416,8 +416,11 @@ function (void) set_coordinates(lifso<Individual> inds, i$ pop, [l$ log = T]) {
 	}
 }
 
-// Get subpopulation based on a given ID
-function (lifso<Subpopulation>$) get_pop(i$ i) {
+// Get subpopulation based on a given ID (numeric or string)
+function (lifso<Subpopulation>$) get_pop(si$ i) {
+  if (isString(i)) i = which(NAMES == i);
+  if (!any(i == sim.subpopulations.id))
+    stop("Population " + NAMES[i] + " not present in the simulation in generation " + sim.generation);
 	return sim.subpopulations[i == sim.subpopulations.id];
 }
 
