@@ -4,10 +4,10 @@
 \alias{ancestries}
 \title{Plot simulated ancestry proportions}
 \usage{
-ancestries(output_dir, gen_time = NULL)
+ancestries(model, gen_time = FALSE)
 }
 \arguments{
-\item{output_dir}{Directory with simulation output files}
+\item{model}{Compiled model object}
 }
 \description{
 Plot simulated ancestry proportions

@@ -4,7 +4,7 @@
 \alias{admixture}
 \title{Define an admixture event}
 \usage{
-admixture(from, to, rate, start, end, overlap = 0.2)
+admixture(from, to, rate, start, end, overlap = 0.1)
 }
 \arguments{
 \item{from, to}{Population range objects of the class \code{spammr_pop}}

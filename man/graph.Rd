@@ -4,13 +4,10 @@
 \alias{graph}
 \title{Plot admixture graph based on given model configuration}
 \usage{
-graph(populations, admixtures)
+graph(model)
 }
 \arguments{
-\item{populations}{List of \code{spammr_pop} objects}
-
-\item{admixtures}{List of admixture events created by the
-\code{admixture} function}
+\item{model}{Compiled model object}
 }
 \description{
 Plot admixture graph based on given model configuration
