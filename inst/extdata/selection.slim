@@ -1,15 +1,19 @@
-1 early() {
+1 late() {
+  // position and time of the selected allele's origin
   defineConstant("SEL_POS", c(asFloat({{sel_x}}), asFloat({{sel_y}})));
-             //sim.rescheduleScriptBlock(s999999, generations = asInteger({{sel_time}} / {{gen_time}}));
+  defineConstant("T_SELECTION", SIM_END - asInteger({{sel_time}} / {{gen_time}}));
+  defineConstant("SEL_POP", which(NAMES == "{{sel_pop}}"));
+
+  sim.rescheduleScriptBlock(s999, generations = T_SELECTION);
 }
 
-2 {
+s999 late() {
   log_output("Adding a mutation");
-//  if (get_pop(0).spatialMapValue("world", SEL_POS) == 0.0)
+//  if (get_pop(SEL_POP).spatialMapValue("world", SEL_POS) == 0.0)
 //    stop("Location of selection start outside of the population boundary!\n");
 
-        all_genomes = get_pop(0).genomes;
-        sampled_genomes = sample(all_genomes, asInteger(length(all_genomes) * asFloat({{frequency}})));
-        sampled_genomes.addNewMutation(m0, {{sel_coef}}, 50);
-        sampled_genomes.individual.setSpatialPosition(SEL_POS + runif(2, -SPREAD / 2, SPREAD / 2));
+  all_genomes = get_pop(SEL_POP).genomes;
+  sampled_genomes = sample(all_genomes, asInteger(length(all_genomes) * asFloat({{sel_freq}})));
+  sampled_genomes.addNewMutation(get_pop(SEL_POP).id, {{sel_coef}}, asInteger(SEQ_LENGTH / 2));
+  sampled_genomes.individual.setSpatialPosition(SEL_POS);
 }
