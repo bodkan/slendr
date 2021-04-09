@@ -1,21 +1,19 @@
 #' Animate the simulated population dynamics
 #'
-#' @param locations Tab-separated table with locations of individuals throughout
-#'   the simulation saved by the backend SLiM script
+#' @param model Compiled model object
 #' @param gif Path to an output GIF (animation object returned by default)
-#' @param gen_time Generation time to translate generations into years
-#' @param nframes Number of frames of the animation
+#' #' @param nframes Number of frames of the animation
 #'
 #' @return If `gif = NULL`, return gganimate animation object. Otherwise a GIF
 #'   file is saved and no value is returned.
 #'
 #' @import ggplot2
 #' @export
-animate <- function(locations, gif = NULL, gen_time = NULL, nframes = 100) {
-  locs <- read.table(locations, header = TRUE)
+animate <- function(model, gif = NULL, nframes = 100) {
+  locs <- read.table(file.path(model$path, "output_locations.tsv.gz"), header = TRUE)
   locs$pop <- factor(locs$pop)
   locs$popname <- paste0("pop", locs$pop)
-  locs$tyears <- as.integer(locs$t * gen_time)
+  locs$tyears <- as.integer(locs$t * model$gen_time)
 
   # cut time into blocks - same as the number of frames of the final GIF
   locs$tblock <- cut(
@@ -64,11 +62,11 @@ animate <- function(locations, gif = NULL, gen_time = NULL, nframes = 100) {
 
 #' Plot simulated ancestry proportions
 #'
-#' @param output_dir Directory with simulation output files
+#' @param model Compiled model object
 #'
 #' @export
-ancestries <- function(output_dir, gen_time = NULL) {
-  anc_wide <- read_ancestries(output_dir)
+ancestries <- function(model, gen_time = FALSE) {
+  anc_wide <- read_ancestries(model$path)
 
   # thank god for tidyverse, base R reshaping is truly awful...  but
   # it's not worth dragging along a huge dependency if we can do this
@@ -91,10 +89,10 @@ ancestries <- function(output_dir, gen_time = NULL) {
     names
   anc_long$pop <- factor(anc_long$pop, levels = split_order)
 
-  if (is.null(gen_time))
+  if (gen_time)
     anc_long$time <- anc_long$gen
   else
-    anc_long$time <- anc_long$gen * gen_time
+    anc_long$time <- anc_long$gen * model$gen_time
 
   anc_long[anc_long$pop != anc_long$ancestry, ] %>%
   ggplot(aes(-time, prop, color = ancestry)) +
@@ -108,16 +106,14 @@ ancestries <- function(output_dir, gen_time = NULL) {
 
 #' Plot admixture graph based on given model configuration
 #'
-#' @param populations List of \code{spammr_pop} objects
-#' @param admixtures List of admixture events created by the
-#'   \code{admixture} function
+#' @param model Compiled model object
 #'
 #' @import ggplot2 ggraph
 #' @export
-graph <- function(populations, admixtures) {
+graph <- function(model) {
   # summarize model configuration into a tabular form
-  split_table <- compile_splits(populations)
-  admixture_table <- do.call(rbind, admixtures)
+  split_table <- model$splits
+  admixture_table <- model$admixtures
 
   split_edges <- get_split_edges(split_table)
   admixture_edges <- get_admixture_edges(admixture_table)
@@ -228,7 +224,7 @@ get_split_edges <- function(split_table) {
 
 #' Create a table of population admixture edges for graph visualization
 get_admixture_edges <- function(admix_table) {
-  admix_edges <- admix_table[, c("from_name", "to_name", "rate", "tstart")]
+  admix_edges <- admix_table[, c("source", "target", "rate", "tstart")]
   names(admix_edges) <- c("from", "to", "rate", "time")
   admix_edges$type <- "admixture"
   admix_edges$rate <- sprintf("%.1f%%", admix_edges$rate * 100)
