@@ -18,7 +18,6 @@ animate <- function(model, nframes, gif = NULL) {
     levels = sort(unique(locs$pop)),
     labels = scan(file.path(model$path, "names.txt"), what = "character")
   )
-  locs$popname <- paste0("pop", locs$pop)
   locs$tyears <- as.integer(locs$t * model$gen_time)
 
   # cut time into blocks - same as the number of frames of the final GIF
@@ -36,7 +35,7 @@ animate <- function(model, nframes, gif = NULL) {
   # lower sample density for plotting
   #locs <- dplyr::sample_n(locs, 10000)
 
-  p <- ggplot(locs, aes(x, y, color = popname)) +
+  p <- ggplot(locs, aes(x, y, color = pop)) +
     geom_point(alpha = 0.5) +
   #  coord_fixed(xlim = c(0, dim(map)[2]), ylim = c(0, dim(map)[1])) +
     scale_x_continuous(expand = c(0, 0)) +
