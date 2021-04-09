@@ -191,6 +191,7 @@ compile <- function(populations, model_dir, admixtures = NULL, gen_time, resolut
     admixtures = res_admixtures,
     maps = res_maps[, c("pop", "time", "map")],
     populations = populations,
+    world = attr(populations[[1]], "world"),
     gen_time = gen_time
   )
 
