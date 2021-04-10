@@ -53,12 +53,10 @@ the model specification (step 7). Finally, we will generate some
 visualizations to make sure that the simulation proceeded as we wanted
 to (steps 8 and 9).
 
-1.  Setup the spatial context (the world inhabited by the populations):
-
-<!-- -->
+#### 1. Setup the spatial context (“the world”)
 
     #> OGR data source with driver: ESRI Shapefile 
-    #> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpirJCSk", layer: "ne_110m_land"
+    #> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpqoxIRC", layer: "ne_110m_land"
     #> with 127 features
     #> It has 3 fields
 
@@ -72,9 +70,9 @@ world <- map(
 )
 ```
 
-2.  Define demographic history and spatial boundaries of populations
-    (times are given in “units before present”, distances in
-    kilometers):
+#### 2. Define demographic history and population boundaries
+
+Times are given in “units before present”, distances in kilometers.
 
 ``` r
 p1 <- population(
@@ -118,7 +116,7 @@ p5 <- population(
   expand(by = 2000, start = 7000, end = 2000, snapshots = 10)
 ```
 
-3.  Visualize the defined spatial maps of each population:
+#### 3. Visualize the spatial maps of each population
 
 ``` r
 plot(p1, p2, p3, p4, p5, ncol = 2)
@@ -126,7 +124,7 @@ plot(p1, p2, p3, p4, p5, ncol = 2)
 
 ![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
 
-4.  Define admixture between some populations:
+#### 4. Define admixture events
 
 ``` r
 admixtures <- list(
@@ -135,7 +133,7 @@ admixtures <- list(
 )
 ```
 
-5.  Compile the model:
+#### 5. Compile the model to a set of configuration files
 
 ``` r
 model <- compile(
@@ -147,7 +145,7 @@ model <- compile(
 )
 ```
 
-6.  Visualize the admixture graph implied by our model configuration:
+#### 6. Visualize the implied admixture graph
 
 ``` r
 graph(model)
@@ -155,7 +153,7 @@ graph(model)
 
 ![](man/figures/README-unnamed-chunk-8-1.png)<!-- -->
 
-7.  Run the model in SLiM in batch mode:
+#### 7. Run the model in SLiM (in batch mode in this case)
 
 ``` r
 run(
@@ -171,8 +169,7 @@ As specified, the SLiM run will save ancestry proportions in each
 population over time as well as the location of every individual who
 ever lived.
 
-8.  Verify that the simulated ancestry proportions correspond to what we
-    have specified:
+#### 8. Verify the simulated ancestry proportions
 
 ``` r
 ancestries(model)
@@ -180,7 +177,7 @@ ancestries(model)
 
 ![](man/figures/README-unnamed-chunk-10-1.png)<!-- -->
 
-9.  Re-capitulate the SLiM run as an individual-based animation:
+#### 9. Re-capitulate the SLiM run as an individual-based animation
 
 ``` r
 animate(model, nframes = 200)
