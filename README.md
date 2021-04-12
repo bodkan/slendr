@@ -55,11 +55,6 @@ to (steps 8 and 9).
 
 #### 1. Setup the spatial context (“the world”)
 
-    #> OGR data source with driver: ESRI Shapefile 
-    #> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpqoxIRC", layer: "ne_110m_land"
-    #> with 127 features
-    #> It has 3 fields
-
 ``` r
 library(spammr)
 
