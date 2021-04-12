@@ -27,4 +27,5 @@ reference:
   - title: Model compilation and simulation
     contents:
     - compile
+    - load
     - run

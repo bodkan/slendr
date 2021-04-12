@@ -70,7 +70,7 @@ proceeded as we wanted to (steps 8 and 9).
 
 #### 1. Setup the spatial context ("the world")
 
-```{r, echo = F, message = F}
+```{r, include = F}
 devtools::load_all(".")
 
 unlink("/tmp/example-model", recursive = TRUE, force = TRUE)
