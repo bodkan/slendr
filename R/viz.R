@@ -11,12 +11,13 @@
 #' @import ggplot2
 #' @export
 animate <- function(model, nframes, gif = NULL) {
-  locs <- read.table(file.path(model$path, "output_locations.tsv.gz"), header = TRUE)
+  locs <- read.table(file.path(model$config$directory, "output_locations.tsv.gz"), header = TRUE)
+  pop_names <- scan(file.path(model$config$directory, "names.txt"), what = "character", quiet = TRUE)
   # label populations based on their original idenifiers from the user
   locs$pop <- factor(
     locs$pop,
     levels = sort(unique(locs$pop)),
-    labels = scan(file.path(model$path, "names.txt"), what = "character", quiet = TRUE)
+    labels = pop_names[sort(unique(locs$pop)) + 1]
   )
   locs$tyears <- as.integer(locs$t * model$gen_time)
 
@@ -71,7 +72,7 @@ animate <- function(model, nframes, gif = NULL) {
 #'
 #' @export
 ancestries <- function(model, gen_time = FALSE) {
-  anc_wide <- read_ancestries(model$path)
+  anc_wide <- read_ancestries(model$config$directory)
 
   # thank god for tidyverse, base R reshaping is truly awful...  but
   # it's not worth dragging along a huge dependency if we can do this
@@ -205,7 +206,8 @@ read_ancestries <- function(model_dir) {
 
   lapply(files, function(f) {
     anc_df <- read.table(f, header = TRUE)
-    anc_df$pop <- gsub(".*_ancestry_(.*).tsv", "\\1", f)
+    if (nrow(anc_df) > 0)
+      anc_df$pop <- gsub(".*_ancestry_(.*).tsv", "\\1", f)
     anc_df
   }) %>% do.call(rbind, .)
 }
@@ -229,7 +231,7 @@ get_split_edges <- function(split_table) {
 
 #' Create a table of population admixture edges for graph visualization
 get_admixture_edges <- function(admix_table) {
-  admix_edges <- admix_table[, c("source", "target", "rate", "tstart")]
+  admix_edges <- admix_table[, c("from", "to", "rate", "tstart")]
   names(admix_edges) <- c("from", "to", "rate", "time")
   admix_edges$type <- "admixture"
   admix_edges$rate <- sprintf("%.1f%%", admix_edges$rate * 100)
