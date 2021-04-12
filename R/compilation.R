@@ -154,6 +154,7 @@ compile <- function(populations, model_dir, admixtures = NULL, gen_time, resolut
   # save the admixture table
   if (is.null(admixtures)) {
     admix_table <- data.frame(from = NULL, to = NULL, tstart = NULL, tend = NULL, rate = NULL, overlap = NULL, stringsAsFactors = FALSE)
+    res_admixtures <- NULL
   } else {
     admix_table <- res_admixtures
     admix_table$tstart <- round(admix_table$tstart / gen_time)
@@ -184,14 +185,14 @@ compile <- function(populations, model_dir, admixtures = NULL, gen_time, resolut
     res_admixtures$overlap <- as.logical(res_admixtures$overlap)
   }
 
+  write(gen_time, file.path(model_dir, "gen_time.txt"))
+
   res_maps$map <- file.path(model_dir, paste0(res_maps$map_number, ".png"))
   result <- list(
     path = model_dir,
     splits = res_splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
     admixtures = res_admixtures,
     maps = res_maps[, c("pop", "time", "map")],
-    populations = populations,
-    world = attr(populations[[1]], "world"),
     gen_time = gen_time
   )
 
@@ -388,4 +389,65 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     system(sprintf("open -a SLiMgui %s", script))
   else
     system(sprintf("slim %s", script), ignore.stdout = TRUE)
+}
+
+#' Load a previously serialized spammr model
+#'
+#' @param model_dir Directory with all required configuration files
+#'
+#' @export
+load <- function(model_dir) {
+  # paths to files which are saved by the compile() function and are necessary
+  # for running the backend script using the run() function
+  path_splits <- file.path(model_dir, "splits.tsv")
+  path_admixtures <- file.path(model_dir, "admixtures.tsv")
+  path_maps <- file.path(model_dir, "maps.tsv")
+  path_names <- file.path(model_dir, "names.txt")
+  path_gen_time <- file.path(model_dir, "gen_time.txt")
+
+  if (!dir.exists(model_dir))
+    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+
+  if (!all(file.exists(c(path_splits, path_maps, path_names))))
+    stop(sprintf("Directory '%s' does not contain all spammr configuration files.
+Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt are all present", model_dir), call. = FALSE)
+
+  pop_names <- scan(path_names, what = "character", quiet = TRUE)
+
+  # load the split table from disk and re-format it to the original format
+  splits <- read.table(path_splits, header = TRUE)
+  # add population labels and parent population labels (these are striped away
+  # during model saving because SLiM can't handle mixed types in matrices)
+  splits$pop <- pop_names[splits$pop_id + 1]
+  splits$parent[splits$parent == -1] <- "ancestor"
+  if (any(splits$parent_id != -1))
+    splits$parent[splits$parent != -1] <- pop_names[splits$parent_id[splits$parent != -1] + 1]
+
+  # load and reformat the admixtures table (if present - if absent, no admixture
+  # was specified)
+  if (file.exists(path_admixtures)) {
+    admixtures <- read.table(path_admixtures, header = TRUE)
+  } else {
+    admixtures <- NULL
+  }
+
+  # load and reformat the maps table
+  maps <- read.table(path_maps, header = TRUE)
+  # reconstruct the paths to each raster map (again, stripped away because SLiM
+  # can't handle strings and numbers in a single matrix/data frame)
+  maps$map <- file.path(model_dir, paste0(maps$map_number, ".png"))
+  # recreate the user-specified population labels
+  maps$pop <- pop_names[maps$pop_id + 1]
+  if (!all(file.exists(maps$map)))
+    stop(sprintf("Directory '%s' does not contain all maps required by the model configuration (%s)", model_dir, maps$map), call. = FALSE)
+
+  result <- list(
+    path = model_dir,
+    splits = splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
+    admixtures = admixtures,
+    maps = maps[, c("pop", "time", "map")],
+    gen_time = scan(path_gen_time, what = "integer", quiet = TRUE)
+  )
+
+  result
 }
