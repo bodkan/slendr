@@ -1,6 +1,5 @@
 devtools::load_all("~/projects/spammr")
 
-
 # simulation of Europe
 
 world <- map(
@@ -18,14 +17,14 @@ eurasia <- region("Eurasia", world, coords = list(
 plot(eurasia)
 
 pop <- population(
-  "pop", parent = "ancestor", Ne = 20000,
+  "pop", parent = "ancestor", Ne = 200,
   world = world, region = eurasia
 )
 plot(pop)
 
-compile(pop, output_dir = "~/Desktop/europe", resolution = 10, overwrite = TRUE)
+model <- compile(pop, model_dir = "~/Desktop/europe/", resolution = 10, gen_time = 30, overwrite = TRUE)
 
-run("~/Desktop/europe/", gen_time = 1, burnin = 1, seq_length = 1,
+run(model, burnin = 1, seq_length = 1,
     recomb_rate = 0, sim_length = 100,
     max_distance = 50, max_spread = 5)
 

@@ -742,6 +742,12 @@ head(read.table("/tmp/test-model/maps.tsv", header = T))
 
 The object returned by the `compile()` function (called `model` here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list `model$splits`, `model$admixtures`, etc.
 
+In case you'd want to separate model specification and running into different scripts, _spammr_ includes a function `load()` just for this purpose:
+
+```{r}
+loaded_model <- load("/tmp/test-model")
+```
+
 
 
 
