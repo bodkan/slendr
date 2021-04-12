@@ -14,8 +14,8 @@ run(
   max_spread,
   track_ancestry = FALSE,
   gui = TRUE,
-  include = NULL,
-  ...
+  verbose = FALSE,
+  include = NULL
 )
 }
 \arguments{
@@ -40,6 +40,9 @@ provided, ancestry will be tracked using the number number of neutral
 ancestry markers equal to this number.}
 
 \item{gui}{Run in SLiM GUI instead of command-line? (default)}
+
+\item{include}{Vector of paths to custom SLiM scripts which should be
+combined with the backend SLiM code}
 
 \item{gen_time}{Generation time (in model's time units, i.e. years)}
 }
