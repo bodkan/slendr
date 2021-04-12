@@ -34,7 +34,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
   # saved for later SLiM runs)
   splits_table <- return_splits
   splits_table$tsplit <- splits_table$tsplit / gen_time
-  splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] * gen_time
+  splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] / gen_time
 
   # compile the spatial maps
   maps_table <- compile_maps(populations, splits_table, resolution * 1000)
