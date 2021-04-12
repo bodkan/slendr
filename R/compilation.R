@@ -1,84 +1,3 @@
-#' Iterate over population objects and convert he information about
-#' population split hierarchy and split times into a data frame
-compile_splits <- function(populations) {
-  splits_table <- lapply(populations, function(p) {
-    parent <- attr(p, "parent")
-    if (is.character(parent) && parent == "ancestor") {
-      parent_name <- parent
-    } else {
-      parent_name <- unique(attr(p, "parent")$pop)
-    }
-
-    tremove <- unique(attr(p, "remove"))
-
-    data.frame(
-      pop = unique(p$pop),
-      parent = parent_name,
-      tsplit = p$time[1],
-      Ne = unique(p$Ne),
-      tremove = ifelse(!is.null(tremove), tremove, -1),
-      stringsAsFactors = FALSE
-    )
-  }) %>% do.call(rbind, .)
-
-  # order populations by split time and assign a numeric identifier to each
-  splits_table <- splits_table[
-    order(splits_table$tsplit, decreasing = TRUE, na.last = FALSE), ]
-  splits_table$pop_id <- 1:nrow(splits_table) - 1
-  splits_table$parent_id <- lapply(
-    splits_table$parent,
-    function(i) splits_table[splits_table$pop == i, ]$pop_id
-  ) %>% unlist() %>% c(NA, .)
-
-  splits_table
-}
-
-#' Process vectorized population boundaries into a table with
-#' rasterized map objects
-compile_maps <- function(populations, splits_table, resolution) {
-  # generate rasterized maps
-  maps <- render(populations, resolution)
-
-  # convert list of rasters into data frame, adding the spatial
-  # maps themselves as a list column
-  maps_table <- lapply(maps, function(m) {
-    as.data.frame(m[c("pop", "time")], stringsAsFactors = FALSE)
-  }) %>%
-    do.call(rbind, .)
-  maps_table$time <- round(maps_table$time)
-  # add column with a numeric population identifier (used later by SLiM)
-  maps_table$pop_id <- unlist(lapply(
-    maps_table$pop,
-    function(i) splits_table[splits_table$pop == i, ]$pop_id
-  ))
-  maps_table$map <- I(lapply(maps, function(m) m$map))
-  maps_table <- maps_table[order(maps_table$time, decreasing = TRUE, na.last = FALSE), ]
-
-  # number maps sequentially in the order SLiM will be swapping them
-  # later (each map number X corresponds to X.png)
-  maps_table$map_number <- seq_len(nrow(maps_table))
-
-  maps_table
-}
-
-
-#' Save the rasterized spatial maps as PNG files into a target
-#' directory
-write_maps <- function(maps_table, output_dir) {
-  for (i in seq_len(nrow(maps_table))) {
-    map_row <- maps_table[i, ]
-    # the first spatial map has necessarily a nonsensical time stamp,
-    # so let's take care of that first
-    time <- ifelse(map_row$time == Inf, "ancestor", map_row$time)
-
-    ## filename <- sprintf("map_%d_%s_%s.png", i, map_row$pop, time)
-    filename <- sprintf("%d.png", i)
-    path <- file.path(output_dir, filename)
-
-    save_png(map_row$map[[1]], path)
-  }
-}
-
 #' Compile the spatial maps and split/admixture tables
 #'
 #' @param populations Population map objects of the \code{spammr_pop} class (a
@@ -200,6 +119,227 @@ compile <- function(populations, model_dir, admixtures = NULL, gen_time, resolut
 }
 
 
+#' Load a previously serialized spammr model
+#'
+#' @param model_dir Directory with all required configuration files
+#'
+#' @export
+load <- function(model_dir) {
+  # paths to files which are saved by the compile() function and are necessary
+  # for running the backend script using the run() function
+  path_splits <- file.path(model_dir, "splits.tsv")
+  path_admixtures <- file.path(model_dir, "admixtures.tsv")
+  path_maps <- file.path(model_dir, "maps.tsv")
+  path_names <- file.path(model_dir, "names.txt")
+  path_gen_time <- file.path(model_dir, "gen_time.txt")
+
+  if (!dir.exists(model_dir))
+    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+
+  if (!all(file.exists(c(path_splits, path_maps, path_names))))
+    stop(sprintf("Directory '%s' does not contain all spammr configuration files.
+Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt are all present", model_dir), call. = FALSE)
+
+  pop_names <- scan(path_names, what = "character", quiet = TRUE)
+
+  # load the split table from disk and re-format it to the original format
+  splits <- read.table(path_splits, header = TRUE)
+  # add population labels and parent population labels (these are striped away
+  # during model saving because SLiM can't handle mixed types in matrices)
+  splits$pop <- pop_names[splits$pop_id + 1]
+  ancestral <- splits$parent == -1
+  splits$parent[ancestral] <- "ancestor"
+  if (any(!ancestral))
+    splits$parent[!ancestral] <- pop_names[splits$parent_id[!ancestral] + 1]
+
+  # load and reformat the admixtures table (if present - if absent, no admixture
+  # was specified)
+  admixtures <- NULL
+  if (file.exists(path_admixtures))
+    admixtures <- read.table(path_admixtures, header = TRUE)
+
+  # load and reformat the maps table
+  maps <- read.table(path_maps, header = TRUE)
+  # reconstruct the paths to each raster map (again, stripped away because SLiM
+  # can't handle strings and numbers in a single matrix/data frame)
+  maps$map <- file.path(model_dir, paste0(maps$map_number, ".png"))
+  # recreate the user-specified population labels
+  maps$pop <- pop_names[maps$pop_id + 1]
+  if (!all(file.exists(maps$map)))
+    stop(sprintf("Directory '%s' does not contain all maps required by the model configuration (%s)", model_dir, maps$map), call. = FALSE)
+
+  result <- list(
+    path = model_dir,
+    splits = splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
+    admixtures = admixtures,
+    maps = maps[, c("pop", "time", "map")],
+    gen_time = scan(path_gen_time, what = "integer", quiet = TRUE)
+  )
+
+  result
+}
+
+
+#' Open the compiled spatial model in SLiM
+#'
+#' When run, the compiled SLiM script will save the location of each individual
+#' that ever lived, and will also record a sample of ancient individuals from
+#' each population in a tree sequence data structure which will be saved for all
+#' "present-day" individuals at the end of the simulation. This obviously does
+#' not make sense for all potential uses and the exact specification of output
+#' formats will be changed at some point soon.
+#'
+#' @param model Compiled model object
+#' @param gen_time Generation time (in model's time units, i.e. years)
+#' @param burnin Length of the burnin (in model's time units, i.e. years)
+#' @param sim_length Total length of the simulation (in model's time units, i.e.
+#'   years)
+#' @param seq_length Total length of the simulated sequence in base-pairs
+#' @param recomb_rate Recombination rate of the simulated sequence
+#' @param max_distance,max_spread Maximum values for spatial interaction and
+#'   mating choice (max_distance) and maximum distance for offspring from its
+#'   parents (max_spread)
+#' @param track_ancestry Track ancestry proportion dynamics in all populations
+#'   throughout the simulations (default FALSE)? If a non-zero integer is
+#'   provided, ancestry will be tracked using the number number of neutral
+#'   ancestry markers equal to this number.
+#' @param gui Run in SLiM GUI instead of command-line? (default)
+#'
+#' @export
+run <- function(model, burnin, sim_length, seq_length, recomb_rate,
+                max_distance, max_spread, track_ancestry = FALSE, gui = TRUE,
+                include = NULL, ...) {
+  model_dir <- model$path
+  if (!dir.exists(model_dir))
+    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+
+  if (!all(file.exists(file.path(model_dir, c("admixtures.tsv", "splits.tsv", "maps.tsv")))))
+    stop(sprintf("Directory '%s' does not contain spammr configuration files", model_dir), call. = FALSE)
+
+  if (!length(list.files(model_dir, pattern = "*.png") == 0))
+    stop(sprintf("Directory '%s' does not contain any spammr spatial raster maps", model_dir), call. = FALSE)
+
+  if (!is.logical(track_ancestry) & !is.numeric(track_ancestry))
+    stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
+a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
+  else
+    markers_count <- as.integer(track_ancestry)
+
+  # compile the SLiM backend script
+  template <- readLines(system.file("extdata", "backend.slim", package = "spammr"))
+
+  output_prefix = file.path(normalizePath(model_dir), "output_")
+
+  subst <- list(
+    model_dir = normalizePath(model_dir),
+    output_prefix = output_prefix,
+    burnin = round(burnin / model$gen_time),
+    sim_length = round(sim_length / model$gen_time),
+    max_distance = max_distance,
+    max_spread = max_spread,
+    seq_length = seq_length,
+    recomb_rate = recomb_rate,
+    ancestry_markers = markers_count
+  )
+  if (length(list(...)) > 0 ) subst <- c(subst, list(...))
+
+  if (!is.null(include)) {
+    template <- c(template, sapply(include, readLines))
+  }
+  rendered <- whisker::whisker.render(template, subst)
+
+  script <- file.path(subst[["model_dir"]], "script.slim")
+  writeLines(rendered, script)
+
+  if (gui)
+    system(sprintf("open -a SLiMgui %s", script))
+  else
+    system(sprintf("slim %s", script), ignore.stdout = TRUE)
+}
+
+
+#' Iterate over population objects and convert he information about
+#' population split hierarchy and split times into a data frame
+compile_splits <- function(populations) {
+  splits_table <- lapply(populations, function(p) {
+    parent <- attr(p, "parent")
+    if (is.character(parent) && parent == "ancestor") {
+      parent_name <- parent
+    } else {
+      parent_name <- unique(attr(p, "parent")$pop)
+    }
+
+    tremove <- unique(attr(p, "remove"))
+
+    data.frame(
+      pop = unique(p$pop),
+      parent = parent_name,
+      tsplit = p$time[1],
+      Ne = unique(p$Ne),
+      tremove = ifelse(!is.null(tremove), tremove, -1),
+      stringsAsFactors = FALSE
+    )
+  }) %>% do.call(rbind, .)
+
+  # order populations by split time and assign a numeric identifier to each
+  splits_table <- splits_table[
+    order(splits_table$tsplit, decreasing = TRUE, na.last = FALSE), ]
+  splits_table$pop_id <- 1:nrow(splits_table) - 1
+  splits_table$parent_id <- lapply(
+    splits_table$parent,
+    function(i) splits_table[splits_table$pop == i, ]$pop_id
+  ) %>% unlist() %>% c(NA, .)
+
+  splits_table
+}
+
+#' Process vectorized population boundaries into a table with
+#' rasterized map objects
+compile_maps <- function(populations, splits_table, resolution) {
+  # generate rasterized maps
+  maps <- render(populations, resolution)
+
+  # convert list of rasters into data frame, adding the spatial
+  # maps themselves as a list column
+  maps_table <- lapply(maps, function(m) {
+    as.data.frame(m[c("pop", "time")], stringsAsFactors = FALSE)
+  }) %>%
+    do.call(rbind, .)
+  maps_table$time <- round(maps_table$time)
+  # add column with a numeric population identifier (used later by SLiM)
+  maps_table$pop_id <- unlist(lapply(
+    maps_table$pop,
+    function(i) splits_table[splits_table$pop == i, ]$pop_id
+  ))
+  maps_table$map <- I(lapply(maps, function(m) m$map))
+  maps_table <- maps_table[order(maps_table$time, decreasing = TRUE, na.last = FALSE), ]
+
+  # number maps sequentially in the order SLiM will be swapping them
+  # later (each map number X corresponds to X.png)
+  maps_table$map_number <- seq_len(nrow(maps_table))
+
+  maps_table
+}
+
+
+#' Save the rasterized spatial maps as PNG files into a target
+#' directory
+write_maps <- function(maps_table, output_dir) {
+  for (i in seq_len(nrow(maps_table))) {
+    map_row <- maps_table[i, ]
+    # the first spatial map has necessarily a nonsensical time stamp,
+    # so let's take care of that first
+    time <- ifelse(map_row$time == Inf, "ancestor", map_row$time)
+
+    ## filename <- sprintf("map_%d_%s_%s.png", i, map_row$pop, time)
+    filename <- sprintf("%d.png", i)
+    path <- file.path(output_dir, filename)
+
+    save_png(map_row$map[[1]], path)
+  }
+}
+
+
 #' Render population boundaries to black-and-white spatial maps
 #'
 #' @param pops Spatial population objects of the 'spammr_pop' class
@@ -311,143 +451,4 @@ save_png <- function(raster, path) {
   img_matrix[img_matrix > 0] <- 1
 
   png::writePNG(img_matrix, path)
-}
-
-
-#' Open the compiled spatial model in SLiM
-#'
-#' When run, the compiled SLiM script will save the location of each individual
-#' that ever lived, and will also record a sample of ancient individuals from
-#' each population in a tree sequence data structure which will be saved for all
-#' "present-day" individuals at the end of the simulation. This obviously does
-#' not make sense for all potential uses and the exact specification of output
-#' formats will be changed at some point soon.
-#'
-#' @param model Compiled model object
-#' @param gen_time Generation time (in model's time units, i.e. years)
-#' @param burnin Length of the burnin (in model's time units, i.e. years)
-#' @param sim_length Total length of the simulation (in model's time units, i.e.
-#'   years)
-#' @param seq_length Total length of the simulated sequence in base-pairs
-#' @param recomb_rate Recombination rate of the simulated sequence
-#' @param max_distance,max_spread Maximum values for spatial interaction and
-#'   mating choice (max_distance) and maximum distance for offspring from its
-#'   parents (max_spread)
-#' @param track_ancestry Track ancestry proportion dynamics in all populations
-#'   throughout the simulations (default FALSE)? If a non-zero integer is
-#'   provided, ancestry will be tracked using the number number of neutral
-#'   ancestry markers equal to this number.
-#' @param gui Run in SLiM GUI instead of command-line? (default)
-#'
-#' @export
-run <- function(model, burnin, sim_length, seq_length, recomb_rate,
-                max_distance, max_spread, track_ancestry = FALSE, gui = TRUE,
-                include = NULL, ...) {
-  model_dir <- model$path
-  if (!dir.exists(model_dir))
-    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
-
-  if (!all(file.exists(file.path(model_dir, c("admixtures.tsv", "splits.tsv", "maps.tsv")))))
-    stop(sprintf("Directory '%s' does not contain spammr configuration files", model_dir), call. = FALSE)
-
-  if (!length(list.files(model_dir, pattern = "*.png") == 0))
-    stop(sprintf("Directory '%s' does not contain any spammr spatial raster maps", model_dir), call. = FALSE)
-
-  if (!is.logical(track_ancestry) & !is.numeric(track_ancestry))
-    stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
-a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
-  else
-    markers_count <- as.integer(track_ancestry)
-
-  # compile the SLiM backend script
-  template <- readLines(system.file("extdata", "backend.slim", package = "spammr"))
-
-  output_prefix = file.path(normalizePath(model_dir), "output_")
-
-  subst <- list(
-    model_dir = normalizePath(model_dir),
-    output_prefix = output_prefix,
-    burnin = round(burnin / model$gen_time),
-    sim_length = round(sim_length / model$gen_time),
-    max_distance = max_distance,
-    max_spread = max_spread,
-    seq_length = seq_length,
-    recomb_rate = recomb_rate,
-    ancestry_markers = markers_count
-  )
-  if (length(list(...)) > 0 ) subst <- c(subst, list(...))
-
-  if (!is.null(include)) {
-    template <- c(template, sapply(include, readLines))
-  }
-  rendered <- whisker::whisker.render(template, subst)
-
-  script <- file.path(subst[["model_dir"]], "script.slim")
-  writeLines(rendered, script)
-
-  if (gui)
-    system(sprintf("open -a SLiMgui %s", script))
-  else
-    system(sprintf("slim %s", script), ignore.stdout = TRUE)
-}
-
-#' Load a previously serialized spammr model
-#'
-#' @param model_dir Directory with all required configuration files
-#'
-#' @export
-load <- function(model_dir) {
-  # paths to files which are saved by the compile() function and are necessary
-  # for running the backend script using the run() function
-  path_splits <- file.path(model_dir, "splits.tsv")
-  path_admixtures <- file.path(model_dir, "admixtures.tsv")
-  path_maps <- file.path(model_dir, "maps.tsv")
-  path_names <- file.path(model_dir, "names.txt")
-  path_gen_time <- file.path(model_dir, "gen_time.txt")
-
-  if (!dir.exists(model_dir))
-    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
-
-  if (!all(file.exists(c(path_splits, path_maps, path_names))))
-    stop(sprintf("Directory '%s' does not contain all spammr configuration files.
-Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt are all present", model_dir), call. = FALSE)
-
-  pop_names <- scan(path_names, what = "character", quiet = TRUE)
-
-  # load the split table from disk and re-format it to the original format
-  splits <- read.table(path_splits, header = TRUE)
-  # add population labels and parent population labels (these are striped away
-  # during model saving because SLiM can't handle mixed types in matrices)
-  splits$pop <- pop_names[splits$pop_id + 1]
-  splits$parent[splits$parent == -1] <- "ancestor"
-  if (any(splits$parent_id != -1))
-    splits$parent[splits$parent != -1] <- pop_names[splits$parent_id[splits$parent != -1] + 1]
-
-  # load and reformat the admixtures table (if present - if absent, no admixture
-  # was specified)
-  if (file.exists(path_admixtures)) {
-    admixtures <- read.table(path_admixtures, header = TRUE)
-  } else {
-    admixtures <- NULL
-  }
-
-  # load and reformat the maps table
-  maps <- read.table(path_maps, header = TRUE)
-  # reconstruct the paths to each raster map (again, stripped away because SLiM
-  # can't handle strings and numbers in a single matrix/data frame)
-  maps$map <- file.path(model_dir, paste0(maps$map_number, ".png"))
-  # recreate the user-specified population labels
-  maps$pop <- pop_names[maps$pop_id + 1]
-  if (!all(file.exists(maps$map)))
-    stop(sprintf("Directory '%s' does not contain all maps required by the model configuration (%s)", model_dir, maps$map), call. = FALSE)
-
-  result <- list(
-    path = model_dir,
-    splits = splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
-    admixtures = admixtures,
-    maps = maps[, c("pop", "time", "map")],
-    gen_time = scan(path_gen_time, what = "integer", quiet = TRUE)
-  )
-
-  result
 }
