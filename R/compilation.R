@@ -21,9 +21,13 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
   # first)
   return_splits <- compile_splits(populations)
   if (!is.null(admixtures)) {
+    # lets take care of the fact that most users will input single admixture
+    # events as just a single data frame (can't blame them)
     if (is.data.frame(admixtures))
       admixtures <- list(admixtures)
     return_admixtures <- do.call(rbind, admixtures)
+    return_admixtures$overlap <- return_admixtures$overlap == 1
+    names(return_admixtures)[1:2] <- c("from", "to")
   } else
     return_admixtures <- NULL
 
@@ -73,12 +77,12 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
     admix_table$tend <- admix_table$tend / gen_time
     admix_table$rate <- as.integer(admix_table$rate * 100)
     # convert population names and their parents' names to SLiM numbers
-    admix_table$from <- unlist(lapply(
-      admix_table$from_name,
+    admix_table$from_id <- unlist(lapply(
+      admix_table$from,
       function(i) splits_table[splits_table$pop == i, ]$pop_id
     ))
-    admix_table$to <- unlist(lapply(
-      admix_table$to_name,
+    admix_table$to_id <- unlist(lapply(
+      admix_table$to,
       function(i) splits_table[splits_table$pop == i, ]$pop_id
     ))
   } else
@@ -87,7 +91,12 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
   write_model(model_dir, splits_table, admix_table, maps_table, gen_time)
 
   result <- list(
-    directory = model_dir,
+    config = list(
+      directory = model_dir,
+      splits = file.path(model_dir, "splits.tsv"),
+      maps = file.path(model_dir, "maps.tsv"),
+      admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
+    ),
     splits = return_splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
     admixtures = return_admixtures,
     maps = return_maps[, c("pop", "time", "path")],
@@ -123,7 +132,7 @@ Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt a
   gen_time <- scan(path_gen_time, what = integer(), quiet = TRUE)
 
   # load the split table from disk and re-format it to the original format
-  splits <- read.table(path_splits, header = TRUE)
+  splits <- read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
   # add population labels and parent population labels (these are striped away
   # during model saving because SLiM can't handle mixed types in matrices)
   splits$pop <- pop_names[splits$pop_id + 1]
@@ -135,11 +144,19 @@ Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt a
   # load and reformat the admixtures table (if present - if absent, no admixture
   # was specified)
   admixtures <- NULL
-  if (file.exists(path_admixtures))
-    admixtures <- read.table(path_admixtures, header = TRUE)
+  if (file.exists(path_admixtures)) {
+    admixtures <- read.table(path_admixtures, header = TRUE, stringsAsFactors = FALSE)
+    admixtures$from <- pop_names[admixtures$from + 1]
+    admixtures$to <- pop_names[admixtures$to + 1]
+    admixtures$rate <- admixtures$rate / 100
+    admixtures$tstart <- round(admixtures$tstart * gen_time)
+    admixtures$tend <- round(admixtures$tend * gen_time)
+    admixtures$overlap <- admixtures$overlap == 1
+    admixtures <- admixtures[, c("from", "to", "tstart", "tend", "rate", "overlap")]
+  }
 
   # load and reformat the maps table
-  maps <- read.table(path_maps, header = TRUE)
+  maps <- read.table(path_maps, header = TRUE, stringsAsFactors = FALSE)
   # reconstruct the paths to each raster map (again, stripped away because SLiM
   # can't handle strings and numbers in a single matrix/data frame)
   maps$path <- file.path(model_dir, paste0(maps$map_number, ".png")) %>% gsub("//", "/", .)
@@ -154,11 +171,18 @@ Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt a
   # limited SLiM builtin language)
   splits$tsplit[splits$tsplit == -1] <- Inf
   maps$time[maps$time == -1] <- Inf
-  splits$tsplit <- floor(splits$tsplit * gen_time)
-  splits$tremove[splits$tremove != -1] <- floor(splits$tremove[splits$tremove != -1] * gen_time)
-  maps$time <- floor(maps$time * gen_time)
+  # convert generations back to years
+  splits$tsplit <- round(splits$tsplit * gen_time)
+  splits$tremove[splits$tremove != -1] <- round(splits$tremove[splits$tremove != -1] * gen_time)
+  maps$time <- round(maps$time * gen_time)
 
   result <- list(
+    config = list(
+      directory = model_dir,
+      splits = path_splits,
+      maps = path_maps,
+      admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
+    ),
     directory = model_dir,
     splits = splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
     admixtures = admixtures,
@@ -259,7 +283,7 @@ write_model <- function(model_dir, splits_table, admix_table, maps_table, gen_ti
 
   if (!is.null(admix_table)) {
     write.table(
-      admix_table[, c("from", "to", "tstart", "tend", "rate", "overlap")],
+      admix_table[, c("from_id", "to_id", "tstart", "tend", "rate", "overlap")],
       file.path(model_dir, "admixtures.tsv"),
       sep = "\t", quote = FALSE, row.names = FALSE
     )
@@ -333,6 +357,8 @@ compile_maps <- function(populations, splits_table, resolution) {
   ))
   maps_table$map <- I(lapply(maps, function(m) m$map))
   maps_table <- maps_table[order(maps_table$time, decreasing = TRUE, na.last = FALSE), ]
+
+  maps_table$time <- round(maps_table$time)
 
   # number maps sequentially in the order SLiM will be swapping them
   # later (each map number X corresponds to X.png)
