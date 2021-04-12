@@ -274,7 +274,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   if (gui)
     system(sprintf("open -a SLiMgui %s", script))
   else
-    system(sprintf("slim %s", script), ignore.stdout = verbose)
+    system(sprintf("slim %s", script), ignore.stdout = !verbose)
 }
 
 
