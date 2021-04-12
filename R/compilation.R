@@ -26,7 +26,6 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
     if (is.data.frame(admixtures))
       admixtures <- list(admixtures)
     return_admixtures <- do.call(rbind, admixtures)
-    return_admixtures$overlap <- return_admixtures$overlap == 1
     names(return_admixtures)[1:2] <- c("from", "to")
   } else
     return_admixtures <- NULL
@@ -35,7 +34,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
   # saved for later SLiM runs)
   splits_table <- return_splits
   splits_table$tsplit <- splits_table$tsplit / gen_time
-  splits_table$tremove <- splits_table$tremove / gen_time
+  splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] * gen_time
 
   # compile the spatial maps
   maps_table <- compile_maps(populations, splits_table, resolution * 1000)
@@ -85,8 +84,8 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
       admix_table$to,
       function(i) splits_table[splits_table$pop == i, ]$pop_id
     ))
-  } else
-    admix_table <- NULL
+  }
+  return_admixtures$overlap <- return_admixtures$overlap == 1
 
   write_model(model_dir, splits_table, admix_table, maps_table, gen_time)
 
@@ -225,7 +224,7 @@ Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt a
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
                 max_distance, max_spread, track_ancestry = FALSE, gui = TRUE,
                 verbose = FALSE, include = NULL) {
-  model_dir <- model$path
+  model_dir <- model$config$directory
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
 
@@ -241,10 +240,16 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   } else
     markers_count <- as.integer(track_ancestry)
 
-  # compile the SLiM backend script
+  # compile the SLiM back-end script
   template <- readLines(system.file("extdata", "backend.slim", package = "spammr"))
 
   output_prefix = file.path(normalizePath(model_dir), "output_")
+
+  burnin <- round(burnin / model$gen_time)
+  sim_length <- round(sim_length / model$gen_time)
+
+  if (burnin < 1 | sim_length < 1)
+    stop("Simulation length and burnin must take at least one generation", call. = FALSE)
 
   subst <- list(
     model_dir = normalizePath(model_dir),
