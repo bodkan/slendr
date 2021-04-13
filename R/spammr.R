@@ -127,6 +127,7 @@ plot.spammr <- function(..., pop_facets = TRUE, time_facets = FALSE,
 #'
 #' @export
 print.spammr <- function(x, sf = FALSE, full = FALSE) {
+  # name of the original argument before evaluation
   if (sf) {
     sf:::print.sf(x)
   } else {
@@ -187,15 +188,19 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
     if (type %in% c("world", "region", "pop"))
       cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg, "\n")
     else {
-      cat("populations:", paste0(model1$splits$pop, collapse = ", "), "\n")
-      if (!is.null(admixtures))
-        cat(nrow(x$admixtures), "admixture events\n")
+      cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
+      cat("admixture events: ")
+      if (!is.null(x$admixtures))
+        cat(nrow(x$admixtures), "\n")
       else
-        cat("no admixture events\n")
+        cat("[no admixture]\n")
       cat("generation time:", x$gen_time, "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n\n")
-      cat(paste0("configuration files in:\n", x$config$directory, "\n\n"))
-
+      cat("configuration files in:", x$config$directory, "\n\n")
+      cat(
+"For detailed model specification see `$splits`, `$admixtures`, `$maps`
+components of the model object, or the configuration files and raster maps
+in the model directory.\n")
     }
   }
 }
