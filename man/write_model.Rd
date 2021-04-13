@@ -4,7 +4,14 @@
 \alias{write_model}
 \title{Write model specification tables which will be loaded into SLiM}
 \usage{
-write_model(model_dir, splits_table, admix_table, maps_table, gen_time)
+write_model(
+  model_dir,
+  populations,
+  splits_table,
+  admix_table,
+  maps_table,
+  gen_time
+)
 }
 \description{
 Write model specification tables which will be loaded into SLiM

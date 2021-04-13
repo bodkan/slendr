@@ -146,13 +146,32 @@ model <- compile(
 )
 ```
 
+Compiled model is kept as an R object which can be passed to different
+functions, most importantly the `run()` function shown below.
+
+``` r
+model
+#> spammr 'model' object 
+#> --------------------- 
+#> populations: pop1, pop2, pop3, pop4, pop5 
+#> admixture events: 2 
+#> generation time: 30 
+#> number of spatial maps: 71 
+#> 
+#> configuration files in: /tmp/example-model 
+#> 
+#> For detailed model specification see `$splits`, `$admixtures`, `$maps`,
+#> or `$populations` components of the model object, or the configuration
+#> files in the model directory.
+```
+
 #### 6. Visualize the implied admixture graph
 
 ``` r
 graph(model)
 ```
 
-![](man/figures/README-unnamed-chunk-8-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-9-1.png)<!-- -->
 
 #### 7. Run the model in SLiM (in batch mode in this case)
 
@@ -176,7 +195,7 @@ ever lived.
 ancestries(model)
 ```
 
-![](man/figures/README-unnamed-chunk-10-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-11-1.png)<!-- -->
 
 #### 9. Re-capitulate the SLiM run as an individual-based animation
 
@@ -184,7 +203,7 @@ ancestries(model)
 animate(model, nframes = 200)
 ```
 
-![](man/figures/README-unnamed-chunk-11-1.gif)<!-- -->
+![](man/figures/README-unnamed-chunk-12-1.gif)<!-- -->
 
 Note that it is possible to simulate population splits and admixture
 both by “physically” moving individuals of a population from one
