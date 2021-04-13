@@ -42,7 +42,13 @@ first. At the very least, you will need the most recent version of the
 
 ### Example
 
-Here is a small demonstration of what *spammr* is designed to do.
+Here is a small demonstration of what *spammr* is designed to do. Note
+that this model is not supposed to recapitulate the history of any known
+species and serves just for demonstration purposes.
+
+For a more complete example that is less abstract and demonstrates the
+usage of the package on a model of West Eurasian history, please see the
+[tutorial](https://bodkan.net/spammr/articles/tutorial.html).
 
 We’re going to simulate a demographic history of several populations,
 including splits and admixture events, defining the spatial boundaries
@@ -53,7 +59,7 @@ the model specification (step 7). Finally, we will generate some
 visualizations to make sure that the simulation proceeded as we wanted
 to (steps 8 and 9).
 
-#### 1. Setup the spatial context (“the world”)
+#### 1. Setup the “world” and some geographic regions
 
 ``` r
 library(spammr)
@@ -123,8 +129,8 @@ plot(p1, p2, p3, p4, p5, ncol = 2)
 
 ``` r
 admixtures <- list(
-  admixture(from = p5, to = p4, rate = 0.2, start = 2000, end = 0),
-  admixture(from = p5, to = p3, rate = 0.3, start = 2000, end = 0)
+  admixture(from = p5, to = p4, rate = 0.5, start = 2000, end = 0),
+  admixture(from = p5, to = p3, rate = 0.4, start = 2000, end = 0)
 )
 ```
 
