@@ -59,7 +59,7 @@ the model specification (step 7). Finally, we will generate some
 visualizations to make sure that the simulation proceeded as we wanted
 to (steps 8 and 9).
 
-#### 1. Setup the “world” and some geographic regions
+#### 1. Setup the spatial context (“the world” occupied by populations)
 
 ``` r
 library(spammr)
