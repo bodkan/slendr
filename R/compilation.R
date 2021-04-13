@@ -88,7 +88,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
     admix_table <- NULL
   return_admixtures$overlap <- return_admixtures$overlap == 1
 
-  write_model(model_dir, splits_table, admix_table, maps_table, gen_time)
+  write_model(model_dir, populations, splits_table, admix_table, maps_table, gen_time)
 
   result <- list(
     config = list(
@@ -97,11 +97,14 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
       maps = file.path(model_dir, "maps.tsv"),
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
+    populations = populations,
     splits = return_splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
     admixtures = return_admixtures,
     maps = return_maps[, c("pop", "time", "path")],
     gen_time = gen_time
   )
+
+  class(result) <- set_class(result, "model")
 
   result
 }
@@ -115,6 +118,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
 load <- function(model_dir) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function
+  path_populations <- file.path(model_dir, "populations.rds")
   path_splits <- file.path(model_dir, "splits.tsv")
   path_admixtures <- file.path(model_dir, "admixtures.tsv")
   path_maps <- file.path(model_dir, "maps.tsv")
@@ -124,9 +128,9 @@ load <- function(model_dir) {
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
 
-  if (!all(file.exists(c(path_splits, path_maps, path_names))))
+  if (!all(file.exists(c(path_populations, path_splits, path_maps, path_names))))
     stop(sprintf("Directory '%s' does not contain all spammr configuration files.
-Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt are all present", model_dir), call. = FALSE)
+Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt and gen_time.txt are all present", model_dir), call. = FALSE)
 
   pop_names <- scan(path_names, what = "character", quiet = TRUE)
   gen_time <- scan(path_gen_time, what = integer(), quiet = TRUE)
@@ -183,7 +187,7 @@ Please make sure that {splits,admixtures,maps}.tsv, names.txt and gen_time.txt a
       maps = path_maps,
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
-    directory = model_dir,
+    populations = readRDS(path_populations),
     splits = splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
     admixtures = admixtures,
     maps = maps[, c("pop", "time", "path")],
@@ -280,7 +284,9 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
 
 
 #' Write model specification tables which will be loaded into SLiM
-write_model <- function(model_dir, splits_table, admix_table, maps_table, gen_time) {
+write_model <- function(model_dir, populations, splits_table, admix_table, maps_table, gen_time) {
+  saveRDS(populations, file.path(model_dir, "populations.rds"))
+
   write.table(
     splits_table[, c("pop_id", "Ne", "parent_id", "tsplit", "tremove")],
     file.path(model_dir, "splits.tsv"),
