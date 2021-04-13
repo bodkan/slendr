@@ -94,7 +94,7 @@ initialize() {
 	g1.mutationTypes[mut_ids].mutationStackPolicy = "l";
 	g1.mutationTypes[mut_ids].mutationStackGroup = 0;
 
-        defineConstant("SEQ_LENGTH", asInteger({{seq_length}}));
+  defineConstant("SEQ_LENGTH", asInteger({{seq_length}}));
 	initializeGenomicElement(g1, 0, SEQ_LENGTH - 1);
 
 	initializeRecombinationRate({{recomb_rate}});
@@ -137,13 +137,13 @@ initialize() {
 	else
 		sim.deregisterScriptBlock(s5);
 
-        // output locations
+  // output locations
 	sim.rescheduleScriptBlock(s6, start = SIM_START, end = SIM_END);
 
-        // output tree sequence data
+  // output tree sequence data
 	sim.rescheduleScriptBlock(s7, generations = SIM_END);
 
-        // output ancestry proportions
+  // output ancestry proportions
 	if (TRACK_ANCESTRY)
 		sim.rescheduleScriptBlock(s8, generations = SIM_START:SIM_END);
 	else
