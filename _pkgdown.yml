@@ -8,7 +8,7 @@ reference:
     - map
     - region
 
-  - title: Population configuration
+  - title: Population dynamics configuration
     contents:
     - population
     - expand
@@ -16,7 +16,7 @@ reference:
     - admixture
     - change
 
-  - title: Model visualisation and diagnostics
+  - title: Model visualization and diagnostics
     contents:
     - plot.spammr
     - print.spammr
@@ -24,7 +24,7 @@ reference:
     - animate
     - ancestries
 
-  - title: Model compilation and simulation
+  - title: Compiling and running spatial models
     contents:
     - compile
     - load

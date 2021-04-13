@@ -106,9 +106,9 @@
 <p>Here is a small demonstration of what <em>spammr</em> is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.</p>
 <p>For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the <a href="https://bodkan.net/spammr/articles/tutorial.html">tutorial</a>.</p>
 <p>We’re going to simulate a demographic history of several populations, including splits and admixture events, defining the spatial boundaries of populations as well as their changing dynamics over time (steps 1-6). We will then feed model defined in R into SLiM and instruct it (using a back-end SLiM script provided by this package) to simulate data based on the model specification (step 7). Finally, we will generate some visualizations to make sure that the simulation proceeded as we wanted to (steps 8 and 9).</p>
-<div id="1-setup-the-world-and-some-geographic-regions" class="section level4">
+<div id="1-setup-the-spatial-context-the-world-occupied-by-populations" class="section level4">
 <h4 class="hasAnchor">
-<a href="#1-setup-the-world-and-some-geographic-regions" class="anchor"></a>1. Setup the “world” and some geographic regions</h4>
+<a href="#1-setup-the-spatial-context-the-world-occupied-by-populations" class="anchor"></a>1. Setup the spatial context (“the world” occupied by populations)</h4>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">spammr</span><span class="op">)</span>
 
@@ -190,18 +190,33 @@
   gen_time <span class="op">=</span> <span class="fl">30</span>,
   resolution <span class="op">=</span> <span class="fl">10</span>  <span class="co"># how many km per pixel?</span>
 <span class="op">)</span></code></pre></div>
+<p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/run.html">run()</a></code> function shown below.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span>
+<span class="co">#&gt; spammr 'model' object </span>
+<span class="co">#&gt; --------------------- </span>
+<span class="co">#&gt; populations: pop1, pop2, pop3, pop4, pop5 </span>
+<span class="co">#&gt; admixture events: 2 </span>
+<span class="co">#&gt; generation time: 30 </span>
+<span class="co">#&gt; number of spatial maps: 71 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; configuration files in: /tmp/example-model </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; For detailed model specification see `$splits`, `$admixtures`, `$maps`,</span>
+<span class="co">#&gt; or `$populations` components of the model object, or the configuration</span>
+<span class="co">#&gt; files in the model directory.</span></code></pre></div>
 </div>
 <div id="6-visualize-the-implied-admixture-graph" class="section level4">
 <h4 class="hasAnchor">
 <a href="#6-visualize-the-implied-admixture-graph" class="anchor"></a>6. Visualize the implied admixture graph</h4>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/graph.html">graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-8-1.png"><!-- --></p>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png"><!-- --></p>
 </div>
 <div id="7-run-the-model-in-slim-in-batch-mode-in-this-case" class="section level4">
 <h4 class="hasAnchor">
 <a href="#7-run-the-model-in-slim-in-batch-mode-in-this-case" class="anchor"></a>7. Run the model in SLiM (in batch mode in this case)</h4>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/run.html">run</a></span><span class="op">(</span>
   <span class="va">model</span>,
   burnin <span class="op">=</span> <span class="fl">1000</span>, sim_length <span class="op">=</span> <span class="fl">31000</span>,
@@ -214,16 +229,16 @@
 <div id="8-verify-the-simulated-ancestry-proportions" class="section level4">
 <h4 class="hasAnchor">
 <a href="#8-verify-the-simulated-ancestry-proportions" class="anchor"></a>8. Verify the simulated ancestry proportions</h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ancestries.html">ancestries</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-10-1.png"><!-- --></p>
+<p><img src="reference/figures/README-unnamed-chunk-11-1.png"><!-- --></p>
 </div>
 <div id="9-re-capitulate-the-slim-run-as-an-individual-based-animation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#9-re-capitulate-the-slim-run-as-an-individual-based-animation" class="anchor"></a>9. Re-capitulate the SLiM run as an individual-based animation</h4>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-11-1.gif"><!-- --></p>
+<p><img src="reference/figures/README-unnamed-chunk-12-1.gif"><!-- --></p>
 <p>Note that it is possible to simulate population splits and admixture both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>
 <p>In this case, we simulated the split of populations <em>pop3</em> and <em>pop4</em> from <em>pop2</em> instantaneously, without explicitly tracing their movement. Compare this to the split of <em>pop5</em> from <em>pop1</em>, where we defined the population movement explicitly.</p>
 </div>
