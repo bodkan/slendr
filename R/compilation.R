@@ -84,7 +84,8 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
       admix_table$to,
       function(i) splits_table[splits_table$pop == i, ]$pop_id
     ))
-  }
+  } else
+    admix_table <- NULL
   return_admixtures$overlap <- return_admixtures$overlap == 1
 
   write_model(model_dir, splits_table, admix_table, maps_table, gen_time)
