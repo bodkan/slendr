@@ -185,9 +185,9 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
       cat("\n")
     }
 
-    if (type %in% c("world", "region", "pop"))
+    if (type %in% c("world", "region", "population"))
       cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg, "\n")
-    else {
+    else if (type == "model") {
       cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
       cat("admixture events: ")
       if (!is.null(x$admixtures))
@@ -198,9 +198,11 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
       cat("number of spatial maps:", nrow(x$maps), "\n\n")
       cat("configuration files in:", x$config$directory, "\n\n")
       cat(
-"For detailed model specification see `$splits`, `$admixtures`, `$maps`
-components of the model object, or the configuration files and raster maps
-in the model directory.\n")
+"For detailed model specification see `$splits`, `$admixtures`, `$maps`,
+or `$populations` components of the model object, or the configuration
+files in the model directory.\n")
+    } else {
+      stop("Unknown object type", call. = FALSE)
     }
   }
 }
