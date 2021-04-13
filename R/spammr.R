@@ -130,12 +130,14 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
   if (sf) {
     sf:::print.sf(x)
   } else {
-    if (grepl("spammr_pop", class(x)[2]))
+    if (any(grepl("spammr_pop", class(x))))
       type <- "population"
-    else if (grepl("spammr_region", class(x)[2]))
+    else if (any(grepl("spammr_region", class(x))))
       type <- "region"
-    else
+    else if (any(grepl("spammr_world", class(x))))
       type <- "world"
+    else
+      type <- "model"
 
     header <- sprintf("spammr '%s' object", type)
     sep <- paste(rep("-", nchar(header)), collapse = "")
@@ -182,8 +184,19 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
       cat("\n")
     }
 
-    # extract projection type and name using the internal sf plumbing
-    cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg, "\n")
+    if (type %in% c("world", "region", "pop"))
+      cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg, "\n")
+    else {
+      cat("populations:", paste0(model1$splits$pop, collapse = ", "), "\n")
+      if (!is.null(admixtures))
+        cat(nrow(x$admixtures), "admixture events\n")
+      else
+        cat("no admixture events\n")
+      cat("generation time:", x$gen_time, "\n")
+      cat("number of spatial maps:", nrow(x$maps), "\n\n")
+      cat(paste0("configuration files in:\n", x$config$directory, "\n\n"))
+
+    }
   }
 }
 
