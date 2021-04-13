@@ -167,6 +167,13 @@ model <- compile(
 )
 ```
 
+Compiled model is kept as an R object which can be passed to different
+functions, most importantly the `run()` function shown below.
+
+```{r}
+model
+```
+
 #### 6. Visualize the implied admixture graph
 
 ```{r, fig.width = 12, fig.height = 12}
