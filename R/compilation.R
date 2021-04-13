@@ -194,6 +194,8 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
     gen_time = gen_time
   )
 
+  class(result) <- set_class(result, "model")
+
   result
 }
 
