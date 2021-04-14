@@ -402,3 +402,21 @@ without spatial overlap between populations.",
     stringsAsFactors = FALSE
   )
 }
+
+
+#' Add real locations to the data frame
+convert_locations <- function(df, model) {
+  # dimension of the rasterized map in pixel units
+  raster_dim <- dim(png::readPNG(model$maps$path[1]))
+
+  # dimension of the world in the projected CRS units
+  world <- attr(model$populations[[1]], "world")
+  bbox <- sf::st_bbox(world)
+  world_width <- bbox["xmax"] - bbox["xmin"]
+  world_height <- bbox["ymax"] - bbox["ymin"]
+
+  df$realx <- bbox["xmin"] + world_width * df$x / raster_dim[2]
+  df$realy <- bbox["ymin"] + world_height * df$y / raster_dim[1]
+
+  df
+}

@@ -13,6 +13,7 @@
 animate <- function(model, nframes, gif = NULL) {
   locs <- read.table(file.path(model$config$directory, "output_locations.tsv.gz"), header = TRUE)
   pop_names <- scan(file.path(model$config$directory, "names.txt"), what = "character", quiet = TRUE)
+
   # label populations based on their original idenifiers from the user
   locs$pop <- factor(
     locs$pop,
@@ -36,11 +37,11 @@ animate <- function(model, nframes, gif = NULL) {
   # lower sample density for plotting
   #locs <- dplyr::sample_n(locs, 10000)
 
-  p <- ggplot(locs, aes(x, y, color = pop)) +
-    geom_point(alpha = 0.5) +
-  #  coord_fixed(xlim = c(0, dim(map)[2]), ylim = c(0, dim(map)[1])) +
-    scale_x_continuous(expand = c(0, 0)) +
-    scale_y_continuous(expand = c(0, 0)) +
+  # convert pixel-based coordinates to real projected CRS coordinates
+  locs <- convert_locations(locs, model)
+  world <- attr(model$populations[[1]], "world")
+  p <- plot(world) +
+    geom_point(data = locs, aes(realx, realy, color = pop), alpha = 0.5) +
     theme(axis.title.x = element_blank(),
           axis.title.y = element_blank())
 
