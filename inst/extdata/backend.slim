@@ -57,9 +57,8 @@ initialize() {
     defineConstant("T_ABS_ADMIX_START", admix_param("tstart"));
     defineConstant("T_ABS_ADMIX_END", admix_param("tend"));
     // admixture times relative to the start of the simulation
-    // (add one generation to force admixture only after each split)
-    defineConstant("T_ADMIX_START", SIM_END - T_ABS_ADMIX_START + 1);
-    defineConstant("T_ADMIX_END", SIM_END - T_ABS_ADMIX_END + 1);
+    defineConstant("T_ADMIX_START", SIM_END - T_ABS_ADMIX_START);
+    defineConstant("T_ADMIX_END", SIM_END - T_ABS_ADMIX_END);
 
     catn("T_ADMIX_START: " + paste(T_ADMIX_START));
     catn("T_ADMIX_END: " + paste(T_ADMIX_END));
@@ -69,8 +68,7 @@ initialize() {
     // absolute times of population cleanup
     defineConstant("T_ABS_CLEANUPS", pop_param("tremove"));
     // cleanup times relative to the start of the simulation
-    // (add one generation to force cleanup only after each split)
-    defineConstant("T_CLEANUPS", SIM_END - T_ABS_CLEANUPS + 1);
+    defineConstant("T_CLEANUPS", SIM_END - T_ABS_CLEANUPS);
 
     catn("T_CLEANUPS: " + paste(T_CLEANUPS));
   }
