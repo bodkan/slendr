@@ -150,8 +150,8 @@ plot(p1, p2, p3, p4, p5, ncol = 2)
 
 ```{r}
 admixtures <- list(
-  admixture(from = p5, to = p4, rate = 0.5, start = 2000, end = 0),
-  admixture(from = p5, to = p3, rate = 0.4, start = 2000, end = 0)
+  admixture(from = p5, to = p4, rate = 0.25, start = 2000, end = 0),
+  admixture(from = p5, to = p3, rate = 0.6, start = 2000, end = 0)
 )
 ```
 
@@ -186,7 +186,7 @@ graph(model)
 run(
   model,
   burnin = 1000, sim_length = 31000,
-  seq_length = 1, recomb_rate = 0, track_ancestry = 1, # one locus only
+  seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   max_distance = 30, max_spread = 30,
   gui = FALSE
 )

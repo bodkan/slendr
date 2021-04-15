@@ -175,8 +175,8 @@
 <a href="#4-define-admixture-events" class="anchor"></a>4. Define admixture events</h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">admixtures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-  <span class="fu"><a href="reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p4</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,
-  <span class="fu"><a href="reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p3</span>, rate <span class="op">=</span> <span class="fl">0.4</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+  <span class="fu"><a href="reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p4</span>, rate <span class="op">=</span> <span class="fl">0.25</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,
+  <span class="fu"><a href="reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p3</span>, rate <span class="op">=</span> <span class="fl">0.6</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 </div>
 <div id="5-compile-the-model-to-a-set-of-configuration-files" class="section level4">
@@ -220,7 +220,7 @@
 <code class="sourceCode R"><span class="fu"><a href="reference/run.html">run</a></span><span class="op">(</span>
   <span class="va">model</span>,
   burnin <span class="op">=</span> <span class="fl">1000</span>, sim_length <span class="op">=</span> <span class="fl">31000</span>,
-  seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>, <span class="co"># one locus only</span>
+  seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>, <span class="co"># single locus</span>
   max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>,
   gui <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
