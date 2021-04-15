@@ -5,7 +5,7 @@
 
 ### ⚠️⚠️⚠️ WARNING ⚠️⚠️⚠️
 
-**This software is still under heavy development!**
+**This software is still under development!**
 
 If you are interested in realistic spatio-temporal population genetic
 simulations and somehow stumbled upon this repository then
