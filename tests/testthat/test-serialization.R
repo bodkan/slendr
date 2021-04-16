@@ -19,7 +19,7 @@ test_that("load() restores a single-map model object", {
 test_that("load() restores a complex model object", {
   world <- readRDS("world.rds")
 
-  p1 <- population(name = "pop1", parent = "ancestor", Ne = 700, radius = 600, center = c(10, 25), world = world  )
+  p1 <- population(name = "pop1", parent = "ancestor", Ne = 700, radius = 600, center = c(10, 25), world = world)
   p2 <- population(name = "pop2", parent = p1, time = 30000, Ne = 500, center = c(10, 25), radius = 300) %>%
     move(trajectory = list(c(25, 25), c(40, 30), c(40, 40), c(50, 50)), start = 29000, end = 25000, snapshots = 30)
   p3 <- population(name = "pop3", parent = p2, time = 20000, Ne = 2000, coords = list(c(-10, 50), c(10, 50), c(20, 53), c(40, 60), c(40, 70), c(-10, 65)))
