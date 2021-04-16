@@ -84,7 +84,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
       admix_table$to,
       function(i) splits_table[splits_table$pop == i, ]$pop_id
     ))
-    return_admixtures$overlap <- return_admixtures$overlap == 1
+    admix_table$overlap <- as.integer(admix_table$overlap)
   } else
     admix_table <- NULL
 
