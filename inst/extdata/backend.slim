@@ -17,6 +17,8 @@ initialize() {
 
   defineConstant("MODEL_DIR", "{{model_dir}}");
 
+  defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
+
   // load model definition tables
   defineConstant("SPLIT_TABLE", read_table(paste0(MODEL_DIR, "/splits.tsv")));
   defineConstant("NAMES", readFile(paste0(MODEL_DIR, "/names.txt")));
@@ -37,6 +39,8 @@ initialize() {
   // number of ancestry-informative neutral markers
   defineConstant("N_MARKERS", {{ancestry_markers}});
   defineConstant("TRACK_ANCESTRY", N_MARKERS > 0);
+
+  defineConstant("SAVE_LOCATIONS", {{save_locations}});
 
   defineConstant("SIM_START", T_BURNIN); catn("SIM_START: " + SIM_START);
   defineConstant("SIM_END", T_BURNIN + T_LENGTH); catn("SIM_END: " + SIM_END);
@@ -141,22 +145,21 @@ initialize() {
      sim.deregisterScriptBlock(s5);
 
   // output locations of individuals
-  sim.rescheduleScriptBlock(s6, start = SIM_START, end = SIM_END);
+  if (SAVE_LOCATIONS) {
+    sim.rescheduleScriptBlock(s6, start = SIM_START, end = SIM_END);
+    write_locations_header();
+  } else
+    sim.deregisterScriptBlock(s6);
 
   // output tree sequence data
   sim.rescheduleScriptBlock(s7, generations = SIM_END);
 
   // output ancestry proportions
-  if (TRACK_ANCESTRY)
+  if (TRACK_ANCESTRY) {
      sim.rescheduleScriptBlock(s8, generations = SIM_START:SIM_END);
-  else
+     write_ancestries_header();
+  } else
      sim.deregisterScriptBlock(s8);
-
-  // define output prefix
-  defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
-
-  write_locations_header();
-  write_ancestries_header();
 }
 
 //////////////////////////////////////////////////////////////////////
