@@ -30,6 +30,7 @@ initialize() {
   defineConstant("WIDTH", MAPS[0].width); catn("WIDTH: " + WIDTH);
   defineConstant("HEIGHT", MAPS[0].height); catn("HEIGHT: " + HEIGHT);
 
+  defineConstant("GEN_TIME", {{gen_time}});
   defineConstant("T_BURNIN", {{burnin}}); catn("T_BURNIN: " + T_BURNIN);
   defineConstant("T_LENGTH", {{sim_length}}); catn("T_LENGTH: " + T_LENGTH);
 
@@ -294,7 +295,7 @@ modifyChild() {
 
   // for spatially overlapping admixture and non-migrant offspring,
   // propose location in the neighborhood of one of its parents
-  pos = parent1.spatialPosition + runif(2, -MAX_SPREAD / 2, MAX_SPREAD / 2);
+  pos = parent1.spatialPosition + runif(2, -MAX_SPREAD, MAX_SPREAD);
 
   // make sure that offspring is generated in allowed locations on the map
   // (within it's population bounds and not in an inaccessible location)

@@ -414,18 +414,52 @@ without spatial overlap between populations.",
 
 
 #' Add real locations to the data frame
-convert_locations <- function(df, model) {
+add_real_locations <- function(df, model) {
   # dimension of the rasterized map in pixel units
   raster_dim <- dim(png::readPNG(model$maps$path[1]))
 
   # dimension of the world in the projected CRS units
   world <- attr(model$populations[[1]], "world")
   bbox <- sf::st_bbox(world)
-  world_width <- bbox["xmax"] - bbox["xmin"]
-  world_height <- bbox["ymax"] - bbox["ymin"]
+  world_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
 
-  df$realx <- bbox["xmin"] + world_width * df$x / raster_dim[2]
-  df$realy <- bbox["ymin"] + world_height * df$y / raster_dim[1]
+  df$realx <- bbox["xmin"] + world_dim[1] * df$x / raster_dim[2]
+  df$realy <- bbox["ymin"] + world_dim[2] * df$y / raster_dim[1]
 
   df
+}
+
+
+#' Project a location of a point (latitude, longitude) on a raster
+#'
+#' @param lat,lon Geographic system coordinates
+#' @param model Model object
+#'
+#' @return Two-dimensional numeric vector of pixel coordinates
+#'
+#' @export
+convert <- function(lat, lon, model) {
+  orig_point <- c(lat, lon)
+
+  # convert the coordinate into a projected CRS of the world
+  new_point <- sf::st_point(orig_point) %>%
+    sf::st_sfc() %>%
+    sf::st_sf(crs = 4326) %>%
+    sf::st_transform(crs = sf::st_crs(world)) %>%
+    sf::st_coordinates()
+
+  # dimension of the world in the projected CRS units
+  world <- attr(model$populations[[1]], "world")
+  bbox <- sf::st_bbox(world)
+  world_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
+
+  # dimension of the rasterized map in pixel units
+  raster_dim <- dim(png::readPNG(model$maps$path[1]))
+
+  coords <- c(
+    as.integer(abs((new_point[1] - bbox["xmin"])) / world_dim[1] * raster_dim[1]),
+    as.integer(abs((new_point[2] - bbox["ymin"])) / world_dim[2] * raster_dim[2])
+  )
+
+  coords
 }
