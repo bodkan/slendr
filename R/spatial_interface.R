@@ -457,8 +457,8 @@ convert <- function(lat, lon, model) {
   raster_dim <- dim(png::readPNG(model$maps$path[1]))
 
   coords <- c(
-    as.integer(abs((new_point[1] - bbox["xmin"])) / world_dim[1] * raster_dim[1]),
-    as.integer(abs((new_point[2] - bbox["ymin"])) / world_dim[2] * raster_dim[2])
+    as.integer(abs((new_point[1] - bbox["xmin"])) / world_dim[1] * raster_dim[2]),
+    as.integer(abs((new_point[2] - bbox["ymin"])) / world_dim[2] * raster_dim[1])
   )
 
   coords
