@@ -5,16 +5,50 @@
   defineConstant("T_ONSET", SIM_END - asInteger(round({{onset}} / GEN_TIME)));
   defineConstant("POP", which(NAMES == "{{origin}}"));
 
+  catn("T_ONSET: " + T_ONSET);
+
   sim.rescheduleScriptBlock(s999, generations = T_ONSET);
+  sim.rescheduleScriptBlock(s1000, generations = T_ONSET:SIM_END);
+
+  write_genotypes_header();
 }
 
 s999 late() {
-  log_output("Introducing a beneficial mutation");
-  if (get_pop(POP).spatialMapValue("world", LOCATION) == 1.0)
-    stop("Location of selection start outside of the population boundary!\n");
+  if (sim.generation == T_ONSET) {
+    log_output("Introducing a beneficial mutation");
+    if (get_pop(POP).spatialMapValue("world", LOCATION) == 1.0)
+      stop("Location of selection start outside of the population boundary!\n");
 
-  all_genomes = get_pop(POP).genomes;
-  sampled_genomes = sample(all_genomes, asInteger(length(all_genomes) * FREQ));
-  sampled_genomes.addNewMutation(get_pop(POP).id, S, asInteger(SEQ_LENGTH / 2));
-  sampled_genomes.individual.setSpatialPosition(LOCATION);
+    all_genomes = get_pop(POP).genomes;
+    sampled_genomes = sample(all_genomes, asInteger(length(all_genomes) * FREQ));
+    sampled_genomes.addNewMutation(get_pop(POP).id, S, asInteger(SEQ_LENGTH / 2));
+    unique(sampled_genomes.individual).setSpatialPosition(LOCATION + runif(2, -MAX_SPREAD, MAX_SPREAD));
+  }
+}
+
+// save location of each individual
+s1000 late() {
+  for (ind in sim.subpopulations.individuals) {
+    write_genotypes(ind);
+  }
+}
+
+function (void) write_genotypes_header(void) {
+  filename = paste0(OUTPUT_PREFIX, "gt_locations.tsv.gz");
+  header_str = "t\tpop\tind\tx\ty\tsampled\tgt";
+  writeFile(filename, header_str, compress = T);
+}
+
+// Write information about a given individual to a locations file
+function(void) write_genotypes(lifso<Individual>$ ind) {
+  filename = paste0(OUTPUT_PREFIX, "locations.tsv.gz");
+  ind_str = paste(
+    T_BURNIN + T_LENGTH - sim.generation,
+    ind.subpopulation.id,
+    ind.pedigreeID,
+    ind.spatialPosition,
+    asInteger(!isNULL(ind.getValue("sampled"))),
+    sep = "\t"
+  );
+  writeFile(filename, ind_str, append = T, compress = T);
 }

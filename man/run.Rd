@@ -12,6 +12,7 @@ run(
   recomb_rate,
   max_distance,
   max_spread,
+  save_locations = FALSE,
   track_ancestry = FALSE,
   gui = TRUE,
   verbose = FALSE,
@@ -33,6 +34,9 @@ years)}
 \item{max_distance, max_spread}{Maximum values for spatial interaction and
 mating choice (max_distance) and maximum distance for offspring from its
 parents (max_spread)}
+
+\item{save_locations}{Save location of each individual throughout the
+simulation?}
 
 \item{track_ancestry}{Track ancestry proportion dynamics in all populations
 throughout the simulations (default FALSE)? If a non-zero integer is

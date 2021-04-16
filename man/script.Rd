@@ -14,6 +14,9 @@ by default)}
 
 \item{...}{Variable values to be substituted}
 }
+\value{
+Name of the substituted SLiM script
+}
 \description{
 Variables in the template script must conform to the Mustache specification,
 i.e. {{variable_name}}. For more information see the Mustache specification
