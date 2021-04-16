@@ -219,6 +219,8 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #' @param max_distance,max_spread Maximum values for spatial interaction and
 #'   mating choice (max_distance) and maximum distance for offspring from its
 #'   parents (max_spread)
+#' @param save_locations Save location of each individual throughout the
+#'   simulation?
 #' @param track_ancestry Track ancestry proportion dynamics in all populations
 #'   throughout the simulations (default FALSE)? If a non-zero integer is
 #'   provided, ancestry will be tracked using the number number of neutral
@@ -229,8 +231,9 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'
 #' @export
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
-                max_distance, max_spread, track_ancestry = FALSE, gui = TRUE,
-                verbose = FALSE, include = NULL) {
+                max_distance, max_spread,
+                save_locations = FALSE, track_ancestry = FALSE,
+                gui = TRUE, verbose = FALSE, include = NULL) {
   model_dir <- model$config$directory
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -267,6 +270,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     seq_length = seq_length,
     recomb_rate = recomb_rate,
     ancestry_markers = markers_count,
+    save_locations = if (save_locations) "T" else "F",
     gen_time = model$gen_time
   )
 
@@ -314,7 +318,7 @@ script <- function(path, output = NULL, ...) {
   # none are missing
   subst <- list(...)
   if (!all(vars %in% names(subst)))
-    stop(sprintf("Values of variables %s must be specified",
+    stop(sprintf("Values of %s must be specified",
                  paste(vars[!vars %in% names(subst)], collapse = ", ")), call. = FALSE)
 
   # fill in the variable substitution in the template script and
