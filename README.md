@@ -180,6 +180,7 @@ run(
   model,
   burnin = 1000, sim_length = 31000,
   seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
+  save_locations = TRUE,
   max_distance = 30, max_spread = 30,
   gui = FALSE
 )
