@@ -1,19 +1,20 @@
 1 late() {
-  // position and time of the selected allele's origin
-  defineConstant("SEL_POS", c(asFloat({{sel_x}}), asFloat({{sel_y}})));
-  defineConstant("T_SELECTION", SIM_END - asInteger({{sel_time}} / {{gen_time}}));
-  defineConstant("SEL_POP", which(NAMES == "{{sel_pop}}"));
+  defineConstant("LOCATION", asFloat(c({{coord}})));
+  defineConstant("FREQ", asFloat({{freq}}));
+  defineConstant("S", asFloat({{s}}));
+  defineConstant("T_ONSET", SIM_END - asInteger(round({{onset}} / GEN_TIME)));
+  defineConstant("POP", which(NAMES == "{{origin}}"));
 
-  sim.rescheduleScriptBlock(s999, generations = T_SELECTION);
+  sim.rescheduleScriptBlock(s999, generations = T_ONSET);
 }
 
 s999 late() {
-  log_output("Adding a mutation");
-//  if (get_pop(SEL_POP).spatialMapValue("world", SEL_POS) == 0.0)
-//    stop("Location of selection start outside of the population boundary!\n");
+  log_output("Introducing a beneficial mutation");
+  if (get_pop(POP).spatialMapValue("world", LOCATION) == 1.0)
+    stop("Location of selection start outside of the population boundary!\n");
 
-  all_genomes = get_pop(SEL_POP).genomes;
-  sampled_genomes = sample(all_genomes, asInteger(length(all_genomes) * asFloat({{sel_freq}})));
-  sampled_genomes.addNewMutation(get_pop(SEL_POP).id, {{sel_coef}}, asInteger(SEQ_LENGTH / 2));
-  sampled_genomes.individual.setSpatialPosition(SEL_POS);
+  all_genomes = get_pop(POP).genomes;
+  sampled_genomes = sample(all_genomes, asInteger(length(all_genomes) * FREQ));
+  sampled_genomes.addNewMutation(get_pop(POP).id, S, asInteger(SEQ_LENGTH / 2));
+  sampled_genomes.individual.setSpatialPosition(LOCATION);
 }
