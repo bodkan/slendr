@@ -10,13 +10,15 @@
 #' @param coords List of vector pairs, defining corners of the range
 #' @param region Geographic region of the class \code{spammr_region}
 #' @param remove Time at which the population should be removed
+#' @param intersect Intersect the population's boundaries with landscape
+#'   features?
 #'
 #' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
 population <- function(name, parent, Ne, time = NULL, world = NULL,
                        center = NULL, radius = NULL, coords = NULL,
-                       region = NULL, remove = NULL) {
+                       region = NULL, remove = NULL, intersect = TRUE) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
     time <- Inf
@@ -60,6 +62,8 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
     attr(pop_range, "world") <- world
   } else
     stop("Suspicious parental population specified", call. = FALSE)
+
+  attr(pop_range, "intersect") <- intersect
 
   class(pop_range) <- set_class(pop_range, "pop")
   pop_range
@@ -115,6 +119,7 @@ change <- function(pop, time, Ne = NULL,
   class(res) <- class(pop)
   attr(res, "parent") <- attr(pop, "parent")
   attr(res, "remove") <- attr(pop, "remove")
+  attr(res, "intersect") <-attr(pop, "intersect")
   attr(res, "world") <- world
   sf::st_agr(res) <- "constant"
 
@@ -167,6 +172,8 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
   attr(inter_regions, "region") <- region
   # retain the cleanup time
   attr(inter_regions, "remove") <- attr(pop, "remove")
+  # retain information whether to intersect the population boundaries
+  attr(inter_regions, "intersect") <-attr(pop, "intersect")
 
   class(inter_regions) <- set_class(inter_regions, "pop")
   inter_regions
@@ -247,6 +254,8 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   attr(inter_regions, "parent") <- attr(pop, "parent")
   # retain the cleanup time
   attr(inter_regions, "remove") <- attr(pop, "remove")
+  # retain information whether to intersect the population boundaries
+  attr(inter_regions, "intersect") <-attr(pop, "intersect")
 
   class(inter_regions) <- set_class(inter_regions, "pop")
 
@@ -398,7 +407,7 @@ without spatial overlap between populations.",
     tstart = start,
     tend = end,
     rate = rate,
-    overlap = as.integer(overlap == TRUE | overlap > 0),
+    overlap = overlap,
     stringsAsFactors = FALSE
   )
 }

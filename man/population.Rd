@@ -14,7 +14,8 @@ population(
   radius = NULL,
   coords = NULL,
   region = NULL,
-  remove = NULL
+  remove = NULL,
+  intersect = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,9 @@ population(
 \item{region}{Geographic region of the class \code{spammr_region}}
 
 \item{remove}{Time at which the population should be removed}
+
+\item{intersect}{Intersect the population's boundaries with landscape
+features?}
 }
 \value{
 Object of the \code{spammr_pop} (and \code{sf}) class

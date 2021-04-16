@@ -4,8 +4,11 @@ intersect_features <- function(pop) {
   world <- attr(pop, "world")
   region <- attr(pop, "region")
 
+  intersected <- pop
+
   # restrict the population range to the landscape features
-  intersected <- sf::st_intersection(pop, sf::st_geometry(world))
+  if (attr(pop, "intersect"))
+    intersected <- sf::st_intersection(pop, sf::st_geometry(world))
 
   # restrict further to the geographic boundary, if given
   if (!is.null(region)) {
