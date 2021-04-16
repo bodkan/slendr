@@ -835,7 +835,7 @@ run(
   model, burnin = 30, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
   max_distance = 30, max_spread = 30,
-  track_ancestry = 1,
+  save_locations = TRUE, track_ancestry = 1,
   gui = FALSE # run the model in batch mode
 )
 ```
