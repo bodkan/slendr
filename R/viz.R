@@ -38,7 +38,7 @@ animate <- function(model, nframes, gif = NULL) {
   #locs <- dplyr::sample_n(locs, 10000)
 
   # convert pixel-based coordinates to real projected CRS coordinates
-  locs <- convert_locations(locs, model)
+  locs <- add_real_locations(locs, model)
   world <- attr(model$populations[[1]], "world")
   p <- plot(world) +
     geom_point(data = locs, aes(realx, realy, color = pop), alpha = 0.5) +
