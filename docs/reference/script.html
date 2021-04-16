@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • spammr</title>
+<title>Substitute variables in a template SLiM script — script • spammr</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Substitute variables in a template SLiM script — script" />
+<meta property="og:description" content="Variables in the template script must conform to the Mustache specification,
+i.e. variable_name. For more information see the Mustache specification
+at: http://mustache.github.io/" />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -117,171 +120,41 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Substitute variables in a template SLiM script</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/spammr/blob/master/R/compilation.R'><code>R/compilation.R</code></a></small>
+    <div class="hidden name"><code>script.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Variables in the template script must conform to the Mustache specification,
+i.e. variable_name. For more information see the Mustache specification
+at: <a href='http://mustache.github.io/'>http://mustache.github.io/</a></p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>script</span><span class='op'>(</span><span class='va'>path</span>, output <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-geographic-features" class="hasAnchor"><a href="#section-geographic-features" class="anchor"></a>Geographic features</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="map.html">map()</a></code> </p>
-        </td>
-        <td><p>Define a world map for all spatial operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="region.html">region()</a></code> </p>
-        </td>
-        <td><p>Define a geographic region</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-population-dynamics-configuration" class="hasAnchor"><a href="#section-population-dynamics-configuration" class="anchor"></a>Population dynamics configuration</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="population.html">population()</a></code> </p>
-        </td>
-        <td><p>Define a population range</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="expand.html">expand()</a></code> </p>
-        </td>
-        <td><p>Expand population radius by a given factor in a given time</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="move.html">move()</a></code> </p>
-        </td>
-        <td><p>Move population to a new location in a given amount of time</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="admixture.html">admixture()</a></code> </p>
-        </td>
-        <td><p>Define an admixture event</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="change.html">change()</a></code> </p>
-        </td>
-        <td><p>Add a new time snapshot for an already defined population</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-model-visualization-and-diagnostics" class="hasAnchor"><a href="#section-model-visualization-and-diagnostics" class="anchor"></a>Model visualization and diagnostics</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="plot.spammr.html">plot(<i>&lt;spammr&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Plot spatio-temporal population distributions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.spammr.html">print(<i>&lt;spammr&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Print a spammr object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="graph.html">graph()</a></code> </p>
-        </td>
-        <td><p>Plot admixture graph based on given model configuration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="animate.html">animate()</a></code> </p>
-        </td>
-        <td><p>Animate the simulated population dynamics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ancestries.html">ancestries()</a></code> </p>
-        </td>
-        <td><p>Plot simulated ancestry proportions</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-compiling-and-running-spatial-models" class="hasAnchor"><a href="#section-compiling-and-running-spatial-models" class="anchor"></a>Compiling and running spatial models</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="compile.html">compile()</a></code> </p>
-        </td>
-        <td><p>Compile the spatial maps and split/admixture tables</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="load.html">load()</a></code> </p>
-        </td>
-        <td><p>Load a previously serialized spammr model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="run.html">run()</a></code> </p>
-        </td>
-        <td><p>Open the compiled spatial model in SLiM</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="script.html">script()</a></code> </p>
-        </td>
-        <td><p>Substitute variables in a template SLiM script</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>path</th>
+      <td><p>Path to a template SLiM script</p></td>
+    </tr>
+    <tr>
+      <th>output</th>
+      <td><p>Where to save the substituted SLiM script (temporary location
+by default)</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Variable values to be substituted</p></td>
+    </tr>
     </table>
-  </div>
 
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

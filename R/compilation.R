@@ -247,10 +247,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   } else
     markers_count <- as.integer(track_ancestry)
 
-  # compile the SLiM back-end script
-  template <- readLines(system.file("extdata", "backend.slim", package = "spammr"))
-
-  output_prefix = file.path(normalizePath(model_dir), "output_")
+  backend_script <- system.file("extdata", "backend.slim", package = "spammr")
+  output_script <- file.path(model_dir, "script.slim")
 
   burnin <- round(burnin / model$gen_time)
   sim_length <- round(sim_length / model$gen_time)
@@ -258,9 +256,12 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   if (burnin < 1 | sim_length < 1)
     stop("Simulation length and burnin must take at least one generation", call. = FALSE)
 
-  subst <- list(
+  script(
+    path = backend_script,
+    output = output_script,
+
     model_dir = normalizePath(model_dir),
-    output_prefix = output_prefix,
+    output_prefix = file.path(normalizePath(model_dir), "output_"),
     burnin = burnin,
     sim_length = sim_length,
     max_distance = max_distance,
@@ -270,18 +271,54 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     ancestry_markers = markers_count
   )
 
-  if (!is.null(include)) {
-    template <- c(template, sapply(include, readLines))
-  }
-  rendered <- whisker::whisker.render(template, subst)
-
-  script <- file.path(subst[["model_dir"]], "script.slim")
-  writeLines(rendered, script)
-
   if (gui)
-    system(sprintf("open -a SLiMgui %s", script))
+    system(sprintf("open -a SLiMgui %s", output_script))
   else
-    system(sprintf("slim %s", script), ignore.stdout = !verbose)
+    system(sprintf("slim %s", output_script), ignore.stdout = !verbose)
+}
+
+
+#' Substitute variables in a template SLiM script
+#'
+#' Variables in the template script must conform to the Mustache specification,
+#' i.e. {{variable_name}}. For more information see the Mustache specification
+#' at: <http://mustache.github.io/>
+#'
+#' @param path Path to a template SLiM script
+#' @param output Where to save the substituted SLiM script (temporary location
+#'   by default)
+#' @param ... Variable values to be substituted
+#'
+#' @value Name of the substituted SLiM script
+#'
+#' @export
+script <- function(path, output = NULL, ...) {
+  if (!file.exists(path))
+    stop(sprintf("File '%s' not found", path), call. = FALSE)
+
+    if (is.null(output)) output <- paste0(tempfile(), ".slim")
+
+  template <- readLines(path)
+
+  # extract variables to be substituted in the template script
+  vars <- strsplit(template, split = "\\{\\{") %>%
+    unlist %>%
+    .[grepl("\\}\\}", .)] %>%
+    gsub("\\}\\}.*$", "", .)
+
+  # collect all variables provided by the user and make sure that
+  # none are missing
+  subst <- list(...)
+  if (!all(vars %in% names(subst)))
+    stop(sprintf("Values of variables %s must be specified",
+                 paste(vars[!vars %in% names(subst)], collapse = ", ")), call. = FALSE)
+
+  # fill in the variable substitution in the template script and
+  # save it to disk
+  rendered <- whisker::whisker.render(template, subst)
+  writeLines(rendered, output)
+
+  output
 }
 
 
