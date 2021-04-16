@@ -29,3 +29,4 @@ reference:
     - compile
     - load
     - run
+    - script
