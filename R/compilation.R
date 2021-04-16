@@ -248,7 +248,6 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     markers_count <- as.integer(track_ancestry)
 
   backend_script <- system.file("extdata", "backend.slim", package = "spammr")
-  output_script <- file.path(model_dir, "script.slim")
 
   burnin <- round(burnin / model$gen_time)
   sim_length <- round(sim_length / model$gen_time)
@@ -256,9 +255,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   if (burnin < 1 | sim_length < 1)
     stop("Simulation length and burnin must take at least one generation", call. = FALSE)
 
-  script(
+  base_script <- script(
     path = backend_script,
-    output = output_script,
 
     model_dir = normalizePath(model_dir),
     output_prefix = file.path(normalizePath(model_dir), "output_"),
@@ -268,13 +266,19 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     max_spread = max_spread,
     seq_length = seq_length,
     recomb_rate = recomb_rate,
-    ancestry_markers = markers_count
+    ancestry_markers = markers_count,
+    gen_time = model$gen_time
   )
 
+  # compile all script components, including the backend script, into one file
+  script_components <- unlist(lapply(c(base_script, include), readLines))
+  complete_script <- file.path(model_dir, "script.slim")
+  writeLines(script_components, complete_script)
+
   if (gui)
-    system(sprintf("open -a SLiMgui %s", output_script))
+    system(sprintf("open -a SLiMgui %s", complete_script))
   else
-    system(sprintf("slim %s", output_script), ignore.stdout = !verbose)
+    system(sprintf("slim %s", complete_script), ignore.stdout = !verbose)
 }
 
 
@@ -289,7 +293,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
 #'   by default)
 #' @param ... Variable values to be substituted
 #'
-#' @value Name of the substituted SLiM script
+#' @return Name of the substituted SLiM script
 #'
 #' @export
 script <- function(path, output = NULL, ...) {
@@ -471,35 +475,6 @@ render <- function(pops, resolution) {
   rasters <- do.call(c, raster_list)
 
   rasters
-}
-
-
-#' Calculate pixel location of a spatial point (sf object) on a given
-#' raster
-#'
-#' @param x Point object of the sf type (see `get_centroid`)
-#' @param raster Raster object of the class 'stars'
-#' @param world Underlying world object
-#'
-#' @return Two-dimensional numeric vector of pixel coordinates
-raster_center <- function(pop, raster) {
-  # get the dimension of the whole world raster bitmap
-  raster_width <- dim(raster)["x"]
-  raster_height <- dim(raster)["y"]
-
-  # get the dimension of the world in the real CRS units
-  bbox <- sf::st_bbox(attr(pop, "world"))
-  world_width <- bbox["xmax"] - bbox["xmin"]
-  world_height <- bbox["ymax"] - bbox["ymin"]
-
-  center <- sf::st_coordinates(sf::st_centroid(pop))
-  xpoint <- as.integer(center[1] - bbox["xmin"])
-  ypoint <- as.integer(center[2] - bbox["ymin"])
-
-  coords <- as.integer(c(xpoint / world_width * raster_width,
-                         ypoint / world_height * raster_height))
-
-  coords
 }
 
 
