@@ -16,7 +16,8 @@ run(
   track_ancestry = FALSE,
   gui = TRUE,
   verbose = FALSE,
-  include = NULL
+  include = NULL,
+  output_dir = model$config$directory
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ ancestry markers equal to this number.}
 
 \item{include}{Vector of paths to custom SLiM scripts which should be
 combined with the backend SLiM code}
+
+\item{output_dir}{Where to put potential output files?}
 
 \item{gen_time}{Generation time (in model's time units, i.e. years)}
 }

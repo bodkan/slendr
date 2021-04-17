@@ -34,14 +34,14 @@ s1000 late() {
 }
 
 function (void) write_genotypes_header(void) {
-  filename = paste0(OUTPUT_PREFIX, "gt_locations.tsv.gz");
+  filename = paste0(OUTPUT_DIR, "/ind_gt_locations.tsv.gz");
   header_str = "t\tpop\tind\tx\ty\tsampled\tgt";
   writeFile(filename, header_str, compress = T);
 }
 
 // Write information about a given individual to a locations file
 function(void) write_genotypes(lifso<Individual>$ ind) {
-  filename = paste0(OUTPUT_PREFIX, "locations.tsv.gz");
+  filename = paste0(OUTPUT_DIR, "/ind_gt_locations.tsv.gz");
   ind_str = paste(
     T_BURNIN + T_LENGTH - sim.generation,
     ind.subpopulation.id,
