@@ -228,15 +228,19 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #' @param gui Run in SLiM GUI instead of command-line? (default)
 #' @param include Vector of paths to custom SLiM scripts which should be
 #'   combined with the backend SLiM code
+#' @param output_dir Where to put potential output files?
 #'
 #' @export
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
                 max_distance, max_spread,
                 save_locations = FALSE, track_ancestry = FALSE,
-                gui = TRUE, verbose = FALSE, include = NULL) {
+                gui = TRUE, verbose = FALSE, include = NULL,
+                output_dir = model$config$directory) {
   model_dir <- model$config$directory
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+
+  if (!dir.exists(output_dir)) dir.create(output_dir)
 
   if (!all(file.exists(file.path(model_dir, c("splits.tsv", "maps.tsv")))))
     stop(sprintf("Directory '%s' does not contain spammr configuration files", model_dir), call. = FALSE)
@@ -262,7 +266,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     path = backend_script,
 
     model_dir = normalizePath(model_dir),
-    output_prefix = file.path(normalizePath(model_dir), "output_"),
+    output_dir = normalizePath(output_dir),
     burnin = burnin,
     sim_length = sim_length,
     max_distance = max_distance,
