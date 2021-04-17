@@ -16,8 +16,7 @@ initialize() {
   defineConstant("MAX_SPREAD", asFloat({{max_spread}}));
 
   defineConstant("MODEL_DIR", "{{model_dir}}");
-
-  defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
+  defineConstant("OUTPUT_DIR", "{{output_dir}}");
 
   // load model definition tables
   defineConstant("SPLIT_TABLE", read_table(paste0(MODEL_DIR, "/splits.tsv")));
@@ -250,7 +249,7 @@ s6 late() {
 s7 late() {
   catn("--------------------------------------------------");
   log_output("simulation finished");
-  filename = paste0(OUTPUT_PREFIX, "treeseq.trees");
+  filename = paste0(OUTPUT_DIR, "/tree_seq.trees");
   sim.treeSeqOutput(filename);
   sim.simulationFinished();
 }
@@ -328,14 +327,14 @@ function (i) read_table(s$ path) {
 
 // Write a header of a locations table to a locations file
 function (void) write_locations_header(void) {
-  filename = paste0(OUTPUT_PREFIX, "locations.tsv.gz");
+  filename = paste0(OUTPUT_DIR, "/ind_locations.tsv.gz");
   header_str = "t\tpop\tind\tx\ty\tsampled";
   writeFile(filename, header_str, compress = T);
 }
 
 // Write information about a given individual to a locations file
 function(void) write_locations(lifso<Individual>$ ind) {
-  filename = paste0(OUTPUT_PREFIX, "locations.tsv.gz");
+  filename = paste0(OUTPUT_DIR, "/ind_locations.tsv.gz");
   ind_str = paste(
     T_BURNIN + T_LENGTH - sim.generation,
     ind.subpopulation.id,
@@ -351,7 +350,7 @@ function(void) write_locations(lifso<Individual>$ ind) {
 function (void) write_ancestries_header(void) {
   for (pop in pop_param("pop")) {
     header_str = paste(c("gen", NAMES[pop_param("pop")]), sep = "\t");
-    filename = paste0(OUTPUT_PREFIX, "ancestry_", NAMES[pop], ".tsv");
+    filename = paste0(OUTPUT_DIR, "/ancestry_", NAMES[pop], ".tsv");
     writeFile(filename, header_str);
   }
 }
@@ -360,7 +359,7 @@ function (void) write_ancestries_header(void) {
 function (void) write_ancestries(void) {
   for (pop in sim.subpopulations) {
     line = paste(SIM_END - sim.generation, calc_ancestry(pop), sep = "\t");
-    filename = paste0(OUTPUT_PREFIX, "ancestry_", NAMES[pop.id], ".tsv");
+    filename = paste0(OUTPUT_DIR, "/ancestry_", NAMES[pop.id], ".tsv");
     writeFile(filename, line, append = T);
   }
 }
