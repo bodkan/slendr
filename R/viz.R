@@ -123,7 +123,7 @@ graph <- function(model) {
   admixture_table <- model$admixtures
 
   split_edges <- get_split_edges(split_table)
-  admixture_edges <- get_admixture_edges(admixture_table)
+  admixture_edges <- if (!is.null(admixture_table)) get_admixture_edges(admixture_table) else NULL
   terminal_edges <- get_terminal_edges(split_edges, admixture_edges, split_table)
   intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges)
 
