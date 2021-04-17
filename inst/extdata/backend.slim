@@ -315,9 +315,9 @@ modifyChild() {
 
 // Read table of population splits, migrations, etc.
 function (i) read_table(s$ path) {
-  lines = readFile(path);
-  if (length(lines) <= 1) return(NULL);
+  if (!fileExists(path)) return(NULL);
 
+  lines = readFile(path);
   matrix = sapply(
     lines[1 : (size(lines) - 1)], "asInteger(strsplit(applyValue, '\t'));",
     simplify="matrix"
