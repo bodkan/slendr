@@ -11,7 +11,7 @@
 #' @import ggplot2
 #' @export
 animate <- function(model, nframes, gif = NULL) {
-  locs <- read.table(file.path(model$config$directory, "output_locations.tsv.gz"), header = TRUE)
+  locs <- read.table(file.path(model$config$directory, "ind_locations.tsv.gz"), header = TRUE)
   pop_names <- scan(file.path(model$config$directory, "names.txt"), what = "character", quiet = TRUE)
 
   # label populations based on their original idenifiers from the user
