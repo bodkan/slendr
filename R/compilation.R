@@ -211,31 +211,37 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'
 #' @param model Compiled model object
 #' @param gen_time Generation time (in model's time units, i.e. years)
-#' @param burnin Length of the burnin (in model's time units, i.e. years)
-#' @param sim_length Total length of the simulation (in model's time units, i.e.
-#'   years)
-#' @param seq_length Total length of the simulated sequence in base-pairs
+#' @param burnin Length of the burnin (in model's time units,
+#'   i.e. years)
+#' @param sim_length Total length of the simulation (in model's time
+#'   units, i.e.  years)
+#' @param seq_length Total length of the simulated sequence in
+#'   base-pairs
 #' @param recomb_rate Recombination rate of the simulated sequence
-#' @param max_distance,max_spread Maximum values for spatial interaction and
-#'   mating choice (max_distance) and maximum distance for offspring from its
-#'   parents (max_spread)
-#' @param save_locations Save location of each individual throughout the
-#'   simulation?
-#' @param track_ancestry Track ancestry proportion dynamics in all populations
-#'   throughout the simulations (default FALSE)? If a non-zero integer is
-#'   provided, ancestry will be tracked using the number number of neutral
-#'   ancestry markers equal to this number.
-#' @param gui Run in SLiM GUI instead of command-line? (default)
-#' @param include Vector of paths to custom SLiM scripts which should be
-#'   combined with the backend SLiM code
+#' @param max_distance,max_spread Maximum values for spatial
+#'   interaction and mating choice (max_distance) and maximum distance
+#'   for offspring from its parents (max_spread)
+#' @param save_locations Save location of each individual throughout
+#'   the simulation?
+#' @param track_ancestry Track ancestry proportion dynamics in all
+#'   populations throughout the simulations (default FALSE)? If a
+#'   non-zero integer is provided, ancestry will be tracked using the
+#'   number number of neutral ancestry markers equal to this number.
+#' @param how How to run the script? ("gui" - open in SLiMgui, "batch"
+#'   - run on the command-line, "dry" - do not run, just write a
+#'   compiled SLiM script)
+#' @param include Vector of paths to custom SLiM scripts which should
+#'   be combined with the backend SLiM code
 #' @param output_dir Where to put potential output files?
+#' @param script Name of the compiled output script
 #'
 #' @export
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
                 max_distance, max_spread,
                 save_locations = FALSE, track_ancestry = FALSE,
-                gui = TRUE, verbose = FALSE, include = NULL,
-                output_dir = model$config$directory) {
+                how = "batch", verbose = FALSE, include = NULL,
+                output_dir = model$config$directory,
+                script_path = NULL) {
   model_dir <- model$config$directory
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -280,13 +286,20 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
 
   # compile all script components, including the backend script, into one file
   script_components <- unlist(lapply(c(base_script, include), readLines))
-  complete_script <- file.path(model_dir, "script.slim")
+  if (is.null(script_path))
+    complete_script <- file.path(model_dir, "script.slim")
+  else
+    complete_script <- file.path(model$config$directory, "script.slim")
   writeLines(script_components, complete_script)
 
-  if (gui)
+  if (how == "gui")
     system(sprintf("open -a SLiMgui %s", complete_script))
-  else
+  else if (how == "batch")
     system(sprintf("slim %s", complete_script), ignore.stdout = !verbose)
+  else if (how == "dry")
+    message("Final compiled SLiM script is in ", complete_script)
+  else
+    stop("The only allowed options for the 'how' parameter are 'gui', 'batch', and 'dry'", call. = FALSE)
 }
 
 
