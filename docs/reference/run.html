@@ -151,7 +151,8 @@ formats will be changed at some point soon.</p>
   track_ancestry <span class='op'>=</span> <span class='cn'>FALSE</span>,
   gui <span class='op'>=</span> <span class='cn'>TRUE</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  include <span class='op'>=</span> <span class='cn'>NULL</span>
+  include <span class='op'>=</span> <span class='cn'>NULL</span>,
+  output_dir <span class='op'>=</span> <span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -204,6 +205,10 @@ ancestry markers equal to this number.</p></td>
       <th>include</th>
       <td><p>Vector of paths to custom SLiM scripts which should be
 combined with the backend SLiM code</p></td>
+    </tr>
+    <tr>
+      <th>output_dir</th>
+      <td><p>Where to put potential output files?</p></td>
     </tr>
     <tr>
       <th>gen_time</th>
