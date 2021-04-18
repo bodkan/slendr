@@ -189,7 +189,19 @@ run(
   seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   save_locations = TRUE,
   max_distance = 30, max_spread = 30,
-  gui = FALSE
+  how = "batch"
+)
+```
+
+
+```r
+run(
+  model,
+  burnin = 1000, sim_length = 31000,
+  seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
+  save_locations = TRUE,
+  max_distance = 30, max_spread = 30,
+  how = "gui" # open the model in SLiMgui
 )
 ```
 
@@ -204,7 +216,7 @@ ever lived.
 ancestries(model)
 ```
 
-![plot of chunk unnamed-chunk-11](man/figures/README-unnamed-chunk-11-1.png)
+![plot of chunk unnamed-chunk-12](man/figures/README-unnamed-chunk-12-1.png)
 
 #### 9. Re-capitulate the SLiM run as an individual-based animation
 
@@ -213,7 +225,7 @@ ancestries(model)
 animate(model, nframes = 200)
 ```
 
-![plot of chunk unnamed-chunk-12](man/figures/README-unnamed-chunk-12-1.gif)
+![plot of chunk unnamed-chunk-13](man/figures/README-unnamed-chunk-13-1.gif)
 
 Note that it is possible to simulate population splits and admixture
 both by "physically" moving individuals of a population from one

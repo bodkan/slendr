@@ -223,23 +223,32 @@
   seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>, <span class="co"># single locus</span>
   save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
   max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>,
-  gui <span class="op">=</span> <span class="cn">FALSE</span>
+  how <span class="op">=</span> <span class="st">"batch"</span>
+<span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/run.html">run</a></span><span class="op">(</span>
+  <span class="va">model</span>,
+  burnin <span class="op">=</span> <span class="fl">1000</span>, sim_length <span class="op">=</span> <span class="fl">31000</span>,
+  seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>, <span class="co"># single locus</span>
+  save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
+  max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>,
+  how <span class="op">=</span> <span class="st">"gui"</span> <span class="co"># open the model in SLiMgui</span>
 <span class="op">)</span></code></pre></div>
 <p>As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.</p>
 </div>
 <div id="8-verify-the-simulated-ancestry-proportions" class="section level4">
 <h4 class="hasAnchor">
 <a href="#8-verify-the-simulated-ancestry-proportions" class="anchor"></a>8. Verify the simulated ancestry proportions</h4>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ancestries.html">ancestries</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11"></p>
+<p><img src="reference/figures/README-unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"></p>
 </div>
 <div id="9-re-capitulate-the-slim-run-as-an-individual-based-animation" class="section level4">
 <h4 class="hasAnchor">
 <a href="#9-re-capitulate-the-slim-run-as-an-individual-based-animation" class="anchor"></a>9. Re-capitulate the SLiM run as an individual-based animation</h4>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-12-1.gif" alt="plot of chunk unnamed-chunk-12"></p>
+<p><img src="reference/figures/README-unnamed-chunk-13-1.gif" alt="plot of chunk unnamed-chunk-13"></p>
 <p>Note that it is possible to simulate population splits and admixture both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>
 <p>In this case, we simulated the split of populations <em>pop3</em> and <em>pop4</em> from <em>pop2</em> instantaneously, without explicitly tracing their movement. Compare this to the split of <em>pop5</em> from <em>pop1</em>, where we defined the population movement explicitly.</p>
 </div>
