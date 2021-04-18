@@ -156,7 +156,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp2abTAA", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp94oSya", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -559,7 +559,7 @@ admixture without spatial overlap.</code></pre>
 <code class="sourceCode R"><span class="fu"><a href="../reference/run.html">run</a></span><span class="op">(</span>
   <span class="va">model</span>, burnin <span class="op">=</span> <span class="fl">30</span>, sim_length <span class="op">=</span> <span class="fl">70000</span>,
   seq_length <span class="op">=</span> <span class="fl">100</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>,
-  max_distance <span class="op">=</span> <span class="fl">30</span>, max_spread <span class="op">=</span> <span class="fl">30</span>,
+  max_distance <span class="op">=</span> <span class="fl">500</span>, max_spread <span class="op">=</span> <span class="fl">50</span>,
   save_locations <span class="op">=</span> <span class="cn">TRUE</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>,
   how <span class="op">=</span> <span class="st">"batch"</span> <span class="co"># run the model in batch mode (default is SLiMgui)</span>
 <span class="op">)</span></code></pre></div>
