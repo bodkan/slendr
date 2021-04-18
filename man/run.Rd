@@ -49,8 +49,8 @@ number number of neutral ancestry markers equal to this number.}
 
 \item{how}{How to run the script? ("gui" - open in SLiMgui, "batch"
 \itemize{
-\item run on the command-line, "dry" - do not run, just write a
-compiled SLiM script)
+\item run on the command-line, FALSE or any other value - do not run,
+just write a compiled SLiM script)
 }}
 
 \item{include}{Vector of paths to custom SLiM scripts which should
