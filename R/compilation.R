@@ -232,8 +232,9 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   non-zero integer is provided, ancestry will be tracked using the
 #'   number number of neutral ancestry markers equal to this number.
 #' @param how How to run the script? ("gui" - open in SLiMgui, "batch"
-#'   - run on the command-line, FALSE or any other value - do not run,
-#'   just write a compiled SLiM script)
+#'   - run on the command-line)
+#' @param dry_run Generate final SLiM script, but do not run it
+#'   (default FALSE)
 #' @param include Vector of paths to custom SLiM scripts which should
 #'   be combined with the backend SLiM code
 #' @param output_dir Where to put potential output files?
@@ -243,7 +244,7 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
                 max_distance, max_spread,
                 save_locations = FALSE, track_ancestry = FALSE,
-                how = "batch", verbose = FALSE, include = NULL,
+                how = "batch", dry_run  = FALSE, verbose = FALSE, include = NULL,
                 output_dir = model$config$directory,
                 script_path = NULL) {
   model_dir <- model$config$directory
@@ -296,12 +297,15 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     complete_script <- file.path(model$config$directory, "script.slim")
   writeLines(script_components, complete_script)
 
-  if (how == "gui")
+  if (dry_run)
+    message("Final compiled SLiM script is in ", complete_script)
+  else if (how == "gui")
     system(sprintf("open -a SLiMgui %s", complete_script))
   else if (how == "batch")
     system(sprintf("slim %s", complete_script), ignore.stdout = !verbose)
   else
-    message("Final compiled SLiM script is in ", complete_script)
+    stop("Only 'gui' or 'batch' recognized as values of the 'how' argument",
+         call. = FALSE)
 }
 
 
