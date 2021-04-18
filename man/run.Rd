@@ -14,7 +14,7 @@ run(
   max_spread,
   save_locations = FALSE,
   track_ancestry = FALSE,
-  how = "batch",
+  how = "gui",
   verbose = FALSE,
   include = NULL,
   output_dir = model$config$directory,

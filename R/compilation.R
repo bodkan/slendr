@@ -242,7 +242,7 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
                 max_distance, max_spread,
                 save_locations = FALSE, track_ancestry = FALSE,
-                how = "batch", verbose = FALSE, include = NULL,
+                how = "gui", verbose = FALSE, include = NULL,
                 output_dir = model$config$directory,
                 script_path = NULL) {
   model_dir <- model$config$directory
