@@ -834,7 +834,7 @@ manpage of `run()` for more details.
 run(
   model, burnin = 30, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
-  max_distance = 30, max_spread = 30,
+  max_distance = 500, max_spread = 50,
   save_locations = TRUE, track_ancestry = 1,
   how = "batch" # run the model in batch mode (default is SLiMgui)
 )
