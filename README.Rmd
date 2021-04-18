@@ -1,7 +1,3 @@
----
-output: github_document
----
-
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
 ```{r, include = FALSE}
@@ -181,7 +177,7 @@ graph(model)
 ```
 
 #### 7. Run the model in SLiM (in batch mode in this case)
-   
+
 ```{r}
 run(
   model,

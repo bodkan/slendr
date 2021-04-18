@@ -1,5 +1,6 @@
-
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
+
+
 
 ## spammr: *S*patiotemporal *P*opulation *A*dmixture and *M*igration *M*odels in *R*
 
@@ -14,54 +15,53 @@ congratulations! Your google-fu is strong.
 I have been making good progress towards a first beta version, but the
 package still has some way to go before being production ready.
 
-That said, if you would like to learn more, or if you’re feeling brave
+That said, if you would like to learn more, or if you're feeling brave
 and would like to test the package yourself, take a look at the
-[tutorial](https://bodkan.net/spammr/articles/tutorial.html). Note that
-getting it installed with all the geospatial dependencies can be a
-little bit tricky at this point (see the relevant section in the
+[tutorial](https://bodkan.net/spammr/articles/tutorial.html). Note
+that getting it installed with all the geospatial dependencies can be
+a little bit tricky at this point (see the relevant section in the
 tutorial). If loading the package fails, check the error messages for
-missing software and install it using the package manager of your choice
-(on a Mac I recommend *homebrew*).
+missing software and install it using the package manager of your
+choice (on a Mac I recommend _homebrew_).
 
 If you would like to stay updated with the developments:
 
-1.  Click on the “Watch” button on the project’s [Github
-    website](https://www.github.com/bodkan/spammr).
+1. Click on the "Watch" button on the project's [Github
+website](https://www.github.com/bodkan/spammr).
 
-2.  Follow me on [Twitter](https://www.twitter.com/fleventy5). I might
-    post some updates once the software is a bit more ready.
+2. Follow me on [Twitter](https://www.twitter.com/fleventy5). I might
+post some updates once the software is a bit more ready.
 
 ### Installation
 
 For installation instructions, please take a look at the installation
 section [of the
-tutorial](https://bodkan.net/spammr/articles/tutorial.html#installation-and-setup-1).
-Note that you might need to install some non-R software dependencies
+tutorial](https://bodkan.net/spammr/articles/tutorial.html#installation-and-setup-1). Note
+that you might need to install some non-R software dependencies
 first. At the very least, you will need the most recent version of the
 [SLiM software](https://messerlab.org/slim/) (version 3.6).
 
 ### Example
 
-Here is a small demonstration of what *spammr* is designed to do. Note
-that this model is not supposed to recapitulate the history of any known
-species and serves just for demonstration purposes.
+Here is a small demonstration of what *spammr* is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.
 
-For a more complete example that is less abstract and demonstrates the
-usage of the package on a model of West Eurasian history, please see the
-[tutorial](https://bodkan.net/spammr/articles/tutorial.html).
+For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the [tutorial](https://bodkan.net/spammr/articles/tutorial.html).
 
-We’re going to simulate a demographic history of several populations,
+We're going to simulate a demographic history of several populations,
 including splits and admixture events, defining the spatial boundaries
-of populations as well as their changing dynamics over time (steps 1-6).
-We will then feed model defined in R into SLiM and instruct it (using a
-back-end SLiM script provided by this package) to simulate data based on
-the model specification (step 7). Finally, we will generate some
-visualizations to make sure that the simulation proceeded as we wanted
-to (steps 8 and 9).
+of populations as well as their changing dynamics over time (steps
+1-6). We will then feed model defined in R into SLiM and instruct it
+(using a back-end SLiM script provided by this package) to simulate
+data based on the model specification (step 7). Finally, we will
+generate some visualizations to make sure that the simulation
+proceeded as we wanted to (steps 8 and 9).
 
-#### 1. Setup the spatial context (“the world” occupied by populations)
+#### 1. Setup the spatial context ("the world" occupied by populations)
 
-``` r
+
+
+
+```r
 library(spammr)
 
 world <- map(
@@ -73,9 +73,10 @@ world <- map(
 
 #### 2. Define demographic history and population boundaries
 
-Times are given in “units before present”, distances in kilometers.
+Times are given in "units before present", distances in kilometers.
 
-``` r
+
+```r
 p1 <- population(
   name = "pop1", parent = "ancestor", Ne = 700,
   radius = 600,       # radius of the circular range
@@ -119,15 +120,17 @@ p5 <- population(
 
 #### 3. Visualize the spatial maps of each population
 
-``` r
+
+```r
 plot(p1, p2, p3, p4, p5, ncol = 2)
 ```
 
-![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
+![plot of chunk unnamed-chunk-5](man/figures/README-unnamed-chunk-5-1.png)
 
 #### 4. Define admixture events
 
-``` r
+
+```r
 admixtures <- list(
   admixture(from = p5, to = p4, rate = 0.25, start = 2000, end = 0),
   admixture(from = p5, to = p3, rate = 0.6, start = 2000, end = 0)
@@ -136,7 +139,8 @@ admixtures <- list(
 
 #### 5. Compile the model to a set of configuration files
 
-``` r
+
+```r
 model <- compile(
   model_dir = "/tmp/example-model", # location of serialized model data
   populations = list(p1, p2, p3, p4, p5),
@@ -149,7 +153,8 @@ model <- compile(
 Compiled model is kept as an R object which can be passed to different
 functions, most importantly the `run()` function shown below.
 
-``` r
+
+```r
 model
 #> spammr 'model' object 
 #> --------------------- 
@@ -167,15 +172,17 @@ model
 
 #### 6. Visualize the implied admixture graph
 
-``` r
+
+```r
 graph(model)
 ```
 
-![](man/figures/README-unnamed-chunk-9-1.png)<!-- -->
+![plot of chunk unnamed-chunk-9](man/figures/README-unnamed-chunk-9-1.png)
 
 #### 7. Run the model in SLiM (in batch mode in this case)
 
-``` r
+
+```r
 run(
   model,
   burnin = 1000, sim_length = 31000,
@@ -192,27 +199,30 @@ ever lived.
 
 #### 8. Verify the simulated ancestry proportions
 
-``` r
+
+```r
 ancestries(model)
 ```
 
-![](man/figures/README-unnamed-chunk-11-1.png)<!-- -->
+![plot of chunk unnamed-chunk-11](man/figures/README-unnamed-chunk-11-1.png)
 
 #### 9. Re-capitulate the SLiM run as an individual-based animation
 
-``` r
+
+```r
 animate(model, nframes = 200)
 ```
 
-![](man/figures/README-unnamed-chunk-12-1.gif)<!-- -->
+![plot of chunk unnamed-chunk-12](man/figures/README-unnamed-chunk-12-1.gif)
 
 Note that it is possible to simulate population splits and admixture
-both by “physically” moving individuals of a population from one
-destination to the next across space but it is also possible to do this
-more abstractly (in instantaneous “jumps”) in situations where this is
-more appropriate or where simulating accurate movement is not necessary.
+both by "physically" moving individuals of a population from one
+destination to the next across space but it is also possible to do
+this more abstractly (in instantaneous "jumps") in situations where
+this is more appropriate or where simulating accurate movement is not
+necessary.
 
-In this case, we simulated the split of populations *pop3* and *pop4*
-from *pop2* instantaneously, without explicitly tracing their movement.
-Compare this to the split of *pop5* from *pop1*, where we defined the
-population movement explicitly.
+In this case, we simulated the split of populations _pop3_ and _pop4_
+from _pop2_ instantaneously, without explicitly tracing their
+movement. Compare this to the split of _pop5_ from _pop1_, where we
+defined the population movement explicitly.
