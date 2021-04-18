@@ -88,7 +88,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
   } else
     admix_table <- NULL
 
-  write_model(model_dir, populations, splits_table, admix_table, maps_table, gen_time)
+  write_model(model_dir, populations, splits_table, admix_table, maps_table, gen_time, resolution)
 
   result <- list(
     config = list(
@@ -101,7 +101,8 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
     splits = return_splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
     admixtures = return_admixtures,
     maps = return_maps[, c("pop", "time", "path")],
-    gen_time = gen_time
+    gen_time = gen_time,
+    resolution = resolution
   )
 
   class(result) <- set_class(result, "model")
@@ -124,6 +125,7 @@ load <- function(model_dir) {
   path_maps <- file.path(model_dir, "maps.tsv")
   path_names <- file.path(model_dir, "names.txt")
   path_gen_time <- file.path(model_dir, "gen_time.txt")
+  path_resolution <- file.path(model_dir, "resolution.txt")
 
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -134,6 +136,7 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 
   pop_names <- scan(path_names, what = "character", quiet = TRUE)
   gen_time <- scan(path_gen_time, what = integer(), quiet = TRUE)
+  resolution <- scan(path_resolution, what = integer(), quiet = TRUE)
 
   # load the split table from disk and re-format it to the original format
   splits <- read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
@@ -191,7 +194,8 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
     splits = splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
     admixtures = admixtures,
     maps = maps[, c("pop", "time", "path")],
-    gen_time = gen_time
+    gen_time = gen_time,
+    resolution = resolution
   )
 
   class(result) <- set_class(result, "model")
@@ -275,8 +279,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     output_dir = normalizePath(output_dir),
     burnin = burnin,
     sim_length = sim_length,
-    max_distance = max_distance,
-    max_spread = max_spread,
+    max_distance = max_distance / model$resolution,
+    max_spread = max_spread / model$resolution,
     seq_length = seq_length,
     recomb_rate = recomb_rate,
     ancestry_markers = markers_count,
@@ -346,7 +350,7 @@ script <- function(path, output = NULL, ...) {
 
 
 #' Write model specification tables which will be loaded into SLiM
-write_model <- function(model_dir, populations, splits_table, admix_table, maps_table, gen_time) {
+write_model <- function(model_dir, populations, splits_table, admix_table, maps_table, gen_time, resolution) {
   saveRDS(populations, file.path(model_dir, "populations.rds"))
 
   write.table(
@@ -374,6 +378,7 @@ write_model <- function(model_dir, populations, splits_table, admix_table, maps_
   writeLines(splits_table$pop, con = file.path(model_dir, "names.txt"))
 
   write(gen_time, file.path(model_dir, "gen_time.txt"))
+  write(resolution, file.path(model_dir, "resolution.txt"))
 }
 
 
