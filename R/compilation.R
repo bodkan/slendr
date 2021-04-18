@@ -228,8 +228,8 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   non-zero integer is provided, ancestry will be tracked using the
 #'   number number of neutral ancestry markers equal to this number.
 #' @param how How to run the script? ("gui" - open in SLiMgui, "batch"
-#'   - run on the command-line, "dry" - do not run, just write a
-#'   compiled SLiM script)
+#'   - run on the command-line, FALSE or any other value - do not run,
+#'   just write a compiled SLiM script)
 #' @param include Vector of paths to custom SLiM scripts which should
 #'   be combined with the backend SLiM code
 #' @param output_dir Where to put potential output files?
@@ -296,10 +296,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     system(sprintf("open -a SLiMgui %s", complete_script))
   else if (how == "batch")
     system(sprintf("slim %s", complete_script), ignore.stdout = !verbose)
-  else if (how == "dry")
-    message("Final compiled SLiM script is in ", complete_script)
   else
-    stop("The only allowed options for the 'how' parameter are 'gui', 'batch', and 'dry'", call. = FALSE)
+    message("Final compiled SLiM script is in ", complete_script)
 }
 
 
