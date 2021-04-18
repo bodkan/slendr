@@ -10,7 +10,8 @@ write_model(
   splits_table,
   admix_table,
   maps_table,
-  gen_time
+  gen_time,
+  resolution
 )
 }
 \description{
