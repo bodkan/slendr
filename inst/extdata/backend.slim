@@ -384,7 +384,7 @@ function (void) log_output(s$ str) {
 
 // Assign a spatial map to a given population
 function (void) set_map(i$ i, i$ generation) {
-  if (sim.generation == 1)
+  if (generation == 1)
     img = MAPS[0];
   else
     img = MAPS[maps_param("pop") == i & T_MAPS == generation];
