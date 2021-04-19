@@ -17,8 +17,8 @@ run(
   how = "gui",
   verbose = FALSE,
   include = NULL,
-  output_dir = model$config$directory,
-  script_path = NULL
+  script_path = file.path(model$config$directory, "script.slim"),
+  output_prefix = file.path(model$config$directory, "output")
 )
 }
 \arguments{
@@ -55,11 +55,11 @@ number number of neutral ancestry markers equal to this number.}
 \item{include}{Vector of paths to custom SLiM scripts which should
 be combined with the backend SLiM code}
 
-\item{output_dir}{Where to put potential output files?}
+\item{script_path}{Name of the compiled output script}
+
+\item{output_prefix}{Common prefix (including path) for all output files}
 
 \item{gen_time}{Generation time (in model's time units, i.e. years)}
-
-\item{script}{Name of the compiled output script}
 }
 \description{
 When run, the compiled SLiM script will save the location of each individual
