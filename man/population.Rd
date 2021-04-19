@@ -7,7 +7,7 @@
 population(
   name,
   parent,
-  Ne,
+  N,
   time = NULL,
   world = NULL,
   center = NULL,
@@ -23,7 +23,7 @@ population(
 
 \item{parent}{Parent population object or "ancestor" character scalar}
 
-\item{Ne}{Effective population size at the time of split}
+\item{N}{Number of individuals at the time of split}
 
 \item{time}{Time of the population appearance}
 

@@ -372,7 +372,7 @@ restrict the spatial boundary of the African population to the
 
 ```{r}
 afr <- population(
-  "AFR", parent = "ancestor", Ne = 1000,
+  "AFR", parent = "ancestor", N = 1000,
   world = world, region = africa
 )
 
@@ -393,7 +393,7 @@ after their split from the African ancestors:
 
 ```{r}
 ooa <- population(
-  "OOA", parent = afr, time = 51000, Ne = 200,
+  "OOA", parent = afr, time = 51000, N = 200,
   center = c(33, 30), radius = 500, remove = 27000
 )
 ```
@@ -456,7 +456,7 @@ split from the first non-Africans 28000 years ago:
 
 ```{r}
 ehg <- population(
-  "EHG", time = 28000, Ne = 400, parent = ooa,
+  "EHG", time = 28000, N = 400, parent = ooa,
   world, coords = list(
     c(26, 55), c(38, 53), c(48, 53), c(60, 53),
     c(60, 60), c(48, 63), c(38, 63), c(26, 60)
@@ -475,7 +475,7 @@ modeling code a little bit:
 
 ```{r}
 eur <- population(
-  name = "EUR", time = 25000, Ne = 1000, parent = ehg,
+  name = "EUR", time = 25000, N = 1000, parent = ehg,
   world, region = europe
 )
 
@@ -502,7 +502,7 @@ instead of all around Anatolia:
 
 ```{r}
 ana <- population(
-  name = "ANA", time = 28000, Ne = 800, parent = ooa,
+  name = "ANA", time = 28000, N = 800, parent = ooa,
   world, center = c(34, 38), radius = 700,
   region = anatolia, remove = 6000
 ) %>% expand(
@@ -556,7 +556,7 @@ Yamnaya steppe people:
 
 ```{r}
 yam <- population(
-  name = "YAM", time = 7000, Ne = 600, parent = ehg,
+  name = "YAM", time = 7000, N = 600, parent = ehg,
   world, coords = list(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
@@ -572,11 +572,11 @@ Yamnaya invading Europe:
 To model the migration of the Yamnaya into Europe, we're splitting a
 new "YAM_migr" population from the original Yamnaya. The latter will
 stay where it is, while the migrating population will start invading
-the spatial range of Europeans ("Neolithic" population at the time):
+the spatial range of Europeans ("Nolithic" population at the time):
 
 ```{r}
 yam_migr <- population(
-  name = "YAM_migr", time = 6000, Ne = 1000, parent = yam,
+  name = "YAM_migr", time = 6000, N = 1000, parent = yam,
   world, coords = list(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)

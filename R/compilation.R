@@ -98,7 +98,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
     populations = populations,
-    splits = return_splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
+    splits = return_splits[, c("pop", "parent", "tsplit", "N", "tremove")],
     admixtures = return_admixtures,
     maps = return_maps[, c("pop", "time", "path")],
     gen_time = gen_time,
@@ -191,7 +191,7 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
     populations = readRDS(path_populations),
-    splits = splits[, c("pop", "parent", "tsplit", "Ne", "tremove")],
+    splits = splits[, c("pop", "parent", "tsplit", "N", "tremove")],
     admixtures = admixtures,
     maps = maps[, c("pop", "time", "path")],
     gen_time = gen_time,
@@ -351,7 +351,7 @@ write_model <- function(model_dir, populations, splits_table, admix_table, maps_
   saveRDS(populations, file.path(model_dir, "populations.rds"))
 
   write.table(
-    splits_table[, c("pop_id", "Ne", "parent_id", "tsplit", "tremove")],
+    splits_table[, c("pop_id", "N", "parent_id", "tsplit", "tremove")],
     file.path(model_dir, "splits.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
@@ -396,7 +396,7 @@ compile_splits <- function(populations) {
       pop = unique(p$pop),
       parent = parent_name,
       tsplit = p$time[1],
-      Ne = unique(p$Ne),
+      N = unique(p$N),
       tremove = ifelse(!is.null(tremove), tremove, -1),
       stringsAsFactors = FALSE
     )
