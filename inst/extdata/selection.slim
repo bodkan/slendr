@@ -12,18 +12,20 @@ initialize() {
 
   sim.rescheduleScriptBlock(s999, generations = T_ONSET);
   sim.rescheduleScriptBlock(s1000, generations = T_ONSET:SIM_END);
-
-  write_genotypes_header();
 }
 
 s999 late() {
   if (sim.generation == T_ONSET) {
     log_output("Introducing a beneficial mutation");
-    if (get_pop(POP).spatialMapValue("world", LOCATION) == 1.0)
-      stop("Location of selection start outside of the population boundary!\n");
+    write_genotypes_header();
 
-    genomes = get_pop(POP).genomes;
-    target = sample(genomes, 1);
+    if (get_pop(POP).spatialMapValue("world", LOCATION) == 1.0)
+      stop("Location of introduced selection outside of the population boundary!\n");
+
+    // save the state of the simulation
+    sim.outputFull("/tmp/slim_" + SIM_SEED + ".txt");
+
+    target = sample(get_pop(POP).genomes, 1);
     target.addNewMutation(get_pop(POP).id, S, 1);
     target.individual.setSpatialPosition(LOCATION);
   }
@@ -31,14 +33,34 @@ s999 late() {
 
 // save location of each individual
 s1000 late() {
-  for (ind in sim.subpopulations.individuals) {
-    write_genotypes(ind);
-  }
+  // check if the allele is still present
+  mut = sim.mutationsOfType(m2);
+
+  if (size(mut) == 0) {
+    log_output("Allele was lost (seed " + SIM_SEED + ") - restarting");
+
+    // go back to the selection onset generation
+    sim.readFromPopulationFile("/tmp/slim_" + SIM_SEED + ".txt");
+
+    // restart the recording
+    write_genotypes_header();
+
+    // start a newly seeded run
+    setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+
+    // re-introduce the mutation
+    target = sample(get_pop(POP).genomes, 1);
+    target.addNewMutation(get_pop(POP).id, S, 1);
+    target.individual.setSpatialPosition(LOCATION);
+  } else {
+    for (ind in sim.subpopulations.individuals) {
+      write_genotypes(ind);
+    }
 }
 
 function (void) write_genotypes_header(void) {
   filename = paste0(OUTPUT_PREFIX, "_ind_gt_locations.tsv.gz");
-  header_str = "t\tpop\tind\tx\ty\tsampled\tgt";
+  header_str = "gen\tx\ty\tgt";
   writeFile(filename, header_str, compress = T);
 }
 
@@ -47,10 +69,8 @@ function(void) write_genotypes(lifso<Individual>$ ind) {
   filename = paste0(OUTPUT_PREFIX, "_ind_gt_locations.tsv.gz");
   ind_str = paste(
     T_BURNIN + T_LENGTH - sim.generation,
-    ind.subpopulation.id,
-    ind.pedigreeID,
     ind.spatialPosition,
-    asInteger(!isNULL(ind.getValue("sampled"))),
+    ind.countOfMutationsOfType(m2),
     sep = "\t"
   );
   writeFile(filename, ind_str, append = T, compress = T);
