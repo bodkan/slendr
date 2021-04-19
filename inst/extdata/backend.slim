@@ -3,6 +3,8 @@ initialize() {
   initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
   initializeTreeSeq();
 
+  defineConstant("SIM_SEED", getSeed());
+
   // offspring spread
   defineConstant("SPREAD", asFloat({{spread}}));
 
