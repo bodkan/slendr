@@ -175,7 +175,7 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
       if (length(runs$lengths) > 1)
         snapshots_df$map[cumsum(runs$lengths)] <- "new"
 
-      snapshots_df <- snapshots_df[, c("#", "time", "Ne", "map")]
+      snapshots_df <- snapshots_df[, c("#", "time", "N", "map")]
       if (nrow(snapshots_df) > 15 & !full) {
         print(head(snapshots_df, 5), row.names = FALSE)
         cat("         ...\n")

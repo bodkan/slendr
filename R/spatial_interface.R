@@ -2,7 +2,7 @@
 #'
 #' @param name Name of the population
 #' @param time Time of the population appearance
-#' @param Ne Effective population size at the time of split
+#' @param N Number of individuals at the time of split
 #' @param parent Parent population object or "ancestor" character scalar
 #' @param world Object of the type \code{sf} which defines the world
 #' @param center Vector of two elements defining a center of a circular range
@@ -16,7 +16,7 @@
 #' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
-population <- function(name, parent, Ne, time = NULL, world = NULL,
+population <- function(name, parent, N, time = NULL, world = NULL,
                        center = NULL, radius = NULL, coords = NULL,
                        region = NULL, remove = NULL, intersect = TRUE) {
   # is this the first population defined in the model?
@@ -39,7 +39,7 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
     range <- spatial_range(world, center, radius, coords)
   }
   pop_range <- sf::st_sf(
-    data.frame(pop = name, time = time, Ne = Ne, stringsAsFactors = FALSE),
+    data.frame(pop = name, time = time, N = N, stringsAsFactors = FALSE),
     geometry = range
   )
 
@@ -76,7 +76,7 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
 #'
 #' @param pop Population object of the \code{spammr} class
 #' @param time Time of the current snapshot that is being defined
-#' @param Ne Effective population size (stays the same by default)
+#' @param N Effective population size (stays the same by default)
 #' @param center Vector of two elements defining a center of a circular range
 #' @param radius Scalar defining a radius of a range in kilometers
 #' @param coords List of vector pairs, defining corners of the range
@@ -85,7 +85,7 @@ population <- function(name, parent, Ne, time = NULL, world = NULL,
 #' @return Object of the \code{spammr_pop} (and \code{sf}) class
 #'
 #' @export
-change <- function(pop, time, Ne = NULL,
+change <- function(pop, time, N = NULL,
                    center = NULL, radius = NULL, coords = NULL,
                    region = NULL) {
   if (time %in% pop$time)
@@ -107,10 +107,10 @@ change <- function(pop, time, Ne = NULL,
   } else
     range <- sf::st_geometry(pop[nrow(pop), ])
 
-  if (is.null(Ne)) Ne <- pop[nrow(pop), ]$Ne
+  if (is.null(N)) N <- pop[nrow(pop), ]$N
 
   updated <- sf::st_sf(
-    data.frame(pop = unique(pop$pop), time = time, Ne = Ne, stringsAsFactors = FALSE),
+    data.frame(pop = unique(pop$pop), time = time, N = N, stringsAsFactors = FALSE),
     geometry = range
   )
 
@@ -237,7 +237,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
       data.frame(
         pop = region_start$pop,
         time = traj_diffs[i, "time"],
-        Ne = region_start$Ne,
+        N = region_start$N,
         stringsAsFactors = FALSE
       ),
       geometry = shifted_region,

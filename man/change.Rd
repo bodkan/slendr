@@ -7,7 +7,7 @@
 change(
   pop,
   time,
-  Ne = NULL,
+  N = NULL,
   center = NULL,
   radius = NULL,
   coords = NULL,
@@ -19,7 +19,7 @@ change(
 
 \item{time}{Time of the current snapshot that is being defined}
 
-\item{Ne}{Effective population size (stays the same by default)}
+\item{N}{Effective population size (stays the same by default)}
 
 \item{center}{Vector of two elements defining a center of a circular range}
 

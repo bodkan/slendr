@@ -78,14 +78,14 @@ Times are given in "units before present", distances in kilometers.
 
 ```r
 p1 <- population(
-  name = "pop1", parent = "ancestor", Ne = 700,
+  name = "pop1", parent = "ancestor", N = 700,
   radius = 600,       # radius of the circular range
   center = c(10, 25), # latitude, longitude coordinates of the center
   world = world
 )
 
 p2 <- population(
-  name = "pop2", parent = p1, time = 30000, Ne = 500,
+  name = "pop2", parent = p1, time = 30000, N = 500,
   center = c(10, 25), radius = 300
 ) %>%
   move(
@@ -95,19 +95,19 @@ p2 <- population(
   )
 
 p3 <- population(
-  name = "pop3", parent = p2, time = 20000, Ne = 2000,
+  name = "pop3", parent = p2, time = 20000, N = 2000,
   coords = list(c(-10, 50), c(10, 50), c(20, 53), # polygon range
                 c(40, 60), c(40, 70), c(-10, 65))
 )
 
 p4 <- population(
-  name = "pop4", parent = p2, time = 15000, Ne = 2000,
+  name = "pop4", parent = p2, time = 15000, N = 2000,
   coords = list(c(-10, 35), c(20, 37), c(25, 40),
                 c(30, 45), c(10, 50), c(-10, 45))
 )
 
 p5 <- population(
-  name = "pop5", parent = p1, time = 10000, Ne = 3000,
+  name = "pop5", parent = p1, time = 10000, N = 3000,
   center = c(10, 25), radius = 300
 ) %>%
   move( # population migration...
