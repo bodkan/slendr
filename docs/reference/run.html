@@ -145,15 +145,15 @@ formats will be changed at some point soon.</p>
   <span class='va'>sim_length</span>,
   <span class='va'>seq_length</span>,
   <span class='va'>recomb_rate</span>,
-  <span class='va'>max_distance</span>,
-  <span class='va'>max_spread</span>,
+  <span class='va'>max_interaction</span>,
+  <span class='va'>spread</span>,
   save_locations <span class='op'>=</span> <span class='cn'>FALSE</span>,
   track_ancestry <span class='op'>=</span> <span class='cn'>FALSE</span>,
   how <span class='op'>=</span> <span class='st'>"gui"</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
   include <span class='op'>=</span> <span class='cn'>NULL</span>,
-  output_dir <span class='op'>=</span> <span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>,
-  script_path <span class='op'>=</span> <span class='cn'>NULL</span>
+  script_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"script.slim"</span><span class='op'>)</span>,
+  output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"output"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -183,10 +183,11 @@ base-pairs</p></td>
       <td><p>Recombination rate of the simulated sequence</p></td>
     </tr>
     <tr>
-      <th>max_distance, max_spread</th>
-      <td><p>Maximum values for spatial
-interaction and mating choice (max_distance) and maximum distance
-for offspring from its parents (max_spread)</p></td>
+      <th>max_interaction, spread</th>
+      <td><p>Maximum values for spatial interaction
+and mating choice (max_distance) and the standard deviation of
+the distance of an offspring from its parents (max_spread) - both
+in units of kilometers</p></td>
     </tr>
     <tr>
       <th>save_locations</th>
@@ -212,16 +213,17 @@ number number of neutral ancestry markers equal to this number.</p></td>
 be combined with the backend SLiM code</p></td>
     </tr>
     <tr>
-      <th>output_dir</th>
-      <td><p>Where to put potential output files?</p></td>
+      <th>script_path</th>
+      <td><p>Name of the compiled output script</p></td>
+    </tr>
+    <tr>
+      <th>output_prefix</th>
+      <td><p>Common prefix (including path) for all output
+files</p></td>
     </tr>
     <tr>
       <th>gen_time</th>
       <td><p>Generation time (in model's time units, i.e. years)</p></td>
-    </tr>
-    <tr>
-      <th>script</th>
-      <td><p>Name of the compiled output script</p></td>
     </tr>
     </table>
 

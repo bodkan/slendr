@@ -222,9 +222,10 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #' @param seq_length Total length of the simulated sequence in
 #'   base-pairs
 #' @param recomb_rate Recombination rate of the simulated sequence
-#' @param max_distance,max_spread Maximum values for spatial
-#'   interaction and mating choice (max_distance) and maximum distance
-#'   for offspring from its parents (max_spread)
+#' @param max_interaction,spread Maximum values for spatial interaction
+#'   and mating choice (max_distance) and the standard deviation of
+#'   the distance of an offspring from its parents (max_spread) - both
+#'   in units of kilometers
 #' @param save_locations Save location of each individual throughout
 #'   the simulation?
 #' @param track_ancestry Track ancestry proportion dynamics in all
@@ -236,11 +237,12 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #' @param include Vector of paths to custom SLiM scripts which should
 #'   be combined with the backend SLiM code
 #' @param script_path Name of the compiled output script
-#' @param output_prefix Common prefix (including path) for all output files
+#' @param output_prefix Common prefix (including path) for all output
+#'   files
 #'
 #' @export
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
-                max_distance, max_spread,
+                max_interaction, spread,
                 save_locations = FALSE, track_ancestry = FALSE,
                 how = "gui", verbose = FALSE, include = NULL,
                 script_path = file.path(model$config$directory, "script.slim"),
@@ -276,8 +278,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     output_prefix = output_prefix,
     burnin = burnin,
     sim_length = sim_length,
-    max_distance = max_distance / model$resolution,
-    max_spread = max_spread / model$resolution,
+    max_interaction = max_interaction / model$resolution,
+    spread = spread / model$resolution,
     seq_length = seq_length,
     recomb_rate = recomb_rate,
     ancestry_markers = markers_count,
