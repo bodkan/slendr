@@ -441,6 +441,8 @@ add_real_locations <- function(df, model) {
 convert <- function(lat, lon, model) {
   orig_point <- c(lat, lon)
 
+  world <- attr(model$populations[[1]], "world")
+
   # convert the coordinate into a projected CRS of the world
   new_point <- sf::st_point(orig_point) %>%
     sf::st_sfc() %>%
@@ -449,7 +451,6 @@ convert <- function(lat, lon, model) {
     sf::st_coordinates()
 
   # dimension of the world in the projected CRS units
-  world <- attr(model$populations[[1]], "world")
   bbox <- sf::st_bbox(world)
   world_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
 
