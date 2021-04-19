@@ -1,6 +1,9 @@
+initialize() {
+  initializeMutationType("m999", 1.0, "f", 0.5); // introduced mutation
+}
+
 1 late() {
   defineConstant("LOCATION", asFloat(c({{coord}})));
-  defineConstant("FREQ", asFloat({{freq}}));
   defineConstant("S", asFloat({{s}}));
   defineConstant("T_ONSET", SIM_END - asInteger(round({{onset}} / GEN_TIME)));
   defineConstant("POP", which(NAMES == "{{origin}}"));
@@ -19,10 +22,10 @@ s999 late() {
     if (get_pop(POP).spatialMapValue("world", LOCATION) == 1.0)
       stop("Location of selection start outside of the population boundary!\n");
 
-    all_genomes = get_pop(POP).genomes;
-    sampled_genomes = sample(all_genomes, asInteger(length(all_genomes) * FREQ));
-    sampled_genomes.addNewMutation(get_pop(POP).id, S, asInteger(SEQ_LENGTH / 2));
-    unique(sampled_genomes.individual).setSpatialPosition(LOCATION + runif(2, -MAX_SPREAD, MAX_SPREAD));
+    genomes = get_pop(POP).genomes;
+    target = sample(genomes, 1);
+    target.addNewMutation(get_pop(POP).id, S, 1);
+    target.individual.setSpatialPosition(LOCATION);
   }
 }
 

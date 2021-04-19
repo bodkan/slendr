@@ -3,17 +3,17 @@ initialize() {
   initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
   initializeTreeSeq();
 
+  // offspring spread
+  defineConstant("SPREAD", asFloat({{spread}}));
+
   // maximum interaction/competition distance
-  defineConstant("MAX_DISTANCE", asFloat({{max_distance}}));
+  defineConstant("MAX_INTERACTION", asFloat({{max_interaction}}));
 
   // TODO: make both of these parametrizable at some point
   // spatial competition
-  initializeInteractionType(1, "xy", reciprocal = T, maxDistance = MAX_DISTANCE);
+  initializeInteractionType(1, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
   // spatial mate choice
-  initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_DISTANCE);
-
-  // offspring spread
-  defineConstant("MAX_SPREAD", asFloat({{max_spread}}));
+  initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
 
   defineConstant("MODEL_DIR", "{{model_dir}}");
   defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
@@ -297,7 +297,7 @@ modifyChild() {
 
   // for spatially overlapping admixture and non-migrant offspring,
   // propose location in the neighborhood of one of its parents
-  pos = parent1.spatialPosition + runif(2, -MAX_SPREAD, MAX_SPREAD);
+  pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
 
   // make sure that offspring is generated in allowed locations on the map
   // (within it's population bounds and not in an inaccessible location)
