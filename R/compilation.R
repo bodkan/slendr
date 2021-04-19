@@ -235,21 +235,19 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   - run on the command-line, "dry-run" - simply return the script)
 #' @param include Vector of paths to custom SLiM scripts which should
 #'   be combined with the backend SLiM code
-#' @param output_dir Where to put potential output files?
-#' @param script Name of the compiled output script
+#' @param script_path Name of the compiled output script
+#' @param output_prefix Common prefix (including path) for all output files
 #'
 #' @export
 run <- function(model, burnin, sim_length, seq_length, recomb_rate,
                 max_distance, max_spread,
                 save_locations = FALSE, track_ancestry = FALSE,
                 how = "gui", verbose = FALSE, include = NULL,
-                output_dir = model$config$directory,
-                script_path = NULL) {
+                script_path = file.path(model$config$directory, "script.slim"),
+                output_prefix = file.path(model$config$directory, "output")) {
   model_dir <- model$config$directory
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
-
-  if (!dir.exists(output_dir)) dir.create(output_dir)
 
   if (!all(file.exists(file.path(model_dir, c("splits.tsv", "maps.tsv")))))
     stop(sprintf("Directory '%s' does not contain spammr configuration files", model_dir), call. = FALSE)
@@ -274,8 +272,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   base_script <- script(
     path = backend_script,
 
-    model_dir = normalizePath(model_dir),
-    output_dir = normalizePath(output_dir),
+    model_dir = model_dir,
+    output_prefix = output_prefix,
     burnin = burnin,
     sim_length = sim_length,
     max_distance = max_distance / model$resolution,
@@ -289,18 +287,14 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
 
   # compile all script components, including the backend script, into one file
   script_components <- unlist(lapply(c(base_script, include), readLines))
-  if (is.null(script_path))
-    complete_script <- file.path(model_dir, "script.slim")
-  else
-    complete_script <- file.path(model$config$directory, "script.slim")
-  writeLines(script_components, complete_script)
+  writeLines(script_components, script_path)
 
   if (how == "gui")
-    system(sprintf("open -a SLiMgui %s", complete_script))
+    system(sprintf("open -a SLiMgui %s", script_path))
   else if (how == "batch")
-    system(sprintf("slim %s", complete_script), ignore.stdout = !verbose)
+    system(sprintf("slim %s", script_path), ignore.stdout = !verbose)
   else if (how == "dry-run")
-    message("Final compiled SLiM script is in ", complete_script)
+    message("Final compiled SLiM script is in ", script_path)
   else
     stop("Only 'gui', 'batch', and 'dry-run' are recognized as values of the 'how' argument", call. = FALSE)
 }

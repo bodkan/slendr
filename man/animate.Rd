@@ -4,10 +4,12 @@
 \alias{animate}
 \title{Animate the simulated population dynamics}
 \usage{
-animate(model, nframes, gif = NULL)
+animate(model, locations = NULL, nframes = 200, gif = NULL)
 }
 \arguments{
 \item{model}{Compiled model object}
+
+\item{locations}{Table with individual locations}
 
 \item{nframes}{Number of frames of the animation}
 

@@ -1,6 +1,7 @@
 #' Animate the simulated population dynamics
 #'
 #' @param model Compiled model object
+#' @param locations Table with individual locations
 #' @param nframes Number of frames of the animation
 #' @param gif Path to an output GIF (animation object returned by default)
 #' #' @param nframes Number of frames of the animation
@@ -10,8 +11,10 @@
 #'
 #' @import ggplot2
 #' @export
-animate <- function(model, nframes, gif = NULL) {
-  locs <- read.table(file.path(model$config$directory, "ind_locations.tsv.gz"), header = TRUE)
+animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
+  if (is.null(locations))
+    locations <- file.path(model$config$directory, "output_ind_locations.tsv.gz")
+  locs <- read.table(locations, header = TRUE)
   pop_names <- scan(file.path(model$config$directory, "names.txt"), what = "character", quiet = TRUE)
 
   # label populations based on their original idenifiers from the user
