@@ -108,7 +108,7 @@ initialize() {
 1 {
   // setup the first population (id = 0)
   i = 0;
-  sim.addSubpop(i, pop_param("Ne", i));
+  sim.addSubpop(i, pop_param("N", i));
   set_map(i, sim.generation);
   set_coordinates(get_pop(i).individuals, i);
   add_markers(i);
@@ -394,9 +394,9 @@ function (void) set_map(i$ i, i$ generation) {
 // Split population from the source specified in an input table
 function (void) split_pop(i$ i) {
   source = pop_param("source", i);
-  Ne= pop_param("Ne", i);
+  N = pop_param("N", i);
   log_output("split of " + NAMES[i] + "(" + i + ")" + " from " + NAMES[source] + "(" + source + ")");
-  sim.addSubpopSplit(i, Ne, get_pop(source));
+  sim.addSubpopSplit(i, N, get_pop(source));
 }
 
 // Set the migration rate from a populaion 'from' to a population 'to'
@@ -451,7 +451,7 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     stop("Both population ID and filtering criterion cannot be specified.");
 
   // column names allowed
-  columns = c("pop", "Ne", "source", "tsplit", "tremove");
+  columns = c("pop", "N", "source", "tsplit", "tremove");
 
   // lookup column name number for indexing into a populations matrix
   col_i = which(columns == col) ;
