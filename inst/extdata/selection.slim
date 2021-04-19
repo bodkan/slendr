@@ -5,17 +5,17 @@ initialize() {
 1 late() {
   defineConstant("LOCATION", asFloat(c({{coord}})));
   defineConstant("S", asFloat({{s}}));
-  defineConstant("T_ONSET", SIM_END - asInteger(round({{onset}} / GEN_TIME)));
+  defineConstant("T_MUTATION", SIM_END - asInteger(round({{time}} / GEN_TIME)));
   defineConstant("POP", which(NAMES == "{{origin}}"));
 
-  catn("T_ONSET: " + T_ONSET);
+  catn("T_MUTATION: " + T_MUTATION);
 
-  sim.rescheduleScriptBlock(s999, generations = T_ONSET);
-  sim.rescheduleScriptBlock(s1000, generations = T_ONSET:SIM_END);
+  sim.rescheduleScriptBlock(s999, generations = T_MUTATION);
+  sim.rescheduleScriptBlock(s1000, generations = T_MUTATION:SIM_END);
 }
 
 s999 late() {
-  if (sim.generation == T_ONSET) {
+  if (sim.generation == T_MUTATION) {
     log_output("Introducing a beneficial mutation");
     write_genotypes_header();
 
@@ -26,21 +26,21 @@ s999 late() {
     sim.outputFull("/tmp/slim_" + SIM_SEED + ".txt");
 
     target = sample(get_pop(POP).genomes, 1);
-    target.addNewMutation(get_pop(POP).id, S, 1);
+    target.addNewMutation(m999, S, 0);
     target.individual.setSpatialPosition(LOCATION);
   }
 }
 
-// save location of each individual
+// check if the mutation is still present and save the location
+// of each individual if it is
 s1000 late() {
-  // check if the allele is still present
-  mut = sim.mutationsOfType(m2);
-
-  if (size(mut) == 0) {
-    log_output("Allele was lost (seed " + SIM_SEED + ") - restarting");
+  if (sim.generation >= T_MUTATION & size(sim.mutationsOfType(m999)) == 0) {
+    log_output("Mutation was lost (seed " + SIM_SEED + ") - restarting");
 
     // go back to the selection onset generation
     sim.readFromPopulationFile("/tmp/slim_" + SIM_SEED + ".txt");
+    i1.evaluate();
+    i2.evaluate();
 
     // restart the recording
     write_genotypes_header();
@@ -50,12 +50,14 @@ s1000 late() {
 
     // re-introduce the mutation
     target = sample(get_pop(POP).genomes, 1);
-    target.addNewMutation(get_pop(POP).id, S, 1);
+    target.addNewMutation(m999, S, 0);
     target.individual.setSpatialPosition(LOCATION);
-  } else {
-    for (ind in sim.subpopulations.individuals) {
-      write_genotypes(ind);
-    }
+
+    // reset the spatial map
+    // TODO: this breaks with more populations and multiple maps
+    set_map(get_pop(POP).id, 1);
+  } else
+    for (ind in sim.subpopulations.individuals) write_genotypes(ind);
 }
 
 function (void) write_genotypes_header(void) {
@@ -70,8 +72,9 @@ function(void) write_genotypes(lifso<Individual>$ ind) {
   ind_str = paste(
     T_BURNIN + T_LENGTH - sim.generation,
     ind.spatialPosition,
-    ind.countOfMutationsOfType(m2),
+    ind.countOfMutationsOfType(m999),
     sep = "\t"
   );
   writeFile(filename, ind_str, append = T, compress = T);
+  flushFile(filename);
 }
