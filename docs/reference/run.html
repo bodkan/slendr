@@ -141,7 +141,6 @@ formats will be changed at some point soon.</p>
 
     <pre class="usage"><span class='fu'>run</span><span class='op'>(</span>
   <span class='va'>model</span>,
-  <span class='va'>burnin</span>,
   <span class='va'>sim_length</span>,
   <span class='va'>seq_length</span>,
   <span class='va'>recomb_rate</span>,
@@ -152,6 +151,7 @@ formats will be changed at some point soon.</p>
   how <span class='op'>=</span> <span class='st'>"gui"</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
   include <span class='op'>=</span> <span class='cn'>NULL</span>,
+  burnin <span class='op'>=</span> <span class='cn'>NULL</span>,
   script_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"script.slim"</span><span class='op'>)</span>,
   output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"output"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
@@ -162,11 +162,6 @@ formats will be changed at some point soon.</p>
     <tr>
       <th>model</th>
       <td><p>Compiled model object</p></td>
-    </tr>
-    <tr>
-      <th>burnin</th>
-      <td><p>Length of the burnin (in model's time units,
-i.e. years)</p></td>
     </tr>
     <tr>
       <th>sim_length</th>
@@ -211,6 +206,11 @@ number number of neutral ancestry markers equal to this number.</p></td>
       <th>include</th>
       <td><p>Vector of paths to custom SLiM scripts which should
 be combined with the backend SLiM code</p></td>
+    </tr>
+    <tr>
+      <th>burnin</th>
+      <td><p>Length of the burnin (in model's time units,
+i.e. years)</p></td>
     </tr>
     <tr>
       <th>script_path</th>
