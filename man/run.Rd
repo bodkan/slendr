@@ -6,7 +6,6 @@
 \usage{
 run(
   model,
-  burnin,
   sim_length,
   seq_length,
   recomb_rate,
@@ -17,15 +16,13 @@ run(
   how = "gui",
   verbose = FALSE,
   include = NULL,
+  burnin = NULL,
   script_path = file.path(model$config$directory, "script.slim"),
   output_prefix = file.path(model$config$directory, "output")
 )
 }
 \arguments{
 \item{model}{Compiled model object}
-
-\item{burnin}{Length of the burnin (in model's time units,
-i.e. years)}
 
 \item{sim_length}{Total length of the simulation (in model's time
 units, i.e.  years)}
@@ -55,6 +52,9 @@ number number of neutral ancestry markers equal to this number.}
 
 \item{include}{Vector of paths to custom SLiM scripts which should
 be combined with the backend SLiM code}
+
+\item{burnin}{Length of the burnin (in model's time units,
+i.e. years)}
 
 \item{script_path}{Name of the compiled output script}
 

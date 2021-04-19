@@ -241,10 +241,10 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   files
 #'
 #' @export
-run <- function(model, burnin, sim_length, seq_length, recomb_rate,
+run <- function(model, sim_length, seq_length, recomb_rate,
                 max_interaction, spread,
                 save_locations = FALSE, track_ancestry = FALSE,
-                how = "gui", verbose = FALSE, include = NULL,
+                how = "gui", verbose = FALSE, include = NULL, burnin = NULL,
                 script_path = file.path(model$config$directory, "script.slim"),
                 output_prefix = file.path(model$config$directory, "output")) {
   model_dir <- model$config$directory
@@ -265,7 +265,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
 
   backend_script <- system.file("extdata", "backend.slim", package = "spammr")
 
-  burnin <- round(burnin / model$gen_time)
+  burnin <- if (!is.null(burnin)) round(burnin / model$gen_time) else 1
   sim_length <- round(sim_length / model$gen_time)
 
   if (burnin < 1 | sim_length < 1)
