@@ -183,16 +183,6 @@ graph(model)
 #### 7. Run the model in SLiM (in batch mode in this case)
 
 
-```r
-run(
-  model,
-  burnin = 1000, sim_length = 31000,
-  seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
-  save_locations = TRUE,
-  max_distance = 300, max_spread = 30,
-  how = "batch"
-)
-```
 
 
 ```r
@@ -201,7 +191,7 @@ run(
   burnin = 1000, sim_length = 31000,
   seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   save_locations = TRUE,
-  max_distance = 300, max_spread = 30, # interaction and spread (in km)
+  interaction = 200, spread = 50, # interaction and spread (in km)
   how = "gui" # open the model in SLiMgui
 )
 ```

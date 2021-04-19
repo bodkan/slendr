@@ -10,8 +10,8 @@ run(
   sim_length,
   seq_length,
   recomb_rate,
-  max_distance,
-  max_spread,
+  max_interaction,
+  spread,
   save_locations = FALSE,
   track_ancestry = FALSE,
   how = "gui",
@@ -35,9 +35,10 @@ base-pairs}
 
 \item{recomb_rate}{Recombination rate of the simulated sequence}
 
-\item{max_distance, max_spread}{Maximum values for spatial
-interaction and mating choice (max_distance) and maximum distance
-for offspring from its parents (max_spread)}
+\item{max_interaction, spread}{Maximum values for spatial interaction
+and mating choice (max_distance) and the standard deviation of
+the distance of an offspring from its parents (max_spread) - both
+in units of kilometers}
 
 \item{save_locations}{Save location of each individual throughout
 the simulation?}
@@ -57,7 +58,8 @@ be combined with the backend SLiM code}
 
 \item{script_path}{Name of the compiled output script}
 
-\item{output_prefix}{Common prefix (including path) for all output files}
+\item{output_prefix}{Common prefix (including path) for all output
+files}
 
 \item{gen_time}{Generation time (in model's time units, i.e. years)}
 }
