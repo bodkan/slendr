@@ -76,5 +76,4 @@ function(void) write_genotypes(lifso<Individual>$ ind) {
     sep = "\t"
   );
   writeFile(filename, ind_str, append = T, compress = T);
-  flushFile(filename);
 }
