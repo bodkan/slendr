@@ -34,30 +34,32 @@ s999 late() {
 // check if the mutation is still present and save the location
 // of each individual if it is
 s1000 late() {
-  if (sim.generation >= T_MUTATION & size(sim.mutationsOfType(m999)) == 0) {
-    log_output("Mutation was lost (seed " + SIM_SEED + ") - restarting");
+  if (sim.generation >= T_MUTATION) {
+    if (size(sim.mutationsOfType(m999)) == 0) {
+      log_output("Mutation was lost - restarting");
 
-    // go back to the selection onset generation
-    sim.readFromPopulationFile("/tmp/slim_" + SIM_SEED + ".txt");
-    i1.evaluate();
-    i2.evaluate();
+      // go back to the selection onset generation
+      sim.readFromPopulationFile("/tmp/slim_" + SIM_SEED + ".txt");
+      i1.evaluate();
+      i2.evaluate();
 
-    // restart the recording
-    write_genotypes_header();
+      // restart the recording
+      write_genotypes_header();
 
-    // start a newly seeded run
-    setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+      // start a newly seeded run
+      setSeed(rdunif(1, 0, asInteger(2^62) - 1));
 
-    // re-introduce the mutation
-    target = sample(get_pop(POP).genomes, 1);
-    target.addNewMutation(m999, S, 0);
-    target.individual.setSpatialPosition(LOCATION);
+      // re-introduce the mutation
+      target = sample(get_pop(POP).genomes, 1);
+      target.addNewMutation(m999, S, 0);
+      target.individual.setSpatialPosition(LOCATION);
 
-    // reset the spatial map
-    // TODO: this breaks with more populations and multiple maps
-    set_map(get_pop(POP).id, 1);
-  } else
+      // reset the spatial map
+      // TODO: this breaks with more populations and multiple maps
+      set_map(get_pop(POP).id, 1);
+    } else
     for (ind in sim.subpopulations.individuals) write_genotypes(ind);
+  }
 }
 
 function (void) write_genotypes_header(void) {
