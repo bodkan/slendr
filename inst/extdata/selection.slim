@@ -34,7 +34,7 @@ s999 late() {
 // check if the mutation is still present and save the location
 // of each individual if it is
 s1000 late() {
-  if (sim.generation >= T_MUTATION & size(sim.mutationsOfType(m999)) == 0) {
+  if (sim.generation <= T_MUTATION & size(sim.mutationsOfType(m999)) == 0) {
     log_output("Mutation was lost (seed " + SIM_SEED + ") - restarting");
 
     // go back to the selection onset generation
