@@ -11,7 +11,7 @@ test_that("load() restores a single-map model object", {
 
   # make sure that all components of the model list object before and after
   # serialization are equal
-  components <- c("splits", "admixtures", "maps", "gen_time", "resolution")
+  components <- c("splits", "admixtures", "maps", "gen_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all(model1[[i]] == model2[[i]]))))
   expect_true(all(unlist(model1$config) == unlist(model2$config)))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
@@ -46,7 +46,7 @@ test_that("load() restores a complex model object", {
   )
   model2 <- load(model1$config$directory)
 
-  components <- c("splits", "admixtures", "maps", "gen_time", "resolution")
+  components <- c("splits", "admixtures", "maps", "gen_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all(model1[[i]] == model2[[i]]))))
   expect_true(all(unlist(model1$config) == unlist(model2$config)))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
