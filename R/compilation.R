@@ -97,6 +97,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
       maps = file.path(model_dir, "maps.tsv"),
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
+    world = attr(populations[[1]], "world"),
     populations = populations,
     splits = return_splits[, c("pop", "parent", "tsplit", "N", "tremove")],
     admixtures = return_admixtures,
@@ -183,6 +184,8 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
   splits$tremove[splits$tremove != -1] <- round(splits$tremove[splits$tremove != -1] * gen_time)
   maps$time <- round(maps$time * gen_time)
 
+  populations <- readRDS(path_populations)
+
   result <- list(
     config = list(
       directory = model_dir,
@@ -190,7 +193,8 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
       maps = path_maps,
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
-    populations = readRDS(path_populations),
+    world = attr(populations[[1]], "world"),
+    populations = populations,
     splits = splits[, c("pop", "parent", "tsplit", "N", "tremove")],
     admixtures = admixtures,
     maps = maps[, c("pop", "time", "path")],

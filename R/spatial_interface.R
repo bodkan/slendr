@@ -441,17 +441,15 @@ add_real_locations <- function(df, model) {
 convert <- function(lat, lon, model) {
   orig_point <- c(lat, lon)
 
-  world <- attr(model$populations[[1]], "world")
-
   # convert the coordinate into a projected CRS of the world
   new_point <- sf::st_point(orig_point) %>%
     sf::st_sfc() %>%
     sf::st_sf(crs = 4326) %>%
-    sf::st_transform(crs = sf::st_crs(world)) %>%
+    sf::st_transform(crs = sf::st_crs(model$world)) %>%
     sf::st_coordinates()
 
   # dimension of the world in the projected CRS units
-  bbox <- sf::st_bbox(world)
+  bbox <- sf::st_bbox(model$world)
   world_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
 
   # dimension of the rasterized map in pixel units
