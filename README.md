@@ -164,7 +164,7 @@ model
 #> number of spatial maps: 71 
 #> resolution: 10 km per pixel
 #> 
-#> configuration files in: /tmp/example-model 
+#> configuration files in: /private/tmp/example-model 
 #> 
 #> For detailed model specification see `$splits`, `$admixtures`, `$maps`,
 #> or `$populations` components of the model object, or the configuration
