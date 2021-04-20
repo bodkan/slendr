@@ -197,7 +197,7 @@ print.spammr <- function(x, sf = FALSE, full = FALSE) {
       cat("generation time:", x$gen_time, "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n")
       cat("resolution:", x$resolution, "km per pixel\n\n")
-      cat("configuration files in:", x$config$directory, "\n\n")
+      cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
       cat(
 "For detailed model specification see `$splits`, `$admixtures`, `$maps`,
 or `$populations` components of the model object, or the configuration
