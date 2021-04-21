@@ -1,13 +1,14 @@
 initialize() {
   // introduced mutation
-  initializeMutationType("m999", 1.0, "f", 0.5);
-  m999.convertToSubstitution = F;
+  initializeMutationType("m99999", 1.0, "f", 0.5);
+  m99999.convertToSubstitution = F;
 }
 
 1 late() {
   defineConstant("LOCATION", asFloat(c({{coord}})));
   defineConstant("S", asFloat({{s}}));
   defineConstant("POP", which(NAMES == "{{origin}}"));
+  defineConstant("FINAL_FREQ", {{final_freq}});
 
   defineConstant("T_ABS_MUTATION", asInteger(round({{time}} / GEN_TIME)));
   defineConstant("T_MUTATION", SIM_END - T_ABS_MUTATION);
@@ -15,11 +16,12 @@ initialize() {
   catn("T_ABS_MUTATION: " + T_ABS_MUTATION);
   catn("T_MUTATION: " + T_MUTATION);
 
-  sim.rescheduleScriptBlock(s999, generations = T_MUTATION);
-  sim.rescheduleScriptBlock(s1000, generations = T_MUTATION:SIM_END);
+  sim.rescheduleScriptBlock(s20, generations = T_MUTATION);
+  sim.rescheduleScriptBlock(s21, generations = T_MUTATION:SIM_END);
+  sim.rescheduleScriptBlock(s22, generations = SIM_END);
 }
 
-s999 late() {
+s20 late() {
   if (sim.generation == T_MUTATION) {
     log_output("Introducing a beneficial mutation");
     write_genotypes_header();
@@ -31,39 +33,28 @@ s999 late() {
     sim.outputFull("/tmp/slim_" + SIM_SEED + ".txt");
 
     target = sample(get_pop(POP).genomes, 1);
-    target.addNewMutation(m999, S, 0);
+    target.addNewMutation(m99999, S, 0);
     target.individual.setSpatialPosition(LOCATION);
   }
 }
 
-// check if the mutation is still present and save the location
+// Check if the mutation is still present and save the location
 // of each individual if it is
-s1000 late() {
+s21 late() {
   if (sim.generation >= T_MUTATION) {
-    if (size(sim.mutationsOfType(m999)) == 0) {
+    if (size(sim.mutationsOfType(m99999)) == 0) {
       log_output("Mutation was lost - restarting");
-
-      // go back to the selection onset generation
-      sim.readFromPopulationFile("/tmp/slim_" + SIM_SEED + ".txt");
-      i1.evaluate();
-      i2.evaluate();
-
-      // restart the recording
-      write_genotypes_header();
-
-      // start a newly seeded run
-      setSeed(rdunif(1, 0, asInteger(2^62) - 1));
-
-      // re-introduce the mutation
-      target = sample(get_pop(POP).genomes, 1);
-      target.addNewMutation(m999, S, 0);
-      target.individual.setSpatialPosition(LOCATION);
-
-      // reset the spatial map
-      // TODO: this breaks with more populations and multiple maps
-      set_map(get_pop(POP).id, 1);
+      restart_simulation();
     } else
     for (ind in sim.subpopulations.individuals) write_genotypes(ind);
+  }
+}
+
+// Make sure that the mutation reached sufficiently high frequency
+s22 late() {
+  if (sim.mutationFrequencies(get_pop(POP), sim.mutationsOfType(m99999)) < FINAL_FREQ) {
+    log_output("Mutation not at a sufficiently high final frequency - restarting");
+    restart_simulation();
   }
 }
 
@@ -73,14 +64,37 @@ function (void) write_genotypes_header(void) {
   writeFile(filename, header_str, compress = T);
 }
 
-// Write information about a given individual to a locations file
-function(void) write_genotypes(lifso<Individual>$ ind) {
+// Write information about a given individual and its genotypes
+// to a locations table
+function (void) write_genotypes(lifso<Individual>$ ind) {
   filename = paste0(OUTPUT_PREFIX, "_ind_gt_locations.tsv.gz");
   ind_str = paste(
     SIM_END - sim.generation,
     ind.spatialPosition,
-    ind.countOfMutationsOfType(m999),
+    ind.countOfMutationsOfType(m99999),
     sep = "\t"
   );
   writeFile(filename, ind_str, append = T, compress = T);
+}
+
+function (void) restart_simulation(void) {
+  // go back to the selection onset generation
+  sim.readFromPopulationFile("/tmp/slim_" + SIM_SEED + ".txt");
+  i1.evaluate();
+  i2.evaluate();
+
+  // restart the recording
+  write_genotypes_header();
+
+  // start a newly seeded run
+  setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+
+  // re-introduce the mutation
+  target = sample(get_pop(POP).genomes, 1);
+  target.addNewMutation(m99999, S, 0);
+  target.individual.setSpatialPosition(LOCATION);
+
+  // reset the spatial map
+  // TODO: this breaks with more populations and multiple maps
+  set_map(get_pop(POP).id, 1);
 }
