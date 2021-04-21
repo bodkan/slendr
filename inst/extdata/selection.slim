@@ -1,7 +1,7 @@
 initialize() {
   // introduced mutation
-  initializeMutationType("m99999", 1.0, "f", 0.5);
-  m99999.convertToSubstitution = F;
+  initializeMutationType("m999", 1.0, "f", 0.5);
+  m999.convertToSubstitution = F;
 }
 
 1 late() {
@@ -18,7 +18,10 @@ initialize() {
 
   sim.rescheduleScriptBlock(s20, generations = T_MUTATION);
   sim.rescheduleScriptBlock(s21, generations = T_MUTATION:SIM_END);
-  sim.rescheduleScriptBlock(s22, generations = SIM_END);
+  if (MIN_FREQ > 0)
+    sim.rescheduleScriptBlock(s22, generations = SIM_END);
+  else
+    sim.deregisterScriptBlock(s22);
 }
 
 s20 late() {
@@ -33,7 +36,7 @@ s20 late() {
     sim.outputFull("/tmp/slim_" + SIM_SEED + ".txt");
 
     target = sample(get_pop(POP).genomes, 1);
-    target.addNewMutation(m99999, S, 0);
+    target.addNewMutation(m999, S, 0);
     target.individual.setSpatialPosition(LOCATION);
   }
 }
@@ -42,7 +45,7 @@ s20 late() {
 // of each individual if it is
 s21 late() {
   if (sim.generation >= T_MUTATION) {
-    if (size(sim.mutationsOfType(m99999)) == 0) {
+    if (size(sim.mutationsOfType(m999)) == 0) {
       log_output("Mutation was lost - restarting");
       restart_simulation();
     } else
@@ -52,7 +55,7 @@ s21 late() {
 
 // Make sure that the mutation reached sufficiently high frequency
 s22 late() {
-  if (sim.mutationFrequencies(get_pop(POP), sim.mutationsOfType(m99999)) < MIN_FREQ) {
+  if (sim.generation == SIM_END & all(sim.mutationFrequencies(get_pop(POP), sim.mutationsOfType(m999)) < MIN_FREQ)) {
     log_output("Mutation not at a sufficiently high final frequency - restarting");
     restart_simulation();
   }
@@ -71,7 +74,7 @@ function (void) write_genotypes(lifso<Individual>$ ind) {
   ind_str = paste(
     SIM_END - sim.generation,
     ind.spatialPosition,
-    ind.countOfMutationsOfType(m99999),
+    ind.countOfMutationsOfType(m999),
     sep = "\t"
   );
   writeFile(filename, ind_str, append = T, compress = T);
@@ -91,7 +94,7 @@ function (void) restart_simulation(void) {
 
   // re-introduce the mutation
   target = sample(get_pop(POP).genomes, 1);
-  target.addNewMutation(m99999, S, 0);
+  target.addNewMutation(m999, S, 0);
   target.individual.setSpatialPosition(LOCATION);
 
   // reset the spatial map
