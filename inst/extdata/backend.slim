@@ -338,7 +338,7 @@ function (void) write_locations_header(void) {
 function(void) write_locations(lifso<Individual>$ ind) {
   filename = paste0(OUTPUT_PREFIX, "_ind_locations.tsv.gz");
   ind_str = paste(
-    T_BURNIN + T_LENGTH - sim.generation,
+    SIM_END - sim.generation,
     ind.subpopulation.id,
     ind.pedigreeID,
     ind.spatialPosition,
