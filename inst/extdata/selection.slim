@@ -72,7 +72,7 @@ function (void) write_genotypes_header(void) {
 function(void) write_genotypes(lifso<Individual>$ ind) {
   filename = paste0(OUTPUT_PREFIX, "_ind_gt_locations.tsv.gz");
   ind_str = paste(
-    T_BURNIN + T_LENGTH - sim.generation,
+    SIM_END - sim.generation,
     ind.spatialPosition,
     ind.countOfMutationsOfType(m999),
     sep = "\t"
