@@ -191,7 +191,7 @@ run(
   burnin = 1000, sim_length = 31000,
   seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   save_locations = TRUE,
-  interaction = 200, spread = 50, # interaction and spread (in km)
+  max_interaction = 200, spread = 50, # interaction and spread (in km)
   how = "gui" # open the model in SLiMgui
 )
 ```
