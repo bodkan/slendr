@@ -8,7 +8,7 @@ initialize() {
   defineConstant("LOCATION", asFloat(c({{coord}})));
   defineConstant("S", asFloat({{s}}));
   defineConstant("POP", which(NAMES == "{{origin}}"));
-  defineConstant("FINAL_FREQ", {{final_freq}});
+  defineConstant("MIN_FREQ", {{min_freq}});
 
   defineConstant("T_ABS_MUTATION", asInteger(round({{time}} / GEN_TIME)));
   defineConstant("T_MUTATION", SIM_END - T_ABS_MUTATION);
@@ -52,7 +52,7 @@ s21 late() {
 
 // Make sure that the mutation reached sufficiently high frequency
 s22 late() {
-  if (sim.mutationFrequencies(get_pop(POP), sim.mutationsOfType(m99999)) < FINAL_FREQ) {
+  if (sim.mutationFrequencies(get_pop(POP), sim.mutationsOfType(m99999)) < MIN_FREQ) {
     log_output("Mutation not at a sufficiently high final frequency - restarting");
     restart_simulation();
   }
