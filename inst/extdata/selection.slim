@@ -18,10 +18,7 @@ initialize() {
 
   sim.rescheduleScriptBlock(s20, generations = T_MUTATION);
   sim.rescheduleScriptBlock(s21, generations = T_MUTATION:SIM_END);
-  if (MIN_FREQ > 0)
-    sim.rescheduleScriptBlock(s22, generations = SIM_END);
-  else
-    sim.deregisterScriptBlock(s22);
+  sim.rescheduleScriptBlock(s22, generations = SIM_END);
 }
 
 s20 late() {
