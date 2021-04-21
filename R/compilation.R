@@ -226,10 +226,14 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #' @param seq_length Total length of the simulated sequence in
 #'   base-pairs
 #' @param recomb_rate Recombination rate of the simulated sequence
-#' @param max_interaction,spread Maximum values for spatial interaction
-#'   and mating choice (max_distance) and the standard deviation of
-#'   the distance of an offspring from its parents (max_spread) - both
-#'   in units of kilometers
+#' @param max_interaction,spread Maximum values for spatial
+#'   interaction and mating choice (max_distance) and the standard
+#'   deviation of the distance of an offspring from its parents
+#'   (max_spread) - both in units of kilometers
+#' @param keep_pedigrees Turn on keepPedigrees during SLiM
+#'   initialization?
+#' @param ts_recording Turn on tree sequence recording during SLiM
+#'   initialization?
 #' @param save_locations Save location of each individual throughout
 #'   the simulation?
 #' @param track_ancestry Track ancestry proportion dynamics in all
@@ -248,6 +252,7 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 run <- function(model, sim_length, seq_length, recomb_rate,
                 max_interaction, spread,
                 save_locations = FALSE, track_ancestry = FALSE,
+                keep_pedigrees = FALSE, ts_recording = FALSE,
                 how = "gui", verbose = FALSE, include = NULL, burnin = NULL,
                 script_path = file.path(model$config$directory, "script.slim"),
                 output_prefix = file.path(model$config$directory, "output")) {
@@ -282,6 +287,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     output_prefix = output_prefix,
     burnin = burnin,
     sim_length = sim_length,
+    keep_pedigrees = if (keep_pedigrees) "T" else "F",
+    ts_recording = if (ts_recording) "T" else "F",
     max_interaction = max_interaction / model$resolution,
     spread = spread / model$resolution,
     seq_length = seq_length,

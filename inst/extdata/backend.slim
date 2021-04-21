@@ -1,7 +1,10 @@
 initialize() {
   // TODO: make pedigrees and tree sequences optional in a run() interface
-  initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
-  initializeTreeSeq();
+  defineConstant("KEEP_PEDIGREES", {{keep_pedigrees}});
+  defineConstant("TS_RECORDING", {{ts_recording}});
+
+  initializeSLiMOptions(keepPedigrees = KEEP_PEDIGREES, dimensionality = "xy");
+  if (TS_RECORDING) initializeTreeSeq();
 
   defineConstant("SIM_SEED", getSeed());
 
@@ -239,7 +242,7 @@ s6 late() {
   if (sim.generation % 10 == 0) {
     inds = sapply(sim.subpopulations, "sample(applyValue.individuals, 1);");
     inds.setValue("sampled", 1);
-    sim.treeSeqRememberIndividuals(inds);
+    if (TS_RECORDING) sim.treeSeqRememberIndividuals(inds);
   }
   // save location of each individual present
   for (ind in sim.subpopulations.individuals) {
@@ -251,8 +254,12 @@ s6 late() {
 s7 late() {
   catn("--------------------------------------------------");
   log_output("simulation finished");
-  filename = paste0(OUTPUT_PREFIX, "_tree_seq.trees");
-  sim.treeSeqOutput(filename);
+
+  if (TS_RECORDING) {
+     filename = paste0(OUTPUT_PREFIX, "_tree_seq.trees");
+     sim.treeSeqOutput(filename);
+  }
+
   sim.simulationFinished();
 }
 
@@ -337,10 +344,12 @@ function (void) write_locations_header(void) {
 // Write information about a given individual to a locations file
 function(void) write_locations(lifso<Individual>$ ind) {
   filename = paste0(OUTPUT_PREFIX, "_ind_locations.tsv.gz");
+  if (KEEP_PEDIGREES) id = ind.pedigreeID;
+  else id = -1;
   ind_str = paste(
     SIM_END - sim.generation,
     ind.subpopulation.id,
-    ind.pedigreeID,
+    id,
     ind.spatialPosition,
     asInteger(!isNULL(ind.getValue("sampled"))),
     sep = "\t"

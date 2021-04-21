@@ -13,6 +13,8 @@ run(
   spread,
   save_locations = FALSE,
   track_ancestry = FALSE,
+  keep_pedigrees = FALSE,
+  ts_recording = FALSE,
   how = "gui",
   verbose = FALSE,
   include = NULL,
@@ -32,10 +34,10 @@ base-pairs}
 
 \item{recomb_rate}{Recombination rate of the simulated sequence}
 
-\item{max_interaction, spread}{Maximum values for spatial interaction
-and mating choice (max_distance) and the standard deviation of
-the distance of an offspring from its parents (max_spread) - both
-in units of kilometers}
+\item{max_interaction, spread}{Maximum values for spatial
+interaction and mating choice (max_distance) and the standard
+deviation of the distance of an offspring from its parents
+(max_spread) - both in units of kilometers}
 
 \item{save_locations}{Save location of each individual throughout
 the simulation?}
@@ -44,6 +46,12 @@ the simulation?}
 populations throughout the simulations (default FALSE)? If a
 non-zero integer is provided, ancestry will be tracked using the
 number number of neutral ancestry markers equal to this number.}
+
+\item{keep_pedigrees}{Turn on keepPedigrees during SLiM
+initialization?}
+
+\item{ts_recording}{Turn on tree sequence recording during SLiM
+initialization?}
 
 \item{how}{How to run the script? ("gui" - open in SLiMgui, "batch"
 \itemize{
