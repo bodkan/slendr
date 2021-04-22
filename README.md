@@ -39,7 +39,7 @@ section [of the
 tutorial](https://bodkan.net/spammr/articles/tutorial.html#installation-and-setup-1). Note
 that you might need to install some non-R software dependencies
 first. At the very least, you will need the most recent version of the
-[SLiM software](https://messerlab.org/slim/) (version 3.6).
+[SLiM software](https://messerlab.org/slim/) (version 3.6 or later).
 
 ### Example
 
@@ -50,13 +50,19 @@ For a more complete example that is less abstract and demonstrates the usage of 
 We're going to simulate a demographic history of several populations,
 including splits and admixture events, defining the spatial boundaries
 of populations as well as their changing dynamics over time (steps
-1-6). We will then feed model defined in R into SLiM and instruct it
-(using a back-end SLiM script provided by this package) to simulate
+1-6). We will then feed the model defined in R into SLiM and instruct
+it (using a back-end SLiM script provided by this package) to simulate
 data based on the model specification (step 7). Finally, we will
 generate some visualizations to make sure that the simulation
 proceeded as we wanted to (steps 8 and 9).
 
 #### 1. Setup the spatial context ("the world" occupied by populations)
+
+Note that in the world definition, we are explicitly stating which
+projected [Coordinate Reference
+System](https://en.wikipedia.org/wiki/Spatial_reference_system) (CRS)
+will be used to represent landscape features, distances in kilometers,
+etc.
 
 
 
@@ -73,14 +79,17 @@ world <- map(
 
 #### 2. Define demographic history and population boundaries
 
-Times are given in "units before present", distances in kilometers.
+Times are given in "units before present", distances in
+kilometers. Note that for easier model definition, all coordinates of
+are specified by the user in geographic coordinate system (longitude,
+latitude), but are internally represented in a projected CRS.
 
 
 ```r
 p1 <- population(
   name = "pop1", parent = "ancestor", N = 700,
   radius = 600,       # radius of the circular range
-  center = c(10, 25), # latitude, longitude coordinates of the center
+  center = c(10, 25), # (longitude, latitude) coordinates of the center
   world = world
 )
 
