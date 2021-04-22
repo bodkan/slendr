@@ -51,7 +51,7 @@ s21 late() {
 }
 
 // Make sure that the mutation reached sufficiently high frequency
-s22 late() {
+s22 {
   if (sim.generation == SIM_END & all(sim.mutationFrequencies(get_pop(POP), sim.mutationsOfType(m999)) < MIN_FREQ)) {
     log_output("Mutation not at a sufficiently high final frequency - restarting");
     restart_simulation();
