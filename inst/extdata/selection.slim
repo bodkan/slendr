@@ -1,10 +1,4 @@
 initialize() {
-  // introduced mutation
-  initializeMutationType("m999", 1.0, "f", 0.5);
-  m999.convertToSubstitution = F;
-}
-
-1 late() {
   defineConstant("LOCATION", asFloat(c({{coord}})));
   defineConstant("S", asFloat({{s}}));
   defineConstant("POP", which(NAMES == "{{origin}}"));
@@ -16,6 +10,12 @@ initialize() {
   catn("T_ABS_MUTATION: " + T_ABS_MUTATION);
   catn("T_MUTATION: " + T_MUTATION);
 
+  // introduced mutation
+  initializeMutationType("m999", 1.0, "f", 0.5);
+  m999.convertToSubstitution = F;
+}
+
+1 late() {
   sim.rescheduleScriptBlock(s20, generations = T_MUTATION);
   sim.rescheduleScriptBlock(s21, generations = T_MUTATION:SIM_END);
   sim.rescheduleScriptBlock(s22, generations = SIM_END);
