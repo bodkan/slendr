@@ -63,10 +63,10 @@ Luckily, most of the technical issues with [Coordinate Reference
 Systems](https://en.wikipedia.org/wiki/Spatial_reference_system),
 transformations between them and manipulation of geometric objects are
 pretty much solved now. Unfortunately, dealing with these issues in
-practice is quite challenging and requires non-trivial amount of domain
-expertise. Programming even a simple task in this context also requires
-a lot of code and there are no tools available for programming
-population genetic simulations which are explicitly spatial in nature.
+practice is quite challenging and requires non-trivial amount of
+domain expertise. Programming even a simple task in this context also
+requires a lot of code and there are no tools dedicated to programming
+population complex spatial population genetic simulations.
 
 This R package is designed to provide a collection of primitives (a
 [Domain Specific
@@ -104,7 +104,7 @@ very least, you should make sure to install `udunits` and `gdal` on
 your system (if you're on a Mac, I recommend
 [homebrew](https://brew.sh/)). In my experience, some early users had
 those already installed without even knowing it (perhaps because they
-already used tools or R packages depend)
+already used tools or R packages which depend on them).
 
 2. Install the `devtools` package:
 
@@ -158,7 +158,7 @@ In principle, any source of geospatial data which can be manipulated
 using the [simple features (sf)](https://r-spatial.github.io/sf/)
 infrastructure could be used. For now the `spammr` package implicitly
 uses the [Natural Earth](https://www.naturalearthdata.com/) project
-data (in it's vectorizes form!), which it internally loads using the
+data (in it's vectorized form!), which it internally loads using the
 [rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/README.html)
 interface.
 
@@ -405,7 +405,8 @@ the "background" landscape (removing large bodies of water, etc.).
 
 The intersected form is what is ultimately exported in a serialized
 form (see below) to be loaded as a spatial map into SLiM. This is why
-the `plot()` function renders population ranges by default.
+the `plot()` function renders intersected population ranges by
+default.
 
 ```{r}
 plot(ooa, intersect = F, title = "'Raw' population range")
@@ -519,7 +520,7 @@ history of a population in a single pipeline using the pipe operator
 `%>%`.
 
 Again, we can inspect the object returned by the `expand()` function
-and see that it contains he spatial maps ("snapshots") of the
+and see that it contains the spatial maps ("snapshots") of the
 expansion process across time:
 
 ```{r}
@@ -851,7 +852,7 @@ diagnostics are generated is subject to change...
 ancestries(model)
 ```
 
-Similarly, we can re-capitulate the spatial dynamics with the _spammr_
+Similarly, we can recapitulate the spatial dynamics with the _spammr_
 function `animate()` (this functions is also very bare-bones at the
 moment and is mostly useful as a proof of concept rather than anything
 else):

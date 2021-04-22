@@ -108,7 +108,7 @@
 <h2 class="hasAnchor">
 <a href="#philosophy" class="anchor"></a>Philosophy</h2>
 <p>Geospatial analysis is a deep and complex topic, with dozens of libraries and programs designed to deal with the annoying fact that the Earth is a sphere but we often have to plot things (and simulate things in our case!) on a two-dimensional plane.</p>
-<p>Luckily, most of the technical issues with <a href="https://en.wikipedia.org/wiki/Spatial_reference_system">Coordinate Reference Systems</a>, transformations between them and manipulation of geometric objects are pretty much solved now. Unfortunately, dealing with these issues in practice is quite challenging and requires non-trivial amount of domain expertise. Programming even a simple task in this context also requires a lot of code and there are no tools available for programming population genetic simulations which are explicitly spatial in nature.</p>
+<p>Luckily, most of the technical issues with <a href="https://en.wikipedia.org/wiki/Spatial_reference_system">Coordinate Reference Systems</a>, transformations between them and manipulation of geometric objects are pretty much solved now. Unfortunately, dealing with these issues in practice is quite challenging and requires non-trivial amount of domain expertise. Programming even a simple task in this context also requires a lot of code and there are no tools dedicated to programming population complex spatial population genetic simulations.</p>
 <p>This R package is designed to provide a collection of primitives (a <a href="https://en.wikipedia.org/wiki/Domain-specific_language">Domain Specific Language</a> of sorts) for programming population dynamics (splits, movement, admixture, and expansion of spatial boundaries) across space and time <em>without having to explicitly deal with many of the challenges inherent to geospatial analyses</em>.</p>
 <p>Another goal is to make these spatio-temporal models fully reproducible, easy to write and debug by inspecting each step of the configuration visually, and finally to allow automated feeding of defined spatial maps into the <a href="https://messerlab.org/slim/">SLiM</a> population genetics simulation framework.</p>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
@@ -121,7 +121,7 @@
 <ol style="list-style-type: decimal">
 <li>Install non-R software dependencies</li>
 </ol>
-<p>Some of the R libraries that <em>spammr</em> uses internally rely on non-R software that needs to be installed before doing anything else. At the very least, you should make sure to install <code>udunits</code> and <code>gdal</code> on your system (if you’re on a Mac, I recommend <a href="https://brew.sh/">homebrew</a>). In my experience, some early users had those already installed without even knowing it (perhaps because they already used tools or R packages depend)</p>
+<p>Some of the R libraries that <em>spammr</em> uses internally rely on non-R software that needs to be installed before doing anything else. At the very least, you should make sure to install <code>udunits</code> and <code>gdal</code> on your system (if you’re on a Mac, I recommend <a href="https://brew.sh/">homebrew</a>). In my experience, some early users had those already installed without even knowing it (perhaps because they already used tools or R packages which depend on them).</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Install the <code>devtools</code> package:</li>
 </ol>
@@ -145,7 +145,7 @@
 <h2 class="hasAnchor">
 <a href="#defining-the-overall-world-map" class="anchor"></a>Defining the overall world map</h2>
 <p>Before we do anything else, we need to define a section of the map of the world which will provide context for all downstream spatio-temporal manipulation of population ranges.</p>
-<p>In principle, any source of geospatial data which can be manipulated using the <a href="https://r-spatial.github.io/sf/">simple features (sf)</a> infrastructure could be used. For now the <code>spammr</code> package implicitly uses the <a href="https://www.naturalearthdata.com/">Natural Earth</a> project data (in it’s vectorizes form!), which it internally loads using the <a href="https://cran.r-project.org/web/packages/rnaturalearth/README.html">rnaturalearth</a> interface.</p>
+<p>In principle, any source of geospatial data which can be manipulated using the <a href="https://r-spatial.github.io/sf/">simple features (sf)</a> infrastructure could be used. For now the <code>spammr</code> package implicitly uses the <a href="https://www.naturalearthdata.com/">Natural Earth</a> project data (in it’s vectorized form!), which it internally loads using the <a href="https://cran.r-project.org/web/packages/rnaturalearth/README.html">rnaturalearth</a> interface.</p>
 <p>The first function we will look at is <code><a href="../reference/map.html">map()</a></code>. This function will load the map of the entire world in a vectorized format and zoom in to a specified section of the world.</p>
 <p>Note that in the call below, we specify the coordinates of the zoom in a geographical Coordinate Reference System (CRS), i.e. longitude/latitude), but we also specified that we want to perform all the downstream manipulation of the spatial population maps in a projected CRS (<a href="https://epsg.io/3035">Lambert Azimuthal Equal-Area projection</a>). This is more appropriate for representing a wider European continent used in this tutorial. Of course, different CRS projection could be used based on which part of the world we want to simulate.</p>
 <p>This is the current approach of <code>spammr</code>: let the user specify everything in an easy to understand longitude/latitude geographical CRS, but the internal data structures and the final exported spatial maps are internally handled in a projected CRS which is better for ensuring undistorted distances and proportions.</p>
@@ -156,7 +156,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpA38yic", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmpusfg7o", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spammr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -269,7 +269,7 @@
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">30</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">500</span>, remove <span class="op">=</span> <span class="fl">27000</span>
 <span class="op">)</span></code></pre></div>
 <p>If we call the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function on the returned object, we have the option to either plot the population range in its “raw” form or in its “intersected” form, in which case the raw boundary is intersected with the “background” landscape (removing large bodies of water, etc.).</p>
-<p>The intersected form is what is ultimately exported in a serialized form (see below) to be loaded as a spatial map into SLiM. This is why the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function renders population ranges by default.</p>
+<p>The intersected form is what is ultimately exported in a serialized form (see below) to be loaded as a spatial map into SLiM. This is why the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function renders intersected population ranges by default.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ooa</span>, intersect <span class="op">=</span> <span class="cn">F</span>, title <span class="op">=</span> <span class="st">"'Raw' population range"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
@@ -359,7 +359,7 @@
   region <span class="op">=</span> <span class="va">europe_anatolia</span>
 <span class="op">)</span></code></pre></div>
 <p>Note that in principle, you could specify the entire spatio-temporal history of a population in a single pipeline using the pipe operator <code><a href="../reference/%&gt;%.html">%&gt;%</a></code>.</p>
-<p>Again, we can inspect the object returned by the <code><a href="../reference/expand.html">expand()</a></code> function and see that it contains he spatial maps (“snapshots”) of the expansion process across time:</p>
+<p>Again, we can inspect the object returned by the <code><a href="../reference/expand.html">expand()</a></code> function and see that it contains the spatial maps (“snapshots”) of the expansion process across time:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ana</span>
 <span class="co">#&gt; spammr 'population' object </span>
@@ -571,7 +571,7 @@ admixture without spatial overlap.</code></pre>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ancestries.html">ancestries</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-42-1.png" width="700"></p>
-<p>Similarly, we can re-capitulate the spatial dynamics with the <em>spammr</em> function <code><a href="../reference/animate.html">animate()</a></code> (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):</p>
+<p>Similarly, we can recapitulate the spatial dynamics with the <em>spammr</em> function <code><a href="../reference/animate.html">animate()</a></code> (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/unnamed-chunk-43-1.gif"><!-- --></p>
