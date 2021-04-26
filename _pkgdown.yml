@@ -27,6 +27,6 @@ reference:
   - title: Compiling and running spatial models
     contents:
     - compile
-    - load
+    - read
     - run
     - script
