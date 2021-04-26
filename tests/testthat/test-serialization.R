@@ -1,13 +1,13 @@
 # world <- readRDS("tests/testthat/world.rds")
 
-test_that("load() restores a single-map model object", {
+test_that("read() restores a single-map model object", {
   world <- readRDS("world.rds")
   pop <- population("pop", parent = "ancestor", N = 10,
                     center = c(10, 40), radius = 100, world = world)
 
   model_dir <- file.path(tempdir(), "tmp-single-map-model-serialization")
   model1 <- compile(pop, model_dir = model_dir, resolution = 10, gen_time = 1, overwrite = TRUE)
-  model2 <- load(model1$config$directory)
+  model2 <- read(model1$config$directory)
 
   # make sure that all components of the model list object before and after
   # serialization are equal
@@ -18,7 +18,7 @@ test_that("load() restores a single-map model object", {
 })
 
 
-test_that("load() restores a complex model object", {
+test_that("read() restores a complex model object", {
   world <- readRDS("world.rds")
 
   p1 <- population(name = "pop1", parent = "ancestor", N = 700, radius = 600, center = c(10, 25), world = world)
@@ -44,7 +44,7 @@ test_that("load() restores a complex model object", {
     resolution = 10,
     overwrite = TRUE
   )
-  model2 <- load(model1$config$directory)
+  model2 <- read(model1$config$directory)
 
   components <- c("splits", "admixtures", "maps", "gen_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all(model1[[i]] == model2[[i]]))))

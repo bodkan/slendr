@@ -112,12 +112,12 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
 }
 
 
-#' Load a previously serialized spammr model
+#' Read a previously serialized spammr model
 #'
 #' @param model_dir Directory with all required configuration files
 #'
 #' @export
-load <- function(model_dir) {
+read <- function(model_dir) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function
   path_populations <- file.path(model_dir, "populations.rds")
