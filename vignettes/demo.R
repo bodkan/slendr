@@ -12,9 +12,9 @@ world <- map(
   crs = "EPSG:3035"
 )
 
-world
-
 plot(world, title = "Zoomed-in world map")
+
+world
 
 
 
@@ -66,7 +66,7 @@ plot(europe, anatolia, title = "Geographic regions")
 
 ## Defining spatial population boundaries
 
-afr <- population( # not parent = "ancestor", THIS is the ancestor :/
+afr <- population(
   "AFR", parent = "ancestor", N = 2000, 
   world = world, region = africa
 )
@@ -88,7 +88,7 @@ ooa <- ooa %>% move(
   trajectory = list(c(40, 30), c(50, 30), c(60, 40), c(70, 40)),
   start = 50000,
   end = 40000,
-  snapshots = 30
+  snapshots = 30 # is really necessary to force the user to specify this?
 )
 plot(ooa, title = "Intermediate migration maps")
 
@@ -176,10 +176,11 @@ admixtures <- list(
   admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
   admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000)
 )
+
 admixtures
 
 
-## Compile the whole model and load it in SLiM
+## Compile the whole model to a format which can be loaded in SLiM
 
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
@@ -199,14 +200,14 @@ graph(model)
 
 
 
-## Running the simulation
+## Running the simulation (from a backend SLiM script)
 
 run(
   model, sim_length = 52000,
   seq_length = 1, recomb_rate = 0,
   max_interaction = 200, spread = 50,
-  save_locations = F, track_ancestry = F,
-  how = "gui"
+  save_locations = T, track_ancestry = F,
+  how = "batch"
 )
 
 
