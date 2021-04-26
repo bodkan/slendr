@@ -413,52 +413,77 @@ without spatial overlap between populations.",
 }
 
 
-#' Add real locations to the data frame
-add_real_locations <- function(df, model) {
-  # dimension of the rasterized map in pixel units
-  raster_dim <- dim(png::readPNG(model$maps$path[1]))
-
-  # dimension of the world in the projected CRS units
-  world <- attr(model$populations[[1]], "world")
-  bbox <- sf::st_bbox(world)
-  world_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
-
-  df$realx <- bbox["xmin"] + world_dim[1] * df$x / raster_dim[2]
-  df$realy <- bbox["ymin"] + world_dim[2] * df$y / raster_dim[1]
-
-  df
-}
-
-
-#' Project a location of a point (latitude, longitude) on a raster
+#' Convert between coordinate system (raster-coordinates or CRS)
 #'
-#' @param lat,lon Geographic system coordinates
-#' @param model Model object
+#' @param x,y Coordinates in two dimensions (if missing, coordinates
+#'   expected in the \code{coords} parameter as columns "x" and "y")
+#' @param from,to Either a string accepted by GDAL, a valid integer
+#'   EPSG value, an object of class crs, or the value "raster"
+#' @param coords data.frame-like object with coordinates in columns "x"
+#'   and "y"
+#' @param model object of the class \code{spammr_model}
+#' @param add Add column coordinates to the input data.frame \code{coords}?
 #'
-#' @return Two-dimensional numeric vector of pixel coordinates
+#' @return Data.frame with converted two-dimensional coordinates
 #'
 #' @export
-convert <- function(lat, lon, model) {
-  orig_point <- c(lat, lon)
+convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, add = FALSE) {
+  if ((is.null(x) | is.null(y)) & is.null(coords))
+    stop("Coordinates for conversion are missing", call. = FALSE)
 
-  # convert the coordinate into a projected CRS of the world
-  new_point <- sf::st_point(orig_point) %>%
-    sf::st_sfc() %>%
-    sf::st_sf(crs = 4326) %>%
-    sf::st_transform(crs = sf::st_crs(model$world)) %>%
-    sf::st_coordinates()
+  if ((from == "raster" | to == "raster") & is.null(model))
+    stop("Model object needs to be specified for conversion of raster coordinates", call. = FALSE)
 
-  # dimension of the world in the projected CRS units
-  bbox <- sf::st_bbox(model$world)
-  world_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
+  if (add & is.null(coords))
+    stop("Converted coordinates can only be added to a provided data.frame", call. = FALSE)
 
-  # dimension of the rasterized map in pixel units
-  raster_dim <- dim(png::readPNG(model$maps$path[1]))
+  if (!is.null(coords) & !all(c("x", "y") %in% colnames(coords)))
+    stop("Columns 'x' and 'y' must be present in the input data.frame", call. = FALSE)
 
-  coords <- c(
-    as.integer(abs((new_point[1] - bbox["xmin"])) / world_dim[1] * raster_dim[2]),
-    as.integer(abs((new_point[2] - bbox["ymin"])) / world_dim[2] * raster_dim[1])
-  )
+  if (!is.null(model)) {
+    # dimension of the world in the projected CRS units
+    bbox <- sf::st_bbox(model$world)
+    world_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
+  
+    # dimension of the rasterized map in pixel units
+    # (x/y dimensions of PNGs are reversed)
+    raster_dim <- dim(png::readPNG(model$maps$path[1]))[2:1]
+  }
 
-  coords
+  if (to == "world") to <- sf::st_crs(model$world)
+  if (from == "world") from <- sf::st_crs(model$world)
+
+  if (is.null(coords))
+    df <- data.frame(x = x, y = y)
+  else
+    df <- coords[, c("x", "y")]
+
+  if (from == "raster") {
+    # convert pixel coordinates to na sf object in world-based coordinates
+    df$x <- bbox["xmin"] + world_dim[1] * df$x / raster_dim[1]
+    df$y <- bbox["ymin"] + world_dim[2] * df$y / raster_dim[2]
+    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = sf::st_crs(model$world))
+  } else {
+    # ... otherwise create a formal sf point object from the
+    # coordinates already given
+    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = from)
+  }
+
+  if (to == "raster") {
+    point_coords <- sf::st_transform(point, crs = sf::st_crs(model$world)) %>%
+      sf::st_coordinates()
+    newx <- abs((point_coords[, "X"] - bbox["xmin"])) / world_dim[1] * raster_dim[1]
+    newy <- abs((point_coords[, "Y"] - bbox["ymin"])) / world_dim[2] * raster_dim[2]
+    new_point <- data.frame(newx = round(as.vector(newx)), newy = round(as.vector(newy)))
+  } else {
+    new_point <- sf::st_transform(point, crs = to) %>% sf::st_coordinates()
+    colnames(new_point) <- c("newx", "newy")
+  }
+
+  if (nrow(new_point) == 1)
+    return(as.vector(unlist(new_point)))
+
+  if (add) new_point <- cbind(coords, new_point)
+
+  new_point
 }

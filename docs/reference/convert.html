@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Project a location of a point (latitude, longitude) on a raster — convert • spammr</title>
+<title>Convert between coordinate system (raster-coordinates or CRS) — convert • spammr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Project a location of a point (latitude, longitude) on a raster — convert" />
-<meta property="og:description" content="Project a location of a point (latitude, longitude) on a raster" />
+<meta property="og:title" content="Convert between coordinate system (raster-coordinates or CRS) — convert" />
+<meta property="og:description" content="Convert between coordinate system (raster-coordinates or CRS)" />
 
 
 
@@ -120,33 +120,48 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Project a location of a point (latitude, longitude) on a raster</h1>
+    <h1>Convert between coordinate system (raster-coordinates or CRS)</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/spammr/blob/master/R/spatial_interface.R'><code>R/spatial_interface.R</code></a></small>
     <div class="hidden name"><code>convert.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Project a location of a point (latitude, longitude) on a raster</p>
+    <p>Convert between coordinate system (raster-coordinates or CRS)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>convert</span><span class='op'>(</span><span class='va'>lat</span>, <span class='va'>lon</span>, <span class='va'>model</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>convert</span><span class='op'>(</span><span class='va'>from</span>, <span class='va'>to</span>, x <span class='op'>=</span> <span class='cn'>NULL</span>, y <span class='op'>=</span> <span class='cn'>NULL</span>, coords <span class='op'>=</span> <span class='cn'>NULL</span>, model <span class='op'>=</span> <span class='cn'>NULL</span>, add <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>lat, lon</th>
-      <td><p>Geographic system coordinates</p></td>
+      <th>from, to</th>
+      <td><p>Either a string accepted by GDAL, a valid integer
+EPSG value, an object of class crs, or the value "raster"</p></td>
+    </tr>
+    <tr>
+      <th>x, y</th>
+      <td><p>Coordinates in two dimensions (if missing, coordinates
+expected in the <code>coords</code> parameter as columns "x" and "y")</p></td>
+    </tr>
+    <tr>
+      <th>coords</th>
+      <td><p>data.frame-like object with coordinates in columns "x"
+and "y"</p></td>
     </tr>
     <tr>
       <th>model</th>
-      <td><p>Model object</p></td>
+      <td><p>object of the class <code>spammr_model</code></p></td>
+    </tr>
+    <tr>
+      <th>add</th>
+      <td><p>Add column coordinates to the input data.frame <code>coords</code>?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Two-dimensional numeric vector of pixel coordinates</p>
+    <p>Data.frame with converted two-dimensional coordinates</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

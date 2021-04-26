@@ -2,18 +2,27 @@
 % Please edit documentation in R/spatial_interface.R
 \name{convert}
 \alias{convert}
-\title{Project a location of a point (latitude, longitude) on a raster}
+\title{Convert between coordinate system (raster-coordinates or CRS)}
 \usage{
-convert(lat, lon, model)
+convert(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, add = FALSE)
 }
 \arguments{
-\item{lat, lon}{Geographic system coordinates}
+\item{from, to}{Either a string accepted by GDAL, a valid integer
+EPSG value, an object of class crs, or the value "raster"}
 
-\item{model}{Model object}
+\item{x, y}{Coordinates in two dimensions (if missing, coordinates
+expected in the \code{coords} parameter as columns "x" and "y")}
+
+\item{coords}{data.frame-like object with coordinates in columns "x"
+and "y"}
+
+\item{model}{object of the class \code{spammr_model}}
+
+\item{add}{Add column coordinates to the input data.frame \code{coords}?}
 }
 \value{
-Two-dimensional numeric vector of pixel coordinates
+Data.frame with converted two-dimensional coordinates
 }
 \description{
-Project a location of a point (latitude, longitude) on a raster
+Convert between coordinate system (raster-coordinates or CRS)
 }
