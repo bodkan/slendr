@@ -82,7 +82,7 @@ configuration visually, and finally to allow automated feeding of
 defined spatial maps into the [SLiM](https://messerlab.org/slim/)
 population genetics simulation framework.
 
-```{r, echo = FALSE}
+```{r world-map, echo = FALSE}
 ggplot2::ggplot() +
     ggplot2::geom_sf(data = rnaturalearth::ne_coastline("small", "sf"), fill = NA, color = "black") +
     ggplot2::theme_bw() + ggplot2::coord_sf(crs = "EPSG:4326")
@@ -182,7 +182,16 @@ CRS, but the internal data structures and the final exported spatial
 maps are internally handled in a projected CRS which is better for
 ensuring undistorted distances and proportions.
 
-```{r}
+```{r world_zoom, include = F}
+world <- map(
+  xrange = c(-15, 60),
+  yrange = c(20, 65),
+  crs = "EPSG:3035",
+  ne_dir = "~/Google/postdoc/data/ne_data"
+)
+```
+
+```{r, eval = F}
 world <- map(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
@@ -223,7 +232,7 @@ relying on the lower-level mechanisms of the `sf` package.
 More on that below, but here we will just plot the world context we
 just created:
 
-```{r}
+```{r plot_world}
 plot(world, title = "Zoomed-in world map context")
 ```
 
@@ -318,7 +327,7 @@ Again, we can use the generic `plot()` function to plot both
 geographic regions in the context of the defined section of the world
 map:
 
-```{r}
+```{r plot_europe_anatolia}
 plot(europe, anatolia, title = "Geographic regions")
 ```
 
@@ -370,7 +379,7 @@ First, let's create the African ancestors of modern humans. We
 restrict the spatial boundary of the African population to the
 `africa` region defined above:
 
-```{r}
+```{r plot_afr}
 afr <- population(
   "AFR", parent = "ancestor", N = 1000,
   world = world, region = africa
@@ -408,7 +417,7 @@ form (see below) to be loaded as a spatial map into SLiM. This is why
 the `plot()` function renders intersected population ranges by
 default.
 
-```{r}
+```{r plot_ooa}
 plot(ooa, intersect = F, title = "'Raw' population range")
 plot(ooa, title = "'Intersected' population range")
 ```
@@ -446,7 +455,7 @@ ooa
 
 Checking the result visually again, we see:
 
-```{r}
+```{r plot_ooa_migration}
 plot(ooa, title = "Intermediate migration maps")
 ```
 
@@ -455,7 +464,7 @@ plot(ooa, title = "Intermediate migration maps")
 Let's create a population of Eastern Hunter Gatherers (EHG), which
 split from the first non-Africans 28000 years ago:
 
-```{r}
+```{r plot_ehg}
 ehg <- population(
   "EHG", time = 28000, N = 400, parent = ooa,
   world, coords = list(
@@ -474,7 +483,7 @@ became present day Europeans after receiving admixture from other
 groups over time (see below), we will call them "EUR" to simplify the
 modeling code a little bit:
 
-```{r}
+```{r plot_eur}
 eur <- population(
   name = "EUR", time = 25000, N = 1000, parent = ehg,
   world, region = europe
@@ -529,14 +538,14 @@ ana
 
 We can (and should) check the results visually:
 
-```{r}
+```{r plot_ana}
 plot(ana, title = "Anatolian expansion into Europe")
 ```
 
 To visually see what is really going on behind the scenes, we can plot
 the raw form of the expansion:
 
-```{r}
+```{r plot_ana_raw}
 plot(ana, title = "Anatolian expansion into Europe (not intersected)", intersect = F)
 ```
 
@@ -555,7 +564,7 @@ on to implementing admixture between them,
 
 Yamnaya steppe people:
 
-```{r}
+```{r plot_yam}
 yam <- population(
   name = "YAM", time = 7000, N = 600, parent = ehg,
   world, coords = list(
@@ -575,7 +584,7 @@ new "YAM_migr" population from the original Yamnaya. The latter will
 stay where it is, while the migrating population will start invading
 the spatial range of Europeans ("Nolithic" population at the time):
 
-```{r}
+```{r plot_yam_migr}
 yam_migr <- population(
   name = "YAM_migr", time = 6000, N = 1000, parent = yam,
   world, coords = list(
@@ -608,7 +617,7 @@ maps. Obviously, this is a lot of multi-dimensional information so the
 plot is definitely not perfect, but it should provide a reasonably
 compact overview of what we've built so far.
 
-```{r fig.width = 7, fig.height = 9}
+```{r plot_maps, fig.width = 7, fig.height = 9}
 plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
 ```
 
@@ -654,7 +663,7 @@ case, which can be done by `spammr`'s `plot()` function and the
 optional parameter `pop_facets = F` (which is set to `TRUE` by
 default):
 
-```{r}
+```{r plot_nonoverlapping}
 plot(eur, afr, pop_facets = F)
 ```
 
@@ -781,7 +790,7 @@ color to each population, and different nodes of the same color
 representing snapshots in time when a demographic event affecting that
 population happens.
 
-```{r, fig.width = 12, fig.height = 12}
+```{r plot_graph, fig.width = 12, fig.height = 12}
 graph(model)
 ```
 
@@ -848,7 +857,7 @@ visualize them after the simulation is over using the built-in
 `diagnostics()` function. This is quite bare-bones for now and the way
 diagnostics are generated is subject to change...
 
-```{r}
+```{r plot_ancestries}
 ancestries(model)
 ```
 
@@ -857,7 +866,7 @@ function `animate()` (this functions is also very bare-bones at the
 moment and is mostly useful as a proof of concept rather than anything
 else):
 
-```{r}
+```{r plot_gif}
 animate(model, nframes = 200)
 ```
 

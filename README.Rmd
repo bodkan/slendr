@@ -80,9 +80,10 @@ devtools::load_all(".")
 unlink("/tmp/example-model", recursive = TRUE, force = TRUE)
 
 world <- map(
-  xrange = c(-15, 60), # min-max longitude
-  yrange = c(20, 65),  # min-max latitude
-  crs = "EPSG:3035"    # real projected CRS used internally
+  xrange = c(-15, 60),
+  yrange = c(20, 65),
+  crs = "EPSG:3035",
+  ne_dir = "~/Google/postdoc/data/ne_data"
 )
 ```
 
@@ -147,7 +148,7 @@ p5 <- population(
 
 #### 3. Visualize the spatial maps of each population
 
-```{r fig.width = 12, fig.height = 12}
+```{r plot_maps, fig.width = 12, fig.height = 12}
 plot(p1, p2, p3, p4, p5, ncol = 2)
 ```
 
@@ -181,7 +182,7 @@ model
 
 #### 6. Visualize the implied admixture graph
 
-```{r, fig.width = 12, fig.height = 12}
+```{r plot_graph, fig.width = 12, fig.height = 12}
 graph(model)
 ```
 
@@ -215,13 +216,13 @@ ever lived.
 
 #### 8. Verify the simulated ancestry proportions
 
-```{r}
+```{r plot_ancestries}
 ancestries(model)
 ```
 
 #### 9. Re-capitulate the SLiM run as an individual-based animation
 
-```{r, message = F}
+```{r plot_gif, message = F}
 animate(model, nframes = 200)
 ```
 
