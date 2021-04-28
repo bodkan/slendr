@@ -134,7 +134,7 @@ p5 <- population(
 plot(p1, p2, p3, p4, p5, ncol = 2)
 ```
 
-![plot of chunk unnamed-chunk-5](man/figures/README-unnamed-chunk-5-1.png)
+![plot of chunk plot_maps](man/figures/README-plot_maps-1.png)
 
 #### 4. Define admixture events
 
@@ -187,7 +187,7 @@ model
 graph(model)
 ```
 
-![plot of chunk unnamed-chunk-9](man/figures/README-unnamed-chunk-9-1.png)
+![plot of chunk plot_graph](man/figures/README-plot_graph-1.png)
 
 #### 7. Run the model in SLiM (in batch mode in this case)
 
@@ -216,7 +216,7 @@ ever lived.
 ancestries(model)
 ```
 
-![plot of chunk unnamed-chunk-12](man/figures/README-unnamed-chunk-12-1.png)
+![plot of chunk plot_ancestries](man/figures/README-plot_ancestries-1.png)
 
 #### 9. Re-capitulate the SLiM run as an individual-based animation
 
@@ -225,7 +225,7 @@ ancestries(model)
 animate(model, nframes = 200)
 ```
 
-![plot of chunk unnamed-chunk-13](man/figures/README-unnamed-chunk-13-1.gif)
+![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
 
 Note that it is possible to simulate population splits and admixture
 both by "physically" moving individuals of a population from one

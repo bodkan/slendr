@@ -4,7 +4,7 @@
 \alias{map}
 \title{Define a world map for all spatial operations}
 \usage{
-map(xrange, yrange, crs = "EPSG:4326")
+map(xrange, yrange, crs = "EPSG:4326", ne_dir = NULL)
 }
 \arguments{
 \item{xrange}{Numeric vector with minimum and maximum longitude}
@@ -13,6 +13,9 @@ map(xrange, yrange, crs = "EPSG:4326")
 
 \item{crs}{Coordinate Reference System to use for all spatial
 operations (default is WGS-84 or EPSG:4326 CRS)}
+
+\item{ne_dir}{Path to the directory where Natural Earth data was
+manually downloaded and unzipped}
 }
 \value{
 Object of the \code{spammr_world} (and \code{sf}) class
@@ -20,5 +23,7 @@ Object of the \code{spammr_world} (and \code{sf}) class
 \description{
 Download Natural Earth land area map data, zoom on a given window
 determined by longitude and latitude coordinates and transform to a
-specified projection
+specified projection. Alternatively, load a previously downloaded
+and unzipped data such as the "Land polygons" data here:
+\url{https://www.naturalearthdata.com/downloads/110m-physical-vectors/}
 }
