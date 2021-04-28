@@ -290,32 +290,38 @@ region <- function(name, world, coords) {
 #'
 #' Download Natural Earth land area map data, zoom on a given window
 #' determined by longitude and latitude coordinates and transform to a
-#' specified projection
+#' specified projection. Alternatively, load a previously downloaded
+#' and unzipped data such as the "Land polygons" data here:
+#' <https://www.naturalearthdata.com/downloads/110m-physical-vectors/>
 #'
 #' @param xrange Numeric vector with minimum and maximum longitude
 #' @param yrange Numeric vector with minimum and maximum latitude
 #' @param crs Coordinate Reference System to use for all spatial
 #'   operations (default is WGS-84 or EPSG:4326 CRS)
+#' @param ne_dir Path to the directory where Natural Earth data was
+#'   manually downloaded and unzipped
 #'
 #' @return Object of the \code{spammr_world} (and \code{sf}) class
 #'
 #' @export
-map <- function(xrange, yrange, crs = "EPSG:4326") {
-  ## load the map data (either from a cache location on disk or from
-  ## the server)
-  ## world <- rnaturalearth::ne_load(
-  ##   scale = "small",
-  ##   type = "land",
-  ##   category = "physical",
-  ##   destdir = "~/projects/ne_data",
-  ##   returnclass = "sf"
-  ## )
-  world <- rnaturalearth::ne_download(
-    scale = "small",
-    type = "land",
-    category = "physical",
-    returnclass = "sf"
-  )
+map <- function(xrange, yrange, crs = "EPSG:4326", ne_dir = NULL) {
+  if (is.null(ne_dir)) {
+    world <- rnaturalearth::ne_download(
+      scale = "small",
+      type = "land",
+      category = "physical",
+      returnclass = "sf"
+    )
+  } else {
+    # load the map data from where it was downloaded and unzipped
+    world <- rnaturalearth::ne_load(
+      scale = "small",
+      type = "land",
+      category = "physical",
+      destdir = ne_dir,
+      returnclass = "sf"
+    )
+  }
   sf::st_agr(world) <- "constant"
 
   ## transform the map (default geographic CRS) into the target CRS
