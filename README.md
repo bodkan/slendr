@@ -2,9 +2,7 @@
 
 
 
-## spammr: *S*patiotemporal *P*opulation *A*dmixture and *M*igration *M*odels in *R*
-
-### ⚠️⚠️⚠️ WARNING ⚠️⚠️⚠️
+## stamp: *S*patio-*T*emporally-*A*ware *M*odels of *P*opulations (in *S*LiM) <a href='https://bodkan.net/stamp'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 **This software is still under development!**
 

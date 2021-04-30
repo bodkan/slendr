@@ -6,13 +6,8 @@
 coordinates}
 \usage{
 create_polygon(coords, world)
-
-create_polygon(coords, world)
 }
 \description{
-Create a simple geometry polygon object from the list of
-coordinates
-
 Create a simple geometry polygon object from the list of
 coordinates
 }
