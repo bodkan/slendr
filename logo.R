@@ -2,9 +2,18 @@ library(sf)
 library(tidyverse)
 library(rnaturalearth)
 library(hexSticker)
+library(here)
 
-map <- ne_load(scale = 110, type = "land", category = "physical", destdir = "~/Google/postdoc/data/ne_data", returnclass = "sf")
-map <- st_crop(map, st_bbox(c(xmin = -28, xmax = 80, ymin = -49, ymax = 70), crs = 4326))
+map <- ne_load(
+  scale = 110, type = "land", category = "physical",
+  destdir = "~/Google/postdoc/data/ne_data",
+  returnclass = "sf"
+)
+map <- st_crop(
+  map,
+  st_bbox(c(xmin = -28, xmax = 80, ymin = -49, ymax = 70),
+          crs = 4326)
+)
 
 points_df <- tribble(
   ~lon, ~lat, ~id,
@@ -62,9 +71,12 @@ p <- ggplot() +
   theme_transparent() +
   geom_rect(aes(xmin = -28, xmax = 80, ymin = -32, ymax = -10),
             fill = "lightblue", alpha = 0.8)
-p
-s <- sticker(p, package="stamp(s)", p_size = 8, p_y = 0.55, p_color = "black",
-        h_color = "black", h_fill = "#0077be",
-        s_y = 1.05, s_x = 1, s_width = 2, s_height = 2,
-        white_around_sticker = T, filename = "~/Desktop/logo.pdf")
-plot(s)
+
+sticker(
+  p, package = "stamp(s)",
+  p_size = 8, p_y = 0.55, p_color = "black",
+  h_color = "black", h_fill = "#0077be",
+  s_y = 1.05, s_x = 1, s_width = 2, s_height = 2,
+  white_around_sticker = T,
+  filename = file.path("man/figures", "logo.png")
+)

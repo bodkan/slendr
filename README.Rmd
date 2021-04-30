@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## spammr: *S*patiotemporal *P*opulation *A*dmixture and *M*igration *M*odels in *R*
+## stamp: *S*pace-*T*ime-*A*ware *M*odels of *P*opulations in *S*LiM <img src="man/figures/logo.png" align="right" style="padding-left:10px;background-color:white;" />
 
 ### ⚠️⚠️⚠️ WARNING ⚠️⚠️⚠️
 
