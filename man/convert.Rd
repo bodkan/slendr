@@ -16,7 +16,7 @@ expected in the \code{coords} parameter as columns "x" and "y")}
 \item{coords}{data.frame-like object with coordinates in columns "x"
 and "y"}
 
-\item{model}{object of the class \code{spammr_model}}
+\item{model}{object of the class \code{stamp_model}}
 
 \item{add}{Add column coordinates to the input data.frame \code{coords}?}
 }

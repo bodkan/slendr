@@ -7,7 +7,7 @@
 expand(pop, by, end, snapshots, start = NULL, region = NULL)
 }
 \arguments{
-\item{pop}{Spatial population object of \code{spammr_pop} class}
+\item{pop}{Spatial population object of \code{stamp_pop} class}
 
 \item{by}{How many kilometers to expand by?}
 
@@ -18,7 +18,7 @@ expand(pop, by, end, snapshots, start = NULL, region = NULL)
 \item{region}{Geographic region to restrict the expansion to}
 }
 \value{
-Object of the \code{spammr_pop} (and \code{sf}) class
+Object of the \code{stamp_pop} (and \code{sf}) class
 }
 \description{
 Expand population radius by a given factor in a given time

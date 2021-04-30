@@ -2,7 +2,7 @@
 % Please edit documentation in R/compilation.R
 \name{read}
 \alias{read}
-\title{Read a previously serialized spammr model}
+\title{Read a previously serialized stamp model}
 \usage{
 read(model_dir)
 }
@@ -10,5 +10,5 @@ read(model_dir)
 \item{model_dir}{Directory with all required configuration files}
 }
 \description{
-Read a previously serialized spammr model
+Read a previously serialized stamp model
 }

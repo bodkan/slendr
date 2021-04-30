@@ -95,8 +95,8 @@ Please provide a range object before it was intersected against a map.",
 }
 
 
-#' Set spammr classes (or fix their priorities if already present)
+#' Set stamp classes (or fix their priorities if already present)
 set_class <- function(x, type) {
-  other_classes <- class(x) %>% .[!grepl("^spammr", .)]
-  c("spammr", paste0("spammr_", type), other_classes)
+  other_classes <- class(x) %>% .[!grepl("^stamp", .)]
+  c("stamp", paste0("stamp_", type), other_classes)
 }
