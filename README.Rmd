@@ -12,10 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## stamp <a href='https://bodkan.net/stamp'><img
-src='man/figures/logo.png' align="right" height="139" /></a>
-
-### *S*patio-*T*emporally-*A*ware *M*odels of *P*opulations (in R and SLiM) 
+## Spatio-Temporally-Aware Models of Populations in R <a href='https://bodkan.net/stamp'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 **This software is still under development!** I have been making a
 good progress towards the first beta version, but the package still
