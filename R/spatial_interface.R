@@ -8,12 +8,12 @@
 #' @param center Vector of two elements defining a center of a circular range
 #' @param radius Scalar defining a radius of a range in kilometers
 #' @param coords List of vector pairs, defining corners of the range
-#' @param region Geographic region of the class \code{spammr_region}
+#' @param region Geographic region of the class \code{stamp_region}
 #' @param remove Time at which the population should be removed
 #' @param intersect Intersect the population's boundaries with landscape
 #'   features?
 #'
-#' @return Object of the \code{spammr_pop} (and \code{sf}) class
+#' @return Object of the \code{stamp_pop} (and \code{sf}) class
 #'
 #' @export
 population <- function(name, parent, N, time = NULL, world = NULL,
@@ -53,7 +53,7 @@ population <- function(name, parent, N, time = NULL, world = NULL,
   attr(pop_range, "remove") <- ifelse(!is.null(remove), remove, -1)
 
   # keep a record of the parent population
-  if (inherits(parent, "spammr_pop")) {
+  if (inherits(parent, "stamp_pop")) {
     attr(pop_range, "parent") <- parent[nrow(parent), ]
     # keep the world as an internal attribute
     attr(pop_range, "world") <- world
@@ -74,15 +74,15 @@ population <- function(name, parent, N, time = NULL, world = NULL,
 #' This function allows a more manual control of spatial map changes in addition
 #' to the \code{expand} and \code{move} functions
 #'
-#' @param pop Population object of the \code{spammr} class
+#' @param pop Population object of the \code{stamp} class
 #' @param time Time of the current snapshot that is being defined
 #' @param N Effective population size (stays the same by default)
 #' @param center Vector of two elements defining a center of a circular range
 #' @param radius Scalar defining a radius of a range in kilometers
 #' @param coords List of vector pairs, defining corners of the range
-#' @param region Geographic region of the class \code{spammr_region}
+#' @param region Geographic region of the class \code{stamp_region}
 #'
-#' @return Object of the \code{spammr_pop} (and \code{sf}) class
+#' @return Object of the \code{stamp_pop} (and \code{sf}) class
 #'
 #' @export
 change <- function(pop, time, N = NULL,
@@ -129,13 +129,13 @@ change <- function(pop, time, N = NULL,
 
 #' Expand population radius by a given factor in a given time
 #'
-#' @param pop Spatial population object of \code{spammr_pop} class
+#' @param pop Spatial population object of \code{stamp_pop} class
 #' @param by How many kilometers to expand by?
 #' @param start,end When does the spatial population expansion start/end?
 #' @param snapshots Number of time slices to split the movement into
 #' @param region Geographic region to restrict the expansion to
 #'
-#' @return Object of the \code{spammr_pop} (and \code{sf}) class
+#' @return Object of the \code{stamp_pop} (and \code{sf}) class
 #'
 #' @export
 expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
@@ -182,13 +182,13 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
 
 #' Move population to a new location in a given amount of time
 #'
-#' @param pop Spatial population object of \code{spammr_pop} class
+#' @param pop Spatial population object of \code{stamp_pop} class
 #' @param trajectory List of two-dimensional vectors [(longitude, latitude)]
 #'   specifying the trajectory of the population movement
 #' @param start,end Start/end points of the population movement
 #' @param snapshots Number of time slices to split the movement into
 #'
-#' @return Object of the \code{spammr_pop} (and \code{sf}) class
+#' @return Object of the \code{stamp_pop} (and \code{sf}) class
 #'
 #' @export
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
@@ -269,7 +269,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 #' @param world Object of the type \code{sf} which defines the world
 #' @param coords List of vector pairs, defining corners of the range
 #'
-#' @return Object of the \code{spammr_region} (and \code{sf}) class
+#' @return Object of the \code{stamp_region} (and \code{sf}) class
 #'
 #' @export
 region <- function(name, world, coords) {
@@ -301,7 +301,7 @@ region <- function(name, world, coords) {
 #' @param ne_dir Path to the directory where Natural Earth data was
 #'   manually downloaded and unzipped
 #'
-#' @return Object of the \code{spammr_world} (and \code{sf}) class
+#' @return Object of the \code{stamp_world} (and \code{sf}) class
 #'
 #' @export
 map <- function(xrange, yrange, crs = "EPSG:4326", ne_dir = NULL) {
@@ -344,7 +344,7 @@ map <- function(xrange, yrange, crs = "EPSG:4326", ne_dir = NULL) {
 
 #' Define an admixture event
 #'
-#' @param from,to Population range objects of the class \code{spammr_pop}
+#' @param from,to Population range objects of the class \code{stamp_pop}
 #' @param rate Scalar value in the range (0, 1] specifying the proportion of
 #'   migration over given time period
 #' @param start,end Start and end of the admixture event
@@ -401,7 +401,7 @@ No overlap between population ranges of %s and %s at time %d.
 Please check the spatial maps of both populations by running
 `plot(%s, %s, pop_facets = F)` and adjust them accordingly.
 Alternatively, in case this makes sense for your model, you can
-add `overlap = F` which will instruct spammr to simulate admixture
+add `overlap = F` which will instruct stamp to simulate admixture
 without spatial overlap between populations.",
       from_name, to_name, start, deparse(substitute(from)),
       deparse(substitute(to)), call. = FALSE))
@@ -427,7 +427,7 @@ without spatial overlap between populations.",
 #'   EPSG value, an object of class crs, or the value "raster"
 #' @param coords data.frame-like object with coordinates in columns "x"
 #'   and "y"
-#' @param model object of the class \code{spammr_model}
+#' @param model object of the class \code{stamp_model}
 #' @param add Add column coordinates to the input data.frame \code{coords}?
 #'
 #' @return Data.frame with converted two-dimensional coordinates

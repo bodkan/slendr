@@ -12,20 +12,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-## stamp: *S*patio-*T*emporally-*A*ware *M*odels of *P*opulations (in *S*LiM) <a href='https://bodkan.net/stamp'><img src='man/figures/logo.png' align="right" height="139" /></a>
+## stamp <a href='https://bodkan.net/stamp'><img
+src='man/figures/logo.png' align="right" height="139" /></a>
 
-**This software is still under development!**
+### *S*patio-*T*emporally-*A*ware *M*odels of *P*opulations (in R and SLiM) 
 
-If you are interested in realistic spatio-temporal population genetic
-simulations and somehow stumbled upon this repository then
-congratulations! Your google-fu is strong.
-
-I have been making good progress towards a first beta version, but the
-package still has some way to go before being production ready.
+**This software is still under development!** I have been making a
+good progress towards the first beta version, but the package still
+has some way to go before being production ready.
 
 That said, if you would like to learn more, or if you're feeling brave
 and would like to test the package yourself, take a look at the
-[tutorial](https://bodkan.net/spammr/articles/tutorial.html). Note
+[tutorial](https://bodkan.net/stamp/articles/tutorial.html). Note
 that getting it installed with all the geospatial dependencies can be
 a little bit tricky at this point (see the relevant section in the
 tutorial). If loading the package fails, check the error messages for
@@ -35,7 +33,7 @@ choice (on a Mac I recommend _homebrew_).
 If you would like to stay updated with the developments:
 
 1. Click on the "Watch" button on the project's [Github
-website](https://www.github.com/bodkan/spammr).
+website](https://www.github.com/bodkan/stamp).
 
 2. Follow me on [Twitter](https://www.twitter.com/fleventy5). I might
 post some updates once the software is a bit more ready.
@@ -44,16 +42,16 @@ post some updates once the software is a bit more ready.
 
 For installation instructions, please take a look at the installation
 section [of the
-tutorial](https://bodkan.net/spammr/articles/tutorial.html#installation-and-setup-1). Note
+tutorial](https://bodkan.net/stamp/articles/tutorial.html#installation-and-setup-1). Note
 that you might need to install some non-R software dependencies
 first. At the very least, you will need the most recent version of the
 [SLiM software](https://messerlab.org/slim/) (version 3.6 or later).
 
 ### Example
 
-Here is a small demonstration of what *spammr* is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.
+Here is a small demonstration of what *stamp* is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.
 
-For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the [tutorial](https://bodkan.net/spammr/articles/tutorial.html).
+For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the [tutorial](https://bodkan.net/stamp/articles/tutorial.html).
 
 We're going to simulate a demographic history of several populations,
 including splits and admixture events, defining the spatial boundaries
@@ -86,7 +84,7 @@ world <- map(
 ```
 
 ```{r, eval = F}
-library(spammr)
+library(stamp)
 
 world <- map(
   xrange = c(-15, 60), # min-max longitude
