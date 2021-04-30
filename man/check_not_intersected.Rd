@@ -5,11 +5,7 @@
 \title{Check whether given population region has not yet been intersected}
 \usage{
 check_not_intersected(pop)
-
-check_not_intersected(pop)
 }
 \description{
-Check whether given population region has not yet been intersected
-
 Check whether given population region has not yet been intersected
 }

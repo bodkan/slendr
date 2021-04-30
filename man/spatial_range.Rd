@@ -6,13 +6,8 @@
 geographic region}
 \usage{
 spatial_range(world, center = NULL, radius = NULL, coords = NULL)
-
-spatial_range(world, center = NULL, radius = NULL, coords = NULL)
 }
 \description{
-Define a range (simple geometry object) for a population or a
-geographic region
-
 Define a range (simple geometry object) for a population or a
 geographic region
 }

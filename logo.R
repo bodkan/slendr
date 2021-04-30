@@ -73,10 +73,13 @@ p <- ggplot() +
             fill = "lightblue", alpha = 0.8)
 
 sticker(
-  p, package = "stamp(s)",
+  p, package = "stamp",
   p_size = 8, p_y = 0.55, p_color = "black",
   h_color = "black", h_fill = "#0077be",
   s_y = 1.05, s_x = 1, s_width = 2, s_height = 2,
   white_around_sticker = T,
-  filename = file.path("man/figures", "logo.png")
+  filename = file.path(".", "logo.png")
 )
+
+usethis::use_logo("logo.png")
+unlink("logo.png")

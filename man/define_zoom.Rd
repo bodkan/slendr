@@ -5,11 +5,7 @@
 \title{Define a rectangular region for zooming in on a part of the world}
 \usage{
 define_zoom(lon, lat, source_crs = "EPSG:4326")
-
-define_zoom(lon, lat, source_crs = "EPSG:4326")
 }
 \description{
-Define a rectangular region for zooming in on a part of the world
-
 Define a rectangular region for zooming in on a part of the world
 }
