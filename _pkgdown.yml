@@ -16,8 +16,8 @@ reference:
 
   - title: Model visualization and diagnostics
     contents:
-    - plot.spammr
-    - print.spammr
+    - plot.stamp
+    - print.stamp
     - graph
     - animate
     - ancestries

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spatiotemporal Population Admixture and Migration Models in R • spammr</title>
+<title>Spatio-Temporally-Aware Models of Populations in R and SLiM • stamp</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Spatiotemporal Population Admixture and Migration Models in R">
+<script src="pkgdown.js"></script><meta property="og:title" content="Spatio-Temporally-Aware Models of Populations in R and SLiM">
 <meta property="og:description" content="What the package does (one paragraph).">
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -37,7 +37,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">spammr</a>
+        <a class="navbar-link" href="index.html">stamp</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -61,14 +61,14 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/tutorial.html">spammr: Introduction and tutorial</a>
+      <a href="articles/tutorial.html">stamp: Introduction and tutorial</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bodkan/spammr/">
+  <a href="https://github.com/bodkan/stamp/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -85,36 +85,38 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="stamp-spatio-temporally-aware-models-of-populations-in-slim-" class="section level2">
+<div id="stamp-" class="section level2">
 <h2 class="hasAnchor">
-<a href="#stamp-spatio-temporally-aware-models-of-populations-in-slim-" class="anchor"></a>stamp: <em>S</em>patio-<em>T</em>emporally-<em>A</em>ware <em>M</em>odels of <em>P</em>opulations (in <em>S</em>LiM) <a href="https://bodkan.net/stamp"><img src="reference/figures/logo.png" align="right" height="139"></a>
+<a href="#stamp-" class="anchor"></a>stamp <a href="https://bodkan.net/stamp"><img src="reference/figures/logo.png" align="right" height="139"></a>
 </h2>
-<p><strong>This software is still under development!</strong></p>
-<p>If you are interested in realistic spatio-temporal population genetic simulations and somehow stumbled upon this repository then congratulations! Your google-fu is strong.</p>
-<p>I have been making good progress towards a first beta version, but the package still has some way to go before being production ready.</p>
-<p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at the <a href="https://bodkan.net/spammr/articles/tutorial.html">tutorial</a>. Note that getting it installed with all the geospatial dependencies can be a little bit tricky at this point (see the relevant section in the tutorial). If loading the package fails, check the error messages for missing software and install it using the package manager of your choice (on a Mac I recommend <em>homebrew</em>).</p>
+<div id="spatio-temporally-aware-models-of-populations-in-r-and-slim" class="section level3">
+<h3 class="hasAnchor">
+<a href="#spatio-temporally-aware-models-of-populations-in-r-and-slim" class="anchor"></a><em>S</em>patio-<em>T</em>emporally-<em>A</em>ware <em>M</em>odels of <em>P</em>opulations (in R and SLiM)</h3>
+<p><strong>This software is still under development!</strong> I have been making a good progress towards the first beta version, but the package still has some way to go before being production ready.</p>
+<p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at the <a href="https://bodkan.net/stamp/articles/tutorial.html">tutorial</a>. Note that getting it installed with all the geospatial dependencies can be a little bit tricky at this point (see the relevant section in the tutorial). If loading the package fails, check the error messages for missing software and install it using the package manager of your choice (on a Mac I recommend <em>homebrew</em>).</p>
 <p>If you would like to stay updated with the developments:</p>
 <ol>
-<li><p>Click on the “Watch” button on the project’s <a href="https://www.github.com/bodkan/spammr">Github website</a>.</p></li>
+<li><p>Click on the “Watch” button on the project’s <a href="https://www.github.com/bodkan/stamp">Github website</a>.</p></li>
 <li><p>Follow me on <a href="https://www.twitter.com/fleventy5">Twitter</a>. I might post some updates once the software is a bit more ready.</p></li>
 </ol>
+</div>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
-<p>For installation instructions, please take a look at the installation section <a href="https://bodkan.net/spammr/articles/tutorial.html#installation-and-setup-1">of the tutorial</a>. Note that you might need to install some non-R software dependencies first. At the very least, you will need the most recent version of the <a href="https://messerlab.org/slim/">SLiM software</a> (version 3.6 or later).</p>
+<p>For installation instructions, please take a look at the installation section <a href="https://bodkan.net/stamp/articles/tutorial.html#installation-and-setup-1">of the tutorial</a>. Note that you might need to install some non-R software dependencies first. At the very least, you will need the most recent version of the <a href="https://messerlab.org/slim/">SLiM software</a> (version 3.6 or later).</p>
 </div>
 <div id="example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h3>
-<p>Here is a small demonstration of what <em>spammr</em> is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.</p>
-<p>For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the <a href="https://bodkan.net/spammr/articles/tutorial.html">tutorial</a>.</p>
+<p>Here is a small demonstration of what <em>stamp</em> is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.</p>
+<p>For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the <a href="https://bodkan.net/stamp/articles/tutorial.html">tutorial</a>.</p>
 <p>We’re going to simulate a demographic history of several populations, including splits and admixture events, defining the spatial boundaries of populations as well as their changing dynamics over time (steps 1-6). We will then feed the model defined in R into SLiM and instruct it (using a back-end SLiM script provided by this package) to simulate data based on the model specification (step 7). Finally, we will generate some visualizations to make sure that the simulation proceeded as we wanted to (steps 8 and 9).</p>
 <div id="1-setup-the-spatial-context-the-world-occupied-by-populations" class="section level4">
 <h4 class="hasAnchor">
 <a href="#1-setup-the-spatial-context-the-world-occupied-by-populations" class="anchor"></a>1. Setup the spatial context (“the world” occupied by populations)</h4>
 <p>Note that in the world definition, we are explicitly stating which projected <a href="https://en.wikipedia.org/wiki/Spatial_reference_system">Coordinate Reference System</a> (CRS) will be used to represent landscape features, distances in kilometers, etc.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/spammr">spammr</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/stamp">stamp</a></span><span class="op">)</span>
 
 <span class="va">world</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/map.html">map</a></span><span class="op">(</span>
   xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>, <span class="co"># min-max longitude</span>
@@ -197,8 +199,8 @@
 <p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/run.html">run()</a></code> function shown below.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span>
-<span class="co">#&gt; spammr 'model' object </span>
-<span class="co">#&gt; --------------------- </span>
+<span class="co">#&gt; stamp 'model' object </span>
+<span class="co">#&gt; -------------------- </span>
 <span class="co">#&gt; populations: pop1, pop2, pop3, pop4, pop5 </span>
 <span class="co">#&gt; admixture events: 2 </span>
 <span class="co">#&gt; generation time: 30 </span>
@@ -256,9 +258,9 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/bodkan/spammr/">https://​github.com/​bodkan/​spammr/​</a>
+<li>Browse source code at <br><a href="https://github.com/bodkan/stamp/">https://​github.com/​bodkan/​stamp/​</a>
 </li>
-<li>Report a bug at <br><a href="https://github.com/bodkan/spammr/issues">https://​github.com/​bodkan/​spammr/​issues</a>
+<li>Report a bug at <br><a href="https://github.com/bodkan/stamp/issues">https://​github.com/​bodkan/​stamp/​issues</a>
 </li>
 </ul>
 </div>

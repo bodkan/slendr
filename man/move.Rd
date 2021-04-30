@@ -7,7 +7,7 @@
 move(pop, trajectory, end, snapshots, start = NULL)
 }
 \arguments{
-\item{pop}{Spatial population object of \code{spammr_pop} class}
+\item{pop}{Spatial population object of \code{stamp_pop} class}
 
 \item{trajectory}{List of two-dimensional vectors \link{(longitude, latitude)}
 specifying the trajectory of the population movement}
@@ -17,7 +17,7 @@ specifying the trajectory of the population movement}
 \item{start, end}{Start/end points of the population movement}
 }
 \value{
-Object of the \code{spammr_pop} (and \code{sf}) class
+Object of the \code{stamp_pop} (and \code{sf}) class
 }
 \description{
 Move population to a new location in a given amount of time
