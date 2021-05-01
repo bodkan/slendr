@@ -22,12 +22,13 @@ points_df <- tribble(
   20, 25, 3,
   20, -7, 4,
   25, 5, 5,
+  30, 18, 5.1,
   35, 10, 6,
   35, -7, 7,
   40, 37, 8,
   25, 40, 9,
   12, 48, 10,
-  48, 48, 11,
+  45, 43, 11,
   62, 35, 12,
   45, 30, 13,
   55, 20, 14,
@@ -40,7 +41,7 @@ edges_df <- tribble(
   1, 3,
   2, 4,
   2, 5,
-  3, 6,
+  3, 5.1,
   3, 8,
   6, 15,
   5, 6,
@@ -74,12 +75,12 @@ p <- ggplot() +
 
 sticker(
   p, package = "stamp",
-  p_size = 8, p_y = 0.55, p_color = "black",
+  p_size = 8, p_y = 0.46, p_color = "black",
   h_color = "black", h_fill = "#0077be",
-  s_y = 1.05, s_x = 1, s_width = 2, s_height = 2,
+  s_y = 1.05, s_x = 1.05, s_width = 2.5, s_height = 2.3,
   white_around_sticker = T,
   filename = file.path(".", "logo.png")
-)
+) %>% print()
 
 usethis::use_logo("logo.png")
 unlink("logo.png")
