@@ -19,6 +19,11 @@
 plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
                         intersect = TRUE, geo_graticules = TRUE,
                         title = NULL, nrow = NULL, ncol = NULL) {
+  ##:ess-bp-start::browser@nil:##
+browser(expr=is.null(.ESSBP.[["@8@"]]));##:ess-bp-end:##
+  # TODO: this function is an accretion of too many variants of
+  # plotting too many things at once and is incredibly convoluted and
+  # inflexible - clean this up
   args <- list(...)
   # only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spannr_world"))
@@ -27,7 +32,7 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     # extract the world component underlying each population object
     # and make sure they are all the same with no conflicts
     world <- unique(lapply(args, function(i) attr(i, "world")))
-    if (length(world) != 1) {
+    if (has_crs(world) & length(world) != 1) {
       stop("Population objects do not share the same world component", call. = F)
     } else {
       world <- world[[1]]
@@ -37,7 +42,7 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
   regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
   pops <- do.call(rbind, lapply(list(...), function(i) {
     if (!is.null(i$pop)) {
-      if (intersect)
+      if (intersect & has_crs(world))
         intersect_features(i)
       else
         i
@@ -46,10 +51,11 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
   # replace the Inf split time in ancestral populations
   if (any(pops$time == Inf)) pops[pops$time == Inf, ]$time = NA
 
-  # plot the world map
-  p_map <-  ggplot() +
-    geom_sf(data = world, fill = NA, color = "black") +
-    theme_bw()
+  p_map <-  ggplot() + theme_bw()
+  
+  # plot the world map if a real geographic map was specified
+  if (has_crs(world))
+    p_map <- p_map + geom_sf(data = world, fill = NA, color = "black")
 
   # plot geographic region boundaries, if present
   if (!is.null(regions)) {
@@ -67,10 +73,12 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     }
   }
 
-  if (geo_graticules)
-    graticule_crs <- "EPSG:4326"
-  else
-    graticule_crs <- sf::st_crs(world)
+  if (has_crs(world)) {
+    if (geo_graticules)
+      graticule_crs <- "EPSG:4326"
+    else
+      graticule_crs <- sf::st_crs(world)
+  }
 
   # plot population ranges, if present
   if (!is.null(pops)) {
@@ -110,37 +118,36 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
   if (!is.null(title))
     p_map <- p_map + ggtitle(title)
 
-  p_map + coord_sf(
-    crs = sf::st_crs(world),
-    datum = graticule_crs,
-    expand = 0
-  )
+  if (has_crs(world))
+    return(p_map + coord_sf(crs = sf::st_crs(world), datum = graticule_crs, expand = 0))
+  else
+    return(p_map + coord_sf(expand = 0))
 }
 
 
-#' Print a spannr object
+#' Print a spammr object
 #'
-#' @param x Object of a class spannr
+#' @param x Object of a class spammr
 #' @param sf Print the low-level 'sf' object information?
 #' @param full Print all snapshots? (too many can be bothersome and require
 #'   extensive scrolling)
 #'
 #' @export
-print.spannr <- function(x, sf = FALSE, full = FALSE) {
+print.spammr <- function(x, sf = FALSE, full = FALSE) {
   # name of the original argument before evaluation
   if (sf) {
     sf:::print.sf(x)
   } else {
-    if (any(grepl("spannr_pop", class(x))))
+    if (any(grepl("spammr_pop", class(x))))
       type <- "population"
-    else if (any(grepl("spannr_region", class(x))))
+    else if (any(grepl("spammr_region", class(x))))
       type <- "region"
-    else if (any(grepl("spannr_world", class(x))))
+    else if (any(grepl("spammr_world", class(x))))
       type <- "world"
     else
       type <- "model"
 
-    header <- sprintf("spannr '%s' object", type)
+    header <- sprintf("spammr '%s' object", type)
     sep <- paste(rep("-", nchar(header)), collapse = "")
 
     cat(header, "\n")
@@ -185,9 +192,15 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
       cat("\n")
     }
 
-    if (type %in% c("world", "region", "population"))
-      cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg, "\n")
-    else if (type == "model") {
+    if (type %in% c("world", "region", "population")) {
+      crs <- sf::st_crs(world)$epsg
+      if (is.na(crs))
+        cat("abstract spatial landscape\n")
+      else {
+        crs <- paste("EPSG", crs)
+        cat("Coordinate Reference System:", crs, "\n")
+      }
+    } else if (type == "model") {
       cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
       cat("admixture events: ")
       if (!is.null(x$admixtures))

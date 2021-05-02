@@ -193,6 +193,8 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
 #' @export
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
+  
+  world <- attr(pop, "world")
 
   # take care of just a single destination point being specified
   if (!is.list(trajectory) & length(trajectory) == 2)
@@ -205,20 +207,26 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   }
   start_time <- region_start$time
 
-  source_crs <- "EPSG:4326"
-  target_crs <- sf::st_crs(pop)
-
   # prepend the coordinates of the first region to the list of "checkpoints"
   # along the way of the movement
-  start_coords <- sf::st_centroid(region_start) %>%
-    sf::st_transform(crs = source_crs) %>%
-    sf::st_coordinates()
+  start_coords <- sf::st_centroid(region_start)
+
+  if (has_crs(world)) {
+    source_crs <- "EPSG:4326"
+    target_crs <- sf::st_crs(pop)
+    start_coords <- sf::st_transform(start_coords, crs = source_crs)
+  }
+
+  start_coords <- sf::st_coordinates(start_coords)
   checkpoints <- c(list(as.vector(start_coords)), trajectory)
 
-  traj <- sf::st_linestring(do.call(rbind, checkpoints)) %>%
-    sf::st_sfc() %>%
-    sf::st_sf(crs = source_crs) %>%
-    sf::st_transform(crs = target_crs)
+  traj <- sf::st_linestring(do.call(rbind, checkpoints)) %>% sf::st_sfc()
+
+  if (has_crs(world)) {
+    traj <- sf::st_sf(traj, crs = source_crs) %>% sf::st_transform(crs = target_crs)
+  } else {
+    traj <- sf::st_sf(traj)
+  }
 
   traj_segments <- sf::st_segmentize(traj, sf::st_length(traj) / snapshots)
 
@@ -249,7 +257,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   sf::st_agr(inter_regions) <- "constant"
 
   # keep the world as an internal attribute
-  attr(inter_regions, "world") <- attr(pop, "world")
+  attr(inter_regions, "world") <- world
   # propagate the information about the parental population
   attr(inter_regions, "parent") <- attr(pop, "parent")
   # retain the cleanup time
@@ -296,55 +304,52 @@ region <- function(name, world, coords) {
 #'
 #' @param xrange Numeric vector with minimum and maximum longitude
 #' @param yrange Numeric vector with minimum and maximum latitude
-#' @param crs Coordinate Reference System to use for all spatial
-#'   operations (default is WGS-84 or EPSG:4326 CRS)
+#' @param crs Coordinate Reference System to use for spatial
+#'   operations (no CRS assumed by default, implying an abstract
+#'   landscape not tied to any particular geographic region)
 #' @param ne_dir Path to the directory where Natural Earth data was
-#'   manually downloaded and unzipped
+#'   manually downloaded and unzipped (used only when \code{crs} is
+#'   not NULL)
 #'
 #' @return Object of the \code{spannr_world} (and \code{sf}) class
 #'
 #' @export
-map <- function(xrange, yrange, crs = "EPSG:4326", ne_dir = NULL) {
-  if (is.null(ne_dir)) {
-    world <- rnaturalearth::ne_download(
-      scale = "small",
-      type = "land",
-      category = "physical",
-      returnclass = "sf"
-    )
+map <- function(xrange, yrange, crs = NULL, ne_dir = NULL) {
+  if (is.null(crs)) {
+    world <- create_polygon(list(
+      c(xrange[1], yrange[1]), c(xrange[2], yrange[1]),
+      c(xrange[2], yrange[2]), c(xrange[1], yrange[2])
+    ))
   } else {
-    # load the map data from where it was downloaded and unzipped
-    world <- rnaturalearth::ne_load(
-      scale = "small",
-      type = "land",
-      category = "physical",
-      destdir = ne_dir,
-      returnclass = "sf"
-    )
+    scale <- "small"; type <- "land"; category <- "physical"
+    if (is.null(ne_dir)) {
+      world_raw <- rnaturalearth::ne_download(scale, type, category, returnclass = "sf")
+    } else {
+      world_raw <- rnaturalearth::ne_load(scale, type, category,
+                                          returnclass = "sf", destdir = ne_dir)
+    }
+    sf::st_agr(world_raw) <- "constant"
+
+    ## transform the map (default geographic CRS) into the target CRS
+    world_transf <- sf::st_transform(world_raw, crs)
+
+    ## define boundary coordinates in the target CRS
+    zoom_bounds <- define_zoom(xrange, yrange, "EPSG:4326")
+    zoom_transf <- sf::st_transform(zoom_bounds, crs)
+
+    ## crop the map to the boundary coordinates
+    world <- sf::st_crop(world_transf, zoom_transf)
   }
   sf::st_agr(world) <- "constant"
 
-  ## transform the map (default geographic CRS) into the target CRS
-  world_transf <- sf::st_transform(world, crs)
-
-  ## define boundary coordinates in the target CRS
-  zoom_bounds <- define_zoom(xrange, yrange, "EPSG:4326")
-  zoom_transf <- sf::st_transform(zoom_bounds, crs)
-
-  ## crop the map to the boundary coordinates
-  world_zoom <- sf::st_crop(world_transf, zoom_transf)
-
-  sf::st_agr(world_zoom) <- "constant"
-
-  class(world_zoom) <- set_class(world_zoom, "world")
-
-  world_zoom
+  class(world) <- set_class(world, "world")
+  world
 }
 
 
 #' Define an admixture event
 #'
-#' @param from,to Population range objects of the class \code{spannr_pop}
+#' @param from,to Population range objects of the class \code{spammr_pop}
 #' @param rate Scalar value in the range (0, 1] specifying the proportion of
 #'   migration over given time period
 #' @param start,end Start and end of the admixture event

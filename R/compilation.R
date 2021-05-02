@@ -460,7 +460,7 @@ compile_maps <- function(populations, splits_table, resolution) {
 write_maps <- function(maps_table, output_dir) {
   for (i in seq_len(nrow(maps_table))) {
     map_row <- maps_table[i, ]
-    # the first spatial map has necessarily a nonsensical time spannr,
+    # the first spatial map has necessarily a nonsensical time stamp,
     # so let's take care of that first
     time <- ifelse(map_row$time == Inf, "ancestor", map_row$time)
 
@@ -492,7 +492,7 @@ render <- function(pops, resolution) {
       raster_map <- rasterize(snapshot, resolution)
 
       # return the rendered spatial map with the population name and the
-      # appropriate time spannr (unique-ing because intersecting splits
+      # appropriate time stamp (unique-ing because intersecting splits
       # the spatial object into multiple disjoint features)
       list(
         pop = unique(snapshot$pop),
