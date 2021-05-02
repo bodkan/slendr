@@ -2,14 +2,14 @@
 % Please edit documentation in R/internal_ranges.R, R/stamp.R
 \name{set_class}
 \alias{set_class}
-\title{Set stamp classes (or fix their priorities if already present)}
+\title{Set spannr classes (or fix their priorities if already present)}
 \usage{
 set_class(x, type)
 
 set_class(x, type)
 }
 \description{
-Set stamp classes (or fix their priorities if already present)
+Set spannr classes (or fix their priorities if already present)
 
-Set stamp classes (or fix their priorities if already present)
+Set spannr classes (or fix their priorities if already present)
 }

@@ -14,7 +14,7 @@ compile(
 )
 }
 \arguments{
-\item{populations}{Population map objects of the \code{stamp_pop} class (a
+\item{populations}{Population map objects of the \code{spannr_pop} class (a
 list of such object or a single element)}
 
 \item{model_dir}{Directory to which to save the entire model}
