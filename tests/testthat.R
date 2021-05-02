@@ -1,6 +1,6 @@
 library(testthat)
-library(stamp)
+library(spannr)
 
-test_check("stamp")
+test_check("spannr")
 
 # world data for testing: saveRDS(world, "tests/testthat/world.rds")

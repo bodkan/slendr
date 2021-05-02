@@ -3,7 +3,7 @@
 #' If only geographic regions are given, they are colored. If both
 #' them and populations are given, only populations are specified.
 #'
-#' @param ... Population/geographic region objects of the 'stamp'
+#' @param ... Population/geographic region objects of the 'spannr'
 #'   class
 #' @param pop_facets Plot populations in individual panels?
 #' @param time_facets Plot time snapshots in individual panels?
@@ -16,12 +16,12 @@
 #' @export
 #'
 #' @import ggplot2
-plot.stamp <- function(..., pop_facets = TRUE, time_facets = FALSE,
+plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
                         intersect = TRUE, geo_graticules = TRUE,
                         title = NULL, nrow = NULL, ncol = NULL) {
   args <- list(...)
   # only the world object being plotted?
-  if (length(args) == 1 & inherits(args[[1]], "stamp_world"))
+  if (length(args) == 1 & inherits(args[[1]], "spannr_world"))
     world <- args[[1]]
   else {
     # extract the world component underlying each population object
@@ -118,29 +118,29 @@ plot.stamp <- function(..., pop_facets = TRUE, time_facets = FALSE,
 }
 
 
-#' Print a stamp object
+#' Print a spannr object
 #'
-#' @param x Object of a class stamp
+#' @param x Object of a class spannr
 #' @param sf Print the low-level 'sf' object information?
 #' @param full Print all snapshots? (too many can be bothersome and require
 #'   extensive scrolling)
 #'
 #' @export
-print.stamp <- function(x, sf = FALSE, full = FALSE) {
+print.spannr <- function(x, sf = FALSE, full = FALSE) {
   # name of the original argument before evaluation
   if (sf) {
     sf:::print.sf(x)
   } else {
-    if (any(grepl("stamp_pop", class(x))))
+    if (any(grepl("spannr_pop", class(x))))
       type <- "population"
-    else if (any(grepl("stamp_region", class(x))))
+    else if (any(grepl("spannr_region", class(x))))
       type <- "region"
-    else if (any(grepl("stamp_world", class(x))))
+    else if (any(grepl("spannr_world", class(x))))
       type <- "world"
     else
       type <- "model"
 
-    header <- sprintf("stamp '%s' object", type)
+    header <- sprintf("spannr '%s' object", type)
     sep <- paste(rep("-", nchar(header)), collapse = "")
 
     cat(header, "\n")
@@ -209,8 +209,8 @@ files in the model directory.\n")
 }
 
 
-#' Set stamp classes (or fix their priorities if already present)
+#' Set spannr classes (or fix their priorities if already present)
 set_class <- function(x, type) {
-  other_classes <- class(x) %>% .[!grepl("^stamp", .)]
-  c("stamp", paste0("stamp_", type), other_classes)
+  other_classes <- class(x) %>% .[!grepl("^spannr", .)]
+  c("spannr", paste0("spannr_", type), other_classes)
 }
