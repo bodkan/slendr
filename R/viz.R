@@ -172,7 +172,7 @@ graph <- function(model) {
     geom_edge_link(aes(filter = type == "intermediate",
                        linetype = "continuation")) +
 
-    # population removal time stamp
+    # population removal time spannr
     geom_edge_link(aes(filter = type == "terminal"), alpha = 0.25) +
 
     geom_node_label(aes(filter = type == "split", fill = pop,

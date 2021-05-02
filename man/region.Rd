@@ -14,7 +14,7 @@ region(name, world, coords)
 \item{coords}{List of vector pairs, defining corners of the range}
 }
 \value{
-Object of the \code{stamp_region} (and \code{sf}) class
+Object of the \code{spannr_region} (and \code{sf}) class
 }
 \description{
 Define a geographic region

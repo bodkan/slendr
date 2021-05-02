@@ -15,7 +15,7 @@ change(
 )
 }
 \arguments{
-\item{pop}{Population object of the \code{stamp} class}
+\item{pop}{Population object of the \code{spannr} class}
 
 \item{time}{Time of the current snapshot that is being defined}
 
@@ -27,10 +27,10 @@ change(
 
 \item{coords}{List of vector pairs, defining corners of the range}
 
-\item{region}{Geographic region of the class \code{stamp_region}}
+\item{region}{Geographic region of the class \code{spannr_region}}
 }
 \value{
-Object of the \code{stamp_pop} (and \code{sf}) class
+Object of the \code{spannr_pop} (and \code{sf}) class
 }
 \description{
 This function allows a more manual control of spatial map changes in addition
