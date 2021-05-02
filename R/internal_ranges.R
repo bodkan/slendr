@@ -29,6 +29,12 @@ intersect_features <- function(pop) {
 }
 
 
+#' Does the object have a Coordinate Reference System assigned to it?
+has_crs <- function(x) {
+  !is.na(sf::st_crs(x)$epsg)
+}
+
+
 #' Define a range (simple geometry object) for a population or a
 #' geographic region
 spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
@@ -43,15 +49,20 @@ spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
   # circular population range or polygon range?
   if (!is.null(center)) {
     # point in the WGS-84 geographic CRS
-    point_wgs84 <- sf::st_sfc(sf::st_point(center), crs = "EPSG:4326")
+    point <- sf::st_sfc(sf::st_point(center))
 
-    # transform into target CRS
-    point <- sf::st_transform(point_wgs84, sf::st_crs(world))
-    # expand range into desired radius
-    range <- sf::st_buffer(point, radius * 1000)
+    if (has_crs(world)) {
+      sf::st_crs(point) <- "EPSG:4326"
+      point <- sf::st_transform(point, sf::st_crs(world))
+    }
+
+    range <- sf::st_buffer(point, radius)
   } else {
-    range <- sf::st_geometry(create_polygon(coords, world)) %>%
-      sf::st_transform(crs = sf::st_crs(world))
+    range <- sf::st_geometry(create_polygon(coords))
+    if (has_crs(world)) {
+      sf::st_crs(range) <- "EPSG:4326"
+      range <- sf::st_transform(range, sf::st_crs(world))
+    }
   }
 
   range
@@ -60,7 +71,7 @@ spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
 
 #' Create a simple geometry polygon object from the list of
 #' coordinates
-create_polygon <- function(coords, world) {
+create_polygon <- function(coords) {
   # "loop-back" to the last point to close the polygon
   coords <- c(coords, coords[1])
   coords_mat <- do.call(rbind, coords)
@@ -68,7 +79,7 @@ create_polygon <- function(coords, world) {
   # polygon in the WGS-84 geographic CRS
   polygon <-
     sf::st_polygon(list(coords_mat)) %>%
-    sf::st_sfc(crs = "EPSG:4326") %>%
+    sf::st_sfc() %>%
     sf::st_sf(geometry = .)
 
   polygon
