@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • spannr</title>
+<title>Print a spannr object — print.spannr • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,8 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Print a spannr object — print.spannr" />
+<meta property="og:description" content="Print a spannr object" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -66,7 +67,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -127,18 +128,42 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Print a spannr object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/stamp.R'><code>R/stamp.R</code></a></small>
+    <div class="hidden name"><code>print.spannr.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="tutorial.html">spannr: Introduction and tutorial</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>Print a spannr object</p>
     </div>
+
+    <pre class="usage"><span class='co'># S3 method for spannr</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, sf <span class='op'>=</span> <span class='cn'>FALSE</span>, full <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>Object of a class spannr</p></td>
+    </tr>
+    <tr>
+      <th>sf</th>
+      <td><p>Print the low-level 'sf' object information?</p></td>
+    </tr>
+    <tr>
+      <th>full</th>
+      <td><p>Print all snapshots? (too many can be bothersome and require
+extensive scrolling)</p></td>
+    </tr>
+    </table>
+
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

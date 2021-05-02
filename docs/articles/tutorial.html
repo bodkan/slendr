@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>stamp: Introduction and tutorial • stamp</title>
+<title>spannr: Introduction and tutorial • spannr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,8 +17,8 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="stamp: Introduction and tutorial">
-<meta property="og:description" content="stamp">
+<script src="../pkgdown.js"></script><meta property="og:title" content="spannr: Introduction and tutorial">
+<meta property="og:description" content="spannr">
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -37,7 +37,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">stamp</a>
+        <a class="navbar-link" href="../index.html">spannr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -61,14 +61,14 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/tutorial.html">stamp: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bodkan/stamp/">
+  <a href="https://github.com/bodkan/spannr/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -86,10 +86,10 @@
       </header><script src="tutorial_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>stamp: Introduction and tutorial</h1>
+      <h1 data-toc-skip>spannr: Introduction and tutorial</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bodkan/stamp/blob/master/vignettes/tutorial.Rmd"><code>vignettes/tutorial.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bodkan/spannr/blob/master/vignettes/tutorial.Rmd"><code>vignettes/tutorial.Rmd</code></a></small>
       <div class="hidden name"><code>tutorial.Rmd</code></div>
 
     </div>
@@ -109,7 +109,7 @@
 <p><img src="figures/haak_map.png" style="width:80.0%"></p>
 <p><strong>to produce this kind of data:</strong></p>
 <p><img src="figures/sim_data.png" style="width:80.0%"></p>
-<p>This is possible to do in <a href="https://messerlab.org/slim/">SLiM</a> using its <code>defineSpatialMap()</code> functionality. However, there is currently no way to define spatial maps programmatically, let alone build spatio-temporal models which include population splits, admixture, migration, and expansion. The package <code>stamp</code> is designed to do exactly this, and feed the generated spatial maps into a dedicated back-end SLiM script.</p>
+<p>This is possible to do in <a href="https://messerlab.org/slim/">SLiM</a> using its <code>defineSpatialMap()</code> functionality. However, there is currently no way to define spatial maps programmatically, let alone build spatio-temporal models which include population splits, admixture, migration, and expansion. The package <code>spannr</code> is designed to do exactly this, and feed the generated spatial maps into a dedicated back-end SLiM script.</p>
 </div>
 <div id="philosophy" class="section level2">
 <h2 class="hasAnchor">
@@ -123,12 +123,12 @@
 <div id="installation-and-setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation-and-setup" class="anchor"></a>Installation and setup</h2>
-<p>First, let’s install the latest version of the package and load it. <em>stamp</em> is not yet on CRAN (but will be soon!), so you will need to install the development version from Github using <code>devtools</code>.</p>
+<p>First, let’s install the latest version of the package and load it. <em>spannr</em> is not yet on CRAN (but will be soon!), so you will need to install the development version from Github using <code>devtools</code>.</p>
 <p>Here are the installation steps:</p>
 <ol style="list-style-type: decimal">
 <li>Install non-R software dependencies</li>
 </ol>
-<p>Some of the R libraries that <em>stamp</em> uses internally rely on non-R software that needs to be installed before doing anything else. At the very least, you should make sure to install <code>udunits</code> and <code>gdal</code> on your system (if you’re on a Mac, I recommend <a href="https://brew.sh/">homebrew</a>). In my experience, some early users had those already installed without even knowing it (perhaps because they already used tools or R packages which depend on them).</p>
+<p>Some of the R libraries that <em>spannr</em> uses internally rely on non-R software that needs to be installed before doing anything else. At the very least, you should make sure to install <code>udunits</code> and <code>gdal</code> on your system (if you’re on a Mac, I recommend <a href="https://brew.sh/">homebrew</a>). In my experience, some early users had those already installed without even knowing it (perhaps because they already used tools or R packages which depend on them).</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Install the <code>devtools</code> package:</li>
 </ol>
@@ -136,44 +136,44 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></code></pre></div>
 <p>On some systems, <code>devtools</code> installation fails because of missing libgit dependency. If that happens, please install <code>libgit2</code> first (on a Mac, you can use homebrew again).</p>
 <ol start="3" style="list-style-type: decimal">
-<li>Install <em>stamp</em>:</li>
+<li>Install <em>spannr</em>:</li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bodkan/stamp"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bodkan/spannr"</span><span class="op">)</span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>That’s it! You can now load the package with the usual:</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/stamp">stamp</a></span><span class="op">)</span></code></pre></div>
-<p>Note that the package relies on several R packages for geospatial analyses which, in turn, depend on other software. In case the installation procedure in step #3 fails, inspect the error logs and install the software dependencies manually (on a Mac, use a tool such as <code>homebrew</code>). If that happens, I’d appreciate if you could submit an issue on <a href="https://github.com/bodkan/stamp/issues">Github</a>. Thank you!</p>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/spannr">spannr</a></span><span class="op">)</span></code></pre></div>
+<p>Note that the package relies on several R packages for geospatial analyses which, in turn, depend on other software. In case the installation procedure in step #3 fails, inspect the error logs and install the software dependencies manually (on a Mac, use a tool such as <code>homebrew</code>). If that happens, I’d appreciate if you could submit an issue on <a href="https://github.com/bodkan/spannr/issues">Github</a>. Thank you!</p>
 <p>Finally, because the package is actively being worked on, improvements and bug fixes are being added every couple of hours. Make sure to install the development version each time you’re about to test some things (such as the examples in this vignette).</p>
 </div>
 <div id="defining-the-overall-world-map" class="section level2">
 <h2 class="hasAnchor">
 <a href="#defining-the-overall-world-map" class="anchor"></a>Defining the overall world map</h2>
 <p>Before we do anything else, we need to define a section of the map of the world which will provide context for all downstream spatio-temporal manipulation of population ranges.</p>
-<p>In principle, any source of geospatial data which can be manipulated using the <a href="https://r-spatial.github.io/sf/">simple features (sf)</a> infrastructure could be used. For now the <code>stamp</code> package implicitly uses the <a href="https://www.naturalearthdata.com/">Natural Earth</a> project data (in it’s vectorized form!), which it internally loads using the <a href="https://cran.r-project.org/web/packages/rnaturalearth/README.html">rnaturalearth</a> interface.</p>
+<p>In principle, any source of geospatial data which can be manipulated using the <a href="https://r-spatial.github.io/sf/">simple features (sf)</a> infrastructure could be used. For now the <code>spannr</code> package implicitly uses the <a href="https://www.naturalearthdata.com/">Natural Earth</a> project data (in it’s vectorized form!), which it internally loads using the <a href="https://cran.r-project.org/web/packages/rnaturalearth/README.html">rnaturalearth</a> interface.</p>
 <p>The first function we will look at is <code><a href="../reference/map.html">map()</a></code>. This function will load the map of the entire world in a vectorized format and zoom in to a specified section of the world.</p>
 <p>Note that in the call below, we specify the coordinates of the zoom in a geographical Coordinate Reference System (CRS), i.e. longitude/latitude), but we also specified that we want to perform all the downstream manipulation of the spatial population maps in a projected CRS (<a href="https://epsg.io/3035">Lambert Azimuthal Equal-Area projection</a>). This is more appropriate for representing a wider European continent used in this tutorial. Of course, different CRS projection could be used based on which part of the world we want to simulate.</p>
-<p>This is the current approach of <code>stamp</code>: let the user specify everything in an easy to understand longitude/latitude geographical CRS, but the internal data structures and the final exported spatial maps are internally handled in a projected CRS which is better for ensuring undistorted distances and proportions.</p>
+<p>This is the current approach of <code>spannr</code>: let the user specify everything in an easy to understand longitude/latitude geographical CRS, but the internal data structures and the final exported spatial maps are internally handled in a projected CRS which is better for ensuring undistorted distances and proportions.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">world</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/map.html">map</a></span><span class="op">(</span>
   xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>, <span class="co"># min-max longitude</span>
   yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,  <span class="co"># min-max latitude</span>
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span></code></pre></div>
-<p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>stamp</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
+<p>Internally, the <code>world</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spannr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
 <p>Note that the summary of the object says “projected CRS: ETRS89-extended / LAEA Europe”. This means that the world map has indeed been transformed in the projected CRS we specified above.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">world</span>
-<span class="co">#&gt; stamp 'world' object </span>
-<span class="co">#&gt; -------------------- </span>
+<span class="co">#&gt; spannr 'world' object </span>
+<span class="co">#&gt; --------------------- </span>
 <span class="co">#&gt; Coordinate Reference System: EPSG 3035</span></code></pre></div>
 </div>
 <div id="plotting-geographical-features-and-population-ranges" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-geographical-features-and-population-ranges" class="anchor"></a>Plotting geographical features and population ranges</h2>
-<p>The <code>stamp</code> package implements its own <a href="https://adv-r.hadley.nz/s3.html#s3-methods">generic method</a> called <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>, which overrides the default <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function used for <a href="https://r-spatial.github.io/sf/index.html">simple features</a> <code>sf</code> objects.</p>
+<p>The <code>spannr</code> package implements its own <a href="https://adv-r.hadley.nz/s3.html#s3-methods">generic method</a> called <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>, which overrides the default <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function used for <a href="https://r-spatial.github.io/sf/index.html">simple features</a> <code>sf</code> objects.</p>
 <p>We do this in order to make it easier and more convenient to iteratively build more complex models. The function can smartly decide (based on given input arguments) what is the right way to present the data for the user which helps to define models more quickly without relying on the lower-level mechanisms of the <code>sf</code> package.</p>
 <p>More on that below, but here we will just plot the world context we just created:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -223,19 +223,19 @@
 <p>Again, the object returned by the <code><a href="../reference/region.html">region()</a></code> function is actually a normal <code>sf</code> object, but carrying some additional annotation such as the name of the region (here “Anatolia”):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">anatolia</span>
-<span class="co">#&gt; stamp 'region' object </span>
-<span class="co">#&gt; --------------------- </span>
+<span class="co">#&gt; spannr 'region' object </span>
+<span class="co">#&gt; ---------------------- </span>
 <span class="co">#&gt; Coordinate Reference System: EPSG 3035</span></code></pre></div>
-<p>However, the object also carries additional class annotations for the purpose of internal <code>stamp</code> machinery:</p>
+<p>However, the object also carries additional class annotations for the purpose of internal <code>spannr</code> machinery:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">anatolia</span><span class="op">)</span>
-<span class="co">#&gt; [1] "stamp"        "stamp_region" "sf"           "data.frame"</span></code></pre></div>
-<p>Furthermore, note that in all <code><a href="../reference/region.html">region()</a></code> calls we specified the <code>world</code> object defined at the very beginning. This object is added as a hidden attribute to each <code>stamp</code> object and represents the context for all geospatial transformations, expansions, and plotting.</p>
+<span class="co">#&gt; [1] "spannr"        "spannr_region" "sf"            "data.frame"</span></code></pre></div>
+<p>Furthermore, note that in all <code><a href="../reference/region.html">region()</a></code> calls we specified the <code>world</code> object defined at the very beginning. This object is added as a hidden attribute to each <code>spannr</code> object and represents the context for all geospatial transformations, expansions, and plotting.</p>
 <p>Again, we can use the generic <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function to plot both geographic regions in the context of the defined section of the world map:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">europe</span>, <span class="va">anatolia</span>, title <span class="op">=</span> <span class="st">"Geographic regions"</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_europe_anatolia-1.png" width="700"></p>
-<p>Note that the <code>world</code> object is no longer explicitly specified. It is not needed, because each other class of objects provided to the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function must carry it as a “world” attribute. In fact, each such object must carry the same world context - <code>stamp</code> complains whenever this is not the case.</p>
+<p>Note that the <code>world</code> object is no longer explicitly specified. It is not needed, because each other class of objects provided to the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function must carry it as a “world” attribute. In fact, each such object must carry the same world context - <code>spannr</code> complains whenever this is not the case.</p>
 <p>We can check that the component is really there, although hidden, using the built-in <code>attr</code> function and verify that it is the same as the world object we created at the beginning:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">europe</span>, <span class="st">"world"</span><span class="op">)</span> <span class="op">==</span> <span class="va">world</span><span class="op">)</span>
@@ -246,7 +246,7 @@
 <div id="defining-spatial-population-boundaries" class="section level2">
 <h2 class="hasAnchor">
 <a href="#defining-spatial-population-boundaries" class="anchor"></a>Defining spatial population boundaries</h2>
-<p>One of the aims of the <em>stamp</em> package is formalizing the specification of spatial population boundaries and their changes over time. The core function for this is <code><a href="../reference/population.html">population()</a></code>, which accepts the population <code>name</code> and the <code>time</code> in which we want to enforce that population’s boundary, the effective population size of this population, as well as the <code>world</code> object described above. We also have to specify from which population did our population split from (or explicitly say that it’s an ancestral population). As for specifying the actual spatial boundaries, we have several options.</p>
+<p>One of the aims of the <em>spannr</em> package is formalizing the specification of spatial population boundaries and their changes over time. The core function for this is <code><a href="../reference/population.html">population()</a></code>, which accepts the population <code>name</code> and the <code>time</code> in which we want to enforce that population’s boundary, the effective population size of this population, as well as the <code>world</code> object described above. We also have to specify from which population did our population split from (or explicitly say that it’s an ancestral population). As for specifying the actual spatial boundaries, we have several options.</p>
 <div id="polygon-population-ranges" class="section level3">
 <h3 class="hasAnchor">
 <a href="#polygon-population-ranges" class="anchor"></a>Polygon population ranges</h3>
@@ -264,7 +264,7 @@
 <div id="circular-population-ranges" class="section level3">
 <h3 class="hasAnchor">
 <a href="#circular-population-ranges" class="anchor"></a>Circular population ranges</h3>
-<p>In case we want to simulate a more abstract and simpler population boundary, we can specify a <code>center</code> and <code>radius</code> arguments instead of the polygons. All distance units in the <em>stamp</em> package (such as the <code>radius</code> argument here) are currently specified in units of kilometers.</p>
+<p>In case we want to simulate a more abstract and simpler population boundary, we can specify a <code>center</code> and <code>radius</code> arguments instead of the polygons. All distance units in the <em>spannr</em> package (such as the <code>radius</code> argument here) are currently specified in units of kilometers.</p>
 <p>Here we define the location of the population of non-Africans right after their split from the African ancestors:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
@@ -295,8 +295,8 @@
 <p>We can inspect the object returned by the <code><a href="../reference/move.html">move()</a></code> function and see that it now contains not just the first YAM population range at 7000 years ago, but also the ranges of the intermediate locations:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ooa</span>
-<span class="co">#&gt; stamp 'population' object </span>
-<span class="co">#&gt; ------------------------- </span>
+<span class="co">#&gt; spannr 'population' object </span>
+<span class="co">#&gt; -------------------------- </span>
 <span class="co">#&gt; name: OOA </span>
 <span class="co">#&gt; split from: AFR </span>
 <span class="co">#&gt; split time: 51000 </span>
@@ -365,8 +365,8 @@
 <p>Again, we can inspect the object returned by the <code><a href="../reference/expand.html">expand()</a></code> function and see that it contains the spatial maps (“snapshots”) of the expansion process across time:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ana</span>
-<span class="co">#&gt; stamp 'population' object </span>
-<span class="co">#&gt; ------------------------- </span>
+<span class="co">#&gt; spannr 'population' object </span>
+<span class="co">#&gt; -------------------------- </span>
 <span class="co">#&gt; name: ANA </span>
 <span class="co">#&gt; split from: OOA </span>
 <span class="co">#&gt; split time: 28000 </span>
@@ -395,7 +395,7 @@
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ana</span>, title <span class="op">=</span> <span class="st">"Anatolian expansion into Europe (not intersected)"</span>, intersect <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_ana_raw-1.png" width="700"></p>
-<p>We can see that the population of Anatolian farmers at some point invades the spatial boundary of the EUR population. On its own, this doesn’t imply admixture. In the section on admixture below, we will see how <em>stamp</em> implements admixture of overlapping (but also non-overlapping) populations.</p>
+<p>We can see that the population of Anatolian farmers at some point invades the spatial boundary of the EUR population. On its own, this doesn’t imply admixture. In the section on admixture below, we will see how <em>spannr</em> implements admixture of overlapping (but also non-overlapping) populations.</p>
 <p>Let’s add a couple of more populations and migrations before we move on to implementing admixture between them,</p>
 <p>Yamnaya steppe people:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -431,9 +431,9 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">yam_migr</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_yam_migr-1.png" width="700"></p>
 </div>
-<div id="plotting-multiple-stamp-objects" class="section level2">
+<div id="plotting-multiple-spannr-objects" class="section level2">
 <h2 class="hasAnchor">
-<a href="#plotting-multiple-stamp-objects" class="anchor"></a>Plotting multiple <code>stamp</code> objects</h2>
+<a href="#plotting-multiple-spannr-objects" class="anchor"></a>Plotting multiple <code>spannr</code> objects</h2>
 <p>In addition to plotting individual population ranges, the generic function <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> can handle a combination of population ranges, and can also partition them in individual facets. This is very useful for visual inspection of the specified model and for looking for potential issues before the export of individual spatio-temporal maps. Obviously, this is a lot of multi-dimensional information so the plot is definitely not perfect, but it should provide a reasonably compact overview of what we’ve built so far.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
@@ -442,9 +442,9 @@
 <div id="define-admixture-events" class="section level2">
 <h2 class="hasAnchor">
 <a href="#define-admixture-events" class="anchor"></a>Define admixture events</h2>
-<p>The way <code>stamp</code> implements admixture events is by calling the <code><a href="../reference/admixture.html">admixture()</a></code> function. This function has a very straightforward interface which you should be able to understand from the examples below.</p>
+<p>The way <code>spannr</code> implements admixture events is by calling the <code><a href="../reference/admixture.html">admixture()</a></code> function. This function has a very straightforward interface which you should be able to understand from the examples below.</p>
 <p>One thing to note is that the <code>from</code> and <code>to</code> populations must have overlapping spatial ranges in order to simulate admixture. This is probably rather obvious, as populations can’t mix in space-time if they don’t overlap at a given point in space-time.</p>
-<p>For example, if you look at the spatial boundaries plotted above, you’ll see that the European and African populations don’t have any overlap in population ranges. If we try to instruct <code>stamp</code> to simulate admixture between them, we will get an error:</p>
+<p>For example, if you look at the spatial boundaries plotted above, you’ll see that the European and African populations don’t have any overlap in population ranges. If we try to instruct <code>spannr</code> to simulate admixture between them, we will get an error:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">admixtures</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">eur</span>, to <span class="op">=</span> <span class="va">afr</span>, rate <span class="op">=</span> <span class="fl">0.1</span>, start <span class="op">=</span> <span class="fl">20000</span>, end <span class="op">=</span> <span class="fl">15000</span><span class="op">)</span></code></pre></div>
 <pre><code>Not a sufficient overlap between population ranges of EUR and AFR
@@ -453,9 +453,9 @@ at time 20000. The required overlap is 0.20 but the current overlap is
 
 Please check the spatial maps of both populations by running
 `plot(eur, afr, pop_facets = F)` and either adjust the admixture
-parameters or add `overlap = F` which will instruct stamp to simulate
+parameters or add `overlap = F` which will instruct spannr to simulate
 admixture without spatial overlap.</code></pre>
-<p>The error message instructs us to visually verify that this is the case, which can be done by <code>stamp</code>’s <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function and the optional parameter <code>pop_facets = F</code> (which is set to <code>TRUE</code> by default):</p>
+<p>The error message instructs us to visually verify that this is the case, which can be done by <code>spannr</code>’s <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function and the optional parameter <code>pop_facets = F</code> (which is set to <code>TRUE</code> by default):</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">eur</span>, <span class="va">afr</span>, pop_facets <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_nonoverlapping-1.png" width="700"></p>
@@ -479,7 +479,7 @@ admixture without spatial overlap.</code></pre>
 <div id="compile-the-whole-model-and-load-it-in-slim" class="section level2">
 <h2 class="hasAnchor">
 <a href="#compile-the-whole-model-and-load-it-in-slim" class="anchor"></a>Compile the whole model and load it in SLiM</h2>
-<p>The most crucial function of <code>stamp</code> is <code><a href="../reference/compile.html">compile()</a></code>. It takes all population ranges defined across space and time together with list of admixture events (this is optional, of course, as some models won’t include admixture), and then proceeds by converting all vectorized spatial ranges to a raster bitmap form. Furthermore, it compiles all information about split times, <span class="math inline">\(N_e\)</span> values, admixture directions, times and rates, to a series of tables. All of that will be saved automatically in a dedicated directory in a format that is understood by the backend SLiM script provided by <code>stamp</code> (more on that below).</p>
+<p>The most crucial function of <code>spannr</code> is <code><a href="../reference/compile.html">compile()</a></code>. It takes all population ranges defined across space and time together with list of admixture events (this is optional, of course, as some models won’t include admixture), and then proceeds by converting all vectorized spatial ranges to a raster bitmap form. Furthermore, it compiles all information about split times, <span class="math inline">\(N_e\)</span> values, admixture directions, times and rates, to a series of tables. All of that will be saved automatically in a dedicated directory in a format that is understood by the backend SLiM script provided by <code>spannr</code> (more on that below).</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span><span class="op">)</span>,
@@ -489,7 +489,7 @@ admixture without spatial overlap.</code></pre>
   resolution <span class="op">=</span> <span class="fl">10</span>,
   overwrite <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<p>What do the files in the model directory look like? In an ideal case, you as a user should never worry about these things. In fact, the whole purpose of <code>stamp</code> is to let you work on much higher level of abstraction without worrying about these low-level details. That said, you might find it useful to see how things are stored in the background…</p>
+<p>What do the files in the model directory look like? In an ideal case, you as a user should never worry about these things. In fact, the whole purpose of <code>spannr</code> is to let you work on much higher level of abstraction without worrying about these low-level details. That said, you might find it useful to see how things are stored in the background…</p>
 <p>First of all, we can inspect the contents of the directory and see that it does, indeed, contain all defined spatial maps (now PNG files, which is what SLiM requires).</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"/tmp/test-model"</span>, pattern <span class="op">=</span> <span class="st">"*.png"</span><span class="op">)</span>
@@ -536,16 +536,16 @@ admixture without spatial overlap.</code></pre>
 <span class="co">#&gt; 5      1 1646.467          5</span>
 <span class="co">#&gt; 6      1 1636.367          6</span></code></pre></div>
 <p>The object returned by the <code><a href="../reference/compile.html">compile()</a></code> function (called <code>model</code> here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list <code>model$splits</code>, <code>model$admixtures</code>, etc.</p>
-<p>In case you’d want to separate model specification and running into different scripts, <em>stamp</em> includes a function <code><a href="../reference/read.html">read()</a></code> just for this purpose:</p>
+<p>In case you’d want to separate model specification and running into different scripts, <em>spannr</em> includes a function <code><a href="../reference/read.html">read()</a></code> just for this purpose:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">loaded_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read.html">read</a></span><span class="op">(</span><span class="st">"/tmp/test-model"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="visualize-the-entire-history-of-splits-and-admixtures" class="section level2">
 <h2 class="hasAnchor">
 <a href="#visualize-the-entire-history-of-splits-and-admixtures" class="anchor"></a>Visualize the entire history of splits and admixtures</h2>
-<p>With the couple of code snippets above, we have defined a simple history of European populations over the last 50 thousand years. This history includes population splits and admixture events as well as other demographic changes. While <em>stamp</em> tries to make the formal specification of spatio-temporal population dynamics as concise as possible, in the hope to increase reproducibility and minimize errors, because the admixture history can be very complex and occurs both across space and time, it is hard to really visualize everything that will happen on the SLiM side after the simulation starts just from the code alone.</p>
+<p>With the couple of code snippets above, we have defined a simple history of European populations over the last 50 thousand years. This history includes population splits and admixture events as well as other demographic changes. While <em>spannr</em> tries to make the formal specification of spatio-temporal population dynamics as concise as possible, in the hope to increase reproducibility and minimize errors, because the admixture history can be very complex and occurs both across space and time, it is hard to really visualize everything that will happen on the SLiM side after the simulation starts just from the code alone.</p>
 <p>For this purpose, the package includes a function <code><a href="../reference/graph.html">graph()</a></code> which takes in all the information about the relationships between populations (i.e., the population and admixture objects we defined above) and plots it all in the form of a so-called <em>admixture graph</em> (see <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193">here</a> for a discussion of the admixture graph concept).</p>
-<p>One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full <em>stamp</em> graph, a single population can participate in many admixture events over the course of history. This is visualized by assigning a color to each population, and different nodes of the same color representing snapshots in time when a demographic event affecting that population happens.</p>
+<p>One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full <em>spannr</em> graph, a single population can participate in many admixture events over the course of history. This is visualized by assigning a color to each population, and different nodes of the same color representing snapshots in time when a demographic event affecting that population happens.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/graph.html">graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_graph-1.png" width="1200"></p>
@@ -553,7 +553,7 @@ admixture without spatial overlap.</code></pre>
 <div id="running-the-simulation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-the-simulation" class="anchor"></a>Running the simulation</h2>
-<p>The way we feed the entire serialized model into SLiM is through the <code><a href="../reference/run.html">run()</a></code> function, which understands the format of the model directory created by the <code><a href="../reference/compile.html">compile()</a></code> function and generates a SLiM script (using a backend skeleton script which is a part of this package and can be found by calling <code><a href="https://rdrr.io/r/base/system.file.html">system.file("inst/extdata/backend.slim", package = "stamp")</a></code>, in case you’d like to peek into its internals).</p>
+<p>The way we feed the entire serialized model into SLiM is through the <code><a href="../reference/run.html">run()</a></code> function, which understands the format of the model directory created by the <code><a href="../reference/compile.html">compile()</a></code> function and generates a SLiM script (using a backend skeleton script which is a part of this package and can be found by calling <code><a href="https://rdrr.io/r/base/system.file.html">system.file("inst/extdata/backend.slim", package = "spannr")</a></code>, in case you’d like to peek into its internals).</p>
 <p>Note that when you run this model in SLiMgui (which should automatically open by calling the command below), you will see populations pop up in individual panels. This is how SLiMgui tracks spatial ranges of different populations. <em>Everyone is still simulated in the same world</em>, it’s just that the simulation visualizes individual population ranges separately to reduce clutter.</p>
 <p>A couple of more things to note: notice that the function accepts several parameters determining the length of the simulated sequence and the recombination rate, as well as the length of the burnin period, the total time of the simulation run (excluding burnin), and generation time (which is used to convert all times defined during model specification above into SLiM’s inetrnal units of generations).</p>
 <p>Finally, the parameter <code>track_ancestry</code> determines whether we want our SLiM script to track ancestry proportion changes in all simulations using neutral markers uniformly distributed along each genome. The default value of this parameter is <code>FALSE</code> and no ancestry tracking is performed. Any other non-zero, posititive integer value specifies how many markers we want to use for tracking. Please note that this <em>significantly</em> increases the simulation overhead, not only because the actual burden of mutation objects being simulated, but also because the ancestry is calculated in each generation for each simulated genome. In this case, we’re tracking ancestry using a single non-recombining marker to minimize computational time for the purposes of this demo.</p>
@@ -570,11 +570,11 @@ admixture without spatial overlap.</code></pre>
 <div id="post-simulation-diagnostics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#post-simulation-diagnostics" class="anchor"></a>Post-simulation diagnostics</h2>
-<p>In case we instructed <code>stamp</code> to track ancestry proportions, we can visualize them after the simulation is over using the built-in <code>diagnostics()</code> function. This is quite bare-bones for now and the way diagnostics are generated is subject to change…</p>
+<p>In case we instructed <code>spannr</code> to track ancestry proportions, we can visualize them after the simulation is over using the built-in <code>diagnostics()</code> function. This is quite bare-bones for now and the way diagnostics are generated is subject to change…</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ancestries.html">ancestries</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_ancestries-1.png" width="700"></p>
-<p>Similarly, we can recapitulate the spatial dynamics with the <em>stamp</em> function <code><a href="../reference/animate.html">animate()</a></code> (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):</p>
+<p>Similarly, we can recapitulate the spatial dynamics with the <em>spannr</em> function <code><a href="../reference/animate.html">animate()</a></code> (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_gif-1.gif"><!-- --></p>

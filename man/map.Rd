@@ -18,7 +18,7 @@ operations (default is WGS-84 or EPSG:4326 CRS)}
 manually downloaded and unzipped}
 }
 \value{
-Object of the \code{stamp_world} (and \code{sf}) class
+Object of the \code{spannr_world} (and \code{sf}) class
 }
 \description{
 Download Natural Earth land area map data, zoom on a given window

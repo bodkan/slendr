@@ -35,7 +35,7 @@ population(
 
 \item{coords}{List of vector pairs, defining corners of the range}
 
-\item{region}{Geographic region of the class \code{stamp_region}}
+\item{region}{Geographic region of the class \code{spannr_region}}
 
 \item{remove}{Time at which the population should be removed}
 
@@ -43,7 +43,7 @@ population(
 features?}
 }
 \value{
-Object of the \code{stamp_pop} (and \code{sf}) class
+Object of the \code{spannr_pop} (and \code{sf}) class
 }
 \description{
 Define a population range

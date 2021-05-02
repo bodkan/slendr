@@ -7,7 +7,7 @@
 rasterize(x, resolution)
 }
 \arguments{
-\item{x}{Object of the 'stamp_pop' class}
+\item{x}{Object of the 'spannr_pop' class}
 
 \item{resolution}{How many kilometers per pixel?}
 }
