@@ -1,9 +1,30 @@
 devtools::load_all(".")
 
-world <- map(xrange = c(-15, 60), yrange = c(20, 65), crs = "EPSG:3035")
+map1 <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "blank")
+map1
+print(map1, sf = T)
+plot(map1)
+
+xrange <- c(-15, 60)
+yrange <- c(20, 65)
+l <- spannr:::create_polygon(list(
+  c(xrange[1] + 20, yrange[1] + 10), c(xrange[2] - 20, yrange[1] + 10),
+  c(xrange[2] - 20, yrange[2] - 20), c(xrange[1] + 20, yrange[2] - 20)
+))
+map2 <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = l)
+map2
+print(map2, sf = T)
+plot(map2)
+
+map3 <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "naturalearth",
+              crs = "EPSG:3035", "~/Google/postdoc/data/ne_data")
+map3
+print(map3, sf = T)
+plot(map3)
+
 
 africa <- region(
-  "Africa", world,
+  "Africa", map1,
   coords = list(c(-18, 20), c(40, 20), c(30, 33),
                 c(20, 32), c(10, 35), c(-8, 35))
 )
@@ -25,15 +46,31 @@ anatolia <- region(
                 c(30, 43), c(27, 40), c(25, 38))
 )
 
-afr <- population("AFR", parent = "ancestor", N = 2000, world = world, region = africa)
+afr1 <- population("AFR", parent = "ancestor", N = 2000, world = world1,
+                  coords = list(c(-18, 20), c(40, 20), c(30, 33),
+                                c(20, 32), c(10, 35), c(-8, 35)))
 
-ooa <- population(
-  "OOA", parent = afr, time = 51000, N = 200, remove = 27000,
-  center = c(33, 30), radius = 500
+afr2 <- population("AFR", parent = "ancestor", N = 2000, world = world2,
+                  coords = list(c(-18, 20), c(40, 20), c(30, 33),
+                                c(20, 32), c(10, 35), c(-8, 35)))
+
+ooa1 <- population(
+  "OOA", parent = afr1, time = 51000, N = 200, remove = 27000,
+  center = c(33, 30), radius = 5
 ) %>% move(
   trajectory = list(c(40, 30), c(50, 30), c(60, 40), c(70, 40)),
   start = 50000, end = 40000, snapshots = 30
 )
+plot(ooa1)
+
+ooa2 <- population(
+  "OOA", parent = afr2, time = 51000, N = 200, remove = 27000,
+  center = c(33, 30), radius = 500000
+) %>% move(
+  trajectory = list(c(40, 30), c(50, 30), c(60, 40), c(70, 40)),
+  start = 50000, end = 40000, snapshots = 30
+)
+plot(ooa2)
 
 ehg <- population(
   "EHG", time = 28000, N = 400, parent = ooa, remove = 6000,
