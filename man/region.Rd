@@ -4,12 +4,12 @@
 \alias{region}
 \title{Define a geographic region}
 \usage{
-region(name, world, coords)
+region(name, map, coords)
 }
 \arguments{
 \item{name}{Name of the geographic region}
 
-\item{world}{Object of the type \code{sf} which defines the world}
+\item{map}{Object of the type \code{sf} which defines the map}
 
 \item{coords}{List of vector pairs, defining corners of the range}
 }
