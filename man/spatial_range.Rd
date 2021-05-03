@@ -5,7 +5,7 @@
 \title{Define a range (simple geometry object) for a population or a
 geographic region}
 \usage{
-spatial_range(world, center = NULL, radius = NULL, coords = NULL)
+spatial_range(map, center = NULL, radius = NULL, coords = NULL)
 }
 \description{
 Define a range (simple geometry object) for a population or a

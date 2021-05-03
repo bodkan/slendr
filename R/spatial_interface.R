@@ -4,7 +4,7 @@
 #' @param time Time of the population appearance
 #' @param N Number of individuals at the time of split
 #' @param parent Parent population object or "ancestor" character scalar
-#' @param world Object of the type \code{sf} which defines the world
+#' @param map Object of the type \code{sf} which defines the map
 #' @param center Vector of two elements defining a center of a circular range
 #' @param radius Scalar defining a radius of a range in kilometers
 #' @param coords List of vector pairs, defining corners of the range
@@ -16,27 +16,27 @@
 #' @return Object of the \code{spannr_pop} (and \code{sf}) class
 #'
 #' @export
-population <- function(name, parent, N, time = NULL, world = NULL,
+population <- function(name, parent, N, time = NULL, map = NULL,
                        center = NULL, radius = NULL, coords = NULL,
                        region = NULL, remove = NULL, intersect = TRUE) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
     time <- Inf
-    if (is.null(world))
-      stop("Ancestral population is required to specify its 'world' context",
+    if (is.null(map))
+      stop("Ancestral population is required to specify its 'map' context",
            call. = FALSE)
   } else if (!is.character(parent) & is.null(time)) {
     stop("The split time of each population (except for the ancestral population) needs to be specified",
          call. = FALSE)
   } else {
-    world <- attr(parent[nrow(parent), ], "world")
+    map <- attr(parent[nrow(parent), ], "map")
   }
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
   if (!is.null(region) & is.null(center)) {
     range <- sf::st_sfc(sf::st_geometry(region))
   } else {
-    range <- spatial_range(world, center, radius, coords)
+    range <- spatial_range(map, center, radius, coords)
   }
   pop_range <- sf::st_sf(
     data.frame(pop = name, time = time, N = N, stringsAsFactors = FALSE),
@@ -55,11 +55,11 @@ population <- function(name, parent, N, time = NULL, world = NULL,
   # keep a record of the parent population
   if (inherits(parent, "spannr_pop")) {
     attr(pop_range, "parent") <- parent[nrow(parent), ]
-    # keep the world as an internal attribute
-    attr(pop_range, "world") <- world
+    # keep the map as an internal attribute
+    attr(pop_range, "map") <- map
   } else if (is.character(parent) & parent == "ancestor") {
     attr(pop_range, "parent") <- "ancestor"
-    attr(pop_range, "world") <- world
+    attr(pop_range, "map") <- map
   } else
     stop("Suspicious parental population specified", call. = FALSE)
 
@@ -98,12 +98,12 @@ change <- function(pop, time, N = NULL,
   if (time < attr(pop, "remove"))
     stop("Cannot update population status after it has been removed")
 
-  world <- attr(pop, "world")
+  map <- attr(pop, "map")
   # define the new population range or re-use the old one
   if (!is.null(region)) {
     range <- sf::st_sfc(sf::st_geometry(region))
   } else if (!is.null(center) & !is.null(radius)){
-    range <- spatial_range(world, center, radius, coords)
+    range <- spatial_range(map, center, radius, coords)
   } else
     range <- sf::st_geometry(pop[nrow(pop), ])
 
@@ -120,7 +120,7 @@ change <- function(pop, time, N = NULL,
   attr(res, "parent") <- attr(pop, "parent")
   attr(res, "remove") <- attr(pop, "remove")
   attr(res, "intersect") <-attr(pop, "intersect")
-  attr(res, "world") <- world
+  attr(res, "map") <- map
   sf::st_agr(res) <- "constant"
 
   res
@@ -164,8 +164,8 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
   inter_regions <- rbind(pop, do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
-  # keep the world as an internal attribute
-  attr(inter_regions, "world") <- attr(pop, "world")
+  # keep the map as an internal attribute
+  attr(inter_regions, "map") <- attr(pop, "map")
   # propagate the information about the parental population
   attr(inter_regions, "parent") <- attr(pop, "parent")
   # optionally, add a movement boundary
@@ -194,7 +194,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
   
-  world <- attr(pop, "world")
+  map <- attr(pop, "map")
 
   # take care of just a single destination point being specified
   if (!is.list(trajectory) & length(trajectory) == 2)
@@ -211,7 +211,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   # along the way of the movement
   start_coords <- sf::st_centroid(region_start)
 
-  if (has_crs(world)) {
+  if (has_crs(map)) {
     source_crs <- "EPSG:4326"
     target_crs <- sf::st_crs(pop)
     start_coords <- sf::st_transform(start_coords, crs = source_crs)
@@ -222,7 +222,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 
   traj <- sf::st_linestring(do.call(rbind, checkpoints)) %>% sf::st_sfc()
 
-  if (has_crs(world)) {
+  if (has_crs(map)) {
     traj <- sf::st_sf(traj, crs = source_crs) %>% sf::st_transform(crs = target_crs)
   } else {
     traj <- sf::st_sf(traj)
@@ -256,8 +256,8 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   inter_regions <- rbind(pop, do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
-  # keep the world as an internal attribute
-  attr(inter_regions, "world") <- world
+  # keep the map as an internal attribute
+  attr(inter_regions, "map") <- map
   # propagate the information about the parental population
   attr(inter_regions, "parent") <- attr(pop, "parent")
   # retain the cleanup time
@@ -274,21 +274,21 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 #' Define a geographic region
 #'
 #' @param name Name of the geographic region
-#' @param world Object of the type \code{sf} which defines the world
+#' @param map Object of the type \code{sf} which defines the map
 #' @param coords List of vector pairs, defining corners of the range
 #'
 #' @return Object of the \code{spannr_region} (and \code{sf}) class
 #'
 #' @export
-region <- function(name, world, coords) {
+region <- function(name, map, coords) {
   region <- sf::st_sf(
     region = name,
-    geometry = spatial_range(world, coords = coords)
+    geometry = spatial_range(map, coords = coords)
   )
   sf::st_agr(region) <- "constant"
 
-  # keep the world as an internal attribute
-  attr(region, "world") <- world
+  # keep the map as an internal attribute
+  attr(region, "map") <- map
 
   class(region) <- set_class(region, "region")
   region
@@ -304,46 +304,58 @@ region <- function(name, world, coords) {
 #'
 #' @param xrange Numeric vector with minimum and maximum longitude
 #' @param yrange Numeric vector with minimum and maximum latitude
-#' @param crs Coordinate Reference System to use for spatial
-#'   operations (no CRS assumed by default, implying an abstract
-#'   landscape not tied to any particular geographic region)
+#' @param landscape Either "blank" (for blank abstract geography),
+#'   "naturalearth" (for real Earth geography) or an object of the
+#'   class \code{sf} defining abstract geographic features of the
+#'   world
+#' @param crs EPSG code of a coordinate reference system to use for
+#'   spatial operations (no CRS assumed by default, implying an
+#'   abstract landscape not tied to any real-world geographic region)
 #' @param ne_dir Path to the directory where Natural Earth data was
-#'   manually downloaded and unzipped (used only when \code{crs} is
-#'   not NULL)
+#'   manually downloaded and unzipped (used only when \code{landscape}
+#'   is "naturalearth")
 #'
-#' @return Object of the \code{spannr_world} (and \code{sf}) class
+#' @return Object of the class \code{spannr_map}
 #'
 #' @export
-map <- function(xrange, yrange, crs = NULL, ne_dir = NULL) {
-  if (is.null(crs)) {
-    world <- create_polygon(list(
-      c(xrange[1], yrange[1]), c(xrange[2], yrange[1]),
-      c(xrange[2], yrange[2]), c(xrange[1], yrange[2])
-    ))
-  } else {
-    scale <- "small"; type <- "land"; category <- "physical"
+world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
+   if (inherits(landscape, "sf")) { # a landscape defined by the user
+    map <- sf::st_sf(geometry = sf::st_as_sf(landscape))
+   } else if (landscape == "blank") { # an empty abstract landscape
+    map <- sf::st_sf(geometry = sf::st_sfc())
+  } else if (landscape == "naturalearth") {  # Natural Earth data vector landscape
+    scale <- "small"
+    type <- "land"
+    category <- "physical"
+
     if (is.null(ne_dir)) {
-      world_raw <- rnaturalearth::ne_download(scale, type, category, returnclass = "sf")
+      map_raw <- rnaturalearth::ne_download(scale, type, category, returnclass = "sf")
     } else {
-      world_raw <- rnaturalearth::ne_load(scale, type, category,
-                                          returnclass = "sf", destdir = ne_dir)
+      map_raw <- rnaturalearth::ne_load(scale, type, category,
+                                        returnclass = "sf", destdir = ne_dir)
     }
-    sf::st_agr(world_raw) <- "constant"
+    sf::st_agr(map_raw) <- "constant"
 
     ## transform the map (default geographic CRS) into the target CRS
-    world_transf <- sf::st_transform(world_raw, crs)
+    map_transf <- sf::st_transform(map_raw, crs)
 
     ## define boundary coordinates in the target CRS
     zoom_bounds <- define_zoom(xrange, yrange, "EPSG:4326")
     zoom_transf <- sf::st_transform(zoom_bounds, crs)
 
     ## crop the map to the boundary coordinates
-    world <- sf::st_crop(world_transf, zoom_transf)
+    map <- sf::st_crop(map_transf, zoom_transf)
+  } else {
+    stop("Landscape has to be either 'abstract', 'ne' (Natural Earth) or an object of the class 'sf'", call. = FALSE)
   }
-  sf::st_agr(world) <- "constant"
 
-  class(world) <- set_class(world, "world")
-  world
+  sf::st_agr(map) <- "constant"
+
+  class(map) <- set_class(map, "map")
+  attr(map, "xrange") <- xrange
+  attr(map, "yrange") <- yrange
+
+  map
 }
 
 
@@ -452,17 +464,17 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
     stop("Columns 'x' and 'y' must be present in the input data.frame", call. = FALSE)
 
   if (!is.null(model)) {
-    # dimension of the world in the projected CRS units
-    bbox <- sf::st_bbox(model$world)
-    world_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
+    # dimension of the map in the projected CRS units
+    bbox <- sf::st_bbox(model$map)
+    map_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
   
     # dimension of the rasterized map in pixel units
     # (x/y dimensions of PNGs are reversed)
     raster_dim <- dim(png::readPNG(model$maps$path[1]))[2:1]
   }
 
-  if (to == "world") to <- sf::st_crs(model$world)
-  if (from == "world") from <- sf::st_crs(model$world)
+  if (to == "map") to <- sf::st_crs(model$map)
+  if (from == "map") from <- sf::st_crs(model$map)
 
   if (is.null(coords))
     df <- data.frame(x = x, y = y)
@@ -471,9 +483,9 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
 
   if (from == "raster") {
     # convert pixel coordinates to na sf object in world-based coordinates
-    df$x <- bbox["xmin"] + world_dim[1] * df$x / raster_dim[1]
-    df$y <- bbox["ymin"] + world_dim[2] * df$y / raster_dim[2]
-    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = sf::st_crs(model$world))
+    df$x <- bbox["xmin"] + map_dim[1] * df$x / raster_dim[1]
+    df$y <- bbox["ymin"] + map_dim[2] * df$y / raster_dim[2]
+    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = sf::st_crs(model$map))
   } else {
     # ... otherwise create a formal sf point object from the
     # coordinates already given
@@ -481,10 +493,10 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
   }
 
   if (to == "raster") {
-    point_coords <- sf::st_transform(point, crs = sf::st_crs(model$world)) %>%
+    point_coords <- sf::st_transform(point, crs = sf::st_crs(model$map)) %>%
       sf::st_coordinates()
-    newx <- abs((point_coords[, "X"] - bbox["xmin"])) / world_dim[1] * raster_dim[1]
-    newy <- abs((point_coords[, "Y"] - bbox["ymin"])) / world_dim[2] * raster_dim[2]
+    newx <- abs((point_coords[, "X"] - bbox["xmin"])) / map_dim[1] * raster_dim[1]
+    newy <- abs((point_coords[, "Y"] - bbox["ymin"])) / map_dim[2] * raster_dim[2]
     new_point <- data.frame(newx = round(as.vector(newx)), newy = round(as.vector(newy)))
   } else {
     new_point <- sf::st_transform(point, crs = to) %>% sf::st_coordinates()
