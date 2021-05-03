@@ -97,7 +97,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
       maps = file.path(model_dir, "maps.tsv"),
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
-    world = attr(populations[[1]], "world"),
+    map = attr(populations[[1]], "map"),
     populations = populations,
     splits = return_splits[, c("pop", "parent", "tsplit", "N", "tremove")],
     admixtures = return_admixtures,
@@ -193,7 +193,7 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
       maps = path_maps,
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
-    world = attr(populations[[1]], "world"),
+    map = attr(populations[[1]], "map"),
     populations = populations,
     splits = splits[, c("pop", "parent", "tsplit", "N", "tremove")],
     admixtures = admixtures,
@@ -519,10 +519,10 @@ rasterize <- function(x, resolution) {
   x$fill <- factor(1)
 
   # create a template object for rasterization (i.e. size of the final raster)
-  if (inherits(x, "spannr_world"))
+  if (inherits(x, "spannr_map"))
     bbox <- sf::st_bbox(x)
   else
-    bbox <- sf::st_bbox(attr(x, "world"))
+    bbox <- sf::st_bbox(attr(x, "map"))
 
   template <- stars::st_as_stars(bbox, dx = resolution, dy = resolution)
 

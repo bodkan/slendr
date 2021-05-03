@@ -9,7 +9,7 @@ population(
   parent,
   N,
   time = NULL,
-  world = NULL,
+  map = NULL,
   center = NULL,
   radius = NULL,
   coords = NULL,
@@ -27,7 +27,7 @@ population(
 
 \item{time}{Time of the population appearance}
 
-\item{world}{Object of the type \code{sf} which defines the world}
+\item{map}{Object of the type \code{sf} which defines the map}
 
 \item{center}{Vector of two elements defining a center of a circular range}
 

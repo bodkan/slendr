@@ -1,14 +1,14 @@
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
 intersect_features <- function(pop) {
-  world <- attr(pop, "world")
+  map <- attr(pop, "map")
   region <- attr(pop, "region")
 
   intersected <- pop
 
   # restrict the population range to the landscape features
   if (attr(pop, "intersect"))
-    intersected <- sf::st_intersection(pop, sf::st_geometry(world))
+    intersected <- sf::st_intersection(pop, sf::st_geometry(map))
 
   # restrict further to the geographic boundary, if given
   if (!is.null(region)) {
@@ -21,8 +21,8 @@ intersect_features <- function(pop) {
   # add a small tag signifying that the ranges have been processed
   # and intersected over the map of the world
   attr(intersected, "intersected") <- TRUE
-  # add back the world attribute
-  attr(intersected, "world") <- world
+  # add back the map attribute
+  attr(intersected, "map") <- map
 
   class(intersected) <- set_class(intersected, "pop")
   intersected
@@ -37,7 +37,7 @@ has_crs <- function(x) {
 
 #' Define a range (simple geometry object) for a population or a
 #' geographic region
-spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
+spatial_range <- function(map, center = NULL, radius = NULL, coords = NULL) {
   # check function arguments
   if (!is.null(center) & !is.null(coords))
     stop("Either a circular range (center and radius) or the corners of a polygon need to be specified, not both.", call. = F)
@@ -51,17 +51,17 @@ spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
     # point in the WGS-84 geographic CRS
     point <- sf::st_sfc(sf::st_point(center))
 
-    if (has_crs(world)) {
+    if (has_crs(map)) {
       sf::st_crs(point) <- "EPSG:4326"
-      point <- sf::st_transform(point, sf::st_crs(world))
+      point <- sf::st_transform(point, sf::st_crs(map))
     }
 
     range <- sf::st_buffer(point, radius)
   } else {
     range <- sf::st_geometry(create_polygon(coords))
-    if (has_crs(world)) {
+    if (has_crs(map)) {
       sf::st_crs(range) <- "EPSG:4326"
-      range <- sf::st_transform(range, sf::st_crs(world))
+      range <- sf::st_transform(range, sf::st_crs(map))
     }
   }
 
