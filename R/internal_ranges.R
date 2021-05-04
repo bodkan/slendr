@@ -7,8 +7,11 @@ intersect_features <- function(pop) {
   intersected <- pop
 
   # restrict the population range to the landscape features
-  if (attr(pop, "intersect"))
+  if (attr(pop, "intersect") & nrow(map)) {
     intersected <- sf::st_intersection(pop, sf::st_geometry(map))
+    if (!sum(sf::st_area(intersected)))
+      stop(sprintf("No area left for %s after intersection with landscape at time %s", pop$pop, pop$time), call. = FALSE)
+  }
 
   # restrict further to the geographic boundary, if given
   if (!is.null(region)) {
@@ -110,4 +113,16 @@ Please provide a range object before it was intersected against a map.",
 set_class <- function(x, type) {
   other_classes <- class(x) %>% .[!grepl("^spannr", .)]
   c("spannr", paste0("spannr_", type), other_classes)
+}
+
+
+#' Set a bounding box of a given object, and return that object again
+#'
+#' For some reason there's no builtin way to set a bounding box in sf:
+#' <https://twitter.com/TimSalabim3/status/1063099774977667072>
+set_bbox <- function(x, xmin, xmax, ymin, ymax) {
+  bbox <- c(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
+  attr(bbox, "class") <- "bbox"
+  attr(sf::st_geometry(x), "bbox") <- bbox
+  x
 }

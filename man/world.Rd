@@ -11,16 +11,21 @@ world(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL)
 
 \item{yrange}{Numeric vector with minimum and maximum latitude}
 
-\item{crs}{Coordinate Reference System to use for spatial
-operations (no CRS assumed by default, implying an abstract
-landscape not tied to any particular geographic region)}
+\item{landscape}{Either "blank" (for blank abstract geography),
+"naturalearth" (for real Earth geography) or an object of the
+class \code{sf} defining abstract geographic features of the
+world}
+
+\item{crs}{EPSG code of a coordinate reference system to use for
+spatial operations (no CRS assumed by default, implying an
+abstract landscape not tied to any real-world geographic region)}
 
 \item{ne_dir}{Path to the directory where Natural Earth data was
-manually downloaded and unzipped (used only when \code{crs} is
-not NULL)}
+manually downloaded and unzipped (used only when \code{landscape}
+is "naturalearth")}
 }
 \value{
-Object of the \code{spannr_map} (and \code{sf}) class
+Object of the class \code{spannr_map}
 }
 \description{
 Download Natural Earth land area map data, zoom on a given window
