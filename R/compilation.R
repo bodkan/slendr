@@ -7,14 +7,20 @@
 #'   (either a list of data.frame objects - one per admixture event, or a single
 #'   data.frame for one admixture event)
 #' @param gen_time Generation time (in model's time units, i.e. years)
-#' @param resolution How many kilometers per pixel?
+#' @param resolution How many distance units per pixel?
 #' @param overwrite Overwrite the contents of the output directory (in case it
 #'   already exists)?
 #'
 #' @export
 compile <- function(populations, model_dir, gen_time, resolution, admixtures = NULL, overwrite = FALSE) {
-  if (!inherits(populations, "list"))
-    populations <- list(populations)
+  if (!inherits(populations, "list"))  populations <- list(populations)
+
+  map <- attr(populations[[1]], "map")
+
+  xrange <- sf::st_bbox(map)[c("xmin", "xmax")]
+  yrange <- sf::st_bbox(map)[c("ymin", "ymax")]
+  if (diff(xrange) < resolution | diff(yrange) < resolution)
+    stop("Resolution large then the overall world size", call. = FALSE)
 
   # save split and admixture tables which will be returned in the model object
   # in separate objects (tables serialized for SLiM will have to be stripped
@@ -37,7 +43,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
   splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] / gen_time
 
   # compile the spatial maps
-  maps_table <- compile_maps(populations, splits_table, resolution * 1000)
+  maps_table <- compile_maps(populations, splits_table, resolution)
 
   # prepare the model output directory
   if (dir.exists(model_dir)) {
@@ -97,7 +103,7 @@ compile <- function(populations, model_dir, gen_time, resolution, admixtures = N
       maps = file.path(model_dir, "maps.tsv"),
       admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
     ),
-    map = attr(populations[[1]], "map"),
+    map = map,
     populations = populations,
     splits = return_splits[, c("pop", "parent", "tsplit", "N", "tremove")],
     admixtures = return_admixtures,

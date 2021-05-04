@@ -36,7 +36,7 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
   regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
   pops <- do.call(rbind, lapply(list(...), function(i) {
     if (!is.null(i$pop)) {
-      if (intersect & has_crs(map))
+      if (intersect & nrow(map))
         intersect_features(i)
       else
         i
@@ -111,9 +111,9 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     p_map <- p_map + ggtitle(title)
 
   if (has_crs(map))
-    return(p_map + coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0))
+    return(p_map & coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0))
   else
-    return(p_map + coord_sf(
+    return(p_map & coord_sf(
       xlim = attr(map, "xrange"),
       ylim = attr(map, "yrange"),
       expand = 0
