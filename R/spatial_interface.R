@@ -23,17 +23,17 @@ population <- function(name, parent, N, time = NULL, map = NULL,
   if (is.character(parent) && parent == "ancestor") {
     time <- Inf
     if (is.null(map))
-      stop("Ancestral population is required to specify its 'map' context",
-           call. = FALSE)
+      stop("Ancestral population must specify its 'map'", call. = FALSE)
   } else if (!is.character(parent) & is.null(time)) {
-    stop("The split time of each population (except for the ancestral population) needs to be specified",
-         call. = FALSE)
+    stop("Split time of each population (except for the ancestral population) must be specified", call. = FALSE)
   } else {
-    map <- attr(parent[nrow(parent), ], "map")
+    map <- attr(parent, "map")
   }
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
   if (!is.null(region) & is.null(center)) {
+    if (sf::st_crs(map) != sf::st_crs(region))
+      stop("The specified region uses a different coordinate system than the implied world", call. = FALSE)
     range <- sf::st_sfc(sf::st_geometry(region))
   } else {
     range <- spatial_range(map, center, radius, coords)
@@ -44,10 +44,6 @@ population <- function(name, parent, N, time = NULL, map = NULL,
   )
 
   sf::st_agr(pop_range) <- "constant"
-
-  # optionally, keep a restricted population region
-  if (!is.null(region) & !is.null(center))
-    attr(pop_range, "region") <- region
 
   # when to clean up the population?
   attr(pop_range, "remove") <- ifelse(!is.null(remove), remove, -1)
@@ -156,7 +152,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
   inter_regions <- list()
   inter_regions[[1]] <- region_start
   for (i in seq_along(times)) {
-    exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / snapshots) * 1000)
+    exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / snapshots))
     exp_region$time <- times[i]
     inter_regions[[i + 1]] <- exp_region
   }
@@ -320,9 +316,11 @@ region <- function(name, map, coords) {
 #' @export
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
    if (inherits(landscape, "sf")) { # a landscape defined by the user
-    map <- sf::st_sf(geometry = sf::st_as_sf(landscape))
+     map <- sf::st_sf(geometry = sf::st_as_sf(landscape)) %>%
+       set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
    } else if (landscape == "blank") { # an empty abstract landscape
-    map <- sf::st_sf(geometry = sf::st_sfc())
+    map <- sf::st_sf(geometry = sf::st_sfc()) %>%
+       set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
   } else if (landscape == "naturalearth") {  # Natural Earth data vector landscape
     scale <- "small"
     type <- "land"
