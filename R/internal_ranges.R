@@ -1,14 +1,17 @@
 #' Take a list of all population regions and intersect them with the
 #' set of underlying world map
 intersect_features <- function(pop) {
-  world <- attr(pop, "world")
+  map <- attr(pop, "map")
   region <- attr(pop, "region")
 
   intersected <- pop
 
   # restrict the population range to the landscape features
-  if (attr(pop, "intersect"))
-    intersected <- sf::st_intersection(pop, sf::st_geometry(world))
+  if (attr(pop, "intersect") & nrow(map)) {
+    intersected <- sf::st_intersection(pop, sf::st_geometry(map))
+    if (!sum(sf::st_area(intersected)))
+      stop(sprintf("No area left for %s after intersection with landscape at time %s", pop$pop, pop$time), call. = FALSE)
+  }
 
   # restrict further to the geographic boundary, if given
   if (!is.null(region)) {
@@ -21,17 +24,23 @@ intersect_features <- function(pop) {
   # add a small tag signifying that the ranges have been processed
   # and intersected over the map of the world
   attr(intersected, "intersected") <- TRUE
-  # add back the world attribute
-  attr(intersected, "world") <- world
+  # add back the map attribute
+  attr(intersected, "map") <- map
 
   class(intersected) <- set_class(intersected, "pop")
   intersected
 }
 
 
+#' Does the object have a Coordinate Reference System assigned to it?
+has_crs <- function(x) {
+  !is.na(sf::st_crs(x)$epsg)
+}
+
+
 #' Define a range (simple geometry object) for a population or a
 #' geographic region
-spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
+spatial_range <- function(map, center = NULL, radius = NULL, coords = NULL) {
   # check function arguments
   if (!is.null(center) & !is.null(coords))
     stop("Either a circular range (center and radius) or the corners of a polygon need to be specified, not both.", call. = F)
@@ -43,15 +52,20 @@ spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
   # circular population range or polygon range?
   if (!is.null(center)) {
     # point in the WGS-84 geographic CRS
-    point_wgs84 <- sf::st_sfc(sf::st_point(center), crs = "EPSG:4326")
+    point <- sf::st_sfc(sf::st_point(center))
 
-    # transform into target CRS
-    point <- sf::st_transform(point_wgs84, sf::st_crs(world))
-    # expand range into desired radius
-    range <- sf::st_buffer(point, radius * 1000)
+    if (has_crs(map)) {
+      sf::st_crs(point) <- "EPSG:4326"
+      point <- sf::st_transform(point, sf::st_crs(map))
+    }
+
+    range <- sf::st_buffer(point, radius)
   } else {
-    range <- sf::st_geometry(create_polygon(coords, world)) %>%
-      sf::st_transform(crs = sf::st_crs(world))
+    range <- sf::st_geometry(create_polygon(coords))
+    if (has_crs(map)) {
+      sf::st_crs(range) <- "EPSG:4326"
+      range <- sf::st_transform(range, sf::st_crs(map))
+    }
   }
 
   range
@@ -60,7 +74,7 @@ spatial_range <- function(world, center = NULL, radius = NULL, coords = NULL) {
 
 #' Create a simple geometry polygon object from the list of
 #' coordinates
-create_polygon <- function(coords, world) {
+create_polygon <- function(coords) {
   # "loop-back" to the last point to close the polygon
   coords <- c(coords, coords[1])
   coords_mat <- do.call(rbind, coords)
@@ -68,7 +82,7 @@ create_polygon <- function(coords, world) {
   # polygon in the WGS-84 geographic CRS
   polygon <-
     sf::st_polygon(list(coords_mat)) %>%
-    sf::st_sfc(crs = "EPSG:4326") %>%
+    sf::st_sfc() %>%
     sf::st_sf(geometry = .)
 
   polygon
@@ -99,4 +113,15 @@ Please provide a range object before it was intersected against a map.",
 set_class <- function(x, type) {
   other_classes <- class(x) %>% .[!grepl("^spannr", .)]
   c("spannr", paste0("spannr_", type), other_classes)
+}
+
+
+#' Set a bounding box of a given object, and return that object again
+#' (for some reason there's no builtin way to set a bounding box in
+#' sf <https://twitter.com/TimSalabim3/status/1063099774977667072>)
+set_bbox <- function(x, xmin, xmax, ymin, ymax) {
+  bbox <- c(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
+  attr(bbox, "class") <- "bbox"
+  attr(sf::st_geometry(x), "bbox") <- bbox
+  x
 }

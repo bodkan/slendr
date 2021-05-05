@@ -3,4 +3,4 @@ library(spannr)
 
 test_check("spannr")
 
-# world data for testing: saveRDS(world, "tests/testthat/world.rds")
+# world data for testing: saveRDS(map, "tests/testthat/map.rds")

@@ -6,11 +6,6 @@
 \usage{
 save_png(raster, path)
 }
-\arguments{
-\item{raster}{Object of a stars type}
-
-\item{path}{Full path of an output PNG file}
-}
 \description{
 Save the rasterized stars object to a PNG file
 }
