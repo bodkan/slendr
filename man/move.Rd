@@ -2,23 +2,24 @@
 % Please edit documentation in R/spatial_interface.R
 \name{move}
 \alias{move}
-\title{Move population to a new location in a given amount of time}
+\title{Move the population to a new location in a given amount of time}
 \usage{
 move(pop, trajectory, end, snapshots, start = NULL)
 }
 \arguments{
-\item{pop}{Spatial population object of \code{spannr_pop} class}
+\item{pop}{Object of the class \code{spannr_pop}}
 
-\item{trajectory}{List of two-dimensional vectors \link{(longitude, latitude)}
-specifying the trajectory of the population movement}
+\item{trajectory}{List of two-dimensional vectors (longitude,
+latitude) specifying the migration trajectory}
 
 \item{snapshots}{Number of time slices to split the movement into}
 
-\item{start, end}{Start/end points of the population movement}
+\item{start, end}{Start/end points of the population migration}
 }
 \value{
-Object of the \code{spannr_pop} (and \code{sf}) class
+Object of the class \code{spannr_pop}
 }
 \description{
-Move population to a new location in a given amount of time
+This function defines a displacement of a population along a given
+trajectory in a given time frame
 }

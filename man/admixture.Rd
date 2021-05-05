@@ -7,15 +7,15 @@
 admixture(from, to, rate, start, end, overlap = TRUE)
 }
 \arguments{
-\item{from, to}{Population range objects of the class \code{spannr_pop}}
+\item{from, to}{Objects of the class \code{spannr_pop}}
 
-\item{rate}{Scalar value in the range (0, 1] specifying the proportion of
-migration over given time period}
+\item{rate}{Scalar value in the range (0, 1] specifying the
+proportion of migration over given time period}
 
 \item{start, end}{Start and end of the admixture event}
 
-\item{overlap}{Require spatial overlap between admixing populations (default
-\code{TRUE})}
+\item{overlap}{Require spatial overlap between admixing
+populations?  (default \code{TRUE})}
 }
 \value{
 Object of the class data.frame

@@ -2,14 +2,14 @@
 % Please edit documentation in R/spatial_interface.R
 \name{population}
 \alias{population}
-\title{Define a population range}
+\title{Define a population and its original spatial range}
 \usage{
 population(
   name,
-  parent,
-  N,
   time = NULL,
-  world = NULL,
+  N,
+  parent,
+  map = NULL,
   center = NULL,
   radius = NULL,
   coords = NULL,
@@ -21,30 +21,43 @@ population(
 \arguments{
 \item{name}{Name of the population}
 
-\item{parent}{Parent population object or "ancestor" character scalar}
+\item{time}{Time of the population's first appearance}
 
-\item{N}{Number of individuals at the time of split}
+\item{N}{Number of individuals at the time of first appearance}
 
-\item{time}{Time of the population appearance}
+\item{parent}{Parent population object or "ancestor" (indicating
+that the population does not have an ancestor, and that it is the
+first population in its "lineage")}
 
-\item{world}{Object of the type \code{sf} which defines the world}
+\item{map}{Object of the type \code{spannr_map} which defines the
+world context (created using the \code{world} function)}
 
-\item{center}{Vector of two elements defining a center of a circular range}
+\item{center}{Two-dimensional vector specifying the center of the
+circular range}
 
-\item{radius}{Scalar defining a radius of a range in kilometers}
+\item{radius}{Radius of the circular range}
 
-\item{coords}{List of vector pairs, defining corners of the range}
+\item{coords}{List of vector pairs, defining corners of the polygon
+range (see also the \code{region} argument)}
 
 \item{region}{Geographic region of the class \code{spannr_region}}
 
 \item{remove}{Time at which the population should be removed}
 
-\item{intersect}{Intersect the population's boundaries with landscape
-features?}
+\item{intersect}{Intersect the population's boundaries with
+landscape features?}
 }
 \value{
-Object of the \code{spannr_pop} (and \code{sf}) class
+Object of the class \code{spannr_pop}
 }
 \description{
-Define a population range
+Defines a spatial range of a population and its most important
+parameters.
+}
+\details{
+There are three ways to specify a spatial boundary: i) circular
+range specified using a center coordinate and a radisu, ii) polygon
+specified as a list of two-dimensional vector coordinates, iii)
+polygon as in ii), but defined (and named) using the \code{region}
+function.
 }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add a new time snapshot for an already defined population — change • spannr</title>
+<title>Update the population map or one of its parameters — change • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Add a new time snapshot for an already defined population — change" />
-<meta property="og:description" content="This function allows a more manual control of spatial map changes in addition
-to the expand and move functions" />
+<meta property="og:title" content="Update the population map or one of its parameters — change" />
+<meta property="og:description" content="This function allows a more manual control of spatial map changes
+in addition to the expand and move functions" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -104,7 +104,7 @@ to the expand and move functions" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
@@ -129,14 +129,14 @@ to the expand and move functions" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add a new time snapshot for an already defined population</h1>
+    <h1>Update the population map or one of its parameters</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/spatial_interface.R'><code>R/spatial_interface.R</code></a></small>
     <div class="hidden name"><code>change.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function allows a more manual control of spatial map changes in addition
-to the <code>expand</code> and <code>move</code> functions</p>
+    <p>This function allows a more manual control of spatial map changes
+in addition to the <code>expand</code> and <code>move</code> functions</p>
     </div>
 
     <pre class="usage"><span class='fu'>change</span><span class='op'>(</span>
@@ -154,27 +154,29 @@ to the <code>expand</code> and <code>move</code> functions</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>pop</th>
-      <td><p>Population object of the <code>spannr</code> class</p></td>
+      <td><p>Object of the class <code>spannr_pop</code></p></td>
     </tr>
     <tr>
       <th>time</th>
-      <td><p>Time of the current snapshot that is being defined</p></td>
+      <td><p>Time of the change</p></td>
     </tr>
     <tr>
       <th>N</th>
-      <td><p>Effective population size (stays the same by default)</p></td>
+      <td><p>Number of individuals</p></td>
     </tr>
     <tr>
       <th>center</th>
-      <td><p>Vector of two elements defining a center of a circular range</p></td>
+      <td><p>Two-dimensional vector specifying the center of the
+circular range</p></td>
     </tr>
     <tr>
       <th>radius</th>
-      <td><p>Scalar defining a radius of a range in kilometers</p></td>
+      <td><p>Radius of the circular range</p></td>
     </tr>
     <tr>
       <th>coords</th>
-      <td><p>List of vector pairs, defining corners of the range</p></td>
+      <td><p>List of vector pairs, defining corners of the polygon
+range (see also the <code>region</code> argument)</p></td>
     </tr>
     <tr>
       <th>region</th>
@@ -184,7 +186,7 @@ to the <code>expand</code> and <code>move</code> functions</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of the <code>spannr_pop</code> (and <code>sf</code>) class</p>
+    <p>Object of the class <code>spannr_pop</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

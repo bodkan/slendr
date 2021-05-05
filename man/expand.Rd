@@ -2,24 +2,25 @@
 % Please edit documentation in R/spatial_interface.R
 \name{expand}
 \alias{expand}
-\title{Expand population radius by a given factor in a given time}
+\title{Expand the population range}
 \usage{
 expand(pop, by, end, snapshots, start = NULL, region = NULL)
 }
 \arguments{
-\item{pop}{Spatial population object of \code{spannr_pop} class}
+\item{pop}{Object of the class \code{spannr_pop}}
 
-\item{by}{How many kilometers to expand by?}
+\item{by}{How many units of distance to expand by?}
 
-\item{snapshots}{Number of time slices to split the movement into}
+\item{snapshots}{Number of time slices to split the expansion into}
 
-\item{start, end}{When does the spatial population expansion start/end?}
+\item{start, end}{When does the expansion start/end?}
 
 \item{region}{Geographic region to restrict the expansion to}
 }
 \value{
-Object of the \code{spannr_pop} (and \code{sf}) class
+Object of the class \code{spannr_pop}
 }
 \description{
-Expand population radius by a given factor in a given time
+Expands the spatial population range by a specified distance in a
+given time-window
 }
