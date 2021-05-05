@@ -32,12 +32,6 @@ intersect_features <- function(pop) {
 }
 
 
-#' Does the object have a Coordinate Reference System assigned to it?
-has_crs <- function(x) {
-  !is.na(sf::st_crs(x)$epsg)
-}
-
-
 #' Define a range (simple geometry object) for a population or a
 #' geographic region
 spatial_range <- function(map, center = NULL, radius = NULL, coords = NULL) {
@@ -97,31 +91,4 @@ define_zoom <- function(lon, lat, source_crs = "EPSG:4326") {
     c(x1, x2, x2, x1, x1),
     c(y1, y1, y2, y2, y1)
   ))), crs = source_crs)
-}
-
-
-#' Check whether given population region has not yet been intersected
-check_not_intersected <- function(pop) {
-  if (!is.null(attr(pop, "intersected")))
-    stop("An already intersected population range object was provided.
-Please provide a range object before it was intersected against a map.",
-         call. = FALSE)
-}
-
-
-#' Set spannr classes (or fix their priorities if already present)
-set_class <- function(x, type) {
-  other_classes <- class(x) %>% .[!grepl("^spannr", .)]
-  c("spannr", paste0("spannr_", type), other_classes)
-}
-
-
-#' Set a bounding box of a given object, and return that object again
-#' (for some reason there's no builtin way to set a bounding box in
-#' sf <https://twitter.com/TimSalabim3/status/1063099774977667072>)
-set_bbox <- function(x, xmin, xmax, ymin, ymax) {
-  bbox <- c(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
-  attr(bbox, "class") <- "bbox"
-  attr(sf::st_geometry(x), "bbox") <- bbox
-  x
 }

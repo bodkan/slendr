@@ -79,6 +79,7 @@ population <- function(name, time = NULL, N, parent, map = NULL,
   pop_range
 }
 
+
 #' Update the population map or one of its parameters
 #'
 #' This function allows a more manual control of spatial map changes
@@ -318,6 +319,7 @@ region <- function(name, map, coords) {
   region
 }
 
+
 #' Define a world map for all spatial operations
 #'
 #' Defines either an abstract geographic landscape (blank or
@@ -550,4 +552,125 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
   if (add) new_point <- cbind(coords, new_point)
 
   new_point
+}
+
+
+#' Print a summary of a \code{spannr} object
+#'
+#' Prints a short summary of any \code{spannr} object.
+#'
+#' All spatial objects in the spannr package are internally
+#' represented by a Simple Features (sf) object. This fact is hidden
+#' in most circumstances this, as the goal of the spannr package is to
+#' provide functionality at a much higher level (population
+#' boundaries, geographic regions, instead of individual polygons and
+#' other "low-level" geometric objects). The logical argument
+#' \code{sf} allows the user to inspect the underlying object
+#' structure. Similarly, by default, \code{print} does not print all
+#' spatial map information to reduce clutter. If many individual
+#' spatial maps for a population are present, a full table of spatial
+#' snapshots can be printed using the \code{full} argument.
+#'
+#' @param x Object of a class \code{spannr}
+#' @param sf Print the low-level 'sf' object instead?
+#' @param full Print the complete table of spatial snapshots?
+#'
+#' @export
+print.spannr <- function(x, sf = FALSE, full = FALSE) {
+  if (sf) {
+    sf:::print.sf(x)
+  } else {
+    if (any(grepl("spannr_pop", class(x))))
+      type <- "population"
+    else if (any(grepl("spannr_region", class(x))))
+      type <- "region"
+    else if (any(grepl("spannr_map", class(x))))
+      type <- "map"
+    else if (any(grepl("spannr_model", class(x))))
+      type <- "model"
+    else
+      stop("Unknown object")
+
+    header <- sprintf("spannr '%s' object", type)
+    sep <- paste(rep("-", nchar(header)), collapse = "")
+
+    cat(header, "\n")
+    cat(sep, "\n")
+
+    if (type == "population") {
+      cat("name:", unique(x$pop), "\n")
+      parent <- attr(x, "parent")
+      cat("split from: ")
+      if (is.character(parent) && parent == "ancestor")
+        cat("[this is an ancestral population]\n")
+      else {
+        cat(parent$pop, "\n")
+        cat("split time:", x$time[1], "\n")
+      }
+      cat("removed at: ")
+      if (attr(x, "remove") == -1)
+        cat("[will not be removed]\n")
+      else
+        cat((attr(x, "remove")), "\n")
+
+      # pretty print the raw sf data as a simplified table
+      cat("snapshots:\n")
+      snapshots_df <- as.data.frame(x, stringsAsFactors = FALSE)
+      snapshots_df$`#` <- 1:nrow(snapshots_df)
+      # determine which maps over time are new and which are re-used from the
+      # previous time point (we do this because the raw spatial geometry
+      # representation is hard to read and not useful for seeing what changes
+      # when)
+      runs <- rle(sapply(x$geometry, tracemem))
+      snapshots_df$map <- c("new", rep("same", nrow(snapshots_df) - 1))
+      if (length(runs$lengths) > 1)
+        snapshots_df$map[cumsum(runs$lengths)] <- "new"
+
+      snapshots_df <- snapshots_df[, c("#", "time", "N", "map")]
+      if (nrow(snapshots_df) > 15 & !full) {
+        print(head(snapshots_df, 5), row.names = FALSE)
+        cat("         ...\n")
+        print(tail(snapshots_df, 5), row.names = FALSE)
+      } else
+        print(snapshots_df, row.names = FALSE)
+      cat("\n")
+    }
+
+    if (type %in% c("map", "region", "population")) {
+      crs <- sf::st_crs(x)$epsg
+      if (is.na(crs)) {
+        cat("abstract spatial landscape ")
+        if (nrow(x))
+          cat("with custom features\n")
+        else
+          cat("with no features\n")
+        units <- ""
+      } else {
+        crs <- paste("EPSG", crs)
+        cat("internal coordinate reference system:", crs, "\n")
+        units <- " (in degrees longitude and latitude)"
+      }
+      xrange <- attr(x, "xrange")
+      yrange <- attr(x, "yrange")
+      cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
+                  units, xrange[1], xrange[2], yrange[1], yrange[2]))
+    } else if (type == "model") {
+      cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
+      cat("admixture events: ")
+      if (!is.null(x$admixtures))
+        cat(nrow(x$admixtures), "\n")
+      else
+        cat("[no admixture]\n")
+      cat("generation time:", x$gen_time, "\n")
+      cat("number of spatial maps:", nrow(x$maps), "\n")
+      cat("resolution:", x$resolution, "km per pixel\n\n")
+      cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
+      cat(
+"For detailed model specification see `$splits`, `$admixtures`, `$maps`,
+or `$populations` components of the model object, or the configuration
+files in the model directory.\n")
+    } else {
+      stop("Unknown object type", call. = FALSE)
+    }
+  }
 }
