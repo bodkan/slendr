@@ -23,7 +23,7 @@ animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
     levels = sort(unique(locs$pop)),
     labels = pop_names[sort(unique(locs$pop)) + 1]
   )
-  locs$tyears <- as.integer(locs$t * model$gen_time)
+  locs$tyears <- as.integer(locs$t * model$generation_time)
 
   # cut time into blocks - same as the number of frames of the final GIF
   locs$tblock <- cut(
@@ -48,7 +48,7 @@ animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
     add = TRUE
   )
 
-  p <- plot(model$world) +
+  p <- plot(model$map) +
     geom_point(data = locs, aes(newx, newy, color = pop), alpha = 0.5) +
     theme(axis.title.x = element_blank(),
           axis.title.y = element_blank())
@@ -80,7 +80,7 @@ animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
 #' @param model Compiled model object
 #'
 #' @export
-ancestries <- function(model, gen_time = FALSE) {
+ancestries <- function(model, generation_time = FALSE) {
   anc_wide <- read_ancestries(model$config$directory)
 
   # thank god for tidyverse, base R reshaping is truly awful...  but
@@ -104,10 +104,10 @@ ancestries <- function(model, gen_time = FALSE) {
     names
   anc_long$pop <- factor(anc_long$pop, levels = split_order)
 
-  if (gen_time)
+  if (generation_time)
     anc_long$time <- anc_long$gen
   else
-    anc_long$time <- anc_long$gen * model$gen_time
+    anc_long$time <- anc_long$gen * model$generation_time
 
   anc_long %>%
   ggplot(aes(-time, prop, color = ancestry)) +
@@ -172,7 +172,7 @@ graph <- function(model) {
     geom_edge_link(aes(filter = type == "intermediate",
                        linetype = "continuation")) +
 
-    # population removal time spannr
+    # population removal time stamp
     geom_edge_link(aes(filter = type == "terminal"), alpha = 0.25) +
 
     geom_node_label(aes(filter = type == "split", fill = pop,
