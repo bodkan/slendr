@@ -2,11 +2,14 @@
 % Please edit documentation in R/internal_ranges.R
 \name{set_bbox}
 \alias{set_bbox}
-\title{Set a bounding box of a given object, and return that object again}
+\title{Set a bounding box of a given object, and return that object again
+(for some reason there's no builtin way to set a bounding box in
+sf \url{https://twitter.com/TimSalabim3/status/1063099774977667072})}
 \usage{
 set_bbox(x, xmin, xmax, ymin, ymax)
 }
 \description{
-For some reason there's no builtin way to set a bounding box in sf:
-\url{https://twitter.com/TimSalabim3/status/1063099774977667072}
+Set a bounding box of a given object, and return that object again
+(for some reason there's no builtin way to set a bounding box in
+sf \url{https://twitter.com/TimSalabim3/status/1063099774977667072})
 }

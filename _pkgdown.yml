@@ -3,7 +3,7 @@ url: https://bodkan.net/stamp
 reference:
   - title: Geographic features
     contents:
-    - map
+    - world
     - region
 
   - title: Population dynamics configuration

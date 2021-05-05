@@ -4,7 +4,7 @@
 \alias{ancestries}
 \title{Plot simulated ancestry proportions}
 \usage{
-ancestries(model, gen_time = FALSE)
+ancestries(model, generation_time = FALSE)
 }
 \arguments{
 \item{model}{Compiled model object}

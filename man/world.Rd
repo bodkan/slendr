@@ -7,9 +7,12 @@
 world(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL)
 }
 \arguments{
-\item{xrange}{Numeric vector with minimum and maximum longitude}
+\item{xrange}{Two-dimensional vector specifying minimum and maximum
+horizontal range ("longitude" if using real Earth cartographic
+data)}
 
-\item{yrange}{Numeric vector with minimum and maximum latitude}
+\item{yrange}{Two-dimensional vector specifying minimum and maximum
+vertical range ("latitude" if using real Earth cartographic data)}
 
 \item{landscape}{Either "blank" (for blank abstract geography),
 "naturalearth" (for real Earth geography) or an object of the
@@ -17,20 +20,24 @@ class \code{sf} defining abstract geographic features of the
 world}
 
 \item{crs}{EPSG code of a coordinate reference system to use for
-spatial operations (no CRS assumed by default, implying an
-abstract landscape not tied to any real-world geographic region)}
+spatial operations. No CRS is assumed by default (\code{NULL}),
+implying an abstract landscape not tied to any real-world
+geographic region (when \code{landscape = "blank"} or when
+\code{landscape} is a custom-defined geographic landscape), or
+implying WGS-84 (EPSG 4326) coordinate system when a real Earth
+landscape was defined (\code{landscape = "naturalearth"}).}
 
 \item{ne_dir}{Path to the directory where Natural Earth data was
-manually downloaded and unzipped (used only when \code{landscape}
-is "naturalearth")}
+manually downloaded and unzipped from
+\url{https://www.naturalearthdata.com/downloads/110m-physical-vectors}
+(used only when \code{landscape = "naturalearth"})}
 }
 \value{
 Object of the class \code{spannr_map}
 }
 \description{
-Download Natural Earth land area map data, zoom on a given window
-determined by longitude and latitude coordinates and transform to a
-specified projection. Alternatively, load a previously downloaded
-and unzipped data such as the "Land polygons" data here:
-\url{https://www.naturalearthdata.com/downloads/110m-physical-vectors/}
+Defines either an abstract geographic landscape (blank or
+containing user-defined landscape) or using a real Earth
+cartographic data from the Natural Earth project
+(\url{https://www.naturalearthdata.com}).
 }

@@ -58,10 +58,10 @@
     <loc>https://bodkan.net/stamp/reference/graph.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/intersect_features.html</loc>
+    <loc>https://bodkan.net/stamp/reference/has_crs.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/map.html</loc>
+    <loc>https://bodkan.net/stamp/reference/intersect_features.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/move.html</loc>
@@ -103,10 +103,16 @@
     <loc>https://bodkan.net/stamp/reference/script.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/stamp/reference/set_bbox.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/stamp/reference/set_class.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/spatial_range.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/world.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/write_maps.html</loc>

@@ -63,7 +63,7 @@ etc.
 ```r
 library(spannr)
 
-world <- map(
+map <- world(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
   crs = "EPSG:3035"    # real projected CRS used internally
@@ -81,14 +81,14 @@ latitude), but are internally represented in a projected CRS.
 ```r
 p1 <- population(
   name = "pop1", parent = "ancestor", N = 700,
-  radius = 600,       # radius of the circular range
+  radius = 600000,       # radius of the circular range (in meters)
   center = c(10, 25), # (longitude, latitude) coordinates of the center
-  world = world
+  map = map
 )
 
 p2 <- population(
   name = "pop2", parent = p1, time = 30000, N = 500,
-  center = c(10, 25), radius = 300
+  center = c(10, 25), radius = 300000
 ) %>%
   move(
     trajectory = list(c(25, 25), c(40, 30), # trajectory of movement
@@ -110,14 +110,14 @@ p4 <- population(
 
 p5 <- population(
   name = "pop5", parent = p1, time = 10000, N = 3000,
-  center = c(10, 25), radius = 300
+  center = c(10, 25), radius = 300000
 ) %>%
   move( # population migration...
     trajectory = list(c(-5, 33), c(-5, 40)),
     start = 9000, end = 8000,
     snapshots = 20
   ) %>% # ... followed by expansion
-  expand(by = 2000, start = 7000, end = 2000, snapshots = 10)
+  expand(by = 2000000, start = 7000, end = 2000, snapshots = 10)
 ```
 
 #### 3. Visualize the spatial maps of each population
@@ -142,13 +142,15 @@ admixtures <- list(
 #### 5. Compile the model to a set of configuration files
 
 
+
+
 ```r
 model <- compile(
   model_dir = "/tmp/example-model", # location of serialized model data
   populations = list(p1, p2, p3, p4, p5),
   admixtures = admixtures,
-  gen_time = 30,
-  resolution = 10  # how many km per pixel?
+  generation_time = 30,
+  resolution = 10000  # how many meters per pixel?
 )
 ```
 
@@ -162,9 +164,9 @@ model
 #> --------------------- 
 #> populations: pop1, pop2, pop3, pop4, pop5 
 #> admixture events: 2 
-#> generation time: 30 
+#> generation time: 
 #> number of spatial maps: 71 
-#> resolution: 10 km per pixel
+#> resolution: 10000 km per pixel
 #> 
 #> configuration files in: /private/tmp/example-model 
 #> 
@@ -193,7 +195,7 @@ run(
   burnin = 1000, sim_length = 31000,
   seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   save_locations = TRUE,
-  max_interaction = 200, spread = 50, # interaction and spread (in km)
+  max_interaction = 200e3, spread = 50e3, # interaction and spread (in meters)
   how = "gui" # open the model in SLiMgui
 )
 ```

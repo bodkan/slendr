@@ -6,11 +6,6 @@
 \usage{
 rasterize(x, resolution)
 }
-\arguments{
-\item{x}{Object of the 'spannr_pop' class}
-
-\item{resolution}{How many kilometers per pixel?}
-}
 \description{
 Rasterize the vector form of a population spatial boundary
 }
