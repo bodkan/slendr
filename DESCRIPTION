@@ -34,7 +34,8 @@ Imports:
     patchwork,
     ijtiff,
     ggraph,
-    rgdal
+    rgdal,
+    plotly
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
