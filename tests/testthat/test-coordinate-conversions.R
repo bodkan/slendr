@@ -2,7 +2,7 @@ map <- readRDS("map.rds")
 pop <- population("pop1", parent = "ancestor", N = 100,
                   center = c(0, 10), radius = 10, map = map, intersect = FALSE)
 path <- tempfile()
-model <- compile(pop, path, gen_time = 1, resolution = 100000)
+model <- compile(pop, path, generation_time = 1, resolution = 100000)
 
 ######################################################################
 # error handling

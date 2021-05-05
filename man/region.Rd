@@ -11,11 +11,15 @@ region(name, map, coords)
 
 \item{map}{Object of the type \code{sf} which defines the map}
 
-\item{coords}{List of vector pairs, defining corners of the range}
+\item{coords}{List of vector pairs, defining corners of the polygon}
 }
 \value{
-Object of the \code{spannr_region} (and \code{sf}) class
+Object of the class \code{spannr_region}
 }
 \description{
-Define a geographic region
+Creates a geographic region (a polygon) on a given map and gives it
+a name. This can be used to define objects which can be reused in
+multiple places in a spannr script (such as \code{region} arguments
+of \code{population}) without having to repeatedly define polygon
+coordinates.
 }

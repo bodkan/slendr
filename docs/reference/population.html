@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Define a population range — population • spannr</title>
+<title>Define a population and its original spatial range — population • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Define a population range — population" />
-<meta property="og:description" content="Define a population range" />
+<meta property="og:title" content="Define a population and its original spatial range — population" />
+<meta property="og:description" content="Defines a spatial range of a population and its most important
+parameters." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -103,7 +104,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
@@ -128,21 +129,22 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Define a population range</h1>
+    <h1>Define a population and its original spatial range</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/spatial_interface.R'><code>R/spatial_interface.R</code></a></small>
     <div class="hidden name"><code>population.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Define a population range</p>
+    <p>Defines a spatial range of a population and its most important
+parameters.</p>
     </div>
 
     <pre class="usage"><span class='fu'>population</span><span class='op'>(</span>
   <span class='va'>name</span>,
-  <span class='va'>parent</span>,
-  <span class='va'>N</span>,
   time <span class='op'>=</span> <span class='cn'>NULL</span>,
-  world <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>N</span>,
+  <span class='va'>parent</span>,
+  map <span class='op'>=</span> <span class='cn'>NULL</span>,
   center <span class='op'>=</span> <span class='cn'>NULL</span>,
   radius <span class='op'>=</span> <span class='cn'>NULL</span>,
   coords <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -159,32 +161,37 @@
       <td><p>Name of the population</p></td>
     </tr>
     <tr>
-      <th>parent</th>
-      <td><p>Parent population object or "ancestor" character scalar</p></td>
+      <th>time</th>
+      <td><p>Time of the population's first appearance</p></td>
     </tr>
     <tr>
       <th>N</th>
-      <td><p>Number of individuals at the time of split</p></td>
+      <td><p>Number of individuals at the time of first appearance</p></td>
     </tr>
     <tr>
-      <th>time</th>
-      <td><p>Time of the population appearance</p></td>
+      <th>parent</th>
+      <td><p>Parent population object or "ancestor" (indicating
+that the population does not have an ancestor, and that it is the
+first population in its "lineage")</p></td>
     </tr>
     <tr>
-      <th>world</th>
-      <td><p>Object of the type <code>sf</code> which defines the world</p></td>
+      <th>map</th>
+      <td><p>Object of the type <code>spannr_map</code> which defines the
+world context (created using the <code>world</code> function)</p></td>
     </tr>
     <tr>
       <th>center</th>
-      <td><p>Vector of two elements defining a center of a circular range</p></td>
+      <td><p>Two-dimensional vector specifying the center of the
+circular range</p></td>
     </tr>
     <tr>
       <th>radius</th>
-      <td><p>Scalar defining a radius of a range in kilometers</p></td>
+      <td><p>Radius of the circular range</p></td>
     </tr>
     <tr>
       <th>coords</th>
-      <td><p>List of vector pairs, defining corners of the range</p></td>
+      <td><p>List of vector pairs, defining corners of the polygon
+range (see also the <code>region</code> argument)</p></td>
     </tr>
     <tr>
       <th>region</th>
@@ -196,14 +203,21 @@
     </tr>
     <tr>
       <th>intersect</th>
-      <td><p>Intersect the population's boundaries with landscape
-features?</p></td>
+      <td><p>Intersect the population's boundaries with
+landscape features?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of the <code>spannr_pop</code> (and <code>sf</code>) class</p>
+    <p>Object of the class <code>spannr_pop</code></p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>There are three ways to specify a spatial boundary: i) circular
+range specified using a center coordinate and a radisu, ii) polygon
+specified as a list of two-dimensional vector coordinates, iii)
+polygon as in ii), but defined (and named) using the <code>region</code>
+function.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

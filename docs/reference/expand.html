@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Expand population radius by a given factor in a given time — expand • spannr</title>
+<title>Expand the population range — expand • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Expand population radius by a given factor in a given time — expand" />
-<meta property="og:description" content="Expand population radius by a given factor in a given time" />
+<meta property="og:title" content="Expand the population range — expand" />
+<meta property="og:description" content="Expands the spatial population range by a specified distance in a
+given time-window" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -103,7 +104,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
@@ -128,13 +129,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Expand population radius by a given factor in a given time</h1>
+    <h1>Expand the population range</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/spatial_interface.R'><code>R/spatial_interface.R</code></a></small>
     <div class="hidden name"><code>expand.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Expand population radius by a given factor in a given time</p>
+    <p>Expands the spatial population range by a specified distance in a
+given time-window</p>
     </div>
 
     <pre class="usage"><span class='fu'>expand</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>by</span>, <span class='va'>end</span>, <span class='va'>snapshots</span>, start <span class='op'>=</span> <span class='cn'>NULL</span>, region <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -144,19 +146,19 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>pop</th>
-      <td><p>Spatial population object of <code>spannr_pop</code> class</p></td>
+      <td><p>Object of the class <code>spannr_pop</code></p></td>
     </tr>
     <tr>
       <th>by</th>
-      <td><p>How many kilometers to expand by?</p></td>
+      <td><p>How many units of distance to expand by?</p></td>
     </tr>
     <tr>
       <th>snapshots</th>
-      <td><p>Number of time slices to split the movement into</p></td>
+      <td><p>Number of time slices to split the expansion into</p></td>
     </tr>
     <tr>
       <th>start, end</th>
-      <td><p>When does the spatial population expansion start/end?</p></td>
+      <td><p>When does the expansion start/end?</p></td>
     </tr>
     <tr>
       <th>region</th>
@@ -166,7 +168,7 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of the <code>spannr_pop</code> (and <code>sf</code>) class</p>
+    <p>Object of the class <code>spannr_pop</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -2,7 +2,7 @@
 % Please edit documentation in R/spatial_interface.R
 \name{change}
 \alias{change}
-\title{Add a new time snapshot for an already defined population}
+\title{Update the population map or one of its parameters}
 \usage{
 change(
   pop,
@@ -15,24 +15,26 @@ change(
 )
 }
 \arguments{
-\item{pop}{Population object of the \code{spannr} class}
+\item{pop}{Object of the class \code{spannr_pop}}
 
-\item{time}{Time of the current snapshot that is being defined}
+\item{time}{Time of the change}
 
-\item{N}{Effective population size (stays the same by default)}
+\item{N}{Number of individuals}
 
-\item{center}{Vector of two elements defining a center of a circular range}
+\item{center}{Two-dimensional vector specifying the center of the
+circular range}
 
-\item{radius}{Scalar defining a radius of a range in kilometers}
+\item{radius}{Radius of the circular range}
 
-\item{coords}{List of vector pairs, defining corners of the range}
+\item{coords}{List of vector pairs, defining corners of the polygon
+range (see also the \code{region} argument)}
 
 \item{region}{Geographic region of the class \code{spannr_region}}
 }
 \value{
-Object of the \code{spannr_pop} (and \code{sf}) class
+Object of the class \code{spannr_pop}
 }
 \description{
-This function allows a more manual control of spatial map changes in addition
-to the \code{expand} and \code{move} functions
+This function allows a more manual control of spatial map changes
+in addition to the \code{expand} and \code{move} functions
 }

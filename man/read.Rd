@@ -2,7 +2,7 @@
 % Please edit documentation in R/compilation.R
 \name{read}
 \alias{read}
-\title{Read a previously serialized spannr model}
+\title{Read a previously serialized model configuration}
 \usage{
 read(model_dir)
 }
@@ -10,5 +10,6 @@ read(model_dir)
 \item{model_dir}{Directory with all required configuration files}
 }
 \description{
-Read a previously serialized spannr model
+Reads all configuration tables and other model data from a location
+where it was previously compiled to by the \code{compile} function.
 }

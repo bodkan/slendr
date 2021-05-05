@@ -117,9 +117,8 @@ set_class <- function(x, type) {
 
 
 #' Set a bounding box of a given object, and return that object again
-#'
-#' For some reason there's no builtin way to set a bounding box in sf:
-#' <https://twitter.com/TimSalabim3/status/1063099774977667072>
+#' (for some reason there's no builtin way to set a bounding box in
+#' sf <https://twitter.com/TimSalabim3/status/1063099774977667072>)
 set_bbox <- function(x, xmin, xmax, ymin, ymax) {
   bbox <- c(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
   attr(bbox, "class") <- "bbox"
