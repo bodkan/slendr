@@ -1,15 +1,17 @@
-#' Plot spatio-temporal population distributions
+#' Plot \code{spannr} geographic features on a map
 #'
-#' If only geographic regions are given, they are colored. If both
-#' them and populations are given, only populations are specified.
-#'
-#' @param ... Population/geographic region objects of the 'spannr'
-#'   class
+#' Plots objects of the three \code{spannr} spatial classes
+#' (\code{spannr_map}, \code{spannr_region}, and \code{spannr_pop}).
+#' 
+#' @param ... Objects of classes \code{spannr_map},
+#'   \code{spannr_region}, or \code{spannr_pop}
 #' @param pop_facets Plot populations in individual panels?
 #' @param time_facets Plot time snapshots in individual panels?
-#' @param intersect intersect the population boundaries against landscape
-#'   and other geographic boundaries?
-#' @param geo_graticules Plot axies with lon/lat graticules?
+#' @param intersect Intersect the population boundaries against
+#'   landscape and other geographic boundaries (default TRUE)?
+#' @param graticules Plot graticules in the original Coordinate
+#'   Reference System (such as longitude-latitude), or in the internal
+#'   CRS (such as meters)?
 #' @param title Plot title
 #' @param nrow,ncol Number of columns or rows in the facet plot
 #'
@@ -17,8 +19,11 @@
 #'
 #' @import ggplot2
 plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
-                        intersect = TRUE, geo_graticules = TRUE,
+                        intersect = TRUE, graticules = "original",
                         title = NULL, nrow = NULL, ncol = NULL) {
+  if (!graticules %in% c("internal", "original"))
+    stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
+
   args <- list(...)
   # is only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spannr_map"))
@@ -67,7 +72,7 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     }
   }
 
-  if (geo_graticules & has_crs(map))
+  if (graticules == "original" & has_crs(map))
     graticule_crs <- "EPSG:4326"
   else
     graticule_crs <- sf::st_crs(map)
@@ -121,12 +126,25 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
 }
 
 
-#' Print a spannr object
+#' Print a summary of a \code{spannr} object
 #'
-#' @param x Object of a class spannr
-#' @param sf Print the low-level 'sf' object information?
-#' @param full Print all snapshots? (too many can be bothersome and require
-#'   extensive scrolling)
+#' Prints a short summary of any \code{spannr} object.
+#'
+#' All spatial objects in the spannr package are internally
+#' represented by a Simple Features (sf) object. This fact is hidden
+#' in most circumstances this, as the goal of the spannr package is to
+#' provide functionality at a much higher level (population
+#' boundaries, geographic regions, instead of individual polygons and
+#' other "low-level" geometric objects). The logical argument
+#' \code{sf} allows the user to inspect the underlying object
+#' structure. Similarly, by default, \code{print} does not print all
+#' spatial map information to reduce clutter. If many individual
+#' spatial maps for a population are present, a full table of spatial
+#' snapshots can be printed using the \code{full} argument.
+#'
+#' @param x Object of a class \code{spannr}
+#' @param sf Print the low-level 'sf' object instead?
+#' @param full Print the complete table of spatial snapshots?
 #'
 #' @export
 print.spannr <- function(x, sf = FALSE, full = FALSE) {
@@ -234,3 +252,15 @@ set_class <- function(x, type) {
   other_classes <- class(x) %>% .[!grepl("^spannr", .)]
   c("spannr", paste0("spannr_", type), other_classes)
 }
+
+#' Pipe operator
+#'
+#' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL

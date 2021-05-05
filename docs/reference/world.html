@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate edges leading to the times of population removals in SLiM — get_terminal_edges • spannr</title>
+<title>Define a world map for all spatial operations — world • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,11 @@
 
 
 
-<meta property="og:title" content="Generate edges leading to the times of population removals in SLiM — get_terminal_edges" />
-<meta property="og:description" content="Generate edges leading to the times of population removals in SLiM" />
+<meta property="og:title" content="Define a world map for all spatial operations — world" />
+<meta property="og:description" content="Defines either an abstract geographic landscape (blank or
+containing user-defined landscape) or using a real Earth
+cartographic data from the Natural Earth project
+(https://www.naturalearthdata.com)." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -128,18 +131,63 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generate edges leading to the times of population removals in SLiM</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/viz.R'><code>R/viz.R</code></a></small>
-    <div class="hidden name"><code>get_terminal_edges.Rd</code></div>
+    <h1>Define a world map for all spatial operations</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/spatial_interface.R'><code>R/spatial_interface.R</code></a></small>
+    <div class="hidden name"><code>world.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Generate edges leading to the times of population removals in SLiM</p>
+    <p>Defines either an abstract geographic landscape (blank or
+containing user-defined landscape) or using a real Earth
+cartographic data from the Natural Earth project
+(<a href='https://www.naturalearthdata.com'>https://www.naturalearthdata.com</a>).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_terminal_edges</span><span class='op'>(</span><span class='va'>split_edges</span>, <span class='va'>admixture_edges</span>, <span class='va'>split_table</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>world</span><span class='op'>(</span><span class='va'>xrange</span>, <span class='va'>yrange</span>, landscape <span class='op'>=</span> <span class='st'>"naturalearth"</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span>, ne_dir <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>xrange</th>
+      <td><p>Two-dimensional vector specifying minimum and maximum
+horizontal range ("longitude" if using real Earth cartographic
+data)</p></td>
+    </tr>
+    <tr>
+      <th>yrange</th>
+      <td><p>Two-dimensional vector specifying minimum and maximum
+vertical range ("latitude" if using real Earth cartographic data)</p></td>
+    </tr>
+    <tr>
+      <th>landscape</th>
+      <td><p>Either "blank" (for blank abstract geography),
+"naturalearth" (for real Earth geography) or an object of the
+class <code>sf</code> defining abstract geographic features of the
+world</p></td>
+    </tr>
+    <tr>
+      <th>crs</th>
+      <td><p>EPSG code of a coordinate reference system to use for
+spatial operations. No CRS is assumed by default (<code>NULL</code>),
+implying an abstract landscape not tied to any real-world
+geographic region (when <code>landscape = "blank"</code> or when
+<code>landscape</code> is a custom-defined geographic landscape), or
+implying WGS-84 (EPSG 4326) coordinate system when a real Earth
+landscape was defined (<code>landscape = "naturalearth"</code>).</p></td>
+    </tr>
+    <tr>
+      <th>ne_dir</th>
+      <td><p>Path to the directory where Natural Earth data was
+manually downloaded and unzipped from
+<a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors'>https://www.naturalearthdata.com/downloads/110m-physical-vectors</a>
+(used only when <code>landscape = "naturalearth"</code>)</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Object of the class <code>spannr_map</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

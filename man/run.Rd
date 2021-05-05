@@ -2,7 +2,7 @@
 % Please edit documentation in R/compilation.R
 \name{run}
 \alias{run}
-\title{Open the compiled spatial model in SLiM}
+\title{Run a spannr model as a SLiM script}
 \usage{
 run(
   model,
@@ -24,20 +24,23 @@ run(
 )
 }
 \arguments{
-\item{model}{Compiled model object}
+\item{model}{Model object created by the \code{compile} function}
 
-\item{sim_length}{Total length of the simulation (in model's time
+\item{sim_length}{Total length of the simulation (in model time
 units, i.e.  years)}
 
-\item{seq_length}{Total length of the simulated sequence in
-base-pairs}
+\item{seq_length}{Total length of the simulated sequence (in
+base-pairs)}
 
-\item{recomb_rate}{Recombination rate of the simulated sequence}
+\item{recomb_rate}{Recombination rate of the simulated sequence (in
+recombinations per basepair per generation)}
 
-\item{max_interaction, spread}{Maximum values for spatial
-interaction and mating choice (max_distance) and the standard
-deviation of the distance of an offspring from its parents
-(max_spread) - both in units of kilometers}
+\item{max_interaction}{Maximum spatial interaction and mating
+choice distance}
+
+\item{spread}{Standard deviation of the normal distribution for a
+distance from of an offspring from one of its parents (randomly
+determined by SLiM)}
 
 \item{save_locations}{Save location of each individual throughout
 the simulation?}
@@ -47,7 +50,7 @@ populations throughout the simulations (default FALSE)? If a
 non-zero integer is provided, ancestry will be tracked using the
 number number of neutral ancestry markers equal to this number.}
 
-\item{keep_pedigrees}{Turn on keepPedigrees during SLiM
+\item{keep_pedigrees}{Turn on \code{keepPedigrees} during SLiM
 initialization?}
 
 \item{ts_recording}{Turn on tree sequence recording during SLiM
@@ -69,13 +72,13 @@ i.e. years)}
 \item{output_prefix}{Common prefix (including path) for all output
 files}
 
-\item{gen_time}{Generation time (in model's time units, i.e. years)}
+\item{generation_time}{Generation time (in model's time units,
+i.e. years)}
 }
 \description{
-When run, the compiled SLiM script will save the location of each individual
-that ever lived, and will also record a sample of ancient individuals from
-each population in a tree sequence data structure which will be saved for all
-"present-day" individuals at the end of the simulation. This obviously does
-not make sense for all potential uses and the exact specification of output
-formats will be changed at some point soon.
+Generates a SLiM script from a built-in spannr template,
+substituting all required parameters by values specified by the
+user. The user has an option to either run the script in batch
+mode, open it in SLiMgui, or simply save the generated SLiM script
+to a given location for later use.
 }

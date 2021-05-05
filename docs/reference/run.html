@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Open the compiled spatial model in SLiM — run • spannr</title>
+<title>Run a spannr model as a SLiM script — run • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,13 +46,12 @@
 
 
 
-<meta property="og:title" content="Open the compiled spatial model in SLiM — run" />
-<meta property="og:description" content="When run, the compiled SLiM script will save the location of each individual
-that ever lived, and will also record a sample of ancient individuals from
-each population in a tree sequence data structure which will be saved for all
-&quot;present-day&quot; individuals at the end of the simulation. This obviously does
-not make sense for all potential uses and the exact specification of output
-formats will be changed at some point soon." />
+<meta property="og:title" content="Run a spannr model as a SLiM script — run" />
+<meta property="og:description" content="Generates a SLiM script from a built-in spannr template,
+substituting all required parameters by values specified by the
+user. The user has an option to either run the script in batch
+mode, open it in SLiMgui, or simply save the generated SLiM script
+to a given location for later use." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -108,7 +107,7 @@ formats will be changed at some point soon." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
@@ -133,18 +132,17 @@ formats will be changed at some point soon." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Open the compiled spatial model in SLiM</h1>
+    <h1>Run a spannr model as a SLiM script</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/compilation.R'><code>R/compilation.R</code></a></small>
     <div class="hidden name"><code>run.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>When run, the compiled SLiM script will save the location of each individual
-that ever lived, and will also record a sample of ancient individuals from
-each population in a tree sequence data structure which will be saved for all
-"present-day" individuals at the end of the simulation. This obviously does
-not make sense for all potential uses and the exact specification of output
-formats will be changed at some point soon.</p>
+    <p>Generates a SLiM script from a built-in spannr template,
+substituting all required parameters by values specified by the
+user. The user has an option to either run the script in batch
+mode, open it in SLiMgui, or simply save the generated SLiM script
+to a given location for later use.</p>
     </div>
 
     <pre class="usage"><span class='fu'>run</span><span class='op'>(</span>
@@ -171,28 +169,33 @@ formats will be changed at some point soon.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>model</th>
-      <td><p>Compiled model object</p></td>
+      <td><p>Model object created by the <code>compile</code> function</p></td>
     </tr>
     <tr>
       <th>sim_length</th>
-      <td><p>Total length of the simulation (in model's time
+      <td><p>Total length of the simulation (in model time
 units, i.e.  years)</p></td>
     </tr>
     <tr>
       <th>seq_length</th>
-      <td><p>Total length of the simulated sequence in
-base-pairs</p></td>
+      <td><p>Total length of the simulated sequence (in
+base-pairs)</p></td>
     </tr>
     <tr>
       <th>recomb_rate</th>
-      <td><p>Recombination rate of the simulated sequence</p></td>
+      <td><p>Recombination rate of the simulated sequence (in
+recombinations per basepair per generation)</p></td>
     </tr>
     <tr>
-      <th>max_interaction, spread</th>
-      <td><p>Maximum values for spatial
-interaction and mating choice (max_distance) and the standard
-deviation of the distance of an offspring from its parents
-(max_spread) - both in units of kilometers</p></td>
+      <th>max_interaction</th>
+      <td><p>Maximum spatial interaction and mating
+choice distance</p></td>
+    </tr>
+    <tr>
+      <th>spread</th>
+      <td><p>Standard deviation of the normal distribution for a
+distance from of an offspring from one of its parents (randomly
+determined by SLiM)</p></td>
     </tr>
     <tr>
       <th>save_locations</th>
@@ -208,7 +211,7 @@ number number of neutral ancestry markers equal to this number.</p></td>
     </tr>
     <tr>
       <th>keep_pedigrees</th>
-      <td><p>Turn on keepPedigrees during SLiM
+      <td><p>Turn on <code>keepPedigrees</code> during SLiM
 initialization?</p></td>
     </tr>
     <tr>
@@ -242,8 +245,9 @@ i.e. years)</p></td>
 files</p></td>
     </tr>
     <tr>
-      <th>gen_time</th>
-      <td><p>Generation time (in model's time units, i.e. years)</p></td>
+      <th>generation_time</th>
+      <td><p>Generation time (in model's time units,
+i.e. years)</p></td>
     </tr>
     </table>
 

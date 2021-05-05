@@ -10,7 +10,7 @@ write_model(
   splits_table,
   admix_table,
   maps_table,
-  gen_time,
+  generation_time,
   resolution
 )
 }

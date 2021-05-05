@@ -1,22 +1,36 @@
-#' Define a population range
+#' Define a population and its original spatial range
+#'
+#' Defines a spatial range of a population and its most important
+#' parameters.
+#'
+#' There are three ways to specify a spatial boundary: i) circular
+#' range specified using a center coordinate and a radisu, ii) polygon
+#' specified as a list of two-dimensional vector coordinates, iii)
+#' polygon as in ii), but defined (and named) using the \code{region}
+#' function.
 #'
 #' @param name Name of the population
-#' @param time Time of the population appearance
-#' @param N Number of individuals at the time of split
-#' @param parent Parent population object or "ancestor" character scalar
-#' @param map Object of the type \code{sf} which defines the map
-#' @param center Vector of two elements defining a center of a circular range
-#' @param radius Scalar defining a radius of a range in kilometers
-#' @param coords List of vector pairs, defining corners of the range
+#' @param time Time of the population's first appearance
+#' @param N Number of individuals at the time of first appearance
+#' @param parent Parent population object or "ancestor" (indicating
+#'   that the population does not have an ancestor, and that it is the
+#'   first population in its "lineage")
+#' @param map Object of the type \code{spannr_map} which defines the
+#'   world context (created using the \code{world} function)
+#' @param center Two-dimensional vector specifying the center of the
+#'   circular range
+#' @param radius Radius of the circular range
+#' @param coords List of vector pairs, defining corners of the polygon
+#'   range (see also the \code{region} argument)
 #' @param region Geographic region of the class \code{spannr_region}
 #' @param remove Time at which the population should be removed
-#' @param intersect Intersect the population's boundaries with landscape
-#'   features?
+#' @param intersect Intersect the population's boundaries with
+#'   landscape features?
 #'
-#' @return Object of the \code{spannr_pop} (and \code{sf}) class
+#' @return Object of the class \code{spannr_pop}
 #'
 #' @export
-population <- function(name, parent, N, time = NULL, map = NULL,
+population <- function(name, time = NULL, N, parent, map = NULL,
                        center = NULL, radius = NULL, coords = NULL,
                        region = NULL, remove = NULL, intersect = TRUE) {
   # is this the first population defined in the model?
@@ -65,20 +79,22 @@ population <- function(name, parent, N, time = NULL, map = NULL,
   pop_range
 }
 
-#' Add a new time snapshot for an already defined population
+#' Update the population map or one of its parameters
 #'
-#' This function allows a more manual control of spatial map changes in addition
-#' to the \code{expand} and \code{move} functions
+#' This function allows a more manual control of spatial map changes
+#' in addition to the \code{expand} and \code{move} functions
 #'
-#' @param pop Population object of the \code{spannr} class
-#' @param time Time of the current snapshot that is being defined
-#' @param N Effective population size (stays the same by default)
-#' @param center Vector of two elements defining a center of a circular range
-#' @param radius Scalar defining a radius of a range in kilometers
-#' @param coords List of vector pairs, defining corners of the range
+#' @param pop Object of the class \code{spannr_pop}
+#' @param time Time of the change
+#' @param N Number of individuals
+#' @param center Two-dimensional vector specifying the center of the
+#'   circular range
+#' @param radius Radius of the circular range
+#' @param coords List of vector pairs, defining corners of the polygon
+#'   range (see also the \code{region} argument)
 #' @param region Geographic region of the class \code{spannr_region}
 #'
-#' @return Object of the \code{spannr_pop} (and \code{sf}) class
+#' @return Object of the class \code{spannr_pop}
 #'
 #' @export
 change <- function(pop, time, N = NULL,
@@ -123,15 +139,18 @@ change <- function(pop, time, N = NULL,
 }
 
 
-#' Expand population radius by a given factor in a given time
+#' Expand the population range
 #'
-#' @param pop Spatial population object of \code{spannr_pop} class
-#' @param by How many kilometers to expand by?
-#' @param start,end When does the spatial population expansion start/end?
-#' @param snapshots Number of time slices to split the movement into
+#' Expands the spatial population range by a specified distance in a
+#' given time-window
+#'
+#' @param pop Object of the class \code{spannr_pop}
+#' @param by How many units of distance to expand by?
+#' @param start,end When does the expansion start/end?
+#' @param snapshots Number of time slices to split the expansion into
 #' @param region Geographic region to restrict the expansion to
 #'
-#' @return Object of the \code{spannr_pop} (and \code{sf}) class
+#' @return Object of the class \code{spannr_pop}
 #'
 #' @export
 expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
@@ -176,15 +195,18 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
 }
 
 
-#' Move population to a new location in a given amount of time
+#' Move the population to a new location in a given amount of time
 #'
-#' @param pop Spatial population object of \code{spannr_pop} class
-#' @param trajectory List of two-dimensional vectors [(longitude, latitude)]
-#'   specifying the trajectory of the population movement
-#' @param start,end Start/end points of the population movement
+#' This function defines a displacement of a population along a given
+#' trajectory in a given time frame
+#'
+#' @param pop Object of the class \code{spannr_pop}
+#' @param trajectory List of two-dimensional vectors (longitude,
+#'   latitude) specifying the migration trajectory
+#' @param start,end Start/end points of the population migration
 #' @param snapshots Number of time slices to split the movement into
 #'
-#' @return Object of the \code{spannr_pop} (and \code{sf}) class
+#' @return Object of the class \code{spannr_pop}
 #'
 #' @export
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
@@ -269,11 +291,17 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 
 #' Define a geographic region
 #'
+#' Creates a geographic region (a polygon) on a given map and gives it
+#' a name. This can be used to define objects which can be reused in
+#' multiple places in a spannr script (such as \code{region} arguments
+#' of \code{population}) without having to repeatedly define polygon
+#' coordinates.
+#'
 #' @param name Name of the geographic region
 #' @param map Object of the type \code{sf} which defines the map
-#' @param coords List of vector pairs, defining corners of the range
+#' @param coords List of vector pairs, defining corners of the polygon
 #'
-#' @return Object of the \code{spannr_region} (and \code{sf}) class
+#' @return Object of the class \code{spannr_region}
 #'
 #' @export
 region <- function(name, map, coords) {
@@ -292,24 +320,31 @@ region <- function(name, map, coords) {
 
 #' Define a world map for all spatial operations
 #'
-#' Download Natural Earth land area map data, zoom on a given window
-#' determined by longitude and latitude coordinates and transform to a
-#' specified projection. Alternatively, load a previously downloaded
-#' and unzipped data such as the "Land polygons" data here:
-#' <https://www.naturalearthdata.com/downloads/110m-physical-vectors/>
+#' Defines either an abstract geographic landscape (blank or
+#' containing user-defined landscape) or using a real Earth
+#' cartographic data from the Natural Earth project
+#' (<https://www.naturalearthdata.com>).
 #'
-#' @param xrange Numeric vector with minimum and maximum longitude
-#' @param yrange Numeric vector with minimum and maximum latitude
+#' @param xrange Two-dimensional vector specifying minimum and maximum
+#'   horizontal range ("longitude" if using real Earth cartographic
+#'   data)
+#' @param yrange Two-dimensional vector specifying minimum and maximum
+#'   vertical range ("latitude" if using real Earth cartographic data)
 #' @param landscape Either "blank" (for blank abstract geography),
 #'   "naturalearth" (for real Earth geography) or an object of the
 #'   class \code{sf} defining abstract geographic features of the
 #'   world
 #' @param crs EPSG code of a coordinate reference system to use for
-#'   spatial operations (no CRS assumed by default, implying an
-#'   abstract landscape not tied to any real-world geographic region)
+#'   spatial operations. No CRS is assumed by default (\code{NULL}),
+#'   implying an abstract landscape not tied to any real-world
+#'   geographic region (when \code{landscape = "blank"} or when
+#'   \code{landscape} is a custom-defined geographic landscape), or
+#'   implying WGS-84 (EPSG 4326) coordinate system when a real Earth
+#'   landscape was defined (\code{landscape = "naturalearth"}).
 #' @param ne_dir Path to the directory where Natural Earth data was
-#'   manually downloaded and unzipped (used only when \code{landscape}
-#'   is "naturalearth")
+#'   manually downloaded and unzipped from
+#'   <https://www.naturalearthdata.com/downloads/110m-physical-vectors>
+#'   (used only when \code{landscape = "naturalearth"})
 #'
 #' @return Object of the class \code{spannr_map}
 #'
@@ -359,12 +394,12 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 
 #' Define an admixture event
 #'
-#' @param from,to Population range objects of the class \code{spammr_pop}
-#' @param rate Scalar value in the range (0, 1] specifying the proportion of
-#'   migration over given time period
+#' @param from,to Objects of the class \code{spannr_pop}
+#' @param rate Scalar value in the range (0, 1] specifying the
+#'   proportion of migration over given time period
 #' @param start,end Start and end of the admixture event
-#' @param overlap Require spatial overlap between admixing populations (default
-#'   \code{TRUE})
+#' @param overlap Require spatial overlap between admixing
+#'   populations?  (default \code{TRUE})
 #'
 #' @return Object of the class data.frame
 #'
@@ -434,16 +469,24 @@ without spatial overlap between populations.",
 }
 
 
-#' Convert between coordinate system (raster-coordinates or CRS)
+#' Convert between coordinate systems
+#'
+#' Converts between coordinates on a compiled raster map (i.e. pixel
+#' units) and different Geographic Coordinate Systems (CRS).
 #'
 #' @param x,y Coordinates in two dimensions (if missing, coordinates
-#'   expected in the \code{coords} parameter as columns "x" and "y")
-#' @param from,to Either a string accepted by GDAL, a valid integer
-#'   EPSG value, an object of class crs, or the value "raster"
-#' @param coords data.frame-like object with coordinates in columns "x"
-#'   and "y"
-#' @param model object of the class \code{spannr_model}
-#' @param add Add column coordinates to the input data.frame \code{coords}?
+#'   are expected to be in the \code{data.frame} specified in the
+#'   \code{coords} parameter as columns "x" and "y")
+#' @param from,to Either a CRS code accepted by GDAL, a valid integer
+#'   EPSG value, an object of class \code{crs}, the value "raster"
+#'   (converting from/to pixel coordinates), or "world" (converting
+#'   from/to whatever CRS is set for the underlying map)
+#' @param coords data.frame-like object with coordinates in columns
+#'   "x" and "y"
+#' @param model Object of the class \code{spannr_model}
+#' @param add Add column coordinates to the input data.frame
+#'   \code{coords} (coordinates otherwise returned as a separate
+#'   object)?
 #'
 #' @return Data.frame with converted two-dimensional coordinates
 #'
@@ -471,8 +514,8 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
     raster_dim <- dim(png::readPNG(model$maps$path[1]))[2:1]
   }
 
-  if (to == "map") to <- sf::st_crs(model$map)
-  if (from == "map") from <- sf::st_crs(model$map)
+  if (to == "world") to <- sf::st_crs(model$map)
+  if (from == "world") from <- sf::st_crs(model$map)
 
   if (is.null(coords))
     df <- data.frame(x = x, y = y)

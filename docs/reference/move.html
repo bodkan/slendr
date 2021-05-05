@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Move population to a new location in a given amount of time — move • spannr</title>
+<title>Move the population to a new location in a given amount of time — move • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Move population to a new location in a given amount of time — move" />
-<meta property="og:description" content="Move population to a new location in a given amount of time" />
+<meta property="og:title" content="Move the population to a new location in a given amount of time — move" />
+<meta property="og:description" content="This function defines a displacement of a population along a given
+trajectory in a given time frame" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -103,7 +104,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
@@ -128,13 +129,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Move population to a new location in a given amount of time</h1>
+    <h1>Move the population to a new location in a given amount of time</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/spatial_interface.R'><code>R/spatial_interface.R</code></a></small>
     <div class="hidden name"><code>move.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Move population to a new location in a given amount of time</p>
+    <p>This function defines a displacement of a population along a given
+trajectory in a given time frame</p>
     </div>
 
     <pre class="usage"><span class='fu'>move</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>trajectory</span>, <span class='va'>end</span>, <span class='va'>snapshots</span>, start <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -144,12 +146,12 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>pop</th>
-      <td><p>Spatial population object of <code>spannr_pop</code> class</p></td>
+      <td><p>Object of the class <code>spannr_pop</code></p></td>
     </tr>
     <tr>
       <th>trajectory</th>
-      <td><p>List of two-dimensional vectors (longitude, latitude)
-specifying the trajectory of the population movement</p></td>
+      <td><p>List of two-dimensional vectors (longitude,
+latitude) specifying the migration trajectory</p></td>
     </tr>
     <tr>
       <th>snapshots</th>
@@ -157,13 +159,13 @@ specifying the trajectory of the population movement</p></td>
     </tr>
     <tr>
       <th>start, end</th>
-      <td><p>Start/end points of the population movement</p></td>
+      <td><p>Start/end points of the population migration</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of the <code>spannr_pop</code> (and <code>sf</code>) class</p>
+    <p>Object of the class <code>spannr_pop</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
