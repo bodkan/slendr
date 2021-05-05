@@ -2,27 +2,33 @@
 % Please edit documentation in R/spatial_interface.R
 \name{convert}
 \alias{convert}
-\title{Convert between coordinate system (raster-coordinates or CRS)}
+\title{Convert between coordinate systems}
 \usage{
 convert(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, add = FALSE)
 }
 \arguments{
-\item{from, to}{Either a string accepted by GDAL, a valid integer
-EPSG value, an object of class crs, or the value "raster"}
+\item{from, to}{Either a CRS code accepted by GDAL, a valid integer
+EPSG value, an object of class \code{crs}, the value "raster"
+(converting from/to pixel coordinates), or "world" (converting
+from/to whatever CRS is set for the underlying map)}
 
 \item{x, y}{Coordinates in two dimensions (if missing, coordinates
-expected in the \code{coords} parameter as columns "x" and "y")}
+are expected to be in the \code{data.frame} specified in the
+\code{coords} parameter as columns "x" and "y")}
 
-\item{coords}{data.frame-like object with coordinates in columns "x"
-and "y"}
+\item{coords}{data.frame-like object with coordinates in columns
+"x" and "y"}
 
-\item{model}{object of the class \code{spannr_model}}
+\item{model}{Object of the class \code{spannr_model}}
 
-\item{add}{Add column coordinates to the input data.frame \code{coords}?}
+\item{add}{Add column coordinates to the input data.frame
+\code{coords} (coordinates otherwise returned as a separate
+object)?}
 }
 \value{
 Data.frame with converted two-dimensional coordinates
 }
 \description{
-Convert between coordinate system (raster-coordinates or CRS)
+Converts between coordinates on a compiled raster map (i.e. pixel
+units) and different Geographic Coordinate Systems (CRS).
 }

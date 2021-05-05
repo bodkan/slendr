@@ -6,9 +6,6 @@
 \usage{
 render(pops, resolution)
 }
-\arguments{
-\item{pops}{Spatial population objects of the 'spannr_pop' class}
-}
 \description{
 Render population boundaries to black-and-white spatial maps
 }

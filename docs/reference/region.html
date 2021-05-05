@@ -47,7 +47,11 @@
 
 
 <meta property="og:title" content="Define a geographic region — region" />
-<meta property="og:description" content="Define a geographic region" />
+<meta property="og:description" content="Creates a geographic region (a polygon) on a given map and gives it
+a name. This can be used to define objects which can be reused in
+multiple places in a spannr script (such as region arguments
+of population) without having to repeatedly define polygon
+coordinates." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -103,7 +107,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
@@ -134,10 +138,14 @@
     </div>
 
     <div class="ref-description">
-    <p>Define a geographic region</p>
+    <p>Creates a geographic region (a polygon) on a given map and gives it
+a name. This can be used to define objects which can be reused in
+multiple places in a spannr script (such as <code>region</code> arguments
+of <code>population</code>) without having to repeatedly define polygon
+coordinates.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>region</span><span class='op'>(</span><span class='va'>name</span>, <span class='va'>world</span>, <span class='va'>coords</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>region</span><span class='op'>(</span><span class='va'>name</span>, <span class='va'>map</span>, <span class='va'>coords</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,18 +155,18 @@
       <td><p>Name of the geographic region</p></td>
     </tr>
     <tr>
-      <th>world</th>
-      <td><p>Object of the type <code>sf</code> which defines the world</p></td>
+      <th>map</th>
+      <td><p>Object of the type <code>sf</code> which defines the map</p></td>
     </tr>
     <tr>
       <th>coords</th>
-      <td><p>List of vector pairs, defining corners of the range</p></td>
+      <td><p>List of vector pairs, defining corners of the polygon</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of the <code>spannr_region</code> (and <code>sf</code>) class</p>
+    <p>Object of the class <code>spannr_region</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
