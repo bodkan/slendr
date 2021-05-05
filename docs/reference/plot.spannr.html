@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot spatio-temporal population distributions — plot.spannr • spannr</title>
+<title>Plot spannr geographic features on a map — plot.spannr • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Plot spatio-temporal population distributions — plot.spannr" />
-<meta property="og:description" content="If only geographic regions are given, they are colored. If both
-them and populations are given, only populations are specified." />
+<meta property="og:title" content="Plot spannr geographic features on a map — plot.spannr" />
+<meta property="og:description" content="Plots objects of the three spannr spatial classes
+(spannr_map, spannr_region, and spannr_pop)." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -104,7 +104,7 @@ them and populations are given, only populations are specified." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
@@ -129,14 +129,14 @@ them and populations are given, only populations are specified." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot spatio-temporal population distributions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/stamp.R'><code>R/stamp.R</code></a></small>
+    <h1>Plot <code>spannr</code> geographic features on a map</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/spannr.R'><code>R/spannr.R</code></a></small>
     <div class="hidden name"><code>plot.spannr.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>If only geographic regions are given, they are colored. If both
-them and populations are given, only populations are specified.</p>
+    <p>Plots objects of the three <code>spannr</code> spatial classes
+(<code>spannr_map</code>, <code>spannr_region</code>, and <code>spannr_pop</code>).</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for spannr</span>
@@ -145,7 +145,7 @@ them and populations are given, only populations are specified.</p>
   pop_facets <span class='op'>=</span> <span class='cn'>TRUE</span>,
   time_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
   intersect <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  geo_graticules <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  graticules <span class='op'>=</span> <span class='st'>"original"</span>,
   title <span class='op'>=</span> <span class='cn'>NULL</span>,
   nrow <span class='op'>=</span> <span class='cn'>NULL</span>,
   ncol <span class='op'>=</span> <span class='cn'>NULL</span>
@@ -156,8 +156,8 @@ them and populations are given, only populations are specified.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td><p>Population/geographic region objects of the 'spannr'
-class</p></td>
+      <td><p>Objects of classes <code>spannr_map</code>,
+<code>spannr_region</code>, or <code>spannr_pop</code></p></td>
     </tr>
     <tr>
       <th>pop_facets</th>
@@ -169,12 +169,14 @@ class</p></td>
     </tr>
     <tr>
       <th>intersect</th>
-      <td><p>intersect the population boundaries against landscape
-and other geographic boundaries?</p></td>
+      <td><p>Intersect the population boundaries against
+landscape and other geographic boundaries (default TRUE)?</p></td>
     </tr>
     <tr>
-      <th>geo_graticules</th>
-      <td><p>Plot axies with lon/lat graticules?</p></td>
+      <th>graticules</th>
+      <td><p>Plot graticules in the original Coordinate
+Reference System (such as longitude-latitude), or in the internal
+CRS (such as meters)?</p></td>
     </tr>
     <tr>
       <th>title</th>

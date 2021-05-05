@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print a spannr object — print.spannr • spannr</title>
+<title>Print a summary of a spannr object — print.spannr • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Print a spannr object — print.spannr" />
-<meta property="og:description" content="Print a spannr object" />
+<meta property="og:title" content="Print a summary of a spannr object — print.spannr" />
+<meta property="og:description" content="Prints a short summary of any spannr object." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -103,7 +103,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">spannr: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
@@ -128,13 +128,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print a spannr object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/stamp.R'><code>R/stamp.R</code></a></small>
+    <h1>Print a summary of a <code>spannr</code> object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/spannr.R'><code>R/spannr.R</code></a></small>
     <div class="hidden name"><code>print.spannr.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Print a spannr object</p>
+    <p>Prints a short summary of any <code>spannr</code> object.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for spannr</span>
@@ -145,19 +145,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object of a class spannr</p></td>
+      <td><p>Object of a class <code>spannr</code></p></td>
     </tr>
     <tr>
       <th>sf</th>
-      <td><p>Print the low-level 'sf' object information?</p></td>
+      <td><p>Print the low-level 'sf' object instead?</p></td>
     </tr>
     <tr>
       <th>full</th>
-      <td><p>Print all snapshots? (too many can be bothersome and require
-extensive scrolling)</p></td>
+      <td><p>Print the complete table of spatial snapshots?</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>All spatial objects in the spannr package are internally
+represented by a Simple Features (sf) object. This fact is hidden
+in most circumstances this, as the goal of the spannr package is to
+provide functionality at a much higher level (population
+boundaries, geographic regions, instead of individual polygons and
+other "low-level" geometric objects). The logical argument
+<code>sf</code> allows the user to inspect the underlying object
+structure. Similarly, by default, <code>print</code> does not print all
+spatial map information to reduce clutter. If many individual
+spatial maps for a population are present, a full table of spatial
+snapshots can be printed using the <code>full</code> argument.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

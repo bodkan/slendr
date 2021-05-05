@@ -1,15 +1,17 @@
-#' Plot spatio-temporal population distributions
+#' Plot \code{spannr} geographic features on a map
 #'
-#' If only geographic regions are given, they are colored. If both
-#' them and populations are given, only populations are specified.
-#'
-#' @param ... Population/geographic region objects of the 'spannr'
-#'   class
+#' Plots objects of the three \code{spannr} spatial classes
+#' (\code{spannr_map}, \code{spannr_region}, and \code{spannr_pop}).
+#' 
+#' @param ... Objects of classes \code{spannr_map},
+#'   \code{spannr_region}, or \code{spannr_pop}
 #' @param pop_facets Plot populations in individual panels?
 #' @param time_facets Plot time snapshots in individual panels?
-#' @param intersect intersect the population boundaries against landscape
-#'   and other geographic boundaries?
-#' @param geo_graticules Plot axies with lon/lat graticules?
+#' @param intersect Intersect the population boundaries against
+#'   landscape and other geographic boundaries (default TRUE)?
+#' @param graticules Plot graticules in the original Coordinate
+#'   Reference System (such as longitude-latitude), or in the internal
+#'   CRS (such as meters)?
 #' @param title Plot title
 #' @param nrow,ncol Number of columns or rows in the facet plot
 #'
@@ -17,39 +19,42 @@
 #'
 #' @import ggplot2
 plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
-                        intersect = TRUE, geo_graticules = TRUE,
+                        intersect = TRUE, graticules = "original",
                         title = NULL, nrow = NULL, ncol = NULL) {
+  if (!graticules %in% c("internal", "original"))
+    stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
+
   args <- list(...)
-  # only the world object being plotted?
-  if (length(args) == 1 & inherits(args[[1]], "spannr_world"))
-    world <- args[[1]]
+  # is only the world object being plotted?
+  if (length(args) == 1 & inherits(args[[1]], "spannr_map"))
+    map <- args[[1]]
   else {
-    # extract the world component underlying each population object
+    # extract the map component underlying each population object
     # and make sure they are all the same with no conflicts
-    world <- unique(lapply(args, function(i) attr(i, "world")))
-    if (length(world) != 1) {
-      stop("Population objects do not share the same world component", call. = F)
-    } else {
-      world <- world[[1]]
+    maps <- unique(lapply(args, function(i) attr(i, "map")))
+    if (length(maps) != 1) {
+      stop("Objects do not share the same map component", call. = F)
     }
+    map <- maps[[1]]
   }
 
   regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
   pops <- do.call(rbind, lapply(list(...), function(i) {
     if (!is.null(i$pop)) {
-      if (intersect)
+      if (intersect & nrow(map))
         intersect_features(i)
       else
         i
     }
   }))
-  # replace the Inf split time in ancestral populations
+  # replace the Inf split time in ancestral populations (invisible otherwise)
   if (any(pops$time == Inf)) pops[pops$time == Inf, ]$time = NA
 
-  # plot the world map
-  p_map <-  ggplot() +
-    geom_sf(data = world, fill = NA, color = "black") +
-    theme_bw()
+  p_map <-  ggplot() + theme_bw()
+  
+  # plot the world map if a real geographic map was specified
+  if (nrow(map))
+    p_map <- p_map + geom_sf(data = map, fill = "lightgray", color = NA)
 
   # plot geographic region boundaries, if present
   if (!is.null(regions)) {
@@ -67,10 +72,10 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     }
   }
 
-  if (geo_graticules)
+  if (graticules == "original" & has_crs(map))
     graticule_crs <- "EPSG:4326"
   else
-    graticule_crs <- sf::st_crs(world)
+    graticule_crs <- sf::st_crs(map)
 
   # plot population ranges, if present
   if (!is.null(pops)) {
@@ -110,24 +115,39 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
   if (!is.null(title))
     p_map <- p_map + ggtitle(title)
 
-  p_map + coord_sf(
-    crs = sf::st_crs(world),
-    datum = graticule_crs,
-    expand = 0
-  )
+  if (has_crs(map))
+    return(p_map & coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0))
+  else
+    return(p_map & coord_sf(
+      xlim = attr(map, "xrange"),
+      ylim = attr(map, "yrange"),
+      expand = 0
+    ))
 }
 
 
-#' Print a spannr object
+#' Print a summary of a \code{spannr} object
 #'
-#' @param x Object of a class spannr
-#' @param sf Print the low-level 'sf' object information?
-#' @param full Print all snapshots? (too many can be bothersome and require
-#'   extensive scrolling)
+#' Prints a short summary of any \code{spannr} object.
+#'
+#' All spatial objects in the spannr package are internally
+#' represented by a Simple Features (sf) object. This fact is hidden
+#' in most circumstances this, as the goal of the spannr package is to
+#' provide functionality at a much higher level (population
+#' boundaries, geographic regions, instead of individual polygons and
+#' other "low-level" geometric objects). The logical argument
+#' \code{sf} allows the user to inspect the underlying object
+#' structure. Similarly, by default, \code{print} does not print all
+#' spatial map information to reduce clutter. If many individual
+#' spatial maps for a population are present, a full table of spatial
+#' snapshots can be printed using the \code{full} argument.
+#'
+#' @param x Object of a class \code{spannr}
+#' @param sf Print the low-level 'sf' object instead?
+#' @param full Print the complete table of spatial snapshots?
 #'
 #' @export
 print.spannr <- function(x, sf = FALSE, full = FALSE) {
-  # name of the original argument before evaluation
   if (sf) {
     sf:::print.sf(x)
   } else {
@@ -135,10 +155,12 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
       type <- "population"
     else if (any(grepl("spannr_region", class(x))))
       type <- "region"
-    else if (any(grepl("spannr_world", class(x))))
-      type <- "world"
-    else
+    else if (any(grepl("spannr_map", class(x))))
+      type <- "map"
+    else if (any(grepl("spannr_model", class(x))))
       type <- "model"
+    else
+      stop("Unknown object")
 
     header <- sprintf("spannr '%s' object", type)
     sep <- paste(rep("-", nchar(header)), collapse = "")
@@ -185,9 +207,25 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
       cat("\n")
     }
 
-    if (type %in% c("world", "region", "population"))
-      cat(paste("Coordinate Reference System: EPSG"), sf::st_crs(x)$epsg, "\n")
-    else if (type == "model") {
+    if (type %in% c("map", "region", "population")) {
+      crs <- sf::st_crs(x)$epsg
+      if (is.na(crs)) {
+        cat("abstract spatial landscape ")
+        if (nrow(x))
+          cat("with custom features\n")
+        else
+          cat("with no features\n")
+        units <- ""
+      } else {
+        crs <- paste("EPSG", crs)
+        cat("internal coordinate reference system:", crs, "\n")
+        units <- " (in degrees longitude and latitude)"
+      }
+      xrange <- attr(x, "xrange")
+      yrange <- attr(x, "yrange")
+      cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
+                  units, xrange[1], xrange[2], yrange[1], yrange[2]))
+    } else if (type == "model") {
       cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
       cat("admixture events: ")
       if (!is.null(x$admixtures))
@@ -214,3 +252,15 @@ set_class <- function(x, type) {
   other_classes <- class(x) %>% .[!grepl("^spannr", .)]
   c("spannr", paste0("spannr_", type), other_classes)
 }
+
+#' Pipe operator
+#'
+#' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+NULL

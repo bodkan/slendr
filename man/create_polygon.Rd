@@ -5,7 +5,7 @@
 \title{Create a simple geometry polygon object from the list of
 coordinates}
 \usage{
-create_polygon(coords, world)
+create_polygon(coords)
 }
 \description{
 Create a simple geometry polygon object from the list of

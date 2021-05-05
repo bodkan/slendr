@@ -1,5 +1,5 @@
 ---
-title: "spannr: Introduction and tutorial"
+title: "Introduction and tutorial"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
@@ -183,7 +183,7 @@ maps are internally handled in a projected CRS which is better for
 ensuring undistorted distances and proportions.
 
 ```{r world_zoom, include = F}
-world <- map(
+map <- world(
   xrange = c(-15, 60),
   yrange = c(20, 65),
   crs = "EPSG:3035",
@@ -192,14 +192,14 @@ world <- map(
 ```
 
 ```{r, eval = F}
-world <- map(
+map <- world(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
   crs = "EPSG:3035"    # real projected CRS used internally
 )
 ```
 
-Internally, the `world` object is a normal `sf` class object without
+Internally, the `map` object is a normal `sf` class object without
 additional components. This is unlike other `spannr` object described
 below, which are also `sf` objects but which carry additional internal
 components.
@@ -209,7 +209,7 @@ ETRS89-extended / LAEA Europe". This means that the world map has
 indeed been transformed in the projected CRS we specified above.
 
 ```{r}
-world
+map
 ```
 
 
@@ -233,7 +233,7 @@ More on that below, but here we will just plot the world context we
 just created:
 
 ```{r plot_world}
-plot(world, title = "Zoomed-in world map context")
+plot(map, title = "Zoomed-in world map context")
 ```
 
 
@@ -262,7 +262,7 @@ geographic meaning (i.e. Anatolia, West Eurasia, etc.).
 
 ```{r}
 africa <- region(
-  "Africa", world,
+  "Africa", map,
   coords = list(
     c(-18, 20), c(40, 20), c(30, 33),
     c(20, 32), c(10, 35), c(-8, 35)
@@ -271,7 +271,7 @@ africa <- region(
 
 europe_anatolia <- region(
   "Western Europe & Anatolia",
-  world,
+  map,
   coords = list(
     c(-10, 35), c(-5, 35), c(10, 38), c(20, 35), c(38, 35),
     c(40, 40), c(30, 45), c(20, 58), c(-5, 60), c(-15, 50)
@@ -280,7 +280,7 @@ europe_anatolia <- region(
 
 europe <- region(
   "Western Europe",
-  world,
+  map,
   coords = list(
     c(-8, 35), c(-5, 36), c(10, 38), c(20, 35), c(25, 35),
     c(28, 45), c(20, 58), c(-5, 60), c(-15, 50)
@@ -289,7 +289,7 @@ europe <- region(
 
 anatolia <- region(
   "Anatolia",
-  world,
+  map,
   coords = list(
     c(28, 35), c(40, 35),
     c(42, 40), c(30, 43), c(27, 40), c(25, 38)
@@ -319,7 +319,7 @@ class(anatolia)
 ```
 
 Furthermore, note that in all `region()` calls we specified the
-`world` object defined at the very beginning. This object is added as
+`map` object defined at the very beginning. This object is added as
 a hidden attribute to each `spannr` object and represents the context
 for all geospatial transformations, expansions, and plotting.
 
@@ -331,19 +331,19 @@ map:
 plot(europe, anatolia, title = "Geographic regions")
 ```
 
-Note that the `world` object is no longer explicitly specified. It is
+Note that the `map` object is no longer explicitly specified. It is
 not needed, because each other class of objects provided to the
-`plot()` function must carry it as a "world" attribute. In fact, each
-such object must carry the same world context - `spannr` complains
+`plot()` function must carry it as a "map" attribute. In fact, each
+such object must carry the same map context - `spannr` complains
 whenever this is not the case.
 
 We can check that the component is really there, although hidden,
 using the built-in `attr` function and verify that it is the same as
-the world object we created at the beginning:
+the map object we created at the beginning:
 
 ```{r}
-all(attr(europe, "world") == world)
-all(attr(anatolia, "world") == world)
+all(attr(europe, "map") == map)
+all(attr(anatolia, "map") == map)
 ```
 
 
@@ -362,7 +362,7 @@ specification of spatial population boundaries and their changes over
 time. The core function for this is `population()`, which accepts the
 population `name` and the `time` in which we want to enforce that
 population's boundary, the effective population size of this
-population, as well as the `world` object described above. We also
+population, as well as the `map` object described above. We also
 have to specify from which population did our population split from
 (or explicitly say that it's an ancestral population). As for
 specifying the actual spatial boundaries, we have several options.
@@ -382,7 +382,7 @@ restrict the spatial boundary of the African population to the
 ```{r plot_afr}
 afr <- population(
   "AFR", parent = "ancestor", N = 1000,
-  world = world, region = africa
+  map = map, region = africa
 )
 
 plot(afr)
@@ -393,17 +393,17 @@ plot(afr)
 
 In case we want to simulate a more abstract and simpler population
 boundary, we can specify a `center` and `radius` arguments instead of
-the polygons. All distance units in the _spannr_ package (such as the
-`radius` argument here) are currently specified in units of
-kilometers.
+the polygons. All distance units in the _spannr_ package are specified
+in the coordinate system given during "world creation". For instance,
+EPSG 3035 we're using here specifies distances in meters:
 
 Here we define the location of the population of non-Africans right
 after their split from the African ancestors:
 
 ```{r}
 ooa <- population(
-  "OOA", parent = afr, time = 51000, N = 200,
-  center = c(33, 30), radius = 500, remove = 27000
+  "OOA", parent = afr, time = 51000, N = 200, remove = 27000,
+  center = c(33, 30), radius = 500e3 # 500e3m = 500km
 )
 ```
 
@@ -439,9 +439,7 @@ and the number of individual spatial maps to save during export
 ```{r}
 ooa <- ooa %>% move(
   trajectory = list(c(40, 30), c(50, 30), c(60, 40), c(70, 40)),
-  start = 50000,
-  end = 40000,
-  snapshots = 30
+  start = 50000, end = 40000, snapshots = 30
 )
 ```
 
@@ -466,12 +464,11 @@ split from the first non-Africans 28000 years ago:
 
 ```{r plot_ehg}
 ehg <- population(
-  "EHG", time = 28000, N = 400, parent = ooa,
-  world, coords = list(
+  "EHG", time = 28000, N = 400, parent = ooa, remove = 6000,
+  coords = list(
     c(26, 55), c(38, 53), c(48, 53), c(60, 53),
     c(60, 60), c(48, 63), c(38, 63), c(26, 60)
-  ),
-  remove = 6000
+  )
 )
 
 plot(ehg)
@@ -486,7 +483,7 @@ modeling code a little bit:
 ```{r plot_eur}
 eur <- population(
   name = "EUR", time = 25000, N = 1000, parent = ehg,
-  world, region = europe
+  region = europe
 )
 
 plot(eur)
@@ -512,11 +509,10 @@ instead of all around Anatolia:
 
 ```{r}
 ana <- population(
-  name = "ANA", time = 28000, N = 800, parent = ooa,
-  world, center = c(34, 38), radius = 700,
-  region = anatolia, remove = 6000
+  name = "ANA", time = 28000, N = 800, parent = ooa, remove = 6000,
+  center = c(34, 38), radius = 700e3, region = anatolia
 ) %>% expand(
-  by = 2500,
+  by = 2500e3,
   start = 10000,
   end = 7000,
   snapshots = 10,
@@ -566,12 +562,11 @@ Yamnaya steppe people:
 
 ```{r plot_yam}
 yam <- population(
-  name = "YAM", time = 7000, N = 600, parent = ehg,
-  world, coords = list(
+  name = "YAM", time = 7000, N = 600, parent = ehg, remove = 2000,
+  coords = list(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
-  ),
-  remove = 2000
+  )
 )
 
 plot(yam)
@@ -586,12 +581,11 @@ the spatial range of Europeans ("Nolithic" population at the time):
 
 ```{r plot_yam_migr}
 yam_migr <- population(
-  name = "YAM_migr", time = 6000, N = 1000, parent = yam,
-  world, coords = list(
+  name = "YAM_migr", time = 6000, N = 1000, parent = yam, remove = 2900,
+  coords = list(
     c(26, 50), c(38, 49), c(48, 50),
     c(48, 56), c(38, 59), c(26, 56)
-  ),
-  remove = 2900
+  )
 ) %>%
   move(
     trajectory = c(15, 50),
@@ -704,8 +698,8 @@ model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
   model_dir = "/tmp/test-model",
-  gen_time = 30,
-  resolution = 10,
+  generation_time = 30,
+  resolution = 10e3, # 10km per pixel
   overwrite = TRUE
 )
 ```
@@ -844,7 +838,7 @@ manpage of `run()` for more details.
 run(
   model, burnin = 30, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
-  max_interaction = 200, spread = 50,
+  max_interaction = 200e3, spread = 50e3,
   save_locations = TRUE, track_ancestry = 1,
   how = "batch" # run the model in batch mode (default is SLiMgui)
 )
