@@ -615,7 +615,11 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
 
       # pretty print the raw sf data as a simplified table
       cat("snapshots:\n")
-      snapshots_df <- as.data.frame(x, stringsAsFactors = FALSE)
+      # TODO: as.data.frame(x) is giving a very strange error here (on
+      # the intersected ANA expansion sf object in plotting) - a bug
+      # in sf conversion? manual creation of the data.frame does not
+      # have this issue
+      snapshots_df <- data.frame(pop = x$pop, time = x$time, N = x$N, geometry = x$geometry, stringsAsFactors = FALSE)
       snapshots_df$`#` <- 1:nrow(snapshots_df)
       # determine which maps over time are new and which are re-used from the
       # previous time point (we do this because the raw spatial geometry
