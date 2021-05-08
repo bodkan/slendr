@@ -21,12 +21,13 @@ intersect_features <- function(pop) {
 
   sf::st_agr(intersected) <- "constant"
 
-  ## attributes(intersected) <- attributes(pop)
-  ## # add a small tag signifying that the ranges have been processed
-  ## # and intersected over the map of the world
-  ## attr(intersected, "intersected") <- TRUE
+  # add a small tag signifying that the ranges have been processed
+  # and intersected over the map of the world
+  attr(intersected, "intersected") <- TRUE
+  # add back the map attribute
+  attr(intersected, "map") <- map
 
-  ## class(intersected) <- set_class(intersected, "pop")
+  class(intersected) <- set_class(intersected, "pop")
   intersected
 }
 
