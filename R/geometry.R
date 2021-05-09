@@ -24,10 +24,11 @@ intersect_features <- function(pop) {
   # add a small tag signifying that the ranges have been processed
   # and intersected over the map of the world
   attr(intersected, "intersected") <- TRUE
-  # add back the map attribute
   attr(intersected, "map") <- map
+  attr(intersected, "remove") <- attr(pop, "remove")
 
   class(intersected) <- set_class(intersected, "pop")
+
   intersected
 }
 

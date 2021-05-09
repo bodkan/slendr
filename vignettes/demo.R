@@ -82,29 +82,28 @@ yam_migr <- population(
 ) %>%
   move(trajectory = c(15, 50), start = 5000, end = 3000, snapshots = 8)
 
-plot(afr, ooa, ehg, eur, ana, yam, yam_migr)
-plot(afr, ooa, ehg, eur, ana, yam, yam_migr, intersect = F)
-
 admixtures <- list(
   admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000, overl = F),
   admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000, overl = F)
 )
 
-model <- compile(
-  populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
-  admixtures = admixtures,
-  model_dir = "~/Desktop/demo-model", gen_time = 30, resolution = 10000,
-  overwrite = T
-)
+pops <- list(afr, ooa, ehg, eur, ana, yam, yam_migr)
 
-graph(model)
+## model <- compile(
+##   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
+##   admixtures = admixtures,
+##   model_dir = "~/Desktop/demo-model", generation_time = 30, resolution = 10000,
+##   overwrite = T
+## )
 
-run(
-  model, sim_length = 52000,
-  seq_length = 1, recomb_rate = 0,
-  max_interaction = 100000, spread = 50000,
-  save_locations = T, track_ancestry = F,
-  how = "gui"
-)
+## graph(model)
+
+## run(
+##   model, sim_length = 52000,
+##   seq_length = 1, recomb_rate = 0,
+##   max_interaction = 100000, spread = 50000,
+##   save_locations = T, track_ancestry = F,
+##   how = "gui"
+## )
 
 #animate(model, nframes = 200)
