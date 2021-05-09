@@ -619,18 +619,13 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
       # the intersected ANA expansion sf object in plotting) - a bug
       # in sf conversion? manual creation of the data.frame does not
       # have this issue
-      snapshots_df <- data.frame(pop = x$pop, time = x$time, N = x$N, geometry = x$geometry, stringsAsFactors = FALSE)
+      snapshots_df <- unique(data.frame(pop = x$pop, time = x$time, N = x$N, stringsAsFactors = FALSE))
       snapshots_df$`#` <- 1:nrow(snapshots_df)
       # determine which maps over time are new and which are re-used from the
       # previous time point (we do this because the raw spatial geometry
       # representation is hard to read and not useful for seeing what changes
       # when)
-      runs <- rle(sapply(x$geometry, tracemem))
-      snapshots_df$map <- c("new", rep("same", nrow(snapshots_df) - 1))
-      if (length(runs$lengths) > 1)
-        snapshots_df$map[cumsum(runs$lengths)] <- "new"
-
-      snapshots_df <- snapshots_df[, c("#", "time", "N", "map")]
+      snapshots_df <- snapshots_df[, c("#", "time", "N")]
       if (nrow(snapshots_df) > 15 & !full) {
         print(head(snapshots_df, 5), row.names = FALSE)
         cat("         ...\n")
