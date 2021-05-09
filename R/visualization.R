@@ -377,8 +377,8 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     map <- maps[[1]]
   }
 
-  regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
-  pops <- do.call(rbind, lapply(list(...), function(i) {
+  regions <- do.call(rbind, lapply(args, function(i) if (!is.null(i$region)) i))
+  pops <- do.call(rbind, lapply(args, function(i) {
     if (!is.null(i$pop)) {
       if (intersect & nrow(map))
         intersect_features(i)
