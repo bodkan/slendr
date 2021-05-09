@@ -166,24 +166,44 @@ all_maps <- lapply(names(pops), function(pop_name) {
     .[order(-.$time), ] %>%
     .[.$time != Inf, ]
 
-  attributes(combined_maps) <- attributes(pop_maps)
+#  attributes(combined_maps) <- attributes(pop_maps)
 
   combined_maps
 
-})
+}) %>%
+  do.call(rbind, .) %>%
+  .[order(-all_maps$time), ]
+
+## shifted_maps <- vector(mode = "list", length = nrow(all_maps))
+## shifted_maps[[1]] <- all_maps[1, ]
+## for (i in seq_along(shifted_maps)[-1]) {
+##   current_map <- all_maps[i, ]
+##   if (current_map$time %in% all_maps[1:(i - 1), ]$time)
+##     current_map$time <- current_map$time - 1
+##   shifted_maps[[i]] <- current_map
+## }
+## shifted_maps <- do.call(rbind, shifted_maps)
+## shifted_maps$time <- shifted_maps$time + abs(min(shifted_maps$time))
+
+## sf_maps <- shifted_maps
+
+
+
 
 # intersect the spatial boundaries against the landscape and bind them
 # in a single sf object for plotly animation
-intersected_maps <- lapply(all_maps, intersect_features)
-sf_maps <- do.call(rbind, intersected_maps)
-rownames(sf_maps) <- NULL
+## intersected_maps <- lapply(all_maps, intersect_features)
+## sf_maps <- do.call(rbind, intersected_maps)
+## rownames(sf_maps) <- NULL
+
+
 
 
 ## }
 ## iplot(ooa, eur)
 
 cast_world <- sf::st_cast(map, "MULTIPOLYGON")
-cast_maps <- sf::st_cast(sf_maps, "MULTIPOLYGON")
+cast_maps <- sf::st_cast(all_maps, "MULTIPOLYGON")
 
 ## this works but has no coloring (plots one trace "trace 0" too)
 plot_ly() %>%
@@ -196,12 +216,9 @@ cast_maps %>%
   plot_ly(split = ~pop, color = ~pop)
 
 
-
 # adding a frame breaks shit
 cast_maps %>%
-  plot_ly(split = ~pop, color = ~pop, frame = ~time)
-
-
+  plot_ly(split = ~pop, ids = ~pop, color = ~pop, frame = ~time)
 
 
 
@@ -220,60 +237,8 @@ plotly::ggplotly(p) %>%
 
 
 
-a <- filter(cast_maps, pop == "YAM_migr")
-b <- filter(cast_maps, pop != "YAM_migr", !time %in% a$time)
-a$time <- a$time + rnorm(nrow(a), sd = 100)
-y <- rbind(a, b)
-
-# this works but has no color
-p <- ggplot() +
-    p_map +
-    theme_bw() +
-    geom_sf(data = y, aes(frame = -time, text = pop, fill = pop), alpha = 0.5) +
-    p_coord
-p
-
-plotly::ggplotly(p) %>%
-  plotly::animation_opts(transition = 0, redraw = FALSE)
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-accumulate_by <- function(dat, var) {
-  var <- lazyeval::f_eval(var, dat)
-  lvls <- plotly:::getLevels(var)
-  dats <- lapply(seq_along(lvls), function(x) {
-    cbind(dat[var %in% lvls[seq(1, x)], ], frame = lvls[[x]])
-  })
-  dplyr::bind_rows(dats)
-}
-
-df <- txhousing 
-fig <- df %>%
-  filter(year > 2005, city %in% c("Abilene", "Bay Area"))
-fig <- fig %>% accumulate_by(~date)
 
