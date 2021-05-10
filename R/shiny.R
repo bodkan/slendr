@@ -91,8 +91,11 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
       snapshot
     })
   }
-  
-  spatial_maps <- do.call(rbind, lapply(spatial_maps, intersect_features))
+
+  if (intersect)
+    spatial_maps <- lapply(spatial_maps, intersect_features)
+
+  spatial_maps <- do.call(rbind, spatial_maps)
 
   # plot the world map (if a real geographic map was specified)
   if (nrow(map)) {
@@ -104,8 +107,10 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
 
   if (graticules == "original" & has_crs(map)) {
     graticule_crs <- "EPSG:4326"
+    xlab <- "degrees longitude"; ylab <- "degrees latitude"
   } else {
     graticule_crs <- sf::st_crs(map)
+    xlab <- ylab <- NULL
   }
 
   if (has_crs(map)) {
@@ -127,13 +132,13 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
   
   ggplot() +
     p_map +
-    geom_sf(data = spatial_maps,
-            aes(fill = pop), color = NA) +
+    geom_sf(data = spatial_maps, aes(fill = pop), color = NA, alpha = 0.5) +
     scale_fill_discrete(drop = FALSE) +
     scale_alpha(range = c(1, 0.1)) +
     guides(fill = FALSE, alpha = guide_legend("time")) +
     theme_bw() +
-    coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0)
+    coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0) +
+    labs(xlab = xlab, ylab = ylab)
 }
 
 
@@ -141,9 +146,21 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
 #'
 #' @import shiny
 interact <- function(...) {
-  
-  times <- sort(c(0, unique(unlist(lapply(list(...), `[[`, "time")))))
-  
+
+  args <- list(...)
+
+  map <- attr(args[[1]], "map")
+  times <- sort(c(0, unique(unlist(lapply(args, `[[`, "time")))))
+
+  if (has_crs(map)) {
+    crs <- sf::st_crs(map)$epsg
+    coord_choice <- c("original", "internal")
+    names(coord_choice) <- c("original (longitude-latitude)",
+                             sprintf("internal (EPSG:%s)", crs))
+  } else {
+    coord_choice <- list("original (abstract coordinates" = "original")
+  }
+
   # Define UI for app that draws a histogram ----
   ui <- fluidPage(
 
@@ -156,17 +173,24 @@ interact <- function(...) {
       # Sidebar panel for inputs ----
       sidebarPanel(
 
-        # Input: Slider for the number of bins ----
-        ## sliderInput(
-        ##             min = min(times[times < Inf]),
-        ##             max = max(times[times < Inf]),
-        ##             value = min(times))
         shinyWidgets::sliderTextInput(
           inputId = "time_point",
           label = "Time point:",
-          choices = times[times < Inf],
+          choices = rev(times[times < Inf]),
           selected = max(times[times < Inf]),
           width = "100%"
+        ),
+
+        selectInput(
+          inputId = "coord_system",
+          label = "Coordinate system:",
+          choices = coord_choice
+        ),
+
+        checkboxInput(
+          inputId = "intersect",
+          label = "Intersect against landscape",
+          value = TRUE
         )
 
       ),
@@ -193,7 +217,12 @@ interact <- function(...) {
     output$spannr_shiny <- renderPlot({
       
       # get the last time snapshot before the specified time
-      do.call("plot_maps", c(list(...), time = input$time_point))
+      do.call("plot_maps", c(
+        list(...),
+        time = input$time_point,
+        graticules = input$coord_system,
+        intersect = input$intersect
+      ))
 
     })
 
@@ -201,3 +230,5 @@ interact <- function(...) {
   
   shinyApp(ui, server)
 }
+
+# interact(afr, ooa, ehg, eur, ana, yam, yam_migr)
