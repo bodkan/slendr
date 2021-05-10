@@ -87,7 +87,7 @@ admixtures <- list(
   admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000, overl = F)
 )
 
-pops <- list(afr, ooa, ehg, eur, ana, yam, yam_migr)
+interact(afr, ooa, ehg, eur, ana, yam, yam_migr)
 
 ## model <- compile(
 ##   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
