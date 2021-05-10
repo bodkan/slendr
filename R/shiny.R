@@ -131,7 +131,7 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
   } else {
     p_map <- NULL
   }
-  
+
   ggplot() +
     p_map +
     geom_sf(data = spatial_maps, aes(fill = pop), color = NA, alpha = 0.5) +
@@ -142,6 +142,22 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
     labs(xlab = xlab, ylab = ylab)
 }
 
+#' Pick the next/previous value from a vector
+get_time_point <- function(times, current_value, what) {
+  current_index <- which(times == current_value)
+  if (what == "previous")
+    new_index <- current_index + 1
+  else if (what == "next")
+    new_index <- current_index - 1
+  else
+    stop("Invalid direction for the time point selection")
+
+  # prevent jumping out of the allowed range
+  if (new_index > length(times) | new_index <= 0)
+    new_index <- current_index
+
+  times[new_index]
+}
 
 #' Open an interactive browser of the spatial model
 #'
@@ -152,6 +168,7 @@ interact <- function(...) {
 
   map <- attr(args[[1]], "map")
   times <- sort(c(0, unique(unlist(lapply(args, `[[`, "time")))))
+  times <- times[times != Inf]
 
   if (has_crs(map)) {
     crs <- sf::st_crs(map)$epsg
@@ -177,10 +194,15 @@ interact <- function(...) {
         shinyWidgets::sliderTextInput(
           inputId = "time_point",
           label = "Time point:",
-          choices = rev(times[times < Inf]),
-          selected = max(times[times < Inf]),
+          choices = rev(times),
+          selected = max(times),
           width = "100%"
         ),
+
+        actionButton("previous_time", label = "",
+                     icon = icon("angle-double-left", "fa-1x")),
+        actionButton("next_time", label = "",
+                     icon = icon("angle-double-right", "fa-1x")),
 
         selectInput(
           inputId = "coord_system",
@@ -208,7 +230,17 @@ interact <- function(...) {
 
   
   # Define server logic required to draw a histogram ----
-  server <- function(input, output) {
+  server <- function(input, output, session) {
+
+    observeEvent(input$previous_time, {
+      value <- get_time_point(times, input$time_point, "previous")
+      shinyWidgets::updateSliderTextInput(session, "time_point", selected = value)
+    })
+    observeEvent(input$next_time, {
+      value <- get_time_point(times, input$time_point, "next")
+      shinyWidgets::updateSliderTextInput(session, "time_point", selected = value)
+    })
+
     # This expression that generates the figure is wrapped in a call
     # to renderPlot to indicate that:
     #
