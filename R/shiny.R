@@ -59,7 +59,8 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
   spatial_maps <- list(...)
-    
+  pop_names <- unique(unlist(sapply(pops, `[[`, "pop")))
+
   # extract the map component underlying each population object
   # and make sure they are all the same with no conflicts
   maps <- unique(lapply(spatial_maps, function(i) attr(i, "map")))
@@ -96,6 +97,7 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
     spatial_maps <- lapply(spatial_maps, intersect_features)
 
   spatial_maps <- do.call(rbind, spatial_maps)
+  spatial_maps$pop <- factor(spatial_maps$pop, levels = pop_names)
 
   # plot the world map (if a real geographic map was specified)
   if (nrow(map)) {
@@ -135,7 +137,6 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
     geom_sf(data = spatial_maps, aes(fill = pop), color = NA, alpha = 0.5) +
     scale_fill_discrete(drop = FALSE) +
     scale_alpha(range = c(1, 0.1)) +
-    guides(fill = FALSE, alpha = guide_legend("time")) +
     theme_bw() +
     coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0) +
     labs(xlab = xlab, ylab = ylab)
