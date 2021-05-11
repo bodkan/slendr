@@ -7,7 +7,7 @@
 ancestries(model, generation_time = FALSE)
 }
 \arguments{
-\item{model}{Compiled model object}
+\item{model}{Compiled \code{spannr_model} model object}
 }
 \description{
 Plot simulated ancestry proportions

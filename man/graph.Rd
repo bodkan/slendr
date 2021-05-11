@@ -7,7 +7,7 @@
 graph(model)
 }
 \arguments{
-\item{model}{Compiled model object}
+\item{model}{Compiled \code{spannr_model} model object}
 }
 \description{
 Plot admixture graph based on given model configuration

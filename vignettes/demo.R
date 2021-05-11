@@ -87,14 +87,12 @@ admixtures <- list(
   admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000, overl = F)
 )
 
-interact(afr, ooa, ehg, eur, ana, yam, yam_migr)
-
-## model <- compile(
-##   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
-##   admixtures = admixtures,
-##   model_dir = "~/Desktop/demo-model", generation_time = 30, resolution = 10000,
-##   overwrite = T
-## )
+model <- compile(
+  populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
+  admixtures = admixtures,
+  model_dir = "~/Desktop/demo-model", generation_time = 30, resolution = 10000,
+  overwrite = T
+)
 
 ## graph(model)
 
