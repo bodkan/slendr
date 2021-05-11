@@ -6,7 +6,7 @@
 "interpolate" all of them at time points specified by others
 (unless a given population is supposed to be removed at that time)}
 \usage{
-fill_maps(pops)
+fill_maps(pops, time = NULL)
 }
 \description{
 Take a list of spannr_pop population boundary objects and

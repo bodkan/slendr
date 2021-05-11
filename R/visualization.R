@@ -1,6 +1,6 @@
 #' Animate the simulated population dynamics
 #'
-#' @param model Compiled model object
+#' @param model Compiled \code{spannr_model} model object
 #' @param locations Table with individual locations
 #' @param nframes Number of frames of the animation
 #' @param gif Path to an output GIF (animation object returned by default)
@@ -77,7 +77,7 @@ animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
 
 #' Plot simulated ancestry proportions
 #'
-#' @param model Compiled model object
+#' @param model Compiled \code{spannr_model} model object
 #'
 #' @export
 ancestries <- function(model, generation_time = FALSE) {
@@ -121,7 +121,7 @@ ancestries <- function(model, generation_time = FALSE) {
 
 #' Plot admixture graph based on given model configuration
 #'
-#' @param model Compiled model object
+#' @param model Compiled \code{spannr_model} model object
 #'
 #' @import ggplot2 ggraph
 #' @export
