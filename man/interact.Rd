@@ -4,7 +4,7 @@
 \alias{interact}
 \title{Open an interactive browser of the spatial model}
 \usage{
-interact(model)
+interact(model, step = model$generation_time)
 }
 \arguments{
 \item{model}{Compiled \code{spannr_model} model object}
