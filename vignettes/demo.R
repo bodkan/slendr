@@ -52,7 +52,7 @@ ooa <- population(
 )
 ehg <- population(
   "EHG", time = 28000, N = 400, parent = ooa, remove = 6000,
-  coords = list(c(26, 55), c(38, 45), c(48, 53), c(60, 53),
+  coords = list(c(26, 55), c(38, 53), c(48, 53), c(60, 53),
                 c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
 eur <- population(
@@ -64,9 +64,9 @@ eur <- population(
 )
 ana <- population(
   name = "ANA", time = 28000, N = 800, parent = ooa, remove = 6000,
-  center = c(34, 38), radius = 500000, region = anatolia
+  center = c(34, 38), radius = 500e3, region = anatolia
 ) %>% expand(
-  by = 20, start = 10000, end = 7000,
+  by = 2000e3, start = 10000, end = 7000,
   snapshots = 10,
   region = europe_anatolia
 )
