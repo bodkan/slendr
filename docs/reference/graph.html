@@ -129,7 +129,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot admixture graph based on given model configuration</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/viz.R'><code>R/viz.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
     <div class="hidden name"><code>graph.Rd</code></div>
     </div>
 
@@ -137,14 +137,19 @@
     <p>Plot admixture graph based on given model configuration</p>
     </div>
 
-    <pre class="usage"><span class='fu'>graph</span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>graph</span><span class='op'>(</span><span class='va'>model</span>, show_cleanups <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>model</th>
-      <td><p>Compiled model object</p></td>
+      <td><p>Compiled <code>spannr_model</code> model object</p></td>
+    </tr>
+    <tr>
+      <th>show_cleanups</th>
+      <td><p>Show nodes indicating the times of population
+removals?</p></td>
     </tr>
     </table>
 

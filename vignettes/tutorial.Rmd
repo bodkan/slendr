@@ -3,7 +3,7 @@ title: "Introduction and tutorial"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{spannr: Introduction and tutorial}
+  %\VignetteIndexEntry{Introduction and tutorial}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   markdown: 
