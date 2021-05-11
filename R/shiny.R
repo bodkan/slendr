@@ -145,19 +145,26 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
 
 #' Pick the next/previous value from a vector
 get_time_point <- function(times, current_value, what) {
-  current_index <- which(times == current_value)
-  if (what == "previous")
-    new_index <- current_index + 1
-  else if (what == "next")
-    new_index <- current_index - 1
-  else
-    stop("Invalid direction for the time point selection")
+  current_index <- which(current_value <= times & times <= current_value)
 
-  # prevent jumping out of the allowed range
-  if (new_index > length(times) | new_index <= 0)
-    new_index <- current_index
+  if (!length(current_index)) {
+    if (what == "previous")
+      return(times[current_value <= times][1])
+    else
+      return(tail(times[current_value >= times], 1))
+  } else {
+    if (what == "previous")
+      new_index <- current_index + 1
+    else if (what == "next")
+      new_index <- current_index - 1
+    else
+      stop("Invalid direction for the time point selection")
 
-  times[new_index]
+    # prevent jumping out of the allowed range
+    if (new_index > length(times) | new_index <= 0) new_index <- current_index
+
+    times[new_index]
+  }
 }
 
 #' Open an interactive browser of the spatial model
@@ -166,7 +173,7 @@ get_time_point <- function(times, current_value, what) {
 #'
 #' @import shiny
 #' @export
-interact <- function(model) {
+interact <- function(model, step = model$generation_time) {
 
   # generate choices for the coordinate system graticules
   if (has_crs(map)) {
@@ -190,7 +197,7 @@ interact <- function(model) {
   admixture_starts <- model$admixtures
   admixture_starts$event <- with(
     admixture_starts,
-    sprintf("time %s: migration %s → %s (%.2f%%)", tstart, from, to, rate)
+    sprintf("time %s: migration %s → %s (%.2f%%)", tstart, from, to, 100 * rate)
   )
   admixture_starts <- admixture_starts[, c("tstart", "event")]
   colnames(admixture_starts) <- c("time", "event")
@@ -198,7 +205,7 @@ interact <- function(model) {
   admixture_ends <- model$admixtures
   admixture_ends$event <- with(
     admixture_ends,
-    sprintf("time %s: migration %s → %s (%.2f%%)", tend, from, to, rate)
+    sprintf("time %s: migration %s → %s ends", tend, from, to)
   )
   admixture_ends <- admixture_ends[, c("tend", "event")]
   colnames(admixture_ends) <- c("time", "event")
@@ -209,12 +216,10 @@ interact <- function(model) {
   event_choices <- event_choices[order(event_choices)]
 
   # generate time points for the slider
-  time_points <- unique(sort(c(
-    0,
-    event_choices,
-    unlist(lapply(model$populations, `[[`, "time"))
-  )))
-  time_points <- time_points[time_points != Inf]
+  time_point_snapshots <-
+    c(0, event_choices, unlist(lapply(model$populations, `[[`, "time"))) %>%
+    sort %>% unique %>% .[. != Inf]
+  time_points <- sort(unique(c(time_point_snapshots, seq(min(time_point_snapshots), max(time_point_snapshots), by = step))))
 
   # Define UI for app that draws a histogram ----
   ui <- fluidPage(
@@ -282,12 +287,12 @@ interact <- function(model) {
     }, ignoreInit = TRUE)
 
     observeEvent(input$previous_time, {
-      value <- get_time_point(time_points, input$time_slider, "previous")
+      value <- get_time_point(time_point_snapshots, input$time_slider, "previous")
       shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
     })
 
     observeEvent(input$next_time, {
-      value <- get_time_point(time_points, input$time_slider, "next")
+      value <- get_time_point(time_point_snapshots, input$time_slider, "next")
       shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
     })
     
