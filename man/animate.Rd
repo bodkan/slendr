@@ -7,7 +7,7 @@
 animate(model, locations = NULL, nframes = 200, gif = NULL)
 }
 \arguments{
-\item{model}{Compiled model object}
+\item{model}{Compiled \code{spannr_model} model object}
 
 \item{locations}{Table with individual locations}
 

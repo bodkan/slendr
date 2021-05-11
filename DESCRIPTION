@@ -34,7 +34,10 @@ Imports:
     patchwork,
     ijtiff,
     ggraph,
-    rgdal
+    rgdal,
+    shinyWidgets,
+    shiny,
+    scales
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

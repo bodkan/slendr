@@ -40,6 +40,9 @@
     <loc>https://bodkan.net/stamp/reference/expand.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/stamp/reference/fill_maps.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/stamp/reference/get_admixture_edges.html</loc>
   </url>
   <url>
@@ -55,10 +58,16 @@
     <loc>https://bodkan.net/stamp/reference/get_terminal_edges.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/stamp/reference/get_time_point.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/stamp/reference/graph.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/has_crs.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/interact.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/intersect_features.html</loc>
@@ -71,6 +80,9 @@
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/plot.spannr.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/plot_maps.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/population.html</loc>
