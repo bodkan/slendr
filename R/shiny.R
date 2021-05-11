@@ -221,67 +221,101 @@ interact <- function(model, step = model$generation_time) {
 
   ui <- fluidPage(
 
-    titlePanel("Spatio-temporal model explorer"),
+    navbarPage(
+      "Model explorer",
 
-    sidebarLayout(
+      tabPanel(
+        "Spatial maps",
 
-      sidebarPanel(
+        sidebarLayout(
 
-        htmlOutput(outputId = "time_label"),
+          sidebarPanel(
 
-        br(),
+            htmlOutput(outputId = "time_label"),
 
-        fluidRow(
-          column(2, actionButton("previous_time", label = "",
-                                 icon = icon("angle-double-left", "fa-1x"))),
+            br(),
 
-          column(8, shinyWidgets::sliderTextInput(
-            inputId = "time_slider",
-            label = "",
-            choices = rev(time_points),
-            selected = max(time_points),
-            width = "100%"
-          )),
+            fluidRow(
+              column(2, actionButton("previous_time", label = "",
+                                     icon = icon("angle-double-left", "fa-1x"))),
 
-          column(2, actionButton("next_time", label = "",
-                                 icon = icon("angle-double-right", "fa-1x")))
-        ),
+              column(8, shinyWidgets::sliderTextInput(
+                inputId = "time_slider",
+                label = "",
+                choices = rev(time_points),
+                selected = max(time_points),
+                width = "100%"
+              )),
 
-        selectInput(
-          inputId = "time_select",
-          label = "Select event:",
-          choices = event_choices,
-          selected = max(time_points)
-        ),
+              column(2, actionButton("next_time", label = "",
+                                     icon = icon("angle-double-right", "fa-1x")))
+            ),
 
-        selectInput(
-          inputId = "coord_system",
-          label = "Coordinate system:",
-          choices = coord_choice
-        ),
+            selectInput(
+              inputId = "time_select",
+              label = "Select event:",
+              choices = event_choices,
+              selected = max(time_points)
+            ),
 
-        fluidRow(
-          column(7, checkboxInput(
-            inputId = "intersect",
-            label = "Intersect against landscape",
-            value = TRUE
-          )),
+            selectInput(
+              inputId = "coord_system",
+              label = "Coordinate system:",
+              choices = coord_choice
+            ),
 
-          column(5, checkboxInput(
-            inputId = "show_map",
-            label = "Show landscape",
-            value = TRUE
-          ))
+            fluidRow(
+              column(7, checkboxInput(
+                inputId = "intersect",
+                label = "Intersect ranges",
+                value = TRUE
+              )),
+
+              column(5, checkboxInput(
+                inputId = "show_map",
+                label = "Show landscape",
+                value = TRUE
+              ))
+            )
+
+          ),
+
+          mainPanel(
+
+            plotOutput(outputId = "spannr_maps")
+
+          )
         )
 
-      ),
+      ), # tabPanel
 
-      mainPanel(
+      tabPanel(
+        "Admixture graph",
 
-        plotOutput(outputId = "spannr_maps")
+        sidebarLayout(
 
-      )
-    )
+          sidebarPanel(
+
+            checkboxInput(
+              inputId = "show_removals",
+              label = "Show removal times",
+              value = TRUE
+            )
+
+          ),
+
+          mainPanel(
+
+            plotOutput(outputId = "spannr_graph")
+
+          )
+
+        )
+
+      ) # tabPanel
+
+    ) # navbarPage
+
   )
 
   server <- function(input, output, session) {
@@ -320,7 +354,9 @@ interact <- function(model, step = model$generation_time) {
         show_map = input$show_map
       ))
 
-    })
+    }, height = 600)
+
+    output$spannr_graph <- renderPlot({ graph(model, input$show_removals) }, height = 600)
 
   }
   
