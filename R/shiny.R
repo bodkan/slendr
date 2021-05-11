@@ -1,13 +1,14 @@
 #' Take a list of spannr_pop population boundary objects and
 #' "interpolate" all of them at time points specified by others
 #' (unless a given population is supposed to be removed at that time)
-fill_maps <- function(pops) {
+fill_maps <- function(pops, time = NULL) {
   
   removal_times <- sapply(pops, attr, "remove")
 
   # get times of all spatial maps across all populations
   all_times <- unique(sort(c(
     0,
+    time,
     removal_times,
     unlist(sapply(pops, function(i) i$time))
   ))) %>% .[. != Inf & . != -1]
@@ -59,7 +60,7 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
   spatial_maps <- list(...)
-  pop_names <- unique(unlist(sapply(pops, `[[`, "pop")))
+  pop_names <- unique(unlist(sapply(spatial_maps, `[[`, "pop")))
 
   # extract the map component underlying each population object
   # and make sure they are all the same with no conflicts
@@ -79,7 +80,7 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
   # if the user specified a time point, "interpolate" all maps at that time
   # and return just those that match that time point
   if (!is.null(time)) {
-    spatial_maps <- fill_maps(spatial_maps)
+    spatial_maps <- fill_maps(spatial_maps, time)
 
     previous_time <- min(all_times[all_times >= time])
     # get only those populations already/still present at the
@@ -161,23 +162,59 @@ get_time_point <- function(times, current_value, what) {
 
 #' Open an interactive browser of the spatial model
 #'
+#' @param model Compiled \code{spannr_model} model object
+#'
 #' @import shiny
-interact <- function(...) {
+#' @export
+interact <- function(model) {
 
-  args <- list(...)
-
-  map <- attr(args[[1]], "map")
-  times <- sort(c(0, unique(unlist(lapply(args, `[[`, "time")))))
-  times <- times[times != Inf]
-
+  # generate choices for the coordinate system graticules
   if (has_crs(map)) {
-    crs <- sf::st_crs(map)$epsg
+    crs <- sf::st_crs(model$map)$epsg
     coord_choice <- c("original", "internal")
     names(coord_choice) <- c("original (longitude-latitude)",
                              sprintf("internal (EPSG:%s)", crs))
   } else {
     coord_choice <- list("original (abstract coordinates" = "original")
   }
+
+  # generate event table for manual selection of time points
+  split_events <- model$splits
+  split_events$event <- with(
+    split_events,
+    sprintf("time %s: split of %s from %s", tsplit, pop, parent)
+  )
+  split_events <- split_events[split_events$tsplit != Inf, c("tsplit", "event")]
+  colnames(split_events) <- c("time", "event")
+
+  admixture_starts <- model$admixtures
+  admixture_starts$event <- with(
+    admixture_starts,
+    sprintf("time %s: migration %s → %s (%.2f%%)", tstart, from, to, rate)
+  )
+  admixture_starts <- admixture_starts[, c("tstart", "event")]
+  colnames(admixture_starts) <- c("time", "event")
+
+  admixture_ends <- model$admixtures
+  admixture_ends$event <- with(
+    admixture_ends,
+    sprintf("time %s: migration %s → %s (%.2f%%)", tend, from, to, rate)
+  )
+  admixture_ends <- admixture_ends[, c("tend", "event")]
+  colnames(admixture_ends) <- c("time", "event")
+
+  events <- do.call(rbind, list(split_events, admixture_starts, admixture_ends))
+  event_choices <- events$time
+  names(event_choices) <- events$event
+  event_choices <- event_choices[order(event_choices)]
+
+  # generate time points for the slider
+  time_points <- unique(sort(c(
+    0,
+    event_choices,
+    unlist(lapply(model$populations, `[[`, "time"))
+  )))
+  time_points <- time_points[time_points != Inf]
 
   # Define UI for app that draws a histogram ----
   ui <- fluidPage(
@@ -192,10 +229,10 @@ interact <- function(...) {
       sidebarPanel(
 
         shinyWidgets::sliderTextInput(
-          inputId = "time_point",
+          inputId = "time_slider",
           label = "Time point:",
-          choices = rev(times),
-          selected = max(times),
+          choices = rev(time_points),
+          selected = max(time_points),
           width = "100%"
         ),
 
@@ -203,6 +240,13 @@ interact <- function(...) {
                      icon = icon("angle-double-left", "fa-1x")),
         actionButton("next_time", label = "",
                      icon = icon("angle-double-right", "fa-1x")),
+
+        selectInput(
+          inputId = "time_select",
+          label = "Select event:",
+          choices = event_choices,
+          selected = max(time_points)
+        ),
 
         selectInput(
           inputId = "coord_system",
@@ -221,8 +265,8 @@ interact <- function(...) {
       # Main panel for displaying outputs ----
       mainPanel(
 
-        # Output: Histogram ----
-        plotOutput(outputId = "spannr_shiny")
+        # Output: Spatial maps ----
+        plotOutput(outputId = "spannr_maps")
 
       )
     )
@@ -232,27 +276,27 @@ interact <- function(...) {
   # Define server logic required to draw a histogram ----
   server <- function(input, output, session) {
 
+    observeEvent(input$time_select, {
+      value <- as.numeric(input$time_select)
+      shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
+    }, ignoreInit = TRUE)
+
     observeEvent(input$previous_time, {
-      value <- get_time_point(times, input$time_point, "previous")
-      shinyWidgets::updateSliderTextInput(session, "time_point", selected = value)
-    })
-    observeEvent(input$next_time, {
-      value <- get_time_point(times, input$time_point, "next")
-      shinyWidgets::updateSliderTextInput(session, "time_point", selected = value)
+      value <- get_time_point(time_points, input$time_slider, "previous")
+      shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
     })
 
-    # This expression that generates the figure is wrapped in a call
-    # to renderPlot to indicate that:
-    #
-    # 1. It is "reactive" and therefore should be automatically
-    #    re-executed when inputs (input$bins) change
-    # 2. Its output type is a plot
-    output$spannr_shiny <- renderPlot({
+    observeEvent(input$next_time, {
+      value <- get_time_point(time_points, input$time_slider, "next")
+      shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
+    })
+    
+    output$spannr_maps <- renderPlot({
       
       # get the last time snapshot before the specified time
       do.call("plot_maps", c(
-        list(...),
-        time = input$time_point,
+        as.list(model$populations),
+        time = input$time_slider,
         graticules = input$coord_system,
         intersect = input$intersect
       ))
