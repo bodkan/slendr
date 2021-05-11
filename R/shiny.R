@@ -132,10 +132,12 @@ plot_maps <- function(..., time = NULL, graticules = "original",
   ggplot() +
     p_map +
     geom_sf(data = spatial_maps, aes(fill = pop), color = NA, alpha = 0.5) +
-    scale_fill_discrete(drop = FALSE) +
+    scale_fill_discrete(drop = FALSE, name = "") +
     theme_bw() +
     labs(xlab = xlab, ylab = ylab) +
-    p_coord
+    p_coord +
+    scale_x_continuous(labels = scales::comma) +
+    scale_y_continuous(labels = scales::comma)
 }
 
 #' Pick the next/previous value from a vector
@@ -171,7 +173,7 @@ get_time_point <- function(times, current_value, what) {
 interact <- function(model, step = model$generation_time) {
 
   # generate choices for the coordinate system graticules
-  if (has_crs(map)) {
+  if (has_crs(model$map)) {
     crs <- sf::st_crs(model$map)$epsg
     coord_choice <- c("original", "internal")
     names(coord_choice) <- c("original (longitude-latitude)",
@@ -184,7 +186,7 @@ interact <- function(model, step = model$generation_time) {
   split_events <- model$splits
   split_events$event <- with(
     split_events,
-    sprintf("time %s: split of %s from %s", tsplit, pop, parent)
+    sprintf("split of %s from %s", pop, parent)
   )
   split_events <- split_events[split_events$tsplit != Inf, c("tsplit", "event")]
   colnames(split_events) <- c("time", "event")
@@ -192,7 +194,7 @@ interact <- function(model, step = model$generation_time) {
   admixture_starts <- model$admixtures
   admixture_starts$event <- with(
     admixture_starts,
-    sprintf("time %s: migration %s → %s (%.2f%%)", tstart, from, to, 100 * rate)
+    sprintf("migration %s → %s, %.2f%%", from, to, 100 * rate)
   )
   admixture_starts <- admixture_starts[, c("tstart", "event")]
   colnames(admixture_starts) <- c("time", "event")
@@ -200,14 +202,15 @@ interact <- function(model, step = model$generation_time) {
   admixture_ends <- model$admixtures
   admixture_ends$event <- with(
     admixture_ends,
-    sprintf("time %s: migration %s → %s ends", tend, from, to)
+    sprintf("migration %s → %s ends", from, to)
   )
   admixture_ends <- admixture_ends[, c("tend", "event")]
   colnames(admixture_ends) <- c("time", "event")
 
   events <- do.call(rbind, list(split_events, admixture_starts, admixture_ends))
+  events$label <- sprintf("time %s: %s", events$time, events$event)
   event_choices <- events$time
-  names(event_choices) <- events$event
+  names(event_choices) <- events$label
   event_choices <- event_choices[order(event_choices)]
 
   # generate time points for the slider
@@ -220,7 +223,7 @@ interact <- function(model, step = model$generation_time) {
   ui <- fluidPage(
 
     # App title ----
-    titlePanel("Spatial population dynamics"),
+    titlePanel("Spatio-temporal model explorer"),
 
     # Sidebar layout with input and output definitions ----
     sidebarLayout(
@@ -228,9 +231,11 @@ interact <- function(model, step = model$generation_time) {
       # Sidebar panel for inputs ----
       sidebarPanel(
 
+        htmlOutput(outputId = "time_label"),
+
         shinyWidgets::sliderTextInput(
           inputId = "time_slider",
-          label = "Time point:",
+          label = "",
           choices = rev(time_points),
           selected = max(time_points),
           width = "100%"
@@ -296,7 +301,16 @@ interact <- function(model, step = model$generation_time) {
       value <- get_time_point(time_point_snapshots, input$time_slider, "next")
       shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
     })
-    
+
+    output$time_label = renderText({
+      event <- events[events$time == input$time_slider, "event"]
+      if (length(event))
+        label <- sprintf("<i>(%s)</i>", event)
+      else
+        label <- ""
+      sprintf("<b>Time point:</b> %s %s", input$time_slider, label)
+    })
+
     output$spannr_maps <- renderPlot({
       
       # get the last time snapshot before the specified time
