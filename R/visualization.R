@@ -1,6 +1,6 @@
 #' Animate the simulated population dynamics
 #'
-#' @param model Compiled model object
+#' @param model Compiled \code{spannr_model} model object
 #' @param locations Table with individual locations
 #' @param nframes Number of frames of the animation
 #' @param gif Path to an output GIF (animation object returned by default)
@@ -77,7 +77,7 @@ animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
 
 #' Plot simulated ancestry proportions
 #'
-#' @param model Compiled model object
+#' @param model Compiled \code{spannr_model} model object
 #'
 #' @export
 ancestries <- function(model, generation_time = FALSE) {
@@ -121,11 +121,13 @@ ancestries <- function(model, generation_time = FALSE) {
 
 #' Plot admixture graph based on given model configuration
 #'
-#' @param model Compiled model object
+#' @param model Compiled \code{spannr_model} model object
+#' @param show_cleanups Show nodes indicating the times of population
+#'   removals?
 #'
 #' @import ggplot2 ggraph
 #' @export
-graph <- function(model) {
+graph <- function(model, show_cleanups = TRUE) {
   # summarize model configuration into a tabular form
   split_table <- model$splits
   admixture_table <- model$admixtures
@@ -141,68 +143,73 @@ graph <- function(model) {
     terminal_edges,
     intermediate_edges
   )
+
+  if (!show_cleanups)
+    edges <- edges[edges$type != "terminal", ]
+
   nodes <- get_nodes(edges)
 
   g <- tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
 
   ggraph(g, layout = "sugiyama") +
 
-    # admixture edges along with admixture rates
-    geom_edge_link(
-      aes(filter = type == "admixture", label = rate,
-          start_cap = label_rect(node1.name),
-          end_cap = label_rect(node2.name),
-          linetype = "admixture"),
-      angle_calc = "along",
-      label_dodge = unit(3, "mm"),
-      arrow = arrow(length = unit(4, "mm"))
-    ) +
+  # admixture edges along with admixture rates
+  geom_edge_link(
+    aes(filter = type == "admixture", label = rate,
+        start_cap = label_rect(node1.name),
+        end_cap = label_rect(node2.name),
+        linetype = "admixture"),
+    angle_calc = "along",
+    label_dodge = unit(3, "mm"),
+    arrow = arrow(length = unit(4, "mm"))
+  ) +
 
-    # population split/continuation edges (no rates labeled)
-    geom_edge_link(
-      aes(filter = type  == "split",
-          start_cap = label_rect(node1.name),
-          end_cap = label_rect(node2.name),
-          linetype = "split"),
-      label_dodge = unit(10, "mm"),
-      arrow = arrow(length = unit(4, "mm"))
-    ) +
+  # population split/continuation edges (no rates labeled)
+  geom_edge_link(
+    aes(filter = type  == "split",
+        start_cap = label_rect(node1.name),
+        end_cap = label_rect(node2.name),
+        linetype = "split"),
+    label_dodge = unit(10, "mm"),
+    arrow = arrow(length = unit(4, "mm"))
+  ) +
 
-    # continuation edges
-    geom_edge_link(aes(filter = type == "intermediate",
-                       linetype = "continuation")) +
+  # continuation edges
+  geom_edge_link(aes(filter = type == "intermediate",
+                     linetype = "continuation")) +
 
-    # population removal time stamp
-    geom_edge_link(aes(filter = type == "terminal"), alpha = 0.25) +
+  # population removal time stamp
+  geom_edge_link(aes(filter = type == "terminal"), alpha = 0.25) +
 
-    geom_node_label(aes(filter = type == "split", fill = pop,
-                        label = sprintf("%s split at %s", pop, time))) +
+  geom_node_label(aes(filter = type == "split", fill = pop,
+                      label = sprintf("%s split at %s", pop, time))) +
 
-    geom_node_label(aes(filter = type == "ancestral", fill = pop,
-                        label = paste(pop, "(ancestor)")),
-                    label.size = 1) +
+  geom_node_label(aes(filter = type == "ancestral", fill = pop,
+                      label = paste(pop, "(ancestor)")),
+                  label.size = 1) +
 
-    geom_node_label(aes(filter = type == "admixture", fill = pop,
-                        label = sprintf("admixture at %s", time))) +
+  geom_node_label(aes(filter = type == "admixture", fill = pop,
+                      label = sprintf("admixture at %s", time))) +
 
-    geom_node_label(aes(filter = type == "intermediate", fill = pop,
-                        label = sprintf("from %s", pop))) +
+  geom_node_label(aes(filter = type == "intermediate", fill = pop,
+                      label = sprintf("from %s", pop))) +
 
-    geom_node_label(aes(filter = type == "terminal",
-                        label = sprintf("removed\nat %s",
+  geom_node_label(aes(filter = type == "terminal",
+                      label = sprintf("removed\nat %s",
                                         ifelse(time == 0, "the end", time))),
-                    fill = "white") +
+                  fill = "white") +
 
-    scale_edge_linetype_manual(values = c("split" = "solid",
-                                          "continuation" = "solid",
-                                          "admixture" = "solid")) +
+  scale_edge_linetype_manual(values = c("split" = "solid",
+                                        "continuation" = "solid",
+                                        "admixture" = "solid")) +
 
-    guides(fill = guide_legend("population"),
-           edge_linetype = FALSE) +
+  guides(fill = guide_legend(""), edge_linetype = FALSE) +
 
-    theme_void() +
-    theme(legend.position = "right",
-          plot.margin=unit(c(1, 1, 1, 1), "cm"))
+  theme_void() +
+  theme(legend.position = "right",
+        plot.margin = unit(c(1, 1, 1, 1), "cm"),
+        legend.justification = "top") +
+  coord_cartesian(clip = "off")
 }
 
 
@@ -377,8 +384,8 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
     map <- maps[[1]]
   }
 
-  regions <- do.call(rbind, lapply(list(...), function(i) if (!is.null(i$region)) i))
-  pops <- do.call(rbind, lapply(list(...), function(i) {
+  regions <- do.call(rbind, lapply(args, function(i) if (!is.null(i$region)) i))
+  pops <- do.call(rbind, lapply(args, function(i) {
     if (!is.null(i$pop)) {
       if (intersect & nrow(map))
         intersect_features(i)
