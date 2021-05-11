@@ -208,6 +208,7 @@ interact <- function(model, step = model$generation_time) {
   colnames(admixture_ends) <- c("time", "event")
 
   events <- do.call(rbind, list(split_events, admixture_starts, admixture_ends))
+  events <- aggregate(event~time,data = events, FUN = paste, collapse = ", ")
   events$label <- sprintf("time %s: %s", events$time, events$event)
   events <- events[order(events$time), ]
   event_choices <- events$time
@@ -336,7 +337,7 @@ interact <- function(model, step = model$generation_time) {
     })
 
     output$time_label = renderText({
-      event <- paste(events[events$time == input$time_slider, "event"], collapse = ", ")
+      event <- events[events$time == input$time_slider, "event"]
       if (length(event))
         label <- sprintf("<i>(%s)</i>", event)
       else

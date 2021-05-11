@@ -4,7 +4,13 @@
 \alias{plot_maps}
 \title{Plot spatial maps}
 \usage{
-plot_maps(..., time = NULL, graticules = "original", intersect = TRUE)
+plot_maps(
+  ...,
+  time = NULL,
+  graticules = "original",
+  intersect = TRUE,
+  show_map = TRUE
+)
 }
 \description{
 Plot spatial maps
