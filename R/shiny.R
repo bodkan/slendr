@@ -55,7 +55,8 @@ fill_maps <- function(pops, time = NULL) {
 #' Plot spatial maps
 #'
 #' @import ggplot2
-plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRUE) {
+plot_maps <- function(..., time = NULL, graticules = "original",
+                      intersect = TRUE, show_map = TRUE) {
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
@@ -100,14 +101,6 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
   spatial_maps <- do.call(rbind, spatial_maps)
   spatial_maps$pop <- factor(spatial_maps$pop, levels = pop_names)
 
-  # plot the world map (if a real geographic map was specified)
-  if (nrow(map)) {
-    p_map <- geom_sf(data = sf::st_cast(map, "MULTIPOLYGON"),
-                     aes(frame = NULL), fill = "lightgray", color = NA)
-  } else {
-    p_map <- NULL
-  }
-
   if (graticules == "original" & has_crs(map)) {
     graticule_crs <- "EPSG:4326"
     xlab <- "degrees longitude"; ylab <- "degrees latitude"
@@ -117,7 +110,10 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
   }
 
   if (has_crs(map)) {
-    p_coord <- coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0)
+    bbox <- sf::st_bbox(map)
+    p_coord <- coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0,
+                        xlim = c(bbox["xmin"], bbox["xmax"]),
+                        ylim = c(bbox["ymin"], bbox["ymax"]))
   } else {
     p_coord <- coord_sf(
       xlim = attr(map, "xrange"),
@@ -126,7 +122,7 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
     )
   }
 
-  if (nrow(map)) {
+  if (nrow(map) & show_map) {
     p_map <- geom_sf(data = map,
                      aes(frame = NULL), fill = "lightgray", color = NA)
   } else {
@@ -137,10 +133,9 @@ plot_maps <- function(..., time = NULL, graticules = "original", intersect = TRU
     p_map +
     geom_sf(data = spatial_maps, aes(fill = pop), color = NA, alpha = 0.5) +
     scale_fill_discrete(drop = FALSE) +
-    scale_alpha(range = c(1, 0.1)) +
     theme_bw() +
-    coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0) +
-    labs(xlab = xlab, ylab = ylab)
+    labs(xlab = xlab, ylab = ylab) +
+    p_coord
 }
 
 #' Pick the next/previous value from a vector
@@ -263,6 +258,12 @@ interact <- function(model, step = model$generation_time) {
           inputId = "intersect",
           label = "Intersect against landscape",
           value = TRUE
+        ),
+
+        checkboxInput(
+          inputId = "show_map",
+          label = "Show landscape",
+          value = TRUE
         )
 
       ),
@@ -303,7 +304,8 @@ interact <- function(model, step = model$generation_time) {
         as.list(model$populations),
         time = input$time_slider,
         graticules = input$coord_system,
-        intersect = input$intersect
+        intersect = input$intersect,
+        show_map = input$show_map
       ))
 
     })
