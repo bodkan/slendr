@@ -52,7 +52,7 @@ ooa <- population(
 )
 ehg <- population(
   "EHG", time = 28000, N = 400, parent = ooa, remove = 6000,
-  coords = list(c(26, 55), c(38, 45), c(48, 53), c(60, 53),
+  coords = list(c(26, 55), c(38, 53), c(48, 53), c(60, 53),
                 c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
 eur <- population(
@@ -64,9 +64,9 @@ eur <- population(
 )
 ana <- population(
   name = "ANA", time = 28000, N = 800, parent = ooa, remove = 6000,
-  center = c(34, 38), radius = 500000, region = anatolia
+  center = c(34, 38), radius = 500e3, region = anatolia
 ) %>% expand(
-  by = 20, start = 10000, end = 7000,
+  by = 2000e3, start = 10000, end = 7000,
   snapshots = 10,
   region = europe_anatolia
 )
@@ -82,9 +82,6 @@ yam_migr <- population(
 ) %>%
   move(trajectory = c(15, 50), start = 5000, end = 3000, snapshots = 8)
 
-plot(afr, ooa, ehg, eur, ana, yam, yam_migr)
-plot(afr, ooa, ehg, eur, ana, yam, yam_migr, intersect = F)
-
 admixtures <- list(
   admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000, overl = F),
   admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000, overl = F)
@@ -93,18 +90,18 @@ admixtures <- list(
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  model_dir = "~/Desktop/demo-model", gen_time = 30, resolution = 10000,
+  model_dir = "~/Desktop/demo-model", generation_time = 30, resolution = 10000,
   overwrite = T
 )
 
-graph(model)
+## graph(model)
 
-run(
-  model, sim_length = 52000,
-  seq_length = 1, recomb_rate = 0,
-  max_interaction = 100000, spread = 50000,
-  save_locations = T, track_ancestry = F,
-  how = "gui"
-)
+## run(
+##   model, sim_length = 52000,
+##   seq_length = 1, recomb_rate = 0,
+##   max_interaction = 100000, spread = 50000,
+##   save_locations = T, track_ancestry = F,
+##   how = "gui"
+## )
 
 #animate(model, nframes = 200)

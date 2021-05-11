@@ -4,10 +4,10 @@
 \alias{graph}
 \title{Plot admixture graph based on given model configuration}
 \usage{
-graph(model)
+graph(model, show_removal = TRUE)
 }
 \arguments{
-\item{model}{Compiled model object}
+\item{model}{Compiled \code{spannr_model} model object}
 }
 \description{
 Plot admixture graph based on given model configuration
