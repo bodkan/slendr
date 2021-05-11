@@ -209,9 +209,9 @@ interact <- function(model, step = model$generation_time) {
 
   events <- do.call(rbind, list(split_events, admixture_starts, admixture_ends))
   events$label <- sprintf("time %s: %s", events$time, events$event)
+  events <- events[order(events$time), ]
   event_choices <- events$time
   names(event_choices) <- events$label
-  event_choices <- event_choices[order(event_choices)]
 
   # generate time points for the slider
   time_point_snapshots <-
@@ -233,18 +233,23 @@ interact <- function(model, step = model$generation_time) {
 
         htmlOutput(outputId = "time_label"),
 
-        shinyWidgets::sliderTextInput(
-          inputId = "time_slider",
-          label = "",
-          choices = rev(time_points),
-          selected = max(time_points),
-          width = "100%"
-        ),
+        br(),
 
-        actionButton("previous_time", label = "",
-                     icon = icon("angle-double-left", "fa-1x")),
-        actionButton("next_time", label = "",
-                     icon = icon("angle-double-right", "fa-1x")),
+        fluidRow(
+          column(2, actionButton("previous_time", label = "",
+                                 icon = icon("angle-double-left", "fa-1x"))),
+
+          column(8, shinyWidgets::sliderTextInput(
+            inputId = "time_slider",
+            label = "",
+            choices = rev(time_points),
+            selected = max(time_points),
+            width = "100%"
+          )),
+
+          column(2, actionButton("next_time", label = "",
+                                 icon = icon("angle-double-right", "fa-1x")))
+        ),
 
         selectInput(
           inputId = "time_select",
@@ -259,16 +264,18 @@ interact <- function(model, step = model$generation_time) {
           choices = coord_choice
         ),
 
-        checkboxInput(
-          inputId = "intersect",
-          label = "Intersect against landscape",
-          value = TRUE
-        ),
+        fluidRow(
+          column(7, checkboxInput(
+            inputId = "intersect",
+            label = "Intersect against landscape",
+            value = TRUE
+          )),
 
-        checkboxInput(
-          inputId = "show_map",
-          label = "Show landscape",
-          value = TRUE
+          column(5, checkboxInput(
+            inputId = "show_map",
+            label = "Show landscape",
+            value = TRUE
+          ))
         )
 
       ),
@@ -303,7 +310,7 @@ interact <- function(model, step = model$generation_time) {
     })
 
     output$time_label = renderText({
-      event <- events[events$time == input$time_slider, "event"]
+      event <- paste(events[events$time == input$time_slider, "event"], collapse = ", ")
       if (length(event))
         label <- sprintf("<i>(%s)</i>", event)
       else
