@@ -219,16 +219,12 @@ interact <- function(model, step = model$generation_time) {
     sort %>% unique %>% .[. != Inf]
   time_points <- sort(unique(c(time_point_snapshots, seq(min(time_point_snapshots), max(time_point_snapshots), by = step))))
 
-  # Define UI for app that draws a histogram ----
   ui <- fluidPage(
 
-    # App title ----
     titlePanel("Spatio-temporal model explorer"),
 
-    # Sidebar layout with input and output definitions ----
     sidebarLayout(
 
-      # Sidebar panel for inputs ----
       sidebarPanel(
 
         htmlOutput(outputId = "time_label"),
@@ -280,18 +276,14 @@ interact <- function(model, step = model$generation_time) {
 
       ),
 
-      # Main panel for displaying outputs ----
       mainPanel(
 
-        # Output: Spatial maps ----
         plotOutput(outputId = "spannr_maps")
 
       )
     )
   )
 
-  
-  # Define server logic required to draw a histogram ----
   server <- function(input, output, session) {
 
     observeEvent(input$time_select, {
@@ -320,7 +312,6 @@ interact <- function(model, step = model$generation_time) {
 
     output$spannr_maps <- renderPlot({
       
-      # get the last time snapshot before the specified time
       do.call("plot_maps", c(
         as.list(model$populations),
         time = input$time_slider,
@@ -335,5 +326,3 @@ interact <- function(model, step = model$generation_time) {
   
   shinyApp(ui, server)
 }
-
-# interact(afr, ooa, ehg, eur, ana, yam, yam_migr)
