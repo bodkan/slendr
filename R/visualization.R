@@ -122,10 +122,12 @@ ancestries <- function(model, generation_time = FALSE) {
 #' Plot admixture graph based on given model configuration
 #'
 #' @param model Compiled \code{spannr_model} model object
+#' @param show_cleanups Show nodes indicating the times of population
+#'   removals?
 #'
 #' @import ggplot2 ggraph
 #' @export
-graph <- function(model, show_removal = TRUE) {
+graph <- function(model, show_cleanups = TRUE) {
   # summarize model configuration into a tabular form
   split_table <- model$splits
   admixture_table <- model$admixtures
@@ -142,7 +144,7 @@ graph <- function(model, show_removal = TRUE) {
     intermediate_edges
   )
 
-  if (!show_removal)
+  if (!show_cleanups)
     edges <- edges[edges$type != "terminal", ]
 
   nodes <- get_nodes(edges)

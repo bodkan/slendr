@@ -297,7 +297,7 @@ interact <- function(model, step = model$generation_time) {
           sidebarPanel(
 
             checkboxInput(
-              inputId = "show_removals",
+              inputId = "show_cleanups",
               label = "Show removal times",
               value = TRUE
             )
@@ -356,7 +356,8 @@ interact <- function(model, step = model$generation_time) {
 
     }, height = 600)
 
-    output$spannr_graph <- renderPlot({ graph(model, input$show_removals) }, height = 600)
+    output$spannr_graph <- renderPlot({ graph(model, input$show_cleanups) },
+                                      height = 600)
 
   }
   
