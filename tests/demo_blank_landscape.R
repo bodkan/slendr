@@ -1,20 +1,9 @@
 
 devtools::load_all(".")
 
-map1 <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "blank")
-map1
-print(map1, sf = T)
-
-xrange <- c(-15, 60)
-yrange <- c(20, 65)
-l <- spannr:::create_polygon(list(c(-10, 30), c(50, 30), c(40, 50), c(0, 40)))
-map2 <- world(xrange = xrange, yrange = yrange, landscape = l)
-map2
-print(map2, sf = T)
-
-map3 <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "naturalearth", crs = "EPSG:3035")
-
-map <- map3
+map <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "blank")
+map
+print(map, sf = T)
 
 africa <- region(
   "Africa", map,
@@ -42,21 +31,18 @@ afr <- population(
   coords = list(c(-18, 20), c(40, 20), c(30, 33),
                 c(20, 32), c(10, 35), c(-8, 35))
 )
-
 ooa <- population(
   "OOA", parent = afr, time = 51000, N = 200, remove = 27000,
-  center = c(33, 30), radius = 500000
+  center = c(33, 30), radius = 5
 ) %>% move(
   trajectory = list(c(40, 30), c(50, 30), c(60, 40)),
   start = 50000, end = 40000, snapshots = 30
 )
-
 ehg <- population(
   "EHG", time = 28000, N = 400, parent = ooa, remove = 6000,
   coords = list(c(26, 55), c(38, 53), c(48, 53), c(60, 53),
                 c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
-
 eur <- population(
   name = "EUR",
   time = 25000,
@@ -64,22 +50,19 @@ eur <- population(
   parent = ehg,
   region = europe
 )
-
 ana <- population(
   name = "ANA", time = 28000, N = 800, parent = ooa, remove = 6000,
-  center = c(34, 38), radius = 500e3, region = anatolia
+  center = c(34, 38), radius = 10, region = anatolia
 ) %>% expand(
-  by = 2000e3, start = 10000, end = 7000,
+  by = 10, start = 10000, end = 7000,
   snapshots = 10,
   region = europe_anatolia
 )
-
 yam <- population(
   name = "YAM", time = 7000, N = 600, parent = ehg, remove = 2000,
   coords = list(c(26, 50), c(38, 49), c(48, 50),
                 c(48, 56), c(38, 59), c(26, 56))
 )
-
 yam_migr <- population(
   name = "YAM_migr", time = 6000, N = 1000, parent = yam, remove = 2900,
   coords = list(c(26, 50), c(38, 49), c(48, 50),
@@ -95,20 +78,20 @@ admixtures <- list(
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 10000,
+  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 0.1,
   overwrite = T
 )
 
 interact(model)
 
-graph(model)
+## graph(model)
 
-slim(
-  model, sim_length = 52000,
-  seq_length = 1, recomb_rate = 0,
-  max_interaction = 100000, spread = 50000,
-  save_locations = T, track_ancestry = F,
-  method = "gui"
-)
+## slim(
+##   model, sim_length = 52000,
+##   seq_length = 1, recomb_rate = 0,
+##   max_interaction = 100000, spread = 50000,
+##   save_locations = T, track_ancestry = F,
+##   method = "gui"
+## )
 
 #animate(model, nframes = 200)
