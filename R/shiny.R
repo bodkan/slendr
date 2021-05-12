@@ -217,9 +217,9 @@ interact <- function(model, step = model$generation_time) {
 
   # generate time points for the slider
   time_point_snapshots <-
-    c(0, event_choices, unlist(lapply(model$populations, `[[`, "time"))) %>%
-    sort %>% unique %>% .[. != Inf]
-  time_points <- sort(unique(c(time_point_snapshots, seq(min(time_point_snapshots), max(time_point_snapshots), by = step))))
+    as.integer(c(0, event_choices, unlist(lapply(model$populations, `[[`, "time"))) %>%
+    sort %>% unique %>% .[. != Inf])
+  time_points <- as.integer(sort(unique(c(time_point_snapshots, seq(min(time_point_snapshots), max(time_point_snapshots), by = step)))))
 
   ui <- fluidPage(
 
