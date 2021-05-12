@@ -381,7 +381,7 @@ restrict the spatial boundary of the African population to the
 
 ```{r plot_afr}
 afr <- population(
-  "AFR", parent = "ancestor", N = 1000,
+  "AFR", parent = "ancestor", time = 55000, N = 1000,
   map = map, region = africa
 )
 
@@ -836,8 +836,7 @@ manpage of `slim()` for more details.
 
 ```{r}
 slim(
-  model, burnin = 30, sim_length = 70000,
-  seq_length = 100, recomb_rate = 0,
+  model, seq_length = 100, recomb_rate = 0,
   max_interaction = 200e3, spread = 50e3,
   save_locations = TRUE, track_ancestry = 1,
   method = "batch" # run the model in batch mode (default is SLiMgui)
