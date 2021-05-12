@@ -132,6 +132,7 @@ plot_maps <- function(..., time = NULL, graticules = "original",
   ggplot() +
     p_map +
     geom_sf(data = spatial_maps, aes(fill = pop), color = NA, alpha = 0.5) +
+    geom_sf(data = spatial_maps, fill = NA, color = "black", size = 0.1) +
     scale_fill_discrete(drop = FALSE, name = "") +
     theme_bw() +
     labs(xlab = xlab, ylab = ylab) +
@@ -207,7 +208,15 @@ interact <- function(model, step = model$generation_time) {
   admixture_ends <- admixture_ends[, c("tend", "event")]
   colnames(admixture_ends) <- c("time", "event")
 
-  events <- do.call(rbind, list(split_events, admixture_starts, admixture_ends))
+  cleanup_events <- do.call(rbind, lapply(model$populations, function(pop)
+    data.frame(time = attr(pop, "remove"),
+               event = sprintf("%s removed", pop$pop[1]),
+               stringsAsFactors = FALSE)
+    ))
+  cleanup_events <- cleanup_events[with(cleanup_events, time != -1), ]
+
+  events <- do.call(rbind, list(split_events, admixture_starts,
+                                admixture_ends, cleanup_events))
   events <- aggregate(event~time,data = events, FUN = paste, collapse = ", ")
   events$label <- sprintf("time %s: %s", events$time, events$event)
   events <- events[order(events$time), ]
@@ -216,9 +225,9 @@ interact <- function(model, step = model$generation_time) {
 
   # generate time points for the slider
   time_point_snapshots <-
-    c(0, event_choices, unlist(lapply(model$populations, `[[`, "time"))) %>%
-    sort %>% unique %>% .[. != Inf]
-  time_points <- sort(unique(c(time_point_snapshots, seq(min(time_point_snapshots), max(time_point_snapshots), by = step))))
+    as.integer(c(0, event_choices, unlist(lapply(model$populations, `[[`, "time"))) %>%
+    sort %>% unique %>% .[. != Inf])
+  time_points <- as.integer(sort(unique(c(time_point_snapshots, seq(min(time_point_snapshots), max(time_point_snapshots), by = step)))))
 
   ui <- fluidPage(
 
@@ -272,11 +281,13 @@ interact <- function(model, step = model$generation_time) {
                 value = TRUE
               )),
 
-              column(5, checkboxInput(
-                inputId = "show_map",
-                label = "Show landscape",
-                value = TRUE
-              ))
+              if (nrow(model$map)) {
+                column(5, checkboxInput(
+                  inputId = "show_map",
+                  label = "Show landscape",
+                  value = TRUE
+                ))
+              } else NULL
             )
 
           ),

@@ -133,7 +133,7 @@
 <p>Times are given in “units before present”, distances in kilometers. Note that for easier model definition, all coordinates of are specified by the user in geographic coordinate system (longitude, latitude), but are internally represented in a projected CRS.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span>
-  name <span class="op">=</span> <span class="st">"pop1"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, N <span class="op">=</span> <span class="fl">700</span>,
+  name <span class="op">=</span> <span class="st">"pop1"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, time <span class="op">=</span> <span class="fl">35000</span>, N <span class="op">=</span> <span class="fl">700</span>,
   radius <span class="op">=</span> <span class="fl">600000</span>,       <span class="co"># radius of the circular range (in meters)</span>
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">25</span><span class="op">)</span>, <span class="co"># (longitude, latitude) coordinates of the center</span>
   map <span class="op">=</span> <span class="va">map</span>
@@ -199,7 +199,7 @@
   generation_time <span class="op">=</span> <span class="fl">30</span>,
   resolution <span class="op">=</span> <span class="fl">10000</span>  <span class="co"># how many meters per pixel?</span>
 <span class="op">)</span></code></pre></div>
-<p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/run.html">run()</a></code> function shown below.</p>
+<p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/slim.html">slim()</a></code> function shown below.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span>
 <span class="co">#&gt; spannr 'model' object </span>
@@ -227,19 +227,17 @@
 <h4 class="hasAnchor">
 <a href="#7-run-the-model-in-slim-in-batch-mode-in-this-case" class="anchor"></a>7. Run the model in SLiM (in batch mode in this case)</h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/run.html">run</a></span><span class="op">(</span>
-  <span class="va">model</span>,
-  burnin <span class="op">=</span> <span class="fl">1000</span>, sim_length <span class="op">=</span> <span class="fl">31000</span>,
-  seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>, <span class="co"># single locus</span>
+<code class="sourceCode R"><span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span>
+  <span class="va">model</span>, seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>, <span class="co"># single locus</span>
   save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
   max_interaction <span class="op">=</span> <span class="fl">200e3</span>, spread <span class="op">=</span> <span class="fl">50e3</span>, <span class="co"># interaction and spread (in meters)</span>
-  how <span class="op">=</span> <span class="st">"gui"</span> <span class="co"># open the model in SLiMgui</span>
+  method <span class="op">=</span> <span class="st">"gui"</span> <span class="co"># open the model in SLiMgui</span>
 <span class="op">)</span></code></pre></div>
 <p>As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.</p>
 </div>
-<div id="8-verify-the-simulated-ancestry-proportions" class="section level4">
+<div id="8-visualize-the-simulated-ancestry-proportions" class="section level4">
 <h4 class="hasAnchor">
-<a href="#8-verify-the-simulated-ancestry-proportions" class="anchor"></a>8. Verify the simulated ancestry proportions</h4>
+<a href="#8-visualize-the-simulated-ancestry-proportions" class="anchor"></a>8. Visualize the simulated ancestry proportions</h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ancestries.html">ancestries</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-plot_ancestries-1.png" alt="plot of chunk plot_ancestries"></p>
