@@ -27,5 +27,5 @@ reference:
     contents:
     - compile
     - read
-    - run
     - script
+    - slim

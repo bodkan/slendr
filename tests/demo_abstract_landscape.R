@@ -1,22 +1,11 @@
-devtools::load_all(".")
 
-map1 <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "blank")
-map1
-print(map1, sf = T)
+devtools::load_all(".")
 
 xrange <- c(-15, 60)
 yrange <- c(20, 65)
 l <- spannr:::create_polygon(list(c(-10, 30), c(50, 30), c(40, 50), c(0, 40)))
-map2 <- world(xrange = xrange, yrange = yrange, landscape = l)
-map2
-print(map2, sf = T)
+map <- world(xrange = xrange, yrange = yrange, landscape = l)
 
-map3 <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "naturalearth",
-              crs = "EPSG:3035", "~/Google/postdoc/data/ne_data")
-map3
-print(map3, sf = T)
-
-map <- map3 #
 africa <- region(
   "Africa", map,
   coords = list(c(-18, 20), c(40, 20), c(30, 33),
@@ -39,20 +28,20 @@ anatolia <- region(
 )
 
 afr <- population(
-  "AFR", parent = "ancestor", N = 2000, map = map,
+  "AFR", parent = "ancestor", time = 60000, N = 2000, map = map,
   coords = list(c(-18, 20), c(40, 20), c(30, 33),
                 c(20, 32), c(10, 35), c(-8, 35))
 )
 ooa <- population(
   "OOA", parent = afr, time = 51000, N = 200, remove = 27000,
-  center = c(33, 30), radius = 500000
+  center = c(33, 30), radius = 5
 ) %>% move(
-  trajectory = list(c(40, 30), c(50, 30), c(60, 40)),
+  trajectory = list(c(40, 30), c(50, 30)),
   start = 50000, end = 40000, snapshots = 30
 )
 ehg <- population(
   "EHG", time = 28000, N = 400, parent = ooa, remove = 6000,
-  coords = list(c(26, 55), c(38, 53), c(48, 53), c(60, 53),
+  coords = list(c(26, 55), c(38, 40), c(48, 53), c(60, 53),
                 c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
 eur <- population(
@@ -64,9 +53,9 @@ eur <- population(
 )
 ana <- population(
   name = "ANA", time = 28000, N = 800, parent = ooa, remove = 6000,
-  center = c(34, 38), radius = 500e3, region = anatolia
+  center = c(34, 38), radius = 10, region = anatolia
 ) %>% expand(
-  by = 2000e3, start = 10000, end = 7000,
+  by = 10, start = 10000, end = 7000,
   snapshots = 10,
   region = europe_anatolia
 )
@@ -83,25 +72,22 @@ yam_migr <- population(
   move(trajectory = c(15, 50), start = 5000, end = 3000, snapshots = 8)
 
 admixtures <- list(
-  admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000, overl = F),
-  admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000, overl = F)
+  admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000, overlap = F),
+  admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000, overlap = F)
 )
 
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  model_dir = "~/Desktop/demo-model", generation_time = 30, resolution = 10000,
+  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 3,
   overwrite = T
 )
 
-## graph(model)
+interact(model)
 
-## run(
-##   model, sim_length = 52000,
-##   seq_length = 1, recomb_rate = 0,
-##   max_interaction = 100000, spread = 50000,
-##   save_locations = T, track_ancestry = F,
-##   how = "gui"
-## )
-
-#animate(model, nframes = 200)
+slim(
+  model, seq_length = 1, recomb_rate = 0,
+  max_interaction = 10, spread = 5,
+  save_locations = T, track_ancestry = F,
+  method = "gui"
+)

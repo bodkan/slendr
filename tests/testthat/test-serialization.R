@@ -2,7 +2,7 @@
 
 test_that("read() restores a single-map model object", {
   map <- readRDS("map.rds")
-  pop <- population("pop", parent = "ancestor", N = 10,
+  pop <- population("pop", parent = "ancestor", N = 10, time = 100,
                     center = c(10, 40), radius = 100000, map = map)
 
   model_dir <- file.path(tempdir(), "tmp-single-map-model-serialization")
@@ -17,11 +17,10 @@ test_that("read() restores a single-map model object", {
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
 })
 
-
 test_that("read() restores a complex model object", {
   map <- readRDS("map.rds")
 
-  p1 <- population(name = "pop1", parent = "ancestor", N = 700, radius = 600000, center = c(10, 25), map = map)
+  p1 <- population(name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   p2 <- population(name = "pop2", parent = p1, time = 30000, N = 500, center = c(10, 25), radius = 300000) %>%
     move(trajectory = list(c(25, 25), c(40, 30), c(40, 40), c(50, 50)), start = 29000, end = 25000, snapshots = 30)
   p3 <- population(name = "pop3", parent = p2, time = 20000, N = 2000, coords = list(c(-10, 50), c(10, 50), c(20, 53), c(40, 60), c(40, 70), c(-10, 65)))
@@ -50,4 +49,17 @@ test_that("read() restores a complex model object", {
   expect_true(all(sapply(components, function(i) all(model1[[i]] == model2[[i]]))))
   expect_true(all(unlist(model1$config) == unlist(model2$config)))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
+})
+
+test_that("blank spatial maps throw an error", {
+  xrange <- c(-15, 60)
+  yrange <- c(20, 65)
+  l <- spannr:::create_polygon(list(c(-10, 30), c(50, 30), c(40, 50), c(0, 40)))
+  map <- world(xrange = xrange, yrange = yrange, landscape = l)
+  pop <- population("pop", parent = "ancestor", N = 10, time = 100, center = c(0, 60), radius = 20, map = map)
+  model_dir <- file.path(tempdir(), "tmp-blank-map-error")
+  expect_error(
+    compile(pop, model_dir, generation_time = 1, resolution = 5, overwrite = TRUE),
+    "The generated raster map of pop at time \\d+ is blank."
+  )
 })

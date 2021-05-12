@@ -37,7 +37,7 @@ initialize() {
 
   defineConstant("GEN_TIME", {{generation_time}});
   defineConstant("T_BURNIN", {{burnin}}); catn("T_BURNIN: " + T_BURNIN);
-  defineConstant("T_LENGTH", {{sim_length}}); catn("T_LENGTH: " + T_LENGTH);
+  defineConstant("T_LENGTH", max(pop_param("tsplit"))); catn("T_LENGTH: " + T_LENGTH);
 
   // number of ancestry-informative neutral markers
   defineConstant("N_MARKERS", {{ancestry_markers}});
@@ -53,7 +53,7 @@ initialize() {
 
   if (nrow(SPLIT_TABLE) > 1) {
     // absolute split times
-    defineConstant("T_ABS_SPLITS", pop_param("tsplit"));
+    defineConstant("T_ABS_SPLITS", pop_param("tsplit")[pop_param("tsplit") != T_LENGTH]);
     // split times relative to the start of the simulation
     defineConstant("T_SPLITS", SIM_END - T_ABS_SPLITS);
 
@@ -110,12 +110,14 @@ initialize() {
 }
 
 1 {
-  // setup the first population (id = 0)
-  i = 0;
-  sim.addSubpop(i, pop_param("N", i));
-  set_map(i, sim.generation);
-  set_coordinates(get_pop(i).individuals, i);
-  add_markers(i);
+  // setup ancestral populations (i.e. those which don't have a parent)
+  pop_ids = which(drop(SPLIT_TABLE[, 2]) == -1);
+  for (i in pop_ids) {
+    sim.addSubpop(i, pop_param("N", i));
+    set_map(i, sim.generation);
+    set_coordinates(get_pop(i).individuals, i);
+    add_markers(i);
+  }
 
   // schedule all script blocks (unique() is called in case multiple events
   // are scheduled at once)
@@ -475,6 +477,10 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     if (length(present_i) != 1)
       stop("Incorrect specification of a column in the splits table");
     table = SPLIT_TABLE[drop(SPLIT_TABLE[, present_i]) != -1, ];
+    // ugly hack to get around the new way that splits are defined for
+    // all populations, including the ancestral ones (i.e. explicit "sim_length"
+    // parameter has now been removed)
+    if (present == "tsplit") table = table[drop(table[, present_i]) != T_LENGTH, ];
   } else {
     table = SPLIT_TABLE;
   }

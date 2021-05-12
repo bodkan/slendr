@@ -30,19 +30,18 @@
 #' @return Object of the class \code{spannr_pop}
 #'
 #' @export
-population <- function(name, time = NULL, N, parent, map = NULL,
+population <- function(name, time, N, parent, map = NULL,
                        center = NULL, radius = NULL, coords = NULL,
                        region = NULL, remove = NULL, intersect = TRUE) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
-    time <- Inf
     if (is.null(map))
       stop("Ancestral population must specify its 'map'", call. = FALSE)
-  } else if (!is.character(parent) & is.null(time)) {
-    stop("Split time of each population (except for the ancestral population) must be specified", call. = FALSE)
-  } else {
+    else
+      map <- map
+  } else
     map <- attr(parent, "map")
-  }
+
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
   if (!is.null(region) & is.null(center)) {
@@ -436,7 +435,7 @@ which is outside of the %d-%d admixture time range",
   }
   if (to_remove > start | to_remove > end) {
     stop(sprintf("Population %s scheduled for removal at time %d which is
-outside of the specified %d-%d admixture time window.",
+outside of the specified %d-%d admixture time window",
       to_name, to_remove, start, end),
       call. = FALSE
     )
