@@ -273,11 +273,13 @@ interact <- function(model, step = model$generation_time) {
                 value = TRUE
               )),
 
-              column(5, checkboxInput(
-                inputId = "show_map",
-                label = "Show landscape",
-                value = TRUE
-              ))
+              if (nrow(model$map)) {
+                column(5, checkboxInput(
+                  inputId = "show_map",
+                  label = "Show landscape",
+                  value = TRUE
+                ))
+              } else NULL
             )
 
           ),
