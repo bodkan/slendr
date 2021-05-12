@@ -17,7 +17,6 @@ test_that("read() restores a single-map model object", {
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
 })
 
-
 test_that("read() restores a complex model object", {
   map <- readRDS("map.rds")
 
