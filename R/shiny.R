@@ -208,7 +208,15 @@ interact <- function(model, step = model$generation_time) {
   admixture_ends <- admixture_ends[, c("tend", "event")]
   colnames(admixture_ends) <- c("time", "event")
 
-  events <- do.call(rbind, list(split_events, admixture_starts, admixture_ends))
+  cleanup_events <- do.call(rbind, lapply(model$populations, function(pop)
+    data.frame(time = attr(pop, "remove"),
+               event = sprintf("%s removed", pop$pop[1]),
+               stringsAsFactors = FALSE)
+    ))
+  cleanup_events <- cleanup_events[with(cleanup_events, time != -1), ]
+
+  events <- do.call(rbind, list(split_events, admixture_starts,
+                                admixture_ends, cleanup_events))
   events <- aggregate(event~time,data = events, FUN = paste, collapse = ", ")
   events$label <- sprintf("time %s: %s", events$time, events$event)
   events <- events[order(events$time), ]
