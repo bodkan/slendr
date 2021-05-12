@@ -62,23 +62,19 @@ compile <- function(populations, model_dir, generation_time,
   # save the rasterized maps as PNG files
   write_maps(maps_table, model_dir)
 
+  maps_table$time <- ifelse(maps_table$time == splits_table[splits_table$parent == "ancestor", "tsplit"], -1, maps_table$time)
+
   # keep the original spatial map table for returning as a model object later
   return_maps <- maps_table
   return_maps$path <- return_maps$map_number %>%
     paste0(., ".png") %>% file.path(model_dir, .) %>% gsub("//", "/", .)
 
-  # take care of "special" values for downstream SLiM runs (-1 will be interpreted
-  # as a special value, such as for the "split time" of ancestral populations,
-  # or their "parental" populations) - this is very ugly, but we're limited by
-  # what SLiM's programming language can do...
-  maps_table$time <- ifelse(maps_table$time == splits_table[splits_table$parent == "ancestor", "tsplit"], -1, maps_table$time)
   maps_table$time[maps_table$time != -1] <- maps_table$time[maps_table$time != -1] / generation_time
-  splits_table$tsplit <- ifelse(splits_table$parent == "ancestor", -1, splits_table$tsplit)
   splits_table$parent_id <- ifelse(is.na(splits_table$parent_id), -1, splits_table$parent_id)
 
   # convert times into generations (only in the table of splits which will be
   # saved for later SLiM runs)
-  splits_table$tsplit[splits_table$tsplit != -1] <- splits_table$tsplit[splits_table$tsplit != -1] / generation_time
+  splits_table$tsplit <- splits_table$tsplit / generation_time
   splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] / generation_time
 
   # reformat the admixture table
@@ -194,12 +190,10 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
   # handling of -1 and Inf special cases is absolutely awful, but we are
   # currently forced to do this because we need to interface with the rather
   # limited SLiM builtin language)
-  splits$tsplit[splits$tsplit == -1] <- Inf
-  maps$time[maps$time == -1] <- Inf
   # convert generations back to years
   splits$tsplit <- round(splits$tsplit * generation_time)
   splits$tremove[splits$tremove != -1] <- round(splits$tremove[splits$tremove != -1] * generation_time)
-  maps$time <- round(maps$time * generation_time)
+  maps$time[maps$time != -1] <- round(maps$time[maps$time != -1] * generation_time)
 
   populations <- readRDS(path_populations)
 
