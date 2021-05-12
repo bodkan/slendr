@@ -170,7 +170,7 @@ model <- compile(
 ```
 
 Compiled model is kept as an R object which can be passed to different
-functions, most importantly the `run()` function shown below.
+functions, most importantly the `slim()` function shown below.
 
 ```{r}
 model
@@ -185,24 +185,24 @@ graph(model)
 #### 7. Run the model in SLiM (in batch mode in this case)
 
 ```{r, echo = F}
-run(
+slim(
   model,
   burnin = 1000, sim_length = 31000,
   seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   save_locations = TRUE,
   max_interaction = 200e3, spread = 50e3,
-  how = "batch"
+  method = "batch"
 )
 ```
 
 ```{r, eval = F}
-run(
+slim(
   model,
   burnin = 1000, sim_length = 31000,
   seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   save_locations = TRUE,
   max_interaction = 200e3, spread = 50e3, # interaction and spread (in meters)
-  how = "gui" # open the model in SLiMgui
+  method = "gui" # open the model in SLiMgui
 )
 ```
 

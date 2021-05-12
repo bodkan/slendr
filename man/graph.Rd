@@ -4,10 +4,13 @@
 \alias{graph}
 \title{Plot admixture graph based on given model configuration}
 \usage{
-graph(model, show_removal = TRUE)
+graph(model, show_cleanups = TRUE)
 }
 \arguments{
 \item{model}{Compiled \code{spannr_model} model object}
+
+\item{show_cleanups}{Show nodes indicating the times of population
+removals?}
 }
 \description{
 Plot admixture graph based on given model configuration
