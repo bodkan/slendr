@@ -71,22 +71,21 @@ yam_migr <- population(
   move(trajectory = c(15, 50), start = 5000, end = 3000, snapshots = 8)
 
 admixtures <- list(
-  admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000, overl = F),
-  admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000, overl = F)
+  admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000, overlap = F),
+  admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000, overlap = F)
 )
 
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 0.1,
+  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 0.01,
   overwrite = T
 )
 
 interact(model)
 
 slim(
-  model, sim_length = 52000,
-  seq_length = 1, recomb_rate = 0,
+  model, seq_length = 1, recomb_rate = 0,
   max_interaction = 10, spread = 5,
   save_locations = T, track_ancestry = F,
   method = "gui"
