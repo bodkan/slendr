@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • spannr</title>
+<title>Run a spannr model as a SLiM script — slim • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,12 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Run a spannr model as a SLiM script — slim" />
+<meta property="og:description" content="Generates a SLiM script from a built-in spannr template,
+substituting all required parameters by values specified by the
+user. The user has an option to either run the script in batch
+mode, open it in SLiMgui, or simply save the generated SLiM script
+to a given location for later use." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -66,7 +71,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -125,177 +130,128 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Run a spannr model as a SLiM script</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/compilation.R'><code>R/compilation.R</code></a></small>
+    <div class="hidden name"><code>slim.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Generates a SLiM script from a built-in spannr template,
+substituting all required parameters by values specified by the
+user. The user has an option to either run the script in batch
+mode, open it in SLiMgui, or simply save the generated SLiM script
+to a given location for later use.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>slim</span><span class='op'>(</span>
+  <span class='va'>model</span>,
+  <span class='va'>seq_length</span>,
+  <span class='va'>recomb_rate</span>,
+  <span class='va'>max_interaction</span>,
+  <span class='va'>spread</span>,
+  save_locations <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  track_ancestry <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  keep_pedigrees <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  ts_recording <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  method <span class='op'>=</span> <span class='st'>"gui"</span>,
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  include <span class='op'>=</span> <span class='cn'>NULL</span>,
+  burnin <span class='op'>=</span> <span class='cn'>NULL</span>,
+  script_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"script.slim"</span><span class='op'>)</span>,
+  output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"output"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-geographic-features" class="hasAnchor"><a href="#section-geographic-features" class="anchor"></a>Geographic features</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="world.html">world()</a></code> </p>
-        </td>
-        <td><p>Define a world map for all spatial operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="region.html">region()</a></code> </p>
-        </td>
-        <td><p>Define a geographic region</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-population-dynamics-configuration" class="hasAnchor"><a href="#section-population-dynamics-configuration" class="anchor"></a>Population dynamics configuration</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="population.html">population()</a></code> </p>
-        </td>
-        <td><p>Define a population and its original spatial range</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="expand.html">expand()</a></code> </p>
-        </td>
-        <td><p>Expand the population range</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="move.html">move()</a></code> </p>
-        </td>
-        <td><p>Move the population to a new location in a given amount of time</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="admixture.html">admixture()</a></code> </p>
-        </td>
-        <td><p>Define an admixture event</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="change.html">change()</a></code> </p>
-        </td>
-        <td><p>Update the population map or one of its parameters</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-model-visualization-and-diagnostics" class="hasAnchor"><a href="#section-model-visualization-and-diagnostics" class="anchor"></a>Model visualization and diagnostics</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="plot.spannr.html">plot(<i>&lt;spannr&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Plot <code>spannr</code> geographic features on a map</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.spannr.html">print(<i>&lt;spannr&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Print a summary of a <code>spannr</code> object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="graph.html">graph()</a></code> </p>
-        </td>
-        <td><p>Plot admixture graph based on given model configuration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="animate.html">animate()</a></code> </p>
-        </td>
-        <td><p>Animate the simulated population dynamics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ancestries.html">ancestries()</a></code> </p>
-        </td>
-        <td><p>Plot simulated ancestry proportions</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="interact.html">interact()</a></code> </p>
-        </td>
-        <td><p>Open an interactive browser of the spatial model</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-compiling-and-running-spatial-models" class="hasAnchor"><a href="#section-compiling-and-running-spatial-models" class="anchor"></a>Compiling and running spatial models</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="compile.html">compile()</a></code> </p>
-        </td>
-        <td><p>Compile the spatial demographic model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read.html">read()</a></code> </p>
-        </td>
-        <td><p>Read a previously serialized model configuration</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="script.html">script()</a></code> </p>
-        </td>
-        <td><p>Substitute variables in a template SLiM script</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="slim.html">slim()</a></code> </p>
-        </td>
-        <td><p>Run a spannr model as a SLiM script</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>model</th>
+      <td><p>Model object created by the <code>compile</code> function</p></td>
+    </tr>
+    <tr>
+      <th>seq_length</th>
+      <td><p>Total length of the simulated sequence (in
+base-pairs)</p></td>
+    </tr>
+    <tr>
+      <th>recomb_rate</th>
+      <td><p>Recombination rate of the simulated sequence (in
+recombinations per basepair per generation)</p></td>
+    </tr>
+    <tr>
+      <th>max_interaction</th>
+      <td><p>Maximum spatial interaction and mating
+choice distance</p></td>
+    </tr>
+    <tr>
+      <th>spread</th>
+      <td><p>Standard deviation of the normal distribution for a
+distance from of an offspring from one of its parents (randomly
+determined by SLiM)</p></td>
+    </tr>
+    <tr>
+      <th>save_locations</th>
+      <td><p>Save location of each individual throughout
+the simulation?</p></td>
+    </tr>
+    <tr>
+      <th>track_ancestry</th>
+      <td><p>Track ancestry proportion dynamics in all
+populations throughout the simulations (default FALSE)? If a
+non-zero integer is provided, ancestry will be tracked using the
+number number of neutral ancestry markers equal to this number.</p></td>
+    </tr>
+    <tr>
+      <th>keep_pedigrees</th>
+      <td><p>Turn on <code>keepPedigrees</code> during SLiM
+initialization?</p></td>
+    </tr>
+    <tr>
+      <th>ts_recording</th>
+      <td><p>Turn on tree sequence recording during SLiM
+initialization?</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>How to run the script? ("gui" - open in SLiMgui, "batch"</p><ul>
+<li><p>run on the command-line, "script" - simply return the script)</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>include</th>
+      <td><p>Vector of paths to custom SLiM scripts which should
+be combined with the backend SLiM code</p></td>
+    </tr>
+    <tr>
+      <th>burnin</th>
+      <td><p>Length of the burnin (in model's time units,
+i.e. years)</p></td>
+    </tr>
+    <tr>
+      <th>script_path</th>
+      <td><p>Name of the compiled output script</p></td>
+    </tr>
+    <tr>
+      <th>output_prefix</th>
+      <td><p>Common prefix (including path) for all output
+files</p></td>
+    </tr>
+    <tr>
+      <th>sim_length</th>
+      <td><p>Total length of the simulation (in model time
+units, i.e.  years)</p></td>
+    </tr>
+    <tr>
+      <th>generation_time</th>
+      <td><p>Generation time (in model's time units,
+i.e. years)</p></td>
+    </tr>
     </table>
-  </div>
 
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
