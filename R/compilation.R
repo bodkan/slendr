@@ -28,10 +28,7 @@ compile <- function(populations, model_dir, generation_time,
 
   map <- attr(populations[[1]], "map")
 
-  xrange <- sf::st_bbox(map)[c("xmin", "xmax")]
-  yrange <- sf::st_bbox(map)[c("ymin", "ymax")]
-  if (diff(xrange) < resolution | diff(yrange) < resolution)
-    stop("Pixel size larger than the overall world size", call. = FALSE)
+  check_resolution(map, resolution)
 
   # save split and admixture tables which will be returned in the model object
   # in separate objects (tables serialized for SLiM will have to be stripped
@@ -46,12 +43,7 @@ compile <- function(populations, model_dir, generation_time,
     names(return_admixtures)[1:2] <- c("from", "to")
   } else
     return_admixtures <- NULL
-
-  # convert times into generations (only in the table of splits which will be
-  # saved for later SLiM runs)
   splits_table <- return_splits
-  splits_table$tsplit <- splits_table$tsplit / generation_time
-  splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] / generation_time
 
   # compile the spatial maps
   maps_table <- compile_maps(populations, splits_table, resolution)
@@ -70,19 +62,20 @@ compile <- function(populations, model_dir, generation_time,
   # save the rasterized maps as PNG files
   write_maps(maps_table, model_dir)
 
+  maps_table$time <- ifelse(maps_table$time == splits_table[splits_table$parent == "ancestor", "tsplit"], -1, maps_table$time)
+
   # keep the original spatial map table for returning as a model object later
   return_maps <- maps_table
   return_maps$path <- return_maps$map_number %>%
     paste0(., ".png") %>% file.path(model_dir, .) %>% gsub("//", "/", .)
 
-  # take care of Inf/NA values for downstream SLiM runs (-1 will be interpreted
-  # as a special value, such as for the "split time" of ancestral populations,
-  # or their "parental" populations) - this is very ugly, but we're limited by
-  # what SLiM's programming language can do...
-  splits_table$tsplit <- ifelse(splits_table$tsplit == Inf, -1, splits_table$tsplit)
-  maps_table$time <- ifelse(maps_table$time == Inf, -1, maps_table$time)
   maps_table$time[maps_table$time != -1] <- maps_table$time[maps_table$time != -1] / generation_time
   splits_table$parent_id <- ifelse(is.na(splits_table$parent_id), -1, splits_table$parent_id)
+
+  # convert times into generations (only in the table of splits which will be
+  # saved for later SLiM runs)
+  splits_table$tsplit <- splits_table$tsplit / generation_time
+  splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] / generation_time
 
   # reformat the admixture table
   if (!is.null(return_admixtures)) {
@@ -197,12 +190,10 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
   # handling of -1 and Inf special cases is absolutely awful, but we are
   # currently forced to do this because we need to interface with the rather
   # limited SLiM builtin language)
-  splits$tsplit[splits$tsplit == -1] <- Inf
-  maps$time[maps$time == -1] <- Inf
   # convert generations back to years
   splits$tsplit <- round(splits$tsplit * generation_time)
   splits$tremove[splits$tremove != -1] <- round(splits$tremove[splits$tremove != -1] * generation_time)
-  maps$time <- round(maps$time * generation_time)
+  maps$time[maps$time != -1] <- round(maps$time[maps$time != -1] * generation_time)
 
   populations <- readRDS(path_populations)
 
@@ -258,8 +249,8 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   populations throughout the simulations (default FALSE)? If a
 #'   non-zero integer is provided, ancestry will be tracked using the
 #'   number number of neutral ancestry markers equal to this number.
-#' @param how How to run the script? ("gui" - open in SLiMgui, "batch"
-#'   - run on the command-line, "dry-run" - simply return the script)
+#' @param method How to run the script? ("gui" - open in SLiMgui, "batch"
+#'   - run on the command-line, "script" - simply return the script)
 #' @param include Vector of paths to custom SLiM scripts which should
 #'   be combined with the backend SLiM code
 #' @param generation_time Generation time (in model's time units,
@@ -271,13 +262,13 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   files
 #'
 #' @export
-run <- function(model, sim_length, seq_length, recomb_rate,
-                max_interaction, spread,
-                save_locations = FALSE, track_ancestry = FALSE,
-                keep_pedigrees = FALSE, ts_recording = FALSE,
-                how = "gui", verbose = FALSE, include = NULL, burnin = NULL,
-                script_path = file.path(model$config$directory, "script.slim"),
-                output_prefix = file.path(model$config$directory, "output")) {
+slim <- function(model, seq_length, recomb_rate,
+                 max_interaction, spread,
+                 save_locations = FALSE, track_ancestry = FALSE,
+                 keep_pedigrees = FALSE, ts_recording = FALSE,
+                 method = "gui", verbose = FALSE, include = NULL, burnin = NULL,
+                 script_path = file.path(model$config$directory, "script.slim"),
+                 output_prefix = file.path(model$config$directory, "output")) {
   model_dir <- model$config$directory
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -288,6 +279,9 @@ run <- function(model, sim_length, seq_length, recomb_rate,
   if (!length(list.files(model_dir, pattern = "*.png") == 0))
     stop(sprintf("Directory '%s' does not contain any spannr spatial raster maps", model_dir), call. = FALSE)
 
+  check_resolution(model$map, max_interaction)
+  check_resolution(model$map, spread)
+
   if (!is.logical(track_ancestry) & !is.numeric(track_ancestry)) {
     stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
 a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
@@ -297,10 +291,6 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   backend_script <- system.file("extdata", "backend.slim", package = "spannr")
 
   burnin <- if (!is.null(burnin)) round(burnin / model$generation_time) else 1
-  sim_length <- round(sim_length / model$generation_time)
-
-  if (burnin < 1 | sim_length < 1)
-    stop("Simulation length and burnin must take at least one generation", call. = FALSE)
 
   base_script <- script(
     path = backend_script,
@@ -308,7 +298,6 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     model_dir = model_dir,
     output_prefix = output_prefix,
     burnin = burnin,
-    sim_length = sim_length,
     keep_pedigrees = if (keep_pedigrees) "T" else "F",
     ts_recording = if (ts_recording) "T" else "F",
     max_interaction = max_interaction / model$resolution,
@@ -324,14 +313,14 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   script_components <- unlist(lapply(c(base_script, include), readLines))
   writeLines(script_components, script_path)
 
-  if (how == "gui")
+  if (method == "gui")
     system(sprintf("open -a SLiMgui %s", script_path))
-  else if (how == "batch")
+  else if (method == "batch")
     system(sprintf("slim %s", script_path), ignore.stdout = !verbose)
-  else if (how == "dry-run")
+  else if (method == "script")
     message("Final compiled SLiM script is in ", script_path)
   else
-    stop("Only 'gui', 'batch', and 'dry-run' are recognized as values of the 'how' argument", call. = FALSE)
+    stop("Only 'gui', 'batch', and 'script' are recognized as values of the 'method' argument", call. = FALSE)
 }
 
 
@@ -544,6 +533,14 @@ rasterize <- function(x, resolution) {
 
   # perform the rasterization using the dummy single-value factor column
   raster <- stars::st_rasterize(x["fill"], template)
+
+  if (length(table(raster$ID)) == 1) {
+    stop(sprintf("
+The generated raster map of %s at time %s is blank.
+This would cause SLiM to crash as it would not be able to place
+any individuals on the map. Please check the spatial boundary for
+this population at this time point.", x$pop, x$time), call. = FALSE)
+  }
 
   raster
 }
