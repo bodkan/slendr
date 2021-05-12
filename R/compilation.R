@@ -28,10 +28,7 @@ compile <- function(populations, model_dir, generation_time,
 
   map <- attr(populations[[1]], "map")
 
-  xrange <- sf::st_bbox(map)[c("xmin", "xmax")]
-  yrange <- sf::st_bbox(map)[c("ymin", "ymax")]
-  if (diff(xrange) < resolution | diff(yrange) < resolution)
-    stop("Pixel size larger than the overall world size", call. = FALSE)
+  check_resolution(map, resolution)
 
   # save split and admixture tables which will be returned in the model object
   # in separate objects (tables serialized for SLiM will have to be stripped
@@ -287,6 +284,9 @@ slim <- function(model, sim_length, seq_length, recomb_rate,
 
   if (!length(list.files(model_dir, pattern = "*.png") == 0))
     stop(sprintf("Directory '%s' does not contain any spannr spatial raster maps", model_dir), call. = FALSE)
+
+  check_resolution(model$map, max_interaction)
+  check_resolution(model$map, spread)
 
   if (!is.logical(track_ancestry) & !is.numeric(track_ancestry)) {
     stop("'track_ancestry' must be either FALSE or 0 (no tracking), or

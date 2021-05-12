@@ -7,6 +7,16 @@ Please provide a range object before it was intersected against a map.",
 }
 
 
+#' Check whether the given value makes sense given the map dimensions
+check_resolution <- function(map, val) {
+  xrange <- sf::st_bbox(map)[c("xmin", "xmax")]
+  yrange <- sf::st_bbox(map)[c("ymin", "ymax")]
+  if (diff(xrange) < val | diff(yrange) < val)
+    stop(sprintf("Value of %s = %s larger than the overall world size",
+                 deparse(substitute(val)), val),
+         call. = FALSE)
+}
+
 #' Set a bounding box of a given object, and return that object again
 #' (for some reason there's no builtin way to set a bounding box in
 #' sf <https://twitter.com/TimSalabim3/status/1063099774977667072>)
