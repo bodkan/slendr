@@ -534,6 +534,14 @@ rasterize <- function(x, resolution) {
   # perform the rasterization using the dummy single-value factor column
   raster <- stars::st_rasterize(x["fill"], template)
 
+  if (length(table(raster$ID)) == 1) {
+    stop(sprintf("
+The generated raster map of %s at time %s is blank.
+This would cause SLiM to crash as it would not be able to place
+any individuals on the map. Please check the spatial boundary for
+this population at this time point.", x$pop, x$time), call. = FALSE)
+  }
+
   raster
 }
 
