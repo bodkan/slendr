@@ -1,3 +1,4 @@
+
 devtools::load_all(".")
 
 xrange <- c(-15, 60)
@@ -78,7 +79,7 @@ admixtures <- list(
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 0.01,
+  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 3,
   overwrite = T
 )
 
