@@ -84,14 +84,10 @@ model <- compile(
 
 interact(model)
 
-## graph(model)
-
-## slim(
-##   model, sim_length = 52000,
-##   seq_length = 1, recomb_rate = 0,
-##   max_interaction = 100000, spread = 50000,
-##   save_locations = T, track_ancestry = F,
-##   method = "gui"
-## )
-
-#animate(model, nframes = 200)
+slim(
+  model, sim_length = 52000,
+  seq_length = 1, recomb_rate = 0,
+  max_interaction = 100000, spread = 50000,
+  save_locations = T, track_ancestry = F,
+  method = "gui"
+)
