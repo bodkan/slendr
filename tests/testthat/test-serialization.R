@@ -2,7 +2,7 @@
 
 test_that("read() restores a single-map model object", {
   map <- readRDS("map.rds")
-  pop <- population("pop", parent = "ancestor", N = 10,
+  pop <- population("pop", parent = "ancestor", N = 10, time = 100,
                     center = c(10, 40), radius = 100000, map = map)
 
   model_dir <- file.path(tempdir(), "tmp-single-map-model-serialization")
@@ -21,7 +21,7 @@ test_that("read() restores a single-map model object", {
 test_that("read() restores a complex model object", {
   map <- readRDS("map.rds")
 
-  p1 <- population(name = "pop1", parent = "ancestor", N = 700, radius = 600000, center = c(10, 25), map = map)
+  p1 <- population(name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   p2 <- population(name = "pop2", parent = p1, time = 30000, N = 500, center = c(10, 25), radius = 300000) %>%
     move(trajectory = list(c(25, 25), c(40, 30), c(40, 40), c(50, 50)), start = 29000, end = 25000, snapshots = 30)
   p3 <- population(name = "pop3", parent = p2, time = 20000, N = 2000, coords = list(c(-10, 50), c(10, 50), c(20, 53), c(40, 60), c(40, 70), c(-10, 65)))
