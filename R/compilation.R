@@ -262,7 +262,7 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   files
 #'
 #' @export
-slim <- function(model, sim_length, seq_length, recomb_rate,
+slim <- function(model, seq_length, recomb_rate,
                  max_interaction, spread,
                  save_locations = FALSE, track_ancestry = FALSE,
                  keep_pedigrees = FALSE, ts_recording = FALSE,
@@ -291,10 +291,6 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   backend_script <- system.file("extdata", "backend.slim", package = "spannr")
 
   burnin <- if (!is.null(burnin)) round(burnin / model$generation_time) else 1
-  sim_length <- round(sim_length / model$generation_time)
-
-  if (burnin < 1 | sim_length < 1)
-    stop("Simulation length and burnin must take at least one generation", call. = FALSE)
 
   base_script <- script(
     path = backend_script,
@@ -302,7 +298,6 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     model_dir = model_dir,
     output_prefix = output_prefix,
     burnin = burnin,
-    sim_length = sim_length,
     keep_pedigrees = if (keep_pedigrees) "T" else "F",
     ts_recording = if (ts_recording) "T" else "F",
     max_interaction = max_interaction / model$resolution,
