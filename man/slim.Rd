@@ -6,7 +6,6 @@
 \usage{
 slim(
   model,
-  sim_length,
   seq_length,
   recomb_rate,
   max_interaction,
@@ -25,9 +24,6 @@ slim(
 }
 \arguments{
 \item{model}{Model object created by the \code{compile} function}
-
-\item{sim_length}{Total length of the simulation (in model time
-units, i.e.  years)}
 
 \item{seq_length}{Total length of the simulated sequence (in
 base-pairs)}
@@ -58,7 +54,7 @@ initialization?}
 
 \item{method}{How to run the script? ("gui" - open in SLiMgui, "batch"
 \itemize{
-\item run on the command-line, "dry-run" - simply return the script)
+\item run on the command-line, "script" - simply return the script)
 }}
 
 \item{include}{Vector of paths to custom SLiM scripts which should
@@ -71,6 +67,9 @@ i.e. years)}
 
 \item{output_prefix}{Common prefix (including path) for all output
 files}
+
+\item{sim_length}{Total length of the simulation (in model time
+units, i.e.  years)}
 
 \item{generation_time}{Generation time (in model's time units,
 i.e. years)}
