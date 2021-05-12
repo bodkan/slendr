@@ -795,7 +795,7 @@ graph(model)
 ## Running the simulation
 
 The way we feed the entire serialized model into SLiM is through the
-`run()` function, which understands the format of the model directory
+`slim()` function, which understands the format of the model directory
 created by the `compile()` function and generates a SLiM script (using
 a backend skeleton script which is a part of this package and can be
 found by calling `system.file("inst/extdata/backend.slim", package =
@@ -832,15 +832,15 @@ Ancestry tracking is very useful to monitor that the spatial admixture
 model as defined in R really behaves as expected even on the SLiM
 side. This can be verified by inspecting files named as
 `output_ancestry_XXX.tsv` in the specified output directory. See the
-manpage of `run()` for more details.
+manpage of `slim()` for more details.
 
 ```{r}
-run(
+slim(
   model, burnin = 30, sim_length = 70000,
   seq_length = 100, recomb_rate = 0,
   max_interaction = 200e3, spread = 50e3,
   save_locations = TRUE, track_ancestry = 1,
-  how = "batch" # run the model in batch mode (default is SLiMgui)
+  method = "batch" # run the model in batch mode (default is SLiMgui)
 )
 ```
 

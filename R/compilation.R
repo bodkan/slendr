@@ -46,12 +46,7 @@ compile <- function(populations, model_dir, generation_time,
     names(return_admixtures)[1:2] <- c("from", "to")
   } else
     return_admixtures <- NULL
-
-  # convert times into generations (only in the table of splits which will be
-  # saved for later SLiM runs)
   splits_table <- return_splits
-  splits_table$tsplit <- splits_table$tsplit / generation_time
-  splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] / generation_time
 
   # compile the spatial maps
   maps_table <- compile_maps(populations, splits_table, resolution)
@@ -75,14 +70,19 @@ compile <- function(populations, model_dir, generation_time,
   return_maps$path <- return_maps$map_number %>%
     paste0(., ".png") %>% file.path(model_dir, .) %>% gsub("//", "/", .)
 
-  # take care of Inf/NA values for downstream SLiM runs (-1 will be interpreted
+  # take care of "special" values for downstream SLiM runs (-1 will be interpreted
   # as a special value, such as for the "split time" of ancestral populations,
   # or their "parental" populations) - this is very ugly, but we're limited by
   # what SLiM's programming language can do...
-  splits_table$tsplit <- ifelse(splits_table$tsplit == Inf, -1, splits_table$tsplit)
-  maps_table$time <- ifelse(maps_table$time == Inf, -1, maps_table$time)
+  maps_table$time <- ifelse(maps_table$time == splits_table[splits_table$parent == "ancestor", "tsplit"], -1, maps_table$time)
   maps_table$time[maps_table$time != -1] <- maps_table$time[maps_table$time != -1] / generation_time
+  splits_table$tsplit <- ifelse(splits_table$parent == "ancestor", -1, splits_table$tsplit)
   splits_table$parent_id <- ifelse(is.na(splits_table$parent_id), -1, splits_table$parent_id)
+
+  # convert times into generations (only in the table of splits which will be
+  # saved for later SLiM runs)
+  splits_table$tsplit[splits_table$tsplit != -1] <- splits_table$tsplit[splits_table$tsplit != -1] / generation_time
+  splits_table$tremove[splits_table$tremove != -1] <- splits_table$tremove[splits_table$tremove != -1] / generation_time
 
   # reformat the admixture table
   if (!is.null(return_admixtures)) {
@@ -258,8 +258,8 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   populations throughout the simulations (default FALSE)? If a
 #'   non-zero integer is provided, ancestry will be tracked using the
 #'   number number of neutral ancestry markers equal to this number.
-#' @param how How to run the script? ("gui" - open in SLiMgui, "batch"
-#'   - run on the command-line, "dry-run" - simply return the script)
+#' @param method How to run the script? ("gui" - open in SLiMgui, "batch"
+#'   - run on the command-line, "script" - simply return the script)
 #' @param include Vector of paths to custom SLiM scripts which should
 #'   be combined with the backend SLiM code
 #' @param generation_time Generation time (in model's time units,
@@ -271,13 +271,13 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 #'   files
 #'
 #' @export
-run <- function(model, sim_length, seq_length, recomb_rate,
-                max_interaction, spread,
-                save_locations = FALSE, track_ancestry = FALSE,
-                keep_pedigrees = FALSE, ts_recording = FALSE,
-                how = "gui", verbose = FALSE, include = NULL, burnin = NULL,
-                script_path = file.path(model$config$directory, "script.slim"),
-                output_prefix = file.path(model$config$directory, "output")) {
+slim <- function(model, sim_length, seq_length, recomb_rate,
+                 max_interaction, spread,
+                 save_locations = FALSE, track_ancestry = FALSE,
+                 keep_pedigrees = FALSE, ts_recording = FALSE,
+                 method = "gui", verbose = FALSE, include = NULL, burnin = NULL,
+                 script_path = file.path(model$config$directory, "script.slim"),
+                 output_prefix = file.path(model$config$directory, "output")) {
   model_dir <- model$config$directory
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -324,14 +324,14 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   script_components <- unlist(lapply(c(base_script, include), readLines))
   writeLines(script_components, script_path)
 
-  if (how == "gui")
+  if (method == "gui")
     system(sprintf("open -a SLiMgui %s", script_path))
-  else if (how == "batch")
+  else if (method == "batch")
     system(sprintf("slim %s", script_path), ignore.stdout = !verbose)
-  else if (how == "dry-run")
+  else if (method == "script")
     message("Final compiled SLiM script is in ", script_path)
   else
-    stop("Only 'gui', 'batch', and 'dry-run' are recognized as values of the 'how' argument", call. = FALSE)
+    stop("Only 'gui', 'batch', and 'script' are recognized as values of the 'method' argument", call. = FALSE)
 }
 
 

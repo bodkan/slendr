@@ -132,6 +132,7 @@ plot_maps <- function(..., time = NULL, graticules = "original",
   ggplot() +
     p_map +
     geom_sf(data = spatial_maps, aes(fill = pop), color = NA, alpha = 0.5) +
+    geom_sf(data = spatial_maps, fill = NA, color = "black", size = 0.1) +
     scale_fill_discrete(drop = FALSE, name = "") +
     theme_bw() +
     labs(xlab = xlab, ylab = ylab) +

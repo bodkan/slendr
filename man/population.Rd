@@ -6,7 +6,7 @@
 \usage{
 population(
   name,
-  time = NULL,
+  time,
   N,
   parent,
   map = NULL,
