@@ -110,12 +110,14 @@ initialize() {
 }
 
 1 {
-  // setup the first population (id = 0)
-  i = 0;
-  sim.addSubpop(i, pop_param("N", i));
-  set_map(i, sim.generation);
-  set_coordinates(get_pop(i).individuals, i);
-  add_markers(i);
+  // setup ancestral populations (i.e. those which don't have a parent)
+  pop_ids = which(drop(SPLIT_TABLE[, 2]) == -1);
+  for (i in pop_ids) {
+    sim.addSubpop(i, pop_param("N", i));
+    set_map(i, sim.generation);
+    set_coordinates(get_pop(i).individuals, i);
+    add_markers(i);
+  }
 
   // schedule all script blocks (unique() is called in case multiple events
   // are scheduled at once)
