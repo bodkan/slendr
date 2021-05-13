@@ -10,7 +10,8 @@ plot_maps(
   migrations = FALSE,
   graticules = "original",
   intersect = TRUE,
-  show_map = TRUE
+  show_map = TRUE,
+  interpolated_maps = NULL
 )
 }
 \description{
