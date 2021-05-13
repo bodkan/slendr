@@ -21,7 +21,7 @@ reference:
     - graph
     - animate
     - ancestries
-    - interact
+    - explore
 
   - title: Compiling and running spatial models
     contents:
