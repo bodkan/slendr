@@ -269,7 +269,6 @@ explore <- function(model, step = model$generation_time) {
   time_point_snapshots <-
     as.integer(c(0, event_choices, unlist(lapply(model$populations, `[[`, "time"))) %>%
     sort %>% unique %>% .[. != Inf])
-  time_points <- as.integer(sort(unique(c(time_point_snapshots, seq(min(time_point_snapshots), max(time_point_snapshots), by = step)))))
 
   interpolated_maps <- fill_maps(model$populations, time_point_snapshots)
 
@@ -296,9 +295,10 @@ explore <- function(model, step = model$generation_time) {
               column(8, shinyWidgets::sliderTextInput(
                 inputId = "time_slider",
                 label = "",
-                choices = rev(time_points),
-                selected = max(time_points),
-                width = "100%"
+                choices = rev(time_point_snapshots),
+                selected = max(time_point_snapshots),
+                width = "100%",
+                animate = animationOptions(interval = 2000, loop = FALSE)
               )),
 
               column(2, actionButton("next_time", label = "",
@@ -309,7 +309,7 @@ explore <- function(model, step = model$generation_time) {
               inputId = "time_select",
               label = "Select event:",
               choices = event_choices,
-              selected = max(time_points)
+              selected = max(time_point_snapshots)
             ),
 
             selectInput(
