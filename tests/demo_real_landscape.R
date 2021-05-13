@@ -76,7 +76,7 @@ admixtures <- list(
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 10000,
+  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 10e3,
   overwrite = T
 )
 
@@ -84,7 +84,7 @@ explore(model)
 
 slim(
   model, seq_length = 1, recomb_rate = 0,
-  max_interaction = 100000, spread = 50000,
+  max_interaction = 100e3, spread = 50e3,
   save_locations = T, track_ancestry = F,
   method = "gui"
 )

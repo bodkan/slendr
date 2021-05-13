@@ -313,28 +313,43 @@ explore <- function(model, step = model$generation_time) {
             ),
 
             fluidRow(
-              column(7, checkboxInput(
+              column(4, checkboxInput(
                 inputId = "intersect",
                 label = "Intersect ranges",
                 value = TRUE
               )),
 
               if (nrow(model$map)) {
-                column(5, checkboxInput(
+                column(4, checkboxInput(
                   inputId = "show_map",
-                  label = "Show landscape",
+                  label = "Show map",
                   value = TRUE
                 ))
-              } else NULL
+              } else NULL,
+
+              column(4, checkboxInput(
+                inputId = "show_migrations",
+                label = "Indicate migrations",
+                value = TRUE
+              ))
             ),
 
-            checkboxInput(inputId = "show_migrations", label = "Indicate migration events", value = TRUE)
+            p(strong("Generation time: "), model$generation_time, " time units")
 
           ),
 
           mainPanel(
 
-            plotOutput(outputId = "spannr_maps")
+            fluidRow(
+              align = "center",
+
+              plotOutput(outputId = "spannr_maps", height = 480),
+
+              hr(),
+
+              tableOutput("migrations_table")
+
+            )
 
           )
         )
@@ -352,7 +367,8 @@ explore <- function(model, step = model$generation_time) {
               inputId = "show_cleanups",
               label = "Show removal times",
               value = TRUE
-            )
+            ),
+            width = 3
 
           ),
 
@@ -407,7 +423,20 @@ explore <- function(model, step = model$generation_time) {
         migrations = input$show_migrations
       )
 
-    }, height = 600)
+    })
+
+    output$migrations_table <- renderTable({
+      migr_df <- get_migrations(model, input$time_slider)
+      table <- migr_df[, c("from", "to", "tstart", "tend", "rate")]
+      table$rate_gen <- sprintf("%.1f%%", table$rate / model$generation_time * 100)
+      table$tstart <- as.integer(table$tstart)
+      table$tend <- as.integer(table$tend)
+      table$rate <- sprintf("%.1f%%", table$rate * 100)
+      colnames(table) <- c("migration<br>source", "migration<br>target", "start", "end", "rate", "rate per<br>generation")
+      table$overlapping <- ifelse(migr_df$overlap, "yes", "no")
+      if (!nrow(table)) return(NULL)
+      table
+    }, sanitize.text.function = identity)
 
     output$spannr_graph <- renderPlot({ graph(model, input$show_cleanups) },
                                       height = 600)
