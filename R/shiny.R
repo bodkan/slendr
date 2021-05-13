@@ -273,6 +273,7 @@ explore <- function(model, step = model$generation_time) {
   interpolated_maps <- fill_maps(model$populations, time_point_snapshots)
 
   ui <- fluidPage(
+    tags$style(type="text/css", ".recalculating { opacity: 1.0; }"),
 
     navbarPage(
       "Model explorer",
@@ -298,7 +299,7 @@ explore <- function(model, step = model$generation_time) {
                 choices = rev(time_point_snapshots),
                 selected = max(time_point_snapshots),
                 width = "100%",
-                animate = animationOptions(interval = 2000, loop = FALSE)
+                animate = animationOptions(interval = 1500, loop = FALSE)
               )),
 
               column(2, actionButton("next_time", label = "",
@@ -394,6 +395,15 @@ explore <- function(model, step = model$generation_time) {
 
   server <- function(input, output, session) {
 
+    output$time_label = renderText({
+      event <- events[events$time == input$time_slider, "event"]
+      if (length(event))
+        label <- sprintf("<i>(%s)</i>", event)
+      else
+        label <- ""
+      sprintf("<b>Time point:</b> %s %s", input$time_slider, label)
+    })
+
     observeEvent(input$time_select, {
       value <- as.numeric(input$time_select)
       shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
@@ -407,15 +417,6 @@ explore <- function(model, step = model$generation_time) {
     observeEvent(input$next_time, {
       value <- get_time_point(time_point_snapshots, input$time_slider, "next")
       shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
-    })
-
-    output$time_label = renderText({
-      event <- events[events$time == input$time_slider, "event"]
-      if (length(event))
-        label <- sprintf("<i>(%s)</i>", event)
-      else
-        label <- ""
-      sprintf("<b>Time point:</b> %s %s", input$time_slider, label)
     })
 
     output$spannr_maps <- renderPlot({
