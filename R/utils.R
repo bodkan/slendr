@@ -56,6 +56,37 @@ read_ancestries <- function(model_dir) {
 }
 
 
+#' Get a data frame of migration events active at a given time point
+get_migrations <- function(model, time) {
+  pop_names <- unique(unlist(sapply(model$populations, `[[`, "pop")))
+
+  migrations <- subset(model$admixtures, tstart >= time & tend <= time)
+  migrations$from <- factor(migrations$from, levels = pop_names)
+  migrations$to <- factor(migrations$to, levels = pop_names)
+
+  migr_coords <- lapply(seq_len(nrow(migrations)), function(row_i) {
+
+    from <- model$populations[pop_names == migrations[row_i, ]$from][[1]] %>%
+      .[.$time >= time, ] %>%
+      .[nrow(.), ]
+
+    to <- model$populations[pop_names == migrations[row_i, ]$to][[1]] %>%
+      .[.$time >= time, ] %>%
+      .[nrow(.), ]
+
+    from_center <- sf::st_centroid(from) %>% sf::st_coordinates()
+    to_center <- sf::st_centroid(to) %>% sf::st_coordinates()
+
+    coords <- as.data.frame(cbind(from_center, to_center), stringsAsFactors = FALSE)
+    colnames(coords) <- c("from_x", "from_y", "to_x", "to_y")
+    coords
+
+  }) %>% do.call(rbind, .)
+
+  cbind(migrations, migr_coords)
+}
+
+
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.

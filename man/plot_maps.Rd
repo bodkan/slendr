@@ -7,6 +7,7 @@
 plot_maps(
   ...,
   time = NULL,
+  migrations = FALSE,
   graticules = "original",
   intersect = TRUE,
   show_map = TRUE
