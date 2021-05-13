@@ -213,7 +213,7 @@ get_time_point <- function(times, current_value, what) {
 #'
 #' @import shiny
 #' @export
-explore <- function(model, step = model$generation_time) {
+explore <- function(model) {
 
   # generate choices for the coordinate system graticules
   if (has_crs(model$map)) {
@@ -299,7 +299,7 @@ explore <- function(model, step = model$generation_time) {
                 choices = rev(time_point_snapshots),
                 selected = max(time_point_snapshots),
                 width = "100%",
-                animate = animationOptions(interval = 1500, loop = FALSE)
+                animate = animationOptions(interval = 2000, loop = FALSE)
               )),
 
               column(2, actionButton("next_time", label = "",
