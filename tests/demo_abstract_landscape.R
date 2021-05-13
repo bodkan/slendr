@@ -83,7 +83,7 @@ model <- compile(
   overwrite = T
 )
 
-interact(model)
+explore(model)
 
 slim(
   model, seq_length = 1, recomb_rate = 0,

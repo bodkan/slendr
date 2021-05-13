@@ -61,6 +61,8 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
+  if (is.null(show_map)) show_map <- FALSE
+
   args <- list(...)
 
   if(!all(sapply(args, inherits, "spannr")))
@@ -143,12 +145,10 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
     )
   }
 
-  if (nrow(map) & show_map) {
-    p_map <- geom_sf(data = map,
-                     aes(frame = NULL), fill = "lightgray", color = NA)
-  } else {
+  if (nrow(map) & show_map)
+    p_map <- geom_sf(data = map, aes(frame = NULL), fill = "lightgray", color = NA)
+  else
     p_map <- NULL
-  }
 
   # build a base map with geographic features
   p <- ggplot() +
