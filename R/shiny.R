@@ -57,7 +57,8 @@ fill_maps <- function(pops, time = NULL) {
 #' @import ggplot2
 plot_maps <- function(..., time = NULL, migrations = FALSE,
                       graticules = "original",
-                      intersect = TRUE, show_map = TRUE) {
+                      intersect = TRUE, show_map = TRUE,
+                      interpolated_maps = NULL) {
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
@@ -75,48 +76,51 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
   # a single model object was provided
   if (length(args) == 1 & inherits(args[[1]], "spannr_model")) {
     model <- args[[1]]
-    spatial_maps <- model$populations
+    pops <- model$populations
     map <- model$map
   } else {
-    spatial_maps <- args
+    pops <- args
 
     # extract the map component underlying each population object
     # and make sure they are all the same with no conflicts
-    maps <- unique(lapply(spatial_maps, function(i) attr(i, "map")))
+    maps <- unique(lapply(pops, function(i) attr(i, "map")))
     if (length(maps) != 1) {
       stop("Objects do not share the same map component", call. = F)
     }
-
     map <- maps[[1]]
   }
 
   if (migrations & (is.null(time) | !inherits(args[[1]], "spannr_model")))
     stop("Migrations can be visualized only when a time point *and* a 'spannr_model' objects are specified", call. = FALSE)
   
-  pop_names <- unique(unlist(sapply(spatial_maps, `[[`, "pop")))
+  pop_names <- unique(unlist(sapply(pops, `[[`, "pop")))
 
-  # if the user specified a time point, "interpolate" all maps at that time
-  # and return just those that match that time point
+  # if the user specified a time point, "interpolate" all maps at that
+  # time and return just those that match that time point (unless this
+  # was already pre-computed)
   if (!is.null(time)) {
+    if (is.null(interpolated_maps))
+      interpolated_maps <- fill_maps(pops, time)
+
     # get all time points defined by the user
-    all_times <- sort(unique(unlist(lapply(spatial_maps, `[[`, "time"))))
+    all_times <- sort(unique(unlist(lapply(pops, `[[`, "time"))))
 
     # get split and removal times of all specified populations
-    split_times <- sapply(sapply(spatial_maps, `[[`, "time"), `[`, 1)
-    removal_times <- sapply(spatial_maps, attr, "remove")
-  
-    spatial_maps <- fill_maps(spatial_maps, time)
+    split_times <- sapply(sapply(pops, `[[`, "time"), `[`, 1)
+    removal_times <- sapply(pops, attr, "remove")
 
     previous_time <- min(all_times[all_times >= time])
     # get only those populations already/still present at the
     # specified time...
-    present_pops <- spatial_maps[split_times >= time & removal_times <= time]
+    present_pops <- interpolated_maps[split_times >= time & removal_times <= time]
     # ... and extract their spatial maps
     spatial_maps <- lapply(present_pops, function(pop) {
       snapshot <- pop[pop$time == previous_time, ]
       attributes(snapshot) <- attributes(pop)
       snapshot
     })
+  } else {
+    spatial_maps <- pops
   }
 
   if (intersect) spatial_maps <- lapply(spatial_maps, intersect_features)
@@ -266,6 +270,8 @@ explore <- function(model, step = model$generation_time) {
     as.integer(c(0, event_choices, unlist(lapply(model$populations, `[[`, "time"))) %>%
     sort %>% unique %>% .[. != Inf])
   time_points <- as.integer(sort(unique(c(time_point_snapshots, seq(min(time_point_snapshots), max(time_point_snapshots), by = step)))))
+
+  interpolated_maps <- fill_maps(model$populations, time_point_snapshots)
 
   ui <- fluidPage(
 
@@ -420,7 +426,8 @@ explore <- function(model, step = model$generation_time) {
         graticules = input$coord_system,
         intersect = input$intersect,
         show_map = input$show_map,
-        migrations = input$show_migrations
+        migrations = input$show_migrations,
+        interpolated_maps = interpolated_maps
       )
 
     })
