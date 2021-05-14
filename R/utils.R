@@ -87,6 +87,18 @@ get_migrations <- function(model, time) {
 }
 
 
+#' Transfer given set of attributes from one object to another
+copy_attributes <- function(to, from, which) {
+  for (i in which) {
+    if (!i %in% names(attributes(from)))
+      stop("Unknown attribute ", i, call. = FALSE)
+    attr(to, i) <- attr(from, i)
+  }
+  class(to) <- class(from)
+  to
+}
+
+
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.

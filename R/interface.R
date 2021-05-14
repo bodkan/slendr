@@ -20,9 +20,10 @@
 #' @param center Two-dimensional vector specifying the center of the
 #'   circular range
 #' @param radius Radius of the circular range
-#' @param coords List of vector pairs, defining corners of the polygon
-#'   range (see also the \code{region} argument)
-#' @param region Geographic region of the class \code{spannr_region}
+#' @param polygon List of vector pairs, defining corners of the
+#'   polygon range or a geographic region of the class
+#'   \code{spannr_region} from which the polygon coordinates will be
+#'   extracted (see the \code{region() function})
 #' @param remove Time at which the population should be removed
 #' @param intersect Intersect the population's boundaries with
 #'   landscape features?
@@ -31,8 +32,8 @@
 #'
 #' @export
 population <- function(name, time, N, parent, map = NULL,
-                       center = NULL, radius = NULL, coords = NULL,
-                       region = NULL, remove = NULL, intersect = TRUE) {
+                       center = NULL, radius = NULL, polygon = NULL,
+                       remove = NULL, intersect = TRUE) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
     if (is.null(map))
@@ -41,41 +42,39 @@ population <- function(name, time, N, parent, map = NULL,
       map <- map
   } else
     map <- attr(parent, "map")
-
+  
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
-  if (!is.null(region) & is.null(center)) {
-    if (sf::st_crs(map) != sf::st_crs(region))
-      stop("The specified region uses a different coordinate system than the implied world", call. = FALSE)
-    range <- sf::st_sfc(sf::st_geometry(region))
-  } else {
-    range <- spatial_range(map, center, radius, coords)
-  }
-  pop_range <- sf::st_sf(
-    data.frame(pop = name, time = time, N = N, stringsAsFactors = FALSE),
-    geometry = range
-  )
+  if (!is.null(polygon) & inherits(polygon, "spannr_region"))
+    geometry <- sf::st_geometry(polygon)
+  else
+    geometry <- define_boundary(map, center, radius, polygon)
 
-  sf::st_agr(pop_range) <- "constant"
+  boundary <- sf::st_sf(
+    data.frame(pop = name, time = time, N = N, stringsAsFactors = FALSE),
+    geometry = geometry
+  )
+  sf::st_agr(boundary) <- "constant"
 
   # when to clean up the population?
-  attr(pop_range, "remove") <- ifelse(!is.null(remove), remove, -1)
+  attr(boundary, "remove") <- if (!is.null(remove)) remove else -1
 
   # keep a record of the parent population
   if (inherits(parent, "spannr_pop")) {
-    attr(pop_range, "parent") <- parent[nrow(parent), ]
+    attr(boundary, "parent") <- parent[nrow(parent), ]
     # keep the map as an internal attribute
-    attr(pop_range, "map") <- map
+    attr(boundary, "map") <- map
   } else if (is.character(parent) & parent == "ancestor") {
-    attr(pop_range, "parent") <- "ancestor"
-    attr(pop_range, "map") <- map
+    attr(boundary, "parent") <- "ancestor"
+    attr(boundary, "map") <- map
   } else
-    stop("Suspicious parental population specified", call. = FALSE)
+    stop("Suspicious parent population", call. = FALSE)
 
-  attr(pop_range, "intersect") <- intersect
+  attr(boundary, "intersect") <- intersect
 
-  class(pop_range) <- set_class(pop_range, "pop")
-  pop_range
+  class(boundary) <- set_class(boundary, "pop")
+
+  boundary
 }
 
 
@@ -90,16 +89,16 @@ population <- function(name, time, N, parent, map = NULL,
 #' @param center Two-dimensional vector specifying the center of the
 #'   circular range
 #' @param radius Radius of the circular range
-#' @param coords List of vector pairs, defining corners of the polygon
-#'   range (see also the \code{region} argument)
-#' @param region Geographic region of the class \code{spannr_region}
+#' @param polygon List of vector pairs, defining corners of the
+#'   polygon range (see also the \code{region} argument) or a
+#'   geographic region of the class \code{spannr_region} from which
+#'   the polygon coordinates will be extracted
 #'
 #' @return Object of the class \code{spannr_pop}
 #'
 #' @export
 change <- function(pop, time, N = NULL,
-                   center = NULL, radius = NULL, coords = NULL,
-                   region = NULL) {
+                   center = NULL, radius = NULL, polygon = NULL) {
   if (time %in% pop$time)
     stop("Time point already defined", call. = FALSE)
 
@@ -111,31 +110,33 @@ change <- function(pop, time, N = NULL,
     stop("Cannot update population status after it has been removed")
 
   map <- attr(pop, "map")
-  # define the new population range or re-use the old one
-  if (!is.null(region)) {
-    range <- sf::st_sfc(sf::st_geometry(region))
-  } else if (!is.null(center) & !is.null(radius)){
-    range <- spatial_range(map, center, radius, coords)
-  } else
-    range <- sf::st_geometry(pop[nrow(pop), ])
+
+  # define the population range as a simple geometry object
+  #or reuse the old one
+  if (!is.null(polygon) & inherits(polygon, "spannr_region"))
+      polygon <- sf::st_geometry(polygon)
+
+  if ((!is.null(center) & !is.null(radius)) | !is.null(polygon))
+    boundary <- define_boundary(map, center, radius, NULL)
+  else
+    boundary <- sf::st_geometry(pop[nrow(pop), ])
 
   if (is.null(N)) N <- pop[nrow(pop), ]$N
 
   updated <- sf::st_sf(
     data.frame(pop = unique(pop$pop), time = time, N = N, stringsAsFactors = FALSE),
-    geometry = range
+    geometry = boundary
   )
 
-  res <- rbind(pop, updated)
+  combined <- rbind(pop, updated)
+  sf::st_agr(combined) <- "constant"
 
-  class(res) <- class(pop)
-  attr(res, "parent") <- attr(pop, "parent")
-  attr(res, "remove") <- attr(pop, "remove")
-  attr(res, "intersect") <-attr(pop, "intersect")
-  attr(res, "map") <- map
-  sf::st_agr(res) <- "constant"
+  result <- copy_attributes(
+    combined, pop,
+    c("map", "parent", "remove", "intersect")
+  )
 
-  res
+  result
 }
 
 
@@ -148,12 +149,12 @@ change <- function(pop, time, N = NULL,
 #' @param by How many units of distance to expand by?
 #' @param start,end When does the expansion start/end?
 #' @param snapshots Number of time slices to split the expansion into
-#' @param region Geographic region to restrict the expansion to
+#' @param polygon Geographic region to restrict the expansion to
 #'
 #' @return Object of the class \code{spannr_pop}
 #'
 #' @export
-expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
+expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   check_not_intersected(pop)
 
   region_start <- pop[nrow(pop), ]
@@ -175,23 +176,16 @@ expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
     exp_region$time <- times[i]
     inter_regions[[i + 1]] <- exp_region
   }
-
+  
   inter_regions <- rbind(pop, do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
-  # keep the map as an internal attribute
-  attr(inter_regions, "map") <- attr(pop, "map")
-  # propagate the information about the parental population
-  attr(inter_regions, "parent") <- attr(pop, "parent")
-  # optionally, add a movement boundary
-  attr(inter_regions, "region") <- region
-  # retain the cleanup time
-  attr(inter_regions, "remove") <- attr(pop, "remove")
-  # retain information whether to intersect the population boundaries
-  attr(inter_regions, "intersect") <-attr(pop, "intersect")
+  result <- copy_attributes(
+    inter_regions, pop,
+    c("map", "parent", "remove", "intersect")
+  )
 
-  class(inter_regions) <- set_class(inter_regions, "pop")
-  inter_regions
+  result
 }
 
 
@@ -274,18 +268,12 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   inter_regions <- rbind(pop, do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
-  # keep the map as an internal attribute
-  attr(inter_regions, "map") <- map
-  # propagate the information about the parental population
-  attr(inter_regions, "parent") <- attr(pop, "parent")
-  # retain the cleanup time
-  attr(inter_regions, "remove") <- attr(pop, "remove")
-  # retain information whether to intersect the population boundaries
-  attr(inter_regions, "intersect") <-attr(pop, "intersect")
+  result <- copy_attributes(
+    inter_regions, pop,
+    c("map", "parent", "remove", "intersect")
+  )
 
-  class(inter_regions) <- set_class(inter_regions, "pop")
-
-  inter_regions
+  result
 }
 
 
@@ -299,15 +287,22 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 #'
 #' @param name Name of the geographic region
 #' @param map Object of the type \code{sf} which defines the map
-#' @param coords List of vector pairs, defining corners of the polygon
+#' @param center Two-dimensional vector specifying the center of the
+#'   circular range
+#' @param radius Radius of the circular range
+#' @param polygon List of vector pairs, defining corners of the
+#'   polygon range or a geographic region of the class
+#'   \code{spannr_region} from which the polygon coordinates will be
+#'   extracted (see the \code{region() function})
 #'
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-region <- function(name, map, coords) {
+region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
+  if (is.null(name)) name <- "unnamed region"
   region <- sf::st_sf(
     region = name,
-    geometry = spatial_range(map, coords = coords)
+    geometry = define_boundary(map, center, radius, polygon)
   )
   sf::st_agr(region) <- "constant"
 
@@ -351,8 +346,8 @@ region <- function(name, map, coords) {
 #'
 #' @export
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
-   if (inherits(landscape, "sf")) { # a landscape defined by the user
-     map <- sf::st_sf(geometry = sf::st_as_sf(landscape)) %>%
+  if (inherits(landscape, "sf")) { # a landscape defined by the user
+     map <- sf::st_sf(landscape = sf::st_geometry(landscape)) %>%
        set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
    } else if (landscape == "blank") { # an empty abstract landscape
     map <- sf::st_sf(geometry = sf::st_sfc()) %>%
@@ -596,6 +591,9 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
     cat(header, "\n")
     cat(sep, "\n")
 
+    if (type == "region")
+      cat("name:", x$region, "\n\n")
+
     if (type == "population") {
       cat("name:", unique(x$pop), "\n")
       parent <- attr(x, "parent")
@@ -635,23 +633,28 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
     }
 
     if (type %in% c("map", "region", "population")) {
-      crs <- sf::st_crs(x)$epsg
-      if (is.na(crs)) {
-        cat("abstract spatial landscape ")
-        if (nrow(x))
-          cat("with custom features\n")
-        else
-          cat("with no features\n")
-        units <- ""
-      } else {
-        crs <- paste("EPSG", crs)
-        cat("internal coordinate reference system:", crs, "\n")
-        units <- " (in degrees longitude and latitude)"
-      }
-      xrange <- attr(x, "xrange")
-      yrange <- attr(x, "yrange")
-      cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
-                  units, xrange[1], xrange[2], yrange[1], yrange[2]))
+      cat("map: ")
+      if (type == "map" | !is.null(attr(x, "map"))) {
+        crs <- sf::st_crs(x)$epsg
+        if (is.na(crs)) {
+          cat("abstract spatial landscape ")
+          if (nrow(x))
+            cat("with custom features\n")
+          else
+            cat("with no features\n")
+          units <- ""
+        } else {
+          crs <- paste("EPSG", crs)
+          cat("internal coordinate reference system:", crs, "\n")
+          units <- " (in degrees longitude and latitude)"
+        }
+        
+        xrange <- attr(x, "xrange")
+        yrange <- attr(x, "yrange")
+        cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
+                    units, xrange[1], xrange[2], yrange[1], yrange[2]))
+      } else
+        cat("[no map defined]\n")
     } else if (type == "model") {
       cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
       cat("admixture events: ")
@@ -671,4 +674,71 @@ files in the model directory.\n")
       stop("Unknown object type", call. = FALSE)
     }
   }
+}
+
+
+#' Combine two \code{spannr_region} objects into a single geographic
+#' region
+#'
+#' @param x Object of the class \code{spannr_region}
+#' @param y Object of the class \code{spannr_region}
+#' @param name Name of the resulting geographic region
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+join <- function(x, y, name = NULL) {
+  result <- sf::st_union(x, y)
+  result$region.1 <- NULL
+  if (is.null(name))
+    result$region <- sprintf("%s plus %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
+  result
+}
+
+
+#' Generate the overlap of two \code{spannr_region} objects
+#'
+#' @inheritParams join
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+overlap <- function(x, y, name) {
+  result <- sf::st_intersection(x, y)
+  if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
+  result$region.1 <- NULL
+  if (is.null(name))
+    result$region <- sprintf("overlap %s and %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
+  result
+}
+
+#' Generate the difference between two \code{spannr_region} objects
+#'
+#' @inheritParams join
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+subtract <- function(x, y, name) {
+  result <- sf::st_difference(x, y)
+  if (nrow(result) == 0) stop("No region left after subtraction", call. = FALSE)
+  result$region.1 <- NULL
+  if (is.null(name))
+    result$region <- sprintf("%s minus %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
+  result
 }

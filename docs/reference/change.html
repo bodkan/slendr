@@ -139,15 +139,7 @@ in addition to the expand and move functions" />
 in addition to the <code>expand</code> and <code>move</code> functions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>change</span><span class='op'>(</span>
-  <span class='va'>pop</span>,
-  <span class='va'>time</span>,
-  N <span class='op'>=</span> <span class='cn'>NULL</span>,
-  center <span class='op'>=</span> <span class='cn'>NULL</span>,
-  radius <span class='op'>=</span> <span class='cn'>NULL</span>,
-  coords <span class='op'>=</span> <span class='cn'>NULL</span>,
-  region <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>change</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>time</span>, N <span class='op'>=</span> <span class='cn'>NULL</span>, center <span class='op'>=</span> <span class='cn'>NULL</span>, radius <span class='op'>=</span> <span class='cn'>NULL</span>, polygon <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -174,13 +166,11 @@ circular range</p></td>
       <td><p>Radius of the circular range</p></td>
     </tr>
     <tr>
-      <th>coords</th>
-      <td><p>List of vector pairs, defining corners of the polygon
-range (see also the <code>region</code> argument)</p></td>
-    </tr>
-    <tr>
-      <th>region</th>
-      <td><p>Geographic region of the class <code>spannr_region</code></p></td>
+      <th>polygon</th>
+      <td><p>List of vector pairs, defining corners of the
+polygon range (see also the <code>region</code> argument) or a
+geographic region of the class <code>spannr_region</code> from which
+the polygon coordinates will be extracted</p></td>
     </tr>
     </table>
 
