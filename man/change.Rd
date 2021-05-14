@@ -4,15 +4,7 @@
 \alias{change}
 \title{Update the population map or one of its parameters}
 \usage{
-change(
-  pop,
-  time,
-  N = NULL,
-  center = NULL,
-  radius = NULL,
-  polygon = NULL,
-  region = NULL
-)
+change(pop, time, N = NULL, center = NULL, radius = NULL, polygon = NULL)
 }
 \arguments{
 \item{pop}{Object of the class \code{spannr_pop}}
