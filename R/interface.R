@@ -98,8 +98,7 @@ population <- function(name, time, N, parent, map = NULL,
 #'
 #' @export
 change <- function(pop, time, N = NULL,
-                   center = NULL, radius = NULL, polygon = NULL,
-                   region = NULL) {
+                   center = NULL, radius = NULL, polygon = NULL) {
   if (time %in% pop$time)
     stop("Time point already defined", call. = FALSE)
 
@@ -288,15 +287,21 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 #'
 #' @param name Name of the geographic region
 #' @param map Object of the type \code{sf} which defines the map
-#' @param coords List of vector pairs, defining corners of the polygon
+#' @param center Two-dimensional vector specifying the center of the
+#'   circular range
+#' @param radius Radius of the circular range
+#' @param polygon List of vector pairs, defining corners of the
+#'   polygon range or a geographic region of the class
+#'   \code{spannr_region} from which the polygon coordinates will be
+#'   extracted (see the \code{region() function})
 #'
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-region <- function(name, map, polygon) {
+region <- function(name, map, center = NULL, radius = NULL, polygon = NULL) {
   region <- sf::st_sf(
     region = name,
-    geometry = define_boundary(map, coords = polygon)
+    geometry = define_boundary(map, center, radius, polygon)
   )
   sf::st_agr(region) <- "constant"
 
@@ -585,6 +590,9 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
     cat(header, "\n")
     cat(sep, "\n")
 
+    if (type == "region")
+      cat("name:", x$region, "\n\n")
+
     if (type == "population") {
       cat("name:", unique(x$pop), "\n")
       parent <- attr(x, "parent")
@@ -624,6 +632,7 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
     }
 
     if (type %in% c("map", "region", "population")) {
+      cat("map: ")
       crs <- sf::st_crs(x)$epsg
       if (is.na(crs)) {
         cat("abstract spatial landscape ")
