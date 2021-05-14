@@ -2,8 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{overlap}
 \alias{overlap}
-\title{Generate the overlap of two \code{spannr_region} objects (geometric
-intersection)}
+\title{Generate the overlap of two \code{spannr_region} objects}
 \usage{
 overlap(x, y, name)
 }
@@ -18,6 +17,5 @@ overlap(x, y, name)
 Object of the class \code{spannr_region}
 }
 \description{
-Generate the overlap of two \code{spannr_region} objects (geometric
-intersection)
+Generate the overlap of two \code{spannr_region} objects
 }

@@ -41,7 +41,7 @@ test_that("union of a region with itself gives the same region", {
   map <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "blank")
   coords <- list(c(-18, 20), c(40, 20), c(30, 33), c(20, 32), c(10, 35), c(-8, 35))
   africa <- region("Africa", map, polygon = coords)
-  expect_true(all(africa == combine(africa, africa, name = "Africa")))
+  expect_true(all(africa == join(africa, africa, name = "Africa")))
 })
 
 test_that("intersection of a region with itself gives the same region", {
@@ -89,7 +89,7 @@ test_that("custom landscapes can be specified", {
   r1 <- region(center = c(0, 0), radius = 10)
   r2 <- region(center = c(10, 10), radius = 10)
   r3 <- region(center = c(-10, -10), radius = 10)
-  comb <- r1 %>% combine(r2) %>% combine(r3)
+  comb <- r1 %>% join(r2) %>% join(r3)
   map <- world(xrange = c(-20, 20), yrange = c(-20, 20), landscape = comb)
   # is the geometry component of the builtin map equal to the are of
   # the original regions?
