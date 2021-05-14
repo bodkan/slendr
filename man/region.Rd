@@ -4,7 +4,7 @@
 \alias{region}
 \title{Define a geographic region}
 \usage{
-region(name, map, center, radius, polygon)
+region(name = NULL, map = NULL, center = NULL, radius = NULL, polygon = NULL)
 }
 \arguments{
 \item{name}{Name of the geographic region}

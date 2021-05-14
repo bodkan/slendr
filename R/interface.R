@@ -675,3 +675,72 @@ files in the model directory.\n")
     }
   }
 }
+
+
+#' Combine two \code{spannr_region} objects into a single geographic
+#' region (geometric union)
+#'
+#' @param x Object of the class \code{spannr_region}
+#' @param y Object of the class \code{spannr_region}
+#' @param name Name of the resulting geographic region
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+combine <- function(x, y, name = NULL) {
+  result <- sf::st_union(x, y)
+  result$region.1 <- NULL
+  if (is.null(name))
+    result$region <- sprintf("%s plus %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
+  result
+}
+
+
+#' Generate the overlap of two \code{spannr_region} objects (geometric
+#' intersection)
+#'
+#' @inheritParams combine
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+overlap <- function(x, y, name) {
+  result <- sf::st_intersection(x, y)
+  if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
+  result$region.1 <- NULL
+  if (is.null(name))
+    result$region <- sprintf("overlap %s and %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
+  result
+}
+
+#' Generate the difference between two \code{spannr_region} objects
+#' (geometric subtraction)
+#'
+#' @inheritParams combine
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+subtract <- function(x, y, name) {
+  result <- sf::st_difference(x, y)
+  if (nrow(result) == 0) stop("No region left after subtraction", call. = FALSE)
+  result$region.1 <- NULL
+  if (is.null(name))
+    result$region <- sprintf("%s minus %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
+  result
+}
