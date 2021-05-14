@@ -2,8 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{subtract}
 \alias{subtract}
-\title{Generate the difference between two \code{spannr_region} objects
-(geometric subtraction)}
+\title{Generate the difference between two \code{spannr_region} objects}
 \usage{
 subtract(x, y, name)
 }
@@ -19,5 +18,4 @@ Object of the class \code{spannr_region}
 }
 \description{
 Generate the difference between two \code{spannr_region} objects
-(geometric subtraction)
 }
