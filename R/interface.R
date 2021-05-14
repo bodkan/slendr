@@ -298,7 +298,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-region <- function(name, map, center = NULL, radius = NULL, polygon = NULL) {
+region <- function(name, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
   region <- sf::st_sf(
     region = name,
     geometry = define_boundary(map, center, radius, polygon)
@@ -633,23 +633,27 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
 
     if (type %in% c("map", "region", "population")) {
       cat("map: ")
-      crs <- sf::st_crs(x)$epsg
-      if (is.na(crs)) {
-        cat("abstract spatial landscape ")
-        if (nrow(x))
-          cat("with custom features\n")
-        else
-          cat("with no features\n")
-        units <- ""
-      } else {
-        crs <- paste("EPSG", crs)
-        cat("internal coordinate reference system:", crs, "\n")
-        units <- " (in degrees longitude and latitude)"
-      }
-      xrange <- attr(x, "xrange")
-      yrange <- attr(x, "yrange")
-      cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
-                  units, xrange[1], xrange[2], yrange[1], yrange[2]))
+      if (!is.null(attr(x, "map"))) {
+        crs <- sf::st_crs(x)$epsg
+        if (is.na(crs)) {
+          cat("abstract spatial landscape ")
+          if (nrow(x))
+            cat("with custom features\n")
+          else
+            cat("with no features\n")
+          units <- ""
+        } else {
+          crs <- paste("EPSG", crs)
+          cat("internal coordinate reference system:", crs, "\n")
+          units <- " (in degrees longitude and latitude)"
+        }
+        
+        xrange <- attr(x, "xrange")
+        yrange <- attr(x, "yrange")
+        cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
+                    units, xrange[1], xrange[2], yrange[1], yrange[2]))
+      } else
+        cat("[no map defined]\n")
     } else if (type == "model") {
       cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
       cat("admixture events: ")
