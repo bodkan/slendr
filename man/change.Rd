@@ -10,7 +10,7 @@ change(
   N = NULL,
   center = NULL,
   radius = NULL,
-  coords = NULL,
+  polygon = NULL,
   region = NULL
 )
 }
@@ -26,10 +26,10 @@ circular range}
 
 \item{radius}{Radius of the circular range}
 
-\item{coords}{List of vector pairs, defining corners of the polygon
-range (see also the \code{region} argument)}
-
-\item{region}{Geographic region of the class \code{spannr_region}}
+\item{polygon}{List of vector pairs, defining corners of the
+polygon range (see also the \code{region} argument) or a
+geographic region of the class \code{spannr_region} from which
+the polygon coordinates will be extracted}
 }
 \value{
 Object of the class \code{spannr_pop}
