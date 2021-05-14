@@ -4,14 +4,22 @@
 \alias{region}
 \title{Define a geographic region}
 \usage{
-region(name, map, polygon)
+region(name, map, center, radius, polygon)
 }
 \arguments{
 \item{name}{Name of the geographic region}
 
 \item{map}{Object of the type \code{sf} which defines the map}
 
-\item{coords}{List of vector pairs, defining corners of the polygon}
+\item{center}{Two-dimensional vector specifying the center of the
+circular range}
+
+\item{radius}{Radius of the circular range}
+
+\item{polygon}{List of vector pairs, defining corners of the
+polygon range or a geographic region of the class
+\code{spannr_region} from which the polygon coordinates will be
+extracted (see the \code{region() function})}
 }
 \value{
 Object of the class \code{spannr_region}
