@@ -150,12 +150,12 @@ change <- function(pop, time, N = NULL,
 #' @param by How many units of distance to expand by?
 #' @param start,end When does the expansion start/end?
 #' @param snapshots Number of time slices to split the expansion into
-#' @param region Geographic region to restrict the expansion to
+#' @param polygon Geographic region to restrict the expansion to
 #'
 #' @return Object of the class \code{spannr_pop}
 #'
 #' @export
-expand <- function(pop, by, end, snapshots, start = NULL, region = NULL) {
+expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   check_not_intersected(pop)
 
   region_start <- pop[nrow(pop), ]
