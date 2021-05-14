@@ -84,3 +84,18 @@ test_that("empty intersection gives an error", {
   r2 <- region("r2", map, center = c(10, 10), radius = 1)
   expect_error(overlap(r1, r2, ""), "No region left after intersection")
 })
+
+test_that("custom landscapes can be specified", {
+  r1 <- region(center = c(0, 0), radius = 10)
+  r2 <- region(center = c(10, 10), radius = 10)
+  r3 <- region(center = c(-10, -10), radius = 10)
+  comb <- r1 %>% combine(r2) %>% combine(r3)
+  map <- world(xrange = c(-20, 20), yrange = c(-20, 20), landscape = comb)
+  # is the geometry component of the builtin map equal to the are of
+  # the original regions?
+  expect_true(sf::st_area(map$landscape) == sf::st_area(comb))
+})
+
+test_that("boundaries are either circles or polygons", {
+  expect_error(region(), "Either a circular range or a polygon range must be specified")
+})

@@ -8,11 +8,16 @@
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-combine <- function(x, y, name) {
+combine <- function(x, y, name = NULL) {
   result <- sf::st_union(x, y)
   result$region.1 <- NULL
-  result$region <- name
-  result <- copy_attributes(result, x, c("map"))
+  if (is.null(name))
+    result$region <- sprintf("%s plus %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
   result
 }
 
@@ -31,8 +36,13 @@ overlap <- function(x, y, name) {
   result <- sf::st_intersection(x, y)
   if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
   result$region.1 <- NULL
-  result$region <- name
-  result <- copy_attributes(result, x, c("map"))
+  if (is.null(name))
+    result$region <- sprintf("overlap %s and %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
   result
 }
 
@@ -50,8 +60,13 @@ subtract <- function(x, y, name) {
   result <- sf::st_difference(x, y)
   if (nrow(result) == 0) stop("No region left after subtraction", call. = FALSE)
   result$region.1 <- NULL
-  result$region <- name
-  result <- copy_attributes(result, x, c("map"))
+  if (is.null(name))
+    result$region <- sprintf("%s minus %s", x$region, y$region)
+  else
+    result$region <- name
+  attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
+  result <- copy_attributes(result, x, attrs)
+  sf::st_agr(result) <- "constant"
   result
 }
 
@@ -91,6 +106,8 @@ intersect_features <- function(pop) {
 #' geographic region
 define_boundary <- function(map, center = NULL, radius = NULL, coords = NULL) {
   # check function arguments
+  if (all(is.null(c(center, radius, coords))))
+    stop("Either a circular range or a polygon range must be specified", call. = FALSE)
   if (!is.null(center) & !is.null(coords))
     stop("Either a circular range (center and radius) or the corners of a polygon need to be specified, but not both", call. = F)
   if (!is.null(center) & is.null(radius))
