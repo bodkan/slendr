@@ -298,7 +298,8 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-region <- function(name, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
+region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
+  if (is.null(name)) name <- "unnamed region"
   region <- sf::st_sf(
     region = name,
     geometry = define_boundary(map, center, radius, polygon)
@@ -345,8 +346,8 @@ region <- function(name, map = NULL, center = NULL, radius = NULL, polygon = NUL
 #'
 #' @export
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
-   if (inherits(landscape, "sf")) { # a landscape defined by the user
-     map <- sf::st_sf(geometry = sf::st_as_sf(landscape)) %>%
+  if (inherits(landscape, "sf")) { # a landscape defined by the user
+     map <- sf::st_sf(landscape = sf::st_geometry(landscape)) %>%
        set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
    } else if (landscape == "blank") { # an empty abstract landscape
     map <- sf::st_sf(geometry = sf::st_sfc()) %>%
@@ -633,7 +634,7 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
 
     if (type %in% c("map", "region", "population")) {
       cat("map: ")
-      if (!is.null(attr(x, "map"))) {
+      if (type == "map" | !is.null(attr(x, "map"))) {
         crs <- sf::st_crs(x)$epsg
         if (is.na(crs)) {
           cat("abstract spatial landscape ")
