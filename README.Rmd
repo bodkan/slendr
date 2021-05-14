@@ -115,14 +115,14 @@ p2 <- population(
 
 p3 <- population(
   name = "pop3", parent = p2, time = 20000, N = 2000,
-  coords = list(c(-10, 50), c(10, 50), c(20, 53), # polygon range
-                c(40, 60), c(40, 70), c(-10, 65))
+  polygon = list(c(-10, 50), c(10, 50), c(20, 53), # polygon range
+                 c(40, 60), c(40, 70), c(-10, 65))
 )
 
 p4 <- population(
   name = "pop4", parent = p2, time = 15000, N = 2000,
-  coords = list(c(-10, 35), c(20, 37), c(25, 40),
-                c(30, 45), c(10, 50), c(-10, 45))
+  polygon = list(c(-10, 35), c(20, 37), c(25, 40),
+                 c(30, 45), c(10, 50), c(-10, 45))
 )
 
 p5 <- population(

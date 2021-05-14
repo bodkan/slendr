@@ -34,7 +34,13 @@
     <loc>https://bodkan.net/stamp/reference/convert.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/stamp/reference/copy_attributes.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/stamp/reference/create_polygon.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/define_boundary.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/define_zoom.html</loc>
@@ -79,7 +85,13 @@
     <loc>https://bodkan.net/stamp/reference/intersect_features.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/stamp/reference/join.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/stamp/reference/move.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/overlap.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/pipe.html</loc>
@@ -127,7 +139,7 @@
     <loc>https://bodkan.net/stamp/reference/slim.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/spatial_range.html</loc>
+    <loc>https://bodkan.net/stamp/reference/subtract.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/world.html</loc>
