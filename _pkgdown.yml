@@ -5,6 +5,9 @@ reference:
     contents:
     - world
     - region
+    - combine
+    - overlap
+    - subtract
 
   - title: Population dynamics configuration
     contents:

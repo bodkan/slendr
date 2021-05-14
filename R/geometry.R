@@ -1,3 +1,61 @@
+#' Combine two \code{spannr_region} objects into a single geographic
+#' region (geometric union)
+#'
+#' @param x Object of the class \code{spannr_region}
+#' @param y Object of the class \code{spannr_region}
+#' @param name Name of the resulting geographic region
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+combine <- function(x, y, name) {
+  result <- sf::st_union(x, y)
+  result$region.1 <- NULL
+  result$region <- name
+  result <- copy_attributes(result, x, c("map"))
+  result
+}
+
+
+#' Generate the overlap of two \code{spannr_region} objects (geometric
+#' intersection)
+#'
+#' @param x Object of the class \code{spannr_region}
+#' @param y Object of the class \code{spannr_region}
+#' @param name Name of the resulting geographic region
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+overlap <- function(x, y, name) {
+  result <- sf::st_intersection(x, y)
+  if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
+  result$region.1 <- NULL
+  result$region <- name
+  result <- copy_attributes(result, x, c("map"))
+  result
+}
+
+#' Generate the difference between two \code{spannr_region} objects
+#' (geometric subtraction)
+#'
+#' @param x Object of the class \code{spannr_region}
+#' @param y Object of the class \code{spannr_region}
+#' @param name Name of the resulting geographic region
+#'
+#' @return Object of the class \code{spannr_region}
+#'
+#' @export
+subtract <- function(x, y, name) {
+  result <- sf::st_difference(x, y)
+  if (nrow(result) == 0) stop("No region left after subtraction", call. = FALSE)
+  result$region.1 <- NULL
+  result$region <- name
+  result <- copy_attributes(result, x, c("map"))
+  result
+}
+
+
 #' Take a population region and intersect them with the
 #' underlying world map or its geographic region
 intersect_features <- function(pop) {
