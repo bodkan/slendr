@@ -1,5 +1,5 @@
-#' Take a list of all population regions and intersect them with the
-#' set of underlying world map
+#' Take a population region and intersect them with the
+#' underlying world map or its geographic region
 intersect_features <- function(pop) {
   map <- attr(pop, "map")
   region <- attr(pop, "region")
@@ -13,34 +13,32 @@ intersect_features <- function(pop) {
       stop(sprintf("No area left for %s after intersection with landscape at time %s", pop$pop, pop$time), call. = FALSE)
   }
 
-  # restrict further to the geographic boundary, if given
-  if (!is.null(region)) {
-    sf::st_agr(intersected) <- "constant"
-    intersected <- sf::st_intersection(intersected, sf::st_geometry(region))
-  }
-
   sf::st_agr(intersected) <- "constant"
+
+  result <- copy_attributes(
+    intersected,
+    pop,
+    c("map", "remove", "parent", "intersect")
+  )
 
   # add a small tag signifying that the ranges have been processed
   # and intersected over the map of the world
-  attr(intersected, "intersected") <- TRUE
-  attr(intersected, "map") <- map
-  attr(intersected, "remove") <- attr(pop, "remove")
+  attr(result, "intersected") <- TRUE
 
-  class(intersected) <- set_class(intersected, "pop")
-
-  intersected
+  result
 }
 
 
 #' Define a range (simple geometry object) for a population or a
 #' geographic region
-spatial_range <- function(map, center = NULL, radius = NULL, coords = NULL) {
+define_boundary <- function(map, center = NULL, radius = NULL, coords = NULL) {
   # check function arguments
   if (!is.null(center) & !is.null(coords))
-    stop("Either a circular range (center and radius) or the corners of a polygon need to be specified, not both.", call. = F)
+    stop("Either a circular range (center and radius) or the corners of a polygon need to be specified, but not both", call. = F)
   if (!is.null(center) & is.null(radius))
-    stop("Missing radius argument when defining a circular population range", call. = F)
+    stop("Missing radius argument when defining a circular population range", call. = FALSE)
+  if (is.null(center) & !is.null(radius))
+    stop("Missing center argument when defining a circular population range", call. = FALSE)
   if (!is.null(coords) & length(coords) < 3)
     stop("Polygon range needs to have at least three corners")
 
