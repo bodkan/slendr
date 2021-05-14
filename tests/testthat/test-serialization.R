@@ -23,8 +23,8 @@ test_that("read() restores a complex model object", {
   p1 <- population(name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   p2 <- population(name = "pop2", parent = p1, time = 30000, N = 500, center = c(10, 25), radius = 300000) %>%
     move(trajectory = list(c(25, 25), c(40, 30), c(40, 40), c(50, 50)), start = 29000, end = 25000, snapshots = 30)
-  p3 <- population(name = "pop3", parent = p2, time = 20000, N = 2000, coords = list(c(-10, 50), c(10, 50), c(20, 53), c(40, 60), c(40, 70), c(-10, 65)))
-  p4 <- population(name = "pop4", parent = p2, time = 15000, N = 2000, coords = list(c(-10, 35), c(20, 37), c(25, 40), c(30, 45), c(10, 50), c(-10, 45)))
+  p3 <- population(name = "pop3", parent = p2, time = 20000, N = 2000, polygon = list(c(-10, 50), c(10, 50), c(20, 53), c(40, 60), c(40, 70), c(-10, 65)))
+  p4 <- population(name = "pop4", parent = p2, time = 15000, N = 2000, polygon = list(c(-10, 35), c(20, 37), c(25, 40), c(30, 45), c(10, 50), c(-10, 45)))
   p5 <- population(name = "pop5", parent = p1, time = 10000, N = 300, center = c(10, 25), radius = 300000) %>%
     move(trajectory = list(c(-5, 33), c(-5, 40)), start = 9000, end = 8000, snapshots = 20) %>%
     expand(by = 2000000, start = 7000, end = 2000, snapshots = 10)
