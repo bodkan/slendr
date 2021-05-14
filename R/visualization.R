@@ -399,8 +399,10 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
   p_map <-  ggplot() + theme_bw()
   
   # plot the world map if a real geographic map was specified
-  if (nrow(map))
-    p_map <- p_map + geom_sf(data = map, fill = "lightgray", color = NA)
+  if (!is.null(map)) {
+    if (nrow(map))
+      p_map <- p_map + geom_sf(data = map, fill = "lightgray", color = NA)
+  }
 
   # plot geographic region boundaries, if present
   if (!is.null(regions)) {
