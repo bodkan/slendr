@@ -678,7 +678,7 @@ files in the model directory.\n")
 
 
 #' Combine two \code{spannr_region} objects into a single geographic
-#' region (geometric union)
+#' region
 #'
 #' @param x Object of the class \code{spannr_region}
 #' @param y Object of the class \code{spannr_region}
@@ -687,7 +687,7 @@ files in the model directory.\n")
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-combine <- function(x, y, name = NULL) {
+join <- function(x, y, name = NULL) {
   result <- sf::st_union(x, y)
   result$region.1 <- NULL
   if (is.null(name))
@@ -701,10 +701,9 @@ combine <- function(x, y, name = NULL) {
 }
 
 
-#' Generate the overlap of two \code{spannr_region} objects (geometric
-#' intersection)
+#' Generate the overlap of two \code{spannr_region} objects
 #'
-#' @inheritParams combine
+#' @inheritParams join
 #'
 #' @return Object of the class \code{spannr_region}
 #'
@@ -724,9 +723,8 @@ overlap <- function(x, y, name) {
 }
 
 #' Generate the difference between two \code{spannr_region} objects
-#' (geometric subtraction)
 #'
-#' @inheritParams combine
+#' @inheritParams join
 #'
 #' @return Object of the class \code{spannr_region}
 #'

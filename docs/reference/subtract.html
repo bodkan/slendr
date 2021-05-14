@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Take a population region and intersect them with the
-underlying world map or its geographic region — intersect_features • spannr</title>
+<title>Generate the difference between two spannr_region objects — subtract • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -47,10 +46,8 @@ underlying world map or its geographic region — intersect_features • spannr<
 
 
 
-<meta property="og:title" content="Take a population region and intersect them with the
-underlying world map or its geographic region — intersect_features" />
-<meta property="og:description" content="Take a population region and intersect them with the
-underlying world map or its geographic region" />
+<meta property="og:title" content="Generate the difference between two spannr_region objects — subtract" />
+<meta property="og:description" content="Generate the difference between two spannr_region objects" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -131,20 +128,37 @@ underlying world map or its geographic region" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Take a population region and intersect them with the
-underlying world map or its geographic region</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/geometry.R'><code>R/geometry.R</code></a></small>
-    <div class="hidden name"><code>intersect_features.Rd</code></div>
+    <h1>Generate the difference between two <code>spannr_region</code> objects</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
+    <div class="hidden name"><code>subtract.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Take a population region and intersect them with the
-underlying world map or its geographic region</p>
+    <p>Generate the difference between two <code>spannr_region</code> objects</p>
     </div>
 
-    <pre class="usage"><span class='fu'>intersect_features</span><span class='op'>(</span><span class='va'>pop</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>subtract</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>name</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>Object of the class <code>spannr_region</code></p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>Object of the class <code>spannr_region</code></p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>Name of the resulting geographic region</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Object of the class <code>spannr_region</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
