@@ -2,12 +2,12 @@
 % Please edit documentation in R/geometry.R
 \name{intersect_features}
 \alias{intersect_features}
-\title{Take a list of all population regions and intersect them with the
-set of underlying world map}
+\title{Take a population region and intersect them with the
+underlying world map or its geographic region}
 \usage{
 intersect_features(pop)
 }
 \description{
-Take a list of all population regions and intersect them with the
-set of underlying world map
+Take a population region and intersect them with the
+underlying world map or its geographic region
 }

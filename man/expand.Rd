@@ -4,7 +4,7 @@
 \alias{expand}
 \title{Expand the population range}
 \usage{
-expand(pop, by, end, snapshots, start = NULL, region = NULL)
+expand(pop, by, end, snapshots, start = NULL, polygon = NULL)
 }
 \arguments{
 \item{pop}{Object of the class \code{spannr_pop}}
@@ -15,7 +15,7 @@ expand(pop, by, end, snapshots, start = NULL, region = NULL)
 
 \item{start, end}{When does the expansion start/end?}
 
-\item{region}{Geographic region to restrict the expansion to}
+\item{polygon}{Geographic region to restrict the expansion to}
 }
 \value{
 Object of the class \code{spannr_pop}
