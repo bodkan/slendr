@@ -36,8 +36,7 @@ Imports:
     ggraph,
     rgdal,
     shinyWidgets,
-    shiny,
-    scales
+    shiny
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
