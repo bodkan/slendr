@@ -29,7 +29,6 @@ afr <- population(
   polygon = list(c(-18, 20), c(40, 20), c(30, 33),
                  c(20, 32), c(10, 35), c(-8, 35))
 )
-
 ooa <- population(
   "OOA", parent = afr, time = 51000, N = 200, remove = 27000,
   center = c(33, 30), radius = 500000
@@ -39,7 +38,7 @@ ooa <- population(
 )
 ehg <- population(
   "EHG", time = 28000, N = 400, parent = ooa, remove = 6000,
-  coords = list(c(26, 55), c(38, 53), c(48, 53), c(60, 53),
+  polygon = list(c(26, 55), c(38, 53), c(48, 53), c(60, 53),
                 c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
 eur <- population(
@@ -47,25 +46,27 @@ eur <- population(
   time = 25000,
   N = 1000,
   parent = ehg,
-  region = europe
+  polygon = europe
 )
+
 ana <- population(
   name = "ANA", time = 28000, N = 800, parent = ooa, remove = 6000,
-  center = c(34, 38), radius = 500e3, region = anatolia
+  center = c(34, 38), radius = 500e3, polygon = anatolia
 ) %>% expand(
   by = 2000e3, start = 10000, end = 7000,
   snapshots = 10,
-  region = europe_anatolia
+  polygon = europe_anatolia
 )
+
 yam <- population(
   name = "YAM", time = 7000, N = 600, parent = ehg, remove = 2000,
-  coords = list(c(26, 50), c(38, 49), c(48, 50),
-                c(48, 56), c(38, 59), c(26, 56))
+  polygon = list(c(26, 50), c(38, 49), c(48, 50),
+                 c(48, 56), c(38, 59), c(26, 56))
 )
 yam_migr <- population(
   name = "YAM_migr", time = 6000, N = 1000, parent = yam, remove = 2900,
-  coords = list(c(26, 50), c(38, 49), c(48, 50),
-                c(48, 56), c(38, 59), c(26, 56))
+  polygon = list(c(26, 50), c(38, 49), c(48, 50),
+                 c(48, 56), c(38, 59), c(26, 56))
 ) %>%
   move(trajectory = c(15, 50), start = 5000, end = 3000, snapshots = 8)
 
