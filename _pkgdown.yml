@@ -5,8 +5,11 @@ reference:
     contents:
     - world
     - region
+    - join
+    - overlap
+    - subtract
 
-  - title: Population dynamics configuration
+  - title: Population dynamics
     contents:
     - population
     - expand

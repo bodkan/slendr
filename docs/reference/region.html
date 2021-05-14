@@ -145,7 +145,7 @@ of <code>population</code>) without having to repeatedly define polygon
 coordinates.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>region</span><span class='op'>(</span><span class='va'>name</span>, <span class='va'>map</span>, <span class='va'>coords</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>region</span><span class='op'>(</span>name <span class='op'>=</span> <span class='cn'>NULL</span>, map <span class='op'>=</span> <span class='cn'>NULL</span>, center <span class='op'>=</span> <span class='cn'>NULL</span>, radius <span class='op'>=</span> <span class='cn'>NULL</span>, polygon <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,8 +159,20 @@ coordinates.</p>
       <td><p>Object of the type <code>sf</code> which defines the map</p></td>
     </tr>
     <tr>
-      <th>coords</th>
-      <td><p>List of vector pairs, defining corners of the polygon</p></td>
+      <th>center</th>
+      <td><p>Two-dimensional vector specifying the center of the
+circular range</p></td>
+    </tr>
+    <tr>
+      <th>radius</th>
+      <td><p>Radius of the circular range</p></td>
+    </tr>
+    <tr>
+      <th>polygon</th>
+      <td><p>List of vector pairs, defining corners of the
+polygon range or a geographic region of the class
+<code>spannr_region</code> from which the polygon coordinates will be
+extracted (see the <code>region() function</code>)</p></td>
     </tr>
     </table>
 
