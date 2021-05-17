@@ -179,7 +179,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
   # if the expansion is restricted, crop the whole range accordingly
-  if (!is.null(polygon)) 
+  if (!is.null(polygon))
     inter_regions <- sf::st_intersection(inter_regions, sf::st_geometry(polygon))
 
   all_maps <- rbind(pop, inter_regions)
@@ -380,7 +380,7 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
     ## crop the map to the boundary coordinates
     map <- sf::st_crop(map_transf, zoom_transf)
   } else {
-    stop("Landscape has to be either 'abstract', 'ne' (Natural Earth) or an object of the class 'sf'", call. = FALSE)
+    stop("Landscape has to be either 'blank', 'naturalearth' or an object of the class 'sf'", call. = FALSE)
   }
 
   sf::st_agr(map) <- "constant"
@@ -697,7 +697,7 @@ join <- function(x, y, name = NULL) {
   result <- sf::st_union(x, y)
   result$region.1 <- NULL
   if (is.null(name))
-    result$region <- sprintf("%s plus %s", x$region, y$region)
+    result$region <- sprintf("(%s plus %s)", x$region, y$region)
   else
     result$region <- name
   attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
@@ -714,12 +714,12 @@ join <- function(x, y, name = NULL) {
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-overlap <- function(x, y, name) {
+overlap <- function(x, y, name = NULL) {
   result <- sf::st_intersection(x, y)
   if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
   result$region.1 <- NULL
   if (is.null(name))
-    result$region <- sprintf("overlap %s and %s", x$region, y$region)
+    result$region <- sprintf("(overlap %s and %s)", x$region, y$region)
   else
     result$region <- name
   attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
@@ -735,12 +735,12 @@ overlap <- function(x, y, name) {
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-subtract <- function(x, y, name) {
+subtract <- function(x, y, name = NULL) {
   result <- sf::st_difference(x, y)
   if (nrow(result) == 0) stop("No region left after subtraction", call. = FALSE)
   result$region.1 <- NULL
   if (is.null(name))
-    result$region <- sprintf("%s minus %s", x$region, y$region)
+    result$region <- sprintf("(%s minus %s)", x$region, y$region)
   else
     result$region <- name
   attrs <- if (!is.null(attr(x, "map"))) "map" else NULL

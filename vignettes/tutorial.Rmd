@@ -182,16 +182,7 @@ CRS, but the internal data structures and the final exported spatial
 maps are internally handled in a projected CRS which is better for
 ensuring undistorted distances and proportions.
 
-```{r world_zoom, include = F}
-map <- world(
-  xrange = c(-15, 60),
-  yrange = c(20, 65),
-  crs = "EPSG:3035",
-  ne_dir = "~/Google/postdoc/data/ne_data"
-)
-```
-
-```{r, eval = F}
+```{r world_zoom}
 map <- world(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
@@ -697,7 +688,7 @@ by the backend SLiM script provided by `spannr` (more on that below).
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  model_dir = "/tmp/test-model",
+  dir = "/tmp/test-model",
   generation_time = 30,
   resolution = 10e3, # 10km per pixel
   overwrite = TRUE

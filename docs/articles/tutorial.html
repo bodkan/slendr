@@ -161,7 +161,11 @@
   xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>, <span class="co"># min-max longitude</span>
   yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,  <span class="co"># min-max latitude</span>
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
-<span class="op">)</span></code></pre></div>
+<span class="op">)</span>
+<span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpVooWDE", layer: "ne_110m_land"</span>
+<span class="co">#&gt; with 127 features</span>
+<span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>map</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spannr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
 <p>Note that the summary of the object says “projected CRS: ETRS89-extended / LAEA Europe”. This means that the world map has indeed been transformed in the projected CRS we specified above.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -483,7 +487,7 @@ admixture without spatial overlap.</code></pre>
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span><span class="op">)</span>,
   admixtures <span class="op">=</span> <span class="va">admixtures</span>,
-  model_dir <span class="op">=</span> <span class="st">"/tmp/test-model"</span>,
+  dir <span class="op">=</span> <span class="st">"/tmp/test-model"</span>,
   generation_time <span class="op">=</span> <span class="fl">30</span>,
   resolution <span class="op">=</span> <span class="fl">10e3</span>, <span class="co"># 10km per pixel</span>
   overwrite <span class="op">=</span> <span class="cn">TRUE</span>
@@ -506,28 +510,28 @@ admixture without spatial overlap.</code></pre>
 </ul>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/splits.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="co">#&gt;   pop_id    N parent_id    tsplit   tremove</span>
-<span class="co">#&gt; 1      0 1000        -1 1833.3333  -1.00000</span>
-<span class="co">#&gt; 2      1  200         0 1700.0000 900.00000</span>
-<span class="co">#&gt; 3      2  400         1  933.3333 200.00000</span>
-<span class="co">#&gt; 4      3  800         1  933.3333 200.00000</span>
-<span class="co">#&gt; 5      4 1000         2  833.3333  -1.00000</span>
-<span class="co">#&gt; 6      5  600         2  233.3333  66.66667</span>
-<span class="co">#&gt; 7      6 1000         5  200.0000  96.66667</span></code></pre></div>
+<span class="co">#&gt;   pop_id    N parent_id tsplit_gen tremove_gen</span>
+<span class="co">#&gt; 1      0 1000        -1  1833.3333    -1.00000</span>
+<span class="co">#&gt; 2      1  200         0  1700.0000   900.00000</span>
+<span class="co">#&gt; 3      2  400         1   933.3333   200.00000</span>
+<span class="co">#&gt; 4      3  800         1   933.3333   200.00000</span>
+<span class="co">#&gt; 5      4 1000         2   833.3333    -1.00000</span>
+<span class="co">#&gt; 6      5  600         2   233.3333    66.66667</span>
+<span class="co">#&gt; 7      6 1000         5   200.0000    96.66667</span></code></pre></div>
 <ul>
 <li>the table of admixture events:</li>
 </ul>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/admixtures.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="co">#&gt;   from_id to_id   tstart tend rate overlap</span>
-<span class="co">#&gt; 1       3     4 266.6667  200   50       1</span>
-<span class="co">#&gt; 2       6     4 133.3333  100   75       1</span></code></pre></div>
+<span class="co">#&gt;   from_id to_id tstart_gen tend_gen rate overlap</span>
+<span class="co">#&gt; 1       3     4   266.6667      200   50       1</span>
+<span class="co">#&gt; 2       6     4   133.3333      100   75       1</span></code></pre></div>
 <ul>
 <li>and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather long, so we’re taking a peek at only the first couple of lines):</li>
 </ul>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/maps.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;   pop_id     time map_number</span>
+<span class="co">#&gt;   pop_id time_gen map_number</span>
 <span class="co">#&gt; 1      0   -1.000          1</span>
 <span class="co">#&gt; 2      1 1700.000          2</span>
 <span class="co">#&gt; 3      1 1666.667          3</span>
