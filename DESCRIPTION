@@ -15,7 +15,7 @@ Description: A framework for simulating spatially-explicit genomic
     on an arbitrary admixture graph. Spatial demographic models are then
     compiled into a custom-built SLiM script which can be extended by
     the user to perform arbitrary simulations.
-License: GPL (>= 3)
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

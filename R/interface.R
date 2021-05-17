@@ -42,7 +42,7 @@ population <- function(name, time, N, parent, map = NULL,
       map <- map
   } else
     map <- attr(parent, "map")
-  
+
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
   if (!is.null(polygon) & inherits(polygon, "spannr_region"))
@@ -176,7 +176,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
     exp_region$time <- times[i]
     inter_regions[[i + 1]] <- exp_region
   }
-  
+
   inter_regions <- rbind(pop, do.call(rbind, inter_regions))
   sf::st_agr(inter_regions) <- "constant"
 
@@ -205,7 +205,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 #' @export
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
-  
+
   map <- attr(pop, "map")
 
   # take care of just a single destination point being specified
@@ -504,7 +504,7 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
     # dimension of the map in the projected CRS units
     bbox <- sf::st_bbox(model$map)
     map_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
-  
+
     # dimension of the rasterized map in pixel units
     # (x/y dimensions of PNGs are reversed)
     raster_dim <- dim(png::readPNG(model$maps$path[1]))[2:1]
@@ -648,7 +648,7 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
           cat("internal coordinate reference system:", crs, "\n")
           units <- " (in degrees longitude and latitude)"
         }
-        
+
         xrange <- attr(x, "xrange")
         yrange <- attr(x, "yrange")
         cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
@@ -665,11 +665,14 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
       cat("generation time:", x$gen_time, "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n")
       cat("resolution:", x$resolution, "km per pixel\n\n")
-      cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
-      cat(
+      if (!is.null(model$config)) {
+        cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
+        cat(
 "For detailed model specification see `$splits`, `$admixtures`, `$maps`,
 or `$populations` components of the model object, or the configuration
 files in the model directory.\n")
+      } else
+        cat("[this model has not been serialized to disk]\n")
     } else {
       stop("Unknown object type", call. = FALSE)
     }
