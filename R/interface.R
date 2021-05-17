@@ -176,12 +176,15 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
     exp_region$time <- times[i]
     inter_regions[[i + 1]] <- exp_region
   }
-
-  inter_regions <- rbind(pop, do.call(rbind, inter_regions))
+  inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
+  inter_regions <- sf::st_intersection(inter_regions, sf::st_geometry(polygon))
+
+  all_maps <- rbind(pop, inter_regions)
+  sf::st_agr(all_maps) <- "constant"
 
   result <- copy_attributes(
-    inter_regions, pop,
+    all_maps, pop,
     c("map", "parent", "remove", "intersect")
   )
 
