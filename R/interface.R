@@ -178,7 +178,9 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   }
   inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
-  inter_regions <- sf::st_intersection(inter_regions, sf::st_geometry(polygon))
+  # if the expansion is restricted, crop the whole range accordingly
+  if (!is.null(polygon)) 
+    inter_regions <- sf::st_intersection(inter_regions, sf::st_geometry(polygon))
 
   all_maps <- rbind(pop, inter_regions)
   sf::st_agr(all_maps) <- "constant"
