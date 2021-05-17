@@ -81,9 +81,9 @@ model <- compile(
 
 explore(model)
 
-# slim(
-#   model, seq_length = 1, recomb_rate = 0,
-#   max_interaction = 100e3, spread = 50e3,
-#   save_locations = T, track_ancestry = F,
-#   method = "gui"
-# )
+slim(
+  model, seq_length = 1, recomb_rate = 0,
+  max_interaction = 100e3, spread = 50e3,
+  save_locations = T, track_ancestry = F,
+  method = "gui"
+)
