@@ -1,66 +1,3 @@
-#' Write a compiled spannr model to disk
-#'
-#' @param model Compiled \code{spannr_model} model object
-#' @param dir Output directory for the model configuration files which
-#'   will be loaded by the backend SLiM script
-#' @param overwrite Overwrite the contents of the output directory in
-#'   case it already exists?
-#'
-#' @export
-write <- function(model, dir, overwrite) {
-  # prepare the model output directory
-  if (dir.exists(dir)) {
-    if (!overwrite)
-      stop("Output directory already exists - either delete it or set 'overwrite = TRUE'",
-           call. = FALSE)
-    else
-      unlink(dir, recursive = TRUE, force = TRUE)
-
-  }
-  dir.create(dir)
-
-  # reformat
-  if (!is.null(model$admix_table)) {
-    admix_table <- model$admixtures
-
-    admix_table$rate <- as.integer(admix_table$rate * 100)
-    admix_table$overlap <- as.integer(admix_table$overlap)
-
-    write.table(
-      admix_table[, c("from_id", "to_id", "tstart_gen", "tend_end", "rate", "overlap")],
-      file.path(dir, "admixtures.tsv"),
-      sep = "\t", quote = FALSE, row.names = FALSE
-    )
-  }
-
-  for (i in seq_len(nrow(model$maps))) {
-    map_row <- model$maps[i, ]
-    path <- file.path(dir, sprintf("%d.png", i))
-    save_png(map_row$map[[1]], path)
-  }
-
-  saveRDS(model$populations, file.path(dir, "populations.rds"))
-
-  write.table(
-    model$splits[, c("pop_id", "N", "parent_id", "tsplit_gen", "tremove_gen")],
-    file.path(dir, "splits.tsv"),
-    sep = "\t", quote = FALSE, row.names = FALSE
-  )
-
-  write.table(
-    model$maps[, c("pop_id", "time", "map_number")],
-    file.path(dir, "maps.tsv"),
-    sep = "\t", quote = FALSE, row.names = FALSE
-  )
-
-  # save the population names (SLiM doesn't do data frames with mixed numeric
-  # and character types, so this needs to be saved separately)
-  writeLines(model$pop, con = file.path(dir, "names.txt"))
-
-  base::write(model$generation_time, file.path(dir, "generation_time.txt"))
-  base::write(model$resolution, file.path(dir, "resolution.txt"))
-}
-
 #' Compile the spatial demographic model
 #'
 #' First, compiles the vectorized population spatial maps into a
@@ -79,11 +16,26 @@ write <- function(model, dir, overwrite) {
 #'   \code{admixture} function (either a list of data.frame objects in
 #'   the format defined by the \code{admixture} function, or a single
 #'   data.frame)
+#' @param dir Output directory for the model configuration files which
+#'   will be loaded by the backend SLiM script
+#' @param overwrite Overwrite the contents of the output directory in
+#'   case it already exists?
 #'
 #' @return Compiled \code{spannr_model} model object
 #' @export
-compile <- function(populations, generation_time, resolution, admixtures = NULL) {
+compile <- function(populations, dir, generation_time, resolution, admixtures = NULL, overwrite = FALSE) {
   if (!inherits(populations, "list"))  populations <- list(populations)
+
+  # prepare the model output directory
+  if (dir.exists(dir)) {
+    if (!overwrite)
+      stop("Output directory already exists - either delete it or set 'overwrite = TRUE'",
+           call. = FALSE)
+    else
+      unlink(dir, recursive = TRUE, force = TRUE)
+
+  }
+  dir.create(dir)
 
   map <- attr(populations[[1]], "map")
 
@@ -115,6 +67,8 @@ compile <- function(populations, generation_time, resolution, admixtures = NULL)
   map_table <- compile_maps(populations, split_table, resolution)
 
   map_table$time <- ifelse(map_table$time == split_table[split_table$parent == "ancestor", "tsplit"], -1, map_table$time)
+  map_table$path <-map_table$map_number %>%
+    paste0(., ".png") %>% file.path(dir, .) %>% gsub("//", "/", .)
 
   map_table$time_gen <- map_table$time
   map_table$time_gen[map_table$time_gen != -1] <- map_table$time_gen[map_table$time_gen != -1] / generation_time
@@ -126,20 +80,78 @@ compile <- function(populations, generation_time, resolution, admixtures = NULL)
   split_table$tremove_gen <- split_table$tremove
   split_table$tremove_gen[split_table$tremove_gen != -1] <- split_table$tremove[split_table$tremove_gen != -1] / generation_time
 
+
+  if (is.null(admix_table)) {
+    return_admixtures <- NULL
+  } else {
+    return_admixtures <- admix_table[, c("from", "from_id", "to", "to_id", "tstart", "tstart_gen",
+                                         "tend", "tend_gen", "rate", "overlap")]
+  }
+
+  # compile the result
   result <- list(
-    map = map,
+    config = list(
+      directory = dir,
+      splits = file.path(dir, "splits.tsv"),
+      maps = file.path(dir, "maps.tsv"),
+      admixtures = if (is.null(admixtures)) NULL else file.path(dir, "admixtures.tsv")
+    ),
+    world = map,
     populations = populations,
     splits = split_table[, c("pop", "pop_id", "parent", "parent_id", "N",
                              "tsplit", "tsplit_gen", "tremove", "tremove_gen")],
-    admixtures = admix_table[, c("from", "to", "tstart", "tstart_gen", "tend",
-                                 "tend_gen", "rate", "overlap")],
-    maps = map_table[, c("pop", "time", "time_gen", "map_number", "map")],
+    admixtures = return_admixtures,
+    maps = map_table[, c("pop", "pop_id", "time", "time_gen", "path")],
     generation_time = generation_time,
     resolution = resolution
   )
   class(result) <- set_class(result, "model")
 
+  write_model(dir, populations, admix_table, map_table, split_table, generation_time, resolution)
+
   result
+}
+
+
+#' Write a compiled spannr model to disk
+write_model <- function(dir, populations, admix_table, map_table, split_table, generation_time, resolution) {
+  if (!is.null(admix_table)) {
+    admix_table$rate <- as.integer(admix_table$rate * 100)
+    admix_table$overlap <- as.integer(admix_table$overlap)
+
+    write.table(
+      admix_table[, c("from_id", "to_id", "tstart_gen", "tend_gen", "rate", "overlap")],
+      file.path(dir, "admixtures.tsv"),
+      sep = "\t", quote = FALSE, row.names = FALSE
+    )
+  }
+
+  for (i in seq_len(nrow(map_table))) {
+    map_row <- map_table[i, ]
+    path <- file.path(dir, sprintf("%d.png", i))
+    save_png(map_row$map[[1]], path)
+  }
+
+  saveRDS(populations, file.path(dir, "populations.rds"))
+
+  write.table(
+    split_table[, c("pop_id", "N", "parent_id", "tsplit_gen", "tremove_gen")],
+    file.path(dir, "splits.tsv"),
+    sep = "\t", quote = FALSE, row.names = FALSE
+  )
+
+  write.table(
+    map_table[, c("pop_id", "time_gen", "map_number")],
+    file.path(dir, "maps.tsv"),
+    sep = "\t", quote = FALSE, row.names = FALSE
+  )
+
+  # save the population names (SLiM doesn't do data frames with mixed numeric
+  # and character types, so this needs to be saved separately)
+  writeLines(split_table$pop, con = file.path(dir, "names.txt"))
+
+  base::write(generation_time, file.path(dir, "generation_time.txt"))
+  base::write(resolution, file.path(dir, "resolution.txt"))
 }
 
 
@@ -148,26 +160,26 @@ compile <- function(populations, generation_time, resolution, admixtures = NULL)
 #' Reads all configuration tables and other model data from a location
 #' where it was previously compiled to by the \code{compile} function.
 #'
-#' @param model_dir Directory with all required configuration files
+#' @param dir Directory with all required configuration files
 #'
 #' @export
-read <- function(model_dir) {
+read <- function(dir) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function
-  path_populations <- file.path(model_dir, "populations.rds")
-  path_splits <- file.path(model_dir, "splits.tsv")
-  path_admixtures <- file.path(model_dir, "admixtures.tsv")
-  path_maps <- file.path(model_dir, "maps.tsv")
-  path_names <- file.path(model_dir, "names.txt")
-  path_generation_time <- file.path(model_dir, "generation_time.txt")
-  path_resolution <- file.path(model_dir, "resolution.txt")
+  path_populations <- file.path(dir, "populations.rds")
+  path_splits <- file.path(dir, "splits.tsv")
+  path_admixtures <- file.path(dir, "admixtures.tsv")
+  path_maps <- file.path(dir, "maps.tsv")
+  path_names <- file.path(dir, "names.txt")
+  path_generation_time <- file.path(dir, "generation_time.txt")
+  path_resolution <- file.path(dir, "resolution.txt")
 
-  if (!dir.exists(model_dir))
-    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+  if (!dir.exists(dir))
+    stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
 
   if (!all(file.exists(c(path_populations, path_splits, path_maps, path_names))))
     stop(sprintf("Directory '%s' does not contain all spannr configuration files.
-Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt and generation_time.txt are all present", model_dir), call. = FALSE)
+Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt and generation_time.txt are all present", dir), call. = FALSE)
 
   pop_names <- scan(path_names, what = "character", quiet = TRUE)
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
@@ -185,27 +197,28 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
 
   # load and reformat the admixtures table (if present - if absent, no admixture
   # was specified)
-  admixtures <- NULL
+  admix_table <- NULL
   if (file.exists(path_admixtures)) {
-    admixtures <- read.table(path_admixtures, header = TRUE, stringsAsFactors = FALSE)
-    admixtures$from <- pop_names[admixtures$from + 1]
-    admixtures$to <- pop_names[admixtures$to + 1]
-    admixtures$rate <- admixtures$rate / 100
-    admixtures$tstart <- round(admixtures$tstart * generation_time)
-    admixtures$tend <- round(admixtures$tend * generation_time)
-    admixtures$overlap <- admixtures$overlap == 1
-    admixtures <- admixtures[, c("from", "to", "tstart", "tend", "rate", "overlap")]
+    admix_table <- read.table(path_admixtures, header = TRUE, stringsAsFactors = FALSE)
+    admix_table$from <- pop_names[admix_table$from_id + 1]
+    admix_table$to <- pop_names[admix_table$to_id + 1]
+    admix_table$rate <- admix_table$rate / 100
+    admix_table$tstart <- round(admix_table$tstart_gen * generation_time)
+    admix_table$tend <- round(admix_table$tend_gen * generation_time)
+    admix_table$overlap <- admix_table$overlap == 1
+    admix_table <- admix_table[, c("from", "from_id", "to", "to_id", "tstart", "tstart_gen",
+                                   "tend", "tend_gen", "rate", "overlap")]
   }
 
   # load and reformat the maps table
-  maps <- read.table(path_maps, header = TRUE, stringsAsFactors = FALSE)
+  map_table <- read.table(path_maps, header = TRUE, stringsAsFactors = FALSE)
   # reconstruct the paths to each raster map (again, stripped away because SLiM
   # can't handle strings and numbers in a single matrix/data frame)
-  maps$path <- file.path(model_dir, paste0(maps$map_number, ".png")) %>% gsub("//", "/", .)
-  if (!all(file.exists(maps$path)))
-    stop(sprintf("Directory '%s' does not contain all maps required by the model configuration (%s)", model_dir, maps$map), call. = FALSE)
+  map_table$path <- file.path(dir, paste0(map_table$map_number, ".png")) %>% gsub("//", "/", .)
+  if (!all(file.exists(map_table$path)))
+    stop(sprintf("Directory '%s' does not contain all maps required by the model configuration (%s)", dir, map_table$map), call. = FALSE)
   # recreate the user-specified population labels
-  maps$pop <- pop_names[maps$pop_id + 1]
+  map_table$pop <- pop_names[map_table$pop_id + 1]
 
   # convert times to their original value before conversion for SLiM (this
   # handling of -1 and Inf special cases is absolutely awful, but we are
@@ -214,28 +227,27 @@ Please make sure that populations.rds, {splits,admixtures,maps}.tsv, names.txt a
   # convert generations back to years
   splits$tsplit <- round(splits$tsplit * generation_time)
   splits$tremove[splits$tremove != -1] <- round(splits$tremove[splits$tremove != -1] * generation_time)
-  maps$time[maps$time != -1] <- round(maps$time[maps$time != -1] * generation_time)
+  map_table$time[map_table$time != -1] <- round(map_table$time[map_table$time != -1] * generation_time)
 
   populations <- readRDS(path_populations)
 
   result <- list(
     config = list(
-      directory = model_dir,
+      directory = dir,
       splits = path_splits,
       maps = path_maps,
-      admixtures = if (is.null(admixtures)) NULL else file.path(model_dir, "admixtures.tsv")
+      admixtures = if (is.null(admix_table)) NULL else file.path(dir, "admixtures.tsv")
     ),
-    map = attr(populations[[1]], "map"),
+    world = attr(populations[[1]], "map"),
     populations = populations,
-    splits = splits[, c("pop", "parent", "tsplit", "N", "tremove")],
-    admixtures = admixtures,
-    maps = maps[, c("pop", "time", "path")],
+    splits = splits[, c("pop", "pop_id", "parent", "parent_id", "N", "tsplit",
+                        "tsplit_gen", "tremove", "tremove_gen")],
+    admixtures = admix_table,
+    maps = map_table[, c("pop", "pop_id", "time", "time_gen", "path")],
     generation_time = generation_time,
     resolution = resolution
   )
-
   class(result) <- set_class(result, "model")
-
   result
 }
 
@@ -290,15 +302,15 @@ slim <- function(model, seq_length, recomb_rate,
                  method = "gui", verbose = FALSE, include = NULL, burnin = NULL,
                  script_path = file.path(model$config$directory, "script.slim"),
                  output_prefix = file.path(model$config$directory, "output")) {
-  model_dir <- model$config$directory
-  if (!dir.exists(model_dir))
-    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+  dir <- model$config$directory
+  if (!dir.exists(dir))
+    stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
 
-  if (!all(file.exists(file.path(model_dir, c("splits.tsv", "maps.tsv")))))
-    stop(sprintf("Directory '%s' does not contain spannr configuration files", model_dir), call. = FALSE)
+  if (!all(file.exists(file.path(dir, c("splits.tsv", "maps.tsv")))))
+    stop(sprintf("Directory '%s' does not contain spannr configuration files", dir), call. = FALSE)
 
-  if (!length(list.files(model_dir, pattern = "*.png") == 0))
-    stop(sprintf("Directory '%s' does not contain any spannr spatial raster maps", model_dir), call. = FALSE)
+  if (!length(list.files(dir, pattern = "*.png") == 0))
+    stop(sprintf("Directory '%s' does not contain any spannr spatial raster maps", dir), call. = FALSE)
 
   check_resolution(model$map, max_interaction)
   check_resolution(model$map, spread)
@@ -316,7 +328,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   base_script <- script(
     path = backend_script,
 
-    model_dir = model_dir,
+    dir = dir,
     output_prefix = output_prefix,
     burnin = burnin,
     keep_pedigrees = if (keep_pedigrees) "T" else "F",

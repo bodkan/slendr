@@ -4,11 +4,21 @@
 \alias{compile}
 \title{Compile the spatial demographic model}
 \usage{
-compile(populations, generation_time, resolution, admixtures = NULL)
+compile(
+  populations,
+  dir,
+  generation_time,
+  resolution,
+  admixtures = NULL,
+  overwrite = FALSE
+)
 }
 \arguments{
 \item{populations}{Object(s) of the \code{spannr_pop} class
 (multiple objects need to be specified in a \code{list})}
+
+\item{dir}{Output directory for the model configuration files which
+will be loaded by the backend SLiM script}
 
 \item{generation_time}{Generation time (in model time units)}
 
@@ -18,6 +28,9 @@ compile(populations, generation_time, resolution, admixtures = NULL)
 \code{admixture} function (either a list of data.frame objects in
 the format defined by the \code{admixture} function, or a single
 data.frame)}
+
+\item{overwrite}{Overwrite the contents of the output directory in
+case it already exists?}
 }
 \value{
 Compiled \code{spannr_model} model object
