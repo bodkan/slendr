@@ -2,18 +2,18 @@
 % Please edit documentation in R/compilation.R
 \name{write_model}
 \alias{write_model}
-\title{Write model specification tables which will be loaded into SLiM}
+\title{Write a compiled spannr model to disk}
 \usage{
 write_model(
-  model_dir,
+  dir,
   populations,
-  splits_table,
   admix_table,
-  maps_table,
+  map_table,
+  split_table,
   generation_time,
   resolution
 )
 }
 \description{
-Write model specification tables which will be loaded into SLiM
+Write a compiled spannr model to disk
 }
