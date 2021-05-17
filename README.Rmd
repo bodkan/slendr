@@ -73,8 +73,7 @@ devtools::load_all(".")
 map <- world(
   xrange = c(-15, 60),
   yrange = c(20, 65),
-  crs = "EPSG:3035",
-  ne_dir = "~/Google/postdoc/data/ne_data"
+  crs = "EPSG:3035"
 )
 ```
 
@@ -161,7 +160,7 @@ unlink("/tmp/example-model", recursive = TRUE, force = TRUE)
 
 ```{r}
 model <- compile(
-  model_dir = "/tmp/example-model", # location of serialized model data
+  dir = "/tmp/example-model", # location of serialized model data
   populations = list(p1, p2, p3, p4, p5),
   admixtures = admixtures,
   generation_time = 30,
