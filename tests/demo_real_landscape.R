@@ -1,6 +1,12 @@
 devtools::load_all(".")
 
-map <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "naturalearth", crs = "EPSG:3035")
+map <- world(
+  xrange = c(-15, 60),
+  yrange = c(20, 65),
+  landscape = "naturalearth",
+  crs = "EPSG:3035",
+  ne_dir = "~/Google/postdoc/data/ne_data/"
+)
 
 africa <- region(
   "Africa", map,
@@ -79,7 +85,7 @@ model <- compile(
   dir = "/tmp/demo-model/", overwrite = T
 )
 
-explore(model)
+# explore(model)
 
 slim(
   model, seq_length = 1, recomb_rate = 0,

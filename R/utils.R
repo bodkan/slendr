@@ -58,6 +58,7 @@ read_ancestries <- function(model_dir) {
 
 #' Get a data frame of migration events active at a given time point
 get_migrations <- function(model, time) {
+  if (is.null(model$admixtures)) return(NULL)
   pop_names <- unique(unlist(sapply(model$populations, `[[`, "pop")))
 
   migrations <- subset(model$admixtures, tstart >= time & tend <= time)
