@@ -312,8 +312,8 @@ slim <- function(model, seq_length, recomb_rate,
   if (!length(list.files(dir, pattern = "*.png") == 0))
     stop(sprintf("Directory '%s' does not contain any spannr spatial raster maps", dir), call. = FALSE)
 
-  check_resolution(model$map, max_interaction)
-  check_resolution(model$map, spread)
+  check_resolution(model$world, max_interaction)
+  check_resolution(model$world, spread)
 
   if (!is.logical(track_ancestry) & !is.numeric(track_ancestry)) {
     stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
@@ -328,7 +328,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   base_script <- script(
     path = backend_script,
 
-    dir = dir,
+    model_dir = dir,
     output_prefix = output_prefix,
     burnin = burnin,
     keep_pedigrees = if (keep_pedigrees) "T" else "F",
