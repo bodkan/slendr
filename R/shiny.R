@@ -2,7 +2,7 @@
 #' "interpolate" all of them at time points specified by others
 #' (unless a given population is supposed to be removed at that time)
 fill_maps <- function(pops, time = NULL) {
-  
+
   removal_times <- sapply(pops, attr, "remove")
 
   # get times of all spatial maps across all populations
@@ -12,7 +12,7 @@ fill_maps <- function(pops, time = NULL) {
     removal_times,
     unlist(sapply(pops, function(i) i$time))
   ))) %>% .[. != Inf & . != -1]
-  
+
   all_maps <- lapply(seq_along(pops), function(i) {
 
     # get times where the spatial map of the current population
@@ -77,7 +77,7 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
   if (length(args) == 1 & inherits(args[[1]], "spannr_model")) {
     model <- args[[1]]
     pops <- model$populations
-    map <- model$map
+    map <- model$world
   } else {
     pops <- args
 
@@ -92,7 +92,7 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
 
   if (migrations & (is.null(time) | !inherits(args[[1]], "spannr_model")))
     stop("Migrations can be visualized only when a time point *and* a 'spannr_model' objects are specified", call. = FALSE)
-  
+
   pop_names <- unique(unlist(sapply(pops, `[[`, "pop")))
 
   # if the user specified a time point, "interpolate" all maps at that
@@ -179,7 +179,7 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
         scale_color_discrete(drop = FALSE) +
         guides(color = FALSE)
   }
-  
+
   p + labs(x = xlab, y = ylab)
 }
 
@@ -216,8 +216,8 @@ get_time_point <- function(times, current_value, what) {
 explore <- function(model) {
 
   # generate choices for the coordinate system graticules
-  if (has_crs(model$map)) {
-    crs <- sf::st_crs(model$map)$epsg
+  if (has_crs(model$world)) {
+    crs <- sf::st_crs(model$world)$epsg
     coord_choice <- c("original", "internal")
     names(coord_choice) <- c("original (longitude-latitude)",
                              sprintf("internal (EPSG:%s)", crs))
@@ -326,7 +326,7 @@ explore <- function(model) {
                 value = TRUE
               )),
 
-              if (nrow(model$map)) {
+              if (nrow(model$world)) {
                 column(4, checkboxInput(
                   inputId = "show_map",
                   label = "Show map",
@@ -420,7 +420,7 @@ explore <- function(model) {
     })
 
     output$spannr_maps <- renderPlot({
-      
+
       plot_maps(
         model,
         time = input$time_slider,
@@ -450,6 +450,6 @@ explore <- function(model) {
                                       height = 600)
 
   }
-  
+
   shinyApp(ui, server)
 }
