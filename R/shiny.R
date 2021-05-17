@@ -2,7 +2,7 @@
 #' "interpolate" all of them at time points specified by others
 #' (unless a given population is supposed to be removed at that time)
 fill_maps <- function(pops, time = NULL) {
-  
+
   removal_times <- sapply(pops, attr, "remove")
 
   # get times of all spatial maps across all populations
@@ -12,7 +12,7 @@ fill_maps <- function(pops, time = NULL) {
     removal_times,
     unlist(sapply(pops, function(i) i$time))
   ))) %>% .[. != Inf & . != -1]
-  
+
   all_maps <- lapply(seq_along(pops), function(i) {
 
     # get times where the spatial map of the current population
@@ -77,7 +77,7 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
   if (length(args) == 1 & inherits(args[[1]], "spannr_model")) {
     model <- args[[1]]
     pops <- model$populations
-    map <- model$map
+    map <- model$world
   } else {
     pops <- args
 
@@ -92,7 +92,7 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
 
   if (migrations & (is.null(time) | !inherits(args[[1]], "spannr_model")))
     stop("Migrations can be visualized only when a time point *and* a 'spannr_model' objects are specified", call. = FALSE)
-  
+
   pop_names <- unique(unlist(sapply(pops, `[[`, "pop")))
 
   # if the user specified a time point, "interpolate" all maps at that
@@ -179,7 +179,7 @@ plot_maps <- function(..., time = NULL, migrations = FALSE,
         scale_color_discrete(drop = FALSE) +
         guides(color = FALSE)
   }
-  
+
   p + labs(x = xlab, y = ylab)
 }
 
@@ -216,8 +216,8 @@ get_time_point <- function(times, current_value, what) {
 explore <- function(model) {
 
   # generate choices for the coordinate system graticules
-  if (has_crs(model$map)) {
-    crs <- sf::st_crs(model$map)$epsg
+  if (has_crs(model$world)) {
+    crs <- sf::st_crs(model$world)$epsg
     coord_choice <- c("original", "internal")
     names(coord_choice) <- c("original (longitude-latitude)",
                              sprintf("internal (EPSG:%s)", crs))
@@ -234,21 +234,26 @@ explore <- function(model) {
   split_events <- split_events[split_events$tsplit != Inf, c("tsplit", "event")]
   colnames(split_events) <- c("time", "event")
 
-  admixture_starts <- model$admixtures
-  admixture_starts$event <- with(
-    admixture_starts,
-    sprintf("migration %s → %s, %.2f%%", from, to, 100 * rate)
-  )
-  admixture_starts <- admixture_starts[, c("tstart", "event")]
-  colnames(admixture_starts) <- c("time", "event")
+  if (!is.null(model$admixtures)) {
+    admixture_starts <- model$admixtures
+    admixture_starts$event <- with(
+      admixture_starts,
+      sprintf("migration %s → %s, %.2f%%", from, to, 100 * rate)
+    )
+    admixture_starts <- admixture_starts[, c("tstart", "event")]
+    colnames(admixture_starts) <- c("time", "event")
 
-  admixture_ends <- model$admixtures
-  admixture_ends$event <- with(
-    admixture_ends,
-    sprintf("migration %s → %s ends", from, to)
-  )
-  admixture_ends <- admixture_ends[, c("tend", "event")]
-  colnames(admixture_ends) <- c("time", "event")
+    admixture_ends <- model$admixtures
+    admixture_ends$event <- with(
+      admixture_ends,
+      sprintf("migration %s → %s ends", from, to)
+    )
+    admixture_ends <- admixture_ends[, c("tend", "event")]
+    colnames(admixture_ends) <- c("time", "event")
+  } else {
+    admixture_starts <- NULL
+    admixture_ends <- NULL
+  }
 
   cleanup_events <- do.call(rbind, lapply(model$populations, function(pop)
     data.frame(time = attr(pop, "remove"),
@@ -326,7 +331,7 @@ explore <- function(model) {
                 value = TRUE
               )),
 
-              if (nrow(model$map)) {
+              if (nrow(model$world)) {
                 column(4, checkboxInput(
                   inputId = "show_map",
                   label = "Show map",
@@ -334,11 +339,13 @@ explore <- function(model) {
                 ))
               } else NULL,
 
-              column(4, checkboxInput(
-                inputId = "show_migrations",
-                label = "Indicate migrations",
-                value = TRUE
-              ))
+              if (!is.null(model$admixtures)) {
+                column(4, checkboxInput(
+                  inputId = "show_migrations",
+                  label = "Indicate migrations",
+                  value = TRUE
+                ))
+              } else NULL,
             ),
 
             p(strong("Generation time: "), model$generation_time, " time units")
@@ -420,36 +427,38 @@ explore <- function(model) {
     })
 
     output$spannr_maps <- renderPlot({
-      
+
       plot_maps(
         model,
         time = input$time_slider,
         graticules = input$coord_system,
         intersect = input$intersect,
         show_map = input$show_map,
-        migrations = input$show_migrations,
+        migrations = if (is.null(model$admixtures)) FALSE else input$show_migrations,
         interpolated_maps = interpolated_maps
       )
 
     })
 
     output$migrations_table <- renderTable({
-      migr_df <- get_migrations(model, input$time_slider)
-      table <- migr_df[, c("from", "to", "tstart", "tend", "rate")]
-      table$rate_gen <- sprintf("%.1f%%", table$rate / model$generation_time * 100)
-      table$tstart <- as.integer(table$tstart)
-      table$tend <- as.integer(table$tend)
-      table$rate <- sprintf("%.1f%%", table$rate * 100)
-      colnames(table) <- c("migration<br>source", "migration<br>target", "start", "end", "rate", "rate per<br>generation")
-      table$overlapping <- ifelse(migr_df$overlap, "yes", "no")
-      if (!nrow(table)) return(NULL)
-      table
+      if (!is.null(model$admixtures)) {
+        migr_df <- get_migrations(model, input$time_slider)
+        table <- migr_df[, c("from", "to", "tstart", "tend", "rate")]
+        table$rate_gen <- sprintf("%.1f%%", table$rate / model$generation_time * 100)
+        table$tstart <- as.integer(table$tstart)
+        table$tend <- as.integer(table$tend)
+        table$rate <- sprintf("%.1f%%", table$rate * 100)
+        colnames(table) <- c("migration<br>source", "migration<br>target", "start", "end", "rate", "rate per<br>generation")
+        table$overlapping <- ifelse(migr_df$overlap, "yes", "no")
+        if (!nrow(table)) return(NULL)
+        table
+      } else return(NULL)
     }, sanitize.text.function = identity)
 
     output$spannr_graph <- renderPlot({ graph(model, input$show_cleanups) },
                                       height = 600)
 
   }
-  
+
   shinyApp(ui, server)
 }

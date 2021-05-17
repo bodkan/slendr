@@ -6,13 +6,13 @@ test_that("read() restores a single-map model object", {
                     center = c(10, 40), radius = 100000, map = map)
 
   model_dir <- file.path(tempdir(), "tmp-single-map-model-serialization")
-  model1 <- compile(pop, model_dir = model_dir, resolution = 10000, generation_time = 1, overwrite = TRUE)
+  model1 <- compile(pop, dir = model_dir, resolution = 10000, generation_time = 1, overwrite = TRUE)
   model2 <- read(model1$config$directory)
 
   # make sure that all components of the model list object before and after
   # serialization are equal
-  components <- c("splits", "admixtures", "maps", "generation_time", "resolution", "map")
-  expect_true(all(sapply(components, function(i) all(model1[[i]] == model2[[i]]))))
+  components <- c("splits", "admixtures", "maps", "generation_time", "resolution", "world")
+  expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(unlist(model1$config) == unlist(model2$config)))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
 })
@@ -36,7 +36,7 @@ test_that("read() restores a complex model object", {
 
   model_dir <- file.path(tempdir(), "tmp-complex-map-model-serialization")
   model1 <- compile(
-    model_dir = model_dir,
+    dir = model_dir,
     populations = list(p1, p2, p3, p4, p5),
     admixtures = admixtures,
     generation_time = 30,
@@ -45,8 +45,8 @@ test_that("read() restores a complex model object", {
   )
   model2 <- read(model1$config$directory)
 
-  components <- c("splits", "admixtures", "maps", "generation_time", "resolution", "map")
-  expect_true(all(sapply(components, function(i) all(model1[[i]] == model2[[i]]))))
+  components <- c("splits", "admixtures", "maps", "generation_time", "resolution", "world")
+  expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(unlist(model1$config) == unlist(model2$config)))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
 })

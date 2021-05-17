@@ -48,7 +48,7 @@ animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
     add = TRUE
   )
 
-  p <- plot(model$map) +
+  p <- plot(model$world) +
     geom_point(data = locs, aes(newx, newy, color = pop), alpha = 0.5) +
     theme(axis.title.x = element_blank(),
           axis.title.y = element_blank())

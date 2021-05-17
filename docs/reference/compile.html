@@ -151,7 +151,7 @@ simulation events.</p>
 
     <pre class="usage"><span class='fu'>compile</span><span class='op'>(</span>
   <span class='va'>populations</span>,
-  <span class='va'>model_dir</span>,
+  <span class='va'>dir</span>,
   <span class='va'>generation_time</span>,
   <span class='va'>resolution</span>,
   admixtures <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -167,9 +167,9 @@ simulation events.</p>
 (multiple objects need to be specified in a <code>list</code>)</p></td>
     </tr>
     <tr>
-      <th>model_dir</th>
-      <td><p>Output directory for the model configuration files
-which will be loaded by the backend SLiM script</p></td>
+      <th>dir</th>
+      <td><p>Output directory for the model configuration files which
+will be loaded by the backend SLiM script</p></td>
     </tr>
     <tr>
       <th>generation_time</th>
@@ -193,6 +193,9 @@ case it already exists?</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Compiled <code>spannr_model</code> model object</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
