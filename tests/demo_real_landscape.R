@@ -1,7 +1,12 @@
-
 devtools::load_all(".")
 
-map <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "naturalearth", crs = "EPSG:3035")
+map <- world(
+  xrange = c(-15, 60),
+  yrange = c(20, 65),
+  landscape = "naturalearth",
+  crs = "EPSG:3035",
+  ne_dir = "~/Google/postdoc/data/ne_data/"
+)
 
 africa <- region(
   "Africa", map,
@@ -48,7 +53,6 @@ eur <- population(
   parent = ehg,
   polygon = europe
 )
-
 ana <- population(
   name = "ANA", time = 28000, N = 800, parent = ooa, remove = 6000,
   center = c(34, 38), radius = 500e3, polygon = anatolia
@@ -57,7 +61,6 @@ ana <- population(
   snapshots = 10,
   polygon = europe_anatolia
 )
-
 yam <- population(
   name = "YAM", time = 7000, N = 600, parent = ehg, remove = 2000,
   polygon = list(c(26, 50), c(38, 49), c(48, 50),
@@ -78,11 +81,11 @@ admixtures <- list(
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
   admixtures = admixtures,
-  model_dir = "/tmp/demo-model", generation_time = 30, resolution = 10e3,
-  overwrite = T
+  generation_time = 30, resolution = 10e3,
+  dir = "/tmp/demo-model/", overwrite = T
 )
 
-explore(model)
+# explore(model)
 
 slim(
   model, seq_length = 1, recomb_rate = 0,

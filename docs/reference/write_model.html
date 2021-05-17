@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Write model specification tables which will be loaded into SLiM — write_model • spannr</title>
+<title>Write a compiled spannr model to disk — write_model • spannr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Write model specification tables which will be loaded into SLiM — write_model" />
-<meta property="og:description" content="Write model specification tables which will be loaded into SLiM" />
+<meta property="og:title" content="Write a compiled spannr model to disk — write_model" />
+<meta property="og:description" content="Write a compiled spannr model to disk" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -128,21 +128,21 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Write model specification tables which will be loaded into SLiM</h1>
+    <h1>Write a compiled spannr model to disk</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/compilation.R'><code>R/compilation.R</code></a></small>
     <div class="hidden name"><code>write_model.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Write model specification tables which will be loaded into SLiM</p>
+    <p>Write a compiled spannr model to disk</p>
     </div>
 
     <pre class="usage"><span class='fu'>write_model</span><span class='op'>(</span>
-  <span class='va'>model_dir</span>,
+  <span class='va'>dir</span>,
   <span class='va'>populations</span>,
-  <span class='va'>splits_table</span>,
   <span class='va'>admix_table</span>,
-  <span class='va'>maps_table</span>,
+  <span class='va'>map_table</span>,
+  <span class='va'>split_table</span>,
   <span class='va'>generation_time</span>,
   <span class='va'>resolution</span>
 <span class='op'>)</span></pre>

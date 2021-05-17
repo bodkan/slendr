@@ -42,7 +42,7 @@ population <- function(name, time, N, parent, map = NULL,
       map <- map
   } else
     map <- attr(parent, "map")
-  
+
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
   if (!is.null(polygon) & inherits(polygon, "spannr_region"))
@@ -176,12 +176,17 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
     exp_region$time <- times[i]
     inter_regions[[i + 1]] <- exp_region
   }
-  
-  inter_regions <- rbind(pop, do.call(rbind, inter_regions))
+  inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
+  # if the expansion is restricted, crop the whole range accordingly
+  if (!is.null(polygon))
+    inter_regions <- sf::st_intersection(inter_regions, sf::st_geometry(polygon))
+
+  all_maps <- rbind(pop, inter_regions)
+  sf::st_agr(all_maps) <- "constant"
 
   result <- copy_attributes(
-    inter_regions, pop,
+    all_maps, pop,
     c("map", "parent", "remove", "intersect")
   )
 
@@ -205,7 +210,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 #' @export
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
-  
+
   map <- attr(pop, "map")
 
   # take care of just a single destination point being specified
@@ -375,7 +380,7 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
     ## crop the map to the boundary coordinates
     map <- sf::st_crop(map_transf, zoom_transf)
   } else {
-    stop("Landscape has to be either 'abstract', 'ne' (Natural Earth) or an object of the class 'sf'", call. = FALSE)
+    stop("Landscape has to be either 'blank', 'naturalearth' or an object of the class 'sf'", call. = FALSE)
   }
 
   sf::st_agr(map) <- "constant"
@@ -502,16 +507,16 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
 
   if (!is.null(model)) {
     # dimension of the map in the projected CRS units
-    bbox <- sf::st_bbox(model$map)
+    bbox <- sf::st_bbox(model$world)
     map_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
-  
+
     # dimension of the rasterized map in pixel units
     # (x/y dimensions of PNGs are reversed)
     raster_dim <- dim(png::readPNG(model$maps$path[1]))[2:1]
   }
 
-  if (to == "world") to <- sf::st_crs(model$map)
-  if (from == "world") from <- sf::st_crs(model$map)
+  if (to == "world") to <- sf::st_crs(model$world)
+  if (from == "world") from <- sf::st_crs(model$world)
 
   if (is.null(coords))
     df <- data.frame(x = x, y = y)
@@ -522,7 +527,7 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
     # convert pixel coordinates to na sf object in world-based coordinates
     df$x <- bbox["xmin"] + map_dim[1] * df$x / raster_dim[1]
     df$y <- bbox["ymin"] + map_dim[2] * df$y / raster_dim[2]
-    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = sf::st_crs(model$map))
+    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = sf::st_crs(model$world))
   } else {
     # ... otherwise create a formal sf point object from the
     # coordinates already given
@@ -530,7 +535,7 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
   }
 
   if (to == "raster") {
-    point_coords <- sf::st_transform(point, crs = sf::st_crs(model$map)) %>%
+    point_coords <- sf::st_transform(point, crs = sf::st_crs(model$world)) %>%
       sf::st_coordinates()
     newx <- abs((point_coords[, "X"] - bbox["xmin"])) / map_dim[1] * raster_dim[1]
     newy <- abs((point_coords[, "Y"] - bbox["ymin"])) / map_dim[2] * raster_dim[2]
@@ -648,7 +653,7 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
           cat("internal coordinate reference system:", crs, "\n")
           units <- " (in degrees longitude and latitude)"
         }
-        
+
         xrange <- attr(x, "xrange")
         yrange <- attr(x, "yrange")
         cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
@@ -667,9 +672,10 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
       cat("resolution:", x$resolution, "km per pixel\n\n")
       cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
       cat(
-"For detailed model specification see `$splits`, `$admixtures`, `$maps`,
-or `$populations` components of the model object, or the configuration
-files in the model directory.\n")
+"A detailed model specification can be found in `$splits`, `$admixtures`,
+`$maps`, `$populations`, and other components of the model object (for
+a complete list see `names(<model object>)`). You can also examine
+the serialized configuration files in the model directory.\n")
     } else {
       stop("Unknown object type", call. = FALSE)
     }
@@ -691,7 +697,7 @@ join <- function(x, y, name = NULL) {
   result <- sf::st_union(x, y)
   result$region.1 <- NULL
   if (is.null(name))
-    result$region <- sprintf("%s plus %s", x$region, y$region)
+    result$region <- sprintf("(%s plus %s)", x$region, y$region)
   else
     result$region <- name
   attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
@@ -708,12 +714,12 @@ join <- function(x, y, name = NULL) {
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-overlap <- function(x, y, name) {
+overlap <- function(x, y, name = NULL) {
   result <- sf::st_intersection(x, y)
   if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
   result$region.1 <- NULL
   if (is.null(name))
-    result$region <- sprintf("overlap %s and %s", x$region, y$region)
+    result$region <- sprintf("(overlap %s and %s)", x$region, y$region)
   else
     result$region <- name
   attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
@@ -729,12 +735,12 @@ overlap <- function(x, y, name) {
 #' @return Object of the class \code{spannr_region}
 #'
 #' @export
-subtract <- function(x, y, name) {
+subtract <- function(x, y, name = NULL) {
   result <- sf::st_difference(x, y)
   if (nrow(result) == 0) stop("No region left after subtraction", call. = FALSE)
   result$region.1 <- NULL
   if (is.null(name))
-    result$region <- sprintf("%s minus %s", x$region, y$region)
+    result$region <- sprintf("(%s minus %s)", x$region, y$region)
   else
     result$region <- name
   attrs <- if (!is.null(attr(x, "map"))) "map" else NULL

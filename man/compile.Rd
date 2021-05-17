@@ -6,7 +6,7 @@
 \usage{
 compile(
   populations,
-  model_dir,
+  dir,
   generation_time,
   resolution,
   admixtures = NULL,
@@ -17,8 +17,8 @@ compile(
 \item{populations}{Object(s) of the \code{spannr_pop} class
 (multiple objects need to be specified in a \code{list})}
 
-\item{model_dir}{Output directory for the model configuration files
-which will be loaded by the backend SLiM script}
+\item{dir}{Output directory for the model configuration files which
+will be loaded by the backend SLiM script}
 
 \item{generation_time}{Generation time (in model time units)}
 
@@ -31,6 +31,9 @@ data.frame)}
 
 \item{overwrite}{Overwrite the contents of the output directory in
 case it already exists?}
+}
+\value{
+Compiled \code{spannr_model} model object
 }
 \description{
 First, compiles the vectorized population spatial maps into a

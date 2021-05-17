@@ -193,7 +193,7 @@
 <a href="#5-compile-the-model-to-a-set-of-configuration-files" class="anchor"></a>5. Compile the model to a set of configuration files</h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/compile.html">compile</a></span><span class="op">(</span>
-  model_dir <span class="op">=</span> <span class="st">"/tmp/example-model"</span>, <span class="co"># location of serialized model data</span>
+  dir <span class="op">=</span> <span class="st">"/tmp/example-model"</span>, <span class="co"># location of serialized model data</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span><span class="op">)</span>,
   admixtures <span class="op">=</span> <span class="va">admixtures</span>,
   generation_time <span class="op">=</span> <span class="fl">30</span>,
@@ -212,9 +212,10 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; configuration files in: /private/tmp/example-model </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; For detailed model specification see `$splits`, `$admixtures`, `$maps`,</span>
-<span class="co">#&gt; or `$populations` components of the model object, or the configuration</span>
-<span class="co">#&gt; files in the model directory.</span></code></pre></div>
+<span class="co">#&gt; A detailed model specification can be found in `$splits`, `$admixtures`,</span>
+<span class="co">#&gt; `$maps`, `$populations`, and other components of the model object (for</span>
+<span class="co">#&gt; a complete list see `names(&lt;model object&gt;)`). You can also examine</span>
+<span class="co">#&gt; the serialized configuration files in the model directory.</span></code></pre></div>
 </div>
 <div id="6-visualize-the-implied-admixture-graph" class="section level4">
 <h4 class="hasAnchor">
@@ -269,7 +270,7 @@
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small>GPL (&gt;= 3)</small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 <div class="developers">
