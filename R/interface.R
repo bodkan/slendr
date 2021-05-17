@@ -502,7 +502,7 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
 
   if (!is.null(model)) {
     # dimension of the map in the projected CRS units
-    bbox <- sf::st_bbox(model$map)
+    bbox <- sf::st_bbox(model$world)
     map_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])
 
     # dimension of the rasterized map in pixel units
@@ -510,8 +510,8 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
     raster_dim <- dim(png::readPNG(model$maps$path[1]))[2:1]
   }
 
-  if (to == "world") to <- sf::st_crs(model$map)
-  if (from == "world") from <- sf::st_crs(model$map)
+  if (to == "world") to <- sf::st_crs(model$world)
+  if (from == "world") from <- sf::st_crs(model$world)
 
   if (is.null(coords))
     df <- data.frame(x = x, y = y)
@@ -522,7 +522,7 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
     # convert pixel coordinates to na sf object in world-based coordinates
     df$x <- bbox["xmin"] + map_dim[1] * df$x / raster_dim[1]
     df$y <- bbox["ymin"] + map_dim[2] * df$y / raster_dim[2]
-    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = sf::st_crs(model$map))
+    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = sf::st_crs(model$world))
   } else {
     # ... otherwise create a formal sf point object from the
     # coordinates already given
@@ -530,7 +530,7 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
   }
 
   if (to == "raster") {
-    point_coords <- sf::st_transform(point, crs = sf::st_crs(model$map)) %>%
+    point_coords <- sf::st_transform(point, crs = sf::st_crs(model$world)) %>%
       sf::st_coordinates()
     newx <- abs((point_coords[, "X"] - bbox["xmin"])) / map_dim[1] * raster_dim[1]
     newy <- abs((point_coords[, "Y"] - bbox["ymin"])) / map_dim[2] * raster_dim[2]
@@ -665,14 +665,12 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
       cat("generation time:", x$gen_time, "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n")
       cat("resolution:", x$resolution, "km per pixel\n\n")
-      if (!is.null(model$config)) {
-        cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
-        cat(
-"For detailed model specification see `$splits`, `$admixtures`, `$maps`,
-or `$populations` components of the model object, or the configuration
-files in the model directory.\n")
-      } else
-        cat("[this model has not been serialized to disk]\n")
+      cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
+      cat(
+"A detailed model specification can be found in `$splits`, `$admixtures`,
+`$maps`, `$populations`, and other components of the model object (for
+a complete list see `names(<model object>)`). You can also examine
+the serialized configuration files in the model directory.\n")
     } else {
       stop("Unknown object type", call. = FALSE)
     }
