@@ -146,7 +146,7 @@ admixtures <- list(
 
 ```r
 model <- compile(
-  model_dir = "/tmp/example-model", # location of serialized model data
+  dir = "/tmp/example-model", # location of serialized model data
   populations = list(p1, p2, p3, p4, p5),
   admixtures = admixtures,
   generation_time = 30,
@@ -170,9 +170,10 @@ model
 #> 
 #> configuration files in: /private/tmp/example-model 
 #> 
-#> For detailed model specification see `$splits`, `$admixtures`, `$maps`,
-#> or `$populations` components of the model object, or the configuration
-#> files in the model directory.
+#> A detailed model specification can be found in `$splits`, `$admixtures`,
+#> `$maps`, `$populations`, and other components of the model object (for
+#> a complete list see `names(<model object>)`). You can also examine
+#> the serialized configuration files in the model directory.
 ```
 
 #### 6. Visualize the implied admixture graph

@@ -234,21 +234,26 @@ explore <- function(model) {
   split_events <- split_events[split_events$tsplit != Inf, c("tsplit", "event")]
   colnames(split_events) <- c("time", "event")
 
-  admixture_starts <- model$admixtures
-  admixture_starts$event <- with(
-    admixture_starts,
-    sprintf("migration %s → %s, %.2f%%", from, to, 100 * rate)
-  )
-  admixture_starts <- admixture_starts[, c("tstart", "event")]
-  colnames(admixture_starts) <- c("time", "event")
+  if (!is.null(model$admixtures)) {
+    admixture_starts <- model$admixtures
+    admixture_starts$event <- with(
+      admixture_starts,
+      sprintf("migration %s → %s, %.2f%%", from, to, 100 * rate)
+    )
+    admixture_starts <- admixture_starts[, c("tstart", "event")]
+    colnames(admixture_starts) <- c("time", "event")
 
-  admixture_ends <- model$admixtures
-  admixture_ends$event <- with(
-    admixture_ends,
-    sprintf("migration %s → %s ends", from, to)
-  )
-  admixture_ends <- admixture_ends[, c("tend", "event")]
-  colnames(admixture_ends) <- c("time", "event")
+    admixture_ends <- model$admixtures
+    admixture_ends$event <- with(
+      admixture_ends,
+      sprintf("migration %s → %s ends", from, to)
+    )
+    admixture_ends <- admixture_ends[, c("tend", "event")]
+    colnames(admixture_ends) <- c("time", "event")
+  } else {
+    admixture_starts <- NULL
+    admixture_ends <- NULL
+  }
 
   cleanup_events <- do.call(rbind, lapply(model$populations, function(pop)
     data.frame(time = attr(pop, "remove"),
@@ -334,11 +339,13 @@ explore <- function(model) {
                 ))
               } else NULL,
 
-              column(4, checkboxInput(
-                inputId = "show_migrations",
-                label = "Indicate migrations",
-                value = TRUE
-              ))
+              if (!is.null(model$admixtures)) {
+                column(4, checkboxInput(
+                  inputId = "show_migrations",
+                  label = "Indicate migrations",
+                  value = TRUE
+                ))
+              } else NULL,
             ),
 
             p(strong("Generation time: "), model$generation_time, " time units")
@@ -427,23 +434,25 @@ explore <- function(model) {
         graticules = input$coord_system,
         intersect = input$intersect,
         show_map = input$show_map,
-        migrations = input$show_migrations,
+        migrations = if (is.null(model$admixtures)) FALSE else input$show_migrations,
         interpolated_maps = interpolated_maps
       )
 
     })
 
     output$migrations_table <- renderTable({
-      migr_df <- get_migrations(model, input$time_slider)
-      table <- migr_df[, c("from", "to", "tstart", "tend", "rate")]
-      table$rate_gen <- sprintf("%.1f%%", table$rate / model$generation_time * 100)
-      table$tstart <- as.integer(table$tstart)
-      table$tend <- as.integer(table$tend)
-      table$rate <- sprintf("%.1f%%", table$rate * 100)
-      colnames(table) <- c("migration<br>source", "migration<br>target", "start", "end", "rate", "rate per<br>generation")
-      table$overlapping <- ifelse(migr_df$overlap, "yes", "no")
-      if (!nrow(table)) return(NULL)
-      table
+      if (!is.null(model$admixtures)) {
+        migr_df <- get_migrations(model, input$time_slider)
+        table <- migr_df[, c("from", "to", "tstart", "tend", "rate")]
+        table$rate_gen <- sprintf("%.1f%%", table$rate / model$generation_time * 100)
+        table$tstart <- as.integer(table$tstart)
+        table$tend <- as.integer(table$tend)
+        table$rate <- sprintf("%.1f%%", table$rate * 100)
+        colnames(table) <- c("migration<br>source", "migration<br>target", "start", "end", "rate", "rate per<br>generation")
+        table$overlapping <- ifelse(migr_df$overlap, "yes", "no")
+        if (!nrow(table)) return(NULL)
+        table
+      } else return(NULL)
     }, sanitize.text.function = identity)
 
     output$spannr_graph <- renderPlot({ graph(model, input$show_cleanups) },
