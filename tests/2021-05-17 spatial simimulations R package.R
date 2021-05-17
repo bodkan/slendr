@@ -5,14 +5,11 @@
 #  3. shiny exploration app
 
 
-
-
-# 1.  abstract landscapes -------------------------------------------------
-
+# 1.  abstract landscapes -----------------------------------------
 
 
 
-# real maps ---------------------------------------------------------------
+# real maps -------------------------------------------------------
 
 map_real <- world(
   xrange = c(-15, 60),
@@ -42,13 +39,12 @@ ooa <- population(
   start = 50000, end = 40000, snapshots = 30
 )
 
-plot(afr)
-plot(ooa)
+plot(afr, ooa, pop_facets = F)
 
 
 
 
-# abstract maps (blank) ---------------------------------------------------
+# abstract maps (blank) -------------------------------------------
 
 map_blank <- world(
   xrange = c(0, 100),
@@ -66,8 +62,10 @@ p1 <- population("p1", N = 100, time = 10000, parent = "ancestor",
 p2 <- population("p2", N = 1000, time = 10000, parent = p1,
                  map = map_blank, center = c(80, 80), radius = 15)
 
-p3 <- population("p3", N = 100, time = 10000, parent = p2,
-                 map = map_blank, center = c(80, 20), radius = 8) %>%
+p3 <- population(
+  "p3", N = 100, time = 10000, parent = p2,
+  map = map_blank, center = c(80, 20), radius = 8
+) %>%
   move(trajectory = list(c(80, 80), c(20, 60)),
        start = 8000, end = 5000, snapshots = 20)
 
@@ -87,23 +85,35 @@ explore(model_blank)
 
 
 
-# abstract maps (user-defined landscape) ----------------------------------
+# abstract maps (user-defined landscape) --------------------------
 
-land <- region("islandX", polygon  = list(c(-10, 30), c(50, 30),
-                                          c(40, 50), c(0, 40)))
+land <- region("islandX",
+               polygon = list(c(-10, 30), c(50, 30),
+                              c(40, 50), c(0, 40)))
+
 land
 
-map_custom <- world(xrange = c(-15, 60), yrange = c(20, 65), landscape = land)
+plot(land)
+
+
+map_custom <- world(
+  xrange = c(-15, 60),
+  yrange = c(20, 65),
+  landscape = land
+)
+
 map_custom
 
 plot(map_custom)
 
-p1 <- population("p1", N = 100, time = 10000, parent = "ancestor",
-                 map = map_custom, center = c(0, 30), radius = 5) %>%
+p1 <- population(
+  "p1", N = 100, time = 10000, parent = "ancestor",
+  center = c(0, 30), radius = 5, map = map_custom
+) %>%
   expand(by = 15, start = 8000, end = 6000, snapshots = 10)
 
 p2 <- population("p2", N = 1000, time = 10000, parent = p1,
-                 map = map_custom, center = c(30, 45), radius = 8)
+                 center = c(30, 45), radius = 8, map = map_custom)
 
 plot(p1, p2, pop_facets = F)
 
@@ -122,13 +132,13 @@ explore(model_custom)
 
 
 
-# 2.  set operations ------------------------------------------------------
+# 2.  set operations ----------------------------------------------
 
 
 # three "geographic" regions ...
 r1 <- region("r1", center = c(-10, -10), radius = 10)
-r2 <- region("r2", polygon = list(c(-10, 0), c(-5, -10), c(10, 0),
-                                  c(5, 10), c(-10, 10)))
+r2 <- region("r2", polygon = list(c(-10, 0), c(-5, -10),
+                                  c(10, 0), c(5, 10), c(-10, 10)))
 r3 <- region("r3", center = c(10, 10), radius = 10)
 
 plot(r1, r2, r3)
@@ -138,7 +148,9 @@ overlap(r1, r2) %>% plot
 join(r1, r2) %>% plot
 subtract(r3, r2) %>% plot
 
+# create a more complex geographic region
 land <- join(overlap(r1, r2), subtract(r3, r2))
+
 land
 
 map_custom2 <- world(
@@ -160,7 +172,7 @@ land$geometry[[1]]
 
 
 
-# 3. shiny app ------------------------------------------------------------
+# 3. shiny app ----------------------------------------------------
 
 # this originated as a debugging feature for myself, but it
 # has only a limited use for a general user (the model is dynamic,
