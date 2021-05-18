@@ -51,9 +51,15 @@ initialize() {
   // calculate times for scheduling various simulation events (but only if
   // those events are specified in the configuation tables)
 
-  if (nrow(SPLIT_TABLE) > 1) {
+  // absolute split times
+  defineConstant("T_ABS_ANC", drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2]) == -1, 3]));
+  // split times relative to the start of the simulation
+  defineConstant("T_ANC", SIM_END - T_ABS_ANC);
+  catn("T_ANC: " + paste(T_ANC));
+
+  if (!isNULL(pop_param("tsplit", present = "source"))) {
     // absolute split times
-    defineConstant("T_ABS_SPLITS", pop_param("tsplit")[pop_param("tsplit") != T_LENGTH]);
+    defineConstant("T_ABS_SPLITS", drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2]) != -1, 3]));
     // split times relative to the start of the simulation
     defineConstant("T_SPLITS", SIM_END - T_ABS_SPLITS);
 
@@ -109,9 +115,12 @@ initialize() {
   initializeMutationRate(0.0);
 }
 
-1 {
-  // setup ancestral populations (i.e. those which don't have a parent)
-  pop_ids = drop(SPLIT_TABLE[which(drop(SPLIT_TABLE[, 2]) == -1), 0]);;
+1 early() {
+  // schedule all script blocks (unique() is called in case multiple events
+  // are scheduled at once)
+
+  // creating ancestral populations
+  pop_ids = drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2] == -1), 0])[sim.generation == T_ANC];
   for (i in pop_ids) {
     sim.addSubpop(i, pop_param("N", i));
     set_map(i, sim.generation);
@@ -119,8 +128,10 @@ initialize() {
     add_markers(i);
   }
 
-  // schedule all script blocks (unique() is called in case multiple events
-  // are scheduled at once)
+  if (any(T_ANC > 1))
+    sim.rescheduleScriptBlock(s0, generations = unique(T_ANC)[unique(T_ANC) > 1]);
+  else
+    sim.deregisterScriptBlock(s0);
 
   // population splits
   if (exists("T_SPLITS"))
@@ -170,6 +181,20 @@ initialize() {
 //////////////////////////////////////////////////////////////////////
 // Demography script blocks
 //////////////////////////////////////////////////////////////////////
+
+// Creating ancestral populations
+s0 early() {
+  // setup ancestral populations (i.e. those which don't have a parent)
+  if (sim.generation > 1) {
+    pop_ids = drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2] == -1), 0])[sim.generation == T_ANC];
+    for (i in pop_ids) {
+      sim.addSubpop(i, pop_param("N", i));
+      set_map(i, sim.generation);
+      set_coordinates(get_pop(i).individuals, i);
+      add_markers(i);
+    }
+  }
+}
 
 // Population splits
 s1 late() {
