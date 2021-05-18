@@ -66,12 +66,6 @@ compile <- function(populations, dir, generation_time, resolution, admixtures = 
   # compile the spatial maps
   map_table <- compile_maps(populations, split_table, resolution)
 
-  for (p in split_table[split_table$parent == "ancestor", ]$pop) {
-    map_table[
-      map_table$pop == p &
-        map_table$time %in% split_table[split_table$pop == p, ]$tsplit, ]$time <- -1
-  }
-
   map_table$path <-map_table$map_number %>%
     paste0(., ".png") %>% file.path(dir, .) %>% gsub("//", "/", .)
 

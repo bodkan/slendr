@@ -91,7 +91,7 @@ initialize() {
     // absolute times of spatial map changes
     defineConstant("T_ABS_MAPS", maps_param("time"));
     // times relative to the start of the simulation
-    defineConstant("T_MAPS", c(1, SIM_END - T_ABS_MAPS));
+    defineConstant("T_MAPS", SIM_END - T_ABS_MAPS);
     catn("T_MAPS: " + paste(T_MAPS));
   }
 
@@ -193,6 +193,9 @@ s0 early() {
       set_coordinates(get_pop(i).individuals, i);
       add_markers(i);
     }
+    // evaluate interactions
+    i1.evaluate(get_pop(i));
+    i2.evaluate(get_pop(i));
   }
 }
 
@@ -419,10 +422,7 @@ function (void) log_output(s$ str) {
 
 // Assign a spatial map to a given population
 function (void) set_map(i$ i, i$ generation) {
-  if (generation == 1)
-    img = MAPS[0];
-  else
-    img = MAPS[maps_param("pop") == i & T_MAPS == generation];
+  img = MAPS[maps_param("pop") == i & T_MAPS == generation];
   get_pop(i).defineSpatialMap("world", "xy", 1.0 - img.floatK,
     valueRange=c(min(img.floatK), max(img.floatK)), colors=c("#000000", "#FFFFFF"));
   get_pop(i).setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
