@@ -1,8 +1,10 @@
 
-# Three big new features:
-#  1. abstract landscapes
+# Three new features:
+#  1. "abstract landscapes"
 #  2. set operations on geographic regions
 #  3. shiny exploration app
+
+
 
 
 # 1.  abstract landscapes -----------------------------------------
@@ -56,29 +58,34 @@ map_blank
 
 plot(map_blank)
 
-p1 <- population("p1", N = 100, time = 10000, parent = "ancestor",
+p1 <- population("p1", N = 100, time = 2000, parent = "ancestor",
                  map = map_blank, center = c(20, 20), radius = 10)
 
-p2 <- population("p2", N = 1000, time = 10000, parent = p1,
-                 map = map_blank, center = c(80, 80), radius = 15)
+p2 <- population("p2", N = 1000, time = 3000, parent = "ancestor",
+                 center = c(80, 80), radius = 15, map = map_blank)
 
 p3 <- population(
-  "p3", N = 100, time = 10000, parent = p2,
-  map = map_blank, center = c(80, 20), radius = 8
+  "p3", N = 100, time = 1000, parent = p2,
+  center = c(80, 20), radius = 8, map = map_blank
 ) %>%
   move(trajectory = list(c(80, 80), c(20, 60)),
-       start = 8000, end = 5000, snapshots = 20)
+       start = 800, end = 0, snapshots = 20)
 
 plot(p1, p2, p3, pop_facets = F)
 
 model_blank <- compile(
   populations = list(p1, p2, p3),
   dir = "/tmp/model-blank",
-  generation_time = 1, resolution = 2,
+  generation_time = 10, resolution = 2,
   overwrite = T
 )
 
-explore(model_blank)
+graph(model_blank)
+
+slim(model_blank, seq_length = 1, recomb_rate = 0,
+     max_interaction = 20, spread = 5)
+
+#explore(model_blank)
 
 
 
@@ -87,14 +94,13 @@ explore(model_blank)
 
 # abstract maps (user-defined landscape) --------------------------
 
-land <- region("islandX",
-               polygon = list(c(-10, 30), c(50, 30),
-                              c(40, 50), c(0, 40)))
+land <- region(
+  "islandX",
+  polygon = list(c(-10, 30), c(50, 30),
+                 c(40, 50), c(0, 40))
+)
 
 land
-
-plot(land)
-
 
 map_custom <- world(
   xrange = c(-15, 60),
@@ -125,7 +131,7 @@ model_custom <- compile(
   overwrite = T
 )
 
-explore(model_custom)
+# explore(model_custom)
 
 
 
@@ -152,6 +158,8 @@ subtract(r3, r2) %>% plot
 land <- join(overlap(r1, r2), subtract(r3, r2))
 
 land
+
+plot(land)
 
 map_custom2 <- world(
   xrange = c(-15, 30),
@@ -184,3 +192,12 @@ graph(model)
 
 # interactive shiny app to the rescue
 explore(model)
+
+
+
+
+
+# 4.  other topics ... --------------------------------------------
+
+# - naming functions
+# - next todo items

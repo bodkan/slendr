@@ -51,9 +51,15 @@ initialize() {
   // calculate times for scheduling various simulation events (but only if
   // those events are specified in the configuation tables)
 
-  if (nrow(SPLIT_TABLE) > 1) {
+  // absolute split times
+  defineConstant("T_ABS_ANC", drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2]) == -1, 3]));
+  // split times relative to the start of the simulation
+  defineConstant("T_ANC", SIM_END - T_ABS_ANC);
+  catn("T_ANC: " + paste(T_ANC));
+
+  if (!isNULL(pop_param("tsplit", present = "source"))) {
     // absolute split times
-    defineConstant("T_ABS_SPLITS", pop_param("tsplit")[pop_param("tsplit") != T_LENGTH]);
+    defineConstant("T_ABS_SPLITS", drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2]) != -1, 3]));
     // split times relative to the start of the simulation
     defineConstant("T_SPLITS", SIM_END - T_ABS_SPLITS);
 
@@ -85,7 +91,7 @@ initialize() {
     // absolute times of spatial map changes
     defineConstant("T_ABS_MAPS", maps_param("time"));
     // times relative to the start of the simulation
-    defineConstant("T_MAPS", c(1, SIM_END - T_ABS_MAPS));
+    defineConstant("T_MAPS", SIM_END - T_ABS_MAPS);
     catn("T_MAPS: " + paste(T_MAPS));
   }
 
@@ -109,9 +115,12 @@ initialize() {
   initializeMutationRate(0.0);
 }
 
-1 {
-  // setup ancestral populations (i.e. those which don't have a parent)
-  pop_ids = which(drop(SPLIT_TABLE[, 2]) == -1);
+1 early() {
+  // schedule all script blocks (unique() is called in case multiple events
+  // are scheduled at once)
+
+  // creating ancestral populations
+  pop_ids = drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2] == -1), 0])[sim.generation == T_ANC];
   for (i in pop_ids) {
     sim.addSubpop(i, pop_param("N", i));
     set_map(i, sim.generation);
@@ -119,8 +128,10 @@ initialize() {
     add_markers(i);
   }
 
-  // schedule all script blocks (unique() is called in case multiple events
-  // are scheduled at once)
+  if (any(T_ANC > 1))
+    sim.rescheduleScriptBlock(s0, generations = unique(T_ANC)[unique(T_ANC) > 1]);
+  else
+    sim.deregisterScriptBlock(s0);
 
   // population splits
   if (exists("T_SPLITS"))
@@ -170,6 +181,23 @@ initialize() {
 //////////////////////////////////////////////////////////////////////
 // Demography script blocks
 //////////////////////////////////////////////////////////////////////
+
+// Creating ancestral populations
+s0 early() {
+  // setup ancestral populations (i.e. those which don't have a parent)
+  if (sim.generation > 1) {
+    pop_ids = drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2] == -1), 0])[sim.generation == T_ANC];
+    for (i in pop_ids) {
+      sim.addSubpop(i, pop_param("N", i));
+      set_map(i, sim.generation);
+      set_coordinates(get_pop(i).individuals, i);
+      add_markers(i);
+    }
+    // evaluate interactions
+    i1.evaluate(get_pop(i));
+    i2.evaluate(get_pop(i));
+  }
+}
 
 // Population splits
 s1 late() {
@@ -394,10 +422,7 @@ function (void) log_output(s$ str) {
 
 // Assign a spatial map to a given population
 function (void) set_map(i$ i, i$ generation) {
-  if (generation == 1)
-    img = MAPS[0];
-  else
-    img = MAPS[maps_param("pop") == i & T_MAPS == generation];
+  img = MAPS[maps_param("pop") == i & T_MAPS == generation];
   get_pop(i).defineSpatialMap("world", "xy", 1.0 - img.floatK,
     valueRange=c(min(img.floatK), max(img.floatK)), colors=c("#000000", "#FFFFFF"));
   get_pop(i).setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
@@ -480,11 +505,11 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     // ugly hack to get around the new way that splits are defined for
     // all populations, including the ancestral ones (i.e. explicit "sim_length"
     // parameter has now been removed)
-    if (present == "tsplit") table = table[drop(table[, present_i]) != T_LENGTH, ];
+    if (present == "tsplit") table = table[drop(table[, 2]) != -1, ];
   } else {
     table = SPLIT_TABLE;
   }
-
+	if (length(table) == 0) return NULL;
   if (isNULL(pop_i)) pop_i = seqLen(nrow(table));
   val = drop(table[pop_i, col_i]);
 
