@@ -4,7 +4,7 @@
 \alias{overlap}
 \title{Generate the overlap of two \code{spannr_region} objects}
 \usage{
-overlap(x, y, name)
+overlap(x, y, name = NULL)
 }
 \arguments{
 \item{x}{Object of the class \code{spannr_region}}
