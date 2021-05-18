@@ -111,7 +111,7 @@ initialize() {
 
 1 {
   // setup ancestral populations (i.e. those which don't have a parent)
-  pop_ids = which(drop(SPLIT_TABLE[, 2]) == -1);
+  pop_ids = drop(SPLIT_TABLE[which(drop(SPLIT_TABLE[, 2]) == -1), 0]);;
   for (i in pop_ids) {
     sim.addSubpop(i, pop_param("N", i));
     set_map(i, sim.generation);
@@ -480,11 +480,11 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     // ugly hack to get around the new way that splits are defined for
     // all populations, including the ancestral ones (i.e. explicit "sim_length"
     // parameter has now been removed)
-    if (present == "tsplit") table = table[drop(table[, present_i]) != T_LENGTH, ];
+    if (present == "tsplit") table = table[drop(table[, 2]) != -1, ];
   } else {
     table = SPLIT_TABLE;
   }
-
+	if (length(table) == 0) return NULL;
   if (isNULL(pop_i)) pop_i = seqLen(nrow(table));
   val = drop(table[pop_i, col_i]);
 
