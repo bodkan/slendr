@@ -133,7 +133,7 @@ graph <- function(model, show_cleanups = TRUE) {
   admixture_table <- model$admixtures
 
   split_edges <- get_split_edges(split_table)
-  admixture_edges <- if (!is.null(admixture_table)) get_admixture_edges(admixture_table) else NULL
+  admixture_edges <- get_admixture_edges(admixture_table)
   terminal_edges <- get_terminal_edges(split_edges, admixture_edges, split_table)
   intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges)
 
@@ -218,6 +218,9 @@ get_split_edges <- function(split_table) {
   split_edges <- split_table[split_table$parent != "ancestor",
                              c("parent", "pop", "tsplit")]
   names(split_edges) <- c("from", "to", "time")
+
+  if (!nrow(split_edges)) return(split_edges)
+
   split_edges$type <- "split"
   split_edges$rate <- NA
   split_edges$x <- paste0(split_edges$from, "-", split_edges$time)
@@ -232,6 +235,12 @@ get_split_edges <- function(split_table) {
 
 #' Create a table of population admixture edges for graph visualization
 get_admixture_edges <- function(admix_table) {
+  if (is.null(admix_table)) {
+    admix_edges <- data.frame(matrix(ncol = 4, nrow = 0))
+    colnames(admix_edges) <- c("from", "to", "rate", "tstart")
+    return(admix_edges)
+  }
+
   admix_edges <- admix_table[, c("from", "to", "rate", "tstart")]
   names(admix_edges) <- c("from", "to", "rate", "time")
   admix_edges$type <- "admixture"
@@ -293,7 +302,8 @@ get_terminal_edges <- function(split_edges, admixture_edges, split_table) {
   terminal_edges <- lapply(1:nrow(split_table), function(i) {
     pop <- split_table[i, ]
 
-    prev_time <- max(edges[grepl(pop$pop, edges$x) | grepl(pop$pop, edges$y), ]$time)
+    times <- edges[grepl(pop$pop, edges$x) | grepl(pop$pop, edges$y), ]$time
+    prev_time <- if (length(times)) max(times) else .Machine$integer.max
     prev_node <- paste0(pop$pop, "-", prev_time)
     tremove <- if (pop$tremove == -1) 0 else pop$tremove
 
@@ -348,7 +358,7 @@ get_nodes <- function(edges) {
 #'
 #' Plots objects of the three \code{spannr} spatial classes
 #' (\code{spannr_map}, \code{spannr_region}, and \code{spannr_pop}).
-#' 
+#'
 #' @param ... Objects of classes \code{spannr_map},
 #'   \code{spannr_region}, or \code{spannr_pop}
 #' @param pop_facets Plot populations in individual panels?
@@ -397,7 +407,7 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
   if (any(pops$time == Inf)) pops[pops$time == Inf, ]$time = NA
 
   p_map <-  ggplot() + theme_bw()
-  
+
   # plot the world map if a real geographic map was specified
   if (!is.null(map)) {
     if (nrow(map))
