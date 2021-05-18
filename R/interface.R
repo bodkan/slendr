@@ -697,7 +697,7 @@ join <- function(x, y, name = NULL) {
   result <- sf::st_union(x, y)
   result$region.1 <- NULL
   if (is.null(name))
-    result$region <- sprintf("(%s plus %s)", x$region, y$region)
+    result$region <- sprintf("(%s and %s)", x$region, y$region)
   else
     result$region <- name
   attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
@@ -719,7 +719,7 @@ overlap <- function(x, y, name = NULL) {
   if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
   result$region.1 <- NULL
   if (is.null(name))
-    result$region <- sprintf("(overlap %s and %s)", x$region, y$region)
+    result$region <- sprintf("(overlap of %s and %s)", x$region, y$region)
   else
     result$region <- name
   attrs <- if (!is.null(attr(x, "map"))) "map" else NULL
