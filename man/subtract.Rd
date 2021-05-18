@@ -4,7 +4,7 @@
 \alias{subtract}
 \title{Generate the difference between two \code{spannr_region} objects}
 \usage{
-subtract(x, y, name)
+subtract(x, y, name = NULL)
 }
 \arguments{
 \item{x}{Object of the class \code{spannr_region}}
