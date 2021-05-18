@@ -1,5 +1,5 @@
 test_that("anything but the three allowed landsccape sources leads to error", {
-  error_msg <- "Landscape has to be either 'abstract', 'ne' (Natural Earth) or an object of the class 'sf'"
+  error_msg <- "Landscape has to be either 'blank', 'naturalearth' or an object of the class 'sf'"
   expect_error(world(xrange = c(-15, 60), yrange = c(20, 65), landscape = "blank123"), error_msg, fixed = TRUE)
   expect_error(world(xrange = c(-15, 60), yrange = c(20, 65), landscape = 123), error_msg, fixed = TRUE)
 })
