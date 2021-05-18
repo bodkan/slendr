@@ -66,7 +66,12 @@ compile <- function(populations, dir, generation_time, resolution, admixtures = 
   # compile the spatial maps
   map_table <- compile_maps(populations, split_table, resolution)
 
-  map_table$time <- ifelse(map_table$time == split_table[split_table$parent == "ancestor", "tsplit"], -1, map_table$time)
+  for (p in split_table[split_table$parent == "ancestor", ]$pop) {
+    map_table[
+      map_table$pop == p &
+        map_table$time %in% split_table[split_table$pop == p, ]$tsplit, ]$time <- -1
+  }
+
   map_table$path <-map_table$map_number %>%
     paste0(., ".png") %>% file.path(dir, .) %>% gsub("//", "/", .)
 
@@ -79,7 +84,6 @@ compile <- function(populations, dir, generation_time, resolution, admixtures = 
   split_table$tsplit_gen <- split_table$tsplit / generation_time
   split_table$tremove_gen <- split_table$tremove
   split_table$tremove_gen[split_table$tremove_gen != -1] <- split_table$tremove[split_table$tremove_gen != -1] / generation_time
-
 
   if (is.null(admix_table)) {
     return_admixtures <- NULL
@@ -431,8 +435,8 @@ compile_splits <- function(populations) {
   splits_table$pop_id <- 1:nrow(splits_table) - 1
   splits_table$parent_id <- lapply(
     splits_table$parent,
-    function(i) splits_table[splits_table$pop == i, ]$pop_id
-  ) %>% unlist() %>% c(NA, .)
+    function(i) if (i == "ancestor") -1 else splits_table[splits_table$pop == i, ]$pop_id
+  ) %>% unlist()
 
   splits_table
 }
