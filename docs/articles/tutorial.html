@@ -163,7 +163,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpX4kFG5", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpwoMqpL", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>map</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spannr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -532,7 +532,7 @@ admixture without spatial overlap.</code></pre>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/maps.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   pop_id time_gen map_number</span>
-<span class="co">#&gt; 1      0   -1.000          1</span>
+<span class="co">#&gt; 1      0 1833.333          1</span>
 <span class="co">#&gt; 2      1 1700.000          2</span>
 <span class="co">#&gt; 3      1 1666.667          3</span>
 <span class="co">#&gt; 4      1 1656.567          4</span>
