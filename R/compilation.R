@@ -126,7 +126,7 @@ compile <- function(populations, dir, generation_time, resolution,
   result <- list(
     config = list(
       directory = dir,
-      splits = file.path(dir, "splits.tsv"),
+      splits = file.path(dir, "populations.tsv"),
       maps = file.path(dir, "maps.tsv"),
       admixtures = if (is.null(admixtures)) NULL else file.path(dir, "admixtures.tsv")
     ),
@@ -161,7 +161,7 @@ read <- function(dir) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function
   path_populations <- file.path(dir, "populations.rds")
-  path_splits <- file.path(dir, "splits.tsv")
+  path_splits <- file.path(dir, "populations.tsv")
   path_admixtures <- file.path(dir, "admixtures.tsv")
   path_maps <- file.path(dir, "maps.tsv")
   path_names <- file.path(dir, "names.txt")
@@ -298,7 +298,7 @@ slim <- function(model, seq_length, recomb_rate,
   if (!dir.exists(dir))
     stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
 
-  if (!all(file.exists(file.path(dir, c("splits.tsv", "maps.tsv")))))
+  if (!all(file.exists(file.path(dir, c("populations.tsv", "maps.tsv")))))
     stop(sprintf("Directory '%s' does not contain spannr configuration files", dir), call. = FALSE)
 
   if (!length(list.files(dir, pattern = "*.png") == 0))
@@ -418,7 +418,7 @@ write_model <- function(dir, populations, admix_table, map_table,
   write.table(
     split_table[, c("pop_id", "N", "parent_id", "tsplit_gen", "tremove_gen",
                     "competition_dist", "mate_dist", "offspring_dist")],
-    file.path(dir, "splits.tsv"),
+    file.path(dir, "populations.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
 

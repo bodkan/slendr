@@ -11,7 +11,7 @@ initialize() {
   defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
 
   // load model definition tables
-  defineConstant("POP_TABLE", read_table(paste0(MODEL_DIR, "/splits.tsv")));
+  defineConstant("POP_TABLE", read_table(paste0(MODEL_DIR, "/populations.tsv")));
   defineConstant("NAMES", readFile(paste0(MODEL_DIR, "/names.txt")));
   defineConstant("ADMIX_TABLE", read_table(paste0(MODEL_DIR, "/admixtures.tsv")));
   defineConstant("MAP_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));

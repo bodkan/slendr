@@ -164,6 +164,8 @@ model <- compile(
   populations = list(p1, p2, p3, p4, p5),
   admixtures = admixtures,
   generation_time = 30,
+  competition_dist = 200e3, # interaction distances
+  mate_dist = 200e3, offspring_dist = 50e3,
   resolution = 10000  # how many meters per pixel?
 )
 ```
@@ -187,7 +189,6 @@ graph(model)
 slim(
   model, seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   save_locations = TRUE,
-  max_interaction = 200e3, spread = 50e3,
   method = "batch"
 )
 ```
@@ -196,7 +197,6 @@ slim(
 slim(
   model, seq_length = 1, recomb_rate = 0, track_ancestry = 1, # single locus
   save_locations = TRUE,
-  max_interaction = 200e3, spread = 50e3, # interaction and spread (in meters)
   method = "gui" # open the model in SLiMgui
 )
 ```
