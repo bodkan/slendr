@@ -163,7 +163,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpwoMqpL", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpUMqyLl", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>map</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>spannr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -490,6 +490,7 @@ admixture without spatial overlap.</code></pre>
   dir <span class="op">=</span> <span class="st">"/tmp/test-model"</span>,
   generation_time <span class="op">=</span> <span class="fl">30</span>,
   resolution <span class="op">=</span> <span class="fl">10e3</span>, <span class="co"># 10km per pixel</span>
+  competition_dist <span class="op">=</span> <span class="fl">200e3</span>, mate_dist <span class="op">=</span> <span class="fl">200e3</span>, offspring_dist <span class="op">=</span> <span class="fl">50e3</span>,
   overwrite <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 <p>What do the files in the model directory look like? In an ideal case, you as a user should never worry about these things. In fact, the whole purpose of <code>spannr</code> is to let you work on much higher level of abstraction without worrying about these low-level details. That said, you might find it useful to see how things are stored in the background…</p>
@@ -509,15 +510,23 @@ admixture without spatial overlap.</code></pre>
 <li>the table of population splits:</li>
 </ul>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/splits.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="co">#&gt;   pop_id    N parent_id tsplit_gen tremove_gen</span>
-<span class="co">#&gt; 1      0 1000        -1  1833.3333    -1.00000</span>
-<span class="co">#&gt; 2      1  200         0  1700.0000   900.00000</span>
-<span class="co">#&gt; 3      2  400         1   933.3333   200.00000</span>
-<span class="co">#&gt; 4      3  800         1   933.3333   200.00000</span>
-<span class="co">#&gt; 5      4 1000         2   833.3333    -1.00000</span>
-<span class="co">#&gt; 6      5  600         2   233.3333    66.66667</span>
-<span class="co">#&gt; 7      6 1000         5   200.0000    96.66667</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/populations.tsv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="co">#&gt;   pop_id    N parent_id tsplit_gen tremove_gen competition_dist mate_dist</span>
+<span class="co">#&gt; 1      0 1000        -1  1833.3333    -1.00000               20        20</span>
+<span class="co">#&gt; 2      1  200         0  1700.0000   900.00000               20        20</span>
+<span class="co">#&gt; 3      2  400         1   933.3333   200.00000               20        20</span>
+<span class="co">#&gt; 4      3  800         1   933.3333   200.00000               20        20</span>
+<span class="co">#&gt; 5      4 1000         2   833.3333    -1.00000               20        20</span>
+<span class="co">#&gt; 6      5  600         2   233.3333    66.66667               20        20</span>
+<span class="co">#&gt; 7      6 1000         5   200.0000    96.66667               20        20</span>
+<span class="co">#&gt;   offspring_dist</span>
+<span class="co">#&gt; 1              5</span>
+<span class="co">#&gt; 2              5</span>
+<span class="co">#&gt; 3              5</span>
+<span class="co">#&gt; 4              5</span>
+<span class="co">#&gt; 5              5</span>
+<span class="co">#&gt; 6              5</span>
+<span class="co">#&gt; 7              5</span></code></pre></div>
 <ul>
 <li>the table of admixture events:</li>
 </ul>
@@ -564,7 +573,6 @@ admixture without spatial overlap.</code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span>
   <span class="va">model</span>, seq_length <span class="op">=</span> <span class="fl">100</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>,
-  max_interaction <span class="op">=</span> <span class="fl">200e3</span>, spread <span class="op">=</span> <span class="fl">50e3</span>,
   save_locations <span class="op">=</span> <span class="cn">TRUE</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>,
   method <span class="op">=</span> <span class="st">"batch"</span> <span class="co"># run the model in batch mode (default is SLiMgui)</span>
 <span class="op">)</span></code></pre></div>

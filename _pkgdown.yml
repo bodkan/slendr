@@ -1,7 +1,7 @@
 url: https://bodkan.net/stamp
 
 reference:
-  - title: Geographic features
+  - title: Spatial features
     contents:
     - world
     - region
@@ -9,7 +9,7 @@ reference:
     - overlap
     - subtract
 
-  - title: Population dynamics
+  - title: Spatial population dynamics
     contents:
     - population
     - expand
