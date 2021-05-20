@@ -7,18 +7,6 @@ initialize() {
 
   defineConstant("SIM_SEED", getSeed());
 
-  // offspring spread
-  defineConstant("SPREAD", asFloat({{spread}}));
-
-  // maximum interaction/competition distance
-  defineConstant("MAX_INTERACTION", asFloat({{max_interaction}}));
-
-  // TODO: make both of these parametrizable at some point
-  // spatial competition
-  initializeInteractionType(1, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
-  // spatial mate choice
-  initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
-
   defineConstant("MODEL_DIR", "{{model_dir}}");
   defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
 
@@ -113,6 +101,15 @@ initialize() {
   // TODO: this is only meaningful for purely demographic simulations - make
   // this flexible in run() after other issues are sorted out
   initializeMutationRate(0.0);
+
+  // generate interaction types (two for each population)
+  // TODO: add a more realistic kernel
+  for (i in pop_param("pop")) {
+    // spatial competition distance
+    initializeInteractionType(2 * i, "xy", reciprocal = T, maxDistance = pop_param("competition_dist", pop_i = i));
+    // mate choice distance
+    initializeInteractionType(2 * i + 1, "xy", reciprocal = T, maxDistance = pop_param("mate_dist", pop_i = i));
+  }
 }
 
 1 early() {
@@ -193,9 +190,7 @@ s0 early() {
       set_coordinates(get_pop(i).individuals, i);
       add_markers(i);
     }
-    // evaluate interactions
-    i1.evaluate(get_pop(i));
-    i2.evaluate(get_pop(i));
+    evaluate_interactions();
   }
 }
 
@@ -208,9 +203,7 @@ s1 late() {
     set_map(i, sim.generation);
     set_coordinates(get_pop(i).individuals, i);
     add_markers(i);
-    // evaluate interactions
-    i1.evaluate(get_pop(i));
-    i2.evaluate(get_pop(i));
+    evaluate_interactions();
   }
 }
 
@@ -302,17 +295,17 @@ s8 late() {
 //////////////////////////////////////////////////////////////////////
 
 1: late() {
-  i1.evaluate();
-  i2.evaluate();
+  evaluate_interactions();
 }
 
 2: fitness(NULL) {
-  totalStrength = i1.totalOfNeighborStrengths(individual);
+  interaction = sim.interactionTypes[subpop.id];
+  totalStrength = interaction.totalOfNeighborStrengths(individual);
   return 1.1 - totalStrength / subpop.individualCount;
 }
 
 2: mateChoice() {
-  return i2.strength(individual);
+  return sim.interactionTypes[subpop.id].strength(individual);
 }
 
 modifyChild() {
@@ -335,7 +328,8 @@ modifyChild() {
 
   // for spatially overlapping admixture and non-migrant offspring,
   // propose location in the neighborhood of one of its parents
-  pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
+  jitter = rnorm(2, 0, pop_param("offspring_dist", pop_i = subpop.id));
+  pos = parent1.spatialPosition + jitter;
 
   // make sure that offspring is generated in allowed locations on the map
   // (within it's population bounds and not in an inaccessible location)
@@ -420,6 +414,10 @@ function (void) log_output(s$ str) {
 // Simulation utility functions
 //////////////////////////////////////////////////////////////////////
 
+function (void) evaluate_interactions(void) {
+  sim.interactionTypes.evaluate();
+}
+
 // Assign a spatial map to a given population
 function (void) set_map(i$ i, i$ generation) {
   img = MAPS[maps_param("pop") == i & T_MAPS == generation];
@@ -488,7 +486,8 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     stop("Both population ID and filtering criterion cannot be specified.");
 
   // column names allowed
-  columns = c("pop", "N", "source", "tsplit", "tremove");
+  columns = c("pop", "N", "source", "tsplit", "tremove",
+              "competition_dist", "mate_dist", "offspring_dist");
 
   // lookup column name number for indexing into a populations matrix
   col_i = which(columns == col) ;
