@@ -8,8 +8,6 @@ slim(
   model,
   seq_length,
   recomb_rate,
-  max_interaction,
-  spread,
   save_locations = FALSE,
   track_ancestry = FALSE,
   keep_pedigrees = FALSE,
@@ -30,13 +28,6 @@ base-pairs)}
 
 \item{recomb_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
-
-\item{max_interaction}{Maximum spatial interaction and mating
-choice distance}
-
-\item{spread}{Standard deviation of the normal distribution for a
-distance from of an offspring from one of its parents (randomly
-determined by SLiM)}
 
 \item{save_locations}{Save location of each individual throughout
 the simulation?}
