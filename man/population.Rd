@@ -14,7 +14,10 @@ population(
   radius = NULL,
   polygon = NULL,
   remove = NULL,
-  intersect = TRUE
+  intersect = TRUE,
+  competition_dist = NULL,
+  mate_dist = NULL,
+  offspring_dist = NULL
 )
 }
 \arguments{
@@ -24,39 +27,42 @@ population(
 
 \item{N}{Number of individuals at the time of first appearance}
 
-\item{parent}{Parent population object or "ancestor" (indicating
-that the population does not have an ancestor, and that it is the
-first population in its "lineage")}
+\item{parent}{Parent population object or "ancestor" (indicating that the
+population does not have an ancestor, and that it is the first population
+in its "lineage")}
 
-\item{map}{Object of the type \code{spannr_map} which defines the
-world context (created using the \code{world} function)}
+\item{map}{Object of the type \code{spannr_map} which defines the world
+context (created using the \code{world} function)}
 
-\item{center}{Two-dimensional vector specifying the center of the
-circular range}
+\item{center}{Two-dimensional vector specifying the center of the circular
+range}
 
 \item{radius}{Radius of the circular range}
 
-\item{polygon}{List of vector pairs, defining corners of the
-polygon range or a geographic region of the class
-\code{spannr_region} from which the polygon coordinates will be
-extracted (see the \code{region() function})}
+\item{polygon}{List of vector pairs, defining corners of the polygon range or
+a geographic region of the class \code{spannr_region} from which the
+polygon coordinates will be extracted (see the \code{region() function})}
 
 \item{remove}{Time at which the population should be removed}
 
-\item{intersect}{Intersect the population's boundaries with
-landscape features?}
+\item{intersect}{Intersect the population's boundaries with landscape
+features?}
+
+\item{competition_dist, mate_dist}{Maximum spatial competition and mating
+choice distance}
+
+\item{offspring_dist}{Standard deviation of the normal distribution of the
+parent-offspring distance}
 }
 \value{
 Object of the class \code{spannr_pop}
 }
 \description{
-Defines a spatial range of a population and its most important
-parameters.
+Defines a spatial range of a population and its most important parameters.
 }
 \details{
-There are three ways to specify a spatial boundary: i) circular
-range specified using a center coordinate and a radisu, ii) polygon
-specified as a list of two-dimensional vector coordinates, iii)
-polygon as in ii), but defined (and named) using the \code{region}
-function.
+There are three ways to specify a spatial boundary: i) circular range
+specified using a center coordinate and a radisu, ii) polygon specified as a
+list of two-dimensional vector coordinates, iii) polygon as in ii), but
+defined (and named) using the \code{region} function.
 }

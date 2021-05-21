@@ -691,6 +691,7 @@ model <- compile(
   dir = "/tmp/test-model",
   generation_time = 30,
   resolution = 10e3, # 10km per pixel
+  competition_dist = 200e3, mate_dist = 200e3, offspring_dist = 50e3,
   overwrite = TRUE
 )
 ```
@@ -717,7 +718,7 @@ graphically above, namely:
 - the table of population splits:
 
 ```{r}
-read.table("/tmp/test-model/splits.tsv", header = T)
+read.table("/tmp/test-model/populations.tsv", header = T)
 ```
 
 - the table of admixture events:
@@ -828,7 +829,6 @@ manpage of `slim()` for more details.
 ```{r}
 slim(
   model, seq_length = 100, recomb_rate = 0,
-  max_interaction = 200e3, spread = 50e3,
   save_locations = TRUE, track_ancestry = 1,
   method = "batch" # run the model in batch mode (default is SLiMgui)
 )

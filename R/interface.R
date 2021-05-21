@@ -1,39 +1,41 @@
 #' Define a population and its original spatial range
 #'
-#' Defines a spatial range of a population and its most important
-#' parameters.
+#' Defines a spatial range of a population and its most important parameters.
 #'
-#' There are three ways to specify a spatial boundary: i) circular
-#' range specified using a center coordinate and a radisu, ii) polygon
-#' specified as a list of two-dimensional vector coordinates, iii)
-#' polygon as in ii), but defined (and named) using the \code{region}
-#' function.
+#' There are three ways to specify a spatial boundary: i) circular range
+#' specified using a center coordinate and a radisu, ii) polygon specified as a
+#' list of two-dimensional vector coordinates, iii) polygon as in ii), but
+#' defined (and named) using the \code{region} function.
 #'
 #' @param name Name of the population
 #' @param time Time of the population's first appearance
 #' @param N Number of individuals at the time of first appearance
-#' @param parent Parent population object or "ancestor" (indicating
-#'   that the population does not have an ancestor, and that it is the
-#'   first population in its "lineage")
-#' @param map Object of the type \code{spannr_map} which defines the
-#'   world context (created using the \code{world} function)
-#' @param center Two-dimensional vector specifying the center of the
-#'   circular range
+#' @param parent Parent population object or "ancestor" (indicating that the
+#'   population does not have an ancestor, and that it is the first population
+#'   in its "lineage")
+#' @param map Object of the type \code{spannr_map} which defines the world
+#'   context (created using the \code{world} function)
+#' @param center Two-dimensional vector specifying the center of the circular
+#'   range
 #' @param radius Radius of the circular range
-#' @param polygon List of vector pairs, defining corners of the
-#'   polygon range or a geographic region of the class
-#'   \code{spannr_region} from which the polygon coordinates will be
-#'   extracted (see the \code{region() function})
+#' @param polygon List of vector pairs, defining corners of the polygon range or
+#'   a geographic region of the class \code{spannr_region} from which the
+#'   polygon coordinates will be extracted (see the \code{region() function})
 #' @param remove Time at which the population should be removed
-#' @param intersect Intersect the population's boundaries with
-#'   landscape features?
+#' @param intersect Intersect the population's boundaries with landscape
+#'   features?
+#' @param competition_dist,mate_dist Maximum spatial competition and mating
+#'   choice distance
+#' @param offspring_dist Standard deviation of the normal distribution of the
+#'   parent-offspring distance
 #'
 #' @return Object of the class \code{spannr_pop}
 #'
 #' @export
 population <- function(name, time, N, parent, map = NULL,
                        center = NULL, radius = NULL, polygon = NULL,
-                       remove = NULL, intersect = TRUE) {
+                       remove = NULL, intersect = TRUE,
+                       competition_dist = NULL, mate_dist = NULL, offspring_dist = NULL) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
     if (is.null(map))
@@ -71,6 +73,10 @@ population <- function(name, time, N, parent, map = NULL,
     stop("Suspicious parent population", call. = FALSE)
 
   attr(boundary, "intersect") <- intersect
+
+  attr(boundary, "competition_dist") <- competition_dist
+  attr(boundary, "mate_dist") <- mate_dist
+  attr(boundary, "offspring_dist") <- offspring_dist
 
   class(boundary) <- set_class(boundary, "pop")
 
@@ -133,7 +139,8 @@ change <- function(pop, time, N = NULL,
 
   result <- copy_attributes(
     combined, pop,
-    c("map", "parent", "remove", "intersect")
+    c("map", "parent", "remove", "intersect", "competition_dist",
+      "mate_dist", "offspring_dist")
   )
 
   result
@@ -187,7 +194,8 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 
   result <- copy_attributes(
     all_maps, pop,
-    c("map", "parent", "remove", "intersect")
+    c("map", "parent", "remove", "intersect", "competition_dist",
+      "mate_dist", "offspring_dist")
   )
 
   result
@@ -275,7 +283,8 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 
   result <- copy_attributes(
     inter_regions, pop,
-    c("map", "parent", "remove", "intersect")
+    c("map", "parent", "remove", "intersect", "competition_dist",
+      "mate_dist", "offspring_dist")
   )
 
   result
@@ -727,6 +736,7 @@ overlap <- function(x, y, name = NULL) {
   sf::st_agr(result) <- "constant"
   result
 }
+
 
 #' Generate the difference between two \code{spannr_region} objects
 #'

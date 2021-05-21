@@ -6,7 +6,8 @@ test_that("read() restores a single-map model object", {
                     center = c(10, 40), radius = 100000, map = map)
 
   model_dir <- file.path(tempdir(), "tmp-single-map-model-serialization")
-  model1 <- compile(pop, dir = model_dir, resolution = 10000, generation_time = 1, overwrite = TRUE)
+  model1 <- compile(pop, dir = model_dir, resolution = 10000, generation_time = 1, overwrite = TRUE,
+                    competition_dist = 100e3, mate_dist = 100e3, offspring_dist = 10e3)
   model2 <- read(model1$config$directory)
 
   # make sure that all components of the model list object before and after
@@ -41,7 +42,8 @@ test_that("read() restores a complex model object", {
     admixtures = admixtures,
     generation_time = 30,
     resolution = 10000,
-    overwrite = TRUE
+    overwrite = TRUE,
+    competition_dist = 100e3, mate_dist = 100e3, offspring_dist = 10e3
   )
   model2 <- read(model1$config$directory)
 
@@ -59,7 +61,8 @@ test_that("blank spatial maps throw an error", {
   pop <- population("pop", parent = "ancestor", N = 10, time = 100, center = c(0, 60), radius = 20, map = map)
   model_dir <- file.path(tempdir(), "tmp-blank-map-error")
   expect_error(
-    compile(pop, model_dir, generation_time = 1, resolution = 5, overwrite = TRUE),
+    compile(pop, model_dir, generation_time = 1, resolution = 5, overwrite = TRUE,
+            competition_dist = 1, mate_dist = 1, offspring_dist = 1),
     "The generated raster map of pop at time \\d+ is blank."
   )
 })

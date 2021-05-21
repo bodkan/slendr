@@ -47,8 +47,7 @@
 
 
 <meta property="og:title" content="Define a population and its original spatial range — population" />
-<meta property="og:description" content="Defines a spatial range of a population and its most important
-parameters." />
+<meta property="og:description" content="Defines a spatial range of a population and its most important parameters." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -135,8 +134,7 @@ parameters." />
     </div>
 
     <div class="ref-description">
-    <p>Defines a spatial range of a population and its most important
-parameters.</p>
+    <p>Defines a spatial range of a population and its most important parameters.</p>
     </div>
 
     <pre class="usage"><span class='fu'>population</span><span class='op'>(</span>
@@ -149,7 +147,10 @@ parameters.</p>
   radius <span class='op'>=</span> <span class='cn'>NULL</span>,
   polygon <span class='op'>=</span> <span class='cn'>NULL</span>,
   remove <span class='op'>=</span> <span class='cn'>NULL</span>,
-  intersect <span class='op'>=</span> <span class='cn'>TRUE</span>
+  intersect <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  competition_dist <span class='op'>=</span> <span class='cn'>NULL</span>,
+  mate_dist <span class='op'>=</span> <span class='cn'>NULL</span>,
+  offspring_dist <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -169,19 +170,19 @@ parameters.</p>
     </tr>
     <tr>
       <th>parent</th>
-      <td><p>Parent population object or "ancestor" (indicating
-that the population does not have an ancestor, and that it is the
-first population in its "lineage")</p></td>
+      <td><p>Parent population object or "ancestor" (indicating that the
+population does not have an ancestor, and that it is the first population
+in its "lineage")</p></td>
     </tr>
     <tr>
       <th>map</th>
-      <td><p>Object of the type <code>spannr_map</code> which defines the
-world context (created using the <code>world</code> function)</p></td>
+      <td><p>Object of the type <code>spannr_map</code> which defines the world
+context (created using the <code>world</code> function)</p></td>
     </tr>
     <tr>
       <th>center</th>
-      <td><p>Two-dimensional vector specifying the center of the
-circular range</p></td>
+      <td><p>Two-dimensional vector specifying the center of the circular
+range</p></td>
     </tr>
     <tr>
       <th>radius</th>
@@ -189,10 +190,9 @@ circular range</p></td>
     </tr>
     <tr>
       <th>polygon</th>
-      <td><p>List of vector pairs, defining corners of the
-polygon range or a geographic region of the class
-<code>spannr_region</code> from which the polygon coordinates will be
-extracted (see the <code>region() function</code>)</p></td>
+      <td><p>List of vector pairs, defining corners of the polygon range or
+a geographic region of the class <code>spannr_region</code> from which the
+polygon coordinates will be extracted (see the <code>region() function</code>)</p></td>
     </tr>
     <tr>
       <th>remove</th>
@@ -200,8 +200,18 @@ extracted (see the <code>region() function</code>)</p></td>
     </tr>
     <tr>
       <th>intersect</th>
-      <td><p>Intersect the population's boundaries with
-landscape features?</p></td>
+      <td><p>Intersect the population's boundaries with landscape
+features?</p></td>
+    </tr>
+    <tr>
+      <th>competition_dist, mate_dist</th>
+      <td><p>Maximum spatial competition and mating
+choice distance</p></td>
+    </tr>
+    <tr>
+      <th>offspring_dist</th>
+      <td><p>Standard deviation of the normal distribution of the
+parent-offspring distance</p></td>
     </tr>
     </table>
 
@@ -210,11 +220,10 @@ landscape features?</p></td>
     <p>Object of the class <code>spannr_pop</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>There are three ways to specify a spatial boundary: i) circular
-range specified using a center coordinate and a radisu, ii) polygon
-specified as a list of two-dimensional vector coordinates, iii)
-polygon as in ii), but defined (and named) using the <code>region</code>
-function.</p>
+    <p>There are three ways to specify a spatial boundary: i) circular range
+specified using a center coordinate and a radisu, ii) polygon specified as a
+list of two-dimensional vector coordinates, iii) polygon as in ii), but
+defined (and named) using the <code>region</code> function.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

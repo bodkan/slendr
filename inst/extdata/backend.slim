@@ -7,29 +7,17 @@ initialize() {
 
   defineConstant("SIM_SEED", getSeed());
 
-  // offspring spread
-  defineConstant("SPREAD", asFloat({{spread}}));
-
-  // maximum interaction/competition distance
-  defineConstant("MAX_INTERACTION", asFloat({{max_interaction}}));
-
-  // TODO: make both of these parametrizable at some point
-  // spatial competition
-  initializeInteractionType(1, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
-  // spatial mate choice
-  initializeInteractionType(2, "xy", reciprocal = T, maxDistance = MAX_INTERACTION);
-
   defineConstant("MODEL_DIR", "{{model_dir}}");
   defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
 
   // load model definition tables
-  defineConstant("SPLIT_TABLE", read_table(paste0(MODEL_DIR, "/splits.tsv")));
+  defineConstant("POP_TABLE", read_table(paste0(MODEL_DIR, "/populations.tsv")));
   defineConstant("NAMES", readFile(paste0(MODEL_DIR, "/names.txt")));
   defineConstant("ADMIX_TABLE", read_table(paste0(MODEL_DIR, "/admixtures.tsv")));
   defineConstant("MAP_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));
 
   // load all spatial maps
-  defineConstant("MAPS", sapply(maps_param("map"), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
+  defineConstant("MAPS", sapply(map_param("map"), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
 
   // world map dimensions
   defineConstant("WIDTH", MAPS[0].width); catn("WIDTH: " + WIDTH);
@@ -52,14 +40,14 @@ initialize() {
   // those events are specified in the configuation tables)
 
   // absolute split times
-  defineConstant("T_ABS_ANC", drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2]) == -1, 3]));
+  defineConstant("T_ABS_ANC", drop(POP_TABLE[drop(POP_TABLE[, 2]) == -1, 3]));
   // split times relative to the start of the simulation
   defineConstant("T_ANC", SIM_END - T_ABS_ANC);
   catn("T_ANC: " + paste(T_ANC));
 
   if (!isNULL(pop_param("tsplit", present = "source"))) {
     // absolute split times
-    defineConstant("T_ABS_SPLITS", drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2]) != -1, 3]));
+    defineConstant("T_ABS_SPLITS", drop(POP_TABLE[drop(POP_TABLE[, 2]) != -1, 3]));
     // split times relative to the start of the simulation
     defineConstant("T_SPLITS", SIM_END - T_ABS_SPLITS);
 
@@ -89,7 +77,7 @@ initialize() {
 
   if (length(MAPS) > 1) {
     // absolute times of spatial map changes
-    defineConstant("T_ABS_MAPS", maps_param("time"));
+    defineConstant("T_ABS_MAPS", map_param("time"));
     // times relative to the start of the simulation
     defineConstant("T_MAPS", SIM_END - T_ABS_MAPS);
     catn("T_MAPS: " + paste(T_MAPS));
@@ -113,6 +101,15 @@ initialize() {
   // TODO: this is only meaningful for purely demographic simulations - make
   // this flexible in run() after other issues are sorted out
   initializeMutationRate(0.0);
+
+  // generate interaction types (two for each population)
+  // TODO: add a more realistic kernel
+  for (i in pop_param("pop")) {
+    // spatial competition distance
+    initializeInteractionType(2 * i, "xy", reciprocal = T, maxDistance = pop_param("competition_dist", pop_i = i));
+    // mate choice distance
+    initializeInteractionType(2 * i + 1, "xy", reciprocal = T, maxDistance = pop_param("mate_dist", pop_i = i));
+  }
 }
 
 1 early() {
@@ -120,7 +117,7 @@ initialize() {
   // are scheduled at once)
 
   // creating ancestral populations
-  pop_ids = drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2] == -1), 0])[sim.generation == T_ANC];
+  pop_ids = drop(POP_TABLE[drop(POP_TABLE[, 2] == -1), 0])[sim.generation == T_ANC];
   for (i in pop_ids) {
     sim.addSubpop(i, pop_param("N", i));
     set_map(i, sim.generation);
@@ -186,16 +183,14 @@ initialize() {
 s0 early() {
   // setup ancestral populations (i.e. those which don't have a parent)
   if (sim.generation > 1) {
-    pop_ids = drop(SPLIT_TABLE[drop(SPLIT_TABLE[, 2] == -1), 0])[sim.generation == T_ANC];
+    pop_ids = drop(POP_TABLE[drop(POP_TABLE[, 2] == -1), 0])[sim.generation == T_ANC];
     for (i in pop_ids) {
       sim.addSubpop(i, pop_param("N", i));
       set_map(i, sim.generation);
       set_coordinates(get_pop(i).individuals, i);
       add_markers(i);
     }
-    // evaluate interactions
-    i1.evaluate(get_pop(i));
-    i2.evaluate(get_pop(i));
+    evaluate_interactions();
   }
 }
 
@@ -208,9 +203,7 @@ s1 late() {
     set_map(i, sim.generation);
     set_coordinates(get_pop(i).individuals, i);
     add_markers(i);
-    // evaluate interactions
-    i1.evaluate(get_pop(i));
-    i2.evaluate(get_pop(i));
+    evaluate_interactions();
   }
 }
 
@@ -252,7 +245,7 @@ s4 late() {
 // Update population spatial maps
 s5 late() {
   // get populations whose spatial maps should be updated
-  pop_ids = maps_param("pop")[sim.generation == T_MAPS];
+  pop_ids = map_param("pop")[sim.generation == T_MAPS];
   for (i in pop_ids) {
     log_output("updating map for " + NAMES[i] + "(" + i + ")");
     set_map(i, sim.generation);
@@ -302,17 +295,17 @@ s8 late() {
 //////////////////////////////////////////////////////////////////////
 
 1: late() {
-  i1.evaluate();
-  i2.evaluate();
+  evaluate_interactions();
 }
 
 2: fitness(NULL) {
-  totalStrength = i1.totalOfNeighborStrengths(individual);
+  interaction = sim.interactionTypes[subpop.id];
+  totalStrength = interaction.totalOfNeighborStrengths(individual);
   return 1.1 - totalStrength / subpop.individualCount;
 }
 
 2: mateChoice() {
-  return i2.strength(individual);
+  return sim.interactionTypes[subpop.id].strength(individual);
 }
 
 modifyChild() {
@@ -335,7 +328,8 @@ modifyChild() {
 
   // for spatially overlapping admixture and non-migrant offspring,
   // propose location in the neighborhood of one of its parents
-  pos = parent1.spatialPosition + rnorm(2, 0, SPREAD);
+  jitter = rnorm(2, 0, pop_param("offspring_dist", pop_i = subpop.id));
+  pos = parent1.spatialPosition + jitter;
 
   // make sure that offspring is generated in allowed locations on the map
   // (within it's population bounds and not in an inaccessible location)
@@ -420,9 +414,13 @@ function (void) log_output(s$ str) {
 // Simulation utility functions
 //////////////////////////////////////////////////////////////////////
 
+function (void) evaluate_interactions(void) {
+  sim.interactionTypes.evaluate();
+}
+
 // Assign a spatial map to a given population
 function (void) set_map(i$ i, i$ generation) {
-  img = MAPS[maps_param("pop") == i & T_MAPS == generation];
+  img = MAPS[map_param("pop") == i & T_MAPS == generation];
   get_pop(i).defineSpatialMap("world", "xy", 1.0 - img.floatK,
     valueRange=c(min(img.floatK), max(img.floatK)), colors=c("#000000", "#FFFFFF"));
   get_pop(i).setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
@@ -488,7 +486,8 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     stop("Both population ID and filtering criterion cannot be specified.");
 
   // column names allowed
-  columns = c("pop", "N", "source", "tsplit", "tremove");
+  columns = c("pop", "N", "source", "tsplit", "tremove",
+              "competition_dist", "mate_dist", "offspring_dist");
 
   // lookup column name number for indexing into a populations matrix
   col_i = which(columns == col) ;
@@ -501,13 +500,13 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     present_i = which(columns == present);
     if (length(present_i) != 1)
       stop("Incorrect specification of a column in the splits table");
-    table = SPLIT_TABLE[drop(SPLIT_TABLE[, present_i]) != -1, ];
+    table = POP_TABLE[drop(POP_TABLE[, present_i]) != -1, ];
     // ugly hack to get around the new way that splits are defined for
     // all populations, including the ancestral ones (i.e. explicit "sim_length"
     // parameter has now been removed)
     if (present == "tsplit") table = table[drop(table[, 2]) != -1, ];
   } else {
-    table = SPLIT_TABLE;
+    table = POP_TABLE;
   }
 	if (length(table) == 0) return NULL;
   if (isNULL(pop_i)) pop_i = seqLen(nrow(table));
@@ -539,7 +538,7 @@ function (numeric) admix_param(s$ col, [Ni admix_i = NULL]) {
 }
 
 // Get a value of a column from the table of admixture events
-function (numeric) maps_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
+function (numeric) map_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
   // column names allowed
   columns = c("pop", "time", "map");
 
