@@ -42,8 +42,10 @@ population <- function(name, time, N, parent, map = NULL,
       stop("Ancestral population must specify its 'map'", call. = FALSE)
     else
       map <- map
-  } else
+  } else {
+    check_split_time(time, parent)
     map <- attr(parent, "map")
+  }
 
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
@@ -105,15 +107,7 @@ population <- function(name, time, N, parent, map = NULL,
 #' @export
 change <- function(pop, time, N = NULL,
                    center = NULL, radius = NULL, polygon = NULL) {
-  if (time %in% pop$time)
-    stop("Time point already defined", call. = FALSE)
-
-  if (time > pop[nrow(pop), ]$time)
-    warning("Specifying a spatial map at a time point prior to the last spatial map present for the population",
-            call. = FALSE)
-
-  if (time < attr(pop, "remove"))
-    stop("Cannot update population status after it has been removed")
+  check_event_time(start, pop)
 
   map <- attr(pop, "map")
 
@@ -163,6 +157,7 @@ change <- function(pop, time, N = NULL,
 #' @export
 expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   check_not_intersected(pop)
+  check_event_time(c(start, end), pop)
 
   region_start <- pop[nrow(pop), ]
 
@@ -218,6 +213,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 #' @export
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
+  check_event_time(c(start, end), pop)
 
   map <- attr(pop, "map")
 
@@ -227,6 +223,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 
   region_start <- pop[nrow(pop), ]
   if (!is.null(start)) {
+    check_event_time(time = start, pop)
     region_start$time <- start
     sf::st_agr(region_start) <- "constant"
   }
@@ -432,23 +429,8 @@ admixture <- function(from, to, rate, start, end, overlap = TRUE) {
          call. = FALSE)
 
   # make sure the population is not removed during the the admixture period
-  from_remove <- attr(from, "remove")
-  to_remove <- attr(to, "remove")
-  if (from_remove > start | from_remove > end) {
-    stop(sprintf(
-      "Population %s scheduled for removal at time %d,
-which is outside of the %d-%d admixture time range",
-      from_name, from_remove, start, end),
-      call. = FALSE
-    )
-  }
-  if (to_remove > start | to_remove > end) {
-    stop(sprintf("Population %s scheduled for removal at time %d which is
-outside of the specified %d-%d admixture time window",
-      to_name, to_remove, start, end),
-      call. = FALSE
-    )
-  }
+  check_event_time(start, from); check_event_time(end, from)
+  check_event_time(start, to); check_event_time(end, to)
 
   # calculate the overlap of spatial ranges between source and target
   region_overlap <- sf::st_intersection(region_from, region_to)
