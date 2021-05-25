@@ -12,6 +12,8 @@
 
 - Any simulation can now have multiple "ancestral" populations (i.e. populations without an immediate ancestor created by `sim.addSubpop()`). Until now, all populations had to trace their ancestry to a single ancestor (a leftover of a hard-coded requirement from the very first version of my code).
 
+- Renamed `admixture()` to `geneflow()`.
+
 ## In progress
 
 Most likely the last things before making the first public release:
@@ -22,4 +24,3 @@ Most likely the last things before making the first public release:
 
 - Allow simulations of marine species (this simply requires adding a single argument to the `population()` call which will invert the intersection with landscape objects).
 
-- Rename `admixture()` to `geneflow()` to avoid dragging along ugly historical baggage.

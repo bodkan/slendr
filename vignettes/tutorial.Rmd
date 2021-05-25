@@ -32,9 +32,9 @@ knitr::opts_chunk$set(
 ## Motivation
 
 **What we want to do is simulate this kind of population history
-  (splits and admixture events):**
+  (splits and geneflow events):**
 
-![](figures/admixture_graph.png){width="80%"}
+![](figures/geneflow_graph.png){width="80%"}
 
 **in the context of this:**
 
@@ -47,7 +47,7 @@ knitr::opts_chunk$set(
 This is possible to do in [SLiM](https://messerlab.org/slim/) using
 its `defineSpatialMap()` functionality. However, there is currently no
 way to define spatial maps programmatically, let alone build
-spatio-temporal models which include population splits, admixture,
+spatio-temporal models which include population splits, geneflow,
 migration, and expansion. The package `spannr` is designed to do
 exactly this, and feed the generated spatial maps into a dedicated
 back-end SLiM script.
@@ -72,7 +72,7 @@ This R package is designed to provide a collection of primitives (a
 [Domain Specific
 Language](https://en.wikipedia.org/wiki/Domain-specific_language) of
 sorts) for programming population dynamics (splits, movement,
-admixture, and expansion of spatial boundaries) across space and time
+geneflow, and expansion of spatial boundaries) across space and time
 *without having to explicitly deal with many of the challenges
 inherent to geospatial analyses*.
 
@@ -467,7 +467,7 @@ plot(ehg)
 
 While we're at it, let's also create a population of Western Hunter
 Gatherers (WHG). Because the people living in this region eventually
-became present day Europeans after receiving admixture from other
+became present day Europeans after receiving geneflow from other
 groups over time (see below), we will call them "EUR" to simplify the
 modeling code a little bit:
 
@@ -539,14 +539,14 @@ plot(ana, title = "Anatolian expansion into Europe (not intersected)", intersect
 
 We can see that the population of Anatolian farmers at some point
 invades the spatial boundary of the EUR population. On its own, this
-doesn't imply admixture. In the section on admixture below, we will
-see how _spannr_ implements admixture of overlapping (but also
+doesn't imply geneflow. In the section on geneflow below, we will
+see how _spannr_ implements geneflow of overlapping (but also
 non-overlapping) populations.
 
 
 
 Let's add a couple of more populations and migrations before we move
-on to implementing admixture between them,
+on to implementing geneflow between them,
 
 
 Yamnaya steppe people:
@@ -611,25 +611,25 @@ plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
 
 
 
-## Define admixture events
+## Define geneflow events
 
-The way `spannr` implements admixture events is by calling the
-`admixture()` function. This function has a very straightforward
+The way `spannr` implements geneflow events is by calling the
+`geneflow()` function. This function has a very straightforward
 interface which you should be able to understand from the examples
 below.
 
 One thing to note is that the `from` and `to` populations must have
-overlapping spatial ranges in order to simulate admixture. This is
+overlapping spatial ranges in order to simulate geneflow. This is
 probably rather obvious, as populations can't mix in space-time if
 they don't overlap at a given point in space-time.
 
 For example, if you look at the spatial boundaries plotted above,
 you'll see that the European and African populations don't have any
 overlap in population ranges. If we try to instruct `spannr` to
-simulate admixture between them, we will get an error:
+simulate geneflow between them, we will get an error:
 
 ```{r eval = F}
-admixtures <- admixture(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
+geneflows <- geneflow(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
 ```
 
 ```
@@ -638,9 +638,9 @@ at time 20000. The required overlap is 0.20 but the current overlap is
 0.000000.
 
 Please check the spatial maps of both populations by running
-`plot(eur, afr, pop_facets = F)` and either adjust the admixture
+`plot(eur, afr, pop_facets = F)` and either adjust the geneflow
 parameters or add `overlap = F` which will instruct spannr to simulate
-admixture without spatial overlap.
+geneflow without spatial overlap.
 ```
 
 The error message instructs us to visually verify that this is the
@@ -652,22 +652,22 @@ default):
 plot(eur, afr, pop_facets = F)
 ```
 
-Many models will include multiple admixture events, which we can
+Many models will include multiple geneflow events, which we can
 collect in a simple R list:
 
 ```{r}
-admixtures <- list(
-  admixture(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
-  admixture(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000)
+geneflows <- list(
+  geneflow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
+  geneflow(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000)
 )
 ```
 
-The `admixture()` function returns nothing else than a
-data frame collecting all the admixture parameters for the
+The `geneflow()` function returns nothing else than a
+data frame collecting all the geneflow parameters for the
 `compile()` step below:
 
 ```{r}
-admixtures
+geneflows
 ```
 
 
@@ -676,10 +676,10 @@ admixtures
 
 The most crucial function of `spannr` is `compile()`. It takes all
 population ranges defined across space and time together with list of
-admixture events (this is optional, of course, as some models won't
-include admixture), and then proceeds by converting all vectorized
+geneflow events (this is optional, of course, as some models won't
+include geneflow), and then proceeds by converting all vectorized
 spatial ranges to a raster bitmap form. Furthermore, it compiles all
-information about split times, $N_e$ values, admixture directions,
+information about split times, $N_e$ values, geneflow directions,
 times and rates, to a series of tables. All of that will be saved
 automatically in a dedicated directory in a format that is understood
 by the backend SLiM script provided by `spannr` (more on that below).
@@ -687,7 +687,7 @@ by the backend SLiM script provided by `spannr` (more on that below).
 ```{r}
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
-  admixtures = admixtures,
+  geneflows = geneflows,
   dir = "/tmp/test-model",
   generation_time = 30,
   resolution = 10e3, # 10km per pixel
@@ -721,10 +721,10 @@ graphically above, namely:
 read.table("/tmp/test-model/populations.tsv", header = T)
 ```
 
-- the table of admixture events:
+- the table of geneflow events:
 
 ```{r}
-read.table("/tmp/test-model/admixtures.tsv", header = T)
+read.table("/tmp/test-model/geneflows.tsv", header = T)
 ```
 
 - and finally, the table of populations whose spatial maps will be
@@ -736,7 +736,7 @@ read.table("/tmp/test-model/admixtures.tsv", header = T)
 head(read.table("/tmp/test-model/maps.tsv", header = T))
 ```
 
-The object returned by the `compile()` function (called `model` here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list `model$splits`, `model$admixtures`, etc.
+The object returned by the `compile()` function (called `model` here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list `model$splits`, `model$geneflows`, etc.
 
 In case you'd want to separate model specification and running into different scripts, _spannr_ includes a function `read()` just for this purpose:
 
@@ -747,22 +747,22 @@ loaded_model <- read("/tmp/test-model")
 
 
 
-## Visualize the entire history of splits and admixtures
+## Visualize the entire history of splits and geneflows
 
 With the couple of code snippets above, we have defined a simple
 history of European populations over the last 50 thousand years. This
-history includes population splits and admixture events as well as
+history includes population splits and geneflow events as well as
 other demographic changes. While _spannr_ tries to make the formal
 specification of spatio-temporal population dynamics as concise as
 possible, in the hope to increase reproducibility and minimize errors,
-because the admixture history can be very complex and occurs both
+because the geneflow history can be very complex and occurs both
 across space and time, it is hard to really visualize everything that
 will happen on the SLiM side after the simulation starts just from the
 code alone.
 
 For this purpose, the package includes a function `graph()` which
 takes in all the information about the relationships between
-populations (i.e., the population and admixture objects we defined
+populations (i.e., the population and geneflow objects we defined
 above) and plots it all in the form of a so-called _admixture graph_
 (see
 [here](https://academic.oup.com/genetics/article/192/3/1065/5935193)
@@ -770,7 +770,7 @@ for a discussion of the admixture graph concept).
 
 One important thing to note here is that unlike traditional admixture
 graphs where each node/population is present only once, in the full
-_spannr_ graph, a single population can participate in many admixture
+_spannr_ graph, a single population can participate in many geneflow
 events over the course of history. This is visualized by assigning a
 color to each population, and different nodes of the same color
 representing snapshots in time when a demographic event affecting that
@@ -820,7 +820,7 @@ simulated genome. In this case, we're tracking ancestry using a single
 non-recombining marker to minimize computational time for the purposes
 of this demo.
 
-Ancestry tracking is very useful to monitor that the spatial admixture
+Ancestry tracking is very useful to monitor that the spatial geneflow
 model as defined in R really behaves as expected even on the SLiM
 side. This can be verified by inspecting files named as
 `output_ancestry_XXX.tsv` in the specified output directory. See the
