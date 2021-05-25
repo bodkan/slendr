@@ -402,23 +402,23 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 }
 
 
-#' Define an admixture event
+#' Define a geneflow event
 #'
 #' @param from,to Objects of the class \code{spannr_pop}
 #' @param rate Scalar value in the range (0, 1] specifying the
 #'   proportion of migration over given time period
-#' @param start,end Start and end of the admixture event
+#' @param start,end Start and end of the geneflow event
 #' @param overlap Require spatial overlap between admixing
 #'   populations?  (default \code{TRUE})
 #'
 #' @return Object of the class data.frame
 #'
 #' @export
-admixture <- function(from, to, rate, start, end, overlap = TRUE) {
+geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
-  # get the last specified spatial maps before the admixture time
+  # get the last specified spatial maps before the geneflow time
   region_from <- intersect_features(from[from$time >= start, ] %>% .[nrow(.), ])
   region_to <- intersect_features(to[to$time >= start, ] %>% .[nrow(.), ])
 
@@ -431,20 +431,20 @@ admixture <- function(from, to, rate, start, end, overlap = TRUE) {
                  to_name, start),
          call. = FALSE)
 
-  # make sure the population is not removed during the the admixture period
+  # make sure the population is not removed during the the geneflow period
   from_remove <- attr(from, "remove")
   to_remove <- attr(to, "remove")
   if (from_remove > start | from_remove > end) {
     stop(sprintf(
       "Population %s scheduled for removal at time %d,
-which is outside of the %d-%d admixture time range",
+which is outside of the %d-%d geneflow time range",
       from_name, from_remove, start, end),
       call. = FALSE
     )
   }
   if (to_remove > start | to_remove > end) {
     stop(sprintf("Population %s scheduled for removal at time %d which is
-outside of the specified %d-%d admixture time window",
+outside of the specified %d-%d geneflow time window",
       to_name, to_remove, start, end),
       call. = FALSE
     )
@@ -461,7 +461,7 @@ No overlap between population ranges of %s and %s at time %d.
 Please check the spatial maps of both populations by running
 `plot(%s, %s, pop_facets = F)` and adjust them accordingly.
 Alternatively, in case this makes sense for your model, you can
-add `overlap = F` which will instruct spannr to simulate admixture
+add `overlap = F` which will instruct spannr to simulate geneflow
 without spatial overlap between populations.",
       from_name, to_name, start, deparse(substitute(from)),
       deparse(substitute(to)), call. = FALSE))
@@ -671,17 +671,17 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
         cat("[no map defined]\n")
     } else if (type == "model") {
       cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
-      cat("admixture events: ")
-      if (!is.null(x$admixtures))
-        cat(nrow(x$admixtures), "\n")
+      cat("geneflow events: ")
+      if (!is.null(x$geneflows))
+        cat(nrow(x$geneflows), "\n")
       else
-        cat("[no admixture]\n")
+        cat("[no geneflow]\n")
       cat("generation time:", x$gen_time, "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n")
       cat("resolution:", x$resolution, "km per pixel\n\n")
       cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
       cat(
-"A detailed model specification can be found in `$splits`, `$admixtures`,
+"A detailed model specification can be found in `$splits`, `$geneflows`,
 `$maps`, `$populations`, and other components of the model object (for
 a complete list see `names(<model object>)`). You can also examine
 the serialized configuration files in the model directory.\n")

@@ -51,7 +51,7 @@ Here is a small demonstration of what *spannr* is designed to do. Note that this
 For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the [tutorial](https://bodkan.net/spannr/articles/tutorial.html).
 
 We're going to simulate a demographic history of several populations,
-including splits and admixture events, defining the spatial boundaries
+including splits and geneflow events, defining the spatial boundaries
 of populations as well as their changing dynamics over time (steps
 1-6). We will then feed the model defined in R into SLiM and instruct
 it (using a back-end SLiM script provided by this package) to simulate
@@ -142,12 +142,12 @@ p5 <- population(
 plot(p1, p2, p3, p4, p5, ncol = 2)
 ```
 
-#### 4. Define admixture events
+#### 4. Define geneflow events
 
 ```{r}
-admixtures <- list(
-  admixture(from = p5, to = p4, rate = 0.25, start = 2000, end = 0),
-  admixture(from = p5, to = p3, rate = 0.6, start = 2000, end = 0)
+geneflows <- list(
+  geneflow(from = p5, to = p4, rate = 0.25, start = 2000, end = 0),
+  geneflow(from = p5, to = p3, rate = 0.6, start = 2000, end = 0)
 )
 ```
 
@@ -162,7 +162,7 @@ unlink("/tmp/example-model", recursive = TRUE, force = TRUE)
 model <- compile(
   dir = "/tmp/example-model", # location of serialized model data
   populations = list(p1, p2, p3, p4, p5),
-  admixtures = admixtures,
+  geneflows = geneflows,
   generation_time = 30,
   competition_dist = 200e3, # interaction distances
   mate_dist = 200e3, offspring_dist = 50e3,
@@ -177,7 +177,7 @@ functions, most importantly the `slim()` function shown below.
 model
 ```
 
-#### 6. Visualize the implied admixture graph
+#### 6. Visualize the implied geneflow graph
 
 ```{r plot_graph, fig.width = 12, fig.height = 12}
 graph(model)
@@ -217,7 +217,7 @@ ancestries(model)
 animate(model, nframes = 200)
 ```
 
-Note that it is possible to simulate population splits and admixture
+Note that it is possible to simulate population splits and geneflows
 both by "physically" moving individuals of a population from one
 destination to the next across space but it is also possible to do
 this more abstractly (in instantaneous "jumps") in situations where

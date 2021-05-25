@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization.R
 \name{graph}
 \alias{graph}
-\title{Plot admixture graph based on given model configuration}
+\title{Plot geneflow graph based on given model configuration}
 \usage{
 graph(model, show_cleanups = TRUE)
 }
@@ -13,5 +13,5 @@ graph(model, show_cleanups = TRUE)
 removals?}
 }
 \description{
-Plot admixture graph based on given model configuration
+Plot geneflow graph based on given model configuration
 }
