@@ -1,25 +1,24 @@
 devtools::load_all(".")
 
 eurasia <- world(
-  xrange = c(-15, 60),
-  yrange = c(20, 65),
-  crs = "EPSG:3035"
+  xrange = c(-15, 60), yrange = c(20, 65),
+  landscape = "naturalearth", crs = "EPSG:3035"
 )
 
 eur <- population(
-  name = "EUR", time = 30000, N = 5000, map = eurasia,
+  name = "EUR", time = 10000, N = 5000, map = eurasia,
   polygon = list(c(-8, 35), c(10, 38), c(20, 35), c(25, 35),
                  c(28, 45), c(20, 58), c(-5, 60), c(-15, 50))
 )
 
 ehg <- population(
-  "EHG", time = 30000, N = 0400, map = eurasia,
+  "EHG", time = 10000, N = 4000, map = eurasia,
   polygon = list(c(26, 55), c(38, 53), c(48, 53), c(60, 53),
                  c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
 
 ana <- population(
-  name = "ANA", time = 30000, N = 0800, map = eurasia,
+  name = "ANA", time = 10000, N = 0800, map = eurasia,
   polygon = list(c(28, 35), c(40, 35), c(42, 40),
                  c(30, 43), c(27, 40), c(25, 38))
 ) %>%
@@ -47,6 +46,8 @@ model <- compile(
   competition_dist = 200e3, mate_dist = 200e3, offspring_dist = 100e3,
   dir = "/tmp/test-model", overwrite = TRUE
 )
+
+graph(model)
 
 explore(model)
 

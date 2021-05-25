@@ -32,7 +32,7 @@
 #' @return Object of the class \code{spannr_pop}
 #'
 #' @export
-population <- function(name, time, N, parent, map = NULL,
+population <- function(name, time, N, parent = "ancestor", map = NULL,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
                        competition_dist = NULL, mate_dist = NULL, offspring_dist = NULL) {

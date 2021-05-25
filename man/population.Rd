@@ -8,7 +8,7 @@ population(
   name,
   time,
   N,
-  parent,
+  parent = "ancestor",
   map = NULL,
   center = NULL,
   radius = NULL,
