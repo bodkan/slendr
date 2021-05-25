@@ -56,22 +56,22 @@ read_ancestries <- function(model_dir) {
 }
 
 
-#' Get a data frame of migration events active at a given time point
-get_migrations <- function(model, time) {
-  if (is.null(model$admixtures)) return(NULL)
+#' Get a data frame of geneflow events active at a given time point
+get_geneflows <- function(model, time) {
+  if (is.null(model$geneflows)) return(NULL)
   pop_names <- unique(unlist(sapply(model$populations, `[[`, "pop")))
 
-  migrations <- subset(model$admixtures, tstart >= time & tend <= time)
-  migrations$from <- factor(migrations$from, levels = pop_names)
-  migrations$to <- factor(migrations$to, levels = pop_names)
+  geneflows <- subset(model$geneflows, tstart >= time & tend <= time)
+  geneflows$from <- factor(geneflows$from, levels = pop_names)
+  geneflows$to <- factor(geneflows$to, levels = pop_names)
 
-  migr_coords <- lapply(seq_len(nrow(migrations)), function(row_i) {
+  migr_coords <- lapply(seq_len(nrow(geneflows)), function(row_i) {
 
-    from <- model$populations[pop_names == migrations[row_i, ]$from][[1]] %>%
+    from <- model$populations[pop_names == geneflows[row_i, ]$from][[1]] %>%
       .[.$time >= time, ] %>%
       .[nrow(.), ]
 
-    to <- model$populations[pop_names == migrations[row_i, ]$to][[1]] %>%
+    to <- model$populations[pop_names == geneflows[row_i, ]$to][[1]] %>%
       .[.$time >= time, ] %>%
       .[nrow(.), ]
 
@@ -84,7 +84,7 @@ get_migrations <- function(model, time) {
 
   }) %>% do.call(rbind, .)
 
-  cbind(migrations, migr_coords)
+  cbind(geneflows, migr_coords)
 }
 
 
