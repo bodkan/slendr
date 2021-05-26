@@ -7,15 +7,17 @@ eurasia <- world(xrange = c(-15, 60), yrange = c(20, 65),
                  landscape = "naturalearth", crs = "EPSG:3035")
 
 # -------------------------------------------------------------
-eur <- population(
+eur <- population( # European population
   name = "EUR", time = 10000, N = 5000, map = eurasia,
   polygon = list(c(-8, 35), c(10, 38), c(20, 35), c(25, 35),
                  c(28, 45), c(20, 58), c(-5, 60), c(-15, 50)))
-ehg <- population(
+
+ehg <- population( # Eastern hunter-gatherers
   "EHG", time = 10000, N = 4000, map = eurasia,
   polygon = list(c(26, 55), c(38, 53), c(48, 53), c(60, 53),
                  c(60, 60), c(48, 63), c(38, 63), c(26, 60)))
-ana <- population(
+
+ana <- population( # Anatolian farmers
   name = "ANA", time = 10000, N = 8000, map = eurasia,
   polygon = list(c(28, 35), c(40, 35), c(42, 40),
                  c(30, 43), c(27, 40), c(25, 38))
@@ -23,7 +25,7 @@ ana <- population(
   expand(by = 2500e3, start = 10000, end = 7000,
          snapshots = 10)
 
-yam <- population(
+yam <- population( # Yamnaya steppe population
   name = "YAM", time = 7000, N = 3000, parent = ehg,
   polygon = list(c(26, 50), c(38, 49), c(48, 50),
                  c(48, 56), c(38, 59), c(26, 56))
