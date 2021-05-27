@@ -356,31 +356,30 @@ get_nodes <- function(edges) {
 
 #' Plot \code{spannr} geographic features on a map
 #'
-#' Plots objects of the three \code{spannr} spatial classes
-#' (\code{spannr_map}, \code{spannr_region}, and \code{spannr_pop}).
+#' Plots objects of the three \code{spannr} spatial classes (\code{spannr_map},
+#' \code{spannr_region}, and \code{spannr_pop}).
 #'
-#' @param ... Objects of classes \code{spannr_map},
-#'   \code{spannr_region}, or \code{spannr_pop}
+#' @param x Object of a class \code{spannr_map}, \code{spannr_region}, or
+#'   \code{spannr_pop}
 #' @param pop_facets Plot populations in individual panels?
 #' @param time_facets Plot time snapshots in individual panels?
-#' @param intersect Intersect the population boundaries against
-#'   landscape and other geographic boundaries (default TRUE)?
-#' @param graticules Plot graticules in the original Coordinate
-#'   Reference System (such as longitude-latitude), or in the internal
-#'   CRS (such as meters)?
+#' @param intersect Intersect the population boundaries against landscape and
+#'   other geographic boundaries (default TRUE)?
+#' @param graticules Plot graticules in the original Coordinate Reference System
+#'   (such as longitude-latitude), or in the internal CRS (such as meters)?
 #' @param title Plot title
 #' @param nrow,ncol Number of columns or rows in the facet plot
 #'
 #' @export
 #'
 #' @import ggplot2
-plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
+plot.spannr <- function(x, pop_facets = TRUE, time_facets = FALSE,
                         intersect = TRUE, graticules = "original",
                         title = NULL, nrow = NULL, ncol = NULL) {
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
-  args <- list(...)
+  args <- x
   # is only the world object being plotted?
   if (length(args) == 1 & inherits(args[[1]], "spannr_map"))
     map <- args[[1]]
@@ -462,12 +461,10 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
         time_facet
     })
 
-    if (length(rows) == 1) {
-      p_map <- rows[[1]] +
-        guides(fill = guide_legend("population")) +
-        theme(plot.title = element_blank())
-    } else
-      p_map <- patchwork::wrap_plots(rows, ncol = ncol, nrow = nrow)
+    p_map <- rows[[1]] +
+      guides(fill = guide_legend("population")) +
+      theme(plot.title = element_blank())
+
   }
 
   if (!is.null(title))

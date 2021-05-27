@@ -31,7 +31,6 @@ Imports:
     whisker,
     gganimate,
     png,
-    patchwork,
     ijtiff,
     ggraph,
     rgdal,
