@@ -166,6 +166,8 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 
   region_start <- pop[nrow(pop), ]
 
+  map <- attr(pop, "map")
+
   if (!is.null(start))
     region_start$time <- start
 
@@ -185,9 +187,13 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   }
   inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
-  # if the expansion is restricted, crop the whole range accordingly
-  if (!is.null(polygon))
-    inter_regions <- sf::st_intersection(inter_regions, sf::st_geometry(polygon))
+
+  if (!is.null(polygon)) {
+    if (!inherits(polygon, "spannr_region"))
+      polygon <- region(polygon = polygon, map = map)
+    inter_regions <- sf::st_intersection(inter_regions, polygon)
+    inter_regions$region <- NULL
+  }
 
   all_maps <- rbind(pop, inter_regions)
   sf::st_agr(all_maps) <- "constant"
@@ -703,6 +709,9 @@ the serialized configuration files in the model directory.\n")
 #'
 #' @export
 join <- function(x, y, name = NULL) {
+  if (!inherits(x, "spannr_region")) x <- region(polygon = x)
+  if (!inherits(y, "spannr_region")) y <- region(polygon = y)
+
   result <- sf::st_union(x, y)
   result$region.1 <- NULL
   if (is.null(name))
@@ -724,6 +733,9 @@ join <- function(x, y, name = NULL) {
 #'
 #' @export
 overlap <- function(x, y, name = NULL) {
+  if (!inherits(x, "spannr_region")) x <- region(polygon = x)
+  if (!inherits(y, "spannr_region")) y <- region(polygon = y)
+
   result <- sf::st_intersection(x, y)
   if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
   result$region.1 <- NULL
@@ -746,6 +758,9 @@ overlap <- function(x, y, name = NULL) {
 #'
 #' @export
 subtract <- function(x, y, name = NULL) {
+  if (!inherits(x, "spannr_region")) x <- region(polygon = x)
+  if (!inherits(y, "spannr_region")) y <- region(polygon = y)
+
   result <- sf::st_difference(x, y)
   if (nrow(result) == 0) stop("No region left after subtraction", call. = FALSE)
   result$region.1 <- NULL
