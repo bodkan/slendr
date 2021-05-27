@@ -1,7 +1,7 @@
 .onAttach <- function(libname, pkgname) {
   # check for presence of the slim binary in user's PATH and display
   # a warning if it's not present
-  path_check <- all(Sys.which("slimqwe") != "")
+  path_check <- all(Sys.which("slim") != "")
   if (!path_check) {
     packageStartupMessage(
       "The slim binary was not found in your $PATH variable. Most of\n",
