@@ -34,10 +34,10 @@ has_crs <- function(x) {
 }
 
 
-#' Set spannr classes (or fix their priorities if already present)
+#' Set slendr classes (or fix their priorities if already present)
 set_class <- function(x, type) {
-  other_classes <- class(x) %>% .[!grepl("^spannr", .)]
-  c("spannr", paste0("spannr_", type), other_classes)
+  other_classes <- class(x) %>% .[!grepl("^slendr", .)]
+  c("slendr", paste0("slendr_", type), other_classes)
 }
 
 

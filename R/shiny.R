@@ -1,4 +1,4 @@
-#' Take a list of spannr_pop population boundary objects and
+#' Take a list of slendr_pop population boundary objects and
 #' "interpolate" all of them at time points specified by others
 #' (unless a given population is supposed to be removed at that time)
 fill_maps <- function(pops, time = NULL) {
@@ -66,15 +66,15 @@ plot_maps <- function(..., time = NULL, geneflows = FALSE,
 
   args <- list(...)
 
-  if(!all(sapply(args, inherits, "spannr")))
-    stop("Only objects of the class 'spannr' can be visualized using plot.spannr", call. = FALSE)
+  if(!all(sapply(args, inherits, "slendr")))
+    stop("Only objects of the class 'slendr' can be visualized using plot.slendr", call. = FALSE)
 
-  classes <- grep("spannr_", unique(unlist(sapply(args, class))), value = TRUE)
-  if (length(classes) > 1 & "spannr_model" %in% classes)
-    stop("Either a single 'spannr_model' object or multiple objects of the type 'spannr_map', 'spannr_region', or 'spannr_pop' are allowed as arguments", call. = FALSE)
+  classes <- grep("slendr_", unique(unlist(sapply(args, class))), value = TRUE)
+  if (length(classes) > 1 & "slendr_model" %in% classes)
+    stop("Either a single 'slendr_model' object or multiple objects of the type 'slendr_map', 'slendr_region', or 'slendr_pop' are allowed as arguments", call. = FALSE)
 
   # a single model object was provided
-  if (length(args) == 1 & inherits(args[[1]], "spannr_model")) {
+  if (length(args) == 1 & inherits(args[[1]], "slendr_model")) {
     model <- args[[1]]
     pops <- model$populations
     map <- model$world
@@ -90,8 +90,8 @@ plot_maps <- function(..., time = NULL, geneflows = FALSE,
     map <- maps[[1]]
   }
 
-  if (geneflows & (is.null(time) | !inherits(args[[1]], "spannr_model")))
-    stop("Migrations can be visualized only when a time point *and* a 'spannr_model' objects are specified", call. = FALSE)
+  if (geneflows & (is.null(time) | !inherits(args[[1]], "slendr_model")))
+    stop("Migrations can be visualized only when a time point *and* a 'slendr_model' objects are specified", call. = FALSE)
 
   pop_names <- unique(unlist(sapply(pops, `[[`, "pop")))
 
@@ -209,7 +209,7 @@ get_time_point <- function(times, current_value, what) {
 
 #' Open an interactive browser of the spatial model
 #'
-#' @param model Compiled \code{spannr_model} model object
+#' @param model Compiled \code{slendr_model} model object
 #'
 #' @import shiny
 #' @export
@@ -357,7 +357,7 @@ explore <- function(model) {
             fluidRow(
               align = "center",
 
-              plotOutput(outputId = "spannr_maps", height = 480),
+              plotOutput(outputId = "slendr_maps", height = 480),
 
               hr(),
 
@@ -388,7 +388,7 @@ explore <- function(model) {
 
           mainPanel(
 
-            plotOutput(outputId = "spannr_graph")
+            plotOutput(outputId = "slendr_graph")
 
           )
 
@@ -426,7 +426,7 @@ explore <- function(model) {
       shinyWidgets::updateSliderTextInput(session, "time_slider", selected = value)
     })
 
-    output$spannr_maps <- renderPlot({
+    output$slendr_maps <- renderPlot({
 
       plot_maps(
         model,
@@ -455,7 +455,7 @@ explore <- function(model) {
       } else return(NULL)
     }, sanitize.text.function = identity)
 
-    output$spannr_graph <- renderPlot({ graph(model, input$show_cleanups) },
+    output$slendr_graph <- renderPlot({ graph(model, input$show_cleanups) },
                                       height = 600)
 
   }

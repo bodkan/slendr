@@ -2,7 +2,7 @@
 % Please edit documentation in R/compilation.R
 \name{slim}
 \alias{slim}
-\title{Run a spannr model as a SLiM script}
+\title{Run a slendr model as a SLiM script}
 \usage{
 slim(
   model,
@@ -66,7 +66,7 @@ units, i.e.  years)}
 i.e. years)}
 }
 \description{
-Generates a SLiM script from a built-in spannr template,
+Generates a SLiM script from a built-in slendr template,
 substituting all required parameters by values specified by the
 user. The user has an option to either run the script in batch
 mode, open it in SLiMgui, or simply save the generated SLiM script

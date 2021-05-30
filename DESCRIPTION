@@ -1,5 +1,5 @@
-Package: spannr
-Title: Population Genetics Simulations Spanning Time And Space
+Package: slendr
+Title: Spatio-temporal Population Genetics Simulations Using SLiM
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Martin",
@@ -34,7 +34,6 @@ Imports:
     patchwork,
     ijtiff,
     ggraph,
-    rgdal,
     shinyWidgets,
     shiny
 Suggests: 
@@ -42,6 +41,6 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-URL: https://github.com/bodkan/spannr
-BugReports: https://github.com/bodkan/spannr/issues
+URL: https://github.com/bodkan/slendr
+BugReports: https://github.com/bodkan/slendr/issues
 Config/testthat/edition: 3

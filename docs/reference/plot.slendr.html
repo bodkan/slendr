@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run a spannr model as a SLiM script — run • spannr</title>
+<title>Plot slendr geographic features on a map — plot.slendr • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,12 +46,9 @@
 
 
 
-<meta property="og:title" content="Run a spannr model as a SLiM script — run" />
-<meta property="og:description" content="Generates a SLiM script from a built-in spannr template,
-substituting all required parameters by values specified by the
-user. The user has an option to either run the script in batch
-mode, open it in SLiMgui, or simply save the generated SLiM script
-to a given location for later use." />
+<meta property="og:title" content="Plot slendr geographic features on a map — plot.slendr" />
+<meta property="og:description" content="Plots objects of the three slendr spatial classes
+(slendr_map, slendr_region, and slendr_pop)." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -83,7 +80,7 @@ to a given location for later use." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">spannr</a>
+        <a class="navbar-link" href="../index.html">slendr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -114,7 +111,7 @@ to a given location for later use." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/bodkan/spannr/">
+  <a href="https://github.com/bodkan/slendr/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -132,122 +129,62 @@ to a given location for later use." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run a spannr model as a SLiM script</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/compilation.R'><code>R/compilation.R</code></a></small>
-    <div class="hidden name"><code>run.Rd</code></div>
+    <h1>Plot <code>slendr</code> geographic features on a map</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
+    <div class="hidden name"><code>plot.slendr.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Generates a SLiM script from a built-in spannr template,
-substituting all required parameters by values specified by the
-user. The user has an option to either run the script in batch
-mode, open it in SLiMgui, or simply save the generated SLiM script
-to a given location for later use.</p>
+    <p>Plots objects of the three <code>slendr</code> spatial classes
+(<code>slendr_map</code>, <code>slendr_region</code>, and <code>slendr_pop</code>).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run</span><span class='op'>(</span>
-  <span class='va'>model</span>,
-  <span class='va'>sim_length</span>,
-  <span class='va'>seq_length</span>,
-  <span class='va'>recomb_rate</span>,
-  <span class='va'>max_interaction</span>,
-  <span class='va'>spread</span>,
-  save_locations <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  track_ancestry <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  keep_pedigrees <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  ts_recording <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  how <span class='op'>=</span> <span class='st'>"gui"</span>,
-  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  include <span class='op'>=</span> <span class='cn'>NULL</span>,
-  burnin <span class='op'>=</span> <span class='cn'>NULL</span>,
-  script_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"script.slim"</span><span class='op'>)</span>,
-  output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"output"</span><span class='op'>)</span>
+    <pre class="usage"><span class='co'># S3 method for slendr</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>...</span>,
+  pop_facets <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  time_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  intersect <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  graticules <span class='op'>=</span> <span class='st'>"original"</span>,
+  title <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nrow <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ncol <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>model</th>
-      <td><p>Model object created by the <code>compile</code> function</p></td>
+      <th>...</th>
+      <td><p>Objects of classes <code>slendr_map</code>,
+<code>slendr_region</code>, or <code>slendr_pop</code></p></td>
     </tr>
     <tr>
-      <th>sim_length</th>
-      <td><p>Total length of the simulation (in model time
-units, i.e.  years)</p></td>
+      <th>pop_facets</th>
+      <td><p>Plot populations in individual panels?</p></td>
     </tr>
     <tr>
-      <th>seq_length</th>
-      <td><p>Total length of the simulated sequence (in
-base-pairs)</p></td>
+      <th>time_facets</th>
+      <td><p>Plot time snapshots in individual panels?</p></td>
     </tr>
     <tr>
-      <th>recomb_rate</th>
-      <td><p>Recombination rate of the simulated sequence (in
-recombinations per basepair per generation)</p></td>
+      <th>intersect</th>
+      <td><p>Intersect the population boundaries against
+landscape and other geographic boundaries (default TRUE)?</p></td>
     </tr>
     <tr>
-      <th>max_interaction</th>
-      <td><p>Maximum spatial interaction and mating
-choice distance</p></td>
+      <th>graticules</th>
+      <td><p>Plot graticules in the original Coordinate
+Reference System (such as longitude-latitude), or in the internal
+CRS (such as meters)?</p></td>
     </tr>
     <tr>
-      <th>spread</th>
-      <td><p>Standard deviation of the normal distribution for a
-distance from of an offspring from one of its parents (randomly
-determined by SLiM)</p></td>
+      <th>title</th>
+      <td><p>Plot title</p></td>
     </tr>
     <tr>
-      <th>save_locations</th>
-      <td><p>Save location of each individual throughout
-the simulation?</p></td>
-    </tr>
-    <tr>
-      <th>track_ancestry</th>
-      <td><p>Track ancestry proportion dynamics in all
-populations throughout the simulations (default FALSE)? If a
-non-zero integer is provided, ancestry will be tracked using the
-number number of neutral ancestry markers equal to this number.</p></td>
-    </tr>
-    <tr>
-      <th>keep_pedigrees</th>
-      <td><p>Turn on <code>keepPedigrees</code> during SLiM
-initialization?</p></td>
-    </tr>
-    <tr>
-      <th>ts_recording</th>
-      <td><p>Turn on tree sequence recording during SLiM
-initialization?</p></td>
-    </tr>
-    <tr>
-      <th>how</th>
-      <td><p>How to run the script? ("gui" - open in SLiMgui, "batch"</p><ul>
-<li><p>run on the command-line, "dry-run" - simply return the script)</p></li>
-</ul></td>
-    </tr>
-    <tr>
-      <th>include</th>
-      <td><p>Vector of paths to custom SLiM scripts which should
-be combined with the backend SLiM code</p></td>
-    </tr>
-    <tr>
-      <th>burnin</th>
-      <td><p>Length of the burnin (in model's time units,
-i.e. years)</p></td>
-    </tr>
-    <tr>
-      <th>script_path</th>
-      <td><p>Name of the compiled output script</p></td>
-    </tr>
-    <tr>
-      <th>output_prefix</th>
-      <td><p>Common prefix (including path) for all output
-files</p></td>
-    </tr>
-    <tr>
-      <th>generation_time</th>
-      <td><p>Generation time (in model's time units,
-i.e. years)</p></td>
+      <th>nrow, ncol</th>
+      <td><p>Number of columns or rows in the facet plot</p></td>
     </tr>
     </table>
 
