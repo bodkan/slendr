@@ -17,25 +17,25 @@ slim(
   include = NULL,
   burnin = NULL,
   script_path = file.path(model$config$directory, "script.slim"),
-  output_prefix = file.path(model$config$directory, "output")
+  output_prefix = file.path(model$config$directory, "output"),
+  binary_path = NULL
 )
 }
 \arguments{
 \item{model}{Model object created by the \code{compile} function}
 
-\item{seq_length}{Total length of the simulated sequence (in
-base-pairs)}
+\item{seq_length}{Total length of the simulated sequence (in base-pairs)}
 
 \item{recomb_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
 
-\item{save_locations}{Save location of each individual throughout
-the simulation?}
+\item{save_locations}{Save location of each individual throughout the
+simulation?}
 
-\item{track_ancestry}{Track ancestry proportion dynamics in all
-populations throughout the simulations (default FALSE)? If a
-non-zero integer is provided, ancestry will be tracked using the
-number number of neutral ancestry markers equal to this number.}
+\item{track_ancestry}{Track ancestry proportion dynamics in all populations
+throughout the simulations (default FALSE)? If a non-zero integer is
+provided, ancestry will be tracked using the number number of neutral
+ancestry markers equal to this number.}
 
 \item{keep_pedigrees}{Turn on \code{keepPedigrees} during SLiM
 initialization?}
@@ -43,32 +43,28 @@ initialization?}
 \item{ts_recording}{Turn on tree sequence recording during SLiM
 initialization?}
 
-\item{method}{How to run the script? ("gui" - open in SLiMgui, "batch"
-\itemize{
-\item run on the command-line, "script" - simply return the script)
-}}
+\item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
+on the command-line, "script" - simply return the script)}
 
-\item{include}{Vector of paths to custom SLiM scripts which should
-be combined with the backend SLiM code}
+\item{include}{Vector of paths to custom SLiM scripts which should be
+combined with the backend SLiM code}
 
-\item{burnin}{Length of the burnin (in model's time units,
-i.e. years)}
+\item{burnin}{Length of the burnin (in model's time units, i.e. years)}
 
 \item{script_path}{Name of the compiled output script}
 
-\item{output_prefix}{Common prefix (including path) for all output
-files}
+\item{output_prefix}{Common prefix (including path) for all output files}
 
-\item{sim_length}{Total length of the simulation (in model time
-units, i.e.  years)}
+\item{binary_path}{Optional way to specify path to an appropriate SLiM binary}
 
-\item{generation_time}{Generation time (in model's time units,
-i.e. years)}
+\item{sim_length}{Total length of the simulation (in model time units, i.e.
+years)}
+
+\item{generation_time}{Generation time (in model's time units, i.e. years)}
 }
 \description{
-Generates a SLiM script from a built-in spannr template,
-substituting all required parameters by values specified by the
-user. The user has an option to either run the script in batch
-mode, open it in SLiMgui, or simply save the generated SLiM script
-to a given location for later use.
+Generates a SLiM script from a built-in spannr template, substituting all
+required parameters by values specified by the user. The user has an option
+to either run the script in batch mode, open it in SLiMgui, or simply save
+the generated SLiM script to a given location for later use.
 }
