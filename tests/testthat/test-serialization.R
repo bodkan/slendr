@@ -56,7 +56,7 @@ test_that("read() restores a complex model object", {
 test_that("blank spatial maps throw an error", {
   xrange <- c(-15, 60)
   yrange <- c(20, 65)
-  l <- spannr:::create_polygon(list(c(-10, 30), c(50, 30), c(40, 50), c(0, 40)))
+  l <- slendr:::create_polygon(list(c(-10, 30), c(50, 30), c(40, 50), c(0, 40)))
   map <- world(xrange = xrange, yrange = yrange, landscape = l)
   pop <- population("pop", parent = "ancestor", N = 10, time = 100, center = c(0, 60), radius = 20, map = map)
   model_dir <- file.path(tempdir(), "tmp-blank-map-error")

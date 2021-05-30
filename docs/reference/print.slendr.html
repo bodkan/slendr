@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Define an admixture event — admixture • spannr</title>
+<title>Print a summary of a slendr object — print.slendr • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Define an admixture event — admixture" />
-<meta property="og:description" content="Define an admixture event" />
+<meta property="og:title" content="Print a summary of a slendr object — print.slendr" />
+<meta property="og:description" content="Prints a short summary of any slendr object." />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -79,7 +79,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">spannr</a>
+        <a class="navbar-link" href="../index.html">slendr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -110,7 +110,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/bodkan/spannr/">
+  <a href="https://github.com/bodkan/slendr/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -128,43 +128,48 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Define an admixture event</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
-    <div class="hidden name"><code>admixture.Rd</code></div>
+    <h1>Print a summary of a <code>slendr</code> object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
+    <div class="hidden name"><code>print.slendr.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Define an admixture event</p>
+    <p>Prints a short summary of any <code>slendr</code> object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>admixture</span><span class='op'>(</span><span class='va'>from</span>, <span class='va'>to</span>, <span class='va'>rate</span>, <span class='va'>start</span>, <span class='va'>end</span>, overlap <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for slendr</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, sf <span class='op'>=</span> <span class='cn'>FALSE</span>, full <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>from, to</th>
-      <td><p>Objects of the class <code>spannr_pop</code></p></td>
+      <th>x</th>
+      <td><p>Object of a class <code>slendr</code></p></td>
     </tr>
     <tr>
-      <th>rate</th>
-      <td><p>Scalar value in the range (0, 1] specifying the
-proportion of migration over given time period</p></td>
+      <th>sf</th>
+      <td><p>Print the low-level 'sf' object instead?</p></td>
     </tr>
     <tr>
-      <th>start, end</th>
-      <td><p>Start and end of the admixture event</p></td>
-    </tr>
-    <tr>
-      <th>overlap</th>
-      <td><p>Require spatial overlap between admixing
-populations?  (default <code>TRUE</code>)</p></td>
+      <th>full</th>
+      <td><p>Print the complete table of spatial snapshots?</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Object of the class data.frame</p>
+    <p>All spatial objects in the slendr package are internally
+represented by a Simple Features (sf) object. This fact is hidden
+in most circumstances this, as the goal of the slendr package is to
+provide functionality at a much higher level (population
+boundaries, geographic regions, instead of individual polygons and
+other "low-level" geometric objects). The logical argument
+<code>sf</code> allows the user to inspect the underlying object
+structure. Similarly, by default, <code>print</code> does not print all
+spatial map information to reduce clutter. If many individual
+spatial maps for a population are present, a full table of spatial
+snapshots can be printed using the <code>full</code> argument.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

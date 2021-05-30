@@ -4,9 +4,6 @@
     <loc>https://bodkan.net/stamp/index.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/admixture.html</loc>
-  </url>
-  <url>
     <loc>https://bodkan.net/stamp/reference/ancestries.html</loc>
   </url>
   <url>
@@ -55,13 +52,16 @@
     <loc>https://bodkan.net/stamp/reference/fill_maps.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/get_admixture_edges.html</loc>
+    <loc>https://bodkan.net/stamp/reference/geneflow.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/get_geneflow_edges.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/get_geneflows.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/get_intermediate_edges.html</loc>
-  </url>
-  <url>
-    <loc>https://bodkan.net/stamp/reference/get_migrations.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/get_nodes.html</loc>
@@ -97,7 +97,7 @@
     <loc>https://bodkan.net/stamp/reference/pipe.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/plot.spannr.html</loc>
+    <loc>https://bodkan.net/stamp/reference/plot.slendr.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/plot_maps.html</loc>
@@ -106,7 +106,7 @@
     <loc>https://bodkan.net/stamp/reference/population.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/print.spannr.html</loc>
+    <loc>https://bodkan.net/stamp/reference/print.slendr.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/rasterize.html</loc>
@@ -136,10 +136,10 @@
     <loc>https://bodkan.net/stamp/reference/set_class.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/slim.html</loc>
+    <loc>https://bodkan.net/stamp/reference/slendr.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/stamp/reference/spannr.html</loc>
+    <loc>https://bodkan.net/stamp/reference/slim.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/subtract.html</loc>

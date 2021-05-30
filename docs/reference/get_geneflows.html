@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot spatio-temporal population distributions — plot.stamp • stamp</title>
+<title>Get a data frame of geneflow events active at a given time point — get_geneflows • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Plot spatio-temporal population distributions — plot.stamp" />
-<meta property="og:description" content="If only geographic regions are given, they are colored. If both
-them and populations are given, only populations are specified." />
+<meta property="og:title" content="Get a data frame of geneflow events active at a given time point — get_geneflows" />
+<meta property="og:description" content="Get a data frame of geneflow events active at a given time point" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -80,7 +79,7 @@ them and populations are given, only populations are specified." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">stamp</a>
+        <a class="navbar-link" href="../index.html">slendr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -104,14 +103,14 @@ them and populations are given, only populations are specified." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/tutorial.html">stamp: Introduction and tutorial</a>
+      <a href="../articles/tutorial.html">Introduction and tutorial</a>
     </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/bodkan/stamp/">
+  <a href="https://github.com/bodkan/slendr/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -129,62 +128,17 @@ them and populations are given, only populations are specified." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot spatio-temporal population distributions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/stamp/blob/master/R/stamp.R'><code>R/stamp.R</code></a></small>
-    <div class="hidden name"><code>plot.stamp.Rd</code></div>
+    <h1>Get a data frame of geneflow events active at a given time point</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>get_geneflows.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>If only geographic regions are given, they are colored. If both
-them and populations are given, only populations are specified.</p>
+    <p>Get a data frame of geneflow events active at a given time point</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for stamp</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
-  <span class='va'>...</span>,
-  pop_facets <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  time_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  intersect <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  geo_graticules <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  title <span class='op'>=</span> <span class='cn'>NULL</span>,
-  nrow <span class='op'>=</span> <span class='cn'>NULL</span>,
-  ncol <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_geneflows</span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>time</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>...</th>
-      <td><p>Population/geographic region objects of the 'stamp'
-class</p></td>
-    </tr>
-    <tr>
-      <th>pop_facets</th>
-      <td><p>Plot populations in individual panels?</p></td>
-    </tr>
-    <tr>
-      <th>time_facets</th>
-      <td><p>Plot time snapshots in individual panels?</p></td>
-    </tr>
-    <tr>
-      <th>intersect</th>
-      <td><p>intersect the population boundaries against landscape
-and other geographic boundaries?</p></td>
-    </tr>
-    <tr>
-      <th>geo_graticules</th>
-      <td><p>Plot axies with lon/lat graticules?</p></td>
-    </tr>
-    <tr>
-      <th>title</th>
-      <td><p>Plot title</p></td>
-    </tr>
-    <tr>
-      <th>nrow, ncol</th>
-      <td><p>Number of columns or rows in the facet plot</p></td>
-    </tr>
-    </table>
 
 
   </div>
