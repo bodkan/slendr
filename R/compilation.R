@@ -252,40 +252,36 @@ and generation_time.txt are all present", dir), call. = FALSE)
 
 #' Run a spannr model as a SLiM script
 #'
-#' Generates a SLiM script from a built-in spannr template,
-#' substituting all required parameters by values specified by the
-#' user. The user has an option to either run the script in batch
-#' mode, open it in SLiMgui, or simply save the generated SLiM script
-#' to a given location for later use.
+#' Generates a SLiM script from a built-in spannr template, substituting all
+#' required parameters by values specified by the user. The user has an option
+#' to either run the script in batch mode, open it in SLiMgui, or simply save
+#' the generated SLiM script to a given location for later use.
 #'
 #' @param model Model object created by the \code{compile} function
-#' @param sim_length Total length of the simulation (in model time
-#'   units, i.e.  years)
-#' @param seq_length Total length of the simulated sequence (in
-#'   base-pairs)
+#' @param sim_length Total length of the simulation (in model time units, i.e.
+#'   years)
+#' @param seq_length Total length of the simulated sequence (in base-pairs)
 #' @param recomb_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
 #' @param keep_pedigrees Turn on \code{keepPedigrees} during SLiM
 #'   initialization?
 #' @param ts_recording Turn on tree sequence recording during SLiM
 #'   initialization?
-#' @param save_locations Save location of each individual throughout
-#'   the simulation?
-#' @param track_ancestry Track ancestry proportion dynamics in all
-#'   populations throughout the simulations (default FALSE)? If a
-#'   non-zero integer is provided, ancestry will be tracked using the
-#'   number number of neutral ancestry markers equal to this number.
-#' @param method How to run the script? ("gui" - open in SLiMgui, "batch"
-#'   - run on the command-line, "script" - simply return the script)
-#' @param include Vector of paths to custom SLiM scripts which should
-#'   be combined with the backend SLiM code
-#' @param generation_time Generation time (in model's time units,
-#'   i.e. years)
-#' @param burnin Length of the burnin (in model's time units,
-#'   i.e. years)
+#' @param save_locations Save location of each individual throughout the
+#'   simulation?
+#' @param track_ancestry Track ancestry proportion dynamics in all populations
+#'   throughout the simulations (default FALSE)? If a non-zero integer is
+#'   provided, ancestry will be tracked using the number number of neutral
+#'   ancestry markers equal to this number.
+#' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
+#'   on the command-line, "script" - simply return the script)
+#' @param include Vector of paths to custom SLiM scripts which should be
+#'   combined with the backend SLiM code
+#' @param generation_time Generation time (in model's time units, i.e. years)
+#' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param script_path Name of the compiled output script
-#' @param output_prefix Common prefix (including path) for all output
-#'   files
+#' @param output_prefix Common prefix (including path) for all output files
+#' @param binary_path Optional way to specify path to an appropriate SLiM binary
 #'
 #' @export
 slim <- function(model, seq_length, recomb_rate,
@@ -293,7 +289,8 @@ slim <- function(model, seq_length, recomb_rate,
                  keep_pedigrees = FALSE, ts_recording = FALSE,
                  method = "gui", verbose = FALSE, include = NULL, burnin = NULL,
                  script_path = file.path(model$config$directory, "script.slim"),
-                 output_prefix = file.path(model$config$directory, "output")) {
+                 output_prefix = file.path(model$config$directory, "output"),
+                 binary_path = NULL) {
   dir <- model$config$directory
   if (!dir.exists(dir))
     stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
@@ -303,6 +300,13 @@ slim <- function(model, seq_length, recomb_rate,
 
   if (!length(list.files(dir, pattern = "*.png") == 0))
     stop(sprintf("Directory '%s' does not contain any spannr spatial raster maps", dir), call. = FALSE)
+
+  if (!method %in% c("gui", "batch", "script"))
+    stop("Only 'gui', 'batch', and 'script' are recognized as values of
+the 'method' argument", call. = FALSE)
+
+  if (is.character(binary_path) && !all(file.exists(binary_path)))
+    stop(binary_path, " not found", call. = FALSE)
 
   if (!is.logical(track_ancestry) & !is.numeric(track_ancestry)) {
     stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
@@ -333,17 +337,36 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   script_components <- unlist(lapply(c(base_script, include), readLines))
   writeLines(script_components, script_path)
 
-  if (method == "gui")
-    system(sprintf("open -a SLiMgui %s", script_path))
-  else if (method == "batch")
-    system(sprintf("slim %s", script_path), ignore.stdout = !verbose)
-  else if (method == "script")
+  if (method == "script")
     message("Final compiled SLiM script is in ", script_path)
-  else
-    stop("Only 'gui', 'batch', and 'script' are recognized as values of
-the 'method' argument", call. = FALSE)
+  else {
+    if (!is.null(binary_path)) {
+      cmd <- binary_path
+    } else {
+      cmd <- get_binary(method)
+    }
+    system(sprintf("%s %s", cmd, script_path), ignore.stdout = !verbose)
+  }
 }
 
+#' Get path to an appropriate SLiM binary
+get_binary <- function(method) {
+  if (method == "gui") {
+    if (Sys.info()["sysname"] == "Darwin")
+      return("open -a SLiMgui")
+    else
+      binary <- "SLiMgui"
+  } else
+    binary <- "slim"
+
+  binary_path <- Sys.which(binary)
+  if (all(binary_path == ""))
+    stop(sprintf("%s binary not found. Please modify your $PATH accordingly or
+specify the path manually by setting the 'binary_path' argument.", binary),
+         call. = FALSE)
+  else
+    return(as.character(binary_path))
+}
 
 #' Substitute variables in a template SLiM script
 #'
