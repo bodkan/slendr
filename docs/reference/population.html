@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Define a population and its original spatial range — population • spannr</title>
+<title>Define a population and its original spatial range — population • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -79,7 +79,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">spannr</a>
+        <a class="navbar-link" href="../index.html">slendr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -110,7 +110,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/bodkan/spannr/">
+  <a href="https://github.com/bodkan/slendr/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -129,7 +129,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Define a population and its original spatial range</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
     <div class="hidden name"><code>population.Rd</code></div>
     </div>
 
@@ -141,7 +141,7 @@
   <span class='va'>name</span>,
   <span class='va'>time</span>,
   <span class='va'>N</span>,
-  <span class='va'>parent</span>,
+  parent <span class='op'>=</span> <span class='st'>"ancestor"</span>,
   map <span class='op'>=</span> <span class='cn'>NULL</span>,
   center <span class='op'>=</span> <span class='cn'>NULL</span>,
   radius <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -176,7 +176,7 @@ in its "lineage")</p></td>
     </tr>
     <tr>
       <th>map</th>
-      <td><p>Object of the type <code>spannr_map</code> which defines the world
+      <td><p>Object of the type <code>slendr_map</code> which defines the world
 context (created using the <code>world</code> function)</p></td>
     </tr>
     <tr>
@@ -191,7 +191,7 @@ range</p></td>
     <tr>
       <th>polygon</th>
       <td><p>List of vector pairs, defining corners of the polygon range or
-a geographic region of the class <code>spannr_region</code> from which the
+a geographic region of the class <code>slendr_region</code> from which the
 polygon coordinates will be extracted (see the <code>region() function</code>)</p></td>
     </tr>
     <tr>
@@ -217,7 +217,7 @@ parent-offspring distance</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of the class <code>spannr_pop</code></p>
+    <p>Object of the class <code>slendr_pop</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>There are three ways to specify a spatial boundary: i) circular range

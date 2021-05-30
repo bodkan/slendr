@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Save the rasterized spatial maps as PNG files into a target
-directory — write_maps • spannr</title>
+<title>Define a geneflow event — geneflow • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -47,10 +46,8 @@ directory — write_maps • spannr</title>
 
 
 
-<meta property="og:title" content="Save the rasterized spatial maps as PNG files into a target
-directory — write_maps" />
-<meta property="og:description" content="Save the rasterized spatial maps as PNG files into a target
-directory" />
+<meta property="og:title" content="Define a geneflow event — geneflow" />
+<meta property="og:description" content="Define a geneflow event" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -82,7 +79,7 @@ directory" />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">spannr</a>
+        <a class="navbar-link" href="../index.html">slendr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -113,7 +110,7 @@ directory" />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/bodkan/spannr/">
+  <a href="https://github.com/bodkan/slendr/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -131,20 +128,43 @@ directory" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Save the rasterized spatial maps as PNG files into a target
-directory</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/spannr/blob/master/R/compilation.R'><code>R/compilation.R</code></a></small>
-    <div class="hidden name"><code>write_maps.Rd</code></div>
+    <h1>Define a geneflow event</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
+    <div class="hidden name"><code>geneflow.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Save the rasterized spatial maps as PNG files into a target
-directory</p>
+    <p>Define a geneflow event</p>
     </div>
 
-    <pre class="usage"><span class='fu'>write_maps</span><span class='op'>(</span><span class='va'>maps_table</span>, <span class='va'>output_dir</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>geneflow</span><span class='op'>(</span><span class='va'>from</span>, <span class='va'>to</span>, <span class='va'>rate</span>, <span class='va'>start</span>, <span class='va'>end</span>, overlap <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>from, to</th>
+      <td><p>Objects of the class <code>slendr_pop</code></p></td>
+    </tr>
+    <tr>
+      <th>rate</th>
+      <td><p>Scalar value in the range (0, 1] specifying the
+proportion of migration over given time period</p></td>
+    </tr>
+    <tr>
+      <th>start, end</th>
+      <td><p>Start and end of the geneflow event</p></td>
+    </tr>
+    <tr>
+      <th>overlap</th>
+      <td><p>Require spatial overlap between admixing
+populations?  (default <code>TRUE</code>)</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Object of the class data.frame</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

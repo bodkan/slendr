@@ -7,7 +7,7 @@
 #' series of tables which are later used by the built-in SLiM script to program
 #' the timing of simulation events.
 #'
-#' @param populations Object(s) of the \code{spannr_pop} class (multiple objects
+#' @param populations Object(s) of the \code{slendr_pop} class (multiple objects
 #'   need to be specified in a \code{list})
 #' @param generation_time Generation time (in model time units)
 #' @param resolution How many distance units per pixel?
@@ -23,7 +23,7 @@
 #' @param overwrite Overwrite the contents of the output directory in case it
 #'   already exists?
 #'
-#' @return Compiled \code{spannr_model} model object
+#' @return Compiled \code{slendr_model} model object
 #' @export
 compile <- function(populations, dir, generation_time, resolution,
                     competition_dist = NULL, mate_dist = NULL, offspring_dist = NULL,
@@ -172,7 +172,7 @@ read <- function(dir) {
     stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
 
   if (!all(file.exists(c(path_populations, path_splits, path_maps, path_names))))
-    stop(sprintf("Directory '%s' does not contain all spannr configuration files.
+    stop(sprintf("Directory '%s' does not contain all slendr configuration files.
 Please make sure that populations.rds, {splits,geneflows,maps}.tsv, names.txt
 and generation_time.txt are all present", dir), call. = FALSE)
 
@@ -250,9 +250,9 @@ and generation_time.txt are all present", dir), call. = FALSE)
 }
 
 
-#' Run a spannr model as a SLiM script
+#' Run a slendr model as a SLiM script
 #'
-#' Generates a SLiM script from a built-in spannr template,
+#' Generates a SLiM script from a built-in slendr template,
 #' substituting all required parameters by values specified by the
 #' user. The user has an option to either run the script in batch
 #' mode, open it in SLiMgui, or simply save the generated SLiM script
@@ -299,10 +299,10 @@ slim <- function(model, seq_length, recomb_rate,
     stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
 
   if (!all(file.exists(file.path(dir, c("populations.tsv", "maps.tsv")))))
-    stop(sprintf("Directory '%s' does not contain spannr configuration files", dir), call. = FALSE)
+    stop(sprintf("Directory '%s' does not contain slendr configuration files", dir), call. = FALSE)
 
   if (!length(list.files(dir, pattern = "*.png") == 0))
-    stop(sprintf("Directory '%s' does not contain any spannr spatial raster maps", dir), call. = FALSE)
+    stop(sprintf("Directory '%s' does not contain any slendr spatial raster maps", dir), call. = FALSE)
 
   if (!is.logical(track_ancestry) & !is.numeric(track_ancestry)) {
     stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
@@ -310,7 +310,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   } else
     markers_count <- as.integer(track_ancestry)
 
-  backend_script <- system.file("extdata", "backend.slim", package = "spannr")
+  backend_script <- system.file("extdata", "backend.slim", package = "slendr")
 
   burnin <- if (!is.null(burnin)) round(burnin / model$generation_time) else 1
 
@@ -392,7 +392,7 @@ script <- function(path, output = NULL, ...) {
 }
 
 
-#' Write a compiled spannr model to disk
+#' Write a compiled slendr model to disk
 write_model <- function(dir, populations, admix_table, map_table,
                         split_table, generation_time, resolution) {
   if (!is.null(admix_table)) {
@@ -552,7 +552,7 @@ rasterize <- function(x, resolution) {
   x$fill <- factor(1)
 
   # create a template object for rasterization (i.e. size of the final raster)
-  if (inherits(x, "spannr_map"))
+  if (inherits(x, "slendr_map"))
     bbox <- sf::st_bbox(x)
   else
     bbox <- sf::st_bbox(attr(x, "map"))

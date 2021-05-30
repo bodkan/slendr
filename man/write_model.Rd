@@ -2,7 +2,7 @@
 % Please edit documentation in R/compilation.R
 \name{write_model}
 \alias{write_model}
-\title{Write a compiled spannr model to disk}
+\title{Write a compiled slendr model to disk}
 \usage{
 write_model(
   dir,
@@ -15,5 +15,5 @@ write_model(
 )
 }
 \description{
-Write a compiled spannr model to disk
+Write a compiled slendr model to disk
 }

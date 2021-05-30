@@ -17,7 +17,7 @@ compile(
 )
 }
 \arguments{
-\item{populations}{Object(s) of the \code{spannr_pop} class (multiple objects
+\item{populations}{Object(s) of the \code{slendr_pop} class (multiple objects
 need to be specified in a \code{list})}
 
 \item{dir}{Output directory for the model configuration files which will be
@@ -41,7 +41,7 @@ parent-offspring distance}
 already exists?}
 }
 \value{
-Compiled \code{spannr_model} model object
+Compiled \code{slendr_model} model object
 }
 \description{
 First, compiles the vectorized population spatial maps into a series of

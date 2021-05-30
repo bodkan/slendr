@@ -1,6 +1,6 @@
 #' Animate the simulated population dynamics
 #'
-#' @param model Compiled \code{spannr_model} model object
+#' @param model Compiled \code{slendr_model} model object
 #' @param locations Table with individual locations
 #' @param nframes Number of frames of the animation
 #' @param gif Path to an output GIF (animation object returned by default)
@@ -77,7 +77,7 @@ animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
 
 #' Plot simulated ancestry proportions
 #'
-#' @param model Compiled \code{spannr_model} model object
+#' @param model Compiled \code{slendr_model} model object
 #'
 #' @export
 ancestries <- function(model, generation_time = FALSE) {
@@ -121,7 +121,7 @@ ancestries <- function(model, generation_time = FALSE) {
 
 #' Plot geneflow graph based on given model configuration
 #'
-#' @param model Compiled \code{spannr_model} model object
+#' @param model Compiled \code{slendr_model} model object
 #' @param show_cleanups Show nodes indicating the times of population
 #'   removals?
 #'
@@ -354,13 +354,13 @@ get_nodes <- function(edges) {
 }
 
 
-#' Plot \code{spannr} geographic features on a map
+#' Plot \code{slendr} geographic features on a map
 #'
-#' Plots objects of the three \code{spannr} spatial classes
-#' (\code{spannr_map}, \code{spannr_region}, and \code{spannr_pop}).
+#' Plots objects of the three \code{slendr} spatial classes
+#' (\code{slendr_map}, \code{slendr_region}, and \code{slendr_pop}).
 #'
-#' @param ... Objects of classes \code{spannr_map},
-#'   \code{spannr_region}, or \code{spannr_pop}
+#' @param ... Objects of classes \code{slendr_map},
+#'   \code{slendr_region}, or \code{slendr_pop}
 #' @param pop_facets Plot populations in individual panels?
 #' @param time_facets Plot time snapshots in individual panels?
 #' @param intersect Intersect the population boundaries against
@@ -374,7 +374,7 @@ get_nodes <- function(edges) {
 #' @export
 #'
 #' @import ggplot2
-plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
+plot.slendr <- function(..., pop_facets = TRUE, time_facets = FALSE,
                         intersect = TRUE, graticules = "original",
                         title = NULL, nrow = NULL, ncol = NULL) {
   if (!graticules %in% c("internal", "original"))
@@ -382,7 +382,7 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
 
   args <- list(...)
   # is only the world object being plotted?
-  if (length(args) == 1 & inherits(args[[1]], "spannr_map"))
+  if (length(args) == 1 & inherits(args[[1]], "slendr_map"))
     map <- args[[1]]
   else {
     # extract the map component underlying each population object
