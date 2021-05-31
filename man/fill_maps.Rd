@@ -2,14 +2,14 @@
 % Please edit documentation in R/shiny.R
 \name{fill_maps}
 \alias{fill_maps}
-\title{Take a list of spannr_pop population boundary objects and
+\title{Take a list of slendr_pop population boundary objects and
 "interpolate" all of them at time points specified by others
 (unless a given population is supposed to be removed at that time)}
 \usage{
 fill_maps(pops, time = NULL)
 }
 \description{
-Take a list of spannr_pop population boundary objects and
+Take a list of slendr_pop population boundary objects and
 "interpolate" all of them at time points specified by others
 (unless a given population is supposed to be removed at that time)
 }

@@ -2,16 +2,16 @@
 % Please edit documentation in R/visualization.R
 \name{graph}
 \alias{graph}
-\title{Plot admixture graph based on given model configuration}
+\title{Plot geneflow graph based on given model configuration}
 \usage{
 graph(model, show_cleanups = TRUE)
 }
 \arguments{
-\item{model}{Compiled \code{spannr_model} model object}
+\item{model}{Compiled \code{slendr_model} model object}
 
 \item{show_cleanups}{Show nodes indicating the times of population
 removals?}
 }
 \description{
-Plot admixture graph based on given model configuration
+Plot geneflow graph based on given model configuration
 }
