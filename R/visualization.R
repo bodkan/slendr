@@ -369,6 +369,7 @@ get_nodes <- function(edges) {
 #' @param intersect Intersect the population boundaries against
 #'   landscape and other geographic boundaries (default TRUE)?
 #' @param show_map Show the underlying world map
+#' @param title Title of the plot
 #'
 #' @export
 #'
@@ -376,7 +377,7 @@ get_nodes <- function(edges) {
 plot.slendr <- function(..., time = NULL, geneflows = FALSE,
                         graticules = "original",
                         intersect = TRUE, show_map = TRUE,
-                        interpolated_maps = NULL) {
+                        interpolated_maps = NULL, title = NULL) {
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
@@ -522,6 +523,8 @@ to plot the model dynamics interactively.", call. = FALSE)
       geom_sf_label(data = region_maps, aes(label = region, color = region)) +
       guides(color = FALSE, fill = FALSE)
   }
+
+  if (!is.null(title)) p <- p + ggtitle(title)
 
   p + labs(x = xlab, y = ylab) +
     theme_bw() +

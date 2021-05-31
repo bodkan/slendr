@@ -595,18 +595,16 @@ plot(yam_migr)
 
 In addition to plotting individual population ranges, the generic
 function `plot()` can handle a combination of population ranges, and
-can also partition them in individual facets. This is very useful for
+can also partition them in individual facets. This is useful for
 visual inspection of the specified model and for looking for potential
 issues before the export of individual spatio-temporal
-maps. Obviously, this is a lot of multi-dimensional information so the
-plot is definitely not perfect, but it should provide a reasonably
-compact overview of what we've built so far.
+maps. Obviously, this is a lot of multi-dimensional information:
 
 ```{r plot_maps, fig.width = 7, fig.height = 9}
-plot(afr, ooa, ehg, eur, ana, yam, yam_migr, ncol = 2)
+plot(afr, ooa, ehg, eur, ana, yam, yam_migr)
 ```
 
-
+Below you will see a better way to explore a _slendr_ model interactively.
 
 
 
@@ -638,9 +636,10 @@ at time 20000. The required overlap is 0.20 but the current overlap is
 0.000000.
 
 Please check the spatial maps of both populations by running
-`plot(eur, afr, pop_facets = F)` and either adjust the geneflow
-parameters or add `overlap = F` which will instruct slendr to simulate
-geneflow without spatial overlap.
+`plot(eur, afr)` and adjust them accordingly. Alternatively, in case
+this makes sense for your model, you can add `overlap = F` which
+will instruct slendr to simulate geneflow without spatial overlap
+between populations.
 ```
 
 The error message instructs us to visually verify that this is the
@@ -649,7 +648,7 @@ optional parameter `pop_facets = F` (which is set to `TRUE` by
 default):
 
 ```{r plot_nonoverlapping}
-plot(eur, afr, pop_facets = F)
+plot(eur, afr)
 ```
 
 Many models will include multiple geneflow events, which we can
@@ -781,6 +780,14 @@ graph(model)
 ```
 
 
+
+## Interactive exploration of spatio-temporal models
+
+A slightly fancier way to visualize models is implemented in a function `explore()`. This function accepts a compiled model as its only parameter and spawns an [R shiny](https://shiny.rstudio.com)-based browser app which makes it possible to click through the time snapshots interactively and visualize the spatial maps in each time point.
+
+```{r eval = FALSE}
+explore(model)
+```
 
 
 
