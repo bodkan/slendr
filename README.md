@@ -1,9 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
 
