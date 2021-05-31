@@ -35,7 +35,8 @@ Imports:
     ijtiff,
     ggraph,
     shinyWidgets,
-    shiny
+    shiny,
+    rgdal
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
