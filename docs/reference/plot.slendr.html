@@ -142,13 +142,13 @@
     <pre class="usage"><span class='co'># S3 method for slendr</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
   <span class='va'>...</span>,
-  pop_facets <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  time_facets <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  intersect <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  time <span class='op'>=</span> <span class='cn'>NULL</span>,
+  geneflows <span class='op'>=</span> <span class='cn'>FALSE</span>,
   graticules <span class='op'>=</span> <span class='st'>"original"</span>,
-  title <span class='op'>=</span> <span class='cn'>NULL</span>,
-  nrow <span class='op'>=</span> <span class='cn'>NULL</span>,
-  ncol <span class='op'>=</span> <span class='cn'>NULL</span>
+  intersect <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  show_map <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  interpolated_maps <span class='op'>=</span> <span class='cn'>NULL</span>,
+  title <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -160,17 +160,12 @@
 <code>slendr_region</code>, or <code>slendr_pop</code></p></td>
     </tr>
     <tr>
-      <th>pop_facets</th>
-      <td><p>Plot populations in individual panels?</p></td>
+      <th>time</th>
+      <td><p>Plot a concrete time point</p></td>
     </tr>
     <tr>
-      <th>time_facets</th>
-      <td><p>Plot time snapshots in individual panels?</p></td>
-    </tr>
-    <tr>
-      <th>intersect</th>
-      <td><p>Intersect the population boundaries against
-landscape and other geographic boundaries (default TRUE)?</p></td>
+      <th>geneflows</th>
+      <td><p>Indicate geneflow events with an arrow</p></td>
     </tr>
     <tr>
       <th>graticules</th>
@@ -179,12 +174,17 @@ Reference System (such as longitude-latitude), or in the internal
 CRS (such as meters)?</p></td>
     </tr>
     <tr>
-      <th>title</th>
-      <td><p>Plot title</p></td>
+      <th>intersect</th>
+      <td><p>Intersect the population boundaries against
+landscape and other geographic boundaries (default TRUE)?</p></td>
     </tr>
     <tr>
-      <th>nrow, ncol</th>
-      <td><p>Number of columns or rows in the facet plot</p></td>
+      <th>show_map</th>
+      <td><p>Show the underlying world map</p></td>
+    </tr>
+    <tr>
+      <th>title</th>
+      <td><p>Title of the plot</p></td>
     </tr>
     </table>
 
