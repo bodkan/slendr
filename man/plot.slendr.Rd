@@ -11,7 +11,8 @@
   graticules = "original",
   intersect = TRUE,
   show_map = TRUE,
-  interpolated_maps = NULL
+  interpolated_maps = NULL,
+  title = NULL
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ CRS (such as meters)?}
 landscape and other geographic boundaries (default TRUE)?}
 
 \item{show_map}{Show the underlying world map}
+
+\item{title}{Title of the plot}
 }
 \description{
 Plots objects of the three \code{slendr} spatial classes

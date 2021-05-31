@@ -163,7 +163,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpgKWUi8", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp84ZtRh", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>map</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>slendr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -437,10 +437,14 @@
 <div id="plotting-multiple-slendr-objects" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-multiple-slendr-objects" class="anchor"></a>Plotting multiple <code>slendr</code> objects</h2>
-<p>In addition to plotting individual population ranges, the generic function <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> can handle a combination of population ranges, and can also partition them in individual facets. This is very useful for visual inspection of the specified model and for looking for potential issues before the export of individual spatio-temporal maps. Obviously, this is a lot of multi-dimensional information so the plot is definitely not perfect, but it should provide a reasonably compact overview of what we’ve built so far.</p>
+<p>In addition to plotting individual population ranges, the generic function <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> can handle a combination of population ranges, and can also partition them in individual facets. This is useful for visual inspection of the specified model and for looking for potential issues before the export of individual spatio-temporal maps. Obviously, this is a lot of multi-dimensional information:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span>, <span class="va">yam_migr</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Attempting to plot multiple population ranges at multiple time</span>
+<span class="co">#&gt; points on a single map. Consider using the function `explore()`</span>
+<span class="co">#&gt; to plot the model dynamics interactively.</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_maps-1.png" width="700"></p>
+<p>Below you will see a better way to explore a <em>slendr</em> model interactively.</p>
 </div>
 <div id="define-geneflow-events" class="section level2">
 <h2 class="hasAnchor">
@@ -455,12 +459,16 @@ at time 20000. The required overlap is 0.20 but the current overlap is
 0.000000.
 
 Please check the spatial maps of both populations by running
-`plot(eur, afr, pop_facets = F)` and either adjust the geneflow
-parameters or add `overlap = F` which will instruct slendr to simulate
-geneflow without spatial overlap.</code></pre>
+`plot(eur, afr)` and adjust them accordingly. Alternatively, in case
+this makes sense for your model, you can add `overlap = F` which
+will instruct slendr to simulate geneflow without spatial overlap
+between populations.</code></pre>
 <p>The error message instructs us to visually verify that this is the case, which can be done by <code>slendr</code>’s <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function and the optional parameter <code>pop_facets = F</code> (which is set to <code>TRUE</code> by default):</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">eur</span>, <span class="va">afr</span>, pop_facets <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">eur</span>, <span class="va">afr</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Attempting to plot multiple population ranges at multiple time</span>
+<span class="co">#&gt; points on a single map. Consider using the function `explore()`</span>
+<span class="co">#&gt; to plot the model dynamics interactively.</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_nonoverlapping-1.png" width="700"></p>
 <p>Many models will include multiple geneflow events, which we can collect in a simple R list:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
@@ -562,6 +570,13 @@ geneflow without spatial overlap.</code></pre>
 <code class="sourceCode R"><span class="fu"><a href="../reference/graph.html">graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_graph-1.png" width="1200"></p>
 </div>
+<div id="interactive-exploration-of-spatio-temporal-models" class="section level2">
+<h2 class="hasAnchor">
+<a href="#interactive-exploration-of-spatio-temporal-models" class="anchor"></a>Interactive exploration of spatio-temporal models</h2>
+<p>A slightly fancier way to visualize models is implemented in a function <code><a href="../reference/explore.html">explore()</a></code>. This function accepts a compiled model as its only parameter and spawns an <a href="https://shiny.rstudio.com">R shiny</a>-based browser app which makes it possible to click through the time snapshots interactively and visualize the spatial maps in each time point.</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/explore.html">explore</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
+</div>
 <div id="running-the-simulation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-the-simulation" class="anchor"></a>Running the simulation</h2>
@@ -570,7 +585,7 @@ geneflow without spatial overlap.</code></pre>
 <p>A couple of more things to note: notice that the function accepts several parameters determining the length of the simulated sequence and the recombination rate, as well as the length of the burnin period, the total time of the simulation run (excluding burnin), and generation time (which is used to convert all times defined during model specification above into SLiM’s inetrnal units of generations).</p>
 <p>Finally, the parameter <code>track_ancestry</code> determines whether we want our SLiM script to track ancestry proportion changes in all simulations using neutral markers uniformly distributed along each genome. The default value of this parameter is <code>FALSE</code> and no ancestry tracking is performed. Any other non-zero, posititive integer value specifies how many markers we want to use for tracking. Please note that this <em>significantly</em> increases the simulation overhead, not only because the actual burden of mutation objects being simulated, but also because the ancestry is calculated in each generation for each simulated genome. In this case, we’re tracking ancestry using a single non-recombining marker to minimize computational time for the purposes of this demo.</p>
 <p>Ancestry tracking is very useful to monitor that the spatial geneflow model as defined in R really behaves as expected even on the SLiM side. This can be verified by inspecting files named as <code>output_ancestry_XXX.tsv</code> in the specified output directory. See the manpage of <code><a href="../reference/slim.html">slim()</a></code> for more details.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span>
   <span class="va">model</span>, seq_length <span class="op">=</span> <span class="fl">100</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>,
   save_locations <span class="op">=</span> <span class="cn">TRUE</span>, track_ancestry <span class="op">=</span> <span class="fl">1</span>,
@@ -581,11 +596,11 @@ geneflow without spatial overlap.</code></pre>
 <h2 class="hasAnchor">
 <a href="#post-simulation-diagnostics" class="anchor"></a>Post-simulation diagnostics</h2>
 <p>In case we instructed <code>slendr</code> to track ancestry proportions, we can visualize them after the simulation is over using the built-in <code>diagnostics()</code> function. This is quite bare-bones for now and the way diagnostics are generated is subject to change…</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ancestries.html">ancestries</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_ancestries-1.png" width="700"></p>
 <p>Similarly, we can recapitulate the spatial dynamics with the <em>slendr</em> function <code><a href="../reference/animate.html">animate()</a></code> (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_gif-1.gif"><!-- --></p>
 <p>In case an argument <code>gif = ...</code> was provided, the function will save the animation to the specified location as a GIF file. Note that unless your simulation is very short and/or involves only a small population, rendering of the animation can take several minutes.</p>
