@@ -1,3 +1,15 @@
+convert_time <- function(df, direction, columns) {
+  if (direction == "backward") {
+    max_time <- max(df[, columns])
+    for (column in columns) {
+      times <- df[[column]]
+      times[times != -1] <- max_time - times[times != -1] + 1
+      df[[column]] <- times
+    }
+  }
+  df
+}
+
 #' Compile the spatial demographic model
 #'
 #' First, compiles the vectorized population spatial maps into a series of
@@ -41,6 +53,11 @@ compile <- function(populations, dir, generation_time, resolution,
   }
   dir.create(dir)
 
+  time_flow <- setdiff(unique(sapply(populations, get_time_direction)), "unknown")
+  if (length(time_flow) > 1)
+    stop("Inconsistent direction of time among the specified populations",
+         call. = FALSE)
+
   map <- attr(populations[[1]], "map")
 
   if (!is.null(competition_dist)) check_resolution(map, competition_dist)
@@ -51,7 +68,8 @@ compile <- function(populations, dir, generation_time, resolution,
   # save split and geneflow tables which will be returned in the model object
   # in separate objects (tables serialized for SLiM will have to be stripped
   # first)
-  split_table <- compile_splits(populations)
+  split_table <- compile_splits(populations) %>%
+    convert_time(direction = time_flow, columns = c("tsplit", "tremove"))
 
   # take care of missing interactions and offspring distances
   if (any(is.na(split_table$competition_dist))) {

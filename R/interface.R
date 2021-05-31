@@ -664,9 +664,9 @@ print.slendr <- function(x, sf = FALSE, full = FALSE) {
         cat(nrow(x$geneflows), "\n")
       else
         cat("[no geneflow]\n")
-      cat("generation time:", x$gen_time, "\n")
+      cat("generation time:", x$generation_time, "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n")
-      cat("resolution:", x$resolution, "km per pixel\n\n")
+      cat("resolution:", x$resolution, "distance unit per pixel\n\n")
       cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
       cat(
 "A detailed model specification can be found in `$splits`, `$geneflows`,
