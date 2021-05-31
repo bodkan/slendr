@@ -2,10 +2,10 @@
 % Please edit documentation in R/utils.R
 \name{set_class}
 \alias{set_class}
-\title{Set spannr classes (or fix their priorities if already present)}
+\title{Set slendr classes (or fix their priorities if already present)}
 \usage{
 set_class(x, type)
 }
 \description{
-Set spannr classes (or fix their priorities if already present)
+Set slendr classes (or fix their priorities if already present)
 }

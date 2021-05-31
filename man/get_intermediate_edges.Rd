@@ -4,11 +4,11 @@
 \alias{get_intermediate_edges}
 \title{Create a table of 'intermediate' edges for graph visualization}
 \usage{
-get_intermediate_edges(split_edges, admixture_edges)
+get_intermediate_edges(split_edges, geneflow_edges)
 }
 \description{
-For plotting the entire admixture graph, just nodes representing population
+For plotting the entire geneflow graph, just nodes representing population
 splits are not enough. We also need nodes (population states) which are not
 explicitly simulated as separate population, but they represent time points
-needed to plot admixture edges.
+needed to plot geneflow edges.
 }

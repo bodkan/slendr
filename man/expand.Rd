@@ -7,7 +7,7 @@
 expand(pop, by, end, snapshots, start = NULL, polygon = NULL)
 }
 \arguments{
-\item{pop}{Object of the class \code{spannr_pop}}
+\item{pop}{Object of the class \code{slendr_pop}}
 
 \item{by}{How many units of distance to expand by?}
 
@@ -18,7 +18,7 @@ expand(pop, by, end, snapshots, start = NULL, polygon = NULL)
 \item{polygon}{Geographic region to restrict the expansion to}
 }
 \value{
-Object of the class \code{spannr_pop}
+Object of the class \code{slendr_pop}
 }
 \description{
 Expands the spatial population range by a specified distance in a

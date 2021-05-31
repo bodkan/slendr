@@ -7,7 +7,7 @@
 plot_maps(
   ...,
   time = NULL,
-  migrations = FALSE,
+  geneflows = FALSE,
   graticules = "original",
   intersect = TRUE,
   show_map = TRUE,

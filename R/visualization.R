@@ -1,6 +1,6 @@
 #' Animate the simulated population dynamics
 #'
-#' @param model Compiled \code{spannr_model} model object
+#' @param model Compiled \code{slendr_model} model object
 #' @param locations Table with individual locations
 #' @param nframes Number of frames of the animation
 #' @param gif Path to an output GIF (animation object returned by default)
@@ -77,7 +77,7 @@ animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
 
 #' Plot simulated ancestry proportions
 #'
-#' @param model Compiled \code{spannr_model} model object
+#' @param model Compiled \code{slendr_model} model object
 #'
 #' @export
 ancestries <- function(model, generation_time = FALSE) {
@@ -119,9 +119,9 @@ ancestries <- function(model, generation_time = FALSE) {
 }
 
 
-#' Plot admixture graph based on given model configuration
+#' Plot geneflow graph based on given model configuration
 #'
-#' @param model Compiled \code{spannr_model} model object
+#' @param model Compiled \code{slendr_model} model object
 #' @param show_cleanups Show nodes indicating the times of population
 #'   removals?
 #'
@@ -130,16 +130,16 @@ ancestries <- function(model, generation_time = FALSE) {
 graph <- function(model, show_cleanups = TRUE) {
   # summarize model configuration into a tabular form
   split_table <- model$splits
-  admixture_table <- model$admixtures
+  geneflow_table <- model$geneflows
 
   split_edges <- get_split_edges(split_table)
-  admixture_edges <- get_admixture_edges(admixture_table)
-  terminal_edges <- get_terminal_edges(split_edges, admixture_edges, split_table)
-  intermediate_edges <- get_intermediate_edges(split_edges, admixture_edges)
+  geneflow_edges <- get_geneflow_edges(geneflow_table)
+  terminal_edges <- get_terminal_edges(split_edges, geneflow_edges, split_table)
+  intermediate_edges <- get_intermediate_edges(split_edges, geneflow_edges)
 
   edges <- rbind(
     split_edges,
-    admixture_edges,
+    geneflow_edges,
     terminal_edges,
     intermediate_edges
   )
@@ -153,12 +153,12 @@ graph <- function(model, show_cleanups = TRUE) {
 
   ggraph(g, layout = "sugiyama") +
 
-  # admixture edges along with admixture rates
+  # geneflow edges along with geneflow rates
   geom_edge_link(
-    aes(filter = type == "admixture", label = rate,
+    aes(filter = type == "geneflow", label = rate,
         start_cap = label_rect(node1.name),
         end_cap = label_rect(node2.name),
-        linetype = "admixture"),
+        linetype = "geneflow"),
     angle_calc = "along",
     label_dodge = unit(3, "mm"),
     arrow = arrow(length = unit(4, "mm"))
@@ -188,8 +188,8 @@ graph <- function(model, show_cleanups = TRUE) {
                       label = paste(pop, "(ancestor)")),
                   label.size = 1) +
 
-  geom_node_label(aes(filter = type == "admixture", fill = pop,
-                      label = sprintf("admixture at %s", time))) +
+  geom_node_label(aes(filter = type == "geneflow", fill = pop,
+                      label = sprintf("geneflow at %s", time))) +
 
   geom_node_label(aes(filter = type == "intermediate", fill = pop,
                       label = sprintf("from %s", pop))) +
@@ -201,7 +201,7 @@ graph <- function(model, show_cleanups = TRUE) {
 
   scale_edge_linetype_manual(values = c("split" = "solid",
                                         "continuation" = "solid",
-                                        "admixture" = "solid")) +
+                                        "geneflow" = "solid")) +
 
   guides(fill = guide_legend(""), edge_linetype = FALSE) +
 
@@ -233,8 +233,8 @@ get_split_edges <- function(split_table) {
 }
 
 
-#' Create a table of population admixture edges for graph visualization
-get_admixture_edges <- function(admix_table) {
+#' Create a table of population geneflow edges for graph visualization
+get_geneflow_edges <- function(admix_table) {
   if (is.null(admix_table)) {
     admix_edges <- data.frame(matrix(ncol = 4, nrow = 0))
     colnames(admix_edges) <- c("from", "to", "rate", "tstart")
@@ -243,7 +243,7 @@ get_admixture_edges <- function(admix_table) {
 
   admix_edges <- admix_table[, c("from", "to", "rate", "tstart")]
   names(admix_edges) <- c("from", "to", "rate", "time")
-  admix_edges$type <- "admixture"
+  admix_edges$type <- "geneflow"
   admix_edges$rate <- sprintf("%.1f%%", admix_edges$rate * 100)
   admix_edges$x <- paste0(admix_edges$from, "-", admix_edges$time)
   admix_edges$y <- paste0(admix_edges$to, "-", admix_edges$time)
@@ -254,12 +254,12 @@ get_admixture_edges <- function(admix_table) {
 
 #' Create a table of 'intermediate' edges for graph visualization
 #'
-#' For plotting the entire admixture graph, just nodes representing population
+#' For plotting the entire geneflow graph, just nodes representing population
 #' splits are not enough. We also need nodes (population states) which are not
 #' explicitly simulated as separate population, but they represent time points
-#' needed to plot admixture edges.
-get_intermediate_edges <- function(split_edges, admixture_edges) {
-  edges <- rbind(split_edges, admixture_edges)
+#' needed to plot geneflow edges.
+get_intermediate_edges <- function(split_edges, geneflow_edges) {
+  edges <- rbind(split_edges, geneflow_edges)
 
   all_nodes <- c(edges$x, edges$y)
 
@@ -293,8 +293,8 @@ get_intermediate_edges <- function(split_edges, admixture_edges) {
 
 
 #' Generate edges leading to the times of population removals in SLiM
-get_terminal_edges <- function(split_edges, admixture_edges, split_table) {
-  edges <- rbind(split_edges, admixture_edges)
+get_terminal_edges <- function(split_edges, geneflow_edges, split_table) {
+  edges <- rbind(split_edges, geneflow_edges)
 
   # iterate over all populations and create a data frame of edges from the
   # population split nodes, to the nodes of the population removal from the
@@ -354,13 +354,13 @@ get_nodes <- function(edges) {
 }
 
 
-#' Plot \code{spannr} geographic features on a map
+#' Plot \code{slendr} geographic features on a map
 #'
-#' Plots objects of the three \code{spannr} spatial classes
-#' (\code{spannr_map}, \code{spannr_region}, and \code{spannr_pop}).
+#' Plots objects of the three \code{slendr} spatial classes
+#' (\code{slendr_map}, \code{slendr_region}, and \code{slendr_pop}).
 #'
-#' @param ... Objects of classes \code{spannr_map},
-#'   \code{spannr_region}, or \code{spannr_pop}
+#' @param ... Objects of classes \code{slendr_map},
+#'   \code{slendr_region}, or \code{slendr_pop}
 #' @param pop_facets Plot populations in individual panels?
 #' @param time_facets Plot time snapshots in individual panels?
 #' @param intersect Intersect the population boundaries against
@@ -374,7 +374,7 @@ get_nodes <- function(edges) {
 #' @export
 #'
 #' @import ggplot2
-plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
+plot.slendr <- function(..., pop_facets = TRUE, time_facets = FALSE,
                         intersect = TRUE, graticules = "original",
                         title = NULL, nrow = NULL, ncol = NULL) {
   if (!graticules %in% c("internal", "original"))
@@ -382,7 +382,7 @@ plot.spannr <- function(..., pop_facets = TRUE, time_facets = FALSE,
 
   args <- list(...)
   # is only the world object being plotted?
-  if (length(args) == 1 & inherits(args[[1]], "spannr_map"))
+  if (length(args) == 1 & inherits(args[[1]], "slendr_map"))
     map <- args[[1]]
   else {
     # extract the map component underlying each population object

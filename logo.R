@@ -74,7 +74,7 @@ p <- ggplot() +
             fill = "lightblue", alpha = 0.8)
 
 sticker(
-  p, package = "spannr",
+  p, package = "slendr",
   p_size = 8, p_y = 0.46, p_color = "black",
   h_color = "black", h_fill = "#0077be",
   s_y = 1.05, s_x = 1.05, s_width = 2.5, s_height = 2.3,

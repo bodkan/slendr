@@ -4,7 +4,7 @@
 \alias{get_terminal_edges}
 \title{Generate edges leading to the times of population removals in SLiM}
 \usage{
-get_terminal_edges(split_edges, admixture_edges, split_table)
+get_terminal_edges(split_edges, geneflow_edges, split_table)
 }
 \description{
 Generate edges leading to the times of population removals in SLiM

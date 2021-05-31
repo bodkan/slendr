@@ -13,7 +13,7 @@ initialize() {
   // load model definition tables
   defineConstant("POP_TABLE", read_table(paste0(MODEL_DIR, "/populations.tsv")));
   defineConstant("NAMES", readFile(paste0(MODEL_DIR, "/names.txt")));
-  defineConstant("ADMIX_TABLE", read_table(paste0(MODEL_DIR, "/admixtures.tsv")));
+  defineConstant("GENEFLOW_TABLE", read_table(paste0(MODEL_DIR, "/geneflows.tsv")));
   defineConstant("MAP_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));
 
   // load all spatial maps
@@ -54,16 +54,16 @@ initialize() {
     catn("T_SPLITS: " + paste(T_SPLITS));
   }
 
-  if (!isNULL(ADMIX_TABLE)) {
-    // absolute admixture start/end times
-    defineConstant("T_ABS_ADMIX_START", admix_param("tstart"));
-    defineConstant("T_ABS_ADMIX_END", admix_param("tend"));
-    // admixture times relative to the start of the simulation
-    defineConstant("T_ADMIX_START", SIM_END - T_ABS_ADMIX_START);
-    defineConstant("T_ADMIX_END", SIM_END - T_ABS_ADMIX_END);
+  if (!isNULL(GENEFLOW_TABLE)) {
+    // absolute geneflow start/end times
+    defineConstant("T_ABS_GENEFLOW_START", admix_param("tstart"));
+    defineConstant("T_ABS_GENEFLOW_END", admix_param("tend"));
+    // geneflow times relative to the start of the simulation
+    defineConstant("T_GENEFLOW_START", SIM_END - T_ABS_GENEFLOW_START);
+    defineConstant("T_GENEFLOW_END", SIM_END - T_ABS_GENEFLOW_END);
 
-    catn("T_ADMIX_START: " + paste(T_ADMIX_START));
-    catn("T_ADMIX_END: " + paste(T_ADMIX_END));
+    catn("T_GENEFLOW_START: " + paste(T_GENEFLOW_START));
+    catn("T_GENEFLOW_END: " + paste(T_GENEFLOW_END));
   }
 
   if (length(pop_param("tremove"))) {
@@ -136,10 +136,10 @@ initialize() {
   else
     sim.deregisterScriptBlock(s1);
 
-  // admixture events
-  if (exists("T_ADMIX_START")) {
-    sim.rescheduleScriptBlock(s2, generations = unique(T_ADMIX_START));
-    sim.rescheduleScriptBlock(s3, generations = unique(T_ADMIX_END));
+  // geneflow events
+  if (exists("T_GENEFLOW_START")) {
+    sim.rescheduleScriptBlock(s2, generations = unique(T_GENEFLOW_START));
+    sim.rescheduleScriptBlock(s3, generations = unique(T_GENEFLOW_END));
   } else {
     sim.deregisterScriptBlock(s2);
     sim.deregisterScriptBlock(s3);
@@ -209,32 +209,32 @@ s1 late() {
 
 // Admixture events
 s2 late() {
-  // iterate over all admixture events scheduled for this generation
+  // iterate over all geneflow events scheduled for this generation
   // and set them accordingly
-  for (i in which(sim.generation == T_ADMIX_START)) {
+  for (i in which(sim.generation == T_GENEFLOW_START)) {
     from = admix_param("source", i);
     to = admix_param("target", i);
     rate = admix_param("rate", i);
-    span = T_ADMIX_END[i] - T_ADMIX_START[i];
-    set_admixture(from, to, rate, span);
+    span = T_GENEFLOW_END[i] - T_GENEFLOW_START[i];
+    set_geneflow(from, to, rate, span);
   }
 }
 
-// Stopping admixture
+// Stopping geneflow
 s3 late() {
-  // iterate over all admixture events scheduled for this generation
+  // iterate over all geneflow events scheduled for this generation
   // and set them back to 0.0
-  for (i in which(sim.generation == T_ADMIX_END)) {
+  for (i in which(sim.generation == T_GENEFLOW_END)) {
     from = admix_param("source", i);
     to = admix_param("target", i);
-    set_admixture(from, to, 0.0);
+    set_geneflow(from, to, 0.0);
   }
 }
 
 // Remove populations which are no longer necessary
 s4 late() {
   // get the ID of the target population from the table
-  // of admixture events and remove them
+  // of geneflow events and remove them
   pop_ids = pop_param("pop", present = "tremove")[sim.generation == T_CLEANUPS + 1];
   for (i in pop_ids) {
     log_output("cleanup of " + NAMES[i] + "(" + i + ")");
@@ -309,15 +309,15 @@ s8 late() {
 }
 
 modifyChild() {
-  // assign locations uniformly in spatially non-overlapping admixture
+  // assign locations uniformly in spatially non-overlapping geneflow
   if (child.migrant) {
-    // get indices of the currently active admixture events
-    active = T_ADMIX_START <= sim.generation & sim.generation <= T_ADMIX_END;
-    // get population of the offspring's parents (i.e. the source of admixture)
+    // get indices of the currently active geneflow events
+    active = T_GENEFLOW_START <= sim.generation & sim.generation <= T_GENEFLOW_END;
+    // get population of the offspring's parents (i.e. the source of geneflow)
     source = sourceSubpop.id == admix_param("source");
-    // get the offspring's new population(i.e. the target of admixture)
+    // get the offspring's new population(i.e. the target of geneflow)
     target = subpop.id == admix_param("target");
-    // get the index of the single matching admixture event
+    // get the index of the single matching geneflow event
     index = admix_param("overlap", which(active & target & source));
 
     if (!admix_param("overlap", index)) {
@@ -326,7 +326,7 @@ modifyChild() {
     }
   }
 
-  // for spatially overlapping admixture and non-migrant offspring,
+  // for spatially overlapping geneflow and non-migrant offspring,
   // propose location in the neighborhood of one of its parents
   jitter = rnorm(2, 0, pop_param("offspring_dist", pop_i = subpop.id));
   pos = parent1.spatialPosition + jitter;
@@ -436,12 +436,12 @@ function (void) split_pop(i$ i) {
 
 // Set the migration rate from a populaion 'from' to a population 'to'
 // (also used for resetting the migration back to zero)
-function (void) set_admixture(i$ from, i$ to, f$ rate, [i$ span = 1]) {
+function (void) set_geneflow(i$ from, i$ to, f$ rate, [i$ span = 1]) {
   if (rate == 0)
     rate_str = " set to 0%";
   else
     rate_str = " (" + rate * 100 + "% over " + span + " generations)";
-  log_output("admixture " + NAMES[from] + "(" + from + ")" + " -> " + NAMES[to] + "(" + to + ")" + rate_str);
+  log_output("geneflow " + NAMES[from] + "(" + from + ")" + " -> " + NAMES[to] + "(" + to + ")" + rate_str);
   source = get_pop(from);
   target = get_pop(to);
   target.setMigrationRates(source, rate / span);
@@ -515,21 +515,21 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
   return val[which(val != -1)];
 }
 
-// Get a value of a column from the table of admixture events
+// Get a value of a column from the table of geneflow events
 function (numeric) admix_param(s$ col, [Ni admix_i = NULL]) {
-  if (isNULL(ADMIX_TABLE)) return(NULL);
+  if (isNULL(GENEFLOW_TABLE)) return(NULL);
   // column names allowed
   columns = c("source", "target", "tstart", "tend", "rate", "overlap");
 
   // lookup column name number for indexing into a populations matrix
   col_i = which(columns == col) ;
   if (length(col_i) != 1)
-    stop("Incorrect specification of a column in the table of admixture events");
+    stop("Incorrect specification of a column in the table of geneflow events");
 
-  if (!isNULL(admix_i)) indices = which(seqAlong(nrow(ADMIX_TABLE)) == admix_i);
+  if (!isNULL(admix_i)) indices = which(seqAlong(nrow(GENEFLOW_TABLE)) == admix_i);
 
   // extract the value
-  val = drop(ADMIX_TABLE[admix_i, col_i]);
+  val = drop(GENEFLOW_TABLE[admix_i, col_i]);
 
   // rate needs to be convered to float
   if (col == "rate") val = val / 100;
@@ -537,7 +537,7 @@ function (numeric) admix_param(s$ col, [Ni admix_i = NULL]) {
   return val;
 }
 
-// Get a value of a column from the table of admixture events
+// Get a value of a column from the table of geneflow events
 function (numeric) map_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
   // column names allowed
   columns = c("pop", "time", "map");

@@ -2,7 +2,7 @@
 
 
 
-## Population Genetics Simulations Spanning Time *and* Space <a href='https://bodkan.net/spannr'><img src='man/figures/logo.png' align="right" height="139" /></a>
+## Spatio-temporal Population Genetics Simulations Using SLiM <a href='https://bodkan.net/slendr'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 **This software is still under development!** I have been making a
 good progress towards the first beta version, but the package still
@@ -10,7 +10,7 @@ has some way to go before being production ready.
 
 That said, if you would like to learn more, or if you're feeling brave
 and would like to test the package yourself, take a look at the
-[tutorial](https://bodkan.net/spannr/articles/tutorial.html). Note
+[tutorial](https://bodkan.net/slendr/articles/tutorial.html). Note
 that getting it installed with all the geospatial dependencies can be
 a little bit tricky at this point (see the relevant section in the
 tutorial). If loading the package fails, check the error messages for
@@ -20,7 +20,7 @@ choice (on a Mac I recommend _homebrew_).
 If you would like to stay updated with the developments:
 
 1. Click on the "Watch" button on the project's [Github
-website](https://www.github.com/bodkan/spannr).
+website](https://www.github.com/bodkan/slendr).
 
 2. Follow me on [Twitter](https://www.twitter.com/fleventy5). I might
 post some updates once the software is a bit more ready.
@@ -29,19 +29,19 @@ post some updates once the software is a bit more ready.
 
 For installation instructions, please take a look at the installation
 section [of the
-tutorial](https://bodkan.net/spannr/articles/tutorial.html#installation-and-setup-1). Note
+tutorial](https://bodkan.net/slendr/articles/tutorial.html#installation-and-setup-1). Note
 that you might need to install some non-R software dependencies
 first. At the very least, you will need the most recent version of the
 [SLiM software](https://messerlab.org/slim/) (version 3.6 or later).
 
 ### Example
 
-Here is a small demonstration of what *spannr* is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.
+Here is a small demonstration of what *slendr* is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.
 
-For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the [tutorial](https://bodkan.net/spannr/articles/tutorial.html).
+For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the [tutorial](https://bodkan.net/slendr/articles/tutorial.html).
 
 We're going to simulate a demographic history of several populations,
-including splits and admixture events, defining the spatial boundaries
+including splits and geneflow events, defining the spatial boundaries
 of populations as well as their changing dynamics over time (steps
 1-6). We will then feed the model defined in R into SLiM and instruct
 it (using a back-end SLiM script provided by this package) to simulate
@@ -61,7 +61,7 @@ etc.
 
 
 ```r
-library(spannr)
+library(slendr)
 
 map <- world(
   xrange = c(-15, 60), # min-max longitude
@@ -129,13 +129,13 @@ plot(p1, p2, p3, p4, p5, ncol = 2)
 
 ![plot of chunk plot_maps](man/figures/README-plot_maps-1.png)
 
-#### 4. Define admixture events
+#### 4. Define geneflow events
 
 
 ```r
-admixtures <- list(
-  admixture(from = p5, to = p4, rate = 0.25, start = 2000, end = 0),
-  admixture(from = p5, to = p3, rate = 0.6, start = 2000, end = 0)
+geneflows <- list(
+  geneflow(from = p5, to = p4, rate = 0.25, start = 2000, end = 0),
+  geneflow(from = p5, to = p3, rate = 0.6, start = 2000, end = 0)
 )
 ```
 
@@ -148,7 +148,7 @@ admixtures <- list(
 model <- compile(
   dir = "/tmp/example-model", # location of serialized model data
   populations = list(p1, p2, p3, p4, p5),
-  admixtures = admixtures,
+  geneflows = geneflows,
   generation_time = 30,
   competition_dist = 200e3, # interaction distances
   mate_dist = 200e3, offspring_dist = 50e3,
@@ -162,23 +162,23 @@ functions, most importantly the `slim()` function shown below.
 
 ```r
 model
-#> spannr 'model' object 
+#> slendr 'model' object 
 #> --------------------- 
 #> populations: pop1, pop2, pop3, pop4, pop5 
-#> admixture events: 2 
+#> geneflow events: 2 
 #> generation time: 
 #> number of spatial maps: 71 
 #> resolution: 10000 km per pixel
 #> 
 #> configuration files in: /private/tmp/example-model 
 #> 
-#> A detailed model specification can be found in `$splits`, `$admixtures`,
+#> A detailed model specification can be found in `$splits`, `$geneflows`,
 #> `$maps`, `$populations`, and other components of the model object (for
 #> a complete list see `names(<model object>)`). You can also examine
 #> the serialized configuration files in the model directory.
 ```
 
-#### 6. Visualize the implied admixture graph
+#### 6. Visualize the implied geneflow graph
 
 
 ```r
@@ -222,7 +222,7 @@ animate(model, nframes = 200)
 
 ![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
 
-Note that it is possible to simulate population splits and admixture
+Note that it is possible to simulate population splits and geneflows
 both by "physically" moving individuals of a population from one
 destination to the next across space but it is also possible to do
 this more abstractly (in instantaneous "jumps") in situations where

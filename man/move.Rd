@@ -7,7 +7,7 @@
 move(pop, trajectory, end, snapshots, start = NULL)
 }
 \arguments{
-\item{pop}{Object of the class \code{spannr_pop}}
+\item{pop}{Object of the class \code{slendr_pop}}
 
 \item{trajectory}{List of two-dimensional vectors (longitude,
 latitude) specifying the migration trajectory}
@@ -17,7 +17,7 @@ latitude) specifying the migration trajectory}
 \item{start, end}{Start/end points of the population migration}
 }
 \value{
-Object of the class \code{spannr_pop}
+Object of the class \code{slendr_pop}
 }
 \description{
 This function defines a displacement of a population along a given
