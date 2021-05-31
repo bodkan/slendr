@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Population Genetics Simulations Spanning Time And Space • spannr</title>
+<title>Spatio-temporal Population Genetics Simulations Using SLiM • slendr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Population Genetics Simulations Spanning Time And Space">
+<script src="pkgdown.js"></script><meta property="og:title" content="Spatio-temporal Population Genetics Simulations Using SLiM">
 <meta property="og:description" content="A framework for simulating spatially-explicit genomic
     data which leverages real cartographic information to programmatically
     and visually encode spatial population boundaries and temporal dynamics
@@ -44,7 +44,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">spannr</a>
+        <a class="navbar-link" href="index.html">slendr</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
       </span>
     </div>
@@ -75,7 +75,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bodkan/spannr/">
+  <a href="https://github.com/bodkan/slendr/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -92,34 +92,34 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="population-genetics-simulations-spanning-time-and-space-" class="section level2">
+<div id="spatio-temporal-population-genetics-simulations-using-slim-" class="section level2">
 <h2 class="hasAnchor">
-<a href="#population-genetics-simulations-spanning-time-and-space-" class="anchor"></a>Population Genetics Simulations Spanning Time <em>and</em> Space <a href="https://bodkan.net/spannr"><img src="reference/figures/logo.png" align="right" height="139"></a>
+<a href="#spatio-temporal-population-genetics-simulations-using-slim-" class="anchor"></a>Spatio-temporal Population Genetics Simulations Using SLiM <a href="https://bodkan.net/slendr"><img src="reference/figures/logo.png" align="right" height="139"></a>
 </h2>
 <p><strong>This software is still under development!</strong> I have been making a good progress towards the first beta version, but the package still has some way to go before being production ready.</p>
-<p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at the <a href="https://bodkan.net/spannr/articles/tutorial.html">tutorial</a>. Note that getting it installed with all the geospatial dependencies can be a little bit tricky at this point (see the relevant section in the tutorial). If loading the package fails, check the error messages for missing software and install it using the package manager of your choice (on a Mac I recommend <em>homebrew</em>).</p>
+<p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at the <a href="https://bodkan.net/slendr/articles/tutorial.html">tutorial</a>. Note that getting it installed with all the geospatial dependencies can be a little bit tricky at this point (see the relevant section in the tutorial). If loading the package fails, check the error messages for missing software and install it using the package manager of your choice (on a Mac I recommend <em>homebrew</em>).</p>
 <p>If you would like to stay updated with the developments:</p>
 <ol>
-<li><p>Click on the “Watch” button on the project’s <a href="https://www.github.com/bodkan/spannr">Github website</a>.</p></li>
+<li><p>Click on the “Watch” button on the project’s <a href="https://www.github.com/bodkan/slendr">Github website</a>.</p></li>
 <li><p>Follow me on <a href="https://www.twitter.com/fleventy5">Twitter</a>. I might post some updates once the software is a bit more ready.</p></li>
 </ol>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
-<p>For installation instructions, please take a look at the installation section <a href="https://bodkan.net/spannr/articles/tutorial.html#installation-and-setup-1">of the tutorial</a>. Note that you might need to install some non-R software dependencies first. At the very least, you will need the most recent version of the <a href="https://messerlab.org/slim/">SLiM software</a> (version 3.6 or later).</p>
+<p>For installation instructions, please take a look at the installation section <a href="https://bodkan.net/slendr/articles/tutorial.html#installation-and-setup-1">of the tutorial</a>. Note that you might need to install some non-R software dependencies first. At the very least, you will need the most recent version of the <a href="https://messerlab.org/slim/">SLiM software</a> (version 3.6 or later).</p>
 </div>
 <div id="example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h3>
-<p>Here is a small demonstration of what <em>spannr</em> is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.</p>
-<p>For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the <a href="https://bodkan.net/spannr/articles/tutorial.html">tutorial</a>.</p>
-<p>We’re going to simulate a demographic history of several populations, including splits and admixture events, defining the spatial boundaries of populations as well as their changing dynamics over time (steps 1-6). We will then feed the model defined in R into SLiM and instruct it (using a back-end SLiM script provided by this package) to simulate data based on the model specification (step 7). Finally, we will generate some visualizations to make sure that the simulation proceeded as we wanted to (steps 8 and 9).</p>
+<p>Here is a small demonstration of what <em>slendr</em> is designed to do. Note that this model is not supposed to recapitulate the history of any known species and serves just for demonstration purposes.</p>
+<p>For a more complete example that is less abstract and demonstrates the usage of the package on a model of West Eurasian history, please see the <a href="https://bodkan.net/slendr/articles/tutorial.html">tutorial</a>.</p>
+<p>We’re going to simulate a demographic history of several populations, including splits and geneflow events, defining the spatial boundaries of populations as well as their changing dynamics over time (steps 1-6). We will then feed the model defined in R into SLiM and instruct it (using a back-end SLiM script provided by this package) to simulate data based on the model specification (step 7). Finally, we will generate some visualizations to make sure that the simulation proceeded as we wanted to (steps 8 and 9).</p>
 <div id="1-setup-the-spatial-context-the-world-occupied-by-populations" class="section level4">
 <h4 class="hasAnchor">
 <a href="#1-setup-the-spatial-context-the-world-occupied-by-populations" class="anchor"></a>1. Setup the spatial context (“the world” occupied by populations)</h4>
 <p>Note that in the world definition, we are explicitly stating which projected <a href="https://en.wikipedia.org/wiki/Spatial_reference_system">Coordinate Reference System</a> (CRS) will be used to represent landscape features, distances in kilometers, etc.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/spannr">spannr</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr">slendr</a></span><span class="op">)</span>
 
 <span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/world.html">world</a></span><span class="op">(</span>
   xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>, <span class="co"># min-max longitude</span>
@@ -179,13 +179,13 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-plot_maps-1.png" alt="plot of chunk plot_maps"></p>
 </div>
-<div id="4-define-admixture-events" class="section level4">
+<div id="4-define-geneflow-events" class="section level4">
 <h4 class="hasAnchor">
-<a href="#4-define-admixture-events" class="anchor"></a>4. Define admixture events</h4>
+<a href="#4-define-geneflow-events" class="anchor"></a>4. Define geneflow events</h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">admixtures</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-  <span class="fu"><a href="reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p4</span>, rate <span class="op">=</span> <span class="fl">0.25</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,
-  <span class="fu"><a href="reference/admixture.html">admixture</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p3</span>, rate <span class="op">=</span> <span class="fl">0.6</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">geneflows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  <span class="fu"><a href="reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p4</span>, rate <span class="op">=</span> <span class="fl">0.25</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,
+  <span class="fu"><a href="reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">p5</span>, to <span class="op">=</span> <span class="va">p3</span>, rate <span class="op">=</span> <span class="fl">0.6</span>, start <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 </div>
 <div id="5-compile-the-model-to-a-set-of-configuration-files" class="section level4">
@@ -195,7 +195,7 @@
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/compile.html">compile</a></span><span class="op">(</span>
   dir <span class="op">=</span> <span class="st">"/tmp/example-model"</span>, <span class="co"># location of serialized model data</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span><span class="op">)</span>,
-  admixtures <span class="op">=</span> <span class="va">admixtures</span>,
+  geneflows <span class="op">=</span> <span class="va">geneflows</span>,
   generation_time <span class="op">=</span> <span class="fl">30</span>,
   competition_dist <span class="op">=</span> <span class="fl">200e3</span>, <span class="co"># interaction distances</span>
   mate_dist <span class="op">=</span> <span class="fl">200e3</span>, offspring_dist <span class="op">=</span> <span class="fl">50e3</span>,
@@ -204,24 +204,24 @@
 <p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/slim.html">slim()</a></code> function shown below.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span>
-<span class="co">#&gt; spannr 'model' object </span>
+<span class="co">#&gt; slendr 'model' object </span>
 <span class="co">#&gt; --------------------- </span>
 <span class="co">#&gt; populations: pop1, pop2, pop3, pop4, pop5 </span>
-<span class="co">#&gt; admixture events: 2 </span>
+<span class="co">#&gt; geneflow events: 2 </span>
 <span class="co">#&gt; generation time: </span>
 <span class="co">#&gt; number of spatial maps: 71 </span>
 <span class="co">#&gt; resolution: 10000 km per pixel</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; configuration files in: /private/tmp/example-model </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; A detailed model specification can be found in `$splits`, `$admixtures`,</span>
+<span class="co">#&gt; A detailed model specification can be found in `$splits`, `$geneflows`,</span>
 <span class="co">#&gt; `$maps`, `$populations`, and other components of the model object (for</span>
 <span class="co">#&gt; a complete list see `names(&lt;model object&gt;)`). You can also examine</span>
 <span class="co">#&gt; the serialized configuration files in the model directory.</span></code></pre></div>
 </div>
-<div id="6-visualize-the-implied-admixture-graph" class="section level4">
+<div id="6-visualize-the-implied-geneflow-graph" class="section level4">
 <h4 class="hasAnchor">
-<a href="#6-visualize-the-implied-admixture-graph" class="anchor"></a>6. Visualize the implied admixture graph</h4>
+<a href="#6-visualize-the-implied-geneflow-graph" class="anchor"></a>6. Visualize the implied geneflow graph</h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/graph.html">graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-plot_graph-1.png" alt="plot of chunk plot_graph"></p>
@@ -250,7 +250,7 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, nframes <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-plot_gif-1.gif" alt="plot of chunk plot_gif"></p>
-<p>Note that it is possible to simulate population splits and admixture both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>
+<p>Note that it is possible to simulate population splits and geneflows both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>
 <p>In this case, we simulated the split of populations <em>pop3</em> and <em>pop4</em> from <em>pop2</em> instantaneously, without explicitly tracing their movement. Compare this to the split of <em>pop5</em> from <em>pop1</em>, where we defined the population movement explicitly.</p>
 </div>
 </div>
@@ -261,9 +261,9 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/bodkan/spannr/">https://​github.com/​bodkan/​spannr/​</a>
+<li>Browse source code at <br><a href="https://github.com/bodkan/slendr/">https://​github.com/​bodkan/​slendr/​</a>
 </li>
-<li>Report a bug at <br><a href="https://github.com/bodkan/spannr/issues">https://​github.com/​bodkan/​spannr/​issues</a>
+<li>Report a bug at <br><a href="https://github.com/bodkan/slendr/issues">https://​github.com/​bodkan/​slendr/​issues</a>
 </li>
 </ul>
 </div>

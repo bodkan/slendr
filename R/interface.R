@@ -13,13 +13,13 @@
 #' @param parent Parent population object or "ancestor" (indicating that the
 #'   population does not have an ancestor, and that it is the first population
 #'   in its "lineage")
-#' @param map Object of the type \code{spannr_map} which defines the world
+#' @param map Object of the type \code{slendr_map} which defines the world
 #'   context (created using the \code{world} function)
 #' @param center Two-dimensional vector specifying the center of the circular
 #'   range
 #' @param radius Radius of the circular range
 #' @param polygon List of vector pairs, defining corners of the polygon range or
-#'   a geographic region of the class \code{spannr_region} from which the
+#'   a geographic region of the class \code{slendr_region} from which the
 #'   polygon coordinates will be extracted (see the \code{region() function})
 #' @param remove Time at which the population should be removed
 #' @param intersect Intersect the population's boundaries with landscape
@@ -29,10 +29,10 @@
 #' @param offspring_dist Standard deviation of the normal distribution of the
 #'   parent-offspring distance
 #'
-#' @return Object of the class \code{spannr_pop}
+#' @return Object of the class \code{slendr_pop}
 #'
 #' @export
-population <- function(name, time, N, parent, map = NULL,
+population <- function(name, time, N, parent = "ancestor", map = NULL,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
                        competition_dist = NULL, mate_dist = NULL, offspring_dist = NULL) {
@@ -49,7 +49,7 @@ population <- function(name, time, N, parent, map = NULL,
 
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
-  if (!is.null(polygon) & inherits(polygon, "spannr_region"))
+  if (!is.null(polygon) & inherits(polygon, "slendr_region"))
     geometry <- sf::st_geometry(polygon)
   else
     geometry <- define_boundary(map, center, radius, polygon)
@@ -64,7 +64,7 @@ population <- function(name, time, N, parent, map = NULL,
   attr(boundary, "remove") <- if (!is.null(remove)) remove else -1
 
   # keep a record of the parent population
-  if (inherits(parent, "spannr_pop")) {
+  if (inherits(parent, "slendr_pop")) {
     attr(boundary, "parent") <- parent[nrow(parent), ]
     # keep the map as an internal attribute
     attr(boundary, "map") <- map
@@ -91,7 +91,7 @@ population <- function(name, time, N, parent, map = NULL,
 #' This function allows a more manual control of spatial map changes
 #' in addition to the \code{expand} and \code{move} functions
 #'
-#' @param pop Object of the class \code{spannr_pop}
+#' @param pop Object of the class \code{slendr_pop}
 #' @param time Time of the change
 #' @param N Number of individuals
 #' @param center Two-dimensional vector specifying the center of the
@@ -99,10 +99,10 @@ population <- function(name, time, N, parent, map = NULL,
 #' @param radius Radius of the circular range
 #' @param polygon List of vector pairs, defining corners of the
 #'   polygon range (see also the \code{region} argument) or a
-#'   geographic region of the class \code{spannr_region} from which
+#'   geographic region of the class \code{slendr_region} from which
 #'   the polygon coordinates will be extracted
 #'
-#' @return Object of the class \code{spannr_pop}
+#' @return Object of the class \code{slendr_pop}
 #'
 #' @export
 change <- function(pop, time, N = NULL,
@@ -113,7 +113,7 @@ change <- function(pop, time, N = NULL,
 
   # define the population range as a simple geometry object
   #or reuse the old one
-  if (!is.null(polygon) & inherits(polygon, "spannr_region"))
+  if (!is.null(polygon) & inherits(polygon, "slendr_region"))
       polygon <- sf::st_geometry(polygon)
 
   if ((!is.null(center) & !is.null(radius)) | !is.null(polygon))
@@ -146,13 +146,13 @@ change <- function(pop, time, N = NULL,
 #' Expands the spatial population range by a specified distance in a
 #' given time-window
 #'
-#' @param pop Object of the class \code{spannr_pop}
+#' @param pop Object of the class \code{slendr_pop}
 #' @param by How many units of distance to expand by?
 #' @param start,end When does the expansion start/end?
 #' @param snapshots Number of time slices to split the expansion into
 #' @param polygon Geographic region to restrict the expansion to
 #'
-#' @return Object of the class \code{spannr_pop}
+#' @return Object of the class \code{slendr_pop}
 #'
 #' @export
 expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
@@ -160,6 +160,8 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   check_event_time(c(start, end), pop)
 
   region_start <- pop[nrow(pop), ]
+
+  map <- attr(pop, "map")
 
   if (!is.null(start))
     region_start$time <- start
@@ -180,9 +182,13 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   }
   inter_regions <- do.call(rbind, inter_regions)
   sf::st_agr(inter_regions) <- "constant"
-  # if the expansion is restricted, crop the whole range accordingly
-  if (!is.null(polygon))
-    inter_regions <- sf::st_intersection(inter_regions, sf::st_geometry(polygon))
+
+  if (!is.null(polygon)) {
+    if (!inherits(polygon, "slendr_region"))
+      polygon <- region(polygon = polygon, map = map)
+    inter_regions <- sf::st_intersection(inter_regions, polygon)
+    inter_regions$region <- NULL
+  }
 
   all_maps <- rbind(pop, inter_regions)
   sf::st_agr(all_maps) <- "constant"
@@ -202,13 +208,13 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 #' This function defines a displacement of a population along a given
 #' trajectory in a given time frame
 #'
-#' @param pop Object of the class \code{spannr_pop}
+#' @param pop Object of the class \code{slendr_pop}
 #' @param trajectory List of two-dimensional vectors (longitude,
 #'   latitude) specifying the migration trajectory
 #' @param start,end Start/end points of the population migration
 #' @param snapshots Number of time slices to split the movement into
 #'
-#' @return Object of the class \code{spannr_pop}
+#' @return Object of the class \code{slendr_pop}
 #'
 #' @export
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
@@ -292,7 +298,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 #'
 #' Creates a geographic region (a polygon) on a given map and gives it
 #' a name. This can be used to define objects which can be reused in
-#' multiple places in a spannr script (such as \code{region} arguments
+#' multiple places in a slendr script (such as \code{region} arguments
 #' of \code{population}) without having to repeatedly define polygon
 #' coordinates.
 #'
@@ -303,10 +309,10 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 #' @param radius Radius of the circular range
 #' @param polygon List of vector pairs, defining corners of the
 #'   polygon range or a geographic region of the class
-#'   \code{spannr_region} from which the polygon coordinates will be
+#'   \code{slendr_region} from which the polygon coordinates will be
 #'   extracted (see the \code{region() function})
 #'
-#' @return Object of the class \code{spannr_region}
+#' @return Object of the class \code{slendr_region}
 #'
 #' @export
 region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
@@ -353,7 +359,7 @@ region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygo
 #'   <https://www.naturalearthdata.com/downloads/110m-physical-vectors>
 #'   (used only when \code{landscape = "naturalearth"})
 #'
-#' @return Object of the class \code{spannr_map}
+#' @return Object of the class \code{slendr_map}
 #'
 #' @export
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
@@ -399,23 +405,23 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 }
 
 
-#' Define an admixture event
+#' Define a geneflow event
 #'
-#' @param from,to Objects of the class \code{spannr_pop}
+#' @param from,to Objects of the class \code{slendr_pop}
 #' @param rate Scalar value in the range (0, 1] specifying the
 #'   proportion of migration over given time period
-#' @param start,end Start and end of the admixture event
+#' @param start,end Start and end of the geneflow event
 #' @param overlap Require spatial overlap between admixing
 #'   populations?  (default \code{TRUE})
 #'
 #' @return Object of the class data.frame
 #'
 #' @export
-admixture <- function(from, to, rate, start, end, overlap = TRUE) {
+geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
-  # get the last specified spatial maps before the admixture time
+  # get the last specified spatial maps before the geneflow time
   region_from <- intersect_features(from[from$time >= start, ] %>% .[nrow(.), ])
   region_to <- intersect_features(to[to$time >= start, ] %>% .[nrow(.), ])
 
@@ -443,7 +449,7 @@ No overlap between population ranges of %s and %s at time %d.
 Please check the spatial maps of both populations by running
 `plot(%s, %s, pop_facets = F)` and adjust them accordingly.
 Alternatively, in case this makes sense for your model, you can
-add `overlap = F` which will instruct spannr to simulate admixture
+add `overlap = F` which will instruct slendr to simulate geneflow
 without spatial overlap between populations.",
       from_name, to_name, start, deparse(substitute(from)),
       deparse(substitute(to)), call. = FALSE))
@@ -475,7 +481,7 @@ without spatial overlap between populations.",
 #'   from/to whatever CRS is set for the underlying map)
 #' @param coords data.frame-like object with coordinates in columns
 #'   "x" and "y"
-#' @param model Object of the class \code{spannr_model}
+#' @param model Object of the class \code{slendr_model}
 #' @param add Add column coordinates to the input data.frame
 #'   \code{coords} (coordinates otherwise returned as a separate
 #'   object)?
@@ -545,13 +551,13 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
 }
 
 
-#' Print a summary of a \code{spannr} object
+#' Print a summary of a \code{slendr} object
 #'
-#' Prints a short summary of any \code{spannr} object.
+#' Prints a short summary of any \code{slendr} object.
 #'
-#' All spatial objects in the spannr package are internally
+#' All spatial objects in the slendr package are internally
 #' represented by a Simple Features (sf) object. This fact is hidden
-#' in most circumstances this, as the goal of the spannr package is to
+#' in most circumstances this, as the goal of the slendr package is to
 #' provide functionality at a much higher level (population
 #' boundaries, geographic regions, instead of individual polygons and
 #' other "low-level" geometric objects). The logical argument
@@ -561,27 +567,27 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
 #' spatial maps for a population are present, a full table of spatial
 #' snapshots can be printed using the \code{full} argument.
 #'
-#' @param x Object of a class \code{spannr}
+#' @param x Object of a class \code{slendr}
 #' @param sf Print the low-level 'sf' object instead?
 #' @param full Print the complete table of spatial snapshots?
 #'
 #' @export
-print.spannr <- function(x, sf = FALSE, full = FALSE) {
+print.slendr <- function(x, sf = FALSE, full = FALSE) {
   if (sf) {
     sf:::print.sf(x)
   } else {
-    if (any(grepl("spannr_pop", class(x))))
+    if (any(grepl("slendr_pop", class(x))))
       type <- "population"
-    else if (any(grepl("spannr_region", class(x))))
+    else if (any(grepl("slendr_region", class(x))))
       type <- "region"
-    else if (any(grepl("spannr_map", class(x))))
+    else if (any(grepl("slendr_map", class(x))))
       type <- "map"
-    else if (any(grepl("spannr_model", class(x))))
+    else if (any(grepl("slendr_model", class(x))))
       type <- "model"
     else
       stop("Unknown object")
 
-    header <- sprintf("spannr '%s' object", type)
+    header <- sprintf("slendr '%s' object", type)
     sep <- paste(rep("-", nchar(header)), collapse = "")
 
     cat(header, "\n")
@@ -653,17 +659,17 @@ print.spannr <- function(x, sf = FALSE, full = FALSE) {
         cat("[no map defined]\n")
     } else if (type == "model") {
       cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
-      cat("admixture events: ")
-      if (!is.null(x$admixtures))
-        cat(nrow(x$admixtures), "\n")
+      cat("geneflow events: ")
+      if (!is.null(x$geneflows))
+        cat(nrow(x$geneflows), "\n")
       else
-        cat("[no admixture]\n")
+        cat("[no geneflow]\n")
       cat("generation time:", x$gen_time, "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n")
       cat("resolution:", x$resolution, "km per pixel\n\n")
       cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
       cat(
-"A detailed model specification can be found in `$splits`, `$admixtures`,
+"A detailed model specification can be found in `$splits`, `$geneflows`,
 `$maps`, `$populations`, and other components of the model object (for
 a complete list see `names(<model object>)`). You can also examine
 the serialized configuration files in the model directory.\n")
@@ -674,17 +680,20 @@ the serialized configuration files in the model directory.\n")
 }
 
 
-#' Combine two \code{spannr_region} objects into a single geographic
+#' Combine two \code{slendr_region} objects into a single geographic
 #' region
 #'
-#' @param x Object of the class \code{spannr_region}
-#' @param y Object of the class \code{spannr_region}
+#' @param x Object of the class \code{slendr_region}
+#' @param y Object of the class \code{slendr_region}
 #' @param name Name of the resulting geographic region
 #'
-#' @return Object of the class \code{spannr_region}
+#' @return Object of the class \code{slendr_region}
 #'
 #' @export
 join <- function(x, y, name = NULL) {
+  if (!inherits(x, "slendr_region")) x <- region(polygon = x)
+  if (!inherits(y, "slendr_region")) y <- region(polygon = y)
+
   result <- sf::st_union(x, y)
   result$region.1 <- NULL
   if (is.null(name))
@@ -698,14 +707,17 @@ join <- function(x, y, name = NULL) {
 }
 
 
-#' Generate the overlap of two \code{spannr_region} objects
+#' Generate the overlap of two \code{slendr_region} objects
 #'
 #' @inheritParams join
 #'
-#' @return Object of the class \code{spannr_region}
+#' @return Object of the class \code{slendr_region}
 #'
 #' @export
 overlap <- function(x, y, name = NULL) {
+  if (!inherits(x, "slendr_region")) x <- region(polygon = x)
+  if (!inherits(y, "slendr_region")) y <- region(polygon = y)
+
   result <- sf::st_intersection(x, y)
   if (nrow(result) == 0) stop("No region left after intersection", call. = FALSE)
   result$region.1 <- NULL
@@ -720,14 +732,17 @@ overlap <- function(x, y, name = NULL) {
 }
 
 
-#' Generate the difference between two \code{spannr_region} objects
+#' Generate the difference between two \code{slendr_region} objects
 #'
 #' @inheritParams join
 #'
-#' @return Object of the class \code{spannr_region}
+#' @return Object of the class \code{slendr_region}
 #'
 #' @export
 subtract <- function(x, y, name = NULL) {
+  if (!inherits(x, "slendr_region")) x <- region(polygon = x)
+  if (!inherits(y, "slendr_region")) y <- region(polygon = y)
+
   result <- sf::st_difference(x, y)
   if (nrow(result) == 0) stop("No region left after subtraction", call. = FALSE)
   result$region.1 <- NULL
