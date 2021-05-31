@@ -14,6 +14,8 @@
 
 - Renamed `admixture()` to `geneflow()`.
 
+- The `plot.slendr` generic function 
+
 ## In progress
 
 Most likely the last things before making the first public release:

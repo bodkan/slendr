@@ -6,33 +6,30 @@
 \usage{
 \method{plot}{slendr}(
   ...,
-  pop_facets = TRUE,
-  time_facets = FALSE,
-  intersect = TRUE,
+  time = NULL,
+  geneflows = FALSE,
   graticules = "original",
-  title = NULL,
-  nrow = NULL,
-  ncol = NULL
+  intersect = TRUE,
+  show_map = TRUE,
+  interpolated_maps = NULL
 )
 }
 \arguments{
 \item{...}{Objects of classes \code{slendr_map},
 \code{slendr_region}, or \code{slendr_pop}}
 
-\item{pop_facets}{Plot populations in individual panels?}
+\item{time}{Plot a concrete time point}
 
-\item{time_facets}{Plot time snapshots in individual panels?}
-
-\item{intersect}{Intersect the population boundaries against
-landscape and other geographic boundaries (default TRUE)?}
+\item{geneflows}{Indicate geneflow events with an arrow}
 
 \item{graticules}{Plot graticules in the original Coordinate
 Reference System (such as longitude-latitude), or in the internal
 CRS (such as meters)?}
 
-\item{title}{Plot title}
+\item{intersect}{Intersect the population boundaries against
+landscape and other geographic boundaries (default TRUE)?}
 
-\item{nrow, ncol}{Number of columns or rows in the facet plot}
+\item{show_map}{Show the underlying world map}
 }
 \description{
 Plots objects of the three \code{slendr} spatial classes
