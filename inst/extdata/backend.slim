@@ -13,7 +13,7 @@ initialize() {
   // load model definition tables
   defineConstant("POP_TABLE", read_table(paste0(MODEL_DIR, "/populations.tsv")));
   defineConstant("NAMES", readFile(paste0(MODEL_DIR, "/names.txt")));
-  defineConstant("GENEFLOW_TABLE", read_table(paste0(MODEL_DIR, "/geneflows.tsv")));
+  defineConstant("GENEFLOW_TABLE", read_table(paste0(MODEL_DIR, "/geneflow.tsv")));
   defineConstant("MAP_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));
 
   // load all spatial maps
@@ -25,7 +25,7 @@ initialize() {
 
   defineConstant("GEN_TIME", {{generation_time}});
   defineConstant("T_BURNIN", {{burnin}}); catn("T_BURNIN: " + T_BURNIN);
-  defineConstant("T_LENGTH", max(pop_param("tsplit"))); catn("T_LENGTH: " + T_LENGTH);
+  defineConstant("T_LENGTH", {{length}}); catn("T_LENGTH: " + T_LENGTH);
 
   // number of ancestry-informative neutral markers
   defineConstant("N_MARKERS", {{ancestry_markers}});
@@ -33,53 +33,39 @@ initialize() {
 
   defineConstant("SAVE_LOCATIONS", {{save_locations}});
 
-  defineConstant("SIM_START", T_BURNIN); catn("SIM_START: " + SIM_START);
+  defineConstant("SIM_START", T_BURNIN + 1); catn("SIM_START: " + SIM_START);
   defineConstant("SIM_END", T_BURNIN + T_LENGTH); catn("SIM_END: " + SIM_END);
 
   // calculate times for scheduling various simulation events (but only if
   // those events are specified in the configuation tables)
 
-  // absolute split times
-  defineConstant("T_ABS_ANC", drop(POP_TABLE[drop(POP_TABLE[, 2]) == -1, 3]));
-  // split times relative to the start of the simulation
-  defineConstant("T_ANC", SIM_END - T_ABS_ANC);
+  // ancestral population creation times
+  defineConstant("T_ANC", T_BURNIN + drop(POP_TABLE[drop(POP_TABLE[, 2]) == -1, 3]));
   catn("T_ANC: " + paste(T_ANC));
 
   if (!isNULL(pop_param("tsplit", present = "source"))) {
-    // absolute split times
-    defineConstant("T_ABS_SPLITS", drop(POP_TABLE[drop(POP_TABLE[, 2]) != -1, 3]));
-    // split times relative to the start of the simulation
-    defineConstant("T_SPLITS", SIM_END - T_ABS_SPLITS);
-
+    // split times
+    defineConstant("T_SPLITS", T_BURNIN + drop(POP_TABLE[drop(POP_TABLE[, 2]) != -1, 3]));
     catn("T_SPLITS: " + paste(T_SPLITS));
   }
 
   if (!isNULL(GENEFLOW_TABLE)) {
-    // absolute geneflow start/end times
-    defineConstant("T_ABS_GENEFLOW_START", admix_param("tstart"));
-    defineConstant("T_ABS_GENEFLOW_END", admix_param("tend"));
-    // geneflow times relative to the start of the simulation
-    defineConstant("T_GENEFLOW_START", SIM_END - T_ABS_GENEFLOW_START);
-    defineConstant("T_GENEFLOW_END", SIM_END - T_ABS_GENEFLOW_END);
-
+    // geneflow start/end times
+    defineConstant("T_GENEFLOW_START", T_BURNIN + admix_param("tstart"));
+    defineConstant("T_GENEFLOW_END", T_BURNIN + admix_param("tend"));
     catn("T_GENEFLOW_START: " + paste(T_GENEFLOW_START));
     catn("T_GENEFLOW_END: " + paste(T_GENEFLOW_END));
   }
 
   if (length(pop_param("tremove"))) {
-    // absolute times of population cleanup
-    defineConstant("T_ABS_CLEANUPS", pop_param("tremove"));
-    // cleanup times relative to the start of the simulation
-    defineConstant("T_CLEANUPS", SIM_END - T_ABS_CLEANUPS);
-
+    // times of population cleanups
+    defineConstant("T_CLEANUPS", T_BURNIN + pop_param("tremove"));
     catn("T_CLEANUPS: " + paste(T_CLEANUPS));
   }
 
   if (length(MAPS) > 1) {
     // absolute times of spatial map changes
-    defineConstant("T_ABS_MAPS", map_param("time"));
-    // times relative to the start of the simulation
-    defineConstant("T_MAPS", SIM_END - T_ABS_MAPS);
+    defineConstant("T_MAPS", T_BURNIN + map_param("time"));
     catn("T_MAPS: " + paste(T_MAPS));
   }
 
