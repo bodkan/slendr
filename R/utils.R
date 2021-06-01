@@ -154,12 +154,12 @@ check_event_time <- function(time, pop) {
   }
 
   removal_time <- attr(pop, "remove")
-  if (direction == "forward" & any(time > removal_time)) {
+  if (removal_time != -1 & direction == "forward" & any(time > removal_time)) {
     stop(sprintf("The specified event time (%d) is not consistent with the scheduled removal of %s (%s). ",
                  time, pop$pop[1], removal_time),
          call. = FALSE)
   }
-  if (direction == "backward" & any(time < removal_time)) {
+  if (removal_time != -1 & direction == "backward" & any(time < removal_time)) {
     stop(sprintf("The specified event time (%d) is not consistent with the scheduled removal of %s (%s). ",
                  time, pop$pop[1], removal_time),
          call. = FALSE)
