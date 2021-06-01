@@ -1,6 +1,5 @@
-convert_time <- function(df, direction, columns) {
+convert_time <- function(df, direction, columns, max_time) {
   if (direction == "backward") {
-    max_time <- max(df[, columns])
     for (column in columns) {
       times <- df[[column]]
       times[times != -1] <- max_time - times[times != -1] + 1
@@ -68,8 +67,27 @@ compile <- function(populations, dir, generation_time, resolution,
   # save split and geneflow tables which will be returned in the model object
   # in separate objects (tables serialized for SLiM will have to be stripped
   # first)
-  split_table <- compile_splits(populations) %>%
-    convert_time(direction = time_flow, columns = c("tsplit", "tremove"))
+  split_table <- compile_splits(populations)
+
+  max_time <- max(split_table$tsplit)
+  split_table <- convert_time(
+    split_table,
+    direction = time_flow,
+    columns = c("tsplit", "tremove"),
+    max_time = max_time
+  )
+
+  # order populations by split time and assign a numeric identifier to each
+  split_table <- split_table[
+    order(split_table$tsplit, decreasing = FALSE, na.last = FALSE), ]
+  split_table$pop_id <- 1:nrow(split_table) - 1
+  split_table$parent_id <- lapply(
+    split_table$parent,
+    function(i) {
+      if (i == "ancestor") -1
+      else split_table[split_table$pop == i, ]$pop_id
+    }
+  ) %>% unlist()
 
   # take care of missing interactions and offspring distances
   if (any(is.na(split_table$competition_dist))) {
@@ -98,7 +116,12 @@ compile <- function(populations, dir, generation_time, resolution,
 
   if (!is.null(geneflows)) {
     if (is.data.frame(geneflows)) geneflows <- list(geneflows)
-    admix_table <- do.call(rbind, geneflows)
+    admix_table <- do.call(rbind, geneflows) %>%
+      convert_time(
+      direction = time_flow,
+      columns = c("tstart", "tend"),
+      max_time = max_time
+    )
     names(admix_table)[1:2] <- c("from", "to")
     admix_table$tstart_gen <- admix_table$tstart / generation_time
     admix_table$tend_gen <- admix_table$tend / generation_time
@@ -115,7 +138,12 @@ compile <- function(populations, dir, generation_time, resolution,
     admix_table <- NULL
 
   # compile the spatial maps
-  map_table <- compile_maps(populations, split_table, resolution)
+  map_table <- compile_maps(populations, split_table, resolution) %>%
+    convert_time(
+      direction = time_flow,
+      columns = "time",
+      max_time = max_time
+    )
 
   map_table$path <-map_table$map_number %>%
     paste0(., ".png") %>% file.path(dir, .) %>% gsub("//", "/", .)
@@ -484,18 +512,6 @@ compile_splits <- function(populations) {
       stringsAsFactors = FALSE
     )
   }) %>% do.call(rbind, .)
-
-  # order populations by split time and assign a numeric identifier to each
-  splits_table <- splits_table[
-    order(splits_table$tsplit, decreasing = TRUE, na.last = FALSE), ]
-  splits_table$pop_id <- 1:nrow(splits_table) - 1
-  splits_table$parent_id <- lapply(
-    splits_table$parent,
-    function(i) {
-      if (i == "ancestor") -1
-      else splits_table[splits_table$pop == i, ]$pop_id
-    }
-  ) %>% unlist()
 
   splits_table
 }
