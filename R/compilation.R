@@ -343,17 +343,14 @@ and generation_time.txt are all present", dir), call. = FALSE)
 #'   i.e. years)
 #' @param burnin Length of the burnin (in model's time units,
 #'   i.e. years)
-#' @param script_path Name of the compiled output script
-#' @param output_prefix Common prefix (including path) for all output
-#'   files
+#' @param seed Random seed (if missing, SLiM's own seed will be used)
 #'
 #' @export
 slim <- function(model, seq_length, recomb_rate,
                  save_locations = FALSE, track_ancestry = FALSE,
                  keep_pedigrees = FALSE, ts_recording = FALSE,
                  method = "gui", verbose = FALSE, include = NULL, burnin = 0,
-                 script_path = file.path(model$config$directory, "script.slim"),
-                 output_prefix = file.path(model$config$directory, "output")) {
+                 seed = NULL) {
   dir <- model$config$directory
   if (!dir.exists(dir))
     stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
@@ -370,6 +367,9 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   } else
     markers_count <- as.integer(track_ancestry)
 
+  script_path <- file.path(model$config$directory, "script.slim")
+  output_prefix <- file.path(model$config$directory, "output")
+
   backend_script <- system.file("extdata", "backend.slim", package = "slendr")
 
   base_script <- script(
@@ -384,7 +384,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     recomb_rate = recomb_rate,
     ancestry_markers = markers_count,
     save_locations = if (save_locations) "T" else "F",
-    generation_time = model$generation_time
+    generation_time = model$generation_time,
+    seed = if (is.null(seed)) "getSeed()" else seed
   )
 
   # compile all script components, including the backend script, into one file

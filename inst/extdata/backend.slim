@@ -5,7 +5,7 @@ initialize() {
   initializeSLiMOptions(keepPedigrees = KEEP_PEDIGREES, dimensionality = "xy");
   if (TS_RECORDING) initializeTreeSeq();
 
-  defineConstant("SIM_SEED", getSeed());
+  defineConstant("SIM_SEED", {{seed}});
 
   defineConstant("MODEL_DIR", "{{model_dir}}");
   defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
