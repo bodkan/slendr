@@ -15,7 +15,7 @@ slim(
   method = "gui",
   verbose = FALSE,
   include = NULL,
-  burnin = NULL,
+  burnin = 0,
   script_path = file.path(model$config$directory, "script.slim"),
   output_prefix = file.path(model$config$directory, "output")
 )

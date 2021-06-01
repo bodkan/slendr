@@ -11,7 +11,8 @@ write_model(
   map_table,
   split_table,
   generation_time,
-  resolution
+  resolution,
+  length
 )
 }
 \description{

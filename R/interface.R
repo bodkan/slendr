@@ -418,14 +418,23 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 #'
 #' @export
 geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
+  # make sure the population is not removed during the the admixture period
+  check_event_time(start, from); check_event_time(end, from)
+  check_event_time(start, to); check_event_time(end, to)
+
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
-  time_dir <- setdiff(c(get_time_direction(from), get_time_direction(to)), "unknown")
-  comp <- ifelse(time_dir == "backward", `>=`, `<=`)
-
-  if (!comp(start, end))
-    stop("Specified times are not consistent with the assumed direction of time", call. = FALSE)
+  if (from$time[1] <= start & from$time[1] <= end &
+      to$time[1] <= start & to$time[1] <= end)
+    comp <- `<=`
+  else if (from$time[1] >= start & from$time[1] >= end &
+             to$time[1] >= start & to$time[1] >= end)
+    comp <- `>=`
+  else
+    stop(sprintf("Specified times are not consistent with the assumed direction of
+time (geneflow %s -> %s in the time window %s-%s)", from_name, to_name, start, end),
+call. = FALSE)
 
   # get the last specified spatial maps before the geneflow time
   region_from <- intersect_features(from[comp(from$time, start), ] %>% .[nrow(.), ])
@@ -439,10 +448,6 @@ geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
     stop(sprintf("No spatial map defined for %s at/before the time %d",
                  to_name, start),
          call. = FALSE)
-
-  # make sure the population is not removed during the the admixture period
-  check_event_time(start, from); check_event_time(end, from)
-  check_event_time(start, to); check_event_time(end, to)
 
   # calculate the overlap of spatial ranges between source and target
   region_overlap <- sf::st_intersection(region_from, region_to)

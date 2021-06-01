@@ -11,9 +11,8 @@
 #'
 #' @import ggplot2
 #' @export
-animate <- function(model, locations = NULL, nframes = 200, gif = NULL) {
-  if (is.null(locations))
-    locations <- file.path(model$config$directory, "output_ind_locations.tsv.gz")
+animate <- function(model, nframes = 200, gif = NULL) {
+  locations <- file.path(model$config$directory, "output_ind_locations.tsv.gz")
   locs <- read.table(locations, header = TRUE)
   pop_names <- scan(file.path(model$config$directory, "names.txt"), what = "character", quiet = TRUE)
 
