@@ -421,9 +421,15 @@ geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
+  time_dir <- setdiff(c(get_time_direction(from), get_time_direction(to)), "unknown")
+  comp <- ifelse(time_dir == "backward", `>=`, `<=`)
+
+  if (!comp(start, end))
+    stop("Specified times are not consistent with the assumed direction of time", call. = FALSE)
+
   # get the last specified spatial maps before the geneflow time
-  region_from <- intersect_features(from[from$time >= start, ] %>% .[nrow(.), ])
-  region_to <- intersect_features(to[to$time >= start, ] %>% .[nrow(.), ])
+  region_from <- intersect_features(from[comp(from$time, start), ] %>% .[nrow(.), ])
+  region_to <- intersect_features(to[comp(to$time, start), ] %>% .[nrow(.), ])
 
   if (nrow(region_from) == 0)
     stop(sprintf("No spatial map defined for %s at/before the time %d",
@@ -665,6 +671,7 @@ print.slendr <- function(x, sf = FALSE, full = FALSE) {
       else
         cat("[no geneflow]\n")
       cat("generation time:", x$generation_time, "\n")
+      cat("time direction:", get_time_direction(tail(x$populations, 1)[[1]]), "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n")
       cat("resolution:", x$resolution, "distance unit per pixel\n\n")
       cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
