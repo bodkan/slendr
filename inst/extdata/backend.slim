@@ -6,6 +6,7 @@ initialize() {
   if (TS_RECORDING) initializeTreeSeq();
 
   defineConstant("SIM_SEED", {{seed}});
+  setSeed(SIM_SEED); catn("SEED: " + getSeed());
 
   defineConstant("MODEL_DIR", "{{model_dir}}");
   defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
@@ -34,7 +35,7 @@ initialize() {
   defineConstant("SAVE_LOCATIONS", {{save_locations}});
 
   defineConstant("SIM_START", T_BURNIN + 1); catn("SIM_START: " + SIM_START);
-  defineConstant("SIM_END", T_BURNIN + T_LENGTH); catn("SIM_END: " + SIM_END);
+  defineConstant("SIM_END", T_BURNIN + T_LENGTH + 1); catn("SIM_END: " + SIM_END);
 
   // calculate times for scheduling various simulation events (but only if
   // those events are specified in the configuation tables)

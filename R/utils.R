@@ -152,6 +152,11 @@ check_event_time <- function(time, pop) {
                  time, previous_time),
          call. = FALSE)
   }
+}
+
+
+check_removal_time <- function(time, pop) {
+  direction <- get_time_direction(pop)
 
   removal_time <- attr(pop, "remove")
   if (removal_time != -1 & direction == "forward" & any(time > removal_time)) {
