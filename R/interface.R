@@ -54,35 +54,35 @@ population <- function(name, time, N, parent = "ancestor", map = NULL,
   else
     geometry <- define_boundary(map, center, radius, polygon)
 
-  boundary <- sf::st_sf(
+  pop <- sf::st_sf(
     data.frame(pop = name, time = time, N = N, stringsAsFactors = FALSE),
     geometry = geometry
   )
-  sf::st_agr(boundary) <- "constant"
+  sf::st_agr(pop) <- "constant"
 
   # when to clean up the population?
-  attr(boundary, "remove") <- if (!is.null(remove)) remove else -1
+  attr(pop, "remove") <- if (!is.null(remove)) remove else -1
 
   # keep a record of the parent population
   if (inherits(parent, "slendr_pop")) {
-    attr(boundary, "parent") <- parent[nrow(parent), ]
+    attr(pop, "parent") <- parent
     # keep the map as an internal attribute
-    attr(boundary, "map") <- map
+    attr(pop, "map") <- map
   } else if (is.character(parent) & parent == "ancestor") {
-    attr(boundary, "parent") <- "ancestor"
-    attr(boundary, "map") <- map
+    attr(pop, "parent") <- "ancestor"
+    attr(pop, "map") <- map
   } else
     stop("Suspicious parent population", call. = FALSE)
 
-  attr(boundary, "intersect") <- intersect
+  attr(pop, "intersect") <- intersect
 
-  attr(boundary, "competition_dist") <- competition_dist
-  attr(boundary, "mate_dist") <- mate_dist
-  attr(boundary, "offspring_dist") <- offspring_dist
+  attr(pop, "competition_dist") <- competition_dist
+  attr(pop, "mate_dist") <- mate_dist
+  attr(pop, "offspring_dist") <- offspring_dist
 
-  class(boundary) <- set_class(boundary, "pop")
+  class(pop) <- set_class(pop, "pop")
 
-  boundary
+  pop
 }
 
 
@@ -108,6 +108,7 @@ population <- function(name, time, N, parent = "ancestor", map = NULL,
 change <- function(pop, time, N = NULL,
                    center = NULL, radius = NULL, polygon = NULL) {
   check_event_time(start, pop)
+  check_removal_time(start, pop)
 
   map <- attr(pop, "map")
 
@@ -158,6 +159,7 @@ change <- function(pop, time, N = NULL,
 expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   check_not_intersected(pop)
   check_event_time(c(start, end), pop)
+  check_removal_time(start, pop)
 
   region_start <- pop[nrow(pop), ]
 
@@ -220,6 +222,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
   check_event_time(c(start, end), pop)
+  check_removal_time(start, pop)
 
   map <- attr(pop, "map")
 
@@ -230,6 +233,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   region_start <- pop[nrow(pop), ]
   if (!is.null(start)) {
     check_event_time(time = start, pop)
+    check_removal_time(start, pop)
     region_start$time <- start
     sf::st_agr(region_start) <- "constant"
   }
@@ -419,8 +423,8 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 #' @export
 geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   # make sure the population is not removed during the the admixture period
-  check_event_time(start, from); check_event_time(end, from)
-  check_event_time(start, to); check_event_time(end, to)
+  check_removal_time(start, from); check_removal_time(end, from)
+  check_removal_time(start, to); check_removal_time(end, to)
 
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
