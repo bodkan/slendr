@@ -2,12 +2,15 @@ convert_time <- function(df, direction, columns, max_time, generation_time) {
   if (direction == "backward") {
     for (column in columns) {
       times <- df[[column]]
-      times[times != -1] <- max_time - times[times != -1]
-      times[times == 0] <- generation_time
+      times[times != -1] <- max_time - times[times != -1] + generation_time
       df[[column]] <- times
     }
   }
   df
+}
+
+rounding_fn <- function(direction) {
+  if (direction == "forward") ceiling else floor
 }
 
 #' Compile the spatial demographic model
@@ -34,12 +37,14 @@ convert_time <- function(df, direction, columns, max_time, generation_time) {
 #'   loaded by the backend SLiM script
 #' @param overwrite Overwrite the contents of the output directory in case it
 #'   already exists?
+#' @param sim_length Total length of the simulation (if time is specified in a
+#'   forward direction)
 #'
 #' @return Compiled \code{slendr_model} model object
 #' @export
 compile <- function(populations, dir, generation_time, resolution,
                     competition_dist = NULL, mate_dist = NULL, offspring_dist = NULL,
-                    geneflow = NULL, overwrite = FALSE) {
+                    geneflow = list(), overwrite = FALSE, sim_length = NULL) {
   if (!inherits(populations, "list"))  populations <- list(populations)
 
   # prepare the model output directory
@@ -53,10 +58,28 @@ compile <- function(populations, dir, generation_time, resolution,
   }
   dir.create(dir)
 
+  if (is.data.frame(geneflow)) geneflow <- list(geneflow)
+
+  if (is.null(sim_length))
+    max_time <- max(unlist(c(sapply(populations, function(x) max(x$time)),
+                             sapply(geneflow, function(x) max(x$tstart)),
+                             sapply(geneflow, function(x) max(x$tend)))))
+  else
+    max_time <- sim_length
+
   direction <- setdiff(unique(sapply(populations, get_time_direction)), "unknown")
   if (length(direction) > 1)
     stop("Inconsistent direction of time among the specified populations",
          call. = FALSE)
+
+  if (length(direction) == 0) {
+    if (min(sapply(populations, function(x) x$time[1])) == 1 & is.null(sim_length))
+      stop("Simulation length 'sim_length' must be specified for forward time direction", call. = FALSE)
+    else
+      direction <- "backward"
+  }
+
+  rounding <- rounding_fn(direction)
 
   map <- attr(populations[[1]], "map")
 
@@ -70,7 +93,6 @@ compile <- function(populations, dir, generation_time, resolution,
   # first)
   split_table <- compile_splits(populations)
 
-  max_time <- max(split_table$tsplit)
   split_table <- convert_time(
     split_table,
     direction = direction,
@@ -116,8 +138,7 @@ compile <- function(populations, dir, generation_time, resolution,
   split_table[, c("competition_dist", "mate_dist", "offspring_dist")] <-
     split_table[, c("competition_dist", "mate_dist", "offspring_dist")] / resolution
 
-  if (!is.null(geneflow)) {
-    if (is.data.frame(geneflow)) geneflow <- list(geneflow)
+  if (length(geneflow) > 0) {
     admix_table <- do.call(rbind, geneflow) %>%
       convert_time(
       direction = direction,
@@ -149,9 +170,14 @@ compile <- function(populations, dir, generation_time, resolution,
       generation_time = generation_time
     )
 
+  map_table$time <- round(map_table$time)
   # number maps sequentially in the order SLiM will be swapping them
   # later (each map number X corresponds to X.png)
   map_table <- map_table[order(map_table$time, na.last = FALSE), ]
+  # in some situations, multiple maps are scheduled for a single generation
+  # for one population - this removes the duplicates, but ideally this kind
+  # of problem should be caught somewhere upstream
+  map_table <- map_table[!duplicated(map_table[, c("pop", "time")]), ]
   map_table$map_number <- seq_len(nrow(map_table))
   map_table$path <-map_table$map_number %>%
     paste0(., ".png") %>% file.path(dir, .) %>% gsub("//", "/", .)
@@ -182,7 +208,7 @@ compile <- function(populations, dir, generation_time, resolution,
       directory = dir,
       splits = file.path(dir, "populations.tsv"),
       maps = file.path(dir, "maps.tsv"),
-      geneflow = if (is.null(geneflow)) NULL else file.path(dir, "geneflow.tsv")
+      geneflow = if (length(geneflow) == 0) NULL else file.path(dir, "geneflow.tsv")
     ),
     world = map,
     populations = populations,
@@ -256,8 +282,8 @@ and generation_time.txt are all present", dir), call. = FALSE)
     admix_table$from <- pop_names[admix_table$from_id + 1]
     admix_table$to <- pop_names[admix_table$to_id + 1]
     admix_table$rate <- admix_table$rate / 100
-    admix_table$tstart <- round(admix_table$tstart_gen * generation_time)
-    admix_table$tend <- round(admix_table$tend_gen * generation_time)
+    admix_table$tstart <- admix_table$tstart_gen * generation_time
+    admix_table$tend <- admix_table$tend_gen * generation_time
     admix_table$overlap <- admix_table$overlap == 1
     admix_table <- admix_table[, c("from", "from_id", "to", "to_id", "tstart",
                                    "tstart_gen", "tend", "tend_gen", "rate", "overlap")]
@@ -278,11 +304,11 @@ and generation_time.txt are all present", dir), call. = FALSE)
   # currently forced to do this because we need to interface with the rather
   # limited SLiM builtin language)
   # convert generations back to years
-  splits$tsplit <- round(splits$tsplit * generation_time)
+  splits$tsplit <- splits$tsplit * generation_time
   splits$tremove[splits$tremove != -1] <-
-    round(splits$tremove[splits$tremove != -1] * generation_time)
+    splits$tremove[splits$tremove != -1] * generation_time
   map_table$time[map_table$time != -1] <-
-    round(map_table$time[map_table$time != -1] * generation_time)
+    map_table$time[map_table$time != -1] * generation_time
 
   populations <- readRDS(path_populations)
   direction <- setdiff(unique(sapply(populations, get_time_direction)), "unknown")
@@ -548,8 +574,6 @@ compile_maps <- function(populations, splits_table, resolution) {
     function(i) splits_table[splits_table$pop == i, ]$pop_id
   ))
   maps_table$map <- I(lapply(maps, function(m) m$map))
-
-  maps_table$time <- round(maps_table$time)
 
   maps_table
 }
