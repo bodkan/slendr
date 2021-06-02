@@ -1,18 +1,3 @@
-convert_time <- function(df, direction, columns, max_time, generation_time) {
-  if (direction == "backward") {
-    for (column in columns) {
-      times <- df[[column]]
-      times[times != -1] <- max_time - times[times != -1] + generation_time
-      df[[column]] <- times
-    }
-  }
-  df
-}
-
-rounding_fn <- function(direction) {
-  if (direction == "forward") ceiling else floor
-}
-
 #' Compile the spatial demographic model
 #'
 #' First, compiles the vectorized population spatial maps into a series of
@@ -78,8 +63,6 @@ compile <- function(populations, dir, generation_time, resolution,
     else
       direction <- "backward"
   }
-
-  rounding <- rounding_fn(direction)
 
   map <- attr(populations[[1]], "map")
 

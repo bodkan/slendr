@@ -172,6 +172,19 @@ check_removal_time <- function(time, pop) {
 }
 
 
+#' Convert time from backward to forward direction
+convert_time <- function(df, direction, columns, max_time, generation_time) {
+  if (direction == "backward") {
+    for (column in columns) {
+      times <- df[[column]]
+      times[times != -1] <- max_time - times[times != -1] + generation_time
+      df[[column]] <- times
+    }
+  }
+  df
+}
+
+
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
