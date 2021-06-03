@@ -18,7 +18,7 @@ initialize() {
   defineConstant("MAP_TABLE", read_table(paste0(MODEL_DIR, "/maps.tsv")));
 
   // load all spatial maps
-  defineConstant("MAPS", sapply(map_param("map"), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
+  defineConstant("MAPS", sapply(map_param("map_number"), "Image(paste0(MODEL_DIR, '/', applyValue, '.png'));"));
 
   // world map dimensions
   defineConstant("WIDTH", MAPS[0].width); catn("WIDTH: " + WIDTH);
@@ -41,12 +41,12 @@ initialize() {
   // those events are specified in the configuation tables)
 
   // ancestral population creation times
-  defineConstant("T_ANC", T_BURNIN + drop(POP_TABLE[drop(POP_TABLE[, 2]) == -1, 3]));
+  defineConstant("T_ANC", T_BURNIN + drop(POP_TABLE[drop(POP_TABLE[, 2]) == -1, 4]));
   catn("T_ANC: " + paste(T_ANC));
 
   if (!isNULL(pop_param("tsplit_gen", present = "source"))) {
     // split times
-    defineConstant("T_SPLITS", T_BURNIN + drop(POP_TABLE[drop(POP_TABLE[, 2]) != -1, 3]));
+    defineConstant("T_SPLITS", T_BURNIN + drop(POP_TABLE[drop(POP_TABLE[, 2]) != -1, 4]));
     catn("T_SPLITS: " + paste(T_SPLITS));
   }
 
