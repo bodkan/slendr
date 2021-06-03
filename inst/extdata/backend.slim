@@ -44,7 +44,7 @@ initialize() {
   defineConstant("T_ANC", T_BURNIN + drop(POP_TABLE[drop(POP_TABLE[, 2]) == -1, 3]));
   catn("T_ANC: " + paste(T_ANC));
 
-  if (!isNULL(pop_param("tsplit", present = "source"))) {
+  if (!isNULL(pop_param("tsplit_gen", present = "source"))) {
     // split times
     defineConstant("T_SPLITS", T_BURNIN + drop(POP_TABLE[drop(POP_TABLE[, 2]) != -1, 3]));
     catn("T_SPLITS: " + paste(T_SPLITS));
@@ -52,21 +52,21 @@ initialize() {
 
   if (!isNULL(GENEFLOW_TABLE)) {
     // geneflow start/end times
-    defineConstant("T_GENEFLOW_START", T_BURNIN + admix_param("tstart"));
-    defineConstant("T_GENEFLOW_END", T_BURNIN + admix_param("tend"));
+    defineConstant("T_GENEFLOW_START", T_BURNIN + admix_param("tstart_gen"));
+    defineConstant("T_GENEFLOW_END", T_BURNIN + admix_param("tend_gen"));
     catn("T_GENEFLOW_START: " + paste(T_GENEFLOW_START));
     catn("T_GENEFLOW_END: " + paste(T_GENEFLOW_END));
   }
 
-  if (length(pop_param("tremove"))) {
+  if (length(pop_param("tremove_gen"))) {
     // times of population cleanups
-    defineConstant("T_CLEANUPS", T_BURNIN + pop_param("tremove"));
+    defineConstant("T_CLEANUPS", T_BURNIN + pop_param("tremove_gen"));
     catn("T_CLEANUPS: " + paste(T_CLEANUPS));
   }
 
   if (length(MAPS) > 1) {
     // absolute times of spatial map changes
-    defineConstant("T_MAPS", T_BURNIN + map_param("time"));
+    defineConstant("T_MAPS", T_BURNIN + map_param("time_gen"));
     catn("T_MAPS: " + paste(T_MAPS));
   }
 
@@ -184,7 +184,7 @@ s0 early() {
 // Population splits
 s1 late() {
   // get the populations splitting in the current generation
-  pop_ids = pop_param("pop", present = "tsplit")[sim.generation == T_SPLITS];
+  pop_ids = pop_param("pop", present = "tsplit_gen")[sim.generation == T_SPLITS];
   for (i in pop_ids) {
     split_pop(i);
     set_map(i, sim.generation);
@@ -222,7 +222,7 @@ s3 late() {
 s4 late() {
   // get the ID of the target population from the table
   // of geneflow events and remove them
-  pop_ids = pop_param("pop", present = "tremove")[sim.generation == T_CLEANUPS + 1];
+  pop_ids = pop_param("pop", present = "tremove_gen")[sim.generation == T_CLEANUPS + 1];
   for (i in pop_ids) {
     log_output("cleanup of " + NAMES[i] + "(" + i + ")");
     get_pop(i).setSubpopulationSize(0);
@@ -473,8 +473,9 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     stop("Both population ID and filtering criterion cannot be specified.");
 
   // column names allowed
-  columns = c("pop", "N", "source", "tsplit", "tremove",
-              "competition_dist", "mate_dist", "offspring_dist");
+  columns = c("pop", "N", "source", "tsplit", "tsplit_gen", "tremove",
+              "tremove_gen", "competition_dist", "mate_dist",
+              "offspring_dist", "orig_tsplit", "orig_tremove");
 
   // lookup column name number for indexing into a populations matrix
   col_i = which(columns == col) ;
@@ -491,7 +492,7 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
     // ugly hack to get around the new way that splits are defined for
     // all populations, including the ancestral ones (i.e. explicit "sim_length"
     // parameter has now been removed)
-    if (present == "tsplit") table = table[drop(table[, 2]) != -1, ];
+    if (present == "tsplit_gen") table = table[drop(table[, 2]) != -1, ];
   } else {
     table = POP_TABLE;
   }
@@ -506,7 +507,9 @@ function (numeric) pop_param(s$ col, [Ni$ pop_i = NULL], [Ns$ present = NULL]) {
 function (numeric) admix_param(s$ col, [Ni admix_i = NULL]) {
   if (isNULL(GENEFLOW_TABLE)) return(NULL);
   // column names allowed
-  columns = c("source", "target", "tstart", "tend", "rate", "overlap");
+  columns = c("source", "target", "tstart", "tstart_gen",
+              "tend", "tend_gen", "rate", "overlap",
+              "orig_tstart", "orig_tend");
 
   // lookup column name number for indexing into a populations matrix
   col_i = which(columns == col) ;
@@ -527,7 +530,7 @@ function (numeric) admix_param(s$ col, [Ni admix_i = NULL]) {
 // Get a value of a column from the table of geneflow events
 function (numeric) map_param(s$ col, [Ni$ pop_i = NULL], [Ni$ time = NULL]) {
   // column names allowed
-  columns = c("pop", "time", "map");
+  columns = c("pop", "time", "time_gen", "map_number", "orig_time");
 
   // lookup column name number for indexing into a populations matrix
   col_i = which(columns == col) ;

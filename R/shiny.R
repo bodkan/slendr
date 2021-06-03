@@ -100,24 +100,24 @@ explore <- function(model) {
     split_events,
     sprintf("split of %s from %s", pop, parent)
   )
-  split_events <- split_events[split_events$tsplit != Inf, c("tsplit", "event")]
+  split_events <- split_events[split_events$orig_tsplit != Inf, c("orig_tsplit", "event")]
   colnames(split_events) <- c("time", "event")
 
-  if (!is.null(model$geneflows)) {
-    geneflow_starts <- model$geneflows
+  if (!is.null(model$geneflow)) {
+    geneflow_starts <- model$geneflow
     geneflow_starts$event <- with(
       geneflow_starts,
       sprintf("geneflow %s → %s, %.2f%%", from, to, 100 * rate)
     )
-    geneflow_starts <- geneflow_starts[, c("tstart", "event")]
+    geneflow_starts <- geneflow_starts[, c("orig_tstart", "event")]
     colnames(geneflow_starts) <- c("time", "event")
 
-    geneflow_ends <- model$geneflows
+    geneflow_ends <- model$geneflow
     geneflow_ends$event <- with(
       geneflow_ends,
       sprintf("geneflow %s → %s ends", from, to)
     )
-    geneflow_ends <- geneflow_ends[, c("tend", "event")]
+    geneflow_ends <- geneflow_ends[, c("orig_tend", "event")]
     colnames(geneflow_ends) <- c("time", "event")
   } else {
     geneflow_starts <- NULL
@@ -208,7 +208,7 @@ explore <- function(model) {
                 ))
               } else NULL,
 
-              if (!is.null(model$geneflows)) {
+              if (!is.null(model$geneflow)) {
                 column(4, checkboxInput(
                   inputId = "show_geneflows",
                   label = "Indicate geneflows",
@@ -303,21 +303,21 @@ explore <- function(model) {
         graticules = input$coord_system,
         intersect = input$intersect,
         show_map = input$show_map,
-        geneflows = if (is.null(model$geneflows)) FALSE else input$show_geneflows,
+        geneflows = if (is.null(model$geneflow)) FALSE else input$show_geneflows,
         interpolated_maps = interpolated_maps
       )
 
     })
 
     output$geneflows_table <- renderTable({
-      if (!is.null(model$geneflows)) {
+      if (!is.null(model$geneflow)) {
         migr_df <- get_geneflows(model, input$time_slider)
-        table <- migr_df[, c("from", "to", "tstart", "tend", "rate")]
+        table <- migr_df[, c("from", "to", "orig_tstart", "orig_tend", "rate")]
         table$rate_gen <- sprintf("%.1f%%", table$rate / model$generation_time * 100)
-        table$tstart <- as.integer(table$tstart)
-        table$tend <- as.integer(table$tend)
+        table$orig_tstart <- as.integer(table$orig_tstart)
+        table$orig_tend <- as.integer(table$orig_tend)
         table$rate <- sprintf("%.1f%%", table$rate * 100)
-        colnames(table) <- c("geneflow<br>source", "geneflow<br>target", "start", "end", "rate", "rate per<br>generation")
+        colnames(table) <- c("source", "target", "start", "end", "rate", "rate per gen.")
         table$overlapping <- ifelse(migr_df$overlap, "yes", "no")
         if (!nrow(table)) return(NULL)
         table
