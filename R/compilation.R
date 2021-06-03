@@ -122,8 +122,11 @@ compile <- function(populations, dir, generation_time, resolution,
     split_table[, c("competition_dist", "mate_dist", "offspring_dist")] / resolution
 
   if (length(geneflow) > 0) {
-    admix_table <- do.call(rbind, geneflow) %>%
-      convert_time(
+    admix_table <- do.call(rbind, geneflow)
+    admix_table[, c("orig_tstart", "orig_tend")] <-
+      admix_table[, c("tstart", "tend")]
+    admix_table <- convert_time(
+      admix_table,
       direction = direction,
       columns = c("tstart", "tend"),
       max_time = max_time,
@@ -165,6 +168,7 @@ compile <- function(populations, dir, generation_time, resolution,
   map_table$path <-map_table$map_number %>%
     paste0(., ".png") %>% file.path(dir, .) %>% gsub("//", "/", .)
 
+  map_table$orig_time <- map_table$time
   map_table$time_gen <- map_table$time
   map_table$time_gen[map_table$time_gen != -1] <-
     map_table$time_gen[map_table$time_gen != -1] / generation_time
@@ -530,6 +534,9 @@ compile_splits <- function(populations) {
       stringsAsFactors = FALSE
     )
   }) %>% do.call(rbind, .)
+
+  splits_table[, c("orig_tsplit", "orig_tremove")] <-
+    splits_table[, c("tsplit", "tremove")]
 
   splits_table
 }
