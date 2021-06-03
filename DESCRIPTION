@@ -37,6 +37,7 @@ Imports:
     shinyWidgets,
     shiny,
     data.table
+    rgdal
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

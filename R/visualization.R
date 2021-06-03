@@ -360,30 +360,54 @@ get_nodes <- function(edges) {
 #'
 #' @param ... Objects of classes \code{slendr_map},
 #'   \code{slendr_region}, or \code{slendr_pop}
-#' @param pop_facets Plot populations in individual panels?
-#' @param time_facets Plot time snapshots in individual panels?
-#' @param intersect Intersect the population boundaries against
-#'   landscape and other geographic boundaries (default TRUE)?
+#' @param time Plot a concrete time point
+#' @param geneflows Indicate geneflow events with an arrow
 #' @param graticules Plot graticules in the original Coordinate
 #'   Reference System (such as longitude-latitude), or in the internal
 #'   CRS (such as meters)?
-#' @param title Plot title
-#' @param nrow,ncol Number of columns or rows in the facet plot
+#' @param intersect Intersect the population boundaries against
+#'   landscape and other geographic boundaries (default TRUE)?
+#' @param show_map Show the underlying world map
+#' @param title Title of the plot
 #'
 #' @export
 #'
 #' @import ggplot2
-plot.slendr <- function(..., pop_facets = TRUE, time_facets = FALSE,
-                        intersect = TRUE, graticules = "original",
-                        title = NULL, nrow = NULL, ncol = NULL) {
+plot.slendr <- function(..., time = NULL, geneflows = FALSE,
+                        graticules = "original",
+                        intersect = TRUE, show_map = TRUE,
+                        interpolated_maps = NULL, title = NULL) {
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
+  if (is.null(show_map)) show_map <- FALSE
+
   args <- list(...)
-  # is only the world object being plotted?
-  if (length(args) == 1 & inherits(args[[1]], "slendr_map"))
+
+  if(!all(sapply(args, inherits, "slendr")))
+    stop("Only objects of the class 'slendr' can be visualized using plot.slendr", call. = FALSE)
+
+  classes <- grep("slendr_", unique(unlist(sapply(args, class))), value = TRUE)
+  if (length(classes) > 1 & "slendr_model" %in% classes)
+    stop("If a 'slendr_model' object is to be plotted, it must be a single argument", call. = FALSE)
+  if (length(classes) > 1 & "slendr_map" %in% classes)
+    stop("If a 'slendr_map' object is to be plotted, it must be a single argument", call. = FALSE)
+  if (length(intersect(c("slendr_region", "slendr_pop"), classes)) > 1)
+    stop("'slendr_region' and 'slendr_pops' object cannot be plotted at once", call. = FALSE)
+
+  if (geneflows & (is.null(time) | !inherits(args[[1]], "slendr_model")))
+    stop("Migrations can be visualized only when a time point *and* a 'slendr_model' objects are specified", call. = FALSE)
+
+  # a single model object was provided
+  if (length(args) == 1 & inherits(args[[1]], "slendr_model")) {
+    model <- args[[1]]
+    pops <- model$populations
+    map <- model$world
+    regions <- list()
+  } else if (all(classes == "slendr_map")) {
     map <- args[[1]]
-  else {
+    regions <- pops <- list()
+  } else {
     # extract the map component underlying each population object
     # and make sure they are all the same with no conflicts
     maps <- unique(lapply(args, function(i) attr(i, "map")))
@@ -391,93 +415,118 @@ plot.slendr <- function(..., pop_facets = TRUE, time_facets = FALSE,
       stop("Objects do not share the same map component", call. = F)
     }
     map <- maps[[1]]
+
+    regions <- lapply(args, function(i) if (!is.null(i$region)) i) %>% Filter(Negate(is.null), .)
+    pops <- lapply(args, function(i) if (!is.null(i$pop)) i) %>% Filter(Negate(is.null), .)
   }
 
-  regions <- do.call(rbind, lapply(args, function(i) if (!is.null(i$region)) i))
-  pops <- do.call(rbind, lapply(args, function(i) {
-    if (!is.null(i$pop)) {
-      if (intersect & nrow(map))
-        intersect_features(i)
-      else
-        i
-    }
-  }))
-  # replace the Inf split time in ancestral populations (invisible otherwise)
-  if (any(pops$time == Inf)) pops[pops$time == Inf, ]$time = NA
-
-  p_map <-  ggplot() + theme_bw()
-
-  # plot the world map if a real geographic map was specified
-  if (!is.null(map)) {
-    if (nrow(map))
-      p_map <- p_map + geom_sf(data = map, fill = "lightgray", color = NA)
-  }
-
-  # plot geographic region boundaries, if present
-  if (!is.null(regions)) {
-    # plot in colors only when no populations are present
-    if (is.null(pops)) {
-      p_map <- p_map +
-        geom_sf(data = regions, aes(fill = region), linetype = 2, alpha = 0.5) +
-        geom_sf_label(data = regions, aes(label = region, color = region)) +
-        guides(color = FALSE, fill = FALSE) +
-        theme(axis.title = element_blank())
-    } else {
-      p_map <- p_map +
-        geom_sf(data = regions, fill = "lightgray", linetype = 2, alpha = 0.5) +
-        geom_sf_label(data = regions, aes(label = region))
-    }
-  }
-
-  if (graticules == "original" & has_crs(map))
+  if (graticules == "original" & has_crs(map)) {
     graticule_crs <- "EPSG:4326"
-  else
+    xlab <- "degrees longitude"; ylab <- "degrees latitude"
+  } else {
     graticule_crs <- sf::st_crs(map)
-
-  # plot population ranges, if present
-  if (!is.null(pops)) {
-    pops$pop <- factor(pops$pop)
-
-    if (pop_facets)
-      pop_ids <- as.list(unique(pops$pop))
-    else
-      pop_ids <- list(unique(pops$pop))
-
-    if (time_facets)
-      time_facet <- facet_wrap(~ time)
-    else
-      time_facet <- NULL
-
-    rows <- lapply(pop_ids, function(id) {
-      p_map +
-        geom_sf(data = pops[pops$pop %in% id, ],
-                aes(fill = pop, alpha = -time), color = NA) +
-        geom_sf(data = pops[pops$pop %in% id, ],
-                fill = NA, color = "black", size = 0.1) +
-        scale_fill_discrete(drop = FALSE) +
-        scale_alpha(range = c(1, 0.1)) +
-        ggtitle(sprintf("population: %s", id)) +
-        guides(fill = FALSE, alpha = guide_legend("time")) +
-        time_facet
-    })
-
-    if (length(rows) == 1) {
-      p_map <- rows[[1]] +
-        guides(fill = guide_legend("population")) +
-        theme(plot.title = element_blank())
-    } else
-      p_map <- patchwork::wrap_plots(rows, ncol = ncol, nrow = nrow)
+    xlab <- ylab <- NULL
   }
 
-  if (!is.null(title))
-    p_map <- p_map + ggtitle(title)
-
-  if (has_crs(map))
-    return(p_map & coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0))
-  else
-    return(p_map & coord_sf(
+  if (has_crs(map)) {
+    bbox <- sf::st_bbox(map)
+    p_coord <- coord_sf(crs = sf::st_crs(map), datum = graticule_crs, expand = 0,
+                        xlim = c(bbox["xmin"], bbox["xmax"]),
+                        ylim = c(bbox["ymin"], bbox["ymax"]))
+  } else {
+    p_coord <- coord_sf(
       xlim = attr(map, "xrange"),
       ylim = attr(map, "yrange"),
       expand = 0
-    ))
+    )
+  }
+
+  p <- ggplot()
+
+  if (nrow(map) & show_map)
+    p <- p + geom_sf(data = map, aes(frame = NULL), fill = "lightgray", color = NA)
+
+  if (length(pops)) {
+    pop_names <- unique(unlist(sapply(pops, `[[`, "pop")))
+
+    # if the user specified a time point, "interpolate" all maps at that
+    # time and return just those that match that time point (unless this
+    # was already pre-computed)
+    if (!is.null(time)) {
+      if (is.null(interpolated_maps))
+        interpolated_maps <- fill_maps(pops, time)
+
+      # get all time points defined by the user
+      all_times <- sort(unique(unlist(lapply(pops, `[[`, "time"))))
+
+      # get split and removal times of all specified populations
+      split_times <- sapply(sapply(pops, `[[`, "time"), `[`, 1)
+      removal_times <- sapply(pops, attr, "remove")
+
+      previous_time <- min(all_times[all_times >= time])
+      # get only those populations already/still present at the
+      # specified time...
+      present_pops <- interpolated_maps[split_times >= time & removal_times <= time]
+      # ... and extract their spatial maps
+      pop_maps <- lapply(present_pops, function(pop) {
+        snapshot <- pop[pop$time == previous_time, ]
+        attributes(snapshot) <- attributes(pop)
+        snapshot
+      })
+    } else {
+      pop_maps <- pops
+    }
+
+    if (intersect) pop_maps <- lapply(pop_maps, intersect_features)
+
+    pop_maps <- do.call(rbind, pop_maps)
+    pop_maps$pop <- factor(pop_maps$pop, levels = pop_names)
+
+    if (length(unique(pop_maps$time)) > 1) {
+      warning("Attempting to plot population ranges at multiple time points on
+a single map. This is very hard to do in a satisfying way. Please
+consider using the function `explore()` to plot the model dynamics
+interactively.", call. = FALSE)
+      # build a base map with geographic features
+      p <- p +
+        geom_sf(data = pop_maps, aes(fill = pop, alpha = time), color = NA) +
+        geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
+    } else {
+      p <- p +
+        geom_sf(data = pop_maps, aes(fill = pop), color = NA, alpha = 0.4) +
+        geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
+    }
+    p <- p + scale_fill_discrete(drop = FALSE, name = "")
+
+    # add geneflow arrows, if requested
+    if (geneflows) {
+      migr_df <- get_geneflows(model, time)
+      if (nrow(migr_df))
+        p <- p +
+          geom_point(data = migr_df, aes(x = from_x, y = from_y, color = from), size = 7) +
+          geom_point(data = migr_df, aes(x = to_x, y = to_y, color = to), size = 7) +
+          geom_curve(
+            data = migr_df,
+            aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
+            arrow = arrow(length = unit(2,"mm"), type = "closed"),
+            lineend = "round", size = 0.5, arrow.fill = "black"
+          ) +
+          scale_color_discrete(drop = FALSE) +
+          guides(color = FALSE)
+    }
+  }
+
+  if (length(regions)) {
+    region_maps <- do.call(rbind, regions)
+    p <- p +
+      geom_sf(data = region_maps, aes(fill = region), linetype = 2, alpha = 0.5) +
+      geom_sf_label(data = region_maps, aes(label = region, color = region)) +
+      guides(color = FALSE, fill = FALSE)
+  }
+
+  if (!is.null(title)) p <- p + ggtitle(title)
+
+  p + labs(x = xlab, y = ylab) +
+    theme_bw() +
+    p_coord
 }
