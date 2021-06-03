@@ -36,8 +36,8 @@ test_that("forward and backward time model objects are equivalent", {
     competition_dist = 1, mate_dist = 1, offspring_dist = 1
   )
 
-  expect_true(all.equal(forward$splits, backward$splits))
-  expect_true(all.equal(geneflows$splits, geneflows$splits))
+  expect_true(all.equal(forward$splits[, 1:12], backward$splits[, 1:12]))
+  expect_true(all.equal(forward$geneflow[, 1:10], backward$geneflow[, 1:10]))
   expect_true(all.equal(forward$maps[, c("pop", "pop_id", "time", "time_gen")],
                         backward$maps[, c("pop", "pop_id", "time", "time_gen")]))
 
@@ -99,10 +99,10 @@ test_that("forward and backward models yield the same simulation result", {
   )
 
   # model objects are the same
-  expect_true(all.equal(forward$splits, backward$splits))
-  expect_true(all.equal(geneflow$splits, geneflow$splits))
-  expect_true(all.equal(forward$maps[, c("time", "time_gen")],
-                        backward$maps[, c("time", "time_gen")]))
+  expect_true(all.equal(forward$splits[, 1:12], backward$splits[, 1:12]))
+  expect_true(all.equal(forward$geneflow[, 1:10], backward$geneflow[, 1:10]))
+  expect_true(all.equal(forward$maps[, c("pop", "pop_id", "time", "time_gen")],
+                        backward$maps[, c("pop", "pop_id", "time", "time_gen")]))
 
   components <- c("generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
