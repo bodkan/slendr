@@ -58,10 +58,10 @@ read_ancestries <- function(model_dir) {
 
 #' Get a data frame of geneflow events active at a given time point
 get_geneflows <- function(model, time) {
-  if (is.null(model$geneflows)) return(NULL)
+  if (is.null(model$geneflow)) return(NULL)
   pop_names <- unique(unlist(sapply(model$populations, `[[`, "pop")))
 
-  geneflows <- subset(model$geneflows, tstart >= time & tend <= time)
+  geneflows <- subset(model$geneflow, orig_tstart >= time & orig_tend <= time)
   geneflows$from <- factor(geneflows$from, levels = pop_names)
   geneflows$to <- factor(geneflows$to, levels = pop_names)
 
@@ -176,6 +176,7 @@ check_removal_time <- function(time, pop) {
 convert_time <- function(df, direction, columns, max_time, generation_time) {
   if (direction == "backward") {
     for (column in columns) {
+      df[[paste0("orig_", column)]] <- df[[column]]
       times <- df[[column]]
       times[times != -1] <- max_time - times[times != -1] + generation_time
       df[[column]] <- times
