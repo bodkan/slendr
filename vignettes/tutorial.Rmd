@@ -686,7 +686,7 @@ by the backend SLiM script provided by `slendr` (more on that below).
 ```{r}
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
-  geneflows = geneflows,
+  geneflow = geneflows,
   dir = "/tmp/test-model",
   generation_time = 30,
   resolution = 10e3, # 10km per pixel
@@ -723,7 +723,7 @@ read.table("/tmp/test-model/populations.tsv", header = T)
 - the table of geneflow events:
 
 ```{r}
-read.table("/tmp/test-model/geneflows.tsv", header = T)
+read.table("/tmp/test-model/geneflow.tsv", header = T)
 ```
 
 - and finally, the table of populations whose spatial maps will be
@@ -835,7 +835,7 @@ manpage of `slim()` for more details.
 
 ```{r}
 slim(
-  model, seq_length = 100, recomb_rate = 0,
+  model, seq_length = 1, recomb_rate = 0,
   save_locations = TRUE, track_ancestry = 1,
   method = "batch" # run the model in batch mode (default is SLiMgui)
 )
