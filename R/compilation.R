@@ -182,7 +182,8 @@ compile <- function(populations, dir, generation_time, resolution,
   } else {
     return_geneflow <-
       admix_table[,c("from", "from_id", "to", "to_id", "tstart", "tstart_gen",
-                     "tend", "tend_gen", "rate", "overlap")]
+                     "tend", "tend_gen", "rate", "overlap",
+                     "orig_tstart", "orig_tend")]
   }
 
   # compile the result
@@ -197,9 +198,10 @@ compile <- function(populations, dir, generation_time, resolution,
     populations = populations,
     splits = split_table[, c("pop", "pop_id", "parent", "parent_id", "N",
                              "tsplit", "tsplit_gen", "tremove", "tremove_gen",
-                             "competition_dist", "mate_dist", "offspring_dist")],
+                             "competition_dist", "mate_dist", "offspring_dist",
+                             "orig_tsplit", "orig_tremove")],
     geneflow = return_geneflow,
-    maps = map_table[, c("pop", "pop_id", "time", "time_gen", "path")],
+    maps = map_table[, c("pop", "pop_id", "time", "time_gen", "path", "orig_time")],
     generation_time = generation_time,
     resolution = resolution,
     length = max_time,
@@ -269,7 +271,8 @@ and generation_time.txt are all present", dir), call. = FALSE)
     admix_table$tend <- admix_table$tend_gen * generation_time
     admix_table$overlap <- admix_table$overlap == 1
     admix_table <- admix_table[, c("from", "from_id", "to", "to_id", "tstart",
-                                   "tstart_gen", "tend", "tend_gen", "rate", "overlap")]
+                                   "tstart_gen", "tend", "tend_gen", "rate", "overlap",
+                                   "orig_tstart", "orig_tend")]
   }
 
   # load and reformat the maps table
@@ -281,17 +284,6 @@ and generation_time.txt are all present", dir), call. = FALSE)
     stop(sprintf("Directory '%s' does not contain all maps required by the model configuration (%s)", dir, map_table$map), call. = FALSE)
   # recreate the user-specified population labels
   map_table$pop <- pop_names[map_table$pop_id + 1]
-
-  # convert times to their original value before conversion for SLiM (this
-  # handling of -1 and Inf special cases is absolutely awful, but we are
-  # currently forced to do this because we need to interface with the rather
-  # limited SLiM builtin language)
-  # convert generations back to years
-  splits$tsplit <- splits$tsplit * generation_time
-  splits$tremove[splits$tremove != -1] <-
-    splits$tremove[splits$tremove != -1] * generation_time
-  map_table$time[map_table$time != -1] <-
-    map_table$time[map_table$time != -1] * generation_time
 
   populations <- readRDS(path_populations)
   direction <- setdiff(unique(sapply(populations, get_time_direction)), "unknown")
@@ -307,9 +299,10 @@ and generation_time.txt are all present", dir), call. = FALSE)
     populations = populations,
     splits = splits[, c("pop", "pop_id", "parent", "parent_id", "N", "tsplit",
                         "tsplit_gen", "tremove", "tremove_gen",
-                        "competition_dist", "mate_dist", "offspring_dist")],
+                        "competition_dist", "mate_dist", "offspring_dist",
+                        "orig_tsplit", "orig_tremove")],
     geneflow = admix_table,
-    maps = map_table[, c("pop", "pop_id", "time", "time_gen", "path")],
+    maps = map_table[, c("pop", "pop_id", "time", "time_gen", "path", "orig_time")],
     generation_time = generation_time,
     resolution = resolution,
     direction = direction
@@ -468,8 +461,8 @@ write_model <- function(dir, populations, admix_table, map_table,
     admix_table$overlap <- as.integer(admix_table$overlap)
 
     write.table(
-      admix_table[, c("from_id", "to_id", "tstart_gen", "tend_gen",
-                      "rate", "overlap")],
+      admix_table[, c("from_id", "to_id", "tstart", "tstart_gen", "tend", "tend_gen",
+                      "rate", "overlap", "orig_tstart", "orig_tend")],
       file.path(dir, "geneflow.tsv"),
       sep = "\t", quote = FALSE, row.names = FALSE
     )
@@ -484,14 +477,16 @@ write_model <- function(dir, populations, admix_table, map_table,
   saveRDS(populations, file.path(dir, "populations.rds"))
 
   write.table(
-    split_table[, c("pop_id", "N", "parent_id", "tsplit_gen", "tremove_gen",
-                    "competition_dist", "mate_dist", "offspring_dist")],
+    split_table[, c("pop_id", "N", "parent_id", "tsplit", "tsplit_gen",
+                    "tremove", "tremove_gen",
+                    "competition_dist", "mate_dist", "offspring_dist",
+                    "orig_tsplit", "orig_tremove")],
     file.path(dir, "populations.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )
 
   write.table(
-    map_table[, c("pop_id", "time_gen", "map_number")],
+    map_table[, c("pop_id", "time", "time_gen", "map_number", "orig_time")],
     file.path(dir, "maps.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
   )

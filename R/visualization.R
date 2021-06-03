@@ -127,9 +127,11 @@ ancestries <- function(model, generation_time = FALSE) {
 #' @import ggplot2 ggraph
 #' @export
 graph <- function(model, show_cleanups = TRUE) {
-  # summarize model configuration into a tabular form
+  # plot times in their original direction
   split_table <- model$splits
-  geneflow_table <- model$geneflows
+  split_table[, c("tsplit", "tremove")] <-   split_table[, c("orig_tsplit", "orig_tremove")]
+  geneflow_table <- model$geneflow
+  geneflow_table[, c("tstart", "tend")] <-   geneflow_table[, c("orig_tstart", "orig_tend")]
 
   split_edges <- get_split_edges(split_table)
   geneflow_edges <- get_geneflow_edges(geneflow_table)
