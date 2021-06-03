@@ -462,10 +462,10 @@ call. = FALSE)
 No overlap between population ranges of %s and %s at time %d.
 
 Please check the spatial maps of both populations by running
-`plot(%s, %s, pop_facets = F)` and adjust them accordingly.
-Alternatively, in case this makes sense for your model, you can
-add `overlap = F` which will instruct slendr to simulate geneflow
-without spatial overlap between populations.",
+`plot(%s, %s)` and adjust them accordingly. Alternatively, in case
+this makes sense for your model, you can add `overlap = F` which
+will instruct slendr to simulate geneflow without spatial overlap
+between populations.",
       from_name, to_name, start, deparse(substitute(from)),
       deparse(substitute(to)), call. = FALSE))
   }
