@@ -2,11 +2,11 @@ test_that("forward and backward time model objects are equivalent", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
 
   # forward direction
-  p1 <- population(name = "p1", parent = "ancestor", time = 1, N = 1, center = c(1, 1), radius = 1, map = map)
-  p2 <- population(name = "p2", parent = p1,         time = 2, N = 1, center = c(1, 1), radius = 1)
-  p3 <- population(name = "p3", parent = p1,         time = 3, N = 1, center = c(1, 1), radius = 1)
-  p4 <- population(name = "p4", parent = p3,         time = 4, N = 1, center = c(1, 1), radius = 1)
-  p5 <- population(name = "p5", parent = p2,         time = 5, N = 1, center = c(1, 1), radius = 1)
+  p1 <- population(name = "p1",              time = 1, N = 1, center = c(1, 1), radius = 1, map = map)
+  p2 <- population(name = "p2", parent = p1, time = 2, N = 1, center = c(1, 1), radius = 1)
+  p3 <- population(name = "p3", parent = p1, time = 3, N = 1, center = c(1, 1), radius = 1)
+  p4 <- population(name = "p4", parent = p3, time = 4, N = 1, center = c(1, 1), radius = 1)
+  p5 <- population(name = "p5", parent = p2, time = 5, N = 1, center = c(1, 1), radius = 1)
 
   geneflows <- geneflow(p1, p2, start = 2, end = 3, rate = 0.5, overlap = FALSE)
 
@@ -20,11 +20,11 @@ test_that("forward and backward time model objects are equivalent", {
   )
 
   # backward direction
-  p1 <- population(name = "p1", parent = "ancestor", time = 5, N = 1, center = c(1, 1), radius = 1, map = map)
-  p2 <- population(name = "p2", parent = p1,         time = 4, N = 1, center = c(1, 1), radius = 1)
-  p3 <- population(name = "p3", parent = p1,         time = 3, N = 1, center = c(1, 1), radius = 1)
-  p4 <- population(name = "p4", parent = p3,         time = 2, N = 1, center = c(1, 1), radius = 1)
-  p5 <- population(name = "p5", parent = p2,         time = 1, N = 1, center = c(1, 1), radius = 1)
+  p1 <- population(name = "p1",              time = 5, N = 1, center = c(1, 1), radius = 1, map = map)
+  p2 <- population(name = "p2", parent = p1, time = 4, N = 1, center = c(1, 1), radius = 1)
+  p3 <- population(name = "p3", parent = p1, time = 3, N = 1, center = c(1, 1), radius = 1)
+  p4 <- population(name = "p4", parent = p3, time = 2, N = 1, center = c(1, 1), radius = 1)
+  p5 <- population(name = "p5", parent = p2, time = 1, N = 1, center = c(1, 1), radius = 1)
 
   geneflows <- geneflow(p1, p2, start = 4, end = 3, rate = 0.5, overlap = FALSE)
 
@@ -118,6 +118,7 @@ test_that("forward and backward models yield the same simulation result", {
     readLines %>% grep("MODEL_DIR|OUTPUT_PREFIX", ., value = TRUE, invert = TRUE)
   expect_equal(f_script, b_script)
 
+  # make sure that the simulated location data is the same
   f_loc <- data.table::fread(file.path(forward$config$directory, "output_ind_locations.tsv.gz"))
   b_loc <- data.table::fread(file.path(backward$config$directory, "output_ind_locations.tsv.gz"))
 
