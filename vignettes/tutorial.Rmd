@@ -600,7 +600,7 @@ visual inspection of the specified model and for looking for potential
 issues before the export of individual spatio-temporal
 maps. Obviously, this is a lot of multi-dimensional information:
 
-```{r plot_maps, fig.width = 7, fig.height = 9}
+```{r plot_maps}
 plot(afr, ooa, ehg, eur, ana, yam, yam_migr)
 ```
 

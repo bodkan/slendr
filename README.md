@@ -76,10 +76,11 @@ map <- world(
 
 #### 2. Define demographic history and population boundaries
 
-Times are given in "units before present", distances in kilometers. Note
+Times are given in "units before the present", distances in kilometers. Note
 that for easier model definition, all coordinates of are specified by
 the user in geographic coordinate system (longitude, latitude), but are
-internally represented in a projected CRS.
+internally represented in a projected CRS. If desired, times can also be
+given in a forward direction.
 
 
 ```r
@@ -143,7 +144,7 @@ geneflows <- list(
 model <- compile(
   dir = "/tmp/example-model", # location of serialized model data
   populations = list(p1, p2, p3, p4, p5),
-  geneflows = geneflows,
+  geneflow = geneflows,
   generation_time = 30,
   competition_dist = 200e3, # interaction distances (in meters)
   mate_dist = 200e3, offspring_dist = 50e3,
@@ -152,7 +153,8 @@ model <- compile(
 ```
 
 Compiled model is kept as an R object which can be passed to different
-functions, most importantly the `slim()` function shown below.
+functions, most importantly the `slim()` function shown below. Evaluating
+it in the console prints out a brief summary of the mode:
 
 
 ```r
@@ -160,10 +162,11 @@ model
 #> slendr 'model' object 
 #> --------------------- 
 #> populations: pop1, pop2, pop3, pop4, pop5 
-#> geneflow events: 2 
-#> generation time: 
+#> geneflow events: [no geneflow]
+#> generation time: 30 
+#> time direction: backward 
 #> number of spatial maps: 71 
-#> resolution: 10000 km per pixel
+#> resolution: 10000 distance unit per pixel
 #> 
 #> configuration files in: /private/tmp/example-model 
 #> 

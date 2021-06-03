@@ -12,8 +12,9 @@ compile(
   competition_dist = NULL,
   mate_dist = NULL,
   offspring_dist = NULL,
-  geneflow = NULL,
-  overwrite = FALSE
+  geneflow = list(),
+  overwrite = FALSE,
+  sim_length = NULL
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ parent-offspring distance}
 
 \item{overwrite}{Overwrite the contents of the output directory in case it
 already exists?}
+
+\item{sim_length}{Total length of the simulation (if time is specified in a
+forward direction)}
 }
 \value{
 Compiled \code{slendr_model} model object

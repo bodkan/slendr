@@ -156,9 +156,8 @@ to a given location for later use.</p>
   method <span class='op'>=</span> <span class='st'>"gui"</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
   include <span class='op'>=</span> <span class='cn'>NULL</span>,
-  burnin <span class='op'>=</span> <span class='cn'>NULL</span>,
-  script_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"script.slim"</span><span class='op'>)</span>,
-  output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>config</span><span class='op'>$</span><span class='va'>directory</span>, <span class='st'>"output"</span><span class='op'>)</span>
+  burnin <span class='op'>=</span> <span class='fl'>0</span>,
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -217,13 +216,8 @@ be combined with the backend SLiM code</p></td>
 i.e. years)</p></td>
     </tr>
     <tr>
-      <th>script_path</th>
-      <td><p>Name of the compiled output script</p></td>
-    </tr>
-    <tr>
-      <th>output_prefix</th>
-      <td><p>Common prefix (including path) for all output
-files</p></td>
+      <th>seed</th>
+      <td><p>Random seed (if missing, SLiM's own seed will be used)</p></td>
     </tr>
     <tr>
       <th>sim_length</th>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Animate the simulated population dynamics — animate • slendr</title>
+<title>Convert time from backward to forward direction — convert_time • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Animate the simulated population dynamics — animate" />
-<meta property="og:description" content="Animate the simulated population dynamics" />
+<meta property="og:title" content="Convert time from backward to forward direction — convert_time" />
+<meta property="og:description" content="Convert time from backward to forward direction" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -128,43 +128,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Animate the simulated population dynamics</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
-    <div class="hidden name"><code>animate.Rd</code></div>
+    <h1>Convert time from backward to forward direction</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>convert_time.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Animate the simulated population dynamics</p>
+    <p>Convert time from backward to forward direction</p>
     </div>
 
-    <pre class="usage"><span class='fu'>animate</span><span class='op'>(</span><span class='va'>model</span>, nframes <span class='op'>=</span> <span class='fl'>200</span>, gif <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>convert_time</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>direction</span>, <span class='va'>columns</span>, <span class='va'>max_time</span>, <span class='va'>generation_time</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>model</th>
-      <td><p>Compiled <code>slendr_model</code> model object</p></td>
-    </tr>
-    <tr>
-      <th>nframes</th>
-      <td><p>Number of frames of the animation</p></td>
-    </tr>
-    <tr>
-      <th>gif</th>
-      <td><p>Path to an output GIF (animation object returned by default)
-#' @param nframes Number of frames of the animation</p></td>
-    </tr>
-    <tr>
-      <th>locations</th>
-      <td><p>Table with individual locations</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>If <code>gif = NULL</code>, return gganimate animation object. Otherwise a GIF
-file is saved and no value is returned.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
