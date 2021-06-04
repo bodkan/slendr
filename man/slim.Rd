@@ -15,9 +15,8 @@ slim(
   method = "gui",
   verbose = FALSE,
   include = NULL,
-  burnin = NULL,
-  script_path = file.path(model$config$directory, "script.slim"),
-  output_prefix = file.path(model$config$directory, "output")
+  burnin = 0,
+  seed = NULL
 )
 }
 \arguments{
@@ -54,10 +53,7 @@ be combined with the backend SLiM code}
 \item{burnin}{Length of the burnin (in model's time units,
 i.e. years)}
 
-\item{script_path}{Name of the compiled output script}
-
-\item{output_prefix}{Common prefix (including path) for all output
-files}
+\item{seed}{Random seed (if missing, SLiM's own seed will be used)}
 
 \item{sim_length}{Total length of the simulation (in model time
 units, i.e.  years)}

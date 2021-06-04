@@ -19,6 +19,9 @@
     <loc>https://bodkan.net/stamp/reference/check_resolution.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/stamp/reference/check_split_time.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/stamp/reference/compile.html</loc>
   </url>
   <url>
@@ -29,6 +32,9 @@
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/convert.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/convert_time.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/copy_attributes.html</loc>
@@ -64,6 +70,9 @@
     <loc>https://bodkan.net/stamp/reference/get_intermediate_edges.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/stamp/reference/get_lineage_splits.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/stamp/reference/get_nodes.html</loc>
   </url>
   <url>
@@ -71,6 +80,9 @@
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/get_terminal_edges.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/stamp/reference/get_time_direction.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/stamp/reference/get_time_point.html</loc>
