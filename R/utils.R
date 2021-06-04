@@ -58,10 +58,10 @@ read_ancestries <- function(model_dir) {
 
 #' Get a data frame of geneflow events active at a given time point
 get_geneflows <- function(model, time) {
-  if (is.null(model$geneflows)) return(NULL)
+  if (is.null(model$geneflow)) return(NULL)
   pop_names <- unique(unlist(sapply(model$populations, `[[`, "pop")))
 
-  geneflows <- subset(model$geneflows, tstart >= time & tend <= time)
+  geneflows <- subset(model$geneflow, orig_tstart >= time & orig_tend <= time)
   geneflows$from <- factor(geneflows$from, levels = pop_names)
   geneflows$to <- factor(geneflows$to, levels = pop_names)
 
@@ -97,6 +97,92 @@ copy_attributes <- function(to, from, which) {
   }
   class(to) <- class(from)
   to
+}
+
+
+#' Get split times of populations in the lineage of the given population
+get_lineage_splits <- function(x) {
+  parent <- attr(x, "parent")
+  if (is.character(parent))
+    return(x$time[1])
+  else
+    return(c(x$time[1], get_lineage_splits(parent)))
+}
+
+
+#' Get direction of time implied by the model
+get_time_direction <- function(pop) {
+  times <- get_lineage_splits(pop)
+  if (length(times) == 1)
+    "unknown"
+  else if (all(diff(times) > 0))
+    "backward"
+  else
+    "forward"
+}
+
+
+#' Check the consistency of the given split time to the parent population
+check_split_time <- function(time, parent) {
+  parent_time <- parent$time[1]
+  direction <- get_time_direction(parent)
+  if (direction == "forward" & time <= parent_time) {
+    stop(sprintf("The model implies forward time direction but the specified split time (%d) is lower than the parent's (%s)",
+                 time, parent_time),
+         call. = FALSE)
+  } else if (direction == "backward" & time >= parent_time) {
+    stop(sprintf("The model implies backward time direction but the specified split time (%s) is higher than the parent's (%s)",
+                 time, parent_time),
+         call. = FALSE)
+  }
+}
+
+
+check_event_time <- function(time, pop) {
+  direction <- get_time_direction(pop)
+
+  previous_time <- pop$time[1]
+  if (direction == "forward" & any(time < previous_time)) {
+    stop(sprintf("The model implies forward time direction but the specified event time (%d) is lower than last active time (%s). ",
+                 time, previous_time),
+         call. = FALSE)
+  }
+  if (direction == "backward" & any(time > previous_time)) {
+    stop(sprintf("The model implies backward time direction but the specified event time (%d) is lower than last active time (%s). ",
+                 time, previous_time),
+         call. = FALSE)
+  }
+}
+
+
+check_removal_time <- function(time, pop) {
+  direction <- get_time_direction(pop)
+
+  removal_time <- attr(pop, "remove")
+  if (removal_time != -1 & direction == "forward" & any(time > removal_time)) {
+    stop(sprintf("The specified event time (%d) is not consistent with the scheduled removal of %s (%s). ",
+                 time, pop$pop[1], removal_time),
+         call. = FALSE)
+  }
+  if (removal_time != -1 & direction == "backward" & any(time < removal_time)) {
+    stop(sprintf("The specified event time (%d) is not consistent with the scheduled removal of %s (%s). ",
+                 time, pop$pop[1], removal_time),
+         call. = FALSE)
+  }
+}
+
+
+#' Convert time from backward to forward direction
+convert_time <- function(df, direction, columns, max_time, generation_time) {
+  if (direction == "backward") {
+    for (column in columns) {
+      df[[paste0("orig_", column)]] <- df[[column]]
+      times <- df[[column]]
+      times[times != -1] <- max_time - times[times != -1] + generation_time
+      df[[column]] <- times
+    }
+  }
+  df
 }
 
 

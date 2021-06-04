@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Animate the simulated population dynamics — animate • slendr</title>
+<title>Check the consistency of the given split time to the parent population — check_split_time • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Animate the simulated population dynamics — animate" />
-<meta property="og:description" content="Animate the simulated population dynamics" />
+<meta property="og:title" content="Check the consistency of the given split time to the parent population — check_split_time" />
+<meta property="og:description" content="Check the consistency of the given split time to the parent population" />
 <meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
 
 
@@ -128,43 +128,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Animate the simulated population dynamics</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
-    <div class="hidden name"><code>animate.Rd</code></div>
+    <h1>Check the consistency of the given split time to the parent population</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>check_split_time.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Animate the simulated population dynamics</p>
+    <p>Check the consistency of the given split time to the parent population</p>
     </div>
 
-    <pre class="usage"><span class='fu'>animate</span><span class='op'>(</span><span class='va'>model</span>, nframes <span class='op'>=</span> <span class='fl'>200</span>, gif <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>check_split_time</span><span class='op'>(</span><span class='va'>time</span>, <span class='va'>parent</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>model</th>
-      <td><p>Compiled <code>slendr_model</code> model object</p></td>
-    </tr>
-    <tr>
-      <th>nframes</th>
-      <td><p>Number of frames of the animation</p></td>
-    </tr>
-    <tr>
-      <th>gif</th>
-      <td><p>Path to an output GIF (animation object returned by default)
-#' @param nframes Number of frames of the animation</p></td>
-    </tr>
-    <tr>
-      <th>locations</th>
-      <td><p>Table with individual locations</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>If <code>gif = NULL</code>, return gganimate animation object. Otherwise a GIF
-file is saved and no value is returned.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

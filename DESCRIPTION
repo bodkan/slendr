@@ -36,6 +36,7 @@ Imports:
     ggraph,
     shinyWidgets,
     shiny,
+    data.table,
     rgdal
 Suggests: 
     testthat (>= 3.0.0),

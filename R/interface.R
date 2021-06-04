@@ -42,8 +42,10 @@ population <- function(name, time, N, parent = "ancestor", map = NULL,
       stop("Ancestral population must specify its 'map'", call. = FALSE)
     else
       map <- map
-  } else
+  } else {
+    check_split_time(time, parent)
     map <- attr(parent, "map")
+  }
 
   # define the population range as a simple geometry object
   # and bind it with the annotation info into an sf object
@@ -52,35 +54,35 @@ population <- function(name, time, N, parent = "ancestor", map = NULL,
   else
     geometry <- define_boundary(map, center, radius, polygon)
 
-  boundary <- sf::st_sf(
+  pop <- sf::st_sf(
     data.frame(pop = name, time = time, N = N, stringsAsFactors = FALSE),
     geometry = geometry
   )
-  sf::st_agr(boundary) <- "constant"
+  sf::st_agr(pop) <- "constant"
 
   # when to clean up the population?
-  attr(boundary, "remove") <- if (!is.null(remove)) remove else -1
+  attr(pop, "remove") <- if (!is.null(remove)) remove else -1
 
   # keep a record of the parent population
   if (inherits(parent, "slendr_pop")) {
-    attr(boundary, "parent") <- parent[nrow(parent), ]
+    attr(pop, "parent") <- parent
     # keep the map as an internal attribute
-    attr(boundary, "map") <- map
+    attr(pop, "map") <- map
   } else if (is.character(parent) & parent == "ancestor") {
-    attr(boundary, "parent") <- "ancestor"
-    attr(boundary, "map") <- map
+    attr(pop, "parent") <- "ancestor"
+    attr(pop, "map") <- map
   } else
     stop("Suspicious parent population", call. = FALSE)
 
-  attr(boundary, "intersect") <- intersect
+  attr(pop, "intersect") <- intersect
 
-  attr(boundary, "competition_dist") <- competition_dist
-  attr(boundary, "mate_dist") <- mate_dist
-  attr(boundary, "offspring_dist") <- offspring_dist
+  attr(pop, "competition_dist") <- competition_dist
+  attr(pop, "mate_dist") <- mate_dist
+  attr(pop, "offspring_dist") <- offspring_dist
 
-  class(boundary) <- set_class(boundary, "pop")
+  class(pop) <- set_class(pop, "pop")
 
-  boundary
+  pop
 }
 
 
@@ -105,15 +107,8 @@ population <- function(name, time, N, parent = "ancestor", map = NULL,
 #' @export
 change <- function(pop, time, N = NULL,
                    center = NULL, radius = NULL, polygon = NULL) {
-  if (time %in% pop$time)
-    stop("Time point already defined", call. = FALSE)
-
-  if (time > pop[nrow(pop), ]$time)
-    warning("Specifying a spatial map at a time point prior to the last spatial map present for the population",
-            call. = FALSE)
-
-  if (time < attr(pop, "remove"))
-    stop("Cannot update population status after it has been removed")
+  check_event_time(start, pop)
+  check_removal_time(start, pop)
 
   map <- attr(pop, "map")
 
@@ -163,6 +158,8 @@ change <- function(pop, time, N = NULL,
 #' @export
 expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   check_not_intersected(pop)
+  check_event_time(c(start, end), pop)
+  check_removal_time(start, pop)
 
   region_start <- pop[nrow(pop), ]
 
@@ -224,6 +221,8 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 #' @export
 move <- function(pop, trajectory, end, snapshots, start = NULL) {
   check_not_intersected(pop)
+  check_event_time(c(start, end), pop)
+  check_removal_time(start, pop)
 
   map <- attr(pop, "map")
 
@@ -233,6 +232,8 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
 
   region_start <- pop[nrow(pop), ]
   if (!is.null(start)) {
+    check_event_time(time = start, pop)
+    check_removal_time(start, pop)
     region_start$time <- start
     sf::st_agr(region_start) <- "constant"
   }
@@ -421,12 +422,27 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 #'
 #' @export
 geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
+  # make sure the population is not removed during the the admixture period
+  check_removal_time(start, from); check_removal_time(end, from)
+  check_removal_time(start, to); check_removal_time(end, to)
+
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
+  if (from$time[1] <= start & from$time[1] <= end &
+      to$time[1] <= start & to$time[1] <= end)
+    comp <- `<=`
+  else if (from$time[1] >= start & from$time[1] >= end &
+             to$time[1] >= start & to$time[1] >= end)
+    comp <- `>=`
+  else
+    stop(sprintf("Specified times are not consistent with the assumed direction of
+time (geneflow %s -> %s in the time window %s-%s)", from_name, to_name, start, end),
+call. = FALSE)
+
   # get the last specified spatial maps before the geneflow time
-  region_from <- intersect_features(from[from$time >= start, ] %>% .[nrow(.), ])
-  region_to <- intersect_features(to[to$time >= start, ] %>% .[nrow(.), ])
+  region_from <- intersect_features(from[comp(from$time, start), ] %>% .[nrow(.), ])
+  region_to <- intersect_features(to[comp(to$time, start), ] %>% .[nrow(.), ])
 
   if (nrow(region_from) == 0)
     stop(sprintf("No spatial map defined for %s at/before the time %d",
@@ -436,25 +452,6 @@ geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
     stop(sprintf("No spatial map defined for %s at/before the time %d",
                  to_name, start),
          call. = FALSE)
-
-  # make sure the population is not removed during the the geneflow period
-  from_remove <- attr(from, "remove")
-  to_remove <- attr(to, "remove")
-  if (from_remove > start | from_remove > end) {
-    stop(sprintf(
-      "Population %s scheduled for removal at time %d,
-which is outside of the %d-%d geneflow time range",
-      from_name, from_remove, start, end),
-      call. = FALSE
-    )
-  }
-  if (to_remove > start | to_remove > end) {
-    stop(sprintf("Population %s scheduled for removal at time %d which is
-outside of the specified %d-%d geneflow time window",
-      to_name, to_remove, start, end),
-      call. = FALSE
-    )
-  }
 
   # calculate the overlap of spatial ranges between source and target
   region_overlap <- sf::st_intersection(region_from, region_to)
@@ -682,9 +679,10 @@ print.slendr <- function(x, sf = FALSE, full = FALSE) {
         cat(nrow(x$geneflows), "\n")
       else
         cat("[no geneflow]\n")
-      cat("generation time:", x$gen_time, "\n")
+      cat("generation time:", x$generation_time, "\n")
+      cat("time direction:", get_time_direction(tail(x$populations, 1)[[1]]), "\n")
       cat("number of spatial maps:", nrow(x$maps), "\n")
-      cat("resolution:", x$resolution, "km per pixel\n\n")
+      cat("resolution:", x$resolution, "distance unit per pixel\n\n")
       cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
       cat(
 "A detailed model specification can be found in `$splits`, `$geneflows`,
