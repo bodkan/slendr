@@ -2,9 +2,9 @@
 
 
 
-## Spatio-temporal Population Genetics Simulations Using SLiM <a href='https://bodkan.net/slendr'><img src="man/figures/logo.png" align="right" height="139"/></a>
+## Spatio-temporal Population Genetics Simulations in SLiM
 
-**This software is still under development!** I have been making a good
+**This software is still under development!** <a href='https://bodkan.net/slendr'><img src="man/figures/logo.png" align="right" height="139"/></a> I have been making a good
 progress towards the first beta version, but the package still has some
 way to go before being production ready.
 
