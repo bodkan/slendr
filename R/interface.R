@@ -28,6 +28,8 @@
 #'   choice distance
 #' @param offspring_dist Standard deviation of the normal distribution of the
 #'   parent-offspring distance
+#' @param aquatic Is the species aquatic (\code{FALSE} by default, i.e.
+#'   terrestrial species)?
 #'
 #' @return Object of the class \code{slendr_pop}
 #'
@@ -35,7 +37,8 @@
 population <- function(name, time, N, parent = "ancestor", map = NULL,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
-                       competition_dist = NULL, mate_dist = NULL, offspring_dist = NULL) {
+                       competition_dist = NULL, mate_dist = NULL, offspring_dist = NULL,
+                       aquatic = FALSE) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
     if (is.null(map))
@@ -79,6 +82,8 @@ population <- function(name, time, N, parent = "ancestor", map = NULL,
   attr(pop, "competition_dist") <- competition_dist
   attr(pop, "mate_dist") <- mate_dist
   attr(pop, "offspring_dist") <- offspring_dist
+
+  attr(pop, "aquatic") <- aquatic
 
   class(pop) <- set_class(pop, "pop")
 
@@ -135,7 +140,7 @@ change <- function(pop, time, N = NULL,
   result <- copy_attributes(
     combined, pop,
     c("map", "parent", "remove", "intersect", "competition_dist",
-      "mate_dist", "offspring_dist")
+      "mate_dist", "offspring_dist", "aquatic")
   )
 
   result
@@ -198,7 +203,7 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   result <- copy_attributes(
     all_maps, pop,
     c("map", "parent", "remove", "intersect", "competition_dist",
-      "mate_dist", "offspring_dist")
+      "mate_dist", "offspring_dist", "aquatic")
   )
 
   result
@@ -291,7 +296,7 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   result <- copy_attributes(
     inter_regions, pop,
     c("map", "parent", "remove", "intersect", "competition_dist",
-      "mate_dist", "offspring_dist")
+      "mate_dist", "offspring_dist", "aquatic")
   )
 
   result
@@ -626,6 +631,11 @@ print.slendr <- function(x, sf = FALSE, full = FALSE) {
         cat("[will not be removed]\n")
       else
         cat((attr(x, "remove")), "\n")
+
+      if (attr(x, "aquatic") == FALSE)
+        cat("habitat: terrestrial\n")
+      else
+        cat("habitat: aquatic\n")
 
       # pretty print the raw sf data as a simplified table
       cat("snapshots:\n")

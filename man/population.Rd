@@ -17,7 +17,8 @@ population(
   intersect = TRUE,
   competition_dist = NULL,
   mate_dist = NULL,
-  offspring_dist = NULL
+  offspring_dist = NULL,
+  aquatic = FALSE
 )
 }
 \arguments{
@@ -53,6 +54,9 @@ choice distance}
 
 \item{offspring_dist}{Standard deviation of the normal distribution of the
 parent-offspring distance}
+
+\item{aquatic}{Is the species aquatic (\code{FALSE} by default, i.e.
+terrestrial species)?}
 }
 \value{
 Object of the class \code{slendr_pop}

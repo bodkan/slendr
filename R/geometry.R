@@ -9,6 +9,8 @@ intersect_features <- function(pop) {
   # restrict the population range to the landscape features
   if (attr(pop, "intersect") & nrow(map)) {
     intersected <- sf::st_intersection(pop, sf::st_geometry(map))
+    if (attr(pop, "aquatic"))
+      intersected <- sf::st_difference(pop, sf::st_combine(intersected))
     if (!sum(sf::st_area(intersected)))
       stop(sprintf("No area left for %s after intersection with landscape at time %s", pop$pop, pop$time), call. = FALSE)
   }
@@ -18,7 +20,7 @@ intersect_features <- function(pop) {
   result <- copy_attributes(
     intersected,
     pop,
-    c("map", "remove", "parent", "intersect")
+    c("map", "remove", "parent", "intersect", "aquatic")
   )
 
   # add a small tag signifying that the ranges have been processed

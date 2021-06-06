@@ -10,7 +10,8 @@
 
 - It is now possible to define models in forward or backwards direction, depending on what is more convenient for the user and the scenario that is being modeled. The direction of time is automatically detected and translated to SLiM's units of generations in the forward direction.
 
-- The explicit (and a little redundant) `sim_length` parameter was finally removed.
+- Simulations of marine species are now possible (this required adding a single argument `marine` to the `population()` call which instructs the population range rendering procedure to "invert' intersection with landscape features).
+
 
 
 - Any simulation can now have multiple "ancestral" populations (i.e. populations without an immediate ancestor created by `sim.addSubpop()`). Until now, all populations had to trace their ancestry to a single ancestor (a leftover of a hard-coded requirement from the very first version of my code).
@@ -24,6 +25,3 @@
 Most likely the last things before making the first public release:
 
 - A straightforward way to specify when and how many individuals should be remembered for the tree sequence output or location tracking, and more generally, provide a way to schedule custom output events (user-defined SLiM functions) on the R side, that will be triggered at the scheduled times on the SLiM side.
-
-- Allow simulations of marine species (this simply requires adding a single argument to the `population()` call which will invert the intersection with landscape objects).
-
