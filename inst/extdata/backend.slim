@@ -64,11 +64,9 @@ initialize() {
     catn("T_CLEANUPS: " + paste(T_CLEANUPS));
   }
 
-  if (length(MAPS) > 1) {
-    // absolute times of spatial map changes
-    defineConstant("T_MAPS", T_BURNIN + map_param("time_gen"));
-    catn("T_MAPS: " + paste(T_MAPS));
-  }
+  // times of spatial map changes
+  defineConstant("T_MAPS", T_BURNIN + map_param("time_gen"));
+  catn("T_MAPS: " + paste(T_MAPS));
 
   // mutation types of neutral ancestry-informative markers for each population
   mut_ids = pop_param("pop");
