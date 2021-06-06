@@ -23,6 +23,7 @@ RoxygenNote: 7.1.1
 SystemRequirements: SLiM is a genetically explicit forward simulation software package for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information.
 Imports: 
     ggplot2,
+    rgdal,
     sf,
     rnaturalearth,
     rnaturalearthdata,
@@ -31,13 +32,12 @@ Imports:
     whisker,
     gganimate,
     png,
-    patchwork,
     ijtiff,
     ggraph,
     shinyWidgets,
     shiny,
-    data.table,
-    rgdal
+    R.utils,
+    data.table
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
