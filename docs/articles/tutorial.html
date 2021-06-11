@@ -166,7 +166,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># real projected CRS used internally</span>
 <span class="op">)</span>
 <span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span>
-<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpBuAt2q", layer: "ne_110m_land"</span>
+<span class="co">#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpvZK3Va", layer: "ne_110m_land"</span>
 <span class="co">#&gt; with 127 features</span>
 <span class="co">#&gt; It has 3 fields</span></code></pre></div>
 <p>Internally, the <code>map</code> object is a normal <code>sf</code> class object without additional components. This is unlike other <code>slendr</code> object described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -263,7 +263,7 @@
 <p>Here we define the location of the population of non-Africans right after their split from the African ancestors:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
-  <span class="st">"OOA"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">51000</span>, N <span class="op">=</span> <span class="fl">500</span>,
+  <span class="st">"OOA"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">51000</span>, N <span class="op">=</span> <span class="fl">500</span>, remove <span class="op">=</span> <span class="fl">25000</span>,
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">30</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">400e3</span>
 <span class="op">)</span></code></pre></div>
 <p>If we call the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function on the returned object, we have the option to either plot the population range in its “raw” form or in its “intersected” form, in which case the raw boundary is intersected with the “background” landscape (removing large bodies of water, etc.).</p>
@@ -293,7 +293,7 @@
 <span class="co">#&gt; name: OOA </span>
 <span class="co">#&gt; split from: AFR </span>
 <span class="co">#&gt; split time: 51000 </span>
-<span class="co">#&gt; removed at: [will not be removed]</span>
+<span class="co">#&gt; removed at: 25000 </span>
 <span class="co">#&gt; habitat: terrestrial</span>
 <span class="co">#&gt; snapshots:</span>
 <span class="co">#&gt;   #    time   N</span>
@@ -344,7 +344,7 @@
 <p>Let’s create a population of Eastern Hunter Gatherers (EHG), which split from the first non-Africans 28000 years ago:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ehg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
-  <span class="st">"EHG"</span>, parent <span class="op">=</span> <span class="va">ooa</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">1000</span>,
+  <span class="st">"EHG"</span>, parent <span class="op">=</span> <span class="va">ooa</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">1000</span>, remove <span class="op">=</span> <span class="fl">6000</span>,
   polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">55</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">53</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">53</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">53</span><span class="op">)</span>,
     <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">63</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">63</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">60</span><span class="op">)</span><span class="op">)</span>
@@ -369,7 +369,7 @@
 <p>For instance, let’s represent the expansion of Anatolian farmers, who also split from the OOA population at 28000 years ago, at the time of the split of the EHG population. Note that we use use an optional parameter <code>polygon</code> which restricts the expansion only to Europe, instead of all around Anatolia:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ana</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Anatolian farmers</span>
-  name <span class="op">=</span> <span class="st">"ANA"</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">3000</span>, parent <span class="op">=</span> <span class="va">ooa</span>,
+  name <span class="op">=</span> <span class="st">"ANA"</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">3000</span>, parent <span class="op">=</span> <span class="va">ooa</span>, remove <span class="op">=</span> <span class="fl">4000</span>,
   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">34</span>, <span class="fl">38</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">500e3</span>, polygon <span class="op">=</span> <span class="va">anatolia</span>
 <span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/expand.html">expand</a></span><span class="op">(</span> <span class="co"># expand the range by 2.500 km</span>
@@ -385,7 +385,7 @@
 <span class="co">#&gt; name: ANA </span>
 <span class="co">#&gt; split from: OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA OOA </span>
 <span class="co">#&gt; split time: 28000 </span>
-<span class="co">#&gt; removed at: [will not be removed]</span>
+<span class="co">#&gt; removed at: 4000 </span>
 <span class="co">#&gt; habitat: terrestrial</span>
 <span class="co">#&gt; snapshots:</span>
 <span class="co">#&gt;   #  time    N</span>
@@ -424,7 +424,7 @@
 <p>Yamnaya steppe people:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">yam</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Yamnaya steppe population</span>
-  name <span class="op">=</span> <span class="st">"YAM"</span>, time <span class="op">=</span> <span class="fl">7000</span>, N <span class="op">=</span> <span class="fl">500</span>, parent <span class="op">=</span> <span class="va">ehg</span>,
+  name <span class="op">=</span> <span class="st">"YAM"</span>, time <span class="op">=</span> <span class="fl">7000</span>, N <span class="op">=</span> <span class="fl">500</span>, parent <span class="op">=</span> <span class="va">ehg</span>, remove <span class="op">=</span> <span class="fl">2500</span>,
   polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">49</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">50</span><span class="op">)</span>,
                  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">56</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">59</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">56</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
@@ -540,19 +540,19 @@ between populations.</code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="st">"/tmp/test-model/populations.tsv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt;   pop_id    N parent_id tsplit tsplit_gen tremove tremove_gen competition_dist</span>
-<span class="co">#&gt; 1      0 3000        -1     30    1.00000      -1          -1               13</span>
-<span class="co">#&gt; 2      1  500         0   1030   34.33333      -1          -1               13</span>
-<span class="co">#&gt; 3      2 1000         1  24030  801.00000      -1          -1               13</span>
-<span class="co">#&gt; 4      3 3000         1  24030  801.00000      -1          -1               13</span>
-<span class="co">#&gt; 5      4 2000         2  27030  901.00000      -1          -1               13</span>
-<span class="co">#&gt; 6      5  500         2  45030 1501.00000      -1          -1               13</span>
+<span class="co">#&gt; 1      0 3000        -1     30    1.00000      -1      -1.000               13</span>
+<span class="co">#&gt; 2      1  500         0   1030   34.33333   27030     901.000               13</span>
+<span class="co">#&gt; 3      2 1000         1  24030  801.00000   46030    1534.333               13</span>
+<span class="co">#&gt; 4      3 3000         1  24030  801.00000   48030    1601.000               13</span>
+<span class="co">#&gt; 5      4 2000         2  27030  901.00000      -1      -1.000               13</span>
+<span class="co">#&gt; 6      5  500         2  45030 1501.00000   49530    1651.000               13</span>
 <span class="co">#&gt;   mate_dist offspring_dist orig_tsplit orig_tremove</span>
 <span class="co">#&gt; 1        10              7       52000           -1</span>
-<span class="co">#&gt; 2        10              7       51000           -1</span>
-<span class="co">#&gt; 3        10              7       28000           -1</span>
-<span class="co">#&gt; 4        10              7       28000           -1</span>
+<span class="co">#&gt; 2        10              7       51000        25000</span>
+<span class="co">#&gt; 3        10              7       28000         6000</span>
+<span class="co">#&gt; 4        10              7       28000         4000</span>
 <span class="co">#&gt; 5        10              7       25000           -1</span>
-<span class="co">#&gt; 6        10              7        7000           -1</span></code></pre></div>
+<span class="co">#&gt; 6        10              7        7000         2500</span></code></pre></div>
 <ul>
 <li>the table of geneflow events:</li>
 </ul>
@@ -626,7 +626,7 @@ between populations.</code></pre>
 <p><img src="tutorial_files/figure-html/plot_ancestries-1.png" width="700"></p>
 <p>Similarly, we can recapitulate the spatial dynamics with the <em>slendr</em> function <code><a href="../reference/animate.html">animate()</a></code> (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">100</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/plot_gif-1.gif"><!-- --></p>
 <p>In case an argument <code>gif = ...</code> was provided, the function will save the animation to the specified location as a GIF file. Note that unless your simulation is very short and/or involves only a small population, rendering of the animation can take several minutes.</p>
 </div>

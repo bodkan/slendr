@@ -374,7 +374,7 @@ after their split from the African ancestors:
 
 ```{r}
 ooa <- population(
-  "OOA", parent = afr, time = 51000, N = 500,
+  "OOA", parent = afr, time = 51000, N = 500, remove = 25000,
   center = c(33, 30), radius = 400e3
 )
 ```
@@ -436,7 +436,7 @@ split from the first non-Africans 28000 years ago:
 
 ```{r plot_ehg}
 ehg <- population(
-  "EHG", parent = ooa, time = 28000, N = 1000,
+  "EHG", parent = ooa, time = 28000, N = 1000, remove = 6000,
   polygon = list(
     c(26, 55), c(38, 53), c(48, 53), c(60, 53),
     c(60, 60), c(48, 63), c(38, 63), c(26, 60))
@@ -480,7 +480,7 @@ instead of all around Anatolia:
 
 ```{r}
 ana <- population( # Anatolian farmers
-  name = "ANA", time = 28000, N = 3000, parent = ooa,
+  name = "ANA", time = 28000, N = 3000, parent = ooa, remove = 4000,
   center = c(34, 38), radius = 500e3, polygon = anatolia
 ) %>%
   expand( # expand the range by 2.500 km
@@ -531,7 +531,7 @@ Yamnaya steppe people:
 
 ```{r plot_yam}
 yam <- population( # Yamnaya steppe population
-  name = "YAM", time = 7000, N = 500, parent = ehg,
+  name = "YAM", time = 7000, N = 500, parent = ehg, remove = 2500,
   polygon = list(c(26, 50), c(38, 49), c(48, 50),
                  c(48, 56), c(38, 59), c(26, 56))
 )
@@ -826,7 +826,7 @@ moment and is mostly useful as a proof of concept rather than anything
 else):
 
 ```{r plot_gif}
-animate(model, steps = 200)
+animate(model, steps = 100, width = 500, height = 300)
 ```
 
 In case an argument `gif = ...` was provided, the function will save
