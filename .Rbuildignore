@@ -7,3 +7,4 @@
 ^README.Rmd
 ^build_docs.R
 ^logo.R
+^.lintr
