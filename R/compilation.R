@@ -59,7 +59,8 @@ compile <- function(populations, dir, generation_time, resolution,
 
   if (length(direction) == 0) {
     if (min(sapply(populations, function(x) x$time[1])) == 1 & is.null(sim_length))
-      stop("Simulation length 'sim_length' must be specified for forward time direction", call. = FALSE)
+      stop("Simulation length 'sim_length' must be specified for forward time direction",
+      call. = FALSE)
     else
       direction <- "backward"
   }
@@ -87,7 +88,7 @@ compile <- function(populations, dir, generation_time, resolution,
   # order populations by split time and assign a numeric identifier to each
   split_table <- split_table[
     order(split_table$tsplit, decreasing = FALSE, na.last = FALSE), ]
-  split_table$pop_id <- 1:nrow(split_table) - 1
+  split_table$pop_id <- seq_len(nrow(split_table)) - 1
   split_table$parent_id <- lapply(
     split_table$parent,
     function(i) {
@@ -100,21 +101,24 @@ compile <- function(populations, dir, generation_time, resolution,
   if (any(is.na(split_table$competition_dist))) {
     if (is.null(competition_dist)) {
       pop_names <- paste(split_table[is.na(split_table$competition_dist), ]$pop, collapse = ", ")
-      stop("Parameter 'competition_dist' missing for ", pop_names, " and a general value of this parameter was not provided to the compile() function", call. = FALSE)
+      stop("Parameter 'competition_dist' missing for ", pop_names, " and a general
+value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
       split_table$competition_dist[is.na(split_table$competition_dist)] <- competition_dist
   }
   if (any(is.na(split_table$mate_dist))) {
     if (is.null(mate_dist)) {
       pop_names <- paste(split_table[is.na(split_table$mate_dist), ]$pop, collapse = ", ")
-      stop("Parameter 'mate_dist' missing for ", pop_names, " and a general value of this parameter was not provided to the compile() function", call. = FALSE)
+      stop("Parameter 'mate_dist' missing for ", pop_names, " and a general
+value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
       split_table$mate_dist[is.na(split_table$mate_dist)] <- mate_dist
   }
   if (any(is.na(split_table$offspring_dist))) {
     if (is.null(offspring_dist)) {
       pop_names <- paste(split_table[is.na(split_table$offspring_dist), ]$pop, collapse = ", ")
-      stop("Parameter 'offspring_dist' missing for ", pop_names, " and a general value of this parameter was not provided to the compile() function", call. = FALSE)
+      stop("Parameter 'offspring_dist' missing for ", pop_names, " and a general
+value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
       split_table$offspring_dist[is.na(split_table$offspring_dist)] <- offspring_dist
   }
@@ -165,8 +169,10 @@ compile <- function(populations, dir, generation_time, resolution,
   # of problem should be caught somewhere upstream
   map_table <- map_table[!duplicated(map_table[, c("pop", "time")]), ]
   map_table$map_number <- seq_len(nrow(map_table))
-  map_table$path <-map_table$map_number %>%
-    paste0(., ".png") %>% file.path(dir, .) %>% gsub("//", "/", .)
+  map_table$path <- map_table$map_number %>%
+    paste0(., ".png") %>%
+    file.path(dir, .) %>%
+    sub("//", "/", .)
 
   map_table$orig_time <- map_table$time
   map_table$time_gen <- map_table$time
@@ -185,9 +191,9 @@ compile <- function(populations, dir, generation_time, resolution,
     return_geneflow <- NULL
   } else {
     return_geneflow <-
-      admix_table[,c("from", "from_id", "to", "to_id", "tstart", "tstart_gen",
-                     "tend", "tend_gen", "rate", "overlap",
-                     "orig_tstart", "orig_tend")]
+      admix_table[, c("from", "from_id", "to", "to_id", "tstart", "tstart_gen",
+                      "tend", "tend_gen", "rate", "overlap",
+                      "orig_tstart", "orig_tend")]
   }
 
   # compile the result
@@ -251,10 +257,10 @@ and generation_time.txt are all present", dir), call. = FALSE)
   pop_names <- scan(path_names, what = "character", quiet = TRUE)
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
   resolution <- scan(path_resolution, what = integer(), quiet = TRUE)
-  length <- scan(path_length, what = integer(), quiet = TRUE)
+  sim_length <- scan(path_length, what = integer(), quiet = TRUE)
 
   # load the split table from disk and re-format it to the original format
-  splits <- read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
+  splits <- utils::read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
   # add population labels and parent population labels (these are striped away
   # during model saving because SLiM can't handle mixed types in matrices)
   splits$pop <- pop_names[splits$pop_id + 1]
@@ -285,7 +291,8 @@ and generation_time.txt are all present", dir), call. = FALSE)
   # can't handle strings and numbers in a single matrix/data frame)
   map_table$path <- file.path(dir, paste0(map_table$map_number, ".png")) %>% gsub("//", "/", .)
   if (!all(file.exists(map_table$path)))
-    stop(sprintf("Directory '%s' does not contain all maps required by the model configuration (%s)", dir, map_table$map), call. = FALSE)
+    stop(sprintf("Directory '%s' does not contain all maps required by the model
+configuration (%s)", dir, map_table$map), call. = FALSE)
   # recreate the user-specified population labels
   map_table$pop <- pop_names[map_table$pop_id + 1]
 
@@ -309,6 +316,7 @@ and generation_time.txt are all present", dir), call. = FALSE)
     maps = map_table[, c("pop", "pop_id", "time", "time_gen", "path", "orig_time")],
     generation_time = generation_time,
     resolution = resolution,
+    length = sim_length,
     direction = direction
   )
   class(result) <- set_class(result, "model")
@@ -318,38 +326,33 @@ and generation_time.txt are all present", dir), call. = FALSE)
 
 #' Run a slendr model as a SLiM script
 #'
-#' Generates a SLiM script from a built-in slendr template,
-#' substituting all required parameters by values specified by the
-#' user. The user has an option to either run the script in batch
-#' mode, open it in SLiMgui, or simply save the generated SLiM script
-#' to a given location for later use.
+#' Generates a SLiM script from a built-in slendr template, substituting all
+#' required parameters by values specified by the user. The user has an option
+#' to either run the script in batch mode, open it in SLiMgui, or simply save
+#' the generated SLiM script to a given location for later use.
 #'
 #' @param model Model object created by the \code{compile} function
-#' @param sim_length Total length of the simulation (in model time
-#'   units, i.e.  years)
-#' @param seq_length Total length of the simulated sequence (in
-#'   base-pairs)
+#' @param seq_length Total length of the simulated sequence (in base-pairs)
 #' @param recomb_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
 #' @param keep_pedigrees Turn on \code{keepPedigrees} during SLiM
 #'   initialization?
 #' @param ts_recording Turn on tree sequence recording during SLiM
 #'   initialization?
-#' @param save_locations Save location of each individual throughout
-#'   the simulation?
-#' @param track_ancestry Track ancestry proportion dynamics in all
-#'   populations throughout the simulations (default FALSE)? If a
-#'   non-zero integer is provided, ancestry will be tracked using the
-#'   number number of neutral ancestry markers equal to this number.
-#' @param method How to run the script? ("gui" - open in SLiMgui, "batch"
-#'   - run on the command-line, "script" - simply return the script)
-#' @param include Vector of paths to custom SLiM scripts which should
-#'   be combined with the backend SLiM code
-#' @param generation_time Generation time (in model's time units,
-#'   i.e. years)
-#' @param burnin Length of the burnin (in model's time units,
-#'   i.e. years)
+#' @param save_locations Save location of each individual throughout the
+#'   simulation?
+#' @param track_ancestry Track ancestry proportion dynamics in all populations
+#'   throughout the simulations (default FALSE)? If a non-zero integer is
+#'   provided, ancestry will be tracked using the number number of neutral
+#'   ancestry markers equal to this number.
+#' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
+#'   on the command-line, "script" - simply return the script)
+#' @param include Vector of paths to custom SLiM scripts which should be
+#'   combined with the backend SLiM code
+#' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param seed Random seed (if missing, SLiM's own seed will be used)
+#' @param verbose Write the SLiM output log to the console? (default
+#'   \code{FALSE})
 #'
 #' @export
 slim <- function(model, seq_length, recomb_rate,
@@ -362,10 +365,12 @@ slim <- function(model, seq_length, recomb_rate,
     stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
 
   if (!all(file.exists(file.path(dir, c("populations.tsv", "maps.tsv")))))
-    stop(sprintf("Directory '%s' does not contain slendr configuration files", dir), call. = FALSE)
+    stop(sprintf("Directory '%s' does not contain slendr configuration files", dir),
+    call. = FALSE)
 
   if (!length(list.files(dir, pattern = "*.png") == 0))
-    stop(sprintf("Directory '%s' does not contain any slendr spatial raster maps", dir), call. = FALSE)
+    stop(sprintf("Directory '%s' does not contain any slendr spatial raster maps", dir),
+    call. = FALSE)
 
   if (!is.logical(track_ancestry) & !is.numeric(track_ancestry)) {
     stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
@@ -457,14 +462,14 @@ script <- function(path, output = NULL, ...) {
 }
 
 
-#' Write a compiled slendr model to disk
+# Write a compiled slendr model to disk
 write_model <- function(dir, populations, admix_table, map_table,
                         split_table, generation_time, resolution, length) {
   if (!is.null(admix_table)) {
     admix_table$rate <- as.integer(admix_table$rate * 100)
     admix_table$overlap <- as.integer(admix_table$overlap)
 
-    write.table(
+    utils::write.table(
       admix_table[, c("from_id", "to_id", "tstart", "tstart_gen", "tend", "tend_gen",
                       "rate", "overlap", "orig_tstart", "orig_tend")],
       file.path(dir, "geneflow.tsv"),
@@ -480,7 +485,7 @@ write_model <- function(dir, populations, admix_table, map_table,
 
   saveRDS(populations, file.path(dir, "populations.rds"))
 
-  write.table(
+  utils::write.table(
     split_table[, c("pop_id", "N", "parent_id", "tsplit", "tsplit_gen",
                     "tremove", "tremove_gen",
                     "competition_dist", "mate_dist", "offspring_dist",
@@ -489,7 +494,7 @@ write_model <- function(dir, populations, admix_table, map_table,
     sep = "\t", quote = FALSE, row.names = FALSE
   )
 
-  write.table(
+  utils::write.table(
     map_table[, c("pop_id", "time", "time_gen", "map_number", "orig_time")],
     file.path(dir, "maps.tsv"),
     sep = "\t", quote = FALSE, row.names = FALSE
@@ -505,8 +510,8 @@ write_model <- function(dir, populations, admix_table, map_table,
 }
 
 
-#' Iterate over population objects and convert he information about
-#' population split hierarchy and split times into a data frame
+# Iterate over population objects and convert he information about
+# population split hierarchy and split times into a data frame
 compile_splits <- function(populations) {
   splits_table <- lapply(populations, function(p) {
     parent <- attr(p, "parent")
@@ -541,8 +546,8 @@ compile_splits <- function(populations) {
   splits_table
 }
 
-#' Process vectorized population boundaries into a table with
-#' rasterized map objects
+# Process vectorized population boundaries into a table with
+# rasterized map objects
 compile_maps <- function(populations, splits_table, resolution) {
   # generate rasterized maps
   maps <- render(populations, resolution)
@@ -564,7 +569,7 @@ compile_maps <- function(populations, splits_table, resolution) {
 }
 
 
-#' Render population boundaries to black-and-white spatial maps
+# Render population boundaries to black-and-white spatial maps
 render <- function(pops, resolution) {
   raster_list <- lapply(pops, function(pop) {
     # iterate over temporal maps for the current population
@@ -597,7 +602,7 @@ render <- function(pops, resolution) {
 }
 
 
-#' Rasterize the vector form of a population spatial boundary
+# Rasterize the vector form of a population spatial boundary
 rasterize <- function(x, resolution) {
   # add a dummy variable for plotting the bi-color map
   x$fill <- factor(1)
@@ -625,7 +630,7 @@ this population at this time point.", x$pop, x$time), call. = FALSE)
 }
 
 
-#' Save the rasterized stars object to a PNG file
+# Save the rasterized stars object to a PNG file
 save_png <- function(raster, path) {
   tmp_tiff <- paste0(tempfile(), ".tiff")
 

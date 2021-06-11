@@ -1,45 +1,35 @@
 #' Animate the simulated population dynamics
 #'
 #' @param model Compiled \code{slendr_model} model object
-#' @param locations Table with individual locations
-#' @param nframes Number of frames of the animation
-#' @param gif Path to an output GIF (animation object returned by default)
-#' #' @param nframes Number of frames of the animation
+#' @param steps How many frames should the animation have?
+#' @param gif Path to an output GIF file (animation object returned
+#'   by default)
 #'
 #' @return If `gif = NULL`, return gganimate animation object. Otherwise a GIF
 #'   file is saved and no value is returned.
 #'
-#' @import ggplot2
+#' @import ggplot2 data.table
 #' @export
-animate <- function(model, nframes = 200, gif = NULL) {
+animate <- function(model, steps, gif = NULL, width = 800, height = 560) {
   locations <- file.path(model$config$directory, "output_ind_locations.tsv.gz")
-  locs <- data.table::fread(locations, header = TRUE)
-  pop_names <- scan(file.path(model$config$directory, "names.txt"), what = "character", quiet = TRUE)
+  locs <- fread(locations, header = TRUE)
+  pop_names <- scan(file.path(model$config$directory, "names.txt"),
+    what = "character", quiet = TRUE)
 
-  # label populations based on their original idenifiers from the user
+  # label populations based on their original identifiers from the user
   locs$pop <- factor(
     locs$pop,
     levels = sort(unique(locs$pop)),
     labels = pop_names[sort(unique(locs$pop)) + 1]
   )
-  locs$tyears <- as.integer(locs$t * model$generation_time)
+  locs$time <- as.integer(locs$t * model$generation_time)
+  locs <- locs[time %in% sort(unique(
+    c(min(time),
+      time[seq(1, length(time), length.out = steps)],
+      max(time))
+  ))]
 
-  # cut time into blocks - same as the number of frames of the final GIF
-  locs$tblock <- cut(
-    locs$tyears,
-    breaks = seq(max(locs$tyears), min(locs$tyears), length.out = nframes + 1),
-    include.lowest = TRUE,
-    dig.lab = 10
-  )
-
-  # reverse the order of time in the forward direction
-  ordered <- rev(levels(locs$tblock[order(locs$tyears)]))
-  locs$tblock <- factor(locs$tblock, levels = ordered)
-
-  # lower sample density for plotting
-  #locs <- dplyr::sample_n(locs, 10000)
-
-  # convert pixel-based coordinates to real projected CRS coordinates
+  # convert pixel-based coordinates to the internal CRS
   locs <- convert(
     coords = locs,
     from = "raster", to = "world",
@@ -50,21 +40,29 @@ animate <- function(model, nframes = 200, gif = NULL) {
   p <- plot(model$world) +
     geom_point(data = locs, aes(newx, newy, color = pop), alpha = 0.5) +
     theme(axis.title.x = element_blank(),
-          axis.title.y = element_blank())
+          axis.title.y = element_blank(),
+          legend.title = element_blank())
 
-  anim <- p +
-    gganimate::transition_states(
-      tblock,
+  if (model$direction == "backward")
+    transition <- gganimate::transition_states(
+      -time,
       transition_length = 1,
       state_length = 0
-    ) +
-    ggtitle("time block: {closest_state} years ago")
+    )
+  else
+    transition <- gganimate::transition_states(
+      time,
+      transition_length = 1,
+      state_length = 0
+    )
+
+  gganim <- p + transition + ggtitle("time: {abs(as.integer(closest_state))}")
 
   anim <- gganimate::animate(
-    anim,
-    nframes = nframes + 1,
-    width = 800,
-    height = 560
+    gganim,
+    nframes = length(unique(locs$time)),
+    width = width,
+    height = height
   )
 
   if (is.null(gif))
@@ -79,13 +77,13 @@ animate <- function(model, nframes = 200, gif = NULL) {
 #' @param model Compiled \code{slendr_model} model object
 #'
 #' @export
-ancestries <- function(model, generation_time = FALSE) {
+ancestries <- function(model) {
   anc_wide <- read_ancestries(model$config$directory)
 
   # thank god for tidyverse, base R reshaping is truly awful...  but
   # it's not worth dragging along a huge dependency if we can do this
   # sort of thing in base R...
-  anc_long <- reshape(
+  anc_long <- stats::reshape(
     data = anc_wide,
     direction = "long",
     timevar = "ancestry",
@@ -103,10 +101,7 @@ ancestries <- function(model, generation_time = FALSE) {
     names
   anc_long$pop <- factor(anc_long$pop, levels = split_order)
 
-  if (generation_time)
-    anc_long$time <- anc_long$gen
-  else
-    anc_long$time <- anc_long$gen * model$generation_time
+  anc_long$time <- anc_long$gen * model$generation_time
 
   anc_long %>%
   ggplot(aes(-time, prop, color = ancestry)) +
@@ -214,7 +209,7 @@ graph <- function(model, show_cleanups = TRUE) {
 }
 
 
-#' Create a table of population split edges for graph visualization
+# Create a table of population split edges for graph visualization
 get_split_edges <- function(split_table) {
   split_edges <- split_table[split_table$parent != "ancestor",
                              c("parent", "pop", "tsplit")]
@@ -234,7 +229,7 @@ get_split_edges <- function(split_table) {
 }
 
 
-#' Create a table of population geneflow edges for graph visualization
+# Create a table of population geneflow edges for graph visualization
 get_geneflow_edges <- function(admix_table) {
   if (is.null(admix_table)) {
     admix_edges <- data.frame(matrix(ncol = 4, nrow = 0))
@@ -253,12 +248,12 @@ get_geneflow_edges <- function(admix_table) {
 }
 
 
-#' Create a table of 'intermediate' edges for graph visualization
-#'
-#' For plotting the entire geneflow graph, just nodes representing population
-#' splits are not enough. We also need nodes (population states) which are not
-#' explicitly simulated as separate population, but they represent time points
-#' needed to plot geneflow edges.
+# Create a table of 'intermediate' edges for graph visualization
+#
+# For plotting the entire geneflow graph, just nodes representing population
+# splits are not enough. We also need nodes (population states) which are not
+# explicitly simulated as separate population, but they represent time points
+# needed to plot geneflow edges.
 get_intermediate_edges <- function(split_edges, geneflow_edges) {
   edges <- rbind(split_edges, geneflow_edges)
 
@@ -284,23 +279,24 @@ get_intermediate_edges <- function(split_edges, geneflow_edges) {
     # construct data frame of consecutive, linked pairs of nodes
     pairs <- cbind(nodes[-length(nodes)], nodes[-1]) %>%
       as.data.frame(stringsAsFactors = FALSE) %>%
-      setNames(c("x", "y"))
+      stats::setNames(c("x", "y"))
     pairs$type <- "intermediate"
     pairs$time <- as.integer(gsub(".*-", "", pairs$y))
     pairs$rate <- NA
     pairs
-  }) %>% do.call(rbind, .)
+  }) %>%
+  do.call(rbind, .)
 }
 
 
-#' Generate edges leading to the times of population removals in SLiM
+# Generate edges leading to the times of population removals in SLiM
 get_terminal_edges <- function(split_edges, geneflow_edges, split_table) {
   edges <- rbind(split_edges, geneflow_edges)
 
   # iterate over all populations and create a data frame of edges from the
   # population split nodes, to the nodes of the population removal from the
   # simulation
-  terminal_edges <- lapply(1:nrow(split_table), function(i) {
+  terminal_edges <- lapply(seq_len(nrow(split_table)), function(i) {
     pop <- split_table[i, ]
 
     times <- edges[grepl(pop$pop, edges$x) | grepl(pop$pop, edges$y), ]$time
@@ -322,7 +318,7 @@ get_terminal_edges <- function(split_edges, geneflow_edges, split_table) {
 }
 
 
-#' Get table of node labels in the graph
+# Get table of node labels in the graph
 get_nodes <- function(edges) {
   nodes <- unique(c(edges$x, edges$y))
 
@@ -357,20 +353,22 @@ get_nodes <- function(edges) {
 
 #' Plot \code{slendr} geographic features on a map
 #'
-#' Plots objects of the three \code{slendr} spatial classes
-#' (\code{slendr_map}, \code{slendr_region}, and \code{slendr_pop}).
+#' Plots objects of the three \code{slendr} spatial classes (\code{slendr_map},
+#' \code{slendr_region}, and \code{slendr_pop}).
 #'
-#' @param ... Objects of classes \code{slendr_map},
-#'   \code{slendr_region}, or \code{slendr_pop}
+#' @param ... Objects of classes \code{slendr_map}, \code{slendr_region}, or
+#'   \code{slendr_pop}
 #' @param time Plot a concrete time point
 #' @param geneflows Indicate geneflow events with an arrow
-#' @param graticules Plot graticules in the original Coordinate
-#'   Reference System (such as longitude-latitude), or in the internal
-#'   CRS (such as meters)?
-#' @param intersect Intersect the population boundaries against
-#'   landscape and other geographic boundaries (default TRUE)?
+#' @param graticules Plot graticules in the original Coordinate Reference System
+#'   (such as longitude-latitude), or in the internal CRS (such as meters)?
+#' @param intersect Intersect the population boundaries against landscape and
+#'   other geographic boundaries (default TRUE)?
 #' @param show_map Show the underlying world map
 #' @param title Title of the plot
+#' @param interpolated_maps Interpolated spatial boundaries for all populations
+#'   in all time points (this is only used for plotting using the \code{explore}
+#'   shiny app)
 #'
 #' @export
 #'
@@ -378,7 +376,7 @@ get_nodes <- function(edges) {
 plot.slendr <- function(..., time = NULL, geneflows = FALSE,
                         graticules = "original",
                         intersect = TRUE, show_map = TRUE,
-                        interpolated_maps = NULL, title = NULL) {
+                        title = NULL, interpolated_maps = NULL) {
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
@@ -386,7 +384,7 @@ plot.slendr <- function(..., time = NULL, geneflows = FALSE,
 
   args <- list(...)
 
-  if(!all(sapply(args, inherits, "slendr")))
+  if (!all(sapply(args, inherits, "slendr")))
     stop("Only objects of the class 'slendr' can be visualized using plot.slendr", call. = FALSE)
 
   classes <- grep("slendr_", unique(unlist(sapply(args, class))), value = TRUE)
@@ -398,7 +396,8 @@ plot.slendr <- function(..., time = NULL, geneflows = FALSE,
     stop("'slendr_region' and 'slendr_pops' object cannot be plotted at once", call. = FALSE)
 
   if (geneflows & (is.null(time) | !inherits(args[[1]], "slendr_model")))
-    stop("Migrations can be visualized only when a time point *and* a 'slendr_model' objects are specified", call. = FALSE)
+    stop("Migrations can be visualized only when a time point and a 'slendr_model'
+objects are specified", call. = FALSE)
 
   # a single model object was provided
   if (length(args) == 1 & inherits(args[[1]], "slendr_model")) {
@@ -414,7 +413,7 @@ plot.slendr <- function(..., time = NULL, geneflows = FALSE,
     # and make sure they are all the same with no conflicts
     maps <- unique(lapply(args, function(i) attr(i, "map")))
     if (length(maps) != 1) {
-      stop("Objects do not share the same map component", call. = F)
+      stop("Objects do not share the same map component", call. = FALSE)
     }
     map <- maps[[1]]
 
@@ -424,7 +423,8 @@ plot.slendr <- function(..., time = NULL, geneflows = FALSE,
 
   if (graticules == "original" & has_crs(map)) {
     graticule_crs <- "EPSG:4326"
-    xlab <- "degrees longitude"; ylab <- "degrees latitude"
+    xlab <- "degrees longitude"
+    ylab <- "degrees latitude"
   } else {
     graticule_crs <- sf::st_crs(map)
     xlab <- ylab <- NULL
@@ -510,7 +510,7 @@ interactively.", call. = FALSE)
           geom_curve(
             data = migr_df,
             aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
-            arrow = arrow(length = unit(2,"mm"), type = "closed"),
+            arrow = arrow(length = unit(2, "mm"), type = "closed"),
             lineend = "round", size = 0.5, arrow.fill = "black"
           ) +
           scale_color_discrete(drop = FALSE) +

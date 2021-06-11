@@ -11,8 +11,13 @@
 #'
 #' You can find installation instructions, reference manual, and tutorials at
 #' <https://bodkan.net/slendr>.
-#'
 #' @docType package
 #' @name slendr
+#' @keywords internal
+"_PACKAGE"
+
+# The following block is used by usethis to automatically manage
+# roxygen namespace tags. Modify with care!
+## usethis namespace: start
+## usethis namespace: end
 NULL
-#> NULL

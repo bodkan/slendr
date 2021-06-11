@@ -1,4 +1,4 @@
-url: https://bodkan.net/stamp
+url: https://bodkan.net/slendr
 
 reference:
   - title: Spatial features
@@ -8,13 +8,14 @@ reference:
     - join
     - overlap
     - subtract
+    - convert
 
   - title: Spatial population dynamics
     contents:
     - population
     - expand
     - move
-    - admixture
+    - geneflow
     - change
 
   - title: Model visualization and diagnostics

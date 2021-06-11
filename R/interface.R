@@ -173,7 +173,6 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
   if (!is.null(start))
     region_start$time <- start
 
-  start_time <- region_start$time
   times <- seq(
     start,
     end,
@@ -401,7 +400,8 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
     ## crop the map to the boundary coordinates
     map <- sf::st_crop(map_transf, zoom_transf)
   } else {
-    stop("Landscape has to be either 'blank', 'naturalearth' or an object of the class 'sf'", call. = FALSE)
+    stop("Landscape has to be either 'blank', 'naturalearth' or an object of the class 'sf'",
+         call. = FALSE)
   }
 
   sf::st_agr(map) <- "constant"
@@ -428,8 +428,10 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 #' @export
 geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   # make sure the population is not removed during the the admixture period
-  check_removal_time(start, from); check_removal_time(end, from)
-  check_removal_time(start, to); check_removal_time(end, to)
+  check_removal_time(start, from)
+  check_removal_time(end, from)
+  check_removal_time(start, to)
+  check_removal_time(end, to)
 
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
@@ -467,7 +469,7 @@ call. = FALSE)
 No overlap between population ranges of %s and %s at time %d.
 
 Please check the spatial maps of both populations by running
-`plot(%s, %s)` and adjust them accordingly. Alternatively, in case
+`display(%s, %s)` and adjust them accordingly. Alternatively, in case
 this makes sense for your model, you can add `overlap = F` which
 will instruct slendr to simulate geneflow without spatial overlap
 between populations.",
@@ -588,120 +590,114 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
 #' snapshots can be printed using the \code{full} argument.
 #'
 #' @param x Object of a class \code{slendr}
-#' @param sf Print the low-level 'sf' object instead?
-#' @param full Print the complete table of spatial snapshots?
 #'
 #' @export
-print.slendr <- function(x, sf = FALSE, full = FALSE) {
-  if (sf) {
-    sf:::print.sf(x)
-  } else {
-    if (any(grepl("slendr_pop", class(x))))
-      type <- "population"
-    else if (any(grepl("slendr_region", class(x))))
-      type <- "region"
-    else if (any(grepl("slendr_map", class(x))))
-      type <- "map"
-    else if (any(grepl("slendr_model", class(x))))
-      type <- "model"
-    else
-      stop("Unknown object")
+print.slendr <- function(x, ...) {
+  if (any(grepl("slendr_pop", class(x))))
+    type <- "population"
+  else if (any(grepl("slendr_region", class(x))))
+    type <- "region"
+  else if (any(grepl("slendr_map", class(x))))
+    type <- "map"
+  else if (any(grepl("slendr_model", class(x))))
+    type <- "model"
+  else
+    stop("Unknown object")
 
-    header <- sprintf("slendr '%s' object", type)
-    sep <- paste(rep("-", nchar(header)), collapse = "")
+  header <- sprintf("slendr '%s' object", type)
+  sep <- paste(rep("-", nchar(header)), collapse = "")
 
-    cat(header, "\n")
-    cat(sep, "\n")
+  cat(header, "\n")
+  cat(sep, "\n")
 
-    if (type == "region")
-      cat("name:", x$region, "\n\n")
+  if (type == "region")
+    cat("name:", x$region, "\n\n")
 
-    if (type == "population") {
-      cat("name:", unique(x$pop), "\n")
-      parent <- attr(x, "parent")
-      cat("split from: ")
-      if (is.character(parent) && parent == "ancestor")
-        cat("[this is an ancestral population]\n")
-      else {
-        cat(parent$pop, "\n")
-        cat("split time:", x$time[1], "\n")
-      }
-      cat("removed at: ")
-      if (attr(x, "remove") == -1)
-        cat("[will not be removed]\n")
-      else
-        cat((attr(x, "remove")), "\n")
-
-      if (attr(x, "aquatic") == FALSE)
-        cat("habitat: terrestrial\n")
-      else
-        cat("habitat: aquatic\n")
-
-      # pretty print the raw sf data as a simplified table
-      cat("snapshots:\n")
-      # TODO: as.data.frame(x) is giving a very strange error here (on
-      # the intersected ANA expansion sf object in plotting) - a bug
-      # in sf conversion? manual creation of the data.frame does not
-      # have this issue
-      snapshots_df <- unique(data.frame(pop = x$pop, time = x$time, N = x$N, stringsAsFactors = FALSE))
-      snapshots_df$`#` <- 1:nrow(snapshots_df)
-      # determine which maps over time are new and which are re-used from the
-      # previous time point (we do this because the raw spatial geometry
-      # representation is hard to read and not useful for seeing what changes
-      # when)
-      snapshots_df <- snapshots_df[, c("#", "time", "N")]
-      if (nrow(snapshots_df) > 15 & !full) {
-        print(head(snapshots_df, 5), row.names = FALSE)
-        cat("         ...\n")
-        print(tail(snapshots_df, 5), row.names = FALSE)
-      } else
-        print(snapshots_df, row.names = FALSE)
-      cat("\n")
+  if (type == "population") {
+    cat("name:", unique(x$pop), "\n")
+    parent <- attr(x, "parent")
+    cat("split from: ")
+    if (is.character(parent) && parent == "ancestor")
+      cat("[this is an ancestral population]\n")
+    else {
+      cat(parent$pop, "\n")
+      cat("split time:", x$time[1], "\n")
     }
+    cat("removed at: ")
+    if (attr(x, "remove") == -1)
+      cat("[will not be removed]\n")
+    else
+      cat((attr(x, "remove")), "\n")
 
-    if (type %in% c("map", "region", "population")) {
-      cat("map: ")
-      if (type == "map" | !is.null(attr(x, "map"))) {
-        crs <- sf::st_crs(x)$epsg
-        if (is.na(crs)) {
-          cat("abstract spatial landscape ")
-          if (nrow(x))
-            cat("with custom features\n")
-          else
-            cat("with no features\n")
-          units <- ""
-        } else {
-          crs <- paste("EPSG", crs)
-          cat("internal coordinate reference system:", crs, "\n")
-          units <- " (in degrees longitude and latitude)"
-        }
+    if (attr(x, "aquatic") == FALSE)
+      cat("habitat: terrestrial\n")
+    else
+      cat("habitat: aquatic\n")
 
-        xrange <- attr(x, "xrange")
-        yrange <- attr(x, "yrange")
-        cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
-                    units, xrange[1], xrange[2], yrange[1], yrange[2]))
-      } else
-        cat("[no map defined]\n")
-    } else if (type == "model") {
-      cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
-      cat("geneflow events: ")
-      if (!is.null(x$geneflows))
-        cat(nrow(x$geneflows), "\n")
-      else
-        cat("[no geneflow]\n")
-      cat("generation time:", x$generation_time, "\n")
-      cat("time direction:", get_time_direction(tail(x$populations, 1)[[1]]), "\n")
-      cat("number of spatial maps:", nrow(x$maps), "\n")
-      cat("resolution:", x$resolution, "distance unit per pixel\n\n")
-      cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
-      cat(
+    # pretty print the raw sf data as a simplified table
+    cat("snapshots:\n")
+    # TODO: as.data.frame(x) is giving a very strange error here (on
+    # the intersected ANA expansion sf object in plotting) - a bug
+    # in sf conversion? manual creation of the data.frame does not
+    # have this issue
+    snapshots_df <- unique(data.frame(
+      pop = x$pop,
+      time = x$time,
+      N = x$N,
+      stringsAsFactors = FALSE
+    ))
+    snapshots_df$`#` <- seq_len(nrow(snapshots_df))
+    # determine which maps over time are new and which are re-used from the
+    # previous time point (we do this because the raw spatial geometry
+    # representation is hard to read and not useful for seeing what changes
+    # when)
+    snapshots_df <- snapshots_df[, c("#", "time", "N")]
+    print(snapshots_df, row.names = FALSE)
+    cat("\n")
+  }
+
+  if (type %in% c("map", "region", "population")) {
+    cat("map: ")
+    if (type == "map" | !is.null(attr(x, "map"))) {
+      crs <- sf::st_crs(x)$epsg
+      if (is.na(crs)) {
+        cat("abstract spatial landscape ")
+        if (nrow(x))
+          cat("with custom features\n")
+        else
+          cat("with no features\n")
+        units <- ""
+      } else {
+        crs <- paste("EPSG", crs)
+        cat("internal coordinate reference system:", crs, "\n")
+        units <- " (in degrees longitude and latitude)"
+      }
+
+      xrange <- attr(x, "xrange")
+      yrange <- attr(x, "yrange")
+      cat(sprintf("spatial limits%s:\n  - vertical %d ... %d\n  - horizontal %d ... %d\n",
+                  units, xrange[1], xrange[2], yrange[1], yrange[2]))
+    } else
+      cat("[no map defined]\n")
+  } else if (type == "model") {
+    cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
+    cat("geneflow events: ")
+    if (!is.null(x$geneflows))
+      cat(nrow(x$geneflows), "\n")
+    else
+      cat("[no geneflow]\n")
+    cat("generation time:", x$generation_time, "\n")
+    cat("time direction:", get_time_direction(tail(x$populations, 1)[[1]]), "\n")
+    cat("number of spatial maps:", nrow(x$maps), "\n")
+    cat("resolution:", x$resolution, "distance unit per pixel\n\n")
+    cat("configuration files in:", normalizePath(x$config$directory), "\n\n")
+    cat(
 "A detailed model specification can be found in `$splits`, `$geneflows`,
 `$maps`, `$populations`, and other components of the model object (for
 a complete list see `names(<model object>)`). You can also examine
 the serialized configuration files in the model directory.\n")
-    } else {
-      stop("Unknown object type", call. = FALSE)
-    }
+  } else {
+    stop("Unknown object type", call. = FALSE)
   }
 }
 

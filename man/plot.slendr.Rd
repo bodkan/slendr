@@ -11,30 +11,33 @@
   graticules = "original",
   intersect = TRUE,
   show_map = TRUE,
-  interpolated_maps = NULL,
-  title = NULL
+  title = NULL,
+  interpolated_maps = NULL
 )
 }
 \arguments{
-\item{...}{Objects of classes \code{slendr_map},
-\code{slendr_region}, or \code{slendr_pop}}
+\item{...}{Objects of classes \code{slendr_map}, \code{slendr_region}, or
+\code{slendr_pop}}
 
 \item{time}{Plot a concrete time point}
 
 \item{geneflows}{Indicate geneflow events with an arrow}
 
-\item{graticules}{Plot graticules in the original Coordinate
-Reference System (such as longitude-latitude), or in the internal
-CRS (such as meters)?}
+\item{graticules}{Plot graticules in the original Coordinate Reference System
+(such as longitude-latitude), or in the internal CRS (such as meters)?}
 
-\item{intersect}{Intersect the population boundaries against
-landscape and other geographic boundaries (default TRUE)?}
+\item{intersect}{Intersect the population boundaries against landscape and
+other geographic boundaries (default TRUE)?}
 
 \item{show_map}{Show the underlying world map}
 
 \item{title}{Title of the plot}
+
+\item{interpolated_maps}{Interpolated spatial boundaries for all populations
+in all time points (this is only used for plotting using the \code{explore}
+shiny app)}
 }
 \description{
-Plots objects of the three \code{slendr} spatial classes
-(\code{slendr_map}, \code{slendr_region}, and \code{slendr_pop}).
+Plots objects of the three \code{slendr} spatial classes (\code{slendr_map},
+\code{slendr_region}, and \code{slendr_pop}).
 }

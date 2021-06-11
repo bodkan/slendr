@@ -47,9 +47,9 @@
 
 
 <meta property="og:title" content="Plot slendr geographic features on a map — plot.slendr" />
-<meta property="og:description" content="Plots objects of the three slendr spatial classes
-(slendr_map, slendr_region, and slendr_pop)." />
-<meta property="og:image" content="https://bodkan.net/stamp/logo.png" />
+<meta property="og:description" content="Plots objects of the three slendr spatial classes (slendr_map,
+slendr_region, and slendr_pop)." />
+<meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
 
@@ -135,8 +135,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Plots objects of the three <code>slendr</code> spatial classes
-(<code>slendr_map</code>, <code>slendr_region</code>, and <code>slendr_pop</code>).</p>
+    <p>Plots objects of the three <code>slendr</code> spatial classes (<code>slendr_map</code>,
+<code>slendr_region</code>, and <code>slendr_pop</code>).</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for slendr</span>
@@ -147,8 +147,8 @@
   graticules <span class='op'>=</span> <span class='st'>"original"</span>,
   intersect <span class='op'>=</span> <span class='cn'>TRUE</span>,
   show_map <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  interpolated_maps <span class='op'>=</span> <span class='cn'>NULL</span>,
-  title <span class='op'>=</span> <span class='cn'>NULL</span>
+  title <span class='op'>=</span> <span class='cn'>NULL</span>,
+  interpolated_maps <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -156,8 +156,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td><p>Objects of classes <code>slendr_map</code>,
-<code>slendr_region</code>, or <code>slendr_pop</code></p></td>
+      <td><p>Objects of classes <code>slendr_map</code>, <code>slendr_region</code>, or
+<code>slendr_pop</code></p></td>
     </tr>
     <tr>
       <th>time</th>
@@ -169,14 +169,13 @@
     </tr>
     <tr>
       <th>graticules</th>
-      <td><p>Plot graticules in the original Coordinate
-Reference System (such as longitude-latitude), or in the internal
-CRS (such as meters)?</p></td>
+      <td><p>Plot graticules in the original Coordinate Reference System
+(such as longitude-latitude), or in the internal CRS (such as meters)?</p></td>
     </tr>
     <tr>
       <th>intersect</th>
-      <td><p>Intersect the population boundaries against
-landscape and other geographic boundaries (default TRUE)?</p></td>
+      <td><p>Intersect the population boundaries against landscape and
+other geographic boundaries (default TRUE)?</p></td>
     </tr>
     <tr>
       <th>show_map</th>
@@ -185,6 +184,12 @@ landscape and other geographic boundaries (default TRUE)?</p></td>
     <tr>
       <th>title</th>
       <td><p>Title of the plot</p></td>
+    </tr>
+    <tr>
+      <th>interpolated_maps</th>
+      <td><p>Interpolated spatial boundaries for all populations
+in all time points (this is only used for plotting using the <code>explore</code>
+shiny app)</p></td>
     </tr>
     </table>
 

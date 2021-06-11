@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 5,
   dpi = 100,
-  eval = T
+  eval = TRUE
 )
 ```
 
@@ -84,7 +84,8 @@ population genetics simulation framework.
 
 ```{r world-map, echo = FALSE}
 ggplot2::ggplot() +
-    ggplot2::geom_sf(data = rnaturalearth::ne_coastline("small", "sf"), fill = NA, color = "black") +
+    ggplot2::geom_sf(data = rnaturalearth::ne_coastline("small", "sf"),
+    fill = NA, color = "black") +
     ggplot2::theme_bw() + ggplot2::coord_sf(crs = "EPSG:4326")
 ```
 
@@ -108,7 +109,7 @@ already used tools or R packages which depend on them).
 
 2. Install the `devtools` package:
 
-```{r, eval = F}
+```{r, eval = FALSE}
 install.packages("devtools")
 ```
 
@@ -118,18 +119,18 @@ a Mac, you can use homebrew again).
 
 3. Install _slendr_:
 
-```{r, eval = F}
+```{r, eval = FALSE}
 devtools::install_github("bodkan/slendr")
+```
+
+```{r}
+devtools::load_all(".")
 ```
 
 4. That's it! You can now load the package with the usual:
 
-```{r, eval = F}
+```{r, eval = FALSE}
 library(slendr)
-```
-
-```{r, echo = F, message = F}
-devtools::load_all(".")
 ```
 
 Note that the package relies on several R packages for geospatial
@@ -209,10 +210,7 @@ map
 
 ## Plotting geographical features and population ranges
 
-The `slendr` package implements its own [generic
-method](https://adv-r.hadley.nz/s3.html#s3-methods) called `plot()`,
-which overrides the default `plot()` function used for [simple
-features](https://r-spatial.github.io/sf/index.html) `sf` objects.
+The `slendr` package implements its own plotting function called `plot()`.
 
 We do this in order to make it easier and more convenient to
 iteratively build more complex models. The function can smartly decide
@@ -254,37 +252,20 @@ geographic meaning (i.e. Anatolia, West Eurasia, etc.).
 ```{r}
 africa <- region(
   "Africa", map,
-  polygon = list(
-    c(-18, 20), c(40, 20), c(30, 33),
-    c(20, 32), c(10, 35), c(-8, 35)
-  )
+  polygon = list(c(-18, 20), c(40, 20), c(30, 33),
+                 c(20, 32), c(10, 35), c(-8, 35))
 )
-
-europe_anatolia <- region(
-  "Western Europe & Anatolia",
-  map,
-  polygon = list(
-    c(-10, 35), c(-5, 35), c(10, 38), c(20, 35), c(38, 35),
-    c(40, 40), c(30, 45), c(20, 58), c(-5, 60), c(-15, 50)
-  )
-)
-
 europe <- region(
-  "Western Europe",
-  map,
+  "Europe", map,
   polygon = list(
     c(-8, 35), c(-5, 36), c(10, 38), c(20, 35), c(25, 35),
-    c(28, 45), c(20, 58), c(-5, 60), c(-15, 50)
+    c(33, 45), c(20, 58), c(-5, 60), c(-15, 50)
   )
 )
-
 anatolia <- region(
-  "Anatolia",
-  map,
-  polygon = list(
-    c(28, 35), c(40, 35),
-    c(42, 40), c(30, 43), c(27, 40), c(25, 38)
-  )
+  "Anatolia", map,
+  polygon = list(c(28, 35), c(40, 35), c(42, 40),
+                 c(30, 43), c(27, 40), c(25, 38))
 )
 ```
 
@@ -319,7 +300,7 @@ geographic regions in the context of the defined section of the world
 map:
 
 ```{r plot_europe_anatolia}
-plot(europe, anatolia, title = "Geographic regions")
+plot(africa, europe, anatolia, title = "Geographic regions")
 ```
 
 Note that the `map` object is no longer explicitly specified. It is
@@ -372,7 +353,7 @@ restrict the spatial boundary of the African population to the
 
 ```{r plot_afr}
 afr <- population(
-  "AFR", parent = "ancestor", time = 55000, N = 1000,
+  "AFR", parent = "ancestor", time = 52000, N = 3000,
   map = map, polygon = africa
 )
 
@@ -393,8 +374,8 @@ after their split from the African ancestors:
 
 ```{r}
 ooa <- population(
-  "OOA", parent = afr, time = 51000, N = 200, remove = 27000,
-  center = c(33, 30), radius = 500e3 # 500e3m = 500km
+  "OOA", parent = afr, time = 51000, N = 500,
+  center = c(33, 30), radius = 400e3
 )
 ```
 
@@ -409,7 +390,7 @@ the `plot()` function renders intersected population ranges by
 default.
 
 ```{r plot_ooa}
-plot(ooa, intersect = F, title = "'Raw' population range")
+plot(ooa, intersect = FALSE, title = "'Raw' population range")
 plot(ooa, title = "'Intersected' population range")
 ```
 
@@ -429,7 +410,7 @@ and the number of individual spatial maps to save during export
 
 ```{r}
 ooa <- ooa %>% move(
-  trajectory = list(c(40, 30), c(50, 30), c(60, 40), c(70, 40)),
+  trajectory = list(c(40, 30), c(50, 30), c(60, 40)),
   start = 50000, end = 40000, snapshots = 30
 )
 ```
@@ -455,11 +436,10 @@ split from the first non-Africans 28000 years ago:
 
 ```{r plot_ehg}
 ehg <- population(
-  "EHG", time = 28000, N = 400, parent = ooa, remove = 6000,
+  "EHG", parent = ooa, time = 28000, N = 1000,
   polygon = list(
     c(26, 55), c(38, 53), c(48, 53), c(60, 53),
-    c(60, 60), c(48, 63), c(38, 63), c(26, 60)
-  )
+    c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
 
 plot(ehg)
@@ -472,8 +452,8 @@ groups over time (see below), we will call them "EUR" to simplify the
 modeling code a little bit:
 
 ```{r plot_eur}
-eur <- population(
-  name = "EUR", time = 25000, N = 1000, parent = ehg,
+eur <- population( # European population
+  name = "EUR", parent = ehg, time = 25000, N = 2000,
   polygon = europe
 )
 
@@ -499,16 +479,14 @@ parameter `polygon` which restricts the expansion only to Europe,
 instead of all around Anatolia:
 
 ```{r}
-ana <- population(
-  name = "ANA", time = 28000, N = 800, parent = ooa, remove = 6000,
-  center = c(34, 38), radius = 700e3, polygon = anatolia
-) %>% expand(
-  by = 2500e3,
-  start = 10000,
-  end = 7000,
-  snapshots = 10,
-  polygon = europe_anatolia
-)
+ana <- population( # Anatolian farmers
+  name = "ANA", time = 28000, N = 3000, parent = ooa,
+  center = c(34, 38), radius = 500e3, polygon = anatolia
+) %>%
+  expand( # expand the range by 2.500 km
+    by = 2500e3, start = 10000, end = 7000, snapshots = 10,
+    polygon = join(europe, anatolia)
+  )
 ```
 
 Note that in principle, you could specify the entire spatio-temporal
@@ -533,7 +511,7 @@ To visually see what is really going on behind the scenes, we can plot
 the raw form of the expansion:
 
 ```{r plot_ana_raw}
-plot(ana, title = "Anatolian expansion into Europe (not intersected)", intersect = F)
+plot(ana, title = "Anatolian expansion into Europe (not intersected)", intersect = FALSE)
 ```
 
 
@@ -552,12 +530,10 @@ on to implementing geneflow between them,
 Yamnaya steppe people:
 
 ```{r plot_yam}
-yam <- population(
-  name = "YAM", time = 7000, N = 600, parent = ehg, remove = 2000,
-  polygon = list(
-    c(26, 50), c(38, 49), c(48, 50),
-    c(48, 56), c(38, 59), c(26, 56)
-  )
+yam <- population( # Yamnaya steppe population
+  name = "YAM", time = 7000, N = 500, parent = ehg,
+  polygon = list(c(26, 50), c(38, 49), c(48, 50),
+                 c(48, 56), c(38, 59), c(26, 56))
 )
 
 plot(yam)
@@ -565,27 +541,15 @@ plot(yam)
 
 Yamnaya invading Europe:
 
-To model the migration of the Yamnaya into Europe, we're splitting a
-new "YAM_migr" population from the original Yamnaya. The latter will
-stay where it is, while the migrating population will start invading
-the spatial range of Europeans ("Nolithic" population at the time):
 
 ```{r plot_yam_migr}
-yam_migr <- population(
-  name = "YAM_migr", time = 6000, N = 1000, parent = yam, remove = 2900,
-  polygon = list(
-    c(26, 50), c(38, 49), c(48, 50),
-    c(48, 56), c(38, 59), c(26, 56)
-  )
-) %>%
+yam <- yam %>%
   move(
     trajectory = c(15, 50),
-    start = 5000,
-    end = 3000,
-    snapshots = 8
+    start = 5000, end = 3000, snapshots = 8
   )
 
-plot(yam_migr)
+plot(yam)
 ```
 
 
@@ -601,7 +565,7 @@ issues before the export of individual spatio-temporal
 maps. Obviously, this is a lot of multi-dimensional information:
 
 ```{r plot_maps}
-plot(afr, ooa, ehg, eur, ana, yam, yam_migr)
+plot(afr, ooa, ehg, eur, ana, yam)
 ```
 
 Below you will see a better way to explore a _slendr_ model interactively.
@@ -626,7 +590,7 @@ you'll see that the European and African populations don't have any
 overlap in population ranges. If we try to instruct `slendr` to
 simulate geneflow between them, we will get an error:
 
-```{r eval = F}
+```{r eval = FALSE}
 geneflows <- geneflow(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
 ```
 
@@ -655,9 +619,10 @@ Many models will include multiple geneflow events, which we can
 collect in a simple R list:
 
 ```{r}
-geneflows <- list(
+gf <- list(
+  geneflow(from = ana, to = yam, rate = 0.5, start = 6500, end = 6400, overlap = FALSE),
   geneflow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
-  geneflow(from = yam_migr, to = eur, rate = 0.75, start = 4000, end = 3000)
+  geneflow(from = yam, to = eur, rate = 0.75, start = 4000, end = 3000)
 )
 ```
 
@@ -666,7 +631,7 @@ data frame collecting all the geneflow parameters for the
 `compile()` step below:
 
 ```{r}
-geneflows
+gf
 ```
 
 
@@ -685,12 +650,13 @@ by the backend SLiM script provided by `slendr` (more on that below).
 
 ```{r}
 model <- compile(
-  populations = list(afr, ooa, ehg, eur, ana, yam, yam_migr),
-  geneflow = geneflows,
-  dir = "/tmp/test-model",
+  populations = list(afr, ooa, ehg, eur, ana, yam), # populations defined above
+  geneflow = gf, # geneflow events defined above
   generation_time = 30,
-  resolution = 10e3, # 10km per pixel
-  competition_dist = 200e3, mate_dist = 200e3, offspring_dist = 50e3,
+  resolution = 10e3, # resolution in meters per pixel
+  competition_dist = 130e3, mate_dist = 100e3, # spatial interaction in SLiM
+  offspring_dist = 70e3, # how far will offspring end up from their parents
+  dir = "/tmp/test-model/",
   overwrite = TRUE
 )
 ```
@@ -717,13 +683,13 @@ graphically above, namely:
 - the table of population splits:
 
 ```{r}
-read.table("/tmp/test-model/populations.tsv", header = T)
+read.table("/tmp/test-model/populations.tsv", header = TRUE)
 ```
 
 - the table of geneflow events:
 
 ```{r}
-read.table("/tmp/test-model/geneflow.tsv", header = T)
+read.table("/tmp/test-model/geneflow.tsv", header = TRUE)
 ```
 
 - and finally, the table of populations whose spatial maps will be
@@ -732,7 +698,7 @@ read.table("/tmp/test-model/geneflow.tsv", header = T)
   the first couple of lines):
 
 ```{r}
-head(read.table("/tmp/test-model/maps.tsv", header = T))
+head(read.table("/tmp/test-model/maps.tsv", header = TRUE))
 ```
 
 The object returned by the `compile()` function (called `model` here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list `model$splits`, `model$geneflows`, etc.
@@ -835,9 +801,11 @@ manpage of `slim()` for more details.
 
 ```{r}
 slim(
-  model, seq_length = 1, recomb_rate = 0,
-  save_locations = TRUE, track_ancestry = 1,
-  method = "batch" # run the model in batch mode (default is SLiMgui)
+  model,
+  seq_length = 1, recomb_rate = 0, # simulate only a single locus
+  save_locations = TRUE, # save the location of everyone who ever lived
+  track_ancestry = 1,
+  method = "batch" # change to "gui" to execute the model in SLiMgui
 )
 ```
 
@@ -858,7 +826,7 @@ moment and is mostly useful as a proof of concept rather than anything
 else):
 
 ```{r plot_gif}
-animate(model, nframes = 200)
+animate(model, steps = 200)
 ```
 
 In case an argument `gif = ...` was provided, the function will save
