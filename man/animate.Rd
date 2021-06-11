@@ -4,17 +4,15 @@
 \alias{animate}
 \title{Animate the simulated population dynamics}
 \usage{
-animate(model, nframes = 200, gif = NULL)
+animate(model, steps, gif = NULL, width = 800, height = 560)
 }
 \arguments{
 \item{model}{Compiled \code{slendr_model} model object}
 
-\item{nframes}{Number of frames of the animation}
+\item{steps}{How many frames should the animation have?}
 
-\item{gif}{Path to an output GIF (animation object returned by default)
-#' @param nframes Number of frames of the animation}
-
-\item{locations}{Table with individual locations}
+\item{gif}{Path to an output GIF file (animation object returned
+by default)}
 }
 \value{
 If \code{gif = NULL}, return gganimate animation object. Otherwise a GIF

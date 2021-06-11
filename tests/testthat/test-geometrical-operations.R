@@ -33,7 +33,8 @@ test_that("polygon ranges need at least three corners", {
   coords <- list(c(-18, 20), c(40, 20), c(50, 50))
   expect_error(
     population("AFR", parent = "ancestor", time = 1, N = 1, map = map, center = 1, radius = 1, polygon = coords),
-    "Either a circular range (center and radius) or the corners of a polygon need to be specified, but not both", fixed = TRUE
+    "Either a circular range (center and radius) or the corners of
+a polygon need to be specified, but not both", fixed = TRUE
   )
 })
 

@@ -4,3 +4,6 @@
 ^pkgdown$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README.Rmd
+^build_docs.R
+^logo.R

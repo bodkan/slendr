@@ -67,9 +67,9 @@ p <- ggplot() +
 #  geom_label(data = points_df, aes(lon, lat, label = id)) +
   geom_segment(data = edges_df, aes(x = x, y = y, xend = xend, yend = yend, color = from)) +
   geom_point(data = points_df, aes(lon, lat, color = id), size = 1.5) +
-  guides(color = F, fill = F) +
-  scale_x_continuous(expand = c(0,0)) +
-  scale_y_continuous(expand = c(0,0)) +
+  guides(color = FALSE, fill = FALSE) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
   theme_void() +
   theme_transparent() +
   geom_rect(aes(xmin = -28, xmax = 80, ymin = -22, ymax = -7),
@@ -80,9 +80,10 @@ sticker(
   p_size = 8, p_y = 0.42, p_color = "black",
   h_color = "black", h_fill = "#0077be",
   s_y = 0.9, s_x = 1.05, s_width = 2.5, s_height = 2.3,
-  white_around_sticker = T,
+  white_around_sticker = TRUE,
   filename = file.path(".", "logo.png")
 )
 
+unlink("man/figures/logo.png", force = TRUE)
 usethis::use_logo("logo.png")
 unlink("logo.png")

@@ -4,14 +4,10 @@
 \alias{print.slendr}
 \title{Print a summary of a \code{slendr} object}
 \usage{
-\method{print}{slendr}(x, sf = FALSE, full = FALSE)
+\method{print}{slendr}(x, ...)
 }
 \arguments{
 \item{x}{Object of a class \code{slendr}}
-
-\item{sf}{Print the low-level 'sf' object instead?}
-
-\item{full}{Print the complete table of spatial snapshots?}
 }
 \description{
 Prints a short summary of any \code{slendr} object.

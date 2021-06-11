@@ -15,6 +15,7 @@ Description: A framework for simulating spatially-explicit genomic
     on an arbitrary admixture graph. Spatial demographic models are then
     compiled into a custom-built SLiM script which can be extended by
     the user to perform arbitrary simulations.
+Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -37,11 +38,13 @@ Imports:
     shinyWidgets,
     shiny,
     R.utils,
-    data.table
+    data.table,
+    tidygraph
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
-    rmarkdown
+    rmarkdown,
+    devtools
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues

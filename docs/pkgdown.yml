@@ -3,8 +3,8 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   tutorial: tutorial.html
-last_built: 2021-06-06T20:20Z
+last_built: 2021-06-11T16:14Z
 urls:
-  reference: https://bodkan.net/stamp/reference
-  article: https://bodkan.net/stamp/articles
+  reference: https://bodkan.net/slendr/reference
+  article: https://bodkan.net/slendr/articles
 

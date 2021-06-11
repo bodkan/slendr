@@ -1,6 +1,6 @@
-#' Take a list of slendr_pop population boundary objects and
-#' "interpolate" all of them at time points specified by others
-#' (unless a given population is supposed to be removed at that time)
+# Take a list of slendr_pop population boundary objects and
+# "interpolate" all of them at time points specified by others
+# (unless a given population is supposed to be removed at that time)
 fill_maps <- function(pops, time = NULL) {
 
   removal_times <- sapply(pops, attr, "remove")
@@ -52,7 +52,7 @@ fill_maps <- function(pops, time = NULL) {
 }
 
 
-#' Pick the next/previous value from a vector
+# Pick the next/previous value from a vector
 get_time_point <- function(times, current_value, what) {
   current_index <- which(current_value <= times & times <= current_value)
 
@@ -60,7 +60,7 @@ get_time_point <- function(times, current_value, what) {
     if (what == "previous")
       return(times[current_value <= times][1])
     else
-      return(tail(times[current_value >= times], 1))
+      return(utils::tail(times[current_value >= times], 1))
   } else {
     if (what == "previous")
       new_index <- current_index + 1
@@ -107,7 +107,7 @@ explore <- function(model) {
     geneflow_starts <- model$geneflow
     geneflow_starts$event <- with(
       geneflow_starts,
-      sprintf("geneflow %s → %s, %.2f%%", from, to, 100 * rate)
+      sprintf("geneflow %s -> %s, %.2f%%", from, to, 100 * rate)
     )
     geneflow_starts <- geneflow_starts[, c("orig_tstart", "event")]
     colnames(geneflow_starts) <- c("time", "event")
@@ -115,7 +115,7 @@ explore <- function(model) {
     geneflow_ends <- model$geneflow
     geneflow_ends$event <- with(
       geneflow_ends,
-      sprintf("geneflow %s → %s ends", from, to)
+      sprintf("geneflow %s -> %s ends", from, to)
     )
     geneflow_ends <- geneflow_ends[, c("orig_tend", "event")]
     colnames(geneflow_ends) <- c("time", "event")
@@ -133,7 +133,7 @@ explore <- function(model) {
 
   events <- do.call(rbind, list(split_events, geneflow_starts,
                                 geneflow_ends, cleanup_events))
-  events <- aggregate(event~time,data = events, FUN = paste, collapse = ", ")
+  events <- stats::aggregate(event~time, data = events, FUN = paste, collapse = ", ")
   events$label <- sprintf("time %s: %s", events$time, events$event)
   events <- events[order(events$time), ]
   event_choices <- events$time
@@ -142,12 +142,14 @@ explore <- function(model) {
   # generate time points for the slider
   time_point_snapshots <-
     as.integer(c(0, event_choices, unlist(lapply(model$populations, `[[`, "time"))) %>%
-    sort %>% unique %>% .[. != Inf])
+    sort %>%
+    unique %>%
+    .[. != Inf])
 
   interpolated_maps <- fill_maps(model$populations, time_point_snapshots)
 
   ui <- fluidPage(
-    tags$style(type="text/css", ".recalculating { opacity: 1.0; }"),
+    tags$style(type = "text/css", ".recalculating { opacity: 1.0; }"),
 
     navbarPage(
       "Model explorer",
