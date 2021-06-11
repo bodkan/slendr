@@ -14,9 +14,9 @@ editor_options:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 7,
-  fig.height = 5,
-  dpi = 100,
+  fig.width = 6,
+  fig.height = 4,
+  dpi = 80,
   eval = TRUE
 )
 ```

@@ -211,18 +211,18 @@
   <span class="op">)</span></code></pre></div>
 <p>We can use the function <code>plot</code> again, but we get a warning informing us that plotting complex model dynamics over time on a single map is not a good idea. Below, we show a better way to do this using a built-in interactive R shiny app.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; Warning: Attempting to plot population ranges at multiple time points on
-#&gt; a single map. This is very hard to do in a satisfying way. Please
-#&gt; consider using the function `explore()` to plot the model dynamics
-#&gt; interactively.</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Attempting to plot population ranges at multiple time points on</span>
+<span class="co">#&gt; a single map. This is very hard to do in a satisfying way. Please</span>
+<span class="co">#&gt; consider using the function `explore()` to plot the model dynamics</span>
+<span class="co">#&gt; interactively.</span></code></pre></div>
 <p><img src="reference/figures/README-plot_popmaps-1.png" alt="plot of chunk plot_popmaps"></p>
 </div>
 <div id="4-define-geneflow-events" class="section level4">
 <h4 class="hasAnchor">
 <a href="#4-define-geneflow-events" class="anchor"></a>4. Define geneflow events</h4>
 <p>By default, overlapping populations in SLiM do not mix. In order to schedule an geneflow event between two populations, we can use the function <code>geneflow</code>. If we want to specify multiple such events at once, we can collect them in a simple R list:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
   <span class="fu"><a href="reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">yam</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">6500</span>, end <span class="op">=</span> <span class="fl">6400</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
   <span class="fu"><a href="reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,
@@ -232,7 +232,7 @@
 <div id="5-compile-the-model-to-a-set-of-configuration-files" class="section level4">
 <h4 class="hasAnchor">
 <a href="#5-compile-the-model-to-a-set-of-configuration-files" class="anchor"></a>5. Compile the model to a set of configuration files</h4>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/compile.html">compile</a></span><span class="op">(</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>, <span class="co"># populations defined above</span>
   geneflow <span class="op">=</span> <span class="va">gf</span>, <span class="co"># geneflow events defined above</span>
@@ -243,29 +243,29 @@
   dir <span class="op">=</span> <span class="st">"/tmp/example-model/"</span>
 <span class="op">)</span></code></pre></div>
 <p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/slim.html">slim()</a></code> function shown below. Evaluating it in the console prints its brief summary:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model</span></code></pre></div>
-<pre><code>#&gt; slendr 'model' object 
-#&gt; --------------------- 
-#&gt; populations: AFR, OOA, EHG, ANA, EUR, YAM 
-#&gt; geneflow events: [no geneflow]
-#&gt; generation time: 30 
-#&gt; time direction: backward 
-#&gt; number of spatial maps: 59 
-#&gt; resolution: 10000 distance unit per pixel
-#&gt; 
-#&gt; configuration files in: /private/tmp/example-model 
-#&gt; 
-#&gt; A detailed model specification can be found in `$splits`, `$geneflows`,
-#&gt; `$maps`, `$populations`, and other components of the model object (for
-#&gt; a complete list see `names(&lt;model object&gt;)`). You can also examine
-#&gt; the serialized configuration files in the model directory.</code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span>
+<span class="co">#&gt; slendr 'model' object </span>
+<span class="co">#&gt; --------------------- </span>
+<span class="co">#&gt; populations: AFR, OOA, EHG, ANA, EUR, YAM </span>
+<span class="co">#&gt; geneflow events: [no geneflow]</span>
+<span class="co">#&gt; generation time: 30 </span>
+<span class="co">#&gt; time direction: backward </span>
+<span class="co">#&gt; number of spatial maps: 59 </span>
+<span class="co">#&gt; resolution: 10000 distance unit per pixel</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; configuration files in: /private/tmp/example-model </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; A detailed model specification can be found in `$splits`, `$geneflows`,</span>
+<span class="co">#&gt; `$maps`, `$populations`, and other components of the model object (for</span>
+<span class="co">#&gt; a complete list see `names(&lt;model object&gt;)`). You can also examine</span>
+<span class="co">#&gt; the serialized configuration files in the model directory.</span></code></pre></div>
 </div>
 <div id="6-visualize-the-model" class="section level4">
 <h4 class="hasAnchor">
 <a href="#6-visualize-the-model" class="anchor"></a>6. Visualize the model</h4>
 <p>The package provides an [R shiny]-based browser app <code><a href="reference/explore.html">explore()</a></code> for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/explore.html">explore</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p>The function has two modes:</p>
 <ol>
@@ -282,7 +282,7 @@
 <a href="#7-run-the-model-in-slim" class="anchor"></a>7. Run the model in SLiM</h4>
 <p>Finally, we can execute the compiled model in SLiM. Here we run the simulation in a batch mode, but we could also run it in SLiMgui by setting <code>method = "gui"</code>.</p>
 <p>The <code>slim</code> function generates a complete SLiM script tailored to run the spatial model we defined above. This saves you, the user, a tremendous amount of time.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span>
   <span class="va">model</span>,
   seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, <span class="co"># simulate only a single locus</span>
@@ -295,7 +295,7 @@
 <h4 class="hasAnchor">
 <a href="#8-re-capitulate-the-slim-run-as-an-individual-based-animation" class="anchor"></a>8. Re-capitulate the SLiM run as an individual-based animation</h4>
 <p>We can use the saved locations of every individual that lived throughout the course of the simulation to generate a simple GIF animation:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">100</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-plot_gif-1.gif" alt="plot of chunk plot_gif"></p>
 <p>Note that it is possible to simulate population splits and geneflows both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>

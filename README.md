@@ -2,6 +2,8 @@
 
 
 
+
+
 ## Spatio-temporal Population Genetics Simulations in SLiM
 
 **This software is still under development!** <a href='https://bodkan.net/slendr'>
@@ -196,9 +198,6 @@ app.
 
 ```r
 plot(afr, ooa, ehg, eur, ana, yam)
-```
-
-```
 #> Warning: Attempting to plot population ranges at multiple time points on
 #> a single map. This is very hard to do in a satisfying way. Please
 #> consider using the function `explore()` to plot the model dynamics
@@ -247,9 +246,6 @@ it in the console prints its brief summary:
 
 ```r
 model
-```
-
-```
 #> slendr 'model' object 
 #> --------------------- 
 #> populations: AFR, OOA, EHG, ANA, EUR, YAM 
