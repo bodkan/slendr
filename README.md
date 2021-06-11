@@ -148,7 +148,7 @@ afr <- population( # African ancestral population
 )
 
 ooa <- population( # population of the first migrants out of Africa
-  "OOA", parent = afr, time = 51000, N = 500,
+  "OOA", parent = afr, time = 51000, N = 500, remove = 25000,
   center = c(33, 30), radius = 400e3
 ) %>%
   move(
@@ -157,7 +157,7 @@ ooa <- population( # population of the first migrants out of Africa
   )
 
 ehg <- population( # Eastern hunter-gatherers
-  "EHG", parent = ooa, time = 28000, N = 1000,
+  "EHG", parent = ooa, time = 28000, N = 1000, remove = 6000,
   polygon = list(
     c(26, 55), c(38, 53), c(48, 53), c(60, 53),
     c(60, 60), c(48, 63), c(38, 63), c(26, 60))
@@ -169,7 +169,7 @@ eur <- population( # European population
 )
 
 ana <- population( # Anatolian farmers
-  name = "ANA", time = 28000, N = 3000, parent = ooa,
+  name = "ANA", time = 28000, N = 3000, parent = ooa, remove = 4000,
   center = c(34, 38), radius = 500e3, polygon = anatolia
 ) %>%
   expand( # expand the range by 2.500 km
@@ -178,7 +178,7 @@ ana <- population( # Anatolian farmers
   )
 
 yam <- population( # Yamnaya steppe population
-  name = "YAM", time = 7000, N = 500, parent = ehg,
+  name = "YAM", time = 7000, N = 500, parent = ehg, remove = 2500,
   polygon = list(c(26, 50), c(38, 49), c(48, 50),
                  c(48, 56), c(38, 59), c(26, 56))
 ) %>%
@@ -314,9 +314,12 @@ ever lived.
 
 #### 8. Re-capitulate the SLiM run as an individual-based animation
 
+We can use the saved locations of every individual that lived throughout the
+course of the simulation to generate a simple GIF animation:
+
 
 ```r
-animate(model, steps = 200)
+animate(model, steps = 100, width = 500, height = 300)
 ```
 
 ![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
