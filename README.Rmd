@@ -2,15 +2,17 @@
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  colapse = TRUE,
+  collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  fig.width = 7,
-  fig.height = 5,
-  dpi = 100,
+  fig.width = 6,
+  fig.height = 4,
+  dpi = 80,
   eval = TRUE
 )
 ```
+
+
 
 ## Spatio-temporal Population Genetics Simulations in SLiM
 
