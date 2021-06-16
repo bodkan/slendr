@@ -252,7 +252,7 @@ model
 #> geneflow events: [no geneflow]
 #> generation time: 30 
 #> time direction: backward 
-#> number of spatial maps: 59 
+#> number of spatial maps: 58 
 #> resolution: 10000 distance unit per pixel
 #> 
 #> configuration files in: /private/tmp/example-model 
