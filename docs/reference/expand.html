@@ -47,8 +47,8 @@
 
 
 <meta property="og:title" content="Expand the population range — expand" />
-<meta property="og:description" content="Expands the spatial population range by a specified distance in a
-given time-window" />
+<meta property="og:description" content="Expands the spatial population range by a specified distance in a given
+time-window" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -135,11 +135,20 @@ given time-window" />
     </div>
 
     <div class="ref-description">
-    <p>Expands the spatial population range by a specified distance in a
-given time-window</p>
+    <p>Expands the spatial population range by a specified distance in a given
+time-window</p>
     </div>
 
-    <pre class="usage"><span class='fu'>expand</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>by</span>, <span class='va'>end</span>, <span class='va'>snapshots</span>, start <span class='op'>=</span> <span class='cn'>NULL</span>, polygon <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>expand</span><span class='op'>(</span>
+  <span class='va'>pop</span>,
+  <span class='va'>by</span>,
+  <span class='va'>end</span>,
+  <span class='va'>start</span>,
+  overlap <span class='op'>=</span> <span class='fl'>0.8</span>,
+  snapshots <span class='op'>=</span> <span class='cn'>NULL</span>,
+  polygon <span class='op'>=</span> <span class='cn'>NULL</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,12 +162,17 @@ given time-window</p>
       <td><p>How many units of distance to expand by?</p></td>
     </tr>
     <tr>
-      <th>snapshots</th>
-      <td><p>Number of time slices to split the expansion into</p></td>
-    </tr>
-    <tr>
       <th>start, end</th>
       <td><p>When does the expansion start/end?</p></td>
+    </tr>
+    <tr>
+      <th>overlap</th>
+      <td><p>Minimum overlap between subsequent spatial boundaries</p></td>
+    </tr>
+    <tr>
+      <th>snapshots</th>
+      <td><p>The number of intermediate snapshots (overrides the
+<code>overlap</code> parameter)</p></td>
     </tr>
     <tr>
       <th>polygon</th>
