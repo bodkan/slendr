@@ -149,54 +149,87 @@ change <- function(pop, time, N = NULL,
 
 #' Expand the population range
 #'
-#' Expands the spatial population range by a specified distance in a
-#' given time-window
+#' Expands the spatial population range by a specified distance in a given
+#' time-window
 #'
 #' @param pop Object of the class \code{slendr_pop}
 #' @param by How many units of distance to expand by?
 #' @param start,end When does the expansion start/end?
-#' @param snapshots Number of time slices to split the expansion into
+#' @param overlap Minimum overlap between subsequent spatial boundaries
+#' @param snapshots The number of intermediate snapshots (overrides the
+#'   \code{overlap} parameter)
 #' @param polygon Geographic region to restrict the expansion to
 #'
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
-expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
-  check_not_intersected(pop)
+expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
+                   polygon = NULL, verbose = TRUE) {
   check_event_time(c(start, end), pop)
   check_removal_time(start, pop)
 
-  region_start <- pop[nrow(pop), ]
-
   map <- attr(pop, "map")
 
-  if (!is.null(start))
-    region_start$time <- start
+  # get the last available population boundary
+  region_start <- pop[nrow(pop), ]
+  sf::st_agr(region_start) <- "constant"
 
-  times <- seq(
-    start,
-    end,
-    length.out = snapshots + 1
-  )[-1]
+  if (is.null(snapshots)) {
+    n <- 1
+    message("Iterative search for the minimum sufficient number of intermediate
+spatial snapshots, starting at ", n, ". This should only take a couple of
+seconds...")
+  } else
+    n <- snapshots
 
-  inter_regions <- list()
-  inter_regions[[1]] <- region_start
-  for (i in seq_along(times)) {
-    exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / snapshots))
-    exp_region$time <- times[i]
-    inter_regions[[i + 1]] <- exp_region
+  # iterate through the number of intermediate spatial boundaries to reach
+  # the required overlap between subsequent spatial maps
+  repeat {
+    times <- seq(start, end, length.out = n + 1)[-1]
+
+    # generate intermediate spatial maps, starting from the last one
+    inter_regions <- list()
+    inter_regions[[1]] <- region_start
+    for (i in seq_along(times)) {
+      exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / n))
+      exp_region$time <- times[i]
+      sf::st_agr(exp_region) <- "constant"
+
+      # restrict the next spatial boundary to the region of interest
+      if (!is.null(polygon)) {
+        if (!inherits(polygon, "slendr_region"))
+          polygon <- region(polygon = polygon, map = map)
+        exp_region <- sf::st_intersection(exp_region, polygon)
+        exp_region$region <- NULL
+        sf::st_agr(exp_region) <- "constant"
+      }
+
+      inter_regions[[i + 1]] <- exp_region
+    }
+
+    if (!is.null(snapshots)) break
+
+    # calculate the overlap between subsequent spatial snapshots
+    overlaps <- sapply(
+      seq_along(inter_regions)[-1], function(i) {
+        a <- inter_regions[[i - 1]]
+        b <- inter_regions[[i]]
+        sf::st_area(sf::st_intersection(a, b)) / sf::st_area(b)
+      }
+    )
+
+    if (all(overlaps >= overlap)) {
+      message("The required ", sprintf("%.1f%%", 100 * overlap),
+              " overlap between subsequent spatial maps has been met")
+      break
+    } else {
+      n <- n + 1
+      if (verbose)
+        message("- Increasing to ", n, " snapshots")
+    }
   }
-  inter_regions <- do.call(rbind, inter_regions)
-  sf::st_agr(inter_regions) <- "constant"
 
-  if (!is.null(polygon)) {
-    if (!inherits(polygon, "slendr_region"))
-      polygon <- region(polygon = polygon, map = map)
-    inter_regions <- sf::st_intersection(inter_regions, polygon)
-    inter_regions$region <- NULL
-  }
-
-  all_maps <- rbind(pop, inter_regions)
+  all_maps <- do.call(rbind, inter_regions) %>% rbind(pop, .)
   sf::st_agr(all_maps) <- "constant"
 
   result <- copy_attributes(
@@ -211,22 +244,34 @@ expand <- function(pop, by, end, snapshots, start = NULL, polygon = NULL) {
 
 #' Move the population to a new location in a given amount of time
 #'
-#' This function defines a displacement of a population along a given
-#' trajectory in a given time frame
+#' This function defines a displacement of a population along a given trajectory
+#' in a given time frame
 #'
 #' @param pop Object of the class \code{slendr_pop}
-#' @param trajectory List of two-dimensional vectors (longitude,
-#'   latitude) specifying the migration trajectory
+#' @param trajectory List of two-dimensional vectors (longitude, latitude)
+#'   specifying the migration trajectory
 #' @param start,end Start/end points of the population migration
-#' @param snapshots Number of time slices to split the movement into
+#' @param overlap Minimum overlap between subsequent spatial boundaries
+#' @param snapshots The number of intermediate snapshots (overrides the
+#'   \code{overlap} parameter)
+#' @param verbose Show the progress of searching through the number of
+#'   sufficient snapshots?
 #'
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
-move <- function(pop, trajectory, end, snapshots, start = NULL) {
-  check_not_intersected(pop)
+move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
+                 verbose = TRUE) {
   check_event_time(c(start, end), pop)
   check_removal_time(start, pop)
+
+  if (!is.null(snapshots))
+    if (snapshots <= 0)
+      stop("The number of snapshots must be a non-negative integer", call. = FALSE)
+
+  if (!(overlap > 0 & overlap < 1))
+    stop("The required overlap between subsequent spatial maps must be a number
+between 0 and 1", call. = FALSE)
 
   map <- attr(pop, "map")
 
@@ -234,14 +279,10 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   if (!is.list(trajectory) & length(trajectory) == 2)
     trajectory <- list(trajectory)
 
+  # get the last available population boundary
   region_start <- pop[nrow(pop), ]
-  if (!is.null(start)) {
-    check_event_time(time = start, pop)
-    check_removal_time(start, pop)
-    region_start$time <- start
-    sf::st_agr(region_start) <- "constant"
-  }
-  start_time <- region_start$time
+  region_start$time <- start
+  sf::st_agr(region_start) <- "constant"
 
   # prepend the coordinates of the first region to the list of "checkpoints"
   # along the way of the movement
@@ -259,34 +300,71 @@ move <- function(pop, trajectory, end, snapshots, start = NULL) {
   traj <- sf::st_linestring(do.call(rbind, checkpoints)) %>% sf::st_sfc()
 
   if (has_crs(map)) {
-    traj <- sf::st_sf(traj, crs = source_crs) %>% sf::st_transform(crs = target_crs)
+    traj <- sf::st_sf(traj, crs = source_crs) %>%
+      sf::st_transform(crs = target_crs)
   } else {
     traj <- sf::st_sf(traj)
   }
 
-  traj_segments <- sf::st_segmentize(traj, sf::st_length(traj) / snapshots)
+  if (is.null(snapshots)) {
+    n <- 1
+    message("Iterative search for the minimum sufficient number of intermediate
+spatial snapshots, starting at ", n, ". This should only take a couple of
+seconds...")
+  } else
+    n <- snapshots
 
-  traj_points <- sf::st_cast(traj_segments, "POINT")
-  traj_points_coords <- sf::st_coordinates(traj_points)
-  traj_diffs <- diff(traj_points_coords)
+  # iterate through the number of intermediate spatial boundaries to reach
+  # the required overlap between subsequent spatial maps
+  repeat {
+    traj_segments <- sf::st_segmentize(traj, sf::st_length(traj) / n)
 
-  time_slices <- seq(start_time, end, length.out = nrow(traj_points))[-1]
-  traj_diffs <- cbind(traj_diffs, time = time_slices)
+    traj_points <- sf::st_cast(traj_segments, "POINT")
+    traj_points_coords <- sf::st_coordinates(traj_points)
+    traj_diffs <- diff(traj_points_coords)
 
-  inter_regions <- list()
-  inter_regions[[1]] <- region_start
-  for (i in seq_len(nrow(traj_diffs))) {
-    shifted_region <- sf::st_geometry(inter_regions[[i]]) + traj_diffs[i, c("X", "Y")]
-    inter_regions[[i + 1]] <- sf::st_sf(
-      data.frame(
-        pop = region_start$pop,
-        time = traj_diffs[i, "time"],
-        N = region_start$N,
-        stringsAsFactors = FALSE
-      ),
-      geometry = shifted_region,
-      crs = sf::st_crs(inter_regions[[i]])
+    time_slices <- seq(start, end, length.out = nrow(traj_points))[-1]
+    traj_diffs <- cbind(traj_diffs, time = time_slices)
+
+    inter_regions <- list()
+    inter_regions[[1]] <- region_start
+    for (i in seq_len(nrow(traj_diffs))) {
+      shifted_region <- sf::st_geometry(inter_regions[[i]]) + traj_diffs[i, c("X", "Y")]
+      inter_regions[[i + 1]] <- sf::st_sf(
+        data.frame(
+          pop = region_start$pop,
+          time = traj_diffs[i, "time"],
+          N = region_start$N,
+          stringsAsFactors = FALSE
+        ),
+        geometry = shifted_region,
+        crs = sf::st_crs(inter_regions[[i]])
+      )
+      sf::st_agr(inter_regions[[i + 1]]) <- "constant"
+    }
+
+    if (!is.null(snapshots)) break
+
+    # calculate the overlap between subsequent spatial snapshots
+    overlaps <- sapply(
+      seq_along(inter_regions)[-1], function(i) {
+        a <- inter_regions[[i - 1]]
+        b <- inter_regions[[i]]
+        intersection <- sf::st_intersection(a, b)
+        if (nrow(intersection) == 0) return(0)
+        sf::st_area(intersection) / sf::st_area(b)
+      }
     )
+
+    if (all(overlaps >= overlap)) {
+      message("The required ", sprintf("%.1f%%", 100 * overlap),
+              " overlap between subsequent spatial maps has been met")
+      break
+    } else {
+      n <- n + 1
+      if (verbose)
+        message("- testing ", n, " snapshots")
+    }
   }
 
   inter_regions <- rbind(pop, do.call(rbind, inter_regions))
