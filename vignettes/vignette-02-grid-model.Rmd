@@ -168,7 +168,22 @@ We can take things one step further. What if we wanted to do a similar thing (i.
 
 Let's zoom in an some interesting part of the world and then create a grid of demes using the same helper function `create_pop` we defined above (each population boundary being 300 km in diameter):
 
-```{r, message = FALSE}
+```{r, include = FALSE}
+map <- world(
+  xrange = c(-25, 55),
+  yrange = c(-32, 35),
+  crs = 4326,
+  ne_dir = "~/Documents/postdoc/data/ne_data/"
+)
+
+n <- 20
+
+populations <-
+  seq(1, n * n) %>%
+  lapply(create_pop, n_side = n, map = map, N = 100, radius = 150e3)
+```
+
+```{r, eval = FALSE}
 map <- world(
   xrange = c(-25, 55),
   yrange = c(-32, 35),

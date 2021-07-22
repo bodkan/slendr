@@ -99,7 +99,16 @@ Note that in the call below, we specify the coordinates of the zoom in a geograp
 
 This is the approach of *slendr*: let the user specify everything in an easy to understand longitude/latitude geographical CRS (which can be read from any map, making it very easy to define spatial boundaries and trajectories of movement), but the internal data structures and the final exported spatial maps are internally handled in a projected CRS which is important to make sure that distances and proportions are not distorted.
 
-```{r world_zoom}
+```{r, include = FALSE}
+map <- world(
+  xrange = c(-15, 60), # min-max longitude
+  yrange = c(20, 65),  # min-max latitude
+  crs = "EPSG:3035",  # real projected CRS used internally
+  ne_dir = "~/Documents/postdoc/data/ne_data/"
+)
+```
+
+```{r world_zoom, eval = FALSE}
 map <- world(
   xrange = c(-15, 60), # min-max longitude
   yrange = c(20, 65),  # min-max latitude
