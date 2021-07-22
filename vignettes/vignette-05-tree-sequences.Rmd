@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r, echo = FALSE, message = FALSE, }
+```{r, include = FALSE}
 devtools::load_all(".")
 ```
 
@@ -83,7 +83,18 @@ For instance, a paper by Petr _et al._ examined the impact of ancient geneflow b
 
 The table of radiocarbon ages of early modern human (EMH) ancient DNA data points is available online. The only thing we have to do is reformat it so that it is in the same format as the data frames produced by the `sampling()` function:
 
-```{r, message = FALSE}
+
+```{r, include = FALSE}
+emh_inds <- readr::read_delim(
+  system.file("extdata", "emh_ages.txt", package = "slendr"),
+  delim = " ", col_names = c("name", "time")
+)
+
+emh_inds
+```
+
+
+```{r, eval = FALSE, message = FALSE}
 emh_inds <- readr::read_delim(
   "https://raw.githubusercontent.com/bodkan/nea-over-time/master/data/emh_ages.txt",
   delim = " ", col_names = c("name", "time")

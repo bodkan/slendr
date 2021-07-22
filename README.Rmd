@@ -69,18 +69,19 @@ System](https://en.wikipedia.org/wiki/Spatial_reference_system) (CRS)
 will be used to represent landscape features, distances in kilometers,
 etc.
 
-```{r, include = F}
+```{r, include = FALSE}
 devtools::load_all(".")
 set.seed(314159)
 
 map <- world(
   xrange = c(-15, 60),
   yrange = c(20, 65),
-  crs = "EPSG:3035"
+  crs = "EPSG:3035",
+  ne_dir = "~/Documents/postdoc/data/ne_data/"
 )
 ```
 
-```{r, eval = F}
+```{r, eval = FALSE}
 library(slendr)
 
 map <- world(
@@ -251,7 +252,7 @@ checking the model dynamics interactively and visually. For more complex models,
 this is much better than static spatial plots such as the one we showed in step
 2 above:
 
-```{r, eval = F}
+```{r, eval = FALSE}
 explore(model)
 ```
 
@@ -293,7 +294,7 @@ ever lived.
 We can use the saved locations of every individual that lived throughout the
 course of the simulation to generate a simple GIF animation:
 
-```{r plot_gif, message = F}
+```{r plot_gif, message = FALSE}
 animate(model, steps = 100, width = 500, height = 300)
 ```
 
