@@ -24,7 +24,7 @@ Our motivation for starting this project was to create a programmable simulation
 
 ![](figures/geneflow_graph.png){width="80%"}
 
-representing a very simplified view of the history of anatomically modern humans (AMH) in West Eurasia over the last \~50 thousand years ago (a comprehensive overview can be found in a review by [Such and such et al.](asd))---and design a tool which will make it possible to simulate such models in an explicit geographical context to capture processes similar to those in the following figure (taken from a study by [Haak et al. 2015](asd)):
+representing a very simplified view of the history of anatomically modern humans (AMH) in West Eurasia over the last \~50 thousand years ago (a comprehensive overview can be found in a review by [Lazaridis](https://arxiv.org/abs/1805.01579))---and design a tool which will make it possible to simulate such models in an explicit geographical context to capture processes similar to those in the following figure (taken from a study by [Haak et al. 2015](https://www.nature.com/articles/nature14317)):
 
 ![](figures/haak_map.png){width="80%"}
 
@@ -515,10 +515,10 @@ In case an argument `gif = ...` was provided, the function will save the animati
 
 This vignette described only the most basic features of the *slendr* package but it is already quite long. There is much more to *slendr* than what we demonstrated here. For instance:
 
-- You can tweak parameters influencing dispersal dynamics (how "clumpy" populations are, how far can offspring migrate from their parents, etc.) and change how they evolve over time. See [this vignette](http://bodkan.net/slendr/articles/vignette-03-interactions.html) for more information.
+- You can tweak parameters influencing dispersal dynamics (how "clumpy" populations are, how far can offspring migrate from their parents, etc.) and change how they evolve over time. See [this vignette](vignette-03-interactions.html) for more information.
 
-- You can use *slendr* to program non-spatial models, which means that any concievable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an [Approximate Bayesian Computation](https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation) pipeline or other analyses leveraging readily available R packages. You can find more in [this vignette](http://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html).
+- You can use *slendr* to program non-spatial models, which means that any concievable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an [Approximate Bayesian Computation](https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation) pipeline or other analyses leveraging readily available R packages. You can find more in [this vignette](vignette-04-nonspatial-models.html).
 
-- You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [in this vignette](http://bodkan.net/slendr/articles/vignette-02-grid-model.html).
+- You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [in this vignette](vignette-02-grid-model.html).
 
-- Because SLiM saves data in a tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html)for interfacing with Python codeyou have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/)and [*pyslim*](https://pyslim.readthedocs.io)to process simulated data at a massive scale right at your fingertips, all within the convenient environment of R.
+- Because SLiM saves data in a tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html) for interfacing with Python codeyou have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/)and [*pyslim*](https://pyslim.readthedocs.io)to process simulated data at a massive scale right at your fingertips, all within the convenient environment of R.

@@ -80,9 +80,6 @@
     <li>
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
-    <li>
-      <a href="../articles/vignette-05-tree-sequences.html">Processing of tree-sequence data</a>
-    </li>
   </ul>
 </li>
 <li>
@@ -136,7 +133,7 @@
 <a href="#motivation" class="anchor"></a>Motivation</h2>
 <p>Our motivation for starting this project was to create a programmable simulation framework which would add an explicit spatial dimension to population genetics models. Specifically, the original idea was was to be able to take models such as the one here—</p>
 <p><img src="figures/geneflow_graph.png" style="width:80.0%"></p>
-<p>representing a very simplified view of the history of anatomically modern humans (AMH) in West Eurasia over the last ~50 thousand years ago (a comprehensive overview can be found in a review by <a href="asd">Such and such et al.</a>)—and design a tool which will make it possible to simulate such models in an explicit geographical context to capture processes similar to those in the following figure (taken from a study by <a href="asd">Haak et al. 2015</a>):</p>
+<p>representing a very simplified view of the history of anatomically modern humans (AMH) in West Eurasia over the last ~50 thousand years ago (a comprehensive overview can be found in a review by <a href="https://arxiv.org/abs/1805.01579">Lazaridis</a>)—and design a tool which will make it possible to simulate such models in an explicit geographical context to capture processes similar to those in the following figure (taken from a study by <a href="https://www.nature.com/articles/nature14317">Haak et al. 2015</a>):</p>
 <p><img src="figures/haak_map.png" style="width:80.0%"></p>
 <p>The reason for doing this is probably clear. A lot of what we do in studying the history of humans and other species is focused on reconstructing population movements, expansions and geneflow events, all of which happen in a geographical context. In fact, this geographic component is often what we are most interested in (i.e., “Where did the ancestors of some population come from?”, “By which route and how fast did they migrate?”, etc.). However, this goes beyond just simulating demographic history. For instance, selection pressure driving adaptation can often be spatially heterogeneous: members of a population occupying one part of the continent could be exposed to a different environmental pressure than individuals elsewhere, and allele frequency distribution shaped by the adaptation process would reflect this spatial heterogeneity accordingly. Having a way to simulate explicitly spatial genomic data in such situations would allow us to build more realistic models and test more specific hypotheses than are simply not possible by non-spatial simulation methods.</p>
 <p>The R package <em>slendr</em> introduced in this vignette presents such a framework. Internally, the package has two independent but tightly interconnected units:</p>
@@ -557,12 +554,12 @@ between populations.</code></pre>
 <span class="co">#&gt; 5 OOA      1  49230.77       93</span>
 <span class="co">#&gt; 6 OOA      1  48846.15      106</span>
 <span class="co">#&gt;                                                                               path</span>
-<span class="co">#&gt; 1 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpTgYNUa/tutorial-model/1.png</span>
-<span class="co">#&gt; 2 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpTgYNUa/tutorial-model/2.png</span>
-<span class="co">#&gt; 3 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpTgYNUa/tutorial-model/3.png</span>
-<span class="co">#&gt; 4 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpTgYNUa/tutorial-model/4.png</span>
-<span class="co">#&gt; 5 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpTgYNUa/tutorial-model/5.png</span>
-<span class="co">#&gt; 6 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpTgYNUa/tutorial-model/6.png</span></code></pre></div>
+<span class="co">#&gt; 1 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpBCN2SU/tutorial-model/1.png</span>
+<span class="co">#&gt; 2 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpBCN2SU/tutorial-model/2.png</span>
+<span class="co">#&gt; 3 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpBCN2SU/tutorial-model/3.png</span>
+<span class="co">#&gt; 4 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpBCN2SU/tutorial-model/4.png</span>
+<span class="co">#&gt; 5 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpBCN2SU/tutorial-model/5.png</span>
+<span class="co">#&gt; 6 /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpBCN2SU/tutorial-model/6.png</span></code></pre></div>
 <p>The object returned by the <code><a href="../reference/compile.html">compile()</a></code> function (called <code>model</code> here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list <code>model$splits</code>, <code>model$geneflows</code>, etc.</p>
 <p>In case you’d want to separate model specification and running into different scripts, <em>slendr</em> includes a function <code><a href="../reference/read.html">read()</a></code> just for this purpose:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
@@ -622,10 +619,10 @@ between populations.</code></pre>
 <a href="#more-information" class="anchor"></a>More information</h2>
 <p>This vignette described only the most basic features of the <em>slendr</em> package but it is already quite long. There is much more to <em>slendr</em> than what we demonstrated here. For instance:</p>
 <ul>
-<li><p>You can tweak parameters influencing dispersal dynamics (how “clumpy” populations are, how far can offspring migrate from their parents, etc.) and change how they evolve over time. See <a href="http://bodkan.net/slendr/articles/vignette-03-interactions.html">this vignette</a> for more information.</p></li>
-<li><p>You can use <em>slendr</em> to program non-spatial models, which means that any concievable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an <a href="https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation">Approximate Bayesian Computation</a> pipeline or other analyses leveraging readily available R packages. You can find more in <a href="http://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">this vignette</a>.</p></li>
-<li><p>You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown <a href="http://bodkan.net/slendr/articles/vignette-02-grid-model.html">in this vignette</a>.</p></li>
-<li><p>Because SLiM saves data in a tree-sequence file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html"><em>reticulate</em></a>for interfacing with Python codeyou have the incredible power of <a href="https://tskit.dev/tskit/docs/stable/"><em>tskit</em></a>and <a href="https://pyslim.readthedocs.io"><em>pyslim</em></a>to process simulated data at a massive scale right at your fingertips, all within the convenient environment of R.</p></li>
+<li><p>You can tweak parameters influencing dispersal dynamics (how “clumpy” populations are, how far can offspring migrate from their parents, etc.) and change how they evolve over time. See <a href="vignette-03-interactions.html">this vignette</a> for more information.</p></li>
+<li><p>You can use <em>slendr</em> to program non-spatial models, which means that any concievable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an <a href="https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation">Approximate Bayesian Computation</a> pipeline or other analyses leveraging readily available R packages. You can find more in <a href="vignette-04-nonspatial-models.html">this vignette</a>.</p></li>
+<li><p>You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown <a href="vignette-02-grid-model.html">in this vignette</a>.</p></li>
+<li><p>Because SLiM saves data in a tree-sequence file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html"><em>reticulate</em></a> for interfacing with Python codeyou have the incredible power of <a href="https://tskit.dev/tskit/docs/stable/"><em>tskit</em></a>and <a href="https://pyslim.readthedocs.io"><em>pyslim</em></a>to process simulated data at a massive scale right at your fingertips, all within the convenient environment of R.</p></li>
 </ul>
 </div>
   </div>
