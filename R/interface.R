@@ -50,6 +50,8 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
     check_split_time(time, parent)
     map <- attr(parent, "map")
   }
+  time <- as.integer(time)
+  N <- as.integer(N)
 
   if (inherits(map, "slendr_map")) {
     # define the population range as a simple geometry object
