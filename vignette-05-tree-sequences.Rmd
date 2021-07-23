@@ -1,0 +1,259 @@
+---
+title: "Processing of tree-sequence data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Processing of tree-sequence data}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  eval = FALSE,
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4,
+  dpi = 80,
+  eval = TRUE
+)
+```
+
+
+```{r, include = FALSE}
+devtools::load_all(".")
+```
+
+### Model of Neanderthal introgression into Eurasians
+
+In this vignette, we will show how to specify sampling events to record individuals in the tree-sequence output file (a procedure which is called "remembering" of individuals in the SLiM/tskit context). We will demonstrate this feature on a simple model of Neanderthal introgression into the ancestors of non-African individuals.
+
+**NOTE: This vignette is actively being developed. Everything here is going to change, dramatically.**
+
+```{r}
+library(slendr)
+
+anc <- population("ANC", time = 5e6, N = 5)
+neand <- population("NEA", parent = anc, time = 500e3, N = 2) #, remove = 40e3)
+afr <- population("AFR", parent = anc, time = 500e3, N = 20)
+eur <- population("EUR", parent = afr, time = 60e3, N = 20)
+
+gf <- NULL #geneflow(from = neand, to = eur, rate = 0.03, start = 50000, end = 45000)
+```
+
+
+```{r}
+model1 <- compile(
+  populations = list(anc, neand, afr, eur), geneflow = gf,
+  generation_time = 30,
+  dir = file.path(tempdir(), "neand-introgression"), overwrite = TRUE
+)
+```
+
+Here's our simple model visualized as a graph:
+
+```{r, fig.width = 6, fig.height = 4}
+graph(model1) + ggplot2::theme(legend.position = "none")
+```
+
+We have defined a model. How do we sample data from it? Ideally, we would like to be able to schedule sampling events at a given time, sampling a defined number of individuals from a given population.
+
+## Scheduling sampling events
+
+For your convenience, _slendr_ provides a function `sampling()` which allows you to define such sampling schedule automatically, while at the same time, enforce that only populations which are already (i.e. after their appearance in the simulation) or still (before they are removed from the simulation) will be sampled from.
+
+In our example, we want to sample two Neanderthal individuals (the older one being the [Altai Neanderthal](), then younger one [Vindija Neanderthal]()):
+
+```{r}
+neand_inds <- sampling(times = c(70000, 40000), list(neand, 1))
+
+neand_inds
+```
+
+Next, we want to sample of present-day individuals---an "ancestor" representing a chimpanzee outgroup, and a couple of Africans and Europeans:
+
+```{r}
+present_inds <- sampling(times = 0, list(anc, 1), list(afr, 5), list(eur, 5))
+
+present_inds
+```
+
+As you can see, the `sampling()` function returns a plain old data frame with a very simple structure (columns time, population name, number of individuals). This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated historical samples).
+
+For instance, a paper by Petr _et al._ examined the impact of ancient geneflow between Eurasian populations (known to carry Neanderthal ancestry) and African populations (assumed to carry no Neanderthal ancestry) on the inference of Neanderthal ancestry proportions in Eurasians. Specifically, because African genomes are routinely used to estimate Neanderthal ancestry in non-Africans they were interested in knowing how do traces amounts of Neanderthal ancestry present in Africans today resulting from past geneflow between Eurasians and Africans affect the statistical inference.
+
+The table of radiocarbon ages of early modern human (EMH) ancient DNA data points is available online. The only thing we have to do is reformat it so that it is in the same format as the data frames produced by the `sampling()` function:
+
+```{r, include = FALSE}
+emh_inds <- readr::read_delim(
+  system.file("extdata", "emh_ages.txt", package = "slendr"),
+  delim = " ", col_names = c("name", "time")
+)
+
+emh_inds
+```
+
+
+```{r, eval = FALSE, message = FALSE}
+emh_inds <- readr::read_delim(
+  "https://raw.githubusercontent.com/bodkan/nea-over-time/master/data/emh_ages.txt",
+  delim = " ", col_names = c("name", "time")
+)
+
+emh_inds
+```
+
+```{r}
+emh_inds$pop <- "EUR"
+emh_inds$n <- 1
+emh_inds <- emh_inds[, c("time", "pop", "n")]
+
+head(emh_inds)
+emh_inds <- NULL
+```
+
+One nice feature of the `sampling()` function is that it only schedules sampling events for populations if that population is present in the simulation at a given time. This makes it possible to simply specify the whole time range for sampling, specify all populations and sizes of the samples, and let the function generate sampling events only for populations present at each time. If for some reason a stricter control over sampling is required, this behavior can be switched off by setting `strict = TRUE` like this:
+
+```{r, eval = FALSE}
+# this attempts to sample a Neanderthal individual at a point when Neanderthals
+# are already extinct, resulting in an error
+sampling(times = 10000, list(neand, 1), strict = TRUE)
+```
+
+```
+Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only keep valid sampling events.
+```
+
+## Executing the simulation
+
+Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the `slim()` function as usual, but this time we set `ts_recording = TRUE` (switching of tree-sequence recording in SLiM) and we specify the sampling events with the `sampling = ` argument. Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R:
+
+```{r}
+sampling <- rbind(neand_inds, present_inds, emh_inds)
+sampling
+```
+
+```{r}
+slim(
+  model1,
+  seq_length = 10000, recomb_rate = 0, # simulate 100 Mb sequence
+  ts_recording = TRUE, method = "gui",
+  sampling = sampling,
+  verbose = TRUE
+)
+```
+
+## Setting up _reticulate_ with _tskit_ and _pyslim_
+
+The result of switching on `ts_recording = TRUE` in the `slim()` call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
+
+```{r}
+ts_file <- file.path(model1$path, "output_tree_seq.trees")
+file.exists(ts_file)
+```
+
+Tree-sequences are one of the most revolutionary developments in population genetics in the last couple of decades for number of reasons, one of them being the possibility to store extremely large data sets succintly, by encoding the entire history of samples in the data set as a series of correlated tree geneaologies along the genome.
+
+Going into too much detail on this topic is clearly beyond the scope of this tutorial as everything is explain much better elsewhere (the best place to start is probably [this overview page](https://tskit.dev/learn.html)). What we will demonstrate in the rest of this vignette is how you can access and manipulate tree-sequence outputs generated by _slendr_ models and perform various statistics on them using the combination of an incredible pair of Python modules [tskit](https://tskit.dev/tskit/docs/stable/) and [pyslim](https://pyslim.readthedocs.io/en/latest/index.html) (used to access and manipulate tree-sequence files produced by SLiM) and the R package [reticulate](https://rstudio.github.io/reticulate/index.html) which allows seamless integration of Python modules into R.
+
+Of course, it needs to be said that once you have the tree-sequence file generated by _slendr_ & SLiM, you can easily perform every conceivable analysis in the native Python environment. The intention here is to show how you can continue working on the tree-sequence files in R even after you have run the entire _slendr_ simulation.
+
+First, in order to be able to interface with _tskit_ and _pyslim_ using the _reticulate_ package, you will need a working Python environment with the required Python modules already installed. I personally manage Python installations and separate package environments using [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv). However, this is only my own personal preference. If you prefer using conda or any [other Python management solution](https://xkcd.com/1987/), feel free to stick stick with them. In any case, I recommend using tooling which is supported by [reticulate](https://rstudio.github.io/reticulate/index.html) itself, because it will be easy to find support should you run into troubles.
+
+For completeness, here is how I have just installed _tskit_ and _pyslim_ into a brand new environment on my Mac using pyenv:
+
+```bash
+# install the most recent version of Python (switching on compilation
+# as a shared library is important for reticulate)
+env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.9.6
+
+# create a separate Python environment dedicated to reticulate and tskit work
+pyenv virtualenv 3.9.6 retipy
+
+# install required Python modules into the environment
+pyenv activate retipy
+pip install tskit pyslim
+```
+
+Now we can, already in R, instruct _reticulate_ to use the newly created Python environment. I use `required = TRUE` here to enforce the use of this specific environment):
+
+```{r}
+library(reticulate)
+use_virtualenv("~/.pyenv/versions/retipy/", required = TRUE)
+```
+
+We can make sure that _reticulate_ is using our environment by calling:
+
+```{r}
+py_config()
+```
+
+## Accessing tree-sequence output files
+
+First lets use _reticulate_ to load both Python packages:
+
+```{r}
+tskit <- import("tskit")
+pyslim <- import("pyslim")
+```
+
+Now have have all the power of Python tree-sequence magic at our disposal, from R!
+
+```{r}
+ts <- pyslim$load(ts_file)
+```
+
+```{r}
+ts$num_individuals
+```
+
+```{r}
+ts$individual_populations %>% nrow
+ts$individual_populations %>% table
+
+ts$individual_times %>% nrow
+ts$individual_times %>% table
+```
+
+```{r}
+get_individuals <- function(ts) {
+  purrr::map_dfr(seq(0, ts$num_individuals - 1), function(i) {
+    ind <- ts$individual(i)
+    list(
+      id = ind["id"],
+      pedigree_id = ind["metadata"]["pedigree_id"],
+      pop = ind["metadata"]["subpopulation"],
+      flag = ind["flags"],
+      alive = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_ALIVE) != 0,
+      remembered = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_REMEMBERED) != 0,
+      retained = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_RETAINED) != 0
+    )
+  })
+}
+```
+
+
+```{r}
+all_inds <- get_individuals(ts)
+
+tsim <- ts$simplify(filter(all_inds, remembered)$id)
+sampled_inds <- get_individuals(tsim)
+```
+
+
+
+```{r}
+tree <- ts$first()
+```
+
+```{r}
+cat(ts$first()$draw_text())
+```
+
+
+## Calculating _f_-statistics
+
+In addition to being a breakthrough in terms of computation efficiency, tree-sequences gives us a way to express much more elegantly . Again, we can't go into too much detail here but I encourage you to take a look at a paper by [Ralph _et al._](https://www.genetics.org/content/215/3/779) on the duality between statistics expressed in terms of branch lengths and traditional summaries of genetic variation.
+
+In our example of Neanderthal introgression
+
