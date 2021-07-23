@@ -9,11 +9,11 @@
 **This software is still under development!** <a href='https://bodkan.net/slendr'>
 <img src="man/figures/logo.png" align="right" height="139"/></a>
 I have been making a good progress towards the first beta version, but
-the package still has some way to go before being production ready. If you are interested, you can see the list of changes between versions [here](https://bodkan.net/slendr/news/index.html).
+the package still has some way to go before being production ready. If you are interested, you can see the list of changes between versions [here](news/index.html).
 
 That said, if you would like to learn more, or if you're feeling brave
 and would like to test the package yourself, take a look at the
-[tutorial](https://bodkan.net/slendr/articles/slendr.html). Note that
+[tutorial](articles/vignette-01-tutorial.html). Note that
 getting it installed with all the geospatial dependencies can be a
 little bit tricky at this point (see the relevant section in the
 tutorial). If loading the package fails, check the error messages for
@@ -32,7 +32,7 @@ If you would like to stay updated with the developments:
 
 For installation instructions, please take a look at the installation
 section [of the
-tutorial](https://bodkan.net/slendr/articles/slendr.html#installation-and-setup-1).
+tutorial](articles/vignette-01-tutorial.html#installation-and-setup-1).
 Note that you might need to install some non-R software dependencies
 first. At the very least, you will need the most recent version of the
 [SLiM software](https://messerlab.org/slim/) (version 3.6 or later).
@@ -43,7 +43,7 @@ Here is a small demonstration of what *slendr* is designed to do. We want
 to simulate spatiotemporal data representing the history of modern humans
 in Eurasia after the Out of Africa migration. This example will be quite
 brief, for more details, please see the
-[tutorial](https://bodkan.net/slendr/articles/slendr.html) vignette.
+[tutorial](articles/vignette-01-tutorial.html) vignette.
 
 The package is designed to allow the building of complex spatiotemporal
 population genetics models in a single R script and then feeding such models
@@ -252,7 +252,7 @@ model
 #>   - number of spatial maps: 60 
 #>   - resolution: 10000 distance units per pixel
 #> 
-#> configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpSMRJVO/readme-model 
+#> configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpGfhB7m/readme-model 
 #> 
 #> A detailed model specification can be found in `$splits`, `$geneflows`,
 #> `$maps`, `$populations`, and other components of the model object (for
