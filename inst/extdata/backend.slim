@@ -341,7 +341,7 @@ s10 late() {
     }
 
     inds = sample(all_inds, n);
-    sim.treeSeqRememberIndividuals(inds, permanent = F);
+    sim.treeSeqRememberIndividuals(inds, permanent = T);
 
 
   }
@@ -524,7 +524,7 @@ function (s$) config_path(s$ file) {
 // Write the locations file header line
 function (void) write_locations_header(void) {
   filename = paste0(OUTPUT_PREFIX, "_ind_locations.tsv.gz");
-  header_str = "gen\ttime\tpop\tind\tx\ty\tsampled";
+  header_str = "gen\ttime\tpop\tind\tx\ty";
   writeFile(filename, header_str, compress = T);
 }
 
@@ -549,7 +549,7 @@ function(void) write_locations(lifso<Individual>$ ind) {
 
   ind_str = paste(sim.generation, original_time(sim.generation),
                   ind.subpopulation.id, id, ind.spatialPosition,
-                  asInteger(!isNULL(ind.getValue("sampled"))), sep = "\t");
+                  sep = "\t");
 
   writeFile(filename, ind_str, append = T, compress = T);
 }
