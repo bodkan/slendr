@@ -980,8 +980,11 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 
 #' Define sampling events at specified times for a given set of populations
 #'
-#' @param times Integer vector of times (in model time units) at which to schedule remembering of individuals in the tree-sequence
-#' @param ... Lists of two elements <\code{slendr_pop} population object>-<number of individuals to sample>, representing from which populations should how many individuals be remembered at times given by \code{times}
+#' @param times Integer vector of times (in model time units) at which to
+#'   schedule remembering of individuals in the tree-sequence
+#' @param ... Lists of two elements (\code{slendr_pop} population object-<number
+#'   of individuals to sample), representing from which populations should how
+#'   many individuals be remembered at times given by \code{times}
 #'
 sampling <- function(times, ..., strict = FALSE) {
   samples <- list(...)
