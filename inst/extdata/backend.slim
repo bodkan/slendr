@@ -65,17 +65,22 @@ initialize() {
 
   // mutation types of neutral ancestry-informative markers
   // (one for each population)
-  mut_types = POPULATIONS.getValue("pop_id");
-  for (i in mut_types)
-    initializeMutationType(i, 0.5, "f", 0.0);
+  if (TRACK_ANCESTRY) {
+    mut_types = POPULATIONS.getValue("pop_id");
+    for (i in mut_types)
+      initializeMutationType(i, 0.5, "f", 0.0);
 
-  initializeGenomicElementType("g1", mut_types, rep(1.0, length(mut_types)));
+    initializeGenomicElementType("g1", mut_types, rep(1.0, length(mut_types)));
 
-  // all ancestry informative neutral markers have to be prevented
-  // from stacking and from being removed after fixation
-  g1.mutationTypes[mut_types].convertToSubstitution = F;
-  g1.mutationTypes[mut_types].mutationStackPolicy = "l";
-  g1.mutationTypes[mut_types].mutationStackGroup = 0;
+    // all ancestry informative neutral markers have to be prevented
+    // from stacking and from being removed after fixation
+    g1.mutationTypes[mut_types].convertToSubstitution = F;
+    g1.mutationTypes[mut_types].mutationStackPolicy = "l";
+    g1.mutationTypes[mut_types].mutationStackGroup = 0;
+  } else {
+    initializeMutationType("m0", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m0, 1.0);
+  }
 
   defineConstant("SEQ_LENGTH", asInteger({{seq_length}}));
   initializeGenomicElement(g1, 0, SEQ_LENGTH - 1);

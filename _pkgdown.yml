@@ -42,6 +42,7 @@ reference:
     - resize
     - dispersal
     - geneflow
+
   - title: Defining and manipulating spatial features
     contents:
     - world
@@ -49,12 +50,14 @@ reference:
     - join
     - overlap
     - subtract
+
   - title: Coordinate conversion, distances, areas
     contents:
     - convert
     - distance
     - area
     - dimension
+
   - title: Model visualization and diagnostics
     contents:
     - plot.slendr
@@ -66,12 +69,25 @@ reference:
     - print.slendr_region
     - print.slendr_pop
     - print.slendr_model
+
   - title: Compiling and running spatial models
     contents:
     - compile
     - read
     - script
     - slim
+
+  - title: Tree-sequence processing
+    contents:
+    - ts_load
+    - ts_simplify
+    - ts_mutate
+    - ts_individuals
+    - ts_genotypes
+
+  - title: Tree-sequence statistics
+    contents:
+    - ts_f2, ts_f3, ts_f4
 
 news:
   one_page: true
