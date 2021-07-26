@@ -64,12 +64,14 @@
   `compile()` call. These parameters can also change dynamically over
   time by calling the `dispersal()` function.
 
-- Sampling of individuals for tree-sequence recording can be scheduled
-  by calling the `sampling()` function. A basic interface to _tskit_
-  has been implemented: loading and simplifying tree-sequence data, 
-  conversion to genotype file formats such as EIGENSTRAT (making it
-  possible to run ADMIXTOOLS analyses on the simulated data) and VCF,
-  a couple of statistics functions (all with the `ts_*` prefix).
+- Sampling of individuals for tree-sequence recording can now be scheduled
+  with the `sampling()` function.
+
+- A basic interface to _tskit_ has been implemented: loading and
+  simplifying tree-sequence data, conversion to genotype file formats
+  such as EIGENSTRAT (making it possible to run ADMIXTOOLS analyses on the
+  simulated data) and VCF, a couple of population genetics statistical
+  functions (all with the `ts_*` prefix).
 
 - Five new vignettes have been added (available under "Articles" at
   the [project website](https://bodkan.net/slendr).
