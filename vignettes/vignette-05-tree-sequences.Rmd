@@ -1,9 +1,9 @@
 ---
-title: "Tree-sequences and tskit interface"
+title: "Tree-sequences, tskit interface, f-statistics"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{Tree-sequences and tskit interface}
+  %\VignetteIndexEntry{Tree-sequences, tskit interface, f-statistics}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
@@ -19,36 +19,34 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 ```{r, include = FALSE}
 devtools::load_all(".")
 ```
 
+In this vignette, we will show how to specify sampling events to record individuals in the tree-sequence output file (a procedure which is called "remembering" of individuals in the SLiM context) and how to perform simple analyses using *slendr*'s interface to the [*tskit*](http://tskit.dev)Python library for handling tree-sequence data. Specifically, we will demonstrate these features on a model of Neanderthal introgression into anatomically modern humans and show how to estimate the amount of Neanderthal ancestry using $f$-statistics calculated directly on the tree-sequence data structure entirely from R.
+
 ### Model of Neanderthal introgression into Eurasians
 
-In this vignette, we will show how to specify sampling events to record individuals in the tree-sequence output file (a procedure which is called "remembering" of individuals in the SLiM/tskit context). We will demonstrate this feature on a simple model of Neanderthal introgression into the ancestors of non-African individuals.
-
-**NOTE: This vignette is actively being developed. Everything here is going to change, dramatically.**
+First, let's set up a simple *non-spatial* model of Neanderthal introgression using *slendr.* This is essentially the same procedure which we have shown in another vignette introducing [non-spatial *slendr* models](vignette-04-nonspatial-models.html).
 
 ```{r}
 library(slendr)
 
-# a single individual ancestor to serve as an outgroup for analyses below
+# a single individual ancestor "population" to serve as a chimpanzee outgroup
+# (we do this to drastically reduce the computational time for this toy model)
 anc <- population("ANC", time = 5e6, N = 1)
+
+# two anatomically modern human populations: Africans and Europeans
+afr <- population("AFR", parent = anc, time = 4.9e6, N = 10000)
+eur <- population("EUR", parent = afr, time = 60e3, N = 5000)
 
 # Neanderthal population splitting at 0.5 Mya from the common ancestor with
 # anatomically modern humans (and extinct by 40 kya)
-nea <- population("NEA", parent = anc, time = 500e3, N = 1000, remove = 40e3)
+nea <- population("NEA", parent = afr, time = 500e3, N = 1000, remove = 40e3)
 
-# two anatomically modern human populations: Africans and Europeans
-afr <- population("AFR", parent = anc, time = 500e3, N = 10000)
-eur <- population("EUR", parent = afr, time = 60e3, N = 5000)
-
-# Neanderthal introgression event between 50-45 kya at 3%
+# 3% Neanderthal introgression event into Europeans between 50-45 kya
 gf <- geneflow(from = nea, to = eur, rate = 0.03, start = 50000, end = 45000)
-```
 
-```{r}
 model <- compile(
   populations = list(anc, nea, afr, eur), geneflow = gf,
   generation_time = 30,
@@ -56,60 +54,37 @@ model <- compile(
 )
 ```
 
-Here's our simple model visualized as a graph. Not particularly illuminating in this simple example, but it is worth keeping in mind that such graph is embedded within every _slendr_ model:
+Here's our toy model visualized as a graph. Not particularly illuminating in this simple example, but it is worth keeping in mind that such graph is embedded within every *slendr* model and can be always invoked to make sure the model you're setting up is correct:
 
 ```{r, fig.width = 6, fig.height = 4}
 graph(model) + ggplot2::theme(legend.position = "none")
 ```
 
-We have defined a model. How do we sample data from it? Ideally, we would like to be able to schedule sampling events at a given time, sampling a defined number of individuals from a given population.
-
 ## Scheduling sampling events
 
-For your convenience, _slendr_ provides a function `sampling()` which allows you to define such sampling schedule automatically, while at the same time, enforce that only populations which are already (i.e. after their appearance in the simulation) or still (before they are removed from the simulation) will be sampled from.
+So now that we have defined a model, how do we sample data from it? Ideally, we would like to to schedule sampling events at a given time, sampling a defined number of individuals from a given population. This is why *slendr* provides a function `sampling()` which allows you to define such sampling schedule automatically while, at the same time, enforcing that only populations which are already (i.e. after their appearance in the simulation) or still (before they are removed from the simulation) will be sampled from.
 
 In our example, we want to sample two Neanderthal individuals (the older one being the [Altai Neanderthal](), then younger one [Vindija Neanderthal]()):
 
 ```{r}
-nea_inds <- sampling(times = c(70000, 40000), list(nea, 1))
-nea_inds
+nea_samples <- sampling(times = c(70000, 40000), list(nea, 1))
+nea_samples
 ```
 
-Next, we want to sample present-day individuals---an "outgroup" representing a chimpanzee, and a couple of Africans and Europeans:
+Next, we want to sample some present-day individuals: an "outgroup" representing a chimpanzee, and a couple of Africans and Europeans:
 
 ```{r}
-present_inds <- sampling(times = 0, list(anc, 1), list(afr, 5), list(eur, 5))
-present_inds
+present_samples <- sampling(times = 0, list(anc, 1), list(afr, 5), list(eur, 5))
+present_samples
 ```
 
-As you can see, the `sampling()` function returns a plain old data frame with a very simple structure (columns time, population name, number of individuals). This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated historical samples).
+As you can see, the `sampling()` function returns a plain old data frame with a very simple structure with three columns: time, population name, and the number of individuals. This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated historical samples). For instance, there has been a [lot](https://www.nature.com/articles/nature17993) of [interest](https://www.pnas.org/content/116/5/1639) to estimate the trajectory of Neanderthal ancestry in Europe over time using ancient DNA data from anatomically modern human individuals (also called early modern humans, EMH) across the last couple of tens of thousands of years.
 
-For instance, a paper by Petr _et al._ examined the impact of ancient geneflow between Eurasian populations (known to carry Neanderthal ancestry) and African populations (assumed to carry no Neanderthal ancestry) on the inference of Neanderthal ancestry proportions in Eurasians. Specifically, because African genomes are routinely used to estimate Neanderthal ancestry in non-Africans they were interested in knowing how do traces amounts of Neanderthal ancestry present in Africans today resulting from past geneflow between Eurasians and Africans affect the statistical inference.
-
-The table of radiocarbon ages of early modern human (EMH) ancient DNA data points is available online. The only thing we have to do is reformat it so that it is in the same format as the data frames produced by the `sampling()` function (i.e. three-column table with a the time of a sampling event, the name of the population to sample from, and the number of individuals to sample):
-
-```{r, include = FALSE}
-emh_inds <- readr::read_delim(
-  system.file("extdata", "emh_ages.txt", package = "slendr"),
-  delim = " ", col_names = c("name", "time")
-)
-emh_inds
-```
-
-```{r, eval = FALSE, message = FALSE}
-emh_inds <- readr::read_delim(
-  "https://raw.githubusercontent.com/bodkan/nea-over-time/master/data/emh_ages.txt",
-  delim = " ", col_names = c("name", "time")
-)
-emh_inds
-```
+We can simulate something close to the available [EMH ancient DNA data set](https://www.nature.com/articles/nature17993) over the last 50 thousand years by running something like this:
 
 ```{r}
-emh_inds$pop <- "EUR"
-emh_inds$n <- 1
-emh_inds <- emh_inds[, c("time", "pop", "n")]
-
-head(emh_inds)
+emh_samples <- sampling(times = runif(n = 50, min = 10000, max = 50000), list(eur, 1))
+emh_samples
 ```
 
 One nice feature of the `sampling()` function is that it only schedules sampling events for populations if that population is present in the simulation at a given time. This makes it possible to simply specify the whole time range for sampling, specify all populations and sizes of the samples, and let the function generate sampling events only for populations present at each time. If for some reason a stricter control over sampling is required, this behavior can be switched off by setting `strict = TRUE` like this:
@@ -120,28 +95,22 @@ One nice feature of the `sampling()` function is that it only schedules sampling
 sampling(times = 10000, list(nea, 1), strict = TRUE)
 ```
 
-```
-Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only keep valid sampling events.
-```
+    Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only keep valid sampling events.
 
 ## Executing the simulation
 
-Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the `slim()` function as usual, but this time we set `ts_recording = TRUE` (switching of tree-sequence recording in SLiM) and we specify the sampling events with the `sampling = ` argument. Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R:
-
-```{r}
-samples <- rbind(nea_inds, present_inds, emh_inds)
-samples
-```
+Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the `slim()` function as usual, but this time we set `ts_recording = TRUE` (switching of tree-sequence recording in SLiM) and we specify the sampling events with the `sampling =` argument. Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R:
 
 ```{r}
 slim(
   model, seq_length = 10e6, recomb_rate = 1e-8,
-  ts_recording = TRUE, sampling = samples,
+  ts_recording = TRUE,
+  sampling = rbind(nea_samples, present_samples, emh_samples),
   method = "batch", verbose = TRUE
 )
 ```
 
-## Setting up _reticulate_ with _tskit_ and _pyslim_
+## R interface for *tskit*, *pyslim* and *msprime*
 
 The result of switching on `ts_recording = TRUE` in the `slim()` call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
 
@@ -150,22 +119,23 @@ ts_file <- file.path(model$path, "output_tree_seq.trees")
 file.exists(ts_file)
 ```
 
-Tree-sequences are one of the most revolutionary developments in population genetics in the last couple of decades for number of reasons, one of them being the possibility to store extremely large data sets succintly, by encoding the entire history of samples in the data set as a series of correlated tree geneaologies along the genome.
+Tree-sequences are one of the most revolutionary developments in population genetics in the last couple of decades for a number of reasons. One of them being the possibility to store extremely large data sets succinctly by encoding the entire history of all individualsas a series of correlated tree genealogies along the genome.
 
-Going into too much detail on this topic is clearly beyond the scope of this tutorial as everything is explain much better elsewhere (the best place to start is probably [this overview page](https://tskit.dev/learn.html)). What we will demonstrate in the rest of this vignette is how you can access and manipulate tree-sequence outputs generated by _slendr_ models and perform various statistics on them using the combination of an incredible pair of Python modules [tskit](https://tskit.dev/tskit/docs/stable/) and [pyslim](https://pyslim.readthedocs.io/en/latest/index.html) (used to access and manipulate tree-sequence files produced by SLiM) and the R package [reticulate](https://rstudio.github.io/reticulate/index.html) which allows seamless integration of Python modules into R.
+Going into too much detail on this topic is clearly beyond the scope of this tutorial, especially because everything is explain much better [elsewhere](https://tskit.dev/learn.html). Instead, what we will demonstrate in the rest of this vignette is how you can access and manipulate tree-sequence outputs generated by *slendr* models and perform various statistics on them using Python modules [tskit](https://tskit.dev/tskit/docs/stable/) and [pyslim](https://pyslim.readthedocs.io/en/latest/index.html) (used to access and manipulate tree-sequence files produced by SLiM) from *slendr,* without having to leave R. The key is a magical R package [reticulate](https://rstudio.github.io/reticulate/index.html) which creates seamless binding Python modules with R.
 
-Of course, it needs to be said that once you have the tree-sequence file generated by _slendr_ & SLiM, you can easily perform every conceivable analysis in the native Python environment. The intention here is to show how you can continue working on the tree-sequence files in R even after you have run the entire _slendr_ simulation.
+Of course, it needs to be said that once you have the tree-sequence file generated by *slendr* & SLiM, you can easily perform every conceivable analysis directly using *tskit*. The intention here is to show how you can continue working on the tree-sequence files in R whenever that's convenient for you, even after you have run the entire *slendr* simulation.
 
-First, in order to be able to interface with _tskit_ and _pyslim_ using the _reticulate_ package, you will need a working Python environment with the required Python modules already installed. I personally manage Python installations and separate package environments using [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv). However, this is only my own personal preference. If you prefer using conda or any [other Python management solution](https://xkcd.com/1987/), feel free to stick stick with them. In any case, I recommend using tooling which is supported by [reticulate](https://rstudio.github.io/reticulate/index.html) itself, because it will be easy to find support should you run into troubles.
+First, in order to be able to interface with *tskit* and *pyslim* using the *reticulate* package, you will need a working Python environment with the required Python modules already installed. I personally manage Python installations and separate package environments using [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv). However, this is only my own personal preference. If you prefer using conda or any [other Python management solution](https://xkcd.com/1987/), feel free to stick stick with them. In any case, I recommend using tooling which is supported by [reticulate](https://rstudio.github.io/reticulate/index.html) itself, because it will be easy to find support should you run into any trouble.
 
-For completeness, here is how I have just installed _tskit_ and _pyslim_ into a brand new environment on my Mac using pyenv:
+For completeness, here is how I have just installed *tskit* and *pyslim* into a brand new environment on my Mac using pyenv:
 
-```bash
-# install the most recent version of Python (enforcing the compilation of
-# Python as a shared library is important for the reticulate package to work)
+``` {.bash}
+# 1. install the most recent version of Python (enforcing the compilation of
+# Python as a shared library is important for the reticulate package to work,
+# at least on a Mac)
 env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.9.6
 
-# create a separate Python environment dedicated to reticulate and tskit work
+# create a separate Python environment dedicated to our R/Python interface
 pyenv virtualenv 3.9.6 retipy
 
 # install required Python modules into the environment
@@ -173,13 +143,13 @@ pyenv activate retipy
 pip install tskit pyslim msprime
 ```
 
-Now we can, already in R, instruct the _reticulate_ package to use the newly created Python environment:
+Now we can instruct the *reticulate* package to use the newly created Python environment:
 
 ```{r}
-reticulate::use_virtualenv("~/.pyenv/versions/retipy")
+reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
 ```
 
-We can make sure that _reticulate_ is indeed using our environment by calling:
+We can make sure that *reticulate* is indeed using our environment by calling:
 
 ```{r}
 reticulate::py_config()
@@ -187,61 +157,57 @@ reticulate::py_config()
 
 ## Loading and processing tree-sequence output files
 
-We can load the tree-sequence file saved by SLiM using the function `ts_load()`. Optionally, we can also instruct this function to simplify the tree-sequence to only the individuals that we explicitly sampled (using the sampling schedule set up by `sampling()` above). What _slendr_ does here is provide an R-friendly interface to _tskit_ and _pyslim_, essentially reproducing steps in [this tutorial](https://pyslim.readthedocs.io/en/stable/tutorial.html).
+With the technicalities out of the way, we can now load the tree-sequence file saved by SLiM using the function a *slendr* function `ts_load()`. Optionally, we can also instruct this function to simplify the tree-sequence to only the individuals that we explicitly sampled (using the sampling schedule set up by `sampling()` above). What *slendr* does here is provide an R-friendly interface to *tskit* and *pyslim*, essentially reproducing steps in [this tutorial](https://pyslim.readthedocs.io/en/stable/tutorial.html) in a single step. Note that we have to provide the `model` object generated by `compile()` above, because we use it to pull out information about the simulation which is not stored by the SLiM tree-sequence object.
 
 ```{r}
 ts <- ts_load(ts_file, model, simplify = TRUE)
 ```
 
-For computational efficiency, we did not simulate any mutations during the SLiM run. We can add mutations to the tree-sequence at a given rate by calling (again, following the [pyslim tutorial](https://pyslim.readthedocs.io/en/stable/tutorial.html#recapitation-simplification-and-mutation):
+For computational efficiency, we did not simulate any mutations during the SLiM run. In order to be able to calculate statistics from genetic variation, we can add mutations to the tree-sequence at a given rate by running:
 
 ```{r}
 ts <- ts_mutate(ts, mutation_rate = 1e-8)
 ```
 
-Having done that, we can calculate some basic statistics on our simulated data. We note that everything that we do here (every function with the prefix `ts_*()`) is, in fact, interfacing with either _tskit_ / _pyslim_ / _msprime_ Python modules via the _reticulate_ R package. Our goal here is to capture the most basic of analyses one might want to do and wrap them in a neat interface indistinguishable from any other R function---this is, after all, the reason why _reticulate_ has been created in the first place (making various Python data science modules appear almost as if they were simply R packages).
+Having done that, we can calculate some basic statistics on our simulated data. We note that everything that we do here (every function with the prefix `ts_*()` in *slendr*) is, in fact, interfacing with the *tskit* Python module internally via the *reticulate* R package. Our goal here is to capture the most basic of analyses one might want to perform on tree-sequences in R and wrap them in a neat interface indistinguishable from any other R function---this is, after all, the reason why *reticulate* has been created in the first place (making various Python data science modules appear almost as if they were simply R packages).
 
-That said, our goal isn't to capture everything that is possible to do in _tskit_. I love R and I prefer to use it for as much of my work as possible, but for anything that does not involve calculating simple population genetics statistics on simulated tree genealogies, it is better to use _tskit_ directly.
+That said, our goal isn't to capture everything that is possible to do in *tskit*. I personally love R and prefer to use it for as much of my work as possible, but for anything that does not involve calculating population genetics statistics on simulated tree genealogies, it is better to use *tskit* directly. In other words, if you're developing a novel population genetic inference method on which operates on tree-sequence data, you should probably use *tskit* directly (either its C API or the Python interface), not R.
 
-The thing to keep in mind in this context is that the tree-sequence files created by _slendr_ & SLiM are "normal" tree-sequence files as expected by _pyslim_. There is no magic here, and no surprises. Regardless of what is shown below, you could just as easily load the tree-sequence output of _slendr_ into Python and do everything using the powerful _tskit_ & _pyslim_ & _msprime_ trio.
+## Calculating *f*-statistics
 
-## Calculating _f_-statistics
-
-In addition to being a revolutionary breakthrough in terms of computation efficiency, many population genetics statistics we often calculate from genetic variation data are a natural consequence of tree sequence genealogies. Again, we can't go into too much detail here but I encourage you to take a look at a paper by [Ralph _et al._](https://www.genetics.org/content/215/3/779) on the duality between statistics expressed in terms of branch lengths and traditional summaries of genetic variation.
+In addition to being a revolutionary breakthrough in terms of computation efficiency, many population genetics statistics we are often interested in are a natural consequence of having a direct access to tree sequence genealogies simply because those capture the true demographic history of a sample. Again, we can't go into too much detail here but I encourage you to take a look at a paper by [Ralph *et al.*](https://www.genetics.org/content/215/3/779) on the duality between statistics expressed in terms of branch lengths and the traditional summaries based on samples of genetic variation.
 
 For instance, we have functions such as `ts_f2()`, `ts_f3()`, `ts_f4()` and `ts_f4ratio()` which calculate the well-known set of Patterson's $f$-statistics:
 
 ```{r}
 ts_f2(ts, "EUR1", "EUR2")
 
-ts_f3(ts, "NEA1", "NEA2", "ANC1")
 ts_f3(ts, "EUR1", "EUR2", "ANC1")
-ts_f3(ts, "AFR1", "AFR2", "ANC1")
-
-ts_f3(ts, "NEA1", "AFR1", "ANC1")
 ts_f3(ts, "EUR1", "AFR1", "ANC1")
+ts_f3(ts, "EUR1", "NEA1", "ANC1")
 
 ts_f4(ts, "AFR1", "AFR2", "NEA1", "ANC1")
 ts_f4(ts, "AFR1", "EUR1", "NEA1", "ANC1")
 ```
 
-These functions accept a `mode = ` argument, specifying whether the statistics should be calculated using mutation site patterns (`mode = "site"`, the default) or branch lengths (`mode = "branch"`). See the [relevant section](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.write_vcf) of the official _tskit_ documentation for more information.
+These functions accept a `mode =` argument, specifying whether the statistics should be calculated using mutation site patterns (`mode = "site"`, the default) or branch lengths (`mode = "branch"`). See the [relevant section](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.write_vcf) of the official *tskit* documentation for more on this topic.
 
-Let's take a list of all simulated European individuals, iterate over them, and calculate the Neanderthal ancestry proportion in each using the $f_4$-ratio statistic (implemented in the `ts_f4ratio()` function):
+## Estimating Neanderthal ancestry proportions
+
+Let's try to put these new tools to practice and estimate the proportion of Neanderthal ancestry in Africans and Europeans in our simulated data. We can do this using the Patterson's $f_4$-ratio statistic implemented in the `ts_f4ratio()` function (you can find more information about this particular version of the statistic [here](https://www.pnas.org/content/116/5/1639)):
 
 ```{r}
-# get a table of simulated African and European individuals
+# get a table of simulated African and European individuals in the tree-sequence
 individuals <- ts_individuals(ts) %>% dplyr::filter(pop %in% c("AFR", "EUR"))
 
-# estimate Neanderthal ancestry proportion in all of them
+# estimate the amounts of Neanderthal ancestry in these individuals
 nea_f4ratio <- ts_f4ratio(ts, X = individuals$name, "NEA1", "NEA2", "AFR1", "ANC1")
 
-# add the Neanderthal ancestry estimates (in the 'alpha' column)
-# to the original table
+# add the Neanderthal ancestry estimates to the table of individuals
 individuals$ancestry <- nea_f4ratio$alpha
 ```
 
-If we now summarise the inferred Neanderthal distribution in both populations, we see that---as expected--there is no Neanderthal ancestry in Africans but there is around 3% Neanderthal ancestry in Europeans:
+If we now summarise the inferred Neanderthal distribution in both populations, we see that there is no Neanderthal ancestry in Africans (as expected by our model) but there is around 3% Neanderthal ancestry in Europeans (consistent with the 3% introgression pulse we simulated between 50-45 ky ago):
 
 ```{r}
 ggplot(individuals, aes(pop, ancestry, fill = pop)) +
@@ -251,13 +217,9 @@ ggplot(individuals, aes(pop, ancestry, fill = pop)) +
   theme(legend.position = "none")
 ```
 
-This is exactly as we specified in the model configuration above:
+This is exactly as we specified in the model configuration above, suggesting that our simulations work as they should. You can see that there is quite a bit of noise but that's because we simulated only 10Mb of sequence.
 
-```{r}
-gf
-```
-
-Because we have the full metadata available for each individual (including their sampling time), we can plot the trajectory of Neanderthal ancestry in Europe over the last 50 thousand years:
+We can also plot the trajectory of Neanderthal ancestry in Europe over the last 50 thousand years:
 
 ```{r}
 filter(individuals, pop == "EUR") %>%
@@ -268,18 +230,18 @@ filter(individuals, pop == "EUR") %>%
   labs(x = "time [years ago]", y = "Neanderthal ancestry proportion")
 ```
 
+Again, this is a result consistent with empirical estimates of Neanderthal ancestry using [ancient DNA data](https://www.pnas.org/content/116/5/1639).
 
+## Feeding data into the *admixr* package for ADMIXTOOLS analysis
 
-## Feeding data into the _admixr_ package for ADMIXTOOLS analysis
-
-In case you would like to verify some _f_-statistics results using the venerable [ADMIXTOOLS](https://academic.oup.com/genetics/article/192/3/1065/5935193) software which first introduced these statistics, _slendr_ provides a convenient function `ts_eigenstrat()`. This function converts the genotype data embedded within the tree-sequence data structure and saves it to disk in an EIGENSTRAT file format. The file conversion is internally handled by the R package [_admixr_](http://bodkan.net/admixr) (an R package for automated ADMIXTOOLS analyses) and returns _admixr_'s `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together.
+In case you would like to verify some *f*-statistics results using the venerable [ADMIXTOOLS](https://academic.oup.com/genetics/article/192/3/1065/5935193) software (which first introduced these statistics), you can convert the tree-sequence data to a file format called EIGENSTRAT using the `ts_eigenstrat()` function. The file conversion is internally handled by the R package [*admixr*](http://bodkan.net/admixr) and returns an `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together. *admixr* is an R package for running automated ADMIXTOOLS analyses entirely from R and makes these types of analyses very convenient.
 
 ```{r}
 snps <- ts_eigenstrat(ts, prefix = file.path(tempdir(), "eigenstrat", "data"))
 snps
 ```
 
-Running an _admixr_ analysis is then as easy as plugging the object into an _admixr_ function. For instance, we can test for the presence of Neanderthal ancestry in Europeans like this:
+Running an *admixr* analysis is then as easy as plugging the object into an *admixr* function. For instance, we can test for the presence of Neanderthal ancestry in Europeans like this:
 
 ```{r}
 library(admixr)
@@ -297,18 +259,21 @@ And we can estimate the proportion of Neanderthal ancestry in a similar way like
 
 ```{r}
 # admixr calculation
-f4ratio(snps, X = "EUR1", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
-f4ratio(snps, X = "EUR2", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
+f4ratio(data = snps, X = c("EUR1", "EUR2", "AFR2"),
+        A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
 
 # tskit calculation
-ts_f4ratio(ts, X = "EUR1", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
-ts_f4ratio(ts, X = "EUR2", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
+ts_f4ratio(ts, X = c("EUR1", "EUR2", "AFR2"),
+           A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
 ```
 
-In fact, lets compare the values estimated by both methods for all individuals:
+In fact, lets compare the values obtained by both methods for all individuals:
 
 ```{r}
+# tskit result
 result_ts <- ts_f4ratio(ts, X = individuals$name, A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1") %>% rename(alpha_ts = alpha)
+
+# result obtained by admixr/ADMIXTOOLS
 result_admixr <- f4ratio(snps, X = individuals$name, A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1") %>% rename(alpha_admixr = alpha)
 
 results <- bind_cols(result_ts, result_admixr)
