@@ -45,7 +45,8 @@ Imports:
     readr,
     stringr,
     reticulate,
-    magick
+    magick,
+    admixr
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

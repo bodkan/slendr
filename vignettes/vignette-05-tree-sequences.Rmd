@@ -33,11 +33,12 @@ In this vignette, we will show how to specify sampling events to record individu
 ```{r}
 library(dplyr)
 library(ggplot2)
+
 library(slendr)
 
-anc <- population("ANC", time = 1e6, N = 1)
+anc <- population("ANC", time = 5e6, N = 1)
 nea <- population("NEA", parent = anc, time = 500e3, N = 1000, remove = 40e3)
-afr <- population("AFR", parent = anc, time = 500e3, N = 12000)
+afr <- population("AFR", parent = anc, time = 500e3, N = 10000)
 eur <- population("EUR", parent = afr, time = 60e3, N = 5000)
 
 gf <- geneflow(from = nea, to = eur, rate = 0.03, start = 50000, end = 45000)
@@ -48,7 +49,7 @@ gf <- geneflow(from = nea, to = eur, rate = 0.03, start = 50000, end = 45000)
 model <- compile(
   populations = list(anc, nea, afr, eur), geneflow = gf,
   generation_time = 30,
-  dir = file.path("/tmp/", "archaic-introgression"), overwrite = TRUE
+  dir = file.path("/tmp/", "introgression"), overwrite = TRUE
 )
 ```
 
@@ -71,7 +72,7 @@ nea_inds <- sampling(times = c(70000, 40000), list(nea, 1))
 nea_inds
 ```
 
-Next, we want to sample of present-day individuals---an "ancestor" representing a chimpanzee outgroup, and a couple of Africans and Europeans:
+Next, we want to sample present-day individuals---an "outgroup" representing a chimpanzee, and a couple of Africans and Europeans:
 
 ```{r}
 present_inds <- sampling(times = 0, list(anc, 1), list(afr, 5), list(eur, 5))
@@ -144,10 +145,9 @@ slim(
 The result of switching on `ts_recording = TRUE` in the `slim()` call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
 
 ```{r}
-model <- read("/tmp/archaic-introgression/")
+model <- read("/tmp/introgression/")
 ts_file <- file.path(model$path, "output_tree_seq.trees")
 file.exists(ts_file)
-#file.copy(ts_file, "~/Desktop/ts.trees", overwrite = TRUE)
 ```
 
 Tree-sequences are one of the most revolutionary developments in population genetics in the last couple of decades for number of reasons, one of them being the possibility to store extremely large data sets succintly, by encoding the entire history of samples in the data set as a series of correlated tree geneaologies along the genome.
@@ -193,6 +193,10 @@ ts <- ts_load(ts_file, model, simplify = TRUE)
 
 ```{r}
 ts <- ts_mutate(ts, mutation_rate = 1e-8)
+```
+
+```{r}
+gt <- ts_genotypes(ts)
 ```
 
 ```{r}
@@ -251,4 +255,38 @@ gf
 In addition to being a breakthrough in terms of computation efficiency, tree-sequences gives us a way to express much more elegantly . Again, we can't go into too much detail here but I encourage you to take a look at a paper by [Ralph _et al._](https://www.genetics.org/content/215/3/779) on the duality between statistics expressed in terms of branch lengths and traditional summaries of genetic variation.
 
 In our example of Neanderthal introgression
+
+## Feeding data into the _admixr_ package for ADMIXTOOLS analysis
+
+In case you would like to verify some _f_-statistics results using ADMIXTOOLS, the traditional workhorse for these types of analyses in population genetics, _slendr_ provides a convenient function `ts_eigenstrat()` which converts the genotype data embedded within the tree-sequence data structure and saves it to disk in an EIGENSTRAT file format. This function uses the R package [_admixr_](http://bodkan.net/admixr) under the hood for file conversion and returns _admixr_'s `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together.
+
+```{r}
+snps <- ts_eigenstrat(ts, prefix = "/tmp/eigenstrat/data", chrom = "chr1")
+```
+
+Running an _admixr_ analysis is then as easy as plugging the object into an _admixr_ function. For instance, we can test for the presence of Neanderthal ancestry in Europeans like this:
+
+```{r}
+library(admixr)
+
+# admixt calculation
+f4(snps, W = "AFR1", X = "AFR2", Y = "NEA1", Z = "ANC1")
+f4(snps, W = "AFR1", X = "EUR1", Y = "NEA1", Z = "ANC1")
+
+# tskit calculation
+ts_f4(ts, W = "AFR1", X = "AFR2", Y = "NEA1", Z = "ANC1")
+ts_f4(ts, W = "AFR1", X = "EUR1", Y = "NEA1", Z = "ANC1")
+```
+
+And we can estimate the proportion of Neanderthal ancestry in a similar way like this:
+
+```{r}
+# admixr calculation
+f4ratio(snps, X = "EUR1", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
+f4ratio(snps, X = "EUR2", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
+
+# tskit calculation
+ts_f4ratio(ts, X = "EUR1", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
+ts_f4ratio(ts, X = "EUR2", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
+```
 
