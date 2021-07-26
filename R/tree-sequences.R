@@ -101,7 +101,9 @@ ts_genotypes <- function(ts) {
     dplyr::select(chr1, chr2) %>%
     unlist() %>%
     as.character()
-  dplyr::as_tibble(genotypes)
+  dplyr::as_tibble(genotypes) %>%
+    dplyr::mutate(pos = ts$tables$sites$position) %>%
+    dplyr::select(pos, dplyr::everything())
 }
 
 #' Extract genotypes from the tree-sequence in the EIGENSTRAT format
@@ -112,13 +114,13 @@ ts_genotypes <- function(ts) {
 #' @return Object of the class EIGENSTRAT created by the admixr package
 #'
 #' @export
-ts_eigenstrat <- function(ts, prefix, chrom = "chrN", quiet = FALSE) {
+ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
   chrom_genotypes <- ts_genotypes(ts)
   chr1_genotypes <- dplyr::select(chrom_genotypes, dplyr::ends_with("_chr1"))
   chr2_genotypes <- dplyr::select(chrom_genotypes, dplyr::ends_with("_chr2"))
 
   # create a geno file table
-  geno <- dplyr::as_tibble(chr1_genotypes + chr2_genotypes)
+  geno <- dplyr::as_tibble(2 - chr1_genotypes + chr2_genotypes)
   colnames(geno) <- ts_individuals(ts)$name
 
   # create an ind file table
@@ -159,7 +161,7 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chrN", quiet = FALSE) {
 # tree-sequence statistics ------------------------------------------------
 
 #' @rdname ts_f4ratio
-ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"), ...) {
+ts_f2 <- function(ts, A, B, mode = c("site", "branch"), ...) {
   mode <- match.arg(mode)
 
   nodes_a <- ts_nodes(ts, A)
@@ -173,7 +175,7 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"), ...) {
 }
 
 #' @rdname ts_f4ratio
-ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"), ...) {
+ts_f3 <- function(ts, A, B, C, mode = c("site", "branch"), ...) {
   mode <- match.arg(mode)
 
   nodes_a <- ts_nodes(ts, A)
@@ -189,7 +191,7 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"), ...) {
 }
 
 #' @rdname ts_f4ratio
-ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"), ...) {
+ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch"), ...) {
   mode <- match.arg(mode)
 
   nodes_w <- ts_nodes(ts, W)
@@ -215,16 +217,14 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"), ...) {
 #' @return Numeric estimate of ancestry proportion
 #'
 #' @export
-ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch", "node")) {
+ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch")) {
   mode <- match.arg(mode)
 
-  dplyr::tibble(
-    X = concat(X),
-    A = concat(A),
-    B = concat(B),
-    C = concat(C),
-    O = concat(O),
-    alpha = ts_f4(ts, A, O, X, C, mode = mode)$f4 / ts_f4(ts, A, O, B, C, mode = mode)$f4
+  purrr::map_dfr(
+    X, function(.x) {
+      alpha <- ts_f4(ts, A, O, .x, C, mode = mode)$f4 / ts_f4(ts, A, O, B, C, mode = mode)$f4
+      dplyr::tibble(X = .x, A = concat(A), B = concat(B), C = concat(C), O = concat(O), alpha)
+    }
   )
 }
 
@@ -251,6 +251,7 @@ ts_nodes <- function(ts, ind) {
 
 concat <- function(x) paste(x, sep = "+")
 
+
 get_individuals <- function(ts, model) {
   # extract information about individuals from the tree-sequence
   individuals <-
@@ -261,6 +262,7 @@ get_individuals <- function(ts, model) {
         pedigree_id = ind["metadata"]["pedigree_id"],
         chr1_id = ind["nodes"][1],
         chr2_id = ind["nodes"][2],
+        time = ind["time"],
         loc_x = ind["location"][1],
         loc_y = ind["location"][2],
         pop_id = ind["metadata"]["subpopulation"],
@@ -269,9 +271,14 @@ get_individuals <- function(ts, model) {
         remembered = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_REMEMBERED) != 0,
         retained = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_RETAINED) != 0
       )
-    })
+    }) %>%
+    dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
+    dplyr::arrange(-time, pop) %>%
+    dplyr::select(-pop, -time)
 
-  # load sampling times table
+  # load sampling times table (expand multiple samplings at a single time point
+  # into one record per each individual to matche the number of rows in the
+  # table extract from the tree-sequence above)
   samples <- file.path(model$path, "script_samples.tsv") %>%
     readr::read_tsv(col_types = "ciii") %>%
     {
@@ -285,13 +292,17 @@ get_individuals <- function(ts, model) {
                   chr1 = paste0(pop, 1:dplyr::n(), "_chr1"),
                   chr2 = paste0(pop, 1:dplyr::n(), "_chr2")) %>%
     dplyr::ungroup() %>%
+    dplyr::arrange(-time_orig, pop) %>%
     dplyr::rename(time = time_orig) %>%
-    dplyr::arrange(-time) %>%
     dplyr::select(pop, name, time, chr1, chr2)
 
+  # splits individuals extracted from the tree-sequence into those remembered
+  # (i.e. individuals present in the sampling table) and those that are not
   remembered <- dplyr::filter(individuals, remembered)
   not_remembered <- dplyr::filter(individuals, !remembered)
 
+  # combine everything together - first merge sampling information for
+  # remembered individuals, then concatenate this with everyone else
   combined <-
     cbind(remembered, samples) %>%
     dplyr::bind_rows(not_remembered) %>%
@@ -302,3 +313,55 @@ get_individuals <- function(ts, model) {
 
   combined
 }
+
+# get_individuals <- function(ts, model) {
+#   # extract information about individuals from the tree-sequence
+#   individuals <-
+#     purrr::map_dfr(seq(0, ts$num_individuals - 1), function(i) {
+#       ind <- ts$individual(i)
+#       list(
+#         id = ind["id"],
+#         pedigree_id = ind["metadata"]["pedigree_id"],
+#         chr1_id = ind["nodes"][1],
+#         chr2_id = ind["nodes"][2],
+#         loc_x = ind["location"][1],
+#         loc_y = ind["location"][2],
+#         pop_id = ind["metadata"]["subpopulation"],
+#         flag = ind["flags"],
+#         alive = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_ALIVE) != 0,
+#         remembered = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_REMEMBERED) != 0,
+#         retained = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_RETAINED) != 0
+#       )
+#     })
+#
+#   # load sampling times table
+#   samples <- file.path(model$path, "script_samples.tsv") %>%
+#     readr::read_tsv(col_types = "ciii") %>%
+#     {
+#       rbind(
+#         dplyr::filter(., n == 1),
+#         dplyr::filter(., n > 1) %>% .[rep(seq_len(nrow(.)), .$n), ]
+#       )
+#     } %>%
+#     dplyr::group_by(pop) %>%
+#     dplyr::mutate(name = paste0(pop, 1:dplyr::n()),
+#                   chr1 = paste0(pop, 1:dplyr::n(), "_chr1"),
+#                   chr2 = paste0(pop, 1:dplyr::n(), "_chr2")) %>%
+#     dplyr::ungroup() %>%
+#     dplyr::rename(time = time_orig) %>%
+#     dplyr::arrange(-time) %>%
+#     dplyr::select(pop, name, time, chr1, chr2)
+#
+#   remembered <- dplyr::filter(individuals, remembered)
+#   not_remembered <- dplyr::filter(individuals, !remembered)
+#
+#   combined <-
+#     cbind(remembered, samples) %>%
+#     dplyr::bind_rows(not_remembered) %>%
+#     dplyr::select(name, id, pop, time, chr1_id, chr2_id,
+#                   chr1, chr2, loc_x, loc_y, pedigree_id,
+#                   dplyr::everything()) %>%
+#     dplyr::as_tibble()
+#
+#   combined
+# }

@@ -64,12 +64,15 @@
   `compile()` call. These parameters can also change dynamically over
   time by calling the `dispersal()` function.
 
-- Two knew vignettes have been
-  added. [One](../articles/grid_example.html) demonstrates a simple
-  use case of simulating the history of populations as demes laid out
-  on a regular abstract grid. The [other
-  one](../articles/spatial_interactions.html) demonstrates the spatial
-  interaction dynamics described in the previous point.
+- Sampling of individuals for tree-sequence recording can be scheduled
+  by calling the `sampling()` function. A basic interface to _tskit_
+  has been implemented: loading and simplifying tree-sequence data, 
+  conversion to genotype file formats such as EIGENSTRAT (making it
+  possible to run ADMIXTOOLS analyses on the simulated data) and VCF,
+  a couple of statistics functions (all with the `ts_*` prefix).
+
+- Five new vignettes have been added (available under "Articles" at
+  the [project website](https://bodkan.net/slendr).
 
 ## Nonspatial simulations
 

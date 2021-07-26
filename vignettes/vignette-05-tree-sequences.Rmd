@@ -1,9 +1,9 @@
 ---
-title: "Processing of tree-sequence data"
+title: "Tree-sequences and tskit interface"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{Processing of tree-sequence data}
+  %\VignetteIndexEntry{Tree-sequences and tskit interface}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
@@ -31,29 +31,32 @@ In this vignette, we will show how to specify sampling events to record individu
 **NOTE: This vignette is actively being developed. Everything here is going to change, dramatically.**
 
 ```{r}
-library(dplyr)
-library(ggplot2)
-
 library(slendr)
 
+# a single individual ancestor to serve as an outgroup for analyses below
 anc <- population("ANC", time = 5e6, N = 1)
+
+# Neanderthal population splitting at 0.5 Mya from the common ancestor with
+# anatomically modern humans (and extinct by 40 kya)
 nea <- population("NEA", parent = anc, time = 500e3, N = 1000, remove = 40e3)
+
+# two anatomically modern human populations: Africans and Europeans
 afr <- population("AFR", parent = anc, time = 500e3, N = 10000)
 eur <- population("EUR", parent = afr, time = 60e3, N = 5000)
 
+# Neanderthal introgression event between 50-45 kya at 3%
 gf <- geneflow(from = nea, to = eur, rate = 0.03, start = 50000, end = 45000)
 ```
-
 
 ```{r}
 model <- compile(
   populations = list(anc, nea, afr, eur), geneflow = gf,
   generation_time = 30,
-  dir = file.path("/tmp/", "introgression"), overwrite = TRUE
+  dir = file.path(tempdir(), "introgression"), overwrite = TRUE
 )
 ```
 
-Here's our simple model visualized as a graph:
+Here's our simple model visualized as a graph. Not particularly illuminating in this simple example, but it is worth keeping in mind that such graph is embedded within every _slendr_ model:
 
 ```{r, fig.width = 6, fig.height = 4}
 graph(model) + ggplot2::theme(legend.position = "none")
@@ -83,7 +86,7 @@ As you can see, the `sampling()` function returns a plain old data frame with a 
 
 For instance, a paper by Petr _et al._ examined the impact of ancient geneflow between Eurasian populations (known to carry Neanderthal ancestry) and African populations (assumed to carry no Neanderthal ancestry) on the inference of Neanderthal ancestry proportions in Eurasians. Specifically, because African genomes are routinely used to estimate Neanderthal ancestry in non-Africans they were interested in knowing how do traces amounts of Neanderthal ancestry present in Africans today resulting from past geneflow between Eurasians and Africans affect the statistical inference.
 
-The table of radiocarbon ages of early modern human (EMH) ancient DNA data points is available online. The only thing we have to do is reformat it so that it is in the same format as the data frames produced by the `sampling()` function:
+The table of radiocarbon ages of early modern human (EMH) ancient DNA data points is available online. The only thing we have to do is reformat it so that it is in the same format as the data frames produced by the `sampling()` function (i.e. three-column table with a the time of a sampling event, the name of the population to sample from, and the number of individuals to sample):
 
 ```{r, include = FALSE}
 emh_inds <- readr::read_delim(
@@ -92,7 +95,6 @@ emh_inds <- readr::read_delim(
 )
 emh_inds
 ```
-
 
 ```{r, eval = FALSE, message = FALSE}
 emh_inds <- readr::read_delim(
@@ -134,9 +136,8 @@ samples
 ```{r}
 slim(
   model, seq_length = 10e6, recomb_rate = 1e-8,
-  ts_recording = TRUE, method = "batch",
-  sampling = samples,
-  verbose = TRUE
+  ts_recording = TRUE, sampling = samples,
+  method = "batch", verbose = TRUE
 )
 ```
 
@@ -145,7 +146,6 @@ slim(
 The result of switching on `ts_recording = TRUE` in the `slim()` call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
 
 ```{r}
-model <- read("/tmp/introgression/")
 ts_file <- file.path(model$path, "output_tree_seq.trees")
 file.exists(ts_file)
 ```
@@ -161,8 +161,8 @@ First, in order to be able to interface with _tskit_ and _pyslim_ using the _ret
 For completeness, here is how I have just installed _tskit_ and _pyslim_ into a brand new environment on my Mac using pyenv:
 
 ```bash
-# install the most recent version of Python (switching on compilation
-# as a shared library is important for reticulate)
+# install the most recent version of Python (enforcing the compilation of
+# Python as a shared library is important for the reticulate package to work)
 env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.9.6
 
 # create a separate Python environment dedicated to reticulate and tskit work
@@ -170,34 +170,46 @@ pyenv virtualenv 3.9.6 retipy
 
 # install required Python modules into the environment
 pyenv activate retipy
-pip install tskit pyslim
+pip install tskit pyslim msprime
 ```
 
-Now we can, already in R, instruct the _reticulate_ package to use the newly created Python environment. I use `required = TRUE` here to enforce the use of this specific environment):
+Now we can, already in R, instruct the _reticulate_ package to use the newly created Python environment:
 
 ```{r}
-reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
+reticulate::use_virtualenv("~/.pyenv/versions/retipy")
 ```
 
-We can make sure that _reticulate_ is using our environment by calling:
+We can make sure that _reticulate_ is indeed using our environment by calling:
 
 ```{r}
 reticulate::py_config()
 ```
 
-## Accessing tree-sequence output files
+## Loading and processing tree-sequence output files
+
+We can load the tree-sequence file saved by SLiM using the function `ts_load()`. Optionally, we can also instruct this function to simplify the tree-sequence to only the individuals that we explicitly sampled (using the sampling schedule set up by `sampling()` above). What _slendr_ does here is provide an R-friendly interface to _tskit_ and _pyslim_, essentially reproducing steps in [this tutorial](https://pyslim.readthedocs.io/en/stable/tutorial.html).
 
 ```{r}
 ts <- ts_load(ts_file, model, simplify = TRUE)
 ```
 
+For computational efficiency, we did not simulate any mutations during the SLiM run. We can add mutations to the tree-sequence at a given rate by calling (again, following the [pyslim tutorial](https://pyslim.readthedocs.io/en/stable/tutorial.html#recapitation-simplification-and-mutation):
+
 ```{r}
 ts <- ts_mutate(ts, mutation_rate = 1e-8)
 ```
 
-```{r}
-gt <- ts_genotypes(ts)
-```
+Having done that, we can calculate some basic statistics on our simulated data. We note that everything that we do here (every function with the prefix `ts_*()`) is, in fact, interfacing with either _tskit_ / _pyslim_ / _msprime_ Python modules via the _reticulate_ R package. Our goal here is to capture the most basic of analyses one might want to do and wrap them in a neat interface indistinguishable from any other R function---this is, after all, the reason why _reticulate_ has been created in the first place (making various Python data science modules appear almost as if they were simply R packages).
+
+That said, our goal isn't to capture everything that is possible to do in _tskit_. I love R and I prefer to use it for as much of my work as possible, but for anything that does not involve calculating simple population genetics statistics on simulated tree genealogies, it is better to use _tskit_ directly.
+
+The thing to keep in mind in this context is that the tree-sequence files created by _slendr_ & SLiM are "normal" tree-sequence files as expected by _pyslim_. There is no magic here, and no surprises. Regardless of what is shown below, you could just as easily load the tree-sequence output of _slendr_ into Python and do everything using the powerful _tskit_ & _pyslim_ & _msprime_ trio.
+
+## Calculating _f_-statistics
+
+In addition to being a revolutionary breakthrough in terms of computation efficiency, many population genetics statistics we often calculate from genetic variation data are a natural consequence of tree sequence genealogies. Again, we can't go into too much detail here but I encourage you to take a look at a paper by [Ralph _et al._](https://www.genetics.org/content/215/3/779) on the duality between statistics expressed in terms of branch lengths and traditional summaries of genetic variation.
+
+For instance, we have functions such as `ts_f2()`, `ts_f3()`, `ts_f4()` and `ts_f4ratio()` which calculate the well-known set of Patterson's $f$-statistics:
 
 ```{r}
 ts_f2(ts, "EUR1", "EUR2")
@@ -213,55 +225,58 @@ ts_f4(ts, "AFR1", "AFR2", "NEA1", "ANC1")
 ts_f4(ts, "AFR1", "EUR1", "NEA1", "ANC1")
 ```
 
-```{r}
-europeans <- ts_individuals(ts) %>% dplyr::filter(pop == "EUR")
+These functions accept a `mode = ` argument, specifying whether the statistics should be calculated using mutation site patterns (`mode = "site"`, the default) or branch lengths (`mode = "branch"`). See the [relevant section](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.write_vcf) of the official _tskit_ documentation for more information.
 
-europeans$nea <- purrr::map_dbl(
-  europeans$name,
-  ~ ts_f4ratio(ts, .x, "AFR1", "NEA1", "NEA2", "ANC1")
-)
+Let's take a list of all simulated European individuals, iterate over them, and calculate the Neanderthal ancestry proportion in each using the $f_4$-ratio statistic (implemented in the `ts_f4ratio()` function):
+
+```{r}
+# get a table of simulated African and European individuals
+individuals <- ts_individuals(ts) %>% dplyr::filter(pop %in% c("AFR", "EUR"))
+
+# estimate Neanderthal ancestry proportion in all of them
+nea_f4ratio <- ts_f4ratio(ts, X = individuals$name, "NEA1", "NEA2", "AFR1", "ANC1")
+
+# add the Neanderthal ancestry estimates (in the 'alpha' column)
+# to the original table
+individuals$ancestry <- nea_f4ratio$alpha
 ```
 
-Summarise the inferred Neanderthal distribution in each population:
+If we now summarise the inferred Neanderthal distribution in both populations, we see that---as expected--there is no Neanderthal ancestry in Africans but there is around 3% Neanderthal ancestry in Europeans:
 
 ```{r}
-group_by(europeans, pop) %>%
-  summarise(mean_nea = mean(nea))
-```
-
-```{r}
-ggplot(europeans, aes(pop, nea, fill = pop)) +
+ggplot(individuals, aes(pop, ancestry, fill = pop)) +
   geom_boxplot() +
-  geom_jitter()
+  geom_jitter() +
+  labs(y = "Neanderthal ancestry proportion", x = "") +
+  theme(legend.position = "none")
 ```
 
-
-```{r}
-ggplot(europeans, aes(time, nea)) +
-  geom_point() +
-  geom_smooth(method = "lm", linetype = 2, color = "red", size = 0.5) +
-  xlim(46000, 0)
-```
-
-
-Encouragingly, we see about 3% Neanderthal ancestry in Europeans, which is exactly what we specified in the call to `geneflow()`:
+This is exactly as we specified in the model configuration above:
 
 ```{r}
 gf
 ```
 
-## Calculating _f_-statistics
+Because we have the full metadata available for each individual (including their sampling time), we can plot the trajectory of Neanderthal ancestry in Europe over the last 50 thousand years:
 
-In addition to being a breakthrough in terms of computation efficiency, tree-sequences gives us a way to express much more elegantly . Again, we can't go into too much detail here but I encourage you to take a look at a paper by [Ralph _et al._](https://www.genetics.org/content/215/3/779) on the duality between statistics expressed in terms of branch lengths and traditional summaries of genetic variation.
+```{r}
+filter(individuals, pop == "EUR") %>%
+  ggplot(aes(time, ancestry)) +
+  geom_point() +
+  geom_smooth(method = "lm", linetype = 2, color = "red", size = 0.5) +
+  xlim(46000, 0) +
+  labs(x = "time [years ago]", y = "Neanderthal ancestry proportion")
+```
 
-In our example of Neanderthal introgression
+
 
 ## Feeding data into the _admixr_ package for ADMIXTOOLS analysis
 
-In case you would like to verify some _f_-statistics results using ADMIXTOOLS, the traditional workhorse for these types of analyses in population genetics, _slendr_ provides a convenient function `ts_eigenstrat()` which converts the genotype data embedded within the tree-sequence data structure and saves it to disk in an EIGENSTRAT file format. This function uses the R package [_admixr_](http://bodkan.net/admixr) under the hood for file conversion and returns _admixr_'s `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together.
+In case you would like to verify some _f_-statistics results using the venerable [ADMIXTOOLS](https://academic.oup.com/genetics/article/192/3/1065/5935193) software which first introduced these statistics, _slendr_ provides a convenient function `ts_eigenstrat()`. This function converts the genotype data embedded within the tree-sequence data structure and saves it to disk in an EIGENSTRAT file format. The file conversion is internally handled by the R package [_admixr_](http://bodkan.net/admixr) (an R package for automated ADMIXTOOLS analyses) and returns _admixr_'s `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together.
 
 ```{r}
-snps <- ts_eigenstrat(ts, prefix = "/tmp/eigenstrat/data", chrom = "chr1")
+snps <- ts_eigenstrat(ts, prefix = file.path(tempdir(), "eigenstrat", "data"))
+snps
 ```
 
 Running an _admixr_ analysis is then as easy as plugging the object into an _admixr_ function. For instance, we can test for the presence of Neanderthal ancestry in Europeans like this:
@@ -269,13 +284,13 @@ Running an _admixr_ analysis is then as easy as plugging the object into an _adm
 ```{r}
 library(admixr)
 
-# admixt calculation
+# admixr calculation
 f4(snps, W = "AFR1", X = "AFR2", Y = "NEA1", Z = "ANC1")
 f4(snps, W = "AFR1", X = "EUR1", Y = "NEA1", Z = "ANC1")
 
 # tskit calculation
-ts_f4(ts, W = "AFR1", X = "AFR2", Y = "NEA1", Z = "ANC1")
-ts_f4(ts, W = "AFR1", X = "EUR1", Y = "NEA1", Z = "ANC1")
+ts_f4(ts, W = "AFR1", X = "AFR2", Y = "NEA1", Z = "ANC1", mode = "branch")
+ts_f4(ts, W = "AFR1", X = "EUR1", Y = "NEA1", Z = "ANC1", mode = "branch")
 ```
 
 And we can estimate the proportion of Neanderthal ancestry in a similar way like this:
@@ -290,3 +305,18 @@ ts_f4ratio(ts, X = "EUR1", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
 ts_f4ratio(ts, X = "EUR2", A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1")
 ```
 
+In fact, lets compare the values estimated by both methods for all individuals:
+
+```{r}
+result_ts <- ts_f4ratio(ts, X = individuals$name, A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1") %>% rename(alpha_ts = alpha)
+result_admixr <- f4ratio(snps, X = individuals$name, A = "NEA1", B = "NEA2", C = "AFR1", O = "ANC1") %>% rename(alpha_admixr = alpha)
+
+results <- bind_cols(result_ts, result_admixr)
+
+ggplot(results, aes(alpha_ts, alpha_admixr)) +
+  geom_point() +
+  labs(x = "f4-ratio calculation using admixr/ADMIXTOOLS",
+       y = "f4-ratio calculation using tskit")
+```
+
+Looks pretty much perfect! 🎉
