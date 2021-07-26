@@ -2,9 +2,9 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_eigenstrat}
 \alias{ts_eigenstrat}
-\title{Save genotypes from the tree-sequence in an EIGENSTRAT format}
+\title{Extract genotypes from the tree-sequence in the EIGENSTRAT format}
 \usage{
-ts_eigenstrat(ts, prefix)
+ts_eigenstrat(ts, prefix, chrom = "chrN", quiet = FALSE)
 }
 \arguments{
 \item{ts}{SlimTreeSequence object}
@@ -15,5 +15,5 @@ ts_eigenstrat(ts, prefix)
 Object of the class EIGENSTRAT created by the admixr package
 }
 \description{
-Save genotypes from the tree-sequence in an EIGENSTRAT format
+Extract genotypes from the tree-sequence in the EIGENSTRAT format
 }

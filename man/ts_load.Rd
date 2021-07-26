@@ -2,8 +2,7 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_load}
 \alias{ts_load}
-\title{Load a tree-sequence file produced by a given model (optionally simplifying
-only to remembered individuals)}
+\title{only to remembered individuals)}
 \usage{
 ts_load(file, model, simplify = FALSE)
 }
@@ -19,6 +18,5 @@ remembered (i.e. "sampled", in \textit{slendr} parlance) individuals?}
 SlimTreeSequence object
 }
 \description{
-Load a tree-sequence file produced by a given model (optionally simplifying
 only to remembered individuals)
 }
