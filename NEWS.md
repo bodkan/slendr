@@ -7,6 +7,37 @@
   completely arbitrary shapes of the "continents", geographic barriers
   etc.).
 
+- It is now possible to define models in forward or backwards
+  direction, depending on what is more convenient for the user and the
+  scenario that is being modeled. The direction of time is
+  automatically detected and translated to SLiM's units of generations
+  in the forward direction.
+
+- Spatial interaction distances (translated to `maxDistance` on the
+  SLiM side) as well as offspring distances from parents (i.e. the
+  standard deviations of their normal distributions) can now be
+  specified for each population individually. The users can still
+  provide default values for all populations (or just those which did
+  not have their own dedicated parameter values) in the main
+  `compile()` call. These parameters can also change dynamically over
+  time by calling the `dispersal()` function.
+
+- Sampling ("remembering") of individuals for tree-sequence recording can
+  now be scheduled with the `sampling()` function.
+
+- A basic interface to _tskit_ has been implemented: loading, recapitating,
+  and simplifying tree-sequence data, conversion to genotype file formats
+  such as EIGENSTRAT (`ts_eigenstrat()`) and VCF (`ts_vcf()`), a couple of
+  population genetics statistical functions (all with the `ts_*` prefix)
+  such as `ts_f3()`, etc. have also been implemented. More is to come, but
+  the goal here is to focus *only* on loading tree-sequences and calculating
+  population genetics statistics on simulated tree-sequence data, nothing more.
+  Only the things desirable (and sensible) to do within R and its limitations
+  will be implemented. All of the *tskit*/*pyslim* functionality is accessed
+  via the [_reticulate_](https://rstudio.github.io/reticulate/index.html)
+  package. See a [dedicated vignette](../articles/vignette-05-tree-sequences.html)
+  for an example of the tree-sequence functionality in *slendr*.
+
 - New set operations for manipulating spatial regions: `join()`,
   `overlap()`, `subtract()`. These can be used to build more complex
   population boundaries and geographic regions from smaller ones.
@@ -18,23 +49,11 @@
   a time slider. This can be used to inspect the model spatial
   dynamics interactively before they are sent over to the SLiM side.
 
--  A new function `distance()` for computing distances between
-   geographic objects in the package (either between their borders or
-   centroids) has been implemented.
-
-- A small utility function `dimension()` which calculates the
-  dimension of the world map in the "real" projected units
-  (i.e. meters) has been added.
-
-- A new function `area()` has for calculating the geographic area
-  covered by any object of the class `slendr` has been implemented.
-
-- It is now possible to define models in forward or backwards
-  direction, depending on what is more convenient for the user and the
-  scenario that is being modeled. The direction of time is
-  automatically detected and translated to SLiM's units of generations
-  in the forward direction. The implementation of this features might
-  be a bit wonky in some aspects and more testing is required.
+- New functions `distance()` (for computing distances between
+  geographic objects), `dimension()` (which calculates the
+  dimension of the world map in the "real" projected units), and `area()`
+  (for calculating the geographic area covered by any spatial object)
+  have been added.
 
 - Simulations of marine species are now possible. This required adding
   a single argument `aquatic = TRUE` to the `population()` call which
@@ -43,35 +62,11 @@
   (subtracting land instead of water, which is done for terrestrial
   species).
 
-- Any simulation can now have multiple "ancestral" populations
-  (i.e. populations without an immediate ancestor created by
-  `sim.addSubpop()`). Until now, all populations had to trace their
-  ancestry to a single ancestor (a leftover of a hard-coded
-  requirement from the very first version of the code).
-
 - A function `resize()` for scheduling changes in population size (in
   a single step, or as an exponential growth/shrinking) is
   implemented.
 
 - A new `shrink()` function (analogous to `expand()`) is implemented.
-
-- Spatial interaction distances (translated to `maxDistance` on the
-  SLiM side) as well as offspring distances from parents (i.e. the
-  standard deviations of their normal distributions) can now be
-  specified for each population individually. The users can still
-  provide default values for all populations (or just those which did
-  not have their own dedicated parameter values) in the main
-  `compile()` call. These parameters can also change dynamically over
-  time by calling the `dispersal()` function.
-
-- Sampling of individuals for tree-sequence recording can now be scheduled
-  with the `sampling()` function.
-
-- A basic interface to _tskit_ has been implemented: loading and
-  simplifying tree-sequence data, conversion to genotype file formats
-  such as EIGENSTRAT (making it possible to run ADMIXTOOLS analyses on the
-  simulated data) and VCF, a couple of population genetics statistical
-  functions (all with the `ts_*` prefix).
 
 - Five new vignettes have been added (available under "Articles" at
   the [project website](https://bodkan.net/slendr).
@@ -79,12 +74,12 @@
 ## Nonspatial simulations
 
 - _slendr_ can now simulate "normal" nonspatial models. This is
-  triggered by setting the `map = FALSE` in the `population()`
+  triggered by leaving the `map = FALSE` in the `population()`
   "constructor" function call. All populations descending from that
   population will then be nonspatial, and the whole compiled model
   will be run in the nonspatial model on the SLiM side. A short
-  [example vignette](../articles/nonspatial_models.html) demonstrating
-  this feature has been added.
+  [example vignette](../articles/vignette-04-nonspatial-models.html)
+  demonstrating this feature has been added.
 
 ## Changes to the R interface
 

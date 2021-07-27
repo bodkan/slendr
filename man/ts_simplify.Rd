@@ -3,7 +3,7 @@
 \name{ts_simplify}
 \alias{ts_simplify}
 \title{Simplify tree-sequence object down to only remembered (i.e. "sampled", in
-\textit{slendr} parlance) individuals}
+slendr parlance) individuals}
 \usage{
 ts_simplify(ts)
 }
@@ -15,5 +15,5 @@ ts_simplify(ts)
 }
 \description{
 Simplify tree-sequence object down to only remembered (i.e. "sampled", in
-\textit{slendr} parlance) individuals
+slendr parlance) individuals
 }

@@ -73,6 +73,7 @@ reference:
   - title: Compiling and running spatial models
     contents:
     - compile
+    - sampling
     - read
     - script
     - slim
@@ -85,10 +86,14 @@ reference:
     - ts_individuals
     - ts_genotypes
     - ts_eigenstrat
+    - ts_vcf
 
   - title: Tree-sequence statistics
     contents:
-    - ts_f2, ts_f3, ts_f4, ts_f4ratio
+    - ts_f2
+    - ts_f3
+    - ts_f4
+    - ts_f4ratio
 
 news:
   one_page: true
