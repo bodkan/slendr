@@ -106,6 +106,6 @@
 
 ## Other changes
 
-- More than a hundred new unit tests checking the consistency of the R
+- Almost two hundred new unit tests checking the consistency of the R
   interface (misspecified event times, etc.) as well as the
   correctness of the SLiM simulation runs programmed by *slendr*.
