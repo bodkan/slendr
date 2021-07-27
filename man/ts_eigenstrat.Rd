@@ -4,7 +4,7 @@
 \alias{ts_eigenstrat}
 \title{Extract genotypes from the tree-sequence in the EIGENSTRAT format}
 \usage{
-ts_eigenstrat(ts, prefix, chrom = "chrN", quiet = FALSE)
+ts_eigenstrat(ts, prefix, chrom = "chr1", quiet = FALSE)
 }
 \arguments{
 \item{ts}{SlimTreeSequence object}

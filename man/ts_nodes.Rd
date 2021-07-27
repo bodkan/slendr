@@ -2,7 +2,7 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_nodes}
 \alias{ts_nodes}
-\title{Extract the nodes belonging to the given individuals}
+\title{Extract the nodes belonging to a given set of individuals}
 \usage{
 ts_nodes(ts, ind)
 }
@@ -15,5 +15,5 @@ ts_nodes(ts, ind)
 An integer vector with node numbers
 }
 \description{
-Extract the nodes belonging to the given individuals
+Extract the nodes belonging to a given set of individuals
 }

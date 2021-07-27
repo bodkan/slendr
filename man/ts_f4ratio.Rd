@@ -7,19 +7,19 @@
 \alias{ts_f4ratio}
 \title{Calculate the f2, f3, f4, and f4-ratio statistics}
 \usage{
-ts_f2(ts, A, B, mode = c("site", "branch", "node"), ...)
+ts_f2(ts, A, B, mode = c("site", "branch"), ...)
 
-ts_f3(ts, A, B, C, mode = c("site", "branch", "node"), ...)
+ts_f3(ts, A, B, C, mode = c("site", "branch"), ...)
 
-ts_f4(ts, W, X, Y, Z, mode = c("site", "branch", "node"), ...)
+ts_f4(ts, W, X, Y, Z, mode = c("site", "branch"), ...)
 
-ts_f4ratio(ts, X, A, B, C, O, mode = c("site", "branch", "node"))
+ts_f4ratio(ts, X, A, B, C, O, mode = c("site", "branch"))
 }
 \arguments{
 \item{ts}{SlimTreeSequence object}
 
 \item{w, x, y, z, a, b, c, o}{Character vectors of  individual names (following the
-nomenclature of Patterson \textit{et al.} 2021)}
+nomenclature of Patterson et al. 2021)}
 }
 \value{
 Numeric estimate of ancestry proportion

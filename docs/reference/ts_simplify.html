@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Move the population to a new location in a given amount of time — move • slendr</title>
+<title>Simplify tree-sequence object down to only remembered (i.e. "sampled", in
+slendr parlance) individuals — ts_simplify • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,9 +53,10 @@
 
 
 
-<meta property="og:title" content="Move the population to a new location in a given amount of time — move" />
-<meta property="og:description" content="This function defines a displacement of a population along a given trajectory
-in a given time frame" />
+<meta property="og:title" content="Simplify tree-sequence object down to only remembered (i.e. "sampled", in
+slendr parlance) individuals — ts_simplify" />
+<meta property="og:description" content="Simplify tree-sequence object down to only remembered (i.e. &quot;sampled&quot;, in
+slendr parlance) individuals" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -168,61 +170,31 @@ in a given time frame" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Move the population to a new location in a given amount of time</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
-    <div class="hidden name"><code>move.Rd</code></div>
+    <h1>Simplify tree-sequence object down to only remembered (i.e. "sampled", in
+slendr parlance) individuals</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
+    <div class="hidden name"><code>ts_simplify.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function defines a displacement of a population along a given trajectory
-in a given time frame</p>
+    <p>Simplify tree-sequence object down to only remembered (i.e. "sampled", in
+slendr parlance) individuals</p>
     </div>
 
-    <pre class="usage"><span class='fu'>move</span><span class='op'>(</span>
-  <span class='va'>pop</span>,
-  <span class='va'>trajectory</span>,
-  <span class='va'>end</span>,
-  <span class='va'>start</span>,
-  overlap <span class='op'>=</span> <span class='fl'>0.8</span>,
-  snapshots <span class='op'>=</span> <span class='cn'>NULL</span>,
-  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_simplify</span><span class='op'>(</span><span class='va'>ts</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>pop</th>
-      <td><p>Object of the class <code>slendr_pop</code></p></td>
-    </tr>
-    <tr>
-      <th>trajectory</th>
-      <td><p>List of two-dimensional vectors (longitude, latitude)
-specifying the migration trajectory</p></td>
-    </tr>
-    <tr>
-      <th>start, end</th>
-      <td><p>Start/end points of the population migration</p></td>
-    </tr>
-    <tr>
-      <th>overlap</th>
-      <td><p>Minimum overlap between subsequent spatial boundaries</p></td>
-    </tr>
-    <tr>
-      <th>snapshots</th>
-      <td><p>The number of intermediate snapshots (overrides the
-<code>overlap</code> parameter)</p></td>
-    </tr>
-    <tr>
-      <th>verbose</th>
-      <td><p>Show the progress of searching through the number of
-sufficient snapshots?</p></td>
+      <th>ts</th>
+      <td><p>SlimTreeSequence object</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of the class <code>slendr_pop</code></p>
+    <p>@return SlimTreeSequence object accessed via the reticulate package</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
