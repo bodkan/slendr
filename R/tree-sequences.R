@@ -357,28 +357,31 @@ ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch")) {
 #' Calculate Fst between a pair of samples of individuals
 #'
 #' @param tsSlimTreeSequence object
-#' @param x,y Character vectors of individual names
+#' @param sample_sets List of character vectors with individual names (one
+#'   vector per sample)
 #' @param mode The mode for the calculation ("sites" or "branch")
 #' @param windows Breakpoint coordinates between windows (first coordinate 0 and
 #'   last coordinate equal to \code{ts$sequence_length} are added automatically)
 #'
-#' @return Either a single Fst value or a vector of Fst values (one for each window)
+#' @return Either a single Fst value or a vector of Fst values (one for each
+#'   window)
 #'
 #' @export
-ts_fst <- function(ts, X, Y, mode = c("site", "branch"), windows = NULL) {
+ts_fst <- function(ts, sample_sets, mode = c("site", "branch"), windows = NULL) {
   mode <- match.arg(mode)
   windows <- define_windows(ts, windows)
 
-  nodes_x <- ts_nodes(ts, X)
-  nodes_y <- ts_nodes(ts, Y)
+  sample_set_nodes <- purrr::map(sample_sets, function(set) {
+    ts_nodes(ts, set)
+  })
 
-  ts$Fst(sample_sets = list(nodes_x, nodes_y), mode = mode, windows = windows)
+  ts$Fst(sample_sets = sample_set_nodes, mode = mode, windows = windows)
 }
 
 #' Calculate Tajima's D for a group of individuals
 #'
 #' @param tsSlimTreeSequence object
-#' @param set Character vector of individual names
+#' @param sample Character vector of individual names
 #' @param mode The mode for the calculation ("sites" or "branch")
 #' @param windows Breakpoint coordinates between windows (first coordinate 0 and
 #'   last coordinate equal to \code{ts$sequence_length} are added automatically)
@@ -386,13 +389,15 @@ ts_fst <- function(ts, X, Y, mode = c("site", "branch"), windows = NULL) {
 #' @return Either a single Fst value or a vector of Fst values (one for each window)
 #'
 #' @export
-ts_tajima <- function(ts, sample, mode = c("site", "branch"), windows = NULL) {
+ts_tajima <- function(ts, sample_sets, mode = c("site", "branch"), windows = NULL) {
   mode <- match.arg(mode)
   windows <- define_windows(ts, windows)
 
-  nodes <- ts_nodes(ts, sample)
+  sample_set_nodes <- purrr::map(sample_sets, function(set) {
+    ts_nodes(ts, set)
+  })
 
-  ts$Tajimas_D(sample_sets = nodes, mode = mode, windows = windows)
+  ts$Tajimas_D(sample_sets = sample_set_nodes, mode = mode, windows = windows)
 }
 
 #' Compute the allele frequency spectrum with respect to the given set of
@@ -408,13 +413,15 @@ ts_tajima <- function(ts, sample, mode = c("site", "branch"), windows = NULL) {
 #'   window)
 #'
 #' @export
-ts_afs <- function(ts, sample, mode = c("site", "branch"), windows = NULL) {
+ts_afs <- function(ts, sample_sets, mode = c("site", "branch"), windows = NULL) {
   mode <- match.arg(mode)
   windows <- define_windows(ts, windows)
 
-  nodes <- ts_nodes(ts, sample)
+  sample_set_nodes <- purrr::map(sample_sets, function(set) {
+    ts_nodes(ts, set)
+  })
 
-  ts$Tajimas_D(sample_sets = nodes, mode = mode, windows = windows)
+  ts$allele_frequency_spectrum(sample_sets = sample_set_nodes, mode = mode, windows = windows)
 }
 
 # tree-sequence utility functions -----------------------------------------

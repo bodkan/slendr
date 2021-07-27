@@ -1,3 +1,4 @@
+---
 title: "Tree-sequences, tskit interface, f-statistics"
 output: rmarkdown::html_vignette
 vignette: >
@@ -16,8 +17,12 @@ knitr::opts_chunk$set(
   eval = TRUE
 )
 
+# for some reason knitr/reticulate sets this to default, sabotaging
+# our efforts to make reticulate use our custom environment -- this
+# appears to solve the problem
+Sys.unsetenv("RETICULATE_PYTHON")
+
 devtools::load_all(".")
-reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
 ```
 
 In this vignette, we will show how to specify sampling events to record individuals in the tree-sequence output file (a procedure which is called "remembering" of individuals in the SLiM context) and how to perform simple analyses using *slendr*'s interface to the [*tskit*](http://tskit.dev) Python library. Specifically, we will demonstrate these features on a model of Neanderthal introgression into anatomically modern humans by showing how to estimate the amount of Neanderthal ancestry using $f$-statistics calculated directly on the tree-sequence data structure entirely from R.
@@ -49,7 +54,8 @@ gf <- geneflow(from = nea, to = eur, rate = 0.03, start = 55000, end = 50000)
 model <- compile(
   populations = list(anc, chimp, nea, afr, eur), geneflow = gf,
   generation_time = 30,
-  dir = file.path(tempdir(), "introgression"), overwrite = TRUE
+  dir = file.path("/tmp/", "introgression"), overwrite = TRUE
+  #dir = file.path(tempdir(), "introgression"), overwrite = TRUE
 )
 ```
 
@@ -101,13 +107,12 @@ sampling(times = 10000, list(nea, 1), strict = TRUE)
 Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the `slim()` function as usual, but this time we set `ts_recording = TRUE` (switching of tree-sequence recording in SLiM) and we specify the sampling events with the `sampling =` argument. Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such):
 
 ```{r}
-# slim(
-#   model, seq_length = 10e6, recomb_rate = 1e-8,
-#   ts_recording = TRUE,
-#   sampling = rbind(nea_samples, present_samples, emh_samples),
-#   method = "batch", verbose = TRUE
-# )
-model <- read("~/Desktop/introgression/")
+slim(
+  model, seq_length = 10e6, recomb_rate = 1e-8,
+  ts_recording = TRUE,
+  sampling = rbind(nea_samples, present_samples, emh_samples),
+  method = "batch", verbose = TRUE
+)
 ```
 
 ## R interface for *tskit*, *pyslim* and *msprime*
