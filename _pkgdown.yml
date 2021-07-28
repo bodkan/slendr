@@ -81,12 +81,15 @@ reference:
   - title: Tree-sequence processing
     contents:
     - ts_load
+    - ts_recapitate
     - ts_simplify
     - ts_mutate
     - ts_individuals
+    - ts_nodes
     - ts_genotypes
     - ts_eigenstrat
     - ts_vcf
+    - ts_coalesced
 
   - title: Tree-sequence statistics
     contents:
@@ -94,6 +97,9 @@ reference:
     - ts_f3
     - ts_f4
     - ts_f4ratio
+    - ts_fst
+    - ts_tajima
+    - ts_afs
 
 news:
   one_page: true

@@ -4,7 +4,7 @@
 \alias{ts_tajima}
 \title{Calculate Tajima's D for a group of individuals}
 \usage{
-ts_tajima(ts, sample, mode = c("site", "branch"), windows = NULL)
+ts_tajima(ts, sample_sets, mode = c("site", "branch"), windows = NULL)
 }
 \arguments{
 \item{mode}{The mode for the calculation ("sites" or "branch")}
@@ -14,7 +14,7 @@ last coordinate equal to \code{ts$sequence_length} are added automatically)}
 
 \item{tsSlimTreeSequence}{object}
 
-\item{set}{Character vector of individual names}
+\item{sample}{Character vector of individual names}
 }
 \value{
 Either a single Fst value or a vector of Fst values (one for each window)

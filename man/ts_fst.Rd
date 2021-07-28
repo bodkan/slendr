@@ -4,20 +4,22 @@
 \alias{ts_fst}
 \title{Calculate Fst between a pair of samples of individuals}
 \usage{
-ts_fst(ts, X, Y, mode = c("site", "branch"), windows = NULL)
+ts_fst(ts, sample_sets, mode = c("site", "branch"), windows = NULL)
 }
 \arguments{
+\item{sample_sets}{List of character vectors with individual names (one
+vector per sample)}
+
 \item{mode}{The mode for the calculation ("sites" or "branch")}
 
 \item{windows}{Breakpoint coordinates between windows (first coordinate 0 and
 last coordinate equal to \code{ts$sequence_length} are added automatically)}
 
 \item{tsSlimTreeSequence}{object}
-
-\item{x, y}{Character vectors of individual names}
 }
 \value{
-Either a single Fst value or a vector of Fst values (one for each window)
+Either a single Fst value or a vector of Fst values (one for each
+window)
 }
 \description{
 Calculate Fst between a pair of samples of individuals
