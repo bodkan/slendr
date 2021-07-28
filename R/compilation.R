@@ -38,8 +38,14 @@ compile <- function(populations, dir, generation_time, resolution = NULL,
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   # make sure that all parents are present
-  pop_names <- purrr::map_chr(populations, ~ .x$pop)
-  parent_names <- unique(purrr::map_chr(populations, ~ attr(.x, "parent")$pop))
+  pop_names <- purrr::map_chr(populations, ~ .x$pop[1])
+  parent_names <- unique(purrr::map_chr(populations, function(pop) {
+    parent <- attr(pop, "parent")
+    if (is.character(parent))
+      return(pop$pop[1])
+    else
+      parent$pop[1]
+  }))
   if (!all(parent_names %in% pop_names))
     stop("The following parent populations are missing: ", parent_names[!parent_names %in% pop_names], call. = FALSE)
 
