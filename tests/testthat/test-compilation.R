@@ -27,3 +27,10 @@ test_that("'competition_dist', 'mate_dist', and 'dispersal_dist' do not have to 
   p <- population(competition_dist = 10, mate_dist = 10, dispersal_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   expect_silent(compile(populations = list(p), generation_time = 30, resolution = 10e3, dir = tempfile(), overwrite = TRUE, direction = "backward"))
 })
+
+test_that("presence of all parents is enforced", {
+  p1 <- population(name = "pop1", N = 700, time = 40000)
+  p2 <- population(name = "pop2", parent = p1, N = 700, time = 4000)
+  expect_error(compile(populations = p2, dir = file.path(tempdir(), "missing-parent"), generation_time = 30),
+               "The following parent populations are missing: pop1")
+})

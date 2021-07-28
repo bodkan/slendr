@@ -103,6 +103,48 @@
     <loc>https://bodkan.net/slendr/reference/subtract.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/slendr/reference/ts_afs.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_coalesced.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_eigenstrat.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_f4ratio.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_fst.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_genotypes.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_individuals.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_load.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_mutate.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_nodes.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_recapitate.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_simplify.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_tajima.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_vcf.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/slendr/reference/world.html</loc>
   </url>
   <url>
@@ -116,5 +158,8 @@
   </url>
   <url>
     <loc>https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html</loc>
   </url>
 </urlset>

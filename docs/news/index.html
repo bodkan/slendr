@@ -125,6 +125,9 @@
     <li>
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
+    <li>
+      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequences, tskit interface, f-statistics</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -175,18 +178,17 @@
 <a href="#new-functionality" class="anchor"></a>New functionality</h2>
 <ul>
 <li><p>Geographic landscapes and coordinate systems are no longer tied to a geographic location on Earth and can be fully abstract (including completely arbitrary shapes of the “continents”, geographic barriers etc.).</p></li>
+<li><p>It is now possible to define models in forward or backwards direction, depending on what is more convenient for the user and the scenario that is being modeled. The direction of time is automatically detected and translated to SLiM’s units of generations in the forward direction.</p></li>
+<li><p>Spatial interaction distances (translated to <code>maxDistance</code> on the SLiM side) as well as offspring distances from parents (i.e. the standard deviations of their normal distributions) can now be specified for each population individually. The users can still provide default values for all populations (or just those which did not have their own dedicated parameter values) in the main <code><a href="../reference/compile.html">compile()</a></code> call. These parameters can also change dynamically over time by calling the <code><a href="../reference/dispersal.html">dispersal()</a></code> function.</p></li>
+<li><p>Sampling (“remembering”) of individuals for tree-sequence recording can now be scheduled with the <code><a href="../reference/sampling.html">sampling()</a></code> function.</p></li>
+<li><p>A basic interface to <em>tskit</em> has been implemented: loading, recapitating, and simplifying tree-sequence data, conversion to genotype file formats such as EIGENSTRAT (<code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code>) and VCF (<code><a href="../reference/ts_vcf.html">ts_vcf()</a></code>), a couple of population genetics statistical functions (all with the <code>ts_*</code> prefix) such as <code><a href="../reference/ts_f2.html">ts_f3()</a></code>, etc. have also been implemented. More is to come, but the goal here is to focus <em>only</em> on loading tree-sequences and calculating population genetics statistics on simulated tree-sequence data, nothing more. Only the things desirable (and sensible) to do within R and its limitations will be implemented. All of the <em>tskit</em>/<em>pyslim</em> functionality is accessed via the <a href="https://rstudio.github.io/reticulate/index.html"><em>reticulate</em></a> package. See a <a href="../articles/vignette-05-tree-sequences.html">dedicated vignette</a> for an example of the tree-sequence functionality in <em>slendr</em>.</p></li>
 <li><p>New set operations for manipulating spatial regions: <code><a href="../reference/join.html">join()</a></code>, <code><a href="../reference/overlap.html">overlap()</a></code>, <code><a href="../reference/subtract.html">subtract()</a></code>. These can be used to build more complex population boundaries and geographic regions from smaller ones.</p></li>
 <li><p>New <a href="http://shiny.rstudio.com">shiny</a>-based interactive exploration “app”: <code><a href="../reference/explore.html">explore()</a></code>. The functions accepts a compiled <code>slendr_model</code> object (i.e. a formal configuration of spatial population dynamics and gene flow events) and the package will spawn a browser app with a time slider. This can be used to inspect the model spatial dynamics interactively before they are sent over to the SLiM side.</p></li>
-<li><p>A new function <code><a href="../reference/distance.html">distance()</a></code> for computing distances between geographic objects in the package (either between their borders or centroids) has been implemented.</p></li>
-<li><p>A small utility function <code><a href="../reference/dimension.html">dimension()</a></code> which calculates the dimension of the world map in the “real” projected units (i.e. meters) has been added.</p></li>
-<li><p>A new function <code><a href="../reference/area.html">area()</a></code> has for calculating the geographic area covered by any object of the class <code>slendr</code> has been implemented.</p></li>
-<li><p>It is now possible to define models in forward or backwards direction, depending on what is more convenient for the user and the scenario that is being modeled. The direction of time is automatically detected and translated to SLiM’s units of generations in the forward direction. The implementation of this features might be a bit wonky in some aspects and more testing is required.</p></li>
+<li><p>New functions <code><a href="../reference/distance.html">distance()</a></code> (for computing distances between geographic objects), <code><a href="../reference/dimension.html">dimension()</a></code> (which calculates the dimension of the world map in the “real” projected units), and <code><a href="../reference/area.html">area()</a></code> (for calculating the geographic area covered by any spatial object) have been added.</p></li>
 <li><p>Simulations of marine species are now possible. This required adding a single argument <code>aquatic = TRUE</code> to the <code><a href="../reference/population.html">population()</a></code> call which instructs the population range rendering procedure during compilation to "invert’ intersection with landscape features (subtracting land instead of water, which is done for terrestrial species).</p></li>
-<li><p>Any simulation can now have multiple “ancestral” populations (i.e. populations without an immediate ancestor created by <code>sim.addSubpop()</code>). Until now, all populations had to trace their ancestry to a single ancestor (a leftover of a hard-coded requirement from the very first version of the code).</p></li>
 <li><p>A function <code><a href="../reference/resize.html">resize()</a></code> for scheduling changes in population size (in a single step, or as an exponential growth/shrinking) is implemented.</p></li>
 <li><p>A new <code><a href="../reference/shrink.html">shrink()</a></code> function (analogous to <code><a href="../reference/expand.html">expand()</a></code>) is implemented.</p></li>
-<li><p>Spatial interaction distances (translated to <code>maxDistance</code> on the SLiM side) as well as offspring distances from parents (i.e. the standard deviations of their normal distributions) can now be specified for each population individually. The users can still provide default values for all populations (or just those which did not have their own dedicated parameter values) in the main <code><a href="../reference/compile.html">compile()</a></code> call. These parameters can also change dynamically over time by calling the <code><a href="../reference/dispersal.html">dispersal()</a></code> function.</p></li>
-<li><p>Two knew vignettes have been added. <a href="../articles/grid_example.html">One</a> demonstrates a simple use case of simulating the history of populations as demes laid out on a regular abstract grid. The <a href="../articles/spatial_interactions.html">other one</a> demonstrates the spatial interaction dynamics described in the previous point.</p></li>
+<li><p>Five new vignettes have been added (available under “Articles” at the <a href="https://bodkan.net/slendr">project website</a>.</p></li>
 </ul>
 </div>
 <div id="nonspatial-simulations" class="section level2">
@@ -194,7 +196,7 @@
 <a href="#nonspatial-simulations" class="anchor"></a>Nonspatial simulations</h2>
 <ul>
 <li>
-<em>slendr</em> can now simulate “normal” nonspatial models. This is triggered by setting the <code>map = FALSE</code> in the <code><a href="../reference/population.html">population()</a></code> “constructor” function call. All populations descending from that population will then be nonspatial, and the whole compiled model will be run in the nonspatial model on the SLiM side. A short <a href="../articles/nonspatial_models.html">example vignette</a> demonstrating this feature has been added.</li>
+<em>slendr</em> can now simulate “normal” nonspatial models. This is triggered by leaving the <code>map = FALSE</code> in the <code><a href="../reference/population.html">population()</a></code> “constructor” function call. All populations descending from that population will then be nonspatial, and the whole compiled model will be run in the nonspatial model on the SLiM side. A short <a href="../articles/vignette-04-nonspatial-models.html">example vignette</a> demonstrating this feature has been added.</li>
 </ul>
 </div>
 <div id="changes-to-the-r-interface" class="section level2">
@@ -216,7 +218,7 @@
 <h2 class="hasAnchor">
 <a href="#other-changes" class="anchor"></a>Other changes</h2>
 <ul>
-<li>More than a hundred new unit tests checking the consistency of the R interface (misspecified event times, etc.) as well as the correctness of the SLiM simulation runs programmed by <em>slendr</em>.</li>
+<li>Almost two hundred new unit tests checking the consistency of the R interface (misspecified event times, etc.) as well as the correctness of the SLiM simulation runs programmed by <em>slendr</em>.</li>
 </ul>
 </div>
 </div>

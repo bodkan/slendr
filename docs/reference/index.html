@@ -125,6 +125,9 @@
     <li>
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
+    <li>
+      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequences, tskit interface, f-statistics</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -403,6 +406,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="sampling.html">sampling()</a></code> </p>
+        </td>
+        <td><p>Define sampling events at specified times for a given set of populations</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="read.html">read()</a></code> </p>
         </td>
         <td><p>Read a previously serialized model configuration</p></td>
@@ -418,6 +427,119 @@
           <p><code><a href="slim.html">slim()</a></code> </p>
         </td>
         <td><p>Run a slendr model as a SLiM script</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-tree-sequence-processing" class="hasAnchor"><a href="#section-tree-sequence-processing" class="anchor"></a>Tree-sequence processing</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="ts_load.html">ts_load()</a></code> </p>
+        </td>
+        <td><p>Load a tree-sequence file produced by a given model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_recapitate.html">ts_recapitate()</a></code> </p>
+        </td>
+        <td><p>Recapitate the tree-sequence</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_simplify.html">ts_simplify()</a></code> </p>
+        </td>
+        <td><p>Simplify tree-sequence object down to only remembered (i.e. "sampled", in
+slendr parlance) individuals</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_mutate.html">ts_mutate()</a></code> </p>
+        </td>
+        <td><p>Add mutations to the given tree-sequence</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_individuals.html">ts_individuals()</a></code> </p>
+        </td>
+        <td><p>Extract table of individuals from pyslim's tree-sequence object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_nodes.html">ts_nodes()</a></code> </p>
+        </td>
+        <td><p>Extract the nodes belonging to a given set of individuals</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_genotypes.html">ts_genotypes()</a></code> </p>
+        </td>
+        <td><p>Extract genotype table from the tree-sequence</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_eigenstrat.html">ts_eigenstrat()</a></code> </p>
+        </td>
+        <td><p>Extract genotypes from the tree-sequence in the EIGENSTRAT format</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_vcf.html">ts_vcf()</a></code> </p>
+        </td>
+        <td><p>Save genotypes in the tree-sequence as a VCF file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_coalesced.html">ts_coalesced()</a></code> </p>
+        </td>
+        <td><p>Check that all trees in the tree-sequence are coalesced (i.e. have only one
+root)</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-tree-sequence-statistics" class="hasAnchor"><a href="#section-tree-sequence-statistics" class="anchor"></a>Tree-sequence statistics</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="ts_f4ratio.html">ts_f2()</a></code> <code><a href="ts_f4ratio.html">ts_f3()</a></code> <code><a href="ts_f4ratio.html">ts_f4()</a></code> <code><a href="ts_f4ratio.html">ts_f4ratio()</a></code> </p>
+        </td>
+        <td><p>Calculate the f2, f3, f4, and f4-ratio statistics</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_fst.html">ts_fst()</a></code> </p>
+        </td>
+        <td><p>Calculate Fst between a pair of samples of individuals</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_tajima.html">ts_tajima()</a></code> </p>
+        </td>
+        <td><p>Calculate Tajima's D for a group of individuals</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_afs.html">ts_afs()</a></code> </p>
+        </td>
+        <td><p>Compute the allele frequency spectrum with respect to the given set of
+individuals</p></td>
       </tr>
     </tbody>
     </table>
