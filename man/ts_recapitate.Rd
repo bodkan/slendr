@@ -4,14 +4,16 @@
 \alias{ts_recapitate}
 \title{Recapitate the tree-sequence}
 \usage{
-ts_recapitate(ts, recombination_rate, Ne)
+ts_recapitate(ts, recombination_rate, Ne, random_seed = NULL)
 }
 \arguments{
 \item{ts}{SlimTreeSequence object loaded by \code{ts_load}}
 
 \item{recombination_rate}{A constant value of the recombination rate}
 
-\item{Ne}{Effective population size during the recapitation simulation}
+\item{Ne}{Effective population size during the recapitation process}
+
+\item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 }
 \value{
 @return SlimTreeSequence object accessed via the reticulate package

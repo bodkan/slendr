@@ -20,12 +20,13 @@
 #' @param simplify Should the tree-sequence be simplified down to only
 #'   remembered (i.e. "sampled", in slendr parlance) individuals?
 #' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
+#' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #'
 #' @return SlimTreeSequence object
 #'
 #' @export
 ts_load <- function(file, model, recapitate = FALSE, simplify = FALSE,
-                    recombination_rate = NULL, Ne = NULL) {
+                    recombination_rate = NULL, Ne = NULL, random_seed = NULL) {
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
 
@@ -42,7 +43,8 @@ ts_load <- function(file, model, recapitate = FALSE, simplify = FALSE,
     if (ts_coalesced(ts))
       message("No need to recapitate, all trees are coalesced")
     else
-      ts <- ts_recapitate(ts, recombination_rate, Ne)
+      ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
+                          random_seed = random_seed)
   }
   if (simplify)
     return(ts_simplify(ts))
@@ -75,16 +77,17 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'
 #' @param ts Object of the type SlimTreeSequence
 #' @param mutation_rate Mutation rate used by msprime to simulate mutations
+#' @param random_seed Random seed passed to msprime's \code{mutate} method
 #'
 #' @return SlimTreeSequence object
 #'
 #' @export
-ts_mutate <- function(ts, mutation_rate) {
+ts_mutate <- function(ts, mutation_rate, random_seed = NULL) {
   if (!inherits(ts, "slendr_ts"))
     stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
 
   ts_mutated <-
-    msprime$mutate(ts, rate = mutation_rate, keep = TRUE) %>%
+    msprime$mutate(ts, rate = mutation_rate, keep = TRUE, random_seed = random_seed) %>%
     pyslim$SlimTreeSequence()
 
     # decorate the SlimTreeSequence object with a table of individuals
@@ -98,18 +101,20 @@ ts_mutate <- function(ts, mutation_rate) {
 #'
 #' @param ts SlimTreeSequence object loaded by \code{ts_load}
 #' @param recombination_rate A constant value of the recombination rate
-#' @param Ne Effective population size during the recapitation simulation
+#' @param Ne Effective population size during the recapitation process
+#' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #'
 #' @return @return SlimTreeSequence object accessed via the reticulate package
 #'
 #' @export
-ts_recapitate <- function(ts, recombination_rate, Ne) {
+ts_recapitate <- function(ts, recombination_rate, Ne, random_seed = NULL) {
   if (!inherits(ts, "slendr_ts"))
     stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
 
   individuals <- attr(ts, "info")
 
-  new_ts <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne)
+  new_ts <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
+                          random_seed = random_seed)
 
   # decorate the SlimTreeSequence object with a table of individuals
   attr(new_ts, "info") <- get_individuals(new_ts, model)

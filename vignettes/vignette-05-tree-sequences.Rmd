@@ -193,7 +193,7 @@ ts_coalesced(ts)
 For computational efficiency, we did not simulate any mutations during the SLiM run. In order to be able to calculate statistics from genetic variation, we can add mutations to the tree-sequence at a given rate by running:
 
 ```{r}
-ts <- ts_mutate(ts, mutation_rate = 1e-8)
+ts <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 314159)
 ```
 
 Having done that, we can calculate some basic statistics on our simulated data. We note that everything that we do here (every function with the prefix `ts_*()` in *slendr*) is, in fact, interfacing with the *tskit* Python module. Our goal is to capture the most basic of analyses one might want to perform on tree-sequences in R and wrap them in a neat interface indistinguishable from any other R function---this is, after all, the reason why *reticulate* has been created in the first place (making various Python data science modules appear as if they were regular R packages).

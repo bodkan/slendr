@@ -10,6 +10,7 @@ knitr::opts_chunk$set(
   dpi = 80,
   eval = FALSE
 )
+set.seed(314159)
 ```
 
 ## Spatial Simulations for Population Genetics in R & SLiM
@@ -52,7 +53,6 @@ First, we define the spatial context of the simulation. This will be the entire 
 
 ```{r, include = FALSE}
 devtools::load_all(".")
-set.seed(314159)
 
 map <- world(
   xrange = c(-15, 60),

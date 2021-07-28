@@ -4,12 +4,14 @@
 \alias{ts_mutate}
 \title{Add mutations to the given tree-sequence}
 \usage{
-ts_mutate(ts, mutation_rate)
+ts_mutate(ts, mutation_rate, random_seed = NULL)
 }
 \arguments{
 \item{ts}{Object of the type SlimTreeSequence}
 
 \item{mutation_rate}{Mutation rate used by msprime to simulate mutations}
+
+\item{random_seed}{Random seed passed to msprime's \code{mutate} method}
 }
 \value{
 SlimTreeSequence object
