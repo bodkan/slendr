@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract the nodes belonging to a given set of individuals — ts_nodes • slendr</title>
+<title>Check that all trees in the tree-sequence are coalesced (i.e. have only one
+root) — ts_coalesced • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +53,10 @@
 
 
 
-<meta property="og:title" content="Extract the nodes belonging to a given set of individuals — ts_nodes" />
-<meta property="og:description" content="Extract the nodes belonging to a given set of individuals" />
+<meta property="og:title" content="Check that all trees in the tree-sequence are coalesced (i.e. have only one
+root) — ts_coalesced" />
+<meta property="og:description" content="Check that all trees in the tree-sequence are coalesced (i.e. have only one
+root)" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -167,16 +170,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract the nodes belonging to a given set of individuals</h1>
+    <h1>Check that all trees in the tree-sequence are coalesced (i.e. have only one
+root)</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
-    <div class="hidden name"><code>ts_nodes.Rd</code></div>
+    <div class="hidden name"><code>ts_coalesced.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extract the nodes belonging to a given set of individuals</p>
+    <p>Check that all trees in the tree-sequence are coalesced (i.e. have only one
+root)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_nodes</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>ind</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_coalesced</span><span class='op'>(</span><span class='va'>ts</span>, return_failed <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -186,14 +191,16 @@
       <td><p>SlimTreeSequence object</p></td>
     </tr>
     <tr>
-      <th>ind</th>
-      <td><p>A character vector of individual names</p></td>
+      <th>return_failed</th>
+      <td><p>Report back which trees failed the coalescence
+check?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An integer vector with node numbers</p>
+    <p>TRUE or FALSE value if <code>return_failed = FALSE</code>, otherwise a vector of
+(tskit Python 0-based) indices of trees which failed the coalescence test</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

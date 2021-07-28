@@ -1,0 +1,14 @@
+pandoc: '2.13'
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  vignette-01-tutorial: vignette-01-tutorial.html
+  vignette-02-grid-model: vignette-02-grid-model.html
+  vignette-03-interactions: vignette-03-interactions.html
+  vignette-04-nonspatial-models: vignette-04-nonspatial-models.html
+  vignette-05-tree-sequences: vignette-05-tree-sequences.html
+last_built: 2021-07-28T00:19Z
+urls:
+  reference: https://bodkan.net/slendr/reference
+  article: https://bodkan.net/slendr/articles
+

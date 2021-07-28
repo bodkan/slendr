@@ -5,7 +5,7 @@
 \title{Compute the allele frequency spectrum with respect to the given set of
 individuals}
 \usage{
-ts_afs(ts, sample, mode = c("site", "branch"), windows = NULL)
+ts_afs(ts, sample_sets, mode = c("site", "branch"), windows = NULL)
 }
 \arguments{
 \item{mode}{The mode for the calculation ("sites" or "branch")}
