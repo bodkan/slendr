@@ -176,7 +176,7 @@
     <p>Recapitate the tree-sequence</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_recapitate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>recombination_rate</span>, <span class='va'>Ne</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_recapitate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>recombination_rate</span>, <span class='va'>Ne</span>, random_seed <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -191,7 +191,11 @@
     </tr>
     <tr>
       <th>Ne</th>
-      <td><p>Effective population size during the recapitation simulation</p></td>
+      <td><p>Effective population size during the recapitation process</p></td>
+    </tr>
+    <tr>
+      <th>random_seed</th>
+      <td><p>Random seed passed to pyslim's <code>recapitate</code> method</p></td>
     </tr>
     </table>
 

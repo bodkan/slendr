@@ -176,7 +176,7 @@
     <p>Add mutations to the given tree-sequence</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_mutate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>mutation_rate</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_mutate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>mutation_rate</span>, random_seed <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -188,6 +188,10 @@
     <tr>
       <th>mutation_rate</th>
       <td><p>Mutation rate used by msprime to simulate mutations</p></td>
+    </tr>
+    <tr>
+      <th>random_seed</th>
+      <td><p>Random seed passed to msprime's <code>mutate</code> method</p></td>
     </tr>
     </table>
 

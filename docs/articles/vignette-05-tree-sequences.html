@@ -317,7 +317,7 @@
 <span class="co">#&gt; [1] TRUE</span></code></pre></div>
 <p>For computational efficiency, we did not simulate any mutations during the SLiM run. In order to be able to calculate statistics from genetic variation, we can add mutations to the tree-sequence at a given rate by running:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span><span class="va">ts</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span><span class="va">ts</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
 <p>Having done that, we can calculate some basic statistics on our simulated data. We note that everything that we do here (every function with the prefix <code>ts_*()</code> in <em>slendr</em>) is, in fact, interfacing with the <em>tskit</em> Python module. Our goal is to capture the most basic of analyses one might want to perform on tree-sequences in R and wrap them in a neat interface indistinguishable from any other R function—this is, after all, the reason why <em>reticulate</em> has been created in the first place (making various Python data science modules appear as if they were regular R packages).</p>
 <p>That said, <u><em>slendr</em> doesn’t try to capture everything that is possible to do in <em>tskit</em></u>. I personally love R and prefer to use it for as much of my work as possible, but for anything that does not involve calculating population genetics statistics on simulated tree genealogies it is better to use <em>tskit</em> directly. In other words, if you’re developing a novel population genetic inference method on which operates on tree-sequence data, you should probably use <em>tskit</em> directly (either its C API or the Python interface), not R. This is why we haven’t implemented <em>tskit</em>’s functionality for iterating over trees in the tree-sequence, traversing nodes, etc. It’s likely that the number of <em>tskit</em> functions implemented in <em>slendr</em> will slowly grow (especially those related to population genetics statistics) but this is where we currently draw the line: <em>slendr</em> is an R package for simulating data (tree-sequences or other) in SLiM and for calculating statistics on it, nothing less, nothing more.</p>
 </div>
@@ -331,13 +331,13 @@
 <span class="co">#&gt; # A tibble: 1 x 3</span>
 <span class="co">#&gt;   A     B            f2</span>
 <span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 EUR1  EUR2  0.0000106</span>
+<span class="co">#&gt; 1 EUR1  EUR2  0.0000138</span>
 
 <span class="fu"><a href="../reference/ts_f2.html">ts_f3</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"EUR1"</span>, <span class="st">"AFR1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 4</span>
 <span class="co">#&gt;   A     B     C            f3</span>
 <span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 EUR1  AFR1  CH1   0.0000012</span>
+<span class="co">#&gt; 1 EUR1  AFR1  CH1   0.0000014</span>
 
 <span class="fu"><a href="../reference/ts_f2.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR1"</span>, <span class="st">"AFR2"</span>, <span class="st">"NEA1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 5</span>
@@ -346,9 +346,9 @@
 <span class="co">#&gt; 1 AFR1  AFR2  NEA1  CH1       0</span>
 <span class="fu"><a href="../reference/ts_f2.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR1"</span>, <span class="st">"EUR1"</span>, <span class="st">"NEA1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 5</span>
-<span class="co">#&gt;   W     X     Y     Z              f4</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 AFR1  EUR1  NEA1  CH1   -0.00000833</span></code></pre></div>
+<span class="co">#&gt;   W     X     Y     Z             f4</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 AFR1  EUR1  NEA1  CH1   -0.0000100</span></code></pre></div>
 <p>These functions accept a <code>mode =</code> argument, specifying whether the statistics should be calculated using mutation site patterns (<code>mode = "site"</code>, the default) or branch lengths (<code>mode = "branch"</code>). See the <a href="https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.write_vcf">relevant section</a> of the official <em>tskit</em> documentation for more on this topic.</p>
 </div>
 <div id="estimating-neanderthal-ancestry-proportions" class="section level2">
@@ -389,14 +389,14 @@
 <p>In case you would like to verify some <em>f</em>-statistics results using the venerable <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193">ADMIXTOOLS</a> software (see the linked paper which formally introduced these statistics in the first place), you can convert the tree-sequence data to a file format called EIGENSTRAT using the <code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code> function. The file conversion is internally handled by the R package <a href="http://bodkan.net/admixr"><em>admixr</em></a> and returns an <code>EIGENSTRAT</code> object which ties all individual <code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/tutorial.html">tutorial</a> to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R package for running automated ADMIXTOOLS analyses entirely from R and makes these types of analyses very convenient.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">snps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_eigenstrat.html">ts_eigenstrat</a></span><span class="op">(</span><span class="va">ts</span>, prefix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"eigenstrat"</span>, <span class="st">"data"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; 184 mutations (out of 58817) have been removed because they appeared on a position already occupied by another mutation. This is a consequence of mutations positions in tskit being in floating-point values but normal genomic locations being integer values.</span>
+<span class="co">#&gt; 166 mutations (out of 58559) have been removed because they appeared on a position already occupied by another mutation. This is a consequence of mutations positions in tskit being in floating-point values but normal genomic locations being integer values.</span>
 <span class="va">snps</span>
 <span class="co">#&gt; EIGENSTRAT object</span>
 <span class="co">#&gt; =================</span>
 <span class="co">#&gt; components:</span>
-<span class="co">#&gt;   ind file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpq4FaVQ/eigenstrat/data.ind</span>
-<span class="co">#&gt;   snp file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpq4FaVQ/eigenstrat/data.snp</span>
-<span class="co">#&gt;   geno file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpq4FaVQ/eigenstrat/data.geno</span></code></pre></div>
+<span class="co">#&gt;   ind file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpY770do/eigenstrat/data.ind</span>
+<span class="co">#&gt;   snp file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpY770do/eigenstrat/data.snp</span>
+<span class="co">#&gt;   geno file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpY770do/eigenstrat/data.geno</span></code></pre></div>
 <p>Running an <em>admixr</em> analysis is then as easy as plugging the object into an <em>admixr</em> function. For instance, we can estimate the proportion of Neanderthal ancestry in a couple of individuals <span class="math inline">\(X\)</span> like this (<em>admixr</em> calls this proportion <code>alpha</code>):</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/admixr">admixr</a></span><span class="op">)</span>
@@ -404,10 +404,10 @@
 <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html">f4ratio</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">snps</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EUR1"</span>, <span class="st">"EUR2"</span>, <span class="st">"AFR2"</span><span class="op">)</span>,
         A <span class="op">=</span> <span class="st">"NEA1"</span>, B <span class="op">=</span> <span class="st">"NEA2"</span>, C <span class="op">=</span> <span class="st">"AFR1"</span>, O <span class="op">=</span> <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 3 x 8</span>
-<span class="co">#&gt;   A     B     X     C     O       alpha  stderr Zscore</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 NEA1  NEA2  EUR1  AFR1  CH1   0.0478  0.0537    0.89</span>
-<span class="co">#&gt; 2 NEA1  NEA2  EUR2  AFR1  CH1   0.00303 0.00341   0.89</span>
+<span class="co">#&gt;   A     B     X     C     O       alpha  stderr  Zscore</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 NEA1  NEA2  EUR1  AFR1  CH1   0.0584  0.0665    0.878</span>
+<span class="co">#&gt; 2 NEA1  NEA2  EUR2  AFR1  CH1   0.00383 0.00370   1.04 </span>
 <span class="co">#&gt; 3 NEA1  NEA2  AFR2  AFR1  CH1   0       0       NaN</span></code></pre></div>
 <p>In fact, lets compare the values obtained by both <em>tskit</em> and <em>admixr</em>/ADMIXTOOLS for all individuals:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">

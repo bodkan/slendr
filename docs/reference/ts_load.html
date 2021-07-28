@@ -184,7 +184,8 @@ Optionally, the tree-sequence can be recapitated and simplified.</p>
   recapitate <span class='op'>=</span> <span class='cn'>FALSE</span>,
   simplify <span class='op'>=</span> <span class='cn'>FALSE</span>,
   recombination_rate <span class='op'>=</span> <span class='cn'>NULL</span>,
-  Ne <span class='op'>=</span> <span class='cn'>NULL</span>
+  Ne <span class='op'>=</span> <span class='cn'>NULL</span>,
+  random_seed <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -210,6 +211,10 @@ remembered (i.e. "sampled", in slendr parlance) individuals?</p></td>
     <tr>
       <th>recombination_rate, Ne</th>
       <td><p>Arguments passed to <code>ts_recapitate</code></p></td>
+    </tr>
+    <tr>
+      <th>random_seed</th>
+      <td><p>Random seed passed to pyslim's <code>recapitate</code> method</p></td>
     </tr>
     </table>
 
