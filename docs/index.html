@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spatiotemporal Population Genetics Simulations in R and SLiM • slendr</title>
+<title>Spatiotemporal Population Genetics Simulations in R • slendr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -19,15 +19,21 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><!-- docsearch --><script src="docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="docsearch.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Spatiotemporal Population Genetics Simulations in R and SLiM">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Spatiotemporal Population Genetics Simulations in R">
 <meta property="og:description" content="A framework for simulating spatially-explicit genomic
     data which leverages real cartographic information to programmatically
     and visually encode spatial population boundaries and temporal dynamics
-    (i.e., population displacements and expansions) across a real geographic
-    landscape, and specify population divergences and gene flow events based
-    on an arbitrary admixture graph. Spatial demographic models are then
-    compiled into a custom-built SLiM script which can be extended by
-    the user to perform arbitrary simulations.">
+    (i.e., population movement and expansions) across a real geographic
+    landscape, and specify population divergences and geneflow events based
+    on an arbitrary graph of demographic history. Models specified by the
+    package are then automatically executed by the SLiM software behind the
+    scenes, using a custom built-in SLiM script. In addition to models on real
+    geographic landscape, fully abstract spatial models are also supported,
+    but the users can also simulate data from traditional non-spatial models.
+    Simulated sequence data is saved in a tree-sequence format and can be
+    loaded, manipulated and summarised using tree-sequence functionality
+    provided by Python modules tskit and pyslim, all without having to
+    leave the R interface.">
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -127,9 +133,9 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="spatiotemporal-population-genetics-simulations-in-r-and-slim" class="section level2">
+<div id="spatiotemporal-simulations-for-population-genetics" class="section level2">
 <h2 class="hasAnchor">
-<a href="#spatiotemporal-population-genetics-simulations-in-r-and-slim" class="anchor"></a>Spatiotemporal Population Genetics Simulations in R and SLiM</h2>
+<a href="#spatiotemporal-simulations-for-population-genetics" class="anchor"></a>Spatiotemporal Simulations for Population Genetics</h2>
 <p><strong>This software is still under development!</strong> <a href="https://bodkan.net/slendr"> <img src="reference/figures/logo.png" align="right" height="139"></a> I have been making a good progress towards the first beta version, but the package still has some way to go before being production ready. If you are interested, you can see the list of changes between versions <a href="news/index.html">here</a>.</p>
 <p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at the <a href="articles/vignette-01-tutorial.html">tutorial</a>. Note that getting it installed with all the geospatial dependencies can be a little bit tricky at this point (see the relevant section in the tutorial). If loading the package fails, check the error messages for missing software and install it using the package manager of your choice (on a Mac I recommend <em>homebrew</em>).</p>
 <p>If you would like to stay updated with the developments:</p>
@@ -287,7 +293,7 @@
 <span class="co">#&gt;   - number of spatial maps: 60 </span>
 <span class="co">#&gt;   - resolution: 10000 distance units per pixel</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpYip7lL/readme-model </span>
+<span class="co">#&gt; configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpRed0ld/readme-model </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; A detailed model specification can be found in `$splits`, `$geneflows`,</span>
 <span class="co">#&gt; `$maps`, `$populations`, and other components of the model object (for</span>

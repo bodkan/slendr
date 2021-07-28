@@ -118,8 +118,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne) {
   new_ts
 }
 
-#' Simplify tree-sequence object down to only remembered (i.e. "sampled", in
-#' slendr parlance) individuals
+#' Simplify tree-sequence object down to sampled individuals
 #'
 #' @param ts SlimTreeSequence object
 #'

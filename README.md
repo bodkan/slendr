@@ -2,9 +2,7 @@
 
 
 
-
-
-## Spatiotemporal Population Genetics Simulations in R and SLiM
+## Spatiotemporal Simulations for Population Genetics
 
 **This software is still under development!** <a href='https://bodkan.net/slendr'>
 <img src="man/figures/logo.png" align="right" height="139"/></a>
@@ -252,7 +250,7 @@ model
 #>   - number of spatial maps: 60 
 #>   - resolution: 10000 distance units per pixel
 #> 
-#> configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpYip7lL/readme-model 
+#> configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpRed0ld/readme-model 
 #> 
 #> A detailed model specification can be found in `$splits`, `$geneflows`,
 #> `$maps`, `$populations`, and other components of the model object (for

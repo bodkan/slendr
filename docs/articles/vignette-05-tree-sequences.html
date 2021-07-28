@@ -197,16 +197,16 @@
 <span class="co">#&gt; # A tibble: 50 x 3</span>
 <span class="co">#&gt;     time pop       n</span>
 <span class="co">#&gt;    &lt;int&gt; &lt;chr&gt; &lt;int&gt;</span>
-<span class="co">#&gt;  1 33140 EUR       1</span>
-<span class="co">#&gt;  2 25630 EUR       1</span>
-<span class="co">#&gt;  3 25549 EUR       1</span>
-<span class="co">#&gt;  4 38094 EUR       1</span>
-<span class="co">#&gt;  5 38135 EUR       1</span>
-<span class="co">#&gt;  6 14293 EUR       1</span>
-<span class="co">#&gt;  7 11270 EUR       1</span>
-<span class="co">#&gt;  8 30293 EUR       1</span>
-<span class="co">#&gt;  9 15239 EUR       1</span>
-<span class="co">#&gt; 10 35407 EUR       1</span>
+<span class="co">#&gt;  1 16361 EUR       1</span>
+<span class="co">#&gt;  2 29322 EUR       1</span>
+<span class="co">#&gt;  3 16979 EUR       1</span>
+<span class="co">#&gt;  4 22342 EUR       1</span>
+<span class="co">#&gt;  5 37738 EUR       1</span>
+<span class="co">#&gt;  6 25728 EUR       1</span>
+<span class="co">#&gt;  7 28594 EUR       1</span>
+<span class="co">#&gt;  8 18357 EUR       1</span>
+<span class="co">#&gt;  9 20367 EUR       1</span>
+<span class="co">#&gt; 10 24655 EUR       1</span>
 <span class="co">#&gt; # … with 40 more rows</span></code></pre></div>
 <p>This samples a single ancient European individuals at randomly chosen times between 40 and 10 ky ago.</p>
 <p>One nice feature of the <code><a href="../reference/sampling.html">sampling()</a></code> function is that it only schedules sampling events for populations if that population is present in the simulation at a given time. This makes it possible to simply specify the whole time range for sampling, specify all populations and sizes of the samples, and let the function generate sampling events only for populations present at each time. If for some reason a stricter control over sampling is required, this behavior can be switched off by setting <code>strict = TRUE</code> like this:</p>
@@ -221,7 +221,8 @@
   <span class="va">model</span>, seq_length <span class="op">=</span> <span class="fl">10e6</span>, recomb_rate <span class="op">=</span> <span class="fl">1e-8</span>,
   ts_recording <span class="op">=</span> <span class="cn">TRUE</span>,
   sampling <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">nea_samples</span>, <span class="va">present_samples</span>, <span class="va">emh_samples</span><span class="op">)</span>,
-  method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>
+  method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>,
+  seed <span class="op">=</span> <span class="fl">314159</span>
 <span class="op">)</span></code></pre></div>
 </div>
 <div id="r-interface-for-tskit-pyslim-and-msprime" class="section level2">
@@ -276,18 +277,18 @@
 <span class="co">#&gt; ╔══════════════════════════╗</span>
 <span class="co">#&gt; ║TreeSequence              ║</span>
 <span class="co">#&gt; ╠═══════════════╤══════════╣</span>
-<span class="co">#&gt; ║Trees          │    100789║</span>
+<span class="co">#&gt; ║Trees          │    101652║</span>
 <span class="co">#&gt; ╟───────────────┼──────────╢</span>
 <span class="co">#&gt; ║Sequence Length│10000000.0║</span>
 <span class="co">#&gt; ╟───────────────┼──────────╢</span>
 <span class="co">#&gt; ║Sample Nodes   │     30108║</span>
 <span class="co">#&gt; ╟───────────────┼──────────╢</span>
-<span class="co">#&gt; ║Total Size     │   2.0 GiB║</span>
+<span class="co">#&gt; ║Total Size     │   2.1 GiB║</span>
 <span class="co">#&gt; ╚═══════════════╧══════════╝</span>
 <span class="co">#&gt; ╔═══════════╤════════╤═════════╤════════════╗</span>
 <span class="co">#&gt; ║Table      │Rows    │Size     │Has Metadata║</span>
 <span class="co">#&gt; ╠═══════════╪════════╪═════════╪════════════╣</span>
-<span class="co">#&gt; ║Edges      │47859238│  1.2 GiB│          No║</span>
+<span class="co">#&gt; ║Edges      │49989051│  1.3 GiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Individuals│   15054│942.3 KiB│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
@@ -295,7 +296,7 @@
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Mutations  │       0│  1.2 KiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
-<span class="co">#&gt; ║Nodes      │12601489│408.6 MiB│         Yes║</span>
+<span class="co">#&gt; ║Nodes      │12687318│411.4 MiB│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Populations│       5│  3.1 KiB│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
@@ -328,15 +329,15 @@
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_f2.html">ts_f2</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"EUR1"</span>, <span class="st">"EUR2"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 3</span>
-<span class="co">#&gt;   A     B              f2</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 EUR1  EUR2  -0.00000865</span>
+<span class="co">#&gt;   A     B            f2</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 EUR1  EUR2  0.0000108</span>
 
 <span class="fu"><a href="../reference/ts_f2.html">ts_f3</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"EUR1"</span>, <span class="st">"AFR1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 4</span>
-<span class="co">#&gt;   A     B     C             f3</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 EUR1  AFR1  CH1   0.00000248</span>
+<span class="co">#&gt;   A     B     C            f3</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 EUR1  AFR1  CH1   0.0000022</span>
 
 <span class="fu"><a href="../reference/ts_f2.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR1"</span>, <span class="st">"AFR2"</span>, <span class="st">"NEA1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 5</span>
@@ -345,9 +346,9 @@
 <span class="co">#&gt; 1 AFR1  AFR2  NEA1  CH1       0</span>
 <span class="fu"><a href="../reference/ts_f2.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR1"</span>, <span class="st">"EUR1"</span>, <span class="st">"NEA1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 5</span>
-<span class="co">#&gt;   W     X     Y     Z             f4</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 AFR1  EUR1  NEA1  CH1   -0.0000154</span></code></pre></div>
+<span class="co">#&gt;   W     X     Y     Z              f4</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 AFR1  EUR1  NEA1  CH1   -0.00000937</span></code></pre></div>
 <p>These functions accept a <code>mode =</code> argument, specifying whether the statistics should be calculated using mutation site patterns (<code>mode = "site"</code>, the default) or branch lengths (<code>mode = "branch"</code>). See the <a href="https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.write_vcf">relevant section</a> of the official <em>tskit</em> documentation for more on this topic.</p>
 </div>
 <div id="estimating-neanderthal-ancestry-proportions" class="section level2">
@@ -368,8 +369,8 @@
   <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Neanderthal ancestry proportion"</span>, x <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">coord_cartesian</span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/unnamed-chunk-18-1.png" width="480"></p>
-<p>This is exactly as we specified in the model configuration above, suggesting that our simulations work as they should. You can see that there is quite a bit of noise but that’s because we simulated only 10Mb of sequence.</p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_distributions-1.png" width="480"></p>
+<p>This is exactly as we specified in the model configuration above, suggesting that our simulations work as they should. You can see that there is quite a bit of noise but that’s because we simulated only 10 Mb of sequence.</p>
 <p>We can also plot the trajectory of Neanderthal ancestry in Europe over the last 50 thousand years:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">inds</span><span class="op">[</span><span class="va">inds</span><span class="op">$</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"EUR"</span>, <span class="op">]</span> <span class="op">%&gt;%</span>
@@ -379,7 +380,7 @@
   <span class="fu"><a href="https://rdrr.io/r/graphics/plot.window.html">xlim</a></span><span class="op">(</span><span class="fl">40000</span>, <span class="fl">0</span><span class="op">)</span> <span class="op">+</span> <span class="fu">coord_cartesian</span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"time [years ago]"</span>, y <span class="op">=</span> <span class="st">"Neanderthal ancestry proportion"</span><span class="op">)</span>
 <span class="co">#&gt; `geom_smooth()` using formula 'y ~ x'</span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/unnamed-chunk-19-1.png" width="480"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_trajectory-1.png" width="480"></p>
 <p>Again, this is a result consistent with empirical estimates of Neanderthal ancestry using <a href="https://www.pnas.org/content/116/5/1639">ancient DNA data</a>.</p>
 </div>
 <div id="admixtools-analyses" class="section level2">
@@ -388,14 +389,14 @@
 <p>In case you would like to verify some <em>f</em>-statistics results using the venerable <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193">ADMIXTOOLS</a> software (see the linked paper which formally introduced these statistics in the first place), you can convert the tree-sequence data to a file format called EIGENSTRAT using the <code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code> function. The file conversion is internally handled by the R package <a href="http://bodkan.net/admixr"><em>admixr</em></a> and returns an <code>EIGENSTRAT</code> object which ties all individual <code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/tutorial.html">tutorial</a> to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R package for running automated ADMIXTOOLS analyses entirely from R and makes these types of analyses very convenient.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">snps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_eigenstrat.html">ts_eigenstrat</a></span><span class="op">(</span><span class="va">ts</span>, prefix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"eigenstrat"</span>, <span class="st">"data"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; 174 mutations (out of 58062) have been removed because they appeared on a position already occupied by another mutation. This is a consequence of mutations positions in tskit being in floating-point values but normal genomic locations being integer values.</span>
+<span class="co">#&gt; 168 mutations (out of 58469) have been removed because they appeared on a position already occupied by another mutation. This is a consequence of mutations positions in tskit being in floating-point values but normal genomic locations being integer values.</span>
 <span class="va">snps</span>
 <span class="co">#&gt; EIGENSTRAT object</span>
 <span class="co">#&gt; =================</span>
 <span class="co">#&gt; components:</span>
-<span class="co">#&gt;   ind file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp7kMd6h/eigenstrat/data.ind</span>
-<span class="co">#&gt;   snp file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp7kMd6h/eigenstrat/data.snp</span>
-<span class="co">#&gt;   geno file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp7kMd6h/eigenstrat/data.geno</span></code></pre></div>
+<span class="co">#&gt;   ind file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpzSAa5V/eigenstrat/data.ind</span>
+<span class="co">#&gt;   snp file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpzSAa5V/eigenstrat/data.snp</span>
+<span class="co">#&gt;   geno file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpzSAa5V/eigenstrat/data.geno</span></code></pre></div>
 <p>Running an <em>admixr</em> analysis is then as easy as plugging the object into an <em>admixr</em> function. For instance, we can estimate the proportion of Neanderthal ancestry in a couple of individuals <span class="math inline">\(X\)</span> like this (<em>admixr</em> calls this proportion <code>alpha</code>):</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/admixr">admixr</a></span><span class="op">)</span>
@@ -403,11 +404,11 @@
 <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html">f4ratio</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">snps</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"EUR1"</span>, <span class="st">"EUR2"</span>, <span class="st">"AFR2"</span><span class="op">)</span>,
         A <span class="op">=</span> <span class="st">"NEA1"</span>, B <span class="op">=</span> <span class="st">"NEA2"</span>, C <span class="op">=</span> <span class="st">"AFR1"</span>, O <span class="op">=</span> <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 3 x 8</span>
-<span class="co">#&gt;   A     B     X     C     O      alpha  stderr Zscore</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 NEA1  NEA2  EUR1  AFR1  CH1   0.103  0.00395  26.0 </span>
-<span class="co">#&gt; 2 NEA1  NEA2  EUR2  AFR1  CH1   0.0311 0.0131    2.37</span>
-<span class="co">#&gt; 3 NEA1  NEA2  AFR2  AFR1  CH1   0      0       NaN</span></code></pre></div>
+<span class="co">#&gt;   A     B     X     C     O       alpha  stderr Zscore</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 NEA1  NEA2  EUR1  AFR1  CH1   0.0647  0.0631    1.02</span>
+<span class="co">#&gt; 2 NEA1  NEA2  EUR2  AFR1  CH1   0.00498 0.00352   1.42</span>
+<span class="co">#&gt; 3 NEA1  NEA2  AFR2  AFR1  CH1   0       0       NaN</span></code></pre></div>
 <p>In fact, lets compare the values obtained by both <em>tskit</em> and <em>admixr</em>/ADMIXTOOLS for all individuals:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># tskit result</span>
@@ -422,7 +423,7 @@
   <span class="fu">geom_abline</span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"red"</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"f4-ratio statistic calculated with admixr/ADMIXTOOLS"</span>,
        y <span class="op">=</span> <span class="st">"f4-ratio statistic calculated with tskit"</span><span class="op">)</span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/unnamed-chunk-22-1.png" width="480"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_vs_admixr-1.png" width="480"></p>
 <p>The correspondence between the two looks good! 🎉 Again, note that the large amount of variance around the expected value of 3% ancestry is due to an extremely small data simulated here (only 10 Mb of sequence).</p>
 </div>
 <div id="vcf-output" class="section level2">

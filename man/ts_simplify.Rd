@@ -2,8 +2,7 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_simplify}
 \alias{ts_simplify}
-\title{Simplify tree-sequence object down to only remembered (i.e. "sampled", in
-slendr parlance) individuals}
+\title{Simplify tree-sequence object down to sampled individuals}
 \usage{
 ts_simplify(ts)
 }
@@ -14,6 +13,5 @@ ts_simplify(ts)
 @return SlimTreeSequence object accessed via the reticulate package
 }
 \description{
-Simplify tree-sequence object down to only remembered (i.e. "sampled", in
-slendr parlance) individuals
+Simplify tree-sequence object down to sampled individuals
 }

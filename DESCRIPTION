@@ -1,5 +1,5 @@
 Package: slendr
-Title: Spatiotemporal Population Genetics Simulations in R and SLiM
+Title: Spatiotemporal Population Genetics Simulations in R
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Martin",
@@ -10,18 +10,24 @@ Authors@R:
 Description: A framework for simulating spatially-explicit genomic
     data which leverages real cartographic information to programmatically
     and visually encode spatial population boundaries and temporal dynamics
-    (i.e., population displacements and expansions) across a real geographic
-    landscape, and specify population divergences and gene flow events based
-    on an arbitrary admixture graph. Spatial demographic models are then
-    compiled into a custom-built SLiM script which can be extended by
-    the user to perform arbitrary simulations.
+    (i.e., population movement and expansions) across a real geographic
+    landscape, and specify population divergences and geneflow events based
+    on an arbitrary graph of demographic history. Models specified by the
+    package are then automatically executed by the 'SLiM' software behind the
+    scenes, using a custom built-in 'SLiM' script. In addition to models on real
+    geographic landscape, fully abstract spatial models are also supported,
+    but the users can also simulate data from traditional non-spatial models.
+    Simulated sequence data is saved in a tree-sequence format and can be
+    loaded, manipulated and summarised using tree-sequence functionality
+    provided by Python modules 'tskit' and 'pyslim', all without having to
+    leave the R interface.
 Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-SystemRequirements: SLiM is a genetically explicit forward simulation software package for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information.
+SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information.
 Imports: 
     ggplot2,
     rgdal,
