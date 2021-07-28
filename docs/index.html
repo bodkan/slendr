@@ -133,26 +133,37 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="spatiotemporal-simulations-for-population-genetics" class="section level2">
+
+<div id="spatial-simulations-for-population-genetics-in-r--slim" class="section level2">
 <h2 class="hasAnchor">
-<a href="#spatiotemporal-simulations-for-population-genetics" class="anchor"></a>Spatiotemporal Simulations for Population Genetics</h2>
-<p><strong>This software is still under development!</strong> <a href="https://bodkan.net/slendr"> <img src="reference/figures/logo.png" align="right" height="139"></a> I have been making a good progress towards the first beta version, but the package still has some way to go before being production ready. If you are interested, you can see the list of changes between versions <a href="news/index.html">here</a>.</p>
-<p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at the <a href="articles/vignette-01-tutorial.html">tutorial</a>. Note that getting it installed with all the geospatial dependencies can be a little bit tricky at this point (see the relevant section in the tutorial). If loading the package fails, check the error messages for missing software and install it using the package manager of your choice (on a Mac I recommend <em>homebrew</em>).</p>
+<a href="#spatial-simulations-for-population-genetics-in-r--slim" class="anchor"></a>Spatial Simulations for Population Genetics in R &amp; SLiM</h2>
+<div id="overview-" class="section level3">
+<h3 class="hasAnchor">
+<a href="#overview-" class="anchor"></a><em>Overview</em> <a href="https://bodkan.net/slendr"><img src="reference/figures/logo.png" align="right" height="139"></a>
+</h3>
+<p><em>slendr</em> is an R package for simulating spatially-explicit genomic data. It allows to programmatically and visually encode spatial population boundaries and temporal dynamics across a geographic landscape (leveraging real cartographic data or abstract, user-defined landscapes), and specify population divergences and geneflow events based on an arbitrary graph of demographic history.</p>
+<p>Its strength comes from combining the flexibility of R with its wealth of libraries for graphics, geospatial analysis and statistics, with the power of the forward population genetics simulator <a href="https://messerlab.org/slim/">SLiM</a> and its <a href="http://benhaller.com/slim/SLiM_Manual.pdf">massive library</a> of features for simulating genomic data.</p>
+<p>The goal of <em>slendr</em> is to provide a convenient R interface for defining arbitrary complex spatial (and <a href="articles/vignette-04-nonspatial-models.html">non-spatial</a>) models of population history and execute them automatically by SLiM as a backend engine, all without having to leave the convenience of the R environment. By default, output data is saved in a <a href="https://tskit.dev/learn.html#what">tree-sequence</a> format, allowing efficient simulations of genome-scale and population-scale data. The R package also provides basic functionality for processing the simulated tree-sequence outputs and for calculating the most frequently used population genetics statistics by implementing an interface to the tree-sequence library <a href="https://tskit.dev">tskit</a> via the <a href="https://rstudio.github.io/reticulate/index.html">reticulate</a> package. <em>slendr</em> can also serve as a tool for simulating data from non-spatial models, making it possible to write entire simulation and analytic pipelines entirely from R.</p>
+<hr>
+<p><strong>This software is still under development!</strong> We have been making steady progress towards the first beta version, but the package still has some way to go before being production ready. If you are interested, you can see the list of changes between versions <a href="news/index.html">here</a>.</p>
+<p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at some of our tutorial vignettes (either the main <a href="articles/vignette-01-tutorial.html">tutorial</a> or other vignettes available under the “Articles” menu on the <a href="https://bodkan.net/slendr/">project website</a>).</p>
 <p>If you would like to stay updated with the developments:</p>
 <ol>
 <li><p>Click on the “Watch” button on the project’s <a href="https://www.github.com/bodkan/slendr">Github website</a>.</p></li>
 <li><p>Follow me on <a href="https://www.twitter.com/fleventy5">Twitter</a>. I might post some updates once the software is a bit more ready.</p></li>
 </ol>
+<hr>
+</div>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
-<p>For installation instructions, please take a look at the installation section <a href="articles/vignette-01-tutorial.html#installation-and-setup-1">of the tutorial</a>. Note that you might need to install some non-R software dependencies first. At the very least, you will need the most recent version of the <a href="https://messerlab.org/slim/">SLiM software</a> (version 3.6 or later).</p>
+<p>For installation instructions, please take a look at the installation section of the <a href="articles/vignette-01-tutorial.html#installation-and-setup-1">main tutorial</a>. Note that in order to simulate data, you will need the most recent version of the <a href="https://messerlab.org/slim/">SLiM software</a> (version 3.6 or later). Similarly, if you would like to process tree-sequence data generated by <em>slendr</em> &amp; SLiM from R, you will need a working Python environment with the modules <em>tskit</em> and <em>pyslim</em> (see the <a href="articles/vignette-05-tree-sequences.html#r-interface-for-tskit-pyslim-and-msprime-1">relevant vignette</a> for more detail).</p>
+<p>The main dependency of <em>slendr</em> is the R package <a href="https://r-spatial.github.io/sf/"><em>sf</em></a>, which it uses for manipulation of geospatial data. In turn, <em>sf</em> depends on several external pieces of software which sometimes need to be installed. That said, if you can successfully install <em>sf</em> by running <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("sf")</a></code> you will be good to go. In case you run into trouble, following <em>sf</em>’s <a href="https://r-spatial.github.io/sf/#installing">installation guidelines</a> has so far always been a success.</p>
 </div>
 <div id="example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h3>
 <p>Here is a small demonstration of what <em>slendr</em> is designed to do. We want to simulate spatiotemporal data representing the history of modern humans in Eurasia after the Out of Africa migration. This example will be quite brief, for more details, please see the <a href="articles/vignette-01-tutorial.html">tutorial</a> vignette.</p>
-<p>The package is designed to allow the building of complex spatiotemporal population genetics models in a single R script and then feeding such models to SLiM using a template SLiM script.</p>
 <div id="1-setup-the-spatial-context" class="section level4">
 <h4 class="hasAnchor">
 <a href="#1-setup-the-spatial-context" class="anchor"></a>1. Setup the spatial context</h4>
@@ -168,7 +179,6 @@
 <p>We can visualize the defined world map using the generic function <code>plot</code> provided by the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-plot_world-1.png" alt="plot of chunk plot_world"></p>
 <p>Although in this example we use a real Earth landscape, the <code>map</code> can be completely abstract (either blank or with user-defined landscape features such as continents, islands, corridors and barriers).</p>
 </div>
 <div id="2-define-broader-geographic-regions" class="section level4">
@@ -197,7 +207,6 @@
 <p>Again, we can use the generic <code>plot</code> function to visualize the objects:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">africa</span>, <span class="va">europe</span>, <span class="va">anatolia</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-plot_regions-1.png" alt="plot of chunk plot_regions"></p>
 </div>
 <div id="3-define-demographic-history-and-population-boundaries" class="section level4">
 <h4 class="hasAnchor">
@@ -249,12 +258,7 @@
   <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span>trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">5000</span>, end <span class="op">=</span> <span class="fl">3000</span>, snapshots <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p>We can use the function <code>plot</code> again, but we get a warning informing us that plotting complex model dynamics over time on a single map is not a good idea. Below, we show a better way to do this using a built-in interactive R shiny app.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Attempting to plot population ranges at multiple time points on</span>
-<span class="co">#&gt; a single map. This is very hard to do in a satisfying way. Please</span>
-<span class="co">#&gt; consider using the function `explore()` to plot the model dynamics</span>
-<span class="co">#&gt; interactively.</span></code></pre></div>
-<p><img src="reference/figures/README-plot_popmaps-1.png" alt="plot of chunk plot_popmaps"></p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="4-define-geneflow-events" class="section level4">
 <h4 class="hasAnchor">
@@ -282,23 +286,7 @@
 <span class="op">)</span></code></pre></div>
 <p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/slim.html">slim()</a></code> function shown below. Evaluating it in the console prints its brief summary:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model</span>
-<span class="co">#&gt; slendr 'model' object </span>
-<span class="co">#&gt; --------------------- </span>
-<span class="co">#&gt; populations: AFR, OOA, EHG, ANA, EUR, YAM </span>
-<span class="co">#&gt; geneflow events: [no geneflow]</span>
-<span class="co">#&gt; generation time: 30 </span>
-<span class="co">#&gt; time direction: backward </span>
-<span class="co">#&gt; model type: spatial</span>
-<span class="co">#&gt;   - number of spatial maps: 60 </span>
-<span class="co">#&gt;   - resolution: 10000 distance units per pixel</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpRed0ld/readme-model </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; A detailed model specification can be found in `$splits`, `$geneflows`,</span>
-<span class="co">#&gt; `$maps`, `$populations`, and other components of the model object (for</span>
-<span class="co">#&gt; a complete list see `names(&lt;model object&gt;)`). You can also examine</span>
-<span class="co">#&gt; the serialized configuration files in the model directory.</span></code></pre></div>
+<code class="sourceCode R"><span class="va">model</span></code></pre></div>
 </div>
 <div id="6-visualize-the-model" class="section level4">
 <h4 class="hasAnchor">
@@ -333,12 +321,23 @@
 <p>We can use the saved locations of every individual that lived throughout the course of the simulation to generate a simple GIF animation:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">100</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-plot_gif-1.gif" alt="plot of chunk plot_gif"></p>
 <p>Note that it is possible to simulate population splits and geneflows both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>
 <p>In this case, the only population movement we explicitly encoded was the split and migration of the OOA population from Africans and the expansion of Anatolians. All the other populations simply popped up on a map, without explicitly migrating there. Similarly, the geneflow from Anatolians into the Yamnaya specified in step 4. did not require a spatial overlap between the two populations, but the other two geneflow events did.</p>
 </div>
 </div>
 </div>
+<div id="further-information" class="section level2">
+<h2 class="hasAnchor">
+<a href="#further-information" class="anchor"></a>Further information</h2>
+<p>The example above provides only a very brief overview of the functionality of the <em>slendr</em> package. There is much more to <em>slendr</em> than what we demonstrated here. For instance:</p>
+<ul>
+<li><p>You can tweak parameters influencing dispersal dynamics (how “clumpy” populations are, how far can offspring migrate from their parents, etc.) and define how these should change over time. For instance, you can see that in the animation above, the African population forms a single “blob” that really isn’t spread out across its entire population range. Tweaking the dispersal parameters as show <a href="articles/vignette-03-interactions.html">this vignette</a> helps avoid that.</p></li>
+<li><p>You can use <em>slendr</em> to program non-spatial models, which means that any concievable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an <a href="https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation">Approximate Bayesian Computation</a> pipeline or other use any other R package for downstream analysis in the same R script. You can find more in <a href="articles/vignette-04-nonspatial-models.html">this vignette</a>.</p></li>
+<li><p>You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown <a href="vignette-02-grid-model.html">this vignette</a>.</p></li>
+<li><p>Because <em>slendr</em> &amp; SLiM save data in a tree-sequence file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html"><em>reticulate</em></a> for interfacing with Python code, we have the incredible power of <a href="https://tskit.dev/tskit/docs/stable/"><em>tskit</em></a> and <a href="https://pyslim.readthedocs.io"><em>pyslim</em></a> for manipulating tree-sequence data right at our fingertips, all within the convenient environment of R.</p></li>
+</ul>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

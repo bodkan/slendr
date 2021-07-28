@@ -331,13 +331,13 @@
 <span class="co">#&gt; # A tibble: 1 x 3</span>
 <span class="co">#&gt;   A     B            f2</span>
 <span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 EUR1  EUR2  0.0000108</span>
+<span class="co">#&gt; 1 EUR1  EUR2  0.0000107</span>
 
 <span class="fu"><a href="../reference/ts_f2.html">ts_f3</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"EUR1"</span>, <span class="st">"AFR1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 4</span>
-<span class="co">#&gt;   A     B     C            f3</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 EUR1  AFR1  CH1   0.0000022</span>
+<span class="co">#&gt;   A     B     C             f3</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 EUR1  AFR1  CH1   0.00000275</span>
 
 <span class="fu"><a href="../reference/ts_f2.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR1"</span>, <span class="st">"AFR2"</span>, <span class="st">"NEA1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 5</span>
@@ -346,9 +346,9 @@
 <span class="co">#&gt; 1 AFR1  AFR2  NEA1  CH1       0</span>
 <span class="fu"><a href="../reference/ts_f2.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR1"</span>, <span class="st">"EUR1"</span>, <span class="st">"NEA1"</span>, <span class="st">"CH1"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 5</span>
-<span class="co">#&gt;   W     X     Y     Z              f4</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 AFR1  EUR1  NEA1  CH1   -0.00000937</span></code></pre></div>
+<span class="co">#&gt;   W     X     Y     Z             f4</span>
+<span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 AFR1  EUR1  NEA1  CH1   -0.0000110</span></code></pre></div>
 <p>These functions accept a <code>mode =</code> argument, specifying whether the statistics should be calculated using mutation site patterns (<code>mode = "site"</code>, the default) or branch lengths (<code>mode = "branch"</code>). See the <a href="https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.write_vcf">relevant section</a> of the official <em>tskit</em> documentation for more on this topic.</p>
 </div>
 <div id="estimating-neanderthal-ancestry-proportions" class="section level2">
@@ -389,14 +389,14 @@
 <p>In case you would like to verify some <em>f</em>-statistics results using the venerable <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193">ADMIXTOOLS</a> software (see the linked paper which formally introduced these statistics in the first place), you can convert the tree-sequence data to a file format called EIGENSTRAT using the <code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code> function. The file conversion is internally handled by the R package <a href="http://bodkan.net/admixr"><em>admixr</em></a> and returns an <code>EIGENSTRAT</code> object which ties all individual <code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/tutorial.html">tutorial</a> to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R package for running automated ADMIXTOOLS analyses entirely from R and makes these types of analyses very convenient.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">snps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_eigenstrat.html">ts_eigenstrat</a></span><span class="op">(</span><span class="va">ts</span>, prefix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"eigenstrat"</span>, <span class="st">"data"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; 168 mutations (out of 58469) have been removed because they appeared on a position already occupied by another mutation. This is a consequence of mutations positions in tskit being in floating-point values but normal genomic locations being integer values.</span>
+<span class="co">#&gt; 183 mutations (out of 58998) have been removed because they appeared on a position already occupied by another mutation. This is a consequence of mutations positions in tskit being in floating-point values but normal genomic locations being integer values.</span>
 <span class="va">snps</span>
 <span class="co">#&gt; EIGENSTRAT object</span>
 <span class="co">#&gt; =================</span>
 <span class="co">#&gt; components:</span>
-<span class="co">#&gt;   ind file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpzSAa5V/eigenstrat/data.ind</span>
-<span class="co">#&gt;   snp file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpzSAa5V/eigenstrat/data.snp</span>
-<span class="co">#&gt;   geno file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpzSAa5V/eigenstrat/data.geno</span></code></pre></div>
+<span class="co">#&gt;   ind file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpwDRNKP/eigenstrat/data.ind</span>
+<span class="co">#&gt;   snp file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpwDRNKP/eigenstrat/data.snp</span>
+<span class="co">#&gt;   geno file: /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpwDRNKP/eigenstrat/data.geno</span></code></pre></div>
 <p>Running an <em>admixr</em> analysis is then as easy as plugging the object into an <em>admixr</em> function. For instance, we can estimate the proportion of Neanderthal ancestry in a couple of individuals <span class="math inline">\(X\)</span> like this (<em>admixr</em> calls this proportion <code>alpha</code>):</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/admixr">admixr</a></span><span class="op">)</span>
@@ -406,8 +406,8 @@
 <span class="co">#&gt; # A tibble: 3 x 8</span>
 <span class="co">#&gt;   A     B     X     C     O       alpha  stderr Zscore</span>
 <span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 NEA1  NEA2  EUR1  AFR1  CH1   0.0647  0.0631    1.02</span>
-<span class="co">#&gt; 2 NEA1  NEA2  EUR2  AFR1  CH1   0.00498 0.00352   1.42</span>
+<span class="co">#&gt; 1 NEA1  NEA2  EUR1  AFR1  CH1   0.0712  0.0698    1.02</span>
+<span class="co">#&gt; 2 NEA1  NEA2  EUR2  AFR1  CH1   0.00390 0.00382   1.02</span>
 <span class="co">#&gt; 3 NEA1  NEA2  AFR2  AFR1  CH1   0       0       NaN</span></code></pre></div>
 <p>In fact, lets compare the values obtained by both <em>tskit</em> and <em>admixr</em>/ADMIXTOOLS for all individuals:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
