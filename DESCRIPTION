@@ -43,8 +43,6 @@ Imports:
     ggraph,
     shinyWidgets,
     shiny,
-    R.utils,
-    data.table,
     tidygraph,
     dplyr,
     purrr,

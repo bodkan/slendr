@@ -1,7 +1,7 @@
 map <- readRDS("map.rds")
 
 run_sim <- function(pop, direction, sim_length = NULL, method = "batch") {
-  model_dir <- "/tmp/test_resize"
+  model_dir <- file.path(tempdir(), "test_resize")
   unlink(model_dir, recursive = TRUE, force = TRUE)
 
   model <- compile(
@@ -12,9 +12,8 @@ run_sim <- function(pop, direction, sim_length = NULL, method = "batch") {
 
   slim(model, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = method)
 
-  dt <- fread(file.path(model$path, "output_ind_locations.tsv.gz"))
-
-  dt[, .N, by = .(gen, time, pop)]
+  df <- suppressMessages(readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"), progress = FALSE))
+  suppressMessages(dplyr::group_by(df, gen, time, pop) %>% dplyr::summarise(N = dplyr::n()))
 }
 
 calculate_exp_sizes <- function(N1, N2, t1, t2) {
@@ -34,8 +33,8 @@ test_that("Population size is increased correctly in single step", {
   pop <- population("pop", time = 1000, N = 100, map = map, center = c(20, 50), radius = 500e3)
   res <- run_sim(resize(pop, N = 50, time = 900, how = "step"), "backward")
   start_N <- attr(pop, "history")[[1]]$N
-  expect_true(res[time > 900, all(N == start_N)])
-  expect_true(res[time <= 900, all(N == 50)])
+  expect_true(dplyr::filter(res, time > 900) %>% { all(.$N == start_N) })
+  expect_true(dplyr::filter(res, time <= 900) %>% { all(.$N == 50) })
 })
 
 test_that("Population size is increased correctly in two steps", {
@@ -44,9 +43,9 @@ test_that("Population size is increased correctly in two steps", {
     resize(pop, N = 50, time = 900, how = "step") %>%
       resize(pop, N = 500, time = 300, how = "step"), "backward")
   start_N <- attr(pop, "history")[[1]]$N
-  expect_true(res[time > 900, all(N == start_N)])
-  expect_true(res[time <= 900 & time > 300, all(N == 50)])
-  expect_true(res[time < 300, all(N == 500)])
+  expect_true(dplyr::filter(res, time > 900) %>% { all(.$N == start_N) })
+  expect_true(dplyr::filter(res, time <= 900 & time > 300) %>% { all(.$N == 50) })
+  expect_true(dplyr::filter(res, time < 300) %>% { all(.$N == 500) })
 })
 
 test_that("Simulated exponential growth matches theoretical expectations", {
@@ -57,12 +56,12 @@ test_that("Simulated exponential growth matches theoretical expectations", {
   res <- run_sim(resize(pop, N = N2, time = t1, end = t2, how = "exponential"), "backward")
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
 
-  expect_true(res[1, N == N1]) # initial size
-  expect_true(res[N > N1, time[1] == t1 - 1]) # start of the growth
-  expect_true(res[.N, N == N2]) # final size
+  expect_true(res[1, ]$N == N1) # initial size
+  expect_true(dplyr::filter(res, N > N1) %>% { .$time[1] == t1 - 1 }) # start of the growth
+  expect_true(res[nrow(res), ]$N == N2) # final size
 
-    # sizes match expectations
-  expect_true(res[time <= t1 & time >= t2, all(N == expected_N)])
+  # sizes match expectations
+  expect_true(dplyr::filter(res, time <= t1 & time >= t2) %>% { all(.$N == expected_N) })
 })
 
 test_that("Simulated exponential shrinking matches theoretical expectations", {
@@ -73,12 +72,12 @@ test_that("Simulated exponential shrinking matches theoretical expectations", {
   res <- run_sim(resize(pop, N = N2, time = t1, end = t2, how = "exponential"), "backward")
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
 
-  expect_true(res[1, N == N1]) # initial size
-  expect_true(res[N < N1, time[1] == t1 - 1]) # start of the growth
-  expect_true(res[.N, N == N2]) # final size
+  expect_true(res[1, ]$N == N1) # initial size
+  expect_true(dplyr::filter(res, N < N1) %>% { .$time[1] == t1 - 1 }) # start of the growth
+  expect_true(res[nrow(res), ]$N == N2) # final size
 
   # sizes match expectations
-  expect_true(res[time <= t1 & time >= t2, all(N == expected_N)])
+  expect_true(dplyr::filter(res, time <= t1 & time >= t2) %>% { all(.$N == expected_N) })
 })
 
 test_that("Multiple resize event types are allowed (backward model)", {
@@ -92,13 +91,13 @@ test_that("Multiple resize event types are allowed (backward model)", {
   res <- run_sim(pop, "backward")
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
 
-  expect_true(res[1, N == N1]) # initial size
-  expect_true(res[N > N1, time[1] == t1 - 1]) # start of the exponential growth
-  expect_true(res[N == N3, time[1] == t3]) # time of the step resize event
-  expect_true(res[.N, N == N3]) # final size
+  expect_true(res[1, ]$N == N1) # initial size
+  expect_true(dplyr::filter(res, N > N1) %>% { .$time[1] == t1 - 1 }) # start of the exponential growth
+  expect_true(dplyr::filter(res, N == N3) %>% { .$time[1] == t3 }) # time of the step resize event
+  expect_true(res[nrow(res), ]$N == N3) # final size
 
   # sizes match expectations
-  expect_true(res[time <= t1 & time >= t2, all(N == expected_N)])
+  expect_true(dplyr::filter(res, time <= t1 & time >= t2) %>% { all(.$N == expected_N) })
 })
 
 test_that("Multiple resize event types are allowed (forward model)", {
@@ -112,11 +111,11 @@ test_that("Multiple resize event types are allowed (forward model)", {
   res <- run_sim(pop, "forward", sim_length = 1000)
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
 
-  expect_true(res[1, N == N1]) # initial size
-  expect_true(res[N < N1, time[1] == t1 + 1]) # start of the exponential growth
-  expect_true(res[N == N3, time[1] == t3]) # time of the step resize event
-  expect_true(res[.N, N == N3]) # final size
+  expect_true(res[1, ]$N == N1) # initial size
+  expect_true(dplyr::filter(res, N < N1) %>% { .$time[1] == t1 + 1 }) # start of the exponential growth
+  expect_true(dplyr::filter(res, N == N3) %>% { .$time[1] == t3 }) # time of the step resize event
+  expect_true(res[nrow(res), ]$N == N3) # final size
 
   # sizes match expectations
-  expect_true(res[time <= t1 & time >= t2, all(N == expected_N)])
+  expect_true(dplyr::filter(res, time <= t1 & time >= t2) %>% { all(.$N == expected_N) })
 })

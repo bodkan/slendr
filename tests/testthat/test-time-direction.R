@@ -122,9 +122,8 @@ test_that("forward and backward models yield the same simulation result", {
   expect_equal(f_script, b_script)
 
   # make sure that the simulated location data is the same
-  f_loc <- data.table::fread(file.path(forward$path, "output_ind_locations.tsv.gz"))
-  b_loc <- data.table::fread(file.path(backward$path, "output_ind_locations.tsv.gz"))
-  f_loc[, time := NULL]; b_loc[, time := NULL]
+  f_loc <- suppressMessages(readr::read_tsv(file.path(forward$path, "output_ind_locations.tsv.gz")) %>% dplyr::select(-time))
+  b_loc <- suppressMessages(readr::read_tsv(file.path(backward$path, "output_ind_locations.tsv.gz")) %>% dplyr::select(-time))
 
   expect_equal(f_loc, b_loc)
 })
