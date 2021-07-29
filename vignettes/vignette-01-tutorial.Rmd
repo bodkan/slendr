@@ -436,11 +436,7 @@ read.table(file.path(tempdir(), "tutorial-model", "splits.tsv"), header = TRUE)
 read.table(file.path(tempdir(), "tutorial-model", "geneflow.tsv"), header = TRUE)
 ```
 
--   and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather long, so we're taking a peek at only the first couple of lines):
-
-```{r}
-head(read.table(file.path(tempdir(), "tutorial-model", "maps.tsv"), header = TRUE))
-```
+-   and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather long, so we're not showing it here).
 
 The object returned by the `compile()` function (called `model` here) binds all of this information together. In fact, for easier debugging and sanity checks, it carries the locations of these tables (as well as other important information) in it as elements of a list `model$splits`, `model$geneflows`, etc.
 
@@ -497,7 +493,7 @@ slim(
 
 ## Post-simulation diagnostics
 
-In case we instructed *slendr* to track ancestry proportions, we can visualize them after the simulation is over using the built-in `diagnostics()` function. This is quite bare-bones for now and the way diagnostics are generated is subject to change...
+In case we instructed *slendr* to track ancestry proportions, we can visualize them after the simulation is over using the built-in `ancestries()` function. This is quite bare-bones for now and the way diagnostics are generated is probably subject to change.
 
 ```{r plot_ancestries}
 ancestries(model)

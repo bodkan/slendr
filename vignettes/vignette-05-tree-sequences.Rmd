@@ -261,7 +261,6 @@ In case you would like to verify some *f*-statistics results using the venerable
 
 ```{r}
 snps <- ts_eigenstrat(ts, prefix = file.path(tempdir(), "eigenstrat", "data"))
-snps
 ```
 
 Running an *admixr* analysis is then as easy as plugging the object into an *admixr* function. For instance, we can estimate the proportion of Neanderthal ancestry in a couple of individuals $X$ like this (*admixr* calls this proportion `alpha`):
