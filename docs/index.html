@@ -290,31 +290,13 @@
   dispersal_dist <span class="op">=</span> <span class="fl">70e3</span>, <span class="co"># how far will offspring end up from their parents</span>
   dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"readme-model"</span><span class="op">)</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/slim.html">slim()</a></code> function shown below. Evaluating it in the console prints its brief summary:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model</span>
-<span class="co">#&gt; slendr 'model' object </span>
-<span class="co">#&gt; --------------------- </span>
-<span class="co">#&gt; populations: AFR, OOA, EHG, ANA, EUR, YAM </span>
-<span class="co">#&gt; geneflow events: [no geneflow]</span>
-<span class="co">#&gt; generation time: 30 </span>
-<span class="co">#&gt; time direction: backward </span>
-<span class="co">#&gt; model type: spatial</span>
-<span class="co">#&gt;   - number of spatial maps: 60 </span>
-<span class="co">#&gt;   - resolution: 10000 distance units per pixel</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpvkLgoL/readme-model </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; A detailed model specification can be found in `$splits`, `$geneflows`,</span>
-<span class="co">#&gt; `$maps`, `$populations`, and other components of the model object (for</span>
-<span class="co">#&gt; a complete list see `names(&lt;model object&gt;)`). You can also examine</span>
-<span class="co">#&gt; the serialized configuration files in the model directory.</span></code></pre></div>
+<p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/slim.html">slim()</a></code> function shown below.</p>
 </div>
 <div id="6-visualize-the-model" class="section level4">
 <h4 class="hasAnchor">
 <a href="#6-visualize-the-model" class="anchor"></a>6. Visualize the model</h4>
 <p>The package provides an <a href="https://shiny.rstudio.com">R shiny</a>-based browser app <code><a href="reference/explore.html">explore()</a></code> for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/explore.html">explore</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p>The function has two modes:</p>
 <p>a) Plotting spatial map dynamics:</p>
@@ -327,7 +309,7 @@
 <a href="#7-run-the-model-in-slim" class="anchor"></a>7. Run the model in SLiM</h4>
 <p>Finally, we can execute the compiled model in SLiM. Here we run the simulation in a batch mode, but we could also run it in SLiMgui by setting <code>method = "gui"</code>.</p>
 <p>The <code>slim</code> function generates a complete SLiM script tailored to run the spatial model we defined above. This saves you, the user, a tremendous amount of time.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span>
   <span class="va">model</span>,
   seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, <span class="co"># simulate only a single locus</span>
@@ -341,7 +323,7 @@
 <h4 class="hasAnchor">
 <a href="#8-re-capitulate-the-slim-run-as-an-individual-based-animation" class="anchor"></a>8. Re-capitulate the SLiM run as an individual-based animation</h4>
 <p>We can use the saved locations of every individual that lived throughout the course of the simulation to generate a simple GIF animation:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">100</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-plot_gif-1.gif" alt="plot of chunk plot_gif"></p>
 <p>Note that it is possible to simulate population splits and geneflows both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>
