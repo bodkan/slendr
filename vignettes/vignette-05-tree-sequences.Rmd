@@ -201,6 +201,28 @@ Having done that, we can calculate some basic statistics on our simulated data.
 
 However, before we do that, we would first like to note that everything that we do in the rest of this vignette (i.e. whenever we call a function with the prefix `ts_*()` in *slendr*), we are interfacing with the *tskit* Python module under the hood. Our goal is to capture most of the analyses one might want to perform on tree-sequences in R and wrap them in a neat interface indistinguishable from any other R function---this is, after all, the reason why *reticulate* has been created in the first place (making various Python data science modules appear as if they were regular R packages).
 
+## Accessing *tskit* functionality directly
+
+As we mentioned in the previous section, the goal of this vignette is to show how to use *slendr* to perform the main tree-sequence operations using a convenient R interface to *tskit*. However, you should always keep in mind that you are not restricted to a subset of *tskit* functionality that *slendr* translated to R (i.e. [all functions](../reference/index.html) with the prefix `ts_`). Thanks to the incredible R package [*reticulate*](https://rstudio.github.io/reticulate/index.html), you can access Python methods and object variables directly, using the `$` operator.
+
+As an example, instead of calling the function `ts_coalesced()` on the tree-sequence as we did above, we could check that all trees are coalesced by running the following snippet instead:
+
+```{r}
+# iterate over all trees in the tree-sequence and check if each
+# has only one root (i.e. is fully coalesced) - note that Python
+# lists are 0-based, which is something we need to take care of
+all(sapply(seq_len(ts$num_trees),
+           function(i) ts$at_index(i - 1)$num_roots == 1))
+```
+
+We believe it makes sense to use the R interface whenever possible (even if only because it makes many operations a little bit more convenient). However, if there is some functionality in *slendr* missing, you can always resort to accessing the Python objects directly as we have just demonstrated. You can verify that all [methods and attributes](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence) of a Python tree-sequence object is still accessible in R:
+
+```{r}
+names(ts)
+```
+
+In fact, you will recognize some of the elements in the output above from examples involving `ts_` functions in this vignette! In short, there is no blackbox---*slendr* only provides a slightly more convenient layer over *tskit* for R users.
+
 ## Calculating *f*-statistics
 
 In addition to being a revolutionary breakthrough in terms of computation efficiency, many statistics that we are often interested in population genetics are a natural consequence of having a direct access to tree sequence genealogies, simply because those genealogies capture the true demographic history of a sample. Again, we can't go into too much detail here but we encourage you to take a look at a paper by [Ralph *et al.*](https://www.genetics.org/content/215/3/779) on the duality between statistics expressed in terms of branch lengths and the traditional summaries based on samples of genetic variation.
@@ -236,7 +258,7 @@ inds <- ts_individuals(ts) %>% dplyr::filter(pop %in% c("AFR", "EUR"))
 inds$ancestry <- ts_f4ratio(ts, X = inds$name, "NEA1", "NEA2", "AFR1", "CH1")$alpha
 ```
 
-If we now summarise the inferred Neanderthal distribution in both populations, we see that there is no Neanderthal ancestry in Africans (as expected by our model--Africans did not receive a Neanderthal introgression pulse) but there is around `r gf$rate * 100`% Neanderthal ancestry in Europeans (consistent with the 3% introgression pulse we simulated between `r gf$tstart`-`r gf$tend` thousand years [ky] ago):
+If we now summarise the inferred Neanderthal distribution in both populations, we see that there is no Neanderthal ancestry in Africans (as expected by our model--Africans did not receive a Neanderthal introgression pulse) but there is around `r gf$rate * 100`% Neanderthal ancestry in Europeans (consistent with the 3% introgression pulse we simulated between `r as.integer(gf$tstart)` and `r as.integer(gf$tend)` thousand years [ky] ago):
 
 ```{r, ts_nea_distributions}
 ggplot(inds, aes(pop, ancestry, fill = pop)) +

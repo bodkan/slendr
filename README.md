@@ -194,28 +194,7 @@ model <- compile(
 )
 ```
 
-Compiled model is kept as an R object which can be passed to different functions, most importantly the `slim()` function shown below. Evaluating it in the console prints its brief summary:
-
-
-```r
-model
-#> slendr 'model' object 
-#> --------------------- 
-#> populations: AFR, OOA, EHG, ANA, EUR, YAM 
-#> geneflow events: [no geneflow]
-#> generation time: 30 
-#> time direction: backward 
-#> model type: spatial
-#>   - number of spatial maps: 60 
-#>   - resolution: 10000 distance units per pixel
-#> 
-#> configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpYJX3kB/readme-model 
-#> 
-#> A detailed model specification can be found in `$splits`, `$geneflows`,
-#> `$maps`, `$populations`, and other components of the model object (for
-#> a complete list see `names(<model object>)`). You can also examine
-#> the serialized configuration files in the model directory.
-```
+Compiled model is kept as an R object which can be passed to different functions, most importantly the `slim()` function shown below.
 
 #### 6. Visualize the model
 

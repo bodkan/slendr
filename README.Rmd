@@ -196,11 +196,7 @@ model <- compile(
 )
 ```
 
-Compiled model is kept as an R object which can be passed to different functions, most importantly the `slim()` function shown below. Evaluating it in the console prints its brief summary:
-
-```{r}
-model
-```
+Compiled model is kept as an R object which can be passed to different functions, most importantly the `slim()` function shown below.
 
 #### 6. Visualize the model
 

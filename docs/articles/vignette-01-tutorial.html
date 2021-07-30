@@ -597,17 +597,7 @@ between populations.</code></pre>
 <p><img src="vignette-01-tutorial_files/figure-html/plot_ancestries-1.png" width="480"></p>
 <p>Similarly, we can recapitulate the spatial dynamics with the <em>slendr</em> function <code><a href="../reference/animate.html">animate()</a></code> (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">100</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Column specification ────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; cols(</span>
-<span class="co">#&gt;   gen = col_double(),</span>
-<span class="co">#&gt;   time = col_double(),</span>
-<span class="co">#&gt;   pop = col_double(),</span>
-<span class="co">#&gt;   ind = col_double(),</span>
-<span class="co">#&gt;   x = col_double(),</span>
-<span class="co">#&gt;   y = col_double()</span>
-<span class="co">#&gt; )</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">100</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-01-tutorial_files/figure-html/plot_gif-1.gif"><!-- --></p>
 <p>In case an argument <code>gif = ...</code> was provided, the function will save the animation to the specified location as a GIF file. Note that unless your simulation is very short and/or involves only a small population, rendering of the animation can take several minutes.</p>
 </div>

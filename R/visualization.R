@@ -15,7 +15,7 @@ animate <- function(model, steps, gif = NULL, width = 800, height = 560) {
     stop("Cannot animate non-spatial models", call. = FALSE)
 
   locations <- file.path(model$path, "output_ind_locations.tsv.gz")
-  locs <- readr::read_tsv(locations)
+  locs <- readr::read_tsv(locations, col_types = "iiiidd", progress = FALSE)
   pop_names <- model$splits$pop
 
   # label populations based on their original identifiers from the user
