@@ -126,7 +126,7 @@
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
     <li>
-      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequences, tskit interface, f-statistics</a>
+      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequences processing and statistics</a>
     </li>
   </ul>
 </li>
@@ -499,8 +499,7 @@
         <td>
           <p><code><a href="ts_coalesced.html">ts_coalesced()</a></code> </p>
         </td>
-        <td><p>Check that all trees in the tree-sequence are coalesced (i.e. have only one
-root)</p></td>
+        <td><p>Check that all trees in the tree-sequence are fully coalesced</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -523,22 +522,33 @@ root)</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ts_fst.html">ts_fst()</a></code> </p>
+          <p><code><a href="ts_afs.html">ts_afs()</a></code> </p>
         </td>
-        <td><p>Calculate Fst between a pair of samples of individuals</p></td>
+        <td><p>Compute the allele frequency spectrum (AFS)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_fst.html">ts_fst()</a></code> <code><a href="ts_fst.html">ts_divergence()</a></code> </p>
+        </td>
+        <td><p>Calculate pairwise Fst between sets of individuals</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_diversity.html">ts_diversity()</a></code> </p>
+        </td>
+        <td><p>Calculate diversity in given sets of individuals</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="ts_tajima.html">ts_tajima()</a></code> </p>
         </td>
-        <td><p>Calculate Tajima's D for a group of individuals</p></td>
+        <td><p>Calculate Tajima's D for given sets of individuals</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ts_afs.html">ts_afs()</a></code> </p>
+          <p><code><a href="ts_segregating.html">ts_segregating()</a></code> </p>
         </td>
-        <td><p>Compute the allele frequency spectrum with respect to the given set of
-individuals</p></td>
+        <td><p>Calculate the density of segregating sites for the given sets of individuals</p></td>
       </tr>
     </tbody>
     </table>

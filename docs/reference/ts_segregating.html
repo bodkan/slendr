@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get table of node labels in the graph — get_nodes • slendr</title>
+<title>Calculate the density of segregating sites for the given sets of individuals — ts_segregating • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,8 @@
 
 
 
-<meta property="og:title" content="Get table of node labels in the graph — get_nodes" />
-<meta property="og:description" content="Get table of node labels in the graph" />
+<meta property="og:title" content="Calculate the density of segregating sites for the given sets of individuals — ts_segregating" />
+<meta property="og:description" content="Calculate the density of segregating sites for the given sets of individuals" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -127,7 +127,7 @@
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
     <li>
-      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequences, tskit interface, f-statistics</a>
+      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequences processing and statistics</a>
     </li>
   </ul>
 </li>
@@ -167,18 +167,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get table of node labels in the graph</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
-    <div class="hidden name"><code>get_nodes.Rd</code></div>
+    <h1>Calculate the density of segregating sites for the given sets of individuals</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
+    <div class="hidden name"><code>ts_segregating.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get table of node labels in the graph</p>
+    <p>Calculate the density of segregating sites for the given sets of individuals</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_nodes</span><span class='op'>(</span><span class='va'>edges</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_segregating</span><span class='op'>(</span>
+  <span class='va'>ts</span>,
+  <span class='va'>sample_sets</span>,
+  mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"site"</span>, <span class='st'>"branch"</span>, <span class='st'>"node"</span><span class='op'>)</span>,
+  windows <span class='op'>=</span> <span class='cn'>NULL</span>,
+  span_normalise <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>sample_sets</th>
+      <td><p>A list (optionally a named list) of character vectors with
+individual names (one vector per set)</p></td>
+    </tr>
+    <tr>
+      <th>mode</th>
+      <td><p>The mode for the calculation ("sites" or "branch")</p></td>
+    </tr>
+    <tr>
+      <th>windows</th>
+      <td><p>Coordinates of breakpoints between windows. The first
+coordinate (0) and the last coordinate (equal to <code>ts$sequence_length</code>)
+are added automatically)</p></td>
+    </tr>
+    <tr>
+      <th>span_normalise</th>
+      <td><p>Divide the result by the span of the window? Default
+TRUE, see the tskit documentation for more detail.</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>For each set of individuals either a single diversity value or a
+vector of diversity values (one for each window)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -25,7 +25,7 @@ navbar:
           href: articles/vignette-03-interactions.html
         - text: Traditional non-spatial models
           href: articles/vignette-04-nonspatial-models.html
-        - text: Tree-sequences, tskit interface, f-statistics
+        - text: Tree-sequences processing and statistics
           href: articles/vignette-05-tree-sequences.html
     twitter:
       icon: fa-twitter
@@ -97,9 +97,12 @@ reference:
     - ts_f3
     - ts_f4
     - ts_f4ratio
+    - ts_afs
+    - ts_divergence
+    - ts_diversity
     - ts_fst
     - ts_tajima
-    - ts_afs
+    - ts_segregating
 
 news:
   one_page: true

@@ -2,25 +2,49 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_fst}
 \alias{ts_fst}
-\title{Calculate Fst between a pair of samples of individuals}
+\alias{ts_divergence}
+\title{Calculate pairwise Fst between sets of individuals}
 \usage{
-ts_fst(ts, sample_sets, mode = c("site", "branch"), windows = NULL)
+ts_fst(
+  ts,
+  sample_sets,
+  mode = c("site", "branch", "node"),
+  windows = NULL,
+  span_normalise = TRUE
+)
+
+ts_divergence(
+  ts,
+  sample_sets,
+  mode = c("site", "branch", "node"),
+  windows = NULL,
+  span_normalise = TRUE
+)
 }
 \arguments{
-\item{sample_sets}{List of character vectors with individual names (one
-vector per sample)}
+\item{sample_sets}{A list (optionally a named list) of character vectors with
+individual names (one vector per set)}
 
 \item{mode}{The mode for the calculation ("sites" or "branch")}
 
-\item{windows}{Breakpoint coordinates between windows (first coordinate 0 and
-last coordinate equal to \code{ts$sequence_length} are added automatically)}
+\item{windows}{Coordinates of breakpoints between windows. The first
+coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
+do not have to be specified as they are added automatically.}
+
+\item{span_normalise}{Divide the result by the span of the window? Default
+TRUE, see the tskit documentation for more detail.}
 
 \item{tsSlimTreeSequence}{object}
 }
 \value{
-Either a single Fst value or a vector of Fst values (one for each
-window)
+For each pairwise calculation, either a single Fst value or a vector
+of Fst values (one for each window)
+
+For each pairwise calculation, either a single divergence value or a
+vector of divergence values (one for each window)
 }
 \description{
-Calculate Fst between a pair of samples of individuals
+For a discussion on the difference between "site", "branch", and "node"
+options of the \code{mode} argument, please see the tskit documentation at
+\url{https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode}.
 }

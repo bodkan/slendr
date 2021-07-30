@@ -8,14 +8,14 @@
 #' @return If `gif = NULL`, return gganimate animation object. Otherwise a GIF
 #'   file is saved and no value is returned.
 #'
-#' @import ggplot2 data.table
+#' @import ggplot2
 #' @export
 animate <- function(model, steps, gif = NULL, width = 800, height = 560) {
   if (!inherits(model$world, "slendr_map"))
     stop("Cannot animate non-spatial models", call. = FALSE)
 
   locations <- file.path(model$path, "output_ind_locations.tsv.gz")
-  locs <- fread(locations, header = TRUE)
+  locs <- readr::read_tsv(locations)
   pop_names <- model$splits$pop
 
   # label populations based on their original identifiers from the user
@@ -25,11 +25,11 @@ animate <- function(model, steps, gif = NULL, width = 800, height = 560) {
     labels = pop_names[sort(unique(locs$pop)) + 1]
   )
   locs$time <- as.integer(locs$time)
-  locs <- locs[time %in% sort(unique(
+  locs <- dplyr::filter(locs, time %in% sort(unique(
     c(min(time),
       time[seq(1, length(time), length.out = steps)],
       max(time))
-  ))]
+  )))
 
   # convert pixel-based coordinates to the internal CRS
   locs <- convert(
@@ -269,8 +269,7 @@ get_intermediate_edges <- function(split_edges, geneflow_edges) {
 }
 
 
-#' Get table of node labels in the graph
-#' @import data.table
+# Get table of node labels in the graph
 get_nodes <- function(edges) {
   nodes <- unique(c(edges$x, edges$y))
 
@@ -300,13 +299,12 @@ get_nodes <- function(edges) {
   })
   nodes$type[!nodes$name %in% edges$y] <- "ancestral"
 
-  nodes <- as.data.table(nodes)
-  nodes[, label := fcase(
-    type == "split", sprintf("%s split\nat %s", pop, time),
-    type == "ancestral", paste(pop, "(ancestor)"),
-    type == "geneflow", sprintf("geneflow\nat %s", time),
-    type == "intermediate", sprintf("from %s", pop)
-  )]
+  nodes <- nodes %>% dplyr::mutate(label = dplyr::case_when(
+    type == "split" ~ sprintf("%s split\nat %s", pop, time),
+    type == "ancestral" ~ paste(pop, "(ancestor)"),
+    type == "geneflow" ~ sprintf("geneflow\nat %s", time),
+    type == "intermediate" ~ sprintf("from %s", pop)
+  ))
   nodes
 }
 

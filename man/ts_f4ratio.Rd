@@ -7,16 +7,52 @@
 \alias{ts_f4ratio}
 \title{Calculate the f2, f3, f4, and f4-ratio statistics}
 \usage{
-ts_f2(ts, A, B, mode = c("site", "branch"), ...)
+ts_f2(
+  ts,
+  A,
+  B,
+  mode = c("site", "branch", "node"),
+  span_normalise = TRUE,
+  windows = NULL
+)
 
-ts_f3(ts, A, B, C, mode = c("site", "branch"), ...)
+ts_f3(
+  ts,
+  A,
+  B,
+  C,
+  mode = c("site", "branch", "node"),
+  span_normalise = TRUE,
+  windows = NULL
+)
 
-ts_f4(ts, W, X, Y, Z, mode = c("site", "branch"), ...)
+ts_f4(
+  ts,
+  W,
+  X,
+  Y,
+  Z,
+  mode = c("site", "branch", "node"),
+  span_normalise = TRUE,
+  windows = NULL
+)
 
-ts_f4ratio(ts, X, A, B, C, O, mode = c("site", "branch"))
+ts_f4ratio(
+  ts,
+  X,
+  A,
+  B,
+  C,
+  O,
+  mode = c("site", "branch"),
+  span_normalise = TRUE
+)
 }
 \arguments{
 \item{ts}{SlimTreeSequence object}
+
+\item{span_normalise}{Divide the result by the span of the window? Default
+TRUE, see the tskit documentation for more detail.}
 
 \item{w, x, y, z, a, b, c, o}{Character vectors of  individual names (following the
 nomenclature of Patterson et al. 2021)}

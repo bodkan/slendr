@@ -40,9 +40,6 @@
     <loc>https://bodkan.net/slendr/reference/geneflow.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/slendr/reference/get_nodes.html</loc>
-  </url>
-  <url>
     <loc>https://bodkan.net/slendr/reference/graph.html</loc>
   </url>
   <url>
@@ -109,6 +106,9 @@
     <loc>https://bodkan.net/slendr/reference/ts_coalesced.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/slendr/reference/ts_diversity.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/slendr/reference/ts_eigenstrat.html</loc>
   </url>
   <url>
@@ -134,6 +134,9 @@
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/ts_recapitate.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_segregating.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/ts_simplify.html</loc>

@@ -10,17 +10,16 @@ Authors@R:
 Description: A framework for simulating spatially-explicit genomic
     data which leverages real cartographic information to programmatically
     and visually encode spatial population boundaries and temporal dynamics
-    (i.e., population movement and expansions) across a real geographic
-    landscape, and specify population divergences and geneflow events based
-    on an arbitrary graph of demographic history. Models specified by the
-    package are then automatically executed by the 'SLiM' software behind the
-    scenes, using a custom built-in 'SLiM' script. In addition to models on real
-    geographic landscape, fully abstract spatial models are also supported,
-    but the users can also simulate data from traditional non-spatial models.
-    Simulated sequence data is saved in a tree-sequence format and can be
-    loaded, manipulated and summarised using tree-sequence functionality
-    provided by Python modules 'tskit' and 'pyslim', all without having to
-    leave the R interface.
+    across a real geographic landscape, and specify population divergences
+    and geneflow events based on an arbitrary graph of demographic history.
+    Models specified by the package are then automatically executed by the
+    'SLiM' software behind the scenes, using a custom built-in 'SLiM' script.
+    In addition to models on real geographic landscape, fully abstract spatial
+    models are also supported, but the users can also simulate data from
+    traditional non-spatial models. Simulated sequence data is saved in
+    a tree-sequence format and can be loaded, manipulated and summarised using
+    tree-sequence functionality provided by Python modules 'tskit' and
+    'pyslim', all without having to leave the R interface.
 Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
 Encoding: UTF-8

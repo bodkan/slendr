@@ -70,7 +70,7 @@ read_ancestries <- function(model_dir) {
          call. = FALSE)
 
   lapply(files, function(f) {
-    anc_df <- data.table::fread(f)
+    anc_df <- readr::read_tsv(f, col_types = readr::cols(.default = readr::col_double()))
     if (nrow(anc_df) > 0)
       anc_df$pop <- gsub(".*_ancestry_(.*).tsv", "\\1", f)
     anc_df

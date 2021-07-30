@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 80,
-  eval = FALSE
+  eval = TRUE
 )
 set.seed(314159)
 ```

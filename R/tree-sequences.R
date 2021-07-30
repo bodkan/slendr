@@ -52,8 +52,7 @@ ts_load <- function(file, model, recapitate = FALSE, simplify = FALSE,
     return(ts)
 }
 
-#' Check that all trees in the tree-sequence are coalesced (i.e. have only one
-#' root)
+#' Check that all trees in the tree-sequence are fully coalesced
 #'
 #' @param ts SlimTreeSequence object
 #' @param return_failed Report back which trees failed the coalescence
@@ -285,54 +284,46 @@ ts_nodes <- function(ts, ind) {
     as.integer()
 }
 
-# tree-sequence statistics ------------------------------------------------
+# f-statistics ------------------------------------------------------------
 
-#' @rdname ts_f4ratio
-ts_f2 <- function(ts, A, B, mode = c("site", "branch"), ...) {
-  mode <- match.arg(mode)
+fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
+  if (!stat %in% c("f2", "f3", "f4"))
+    stop("Unknown statistic '", stat, "'", call. = FALSE)
 
-  nodes_a <- ts_nodes(ts, A)
-  nodes_b <- ts_nodes(ts, B)
+  if (!is.null(windows)) windows <- define_windows(ts, windows)
 
-  dplyr::tibble(
-    A = concat(A),
-    B = concat(B),
-    f2 = ts$f2(sample_sets = list(nodes_a, nodes_b), mode = mode, ...)
-  )
+  node_sets <- purrr::map(sample_sets, ~ ts_nodes(ts, .x))
+
+  result <- ts[[stat]](sample_sets = node_sets, mode = mode,
+                       span_normalise = TRUE, windows = windows)
+
+  if (length(result) > 1) result <- list(result)
+  result
 }
 
 #' @rdname ts_f4ratio
-ts_f3 <- function(ts, A, B, C, mode = c("site", "branch"), ...) {
+ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
+                  span_normalise = TRUE, windows = NULL) {
   mode <- match.arg(mode)
-
-  nodes_a <- ts_nodes(ts, A)
-  nodes_b <- ts_nodes(ts, B)
-  nodes_c <- ts_nodes(ts, C)
-
-  dplyr::tibble(
-    A = concat(A),
-    B = concat(B),
-    C = concat(C),
-    f3 = ts$f3(sample_sets = list(nodes_a, nodes_b, nodes_c), mode = mode, ...)
-  )
+  result <- fstat(ts, "f2", list(A, B), mode, windows, span_normalise)
+  dplyr::tibble(A = concat(A), B = concat(B), f2 = result)
 }
 
 #' @rdname ts_f4ratio
-ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch"), ...) {
+ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
+                  span_normalise = TRUE, windows = NULL) {
   mode <- match.arg(mode)
+  result <- fstat(ts, "f3", list(A, B, C), mode, windows, span_normalise)
+  dplyr::tibble(A = concat(A), B = concat(B), C = concat(C), f3 = result)
+}
 
-  nodes_w <- ts_nodes(ts, W)
-  nodes_x <- ts_nodes(ts, X)
-  nodes_y <- ts_nodes(ts, Y)
-  nodes_z <- ts_nodes(ts, Z)
-
-  dplyr::tibble(
-    W = concat(W),
-    X = concat(X),
-    Y = concat(Y),
-    Z = concat(Z),
-    f4 = ts$f4(sample_sets = list(nodes_w, nodes_x, nodes_y, nodes_z), mode = mode, ...)
-  )
+#' @rdname ts_f4ratio
+ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
+                  span_normalise = TRUE, windows = NULL) {
+  mode <- match.arg(mode)
+  result <- fstat(ts, "f4", list(W, X, Y, Z), mode, windows, span_normalise)
+  dplyr::tibble(W = concat(W), X = concat(X), Y = concat(Y), Z = concat(Z),
+                f4 = result)
 }
 
 #' Calculate the f2, f3, f4, and f4-ratio statistics
@@ -340,11 +331,13 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch"), ...) {
 #' @param ts SlimTreeSequence object
 #' @param w,x,y,z,a,b,c,o Character vectors of  individual names (following the
 #'   nomenclature of Patterson et al. 2021)
+#' @param span_normalise Divide the result by the span of the window? Default
+#'   TRUE, see the tskit documentation for more detail.
 #'
 #' @return Numeric estimate of ancestry proportion
 #'
 #' @export
-ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch")) {
+ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch"), span_normalise = TRUE) {
   mode <- match.arg(mode)
 
   purrr::map_dfr(
@@ -358,75 +351,253 @@ ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch")) {
   )
 }
 
-#' Calculate Fst between a pair of samples of individuals
+# multiway statistics -----------------------------------------------------
+
+multiway_stat <- function(ts, stat = c("fst", "divergence"),
+                          k, sample_sets, mode, windows, span_normalise) {
+  stat <- match.arg(stat)
+  node_sets <- purrr::map(sample_sets, function(set) {
+    ts_nodes(ts, set)
+  })
+
+  n_sets <- length(sample_sets)
+
+  # generate all pairwise indexes required by tskit for more than
+  # two sample sets
+  indexes <- combn(n_sets, m = k, simplify = FALSE,
+                   FUN = function(x) as.integer(x - 1))
+
+  fun <- switch(
+    stat,
+    "fst" = ts[["Fst"]],
+    "divergence" = ts[["divergence"]]
+  )
+  if (is.null(fun))
+    stop("Unknown statistic '", stat, "'", call. = FALSE)
+
+  values <- fun(
+    sample_sets = unname(node_sets),
+    indexes = indexes,
+    mode = mode,
+    windows = windows,
+    span_normalise = span_normalise
+  )
+  if (is.matrix(values))
+    values <- split(values, col(values))
+
+  if (is.null(names(sample_sets)))
+    set_names <- paste0("set_", seq_len(n_sets))
+  else
+    set_names <- names(sample_sets)
+
+  result <- purrr::map_dfr(indexes, ~ {
+    set <- set_names[.x + 1]
+    as.data.frame(t(matrix(set)), stringsAsFactors = FALSE)
+  }) %>%
+    dplyr::as_tibble() %>%
+    dplyr::mutate(stat = values)
+
+  result
+}
+
+#' Calculate pairwise Fst between sets of individuals
+#'
+#' For a discussion on the difference between "site", "branch", and "node"
+#' options of the \code{mode} argument, please see the tskit documentation at
+#' <https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode>.
 #'
 #' @param tsSlimTreeSequence object
-#' @param sample_sets List of character vectors with individual names (one
-#'   vector per sample)
+#' @param sample_sets A list (optionally a named list) of character vectors with
+#'   individual names (one vector per set)
 #' @param mode The mode for the calculation ("sites" or "branch")
-#' @param windows Breakpoint coordinates between windows (first coordinate 0 and
-#'   last coordinate equal to \code{ts$sequence_length} are added automatically)
+#' @param windows Coordinates of breakpoints between windows. The first
+#'   coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
+#'   do not have to be specified as they are added automatically.
+#' @param span_normalise Divide the result by the span of the window? Default
+#'   TRUE, see the tskit documentation for more detail.
+#'
+#' @return For each pairwise calculation, either a single Fst value or a vector
+#'   of Fst values (one for each window)
+#'
+#' @export
+ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
+                   windows = NULL, span_normalise = TRUE) {
+  mode <- match.arg(mode)
+  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.null(windows)) windows <- define_windows(ts, windows)
+  multiway_stat(ts, "fst", k = 2, sample_sets, mode, windows, span_normalise) %>%
+    setNames(c("x", "y", "Fst"))
+}
+
+#' Calculate pairwise divergence between sets of individuals
+#'
+#' @rdname ts_fst
+#'
+#' @return For each pairwise calculation, either a single divergence value or a
+#'   vector of divergence values (one for each window)
+#'
+#' @export
+ts_divergence <- function(ts, sample_sets, mode = c("site", "branch", "node"),
+                   windows = NULL, span_normalise = TRUE) {
+  mode <- match.arg(mode)
+  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.null(windows)) windows <- define_windows(ts, windows)
+  multiway_stat(ts, "divergence", k = 2, sample_sets, mode, windows, span_normalise) %>%
+    setNames(c("x", "y", "divergence"))
+}
+
+# oneway statistics -------------------------------------------------------
+
+oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = NULL) {
+  node_sets <- purrr::map(sample_sets, function(set) {
+    ts_nodes(ts, set)
+  })
+
+  n_sets <- length(sample_sets)
+
+  fun <- switch(
+    stat,
+    "D" = ts[["Tajimas_D"]],
+    "diversity" = ts[["diversity"]],
+    "segsites" = ts[["segregating_sites"]]
+  )
+  if (is.null(fun))
+    stop("Unknown statistic '", stat, "'", call. = FALSE)
+
+  args <- list(sample_sets = unname(node_sets),
+               mode = mode,
+               windows = windows)
+  if (!is.null(span_normalise)) args[["span_normalise"]] <- span_normalise
+
+  values <- do.call(fun, args)
+
+  if (is.matrix(values))
+    values <- split(values, col(values))
+
+  if (is.null(names(sample_sets)))
+    set_names <- paste0("set_", seq_len(n_sets))
+  else
+    set_names <- names(sample_sets)
+
+  result <- dplyr::tibble(set = set_names)
+  result[[stat]] <- values
+  result
+}
+
+#' Calculate the density of segregating sites for the given sets of individuals
+#'
+#' @inheritParams ts_tajima
+#' @param span_normalise Divide the result by the span of the window? Default
+#'   TRUE, see the tskit documentation for more detail.
+#'
+#' @return For each set of individuals either a single diversity value or a
+#'   vector of diversity values (one for each window)
+#'
+#' @export
+ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
+                           windows = NULL, span_normalise = TRUE) {
+  mode <- match.arg(mode)
+  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.null(windows)) windows <- define_windows(ts, windows)
+  oneway_stat(ts, "segsites", sample_sets, mode, windows, span_normalise)
+}
+
+#' Calculate diversity in given sets of individuals
+#'
+#' @inheritParams ts_tajima
+#' @param span_normalise Divide the result by the span of the window? Default
+#'   TRUE, see the tskit documentation for more detail.
+#'
+#' @return For each set of individuals either a single diversity value or a
+#'   vector of diversity values (one for each window)
+#'
+#' @export
+ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
+                         windows = NULL, span_normalise = TRUE) {
+  mode <- match.arg(mode)
+  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.null(windows)) windows <- define_windows(ts, windows)
+  oneway_stat(ts, "diversity", sample_sets, mode, windows, span_normalise)
+}
+
+#' Calculate Tajima's D for given sets of individuals
+#'
+#' For a discussion on the difference between "site" and "branch" options of the
+#' \code{mode} argument, please see the tskit documentation at
+#' <https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode>
+#'
+#' @param tsSlimTreeSequence object
+#' @param sample_sets A list (optionally a named list) of character vectors with
+#'   individual names (one vector per set)
+#' @param mode The mode for the calculation ("sites" or "branch")
+#' @param windows Coordinates of breakpoints between windows. The first
+#'   coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
+#'   are added automatically)
+#'
+#' @return For each set of individuals either a single Tajima's D value or a
+#'   vector of Tajima's D values (one for each window)
+#'
+#' @export
+ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
+                      windows = NULL) {
+  mode <- match.arg(mode)
+  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.null(windows)) windows <- define_windows(ts, windows)
+  oneway_stat(ts, "D", sample_sets, mode, windows)
+}
+
+# other statistics --------------------------------------------------------
+
+#' Compute the allele frequency spectrum (AFS)
+#'
+#' This function computes the AFS with respect to the given set of individuals
+#'
+#' For more information on the format of the result and dimensions, in
+#' particular the interpretation of the first and the last element of the AFS,
+#' please see the tskit manual at
+#' <https://tskit.dev/tskit/docs/stable/tutorial.html#sec-tutorial-afs-zeroth-entry>
+#'
+#' @param tsSlimTreeSequence object
+#' @param sample_sets A list (optionally a named list) of character vectors with
+#'   individual names (one vector per set). If NULL, allele frequency spectrum
+#'   for all individuals in the tree-sequence will be computed.
+#' @param mode The mode for the calculation ("sites" or "branch")
+#' @param windows Coordinates of breakpoints between windows. The first
+#'   coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
+#'   are added automatically)
+#' @param polarised When FALSE (the default) the allele frequency spectrum will
+#'   be folded (i.e. the counts will not depend on knowing which allele is
+#'   ancestral)
 #'
 #' @return Either a single Fst value or a vector of Fst values (one for each
 #'   window)
 #'
 #' @export
-ts_fst <- function(ts, sample_sets, mode = c("site", "branch"), windows = NULL) {
+ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
+                   windows = NULL, span_normalise = TRUE,
+                   polarised = FALSE) {
   mode <- match.arg(mode)
-  windows <- define_windows(ts, windows)
+  if (is.null(sample_sets))
+    sample_sets <- list(ts_individuals(ts)$name)
+  else if (!is.list(sample_sets))
+    sample_sets <- list(sample_sets)
+  if (!is.null(windows)) windows <- define_windows(ts, windows)
 
-  sample_set_nodes <- purrr::map(sample_sets, function(set) {
+  node_sets <- purrr::map(sample_sets, function(set) {
     ts_nodes(ts, set)
   })
 
-  ts$Fst(sample_sets = sample_set_nodes, mode = mode, windows = windows)
+  result <- ts$allele_frequency_spectrum(
+    sample_sets = unname(node_sets),
+    mode = mode,
+    windows = windows,
+    span_normalise = span_normalise,
+    polarised = polarised
+  )
+
+  result
 }
 
-#' Calculate Tajima's D for a group of individuals
-#'
-#' @param tsSlimTreeSequence object
-#' @param sample Character vector of individual names
-#' @param mode The mode for the calculation ("sites" or "branch")
-#' @param windows Breakpoint coordinates between windows (first coordinate 0 and
-#'   last coordinate equal to \code{ts$sequence_length} are added automatically)
-#'
-#' @return Either a single Fst value or a vector of Fst values (one for each window)
-#'
-#' @export
-ts_tajima <- function(ts, sample_sets, mode = c("site", "branch"), windows = NULL) {
-  mode <- match.arg(mode)
-  windows <- define_windows(ts, windows)
-
-  sample_set_nodes <- purrr::map(sample_sets, function(set) {
-    ts_nodes(ts, set)
-  })
-
-  ts$Tajimas_D(sample_sets = sample_set_nodes, mode = mode, windows = windows)
-}
-
-#' Compute the allele frequency spectrum with respect to the given set of
-#' individuals
-#'
-#' @param tsSlimTreeSequence object
-#' @param set Character vector of individual names
-#' @param mode The mode for the calculation ("sites" or "branch")
-#' @param windows Breakpoint coordinates between windows (first coordinate 0 and
-#'   last coordinate equal to \code{ts$sequence_length} are added automatically)
-#'
-#' @return Either a single Fst value or a vector of Fst values (one for each
-#'   window)
-#'
-#' @export
-ts_afs <- function(ts, sample_sets, mode = c("site", "branch"), windows = NULL) {
-  mode <- match.arg(mode)
-  windows <- define_windows(ts, windows)
-
-  sample_set_nodes <- purrr::map(sample_sets, function(set) {
-    ts_nodes(ts, set)
-  })
-
-  ts$allele_frequency_spectrum(sample_sets = sample_set_nodes, mode = mode, windows = windows)
-}
 
 # tree-sequence utility functions -----------------------------------------
 
@@ -434,7 +605,9 @@ define_windows <- function(ts, breakpoints) {
   unique(c(0, breakpoints, ts$sequence_length))
 }
 
-concat <- function(x) paste(x, sep = "+")
+concat <- function(x) {
+  paste(x, collapse = "+")
+}
 
 get_individuals <- function(ts, model) {
   # extract information about individuals from the tree-sequence

@@ -60,6 +60,8 @@ We can visualize the defined world map using the generic function `plot` provide
 plot(map)
 ```
 
+![plot of chunk plot_world](man/figures/README-plot_world-1.png)
+
 Although in this example we use a real Earth landscape, the `map` can be completely abstract (either blank or with user-defined landscape features such as continents, islands, corridors and barriers).
 
 #### 2. Define broader geographic regions
@@ -95,6 +97,8 @@ Again, we can use the generic `plot` function to visualize the objects:
 ```r
 plot(africa, europe, anatolia)
 ```
+
+![plot of chunk plot_regions](man/figures/README-plot_regions-1.png)
 
 #### 3. Define demographic history and population boundaries
 
@@ -154,7 +158,13 @@ We can use the function `plot` again, but we get a warning informing us that plo
 
 ```r
 plot(afr, ooa, ehg, eur, ana, yam)
+#> Warning: Attempting to plot population ranges at multiple time points on
+#> a single map. This is very hard to do in a satisfying way. Please
+#> consider using the function `explore()` to plot the model dynamics
+#> interactively.
 ```
+
+![plot of chunk plot_popmaps](man/figures/README-plot_popmaps-1.png)
 
 #### 4. Define geneflow events
 
@@ -189,6 +199,22 @@ Compiled model is kept as an R object which can be passed to different functions
 
 ```r
 model
+#> slendr 'model' object 
+#> --------------------- 
+#> populations: AFR, OOA, EHG, ANA, EUR, YAM 
+#> geneflow events: [no geneflow]
+#> generation time: 30 
+#> time direction: backward 
+#> model type: spatial
+#>   - number of spatial maps: 60 
+#>   - resolution: 10000 distance units per pixel
+#> 
+#> configuration files in: /private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpYJX3kB/readme-model 
+#> 
+#> A detailed model specification can be found in `$splits`, `$geneflows`,
+#> `$maps`, `$populations`, and other components of the model object (for
+#> a complete list see `names(<model object>)`). You can also examine
+#> the serialized configuration files in the model directory.
 ```
 
 #### 6. Visualize the model
@@ -237,6 +263,8 @@ We can use the saved locations of every individual that lived throughout the cou
 ```r
 animate(model, steps = 100, width = 500, height = 300)
 ```
+
+![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
 
 Note that it is possible to simulate population splits and geneflows both by "physically" moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous "jumps") in situations where this is more appropriate or where simulating accurate movement is not necessary.
 

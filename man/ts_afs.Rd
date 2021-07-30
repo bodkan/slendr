@@ -2,26 +2,44 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_afs}
 \alias{ts_afs}
-\title{Compute the allele frequency spectrum with respect to the given set of
-individuals}
+\title{Compute the allele frequency spectrum (AFS)}
 \usage{
-ts_afs(ts, sample_sets, mode = c("site", "branch"), windows = NULL)
+ts_afs(
+  ts,
+  sample_sets = NULL,
+  mode = c("site", "branch", "node"),
+  windows = NULL,
+  span_normalise = TRUE,
+  polarised = FALSE
+)
 }
 \arguments{
+\item{sample_sets}{A list (optionally a named list) of character vectors with
+individual names (one vector per set). If NULL, allele frequency spectrum
+for all individuals in the tree-sequence will be computed.}
+
 \item{mode}{The mode for the calculation ("sites" or "branch")}
 
-\item{windows}{Breakpoint coordinates between windows (first coordinate 0 and
-last coordinate equal to \code{ts$sequence_length} are added automatically)}
+\item{windows}{Coordinates of breakpoints between windows. The first
+coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
+are added automatically)}
+
+\item{polarised}{When FALSE (the default) the allele frequency spectrum will
+be folded (i.e. the counts will not depend on knowing which allele is
+ancestral)}
 
 \item{tsSlimTreeSequence}{object}
-
-\item{set}{Character vector of individual names}
 }
 \value{
 Either a single Fst value or a vector of Fst values (one for each
 window)
 }
 \description{
-Compute the allele frequency spectrum with respect to the given set of
-individuals
+This function computes the AFS with respect to the given set of individuals
+}
+\details{
+For more information on the format of the result and dimensions, in
+particular the interpretation of the first and the last element of the AFS,
+please see the tskit manual at
+\url{https://tskit.dev/tskit/docs/stable/tutorial.html#sec-tutorial-afs-zeroth-entry}
 }
