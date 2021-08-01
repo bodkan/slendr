@@ -120,7 +120,6 @@ slim(
 The result of switching on `ts_recording = TRUE` in the `slim()` call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
 
 ```{r}
-model = read("~/Desktop/introgression/")
 ts_file <- file.path(model$path, "output_tree_seq.trees")
 file.exists(ts_file)
 ```
