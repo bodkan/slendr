@@ -466,15 +466,7 @@ Now we can calculate diversity in each population and sort the results in an inc
 ts_diversity(ts, sample_sets) %>% dplyr::arrange(diversity)
 ```
 
-Great! This matches our expectations. We simulated chimp "population" as only one individual, so we expect essentially no diversity after millions of years of evolution. This is consistent with the `CH1` individual having no heterozygous sites which we can verify by running.
-
-```{r}
-ts_genotypes(ts) %>%
-  dplyr::filter(CH1_chr1 != CH1_chr2) %>%
-  nrow()
-```
-
-This code chunk extracted the simulated genotypes of all chromosomes from the tree-sequence and then counted at how many loci is the simulated "chimpanzee" heterozygous (the answer is zero, as expected by the extremely unrealistic population history that we specified above to reduce computation time).
+Great! This matches our expectations. We simulated chimp "population" as only one individual, so we expect essentially no diversity after millions of years of evolution.
 
 ### Divergence
 

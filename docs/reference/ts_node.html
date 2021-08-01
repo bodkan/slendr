@@ -178,7 +178,14 @@ will be returned." />
 will be returned.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_node</span><span class='op'>(</span><span class='va'>ts</span>, id <span class='op'>=</span> <span class='cn'>NULL</span>, individual_id <span class='op'>=</span> <span class='cn'>NULL</span>, pedigree_id <span class='op'>=</span> <span class='cn'>NULL</span>, name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_node</span><span class='op'>(</span>
+  <span class='va'>ts</span>,
+  id <span class='op'>=</span> <span class='cn'>NULL</span>,
+  individual_id <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pedigree_id <span class='op'>=</span> <span class='cn'>NULL</span>,
+  name <span class='op'>=</span> <span class='cn'>NULL</span>,
+  numeric <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -203,6 +210,11 @@ will be returned.</p>
       <th>name</th>
       <td><p>String name of the individual (all names can be accessed by
 <code>ts_individuals</code>)</p></td>
+    </tr>
+    <tr>
+      <th>numeric</th>
+      <td><p>Return just the numeric indides of nodes (default is
+<code>fALSE</code>)?</p></td>
     </tr>
     </table>
 
