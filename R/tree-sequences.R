@@ -21,12 +21,16 @@
 #'   remembered (i.e. "sampled", in slendr parlance) individuals?
 #' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
+#' @param individuals A character vector of individual names. If NULL, all
+#'   remembered individuals will be retained. Only used when \code{simplify =
+#'   TRUE}.
 #'
 #' @return SlimTreeSequence object
 #'
 #' @export
 ts_load <- function(file, model, recapitate = FALSE, simplify = FALSE,
-                    recombination_rate = NULL, Ne = NULL, random_seed = NULL) {
+                    recombination_rate = NULL, Ne = NULL, random_seed = NULL,
+                    individuals = NULL) {
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
 
@@ -36,7 +40,7 @@ ts_load <- function(file, model, recapitate = FALSE, simplify = FALSE,
   # (this is to avoid having to drag the model object to each function
   # operating on the tree-sequence and requiring information about the
   # simulated individuals)
-  attr(ts, "info") <- get_individuals(ts, model)
+  attr(ts, "metadata") <- ts_complete_metadata(ts, model)
   class(ts) <- c("slendr_ts", class(ts))
 
   if (recapitate) {
@@ -46,31 +50,79 @@ ts_load <- function(file, model, recapitate = FALSE, simplify = FALSE,
       ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
                           random_seed = random_seed)
   }
-  if (simplify)
-    return(ts_simplify(ts))
-  else
-    return(ts)
+
+  if (simplify) ts <- ts_simplify(ts, individuals)
+
+  ts
 }
 
-#' Check that all trees in the tree-sequence are fully coalesced
+#' Recapitate the tree-sequence
 #'
-#' @param ts SlimTreeSequence object
-#' @param return_failed Report back which trees failed the coalescence
-#'   check?
+#' @param ts SlimTreeSequence object loaded by \code{ts_load}
+#' @param recombination_rate A constant value of the recombination rate
+#' @param Ne Effective population size during the recapitation process
+#' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #'
-#' @return TRUE or FALSE value if \code{return_failed = FALSE}, otherwise a vector of
-#'   (tskit Python 0-based) indices of trees which failed the coalescence test
+#' @return @return SlimTreeSequence object accessed via the reticulate package
 #'
 #' @export
-ts_coalesced <- function(ts, return_failed = FALSE) {
-  num_roots <- reticulate::iterate(ts$trees(), function(t) t$num_roots)
-  if (all(num_roots == 1))
-    return(TRUE)
-  else if (return_failed)
-    return(which(num_roots) - 1)
-  else
-    return(FALSE)
+ts_recapitate <- function(ts, recombination_rate, Ne, random_seed = NULL) {
+  if (!inherits(ts, "slendr_ts"))
+    stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
+
+  new_ts <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
+                          random_seed = random_seed)
+
+  # individuals after recapitation are the same
+  attr(new_ts, "metadata") <- attr(ts, "metadata")
+  class(new_ts) <- c("slendr_ts", class(new_ts))
+
+  new_ts
 }
+
+#' Simplify the tree-sequence down to a given set of individuals
+#'
+#' @param ts SlimTreeSequence object
+#' @param samples A character vector of individual names. If NULL, all
+#'   remembered individuals will be retained.
+#'
+#' @return @return SlimTreeSequence object accessed via the reticulate package
+#'
+#' @export
+ts_simplify <- function(ts, individuals = NULL) {
+  if (!inherits(ts, "slendr_ts"))
+    stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
+
+  if (is.null(individuals))
+    metadata <- attr(ts, "metadata") %>% dplyr::filter(remembered)
+  else
+    metadata <- attr(ts, "metadata") %>% dplyr::filter(name %in% individuals)
+
+  node_ids <- metadata %>%
+    dplyr::select(chr1_id, chr2_id) %>%
+    unlist() %>%
+    as.integer()
+
+  ts_new <- ts$simplify(node_ids, filter_populations = FALSE)
+
+  # decorate the SlimTreeSequence object with a table of individuals
+  metadata_new <- ts_raw_metadata(ts_new) %>% dplyr::arrange(pedigree_id)
+
+  # replace numeric IDs of elements after simplification changed them
+  # (the original metadata table must be ordered by pedigree_id first!)
+  metadata <- dplyr::arrange(metadata, pedigree_id)
+  metadata$id <- metadata_new$id
+  metadata$chr1_id <- metadata_new$chr1_id
+  metadata$chr2_id <- metadata_new$chr2_id
+  metadata$pop_id <- metadata_new$pop_id
+
+  attr(ts_new, "metadata") <- metadata
+  class(ts_new) <- c("slendr_ts", class(ts_new))
+
+  ts_new
+}
+
+# genotype conversion -----------------------------------------------------
 
 #' Add mutations to the given tree-sequence
 #'
@@ -89,64 +141,12 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL) {
     msprime$mutate(ts, rate = mutation_rate, keep = TRUE, random_seed = random_seed) %>%
     pyslim$SlimTreeSequence()
 
-    # decorate the SlimTreeSequence object with a table of individuals
-  attr(ts_mutated, "info") <- attr(ts, "info")
+  # decorate the SlimTreeSequence object with a table of individuals
+  attr(ts_mutated, "metadata") <- attr(ts, "metadata")
+
   class(ts_mutated) <- c("slendr_ts", class(ts_mutated))
 
   ts_mutated
-}
-
-#' Recapitate the tree-sequence
-#'
-#' @param ts SlimTreeSequence object loaded by \code{ts_load}
-#' @param recombination_rate A constant value of the recombination rate
-#' @param Ne Effective population size during the recapitation process
-#' @param random_seed Random seed passed to pyslim's \code{recapitate} method
-#'
-#' @return @return SlimTreeSequence object accessed via the reticulate package
-#'
-#' @export
-ts_recapitate <- function(ts, recombination_rate, Ne, random_seed = NULL) {
-  if (!inherits(ts, "slendr_ts"))
-    stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
-
-  individuals <- attr(ts, "info")
-
-  new_ts <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
-                          random_seed = random_seed)
-
-  # decorate the SlimTreeSequence object with a table of individuals
-  attr(new_ts, "info") <- get_individuals(new_ts, model)
-
-  class(new_ts) <- c("slendr_ts", class(new_ts))
-  new_ts
-}
-
-#' Simplify tree-sequence object down to sampled individuals
-#'
-#' @param ts SlimTreeSequence object
-#'
-#' @return @return SlimTreeSequence object accessed via the reticulate package
-#'
-#' @export
-ts_simplify <- function(ts) {
-  if (!inherits(ts, "slendr_ts"))
-    stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
-
-  individuals <- attr(ts, "info")
-
-  node_ids <- dplyr::filter(individuals, remembered) %>%
-    dplyr::select(chr1_id, chr2_id) %>%
-    unlist() %>%
-    as.integer()
-
-  new_ts <- ts$simplify(node_ids)
-
-  # decorate the SlimTreeSequence object with a table of individuals
-  attr(new_ts, "info") <- get_individuals(new_ts, model)
-
-  class(new_ts) <- c("slendr_ts", class(new_ts))
-  new_ts
 }
 
 #' Extract genotype table from the tree-sequence
@@ -158,11 +158,20 @@ ts_simplify <- function(ts) {
 #' @export
 ts_genotypes <- function(ts) {
   genotypes <- ts$genotype_matrix()
-  colnames(genotypes) <-
-    ts_individuals(ts) %>%
-    dplyr::select(chr1, chr2) %>%
-    unlist() %>%
-    as.character()
+
+  # we had to do some rearrangement of nodes in the table of individuals
+  # (in case we did simplification) so the genotype matrix returned by
+  # tskit is not exactly in the right order -- this is fixed here, by
+  # reordering all samples (chromosomes/nodes) by their numeric IDs, which
+  # is what is normally returned by genotype_matrix()
+  col_names <- dplyr::bind_rows(
+    ts_individuals(ts) %>% dplyr::select(chr1_id, chr1) %>% setNames(c("id", "chr")),
+    ts_individuals(ts) %>% dplyr::select(chr2_id, chr2) %>% setNames(c("id", "chr"))
+  ) %>%
+    dplyr::arrange(id)
+
+  colnames(genotypes) <- col_names$chr
+
   dplyr::as_tibble(genotypes) %>%
     dplyr::mutate(pos = ts$tables$sites$position) %>%
     dplyr::select(pos, dplyr::everything())
@@ -183,12 +192,11 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
 
   # create a geno file table
   geno <- dplyr::as_tibble(2 - (chr1_genotypes + chr2_genotypes))
-  colnames(geno) <- ts_individuals(ts)$name
+  individuals <- gsub("_chr.", "", colnames(geno))
+  colnames(geno) <- individuals
 
   # create an ind file table
-  ind <- ts_individuals(ts) %>%
-    dplyr::mutate(sex = "U") %>%
-    dplyr::select(id = name, sex, label = name)
+  ind <- dplyr::tibble(id = individuals, sex = "U", label = individuals)
 
   # create a snp file table
   positions <- round(ts$tables$sites$position)
@@ -250,6 +258,8 @@ ts_vcf <- function(ts, vcf, individuals = NULL) {
   })
 }
 
+# handling of individuals and nodes ---------------------------------------
+
 #' Extract table of individuals from pyslim's tree-sequence object
 #'
 #' @param ts SlimTreeSequence object
@@ -262,26 +272,161 @@ ts_vcf <- function(ts, vcf, individuals = NULL) {
 ts_individuals <- function(ts) {
   if (!inherits(ts, "slendr_ts"))
     stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
-  attr(ts, "info")
+  attr(ts, "metadata")
 }
 
-#' Extract the nodes belonging to a given set of individuals
+#' Extract a single individual from a tree-sequence
 #'
 #' @param ts SlimTreeSequence object
-#' @param ind A character vector of individual names
+#' @param id Numeric index of an individual
+#' @param pedigree_id Pedigree number of an individual
+#' @param name String name of the individual (all names can be accessed by \code{ts_individuals})
 #'
-#' @return An integer vector with node numbers
+#' @return Object of the type \code{tskit.trees.Individual}
 #'
 #' @export
-ts_nodes <- function(ts, ind) {
-  if (!inherits(ts, "slendr_ts"))
-    stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
+ts_individual <- function(ts, id = NULL, pedigree_id = NULL, name = NULL) {
+  if (all(is.null(c(id, pedigree_id, name))))
+    stop("At least one individual identifier (id, pedigree_id, name) must be specified",
+         call. = FALSE)
+  metadata <- ts_individuals(ts)
+  if (!is.null(pedigree_id))
+    id <- metadata[which(metadata$pedigree_id == pedigree_id), ]$id
+  else if (!is.null(name))
+    id <- metadata[which(metadata$name == name), ]$id
+  ts$individual(as.integer(id))
+}
 
-  attr(ts, "info") %>%
-    dplyr::filter(name %in% ind) %>%
-    dplyr::select(chr1_id, chr2_id) %>%
-    unlist() %>%
-    as.integer()
+#' Extract a node from a tree-sequence
+#'
+#' If an individual identifier is given, the nodes belonging to that individual
+#' will be returned.
+#'
+#' @param ts SlimTreeSequence object
+#' @param id Numeric index of an node
+#' @param individual_id Numeric index of an individual
+#' @param pedigree_id Pedigree number of an individual
+#' @param name String name of the individual (all names can be accessed by
+#'   \code{ts_individuals})
+#' @param numeric Return just the numeric indides of nodes (default is
+#'   \code{fALSE})?
+#'
+#' @return Object of the type \code{tskit.trees.Individual}
+#'
+#' @export
+ts_node <- function(ts, id = NULL, individual_id = NULL,
+                    pedigree_id = NULL, name = NULL,
+                    numeric = FALSE) {
+  if (all(is.null(c(id, individual_id, pedigree_id, name))))
+    stop("At least one individual identifier (id, pedigree_id, name) must be specified",
+         call. = FALSE)
+  metadata <- ts_individuals(ts)
+  if (!is.null(individual_id))
+    id <- metadata[which(metadata$id == individual_id), c("chr1_id", "chr2_id")] %>% unlist
+  if (!is.null(pedigree_id))
+    id <- metadata[which(metadata$pedigree_id == pedigree_id), c("chr1_id", "chr2_id")] %>% unlist
+  else if (!is.null(name))
+    id <- metadata[which(metadata$name == name), c("chr1_id", "chr2_id")] %>% unlist
+
+  nodes <- purrr::map(id, ~ ts$node(as.integer(.x))) %>% unname()
+
+  if (numeric) nodes <- purrr::map_int(nodes, ~ .x$id)
+  if (length(nodes) == 1) return(nodes[[1]])
+  nodes
+}
+
+# tree operations ---------------------------------------------------------
+
+#' Get a tree from a given tree-sequence
+#'
+#' For more information about optional keyword arguments see tskit documentation:
+#' <https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class>
+#'
+#' @param ts SlimTreeSequence object
+#' @param i Position of the tree in the tree-sequence. If \code{mode = "index"},
+#'   an i-th tree will be returned (in one-based indexing), if \code{mode =
+#'   "position"}, a tree covering an i-th base of the simulated genome will be
+#'   returned.
+#' @param ... Additional keyword arguments accepted by
+#'   \code{tskit.TreeSequence.at and tskit.TreeSequence.at_index} methods
+#'
+#' @return Object of the type tskit.trees.Tree
+#'
+#' @export
+ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
+  mode <- match.arg(mode)
+  if (mode == "index")
+    tree <- ts$at_index(index = i - 1, ...)
+  else
+    tree <- ts$at(position = i - 1, ...)
+  tree
+}
+
+#' Plot a graphical representation of a tree-sequence or a single tree
+#'
+#' This function obtains an SVG representation by calling the \code{draw_svg}
+#' method of tskit and renders it as a bitmap imagine in R. All of the many
+#' optional keyword arguments can be provided and will be automatically passed
+#' to \code{draw_svg} behind the scenes.
+#'
+#' @param x A tree-sequence loaded by \code{ts_load} or a single tree extracted
+#'   from a tree-sequence by \code{ts_tree}
+#' @param width,height Pixel dimensions of the rendered bitmap
+#' @param ... Keyword arguments to the tskit \code{draw_svg} function.
+#'
+#' @export
+ts_draw <- function(x, width = 1500, height = 500, individuals = FALSE, ts = NULL, ...) {
+  if (individuals) {
+    if (inherits(x, "tskit.trees.Tree") & is.null(ts))
+      stop("For plotting individual names, please provide the ",
+           "original tree-sequence object for annotation using ",
+           "the `ts = ` argument to `ts_draw()", call. = FALSE)
+    else if (inherits(x, "tskit.trees.TreeSequence"))
+      ts <- x
+    metadata <- ts_individuals(ts)
+    labels <- reticulate::py_dict(keys = c(metadata$chr1_id, metadata$chr2_id),
+                                  values = c(metadata$chr1, metadata$chr2))
+  } else
+    labels <- NULL
+
+  svg <- x$draw_svg(size = c(width, height), node_labels = labels)
+
+  # convert from a SVG representation to a PNG image
+  raw <- charToRaw(svg)
+  tmp_file <- paste0(tempfile(), ".png")
+  rsvg::rsvg_png(svg = raw, file = tmp_file, width = width, height = height)
+
+  # set margins to zero, save original settings
+  orig_par <- par(mar = c(0, 0, 0, 0))
+
+  # plot the PNG image, filling the entire plotting window
+  img <- png::readPNG(tmp_file)
+  plot.new()
+  plot.window(0:1, 0:1)
+  rasterImage(img, 0, 0, 1, 1)
+
+  # restor original settings
+  par(orig_par)
+}
+
+#' Check that all trees in the tree-sequence are fully coalesced
+#'
+#' @param ts SlimTreeSequence object
+#' @param return_failed Report back which trees failed the coalescence
+#'   check?
+#'
+#' @return TRUE or FALSE value if \code{return_failed = FALSE}, otherwise a vector of
+#'   (tskit Python 0-based) indices of trees which failed the coalescence test
+#'
+#' @export
+ts_coalesced <- function(ts, return_failed = FALSE) {
+  num_roots <- reticulate::iterate(ts$trees(), function(t) t$num_roots)
+  if (all(num_roots == 1))
+    return(TRUE)
+  else if (return_failed)
+    return(which(num_roots) - 1)
+  else
+    return(FALSE)
 }
 
 # f-statistics ------------------------------------------------------------
@@ -292,7 +437,7 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 
   if (!is.null(windows)) windows <- define_windows(ts, windows)
 
-  node_sets <- purrr::map(sample_sets, ~ ts_nodes(ts, .x))
+  node_sets <- purrr::map(sample_sets, ~ node_ids(ts, .x))
 
   result <- ts[[stat]](sample_sets = node_sets, mode = mode,
                        span_normalise = TRUE, windows = windows)
@@ -357,7 +502,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
                           k, sample_sets, mode, windows, span_normalise) {
   stat <- match.arg(stat)
   node_sets <- purrr::map(sample_sets, function(set) {
-    ts_nodes(ts, set)
+    node_ids(ts, set)
   })
 
   n_sets <- length(sample_sets)
@@ -450,7 +595,7 @@ ts_divergence <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 
 oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = NULL) {
   node_sets <- purrr::map(sample_sets, function(set) {
-    ts_nodes(ts, set)
+    node_ids(ts, set)
   })
 
   n_sets <- length(sample_sets)
@@ -584,7 +729,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
   if (!is.null(windows)) windows <- define_windows(ts, windows)
 
   node_sets <- purrr::map(sample_sets, function(set) {
-    ts_nodes(ts, set)
+    node_ids(ts, set)
   })
 
   result <- ts$allele_frequency_spectrum(
@@ -601,6 +746,11 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 
 # tree-sequence utility functions -----------------------------------------
 
+# Function for extracting numerical node IDs for various statistics
+node_ids <- function(ts, individuals) {
+  purrr::map(individuals, ~ ts_node(ts, name = .x, numeric = TRUE)) %>% unlist()
+}
+
 define_windows <- function(ts, breakpoints) {
   unique(c(0, breakpoints, ts$sequence_length))
 }
@@ -609,33 +759,33 @@ concat <- function(x) {
   paste(x, collapse = "+")
 }
 
-get_individuals <- function(ts, model) {
-  # extract information about individuals from the tree-sequence
-  individuals <-
-    purrr::map_dfr(seq(0, ts$num_individuals - 1), function(i) {
-      ind <- ts$individual(i)
-      list(
-        id = ind["id"],
-        pedigree_id = ind["metadata"]["pedigree_id"],
-        chr1_id = ind["nodes"][1],
-        chr2_id = ind["nodes"][2],
-        time = ind["time"],
-        loc_x = ind["location"][1],
-        loc_y = ind["location"][2],
-        pop_id = ind["metadata"]["subpopulation"],
-        flag = ind["flags"],
-        alive = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_ALIVE) != 0,
-        remembered = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_REMEMBERED) != 0,
-        retained = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_RETAINED) != 0
-      )
-    }) %>%
+ts_raw_metadata <- function(ts) {
+  purrr::map_dfr(seq(0, ts$num_individuals - 1), function(i) {
+    ind <- ts$individual(i)
+    list(
+      id = ind["id"],
+      pedigree_id = ind["metadata"]["pedigree_id"],
+      chr1_id = ind["nodes"][1],
+      chr2_id = ind["nodes"][2],
+      time = ind["time"],
+      loc_x = ind["location"][1],
+      loc_y = ind["location"][2],
+      pop_id = ind["metadata"]["subpopulation"],
+      flag = ind["flags"],
+      alive = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_ALIVE) != 0,
+      remembered = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_REMEMBERED) != 0,
+      retained = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_RETAINED) != 0
+    )
+  })
+}
+
+ts_complete_metadata <- function(ts, model) {
+  # bind raw tree-sequence individual information with sample data
+  individuals <- ts_raw_metadata(ts) %>%
     dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
     dplyr::arrange(-time, pop) %>%
     dplyr::select(-pop, -time)
 
-  # load sampling times table (expand multiple samplings at a single time point
-  # into one record per each individual to matche the number of rows in the
-  # table extract from the tree-sequence above)
   samples <- file.path(model$path, "script_samples.tsv") %>%
     readr::read_tsv(col_types = "ciii") %>%
     {
@@ -663,10 +813,14 @@ get_individuals <- function(ts, model) {
   combined <-
     cbind(remembered, samples) %>%
     dplyr::bind_rows(not_remembered) %>%
-    dplyr::select(name, id, pop, time, chr1_id, chr2_id,
-                  chr1, chr2, loc_x, loc_y, pedigree_id,
+    dplyr::select(name, id, pedigree_id, chr1_id, chr2_id, pop_id, pop,
+                  time, chr1, chr2, loc_x, loc_y,
                   dplyr::everything()) %>%
     dplyr::as_tibble()
 
+  # this is the most complete set of metadata before any simplification etc
+  # --should everything be based on this?
+  # --how does later simplification mess with the IDs? can we use name as the
+  # key to bind everything post every simplification?
   combined
 }

@@ -61,7 +61,7 @@ model <- compile(
 Here's our toy model visualized as a graph. Not particularly illuminating in this simple example, but it's always worth keeping in mind that such graph is embedded within every *slendr* model and can be always invoked to make sure the model you're setting up is correct:
 
 ```{r, introgression_graph, fig.width = 6, fig.height = 4}
-graph(model) + ggplot2::theme(legend.position = "none")
+plot_graph(model) + ggplot2::theme(legend.position = "none")
 ```
 
 ## Scheduling of sampling events
@@ -120,6 +120,7 @@ slim(
 The result of switching on `ts_recording = TRUE` in the `slim()` call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
 
 ```{r}
+model = read("~/Desktop/introgression/")
 ts_file <- file.path(model$path, "output_tree_seq.trees")
 file.exists(ts_file)
 ```
@@ -178,6 +179,12 @@ We can see that the tree-sequence data is very large and contains many more indi
 ts <- ts_load(ts_file, model, simplify = TRUE)
 ```
 
+By default, simplification in `ts_load()` simplified the tree-sequence down to only remembered individuals (i.e. those we explicitly scheduled for sampling). We can also narrow down the simplification to a defined set of individuals using the `individuals = ` argument. Internally, simplification is implemented in a dedicated function `ts_simplify()` which we can always call explicitly, like this:
+
+```{r}
+ts_small <- ts_simplify(ts, individuals = c("CH1", "NEA1", "AFR2", "EUR20", "EUR50"))
+```
+
 Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapitation](https://pyslim.readthedocs.io/en/latest/tutorial.html#recapitation). Again, we can do this in one go, by specifying `recapitate = TRUE` in the call to `ts_load()` after specifying a couple of additional arguments required for recapitation (see the pyslim documentation in the [recapitation](https://pyslim.readthedocs.io/en/latest/tutorial.html#recapitation) section for more detail):
 
 ```{r, eval = FALSE}
@@ -200,6 +207,35 @@ ts <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 314159)
 Having done that, we can calculate some basic statistics on our simulated data.
 
 However, before we do that, we would first like to note that everything that we do in the rest of this vignette (i.e. whenever we call a function with the prefix `ts_*()` in *slendr*), we are interfacing with the *tskit* Python module under the hood. Our goal is to capture most of the analyses one might want to perform on tree-sequences in R and wrap them in a neat interface indistinguishable from any other R function---this is, after all, the reason why *reticulate* has been created in the first place (making various Python data science modules appear as if they were regular R packages).
+
+## Visualisation of trees and tree-sequences
+
+-----
+
+**Note:** The visualisation of trees and tree-sequences in *slendr* is currently still work-in-progress. For a much more comprehensive overview of SVG plotting in *tskit* see the [official tutorial](https://tskit.dev/tutorials/viz.html) on the subject.
+
+-----
+
+We have spend a lot of time talking about how powerful the *tskit* library is. Another great example is tree(-sequence) visualisation. *tskit* [implements](https://tskit.dev/tutorials/viz.html) visualisation of data in an [SVG format](https://en.wikipedia.org/wiki/Scalable_Vector_Graphics) which we can use for quick interactive plotting directly from the R console. First, we introduce a function `ts_tree()` which allows us to extract one tree from the tree-sequence (either an *i*-th tree in the sequence, or a tree overlapping an *i*-th position of the simulated genome, depending on the value of its `mode` argument):
+
+```{r}
+# take the 2nd tree in the sequence (mode = "index" by default)
+tree <- ts_tree(ts_small, i = 2)
+tree
+```
+
+We can then visualize the tree by calling:
+
+```{r, tree}
+ts_draw(tree, width = 1000, height = 600)
+```
+
+If we specify `individuals = TRUE` and provide the tree-sequence object itself (because that carries all the required model metadata such as individual names), we get a slightly more readable figure:
+
+```{r, tree_labels}
+ts_draw(tree, width = 1000, height = 600, individuals = TRUE, ts = ts)
+```
+
 
 ## Accessing *tskit* functionality directly
 
@@ -231,16 +267,16 @@ For instance, we have functions such as `ts_f2()`, `ts_f3()`, `ts_f4()` and `ts_
 
 ```{r}
 # f2 is a measure of the branch length connecting A and B
-ts_f2(ts, A = "EUR1", B = "EUR2")
+ts_f2(ts, A = "EUR1", B = "AFR1")
 
 # f4 is a measure of the drift shared between A and B after their split from C
 ts_f3(ts, A = "EUR1", B = "AFR1", C = "CH1")
 
 # this value should be very close to zero (no introgression in Africans)
-ts_f4(ts, "AFR1", "AFR2", "NEA1", "CH1", mode = "branch")
+ts_f4(ts, "AFR1", "AFR2", "NEA1", "CH1")
 # this value should be significantly negative (many more ABBA sites
 # compared to BABA site due to the introgression into Europeans)
-ts_f4(ts, "AFR1", "EUR1", "NEA1", "CH1", mode = "branch")
+ts_f4(ts, "AFR1", "EUR1", "NEA1", "CH1")
 ```
 
 These functions accept a `mode =` argument, specifying whether the statistics should be calculated using mutation site patterns (`mode = "site"`, the default), branch lengths (`mode = "branch"`), or for each node (`mode = "node"`), as well as the `windows` argument, similarly to other "multiway" statistics implemented by tskit. See the [relevant](https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode) [sections](https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-sample-sets-multi-way) of the official *tskit* documentation for more on this topic.
@@ -304,13 +340,15 @@ f4ratio(data = snps, X = c("EUR1", "EUR2", "AFR2"),
 In fact, lets compare the values obtained by both *tskit* and *admixr*/ADMIXTOOLS for all individuals:
 
 ```{r, ts_vs_admixr}
+europeans <- inds[inds$pop == "EUR", ]$name
+
 # tskit result
-result_ts <- ts_f4ratio(ts, X = inds$name, A = "NEA1", B = "NEA2", C = "AFR1", O = "CH1") %>% dplyr::select(alpha_ts = alpha)
+result_ts <- ts_f4ratio(ts, X = europeans, A = "NEA1", B = "NEA2", C = "AFR1", O = "CH1") %>% dplyr::select(alpha_ts = alpha)
 
 # result obtained by admixr/ADMIXTOOLS
-result_admixr <- f4ratio(snps, X = inds$name, A = "NEA1", B = "NEA2", C = "AFR1", O = "CH1") %>% dplyr::select(alpha_admixr = alpha)
+result_admixr <- f4ratio(snps, X = europeans, A = "NEA1", B = "NEA2", C = "AFR1", O = "CH1") %>% dplyr::select(alpha_admixr = alpha)
 
-dplyr::bind_cols(result_ts, result_admixr) %>%
+dplyr::bind_cols(result_admixr, result_ts) %>%
   ggplot(aes(alpha_ts, alpha_admixr)) +
   geom_point() +
   geom_abline(slope = 1, linetype = 2, color = "red", size = 0.5) +
@@ -374,10 +412,12 @@ As with many other statistics implemented by [*tskit*](https://tskit.dev/tskit/d
 breakpoints <- seq(0, ts$sequence_length, length.out = 21)
 
 # calculate window-based Fst statistic
-win_fst <- ts_fst(ts, windows = breakpoints,
-                  sample_sets = list(afr = c("AFR1", "AFR2", "AFR3"),
-                                     eur = c("EUR1", "EUR2"),
-                                     nea = c("NEA1", "NEA2")))
+win_fst <- ts_fst(
+  ts, windows = breakpoints,
+  sample_sets = list(afr = c("AFR1", "AFR2", "AFR3"),
+                     eur = c("EUR1", "EUR2"),
+                     nea = c("NEA1", "NEA2"))
+)
 
 # we get 20 values for each parwise calculation
 win_fst
