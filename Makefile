@@ -1,6 +1,5 @@
 restore:
 	git restore man/figures/logo.png docs/reference/figures/logo.png docs/logo.png
-	git restore docs/pkgdown.yml
 
 website:
 	rm -rf docs/ man/; mkdir -p man/figures
