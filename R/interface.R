@@ -639,7 +639,7 @@ region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygo
 }
 
 
-#' Convert between coordinate systems
+#' Reproject coordinates between coordinate systems
 #'
 #' Converts between coordinates on a compiled raster map (i.e. pixel
 #' units) and different Geographic Coordinate Systems (CRS).
@@ -661,7 +661,7 @@ region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygo
 #' @return Data.frame with converted two-dimensional coordinates
 #'
 #' @export
-convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, add = FALSE) {
+reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, add = FALSE) {
   if ((is.null(x) | is.null(y)) & is.null(coords))
     stop("Coordinates for conversion are missing", call. = FALSE)
 
@@ -726,7 +726,7 @@ convert <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, a
 }
 
 
-#' Combine two \code{slendr_region} objects into a single geographic region
+#' Merge two spatial \code{slendr} objects into one
 #'
 #' @param x Object of the class \code{slendr}
 #' @param y Object of the class \code{slendr}
@@ -889,7 +889,7 @@ area <- function(x) {
 #'   returned.
 #'
 #' @export
-dimension <- function(map, original = FALSE) {
+dimensions <- function(map, original = FALSE) {
   if (!inherits(map, "slendr_map"))
     stop("Incorrect input type. Object of the type 'slendr_map' expected", call. = FALSE)
   if (has_crs(map) && original)

@@ -32,38 +32,38 @@ navbar:
       href: https://twitter.com/fleventy5
 
 reference:
-  - title: Population dynamics
+  - title: Model components
     contents:
     - population
+    - world
+    - geneflow
+    - region
+
+  - title: Population dynamics
+    contents:
     - move
     - expand
     - shrink
     - boundary
     - resize
     - dispersal
-    - geneflow
 
-  - title: Defining and manipulating spatial features
+  - title: Spatial features
     contents:
-    - world
-    - region
     - join
     - overlap
     - subtract
-
-  - title: Coordinate conversion, distances, areas
-    contents:
-    - convert
+    - reproject
     - distance
     - area
-    - dimension
+    - dimensions
 
   - title: Model visualization and diagnostics
     contents:
     - plot.slendr
-    - graph
+    - plot_graph
+    - plot_ancestry
     - animate
-    - ancestries
     - explore
     - print.slendr_map
     - print.slendr_region
@@ -74,22 +74,25 @@ reference:
     contents:
     - compile
     - sampling
+    - slim
     - read
     - script
-    - slim
 
-  - title: Tree-sequence processing
+  - title: Tree-sequence handling
     contents:
     - ts_load
     - ts_recapitate
     - ts_simplify
     - ts_mutate
+    - ts_individual
     - ts_individuals
-    - ts_nodes
+    - ts_node
     - ts_genotypes
     - ts_eigenstrat
     - ts_vcf
     - ts_coalesced
+    - ts_tree
+    - ts_draw
 
   - title: Tree-sequence statistics
     contents:

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract the nodes belonging to a given set of individuals — ts_nodes • slendr</title>
+<title>Reproject coordinates between coordinate systems — reproject • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,9 @@
 
 
 
-<meta property="og:title" content="Extract the nodes belonging to a given set of individuals — ts_nodes" />
-<meta property="og:description" content="Extract the nodes belonging to a given set of individuals" />
+<meta property="og:title" content="Reproject coordinates between coordinate systems — reproject" />
+<meta property="og:description" content="Converts between coordinates on a compiled raster map (i.e. pixel
+units) and different Geographic Coordinate Systems (CRS)." />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -167,33 +168,62 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract the nodes belonging to a given set of individuals</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
-    <div class="hidden name"><code>ts_nodes.Rd</code></div>
+    <h1>Reproject coordinates between coordinate systems</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
+    <div class="hidden name"><code>reproject.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extract the nodes belonging to a given set of individuals</p>
+    <p>Converts between coordinates on a compiled raster map (i.e. pixel
+units) and different Geographic Coordinate Systems (CRS).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_nodes</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>ind</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>reproject</span><span class='op'>(</span>
+  <span class='va'>from</span>,
+  <span class='va'>to</span>,
+  x <span class='op'>=</span> <span class='cn'>NULL</span>,
+  y <span class='op'>=</span> <span class='cn'>NULL</span>,
+  coords <span class='op'>=</span> <span class='cn'>NULL</span>,
+  model <span class='op'>=</span> <span class='cn'>NULL</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ts</th>
-      <td><p>SlimTreeSequence object</p></td>
+      <th>from, to</th>
+      <td><p>Either a CRS code accepted by GDAL, a valid integer
+EPSG value, an object of class <code>crs</code>, the value "raster"
+(converting from/to pixel coordinates), or "world" (converting
+from/to whatever CRS is set for the underlying map)</p></td>
     </tr>
     <tr>
-      <th>ind</th>
-      <td><p>A character vector of individual names</p></td>
+      <th>x, y</th>
+      <td><p>Coordinates in two dimensions (if missing, coordinates
+are expected to be in the <code>data.frame</code> specified in the
+<code>coords</code> parameter as columns "x" and "y")</p></td>
+    </tr>
+    <tr>
+      <th>coords</th>
+      <td><p>data.frame-like object with coordinates in columns
+"x" and "y"</p></td>
+    </tr>
+    <tr>
+      <th>model</th>
+      <td><p>Object of the class <code>slendr_model</code></p></td>
+    </tr>
+    <tr>
+      <th>add</th>
+      <td><p>Add column coordinates to the input data.frame
+<code>coords</code> (coordinates otherwise returned as a separate
+object)?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An integer vector with node numbers</p>
+    <p>Data.frame with converted two-dimensional coordinates</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

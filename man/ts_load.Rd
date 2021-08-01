@@ -11,7 +11,8 @@ ts_load(
   simplify = FALSE,
   recombination_rate = NULL,
   Ne = NULL,
-  random_seed = NULL
+  random_seed = NULL,
+  individuals = NULL
 )
 }
 \arguments{
@@ -27,6 +28,10 @@ remembered (i.e. "sampled", in slendr parlance) individuals?}
 \item{recombination_rate, Ne}{Arguments passed to \code{ts_recapitate}}
 
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
+
+\item{individuals}{A character vector of individual names. If NULL, all
+remembered individuals will be retained. Only used when \code{simplify =
+  TRUE}.}
 }
 \value{
 SlimTreeSequence object

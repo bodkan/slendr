@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simplify the tree-sequence down to a given set of individuals — ts_simplify • slendr</title>
+<title>Plot a graphical representation of a tree-sequence or a single tree — ts_draw • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,11 @@
 
 
 
-<meta property="og:title" content="Simplify the tree-sequence down to a given set of individuals — ts_simplify" />
-<meta property="og:description" content="Simplify the tree-sequence down to a given set of individuals" />
+<meta property="og:title" content="Plot a graphical representation of a tree-sequence or a single tree — ts_draw" />
+<meta property="og:description" content="This function obtains an SVG representation by calling the draw_svg
+method of tskit and renders it as a bitmap imagine in R. All of the many
+optional keyword arguments can be provided and will be automatically passed
+to draw_svg behind the scenes." />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -167,34 +170,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simplify the tree-sequence down to a given set of individuals</h1>
+    <h1>Plot a graphical representation of a tree-sequence or a single tree</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
-    <div class="hidden name"><code>ts_simplify.Rd</code></div>
+    <div class="hidden name"><code>ts_draw.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Simplify the tree-sequence down to a given set of individuals</p>
+    <p>This function obtains an SVG representation by calling the <code>draw_svg</code>
+method of tskit and renders it as a bitmap imagine in R. All of the many
+optional keyword arguments can be provided and will be automatically passed
+to <code>draw_svg</code> behind the scenes.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_simplify</span><span class='op'>(</span><span class='va'>ts</span>, individuals <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_draw</span><span class='op'>(</span><span class='va'>x</span>, width <span class='op'>=</span> <span class='fl'>1500</span>, height <span class='op'>=</span> <span class='fl'>500</span>, individuals <span class='op'>=</span> <span class='cn'>FALSE</span>, ts <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ts</th>
-      <td><p>SlimTreeSequence object</p></td>
+      <th>x</th>
+      <td><p>A tree-sequence loaded by <code>ts_load</code> or a single tree extracted
+from a tree-sequence by <code>ts_tree</code></p></td>
     </tr>
     <tr>
-      <th>samples</th>
-      <td><p>A character vector of individual names. If NULL, all
-remembered individuals will be retained.</p></td>
+      <th>width, height</th>
+      <td><p>Pixel dimensions of the rendered bitmap</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Keyword arguments to the tskit <code>draw_svg</code> function.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>@return SlimTreeSequence object accessed via the reticulate package</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

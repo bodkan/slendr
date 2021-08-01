@@ -156,6 +156,6 @@ test_that("it is possible to calculate distances betwewen populations and region
 test_that("world dimensions are correctly calculated", {
   map1 <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   map2 <- readRDS("map.rds"); bbox <- sf::st_bbox(map2)
-  expect_equal(dimension(map1), c(100, 100))
-  expect_equal(dimension(map2), as.vector(c(bbox[3] - bbox[1], bbox[4] - bbox[2])))
+  expect_equal(dimensions(map1), c(100, 100))
+  expect_equal(dimensions(map2), as.vector(c(bbox[3] - bbox[1], bbox[4] - bbox[2])))
 })

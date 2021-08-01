@@ -2,16 +2,19 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_simplify}
 \alias{ts_simplify}
-\title{Simplify tree-sequence object down to sampled individuals}
+\title{Simplify the tree-sequence down to a given set of individuals}
 \usage{
-ts_simplify(ts)
+ts_simplify(ts, individuals = NULL)
 }
 \arguments{
 \item{ts}{SlimTreeSequence object}
+
+\item{samples}{A character vector of individual names. If NULL, all
+remembered individuals will be retained.}
 }
 \value{
 @return SlimTreeSequence object accessed via the reticulate package
 }
 \description{
-Simplify tree-sequence object down to sampled individuals
+Simplify the tree-sequence down to a given set of individuals
 }

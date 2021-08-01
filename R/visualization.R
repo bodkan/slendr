@@ -1,313 +1,3 @@
-#' Animate the simulated population dynamics
-#'
-#' @param model Compiled \code{slendr_model} model object
-#' @param steps How many frames should the animation have?
-#' @param gif Path to an output GIF file (animation object returned
-#'   by default)
-#'
-#' @return If `gif = NULL`, return gganimate animation object. Otherwise a GIF
-#'   file is saved and no value is returned.
-#'
-#' @import ggplot2
-#' @export
-animate <- function(model, steps, gif = NULL, width = 800, height = 560) {
-  if (!inherits(model$world, "slendr_map"))
-    stop("Cannot animate non-spatial models", call. = FALSE)
-
-  locations <- file.path(model$path, "output_ind_locations.tsv.gz")
-  locs <- readr::read_tsv(locations, col_types = "iiiidd", progress = FALSE)
-  pop_names <- model$splits$pop
-
-  # label populations based on their original identifiers from the user
-  locs$pop <- factor(
-    locs$pop,
-    levels = sort(unique(locs$pop)),
-    labels = pop_names[sort(unique(locs$pop)) + 1]
-  )
-  locs$time <- as.integer(locs$time)
-  locs <- dplyr::filter(locs, time %in% sort(unique(
-    c(min(time),
-      time[seq(1, length(time), length.out = steps)],
-      max(time))
-  )))
-
-  # convert pixel-based coordinates to the internal CRS
-  locs <- convert(
-    coords = locs,
-    from = "raster", to = "world",
-    model = model,
-    add = TRUE
-  )
-
-  p <- plot(model$world) +
-    geom_point(data = locs, aes(newx, newy, color = pop), alpha = 0.5, size = 0.5) +
-    theme(axis.title.x = element_blank(),
-          axis.title.y = element_blank(),
-          legend.title = element_blank())
-
-  if (length(unique(locs$pop)) == 1) p <- p + theme(legend.position = "none")
-
-  if (model$direction == "backward")
-    transition <- gganimate::transition_states(
-      -time,
-      transition_length = 1,
-      state_length = 0
-    )
-  else
-    transition <- gganimate::transition_states(
-      time,
-      transition_length = 1,
-      state_length = 0
-    )
-
-  gganim <- p + transition + ggtitle("time: {abs(as.integer(closest_state))}")
-
-  anim <- gganimate::animate(
-    gganim,
-    nframes = length(unique(locs$time)),
-    width = width,
-    height = height
-  )
-
-  if (is.null(gif))
-    return(anim)
-  else
-    gganimate::anim_save(gif, anim)
-}
-
-
-#' Plot simulated ancestry proportions
-#'
-#' @param model Compiled \code{slendr_model} model object
-#'
-#' @export
-ancestries <- function(model) {
-  anc_wide <- read_ancestries(model$path)
-
-  # thank god for tidyverse, base R reshaping is truly awful...  but
-  # it's not worth dragging along a huge dependency if we can do this
-  # sort of thing in base R...
-  anc_long <- stats::reshape(
-    data = anc_wide,
-    direction = "long",
-    timevar = "ancestry",
-    varying = 2:(ncol(anc_wide) - 1),
-    idvar = c("gen", "pop"),
-    v.names = "prop",
-    times = colnames(anc_wide)[2:(ncol(anc_wide) - 1)]
-  )
-  rownames(anc_long) <- NULL
-
-  # order population names based on their split order
-  split_order <- split(anc_long, anc_long$pop) %>%
-    sapply(function(df) max(df$gen)) %>%
-    sort(decreasing = TRUE) %>%
-    names
-  anc_long$pop <- factor(anc_long$pop, levels = split_order)
-
-  anc_long$time <- anc_long$gen * model$generation_time
-
-  anc_long %>%
-  ggplot(aes(-time, prop, color = ancestry)) +
-    geom_line() +
-    facet_wrap(~ pop) +
-    coord_cartesian(ylim = c(0, 1)) +
-    ggtitle("Ancestry proportions in populations during the course of their existence") +
-    theme_minimal()
-}
-
-
-#' Plot geneflow graph based on given model configuration
-#'
-#' @param model Compiled \code{slendr_model} model object
-#'
-#' @import ggplot2 ggraph
-#' @export
-graph <- function(model) {
-  # plot times in their original direction
-  split_table <- model$splits
-  split_table[, c("tsplit", "tremove")] <-   split_table[, c("tsplit_orig", "tremove_orig")]
-  geneflow_table <- model$geneflow
-  geneflow_table[, c("tstart", "tend")] <-   geneflow_table[, c("tstart_orig", "tend_orig")]
-
-  split_edges <- get_split_edges(split_table)
-  geneflow_edges <- get_geneflow_edges(geneflow_table)
-  intermediate_edges <- get_intermediate_edges(split_edges, geneflow_edges)
-
-  edges <- rbind(
-    split_edges,
-    geneflow_edges,
-    intermediate_edges
-  )
-
-  nodes <- get_nodes(edges)
-
-  g <- tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
-  layout <- create_layout(g, layout = "sugiyama")
-  layout$pop <- factor(layout$pop, levels = split_table$pop)
-
-  ggraph(layout) +
-
-  # geneflow edges along with geneflow rates
-  geom_edge_link(
-    aes(filter = type == "geneflow", label = rate,
-        start_cap = label_rect(node1.name),
-        end_cap = label_rect(node2.name),
-        linetype = "geneflow"),
-    angle_calc = "along",
-    label_dodge = unit(3, "mm"),
-    arrow = arrow(length = unit(4, "mm"))
-  ) +
-
-  # population split/continuation edges (no rates labeled)
-  geom_edge_link(
-    aes(filter = type  == "split",
-        start_cap = label_rect(node1.name),
-        end_cap = label_rect(node2.name),
-        linetype = "split"),
-    label_dodge = unit(10, "mm"),
-    arrow = arrow(length = unit(4, "mm"))
-  ) +
-
-  # continuation edges
-  geom_edge_link(aes(filter = type == "intermediate",
-                     linetype = "continuation")) +
-
-  geom_node_label(aes(fill = pop, label = label)) +
-
-  scale_edge_linetype_manual(values = c("split" = "solid",
-                                        "continuation" = "solid",
-                                        "geneflow" = "solid")) +
-
-  guides(fill = guide_legend(""), edge_linetype = "none") +
-
-  theme_void() +
-  theme(legend.position = "right",
-        plot.margin = unit(c(1, 1, 1, 1), "cm"),
-        legend.justification = "top") +
-  coord_cartesian(clip = "off")
-}
-
-
-# Create a table of population split edges for graph visualization
-get_split_edges <- function(split_table) {
-  split_edges <- split_table[split_table$parent != "ancestor",
-                             c("parent", "pop", "tsplit")]
-  names(split_edges) <- c("from", "to", "time")
-
-  if (!nrow(split_edges)) return(split_edges)
-
-  split_edges$type <- "split"
-  split_edges$rate <- NA
-  split_edges$x <- paste0(split_edges$from, "#####", split_edges$time)
-  split_edges$y <- paste0(split_edges$to, "#####", split_edges$time)
-
-  split_edges <- split_edges[, c("x", "y", "type", "time", "rate")]
-  rownames(split_edges) <- NULL
-
-  split_edges
-}
-
-
-# Create a table of population geneflow edges for graph visualization
-get_geneflow_edges <- function(admix_table) {
-  if (is.null(admix_table)) {
-    admix_edges <- data.frame(matrix(ncol = 4, nrow = 0))
-    colnames(admix_edges) <- c("from", "to", "rate", "tstart")
-    return(admix_edges)
-  }
-
-  admix_edges <- admix_table[, c("from", "to", "rate", "tstart")]
-  names(admix_edges) <- c("from", "to", "rate", "time")
-  admix_edges$type <- "geneflow"
-  admix_edges$rate <- sprintf("%.1f%%", admix_edges$rate * 100)
-  admix_edges$x <- paste0(admix_edges$from, "#####", admix_edges$time)
-  admix_edges$y <- paste0(admix_edges$to, "#####", admix_edges$time)
-
-  admix_edges[, c("x", "y", "type", "time", "rate")]
-}
-
-
-# Create a table of 'intermediate' edges for graph visualization
-#
-# For plotting the entire geneflow graph, just nodes representing population
-# splits are not enough. We also need nodes (population states) which are not
-# explicitly simulated as separate population, but they represent time points
-# needed to plot geneflow edges.
-get_intermediate_edges <- function(split_edges, geneflow_edges) {
-  edges <- rbind(split_edges, geneflow_edges)
-
-  all_nodes <- c(edges$x, edges$y)
-
-  intermediate_nodes <- lapply(
-    unique(gsub("#####.*$", "", all_nodes)),
-    function(i) {
-      # grab all nodes and their times belonging to the current population i
-      nodes <- all_nodes[grepl(paste0(i, "#####"), all_nodes)]
-      times <- gsub(".*#####", "", nodes)
-      # leave out the ancestral node/time from the sorting (in case it is even
-      # present as a node with a non-integer "ancestral" time)
-      ancestor <- nodes[times == "ancestral"]
-      nodes <- nodes[times != "ancestral"]
-      times <- as.integer(times[times != "ancestral"])
-      c(ancestor, unique(nodes[order(times, decreasing = TRUE)]))
-    }
-  )
-
-  lapply(intermediate_nodes, function(nodes) {
-    if (length(nodes) == 1) return(NULL)
-    # construct data frame of consecutive, linked pairs of nodes
-    pairs <- cbind(nodes[-length(nodes)], nodes[-1]) %>%
-      as.data.frame(stringsAsFactors = FALSE) %>%
-      stats::setNames(c("x", "y"))
-    pairs$type <- "intermediate"
-    pairs$time <- as.integer(gsub(".*#####", "", pairs$y))
-    pairs$rate <- NA
-    pairs
-  }) %>%
-  do.call(rbind, .)
-}
-
-
-# Get table of node labels in the graph
-get_nodes <- function(edges) {
-  nodes <- unique(c(edges$x, edges$y))
-
-  # find the first occurrence of a population in the model based
-  # on the time label
-  pops <- gsub("#####.*$", "", nodes)
-  times <- as.integer(gsub("^.*#####", "", nodes))
-
-  ordered <- order(times, decreasing = TRUE)
-
-  # non-duplicated elements in the vector of population names
-  # indicate the first position of such element
-  nodes <- data.frame(
-    name = nodes[ordered],
-    pop = pops[ordered],
-    time = times[ordered],
-    first = !duplicated(pops[ordered]),
-    stringsAsFactors = FALSE
-  )
-  # assign a type to each node based on the corresponding edge type
-  nodes$type <- sapply(nodes$name, function(i) {
-    type <- grep("intermediate", edges[edges$y == i, ]$type, invert = TRUE, value = TRUE)
-    if (length(type) > 0)
-      return(unique(type))
-    else
-      return("intermediate")
-  })
-  nodes$type[!nodes$name %in% edges$y] <- "ancestral"
-
-  nodes <- nodes %>% dplyr::mutate(label = dplyr::case_when(
-    type == "split" ~ sprintf("%s split\nat %s", pop, time),
-    type == "ancestral" ~ paste(pop, "(ancestor)"),
-    type == "geneflow" ~ sprintf("geneflow\nat %s", time),
-    type == "intermediate" ~ sprintf("from %s", pop)
-  ))
-  nodes
-}
-
 
 #' Plot \code{slendr} geographic features on a map
 #'
@@ -493,3 +183,313 @@ interactively.", call. = FALSE)
     theme_bw() +
     p_coord
 }
+
+#' Plot geneflow graph based on given model configuration
+#'
+#' @param model Compiled \code{slendr_model} model object
+#'
+#' @import ggplot2 ggraph
+#' @export
+plot_graph <- function(model) {
+  # plot times in their original direction
+  split_table <- model$splits
+  split_table[, c("tsplit", "tremove")] <-   split_table[, c("tsplit_orig", "tremove_orig")]
+  geneflow_table <- model$geneflow
+  geneflow_table[, c("tstart", "tend")] <-   geneflow_table[, c("tstart_orig", "tend_orig")]
+
+  split_edges <- get_split_edges(split_table)
+  geneflow_edges <- get_geneflow_edges(geneflow_table)
+  intermediate_edges <- get_intermediate_edges(split_edges, geneflow_edges)
+
+  edges <- rbind(
+    split_edges,
+    geneflow_edges,
+    intermediate_edges
+  )
+
+  nodes <- get_nodes(edges)
+
+  g <- tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
+  layout <- create_layout(g, layout = "sugiyama")
+  layout$pop <- factor(layout$pop, levels = split_table$pop)
+
+  ggraph(layout) +
+
+    # geneflow edges along with geneflow rates
+    geom_edge_link(
+      aes(filter = type == "geneflow", label = rate,
+          start_cap = label_rect(node1.name),
+          end_cap = label_rect(node2.name),
+          linetype = "geneflow"),
+      angle_calc = "along",
+      label_dodge = unit(3, "mm"),
+      arrow = arrow(length = unit(4, "mm"))
+    ) +
+
+    # population split/continuation edges (no rates labeled)
+    geom_edge_link(
+      aes(filter = type  == "split",
+          start_cap = label_rect(node1.name),
+          end_cap = label_rect(node2.name),
+          linetype = "split"),
+      label_dodge = unit(10, "mm"),
+      arrow = arrow(length = unit(4, "mm"))
+    ) +
+
+    # continuation edges
+    geom_edge_link(aes(filter = type == "intermediate",
+                       linetype = "continuation")) +
+
+    geom_node_label(aes(fill = pop, label = label)) +
+
+    scale_edge_linetype_manual(values = c("split" = "solid",
+                                          "continuation" = "solid",
+                                          "geneflow" = "solid")) +
+
+    guides(fill = guide_legend(""), edge_linetype = "none") +
+
+    theme_void() +
+    theme(legend.position = "right",
+          plot.margin = unit(c(1, 1, 1, 1), "cm"),
+          legend.justification = "top") +
+    coord_cartesian(clip = "off")
+}
+
+#' Plot simulated ancestry proportions
+#'
+#' @param model Compiled \code{slendr_model} model object
+#'
+#' @export
+plot_ancestry <- function(model) {
+  anc_wide <- read_ancestries(model$path)
+
+  # thank god for tidyverse, base R reshaping is truly awful...  but
+  # it's not worth dragging along a huge dependency if we can do this
+  # sort of thing in base R...
+  anc_long <- stats::reshape(
+    data = anc_wide,
+    direction = "long",
+    timevar = "ancestry",
+    varying = 2:(ncol(anc_wide) - 1),
+    idvar = c("gen", "pop"),
+    v.names = "prop",
+    times = colnames(anc_wide)[2:(ncol(anc_wide) - 1)]
+  )
+  rownames(anc_long) <- NULL
+
+  # order population names based on their split order
+  split_order <- split(anc_long, anc_long$pop) %>%
+    sapply(function(df) max(df$gen)) %>%
+    sort(decreasing = TRUE) %>%
+    names
+  anc_long$pop <- factor(anc_long$pop, levels = split_order)
+
+  anc_long$time <- anc_long$gen * model$generation_time
+
+  anc_long %>%
+  ggplot(aes(-time, prop, color = ancestry)) +
+    geom_line() +
+    facet_wrap(~ pop) +
+    coord_cartesian(ylim = c(0, 1)) +
+    ggtitle("Ancestry proportions in populations during the course of their existence") +
+    theme_minimal()
+}
+
+#' Animate the simulated population dynamics
+#'
+#' @param model Compiled \code{slendr_model} model object
+#' @param steps How many frames should the animation have?
+#' @param gif Path to an output GIF file (animation object returned
+#'   by default)
+#'
+#' @return If `gif = NULL`, return gganimate animation object. Otherwise a GIF
+#'   file is saved and no value is returned.
+#'
+#' @import ggplot2
+#' @export
+animate <- function(model, steps, gif = NULL, width = 800, height = 560) {
+  if (!inherits(model$world, "slendr_map"))
+    stop("Cannot animate non-spatial models", call. = FALSE)
+
+  locations <- file.path(model$path, "output_ind_locations.tsv.gz")
+  locs <- readr::read_tsv(locations, col_types = "iiiidd", progress = FALSE)
+  pop_names <- model$splits$pop
+
+  # label populations based on their original identifiers from the user
+  locs$pop <- factor(
+    locs$pop,
+    levels = sort(unique(locs$pop)),
+    labels = pop_names[sort(unique(locs$pop)) + 1]
+  )
+  locs$time <- as.integer(locs$time)
+  locs <- dplyr::filter(locs, time %in% sort(unique(
+    c(min(time),
+      time[seq(1, length(time), length.out = steps)],
+      max(time))
+  )))
+
+  # convert pixel-based coordinates to the internal CRS
+  locs <- reproject(
+    coords = locs,
+    from = "raster", to = "world",
+    model = model,
+    add = TRUE
+  )
+
+  p <- plot(model$world) +
+    geom_point(data = locs, aes(newx, newy, color = pop), alpha = 0.5, size = 0.5) +
+    theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          legend.title = element_blank())
+
+  if (length(unique(locs$pop)) == 1) p <- p + theme(legend.position = "none")
+
+  if (model$direction == "backward")
+    transition <- gganimate::transition_states(
+      -time,
+      transition_length = 1,
+      state_length = 0
+    )
+  else
+    transition <- gganimate::transition_states(
+      time,
+      transition_length = 1,
+      state_length = 0
+    )
+
+  gganim <- p + transition + ggtitle("time: {abs(as.integer(closest_state))}")
+
+  anim <- gganimate::animate(
+    gganim,
+    nframes = length(unique(locs$time)),
+    width = width,
+    height = height
+  )
+
+  if (is.null(gif))
+    return(anim)
+  else
+    gganimate::anim_save(gif, anim)
+}
+
+# helper functions --------------------------------------------------------
+
+# Create a table of population split edges for graph visualization
+get_split_edges <- function(split_table) {
+  split_edges <- split_table[split_table$parent != "ancestor",
+                             c("parent", "pop", "tsplit")]
+  names(split_edges) <- c("from", "to", "time")
+
+  if (!nrow(split_edges)) return(split_edges)
+
+  split_edges$type <- "split"
+  split_edges$rate <- NA
+  split_edges$x <- paste0(split_edges$from, "#####", split_edges$time)
+  split_edges$y <- paste0(split_edges$to, "#####", split_edges$time)
+
+  split_edges <- split_edges[, c("x", "y", "type", "time", "rate")]
+  rownames(split_edges) <- NULL
+
+  split_edges
+}
+
+
+# Create a table of population geneflow edges for graph visualization
+get_geneflow_edges <- function(admix_table) {
+  if (is.null(admix_table)) {
+    admix_edges <- data.frame(matrix(ncol = 4, nrow = 0))
+    colnames(admix_edges) <- c("from", "to", "rate", "tstart")
+    return(admix_edges)
+  }
+
+  admix_edges <- admix_table[, c("from", "to", "rate", "tstart")]
+  names(admix_edges) <- c("from", "to", "rate", "time")
+  admix_edges$type <- "geneflow"
+  admix_edges$rate <- sprintf("%.1f%%", admix_edges$rate * 100)
+  admix_edges$x <- paste0(admix_edges$from, "#####", admix_edges$time)
+  admix_edges$y <- paste0(admix_edges$to, "#####", admix_edges$time)
+
+  admix_edges[, c("x", "y", "type", "time", "rate")]
+}
+
+
+# Create a table of 'intermediate' edges for graph visualization
+#
+# For plotting the entire geneflow graph, just nodes representing population
+# splits are not enough. We also need nodes (population states) which are not
+# explicitly simulated as separate population, but they represent time points
+# needed to plot geneflow edges.
+get_intermediate_edges <- function(split_edges, geneflow_edges) {
+  edges <- rbind(split_edges, geneflow_edges)
+
+  all_nodes <- c(edges$x, edges$y)
+
+  intermediate_nodes <- lapply(
+    unique(gsub("#####.*$", "", all_nodes)),
+    function(i) {
+      # grab all nodes and their times belonging to the current population i
+      nodes <- all_nodes[grepl(paste0(i, "#####"), all_nodes)]
+      times <- gsub(".*#####", "", nodes)
+      # leave out the ancestral node/time from the sorting (in case it is even
+      # present as a node with a non-integer "ancestral" time)
+      ancestor <- nodes[times == "ancestral"]
+      nodes <- nodes[times != "ancestral"]
+      times <- as.integer(times[times != "ancestral"])
+      c(ancestor, unique(nodes[order(times, decreasing = TRUE)]))
+    }
+  )
+
+  lapply(intermediate_nodes, function(nodes) {
+    if (length(nodes) == 1) return(NULL)
+    # construct data frame of consecutive, linked pairs of nodes
+    pairs <- cbind(nodes[-length(nodes)], nodes[-1]) %>%
+      as.data.frame(stringsAsFactors = FALSE) %>%
+      stats::setNames(c("x", "y"))
+    pairs$type <- "intermediate"
+    pairs$time <- as.integer(gsub(".*#####", "", pairs$y))
+    pairs$rate <- NA
+    pairs
+  }) %>%
+  do.call(rbind, .)
+}
+
+
+# Get table of node labels in the graph
+get_nodes <- function(edges) {
+  nodes <- unique(c(edges$x, edges$y))
+
+  # find the first occurrence of a population in the model based
+  # on the time label
+  pops <- gsub("#####.*$", "", nodes)
+  times <- as.integer(gsub("^.*#####", "", nodes))
+
+  ordered <- order(times, decreasing = TRUE)
+
+  # non-duplicated elements in the vector of population names
+  # indicate the first position of such element
+  nodes <- data.frame(
+    name = nodes[ordered],
+    pop = pops[ordered],
+    time = times[ordered],
+    first = !duplicated(pops[ordered]),
+    stringsAsFactors = FALSE
+  )
+  # assign a type to each node based on the corresponding edge type
+  nodes$type <- sapply(nodes$name, function(i) {
+    type <- grep("intermediate", edges[edges$y == i, ]$type, invert = TRUE, value = TRUE)
+    if (length(type) > 0)
+      return(unique(type))
+    else
+      return("intermediate")
+  })
+  nodes$type[!nodes$name %in% edges$y] <- "ancestral"
+
+  nodes <- nodes %>% dplyr::mutate(label = dplyr::case_when(
+    type == "split" ~ sprintf("%s split\nat %s", pop, time),
+    type == "ancestral" ~ paste(pop, "(ancestor)"),
+    type == "geneflow" ~ sprintf("geneflow\nat %s", time),
+    type == "intermediate" ~ sprintf("from %s", pop)
+  ))
+  nodes
+}
+

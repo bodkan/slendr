@@ -180,7 +180,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-population-dynamics" class="hasAnchor"><a href="#section-population-dynamics" class="anchor"></a>Population dynamics</h2>
+          <h2 id="section-model-components" class="hasAnchor"><a href="#section-model-components" class="anchor"></a>Model components</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -196,6 +196,37 @@
         </td>
         <td><p>Define a population and its original spatial range</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="world.html">world()</a></code> </p>
+        </td>
+        <td><p>Define a world map for all spatial operations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="geneflow.html">geneflow()</a></code> </p>
+        </td>
+        <td><p>Define a geneflow event</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="region.html">region()</a></code> </p>
+        </td>
+        <td><p>Define a geographic region</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-population-dynamics" class="hasAnchor"><a href="#section-population-dynamics" class="anchor"></a>Population dynamics</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="move.html">move()</a></code> </p>
@@ -231,17 +262,11 @@
           <p><code><a href="dispersal.html">dispersal()</a></code> </p>
         </td>
         <td><p>Change dispersal parameters</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="geneflow.html">geneflow()</a></code> </p>
-        </td>
-        <td><p>Define a geneflow event</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-defining-and-manipulating-spatial-features" class="hasAnchor"><a href="#section-defining-and-manipulating-spatial-features" class="anchor"></a>Defining and manipulating spatial features</h2>
+          <h2 id="section-spatial-features" class="hasAnchor"><a href="#section-spatial-features" class="anchor"></a>Spatial features</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -253,21 +278,9 @@
       <tr>
         
         <td>
-          <p><code><a href="world.html">world()</a></code> </p>
-        </td>
-        <td><p>Define a world map for all spatial operations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="region.html">region()</a></code> </p>
-        </td>
-        <td><p>Define a geographic region</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="join.html">join()</a></code> </p>
         </td>
-        <td><p>Combine two <code>slendr_region</code> objects into a single geographic region</p></td>
+        <td><p>Merge two spatial <code>slendr</code> objects into one</p></td>
       </tr><tr>
         
         <td>
@@ -280,25 +293,12 @@
           <p><code><a href="subtract.html">subtract()</a></code> </p>
         </td>
         <td><p>Generate the difference between two <code>slendr</code> objects</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-coordinate-conversion-distances-areas" class="hasAnchor"><a href="#section-coordinate-conversion-distances-areas" class="anchor"></a>Coordinate conversion, distances, areas</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
+      </tr><tr>
         
         <td>
-          <p><code><a href="convert.html">convert()</a></code> </p>
+          <p><code><a href="reproject.html">reproject()</a></code> </p>
         </td>
-        <td><p>Convert between coordinate systems</p></td>
+        <td><p>Reproject coordinates between coordinate systems</p></td>
       </tr><tr>
         
         <td>
@@ -314,7 +314,7 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="dimension.html">dimension()</a></code> </p>
+          <p><code><a href="dimensions.html">dimensions()</a></code> </p>
         </td>
         <td><p>Return the dimensions of the world map</p></td>
       </tr>
@@ -339,21 +339,21 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="graph.html">graph()</a></code> </p>
+          <p><code><a href="plot_graph.html">plot_graph()</a></code> </p>
         </td>
         <td><p>Plot geneflow graph based on given model configuration</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_ancestry.html">plot_ancestry()</a></code> </p>
+        </td>
+        <td><p>Plot simulated ancestry proportions</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="animate.html">animate()</a></code> </p>
         </td>
         <td><p>Animate the simulated population dynamics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ancestries.html">ancestries()</a></code> </p>
-        </td>
-        <td><p>Plot simulated ancestry proportions</p></td>
       </tr><tr>
         
         <td>
@@ -412,6 +412,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="slim.html">slim()</a></code> </p>
+        </td>
+        <td><p>Run a slendr model as a SLiM script</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="read.html">read()</a></code> </p>
         </td>
         <td><p>Read a previously serialized model configuration</p></td>
@@ -421,17 +427,11 @@
           <p><code><a href="script.html">script()</a></code> </p>
         </td>
         <td><p>Substitute variables in a template SLiM script</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="slim.html">slim()</a></code> </p>
-        </td>
-        <td><p>Run a slendr model as a SLiM script</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-tree-sequence-processing" class="hasAnchor"><a href="#section-tree-sequence-processing" class="anchor"></a>Tree-sequence processing</h2>
+          <h2 id="section-tree-sequence-handling" class="hasAnchor"><a href="#section-tree-sequence-handling" class="anchor"></a>Tree-sequence handling</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -457,7 +457,7 @@
         <td>
           <p><code><a href="ts_simplify.html">ts_simplify()</a></code> </p>
         </td>
-        <td><p>Simplify tree-sequence object down to sampled individuals</p></td>
+        <td><p>Simplify the tree-sequence down to a given set of individuals</p></td>
       </tr><tr>
         
         <td>
@@ -467,15 +467,21 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="ts_individual.html">ts_individual()</a></code> </p>
+        </td>
+        <td><p>Extract a single individual from a tree-sequence</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="ts_individuals.html">ts_individuals()</a></code> </p>
         </td>
         <td><p>Extract table of individuals from pyslim's tree-sequence object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ts_nodes.html">ts_nodes()</a></code> </p>
+          <p><code><a href="ts_node.html">ts_node()</a></code> </p>
         </td>
-        <td><p>Extract the nodes belonging to a given set of individuals</p></td>
+        <td><p>Extract a node from a tree-sequence</p></td>
       </tr><tr>
         
         <td>
@@ -500,6 +506,18 @@
           <p><code><a href="ts_coalesced.html">ts_coalesced()</a></code> </p>
         </td>
         <td><p>Check that all trees in the tree-sequence are fully coalesced</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_tree.html">ts_tree()</a></code> </p>
+        </td>
+        <td><p>Get a tree from a given tree-sequence</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ts_draw.html">ts_draw()</a></code> </p>
+        </td>
+        <td><p>Plot a graphical representation of a tree-sequence or a single tree</p></td>
       </tr>
     </tbody><tbody>
       <tr>

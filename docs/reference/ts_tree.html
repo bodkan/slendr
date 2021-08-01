@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return the dimensions of the world map — dimension • slendr</title>
+<title>Get a tree from a given tree-sequence — ts_tree • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,9 @@
 
 
 
-<meta property="og:title" content="Return the dimensions of the world map — dimension" />
-<meta property="og:description" content="Return the dimensions of the world map" />
+<meta property="og:title" content="Get a tree from a given tree-sequence — ts_tree" />
+<meta property="og:description" content="For more information about optional keyword arguments see tskit documentation:
+https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -167,37 +168,42 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Return the dimensions of the world map</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
-    <div class="hidden name"><code>dimension.Rd</code></div>
+    <h1>Get a tree from a given tree-sequence</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
+    <div class="hidden name"><code>ts_tree.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Return the dimensions of the world map</p>
+    <p>For more information about optional keyword arguments see tskit documentation:
+<a href='https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class'>https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class</a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>dimension</span><span class='op'>(</span><span class='va'>map</span>, original <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_tree</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>i</span>, mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"index"</span>, <span class='st'>"position"</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>map</th>
-      <td><p>Object of the type <code>slendr_map</code></p></td>
+      <th>ts</th>
+      <td><p>SlimTreeSequence object</p></td>
     </tr>
     <tr>
-      <th>original</th>
-      <td><p>Return dimensions in the original coordinate system (CRS)
-instead of the internal projected CRS?</p></td>
+      <th>i</th>
+      <td><p>Position of the tree in the tree-sequence. If <code>mode = "index"</code>,
+an i-th tree will be returned (in one-based indexing), if <code>mode =
+  "position"</code>, a tree covering an i-th base of the simulated genome will be
+returned.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional keyword arguments accepted by
+<code>tskit.TreeSequence.at and tskit.TreeSequence.at_index</code> methods</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If the coordinate reference system was specified, the function
-returns a two-dimensional vector of the world dimensions in the projected
-units. Otherwise the dimensions of the two-dimensional abstract plane are
-returned.</p>
+    <p>Object of the type tskit.trees.Tree</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

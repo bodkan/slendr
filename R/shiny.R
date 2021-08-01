@@ -86,7 +86,7 @@ explore <- function(model) {
 
   if (!has_map(model$populations[[1]]))
     stop("Cannot plot spatial map dynamics for non-spatial models.
-As an alternative, consider using the graph() function to explore
+As an alternative, consider using the plot_graph() function to explore
 the demographic history encapsulated in your model.",
           call. = FALSE)
 
@@ -318,7 +318,7 @@ the demographic history encapsulated in your model.",
       } else return(NULL)
     }, sanitize.text.function = identity)
 
-    output$slendr_graph <- renderPlot({ graph(model) }, height = 600)
+    output$slendr_graph <- renderPlot({ plot_graph(model) }, height = 600)
 
   }
 

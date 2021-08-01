@@ -44,7 +44,7 @@ library(slendr)
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 ```
 
-Here are seven populations occupying a circular range on a blank landscape `r dimension(map)[1]` distances units wide and `r dimension(map)[2]` distance units tall. All are programmed to appear in the simulation in generation one and have the same number of individuals.
+Here are seven populations occupying a circular range on a blank landscape `r dimensions(map)[1]` distances units wide and `r dimensions(map)[2]` distance units tall. All are programmed to appear in the simulation in generation one and have the same number of individuals.
 
 ```{r pop_ranges}
 N <- 3000; y <- 350; r = 240

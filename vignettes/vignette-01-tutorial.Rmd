@@ -450,12 +450,12 @@ loaded_model <- read(file.path(tempdir(), "tutorial-model"))
 
 With the couple of code snippets above, we have defined a simple history of European populations over the last 50 thousand years. This history includes population splits and geneflow events as well as other demographic changes. While *slendr* tries to make the formal specification of spatio-temporal population dynamics as concise as possible, in the hope to increase reproducibility and minimize errors, because the geneflow history can be very complex and occurs both across space and time, it is hard to really visualize everything that will happen on the SLiM side after the simulation starts just from the code alone.
 
-For this purpose, the package includes a function `graph()` which takes in all the information about the relationships between populations (i.e., the population and geneflow objects we defined above) and plots it all in the form of a so-called *admixture graph* (see [here](https://academic.oup.com/genetics/article/192/3/1065/5935193) for a discussion of the admixture graph concept).
+For this purpose, the package includes a function `plot_graph()` which takes in all the information about the relationships between populations (i.e., the population and geneflow objects we defined above) and plots it all in the form of a so-called *admixture graph* (see [here](https://academic.oup.com/genetics/article/192/3/1065/5935193) for a discussion of the admixture graph concept).
 
 One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full *slendr* graph, a single population can participate in many geneflow events over the course of history. This is visualized by assigning a color to each population, and different nodes of the same color representing snapshots in time when a demographic event affecting that population happens.
 
 ```{r plot_graph, fig.width = 12, fig.height = 12}
-graph(model)
+plot_graph(model)
 ```
 
 ## Interactive exploration of spatio-temporal models
@@ -493,10 +493,10 @@ slim(
 
 ## Post-simulation diagnostics
 
-In case we instructed *slendr* to track ancestry proportions, we can visualize them after the simulation is over using the built-in `ancestries()` function. This is quite bare-bones for now and the way diagnostics are generated is probably subject to change.
+In case we instructed *slendr* to track ancestry proportions, we can visualize them after the simulation is over using the built-in `plot_ancestry()` function. This is quite bare-bones for now and the way diagnostics are generated is probably subject to change.
 
 ```{r plot_ancestries}
-ancestries(model)
+plot_ancestry(model)
 ```
 
 Similarly, we can recapitulate the spatial dynamics with the *slendr* function `animate()` (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):

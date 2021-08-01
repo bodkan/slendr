@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{join}
 \alias{join}
-\title{Combine two \code{slendr_region} objects into a single geographic region}
+\title{Merge two spatial \code{slendr} objects into one}
 \usage{
 join(x, y, name = NULL)
 }
@@ -18,5 +18,5 @@ name will be constructed from the function arguments.}
 Object of the class \code{slendr_region}
 }
 \description{
-Combine two \code{slendr_region} objects into a single geographic region
+Merge two spatial \code{slendr} objects into one
 }

@@ -4,9 +4,6 @@
     <loc>https://bodkan.net/slendr/index.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/slendr/reference/ancestries.html</loc>
-  </url>
-  <url>
     <loc>https://bodkan.net/slendr/reference/animate.html</loc>
   </url>
   <url>
@@ -19,10 +16,7 @@
     <loc>https://bodkan.net/slendr/reference/compile.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/slendr/reference/convert.html</loc>
-  </url>
-  <url>
-    <loc>https://bodkan.net/slendr/reference/dimension.html</loc>
+    <loc>https://bodkan.net/slendr/reference/dimensions.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/dispersal.html</loc>
@@ -40,9 +34,6 @@
     <loc>https://bodkan.net/slendr/reference/geneflow.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/slendr/reference/graph.html</loc>
-  </url>
-  <url>
     <loc>https://bodkan.net/slendr/reference/join.html</loc>
   </url>
   <url>
@@ -56,6 +47,12 @@
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/plot.slendr.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/plot_ancestry.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/plot_graph.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/population.html</loc>
@@ -77,6 +74,9 @@
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/region.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/reproject.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/resize.html</loc>
@@ -109,6 +109,9 @@
     <loc>https://bodkan.net/slendr/reference/ts_diversity.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/slendr/reference/ts_draw.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/slendr/reference/ts_eigenstrat.html</loc>
   </url>
   <url>
@@ -121,6 +124,9 @@
     <loc>https://bodkan.net/slendr/reference/ts_genotypes.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/slendr/reference/ts_individual.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/slendr/reference/ts_individuals.html</loc>
   </url>
   <url>
@@ -130,7 +136,7 @@
     <loc>https://bodkan.net/slendr/reference/ts_mutate.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/slendr/reference/ts_nodes.html</loc>
+    <loc>https://bodkan.net/slendr/reference/ts_node.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/ts_recapitate.html</loc>
@@ -143,6 +149,9 @@
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/ts_tajima.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/reference/ts_tree.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/ts_vcf.html</loc>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot geneflow graph based on given model configuration — graph • slendr</title>
+<title>Extract a node from a tree-sequence — ts_node • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,9 @@
 
 
 
-<meta property="og:title" content="Plot geneflow graph based on given model configuration — graph" />
-<meta property="og:description" content="Plot geneflow graph based on given model configuration" />
+<meta property="og:title" content="Extract a node from a tree-sequence — ts_node" />
+<meta property="og:description" content="If an individual identifier is given, the nodes belonging to that individual
+will be returned." />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -167,26 +168,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot geneflow graph based on given model configuration</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
-    <div class="hidden name"><code>graph.Rd</code></div>
+    <h1>Extract a node from a tree-sequence</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
+    <div class="hidden name"><code>ts_node.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot geneflow graph based on given model configuration</p>
+    <p>If an individual identifier is given, the nodes belonging to that individual
+will be returned.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>graph</span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_node</span><span class='op'>(</span><span class='va'>ts</span>, id <span class='op'>=</span> <span class='cn'>NULL</span>, individual_id <span class='op'>=</span> <span class='cn'>NULL</span>, pedigree_id <span class='op'>=</span> <span class='cn'>NULL</span>, name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>model</th>
-      <td><p>Compiled <code>slendr_model</code> model object</p></td>
+      <th>ts</th>
+      <td><p>SlimTreeSequence object</p></td>
+    </tr>
+    <tr>
+      <th>id</th>
+      <td><p>Numeric index of an node</p></td>
+    </tr>
+    <tr>
+      <th>individual_id</th>
+      <td><p>Numeric index of an individual</p></td>
+    </tr>
+    <tr>
+      <th>pedigree_id</th>
+      <td><p>Pedigree number of an individual</p></td>
+    </tr>
+    <tr>
+      <th>name</th>
+      <td><p>String name of the individual (all names can be accessed by
+<code>ts_individuals</code>)</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Object of the type <code>tskit.trees.Individual</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
