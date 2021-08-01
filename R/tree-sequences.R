@@ -375,7 +375,8 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
 #'
 #' @export
-ts_draw <- function(x, width = 1500, height = 500, individuals = FALSE, ts = NULL, ...) {
+ts_draw <- function(x, width = 1500, height = 500, individuals = FALSE,
+                    ts = NULL, ...) {
   if (individuals) {
     if (inherits(x, "tskit.trees.Tree") & is.null(ts))
       stop("For plotting individual names, please provide the ",
@@ -389,7 +390,7 @@ ts_draw <- function(x, width = 1500, height = 500, individuals = FALSE, ts = NUL
   } else
     labels <- NULL
 
-  svg <- x$draw_svg(size = c(width, height), node_labels = labels)
+  svg <- x$draw_svg(size = c(width, height), node_labels = labels, ...)
 
   # convert from a SVG representation to a PNG image
   raw <- charToRaw(svg)

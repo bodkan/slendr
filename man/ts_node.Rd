@@ -4,7 +4,14 @@
 \alias{ts_node}
 \title{Extract a node from a tree-sequence}
 \usage{
-ts_node(ts, id = NULL, individual_id = NULL, pedigree_id = NULL, name = NULL)
+ts_node(
+  ts,
+  id = NULL,
+  individual_id = NULL,
+  pedigree_id = NULL,
+  name = NULL,
+  numeric = FALSE
+)
 }
 \arguments{
 \item{ts}{SlimTreeSequence object}
@@ -17,6 +24,9 @@ ts_node(ts, id = NULL, individual_id = NULL, pedigree_id = NULL, name = NULL)
 
 \item{name}{String name of the individual (all names can be accessed by
 \code{ts_individuals})}
+
+\item{numeric}{Return just the numeric indides of nodes (default is
+\code{fALSE})?}
 }
 \value{
 Object of the type \code{tskit.trees.Individual}

@@ -11,8 +11,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 6,
-  fig.height = 4,
+  fig.width = 8,
+  fig.height = 6,
   dpi = 80,
   eval = TRUE
 )
@@ -182,7 +182,7 @@ ts <- ts_load(ts_file, model, simplify = TRUE)
 By default, simplification in `ts_load()` simplified the tree-sequence down to only remembered individuals (i.e. those we explicitly scheduled for sampling). We can also narrow down the simplification to a defined set of individuals using the `individuals = ` argument. Internally, simplification is implemented in a dedicated function `ts_simplify()` which we can always call explicitly, like this:
 
 ```{r}
-ts_small <- ts_simplify(ts, individuals = c("CH1", "NEA1", "AFR2", "EUR20", "EUR50"))
+ts_small <- ts_simplify(ts, individuals = c("CH1", "NEA1", "NEA2", "AFR1", "AFR2", "EUR20", "EUR50"))
 ```
 
 Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapitation](https://pyslim.readthedocs.io/en/latest/tutorial.html#recapitation). Again, we can do this in one go, by specifying `recapitate = TRUE` in the call to `ts_load()` after specifying a couple of additional arguments required for recapitation (see the pyslim documentation in the [recapitation](https://pyslim.readthedocs.io/en/latest/tutorial.html#recapitation) section for more detail):
@@ -230,10 +230,10 @@ We can then visualize the tree by calling:
 ts_draw(tree, width = 1000, height = 600)
 ```
 
-If we specify `individuals = TRUE` and provide the tree-sequence object itself (because that carries all the required model metadata such as individual names), we get a slightly more readable figure:
+If we specify `individuals = TRUE` and provide the tree-sequence object itself (because that carries all the required model metadata such as individual names), we get a slightly more readable figure. We can also provide keyword arguments specific to *tskit* `draw_svg()` function, such as `time_scale` here:
 
 ```{r, tree_labels}
-ts_draw(tree, width = 1000, height = 600, individuals = TRUE, ts = ts)
+ts_draw(tree, width = 1000, height = 600, individuals = TRUE, ts = ts_small, time_scale = "rank")
 ```
 
 
