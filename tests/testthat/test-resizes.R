@@ -10,7 +10,7 @@ run_sim <- function(pop, direction, sim_length = NULL, method = "batch") {
     dir = model_dir, direction = direction, sim_length = sim_length
   )
 
-  slim(model, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = method)
+  slim(model, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = method, verbose = FALSE)
 
   df <- suppressMessages(readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"), progress = FALSE))
   suppressMessages(dplyr::group_by(df, gen, time, pop) %>% dplyr::summarise(N = dplyr::n()))

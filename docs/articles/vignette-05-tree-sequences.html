@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tree-sequences processing and statistics • slendr</title>
+<title>Tree-sequence processing and statistics • slendr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -19,7 +19,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="../docsearch.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Tree-sequences processing and statistics">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Tree-sequence processing and statistics">
 <meta property="og:description" content="slendr">
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -81,7 +81,7 @@
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
     <li>
-      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequences processing and statistics</a>
+      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
     </li>
   </ul>
 </li>
@@ -121,7 +121,7 @@
       </header><script src="vignette-05-tree-sequences_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Tree-sequences processing and statistics</h1>
+      <h1 data-toc-skip>Tree-sequence processing and statistics</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/master/vignettes/vignette-05-tree-sequences.Rmd"><code>vignettes/vignette-05-tree-sequences.Rmd</code></a></small>
@@ -158,7 +158,7 @@
 <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">anc</span>, <span class="va">chimp</span>, <span class="va">nea</span>, <span class="va">afr</span>, <span class="va">eur</span><span class="op">)</span>, geneflow <span class="op">=</span> <span class="va">gf</span>,
   generation_time <span class="op">=</span> <span class="fl">30</span>,
-  dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"introgression"</span><span class="op">)</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>
+  dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"introgression"</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>Here’s our toy model visualized as a graph. Not particularly illuminating in this simple example, but it’s always worth keeping in mind that such graph is embedded within every <em>slendr</em> model and can be always invoked to make sure the model you’re setting up is correct:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -300,7 +300,7 @@
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Populations│       5│  3.1 KiB│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
-<span class="co">#&gt; ║Provenances│       1│ 28.8 KiB│          No║</span>
+<span class="co">#&gt; ║Provenances│       1│ 29.3 KiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼────────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Sites      │       0│  8 Bytes│          No║</span>
 <span class="co">#&gt; ╚═══════════╧════════╧═════════╧════════════╝</span></code></pre></div>

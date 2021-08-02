@@ -127,7 +127,7 @@
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
     <li>
-      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequences processing and statistics</a>
+      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
     </li>
   </ul>
 </li>
@@ -189,6 +189,10 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>ts</th>
+      <td><p>SlimTreeSequence object</p></td>
+    </tr>
+    <tr>
       <th>sample_sets</th>
       <td><p>A list (optionally a named list) of character vectors with
 individual names (one vector per set). If NULL, allele frequency spectrum
@@ -209,10 +213,6 @@ are added automatically)</p></td>
       <td><p>When FALSE (the default) the allele frequency spectrum will
 be folded (i.e. the counts will not depend on knowing which allele is
 ancestral)</p></td>
-    </tr>
-    <tr>
-      <th>tsSlimTreeSequence</th>
-      <td><p>object</p></td>
     </tr>
     </table>
 

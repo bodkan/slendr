@@ -21,7 +21,7 @@ initialize() {
   defineConstant("POPULATIONS", read_table(config_path("splits.tsv")));
   defineConstant("GENEFLOWS", read_table(config_path("geneflow.tsv")));
   defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
-  defineConstant("SAMPLING", read_table(config_path("script_samples.tsv")));
+  defineConstant("SAMPLING", read_table(output_path("samples.tsv")));
   if (SPATIAL) {
     defineConstant("INTERACTIONS", read_table(config_path("dispersals.tsv")));
     defineConstant("MAPS", read_table(config_path("maps.tsv")));
@@ -358,20 +358,30 @@ s10 late() {
     event = events.getRowValues(i);
     // which population and how many individuals to sample from it?
     pop = event.getValue("pop"); n = event.getValue("n");
+    all_inds = get_pop(pop).individuals;
 
-    log_output("remembering " + n + " individuals of " +
+    if (isInfinite(n)) {
+      n = length(all_inds);
+      n_str = "all (" + n + ")";
+      // replace the original INF value with the actual number of individuals
+      // for later serialization of metadata
+      orig_n = SAMPLING.getValue("n"); orig_n[i] = n;
+      SAMPLING.setValue("n", orig_n);
+    } else
+      n_str = asString(n);
+
+    log_output("remembering " + n_str + " individuals of " +
                pop + "(p" + get_pop(pop).id + ")");
 
     // give a warning in case more individuals are scheduled for sampling
     // than are present in the population
-    all_inds = get_pop(pop).individuals;
     if (n > length(all_inds)) {
       catn("(population has " + length(all_inds) + " but remembering of " + n +
            " was requested - capping at " + length(all_inds) + ")");
       n = length(all_inds);
     }
 
-    inds = sample(all_inds, n);
+    inds = sample(all_inds, asInteger(n));
     sim.treeSeqRememberIndividuals(inds, permanent = T);
   }
 }
@@ -389,11 +399,11 @@ s11 late() {
 
 // End of simulation
 s12 late() {
-  log_output("saving the tree-sequence file");
-
   if (TS_RECORDING) {
-     filename = paste0(OUTPUT_PREFIX, "_tree_seq.trees");
-     sim.treeSeqOutput(filename);
+    log_output("saving the tree-sequence file");
+    filename = paste0(OUTPUT_PREFIX, "_tree_seq.trees");
+    metadata = Dictionary("sampling", SAMPLING);
+    sim.treeSeqOutput(filename, metadata = metadata);
   }
 
   log_output("simulation finished");
@@ -553,6 +563,11 @@ function (s$) config_path(s$ file) {
   return paste0(MODEL_DIR, "/", file);
 }
 
+function (s$) output_path(s$ file) {
+  return paste0(OUTPUT_PREFIX, "_", file);
+}
+
+
 // Write the locations file header line
 function (void) write_locations_header(void) {
   filename = paste0(OUTPUT_PREFIX, "_ind_locations.tsv.gz");
@@ -668,12 +683,12 @@ function (void) print_table(object<Dictionary> d) {
 function (ifsl) convert_type(s$ column_name, s string_values) {
   // vectors of all possible column names in tables defined by slendr `compile()`
 	string = c("pop", "parent", "how", "path", "from", "to", "how");
-	integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N", "n",
+	integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N",
 	            "time_orig", "time_gen", "tmap_orig", "tmap_gen",
 	            "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
 	            "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
 	            "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
-	float = c("rate", "competition_dist", "mate_dist", "dispersal_dist");
+	float = c("rate", "competition_dist", "mate_dist", "dispersal_dist", "n");
 	logical = c("overlap");
 
 	if (any(column_name == integer))

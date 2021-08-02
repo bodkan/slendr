@@ -14,6 +14,8 @@ ts_afs(
 )
 }
 \arguments{
+\item{ts}{SlimTreeSequence object}
+
 \item{sample_sets}{A list (optionally a named list) of character vectors with
 individual names (one vector per set). If NULL, allele frequency spectrum
 for all individuals in the tree-sequence will be computed.}
@@ -27,8 +29,6 @@ are added automatically)}
 \item{polarised}{When FALSE (the default) the allele frequency spectrum will
 be folded (i.e. the counts will not depend on knowing which allele is
 ancestral)}
-
-\item{tsSlimTreeSequence}{object}
 }
 \value{
 Either a single Fst value or a vector of Fst values (one for each

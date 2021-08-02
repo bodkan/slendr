@@ -8,16 +8,19 @@ slim(
   model,
   seq_length,
   recomb_rate,
+  output_dir = model$path,
+  output_prefix = "output",
   save_locations = FALSE,
   track_ancestry = FALSE,
   ts_recording = FALSE,
   sampling = NULL,
   method,
-  verbose = FALSE,
+  verbose = TRUE,
   include = NULL,
   burnin = 0,
   seed = NULL,
-  slim_path = NULL
+  slim_path = NULL,
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -27,6 +30,12 @@ slim(
 
 \item{recomb_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
+
+\item{output_dir}{A directory where to put simulation outputs (by default,
+all output files are placed in a model directory)}
+
+\item{output_prefix}{A common prefix of output files (by default, all files
+will share a prefix \code{"output"})}
 
 \item{save_locations}{Save location of each individual throughout the
 simulation?}
@@ -42,8 +51,8 @@ initialization?}
 \item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
 on the command-line, "script" - simply return the script)}
 
-\item{verbose}{Write the SLiM output log to the console? (default
-\code{FALSE})}
+\item{verbose}{Write the SLiM output log to the console (default
+\code{FALSE})?}
 
 \item{include}{Vector of paths to custom SLiM scripts which should be
 combined with the backend SLiM code}
@@ -54,11 +63,14 @@ combined with the backend SLiM code}
 
 \item{slim_path}{Optional way to specify path to an appropriate SLiM binary}
 
+\item{overwrite}{Overwrite the contents of the output directory (default
+\code{FALSE})?}
+
 \item{samples}{A data frame of times at which a given number of individuals
-should be remembered in the tree-sequence (see \code{sampling} for a function
-that can generate the sampling schedule in the correct format). If missing,
-only individuals present at the end of the simulation will be recorded in
-the tree-sequence output file.}
+should be remembered in the tree-sequence (see \code{sampling} for a
+function that can generate the sampling schedule in the correct format). If
+missing, only individuals present at the end of the simulation will be
+recorded in the tree-sequence output file.}
 }
 \description{
 Generates a SLiM script from a built-in slendr template, substituting all

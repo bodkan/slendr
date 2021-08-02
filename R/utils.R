@@ -243,8 +243,9 @@ check_event_time <- function(time, pop) {
 }
 
 
-check_present_time <- function(time, pop) {
-  direction <- get_time_direction(pop)
+check_present_time <- function(time, pop, direction = NULL) {
+  if (is.null(direction))
+    direction <- get_time_direction(pop)
   split_time <- get_lineage_splits(pop)[1]
 
   if (direction == "backward" & time > split_time)
@@ -254,8 +255,9 @@ check_present_time <- function(time, pop) {
 }
 
 
-check_removal_time <- function(time, pop) {
-  direction <- get_time_direction(pop)
+check_removal_time <- function(time, pop, direction = NULL) {
+  if (is.null(direction))
+    direction <- get_time_direction(pop)
   removal_time <- attr(pop, "remove")
 
   if (removal_time != -1 & direction == "forward" & any(time > removal_time)) {
@@ -341,9 +343,25 @@ has_map <- function(x) {
 
 
 # Process the sampling schedue
-process_sampling <- function(samples, model, script_path) {
-  if (is.null(samples))
-    return("NULL")
+process_sampling <- function(samples, model, script_path, verbose) {
+  # if no explicit sampling schedule was given, try to generate it at least
+  # for the populations which survive to the present
+  if (is.null(samples)) {
+    if (verbose)
+      message("Tree-sequence recording is on but no sampling schedule was given. ",
+              "Generating one at least for populations surviving to the end of the simulation...")
+    surviving_pops <- purrr::keep(model$populations, ~ attr(.x, "remove") == -1)
+    end_time <- if (model$direction == "backward") 0 else model$length
+    samples <- do.call(
+      sampling,
+      c(times = end_time, purrr::map(model$populations, ~ list(.x, Inf)))
+    )
+    if (is.null(samples)) {
+      warning("No populations survive to the end of the simulations which means ",
+              "that no individuals will be remembered.", call. = FALSE)
+      return(NULL)
+    }
+  }
 
   df <- dplyr::group_by(samples, time, pop) %>%
     dplyr::summarise(n = sum(n), .groups = "drop") %>%
@@ -356,9 +374,10 @@ process_sampling <- function(samples, model, script_path) {
 
   script_dir <- dirname(script_path)
 
-  sampling_file <- stringr::str_replace(basename(script_path), ".slim", "_samples.tsv")
+  sampling_file <- stringr::str_replace(basename(script_path), "_script.slim", "_samples.tsv")
   sampling_path <- file.path(script_dir, sampling_file)
 
+  df <- df %>% dplyr::mutate(n = ifelse(is.infinite(n), "INF", n))
   readr::write_tsv(df, sampling_path)
 
   sampling_path

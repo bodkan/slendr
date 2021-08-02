@@ -251,6 +251,10 @@ read <- function(dir) {
 #' @param seq_length Total length of the simulated sequence (in base-pairs)
 #' @param recomb_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
+#' @param output_dir A directory where to put simulation outputs (by default,
+#'   all output files are placed in a model directory)
+#' @param output_prefix A common prefix of output files (by default, all files
+#'   will share a prefix \code{"output"})
 #' @param ts_recording Turn on tree sequence recording during SLiM
 #'   initialization?
 #' @param save_locations Save location of each individual throughout the
@@ -260,10 +264,10 @@ read <- function(dir) {
 #'   provided, ancestry will be tracked using the number number of neutral
 #'   ancestry markers equal to this number.
 #' @param samples A data frame of times at which a given number of individuals
-#'   should be remembered in the tree-sequence (see \code{sampling} for a function
-#'   that can generate the sampling schedule in the correct format). If missing,
-#'   only individuals present at the end of the simulation will be recorded in
-#'   the tree-sequence output file.
+#'   should be remembered in the tree-sequence (see \code{sampling} for a
+#'   function that can generate the sampling schedule in the correct format). If
+#'   missing, only individuals present at the end of the simulation will be
+#'   recorded in the tree-sequence output file.
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
 #'   on the command-line, "script" - simply return the script)
 #' @param include Vector of paths to custom SLiM scripts which should be
@@ -271,15 +275,18 @@ read <- function(dir) {
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param seed Random seed (if missing, SLiM's own seed will be used)
-#' @param verbose Write the SLiM output log to the console? (default
-#'   \code{FALSE})
+#' @param verbose Write the SLiM output log to the console (default
+#'   \code{FALSE})?
+#' @param overwrite Overwrite the contents of the output directory (default
+#'   \code{FALSE})?
 #'
 #' @export
 slim <- function(model, seq_length, recomb_rate,
+                 output_dir = model$path, output_prefix = "output",
                  save_locations = FALSE, track_ancestry = FALSE,
                  ts_recording = FALSE, sampling = NULL,
-                 method, verbose = FALSE, include = NULL, burnin = 0,
-                 seed = NULL, slim_path = NULL) {
+                 method, verbose = TRUE, include = NULL, burnin = 0,
+                 seed = NULL, slim_path = NULL, overwrite = FALSE) {
   dir <- model$path
   if (!dir.exists(dir))
     stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
@@ -297,16 +304,28 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   } else
     markers_count <- as.integer(track_ancestry)
 
-  script_path <- file.path(model$path, "script.slim")
-  output_prefix <- file.path(model$path, "output")
+  if (!file.exists(output_dir)) {
+    message("Directory '", output_dir, "' not existent. Creating...")
+    dir.create(output_dir)
+  }
+
+  if (length(list.files(output_dir, pattern = output_prefix)) && !overwrite)
+    stop("Files already present in '", output_dir, "' with the same prefix. ",
+         "If you wish to proceed, set `overwrite = TRUE`.", call. = FALSE)
+
+  script_path <- file.path(output_dir, paste0(output_prefix, "_script.slim"))
 
   backend_script <- system.file("extdata", "backend.slim", package = "slendr")
 
+  if (!is.null(sampling) && !ts_recording)
+    stop("Sampling (remembering) of individuals only makes sense when `ts_recording = TRUE`", call. = FALSE)
+
+  sampling_schedule <- process_sampling(sampling, model, script_path, verbose)
   base_script <- script(
     spatial = if (inherits(model$world, "slendr_map")) "T" else "F",
     path = backend_script,
     model_dir = dir,
-    output_prefix = output_prefix,
+    output_prefix = path.expand(file.path(output_dir, output_prefix)),
     burnin = round(burnin / model$generation_time),
     length = round(model$length / model$generation_time),
     ts_recording = if (ts_recording) "T" else "F",
@@ -318,7 +337,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     generation_time = model$generation_time,
     direction = model$direction,
     seed = if (is.null(seed)) "getSeed()" else seed,
-    sampling = process_sampling(sampling, model, script_path)
+    sampling = sampling_schedule
   )
 
   # compile all script components, including the backend script, into one file

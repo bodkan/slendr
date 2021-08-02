@@ -34,13 +34,20 @@ ts_load <- function(file, model, recapitate = FALSE, simplify = FALSE,
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
 
+  if (!inherits(model, "slendr_model"))
+    stop("A compiled slendr model object must be provided to be able to fetch metadata from", call. = FALSE)
+
   ts <- pyslim$load(path.expand(file))
 
   # decorate the SlimTreeSequence object with a table of individuals
   # (this is to avoid having to drag the model object to each function
   # operating on the tree-sequence and requiring information about the
   # simulated individuals)
-  attr(ts, "metadata") <- ts_complete_metadata(ts, model)
+  attr(ts, "sampling") <- ts$metadata$SLiM$user_metadata$sampling %>%
+    purrr::transpose() %>%
+    dplyr::as_tibble() %>%
+    tidyr::unnest(cols = c("n", "pop", "time", "time_gen", "time_orig"))
+  attr(ts, "individuals") <- ts_complete_metadata(ts, model)
   class(ts) <- c("slendr_ts", class(ts))
 
   if (recapitate) {
@@ -70,14 +77,15 @@ ts_recapitate <- function(ts, recombination_rate, Ne, random_seed = NULL) {
   if (!inherits(ts, "slendr_ts"))
     stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
 
-  new_ts <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
+  ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
                           random_seed = random_seed)
 
   # individuals after recapitation are the same
-  attr(new_ts, "metadata") <- attr(ts, "metadata")
-  class(new_ts) <- c("slendr_ts", class(new_ts))
+  attr(ts_new, "individuals") <- attr(ts, "individuals")
+  attr(ts_new, "sampling") <- attr(ts, "sampling")
+  class(ts_new) <- c("slendr_ts", class(ts_new))
 
-  new_ts
+  ts_new
 }
 
 #' Simplify the tree-sequence down to a given set of individuals
@@ -94,9 +102,9 @@ ts_simplify <- function(ts, individuals = NULL) {
     stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
 
   if (is.null(individuals))
-    metadata <- attr(ts, "metadata") %>% dplyr::filter(remembered)
+    metadata <- attr(ts, "individuals") %>% dplyr::filter(remembered)
   else
-    metadata <- attr(ts, "metadata") %>% dplyr::filter(name %in% individuals)
+    metadata <- attr(ts, "individuals") %>% dplyr::filter(name %in% individuals)
 
   node_ids <- metadata %>%
     dplyr::select(chr1_id, chr2_id) %>%
@@ -116,7 +124,8 @@ ts_simplify <- function(ts, individuals = NULL) {
   metadata$chr2_id <- metadata_new$chr2_id
   metadata$pop_id <- metadata_new$pop_id
 
-  attr(ts_new, "metadata") <- metadata
+  attr(ts_new, "individuals") <- metadata
+  attr(ts_new, "sampling") <- attr(ts, "sampling")
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
   ts_new
@@ -142,7 +151,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL) {
     pyslim$SlimTreeSequence()
 
   # decorate the SlimTreeSequence object with a table of individuals
-  attr(ts_mutated, "metadata") <- attr(ts, "metadata")
+  attr(ts_mutated, "individuals") <- attr(ts, "individuals")
 
   class(ts_mutated) <- c("slendr_ts", class(ts_mutated))
 
@@ -272,7 +281,7 @@ ts_vcf <- function(ts, vcf, individuals = NULL) {
 ts_individuals <- function(ts) {
   if (!inherits(ts, "slendr_ts"))
     stop("Not a tree sequence object created by ts_load, ts_simplify or ts_mutate", call. = FALSE)
-  attr(ts, "metadata")
+  attr(ts, "individuals")
 }
 
 #' Extract a single individual from a tree-sequence
@@ -703,7 +712,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' please see the tskit manual at
 #' <https://tskit.dev/tskit/docs/stable/tutorial.html#sec-tutorial-afs-zeroth-entry>
 #'
-#' @param tsSlimTreeSequence object
+#' @param ts SlimTreeSequence object
 #' @param sample_sets A list (optionally a named list) of character vectors with
 #'   individual names (one vector per set). If NULL, allele frequency spectrum
 #'   for all individuals in the tree-sequence will be computed.
@@ -787,8 +796,8 @@ ts_complete_metadata <- function(ts, model) {
     dplyr::arrange(-time, pop) %>%
     dplyr::select(-pop, -time)
 
-  samples <- file.path(model$path, "script_samples.tsv") %>%
-    readr::read_tsv(col_types = "ciii") %>%
+  samples <- attr(ts, "sampling") %>%
+    dplyr::select(-time, -time_gen) %>%
     {
       rbind(
         dplyr::filter(., n == 1),

@@ -25,7 +25,7 @@ navbar:
           href: articles/vignette-03-interactions.html
         - text: Traditional non-spatial models
           href: articles/vignette-04-nonspatial-models.html
-        - text: Tree-sequences processing and statistics
+        - text: Tree-sequence processing and statistics
           href: articles/vignette-05-tree-sequences.html
     twitter:
       icon: fa-twitter

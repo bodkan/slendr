@@ -111,13 +111,13 @@ test_that("forward and backward models yield the same simulation result", {
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 
   # simulation runs are the same
-  slim(forward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123)
-  slim(backward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123)
+  slim(forward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
+  slim(backward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
 
   # make sure the scripts are the same
-  f_script <- file.path(forward$path, "script.slim") %>%
+  f_script <- file.path(forward$path, "output_script.slim") %>%
     readLines %>% grep("DIRECTION|MODEL_DIR|OUTPUT_PREFIX", ., value = TRUE, invert = TRUE)
-  b_script <- file.path(backward$path, "script.slim") %>%
+  b_script <- file.path(backward$path, "output_script.slim") %>%
     readLines %>% grep("DIRECTION|MODEL_DIR|OUTPUT_PREFIX", ., value = TRUE, invert = TRUE)
   expect_equal(f_script, b_script)
 
@@ -181,13 +181,13 @@ test_that("forward and backward models yield the same simulation result (nonspat
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 
   # simulation runs are the same
-  slim(forward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123)
-  slim(backward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123)
+  slim(forward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
+  slim(backward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
 
   # make sure the scripts are the same
-  f_script <- file.path(forward$path, "script.slim") %>%
+  f_script <- file.path(forward$path, "output_script.slim") %>%
     readLines %>% grep("DIRECTION|MODEL_DIR|OUTPUT_PREFIX", ., value = TRUE, invert = TRUE)
-  b_script <- file.path(backward$path, "script.slim") %>%
+  b_script <- file.path(backward$path, "output_script.slim") %>%
     readLines %>% grep("DIRECTION|MODEL_DIR|OUTPUT_PREFIX", ., value = TRUE, invert = TRUE)
   expect_equal(f_script, b_script)
 

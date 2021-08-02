@@ -230,6 +230,7 @@ slim(
   method = "batch", # change to "gui" to execute the model in SLiMgui
   seed = 314159
 )
+#> Tree-sequence recording is on but no sampling schedule was given. Generating one at least for populations surviving to the end of the simulation...
 ```
 
 As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.
