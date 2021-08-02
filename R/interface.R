@@ -1009,7 +1009,7 @@ sampling <- function(times, ..., strict = FALSE) {
           t <- as.integer(t)
           check_removal_time(t, pop)
           check_present_time(t, pop)
-          dplyr::tibble(time = t, pop = pop$pop, n = as.integer(n))
+          dplyr::tibble(time = t, pop = pop$pop[1], n = as.integer(n))
         },
         error = function(cond) {
           if (!strict)
