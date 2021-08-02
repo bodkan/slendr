@@ -4,7 +4,6 @@ initialize() {
 
   // optional behavior switches set by the R frontend
   defineConstant("SPATIAL", {{spatial}});
-  defineConstant("KEEP_PEDIGREES", {{keep_pedigrees}});
   defineConstant("TS_RECORDING", {{ts_recording}});
   defineConstant("SAVE_LOCATIONS", {{save_locations}}  & SPATIAL);
   defineConstant("TRACK_ANCESTRY", {{track_ancestry}});
@@ -33,7 +32,7 @@ initialize() {
     defineConstant("WIDTH", MAPS.getValue("image")[0].width);
     defineConstant("HEIGHT", MAPS.getValue("image")[0].height);
 
-    initializeSLiMOptions(keepPedigrees = KEEP_PEDIGREES, dimensionality = "xy");
+    initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
 
     // generate interaction types (two for each population - competition and mating)
     for (i in POPULATIONS.getValue("pop_id")) {
@@ -44,7 +43,7 @@ initialize() {
       initializeInteractionType(2*i+1, "xy", reciprocal = T, maxDistance = mating);
     }
   } else {
-    initializeSLiMOptions(keepPedigrees = KEEP_PEDIGREES);
+    initializeSLiMOptions(keepPedigrees = T);
     defineConstant("INTERACTIONS", NULL);
     defineConstant("MAPS", NULL);
   }
@@ -91,6 +90,7 @@ initialize() {
 
 // Schedule script block events
 1 early() {
+  // announce the start of the burnin and of the simulation itself
   sim.rescheduleScriptBlock(s0, generations = SIM_START);
 
   // population splits
@@ -121,7 +121,7 @@ initialize() {
   // exponential population size changes
   exp_changes = filter(RESIZES, "how", "exponential");
   if (num_rows(exp_changes)) {
-    // generate all times of exponential size changes
+    // extract times of all scheduled exponential size changes
     times = c();
     for (i in iter(exp_changes)) {
       event = exp_changes.getRowValues(i);
@@ -131,7 +131,7 @@ initialize() {
   } else
     sim.deregisterScriptBlock(s6);
 
-  // setting interaction distances and dispersals
+  // set interaction distances and dispersals
   if (num_rows(INTERACTIONS))
     sim.rescheduleScriptBlock(s7, generations = unique(INTERACTIONS.getValue("tdispersal")));
   else
@@ -157,7 +157,7 @@ initialize() {
   } else
      sim.deregisterScriptBlock(s10);
 
-  // removing populations from the simulation
+  // remove populations from the simulation
   cleanups = filter(POPULATIONS, "tremove", -1, negate = T);
   if (num_rows(cleanups))
      sim.rescheduleScriptBlock(s11, generations = unique(cleanups.getValue("tremove")));
@@ -172,7 +172,7 @@ initialize() {
 // Scheduled script blocks
 //////////////////////////////////////////////////////////////////////
 
-// Dummy script block to log the start of the simulation
+// Log the start of the simulation
 s0 late() {
   if (sim.generation == 1 & BURNIN_LENGTH > 0) log_output("start of burnin");
   else log_output("starting the simulation");
@@ -181,6 +181,7 @@ s0 late() {
 // Population splits
 s1 late() {
   pops = filter(POPULATIONS, "tsplit", sim.generation);
+
   for (i in iter(pops)) {
     pop = pops.getRowValues(i);
     pop_id = pop.getValue("pop_id");
@@ -190,7 +191,10 @@ s1 late() {
     else
       split_pop(pop_id);
 
+    // dispersal distance (how far does offspring go from its parent) is
+    // set in a dedicated script block -- here we just create the variable
     get_pop(pop_id).setValue("dispersal_dist", -1);
+
     add_markers(pop_id);
     evaluate_interactions();
   }
@@ -217,12 +221,16 @@ s3 late() {
 // Update population spatial maps
 s4 late() {
   maps = filter(MAPS, "tmap", sim.generation);
+
   for (i in iter(maps)) {
     map = maps.getRowValues(i);
     id = map.getValue("pop_id");
+
     log_output("updating map for " + map.getValue("pop") + "(p" + id + ")");
     set_map(id, sim.generation);
-    // distribute individuals if this is the first map of the population
+
+    // uniformly distribute individuals if this is the very first boundary
+    // of the population
     if (sim.generation == filter(POPULATIONS, "pop_id", id).getValue("tsplit"))
       set_coordinates(get_pop(id).individuals, id);
   }
@@ -247,7 +255,7 @@ s5 {
 s6 {
   if (!num_rows(RESIZES)) return;
 
-  // get all exponential resize events active in this generation
+  // get exponential resize events active in (i.e. overlapping) this generation
   active = RESIZES.getValue("tresize") <= sim.generation &
            RESIZES.getValue("tend") >= sim.generation &
            RESIZES.getValue("how") == "exponential";
@@ -260,6 +268,7 @@ s6 {
     Nstart = event.getValue("prev_N"); Nend = event.getValue("N");
     tstart = event.getValue("tresize"); tend = event.getValue("tend");
 
+    // calculate current population size based on the growth parameters
     r = log(Nend / Nstart) / (tend - tstart);
     tdelta = sim.generation - tstart;
     Nt = asInteger(round(Nstart * exp(r * tdelta)));
@@ -281,19 +290,23 @@ s6 {
 // Changing interaction distances and dispersals
 s7 late() {
   events = filter(INTERACTIONS, "tdispersal", sim.generation);
+
   for (i in iter(events)) {
     event = events.getRowValues(i);
-
     pop = event.getValue("pop"); pop_id = event.getValue("pop_id");
 
     competition_dist = event.getValue("competition_dist");
     mate_dist = event.getValue("mate_dist");
     dispersal_dist = event.getValue("dispersal_dist");
 
+    // interaction parameters are accessed in the same way they were created
+    // in the initialize() block -- for an i-th population, we have the
+    // 'competition' maxDistance at 2*i and mate choice maxDistance at 2*i + 1
     competition = sim.interactionTypes[2 * pop_id];
     mating = sim.interactionTypes[2 * pop_id + 1];
     dispersal = get_pop(pop).getValue("dispersal_dist");
 
+    // only change parameters that are scheduled for change in this event
     if (competition_dist != competition.maxDistance) {
       log_output("setting competition interaction distance for " + pop + "(p" +
                  pop_id + ") to " + competition_dist);
@@ -307,37 +320,50 @@ s7 late() {
       mating.maxDistance = mate_dist;
     }
     if (dispersal_dist != dispersal) {
-      if (dispersal != -1) log_output("setting offspring dispersal distance for " + pop + "(p" + pop_id + ") to " + dispersal_dist);
+      if (dispersal != -1)
+        log_output("setting offspring dispersal distance for " + pop +
+                   "(p" + pop_id + ") to " + dispersal_dist);
       get_pop(pop).setValue("dispersal_dist", dispersal_dist);
     }
   }
   evaluate_interactions();
 }
 
-// Save locations and remember ancient individuals
+// Save locations of all individuals
 s8 late() {
-  // save location of each individual present
+  filename = paste0(OUTPUT_PREFIX, "_ind_locations.tsv.gz");
   for (ind in sim.subpopulations.individuals) {
-    write_locations(ind);
+    ind_str = paste(sim.generation, original_time(sim.generation),
+                    ind.subpopulation.id, ind.pedigreeID, ind.spatialPosition,
+                    sep = "\t");
+    writeFile(filename, ind_str, append = T, compress = T);
   }
 }
 
 // Write ancestry proportions in the current generation
 s9 late() {
-  write_ancestries();
+  for (pop in sim.subpopulations) {
+    pop_name = filter(POPULATIONS, "pop_id", pop.id).getValue("pop");
+    line = paste(SIM_END - sim.generation, calc_ancestry(pop), sep = "\t");
+    filename = paste0(OUTPUT_PREFIX, "_ancestry_", pop_name, ".tsv");
+    writeFile(filename, line, append = T);
+  }
 }
 
 // Remember individuals for tree-sequence recording
 s10 late() {
   events = filter(SAMPLING, "time", sim.generation);
+
   for (i in iter(events)) {
     event = events.getRowValues(i);
-    pop = event.getValue("pop");
-    n = event.getValue("n");
+    // which population and how many individuals to sample from it?
+    pop = event.getValue("pop"); n = event.getValue("n");
 
     log_output("remembering " + n + " individuals of " +
                pop + "(p" + get_pop(pop).id + ")");
 
+    // give a warning in case more individuals are scheduled for sampling
+    // than are present in the population
     all_inds = get_pop(pop).individuals;
     if (n > length(all_inds)) {
       catn("(population has " + length(all_inds) + " but remembering of " + n +
@@ -347,12 +373,10 @@ s10 late() {
 
     inds = sample(all_inds, n);
     sim.treeSeqRememberIndividuals(inds, permanent = T);
-
-
   }
 }
 
-// Remove populations which are no longer necessary
+// Remove populations which have been scheduled for removal
 s11 late() {
   pops = filter(POPULATIONS, "tremove", sim.generation);
   for (i in iter(pops)) {
@@ -450,12 +474,15 @@ function (void) set_map(i$ id, i$ generation) {
   map = filter(filter(MAPS, "pop_id", id), "tmap", generation);
   img = map.getValue("image");
   pop = get_pop(map.getValue("pop"));
-  pop.defineSpatialMap("world", "xy", 1.0 - img.floatK,
-    valueRange=c(min(img.floatK), max(img.floatK)), colors=c("#000000", "#FFFFFF"));
+  pop.defineSpatialMap(
+    "world", "xy", 1.0 - img.floatK,
+    valueRange=c(min(img.floatK), max(img.floatK)),
+    colors=c("#000000", "#FFFFFF")
+  );
   pop.setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
 }
 
-// Split population from the source specified in an input table
+// Split population
 function (void) split_pop(i$ id) {
   pop = filter(POPULATIONS, "pop_id", id);
   log_output("split of " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")" +
@@ -467,7 +494,7 @@ function (void) split_pop(i$ id) {
   );
 }
 
-// Initiate or terminate geneflow
+// Start or stop geneflow
 function (void) set_geneflow(object<Dictionary> event, f$ rate) {
   from = event.getValue("from"); to = event.getValue("to");
   from_id = event.getValue("from_id"); to_id = event.getValue("to_id");
@@ -543,32 +570,6 @@ function (void) write_ancestries_header(void) {
   }
 }
 
-// Write information about a given individual to the locations file
-function(void) write_locations(lifso<Individual>$ ind) {
-  filename = paste0(OUTPUT_PREFIX, "_ind_locations.tsv.gz");
-
-  if (KEEP_PEDIGREES)
-    id = ind.pedigreeID;
-  else
-    id = -1;
-
-  ind_str = paste(sim.generation, original_time(sim.generation),
-                  ind.subpopulation.id, id, ind.spatialPosition,
-                  sep = "\t");
-
-  writeFile(filename, ind_str, append = T, compress = T);
-}
-
-// Write ancestry proportions in all populations in the current generation
-function (void) write_ancestries(void) {
-  for (pop in sim.subpopulations) {
-    pop_name = filter(POPULATIONS, "pop_id", pop.id).getValue("pop");
-    line = paste(SIM_END - sim.generation, calc_ancestry(pop), sep = "\t");
-    filename = paste0(OUTPUT_PREFIX, "_ancestry_", pop_name, ".tsv");
-    writeFile(filename, line, append = T);
-  }
-}
-
 // Calculate a vector of ancestry proportions in a given population
 function (float) calc_ancestry(lifso<Subpopulation>$ pop) {
   // mutation IDs of all populations' ancestry markers
@@ -613,8 +614,7 @@ function (object<Dictionary>) read_table(s$ path) {
 	return dict;
 }
 
-// Filter Dictionary/data-frame for rows where the <column> is
-// equal to <value>
+// Filter Dictionary/data-frame to rows where the <col> is equal to <val>
 function (object<Dictionary>) filter(No<Dictionary> d, s$ col, ifsl$ val,
                                      [l$ negate = F]) {
   if (isNULL(d)) return(NULL);
@@ -690,7 +690,7 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
 	return values;
 }
 
-// Convert times in given tables into absolute SLiM times by adding
+// Convert times in a given table to absolute SLiM times by adding
 // the burnin length to each time point (except for events involving
 // ancestral populations which always start at 1 to include them
 // in the burnin)
@@ -735,7 +735,6 @@ function (i) original_time(i$ generation) {
   } else {
     absolute_end = SIM_START + round(max(POPULATIONS.getValue("tsplit_orig")) / GENERATION_TIME);
     time = (absolute_end - sim.generation) * GENERATION_TIME;
-    //if (time < 0) time = 0;
   }
   return asInteger(time);
 }

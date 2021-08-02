@@ -251,8 +251,6 @@ read <- function(dir) {
 #' @param seq_length Total length of the simulated sequence (in base-pairs)
 #' @param recomb_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
-#' @param keep_pedigrees Turn on \code{keepPedigrees} during SLiM
-#'   initialization?
 #' @param ts_recording Turn on tree sequence recording during SLiM
 #'   initialization?
 #' @param save_locations Save location of each individual throughout the
@@ -279,8 +277,7 @@ read <- function(dir) {
 #' @export
 slim <- function(model, seq_length, recomb_rate,
                  save_locations = FALSE, track_ancestry = FALSE,
-                 keep_pedigrees = FALSE, ts_recording = FALSE,
-                 sampling = NULL,
+                 ts_recording = FALSE, sampling = NULL,
                  method, verbose = FALSE, include = NULL, burnin = 0,
                  seed = NULL, slim_path = NULL) {
   dir <- model$path
@@ -312,7 +309,6 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     output_prefix = output_prefix,
     burnin = round(burnin / model$generation_time),
     length = round(model$length / model$generation_time),
-    keep_pedigrees = if (keep_pedigrees) "T" else "F",
     ts_recording = if (ts_recording) "T" else "F",
     seq_length = seq_length,
     recomb_rate = recomb_rate,

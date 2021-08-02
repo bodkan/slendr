@@ -10,7 +10,6 @@ slim(
   recomb_rate,
   save_locations = FALSE,
   track_ancestry = FALSE,
-  keep_pedigrees = FALSE,
   ts_recording = FALSE,
   sampling = NULL,
   method,
@@ -36,9 +35,6 @@ simulation?}
 throughout the simulations (default FALSE)? If a non-zero integer is
 provided, ancestry will be tracked using the number number of neutral
 ancestry markers equal to this number.}
-
-\item{keep_pedigrees}{Turn on \code{keepPedigrees} during SLiM
-initialization?}
 
 \item{ts_recording}{Turn on tree sequence recording during SLiM
 initialization?}
