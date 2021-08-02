@@ -230,8 +230,7 @@
 </h2>
 <p>The result of switching on <code>ts_recording = TRUE</code> in the <code><a href="../reference/slim.html">slim()</a></code> call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model</span> <span class="op">=</span> <span class="fu"><a href="../reference/read.html">read</a></span><span class="op">(</span><span class="st">"~/Desktop/introgression/"</span><span class="op">)</span>
-<span class="va">ts_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">path</span>, <span class="st">"output_tree_seq.trees"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">ts_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">path</span>, <span class="st">"output_tree_seq.trees"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">ts_file</span><span class="op">)</span>
 <span class="co">#&gt; [1] TRUE</span></code></pre></div>
 <p>Tree-sequences are one of the most revolutionary developments in population genetics in the last couple of decades for a number of reasons. One of them is the possibility to store extremely large data sets succinctly by encoding the entire evolutionary history of a sample of individuals as a series of correlated tree genealogies along the genome.</p>
