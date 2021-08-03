@@ -241,7 +241,7 @@ We can use the saved locations of every individual that lived throughout the cou
 
 
 ```r
-animate(model, steps = 100, width = 500, height = 300)
+animate(model = model, steps = 100, width = 500, height = 300)
 ```
 
 ![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
@@ -258,6 +258,6 @@ The example above provides only a very brief overview of the functionality of th
 
 - You can use *slendr* to program non-spatial models, which means that any concievable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an [Approximate Bayesian Computation](https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation) pipeline or other use any other R package for downstream analysis in the same R script. You can find more in [this vignette](articles/vignette-04-nonspatial-models.html).
 
-- You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [this vignette](vignette-02-grid-model.html).
+- You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [this vignette](articles/vignette-02-grid-model.html).
 
-- Because *slendr* & SLiM save data in a tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html) for interfacing with Python code, we have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/) and [*pyslim*](https://pyslim.readthedocs.io) for manipulating tree-sequence data right at our fingertips, all within the convenient environment of R.
+- Because *slendr* & SLiM save data in a tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html) for interfacing with Python code, we have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/) and [*pyslim*](https://pyslim.readthedocs.io) for manipulating tree-sequence data right at our fingertips, all within the convenient environment of R. An extended example can be found in [this vignette](articles/vignette-05-tree-sequences.html).

@@ -2,23 +2,33 @@
 % Please edit documentation in R/print.R
 \name{print.slendr_pop}
 \alias{print.slendr_pop}
-\title{Print a short summary of a \code{slendr_pop} object}
+\alias{print.slendr_region}
+\alias{print.slendr_map}
+\alias{print.slendr_model}
+\alias{print.slendr_spatial}
+\title{Print a short summary of a \code{slendr} object}
 \usage{
 \method{print}{slendr_pop}(x, ...)
+
+\method{print}{slendr_region}(x, ...)
+
+\method{print}{slendr_map}(x, ...)
+
+\method{print}{slendr_model}(x, ...)
+
+\method{print}{slendr_spatial}(x, ...)
 }
 \arguments{
-\item{x}{Object of a class \code{slendr_pop}}
+\item{x}{Object of a class \code{slendr} (either \code{slendr_pop},
+\code{slendr_map}, \code{slendr_region}, or \code{slendr_spatial})}
 }
 \description{
-All spatial objects in the slendr package are internally
-represented by a Simple Features (sf) object. This fact is hidden
-in most circumstances this, as the goal of the slendr package is to
-provide functionality at a much higher level (population
-boundaries, geographic regions, instead of individual polygons and
-other "low-level" geometric objects). The logical argument
-\code{sf} allows the user to inspect the underlying object
-structure. Similarly, by default, \code{print} does not print all
-spatial map information to reduce clutter. If many individual
-spatial maps for a population are present, a full table of spatial
-snapshots can be printed by typing \code{x[]}.
+All spatial objects in the slendr package are internally represented as
+Simple Features (\code{sf}) objects. This fact is hidden in most
+circumstances this, as the goal of the slendr package is to provide
+functionality at a much higher level (population boundaries, geographic
+regions, instead of individual polygons and other "low-level" geometric
+objects), without the users having to worry about low-level details involved
+in handling spatial geometries. However, the full \code{sf} object
+representation can be always printed by calling \code{x[]}.
 }

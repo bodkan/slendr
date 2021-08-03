@@ -1,0 +1,270 @@
+---
+title: "Working with spatially annotated tree-sequences"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Working with spatially annotated tree-sequences}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  eval = TRUE
+)
+
+# for some reason knitr/reticulate sets this to default, sabotaging
+# our efforts to make reticulate use our custom environment -- this
+# appears to solve the problem
+Sys.unsetenv("RETICULATE_PYTHON")
+
+devtools::load_all(".")
+set.seed(314159)
+```
+
+**Note:** This vignette is a work in progress as the spatial tree-sequence features in *slendr* are still being designed and implemented. Please check back later to see if this notice has been removed.
+
+```{r, collapse = TRUE}
+library(slendr)
+
+library(dplyr)
+library(ggplot2)
+
+reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
+```
+
+## Model specification
+
+First, let's program our spatial model. To keep things consistent across our various tutorials, we will use the same demographic model of modern human history in West Eurasia which we extensively discussed in the [introductory tutorial](vignette-01-tutorial.html):
+
+```{r}
+#
+# define the world map
+#
+map <- world(
+  xrange = c(-15, 60),
+  yrange = c(20, 65),
+  crs = "EPSG:3035"
+)
+
+#
+# define a couple of broad geographic regions
+# 
+africa <- region("Africa", map, polygon = list(c(-18, 20), c(40, 20), c(30, 33),
+                                               c(20, 32), c(10, 35), c(-8, 35)))
+europe <- region("Europe", map, polygon = list(c(-8, 35), c(-5, 36), c(10, 38),
+                                               c(20, 35), c(25, 35), c(33, 45),
+                                               c(20, 58), c(-5, 60), c(-15, 50)))
+anatolia <- region("Anatolia", map, polygon = list(c(28, 35), c(40, 35), c(42, 40),
+                                                   c(30, 43), c(27, 40), c(25, 38)))
+
+#
+# define population histories
+# 
+afr <- population( # African ancestral population
+  "AFR", parent = "ancestor", time = 52000, N = 3000,
+  map = map, polygon = africa
+)
+
+ooa <- population( # population of the first migrants out of Africa
+  "OOA", parent = afr, time = 51000, N = 500, remove = 25000,
+  center = c(33, 30), radius = 400e3
+) %>%
+  move(
+    trajectory = list(c(40, 30), c(50, 30), c(60, 40)),
+    start = 50000, end = 40000, snapshots = 20
+  )
+
+ehg <- population( # Eastern hunter-gatherers
+  "EHG", parent = ooa, time = 28000, N = 1000, remove = 6000,
+  polygon = list(
+    c(26, 55), c(38, 53), c(48, 53), c(60, 53),
+    c(60, 60), c(48, 63), c(38, 63), c(26, 60))
+)
+
+eur <- population( # European population
+  name = "EUR", parent = ehg, time = 25000, N = 2000,
+  polygon = europe
+)
+
+ana <- population( # Anatolian farmers
+  name = "ANA", time = 28000, N = 3000, parent = ooa, remove = 4000,
+  center = c(34, 38), radius = 500e3, polygon = anatolia
+) %>%
+  expand( # expand the range by 2.500 km
+    by = 2500e3, start = 10000, end = 7000,
+    polygon = join(europe, anatolia), snapshots = 20
+  )
+
+yam <- population( # Yamnaya steppe population
+  name = "YAM", time = 7000, N = 500, parent = ehg, remove = 2500,
+  polygon = list(c(26, 50), c(38, 49), c(48, 50),
+                 c(48, 56), c(38, 59), c(26, 56))
+) %>%
+  move(trajectory = list(c(15, 50)), start = 5000, end = 3000, snapshots = 10)
+
+#
+# define geneflow events
+#
+gf <- list(
+  geneflow(from = ana, to = yam, rate = 0.5, start = 6500, end = 6400, overlap = FALSE),
+  geneflow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
+  geneflow(from = yam, to = eur, rate = 0.75, start = 4000, end = 3000)
+)
+
+#
+# compile the spatial model
+#
+model <- compile(
+  populations = list(afr, ooa, ehg, eur, ana, yam),
+  geneflow = gf,
+  generation_time = 30, resolution = 10e3,
+  competition_dist = 130e3, mate_dist = 100e3, dispersal_dist = 70e3,
+  dir = "~/Desktop/sims", overwrite = TRUE
+)
+```
+
+Here is a graph summarising population relationships, split times and geneflow events (this is the same plot we show in the [introductory tutorial](vignette-05-tree-sequences.html)):
+
+```{r, model_graph}
+plot_graph(model)
+```
+
+## Scheduling sampling events and simulation
+
+In the next step, we will schedule the sampling of one individual from each population every one thousand years, starting from 40 thousand years ago to the present (again, a feature already discussed in the [tree-sequence overview](vignette-05-tree-sequences.html#scheduling-of-sampling-events-1)):
+
+```{r}
+# one ancient individual every 1 thousand years
+ancient <- sampling(times = seq(40000, 1, by = -500),
+                    list(ooa, 1), list(ehg, 1), list(eur, 1),
+                    list(ana, 1), list(yam, 1))
+
+# 40 present-day Africans, 100 present-day Europeans
+present <- sampling(times = 0, list(afr, 50), list(eur, 100))
+
+# combine sampling schedules (i.e. data frames) into one
+samples <- rbind(ancient, present)
+samples
+```
+
+With this done, we can simulate data. Because we want to explore how to handle spatiotemporal population genomic tree-sequence data in *slendr*, we have to turn on the tree-sequence recording (`ts_recording = TRUE`). We also need to specify the sampling schedule created in the previous chunk (without it, all individuals present at the very end of the simulation would be sampled):
+
+```{r}
+slim(
+  model, seq_length = 10e6, recomb_rate = 1e-8,
+  save_locations = TRUE, ts_recording = TRUE, sampling = samples,
+  method = "batch", seed = 314159, overwrite = TRUE
+)
+```
+
+After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1) of tree-sequence features in *slendr*.
+
+```{r}
+ts <- ts_load(model, simplify = TRUE)
+ts
+```
+
+## Extracting spatial tree-sequence data
+
+As we showed in the tutorial to [tree-sequence data]() in *slendr*, a useful function for data exploration is `ts_individuals()` which, for a given tree-sequence object loaded and annotated by *slendr*, extracts all information about individuals recorded in the data:
+
+```{r}
+ts_individuals(ts)
+```
+
+However, in order to perform spatiotemporal data analysis, we would like to have the data presented in a format suitable for spatial analyses.
+
+We can extract all location information from the tree-sequence object with a function `ts_spatial()`. Without any other argument it simply extract all locations data for individuals present in the tree-sequence. As with all other _slendr_ objects, the returned object is of the class `slendr_spatial` but is actually internally stored as an `sf` object. As we will see below, this means that we can use all the functionality of the powerful *simple features* [R package *sf*](https://r-spatial.github.io/sf/) for plotting, manipulation, and statistical analysis. For now, typing the object into the R console presents a user-friendly summary of the spatiotemporal data extracted from the tree-sequence:
+
+```{r}
+ts_sf <- ts_spatial(ts)
+ts_sf
+```
+
+At this point, it is important to mention that by default, if a *slendr* model which generated the tree-sequence was encoded in a projected [Coordinate Reference System](https://keen-swartz-3146c4.netlify.app/intro.html#coordinate-reference-systems), `ts_spatial()` automatically transforms coordinates from pixel-based raster coordinates used internally by SLiM (which is stored as `raster_x` and `raster_y` columns in data returned by the `ts_individuals()` function) into that projected CRS. We can override this behavior by specifying an argument `crs`. For instance, if we wanted to convert coordinates to the widely used [World Geodetic System (WGS 84)](https://en.wikipedia.org/wiki/World_Geodetic_System) which encodes coordinates in the global coordinate system (degrees longitude and latitude), we could run:
+
+```{r}
+ts_sf_wgs84 <- ts_spatial(ts, crs = "EPSG:4326")
+ts_sf_wgs84
+```
+
+Note that the location column of the spatial data object now says `<POINT [°]>`, indicating that the coordinates are in longitudinal and latitudinal degrees.
+
+We have to keep in mind, however, that we specified the world map of our model to be represented in projected CRS (EPSG 3035) internally, so plotting the locations data in degrees longitude and latitude onto this map projection would require an [explicit transformation](https://r-spatial.github.io/sf/reference/st_transform.html) (which is why `ts_spatial()` by default converts coordinates into the model's own CRS):
+
+```{r}
+map
+```
+
+## Using the _simple features_ interface
+
+It's hard to overstate how powerful the library for manipulating *simple features* of the class `sf` is. However, it is equally hard to really see this power, especially for novice spatial data analysts which is already quite a challenging field to get into because of many new concepts and names (["projected" vs "geographic" Coordinate Reference Systems](https://www.esri.com/arcgis-blog/products/arcgis-pro/mapping/coordinate-systems-difference/#GCS), transformations between them, their interaction with the _ggplot2_ library for plotting, etc.). A lot of the *slendr* conveniences for encoding and programming spatial models, as well as its features for loading and accessing tree-sequence data, are designed to abstract away most of the complexities of the underlying low-level details to let you focus on the problem at hand.
+
+Unfortunately, once you generate spatial genomic data, it is almost impossible for us to cover the complexities of data analysis and so it is expected that you will have to learn the basics of handling spatio-temporal data yourself. Luckily, everything that you simulated is no different from any other source of spatial data out there and you have [tremendous](https://r-spatial.github.io/sf/) free [resources](https://keen-swartz-3146c4.netlify.app) at your disposal.
+
+The bottom line is: the spatio-temporal data extracted from tree-sequences by the `ts_spatial()` function is nothing else than a normal [`sf`](https://r-spatial.github.io/sf/) data. Any resource that you find for manipulating, plotting, and analysing `sf` data can be applied here as well.
+
+## Plotting simulated spatio-temporal samples
+
+Recall that our own function `plot.slendr` makes it possible to plot any *slendr* object on a world map. For instance, we can plot the world map itself simply by calling:
+
+```{r, world_map}
+plot(map)
+```
+
+Internally, this function is implemented using *ggplot2* and the `geom_sf()` function for [plotting *sf* spatial features](https://r-spatial.github.io/sf/articles/sf5.html). This means that it simply returns a `ggplot` object, which is automatically plotted on evaluation:
+
+```{r}
+plot(map) %>% class
+```
+
+The consequence of the power of *ggplot2* and *sf* libraries is that we can overlay other *sf* features on top of this, including the data extracted and converted by our own `ts_spatial()` function!
+
+```{r, slendr_map_ts}
+plot(map) +
+  geom_sf(data = ts_spatial(ts), aes(color = pop)) +
+  ggtitle("Locations of simulated sampled individuals")
+```
+
+Because internally, `sf` _simple features_ (and, by extension, even `slendr_spatial` objects) are stored as [normal data frames](https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized) with couple more bells and whistles on top of them, we have all the [magnificent tools](https://www.tidyverse.org) for manipulating tabular data at our disposal.
+
+As an example, let's say we wanted to split the sampled individuals in the tree-sequence into epochs and plot those individually using standard *ggplot2* features. We could simply first do this, adding a new column specifying to which epoch does a simulated individual belong:
+
+```{r}
+ts_sf <- ts_sf %>%
+  mutate(epoch = cut(time, breaks = c(40000, 30000, 10000, 4000, 0)),
+         epoch = ifelse(is.na(epoch), 0, epoch),
+         epoch = factor(epoch, labels = c("present", "(present, 4 ky]", "(4 ky, 10 ky]",
+                                          "(10 ky, 30 y]", "(30 ky, 40 ky]")))
+
+ts_sf
+```
+
+Note the new column `epoch` in the printed summary above.
+
+Then, because the `slendr_spatial` object is internally stored as a `sf` object, we can use the *ggplot2* function `geom_sf` to plot it on the map (the warning can be safely ignored):
+
+```{r, slendr_map_epochs}
+plot(model$world) +
+  geom_sf(data = ts_sf, aes(color = pop), size = 0.75) +
+  facet_wrap(~ epoch) +
+  ggtitle("Locations of simulated sampled individuals")
+```
+
+We mentioned that the *slendr* function `plot.slendr()` is implemented using *ggplot2* and *sf* R packages. The implementation of the function is rather complex because it is a generic function designed to take various sorts of input data (remember that you can use it to plot the world map, *slendr* regions, and populations themselves). However, in the interest of making it clear that everything that *slendr* does is completely transparent and that every *slendr* spatial object of any kind is implemented as an *sf* object internally, here is how you could create the previous plot without using any *slendr* plotting functionality at all:
+
+```{r, ggplot_map_epochs}
+ggplot() +
+  geom_sf(data = map, fill = "lightgray", color = NA) + # plot the map
+  geom_sf(data = ts_sf, aes(color = pop), size = 0.75, alpha = 0.8) + # plot tree-sequence locations
+  coord_sf(expand = 0) + # fill in the map features to the edges
+  facet_wrap(~ epoch) +
+  ggtitle("Locations of simulated sampled individuals") +
+  theme_bw()
+```
+
+This is why, although it is impossible for us to capture every possible type of figure you might want to create for your study, you can easily use your knowledge of *ggplot2* to make any figure imaginable.

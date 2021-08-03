@@ -4,10 +4,16 @@
 \alias{plot_ancestry}
 \title{Plot simulated ancestry proportions}
 \usage{
-plot_ancestry(model)
+plot_ancestry(model, output_dir = model$path, output_prefix = "output")
 }
 \arguments{
 \item{model}{Compiled \code{slendr_model} model object}
+
+\item{output_dir}{A directory where to put simulation outputs (by default,
+all output files are placed in a model directory)}
+
+\item{output_prefix}{A common prefix of output files (by default, all files
+will share a prefix \code{"output"})}
 }
 \description{
 Plot simulated ancestry proportions

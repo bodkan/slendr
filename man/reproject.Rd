@@ -11,7 +11,9 @@ reproject(
   y = NULL,
   coords = NULL,
   model = NULL,
-  add = FALSE
+  add = FALSE,
+  input_prefix = "",
+  output_prefix = "new"
 )
 }
 \arguments{

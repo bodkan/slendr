@@ -491,18 +491,20 @@ slim(
 )
 ```
 
+By default, simulation output files are put in the same directory which also stores model configuration data, and are given a common prefix `output_`. Both the directory and the output file prefix can be specified by setting the `output_dir` and `output_prefix` arguments of the function `slim()`.
+
 ## Post-simulation diagnostics
 
 In case we instructed *slendr* to track ancestry proportions, we can visualize them after the simulation is over using the built-in `plot_ancestry()` function. This is quite bare-bones for now and the way diagnostics are generated is probably subject to change.
 
 ```{r plot_ancestries}
-plot_ancestry(model)
+plot_ancestry(model = model)
 ```
 
 Similarly, we can recapitulate the spatial dynamics with the *slendr* function `animate()` (this functions is also very bare-bones at the moment and is mostly useful as a proof of concept rather than anything else):
 
 ```{r plot_gif}
-animate(model, steps = 100, width = 500, height = 300)
+animate(model = model, steps = 100, width = 500, height = 300)
 ```
 
 In case an argument `gif = ...` was provided, the function will save the animation to the specified location as a GIF file. Note that unless your simulation is very short and/or involves only a small population, rendering of the animation can take several minutes.

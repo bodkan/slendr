@@ -564,7 +564,7 @@ function (s$) config_path(s$ file) {
 }
 
 function (s$) output_path(s$ file) {
-  return paste0(OUTPUT_PREFIX, file);
+  return paste0(OUTPUT_PREFIX, "_", file);
 }
 
 

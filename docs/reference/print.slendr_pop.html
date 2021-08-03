@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print a short summary of a slendr_pop object — print.slendr_pop • slendr</title>
+<title>Print a short summary of a slendr object — print.slendr_pop • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,18 +52,15 @@
 
 
 
-<meta property="og:title" content="Print a short summary of a slendr_pop object — print.slendr_pop" />
-<meta property="og:description" content="All spatial objects in the slendr package are internally
-represented by a Simple Features (sf) object. This fact is hidden
-in most circumstances this, as the goal of the slendr package is to
-provide functionality at a much higher level (population
-boundaries, geographic regions, instead of individual polygons and
-other &quot;low-level&quot; geometric objects). The logical argument
-sf allows the user to inspect the underlying object
-structure. Similarly, by default, print does not print all
-spatial map information to reduce clutter. If many individual
-spatial maps for a population are present, a full table of spatial
-snapshots can be printed by typing x[]." />
+<meta property="og:title" content="Print a short summary of a slendr object — print.slendr_pop" />
+<meta property="og:description" content="All spatial objects in the slendr package are internally represented as
+Simple Features (sf) objects. This fact is hidden in most
+circumstances this, as the goal of the slendr package is to provide
+functionality at a much higher level (population boundaries, geographic
+regions, instead of individual polygons and other &quot;low-level&quot; geometric
+objects), without the users having to worry about low-level details involved
+in handling spatial geometries. However, the full sf object
+representation can be always printed by calling x[]." />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -177,26 +174,35 @@ snapshots can be printed by typing x[]." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Print a short summary of a <code>slendr_pop</code> object</h1>
+    <h1>Print a short summary of a <code>slendr</code> object</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/print.R'><code>R/print.R</code></a></small>
     <div class="hidden name"><code>print.slendr_pop.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>All spatial objects in the slendr package are internally
-represented by a Simple Features (sf) object. This fact is hidden
-in most circumstances this, as the goal of the slendr package is to
-provide functionality at a much higher level (population
-boundaries, geographic regions, instead of individual polygons and
-other "low-level" geometric objects). The logical argument
-<code>sf</code> allows the user to inspect the underlying object
-structure. Similarly, by default, <code>print</code> does not print all
-spatial map information to reduce clutter. If many individual
-spatial maps for a population are present, a full table of spatial
-snapshots can be printed by typing <code>x[]</code>.</p>
+    <p>All spatial objects in the slendr package are internally represented as
+Simple Features (<code>sf</code>) objects. This fact is hidden in most
+circumstances this, as the goal of the slendr package is to provide
+functionality at a much higher level (population boundaries, geographic
+regions, instead of individual polygons and other "low-level" geometric
+objects), without the users having to worry about low-level details involved
+in handling spatial geometries. However, the full <code>sf</code> object
+representation can be always printed by calling <code>x[]</code>.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for slendr_pop</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for slendr_region</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for slendr_map</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for slendr_model</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for slendr_spatial</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -204,7 +210,8 @@ snapshots can be printed by typing <code>x[]</code>.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Object of a class <code>slendr_pop</code></p></td>
+      <td><p>Object of a class <code>slendr</code> (either <code>slendr_pop</code>,
+<code>slendr_map</code>, <code>slendr_region</code>, or <code>slendr_spatial</code>)</p></td>
     </tr>
     </table>
 
