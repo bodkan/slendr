@@ -69,6 +69,7 @@ reference:
     - print.slendr_region
     - print.slendr_pop
     - print.slendr_model
+    - print.slendr_spatial
 
   - title: Compiling and running spatial models
     contents:
@@ -84,6 +85,7 @@ reference:
     - ts_recapitate
     - ts_simplify
     - ts_mutate
+    - ts_spatial
     - ts_individual
     - ts_individuals
     - ts_node

@@ -309,18 +309,20 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     dir.create(output_dir)
   }
 
-  if (length(list.files(output_dir, pattern = output_prefix)) && !overwrite)
-    stop("Files already present in '", output_dir, "' with the same prefix. ",
-         "If you wish to proceed, set `overwrite = TRUE`.", call. = FALSE)
-
   script_path <- file.path(output_dir, paste0(output_prefix, "_script.slim"))
+
+  if (file.exists(script_path) && !overwrite)
+    stop("Generated script file already present in '", output_dir, "'. ",
+         "If you wish to proceed, set `overwrite = TRUE`.", call. = FALSE)
 
   backend_script <- system.file("extdata", "backend.slim", package = "slendr")
 
   if (!is.null(sampling) && !ts_recording)
     stop("Sampling (remembering) of individuals only makes sense when `ts_recording = TRUE`", call. = FALSE)
 
-  sampling_schedule <- process_sampling(sampling, model, script_path, verbose)
+  sampling_path <- stringr::str_replace(script_path, "_script.slim", "_samples.tsv")
+  process_sampling(sampling, model, sampling_path, verbose)
+
   base_script <- script(
     spatial = if (inherits(model$world, "slendr_map")) "T" else "F",
     path = backend_script,
@@ -337,7 +339,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     generation_time = model$generation_time,
     direction = model$direction,
     seed = if (is.null(seed)) "getSeed()" else seed,
-    sampling = sampling_schedule
+    sampling = sampling_path
   )
 
   # compile all script components, including the backend script, into one file

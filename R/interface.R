@@ -661,7 +661,8 @@ region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygo
 #' @return Data.frame with converted two-dimensional coordinates
 #'
 #' @export
-reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL, add = FALSE) {
+reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
+                      add = FALSE, input_prefix = "", output_prefix = "new") {
   if ((is.null(x) | is.null(y)) & is.null(coords))
     stop("Coordinates for conversion are missing", call. = FALSE)
 
@@ -671,8 +672,10 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
   if (add & is.null(coords))
     stop("Converted coordinates can only be added to a provided data.frame", call. = FALSE)
 
-  if (!is.null(coords) & !all(c("x", "y") %in% colnames(coords)))
-    stop("Columns 'x' and 'y' must be present in the input data.frame", call. = FALSE)
+  inx <- paste0(input_prefix, "x"); iny <- paste0(input_prefix, "y")
+  outx <- paste0(output_prefix, "x"); outy <- paste0(output_prefix, "y")
+  if (!is.null(coords) & !all(c(inx, iny) %in% colnames(coords)))
+    stop("Columns '", inx, "' and '", iny, "' must be present in the input data.frame", call. = FALSE)
 
   if (!is.null(model)) {
     # dimension of the map in the projected CRS units
@@ -687,20 +690,21 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
   if (to == "world") to <- sf::st_crs(model$world)
   if (from == "world") from <- sf::st_crs(model$world)
 
-  if (is.null(coords))
+  if (is.null(coords)) {
     df <- data.frame(x = x, y = y)
-  else
-    df <- coords[, c("x", "y")]
+    colnames(df) <- c(inx, iny)
+  } else
+    df <- coords[, c(inx, iny)]
 
   if (from == "raster") {
     # convert pixel coordinates to na sf object in world-based coordinates
-    df$x <- bbox["xmin"] + map_dim[1] * df$x / raster_dim[1]
-    df$y <- bbox["ymin"] + map_dim[2] * df$y / raster_dim[2]
-    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = sf::st_crs(model$world))
+    df[[inx]] <- bbox["xmin"] + map_dim[1] * df[[inx]] / raster_dim[1]
+    df[[iny]] <- bbox["ymin"] + map_dim[2] * df[[iny]] / raster_dim[2]
+    point <- sf::st_as_sf(df, coords = c(inx, iny), crs = sf::st_crs(model$world))
   } else {
     # ... otherwise create a formal sf point object from the
     # coordinates already given
-    point <- sf::st_as_sf(df, coords = c("x", "y"), crs = from)
+    point <- sf::st_as_sf(df, coords = c(inx, iny), crs = from)
   }
 
   if (to == "raster") {
@@ -711,16 +715,16 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
     new_point <- data.frame(newx = round(as.vector(newx)), newy = round(as.vector(newy)))
   } else if (!is.na(to)) {
     new_point <- sf::st_transform(point, crs = to) %>% sf::st_coordinates()
-    colnames(new_point) <- c("newx", "newy")
+    colnames(new_point) <- c(outx, outy)
   } else {
     new_point <- point %>% sf::st_coordinates()
-    colnames(new_point) <- c("newx", "newy")
+    colnames(new_point) <- c(outx, outy)
   }
 
   if (nrow(new_point) == 1)
     return(as.vector(unlist(new_point)))
 
-  if (add) new_point <- cbind(coords, new_point)
+  if (add) new_point <- cbind(coords, new_point) %>% dplyr::as_tibble()
 
   new_point
 }

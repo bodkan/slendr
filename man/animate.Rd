@@ -4,10 +4,24 @@
 \alias{animate}
 \title{Animate the simulated population dynamics}
 \usage{
-animate(model, steps, gif = NULL, width = 800, height = 560)
+animate(
+  model,
+  output_dir = model$path,
+  output_prefix = "output",
+  steps,
+  gif = NULL,
+  width = 800,
+  height = 560
+)
 }
 \arguments{
 \item{model}{Compiled \code{slendr_model} model object}
+
+\item{output_dir}{A directory where to look for simulation outputs (by default,
+all output files are in a model directory)}
+
+\item{output_prefix}{A common prefix of output files (by default, all files
+will share a prefix \code{"output"})}
 
 \item{steps}{How many frames should the animation have?}
 

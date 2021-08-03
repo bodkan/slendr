@@ -1,18 +1,16 @@
-#' Print a short summary of a \code{slendr_pop} object
+#' Print a short summary of a \code{slendr} object
 #'
-#' All spatial objects in the slendr package are internally
-#' represented by a Simple Features (sf) object. This fact is hidden
-#' in most circumstances this, as the goal of the slendr package is to
-#' provide functionality at a much higher level (population
-#' boundaries, geographic regions, instead of individual polygons and
-#' other "low-level" geometric objects). The logical argument
-#' \code{sf} allows the user to inspect the underlying object
-#' structure. Similarly, by default, \code{print} does not print all
-#' spatial map information to reduce clutter. If many individual
-#' spatial maps for a population are present, a full table of spatial
-#' snapshots can be printed by typing \code{x[]}.
+#' All spatial objects in the slendr package are internally represented as
+#' Simple Features (\code{sf}) objects. This fact is hidden in most
+#' circumstances this, as the goal of the slendr package is to provide
+#' functionality at a much higher level (population boundaries, geographic
+#' regions, instead of individual polygons and other "low-level" geometric
+#' objects), without the users having to worry about low-level details involved
+#' in handling spatial geometries. However, the full \code{sf} object
+#' representation can be always printed by calling \code{x[]}.
 #'
-#' @param x Object of a class \code{slendr_pop}
+#' @param x Object of a class \code{slendr} (either \code{slendr_pop},
+#'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_spatial})
 #'
 #' @export
 print.slendr_pop <- function(x, ...) {
@@ -42,22 +40,7 @@ print.slendr_pop <- function(x, ...) {
 }
 
 
-#' Print a short summary of a \code{slendr_region} object
-#'
-#' All spatial objects in the slendr package are internally
-#' represented by a Simple Features (sf) object. This fact is hidden
-#' in most circumstances this, as the goal of the slendr package is to
-#' provide functionality at a much higher level (population
-#' boundaries, geographic regions, instead of individual polygons and
-#' other "low-level" geometric objects). The logical argument
-#' \code{sf} allows the user to inspect the underlying object
-#' structure. Similarly, by default, \code{print} does not print all
-#' spatial map information to reduce clutter. If many individual
-#' spatial maps for a population are present, a full table of spatial
-#' snapshots can be printed by typing \code{x[]}.
-#'
-#' @param x Object of a class \code{slendr_region}
-#'
+#' @rdname print.slendr_pop
 #' @export
 print.slendr_region <- function(x, ...) {
   print_header_info(x)
@@ -71,22 +54,7 @@ print.slendr_region <- function(x, ...) {
 }
 
 
-#' Print a short summary of a \code{slendr_map} object
-#'
-#' All spatial objects in the slendr package are internally
-#' represented by a Simple Features (sf) object. This fact is hidden
-#' in most circumstances this, as the goal of the slendr package is to
-#' provide functionality at a much higher level (population
-#' boundaries, geographic regions, instead of individual polygons and
-#' other "low-level" geometric objects). The logical argument
-#' \code{sf} allows the user to inspect the underlying object
-#' structure. Similarly, by default, \code{print} does not print all
-#' spatial map information to reduce clutter. If many individual
-#' spatial maps for a population are present, a full table of spatial
-#' snapshots can be printed by typing \code{x[]}.
-#'
-#' @param x Object of a class \code{slendr_map}
-#'
+#' @rdname print.slendr_pop
 #' @export
 print.slendr_map <- function(x, ...) {
   print_header_info(x)
@@ -94,22 +62,7 @@ print.slendr_map <- function(x, ...) {
 }
 
 
-#' Print a short summary of a \code{slendr_model} object
-#'
-#' All spatial objects in the slendr package are internally
-#' represented by a Simple Features (sf) object. This fact is hidden
-#' in most circumstances this, as the goal of the slendr package is to
-#' provide functionality at a much higher level (population
-#' boundaries, geographic regions, instead of individual polygons and
-#' other "low-level" geometric objects). The logical argument
-#' \code{sf} allows the user to inspect the underlying object
-#' structure. Similarly, by default, \code{print} does not print all
-#' spatial map information to reduce clutter. If many individual
-#' spatial maps for a population are present, a full table of spatial
-#' snapshots can be printed by typing \code{x[]}.
-#'
-#' @param x Object of a class \code{slendr_model}
-#'
+#' @rdname print.slendr_pop
 #' @export
 print.slendr_model <- function(x, ...) {
   print_header_info(x)
@@ -137,6 +90,29 @@ print.slendr_model <- function(x, ...) {
 `$maps`, `$populations`, and other components of the model object (for
 a complete list see `names(<model object>)`). You can also examine
 the serialized configuration files in the model directory.\n")
+}
+
+
+#' @rdname print.slendr_pop
+#' @export
+print.slendr_spatial <- function(x, ...) {
+  model <- attr(x, "model")
+
+  print_header_info(x)
+
+  cat("spatial tree-sequence contents:\n")
+  counts <- dplyr::group_by(x, pop) %>% dplyr::summarise(n = dplyr::n())
+  for (i in seq_len(nrow(counts)))
+    cat(" ", counts[i, ]$pop, "-", counts[i, ]$n, "individuals\n")
+
+  funs <- if (model$direction == "forward") c(min, max) else c(max, min)
+  cat("\n  oldest sample: ", funs[[1]](x$time), "\n")
+  cat("  youngest sample: ", funs[[2]](x$time), "\n\n")
+
+  print_map_info(model$world)
+
+  cat("\ncontents of the sf object:\n\n")
+  print(dplyr::as_tibble(x))
 }
 
 

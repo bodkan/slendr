@@ -58,16 +58,7 @@
     <loc>https://bodkan.net/slendr/reference/population.html</loc>
   </url>
   <url>
-    <loc>https://bodkan.net/slendr/reference/print.slendr_map.html</loc>
-  </url>
-  <url>
-    <loc>https://bodkan.net/slendr/reference/print.slendr_model.html</loc>
-  </url>
-  <url>
     <loc>https://bodkan.net/slendr/reference/print.slendr_pop.html</loc>
-  </url>
-  <url>
-    <loc>https://bodkan.net/slendr/reference/print.slendr_region.html</loc>
   </url>
   <url>
     <loc>https://bodkan.net/slendr/reference/read.html</loc>
@@ -148,6 +139,9 @@
     <loc>https://bodkan.net/slendr/reference/ts_simplify.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/slendr/reference/ts_spatial.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/slendr/reference/ts_tajima.html</loc>
   </url>
   <url>
@@ -173,5 +167,8 @@
   </url>
   <url>
     <loc>https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/articles/vignette-06-locations.html</loc>
   </url>
 </urlset>
