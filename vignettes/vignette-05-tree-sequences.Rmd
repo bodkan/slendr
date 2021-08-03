@@ -9,7 +9,7 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
+  collapse = FALSE,
   comment = "#>",
   fig.width = 8,
   fig.height = 6,
@@ -273,6 +273,7 @@ ts_f3(ts, A = "EUR1", B = "AFR1", C = "CH1")
 
 # this value should be very close to zero (no introgression in Africans)
 ts_f4(ts, "AFR1", "AFR2", "NEA1", "CH1")
+
 # this value should be significantly negative (many more ABBA sites
 # compared to BABA site due to the introgression into Europeans)
 ts_f4(ts, "AFR1", "EUR1", "NEA1", "CH1")
