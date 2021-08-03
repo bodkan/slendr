@@ -331,7 +331,7 @@ s7 late() {
 
 // Save locations of all individuals
 s8 late() {
-  filename = paste0(OUTPUT_PREFIX, "_ind_locations.tsv.gz");
+  filename = output_path("ind_locations.tsv.gz");
   for (ind in sim.subpopulations.individuals) {
     ind_str = paste(sim.generation, original_time(sim.generation),
                     ind.subpopulation.id, ind.pedigreeID, ind.spatialPosition,
@@ -345,7 +345,7 @@ s9 late() {
   for (pop in sim.subpopulations) {
     pop_name = filter(POPULATIONS, "pop_id", pop.id).getValue("pop");
     line = paste(SIM_END - sim.generation, calc_ancestry(pop), sep = "\t");
-    filename = paste0(OUTPUT_PREFIX, "_ancestry_", pop_name, ".tsv");
+    filename = output_path("ancestry_" + pop_name + ".tsv");
     writeFile(filename, line, append = T);
   }
 }
@@ -401,7 +401,7 @@ s11 late() {
 s12 late() {
   if (TS_RECORDING) {
     log_output("saving the tree-sequence file");
-    filename = paste0(OUTPUT_PREFIX, "_tree_seq.trees");
+    filename = output_path("ts.trees");
     metadata = Dictionary("sampling", SAMPLING);
     sim.treeSeqOutput(filename, metadata = metadata);
   }
@@ -564,13 +564,13 @@ function (s$) config_path(s$ file) {
 }
 
 function (s$) output_path(s$ file) {
-  return paste0(OUTPUT_PREFIX, "_", file);
+  return paste0(OUTPUT_PREFIX, file);
 }
 
 
 // Write the locations file header line
 function (void) write_locations_header(void) {
-  filename = paste0(OUTPUT_PREFIX, "_ind_locations.tsv.gz");
+  filename = output_path("ind_locations.tsv.gz");
   header_str = "gen\ttime\tpop\tind\tx\ty";
   writeFile(filename, header_str, compress = T);
 }
@@ -580,7 +580,7 @@ function (void) write_ancestries_header(void) {
   for (i in iter(POPULATIONS)) {
     pop = POPULATIONS.getRowValues(i);
     header_str = paste(c("gen", POPULATIONS.getValue("pop")), sep = "\t");
-    filename = paste0(OUTPUT_PREFIX, "_ancestry_", pop.getValue("pop"), ".tsv");
+    filename = output_path("ancestry_" + pop.getValue("pop") + ".tsv");
     writeFile(filename, header_str);
   }
 }
