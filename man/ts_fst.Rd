@@ -22,6 +22,8 @@ ts_divergence(
 )
 }
 \arguments{
+\item{ts}{pyslim.SlimTreeSequence object}
+
 \item{sample_sets}{A list (optionally a named list) of character vectors with
 individual names (one vector per set)}
 
@@ -33,8 +35,6 @@ do not have to be specified as they are added automatically.}
 
 \item{span_normalise}{Divide the result by the span of the window? Default
 TRUE, see the tskit documentation for more detail.}
-
-\item{tsSlimTreeSequence}{object}
 }
 \value{
 For each pairwise calculation, either a single Fst value or a vector

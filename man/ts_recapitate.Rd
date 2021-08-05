@@ -2,12 +2,12 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_recapitate}
 \alias{ts_recapitate}
-\title{Recapitate the tree-sequence}
+\title{Recapitate the tree sequence}
 \usage{
 ts_recapitate(ts, recombination_rate, Ne, random_seed = NULL)
 }
 \arguments{
-\item{ts}{SlimTreeSequence object loaded by \code{ts_load}}
+\item{ts}{pyslim.SlimTreeSequence object loaded by \code{ts_load}}
 
 \item{recombination_rate}{A constant value of the recombination rate}
 
@@ -16,8 +16,8 @@ ts_recapitate(ts, recombination_rate, Ne, random_seed = NULL)
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 }
 \value{
-@return SlimTreeSequence object accessed via the reticulate package
+@return pyslim.SlimTreeSequence object accessed via the reticulate package
 }
 \description{
-Recapitate the tree-sequence
+Recapitate the tree sequence
 }

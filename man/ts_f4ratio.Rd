@@ -49,7 +49,7 @@ ts_f4ratio(
 )
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 
 \item{span_normalise}{Divide the result by the span of the window? Default
 TRUE, see the tskit documentation for more detail.}

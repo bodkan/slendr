@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Simplify the tree-sequence down to a given set of individuals — ts_simplify • slendr</title>
+<title>Simplify the tree sequence down to a given set of individuals — ts_simplify • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,10 @@
 
 
 
-<meta property="og:title" content="Simplify the tree-sequence down to a given set of individuals — ts_simplify" />
-<meta property="og:description" content="Simplify the tree-sequence down to a given set of individuals" />
+<meta property="og:title" content="Simplify the tree sequence down to a given set of individuals — ts_simplify" />
+<meta property="og:description" content="This function is a convenience wrapper around the simplify method
+implemented in tskit, designed to work on tree sequence data simulated by
+SLiM using the slendr R package." />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -167,13 +169,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Simplify the tree-sequence down to a given set of individuals</h1>
+    <h1>Simplify the tree sequence down to a given set of individuals</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
     <div class="hidden name"><code>ts_simplify.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Simplify the tree-sequence down to a given set of individuals</p>
+    <p>This function is a convenience wrapper around the <code>simplify</code> method
+implemented in tskit, designed to work on tree sequence data simulated by
+SLiM using the <span class="pkg">slendr</span> R package.</p>
     </div>
 
     <pre class="usage"><span class='fu'>ts_simplify</span><span class='op'>(</span><span class='va'>ts</span>, individuals <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -195,6 +199,16 @@ remembered individuals will be retained.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>@return SlimTreeSequence object accessed via the reticulate package</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The simplification process is used to remove redundant information from the
+tree sequence and retains only information necessary to describe the
+genealogical history of a set of samples.</p>
+<p>For more information on how simplification works in pyslim and tskit, see the
+official documentation at
+<a href='https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify'>https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify</a>
+and
+<a href='https://pyslim.readthedocs.io/en/latest/python_api.html?pyslim.SlimTreeSequence.simplify#pyslim.SlimTreeSequence.simplify'>https://pyslim.readthedocs.io/en/latest/python_api.html?pyslim.SlimTreeSequence.simplify#pyslim.SlimTreeSequence.simplify</a>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

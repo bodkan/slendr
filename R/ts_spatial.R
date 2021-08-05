@@ -104,7 +104,7 @@ ts_spatial <- function(ts, crs = NULL) {
 #'
 #' @export
 plot_ancestors <- function(x, individual, connect = TRUE) {
-  anc_sf <- dplyr::filter(sf, name == individual)
+  anc_sf <- dplyr::filter(x, name == individual)
 
   # switch geometry to the individual's location column
   ind_sf <- sf::st_set_geometry(anc_sf[1, ], "location")
@@ -115,8 +115,10 @@ plot_ancestors <- function(x, individual, connect = TRUE) {
   } else
     migration_geom <- NULL
 
+  model <- attr(x, "model")
+
   ggplot() +
-    geom_sf(data = attr(sf, "world"), fill = "lightgray", color = NA) +
+    geom_sf(data = model$world, fill = "lightgray", color = NA) +
     migration_geom +
     geom_sf(data = ind_sf) +
     geom_sf(data = anc_sf, aes(color = anc_time)) +

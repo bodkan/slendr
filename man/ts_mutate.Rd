@@ -2,20 +2,22 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_mutate}
 \alias{ts_mutate}
-\title{Add mutations to the given tree-sequence}
+\title{Add mutations to the given tree sequence}
 \usage{
-ts_mutate(ts, mutation_rate, random_seed = NULL)
+ts_mutate(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE)
 }
 \arguments{
-\item{ts}{Object of the type SlimTreeSequence}
+\item{ts}{Object of the type pyslim.SlimTreeSequence}
 
 \item{mutation_rate}{Mutation rate used by msprime to simulate mutations}
 
 \item{random_seed}{Random seed passed to msprime's \code{mutate} method}
+
+\item{keep_existing}{Keep existing mutations?}
 }
 \value{
-SlimTreeSequence object
+pyslim.SlimTreeSequence object
 }
 \description{
-Add mutations to the given tree-sequence
+Add mutations to the given tree sequence
 }

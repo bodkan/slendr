@@ -2,19 +2,40 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_simplify}
 \alias{ts_simplify}
-\title{Simplify the tree-sequence down to a given set of individuals}
+\title{Simplify the tree sequence down to a given set of individuals}
 \usage{
 ts_simplify(ts, individuals = NULL)
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 
-\item{samples}{A character vector of individual names. If NULL, all
-remembered individuals will be retained.}
+\item{individuals}{A character vector of individual names. If NULL, all
+explicitly remembered individuals (i.e. those specified via the
+\code{\link{sampling}} function will be left in the tree sequence after the
+simplification.}
 }
 \value{
-@return SlimTreeSequence object accessed via the reticulate package
+@return pyslim.SlimTreeSequence object accessed via the reticulate
+package
 }
 \description{
-Simplify the tree-sequence down to a given set of individuals
+This function is a convenience wrapper around the \code{simplify} method
+implemented in tskit, designed to work on tree sequence data simulated by
+SLiM using the \pkg{slendr} R package.
+}
+\details{
+The simplification process is used to remove redundant information from the
+tree sequence and retains only information necessary to describe the
+genealogical history of a set of samples.
+
+For more information on how simplification works in pyslim and tskit, see the
+official documentation at
+\url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify}
+and
+\url{https://pyslim.readthedocs.io/en/latest/python_api.html?pyslim.SlimTreeSequence.simplify#pyslim.SlimTreeSequence.simplify}.
+
+A very clear description of the difference between remembering and retaining
+and how to use these techniques to implement historical individuals (i.e.
+ancient DNA samples) is in the pyslim documentation at
+\url{https://pyslim.readthedocs.io/en/latest/tutorial.html?highlight=retainCoalescentOnly#historical-individuals}.
 }

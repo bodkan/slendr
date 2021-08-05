@@ -2,12 +2,12 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_eigenstrat}
 \alias{ts_eigenstrat}
-\title{Extract genotypes from the tree-sequence in the EIGENSTRAT format}
+\title{Extract genotypes from the tree sequence in the EIGENSTRAT format}
 \usage{
 ts_eigenstrat(ts, prefix, chrom = "chr1", quiet = FALSE)
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 
 \item{prefix}{EIGENSTRAT trio prefix}
 }
@@ -15,5 +15,5 @@ ts_eigenstrat(ts, prefix, chrom = "chr1", quiet = FALSE)
 Object of the class EIGENSTRAT created by the admixr package
 }
 \description{
-Extract genotypes from the tree-sequence in the EIGENSTRAT format
+Extract genotypes from the tree sequence in the EIGENSTRAT format
 }

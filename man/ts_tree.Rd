@@ -2,14 +2,14 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_tree}
 \alias{ts_tree}
-\title{Get a tree from a given tree-sequence}
+\title{Get a tree from a given tree sequence}
 \usage{
 ts_tree(ts, i, mode = c("index", "position"), ...)
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 
-\item{i}{Position of the tree in the tree-sequence. If \code{mode = "index"},
+\item{i}{Position of the tree in the tree sequence. If \code{mode = "index"},
 an i-th tree will be returned (in one-based indexing), if \code{mode =
   "position"}, a tree covering an i-th base of the simulated genome will be
 returned.}
