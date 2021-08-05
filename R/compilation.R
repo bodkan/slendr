@@ -776,3 +776,12 @@ convert_time <- function(df, direction, columns, max_time, generation_time) {
   }
   df
 }
+
+# Convert SLiM time units in generations used in the tree-sequence
+# output to user-specified time units (forward or backward)
+convert_slim_time <- function(times, model) {
+  if (model$direction == "backward")
+    times * model$generation_time
+  else
+    model$length - times * model$generation_time
+}

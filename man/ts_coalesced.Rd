@@ -2,12 +2,12 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_coalesced}
 \alias{ts_coalesced}
-\title{Check that all trees in the tree-sequence are fully coalesced}
+\title{Check that all trees in the tree sequence are fully coalesced}
 \usage{
 ts_coalesced(ts, return_failed = FALSE)
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 
 \item{return_failed}{Report back which trees failed the coalescence
 check?}
@@ -17,5 +17,5 @@ TRUE or FALSE value if \code{return_failed = FALSE}, otherwise a vector of
 (tskit Python 0-based) indices of trees which failed the coalescence test
 }
 \description{
-Check that all trees in the tree-sequence are fully coalesced
+Check that all trees in the tree sequence are fully coalesced
 }

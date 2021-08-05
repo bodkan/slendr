@@ -2,16 +2,16 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_genotypes}
 \alias{ts_genotypes}
-\title{Extract genotype table from the tree-sequence}
+\title{Extract genotype table from the tree sequence}
 \usage{
 ts_genotypes(ts)
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 }
 \value{
 Data frame object of the class \code{tibble}
 }
 \description{
-Extract genotype table from the tree-sequence
+Extract genotype table from the tree sequence
 }

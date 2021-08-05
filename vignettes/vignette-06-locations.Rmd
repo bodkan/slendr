@@ -155,7 +155,7 @@ With this done, we can simulate data. Because we want to explore how to handle s
 
 ```{r}
 slim(
-  model, seq_length = 10e6, recomb_rate = 1e-8,
+  model, seq_length = 100e3, recomb_rate = 1e-8,
   save_locations = TRUE, ts_recording = TRUE, sampling = samples,
   method = "batch", seed = 314159, overwrite = TRUE
 )
@@ -164,8 +164,13 @@ slim(
 After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1) of tree-sequence features in *slendr*.
 
 ```{r}
-ts <- ts_load(model, simplify = TRUE)
+ts <- ts_load(model)
 ts
+```
+
+```{r}
+ts2 <- ts_load(model, simplify = TRUE)
+ts2
 ```
 
 ## Extracting spatial tree-sequence data
@@ -268,3 +273,31 @@ ggplot() +
 ```
 
 This is why, although it is impossible for us to capture every possible type of figure you might want to create for your study, you can easily use your knowledge of *ggplot2* to make any figure imaginable.
+
+
+```{r}
+reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
+model <- read("~/Desktop/sims/")
+
+ts1 <- ts_load(model)
+ts_draw(ts1$first())
+
+ts2 <- ts_recapitate(ts1, recombination_rate = 1e-8, Ne = 10000)
+ts_draw(ts2$first())
+
+ts3 <- ts_simplify(ts2)
+ts_draw(ts3$first())
+
+ts4 <- ts_simplify(ts2, individuals = c("AFR1", "OOA1", "EHG13", "ANA1",
+                                        "YAM4", "EUR5"))
+ts_draw(ts4$first())
+ts_draw(ts4$first(), individuals = TRUE, ts = ts4)
+
+ts = ts3
+
+ts_sf <- ts_spatial(ts)
+
+plot_ancestors(ts_sf, "EUR50")
+
+```
+

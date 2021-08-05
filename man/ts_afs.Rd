@@ -14,11 +14,11 @@ ts_afs(
 )
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 
 \item{sample_sets}{A list (optionally a named list) of character vectors with
 individual names (one vector per set). If NULL, allele frequency spectrum
-for all individuals in the tree-sequence will be computed.}
+for all individuals in the tree sequence will be computed.}
 
 \item{mode}{The mode for the calculation ("sites" or "branch")}
 

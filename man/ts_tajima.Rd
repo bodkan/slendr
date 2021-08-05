@@ -7,6 +7,8 @@
 ts_tajima(ts, sample_sets, mode = c("site", "branch", "node"), windows = NULL)
 }
 \arguments{
+\item{ts}{pyslim.SlimTreeSequence object}
+
 \item{sample_sets}{A list (optionally a named list) of character vectors with
 individual names (one vector per set)}
 
@@ -15,8 +17,6 @@ individual names (one vector per set)}
 \item{windows}{Coordinates of breakpoints between windows. The first
 coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
 are added automatically)}
-
-\item{tsSlimTreeSequence}{object}
 }
 \value{
 For each set of individuals either a single Tajima's D value or a

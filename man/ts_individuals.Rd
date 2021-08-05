@@ -2,19 +2,19 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_individuals}
 \alias{ts_individuals}
-\title{Extract table of individuals from pyslim's tree-sequence object}
+\title{Extract the table of individuals}
 \usage{
-ts_individuals(ts)
+ts_individuals(ts, remembered = NULL, retained = NULL, alive = NULL)
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 
 \item{model}{\code{slendr_model} object of a model that generated the data}
 }
 \value{
-Data frame with individual information from the input tree-sequence
+Data frame with individual information from the input tree sequence
 object
 }
 \description{
-Extract table of individuals from pyslim's tree-sequence object
+Extract the table of individuals
 }

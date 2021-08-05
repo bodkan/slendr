@@ -2,18 +2,18 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_vcf}
 \alias{ts_vcf}
-\title{Save genotypes in the tree-sequence as a VCF file}
+\title{Save genotypes in the tree sequence as a VCF file}
 \usage{
 ts_vcf(ts, vcf, individuals = NULL)
 }
 \arguments{
-\item{ts}{SlimTreeSequence object}
+\item{ts}{pyslim.SlimTreeSequence object}
 
 \item{vcf}{Path to a VCF file}
 
-\item{individuals}{A character vector of individuals in the tree-sequence
-(all individuals present in the tree-sequence will be saved by default)}
+\item{individuals}{A character vector of individuals in the tree sequence
+(all individuals present in the tree sequence will be saved by default)}
 }
 \description{
-Save genotypes in the tree-sequence as a VCF file
+Save genotypes in the tree sequence as a VCF file
 }

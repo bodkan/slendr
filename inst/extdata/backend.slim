@@ -60,7 +60,7 @@ initialize() {
   defineConstant("SIM_START", BURNIN_LENGTH + min(POPULATIONS.getValue("tsplit_gen")));
   defineConstant("SIM_END", SIM_START + SIM_LENGTH);
 
-  if (TS_RECORDING) initializeTreeSeq(retainCoalescentOnly=F);
+  if (TS_RECORDING) initializeTreeSeq(retainCoalescentOnly = T);
 
   // mutation types of neutral ancestry-informative markers
   // (one for each population)
@@ -384,6 +384,12 @@ s10 late() {
     inds = sample(all_inds, asInteger(n));
     sim.treeSeqRememberIndividuals(inds, permanent = T);
   }
+}
+
+1: late() {
+  // note that permanent remembering takes priority in SLiM so this doesn't
+  // override permanent remembering performed above
+  sim.treeSeqRememberIndividuals(sim.subpopulations.individuals, permanent = F);
 }
 
 // Remove populations which have been scheduled for removal
