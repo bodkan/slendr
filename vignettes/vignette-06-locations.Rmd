@@ -301,3 +301,9 @@ plot_ancestors(ts_sf, "EUR50")
 
 ```
 
+
+
+```{r}
+ts_sf %>% dplyr::filter(name == "EUR50")
+```
+
