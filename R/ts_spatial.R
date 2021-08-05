@@ -32,9 +32,9 @@ ts_spatial <- function(ts, crs = NULL) {
   # process table of individuals to get information about potential
   # ancestral locations and times (and notes in those individuals)
   ind_info <- individuals %>%
-    dplyr::select(time, raster_x, raster_y, chr1_id, chr2_id) %>%
-    tidyr::gather("node", "node_id", -c(time, raster_x, raster_y)) %>%
-    dplyr::select(-node, anc_time = time, anc_raster_x = raster_x,
+    dplyr::select(time, pop, raster_x, raster_y, chr1_id, chr2_id) %>%
+    tidyr::gather("node", "node_id", c("chr1_id", "chr2_id")) %>%
+    dplyr::select(-node, anc_time = time, anc_pop = pop, anc_raster_x = raster_x,
                   anc_raster_y = raster_y, anc_node_id = node_id)
 
   # iterate over all nodes from the oldest (those just behind some root)
@@ -56,7 +56,8 @@ ts_spatial <- function(ts, crs = NULL) {
     dplyr::select(node_id, anc_id = parent, left, right) %>%
     dplyr::inner_join(ind_info, by = c("anc_id" = "anc_node_id")) %>%
     dplyr::arrange(node_id, anc_id, left) %>%
-    dplyr::group_nest(node_id, anc_id, anc_time, anc_raster_x, anc_raster_y, .key = "interval")
+    dplyr::group_nest(node_id, anc_id, anc_pop, anc_time, anc_raster_x, anc_raster_y,
+                      .key = "interval")
 
   # convert the table of all individuals into a long format (two rows
   # for each sampled individual -- i.e. for each chromosome)
@@ -66,8 +67,8 @@ ts_spatial <- function(ts, crs = NULL) {
   # to each node in a sampled individual, add the infered ancestors up to the root
   # of each genealogy
   combined <- dplyr::inner_join(individuals_long, ancestors, by = "node_id") %>%
-    dplyr::select(name, node_id, time, raster_x, raster_y, anc_id, anc_raster_x,
-                  anc_raster_y, anc_time, anc_id, dplyr::everything())
+    dplyr::select(name, node_id, time, raster_x, raster_y, anc_id, anc_pop,
+                  anc_raster_x, anc_raster_y, anc_time, anc_id, dplyr::everything())
 
   # reproject coordinates to the original crs
   if (has_crs(model$world)) {
@@ -91,8 +92,8 @@ ts_spatial <- function(ts, crs = NULL) {
 
   sf_result <- sf::st_as_sf(combined, crs = crs, coords = c("anc_x", "anc_y")) %>%
     dplyr::mutate(location = sf_samples$geometry) %>%
-    dplyr::select(name, node_id, time, anc_id, anc_time, anc_location = geometry,
-                  dplyr::everything()) %>%
+    dplyr::select(name, node_id, time, anc_id, anc_pop, anc_time,
+                  anc_location = geometry, dplyr::everything()) %>%
     dplyr::filter(remembered)
 
   attr(sf_result, "model") <- model
@@ -103,26 +104,30 @@ ts_spatial <- function(ts, crs = NULL) {
 #' Plot locations of ancestors of given sample on a map
 #'
 #' @export
-plot_ancestors <- function(x, individual, connect = TRUE) {
-  anc_sf <- dplyr::filter(x, name == individual)
-
-  # switch geometry to the individual's location column
-  ind_sf <- sf::st_set_geometry(anc_sf[1, ], "location")
-
-  if (connect) {
-    sf_line <- dplyr::group_by(anc_sf, name) %>% dplyr::summarise()
-    migration_geom <- geom_sf(data = sf_line)
-  } else
-    migration_geom <- NULL
-
+plot_ancestors <- function(x, individual, older_than = NULL, younger_than = NULL) {
   model <- attr(x, "model")
 
-  ggplot() +
+  anc_sf <- dplyr::filter(x, name == individual)
+  ind_sf <- sf::st_set_geometry(anc_sf[1, ], "location")
+
+  comp_op <- ifelse(model$direction == "backward", `>`, `<`)
+  if (!is.null(older_than)) anc_sf <- dplyr::filter(anc_sf, comp_op(anc_time, older_than))
+  if (!is.null(younger_than)) anc_sf <- dplyr::filter(anc_sf, !comp_op(anc_time, younger_than))
+
+  # if (connect) {
+  #   sf_line <- dplyr::group_by(anc_sf, name) %>% dplyr::summarise()
+  #   migration_geom <- geom_sf(data = sf_line)
+  # } else
+  migration_geom <- NULL
+
+  p <- ggplot() +
     geom_sf(data = model$world, fill = "lightgray", color = NA) +
     migration_geom +
-    geom_sf(data = ind_sf) +
-    geom_sf(data = anc_sf, aes(color = anc_time)) +
+    geom_sf(data = ind_sf, shape = 13) +
+    geom_sf(data = anc_sf, aes(color = anc_pop)) +
     coord_sf(expand = 0) +
     ggtitle(paste("Locations of the ancestors of", individual)) +
     theme_bw()
+
+  p
 }
