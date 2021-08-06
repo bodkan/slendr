@@ -167,7 +167,7 @@ ts_simplify <- function(ts, individuals = NULL) {
   ts_new <- ts$simplify(node_ids, filter_populations = FALSE)
 
   # get columns with named data and the pedigree_id key
-  named_columns <- metadata[, c("pedigree_id", "name", "pop", "chr1", "chr2")]
+  named_columns <- metadata[, c("pedigree_id", "name", "pop")]
 
   metadata_new <- get_raw_inds(ts_new, model) %>%
     dplyr::inner_join(named_columns, by = "pedigree_id") %>%
@@ -222,14 +222,18 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRU
 ts_genotypes <- function(ts) {
   genotypes <- ts$genotype_matrix()
 
+  individuals <- ts_individuals(ts) %>%
+    dplyr::mutate(chr1 = paste0("%s_chr1", name),
+                  chr2 = paste0("%s_chr2", name))
+
   # we had to do some rearrangement of nodes in the table of individuals
   # (in case we did simplification) so the genotype matrix returned by
   # tskit is not exactly in the right order -- this is fixed here, by
   # reordering all samples (chromosomes/nodes) by their numeric IDs, which
   # is what is normally returned by genotype_matrix()
   col_names <- dplyr::bind_rows(
-    ts_individuals(ts) %>% dplyr::select(chr1_id, chr1) %>% setNames(c("id", "chr")),
-    ts_individuals(ts) %>% dplyr::select(chr2_id, chr2) %>% setNames(c("id", "chr"))
+    individuals %>% dplyr::select(chr1_id, chr1) %>% setNames(c("id", "chr")),
+    individuals %>% dplyr::select(chr2_id, chr2) %>% setNames(c("id", "chr"))
   ) %>%
     dplyr::arrange(id)
 
@@ -350,7 +354,7 @@ ts_individuals <- function(ts, remembered = NULL, retained = NULL, alive = NULL)
 #' @export
 ts_nodes <- function(ts) {
   check_ts_class(ts)
-   attr(ts, "nodes")
+  attr(ts, "nodes")
 }
 
 #' @rdname ts_nodes
@@ -418,19 +422,22 @@ ts_draw <- function(x, width = 1500, height = 500, individuals = FALSE,
 
     nodes <- ts_nodes(ts)
     individuals <- ts_individuals(ts) %>%
-      dplyr::select(name, chr1_id, chr2_id, pop) %>%
-      tidyr::gather("chr", "id", -name, -pop) %>%
+      dplyr::select(name, chr1_id, chr2_id) %>%
+      tidyr::gather("chr", "id", -name) %>%
       tidyr::drop_na()
 
     df_labels <-
-      dplyr::left_join(nodes, individuals, by = "id") %>%
-      dplyr::select(id, name, pop)
-    py_labels <- reticulate::py_dict(keys = df_labels$id,
-                                     values = df_labels$name)
-  } else
-    labels <- NULL
+      dplyr::left_join(nodes, individuals, by = c("node_id" = "id")) %>%
+      dplyr::select(node_id, name) %>%
+      dplyr::mutate(node_label = sprintf("%s (%s)", name, node_id),
+                    node_label = ifelse(is.na(name), node_id, node_label))
 
-  svg <- x$draw_svg(size = c(width, height), node_labels = labels, ...)
+    py_labels <- reticulate::py_dict(keys = df_labels$node_id,
+                                     values = df_labels$node_label)
+  } else
+    py_labels <- NULL
+
+  svg <- x$draw_svg(size = c(width, height), node_labels = py_labels, ...)
 
   # convert from a SVG representation to a PNG image
   raw <- charToRaw(svg)
@@ -804,13 +811,14 @@ get_raw_nodes <- function(ts, model) {
   purrr::map_dfr(seq(0, ts$num_nodes - 1), function(i) {
     node <- ts$node(i)
     list(
-      id = i,
+      node_id = i,
       time = convert_slim_time(node$time, model),
-      population = node$population,
-      individual_id = node$individual,
+      pop_id = node$population,
+      ind_id = node$individual,
       slim_id = node["metadata"]["slim_id"]
     )
-  })
+  }) %>%
+    dplyr::mutate(pop = model$splits$pop[pop_id + 1])
 }
 
 get_raw_edges <- function(ts, model) {
@@ -830,7 +838,7 @@ get_raw_inds <- function(ts, model) {
   purrr::map_dfr(seq(0, ts$num_individuals - 1), function(i) {
     ind <- ts$individual(i)
     list(
-      id = ind["id"],
+      ind_id = ind["id"],
       pedigree_id = ind["metadata"]["pedigree_id"],
       chr1_id = ind["nodes"][1],
       chr2_id = ind["nodes"][2],
@@ -865,13 +873,11 @@ get_complete_inds <- function(ts, model) {
       )
     } %>%
     dplyr::group_by(pop) %>%
-    dplyr::mutate(name = paste0(pop, 1:dplyr::n()),
-                  chr1 = paste0(pop, 1:dplyr::n(), "_chr1"),
-                  chr2 = paste0(pop, 1:dplyr::n(), "_chr2")) %>%
+    dplyr::mutate(name = paste0(pop, 1:dplyr::n())) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(-time_orig, pop) %>%
     dplyr::rename(time = time_orig) %>%
-    dplyr::select(-pop, -n, name, time, chr1, chr2)
+    dplyr::select(-pop, -n, name, time)
 
   # splits individuals extracted from the tree sequence into those remembered
   # (i.e. individuals present in the sampling table) and those that are not
@@ -883,7 +889,7 @@ get_complete_inds <- function(ts, model) {
   combined <-
     cbind(remembered, samples) %>%
     dplyr::bind_rows(not_remembered) %>%
-    dplyr::select(name, id, pedigree_id, chr1_id, chr2_id,
+    dplyr::select(name, time, ind_id, chr1_id, chr2_id,
                   remembered, retained, alive,
                   raster_x, raster_y, dplyr::everything()) %>%
     dplyr::as_tibble()

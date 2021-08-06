@@ -170,13 +170,17 @@ reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
 
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
                recombination_rate = 1e-8, Ne = 10000)
-
 ts_draw(ts$first())
 ts_draw(ts$first(), individuals = TRUE, ts = ts)
 
+ts2 <- ts_simplify(ts, c("AFR1", "OOA1", "EUR50", "EHG12"))
+
+ts_draw(ts2$first())
+ts_draw(ts2$first(), individuals = TRUE, ts = ts2)
+
 ts_sf <- ts_spatial(ts)
 
-plot_ancestors(ts_sf, "EUR50")
+plot_parents(ts_sf, "EUR1")
 
 ```
 
