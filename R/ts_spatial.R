@@ -24,14 +24,14 @@ ts_spatial <- function(ts, crs = NULL) {
   edges <- ts_edges(ts)
 
   # root nodes - should they be added to `node_info` below?
-  dplyr::filter(nodes, !id %in% edges$child)
+  dplyr::filter(nodes, !node_id %in% edges$child)
 
   # process table of individuals to get information about locations and times
   # of all nodes (remembered or retained)
   node_info <- individuals %>%
     tidyr::gather("node", "node_id", c("chr1_id", "chr2_id")) %>%
-    dplyr::select(-node, -n, -chr1, -chr2, -pop_id, -remembered, -retained, -alive,
-                  -flag, -id, -pedigree_id, name, time, pop, raster_x, raster_y, node_id) %>%
+    dplyr::select(-node, -pop_id, -remembered, -retained, -alive,
+                  -flag, -ind_id, -pedigree_id, name, time, pop, raster_x, raster_y, node_id) %>%
     dplyr::filter(!is.na(node_id)) # at least one node in an individual recorded
   node_info
 
