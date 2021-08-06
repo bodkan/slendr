@@ -49,7 +49,8 @@ Imports:
     stringr,
     reticulate,
     magick,
-    admixr
+    admixr,
+    tidyr
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

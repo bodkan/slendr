@@ -23,52 +23,29 @@ ts_spatial <- function(ts, crs = NULL) {
   nodes <- ts_nodes(ts)
   edges <- ts_edges(ts)
 
-  # get all non-root nodes from the tree sequence
-  child_nodes <- edges %>%
-    dplyr::group_nest(child, .key = "parents") %>%
-    dplyr::inner_join(nodes, by = c("child" = "id")) %>%
-    dplyr::arrange(-time)
+  # root nodes - should they be added to `node_info` below?
+  dplyr::filter(nodes, !id %in% edges$child)
 
-  # process table of individuals to get information about potential
-  # ancestral locations and times (and notes in those individuals)
-  ind_info <- individuals %>%
-    dplyr::select(time, pop, raster_x, raster_y, chr1_id, chr2_id) %>%
+  # process table of individuals to get information about locations and times
+  # of all nodes (remembered or retained)
+  node_info <- individuals %>%
     tidyr::gather("node", "node_id", c("chr1_id", "chr2_id")) %>%
-    dplyr::select(-node, anc_time = time, anc_pop = pop, anc_raster_x = raster_x,
-                  anc_raster_y = raster_y, anc_node_id = node_id)
+    dplyr::select(-node, -n, -chr1, -chr2, -pop_id, -remembered, -retained, -alive,
+                  -flag, -id, -pedigree_id, name, time, pop, raster_x, raster_y, node_id) %>%
+    dplyr::filter(!is.na(node_id)) # at least one node in an individual recorded
+  node_info
 
-  # iterate over all nodes from the oldest (those just behind some root)
-  # and proceed "down" in the genealogy, remembering for each node
-  # all ancestors above (dynamic programming style)
-  ancestor_list <- vector(mode = "list", length = nrow(nodes))
-  for (i in child_nodes$child) {
-    # who are the parents of the current node?
-    parents <- child_nodes[child_nodes$child == i, ]$parents[[1]]
+  parents <- node_info %>%
+    dplyr::select(parent_id = node_id,
+                  parent_raster_x = raster_x, parent_raster_y = raster_y,
+                  parent_pop = pop, parent_time = time)
 
-    # who are all the ancestors of previous generations collected so far?
-    parent_ancestors <- dplyr::bind_rows(ancestor_list[unique(parents$parent + 1)])
-
-    # bind all previous ancestors with the current parents
-    ancestor_list[[i + 1]] <- dplyr::bind_rows(parents, parent_ancestors) %>%
-      dplyr::mutate(node_id = i)
-  }
-  ancestors <- dplyr::bind_rows(ancestor_list) %>%
-    dplyr::select(node_id, anc_id = parent, left, right) %>%
-    dplyr::inner_join(ind_info, by = c("anc_id" = "anc_node_id")) %>%
-    dplyr::arrange(node_id, anc_id, left) %>%
-    dplyr::group_nest(node_id, anc_id, anc_pop, anc_time, anc_raster_x, anc_raster_y,
-                      .key = "interval")
-
-  # convert the table of all individuals into a long format (two rows
-  # for each sampled individual -- i.e. for each chromosome)
-  individuals_long <- individuals %>%
-    tidyr::gather(key = "node", value = "node_id", c("chr1_id", "chr2_id"))
-
-  # to each node in a sampled individual, add the infered ancestors up to the root
-  # of each genealogy
-  combined <- dplyr::inner_join(individuals_long, ancestors, by = "node_id") %>%
-    dplyr::select(name, node_id, time, raster_x, raster_y, anc_id, anc_pop,
-                  anc_raster_x, anc_raster_y, anc_time, anc_id, dplyr::everything())
+  # join the edges table on a parent key, to get information of a parent
+  # of each node
+  combined <-
+    dplyr::inner_join(node_info, edges, by = c("node_id" = "child")) %>%
+    dplyr::inner_join(parents, by = c("parent" = "parent_id")) %>%
+    dplyr::arrange(name, node_id, left)
 
   # reproject coordinates to the original crs
   if (has_crs(model$world)) {
@@ -81,7 +58,7 @@ ts_spatial <- function(ts, crs = NULL) {
 
     combined <- reproject(
       from = "raster", to = crs, add = TRUE, coords = combined, model = model,
-      input_prefix = "anc_raster_", output_prefix = "anc_"
+      input_prefix = "parent_raster_", output_prefix = "parent_"
     )
   } else {
     ind_locations <- dplyr::select(combined, x = raster_x, y = raster_y)
@@ -89,12 +66,10 @@ ts_spatial <- function(ts, crs = NULL) {
   }
 
   sf_samples <- sf::st_as_sf(ind_locations, coords = c("x", "y"), crs = crs)
-
-  sf_result <- sf::st_as_sf(combined, crs = crs, coords = c("anc_x", "anc_y")) %>%
+  sf_result <- sf::st_as_sf(combined, crs = crs, coords = c("parent_x", "parent_y")) %>%
     dplyr::mutate(location = sf_samples$geometry) %>%
-    dplyr::select(name, node_id, time, anc_id, anc_pop, anc_time,
-                  anc_location = geometry, dplyr::everything()) %>%
-    dplyr::filter(remembered)
+    dplyr::select(name, node_id, time, parent_id = parent, parent_pop, parent_time,
+                  parent_location = geometry, dplyr::everything())
 
   attr(sf_result, "model") <- model
 
@@ -104,30 +79,93 @@ ts_spatial <- function(ts, crs = NULL) {
 #' Plot locations of ancestors of given sample on a map
 #'
 #' @export
-plot_ancestors <- function(x, individual, older_than = NULL, younger_than = NULL) {
+plot_parents <- function(x, individual) {
   model <- attr(x, "model")
 
-  anc_sf <- dplyr::filter(x, name == individual)
-  ind_sf <- sf::st_set_geometry(anc_sf[1, ], "location")
-
-  comp_op <- ifelse(model$direction == "backward", `>`, `<`)
-  if (!is.null(older_than)) anc_sf <- dplyr::filter(anc_sf, comp_op(anc_time, older_than))
-  if (!is.null(younger_than)) anc_sf <- dplyr::filter(anc_sf, !comp_op(anc_time, younger_than))
-
-  # if (connect) {
-  #   sf_line <- dplyr::group_by(anc_sf, name) %>% dplyr::summarise()
-  #   migration_geom <- geom_sf(data = sf_line)
-  # } else
-  migration_geom <- NULL
+  parents_sf <- dplyr::filter(x, name == individual)
+  ind_sf <- sf::st_set_geometry(parents_sf[1, ], "location")
 
   p <- ggplot() +
     geom_sf(data = model$world, fill = "lightgray", color = NA) +
-    migration_geom +
     geom_sf(data = ind_sf, shape = 13) +
-    geom_sf(data = anc_sf, aes(color = anc_pop)) +
+    geom_sf(data = parents_sf, aes(color = parent_pop, parent_time)) +
     coord_sf(expand = 0) +
-    ggtitle(paste("Locations of the ancestors of", individual)) +
+    ggtitle(paste("Locations of the parents of", individual)) +
     theme_bw()
 
   p
 }
+
+
+
+
+
+#' Plot locations of ancestors of given sample on a map
+#'
+#' @export
+# plot_ancestors <- function(x, individual, older_than = NULL, younger_than = NULL) {
+#   model <- attr(x, "model")
+#
+#   anc_sf <- dplyr::filter(x, name == individual)
+#   ind_sf <- sf::st_set_geometry(anc_sf[1, ], "location")
+#
+#   comp_op <- ifelse(model$direction == "backward", `>`, `<`)
+#   if (!is.null(older_than)) anc_sf <- dplyr::filter(anc_sf, comp_op(anc_time, older_than))
+#   if (!is.null(younger_than)) anc_sf <- dplyr::filter(anc_sf, !comp_op(anc_time, younger_than))
+#
+#   # if (connect) {
+#   #   sf_line <- dplyr::group_by(anc_sf, name) %>% dplyr::summarise()
+#   #   migration_geom <- geom_sf(data = sf_line)
+#   # } else
+#   migration_geom <- NULL
+#
+#   p <- ggplot() +
+#     geom_sf(data = model$world, fill = "lightgray", color = NA) +
+#     migration_geom +
+#     geom_sf(data = ind_sf, shape = 13) +
+#     geom_sf(data = anc_sf, aes(color = anc_pop)) +
+#     coord_sf(expand = 0) +
+#     ggtitle(paste("Locations of the ancestors of", individual)) +
+#     theme_bw()
+#
+#   p
+# }
+#
+#
+# all_ancestors <- function(x) {
+#
+#   # iterate over all nodes from the oldest (those just behind some root)
+#   # and proceed "down" in the genealogy, remembering for each node
+#   # all ancestors above (dynamic programming style)
+#   ancestor_list <- vector(mode = "list", length = nrow(nodes))
+#   for (i in child_nodes$child) {
+#     if (i == x) break()
+#     # who are the parents of the current node?
+#     parents <- child_nodes[child_nodes$child == i, ]$parents[[1]]
+#
+#     # who are all the ancestors of previous generations collected so far?
+#     parent_ancestors <- dplyr::bind_rows(ancestor_list[unique(parents$parent + 1)])
+#
+#     # bind all previous ancestors with the current parents
+#     ancestor_list[[i + 1]] <- dplyr::bind_rows(parents, parent_ancestors) %>%
+#       dplyr::mutate(node_id = i)
+#   }
+#   ancestors <- dplyr::bind_rows(ancestor_list) %>%
+#     dplyr::select(node_id, anc_id = parent, left, right) %>%
+#     dplyr::inner_join(ind_info, by = c("anc_id" = "anc_node_id")) %>%
+#     dplyr::arrange(node_id, anc_id, left) %>%
+#     dplyr::group_nest(node_id, anc_id, anc_pop, anc_time, anc_raster_x, anc_raster_y,
+#                       .key = "interval")
+#
+#   # convert the table of all individuals into a long format (two rows
+#   # for each sampled individual -- i.e. for each chromosome)
+#   individuals_long <- individuals %>%
+#     tidyr::gather(key = "node", value = "node_id", c("chr1_id", "chr2_id"))
+#
+#   # to each node in a sampled individual, add the infered ancestors up to the root
+#   # of each genealogy
+#   combined <- dplyr::inner_join(individuals_long, ancestors, by = "node_id") %>%
+#     dplyr::select(name, node_id, time, raster_x, raster_y, anc_id, anc_pop,
+#                   anc_raster_x, anc_raster_y, anc_time, anc_id, dplyr::everything())
+#
+# }

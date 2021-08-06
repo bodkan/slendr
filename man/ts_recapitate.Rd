@@ -4,7 +4,13 @@
 \alias{ts_recapitate}
 \title{Recapitate the tree sequence}
 \usage{
-ts_recapitate(ts, recombination_rate, Ne, random_seed = NULL)
+ts_recapitate(
+  ts,
+  recombination_rate,
+  Ne,
+  random_seed = NULL,
+  assign_metadata = FALSE
+)
 }
 \arguments{
 \item{ts}{pyslim.SlimTreeSequence object loaded by \code{ts_load}}
