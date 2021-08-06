@@ -2,13 +2,12 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_draw}
 \alias{ts_draw}
-\title{Plot a graphical representation of a tree sequence or a single tree}
+\title{Plot a graphical representation of a single tree}
 \usage{
 ts_draw(x, width = 1500, height = 500, individuals = FALSE, ts = NULL, ...)
 }
 \arguments{
-\item{x}{A tree sequence loaded by \code{ts_load} or a single tree extracted
-from a tree sequence by \code{ts_tree}}
+\item{x}{A single tree extracted by \code{\link{ts_tree}}}
 
 \item{width, height}{Pixel dimensions of the rendered bitmap}
 

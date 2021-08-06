@@ -9,7 +9,7 @@ ts_recapitate(
   recombination_rate,
   Ne,
   random_seed = NULL,
-  assign_metadata = FALSE
+  assign_metadata = TRUE
 )
 }
 \arguments{
@@ -20,9 +20,13 @@ ts_recapitate(
 \item{Ne}{Effective population size during the recapitation process}
 
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
+
+\item{assign_metadata}{Should various tree sequence tables be attached to the
+final object?}
 }
 \value{
-@return pyslim.SlimTreeSequence object accessed via the reticulate package
+@return pyslim.SlimTreeSequence object accessed via the reticulate
+package
 }
 \description{
 Recapitate the tree sequence

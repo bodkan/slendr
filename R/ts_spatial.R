@@ -79,16 +79,25 @@ ts_spatial <- function(ts, crs = NULL) {
 #' Plot locations of ancestors of given sample on a map
 #'
 #' @export
-plot_parents <- function(x, individual) {
-  model <- attr(x, "model")
+plot_ancestors <- function(data, x, connect = TRUE) {
+  model <- attr(data, "model")
 
-  parents_sf <- dplyr::filter(x, name == individual)
-  ind_sf <- sf::st_set_geometry(parents_sf[1, ], "location")
+  # a name of a sampled individual was specified
+  if (is.character(x))
+    subset_sf <- dplyr::filter(data, name == x)
+  else if (is.numeric(x))
+    subset_sf <- dplyr::filter(data, node_id == x)
+  else
+    stop("Unknown object given as an individual or a node", call. = FALSE)
+
+  # the first row of the subset data contains the location of the
+  # focal individual or node
+  focal_sf <- sf::st_set_geometry(subset_sf[1, ], "location")
 
   p <- ggplot() +
     geom_sf(data = model$world, fill = "lightgray", color = NA) +
-    geom_sf(data = ind_sf, shape = 13) +
-    geom_sf(data = parents_sf, aes(color = parent_pop, parent_time)) +
+    geom_sf(data = focal_sf, shape = 13, size = 2, color = "red") +
+    geom_sf(data = subset_sf, aes(shape = parent_pop, color = parent_time)) +
     coord_sf(expand = 0) +
     ggtitle(paste("Locations of the parents of", individual)) +
     theme_bw()
