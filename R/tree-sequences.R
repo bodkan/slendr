@@ -45,19 +45,28 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
   file <- file.path(output_dir, paste0(output_prefix, "_ts.trees"))
   ts <- pyslim$load(path.expand(file))
 
-  attr(ts, "sampling") <- get_sampling(ts)
-  attr(ts, "individuals") <- get_complete_inds(ts, model)
-  attr(ts, "nodes") <- get_raw_nodes(ts, model)
-  attr(ts, "edges") <- get_raw_edges(ts, model)
   attr(ts, "model") <- model
+  attr(ts, "sampling") <- get_sampling(ts)
+
   class(ts) <- c("slendr_ts", class(ts))
+
+  # process tree sequence tables only in case recapitation and
+  # simplification are not to be performed during loading
+  # (this avoids computing data that would be overwritten
+  # immediately after)
+  if (!recapitate && !simplify) {
+    attr(ts, "individuals") <- get_complete_inds(ts, model)
+    attr(ts, "nodes") <- get_raw_nodes(ts, model)
+    attr(ts, "edges") <- get_raw_edges(ts, model)
+  }
 
   if (recapitate) {
     if (ts_coalesced(ts))
       message("No need to recapitate, all trees are coalesced")
     else
       ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                          random_seed = random_seed)
+                          random_seed = random_seed,
+                          assign_metadata = !simplify)
   }
 
   if (simplify) ts <- ts_simplify(ts, individuals)
@@ -71,11 +80,15 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
+#' @param assign_metadata Should various tree sequence tables be attached to the
+#'   final object?
 #'
-#' @return @return pyslim.SlimTreeSequence object accessed via the reticulate package
+#' @return @return pyslim.SlimTreeSequence object accessed via the reticulate
+#'   package
 #'
 #' @export
-ts_recapitate <- function(ts, recombination_rate, Ne, random_seed = NULL) {
+ts_recapitate <- function(ts, recombination_rate, Ne,
+                          random_seed = NULL, assign_metadata = TRUE) {
   check_ts_class(ts)
 
   ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
@@ -83,11 +96,15 @@ ts_recapitate <- function(ts, recombination_rate, Ne, random_seed = NULL) {
 
   model <- attr(ts, "model")
 
+  if (assign_metadata) {
+    attr(ts_new, "individuals") <- get_complete_inds(ts_new, model)
+    attr(ts_new, "nodes") <- get_raw_nodes(ts_new, model)
+    attr(ts_new, "edges") <- get_raw_edges(ts_new, model)
+  }
+
   attr(ts_new, "sampling") <-  attr(ts, "sampling")
-  attr(ts_new, "individuals") <- get_complete_inds(ts_new, model)
-  attr(ts_new, "nodes") <- get_raw_nodes(ts_new, model)
-  attr(ts_new, "edges") <- get_raw_edges(ts_new, model)
   attr(ts_new, "model") <- model
+
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
   ts_new
@@ -126,8 +143,11 @@ ts_recapitate <- function(ts, recombination_rate, Ne, random_seed = NULL) {
 #' @export
 ts_simplify <- function(ts, individuals = NULL) {
   check_ts_class(ts)
-  metadata <- attr(ts, "individuals")
+
   model <- attr(ts, "model")
+  metadata <- attr(ts, "individuals")
+  if (is.null(metadata))
+    metadata <- get_complete_inds(ts, model)
 
   if (!all(individuals %in% metadata$name))
     stop("The following individuals are not present in the tree sequence: ",
@@ -135,38 +155,30 @@ ts_simplify <- function(ts, individuals = NULL) {
          call. = FALSE)
 
   if (is.null(individuals))
-    metadata <- dplyr::filter(metadata, remembered)
+    samples <- dplyr::filter(metadata, remembered)
   else
-    metadata <- dplyr::filter(metadata, name %in% individuals)
+    samples <- dplyr::filter(metadata, name %in% individuals)
 
-  node_ids <- metadata %>%
+  node_ids <- samples %>%
     dplyr::select(chr1_id, chr2_id) %>%
     unlist() %>%
     as.integer()
 
   ts_new <- ts$simplify(node_ids, filter_populations = FALSE)
 
-  # decorate the pyslim.SlimTreeSequence object with a table of individuals
+  # get columns with named data and the pedigree_id key
+  named_columns <- metadata[, c("pedigree_id", "name", "pop", "chr1", "chr2")]
+
   metadata_new <- get_raw_inds(ts_new, model) %>%
-    dplyr::arrange(pedigree_id)
+    dplyr::inner_join(named_columns, by = "pedigree_id") %>%
+    .[, colnames(metadata)]
 
-  # replace numeric IDs of elements after simplification changed them
-  # (the original metadata table must be ordered by pedigree_id first!)
-  metadata <- dplyr::arrange(metadata, pedigree_id)
-  new_ids <- dplyr::filter(metadata_new, remembered)
-  metadata$id <- new_ids$id
-  metadata$chr1_id <- new_ids$chr1_id
-  metadata$chr2_id <- new_ids$chr2_id
-  metadata$pop_id <- new_ids$pop_id
-  # extract remaining retained individuals
-  retained <- dplyr::filter(metadata_new, !remembered, retained) %>%
-    dplyr::mutate(pop = model$splits$pop[pop_id + 1])
-
+  attr(ts_new, "model") <- model
   attr(ts_new, "sampling") <- attr(ts, "sampling")
-  attr(ts_new, "individuals") <- dplyr::bind_rows(metadata, retained)
+  attr(ts_new, "individuals") <- metadata_new
   attr(ts_new, "nodes") <- get_raw_nodes(ts_new, model)
   attr(ts_new, "edges") <- get_raw_edges(ts_new, model)
-  attr(ts_new, "model") <- model
+
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
   ts_new
@@ -382,15 +394,14 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
   tree
 }
 
-#' Plot a graphical representation of a tree sequence or a single tree
+#' Plot a graphical representation of a single tree
 #'
 #' This function obtains an SVG representation by calling the \code{draw_svg}
 #' method of tskit and renders it as a bitmap imagine in R. All of the many
 #' optional keyword arguments can be provided and will be automatically passed
 #' to \code{draw_svg} behind the scenes.
 #'
-#' @param x A tree sequence loaded by \code{ts_load} or a single tree extracted
-#'   from a tree sequence by \code{ts_tree}
+#' @param x A single tree extracted by \code{\link{ts_tree}}
 #' @param width,height Pixel dimensions of the rendered bitmap
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
 #'
@@ -404,9 +415,18 @@ ts_draw <- function(x, width = 1500, height = 500, individuals = FALSE,
            "the `ts = ` argument to `ts_draw()", call. = FALSE)
     else if (inherits(x, "tskit.trees.TreeSequence"))
       ts <- x
-    metadata <- ts_individuals(ts)
-    labels <- reticulate::py_dict(keys = c(metadata$chr1_id, metadata$chr2_id),
-                                  values = c(metadata$chr1, metadata$chr2))
+
+    nodes <- ts_nodes(ts)
+    individuals <- ts_individuals(ts) %>%
+      dplyr::select(name, chr1_id, chr2_id, pop) %>%
+      tidyr::gather("chr", "id", -name, -pop) %>%
+      tidyr::drop_na()
+
+    df_labels <-
+      dplyr::left_join(nodes, individuals, by = "id") %>%
+      dplyr::select(id, name, pop)
+    py_labels <- reticulate::py_dict(keys = df_labels$id,
+                                     values = df_labels$name)
   } else
     labels <- NULL
 
@@ -780,6 +800,32 @@ concat <- function(x) {
   paste(x, collapse = "+")
 }
 
+get_raw_nodes <- function(ts, model) {
+  purrr::map_dfr(seq(0, ts$num_nodes - 1), function(i) {
+    node <- ts$node(i)
+    list(
+      id = i,
+      time = convert_slim_time(node$time, model),
+      population = node$population,
+      individual_id = node$individual,
+      slim_id = node["metadata"]["slim_id"]
+    )
+  })
+}
+
+get_raw_edges <- function(ts, model) {
+  purrr::map_dfr(seq(0, ts$num_edges - 1), function(i) {
+    edge <- ts$edge(i)
+    list(
+      child = edge$child,
+      parent = edge$parent,
+      left = edge$left,
+      right = edge$right
+    )
+  }) %>%
+    dplyr::arrange(child, left)
+}
+
 get_raw_inds <- function(ts, model) {
   purrr::map_dfr(seq(0, ts$num_individuals - 1), function(i) {
     ind <- ts$individual(i)
@@ -804,31 +850,6 @@ get_raw_inds <- function(ts, model) {
     ))
 }
 
-get_raw_nodes <- function(ts, model) {
-  purrr::map_dfr(seq(0, ts$num_nodes - 1), function(i) {
-    node <- ts$node(i)
-    list(
-      id = i,
-      time = node$time,
-      population = node$population,
-      individual_id = node$individual,
-      slim_id = node["metadata"]["slim_id"]
-    )
-  })
-}
-
-get_raw_edges <- function(ts, model) {
-  purrr::map_dfr(seq(0, ts$num_edges - 1), function(i) {
-    edge <- ts$edge(i)
-    list(
-      child = edge$child,
-      parent = edge$parent,
-      left = edge$left,
-      right = edge$right
-    )
-  })
-}
-
 get_complete_inds <- function(ts, model) {
   # bind raw tree sequence individual information with sample data
   individuals <- get_raw_inds(ts, model) %>%
@@ -850,7 +871,7 @@ get_complete_inds <- function(ts, model) {
     dplyr::ungroup() %>%
     dplyr::arrange(-time_orig, pop) %>%
     dplyr::rename(time = time_orig) %>%
-    dplyr::select(-pop, name, time, chr1, chr2)
+    dplyr::select(-pop, -n, name, time, chr1, chr2)
 
   # splits individuals extracted from the tree sequence into those remembered
   # (i.e. individuals present in the sampling table) and those that are not
