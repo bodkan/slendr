@@ -30,18 +30,19 @@ ts_spatial <- function(ts, crs = NULL) {
   # of all nodes (remembered or retained)
   node_info <- individuals %>%
     tidyr::gather("node", "node_id", c("chr1_id", "chr2_id")) %>%
-    dplyr::select(-node, -pop_id, -remembered, -retained, -alive,
+    dplyr::select(-node, -pop_id, remembered, retained, alive,
                   -flag, -ind_id, -pedigree_id, name, time, pop, raster_x, raster_y, node_id) %>%
     dplyr::filter(!is.na(node_id)) # at least one node in an individual recorded
   node_info
 
+  # process the table of recorded individuals to be used as parent metadata
   parents <- node_info %>%
     dplyr::select(parent_id = node_id,
                   parent_raster_x = raster_x, parent_raster_y = raster_y,
                   parent_pop = pop, parent_time = time)
 
-  # join the edges table on a parent key, to get information of a parent
-  # of each node
+  # first join nodes with children (to have metadata for child nodes),
+  # then join with parent table (to have metadata for parent nodes)
   combined <-
     dplyr::inner_join(node_info, edges, by = c("node_id" = "child")) %>%
     dplyr::inner_join(parents, by = c("parent" = "parent_id")) %>%
@@ -67,19 +68,32 @@ ts_spatial <- function(ts, crs = NULL) {
 
   sf_samples <- sf::st_as_sf(ind_locations, coords = c("x", "y"), crs = crs)
   sf_result <- sf::st_as_sf(combined, crs = crs, coords = c("parent_x", "parent_y")) %>%
-    dplyr::mutate(location = sf_samples$geometry) %>%
-    dplyr::select(name, node_id, time, parent_id = parent, parent_pop, parent_time,
-                  parent_location = geometry, dplyr::everything())
+    dplyr::mutate(location = sf_samples$geometry,
+                  time = as.integer(time),
+                  parent_time = as.integer(time)) %>%
+    dplyr::select(
+      name, node_id, time, parent_id = parent, parent_pop, parent_time,
+      location, parent_location = geometry, left, right, dplyr::everything()
+    )
+
+  sf_result <- sf::st_set_geometry(sf_result, "location")
 
   attr(sf_result, "model") <- model
+  class(sf_result) <- set_class(sf_result, "spatial")
 
   sf_result
 }
 
-#' Plot locations of ancestors of given sample on a map
+#' Plot locations of ancestors of given individual or node on a map
+#'
+#' @param spatial ts data XXXXX
+#' @param x Either a string representing an individual name, or an integer
+#'   number specifying a node in a tree sequence
+#' @param full_scale Plot time gradient on the full scale (spanning the oldest
+#'   sampled individual to the present)
 #'
 #' @export
-plot_ancestors <- function(data, x, connect = TRUE) {
+plot_ancestors <- function(data, x, full_scale = TRUE, connect = TRUE) {
   model <- attr(data, "model")
 
   # a name of a sampled individual was specified
@@ -92,18 +106,81 @@ plot_ancestors <- function(data, x, connect = TRUE) {
 
   # the first row of the subset data contains the location of the
   # focal individual or node
-  focal_sf <- sf::st_set_geometry(subset_sf[1, ], "location")
+  focal_sf <- subset_sf[1, ]
+
+  if (connect) {
+    point_ind <- focal_sf$location
+    point_parent <- subset_sf$parent_location
+    sf_connections <- purrr::map_dfr(
+      seq_along(point_parent),
+      function(i) {
+        sf::st_union(point_ind, point_parent[i]) %>%
+          sf::st_cast("LINESTRING") %>%
+          sf::st_sf()
+      }) %>%
+      dplyr::bind_cols(dplyr::select(subset_sf, -location, -parent_location))
+    connection <- geom_sf(data = sf_connections, aes(color = time),
+                          alpha = 0.5, size = 0.5)
+  } else
+    connection <- NULL
 
   p <- ggplot() +
     geom_sf(data = model$world, fill = "lightgray", color = NA) +
+    connection +
     geom_sf(data = focal_sf, shape = 13, size = 2, color = "red") +
-    geom_sf(data = subset_sf, aes(shape = parent_pop, color = parent_time)) +
+    geom_sf(data = sf::st_set_geometry(subset_sf, "parent_location"),
+            aes(shape = parent_pop, color = parent_time)) +
     coord_sf(expand = 0) +
-    ggtitle(paste("Locations of the parents of", individual)) +
+    ggtitle(paste("Spatio-temporal placement of the ancestors of", x)) +
     theme_bw()
+
+  if (full_scale)
+    p <- p + scale_color_gradient(limits = c(0, model$length))
 
   p
 }
+
+#' Plot locations of sampled individuals
+#'
+#' @param spatial ts data XXXXX
+#' @param pop Name of the population to plot
+#' @param older_than,younger_than Time boundaries for the samples
+#' @param full_scale Plot time gradient on the full scale (spanning the oldest
+#'   sampled individual to the present)
+#'
+#' @return A ggplot2 object with a map and locations of sampled individual
+#'
+#' @export
+plot_samples <- function(data, pop = NULL, full_scale = TRUE,
+                         older_than = NULL, younger_than = NULL) {
+  model <- attr(data, "model")
+
+  # first subset only to explicitly sampled individuals (those have proper
+  # names extracted from the sampling table)
+  data <- dplyr::filter(data, !is.na(name))
+
+  # if specified, narrow down samples to a given time window
+  comp_op <- ifelse(model$direction == "backward", `>`, `<`)
+  if (!is.null(older_than)) data <- dplyr::filter(data, comp_op(time, older_than))
+  if (!is.null(younger_than)) data <- dplyr::filter(data, !comp_op(time, younger_than))
+
+  # if specified, subset the samples to those from a given population
+  if (!is.null(pop)) data <- dplyr::filter(data, pop == !!pop)
+
+  p <- ggplot() +
+    geom_sf(data = model$world, fill = "lightgray", color = NA) +
+    geom_sf(data = data, aes(shape = pop, color = time)) +
+    coord_sf(expand = 0) +
+    ggtitle("Spatio-temporal placement of sampled individuals") +
+    theme_bw()
+
+  if (full_scale)
+    p <- p + scale_color_gradient(limits = c(0, model$length))
+
+  p
+}
+
+
 
 
 

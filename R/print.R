@@ -106,12 +106,15 @@ print.slendr_spatial <- function(x, ...) {
     cat(" ", counts[i, ]$pop, "-", counts[i, ]$n, "individuals\n")
 
   funs <- if (model$direction == "forward") c(min, max) else c(max, min)
-  cat("\n  oldest sample: ", funs[[1]](x$time), "\n")
-  cat("  youngest sample: ", funs[[2]](x$time), "\n\n")
+  cat("\n  oldest remembered node:", funs[[1]](x$time), model$direction, "time units\n")
+  cat("  youngest remembered node:", funs[[2]](x$time), model$direction, "time units\n\n")
+
+  cat("  oldest sampled individual:", funs[[1]](x[x$remembered, ]$time), model$direction, "time units\n")
+  cat("  youngest sampled individual:", funs[[2]](x[x$remembered, ]$time), model$direction, "time units\n\n")
 
   print_map_info(model$world)
 
-  cat("\ncontents of the sf object:\n\n")
+  cat("\ncontents of the underlying sf object:\n\n")
   print(dplyr::as_tibble(x))
 }
 
@@ -149,7 +152,7 @@ print_map_info <- function(x) {
       units <- ""
     } else {
       crs <- paste("EPSG", crs)
-      cat("internal coordinate reference system:", crs, "\n")
+      cat("internal coordinate reference system", crs, "\n")
       units <- " (in degrees longitude and latitude)"
     }
 

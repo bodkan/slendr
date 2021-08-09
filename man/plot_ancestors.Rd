@@ -2,10 +2,16 @@
 % Please edit documentation in R/ts_spatial.R
 \name{plot_ancestors}
 \alias{plot_ancestors}
-\title{Plot locations of ancestors of given sample on a map}
+\title{Plot locations of ancestors of given individual or node on a map}
 \usage{
-plot_ancestors(x, individual, connect = TRUE)
+plot_ancestors(data, x, connect = TRUE)
+}
+\arguments{
+\item{x}{Either a string representing an individual name, or an integer
+number specifying a node in a tree sequence}
+
+\item{spatial}{ts data XXXXX}
 }
 \description{
-Plot locations of ancestors of given sample on a map
+Plot locations of ancestors of given individual or node on a map
 }
