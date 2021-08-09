@@ -155,7 +155,7 @@ With this done, we can simulate data. Because we want to explore how to handle s
 
 ```{r}
 slim(
-  model, seq_length = 100e3, recomb_rate = 1e-8, burnin = 300000,
+  model, seq_length = 100e3, recomb_rate = 1e-8, burnin = 200000,
   save_locations = TRUE, ts_recording = TRUE, sampling = samples,
   method = "batch", seed = 314159, overwrite = TRUE
 )
@@ -169,12 +169,17 @@ slim(
 reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
 
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
-               recombination_rate = 1e-8, Ne = 10000)
+              recombination_rate = 1e-8, Ne = 10000)
 ts_draw(ts$first())
 ts_draw(ts$first(), individuals = TRUE, ts = ts)
 
-ts_sf <- ts_spatial(ts)
+sf <- ts_spatial(ts)
 
+ts_ancestors("EUR33", sf, ts) %>% plot_ancestors("EUR33")
+```
+
+
+```{r}
 plot_samples(ts_sf)
 
 plot_ancestors(ts_sf, "EUR1")
@@ -182,15 +187,17 @@ plot_ancestors(ts_sf, "EUR1")
 ```
 
 
-
 ```{r}
-individuals <- ts_individuals(ts)
-nodes <- ts_nodes(ts)
-edges <- ts_edges(ts)
+pdf("~/Desktop/trees.pdf", 15, 5)
+trees <- ts$trees()
+while (TRUE) {
+  tree <- reticulate::iter_next(trees)
+  if (is.null(tree))
+    break
+  ts_draw(tree)
+}
+dev.off()
 ```
-
-
-
 
 
 
@@ -326,17 +333,4 @@ ggplot() +
 This is why, although it is impossible for us to capture every possible type of figure you might want to create for your study, you can easily use your knowledge of *ggplot2* to make any figure imaginable.
 
 
-
-
-```{r}
-pdf("~/Desktop/trees.pdf", 15, 5)
-trees <- ts$trees()
-while (TRUE) {
-  tree <- reticulate::iter_next(trees)
-  if (is.null(tree))
-    break
-  ts_draw(tree)
-}
-dev.off()
-```
 

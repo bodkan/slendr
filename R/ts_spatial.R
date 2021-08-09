@@ -20,69 +20,112 @@ ts_spatial <- function(ts, crs = NULL) {
 
   model <- ts_model(ts)
   individuals <- ts_individuals(ts)
-  nodes <- ts_nodes(ts)
-  edges <- ts_edges(ts)
-
-  # root nodes - should they be added to `node_info` below?
-  dplyr::filter(nodes, !node_id %in% edges$child)
 
   # process table of individuals to get information about locations and times
   # of all nodes (remembered or retained)
-  node_info <- individuals %>%
+  nodes <- individuals %>%
     tidyr::gather("node", "node_id", c("chr1_id", "chr2_id")) %>%
-    dplyr::select(-node, -pop_id, remembered, retained, alive,
-                  -flag, -ind_id, -pedigree_id, name, time, pop, raster_x, raster_y, node_id) %>%
+    dplyr::select(name, time, pop, raster_x, raster_y, node_id) %>%
     dplyr::filter(!is.na(node_id)) # at least one node in an individual recorded
-  node_info
 
-  # process the table of recorded individuals to be used as parent metadata
-  parents <- node_info %>%
-    dplyr::select(parent_id = node_id,
-                  parent_raster_x = raster_x, parent_raster_y = raster_y,
-                  parent_pop = pop, parent_time = time)
+  nodes_sf <- convert_to_sf(nodes, model, crs)
 
-  # first join nodes with children (to have metadata for child nodes),
-  # then join with parent table (to have metadata for parent nodes)
-  combined <-
-    dplyr::inner_join(node_info, edges, by = c("node_id" = "child")) %>%
-    dplyr::inner_join(parents, by = c("parent" = "parent_id")) %>%
-    dplyr::arrange(name, node_id, left)
+  attr(nodes_sf, "model") <- model
+  class(nodes_sf) <- set_class(nodes_sf, "spatial")
 
-  # reproject coordinates to the original crs
-  if (has_crs(model$world)) {
-    if (is.null(crs)) crs <- sf::st_crs(model$world)
+  nodes_sf
+}
 
-    ind_locations <- reproject(
-      from = "raster", to = crs, coords = combined, model = model,
-      input_prefix = "raster_", output_prefix = ""
-    ) %>% as.data.frame()
 
-    combined <- reproject(
-      from = "raster", to = crs, add = TRUE, coords = combined, model = model,
-      input_prefix = "parent_raster_", output_prefix = "parent_"
-    )
-  } else {
-    ind_locations <- dplyr::select(combined, x = raster_x, y = raster_y)
-    combined <- dplyr::select(-raster_x, -raster_y)
+#' Convert spatio-temporal tree sequence data to a spatial format
+#'
+#' @param data Object of the class \code{slendr_spatial} carrying the
+#'   spatio-temporal position of each individual node in the tree sequence
+#' @param ts pyslim.SlimTreeSequence object of the class \code{slendr_ts}
+#'   obtained by \code{link{ts_load}}, \code{link{ts_recapitate}},
+#'   \code{link{ts_simplify}}, or \code{link{ts_mutate}}
+#' @param x Either a string representing an individual name, or an integer
+#'   number specifying a node in a tree sequence
+#'
+#' @export
+ts_ancestors <- function(x, data, ts) {
+  check_ts_class(ts)
+  model <- ts_model(ts)
+  edges <- ts_edges(ts)
+
+  # a name of a sampled individual was specified
+  if (is.character(x)) {
+    id <- dplyr::filter(data, name == x)$node_id
+    if (!length(id))
+      stop("Unknown individual", x, call. = FALSE)
+  } else if (is.numeric(x))
+    id <- x
+  else
+    stop("Unknown object given as an individual or a node", call. = FALSE)
+
+  edge <- edges[edges$child %in% id, ]
+  edge$rank <- 1
+
+  processed_nodes <- vector(length = length(unique(data$node_id)) + 1)
+  processed_nodes[unique(edge$child) + 1] <- TRUE
+
+  result <- list()
+  queue <- split(edge, edge$child)
+  while (TRUE) {
+    # take out the first element
+    item <- queue[[1]]; queue[[1]] <- NULL
+
+    # add it to the final list
+    result <- append(result, list(item))
+
+    for (parent in split(item, item$parent)) {
+      edge <- edges[edges$child == unique(parent$parent), ]
+
+      # the parent has no parent itself or it has already been processed
+      if (nrow(edge) == 0) next
+      if (processed_nodes[unique(edge$child) + 1]) next
+
+      processed_nodes[unique(edge$child) + 1] <- TRUE
+
+      edge$rank <- item$rank[1] + 1
+      queue[[length(queue) + 1]] <- edge
+    }
+
+    if (length(queue) == 0) break
   }
 
-  sf_samples <- sf::st_as_sf(ind_locations, coords = c("x", "y"), crs = crs)
-  sf_result <- sf::st_as_sf(combined, crs = crs, coords = c("parent_x", "parent_y")) %>%
-    dplyr::mutate(location = sf_samples$geometry,
-                  time = as.integer(time),
-                  parent_time = as.integer(time)) %>%
-    dplyr::select(
-      name, node_id, time, parent_id = parent, parent_pop, parent_time,
-      location, parent_location = geometry, left, right, dplyr::everything()
-    )
+  result <- dplyr::bind_rows(result)
 
-  sf_result <- sf::st_set_geometry(sf_result, "location")
+  child_data <- dplyr::select(data, name, pop, node_id, time, location)
+  parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location)
 
-  attr(sf_result, "model") <- model
-  class(sf_result) <- set_class(sf_result, "spatial")
+  combined <-result %>%
+    dplyr::inner_join(child_data, by = c("child" = "node_id")) %>%
+    dplyr::inner_join(parent_data, by = c("parent" = "parent_id")) %>%
+    sf::st_as_sf()
 
-  sf_result
+  connections <- purrr::map2(
+    combined$location, combined$parent_location, ~
+      sf::st_union(.x, .y) %>%
+      sf::st_cast("LINESTRING") %>%
+      sf::st_sfc() %>%
+      sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
+    dplyr::bind_rows()
+
+  final <- dplyr::bind_cols(combined, connections) %>%
+    sf::st_set_geometry("connection") %>%
+    dplyr::select(name, node_id = child, pop, time, location,
+                  rank, parent_id = parent, parent_pop, parent_time,
+                  parent_location, connection,
+                  left_pos = left, right_pos = right) %>%
+    dplyr::mutate(rank = as.factor(rank))
+
+  attr(final, "model") <- model
+  class(final) <- set_class(final, "spatial")
+
+  final
 }
+
 
 #' Plot locations of ancestors of given individual or node on a map
 #'
@@ -93,52 +136,51 @@ ts_spatial <- function(ts, crs = NULL) {
 #'   sampled individual to the present)
 #'
 #' @export
-plot_ancestors <- function(data, x, full_scale = TRUE, connect = TRUE) {
+plot_ancestors <- function(data, x, full_scale = TRUE,
+                           younger_than = NULL, color = c("rank", "time")) {
   model <- attr(data, "model")
+  color <- match.arg(color)
+
+  # if specified, narrow down samples to a given time window
+  comp_op <- ifelse(model$direction == "backward", `>`, `<`)
+  if (!is.null(younger_than)) data <- dplyr::filter(data, !comp_op(parent_time, younger_than))
 
   # a name of a sampled individual was specified
-  if (is.character(x))
-    subset_sf <- dplyr::filter(data, name == x)
-  else if (is.numeric(x))
-    subset_sf <- dplyr::filter(data, node_id == x)
+  if (is.character(x)) {
+    if (!all(x %in% data$name))
+      stop("Unknown individual", x[!x %in% data$name], call. = FALSE)
+    id <- dplyr::filter(data, name %in% x)$node_id
+  } else if (is.numeric(x))
+    id <- x
   else
     stop("Unknown object given as an individual or a node", call. = FALSE)
 
-  # the first row of the subset data contains the location of the
-  # focal individual or node
-  focal_sf <- subset_sf[1, ]
+  # extract the focal individual or node
+  focal_node <- dplyr::filter(data, node_id %in% id) %>%
+    sf::st_as_sf() %>%
+    sf::st_set_geometry("location")
 
-  if (connect) {
-    point_ind <- focal_sf$location
-    point_parent <- subset_sf$parent_location
-    sf_connections <- purrr::map_dfr(
-      seq_along(point_parent),
-      function(i) {
-        sf::st_union(point_ind, point_parent[i]) %>%
-          sf::st_cast("LINESTRING") %>%
-          sf::st_sf()
-      }) %>%
-      dplyr::bind_cols(dplyr::select(subset_sf, -location, -parent_location))
-    connection <- geom_sf(data = sf_connections, aes(color = time),
-                          alpha = 0.5, size = 0.5)
-  } else
-    connection <- NULL
+  link_aes <- if (color == "time") aes(color = time) else aes(color = rank)
 
-  p <- ggplot() +
+  ggplot() +
+    # world map
     geom_sf(data = model$world, fill = "lightgray", color = NA) +
-    connection +
-    geom_sf(data = focal_sf, shape = 13, size = 2, color = "red") +
-    geom_sf(data = sf::st_set_geometry(subset_sf, "parent_location"),
-            aes(shape = parent_pop, color = parent_time)) +
+
+    # links between nodes ("spatial branches")
+    geom_sf(data = data, link_aes, size = 0.5, alpha = 0.75) +
+
+    # focal individual (or)
+    geom_sf(data = focal_node, shape = 13, size = 3, color = "red") +
+
+    # all ancestral nodes
+    geom_sf(data = sf::st_set_geometry(data, "parent_location"),
+            aes(shape = parent_pop), alpha = 0.5) +
+
     coord_sf(expand = 0) +
     ggtitle(paste("Spatio-temporal placement of the ancestors of", x)) +
     theme_bw()
-
-  if (full_scale)
-    p <- p + scale_color_gradient(limits = c(0, model$length))
-
-  p
 }
+
 
 #' Plot locations of sampled individuals
 #'
@@ -178,6 +220,31 @@ plot_samples <- function(data, pop = NULL, full_scale = TRUE,
     p <- p + scale_color_gradient(limits = c(0, model$length))
 
   p
+}
+
+
+#' Convert a data frame of information extracted from a tree sequence
+#' table to an sf spatial object
+convert_to_sf <- function(df, model, crs) {
+  # reproject coordinates to the original crs
+  if (has_crs(model$world)) {
+    if (is.null(crs)) crs <- sf::st_crs(model$world)
+
+    locations <- reproject(
+      from = "raster", to = crs, coords = df, model = model,
+      input_prefix = "raster_", output_prefix = "", add = TRUE
+    )
+  } else {
+    locations <- df
+    locations$x <- locations$raster_x
+    locations$y <- locations$raster_y
+  }
+
+  result <- sf::st_as_sf(locations, coords = c("x", "y"), crs = crs) %>%
+    dplyr::mutate(time = as.integer(time)) %>%
+    dplyr::select(name, pop, node_id, time, location = geometry)
+
+  result
 }
 
 
@@ -255,3 +322,4 @@ plot_samples <- function(data, pop = NULL, full_scale = TRUE,
 #                   anc_raster_x, anc_raster_y, anc_time, anc_id, dplyr::everything())
 #
 # }
+#

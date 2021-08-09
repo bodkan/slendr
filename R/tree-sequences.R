@@ -168,7 +168,7 @@ ts_simplify <- function(ts, individuals = NULL) {
   # get columns with named data and the pedigree_id key
   named_columns <- metadata[, c("pedigree_id", "name", "pop")]
 
-  metadata_new <- get_raw_inds(ts_new, model) %>%
+  metadata_new <- get_raw_individuals(ts_new, model) %>%
     dplyr::inner_join(named_columns, by = "pedigree_id") %>%
     .[, colnames(metadata)]
 
@@ -833,7 +833,7 @@ get_raw_edges <- function(ts, model) {
     dplyr::arrange(child, left)
 }
 
-get_raw_inds <- function(ts, model) {
+get_raw_individuals <- function(ts, model) {
   purrr::map_dfr(seq(0, ts$num_individuals - 1), function(i) {
     ind <- ts$individual(i)
     list(
@@ -855,7 +855,7 @@ get_raw_inds <- function(ts, model) {
 
 get_complete_inds <- function(ts, model) {
   # bind raw tree sequence individual information with sample data
-  individuals <- get_raw_inds(ts, model) %>%
+  individuals <- get_raw_individuals(ts, model) %>%
     dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
     dplyr::arrange(-time, pop)
 

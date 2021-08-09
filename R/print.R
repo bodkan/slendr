@@ -109,8 +109,8 @@ print.slendr_spatial <- function(x, ...) {
   cat("\n  oldest remembered node:", funs[[1]](x$time), model$direction, "time units\n")
   cat("  youngest remembered node:", funs[[2]](x$time), model$direction, "time units\n\n")
 
-  cat("  oldest sampled individual:", funs[[1]](x[x$remembered, ]$time), model$direction, "time units\n")
-  cat("  youngest sampled individual:", funs[[2]](x[x$remembered, ]$time), model$direction, "time units\n\n")
+  # cat("  oldest sampled individual:", funs[[1]](x[x$remembered, ]$time), model$direction, "time units\n")
+  # cat("  youngest sampled individual:", funs[[2]](x[x$remembered, ]$time), model$direction, "time units\n\n")
 
   print_map_info(model$world)
 
