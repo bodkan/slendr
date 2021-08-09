@@ -60,14 +60,10 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
     attr(ts, "edges") <- get_raw_edges(ts, model)
   }
 
-  if (recapitate) {
-    if (ts_coalesced(ts))
-      message("No need to recapitate, all trees are coalesced")
-    else
-      ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                          random_seed = random_seed,
-                          assign_metadata = !simplify)
-  }
+  if (recapitate)
+    ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
+                        random_seed = random_seed,
+                        assign_metadata = !simplify)
 
   if (simplify) ts <- ts_simplify(ts, individuals)
 
@@ -90,6 +86,9 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
 ts_recapitate <- function(ts, recombination_rate, Ne,
                           random_seed = NULL, assign_metadata = TRUE) {
   check_ts_class(ts)
+
+  if (ts_coalesced(ts))
+    message("No need to recapitate, all trees already coalesced")
 
   ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
                           random_seed = random_seed)
@@ -842,7 +841,7 @@ get_raw_inds <- function(ts, model) {
       pedigree_id = ind["metadata"]["pedigree_id"],
       chr1_id = ind["nodes"][1],
       chr2_id = ind["nodes"][2],
-      time = ind["time"],
+      time = convert_slim_time(ind["time"], model),
       raster_x = ind["location"][1],
       raster_y = ind["location"][2],
       pop_id = ind["metadata"]["subpopulation"],
@@ -851,11 +850,7 @@ get_raw_inds <- function(ts, model) {
       remembered = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_REMEMBERED) != 0,
       retained = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_RETAINED) != 0
     )
-  }) %>% # convert times of individuals that were only retained
-    dplyr::mutate(time = ifelse(
-      retained & !remembered & !alive,
-      convert_slim_time(time, model), time
-    ))
+  })
 }
 
 get_complete_inds <- function(ts, model) {
