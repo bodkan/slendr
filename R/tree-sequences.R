@@ -57,7 +57,7 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
   if (!recapitate && !simplify) {
     attr(ts, "individuals") <- get_complete_inds(ts, model)
     attr(ts, "nodes") <- get_raw_nodes(ts, model)
-    attr(ts, "edges") <- get_raw_edges(ts, model)
+    attr(ts, "edges") <- get_raw_edges(ts)
   }
 
   if (recapitate)
@@ -98,7 +98,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne,
   if (assign_metadata) {
     attr(ts_new, "individuals") <- get_complete_inds(ts_new, model)
     attr(ts_new, "nodes") <- get_raw_nodes(ts_new, model)
-    attr(ts_new, "edges") <- get_raw_edges(ts_new, model)
+    attr(ts_new, "edges") <- get_raw_edges(ts_new)
   }
 
   attr(ts_new, "sampling") <-  attr(ts, "sampling")
@@ -176,7 +176,7 @@ ts_simplify <- function(ts, individuals = NULL) {
   attr(ts_new, "sampling") <- attr(ts, "sampling")
   attr(ts_new, "individuals") <- metadata_new
   attr(ts_new, "nodes") <- get_raw_nodes(ts_new, model)
-  attr(ts_new, "edges") <- get_raw_edges(ts_new, model)
+  attr(ts_new, "edges") <- get_raw_edges(ts_new)
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -806,51 +806,62 @@ concat <- function(x) {
   paste(x, collapse = "+")
 }
 
+# Extract information from the nodes table
 get_raw_nodes <- function(ts, model) {
-  purrr::map_dfr(seq(0, ts$num_nodes - 1), function(i) {
-    node <- ts$node(i)
-    list(
-      node_id = i,
-      time = convert_slim_time(node$time, model),
-      pop_id = node$population,
-      ind_id = node$individual,
-      slim_id = node["metadata"]["slim_id"]
-    )
-  }) %>%
-    dplyr::mutate(pop = model$splits$pop[pop_id + 1])
+  table <- ts$tables$nodes
+  dplyr::tibble(
+    node_id = seq_len(table$num_rows) - 1,
+    time = convert_slim_time(table$time, model),
+    ind_id = table$individual,
+    pop = model$splits$pop[table$population + 1]
+  )
 }
 
-get_raw_edges <- function(ts, model) {
-  purrr::map_dfr(seq(0, ts$num_edges - 1), function(i) {
-    edge <- ts$edge(i)
-    list(
-      child = edge$child,
-      parent = edge$parent,
-      left = edge$left,
-      right = edge$right
-    )
-  }) %>%
-    dplyr::arrange(child, left)
+# Extract information from the edges table
+get_raw_edges <- function(ts) {
+  table <- ts$tables$edges
+  dplyr::tibble(
+    id = seq_len(table$num_rows) - 1,
+    child = table[["child"]],
+    parent = table[["parent"]],
+    left = table[["left"]],
+    right = table[["right"]],
+  )
 }
 
+# Extract information from the table of individual table
 get_raw_individuals <- function(ts, model) {
-  purrr::map_dfr(seq(0, ts$num_individuals - 1), function(i) {
-    ind <- ts$individual(i)
-    list(
-      ind_id = ind["id"],
-      pedigree_id = ind["metadata"]["pedigree_id"],
-      chr1_id = ind["nodes"][1],
-      chr2_id = ind["nodes"][2],
-      time = convert_slim_time(ind["time"], model),
-      raster_x = ind["location"][1],
-      raster_y = ind["location"][2],
-      pop_id = ind["metadata"]["subpopulation"],
-      flag = ind["flags"],
-      alive = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_ALIVE) != 0,
-      remembered = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_REMEMBERED) != 0,
-      retained = bitwAnd(ind["flags"], pyslim$INDIVIDUAL_RETAINED) != 0
-    )
-  })
+  table <- ts$tables$individuals
+
+  # this is available as binary metadata encoded in the table of individuals but
+  # I have no clue at the moment how decode it in R -- iteration and calling
+  # `ts.individual(i)` is obviously subobtimal, but will have to do for now
+  pedigree_ids <- purrr::map_int(seq(0, ts$num_individuals - 1),
+                                 ~ ts$individual(.x)["metadata"]["pedigree_id"])
+
+  # same problem -- nodes of individuals are also stored in the metadata field
+  # (i.e. chr 1 node is in `["nodes"][1]` and chr 2 in ["nodes"][2]`), but we
+  # can get them also by cross-checking the nodes table which contains
+  # individual IDs
+  ind_ids <- seq_len(table$num_rows) - 1
+  nodes <- get_raw_nodes(ts, model) %>% dplyr::select(node_id, ind_id)
+  chr1_nodes <- purrr::map(ind_ids, ~ nodes[nodes$ind_id == .x, ]$node_id[1]) %>% unlist()
+  chr2_nodes <- purrr::map(ind_ids, ~ nodes[nodes$ind_id == .x, ]$node_id[2]) %>% unlist()
+
+  dplyr::tibble(
+    ind_id = ind_ids,
+    pedigree_id = pedigree_ids,
+    chr1_id = as.integer(chr1_nodes),
+    chr2_id = as.integer(chr2_nodes),
+    time = convert_slim_time(ts$individual_times, model),
+    raster_x = ts$individual_locations[, 1],
+    raster_y = ts$individual_locations[, 2],
+    pop_id = ts$individual_populations,
+    flags = table[["flags"]],
+    alive = bitwAnd(table[["flags"]], pyslim$INDIVIDUAL_ALIVE) != 0,
+    remembered = bitwAnd(table[["flags"]], pyslim$INDIVIDUAL_REMEMBERED) != 0,
+    retained = bitwAnd(table[["flags"]], pyslim$INDIVIDUAL_RETAINED) != 0
+  )
 }
 
 get_complete_inds <- function(ts, model) {
