@@ -357,7 +357,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     } else {
       cmd <- get_binary(method)
     }
-    system(sprintf("%s %s", cmd, script_path), ignore.stdout = !verbose)
+    if (system(sprintf("%s %s", cmd, script_path), ignore.stdout = !verbose) != 0)
+      stop("SLiM simulation threw an error -- see the output above", call. = FALSE)
   }
 }
 
