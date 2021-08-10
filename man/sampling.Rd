@@ -4,9 +4,11 @@
 \alias{sampling}
 \title{Define sampling events at specified times for a given set of populations}
 \usage{
-sampling(times, ..., strict = FALSE)
+sampling(model, times, ..., strict = FALSE)
 }
 \arguments{
+\item{model}{Object of the class \code{slendr_model}}
+
 \item{times}{Integer vector of times (in model time units) at which to
 schedule remembering of individuals in the tree-sequence}
 

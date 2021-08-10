@@ -139,12 +139,13 @@ In the next step, we will schedule the sampling of one individual from each popu
 
 ```{r}
 # one ancient individual every 1 thousand years
-ancient <- sampling(times = seq(40000, 1, by = -500),
+ancient <- sampling(model,
+                    times = seq(40000, 1, by = -500),
                     list(ooa, 1), list(ehg, 1), list(eur, 1),
                     list(ana, 1), list(yam, 1))
 
 # 40 present-day Africans, 100 present-day Europeans
-present <- sampling(times = 0, list(afr, 50), list(eur, 100))
+present <- sampling(model, times = 0, list(afr, 50), list(eur, 100))
 
 # combine sampling schedules (i.e. data frames) into one
 samples <- rbind(ancient, present)

@@ -71,7 +71,7 @@ Now that we have defined a model, how do we sample data from it? Ideally, we wou
 In our example, we want to sample two Neanderthal individuals (the older one being the [Altai Neanderthal](https://www.nature.com/articles/nature12886), the younger one [Vindija Neanderthal](https://science.sciencemag.org/content/358/6363/655)). These two genomes are what we [need](https://www.pnas.org/content/116/5/1639) to estimate Neanderthal ancestry proportion using a so-called $f_4$-ratio statistic (more on that below):
 
 ```{r}
-nea_samples <- sampling(times = c(70000, 40000), list(nea, 1))
+nea_samples <- sampling(model, times = c(70000, 40000), list(nea, 1))
 nea_samples
 ```
 
@@ -80,14 +80,14 @@ As you can see, the `sampling()` function simply accepts the vector of times at 
 Next, we want to sample some present-day individuals: an outgroup representing a chimpanzee, and a couple of Africans and Europeans:
 
 ```{r}
-present_samples <- sampling(times = 0, list(chimp, 1), list(afr, 5), list(eur, 10))
+present_samples <- sampling(model, times = 0, list(chimp, 1), list(afr, 5), list(eur, 10))
 present_samples
 ```
 
 As you can see above, the `sampling()` function returns a plain old data frame with a very simple structure with three columns: time, population name, and the number of individuals. This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated ancient DNA samples from an Excel sheet from some publication). For instance, there has been a [lot](https://www.nature.com/articles/nature17993) of [interest](https://www.pnas.org/content/116/5/1639) to estimate the trajectory of Neanderthal ancestry in Europe over time using ancient DNA data from anatomically modern human individuals (also called early modern humans, EMH) across the last couple of tens of thousands of years. We can simulate something close to the available [EMH ancient DNA data set](https://www.nature.com/articles/nature17993) over the last 50 thousand years by running doing this:
 
 ```{r}
-emh_samples <- sampling(times = runif(n = 40, min = 10000, max = 40000), list(eur, 1))
+emh_samples <- sampling(model, times = runif(n = 40, min = 10000, max = 40000), list(eur, 1))
 emh_samples
 ```
 
@@ -98,7 +98,7 @@ One nice feature of the `sampling()` function is that it only schedules sampling
 ```{r, eval = FALSE}
 # this attempts to sample a Neanderthal individual at a point when Neanderthals
 # are already extinct, resulting in an error
-sampling(times = 10000, list(nea, 1), strict = TRUE)
+sampling(model, times = 10000, list(nea, 1), strict = TRUE)
 ```
 
     Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.
