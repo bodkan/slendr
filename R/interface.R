@@ -992,6 +992,9 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 #'   many individuals be remembered at times given by \code{times}
 #'
 sampling <- function(model, times, ..., strict = FALSE) {
+  if (!inherits(model, "slendr_model"))
+    stop("A slendr_model object must be specified", call. = FALSE)
+
   samples <- list(...)
   sample_pops <- purrr::map(samples, 1)
   sample_counts <- purrr::map(samples, 2)
