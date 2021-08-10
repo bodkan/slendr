@@ -166,17 +166,31 @@ slim(
 
 
 ```{r}
+model <- read("~/Desktop/sims")
+
 reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
+
+ts <- ts_load(model)
 
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
               recombination_rate = 1e-8, Ne = 10000)
+
 ts_draw(ts$first())
 ts_draw(ts$first(), individuals = TRUE, ts = ts)
+```
+
+
+
+
+```{r}
+
 
 sf <- ts_spatial(ts)
 
 ts_ancestors("EUR33", sf, ts) %>% plot_ancestors("EUR33")
 ```
+
+
 
 
 ```{r}

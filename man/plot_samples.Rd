@@ -4,14 +4,26 @@
 \alias{plot_samples}
 \title{Plot locations of sampled individuals}
 \usage{
-plot_samples(data, pop = NULL, older_than = NULL, younger_than = NULL)
+plot_samples(
+  data,
+  pop = NULL,
+  full_scale = TRUE,
+  older_than = NULL,
+  younger_than = NULL
+)
 }
 \arguments{
 \item{pop}{Name of the population to plot}
 
+\item{full_scale}{Plot time gradient on the full scale (spanning the oldest
+sampled individual to the present)}
+
 \item{older_than, younger_than}{Time boundaries for the samples}
 
 \item{spatial}{ts data XXXXX}
+}
+\value{
+A ggplot2 object with a map and locations of sampled individual
 }
 \description{
 Plot locations of sampled individuals
