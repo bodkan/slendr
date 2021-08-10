@@ -2,7 +2,7 @@
 % Please edit documentation in R/ts_spatial.R
 \name{ts_spatial}
 \alias{ts_spatial}
-\title{Convert spatio-temporal tree sequence data to a spatial format}
+\title{Convert tree sequence data to a spatial format}
 \usage{
 ts_spatial(ts, crs = NULL)
 }
@@ -20,5 +20,5 @@ reprojection to a different CRS.}
 Spatial object of the class \code{slendr_ts} and \code{sf}
 }
 \description{
-Convert spatio-temporal tree sequence data to a spatial format
+Convert tree sequence data to a spatial format
 }

@@ -4,11 +4,20 @@
 \alias{plot_ancestors}
 \title{Plot locations of ancestors of given individual or node on a map}
 \usage{
-plot_ancestors(data, x, connect = TRUE)
+plot_ancestors(
+  data,
+  x,
+  full_scale = TRUE,
+  younger_than = NULL,
+  color = c("level", "time")
+)
 }
 \arguments{
 \item{x}{Either a string representing an individual name, or an integer
 number specifying a node in a tree sequence}
+
+\item{full_scale}{Plot time gradient on the full scale (spanning the oldest
+sampled individual to the present)}
 
 \item{spatial}{ts data XXXXX}
 }
