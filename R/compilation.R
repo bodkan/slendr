@@ -320,8 +320,11 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   if (!is.null(sampling) && !ts_recording)
     stop("Sampling (remembering) of individuals only makes sense when `ts_recording = TRUE`", call. = FALSE)
 
-  sampling_path <- stringr::str_replace(script_path, "_script.slim", "_samples.tsv")
-  process_sampling(sampling, model, sampling_path, verbose)
+  if (ts_recording) {
+    sampling_path <- stringr::str_replace(script_path, "_script.slim", "_samples.tsv")
+    process_sampling(sampling, model, sampling_path, verbose)
+  } else
+    sampling_path <- NULL
 
   base_script <- script(
     spatial = if (inherits(model$world, "slendr_map")) "T" else "F",
