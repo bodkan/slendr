@@ -1,4 +1,4 @@
-#' Convert spatio-temporal tree sequence data to a spatial format
+#' Convert tree sequence data to a spatial format
 #'
 #' @param ts pyslim.SlimTreeSequence object
 #' @param crs For spatial models, which coordinate reference system to reproject
@@ -21,8 +21,8 @@ ts_spatial <- function(ts, crs = NULL) {
   model <- ts_model(ts)
   individuals <- ts_individuals(ts)
 
-  # process table of individuals to get information about locations and times
-  # of all nodes (remembered or retained)
+  # process table of individuals to get locations and times of all nodes
+  # (remembered or retained)
   nodes <- individuals %>%
     tidyr::gather("node", "node_id", c("chr1_id", "chr2_id")) %>%
     dplyr::select(name, time, pop, raster_x, raster_y, node_id) %>%
@@ -37,7 +37,7 @@ ts_spatial <- function(ts, crs = NULL) {
 }
 
 
-#' Convert spatio-temporal tree sequence data to a spatial format
+#' Extract the ancestral relationships for a set of nodes
 #'
 #' @param data Object of the class \code{slendr_spatial} carrying the
 #'   spatio-temporal position of each individual node in the tree sequence
@@ -53,48 +53,8 @@ ts_ancestors <- function(x, data, ts) {
   model <- ts_model(ts)
   edges <- ts_edges(ts)
 
-  # a name of a sampled individual was specified
-  if (is.character(x)) {
-    id <- dplyr::filter(data, name == x)$node_id
-    if (!length(id))
-      stop("Unknown individual", x, call. = FALSE)
-  } else if (is.numeric(x))
-    id <- x
-  else
-    stop("Unknown object given as an individual or a node", call. = FALSE)
-
-  edge <- edges[edges$child %in% id, ]
-  edge$rank <- 1
-
-  processed_nodes <- vector(length = length(unique(data$node_id)) + 1)
-  processed_nodes[unique(edge$child) + 1] <- TRUE
-
-  result <- list()
-  queue <- split(edge, edge$child)
-  while (TRUE) {
-    # take out the first element
-    item <- queue[[1]]; queue[[1]] <- NULL
-
-    # add it to the final list
-    result <- append(result, list(item))
-
-    for (parent in split(item, item$parent)) {
-      edge <- edges[edges$child == unique(parent$parent), ]
-
-      # the parent has no parent itself or it has already been processed
-      if (nrow(edge) == 0) next
-      if (processed_nodes[unique(edge$child) + 1]) next
-
-      processed_nodes[unique(edge$child) + 1] <- TRUE
-
-      edge$rank <- item$rank[1] + 1
-      queue[[length(queue) + 1]] <- edge
-    }
-
-    if (length(queue) == 0) break
-  }
-
-  result <- dplyr::bind_rows(result)
+  # collect child-parent links for all samples in the tree sequence
+  collect_ancestors(x, edges)
 
   child_data <- dplyr::select(data, name, pop, node_id, time, location)
   parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location)
@@ -115,10 +75,10 @@ ts_ancestors <- function(x, data, ts) {
   final <- dplyr::bind_cols(combined, connections) %>%
     sf::st_set_geometry("connection") %>%
     dplyr::select(name, node_id = child, pop, time, location,
-                  rank, parent_id = parent, parent_pop, parent_time,
+                  level, parent_id = parent, parent_pop, parent_time,
                   parent_location, connection,
                   left_pos = left, right_pos = right) %>%
-    dplyr::mutate(rank = as.factor(rank))
+    dplyr::mutate(level = as.factor(level))
 
   attr(final, "model") <- model
   class(final) <- set_class(final, "spatial")
@@ -126,6 +86,53 @@ ts_ancestors <- function(x, data, ts) {
   final
 }
 
+# Collect all ancestors of a given node up to the root by traversing the tree
+# edges "bottom-up" using a queue
+collect_ancestors <- function(node_id, edges) {
+  # list collecting all edges leading from the focal node
+  result <- list()
+
+  # initialize the counter of nodes already processed by the queue
+  n_nodes <- length(unique(c(edges$child, edges$parent)))
+  processed_nodes <- vector(length = n_nodes + 1)
+
+  # add all edges leading from the focal node to the queue
+  edge <- edges[edges$child %in% node_id, ] %>% dplyr::mutate(level = 1)
+  queue <- split(edge, edge$child)
+
+  # repeat until the queue is empty (this homebrew queue implementation is
+  # probably horribly inefficient but it will do for now)
+  while (TRUE) {
+    # pop out the first element
+    item <- queue[[1]]; queue[[1]] <- NULL
+
+    # add it to the final list
+    result <- append(result, list(item))
+
+    # iterate over all parents of the current node
+    for (parent in split(item, item$parent)) {
+      # get edges leading from the current parent to its own parent
+      edge <- edges[edges$child == unique(parent$parent), ]
+
+      # if the parent has no parent itself or its node has already been
+      # processed, skip it and don't add it to the queue
+      if (nrow(edge) == 0) next
+      if (processed_nodes[unique(edge$child) + 1]) next
+
+      # mark the node as processed...
+      processed_nodes[unique(edge$child) + 1] <- TRUE
+      # ... and add it to the queue
+      edge$level <- item$level[1] + 1
+      queue[[length(queue) + 1]] <- edge
+    }
+
+    if (length(queue) == 0) break
+  }
+
+  result <- dplyr::bind_rows(result)
+
+  result
+}
 
 #' Plot locations of ancestors of given individual or node on a map
 #'
@@ -137,7 +144,7 @@ ts_ancestors <- function(x, data, ts) {
 #'
 #' @export
 plot_ancestors <- function(data, x, full_scale = TRUE,
-                           younger_than = NULL, color = c("rank", "time")) {
+                           younger_than = NULL, color = c("level", "time")) {
   model <- attr(data, "model")
   color <- match.arg(color)
 
@@ -160,7 +167,7 @@ plot_ancestors <- function(data, x, full_scale = TRUE,
     sf::st_as_sf() %>%
     sf::st_set_geometry("location")
 
-  link_aes <- if (color == "time") aes(color = time) else aes(color = rank)
+  link_aes <- if (color == "time") aes(color = time) else aes(color = level)
 
   ggplot() +
     # world map
@@ -180,7 +187,6 @@ plot_ancestors <- function(data, x, full_scale = TRUE,
     ggtitle(paste("Spatio-temporal placement of the ancestors of", x)) +
     theme_bw()
 }
-
 
 #' Plot locations of sampled individuals
 #'
@@ -222,9 +228,8 @@ plot_samples <- function(data, pop = NULL, full_scale = TRUE,
   p
 }
 
-
-#' Convert a data frame of information extracted from a tree sequence
-#' table to an sf spatial object
+# Convert a data frame of information extracted from a tree sequence
+# table to an sf spatial object
 convert_to_sf <- function(df, model, crs) {
   # reproject coordinates to the original crs
   if (has_crs(model$world)) {
@@ -246,80 +251,3 @@ convert_to_sf <- function(df, model, crs) {
 
   result
 }
-
-
-
-
-
-
-
-#' Plot locations of ancestors of given sample on a map
-#'
-#' @export
-# plot_ancestors <- function(x, individual, older_than = NULL, younger_than = NULL) {
-#   model <- attr(x, "model")
-#
-#   anc_sf <- dplyr::filter(x, name == individual)
-#   ind_sf <- sf::st_set_geometry(anc_sf[1, ], "location")
-#
-#   comp_op <- ifelse(model$direction == "backward", `>`, `<`)
-#   if (!is.null(older_than)) anc_sf <- dplyr::filter(anc_sf, comp_op(anc_time, older_than))
-#   if (!is.null(younger_than)) anc_sf <- dplyr::filter(anc_sf, !comp_op(anc_time, younger_than))
-#
-#   # if (connect) {
-#   #   sf_line <- dplyr::group_by(anc_sf, name) %>% dplyr::summarise()
-#   #   migration_geom <- geom_sf(data = sf_line)
-#   # } else
-#   migration_geom <- NULL
-#
-#   p <- ggplot() +
-#     geom_sf(data = model$world, fill = "lightgray", color = NA) +
-#     migration_geom +
-#     geom_sf(data = ind_sf, shape = 13) +
-#     geom_sf(data = anc_sf, aes(color = anc_pop)) +
-#     coord_sf(expand = 0) +
-#     ggtitle(paste("Locations of the ancestors of", individual)) +
-#     theme_bw()
-#
-#   p
-# }
-#
-#
-# all_ancestors <- function(x) {
-#
-#   # iterate over all nodes from the oldest (those just behind some root)
-#   # and proceed "down" in the genealogy, remembering for each node
-#   # all ancestors above (dynamic programming style)
-#   ancestor_list <- vector(mode = "list", length = nrow(nodes))
-#   for (i in child_nodes$child) {
-#     if (i == x) break()
-#     # who are the parents of the current node?
-#     parents <- child_nodes[child_nodes$child == i, ]$parents[[1]]
-#
-#     # who are all the ancestors of previous generations collected so far?
-#     parent_ancestors <- dplyr::bind_rows(ancestor_list[unique(parents$parent + 1)])
-#
-#     # bind all previous ancestors with the current parents
-#     ancestor_list[[i + 1]] <- dplyr::bind_rows(parents, parent_ancestors) %>%
-#       dplyr::mutate(node_id = i)
-#   }
-#   ancestors <- dplyr::bind_rows(ancestor_list) %>%
-#     dplyr::select(node_id, anc_id = parent, left, right) %>%
-#     dplyr::inner_join(ind_info, by = c("anc_id" = "anc_node_id")) %>%
-#     dplyr::arrange(node_id, anc_id, left) %>%
-#     dplyr::group_nest(node_id, anc_id, anc_pop, anc_time, anc_raster_x, anc_raster_y,
-#                       .key = "interval")
-#
-#   # convert the table of all individuals into a long format (two rows
-#   # for each sampled individual -- i.e. for each chromosome)
-#   individuals_long <- individuals %>%
-#     tidyr::gather(key = "node", value = "node_id", c("chr1_id", "chr2_id"))
-#
-#   # to each node in a sampled individual, add the infered ancestors up to the root
-#   # of each genealogy
-#   combined <- dplyr::inner_join(individuals_long, ancestors, by = "node_id") %>%
-#     dplyr::select(name, node_id, time, raster_x, raster_y, anc_id, anc_pop,
-#                   anc_raster_x, anc_raster_y, anc_time, anc_id, dplyr::everything())
-#
-# }
-#
