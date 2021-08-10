@@ -841,7 +841,7 @@ get_raw_individuals <- function(ts, model) {
   # reticulate doesn't seem to be able to expose non-global objects :(
   assign(tmp_var, ts, envir = globalenv())
   pedigree_ids <- reticulate::py_run_string(sprintf("pedigree_ids = [ind.metadata['pedigree_id'] for ind in r.%s.tables.individuals]", tmp_var))$pedigree_ids
-  rm(list = tmp_var, envir = globalenv())
+  on.exit(rm(list = tmp_var, envir = globalenv()), add = TRUE)
 
   ## for the record, this is the original R version of the code -- *much* slower
   ## due to the gazillion internal reticulate Python calls
