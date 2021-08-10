@@ -833,16 +833,22 @@ get_raw_edges <- function(ts) {
 get_raw_individuals <- function(ts, model) {
   table <- ts$tables$individuals
 
-  # this is available as binary metadata encoded in the table of individuals but
-  # I have no clue at the moment how decode it in R -- iteration and calling
-  # `ts.individual(i)` is obviously subobtimal, but will have to do for now
-  pedigree_ids <- purrr::map_int(seq(0, ts$num_individuals - 1),
-                                 ~ ts$individual(.x)["metadata"]["pedigree_id"])
+  # pedigree_id is available as binary metadata encoded in the table of
+  # individuals but I have no clue at the moment how decode it directly in R --
+  # for now I'm parsing it in Python via reticulate is pretty ugly (but
+  # reasonably fast)
+  tmp_var <- paste0("ts_py_object_", paste(sample(LETTERS, 20, TRUE), collapse = ""))
+  # reticulate doesn't seem to be able to expose non-global objects :(
+  assign(tmp_var, ts, envir = globalenv())
+  pedigree_ids <- reticulate::py_run_string(sprintf("pedigree_ids = [ind.metadata['pedigree_id'] for ind in r.%s.tables.individuals]", tmp_var))$pedigree_ids
+  rm(tmp_var)
+  # this is the original R version of the code -- much slower
+  # pedigree_ids <- purrr::map_int(seq(0, ts$num_individuals - 1),
+  #                                ~ ts$individual(.x)["metadata"]["pedigree_id"])
 
-  # same problem -- nodes of individuals are also stored in the metadata field
-  # (i.e. chr 1 node is in `["nodes"][1]` and chr 2 in ["nodes"][2]`), but we
-  # can get them also by cross-checking the nodes table which contains
-  # individual IDs
+  # getting the two nodes for each individual has the same problem (it's saved
+  # as a metadata column) but we can get them also by cross-checking the nodes table
+  # which contains individual IDs
   ind_ids <- seq_len(table$num_rows) - 1
   nodes <- get_raw_nodes(ts, model) %>% dplyr::select(node_id, ind_id)
   chr1_nodes <- purrr::map(ind_ids, ~ nodes[nodes$ind_id == .x, ]$node_id[1]) %>% unlist()
