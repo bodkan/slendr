@@ -196,9 +196,9 @@ interactively.", call. = FALSE)
 plot_graph <- function(model) {
   # plot times in their original direction
   split_table <- model$splits
-  split_table[, c("tsplit", "tremove")] <-   split_table[, c("tsplit_orig", "tremove_orig")]
+  split_table[, c("tsplit", "tremove")] <- split_table[, c("tsplit_orig", "tremove_orig")]
   geneflow_table <- model$geneflow
-  geneflow_table[, c("tstart", "tend")] <-   geneflow_table[, c("tstart_orig", "tend_orig")]
+  geneflow_table[, c("tstart", "tend")] <- geneflow_table[, c("tstart_orig", "tend_orig")]
 
   split_edges <- get_split_edges(split_table)
   geneflow_edges <- get_geneflow_edges(geneflow_table)
@@ -382,6 +382,101 @@ animate <- function(model, output_dir = model$path, output_prefix = "output",
     return(anim)
   else
     gganimate::anim_save(gif, anim)
+}
+
+
+#' Plot locations of ancestors of given individual or node on a map
+#'
+#' @param spatial ts data XXXXX
+#' @param x Either a string representing an individual name, or an integer
+#'   number specifying a node in a tree sequence
+#' @param full_scale Plot time gradient on the full scale (spanning the oldest
+#'   sampled individual to the present)
+#'
+#' @export
+plot_ancestors <- function(data, x, full_scale = TRUE,
+                           younger_than = NULL, color = c("level", "time")) {
+  model <- attr(data, "model")
+  color <- match.arg(color)
+
+  # if specified, narrow down samples to a given time window
+  comp_op <- ifelse(model$direction == "backward", `>`, `<`)
+  if (!is.null(younger_than)) data <- dplyr::filter(data, !comp_op(parent_time, younger_than))
+
+  # a name of a sampled individual was specified
+  if (is.character(x)) {
+    if (!all(x %in% data$name))
+      stop("Unknown individual", x[!x %in% data$name], call. = FALSE)
+    id <- dplyr::filter(data, name %in% x)$node_id
+  } else if (is.numeric(x))
+    id <- x
+  else
+    stop("Unknown object given as an individual or a node", call. = FALSE)
+
+  # extract the focal individual or node
+  focal_node <- dplyr::filter(data, node_id %in% id) %>%
+    sf::st_as_sf() %>%
+    sf::st_set_geometry("location")
+
+  link_aes <- if (color == "time") aes(color = time) else aes(color = level)
+
+  ggplot() +
+    # world map
+    geom_sf(data = model$world, fill = "lightgray", color = NA) +
+
+    # links between nodes ("spatial branches")
+    geom_sf(data = data, link_aes, size = 0.5, alpha = 0.75) +
+
+    # focal individual (or)
+    geom_sf(data = focal_node, shape = 13, size = 3, color = "red") +
+
+    # all ancestral nodes
+    geom_sf(data = sf::st_set_geometry(data, "parent_location"),
+            aes(shape = parent_pop), alpha = 0.5) +
+
+    coord_sf(expand = 0) +
+    ggtitle(paste("Spatio-temporal placement of the ancestors of", x)) +
+    theme_bw()
+}
+
+#' Plot locations of sampled individuals
+#'
+#' @param spatial ts data XXXXX
+#' @param pop Name of the population to plot
+#' @param older_than,younger_than Time boundaries for the samples
+#' @param full_scale Plot time gradient on the full scale (spanning the oldest
+#'   sampled individual to the present)
+#'
+#' @return A ggplot2 object with a map and locations of sampled individual
+#'
+#' @export
+plot_samples <- function(data, pop = NULL, full_scale = TRUE,
+                         older_than = NULL, younger_than = NULL) {
+  model <- attr(data, "model")
+
+  # first subset only to explicitly sampled individuals (those have proper
+  # names extracted from the sampling table)
+  data <- dplyr::filter(data, !is.na(name))
+
+  # if specified, narrow down samples to a given time window
+  comp_op <- ifelse(model$direction == "backward", `>`, `<`)
+  if (!is.null(older_than)) data <- dplyr::filter(data, comp_op(time, older_than))
+  if (!is.null(younger_than)) data <- dplyr::filter(data, !comp_op(time, younger_than))
+
+  # if specified, subset the samples to those from a given population
+  if (!is.null(pop)) data <- dplyr::filter(data, pop == !!pop)
+
+  p <- ggplot() +
+    geom_sf(data = model$world, fill = "lightgray", color = NA) +
+    geom_sf(data = data, aes(shape = pop, color = time)) +
+    coord_sf(expand = 0) +
+    ggtitle("Spatio-temporal placement of sampled individuals") +
+    theme_bw()
+
+  if (full_scale)
+    p <- p + scale_color_gradient(limits = c(0, model$length))
+
+  p
 }
 
 # helper functions --------------------------------------------------------

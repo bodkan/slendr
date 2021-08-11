@@ -221,9 +221,9 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRU
 ts_genotypes <- function(ts) {
   genotypes <- ts$genotype_matrix()
 
-  individuals <- ts_individuals(ts) %>%
-    dplyr::mutate(chr1 = paste0("%s_chr1", name),
-                  chr2 = paste0("%s_chr2", name))
+  individuals <- ts_individuals(ts, remembered = TRUE) %>%
+    dplyr::mutate(chr1 = sprintf("%s_chr1", name),
+                  chr2 = sprintf("%s_chr2", name))
 
   # we had to do some rearrangement of nodes in the table of individuals
   # (in case we did simplification) so the genotype matrix returned by
@@ -305,16 +305,18 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
 #'
 #' @export
 ts_vcf <- function(ts, vcf, individuals = NULL) {
-  if (is.null(individuals)) individuals <- ts_individuals(ts)$name
+  if (is.null(individuals))
+    individuals <- ts_individuals(ts, remembered = TRUE)$name
 
-  present <- individuals %in% ts_individuals(ts)$name
+  present <- individuals %in% ts_individuals(ts, remembered = TRUE)$name
   if (!all(present))
     stop("", paste(individuals[!present], collapse = ", "),
          " not present in the tree sequence", call. = FALSE)
 
-  individual_ids <- ts_individuals(ts) %>%
+  individual_ids <- ts_individuals(ts, remembered = TRUE) %>%
     dplyr::filter(name %in% individuals) %>%
-    .[["id"]]
+    .[["ind_id"]] %>%
+    as.integer()
 
   gzip <- reticulate::import("gzip")
   with(reticulate::`%as%`(gzip$open(path.expand(vcf), "wt"), vcf_file), {
@@ -794,8 +796,13 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 # private tree sequence utility functions ---------------------------------
 
 # Function for extracting numerical node IDs for various statistics
-node_ids <- function(ts, individuals) {
-  purrr::map(individuals, ~ ts_node(ts, name = .x, numeric = TRUE)) %>% unlist()
+node_ids <- function(ts, x) {
+  if (all(purrr::map_lgl(x, is.numeric)))
+    return(x)
+
+  individuals <- ts_individuals(ts)
+  purrr::map(x, ~ dplyr::filter(individuals, name %in% .x) %>%
+                   .[, c("chr1_id", "chr2_id")]) %>% unlist() %>% as.integer()
 }
 
 define_windows <- function(ts, breakpoints) {
