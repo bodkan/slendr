@@ -1025,24 +1025,22 @@ collect_ancestors <- function(node_id, edges) {
 convert_to_sf <- function(df, model) {
   crs <- sf::st_crs(model$world)
 
+  with_locations <- df[complete.cases(df[, c("raster_x", "raster_y")]), ]
+  without_locations <- df[!complete.cases(df[, c("raster_x", "raster_y")]), ]
+
   # reproject coordinates to the original crs
   if (has_crs(model$world)) {
-    df <- reproject(
-      from = "raster", to = crs, coords = df, model = model,
+    with_locations <- reproject(
+      from = "raster", to = crs, coords = with_locations, model = model,
       input_prefix = "raster_", output_prefix = "", add = TRUE
     )
-    location_cols <- c("x", "y")
   } else {
-    df$x <- df$raster_x
-    df$y <- df$raster_y
-    location_cols <- c("raster_x", "raster_y")
+    with_location$x <- with_locations$raster_x
+    with_locations$y <- with_locations$raster_y
   }
 
-  with_locations <- df[complete.cases(df[, location_cols]), ]
-  without_locations <- df[!complete.cases(df[, location_cols]), ]
-
   result <- sf::st_as_sf(with_locations,
-                         coords = location_cols,
+                         coords = c("x", "y"),
                          crs = crs) %>%
     dplyr::rename(location = geometry)
 
