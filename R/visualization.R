@@ -210,7 +210,7 @@ plot_graph <- function(model) {
     intermediate_edges
   )
 
-  nodes <- get_nodes(edges)
+  nodes <- get_graph_nodes(edges)
 
   g <- tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
   layout <- create_layout(g, layout = "sugiyama")
@@ -575,7 +575,7 @@ get_intermediate_edges <- function(split_edges, geneflow_edges) {
 
 
 # Get table of node labels in the graph
-get_nodes <- function(edges) {
+get_graph_nodes <- function(edges) {
   nodes <- unique(c(edges$x, edges$y))
 
   # find the first occurrence of a population in the model based
