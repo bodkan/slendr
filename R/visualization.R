@@ -439,24 +439,37 @@ plot_ancestors <- function(data, x, full_scale = TRUE,
     theme_bw()
 }
 
-#' Plot locations of sampled individuals
+#' Plot locations of individuals or nodes in the tree sequence
 #'
-#' @param spatial ts data XXXXX
+#' @param spatial Spatial tree sequence data frame (see \code{\link{ts_data}}))
+#' @param x Either a character vector of names of sampled individuals, or an or
+#'   an integer vector with numeric node IDs
 #' @param pop Name of the population to plot
 #' @param older_than,younger_than Time boundaries for the samples
 #' @param full_scale Plot time gradient on the full scale (spanning the oldest
 #'   sampled individual to the present)
 #'
-#' @return A ggplot2 object with a map and locations of sampled individual
+#' @return A ggplot2 object with locations on a map
 #'
 #' @export
-plot_samples <- function(data, pop = NULL, full_scale = TRUE,
-                         older_than = NULL, younger_than = NULL) {
+#' @import ggplot2
+plot_locations <- function(data, x = NULL, pop = NULL, older_than = NULL,
+                           younger_than = NULL, full_scale = TRUE) {
   model <- attr(data, "model")
 
-  # first subset only to explicitly sampled individuals (those have proper
-  # names extracted from the sampling table)
-  data <- dplyr::filter(data, !is.na(name))
+  if (is.null(x)) {
+    id <- dplyr::filter(data, !is.na(name)) %>% dplyr::distinct(name, .keep_all = TRUE) %>% .$node_id
+  } else if (is.character(x)) {
+    if (!all(x %in% data$name))
+      stop("Unknown individual", x[!x %in% data$name], call. = FALSE)
+    id <- dplyr::filter(data, name %in% x) %>% dplyr::distinct(name, .keep_all = TRUE) %>% .$node_id
+  } else if (is.numeric(x))
+    id <- x
+  else
+    stop("Unknown object given as an individual or a node", call. = FALSE)
+
+  # extract the focal individual or node
+  data <- dplyr::filter(data, node_id %in% id)
 
   # if specified, narrow down samples to a given time window
   comp_op <- ifelse(model$direction == "backward", `>`, `<`)
@@ -470,7 +483,7 @@ plot_samples <- function(data, pop = NULL, full_scale = TRUE,
     geom_sf(data = model$world, fill = "lightgray", color = NA) +
     geom_sf(data = data, aes(shape = pop, color = time)) +
     coord_sf(expand = 0) +
-    ggtitle("Spatio-temporal placement of sampled individuals") +
+    guides(shape = guide_legend("population")) +
     theme_bw()
 
   if (full_scale)
