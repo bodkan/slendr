@@ -23,6 +23,11 @@
 #' @param recapitate Should the tree sequence be recapitated?
 #' @param simplify Should the tree sequence be simplified down to only
 #'   remembered (i.e. "sampled", in \emph{slendr} parlance) individuals?
+#' @param spatial Should spatial information encoded in the tree sequence data
+#'   be converted to spatial R datastructures? If FALSE, pixel-based
+#'   raster-dimensions will not be converted to the coordinate reference system
+#'   implied by the model. If TRUE (default), reprojection of coordinates will
+#'   be performed.
 #' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #' @param individuals A character vector of individual names. If NULL, all
@@ -34,8 +39,8 @@
 #' @export
 ts_load <- function(model, output_dir = model$path, output_prefix = "output",
                     recapitate = FALSE, simplify = FALSE,
-                    recombination_rate = NULL, Ne = NULL, random_seed = NULL,
-                    individuals = NULL) {
+                    spatial = TRUE, recombination_rate = NULL,
+                    Ne = NULL, random_seed = NULL, individuals = NULL) {
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
 
@@ -55,17 +60,16 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
   # (this avoids computing data that would be overwritten
   # immediately after)
   if (!recapitate && !simplify) {
-    attr(ts, "individuals") <- get_complete_inds(ts, model)
-    attr(ts, "nodes") <- get_raw_nodes(ts, model)
-    attr(ts, "edges") <- get_raw_edges(ts)
+    attr(ts, "table") <- get_table_data(ts, model, spatial)
+    attr(ts, "edges") <- get_ts_edges(ts)
   }
 
   if (recapitate)
     ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
                         random_seed = random_seed,
-                        assign_metadata = !simplify)
+                        assign_metadata = !simplify, spatial = spatial)
 
-  if (simplify) ts <- ts_simplify(ts, individuals)
+  if (simplify) ts <- ts_simplify(ts, individuals, spatial = spatial)
 
   ts
 }
@@ -75,6 +79,11 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
 #' @param ts pyslim.SlimTreeSequence object loaded by \code{ts_load}
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
+#' @param spatial Should spatial information encoded in the tree sequence data
+#'   be converted to spatial R datastructures? If FALSE, pixel-based
+#'   raster-dimensions will not be converted to the coordinate reference system
+#'   implied by the model. If TRUE (default), reprojection of coordinates will
+#'   be performed.
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #' @param assign_metadata Should various tree sequence tables be attached to the
 #'   final object?
@@ -83,7 +92,7 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
 #'   package
 #'
 #' @export
-ts_recapitate <- function(ts, recombination_rate, Ne,
+ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
                           random_seed = NULL, assign_metadata = TRUE) {
   check_ts_class(ts)
 
@@ -96,9 +105,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne,
   model <- attr(ts, "model")
 
   if (assign_metadata) {
-    attr(ts_new, "individuals") <- get_complete_inds(ts_new, model)
-    attr(ts_new, "nodes") <- get_raw_nodes(ts_new, model)
-    attr(ts_new, "edges") <- get_raw_edges(ts_new)
+    attr(ts_new, "table") <- get_table_data(ts_new, model, spatial)
+    attr(ts_new, "edges") <- get_ts_edges(ts_new)
   }
 
   attr(ts_new, "sampling") <-  attr(ts, "sampling")
@@ -135,48 +143,55 @@ ts_recapitate <- function(ts, recombination_rate, Ne,
 #'   explicitly remembered individuals (i.e. those specified via the
 #'   \code{\link{sampling}} function will be left in the tree sequence after the
 #'   simplification.
+#' @param spatial Should spatial information encoded in the tree sequence data
+#'   be converted to spatial R datastructures? If FALSE, pixel-based
+#'   raster-dimensions will not be converted to the coordinate reference system
+#'   implied by the model. If TRUE (default), reprojection of coordinates will
+#'   be performed.
 #'
 #' @return @return pyslim.SlimTreeSequence object accessed via the reticulate
 #'   package
 #'
 #' @export
-ts_simplify <- function(ts, individuals = NULL) {
+ts_simplify <- function(ts, individuals = NULL, spatial = TRUE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
-  metadata <- attr(ts, "individuals")
-  if (is.null(metadata))
-    metadata <- get_complete_inds(ts, model)
+  table <- attr(ts, "table")
+  if (is.null(table))
+    table <- get_table_data(ts, model, spatial)
 
-  if (!all(individuals %in% metadata$name))
+  if (!all(individuals %in% table$name))
     stop("The following individuals are not present in the tree sequence: ",
-         paste0(individuals[!individuals %in% metadata$name], collapse = ", "),
+         paste0(individuals[!individuals %in% table$name], collapse = ", "),
          call. = FALSE)
 
   if (is.null(individuals))
-    samples <- dplyr::filter(metadata, remembered)
+    samples <- dplyr::filter(table, remembered)$node_id
   else
-    samples <- dplyr::filter(metadata, name %in% individuals)
+    samples <- dplyr::filter(table, name %in% individuals)$node_id
 
-  node_ids <- samples %>%
-    dplyr::select(chr1_id, chr2_id) %>%
-    unlist() %>%
-    as.integer()
+  ts_new <- ts$simplify(as.integer(samples),
+                        filter_populations = FALSE)
 
-  ts_new <- ts$simplify(node_ids, filter_populations = FALSE)
+  # get the name and location from the original table with the pedigree_id key
+  cols <- c("pedigree_id", "pop", "name")
+  if (spatial) cols <- c(cols, "location")
+  # we need to deduplicate the rows because the table is stored
+  # in a long format (but we removed the node_id column which is
+  # which each diploid individual has two values of)
+  keep_data <- table[, cols] %>% dplyr::filter(!duplicated(pedigree_id))
 
-  # get columns with named data and the pedigree_id key
-  named_columns <- metadata[, c("pedigree_id", "name", "pop")]
-
-  metadata_new <- get_raw_individuals(ts_new, model) %>%
-    dplyr::inner_join(named_columns, by = "pedigree_id") %>%
-    .[, colnames(metadata)]
+  nodes_new <- get_ts_nodes(ts_new, model)[, c("node_id", "ind_id")]
+  table_new <- get_ts_individuals(ts_new, model) %>%
+    dplyr::inner_join(keep_data, by = "pedigree_id") %>%
+    dplyr::right_join(nodes_new, by = "ind_id") %>%
+    .[, colnames(table)]
 
   attr(ts_new, "model") <- model
   attr(ts_new, "sampling") <- attr(ts, "sampling")
-  attr(ts_new, "individuals") <- metadata_new
-  attr(ts_new, "nodes") <- get_raw_nodes(ts_new, model)
-  attr(ts_new, "edges") <- get_raw_edges(ts_new)
+  attr(ts_new, "table") <- table_new
+  attr(ts_new, "edges") <- get_ts_edges(ts_new)
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -328,48 +343,82 @@ ts_vcf <- function(ts, vcf, individuals = NULL) {
 
 # handling of individuals and nodes ---------------------------------------
 
-#' Extract the table of individuals
+#' Extract the information about individuals and nodes
 #'
 #' @param ts pyslim.SlimTreeSequence object
-#' @param model \code{slendr_model} object of a model that generated the data
+#' @param remembered,retained,alive Only extract individuals with the specific
+#'   flag
 #'
 #' @return Data frame with individual information from the input tree sequence
 #'   object
 #'
 #' @export
-ts_individuals <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
+ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
   check_ts_class(ts)
-  individuals <- attr(ts, "individuals")
-  if (!is.null(remembered)) individuals <- dplyr::filter(individuals, remembered)
-  if (!is.null(retained)) individuals <- dplyr::filter(individuals, retained)
-  if (!is.null(alive)) individuals <- dplyr::filter(individuals, alive)
-  individuals
+  table <- attr(ts, "table")
+  if (!is.null(remembered)) table <- dplyr::filter(table, remembered)
+  if (!is.null(retained)) table <- dplyr::filter(table, retained)
+  if (!is.null(alive)) table <- dplyr::filter(table, alive)
+  table
 }
 
-#' Get the table of individuals, nodes, or edges or a model object
+#' Extract the table of edges from the tree sequence object
 #'
 #' @param ts pyslim.SlimTreeSequence object
 #'
-#' @return Data frame
-#'
-#' @export
-ts_nodes <- function(ts) {
-  check_ts_class(ts)
-  attr(ts, "nodes")
-}
-
-#' @rdname ts_nodes
 #' @export
 ts_edges <- function(ts) {
   check_ts_class(ts)
   attr(ts, "edges")
 }
 
-#' @rdname ts_nodes
+#' Extract the ancestral relationships for a set of nodes
+#'
+#' @param data Object of the class \code{slendr_spatial} carrying the
+#'   spatio-temporal position of each individual node in the tree sequence
+#' @param ts pyslim.SlimTreeSequence object of the class \code{slendr_ts}
+#'   obtained by \code{link{ts_load}}, \code{link{ts_recapitate}},
+#'   \code{link{ts_simplify}}, or \code{link{ts_mutate}}
+#' @param x Either a string representing an individual name, or an integer
+#'   number specifying a node in a tree sequence
+#'
 #' @export
-ts_model <- function(ts) {
+ts_ancestors <- function(x, data, ts) {
   check_ts_class(ts)
-  attr(ts, "model")
+  model <- ts_model(ts)
+  edges <- ts_edges(ts)
+
+  # collect child-parent links for all samples in the tree sequence
+  collect_ancestors(x, edges)
+
+  child_data <- dplyr::select(data, name, pop, node_id, time, location)
+  parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location)
+
+  combined <-result %>%
+    dplyr::inner_join(child_data, by = c("child" = "node_id")) %>%
+    dplyr::inner_join(parent_data, by = c("parent" = "parent_id")) %>%
+    sf::st_as_sf()
+
+  connections <- purrr::map2(
+    combined$location, combined$parent_location, ~
+      sf::st_union(.x, .y) %>%
+      sf::st_cast("LINESTRING") %>%
+      sf::st_sfc() %>%
+      sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
+    dplyr::bind_rows()
+
+  final <- dplyr::bind_cols(combined, connections) %>%
+    sf::st_set_geometry("connection") %>%
+    dplyr::select(name, node_id = child, pop, time, location,
+                  level, parent_id = parent, parent_pop, parent_time,
+                  parent_location, connection,
+                  left_pos = left, right_pos = right) %>%
+    dplyr::mutate(level = as.factor(level))
+
+  attr(final, "model") <- model
+  class(final) <- set_class(final, "spatial")
+
+  final
 }
 
 # tree operations ---------------------------------------------------------
@@ -795,49 +844,19 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 
 # private tree sequence utility functions ---------------------------------
 
-# Function for extracting numerical node IDs for various statistics
-node_ids <- function(ts, x) {
-  if (all(purrr::map_lgl(x, is.numeric)))
-    return(x)
-
-  individuals <- ts_individuals(ts)
-  purrr::map(x, ~ dplyr::filter(individuals, name %in% .x) %>%
-                   .[, c("chr1_id", "chr2_id")]) %>% unlist() %>% as.integer()
-}
-
-define_windows <- function(ts, breakpoints) {
-  unique(c(0, breakpoints, ts$sequence_length))
-}
-
-concat <- function(x) {
-  paste(x, collapse = "+")
-}
-
 # Extract information from the nodes table
-get_raw_nodes <- function(ts, model) {
+get_ts_nodes <- function(ts, model) {
   table <- ts$tables$nodes
   dplyr::tibble(
     node_id = seq_len(table$num_rows) - 1,
     time = convert_slim_time(table$time, model),
-    ind_id = table$individual,
-    pop = model$splits$pop[table$population + 1]
-  )
-}
-
-# Extract information from the edges table
-get_raw_edges <- function(ts) {
-  table <- ts$tables$edges
-  dplyr::tibble(
-    id = seq_len(table$num_rows) - 1,
-    child = table[["child"]],
-    parent = table[["parent"]],
-    left = table[["left"]],
-    right = table[["right"]],
+    ind_id = ifelse(table$individual == -1, NA, table$individual),
+    pop_id = table$population
   )
 }
 
 # Extract information from the table of individual table
-get_raw_individuals <- function(ts, model) {
+get_ts_individuals <- function(ts, model) {
   table <- ts$tables$individuals
 
   # pedigree_id is available as binary metadata encoded in the table of
@@ -850,42 +869,39 @@ get_raw_individuals <- function(ts, model) {
   pedigree_ids <- reticulate::py_run_string(sprintf("pedigree_ids = [ind.metadata['pedigree_id'] for ind in r.%s.tables.individuals]", tmp_var))$pedigree_ids
   on.exit(rm(list = tmp_var, envir = globalenv()), add = TRUE)
 
-  ## for the record, this is the original R version of the code -- *much* slower
-  ## due to the gazillion internal reticulate Python calls
-  # pedigree_ids <- purrr::map_int(seq(0, ts$num_individuals - 1),
-  #                                ~ ts$individual(.x)["metadata"]["pedigree_id"])
-
-  # getting the two nodes for each individual has the same problem (it's saved
-  # as a metadata column) but we can get them also by cross-checking the nodes table
-  # which contains individual IDs
-  ind_ids <- seq_len(table$num_rows) - 1
-  nodes <- get_raw_nodes(ts, model) %>% dplyr::select(node_id, ind_id)
-  chr1_nodes <- purrr::map(ind_ids, ~ nodes[nodes$ind_id == .x, ]$node_id[1]) %>% unlist()
-  chr2_nodes <- purrr::map(ind_ids, ~ nodes[nodes$ind_id == .x, ]$node_id[2]) %>% unlist()
-
   dplyr::tibble(
-    ind_id = ind_ids,
+    ind_id = seq_len(table$num_rows) - 1,
     pedigree_id = pedigree_ids,
-    chr1_id = as.integer(chr1_nodes),
-    chr2_id = as.integer(chr2_nodes),
     time = convert_slim_time(ts$individual_times, model),
     raster_x = ts$individual_locations[, 1],
     raster_y = ts$individual_locations[, 2],
     pop_id = ts$individual_populations,
-    flags = table[["flags"]],
     alive = bitwAnd(table[["flags"]], pyslim$INDIVIDUAL_ALIVE) != 0,
     remembered = bitwAnd(table[["flags"]], pyslim$INDIVIDUAL_REMEMBERED) != 0,
     retained = bitwAnd(table[["flags"]], pyslim$INDIVIDUAL_RETAINED) != 0
   )
 }
 
-get_complete_inds <- function(ts, model) {
-  # bind raw tree sequence individual information with sample data
-  individuals <- get_raw_individuals(ts, model) %>%
+# Extract information from the edges table
+get_ts_edges <- function(ts) {
+  table <- ts$tables$edges
+  dplyr::tibble(
+    id = seq_len(table$num_rows) - 1,
+    child = table[["child"]],
+    parent = table[["parent"]],
+    left = table[["left"]],
+    right = table[["right"]],
+  )
+}
+
+get_table_data <- function(ts, model, spatial) {
+  # get data from the original individual table
+  individuals <- get_ts_individuals(ts, model) %>%
     dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
     dplyr::arrange(-time, pop)
 
-  samples <- attr(ts, "sampling") %>%
+  # load information about samples
+  samples <- get_sampling(ts) %>%
     dplyr::select(-time, -time_gen) %>%
     {
       rbind(
@@ -898,22 +914,38 @@ get_complete_inds <- function(ts, model) {
     dplyr::ungroup() %>%
     dplyr::arrange(-time_orig, pop) %>%
     dplyr::rename(time = time_orig) %>%
-    dplyr::select(-pop, -n, name, time)
+    dplyr::select(-n, name, time)
 
-  # splits individuals extracted from the tree sequence into those remembered
-  # (i.e. individuals present in the sampling table) and those that are not
-  remembered <- dplyr::filter(individuals, remembered) %>% dplyr::select(-time)
+  # bind the 'permanently remembered' part of the individuals table with the
+  # sampling information to get those individuals' names
+  remembered <- dplyr::filter(individuals, remembered) %>%
+    dplyr::select(-time, -pop) %>%
+    dplyr::bind_cols(samples)
+
+  # get the remaining retained individuals
   not_remembered <- dplyr::filter(individuals, !remembered)
 
-  # combine everything together - first merge sampling information for
-  # remembered individuals, then concatenate this with everyone else
+  # get data from the original nodes table to get node assignments for each
+  # individual but also nodes which are not associated with any individuals
+  # (i.e. those added through recapitation by msprime)
+  nodes <- get_ts_nodes(ts, model)
+
+  # add numeric node IDs to each individual
   combined <-
-    cbind(remembered, samples) %>%
-    dplyr::bind_rows(not_remembered) %>%
-    dplyr::select(name, time, ind_id, chr1_id, chr2_id,
-                  remembered, retained, alive,
-                  raster_x, raster_y, dplyr::everything()) %>%
-    dplyr::as_tibble()
+    dplyr::bind_rows(remembered, not_remembered) %>%
+    dplyr::right_join(nodes, by = "ind_id") %>%
+    dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x))
+
+  if (spatial) {
+    combined <- convert_to_sf(combined, model)
+    location_cols <- "location"
+  } else
+    location_cols <- NULL
+
+  combined <- dplyr::select(
+    combined, name, pop, ind_id, node_id, time, !!location_cols,
+    remembered, retained, alive, pedigree_id
+  )
 
   combined
 }
@@ -928,4 +960,106 @@ get_sampling <- function(ts) {
 check_ts_class <- function(x) {
   if (!inherits(x, "slendr_ts"))
     stop("Not a tree sequence object created by ts_load, ts_simplify, ts_recapitate or ts_mutate", call. = FALSE)
+}
+
+# Function for extracting numerical node IDs for various statistics
+node_ids <- function(ts, x) {
+  if (all(purrr::map_lgl(x, is.numeric)))
+    return(x)
+
+  individuals <- ts_individuals(ts)
+  purrr::map(x, ~ dplyr::filter(individuals, name %in% .x) %>%
+               .[, c("chr1_id", "chr2_id")]) %>% unlist() %>% as.integer()
+}
+
+# Collect all ancestors of a given node up to the root by traversing the tree
+# edges "bottom-up" using a queue
+collect_ancestors <- function(node_id, edges) {
+  # list collecting all edges leading from the focal node
+  result <- list()
+
+  # initialize the counter of nodes already processed by the queue
+  n_nodes <- length(unique(c(edges$child, edges$parent)))
+  processed_nodes <- vector(length = n_nodes + 1)
+
+  # add all edges leading from the focal node to the queue
+  edge <- edges[edges$child %in% node_id, ] %>% dplyr::mutate(level = 1)
+  queue <- split(edge, edge$child)
+
+  # repeat until the queue is empty (this homebrew queue implementation is
+  # probably horribly inefficient but it will do for now)
+  while (TRUE) {
+    # pop out the first element
+    item <- queue[[1]]; queue[[1]] <- NULL
+
+    # add it to the final list
+    result <- append(result, list(item))
+
+    # iterate over all parents of the current node
+    for (parent in split(item, item$parent)) {
+      # get edges leading from the current parent to its own parent
+      edge <- edges[edges$child == unique(parent$parent), ]
+
+      # if the parent has no parent itself or its node has already been
+      # processed, skip it and don't add it to the queue
+      if (nrow(edge) == 0) next
+      if (processed_nodes[unique(edge$child) + 1]) next
+
+      # mark the node as processed...
+      processed_nodes[unique(edge$child) + 1] <- TRUE
+      # ... and add it to the queue
+      edge$level <- item$level[1] + 1
+      queue[[length(queue) + 1]] <- edge
+    }
+
+    if (length(queue) == 0) break
+  }
+
+  result <- dplyr::bind_rows(result)
+
+  result
+}
+
+# Convert a data frame of information extracted from a tree sequence
+# table to an sf spatial object
+convert_to_sf <- function(df, model) {
+  crs <- sf::st_crs(model$world)
+
+  # reproject coordinates to the original crs
+  if (has_crs(model$world)) {
+    df <- reproject(
+      from = "raster", to = crs, coords = df, model = model,
+      input_prefix = "raster_", output_prefix = "", add = TRUE
+    )
+    location_cols <- c("x", "y")
+  } else {
+    df$x <- df$raster_x
+    df$y <- df$raster_y
+    location_cols <- c("raster_x", "raster_y")
+  }
+
+  with_locations <- df[complete.cases(df[, location_cols]), ]
+  without_locations <- df[!complete.cases(df[, location_cols]), ]
+
+  result <- sf::st_as_sf(with_locations,
+                         coords = location_cols,
+                         crs = crs) %>%
+    dplyr::rename(location = geometry)
+
+  # directly binding with without_locations which has no rows lead to an error:
+  # 'Error: Assigned data `x[[all_sfc_columns[i]]]` must be compatible with
+  # existing data.' (similar issue reported here:
+  # https://github.com/mtennekes/tmap/issues/551)
+  if (nrow(without_locations))
+    result <- dplyr::bind_rows(result, without_locations)
+
+  result
+}
+
+define_windows <- function(ts, breakpoints) {
+  unique(c(0, breakpoints, ts$sequence_length))
+}
+
+concat <- function(x) {
+  paste(x, collapse = "+")
 }
