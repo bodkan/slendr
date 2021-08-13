@@ -6,7 +6,7 @@ map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
 N <- 100; y <- 350; r = 240
 p1 <- population("pop1", time = 1, N = N, map = map, center = c(750, y), radius = r)
-p2 <- population("pop2", time = 1, N = N, map = map, center = c(1750, y), radius = r)
+p2 <- population("pop2", parent = p1, time = 2, N = N, map = map, center = c(1750, y), radius = r)
 
 model <- compile(
   populations = list(p1, p2),
@@ -16,7 +16,7 @@ model <- compile(
 )
 
 samples <- rbind(
-  sampling(model, times = 2, list(p1, 2), list(p2, 2)),
+  sampling(model, times = 3, list(p1, 2), list(p2, 2)),
   sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
@@ -32,20 +32,47 @@ test_that("ts_load generates an object of the correct type", {
 
 test_that("tree sequence contains the specified number of sampled individuals", {
   ts <- ts_load(model, simplify = TRUE)
-  individuals <- ts_individuals(ts, remembered = TRUE) %>%
-    dplyr::group_by(time, pop) %>%
-    dplyr::summarise(n = dplyr::n(), .groups = "drop")
-  expect_equal(individuals, samples)
+  counts <- ts_data(ts, remembered = TRUE) %>%
+    dplyr::distinct(ind_id, time, pop) %>%
+    dplyr::count(time, pop)
+  expect_equal(counts, samples)
 })
 
 test_that("locations and times in the tree sequence match values saved by SLiM", {
   ts <- ts_load(model, simplify = TRUE)
-  individuals <- ts_individuals(ts, remembered = TRUE)
+  individuals <- ts_data(ts, remembered = TRUE) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
   true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
                                     col_types = "iicidd")
-  joined <- dplyr::inner_join(individuals, true_locations, by = c("pedigree_id" = "ind"))
+  joined <- dplyr::inner_join(individuals, true_locations,
+                              by = c("pedigree_id" = "ind")) %>%
+    dplyr::mutate(location_x = as.vector(sf::st_coordinates(location)[, 1]),
+                  location_y = as.vector(sf::st_coordinates(location)[, 2]))
   # for some reason the values differ in terms of decimal digits saved?
   # but they *are* equal
-  expect_true(all.equal(joined$raster_x, joined$x, tolerance = 1e-5))
+  expect_true(all.equal(joined$x, joined$location_x, tolerance = 1e-5))
+  expect_true(all.equal(joined$y, joined$location_y, tolerance = 1e-5))
   expect_true(all.equal(joined$time.x, joined$time.y))
+})
+
+test_that("extracted individual, node and edge counts match the tree sequence", {
+  ts1 <- ts_load(model)
+  table1 <- ts_data(ts1)
+
+  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
+  table2 <- ts_data(ts2)
+
+  ts3 <- ts_load(model, recapitate = TRUE, simplify = TRUE, Ne = 1000, recombination_rate = 0)
+  table3 <- ts_data(ts3)
+
+  expect_true(ts1$num_individuals == length(unique(table1$ind_id[!is.na(table1$ind_id)])))
+  expect_true(ts2$num_individuals == length(unique(table2$ind_id[!is.na(table2$ind_id)])))
+  expect_true(ts3$num_individuals == length(unique(table3$ind_id[!is.na(table3$ind_id)])))
+
+  expect_true(ts1$num_nodes == nrow(table1))
+  expect_true(ts2$num_nodes == nrow(table2))
+  expect_true(ts3$num_nodes == nrow(table3))
+
+  expect_true(ts1$num_edges == nrow(ts_edges(ts1)))
+  expect_true(ts2$num_edges == nrow(ts_edges(ts2)))
+  expect_true(ts3$num_edges == nrow(ts_edges(ts3)))
 })
