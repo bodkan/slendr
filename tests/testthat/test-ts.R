@@ -1,6 +1,13 @@
-skip_if(!dir.exists("~/.pyenv/versions/retipy"))
+env_present <- function(path) { tryCatch(
+  {
+    reticulate::use_virtualenv(path, required = TRUE)
+    return(TRUE)
+  },
+  error = function(cond) FALSE
+)
+}
 
-reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
+skip_if(!env_present("~/.pyenv/versions/retipy"))
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
@@ -16,7 +23,7 @@ model <- compile(
 )
 
 samples <- rbind(
-  sampling(model, times = 3, list(p1, 2), list(p2, 2)),
+  sampling(model, times = 2, list(p1, 2), list(p2, 2)),
   sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
@@ -33,9 +40,10 @@ test_that("ts_load generates an object of the correct type", {
 test_that("tree sequence contains the specified number of sampled individuals", {
   ts <- ts_load(model, simplify = TRUE)
   counts <- ts_data(ts, remembered = TRUE) %>%
+    dplyr::as_tibble() %>%
     dplyr::distinct(ind_id, time, pop) %>%
     dplyr::count(time, pop)
-  expect_equal(counts, samples)
+  expect_true(all(counts == samples))
 })
 
 test_that("locations and times in the tree sequence match values saved by SLiM", {
@@ -64,15 +72,39 @@ test_that("extracted individual, node and edge counts match the tree sequence", 
   ts3 <- ts_load(model, recapitate = TRUE, simplify = TRUE, Ne = 1000, recombination_rate = 0)
   table3 <- ts_data(ts3)
 
-  expect_true(ts1$num_individuals == length(unique(table1$ind_id[!is.na(table1$ind_id)])))
-  expect_true(ts2$num_individuals == length(unique(table2$ind_id[!is.na(table2$ind_id)])))
-  expect_true(ts3$num_individuals == length(unique(table3$ind_id[!is.na(table3$ind_id)])))
+  expect_true(ts1$num_individuals == sum(!is.na(unique(table1$ind_id))))
+  expect_true(ts2$num_individuals == sum(!is.na(unique(table2$ind_id))))
+  expect_true(ts3$num_individuals == sum(!is.na(unique(table3$ind_id))))
 
   expect_true(ts1$num_nodes == nrow(table1))
   expect_true(ts2$num_nodes == nrow(table2))
   expect_true(ts3$num_nodes == nrow(table3))
 
+  expect_true(all(sort(table1$node_id) == seq(0, ts1$num_nodes - 1)))
+  expect_true(all(sort(table2$node_id) == seq(0, ts2$num_nodes - 1)))
+  expect_true(all(sort(table3$node_id) == seq(0, ts3$num_nodes - 1)))
+
+  expect_true(all(sort(unique(table1$ind_id)) == seq(0, ts1$num_individuals - 1)))
+  expect_true(all(sort(unique(table2$ind_id)) == seq(0, ts2$num_individuals - 1)))
+  expect_true(all(sort(unique(table3$ind_id)) == seq(0, ts3$num_individuals - 1)))
+
   expect_true(ts1$num_edges == nrow(ts_edges(ts1)))
   expect_true(ts2$num_edges == nrow(ts_edges(ts2)))
   expect_true(ts3$num_edges == nrow(ts_edges(ts3)))
+})
+
+test_that("simplification works only for present samples", {
+  msg <- "The following individuals are not present"
+  expect_error(ts_load(model, simplify = TRUE, simplify_to = "xyz"), msg)
+})
+
+test_that("simplification retains only specified samples", {
+  ts <- ts_load(model, simplify = TRUE, simplify_to = c("pop11", "pop12"))
+  expect_true(all(na.omit(unique(ts_data(ts)$name)) == c("pop11", "pop12")))
+
+  ts2 <- ts_load(model)
+  simplify_to <- sample(ts_samples(ts2)$name, 10)
+
+  ts2 <- ts_simplify(ts2, simplify_to = simplify_to)
+  expect_true(length(intersect(na.omit(unique(ts_data(ts2)$name)), simplify_to)) == length(simplify_to))
 })
