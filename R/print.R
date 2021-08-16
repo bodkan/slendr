@@ -119,14 +119,14 @@ print.slendr_spatial <- function(x, ...) {
     n_remembered <- remembered[remembered$pop == pop, ]$n
     n_retained <- retained[retained$pop == pop, ]$n
     cat(" ", pop, "-",
-        ifelse(!n_remembered, 0, n_remembered), "sampled,",
-        ifelse(!n_retained, 0, n_retained), "retained individuals\n")
+        ifelse(!length(n_remembered), 0, n_remembered), "sampled,",
+        ifelse(!length(n_retained), 0, n_retained), "retained individuals\n")
   }
 
-  cat("\ntotal:", sum(remembered$n), " sampled,",
+  cat("\ntotal:", sum(remembered$n), "sampled,",
       sum(retained$n), "retained individuals",
-      "and\n", n_other, ifelse(n_other > 1, "nodes", "node"),
-      ifelse(n_other > 1, "unnasigned individuals", "an unassigned individual"),
+      "and\n", ifelse(n_other > 1, paste(n_other, "nodes"), "no node"),
+      "from", ifelse(n_other > 1, "unnasigned individuals", "an unassigned individual"),
       "\n\n")
 
   funs <- if (model$direction == "forward") c(min, max) else c(max, min)
