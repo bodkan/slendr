@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  eval = TRUE
+  eval = FALSE
 )
 
 # for some reason knitr/reticulate sets this to default, sabotaging
@@ -171,31 +171,23 @@ model <- read("~/Desktop/sims")
 
 reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
 
-ts <- ts_load(model)
+ts <- ts_load(model, recapitate = TRUE, recombination_rate = 1e-8, Ne = 10000)
 
-ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
-              recombination_rate = 1e-8, Ne = 10000)
-
-ts_draw(ts$first())
-ts_draw(ts$first(), individuals = TRUE, ts = ts)
 ```
 
 
 
 
 ```{r}
-
-
-sf <- ts_spatial(ts)
-
-ts_ancestors("EUR33", sf, ts) %>% plot_ancestors("EUR33")
+data <- ts_data(ts)
 ```
 
 
 
 
 ```{r}
-plot_samples(ts_sf)
+debugonce(plot_locations)
+plot_locations(data)
 
 plot_ancestors(ts_sf, "EUR1")
 
@@ -237,42 +229,47 @@ dev.off()
 After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1) of tree-sequence features in *slendr*.
 
 ```{r}
-ts <- ts_load(model)
-ts
-```
-
-```{r}
-ts2 <- ts_load(model, simplify = TRUE)
-ts2
+ts <- ts_load(model, simplify = TRUE)
 ```
 
 ## Extracting spatial tree-sequence data
 
-As we showed in the tutorial to [tree-sequence data]() in *slendr*, a useful function for data exploration is `ts_individuals()` which, for a given tree-sequence object loaded and annotated by *slendr*, extracts all information about individuals recorded in the data:
+As we showed in the tutorial to [tree-sequence data]() in *slendr*, a useful function for data exploration is `ts_data()` which, for a given tree-sequence object loaded and annotated by *slendr*, extracts all information about individuals and nodes recorded in the tree sequence:
 
 ```{r}
-ts_individuals(ts)
+all_data <- ts_data(ts)
+
+all_data
 ```
 
-However, in order to perform spatiotemporal data analysis, we would like to have the data presented in a format suitable for spatial analyses.
+We have also functions such as `ts_individuals()`, `ts_nodes()` and `ts_edges()` which extract tree sequence tables in their "raw" unprocessed form, but the `ts_data()` function is more useful for data exploration and analyses for several reasons. First, it combined tables of individuals and nodes into a single tabular form but more importantly, if the model which generated this data was a spatial model, the `ts_data()` function automatically annotates the data with the position of each node in space and time which means that we can perform spatial data analysis on the returned data directly.
 
-We can extract all location information from the tree-sequence object with a function `ts_spatial()`. Without any other argument it simply extract all locations data for individuals present in the tree-sequence. As with all other _slendr_ objects, the returned object is of the class `slendr_spatial` but is actually internally stored as an `sf` object. As we will see below, this means that we can use all the functionality of the powerful *simple features* [R package *sf*](https://r-spatial.github.io/sf/) for plotting, manipulation, and statistical analysis. For now, typing the object into the R console presents a user-friendly summary of the spatiotemporal data extracted from the tree-sequence:
+To narrow down the information to only individuals we explicitly sampled, we can add `remembered = TRUE`:
+
 
 ```{r}
-ts_sf <- ts_spatial(ts)
-ts_sf
+sampled_data <- ts_data(ts, remembered = TRUE)
+
+sampled_data
 ```
 
-At this point, it is important to mention that by default, if a *slendr* model which generated the tree-sequence was encoded in a projected [Coordinate Reference System](https://keen-swartz-3146c4.netlify.app/intro.html#coordinate-reference-systems), `ts_spatial()` automatically transforms coordinates from pixel-based raster coordinates used internally by SLiM (which is stored as `raster_x` and `raster_y` columns in data returned by the `ts_individuals()` function) into that projected CRS. We can override this behavior by specifying an argument `crs`. For instance, if we wanted to convert coordinates to the widely used [World Geodetic System (WGS 84)](https://en.wikipedia.org/wiki/World_Geodetic_System) which encodes coordinates in the global coordinate system (degrees longitude and latitude), we could run:
+Even better, because the returned object is of the class `slendr_spatial`, it is internally stored as a spatial `sf` object. This means that we can use all the functionality of the powerful *simple features* [R package *sf*](https://r-spatial.github.io/sf/) (and other packages for geospatial analysis) for plotting, manipulation, and statistical analysis *directly* on the data.
+
+For now, typing the object into the R console presents a user-friendly summary of the spatio-temporal data extracted from the tree-sequence:
 
 ```{r}
-ts_sf_wgs84 <- ts_spatial(ts, crs = "EPSG:4326")
-ts_sf_wgs84
+sampled_data
 ```
 
-Note that the location column of the spatial data object now says `<POINT [°]>`, indicating that the coordinates are in longitudinal and latitudinal degrees.
+In the first part of the summary, we see how many individuals (explicitly sampled or retained) and nodes are present in the tree sequence together with a bit of additional useful information. We can always access and print the internal `sf` object by running the following, which strips away the summary printed by *slendr* and exposes the underlying *sf* data frame:
 
-We have to keep in mind, however, that we specified the world map of our model to be represented in projected CRS (EPSG 3035) internally, so plotting the locations data in degrees longitude and latitude onto this map projection would require an [explicit transformation](https://r-spatial.github.io/sf/reference/st_transform.html) (which is why `ts_spatial()` by default converts coordinates into the model's own CRS):
+```{r}
+sampled_data[]
+```
+
+At this point, it is important to mention that if a *slendr* model which generated the tree-sequence was encoded in a projected [Coordinate Reference System](https://keen-swartz-3146c4.netlify.app/intro.html#coordinate-reference-systems), `ts_data()` automatically transforms coordinates from pixel-based raster coordinates used internally by SLiM (which is stored as `raster_x` and `raster_y` columns in data returned by the `ts_individuals()` function) into that projected CRS.
+
+Because internally the data returned by `ts_data()` is in the projected CRS of the model, we can use the returned object as any other data of the class `sf`. For instance, we specified the world map of our model to be represented in projected CRS (EPSG 3035) which we can verify by typing:
 
 ```{r}
 map
@@ -282,11 +279,11 @@ map
 
 It's hard to overstate how powerful the library for manipulating *simple features* of the class `sf` is. However, it is equally hard to really see this power, especially for novice spatial data analysts which is already quite a challenging field to get into because of many new concepts and names (["projected" vs "geographic" Coordinate Reference Systems](https://www.esri.com/arcgis-blog/products/arcgis-pro/mapping/coordinate-systems-difference/#GCS), transformations between them, their interaction with the _ggplot2_ library for plotting, etc.). A lot of the *slendr* conveniences for encoding and programming spatial models, as well as its features for loading and accessing tree-sequence data, are designed to abstract away most of the complexities of the underlying low-level details to let you focus on the problem at hand.
 
-Unfortunately, once you generate spatial genomic data, it is almost impossible for us to cover the complexities of data analysis and so it is expected that you will have to learn the basics of handling spatio-temporal data yourself. Luckily, everything that you simulated is no different from any other source of spatial data out there and you have [tremendous](https://r-spatial.github.io/sf/) free [resources](https://keen-swartz-3146c4.netlify.app) at your disposal.
+Unfortunately, it is almost impossible for us to cover spatial data analysis in this tutorial. Luckily, the spatial data that *slendr* provides is no different from any other source of spatial data out there and you have [tremendous](https://r-spatial.github.io/sf/) free [resources](https://keen-swartz-3146c4.netlify.app) at your disposal.
 
-The bottom line is: the spatio-temporal data extracted from tree-sequences by the `ts_spatial()` function is nothing else than a normal [`sf`](https://r-spatial.github.io/sf/) data. Any resource that you find for manipulating, plotting, and analysing `sf` data can be applied here as well.
+The bottom line is: the spatio-temporal data extracted from tree-sequences by the `ts_data()` function is nothing else than an any other normal [`sf`](https://r-spatial.github.io/sf/) object. Any resource that you find for manipulating, plotting, and analysing `sf` data can be applied here as well.
 
-## Plotting simulated spatio-temporal samples
+## Plotting locations of simulated sampled individuals
 
 Recall that our own function `plot.slendr` makes it possible to plot any *slendr* object on a world map. For instance, we can plot the world map itself simply by calling:
 
@@ -304,7 +301,7 @@ The consequence of the power of *ggplot2* and *sf* libraries is that we can over
 
 ```{r, slendr_map_ts}
 plot(map) +
-  geom_sf(data = ts_spatial(ts), aes(color = pop)) +
+  geom_sf(data = sampled_data, aes(color = pop)) +
   ggtitle("Locations of simulated sampled individuals")
 ```
 
@@ -313,13 +310,14 @@ Because internally, `sf` _simple features_ (and, by extension, even `slendr_spat
 As an example, let's say we wanted to split the sampled individuals in the tree-sequence into epochs and plot those individually using standard *ggplot2* features. We could simply first do this, adding a new column specifying to which epoch does a simulated individual belong:
 
 ```{r}
-ts_sf <- ts_sf %>%
+epochs <- sampled_data %>% 
+  distinct(name, .keep_all = TRUE) %>% # "collapse" two nodes per individual
   mutate(epoch = cut(time, breaks = c(40000, 30000, 10000, 4000, 0)),
          epoch = ifelse(is.na(epoch), 0, epoch),
          epoch = factor(epoch, labels = c("present", "(present, 4 ky]", "(4 ky, 10 ky]",
                                           "(10 ky, 30 y]", "(30 ky, 40 ky]")))
 
-ts_sf
+epochs
 ```
 
 Note the new column `epoch` in the printed summary above.
@@ -328,7 +326,7 @@ Then, because the `slendr_spatial` object is internally stored as a `sf` object,
 
 ```{r, slendr_map_epochs}
 plot(model$world) +
-  geom_sf(data = ts_sf, aes(color = pop), size = 0.75) +
+  geom_sf(data = epochs, aes(color = pop), size = 0.75) +
   facet_wrap(~ epoch) +
   ggtitle("Locations of simulated sampled individuals")
 ```
@@ -338,7 +336,7 @@ We mentioned that the *slendr* function `plot.slendr()` is implemented using *gg
 ```{r, ggplot_map_epochs}
 ggplot() +
   geom_sf(data = map, fill = "lightgray", color = NA) + # plot the map
-  geom_sf(data = ts_sf, aes(color = pop), size = 0.75, alpha = 0.8) + # plot tree-sequence locations
+  geom_sf(data = epochs, aes(color = pop), size = 0.75, alpha = 0.8) + # plot tree-sequence locations
   coord_sf(expand = 0) + # fill in the map features to the edges
   facet_wrap(~ epoch) +
   ggtitle("Locations of simulated sampled individuals") +
