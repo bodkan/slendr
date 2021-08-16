@@ -230,6 +230,8 @@ After the simulation is done, we can load the data in the same way we did in our
 
 ```{r}
 ts <- ts_load(model, simplify = TRUE)
+
+ts
 ```
 
 ## Extracting spatial tree-sequence data
@@ -305,6 +307,26 @@ plot(map) +
   ggtitle("Locations of simulated sampled individuals")
 ```
 
+Because checking the position of simulatied individuals is something we want to do relatively often during an interactive data exploration, *slendr* provides a shortcut in the form of the function `plot_locations()`:
+
+```{r slendr_map_ts_builtin}
+plot_locations(sampled_data)
+```
+
+The function has several optional arguments that serve to narrow down potentially large data sets to only the samples or nodes of interest. For instance, this is how we would show the locations of only Anatolian simulated individuals who are between 12 and 10 thousand years (ky) old:
+
+```{r slendr_map_ts_builtin2}
+plot_locations(all_data, pop = "ANA", younger_than = 12000, older_than = 10000)
+```
+
+This is how we would plot a location of specific (unsampled) node in the tree sequence:
+
+```{r slendr_map_ts_builtin2}
+plot_locations(all_data, 1102)
+```
+
+*Note*: It is impossible to capture every possible figure one might want to create when analysing complex spatio-temporal data such as spatially-explicit tree sequences. The function `plot_locations()` as well as other plotting functionality shown below serves only for quick interactive exploratory analyses. For generating custom publication-level, we encourage you to utilize the powerful *ggplo2* interface for visualising *sf* objects. This is why we are showing more verbose examples demonstrating how to replicate figures created by built in *slendr* functions "manually".
+
 Because internally, `sf` _simple features_ (and, by extension, even `slendr_spatial` objects) are stored as [normal data frames](https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized) with couple more bells and whistles on top of them, we have all the [magnificent tools](https://www.tidyverse.org) for manipulating tabular data at our disposal.
 
 As an example, let's say we wanted to split the sampled individuals in the tree-sequence into epochs and plot those individually using standard *ggplot2* features. We could simply first do this, adding a new column specifying to which epoch does a simulated individual belong:
@@ -344,6 +366,9 @@ ggplot() +
 ```
 
 This is why, although it is impossible for us to capture every possible type of figure you might want to create for your study, you can easily use your knowledge of *ggplot2* to make any figure imaginable.
+
+## Extracting spatio-temporal ancestral relationships
+
 
 
 
