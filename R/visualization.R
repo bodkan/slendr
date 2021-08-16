@@ -384,18 +384,22 @@ animate <- function(model, output_dir = model$path, output_prefix = "output",
     gganimate::anim_save(gif, anim)
 }
 
-
 #' Plot locations of ancestors of given individual or node on a map
 #'
-#' @param spatial ts data XXXXX
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param x Either a string representing an individual name, or an integer
 #'   number specifying a node in a tree sequence
 #' @param full_scale Plot time gradient on the full scale (spanning the oldest
 #'   sampled individual to the present)
+#' @param older_than,younger_than Time boundaries for the samples
+#' @param color How to color connecting lines? Allowed values are either
+#'   \code{"time"} (continuous variable specifying the age of the parental node)
+#'   or \code{"level"} (factor variable indicating the number of coalescent events
+#'   separating the 'focal node' and the given ancestral node).
 #'
 #' @export
 plot_ancestors <- function(data, x, full_scale = TRUE,
-                           younger_than = NULL, color = c("level", "time")) {
+                           younger_than = NULL, color = c("time", "level")) {
   model <- attr(data, "model")
   color <- match.arg(color)
 
@@ -403,22 +407,40 @@ plot_ancestors <- function(data, x, full_scale = TRUE,
   comp_op <- ifelse(model$direction == "backward", `>`, `<`)
   if (!is.null(younger_than)) data <- dplyr::filter(data, !comp_op(parent_time, younger_than))
 
-  # a name of a sampled individual was specified
+  # the name of a sampled individual was specified
   if (is.character(x)) {
     if (!all(x %in% data$name))
-      stop("Unknown individual", x[!x %in% data$name], call. = FALSE)
-    id <- dplyr::filter(data, name %in% x)$node_id
-  } else if (is.numeric(x))
-    id <- x
-  else
+      stop("Unknown individual ", x[!x %in% data$name], " in the time range of the given data",
+           call. = FALSE)
+    ids <- dplyr::filter(data, name %in% x)$node_id
+  } else if (is.numeric(x)) {
+    if (!all(x %in% data$focal_id))
+      stop("Unknown node ", x[!x %in% data$focal_id], "in the time range of the given data",
+           call. = FALSE)
+    ids <- dplyr::filter(data, focal_id %in% x)$node_id
+  } else
     stop("Unknown object given as an individual or a node", call. = FALSE)
 
+  # add labels for facets (also labeled with individual names if individuals are
+  # being plotted)
+  data <- dplyr::filter(data, focal_id %in% ids) %>%
+    dplyr::mutate(label = paste("focal node", focal_id))
+  if (is.character(x)) {
+    ind_labels <- dplyr::as_tibble(data) %>%
+      dplyr::filter(!is.na(name)) %>%
+      dplyr::distinct(name, focal_id)
+    data <- dplyr::mutate(data, label = unlist(purrr::map2(
+      focal_id, label, ~ sprintf("%s (%s)", .y, ind_labels[ind_labels$focal_id == .x, ]$name)
+    )))
+  }
+
   # extract the focal individual or node
-  focal_node <- dplyr::filter(data, node_id %in% id) %>%
+  focal_node <- dplyr::filter(data, node_id == focal_id) %>%
     sf::st_as_sf() %>%
     sf::st_set_geometry("location")
 
   link_aes <- if (color == "time") aes(color = time) else aes(color = level)
+  color_scale <- if (color == "level") scale_color_discrete(breaks = round(seq(1, max(as.integer(data$level)), length.out = 5))) else NULL
 
   ggplot() +
     # world map
@@ -435,8 +457,12 @@ plot_ancestors <- function(data, x, full_scale = TRUE,
             aes(shape = parent_pop), alpha = 0.5) +
 
     coord_sf(expand = 0) +
-    ggtitle(paste("Spatio-temporal placement of the ancestors of", x)) +
-    theme_bw()
+    theme_bw() +
+    theme(legend.position = "right") +
+    guides(shape = guide_legend("population")) +
+    facet_wrap(~ label) +
+    ggtitle("Spatio-temporal placement of ancestral nodes") +
+    color_scale
 }
 
 #' Plot locations of individuals or nodes in the tree sequence
