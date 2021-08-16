@@ -176,18 +176,20 @@ We can see that the tree-sequence data is very large and contains many more indi
 
 ```{r}
 ts <- ts_load(model, simplify = TRUE)
+ts
 ```
 
-By default, simplification in `ts_load()` simplified the tree-sequence down to only remembered individuals (i.e. those we explicitly scheduled for sampling). We can also narrow down the simplification to a defined set of individuals using the `individuals = ` argument. Internally, simplification is implemented in a dedicated function `ts_simplify()` which we can always call explicitly, like this:
+By default, simplification in `ts_load()` simplified the tree-sequence down to only remembered individuals (i.e. those we explicitly scheduled for sampling). We can also narrow down the simplification to a defined set of individuals using the `simplify_to = ` argument. Internally, simplification is implemented in a dedicated function `ts_simplify()` which we can always call explicitly, like this:
 
 ```{r}
-ts_small <- ts_simplify(ts, individuals = c("CH1", "NEA1", "NEA2", "AFR1", "AFR2", "EUR20", "EUR50"))
+ts_small <- ts_simplify(ts, simplify_to = c("CH1", "NEA1", "NEA2", "AFR1", "AFR2", "EUR20", "EUR50"))
+ts_small
 ```
 
 Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapitation](https://pyslim.readthedocs.io/en/latest/tutorial.html#recapitation). Again, we can do this in one go, by specifying `recapitate = TRUE` in the call to `ts_load()` after specifying a couple of additional arguments required for recapitation (see the pyslim documentation in the [recapitation](https://pyslim.readthedocs.io/en/latest/tutorial.html#recapitation) section for more detail):
 
 ```{r, eval = FALSE}
-ts <- ts_load(ts_file, model, recapitate = TRUE, simplify = TRUE,
+ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
               recombination_rate = 1e-8, Ne = 10000)
 ```
 
@@ -201,6 +203,7 @@ You might have noticed that we did not simulate any mutations during the SLiM ru
 
 ```{r}
 ts <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 314159)
+ts
 ```
 
 Having done that, we can calculate some basic statistics on our simulated data.
@@ -229,10 +232,10 @@ We can then visualize the tree by calling:
 ts_draw(tree, width = 1000, height = 600)
 ```
 
-If we specify `individuals = TRUE` and provide the tree-sequence object itself (because that carries all the required model metadata such as individual names), we get a slightly more readable figure. We can also provide keyword arguments specific to *tskit* `draw_svg()` function, such as `time_scale` here:
+If we specify `labels = TRUE` and provide the tree-sequence object itself (because that carries all the required model metadata such as individual names), we get a slightly more readable figure. We can also provide keyword arguments specific to *tskit* `draw_svg()` function, such as `time_scale` here:
 
 ```{r, tree_labels}
-ts_draw(tree, width = 1000, height = 600, individuals = TRUE, ts = ts_small, time_scale = "rank")
+ts_draw(tree, width = 1000, height = 600, labels = TRUE, ts = ts_small, time_scale = "rank")
 ```
 
 
@@ -240,13 +243,13 @@ ts_draw(tree, width = 1000, height = 600, individuals = TRUE, ts = ts_small, tim
 
 As we mentioned in the previous section, the goal of this vignette is to show how to use *slendr* to perform the main tree-sequence operations using a convenient R interface to *tskit*. However, you should always keep in mind that you are not restricted to a subset of *tskit* functionality that *slendr* translated to R (i.e. [all functions](../reference/index.html) with the prefix `ts_`). Thanks to the incredible R package [*reticulate*](https://rstudio.github.io/reticulate/index.html), you can access Python methods and object variables directly, using the `$` operator.
 
-As an example, instead of calling the function `ts_coalesced()` on the tree-sequence as we did above, we could check that all trees are coalesced by running the following snippet instead:
+As an example, instead of calling the function `ts_coalesced()` on the tree-sequence as we did above, we could check that all trees are coalesced by running the following snippet instead (note that this is very inefficient and we're only doing the operation for the first one hundred trees):
 
 ```{r}
 # iterate over all trees in the tree-sequence and check if each
 # has only one root (i.e. is fully coalesced) - note that Python
 # lists are 0-based, which is something we need to take care of
-all(sapply(seq_len(ts$num_trees),
+all(sapply(seq_len(ts$num_trees)[100],
            function(i) ts$at_index(i - 1)$num_roots == 1))
 ```
 
@@ -272,11 +275,11 @@ ts_f2(ts, A = "EUR1", B = "AFR1")
 ts_f3(ts, A = "EUR1", B = "AFR1", C = "CH1")
 
 # this value should be very close to zero (no introgression in Africans)
-ts_f4(ts, "AFR1", "AFR2", "NEA1", "CH1")
+ts_f4(ts, "AFR1", "AFR2", "NEA1", "CH1", mode = "branch")
 
 # this value should be significantly negative (many more ABBA sites
 # compared to BABA site due to the introgression into Europeans)
-ts_f4(ts, "AFR1", "EUR1", "NEA1", "CH1")
+ts_f4(ts, "AFR1", "EUR1", "NEA1", "CH1", mode = "branch")
 ```
 
 These functions accept a `mode =` argument, specifying whether the statistics should be calculated using mutation site patterns (`mode = "site"`, the default), branch lengths (`mode = "branch"`), or for each node (`mode = "node"`), as well as the `windows` argument, similarly to other "multiway" statistics implemented by tskit. See the [relevant](https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode) [sections](https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-sample-sets-multi-way) of the official *tskit* documentation for more on this topic.
@@ -287,7 +290,7 @@ Let's try to put these new tools to practice and estimate the proportion of Nean
 
 ```{r}
 # first get a table of simulated African and European individuals in the tree-sequence
-inds <- ts_individuals(ts) %>% dplyr::filter(pop %in% c("AFR", "EUR"))
+inds <- ts_samples(ts) %>% dplyr::filter(pop %in% c("AFR", "EUR"))
 
 # estimate the amounts of Neanderthal ancestry in these individuals and add
 # these values to the table
@@ -452,8 +455,8 @@ We can calculate diversity within given groups of individuals with the function 
 First we extract individuals from all populations, creating a list of character vectors for each group (which is what functions such as `ts_diversity()` expects as an input):
 
 ```{r}
-# get individuals from all populations
-sample_sets <- ts_individuals(ts) %>%
+# get sampled individuals from all populations
+sample_sets <- ts_samples(ts) %>%
   split(., .$pop) %>%
   lapply(function(pop) pop$name)
 
