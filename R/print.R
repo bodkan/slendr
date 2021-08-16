@@ -103,12 +103,12 @@ print.slendr_spatial <- function(x, ...) {
   cat("tree-sequence contents:\n")
   individuals <- as.data.frame(x) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
 
-  n_remembered <- individuals %>%
+  remembered <- individuals %>%
     dplyr::filter(remembered) %>%
     dplyr::group_by(pop) %>%
     dplyr::summarise(n = dplyr::n())
 
-  n_retained <- individuals %>%
+  retained <- individuals %>%
     dplyr::filter(!remembered, retained) %>%
     dplyr::group_by(pop) %>%
     dplyr::summarise(n = dplyr::n())
@@ -116,29 +116,27 @@ print.slendr_spatial <- function(x, ...) {
   n_other <- sum(is.na(individuals$ind_id))
 
   for (pop in model$splits$pop) {
+    n_remembered <- remembered[remembered$pop == pop, ]$n
+    n_retained <- retained[retained$pop == pop, ]$n
     cat(" ", pop, "-",
-        n_remembered[n_remembered$pop == pop, ]$n, "sampled,",
-        n_retained[n_retained$pop == pop, ]$n, "retained individuals\n")
+        ifelse(!n_remembered, 0, n_remembered), "sampled,",
+        ifelse(!n_retained, 0, n_retained), "retained individuals\n")
   }
 
-  cat("\ntotal:", sum(n_remembered$n), " sampled,",
-      sum(n_retained$n), "retained individuals\n")
-  cat("      ", n_other, ifelse(n_other > 1, "nodes", "node"), "of unassigned",
-      ifelse(n_other > 1, "individuals", "individual"), "\n")
+  cat("\ntotal:", sum(remembered$n), " sampled,",
+      sum(retained$n), "retained individuals",
+      "and\n", n_other, ifelse(n_other > 1, "nodes", "node"),
+      ifelse(n_other > 1, "unnasigned individuals", "an unassigned individual"),
+      "\n\n")
 
-  cat(sep)
   funs <- if (model$direction == "forward") c(min, max) else c(max, min)
   individuals %>% dplyr::filter(remembered) %>% {
     cat("oldest sampled individual:", funs[[1]](.$time), model$direction, "time units\n")
-    cat("youngest sampled individual:", funs[[2]](.$time), model$direction, "time units\n\n")
+    cat("youngest sampled individual:", funs[[2]](.$time), model$direction, "time units\n")
   }
 
-  cat("oldest node:", funs[[1]](x$time), model$direction, "time units\n")
+  cat("\noldest node:", funs[[1]](x$time), model$direction, "time units\n")
   cat("youngest node:", funs[[2]](x$time), model$direction, "time units\n")
-
-  cat(sep)
-  cat("contents of the underlying sf object:\n\n")
-  print(dplyr::as_tibble(x))
 
   cat(sep)
 
