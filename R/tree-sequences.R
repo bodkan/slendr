@@ -35,7 +35,11 @@
 #'   remembered individuals will be retained. Only used when \code{simplify =
 #'   TRUE}.
 #'
-#' @return pyslim.SlimTreeSequence object of the class \code{slendr_ts}
+#' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+#'
+#' @seealso [\code{\link{ts_data}}] for extracting useful information about
+#'   individuals, nodes, coalescent times and geospatial locations of nodes on a
+#'   map
 #'
 #' @export
 ts_load <- function(model, output_dir = model$path, output_prefix = "output",
@@ -80,7 +84,7 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
 
 #' Recapitate the tree sequence
 #'
-#' @param ts pyslim.SlimTreeSequence object loaded by \code{ts_load}
+#' @param ts \code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
 #' @param spatial Should spatial information encoded in the tree sequence data
@@ -91,7 +95,11 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
 #'   disregarded.
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #'
-#' @return pyslim.SlimTreeSequence object of the class \code{slendr_ts}
+#' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+#'
+#' @seealso [\code{\link{ts_data}}] for extracting useful information about
+#'   individuals, nodes, coalescent times and geospatial locations of nodes on a
+#'   map
 #'
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
@@ -143,7 +151,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' ancient DNA samples) is in the pyslim documentation at
 #' <https://pyslim.readthedocs.io/en/latest/tutorial.html?highlight=retainCoalescentOnly#historical-individuals>.
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param simplify_to A character vector of individual names. If NULL, all
 #'   explicitly remembered individuals (i.e. those specified via the
 #'   \code{\link{sampling}} function will be left in the tree sequence after the
@@ -155,7 +163,11 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #'   be performed. If the model was non-spatial, the value of this parameter is
 #'   disregarded.
 #'
-#' @return pyslim.SlimTreeSequence object of the class \code{slendr_ts}
+#' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+#'
+#' @seealso [\code{\link{ts_data}}] for extracting useful information about
+#'   individuals, nodes, coalescent times and geospatial locations of nodes on a
+#'   map
 #'
 #' @export
 ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
@@ -198,6 +210,8 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
     dplyr::select(node_id, ind_id) %>%
     .$node_id
 
+  location_col <- if (spatial) "location" else NULL
+
   # get other data about individuals in the simplified tree sequence, sort them
   # also by their IDs and times, and add their node IDs extracted above
   # (this works because we sorted both in the same way)
@@ -206,8 +220,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
     dplyr::arrange(ind_id, time) %>%
     dplyr::select(ind_id, pedigree_id, time, alive, remembered, retained) %>%
     dplyr::inner_join(keep_data, by = "pedigree_id") %>%
-    dplyr::mutate(node_id = nodes_new) %>%
-    .[, colnames(data)]
+    dplyr::mutate(node_id = nodes_new)
 
   if (spatial)
     data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
@@ -219,7 +232,9 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
   attr(ts_new, "individuals") <- get_ts_individuals(ts_new)
 
-  attr(ts_new, "data") <- data_new
+  attr(ts_new, "data") <- data_new[, c("name", "pop", "ind_id", "node_id",
+                                       "time", location_col, "remembered",
+                                       "retained", "alive", "pedigree_id")]
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -228,12 +243,16 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 
 #' Add mutations to the given tree sequence
 #'
-#' @param ts Object of the type pyslim.SlimTreeSequence
+#' @param ts Object of the type \code{pyslim.SlimTreeSequence}
 #' @param mutation_rate Mutation rate used by msprime to simulate mutations
 #' @param random_seed Random seed passed to msprime's \code{mutate} method
 #' @param keep_existing Keep existing mutations?
 #'
-#' @return pyslim.SlimTreeSequence object of the class \code{slendr_ts}
+#' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+#'
+#' @seealso [\code{\link{ts_data}}] for extracting useful information about
+#'   individuals, nodes, coalescent times and geospatial locations of nodes on a
+#'   map
 #'
 #' @export
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE) {
@@ -261,7 +280,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRU
 
 #' Extract genotype table from the tree sequence
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #'
 #' @return Data frame object of the class \code{tibble}
 #'
@@ -287,7 +306,7 @@ ts_genotypes <- function(ts) {
 #' EIGENSTRAT data produced by this function can be used by the admixr R package
 #' (<https://bodkan.net/admixr>).
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param prefix EIGENSTRAT trio prefix
 #'
 #' @return Object of the class EIGENSTRAT created by the admixr package
@@ -340,7 +359,7 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
 
 #' Save genotypes from the tree sequenceas a VCF file
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param vcf Path to a VCF file
 #' @param individuals A character vector of individuals in the tree sequence. If
 #'   missing, all individuals present in the tree sequence will be saved.
@@ -369,7 +388,7 @@ ts_vcf <- function(ts, vcf, individuals = NULL) {
 
 # tree sequence tables ----------------------------------------------------
 
-#' Extract annotated information about individuals and nodes
+#' Extract combined annotated table of individuals and nodes
 #'
 #' This function combines information from the table of individuals and table of
 #' nodes into a single data frame which can be used in downstream analyses.
@@ -391,7 +410,7 @@ ts_vcf <- function(ts, vcf, individuals = NULL) {
 #'   sequence, and how to analysed data about distances between nodes in the
 #'   spatial context.
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param remembered,retained,alive Only extract information about nodes and
 #'   times of individuals with the specific flag
 #'
@@ -411,6 +430,8 @@ ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
 
   attr(data, "model") <- attr(ts, "model")
 
+  class(data) <- set_class(data, "spatial")
+
   data
 }
 
@@ -424,10 +445,10 @@ ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
 #' table and further annotates it with useful information from the model
 #' configuration data.
 #'
-#' @seealso [\code{\link{ts_data}}] for accessing processed user friendly tree
+#' @seealso [\code{\link{ts_data}}] for accessing processed and annotated treee
 #'   sequence table data
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #'
 #' @return Data frame with the information from the give tree sequence table
 #'
@@ -451,49 +472,35 @@ ts_nodes <- function(ts) {
   attr(ts, "nodes")
 }
 
-#' Get data about sampled (i.e. permanently remembered) individuals
+#' Infer spatio-temporal ancestral history for given nodes/individuals
 #'
-#' This function extracts sampling schedule used to program sampling events
-#' generated by the \code{\link{sampling}} function.
-#'
-#' @param ts pyslim.SlimTreeSequence object of the class \code{slendr_ts}
-#'   obtained by \code{\link{ts_load}}, \code{\link{ts_recapitate}},
-#'   \code{\link{ts_simplify}}, or \code{\link{ts_mutate}}
-#'
-#' @seealso [\code{\link{sampling()}}] which generates sampling schedule for the
-#'   simulation
-#'
-#' @return Table of permanently remembered individuals present in the tree
-#'   sequence
+#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param x Either a character vector with individual names, or an integer
+#'   vector of node IDs
 #'
 #' @export
-ts_samples <- function(ts) {
-  attr(ts, "sampling")
-}
-
-#' Extract the ancestral relationships for a given set of nodes or individuals
-#'
-#' @param data Object of the class \code{slendr_spatial} carrying the
-#'   spatio-temporal position of each individual node in the tree sequence
-#' @param ts pyslim.SlimTreeSequence object of the class \code{slendr_ts}
-#'   obtained by \code{\link{ts_load}}, \code{\link{ts_recapitate}},
-#'   \code{\link{ts_simplify}}, or \code{link{\ts_mutate}}
-#' @param x Either a string representing an individual name, or an integer
-#'   number specifying a node in a tree sequence
-#'
-#' @export
-ts_ancestors <- function(x, data, ts) {
+ts_ancestors <- function(ts, x = NULL) {
   check_ts_class(ts)
-  model <- ts_model(ts)
+
+  model <- attr(ts, "model")
+
+  if (is.null(model$world))
+    stop("Cannot process locations of ancestral nodes for non-spatial tree sequence data",
+         call. = FALSE)
+
   edges <- ts_edges(ts)
 
-  # collect child-parent links for all samples in the tree sequence
-  collect_ancestors(x, edges)
+  data <- ts_data(ts)
 
-  child_data <- dplyr::select(data, name, pop, node_id, time, location)
+  ids <- get_node_ids(ts, x)
+
+  # collect child-parent branches starting from the "focal nodes"
+  branches <- purrr::map_dfr(ids, ~ collect_ancestors(.x, edges))
+
+  child_data <- dplyr::select(data, name, ind_id, pop, node_id, time, location)
   parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location)
 
-  combined <-result %>%
+  combined <- branches %>%
     dplyr::inner_join(child_data, by = c("child" = "node_id")) %>%
     dplyr::inner_join(parent_data, by = c("parent" = "parent_id")) %>%
     sf::st_as_sf()
@@ -508,14 +515,13 @@ ts_ancestors <- function(x, data, ts) {
 
   final <- dplyr::bind_cols(combined, connections) %>%
     sf::st_set_geometry("connection") %>%
-    dplyr::select(name, node_id = child, pop, time, location,
+    dplyr::select(name, pop, ind_id, focal_id, node_id = child, time, location,
                   level, parent_id = parent, parent_pop, parent_time,
                   parent_location, connection,
                   left_pos = left, right_pos = right) %>%
     dplyr::mutate(level = as.factor(level))
 
   attr(final, "model") <- model
-  class(final) <- set_class(final, "spatial")
 
   final
 }
@@ -527,7 +533,7 @@ ts_ancestors <- function(x, data, ts) {
 #' For more information about optional keyword arguments see tskit documentation:
 #' <https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class>
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param i Position of the tree in the tree sequence. If \code{mode = "index"},
 #'   an i-th tree will be returned (in one-based indexing), if \code{mode =
 #'   "position"}, a tree covering an i-th base of the simulated genome will be
@@ -557,7 +563,7 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @param x A single tree extracted by \code{\link{ts_tree}}
 #' @param width,height Pixel dimensions of the rendered bitmap
 #' @param labels Label each node with the individual name?
-#' @param ts pyslim.SlimTreeSequence object of the class \code{slendr_ts}
+#' @param ts \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'   obtained by \code{link{ts_load}}, \code{link{ts_recapitate}},
 #'   \code{link{ts_simplify}}, or \code{link{ts_mutate}}
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
@@ -604,7 +610,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 
 #' Check that all trees in the tree sequence are fully coalesced
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param return_failed Report back which trees failed the coalescence
 #'   check?
 #'
@@ -630,7 +636,7 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 
   if (!is.null(windows)) windows <- define_windows(ts, windows)
 
-  node_sets <- purrr::map(sample_sets, ~ node_ids(ts, .x))
+  node_sets <- purrr::map(sample_sets, ~ get_node_ids(ts, .x))
 
   result <- ts[[stat]](sample_sets = node_sets, mode = mode,
                        span_normalise = TRUE, windows = windows)
@@ -666,13 +672,13 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 
 #' Calculate the f2, f3, f4, and f4-ratio statistics
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param w,x,y,z,a,b,c,o Character vectors of  individual names (following the
 #'   nomenclature of Patterson et al. 2021)
 #' @param span_normalise Divide the result by the span of the window? Default
 #'   TRUE, see the tskit documentation for more detail.
 #'
-#' @return Numeric estimate of ancestry proportion
+#' @return Data frame with statistics calculated for given sets of individuals
 #'
 #' @export
 ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch"), span_normalise = TRUE) {
@@ -695,7 +701,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
                           k, sample_sets, mode, windows, span_normalise) {
   stat <- match.arg(stat)
   node_sets <- purrr::map(sample_sets, function(set) {
-    node_ids(ts, set)
+    get_node_ids(ts, set)
   })
 
   n_sets <- length(sample_sets)
@@ -738,13 +744,13 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
   result
 }
 
-#' Calculate pairwise Fst between sets of individuals
+#' Calculate pairwise statistics between sets of individuals
 #'
 #' For a discussion on the difference between "site", "branch", and "node"
 #' options of the \code{mode} argument, please see the tskit documentation at
 #' <https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode>.
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param sample_sets A list (optionally a named list) of character vectors with
 #'   individual names (one vector per set)
 #' @param mode The mode for the calculation ("sites" or "branch")
@@ -788,7 +794,7 @@ ts_divergence <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 
 oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = NULL) {
   node_sets <- purrr::map(sample_sets, function(set) {
-    node_ids(ts, set)
+    get_node_ids(ts, set)
   })
 
   n_sets <- length(sample_sets)
@@ -864,7 +870,7 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' \code{mode} argument, please see the tskit documentation at
 #' <https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode>
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param sample_sets A list (optionally a named list) of character vectors with
 #'   individual names (one vector per set)
 #' @param mode The mode for the calculation ("sites" or "branch")
@@ -895,7 +901,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' please see the tskit manual at
 #' <https://tskit.dev/tskit/docs/stable/tutorial.html#sec-tutorial-afs-zeroth-entry>
 #'
-#' @param ts pyslim.SlimTreeSequence object
+#' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param sample_sets A list (optionally a named list) of character vectors with
 #'   individual names (one vector per set). If NULL, allele frequency spectrum
 #'   for all individuals in the tree sequence will be computed.
@@ -922,7 +928,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
   if (!is.null(windows)) windows <- define_windows(ts, windows)
 
   node_sets <- purrr::map(sample_sets, function(set) {
-    node_ids(ts, set)
+    get_node_ids(ts, set)
   })
 
   result <- ts$allele_frequency_spectrum(
@@ -938,6 +944,23 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 
 
 # private tree sequence utility functions ---------------------------------
+
+# Function for extracting numerical node IDs for various statistics
+get_node_ids <- function(ts, x) {
+  if (is.null(x)) {
+    ts_data(ts, remembered = TRUE) %>%
+      .$node_id %>%
+      return()
+  } else if (is.numeric(x)) {
+    return(x)
+  } else if (is.character(x)) {
+    ts_data(ts, remembered = TRUE) %>%
+      dplyr::filter(name %in% x) %>%
+      .$node_id %>%
+      return()
+  } else
+    stop("Unknown data given as individual names or node IDs", call. = FALSE)
+}
 
 # Extract information from the nodes table
 get_ts_nodes <- function(ts) {
@@ -982,10 +1005,10 @@ get_ts_edges <- function(ts) {
   table <- ts$tables$edges
   dplyr::tibble(
     id = seq_len(table$num_rows) - 1,
-    child = table[["child"]],
-    parent = table[["parent"]],
-    left = table[["left"]],
-    right = table[["right"]],
+    child = as.vector(table[["child"]]),
+    parent = as.vector(table[["parent"]]),
+    left = as.vector(table[["left"]]),
+    right = as.vector(table[["right"]])
   )
 }
 
@@ -1061,16 +1084,6 @@ check_ts_class <- function(x) {
     stop("Not a tree sequence object created by ts_load, ts_simplify, ts_recapitate or ts_mutate", call. = FALSE)
 }
 
-# Function for extracting numerical node IDs for various statistics
-node_ids <- function(ts, x) {
-  if (all(purrr::map_lgl(x, is.numeric)))
-    return(x)
-
-  ts_data(ts, remembered = TRUE) %>%
-    dplyr::filter(name %in% x) %>%
-    .$node_id
-}
-
 # Collect all ancestors of a given node up to the root by traversing the tree
 # edges "bottom-up" using a queue
 collect_ancestors <- function(node_id, edges) {
@@ -1115,7 +1128,7 @@ collect_ancestors <- function(node_id, edges) {
     if (length(queue) == 0) break
   }
 
-  result <- dplyr::bind_rows(result)
+  result <- dplyr::bind_rows(result) %>% dplyr::mutate(focal_id = node_id)
   result
 }
 
