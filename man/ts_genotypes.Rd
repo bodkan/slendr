@@ -7,7 +7,7 @@
 ts_genotypes(ts)
 }
 \arguments{
-\item{ts}{pyslim.SlimTreeSequence object}
+\item{ts}{\code{pyslim.SlimTreeSequence} object}
 }
 \value{
 Data frame object of the class \code{tibble}

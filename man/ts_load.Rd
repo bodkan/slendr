@@ -10,10 +10,11 @@ ts_load(
   output_prefix = "output",
   recapitate = FALSE,
   simplify = FALSE,
+  spatial = TRUE,
   recombination_rate = NULL,
   Ne = NULL,
   random_seed = NULL,
-  individuals = NULL
+  simplify_to = NULL
 )
 }
 \arguments{
@@ -30,20 +31,27 @@ will share a prefix \code{"output"})}
 \item{simplify}{Should the tree sequence be simplified down to only
 remembered (i.e. "sampled", in \emph{slendr} parlance) individuals?}
 
+\item{spatial}{Should spatial information encoded in the tree sequence data
+be converted to spatial R datastructures? If FALSE, pixel-based
+raster-dimensions will not be converted to the coordinate reference system
+implied by the model. If TRUE (default), reprojection of coordinates will
+be performed. If the model was non-spatial, the value of this parameter is
+disregarded.}
+
 \item{recombination_rate, Ne}{Arguments passed to \code{ts_recapitate}}
 
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 
-\item{individuals}{A character vector of individual names. If NULL, all
+\item{simplify_to}{A character vector of individual names. If NULL, all
 remembered individuals will be retained. Only used when \code{simplify =
   TRUE}.}
 }
 \value{
-pyslim.SlimTreeSequence object
+\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 }
 \description{
-This function loads a tree sequence file simulated from a given \emph{slendr}
-model. Optionally, the tree sequence can be recapitated and simplified.
+This function loads a tree sequence file simulated from a given slendr model.
+Optionally, the tree sequence can be recapitated and simplified.
 }
 \details{
 The loading, recapitation and simplification is performed using the Python
@@ -55,4 +63,9 @@ available at: \url{https://pyslim.readthedocs.io/en/latest/tutorial.html}.
 The recapitation and simplification steps can also be performed individually
 using the functions \code{\link{ts_recapitate}} and
 \code{\link{ts_simplify}}.
+}
+\seealso{
+\link{\code{\link{ts_data}}} for extracting useful information about
+individuals, nodes, coalescent times and geospatial locations of nodes on a
+map
 }

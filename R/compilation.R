@@ -320,8 +320,11 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   if (!is.null(sampling) && !ts_recording)
     stop("Sampling (remembering) of individuals only makes sense when `ts_recording = TRUE`", call. = FALSE)
 
-  sampling_path <- stringr::str_replace(script_path, "_script.slim", "_samples.tsv")
-  process_sampling(sampling, model, sampling_path, verbose)
+  if (ts_recording) {
+    sampling_path <- stringr::str_replace(script_path, "_script.slim", "_samples.tsv")
+    process_sampling(sampling, model, sampling_path, verbose)
+  } else
+    sampling_path <- NULL
 
   base_script <- script(
     spatial = if (inherits(model$world, "slendr_map")) "T" else "F",
@@ -354,7 +357,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     } else {
       cmd <- get_binary(method)
     }
-    system(sprintf("%s %s", cmd, script_path), ignore.stdout = !verbose)
+    if (system(sprintf("%s %s", cmd, script_path), ignore.stdout = !verbose) != 0)
+      stop("SLiM simulation threw an error -- see the output above", call. = FALSE)
   }
 }
 
@@ -777,11 +781,12 @@ convert_time <- function(df, direction, columns, max_time, generation_time) {
   df
 }
 
-# Convert SLiM time units in generations used in the tree-sequence
-# output to user-specified time units (forward or backward)
+# Convert SLiM time units as they are saved in the tree-sequence output to
+# user-specified time units (forward or backward)
 convert_slim_time <- function(times, model) {
   if (model$direction == "backward")
-    times * model$generation_time
+    result <- times * model$generation_time
   else
-    model$length - times * model$generation_time
+    result <- model$length - times * model$generation_time + 1
+  as.integer(result)
 }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert spatio-temporal tree sequence data to a spatial format — ts_spatial • slendr</title>
+<title>Plot locations of ancestors of given individual or node on a map — plot_ancestors • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,8 @@
 
 
 
-<meta property="og:title" content="Convert spatio-temporal tree sequence data to a spatial format — ts_spatial" />
-<meta property="og:description" content="Convert spatio-temporal tree sequence data to a spatial format" />
+<meta property="og:title" content="Plot locations of ancestors of given individual or node on a map — plot_ancestors" />
+<meta property="og:description" content="Plot locations of ancestors of given individual or node on a map" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -129,6 +129,9 @@
     <li>
       <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
     </li>
+    <li>
+      <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -167,38 +170,53 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert spatio-temporal tree sequence data to a spatial format</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
-    <div class="hidden name"><code>ts_spatial.Rd</code></div>
+    <h1>Plot locations of ancestors of given individual or node on a map</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
+    <div class="hidden name"><code>plot_ancestors.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Convert spatio-temporal tree sequence data to a spatial format</p>
+    <p>Plot locations of ancestors of given individual or node on a map</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_spatial</span><span class='op'>(</span><span class='va'>ts</span>, crs <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_ancestors</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  <span class='va'>x</span>,
+  full_scale <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  younger_than <span class='op'>=</span> <span class='cn'>NULL</span>,
+  color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"time"</span>, <span class='st'>"level"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ts</th>
-      <td><p>SlimTreeSequence object</p></td>
+      <th>x</th>
+      <td><p>Either a string representing an individual name, or an integer
+number specifying a node in a tree sequence</p></td>
     </tr>
     <tr>
-      <th>crs</th>
-      <td><p>For spatial models, which coordinate reference system to reproject
-individual locations to? If <code>NULL</code> (default), coordinates are
-reprojected to the coordinate reference system (CRS) of the entire spatial
-model. Alternatively, a CRS code accepted by GDAL, a valid integer EPSG
-value, an object of class <code>crs</code>, can be specified to change the
-reprojection to a different CRS.</p></td>
+      <th>full_scale</th>
+      <td><p>Plot time gradient on the full scale (spanning the oldest
+sampled individual to the present)</p></td>
+    </tr>
+    <tr>
+      <th>color</th>
+      <td><p>How to color connecting lines? Allowed values are either
+<code>"time"</code> (continuous variable specifying the age of the parental node)
+or <code>"level"</code> (factor variable indicating the number of coalescent events
+separating the 'focal node' and the given ancestral node).</p></td>
+    </tr>
+    <tr>
+      <th>ts</th>
+      <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
+    </tr>
+    <tr>
+      <th>older_than, younger_than</th>
+      <td><p>Time boundaries for the samples</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Spatial object of the class <code>slendr_ts</code> and <code>sf</code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

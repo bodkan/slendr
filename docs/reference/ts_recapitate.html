@@ -129,6 +129,9 @@
     <li>
       <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
     </li>
+    <li>
+      <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -176,14 +179,14 @@
     <p>Recapitate the tree sequence</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_recapitate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>recombination_rate</span>, <span class='va'>Ne</span>, random_seed <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_recapitate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>recombination_rate</span>, <span class='va'>Ne</span>, spatial <span class='op'>=</span> <span class='cn'>TRUE</span>, random_seed <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ts</th>
-      <td><p>SlimTreeSequence object loaded by <code>ts_load</code></p></td>
+      <td><p><code>pyslim.SlimTreeSequence</code> object loaded by <code>ts_load</code></p></td>
     </tr>
     <tr>
       <th>recombination_rate</th>
@@ -194,6 +197,15 @@
       <td><p>Effective population size during the recapitation process</p></td>
     </tr>
     <tr>
+      <th>spatial</th>
+      <td><p>Should spatial information encoded in the tree sequence data
+be converted to spatial R data structures? If FALSE, pixel-based
+raster-dimensions will not be converted to the coordinate reference system
+implied by the model. If TRUE (default), reprojection of coordinates will
+be performed. If the model was non-spatial, the value of this parameter is
+disregarded.</p></td>
+    </tr>
+    <tr>
       <th>random_seed</th>
       <td><p>Random seed passed to pyslim's <code>recapitate</code> method</p></td>
     </tr>
@@ -201,7 +213,12 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>@return SlimTreeSequence object accessed via the reticulate package</p>
+    <p><code>pyslim.SlimTreeSequence</code> object of the class <code>slendr_ts</code></p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='ts_data.html'>ts_data</a></code> for extracting useful information about
+individuals, nodes, coalescent times and geospatial locations of nodes on a
+map</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

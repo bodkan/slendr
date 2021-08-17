@@ -4,7 +4,7 @@ run_sim <- function(direction, start, burnin, gen_time, sim_length = NULL) {
   map <- world(xrange = c(0, 10), yrange = c(0, 10), landscape = "blank")
   p <- population("pop", N = 5, time = start, map = map, center = c(5, 5), radius = 1)
   model <- compile(p, direction = direction, sim_length = sim_length, dir = tempdir(), generation_time = gen_time, resolution = 1, competition_dist = 10, mate_dist = 10, dispersal_dist = 10, overwrite = TRUE)
-  slim(model, method = "batch", burnin = burnin, seq_length = 1, recomb_rate = 0, save_locations = TRUE)
+  slim(model, method = "batch", burnin = burnin, seq_length = 1, recomb_rate = 0, save_locations = TRUE, verbose = FALSE)
   suppressMessages(readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz")))
 }
 

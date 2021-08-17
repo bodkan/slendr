@@ -7,7 +7,7 @@
 ts_eigenstrat(ts, prefix, chrom = "chr1", quiet = FALSE)
 }
 \arguments{
-\item{ts}{pyslim.SlimTreeSequence object}
+\item{ts}{\code{pyslim.SlimTreeSequence} object}
 
 \item{prefix}{EIGENSTRAT trio prefix}
 }
@@ -15,5 +15,6 @@ ts_eigenstrat(ts, prefix, chrom = "chr1", quiet = FALSE)
 Object of the class EIGENSTRAT created by the admixr package
 }
 \description{
-Extract genotypes from the tree sequence in the EIGENSTRAT format
+EIGENSTRAT data produced by this function can be used by the admixr R package
+(\url{https://bodkan.net/admixr}).
 }

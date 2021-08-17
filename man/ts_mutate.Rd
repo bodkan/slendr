@@ -7,7 +7,7 @@
 ts_mutate(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE)
 }
 \arguments{
-\item{ts}{Object of the type pyslim.SlimTreeSequence}
+\item{ts}{Object of the type \code{pyslim.SlimTreeSequence}}
 
 \item{mutation_rate}{Mutation rate used by msprime to simulate mutations}
 
@@ -16,8 +16,13 @@ ts_mutate(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE)
 \item{keep_existing}{Keep existing mutations?}
 }
 \value{
-pyslim.SlimTreeSequence object
+\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 }
 \description{
 Add mutations to the given tree sequence
+}
+\seealso{
+\link{\code{\link{ts_data}}} for extracting useful information about
+individuals, nodes, coalescent times and geospatial locations of nodes on a
+map
 }
