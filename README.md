@@ -230,7 +230,6 @@ slim(
   method = "batch", # change to "gui" to execute the model in SLiMgui
   seed = 314159
 )
-#> Tree-sequence recording is on but no sampling schedule was given. Generating one at least for populations surviving to the end of the simulation...
 ```
 
 As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.
@@ -261,3 +260,5 @@ The example above provides only a very brief overview of the functionality of th
 - You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [this vignette](articles/vignette-02-grid-model.html).
 
 - Because *slendr* & SLiM save data in a tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html) for interfacing with Python code, we have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/) and [*pyslim*](https://pyslim.readthedocs.io) for manipulating tree-sequence data right at our fingertips, all within the convenient environment of R. An extended example can be found in [this vignette](articles/vignette-05-tree-sequences.html).
+
+- For spatially explicit population models, the *slendr* package automatically converts the simulated output data to a format which makes it possible to analyse it with many available R packages for geospatial data analysis. A brief description of this functionality can be found in [this vignette](articles/vignette-06-locations.html).

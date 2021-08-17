@@ -4,19 +4,25 @@
 \alias{ts_simplify}
 \title{Simplify the tree sequence down to a given set of individuals}
 \usage{
-ts_simplify(ts, individuals = NULL)
+ts_simplify(ts, simplify_to = NULL, spatial = TRUE)
 }
 \arguments{
-\item{ts}{pyslim.SlimTreeSequence object}
+\item{ts}{\code{pyslim.SlimTreeSequence} object}
 
-\item{individuals}{A character vector of individual names. If NULL, all
+\item{simplify_to}{A character vector of individual names. If NULL, all
 explicitly remembered individuals (i.e. those specified via the
 \code{\link{sampling}} function will be left in the tree sequence after the
 simplification.}
+
+\item{spatial}{Should spatial information encoded in the tree sequence data
+be converted to spatial R datastructures? If FALSE, pixel-based
+raster-dimensions will not be converted to the coordinate reference system
+implied by the model. If TRUE (default), reprojection of coordinates will
+be performed. If the model was non-spatial, the value of this parameter is
+disregarded.}
 }
 \value{
-@return pyslim.SlimTreeSequence object accessed via the reticulate
-package
+\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 }
 \description{
 This function is a convenience wrapper around the \code{simplify} method
@@ -38,4 +44,9 @@ A very clear description of the difference between remembering and retaining
 and how to use these techniques to implement historical individuals (i.e.
 ancient DNA samples) is in the pyslim documentation at
 \url{https://pyslim.readthedocs.io/en/latest/tutorial.html?highlight=retainCoalescentOnly#historical-individuals}.
+}
+\seealso{
+\link{\code{\link{ts_data}}} for extracting useful information about
+individuals, nodes, coalescent times and geospatial locations of nodes on a
+map
 }

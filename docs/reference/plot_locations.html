@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get a tree from a given tree sequence — ts_tree • slendr</title>
+<title>Plot locations of individuals or nodes in the tree sequence — plot_locations • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,9 +52,8 @@
 
 
 
-<meta property="og:title" content="Get a tree from a given tree sequence — ts_tree" />
-<meta property="og:description" content="For more information about optional keyword arguments see tskit documentation:
-https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class" />
+<meta property="og:title" content="Plot locations of individuals or nodes in the tree sequence — plot_locations" />
+<meta property="og:description" content="Plot locations of individuals or nodes in the tree sequence" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -171,42 +170,54 @@ https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get a tree from a given tree sequence</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
-    <div class="hidden name"><code>ts_tree.Rd</code></div>
+    <h1>Plot locations of individuals or nodes in the tree sequence</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
+    <div class="hidden name"><code>plot_locations.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>For more information about optional keyword arguments see tskit documentation:
-<a href='https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class'>https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class</a></p>
+    <p>Plot locations of individuals or nodes in the tree sequence</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_tree</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>i</span>, mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"index"</span>, <span class='st'>"position"</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_locations</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  x <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pop <span class='op'>=</span> <span class='cn'>NULL</span>,
+  older_than <span class='op'>=</span> <span class='cn'>NULL</span>,
+  younger_than <span class='op'>=</span> <span class='cn'>NULL</span>,
+  full_scale <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ts</th>
-      <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
+      <th>x</th>
+      <td><p>Either a character vector of names of sampled individuals, or an or
+an integer vector with numeric node IDs</p></td>
     </tr>
     <tr>
-      <th>i</th>
-      <td><p>Position of the tree in the tree sequence. If <code>mode = "index"</code>,
-an i-th tree will be returned (in one-based indexing), if <code>mode =
-  "position"</code>, a tree covering an i-th base of the simulated genome will be
-returned.</p></td>
+      <th>pop</th>
+      <td><p>Name of the population to plot</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional keyword arguments accepted by
-<code>tskit.TreeSequence.at and tskit.TreeSequence.at_index</code> methods</p></td>
+      <th>older_than, younger_than</th>
+      <td><p>Time boundaries for the samples</p></td>
+    </tr>
+    <tr>
+      <th>full_scale</th>
+      <td><p>Plot time gradient on the full scale (spanning the oldest
+sampled individual to the present)</p></td>
+    </tr>
+    <tr>
+      <th>spatial</th>
+      <td><p>Spatial tree sequence data frame (see <code><a href='ts_data.html'>ts_data</a></code>))</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Object of the type tskit.trees.Tree</p>
+    <p>A ggplot2 object with locations on a map</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
