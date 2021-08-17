@@ -125,7 +125,7 @@ print.slendr_spatial <- function(x, ...) {
 
   cat("\ntotal:", sum(remembered$n), "sampled,",
       sum(retained$n), "retained individuals",
-      "and\n", ifelse(n_other > 1, paste(n_other, "nodes"), "no node"),
+      "and\n", ifelse(n_other > 1, paste(n_other, "nodes"), "no nodes"),
       "from", ifelse(n_other > 1, "unnasigned individuals", "an unassigned individual"),
       "\n\n")
 
