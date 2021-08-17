@@ -129,6 +129,9 @@
     <li>
       <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
     </li>
+    <li>
+      <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -176,14 +179,14 @@
     <p>Add mutations to the given tree sequence</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_mutate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>mutation_rate</span>, random_seed <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_mutate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>mutation_rate</span>, random_seed <span class='op'>=</span> <span class='cn'>NULL</span>, keep_existing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ts</th>
-      <td><p>Object of the type SlimTreeSequence</p></td>
+      <td><p>Object of the type <code>pyslim.SlimTreeSequence</code></p></td>
     </tr>
     <tr>
       <th>mutation_rate</th>
@@ -193,11 +196,20 @@
       <th>random_seed</th>
       <td><p>Random seed passed to msprime's <code>mutate</code> method</p></td>
     </tr>
+    <tr>
+      <th>keep_existing</th>
+      <td><p>Keep existing mutations?</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>SlimTreeSequence object</p>
+    <p><code>pyslim.SlimTreeSequence</code> object of the class <code>slendr_ts</code></p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='ts_data.html'>ts_data</a></code> for extracting useful information about
+individuals, nodes, coalescent times and geospatial locations of nodes on a
+map</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

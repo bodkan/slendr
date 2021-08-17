@@ -129,6 +129,9 @@
     <li>
       <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
     </li>
+    <li>
+      <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -176,11 +179,15 @@
     <p>Define sampling events at specified times for a given set of populations</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sampling</span><span class='op'>(</span><span class='va'>times</span>, <span class='va'>...</span>, strict <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>sampling</span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>times</span>, <span class='va'>...</span>, strict <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>model</th>
+      <td><p>Object of the class <code>slendr_model</code></p></td>
+    </tr>
     <tr>
       <th>times</th>
       <td><p>Integer vector of times (in model time units) at which to

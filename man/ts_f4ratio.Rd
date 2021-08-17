@@ -49,7 +49,7 @@ ts_f4ratio(
 )
 }
 \arguments{
-\item{ts}{pyslim.SlimTreeSequence object}
+\item{ts}{\code{pyslim.SlimTreeSequence} object}
 
 \item{span_normalise}{Divide the result by the span of the window? Default
 TRUE, see the tskit documentation for more detail.}
@@ -58,7 +58,7 @@ TRUE, see the tskit documentation for more detail.}
 nomenclature of Patterson et al. 2021)}
 }
 \value{
-Numeric estimate of ancestry proportion
+Data frame with statistics calculated for given sets of individuals
 }
 \description{
 Calculate the f2, f3, f4, and f4-ratio statistics

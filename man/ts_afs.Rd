@@ -14,7 +14,7 @@ ts_afs(
 )
 }
 \arguments{
-\item{ts}{pyslim.SlimTreeSequence object}
+\item{ts}{\code{pyslim.SlimTreeSequence} object}
 
 \item{sample_sets}{A list (optionally a named list) of character vectors with
 individual names (one vector per set). If NULL, allele frequency spectrum

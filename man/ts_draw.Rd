@@ -4,18 +4,24 @@
 \alias{ts_draw}
 \title{Plot a graphical representation of a single tree}
 \usage{
-ts_draw(x, width = 1500, height = 500, individuals = FALSE, ts = NULL, ...)
+ts_draw(x, width = 1500, height = 500, labels = FALSE, ts = NULL, ...)
 }
 \arguments{
 \item{x}{A single tree extracted by \code{\link{ts_tree}}}
 
 \item{width, height}{Pixel dimensions of the rendered bitmap}
 
+\item{labels}{Label each node with the individual name?}
+
+\item{ts}{\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+obtained by \code{link{ts_load}}, \code{link{ts_recapitate}},
+\code{link{ts_simplify}}, or \code{link{ts_mutate}}}
+
 \item{...}{Keyword arguments to the tskit \code{draw_svg} function.}
 }
 \description{
-This function obtains an SVG representation by calling the \code{draw_svg}
-method of tskit and renders it as a bitmap imagine in R. All of the many
-optional keyword arguments can be provided and will be automatically passed
-to \code{draw_svg} behind the scenes.
+This function first obtains an SVG representation of the tree by calling the
+\code{draw_svg} method of tskit and renders it as a bitmap image in R. All of
+the many optional keyword arguments of the \code{draw_svg} method can be
+provided and will be automatically passed to the method behind the scenes.
 }
