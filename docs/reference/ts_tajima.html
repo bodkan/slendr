@@ -131,6 +131,9 @@ https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode" />
     <li>
       <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
     </li>
+    <li>
+      <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -186,6 +189,10 @@ https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode" />
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>ts</th>
+      <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
+    </tr>
+    <tr>
       <th>sample_sets</th>
       <td><p>A list (optionally a named list) of character vectors with
 individual names (one vector per set)</p></td>
@@ -199,10 +206,6 @@ individual names (one vector per set)</p></td>
       <td><p>Coordinates of breakpoints between windows. The first
 coordinate (0) and the last coordinate (equal to <code>ts$sequence_length</code>)
 are added automatically)</p></td>
-    </tr>
-    <tr>
-      <th>tsSlimTreeSequence</th>
-      <td><p>object</p></td>
     </tr>
     </table>
 

@@ -4,20 +4,32 @@
 \alias{ts_recapitate}
 \title{Recapitate the tree sequence}
 \usage{
-ts_recapitate(ts, recombination_rate, Ne, random_seed = NULL)
+ts_recapitate(ts, recombination_rate, Ne, spatial = TRUE, random_seed = NULL)
 }
 \arguments{
-\item{ts}{pyslim.SlimTreeSequence object loaded by \code{ts_load}}
+\item{ts}{\code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}}
 
 \item{recombination_rate}{A constant value of the recombination rate}
 
 \item{Ne}{Effective population size during the recapitation process}
 
+\item{spatial}{Should spatial information encoded in the tree sequence data
+be converted to spatial R data structures? If FALSE, pixel-based
+raster-dimensions will not be converted to the coordinate reference system
+implied by the model. If TRUE (default), reprojection of coordinates will
+be performed. If the model was non-spatial, the value of this parameter is
+disregarded.}
+
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 }
 \value{
-@return pyslim.SlimTreeSequence object accessed via the reticulate package
+\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 }
 \description{
 Recapitate the tree sequence
+}
+\seealso{
+\link{\code{\link{ts_data}}} for extracting useful information about
+individuals, nodes, coalescent times and geospatial locations of nodes on a
+map
 }

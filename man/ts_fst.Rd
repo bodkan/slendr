@@ -3,7 +3,7 @@
 \name{ts_fst}
 \alias{ts_fst}
 \alias{ts_divergence}
-\title{Calculate pairwise Fst between sets of individuals}
+\title{Calculate pairwise statistics between sets of individuals}
 \usage{
 ts_fst(
   ts,
@@ -22,7 +22,7 @@ ts_divergence(
 )
 }
 \arguments{
-\item{ts}{pyslim.SlimTreeSequence object}
+\item{ts}{\code{pyslim.SlimTreeSequence} object}
 
 \item{sample_sets}{A list (optionally a named list) of character vectors with
 individual names (one vector per set)}

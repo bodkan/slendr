@@ -352,7 +352,7 @@ process_sampling <- function(samples, model, script_path, verbose) {
     end_time <- if (model$direction == "backward") 0 else model$length
     samples <- do.call(
       sampling,
-      c(times = end_time, purrr::map(model$populations, ~ list(.x, Inf)))
+      c(list(model = model, times = end_time), purrr::map(surviving_pops, ~ list(.x, Inf)))
     )
     if (is.null(samples)) {
       warning("No populations survive to the end of the simulations which means ",

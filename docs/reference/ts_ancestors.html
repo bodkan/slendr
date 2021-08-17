@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get a tree from a given tree sequence — ts_tree • slendr</title>
+<title>Infer spatio-temporal ancestral history for given nodes/individuals — ts_ancestors • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,9 +52,8 @@
 
 
 
-<meta property="og:title" content="Get a tree from a given tree sequence — ts_tree" />
-<meta property="og:description" content="For more information about optional keyword arguments see tskit documentation:
-https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class" />
+<meta property="og:title" content="Infer spatio-temporal ancestral history for given nodes/individuals — ts_ancestors" />
+<meta property="og:description" content="Infer spatio-temporal ancestral history for given nodes/individuals" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -171,17 +170,16 @@ https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get a tree from a given tree sequence</h1>
+    <h1>Infer spatio-temporal ancestral history for given nodes/individuals</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
-    <div class="hidden name"><code>ts_tree.Rd</code></div>
+    <div class="hidden name"><code>ts_ancestors.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>For more information about optional keyword arguments see tskit documentation:
-<a href='https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class'>https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class</a></p>
+    <p>Infer spatio-temporal ancestral history for given nodes/individuals</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_tree</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>i</span>, mode <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"index"</span>, <span class='st'>"position"</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_ancestors</span><span class='op'>(</span><span class='va'>ts</span>, x <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -191,22 +189,12 @@ https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class" />
       <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
     </tr>
     <tr>
-      <th>i</th>
-      <td><p>Position of the tree in the tree sequence. If <code>mode = "index"</code>,
-an i-th tree will be returned (in one-based indexing), if <code>mode =
-  "position"</code>, a tree covering an i-th base of the simulated genome will be
-returned.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Additional keyword arguments accepted by
-<code>tskit.TreeSequence.at and tskit.TreeSequence.at_index</code> methods</p></td>
+      <th>x</th>
+      <td><p>Either a character vector with individual names, or an integer
+vector of node IDs</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Object of the type tskit.trees.Tree</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

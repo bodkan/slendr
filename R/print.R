@@ -98,21 +98,49 @@ the serialized configuration files in the model directory.\n")
 print.slendr_spatial <- function(x, ...) {
   model <- attr(x, "model")
 
-  print_header_info(x)
+  sep <- print_header_info(x)
 
-  cat("spatial tree-sequence contents:\n")
-  counts <- dplyr::group_by(x, pop) %>% dplyr::summarise(n = dplyr::n())
-  for (i in seq_len(nrow(counts)))
-    cat(" ", counts[i, ]$pop, "-", counts[i, ]$n, "individuals\n")
+  cat("tree-sequence contents:\n")
+  individuals <- as.data.frame(x) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
+
+  remembered <- individuals %>%
+    dplyr::filter(remembered) %>%
+    dplyr::group_by(pop) %>%
+    dplyr::summarise(n = dplyr::n())
+
+  retained <- individuals %>%
+    dplyr::filter(!remembered, retained) %>%
+    dplyr::group_by(pop) %>%
+    dplyr::summarise(n = dplyr::n())
+
+  n_other <- sum(is.na(individuals$ind_id))
+
+  for (pop in model$splits$pop) {
+    n_remembered <- remembered[remembered$pop == pop, ]$n
+    n_retained <- retained[retained$pop == pop, ]$n
+    cat(" ", pop, "-",
+        ifelse(!length(n_remembered), 0, n_remembered), "sampled,",
+        ifelse(!length(n_retained), 0, n_retained), "retained individuals\n")
+  }
+
+  cat("\ntotal:", sum(remembered$n), "sampled,",
+      sum(retained$n), "retained individuals",
+      "and\n", ifelse(n_other > 1, paste(n_other, "nodes"), "no nodes"),
+      "from", ifelse(n_other > 1, "unnasigned individuals", "an unassigned individual"),
+      "\n\n")
 
   funs <- if (model$direction == "forward") c(min, max) else c(max, min)
-  cat("\n  oldest sample: ", funs[[1]](x$time), "\n")
-  cat("  youngest sample: ", funs[[2]](x$time), "\n\n")
+  individuals %>% dplyr::filter(remembered) %>% {
+    cat("oldest sampled individual:", funs[[1]](.$time), model$direction, "time units\n")
+    cat("youngest sampled individual:", funs[[2]](.$time), model$direction, "time units\n")
+  }
+
+  cat("\noldest node:", funs[[1]](x$time), model$direction, "time units\n")
+  cat("youngest node:", funs[[2]](x$time), model$direction, "time units\n")
+
+  cat(sep)
 
   print_map_info(model$world)
-
-  cat("\ncontents of the sf object:\n\n")
-  print(dplyr::as_tibble(x))
 }
 
 
@@ -131,6 +159,8 @@ print_header_info <- function(x) {
 
   cat(header, "\n")
   cat(sep, "\n")
+
+  return(paste(sep, "\n"))
 }
 
 
@@ -149,7 +179,7 @@ print_map_info <- function(x) {
       units <- ""
     } else {
       crs <- paste("EPSG", crs)
-      cat("internal coordinate reference system:", crs, "\n")
+      cat("internal coordinate reference system", crs, "\n")
       units <- " (in degrees longitude and latitude)"
     }
 

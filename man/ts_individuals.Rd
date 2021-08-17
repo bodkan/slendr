@@ -2,19 +2,33 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_individuals}
 \alias{ts_individuals}
-\title{Extract the table of individuals}
+\alias{ts_edges}
+\alias{ts_nodes}
+\title{Get the table of individuals/nodes/edges from the tree sequence}
 \usage{
-ts_individuals(ts, remembered = NULL, retained = NULL, alive = NULL)
+ts_individuals(ts)
+
+ts_edges(ts)
+
+ts_nodes(ts)
 }
 \arguments{
-\item{ts}{pyslim.SlimTreeSequence object}
-
-\item{model}{\code{slendr_model} object of a model that generated the data}
+\item{ts}{\code{pyslim.SlimTreeSequence} object}
 }
 \value{
-Data frame with individual information from the input tree sequence
-object
+Data frame with the information from the give tree sequence table
 }
 \description{
-Extract the table of individuals
+This function extract data from a given tree sequence table
+}
+\details{
+This function extracts the raw table data. For further processing and
+analyses, the output of the function \code{\link{ts_data}} might be more
+useful, as it merges the information in node and individual tables into one
+table and further annotates it with useful information from the model
+configuration data.
+}
+\seealso{
+\link{\code{\link{ts_data}}} for accessing processed and annotated treee
+sequence table data
 }
