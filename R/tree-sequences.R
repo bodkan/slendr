@@ -981,8 +981,8 @@ get_ts_individuals <- function(ts) {
   table <- ts$tables$individuals
 
   # pedigree_id is available as binary metadata encoded in the table of
-  # individuals but I have no clue at the moment how decode it directly in R --
-  # for now I'm parsing it in Python via reticulate is pretty ugly (but
+  # individuals but I have no clue at the moment how to decode it directly in R
+  # -- for now I'm parsing it in Python via reticulate is pretty ugly (but
   # reasonably fast)
   tmp_var <- paste0("ts_py_object_", paste(sample(LETTERS, 20, TRUE), collapse = ""))
   # reticulate doesn't seem to be able to expose non-global objects :(
