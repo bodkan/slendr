@@ -190,7 +190,7 @@ Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapi
 
 ```{r, eval = FALSE}
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
-              recombination_rate = 1e-8, Ne = 10000)
+              recomb_rate = 1e-8, Ne = 10000)
 ```
 
 If we were to run this code chunk, we would get a message informing that the recapitation was not necessary because all genealogies in the tree-sequence are already coalesced (i.e. have each only one root node). We can do this check ourselves by calling another *slendr* function `ts_coalesced()` which verifies that all trees in the sequence are fully coalesced:
