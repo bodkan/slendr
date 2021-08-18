@@ -493,7 +493,7 @@ ts_ancestors <- function(ts, x = NULL) {
 
   edges <- ts_edges(ts)
 
-  data <- ts_data(ts)
+  data <- ts_data(ts) %>% dplyr::filter(!is.na(ind_id))
 
   ids <- get_node_ids(ts, x)
 
