@@ -181,7 +181,7 @@
 
     <pre class="usage"><span class='fu'>plot_ancestors</span><span class='op'>(</span>
   <span class='va'>data</span>,
-  <span class='va'>x</span>,
+  x <span class='op'>=</span> <span class='cn'>NULL</span>,
   full_scale <span class='op'>=</span> <span class='cn'>TRUE</span>,
   younger_than <span class='op'>=</span> <span class='cn'>NULL</span>,
   color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"time"</span>, <span class='st'>"level"</span><span class='op'>)</span>
@@ -193,7 +193,8 @@
     <tr>
       <th>x</th>
       <td><p>Either a string representing an individual name, or an integer
-number specifying a node in a tree sequence</p></td>
+number specifying a node in a tree sequence. If <code>NULL</code> (default), the
+spatial ancestry of all focal nodes will be plotted.</p></td>
     </tr>
     <tr>
       <th>full_scale</th>
@@ -204,8 +205,8 @@ sampled individual to the present)</p></td>
       <th>color</th>
       <td><p>How to color connecting lines? Allowed values are either
 <code>"time"</code> (continuous variable specifying the age of the parental node)
-or <code>"level"</code> (factor variable indicating the number of coalescent events
-separating the 'focal node' and the given ancestral node).</p></td>
+or <code>"level"</code> (factor variable indicating the number of coalescent
+events separating the 'focal node' and the given ancestral node).</p></td>
     </tr>
     <tr>
       <th>ts</th>

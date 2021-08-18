@@ -66,10 +66,10 @@ test_that("extracted individual, node and edge counts match the tree sequence", 
   ts1 <- ts_load(model)
   table1 <- ts_data(ts1)
 
-  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
+  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recomb_rate = 0)
   table2 <- ts_data(ts2)
 
-  ts3 <- ts_load(model, recapitate = TRUE, simplify = TRUE, Ne = 1000, recombination_rate = 0)
+  ts3 <- ts_load(model, recapitate = TRUE, simplify = TRUE, Ne = 1000, recomb_rate = 0)
   table3 <- ts_data(ts3)
 
   expect_true(ts1$num_individuals == sum(!is.na(unique(table1$ind_id))))

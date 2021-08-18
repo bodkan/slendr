@@ -5,7 +5,7 @@
 \alias{print.slendr_region}
 \alias{print.slendr_map}
 \alias{print.slendr_model}
-\alias{print.slendr_spatial}
+\alias{print.slendr_tsdata}
 \title{Print a short summary of a \code{slendr} object}
 \usage{
 \method{print}{slendr_pop}(x, ...)
@@ -16,11 +16,11 @@
 
 \method{print}{slendr_model}(x, ...)
 
-\method{print}{slendr_spatial}(x, ...)
+\method{print}{slendr_tsdata}(x, ...)
 }
 \arguments{
 \item{x}{Object of a class \code{slendr} (either \code{slendr_pop},
-\code{slendr_map}, \code{slendr_region}, or \code{slendr_spatial})}
+\code{slendr_map}, \code{slendr_region}, or \code{slendr_tsdata})}
 }
 \description{
 All spatial objects in the slendr package are internally represented as
