@@ -4,12 +4,12 @@
 \alias{ts_recapitate}
 \title{Recapitate the tree sequence}
 \usage{
-ts_recapitate(ts, recombination_rate, Ne, spatial = TRUE, random_seed = NULL)
+ts_recapitate(ts, recomb_rate, Ne, spatial = TRUE, random_seed = NULL)
 }
 \arguments{
 \item{ts}{\code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}}
 
-\item{recombination_rate}{A constant value of the recombination rate}
+\item{recomb_rate}{A constant value of the recombination rate}
 
 \item{Ne}{Effective population size during the recapitation process}
 
