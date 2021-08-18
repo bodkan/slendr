@@ -142,6 +142,7 @@ print.slendr_spatial <- function(x, ...) {
 
   cat("contents of the underlying sf object:\n\n")
   print(head(as.data.frame(x)))
+  cat("\n... and", nrow(x) - nrow(head(as.data.frame(x))), "additional rows\n")
 
   cat(sep)
 
