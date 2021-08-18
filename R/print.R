@@ -95,7 +95,7 @@ the serialized configuration files in the model directory.\n")
 
 #' @rdname print.slendr_pop
 #' @export
-print.slendr_spatial <- function(x, ...) {
+print.slendr_tsdata <- function(x, ...) {
   model <- attr(x, "model")
 
   sep <- print_header_info(x)
