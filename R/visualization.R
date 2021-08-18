@@ -388,17 +388,18 @@ animate <- function(model, output_dir = model$path, output_prefix = "output",
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param x Either a string representing an individual name, or an integer
-#'   number specifying a node in a tree sequence
+#'   number specifying a node in a tree sequence. If \code{NULL} (default), the
+#'   spatial ancestry of all focal nodes will be plotted.
 #' @param full_scale Plot time gradient on the full scale (spanning the oldest
 #'   sampled individual to the present)
 #' @param older_than,younger_than Time boundaries for the samples
 #' @param color How to color connecting lines? Allowed values are either
 #'   \code{"time"} (continuous variable specifying the age of the parental node)
-#'   or \code{"level"} (factor variable indicating the number of coalescent events
-#'   separating the 'focal node' and the given ancestral node).
+#'   or \code{"level"} (factor variable indicating the number of coalescent
+#'   events separating the 'focal node' and the given ancestral node).
 #'
 #' @export
-plot_ancestors <- function(data, x, full_scale = TRUE,
+plot_ancestors <- function(data, x = NULL, full_scale = TRUE,
                            younger_than = NULL, color = c("time", "level")) {
   model <- attr(data, "model")
   color <- match.arg(color)
@@ -408,7 +409,9 @@ plot_ancestors <- function(data, x, full_scale = TRUE,
   if (!is.null(younger_than)) data <- dplyr::filter(data, !comp_op(parent_time, younger_than))
 
   # the name of a sampled individual was specified
-  if (is.character(x)) {
+  if (is.null(x))
+    ids <- unique(data$node_id)
+  else if (is.character(x)) {
     if (!all(x %in% data$name))
       stop("Unknown individual ", x[!x %in% data$name], " in the time range of the given data",
            call. = FALSE)
@@ -440,7 +443,10 @@ plot_ancestors <- function(data, x, full_scale = TRUE,
     sf::st_set_geometry("location")
 
   link_aes <- if (color == "time") aes(color = time) else aes(color = level)
-  color_scale <- if (color == "level") scale_color_discrete(breaks = round(seq(1, max(as.integer(data$level)), length.out = 5))) else NULL
+  if (color == "level")
+    color_scale <- scale_color_discrete(breaks = round(seq(1, max(as.integer(data$level)), length.out = 5)))
+  else
+    color_scale <- scale_color_continuous(type = "viridis", trans = "reverse")
 
   ggplot() +
     # world map
@@ -461,61 +467,8 @@ plot_ancestors <- function(data, x, full_scale = TRUE,
     theme(legend.position = "right") +
     guides(shape = guide_legend("population")) +
     facet_wrap(~ label) +
-    ggtitle("Spatio-temporal placement of ancestral nodes") +
+    ggtitle("Spatio-temporal placement of nodes ancestral to a given focal node") +
     color_scale
-}
-
-#' Plot locations of individuals or nodes in the tree sequence
-#'
-#' @param spatial Spatial tree sequence data frame (see \code{\link{ts_data}}))
-#' @param x Either a character vector of names of sampled individuals, or an or
-#'   an integer vector with numeric node IDs
-#' @param pop Name of the population to plot
-#' @param older_than,younger_than Time boundaries for the samples
-#' @param full_scale Plot time gradient on the full scale (spanning the oldest
-#'   sampled individual to the present)
-#'
-#' @return A ggplot2 object with locations on a map
-#'
-#' @export
-#' @import ggplot2
-plot_locations <- function(data, x = NULL, pop = NULL, older_than = NULL,
-                           younger_than = NULL, full_scale = TRUE) {
-  model <- attr(data, "model")
-
-  if (is.null(x)) {
-    id <- dplyr::filter(data, !is.na(name)) %>% dplyr::distinct(name, .keep_all = TRUE) %>% .$node_id
-  } else if (is.character(x)) {
-    if (!all(x %in% data$name))
-      stop("Unknown individual", x[!x %in% data$name], call. = FALSE)
-    id <- dplyr::filter(data, name %in% x) %>% dplyr::distinct(name, .keep_all = TRUE) %>% .$node_id
-  } else if (is.numeric(x))
-    id <- x
-  else
-    stop("Unknown object given as an individual or a node", call. = FALSE)
-
-  # extract the focal individual or node
-  data <- dplyr::filter(data, node_id %in% id)
-
-  # if specified, narrow down samples to a given time window
-  comp_op <- ifelse(model$direction == "backward", `>`, `<`)
-  if (!is.null(older_than)) data <- dplyr::filter(data, comp_op(time, older_than))
-  if (!is.null(younger_than)) data <- dplyr::filter(data, !comp_op(time, younger_than))
-
-  # if specified, subset the samples to those from a given population
-  if (!is.null(pop)) data <- dplyr::filter(data, pop == !!pop)
-
-  p <- ggplot() +
-    geom_sf(data = model$world, fill = "lightgray", color = NA) +
-    geom_sf(data = data, aes(shape = pop, color = time)) +
-    coord_sf(expand = 0) +
-    guides(shape = guide_legend("population")) +
-    theme_bw()
-
-  if (full_scale)
-    p <- p + scale_color_gradient(limits = c(0, model$length))
-
-  p
 }
 
 # helper functions --------------------------------------------------------
