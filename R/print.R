@@ -140,6 +140,11 @@ print.slendr_spatial <- function(x, ...) {
 
   cat(sep)
 
+  cat("contents of the underlying sf object:\n\n")
+  print(head(as.data.frame(x)))
+
+  cat(sep)
+
   print_map_info(model$world)
 }
 
