@@ -430,7 +430,7 @@ ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
 
   attr(data, "model") <- attr(ts, "model")
 
-  class(data) <- set_class(data, "spatial")
+  class(data) <- set_class(data, "ts_data")
 
   data
 }
