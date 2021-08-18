@@ -71,7 +71,7 @@ reference:
     - print.slendr_region
     - print.slendr_pop
     - print.slendr_model
-    - print.slendr_spatial
+    - print.slendr_tsdata
 
   - title: Compiling and running spatial models
     contents:
@@ -92,7 +92,6 @@ reference:
     - ts_vcf
     - ts_coalesced
     - ts_draw
-    - plot_locations
     - plot_ancestors
 
   - title: Accessing tree-sequence components

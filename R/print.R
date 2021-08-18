@@ -10,7 +10,7 @@
 #' representation can be always printed by calling \code{x[]}.
 #'
 #' @param x Object of a class \code{slendr} (either \code{slendr_pop},
-#'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_spatial})
+#'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_tsdata})
 #'
 #' @export
 print.slendr_pop <- function(x, ...) {
