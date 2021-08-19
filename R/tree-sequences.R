@@ -430,7 +430,7 @@ ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
 
   attr(data, "model") <- attr(ts, "model")
 
-  class(data) <- set_class(data, "ts_data")
+  class(data) <- set_class(data, "tsdata")
 
   data
 }
@@ -475,16 +475,20 @@ ts_nodes <- function(ts) {
 #' Extract names and times of individuals scheduled for sampling
 #' @param ts \code{pyslim.SlimTreeSequence} object
 #' @export
-ts_samples <- function(ts) attr(ts, "sampling")
+ts_samples <- function(ts) {
+  attr(ts, "sampling") %>%
+    filter(name %in% ts_data(ts)$name)
+}
 
 #' Infer spatio-temporal ancestral history for given nodes/individuals
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param x Either a character vector with individual names, or an integer
 #'   vector of node IDs
+#' @param verbose Report on the progress of ancestry path generation?
 #'
 #' @export
-ts_ancestors <- function(ts, x = NULL) {
+ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -497,21 +501,38 @@ ts_ancestors <- function(ts, x = NULL) {
 
   data <- ts_data(ts) %>% dplyr::filter(!is.na(ind_id))
 
-  ids <- get_node_ids(ts, x)
+  if (is.null(x))
+    x <- unique(ts_data(ts)$name)
+  else if (is.character(x) && !all(x %in% data$name))
+    stop("The following individuals are not present in the tree sequence: ",
+         paste0(x[!x %in% data$name], collapse = ", "),
+         call. = FALSE)
 
   # collect child-parent branches starting from the "focal nodes"
-  branches <- purrr::map_dfr(ids, ~ collect_ancestors(.x, edges))
+  branches <- purrr::map_dfr(x, function(.x) {
+    if (verbose) message(sprintf("Collecting ancestors of %s [%d/%d]...",
+                                 .x, which(.x == x), length(x)))
+    ids <- get_node_ids(ts, .x)
+    purrr::map_dfr(ids, function(.y) collect_ancestors(.y, edges) %>%
+      dplyr::mutate(name = ifelse(is.character(.x), .x, NA),
+                    pop = dplyr::filter(data, node_id == .y)$pop[1],
+                    node_id = .y))
+  })
 
-  child_data <- dplyr::select(data, name, ind_id, pop, node_id, time, location)
+  child_data  <- dplyr::select(data, child_pop  = pop, child_id  = node_id, child_time  = time, child_location = location)
   parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location)
+#  ind_data <- dplyr::as_tibble(data) %>% dplyr::select(focal_name = name, focal_pop = pop, focal_ind_id = ind_id)%>% dplyr::distinct()
 
   combined <- branches %>%
-    dplyr::inner_join(child_data, by = c("child" = "node_id")) %>%
-    dplyr::inner_join(parent_data, by = c("parent" = "parent_id")) %>%
+    dplyr::inner_join(child_data, by = "child_id") %>%
+    dplyr::inner_join(parent_data, by = "parent_id") %>%
+#    dplyr::inner_join(ind_data, by = c("ind_id" = "focal_ind_id")) %>%
     sf::st_as_sf()
 
+  if (verbose) message("\nGenerating data about spatial relationships of nodes...")
+
   connections <- purrr::map2(
-    combined$location, combined$parent_location, ~
+    combined$child_location, combined$parent_location, ~
       sf::st_union(.x, .y) %>%
       sf::st_cast("LINESTRING") %>%
       sf::st_sfc() %>%
@@ -520,11 +541,21 @@ ts_ancestors <- function(ts, x = NULL) {
 
   final <- dplyr::bind_cols(combined, connections) %>%
     sf::st_set_geometry("connection") %>%
-    dplyr::select(name, pop, ind_id, focal_id, node_id = child, time, location,
-                  level, parent_id = parent, parent_pop, parent_time,
-                  parent_location, connection,
+    dplyr::select(name, pop, node_id, level,
+                  child_id, child_time, parent_id, parent_time,
+                  child_pop, parent_pop,
+                  child_location, parent_location, connection,
                   left_pos = left, right_pos = right) %>%
-    dplyr::mutate(level = as.factor(level))
+    dplyr::mutate(level = as.factor(level),
+                  pop = factor(pop, levels = model$splits$pop),
+                  child_pop = factor(child_pop, levels = model$splits$pop),
+                  parent_pop = factor(parent_pop, levels = model$splits$pop),
+                  duration = abs(parent_time - child_time),
+                  shift = child_location - parent_location,
+                  horiz_shift = sf::st_coordinates(shift)[, 1],
+                  vert_shift = sf::st_coordinates(shift)[, 2],
+                  distance = as.numeric(sf::st_length(connection))) %>%
+    dplyr::select(-shift)
 
   attr(final, "model") <- model
 
@@ -1091,7 +1122,7 @@ check_ts_class <- function(x) {
 
 # Collect all ancestors of a given node up to the root by traversing the tree
 # edges "bottom-up" using a queue
-collect_ancestors <- function(node_id, edges) {
+collect_ancestors <- function(x, edges) {
   # list for collecting paths (i.e. sets of edges) leading from the focal node
   # to the root
   result <- list()
@@ -1101,7 +1132,7 @@ collect_ancestors <- function(node_id, edges) {
   processed_nodes <- vector(length = n_nodes + 1)
 
   # initialize the queue with all edges leading from the focal node
-  edge <- edges[edges$child %in% node_id, ] %>% dplyr::mutate(level = 1)
+  edge <- edges[edges$child %in% x, ] %>% dplyr::mutate(level = 1)
   queue <- split(edge, edge$child)
 
   # repeat until the queue is empty (this homebrew queue implementation is
@@ -1133,7 +1164,9 @@ collect_ancestors <- function(node_id, edges) {
     if (length(queue) == 0) break
   }
 
-  result <- dplyr::bind_rows(result) %>% dplyr::mutate(focal_id = node_id)
+  result <- dplyr::bind_rows(result) %>%
+    dplyr::select(child_id = child, parent_id = parent, left, right, level)
+
   result
 }
 
