@@ -472,7 +472,9 @@ ts_nodes <- function(ts) {
   attr(ts, "nodes")
 }
 
-#' Extract information about permanently remembered individuals
+#' Extract names and times of individuals scheduled for sampling
+#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @export
 ts_samples <- function(ts) attr(ts, "sampling")
 
 #' Infer spatio-temporal ancestral history for given nodes/individuals
