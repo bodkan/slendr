@@ -110,7 +110,7 @@ yam <- population( # Yamnaya steppe population
 
 # geneflow events
 gf <- list(
-  geneflow(from = ana, to = yam, rate = 0.5, start = 6500, end = 6400, overlap = FALSE),
+  geneflow(from = ana, to = yam, rate = 0.5, start = 6000, end = 4000, overlap = FALSE),
   geneflow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
   geneflow(from = yam, to = eur, rate = 0.75, start = 4000, end = 3000)
 )
@@ -127,7 +127,7 @@ model <- compile(
 
 As a sanity check that we defined the demography correctly, here is a graph summarizing population divergences and geneflow events which we will refer to later in this vignette:
 
-```{r, model_graph}
+```{r, model_graph, fig.width = 7, fig.height = 7}
 plot_graph(model)
 ```
 
@@ -161,6 +161,10 @@ slim(
 After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree%20sequences.html#loading-and-processing-tree%20sequence-output-files-1) of tree sequence features in *slendr*. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:
 
 ```{r}
+reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
+model <- read("~/Desktop/sims/")
+library(dplyr)
+map <- model$world
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, recomb_rate = 1e-8, Ne = 10000)
 ```
 
@@ -261,7 +265,7 @@ The simplest use case is determining the locations and times of every single nod
 ```{r}
 ind <- "EUR25"
 
-lineages <- ts_ancestors(ts, ind)
+lineages <- ts_ancestors(ts, ind, verbose = TRUE)
 ```
 
 The function starts at a given node (or, if a name of a sampled diploid individual is provided, two nodes), extracts information about all the parent nodes of that node in the entire tree sequence, records their locations and times, then proceeds one level "higher" in the genealogical history to gather information about the parents of those parent nodes, etc., until it reaches a root node. The result of this process is another `sf` object in which each row of the table encodes information about single branch in the genealogy of the "focal" node or individual (in our example, `r ind`):
@@ -279,7 +283,7 @@ filter(lineages, level == 1)
 ```
 
 ```{r, include = FALSE}
-counts <- filter(lineages, name == ind, level == 1) %>% count(focal_id)
+counts <- filter(lineages, name == ind, level == 1) %>% as.data.frame() %>% count(node_id)
 ```
 
 We can see that the individual `r ind` has `r sum(counts$n)` different parent nodes in the tree sequence---`r counts[1, ]$n` ancestors of the first chromosome/node, `r counts[2, ]$n` ancestors of the second node.
@@ -291,8 +295,8 @@ level1_branches <- ts_ancestors(ts, "EUR10") %>% filter(level == 1)
 
 ggplot() +
   geom_sf(data = map, fill = "lightgray", color = NA) +
-  geom_sf(data = level1_branches[, ]$location, shape = 13, size = 3, color = "red") +
-  geom_sf(data = level1_branches[, ]$parent_location, shape = 20, color = level1_branches[, ]$focal_id) +
+  geom_sf(data = level1_branches[, ]$child_location, shape = 13, size = 3, color = "red") +
+  geom_sf(data = level1_branches[, ]$parent_location, shape = 20, color = level1_branches[, ]$node_id) +
   geom_sf(data = level1_branches[, ]$connection, linetype = 3) +
   theme_bw() +
   ggtitle("Parent nodes (blue) of a focal individual (red)")
@@ -312,9 +316,15 @@ Lets compare this result to the animation which recapitulates the simulation:
 
 After comparing our spatial tree sequence figure with the animation, we can immediately notice several things:
 
+```{r, include = F}
+nodes <- lineages[!is.na(lineages$name), ]$node_id
+```
+
 1.  All spatial tree sequence paths trace the ancestry of our single European individual `r ind` back to Africa. In fact, we also see a cluster of past ancestral nodes (i.e. concentrated coalescent events) in the place where the Out of Africa (OOA) migrant population settled around 40,000 thousand years ago (yellow population in the the animation).
 
-2.  The first node of the individual in the left panel (node 60 representing the first chromosome) traces part of its ancestry to the EHG population (filled squares) and part to the Anatolia (triangles). This makes sense, because we have simulated European ancestry as being part Anatolian. The second chromosome (node 61) only traces its ancestry to Yamnaya indicated by a star. Again, this is expected because we programmed Yamnaya to also contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population).
+2.  The first chromosome (node `r nodes[1]`) only traces its ancestry to Yamnaya indicated by a star. This is expected because we programmed Yamnaya to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population). We can see a cluster of EHG nodes in one location because we did not specify any spatial dynamic for this population in our model
+
+3.  The second node of the individual (node `r nodes[2]` in the right panel representing the second chromosome) traces part of its ancestry to the EHG population (filled squares) and part to the Anatolia (triangles). This makes sense, because we have simulated European ancestry as being part Anatolian. In fact, we can see a nice "trace" of nodes (past individuals) of the Anatolian ancestry spreading to Europe over time.
 
 By default, branches are colored by the time of coalescence. We can also plot the number of coalescent events separating a focal node (red crossed circle) and one of its ancestors by specifying `color = "level"` (where level 1 represents branches leading to all of the focal node's parents):
 
@@ -342,4 +352,134 @@ As we might expect given the late age of the sample (`r ana_ind$time`), its posi
 
 ## Calculating distances and other statistics using the *sf* package
 
-TODO
+How can we summarise the spatial ancestral dynamics in the figures using some statistics?
+
+Lets take one more look at the `sf` object with the locations and times of ancestral nodes of sampled individuals, focusing on the following subset of columns:
+
+```{r}
+lineages <- ts_ancestors(ts)
+
+select(lineages, connection, child_time, parent_time)
+```
+
+We can use standard *dplyr* table manipulation functions to compute the distances between connected notes and the times that separate them (i.e. branch lengths in the traditional phylogenetic sense). We can then use those two quantities to compute how fast (if any at all) was the movement between ancestral individuals in different time periods of the history of a sample:
+
+```{r}
+distances <- lineages %>%
+  mutate(branch_length = abs(parent_time - child_time) / model$generation_time,
+         distance = sf::st_length(connection) %>% units::set_units(km) %>% as.numeric(),
+         speed = distance / branch_length,
+         epoch = cut(parent_time, breaks = c(Inf, seq(60000, 0, by = -3000)), dig.lab = 10, include.lowest = TRUE)) %>%
+  as_tibble() %>% # strip away the spatial annotation
+  select(name, pop, node_id, branch_length, distance, speed, parent_pop, parent_time, child_pop, child_time, epoch)
+```
+
+```{r}
+distances %>%
+  filter(child_time < 60000) %>%
+  ggplot(aes(epoch, speed, color = child_pop)) +
+  geom_boxplot(color = "black", outlier.shape = NA) +
+  geom_jitter(alpha = 0.25) +
+  facet_grid(pop ~ child_pop) +
+  labs(y = "speed [kilometers / generation]") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+```
+
+
+```{r}
+distances %>%
+  filter(child_time < 60000) %>%
+  ggplot(aes(child_time, distance, color = child_pop)) +
+  geom_point() +
+  facet_grid(pop ~ child_pop) +
+  labs(y = "distance [kilometers]") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+```
+
+
+```{r}
+distances %>%
+  filter(child_time < 60000) %>%
+  ggplot(aes(child_time, speed, color = child_pop)) +
+  geom_point() +
+  facet_grid(pop ~ child_pop) +
+  labs(y = "speed [kilometers per generation]") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+```
+
+
+```{r}
+distances %>%
+  filter(child_time < 60000) %>%
+  filter(pop == "EUR") %>%
+  ggplot(aes(child_time, distance, color = child_pop)) +
+  geom_point() +
+  geom_smooth(aes(group = child_pop)) +
+  labs(y = "distance [kilometers]") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+```
+
+
+```{r}
+distances %>%
+  filter(child_time < 60000) %>%
+  filter(pop == "EUR") %>%
+  ggplot(aes(child_time, speed, color = child_pop)) +
+  geom_point() +
+  geom_smooth(aes(group = child_pop)) +
+  labs(y = "speed [kilometers per generation]") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+```
+
+
+
+
+# Directional movement
+
+```{r}
+directions <- lineages %>%
+  mutate(direction = sf::st_coordinates(child_location - parent_location) / 1e3 / model$generation_time,
+         horizontal = as.vector(direction[, "X"]),
+         vertical = as.vector(direction[, "Y"])) %>%
+  mutate(epoch = cut(child_time, breaks = c(0, 3000, 4000, 5000, 20000, 30000, 40000, 50000, Inf), include.lowest = TRUE, dig.lab = 10)) %>%
+#  mutate(epoch = cut(child_time, breaks = c(Inf, seq(60000, 0, by = -5000)), include.lowest = TRUE, dig.lab = 10)) %>% 
+  as_tibble() %>%
+  distinct(child_id, parent_id, .keep_all = TRUE) %>%
+  select(name, pop, node_id, horizontal, vertical,
+         parent_pop, parent_time, child_pop, child_time, epoch, horizontal)
+```
+
+
+```{r}
+# compute axes limits
+limits <- max(abs(c(directions$horizontal, directions$vertical))) %>% c(-., .)
+
+directions %>%
+  filter(!pop %in% c("OOA", "YAM")) %>%
+  ggplot(aes(horizontal, vertical, color = child_pop)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = 2, alpha = 0.5) +
+  geom_vline(xintercept = 0, linetype = 2, alpha = 0.5) +
+  facet_grid(pop ~ epoch) +
+  labs(x = "West-East movement [kilometers / generation]",
+       y = "North-South movement [kilometers / generation]") +
+#  coord_cartesian(xlim = limits, ylim = limits) +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+```
+
+
+
+## Densities
+
+```{r}
+nodes_sf <-
+  as.data.frame(lineages) %>%
+  distinct(parent_id, .keep_all = TRUE) %>%
+  sf::st_as_sf() %>%
+  sf::st_set_geometry("parent_location")
+
+ggplot() +
+  geom_sf(data = map) +
+  geom_sf(data = nodes_sf, aes(color = parent_time), alpha = 0.5)
+```
+
