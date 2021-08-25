@@ -477,7 +477,7 @@ ts_nodes <- function(ts) {
 #' @export
 ts_samples <- function(ts) {
   attr(ts, "sampling") %>%
-    filter(name %in% ts_data(ts)$name)
+    dplyr::filter(name %in% ts_data(ts)$name)
 }
 
 #' Infer spatio-temporal ancestral history for given nodes/individuals
@@ -549,13 +549,7 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
     dplyr::mutate(level = as.factor(level),
                   pop = factor(pop, levels = model$splits$pop),
                   child_pop = factor(child_pop, levels = model$splits$pop),
-                  parent_pop = factor(parent_pop, levels = model$splits$pop),
-                  duration = abs(parent_time - child_time),
-                  shift = child_location - parent_location,
-                  horiz_shift = sf::st_coordinates(shift)[, 1],
-                  vert_shift = sf::st_coordinates(shift)[, 2],
-                  distance = as.numeric(sf::st_length(connection))) %>%
-    dplyr::select(-shift)
+                  parent_pop = factor(parent_pop, levels = model$splits$pop))
 
   attr(final, "model") <- model
 
@@ -1137,15 +1131,19 @@ collect_ancestors <- function(x, edges) {
 
   # repeat until the queue is empty (this homebrew queue implementation is
   # probably horribly inefficient but it will do for now)
+  i <- 0
   while (TRUE) {
+    #cat("queue ", (i <- i + 1), "\n")
     # pop out the first element
     item <- queue[[1]]; queue[[1]] <- NULL
 
     # add it to the final list
-    result <- append(result, list(item))
+    result[[length(result) + 1]] <- item
 
     # iterate over all parents of the current node
+    p <- 0
     for (parent in split(item, item$parent)) {
+      #cat("queue ", i, " parent ", (p <- i + 1), "\n")
       # get edges leading from the current parent to its own parent
       edge <- edges[edges$child == unique(parent$parent), ]
 
