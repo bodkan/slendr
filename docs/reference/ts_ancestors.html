@@ -179,7 +179,7 @@
     <p>Infer spatio-temporal ancestral history for given nodes/individuals</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_ancestors</span><span class='op'>(</span><span class='va'>ts</span>, x <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_ancestors</span><span class='op'>(</span><span class='va'>ts</span>, x <span class='op'>=</span> <span class='cn'>NULL</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,6 +192,10 @@
       <th>x</th>
       <td><p>Either a character vector with individual names, or an integer
 vector of node IDs</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Report on the progress of ancestry path generation?</p></td>
     </tr>
     </table>
 
