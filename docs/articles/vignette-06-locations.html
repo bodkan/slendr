@@ -299,7 +299,7 @@
 #&gt; oldest sampled individual: 40000 backward time units
 #&gt; youngest sampled individual: 0 backward time units
 #&gt; 
-#&gt; oldest node: 2080708 backward time units
+#&gt; oldest node: 2856417 backward time units
 #&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
 #&gt; contents of the underlying sf object:
@@ -319,7 +319,7 @@
 #&gt; 5  TRUE    31383200
 #&gt; 6  TRUE    31383200
 #&gt; 
-#&gt; ... and 561 additional rows
+#&gt; ... and 557 additional rows
 #&gt; ---------------------- 
 #&gt; map: internal coordinate reference system EPSG 3035 
 #&gt; spatial limits (in degrees longitude and latitude):
@@ -328,7 +328,7 @@
 <p>In the first part of the summary, we see how many individuals (sampled or retained) and nodes are present in the tree sequence together with additional useful information, including a section of the internally stored <code>sf</code> object. And this is a crucial point—<strong>we can always access the internal <code>sf</code> object with the spatial data</strong> by running the following, which avoid the verbose summary above and exposes the underlying <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1"><em>sf</em> data frame</a> directly:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span><span class="op">[</span><span class="op">]</span></code></pre></div>
-<pre><code>#&gt; Simple feature collection with 567 features and 9 fields (with 10 geometries empty)
+<pre><code>#&gt; Simple feature collection with 563 features and 9 fields (with 6 geometries empty)
 #&gt; Geometry type: POINT
 #&gt; Dimension:     XY
 #&gt; Bounding box:  xmin: 2364888 ymin: 294002.8 xmax: 8577345 ymax: 4763638

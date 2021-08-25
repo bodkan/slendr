@@ -457,7 +457,7 @@ distances_long %>%
 
 Still keeping an eye on the animated data above, let's try to summarise the information about distances "traveled" by nodes in different time period by fitting a spline (rather than plotting the raw data with individual nodes):
 
-```{r}
+```{r, smooth_distance_fits}
 distances_long %>% 
   ggplot(aes(child_time, value, color = child_pop)) +
   geom_smooth(method = "loess", aes(group = child_pop)) +
