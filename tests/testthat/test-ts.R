@@ -108,3 +108,16 @@ test_that("simplification retains only specified samples", {
   ts2 <- ts_simplify(ts2, simplify_to = simplify_to)
   expect_true(length(intersect(na.omit(unique(ts_data(ts2)$name)), simplify_to)) == length(simplify_to))
 })
+
+test_that("ts_samples() names match ts_data() information", {
+  ts1 <- ts_load(model)
+  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recomb_rate = 0)
+  ts3 <- ts_load(model, simplify = TRUE, simplify_to = c("pop11", "pop12"))
+  simplify_to <- sample(ts_samples(ts1)$name, 10)
+  ts4 <- ts_simplify(ts1, simplify_to = simplify_to)
+
+  expect_equal(sort(unique(ts_data(ts1, remembered = TRUE)$name)), sort(ts_samples(ts1)$name))
+  expect_equal(sort(unique(ts_data(ts2, remembered = TRUE)$name)), sort(ts_samples(ts2)$name))
+  expect_equal(sort(unique(ts_data(ts3, remembered = TRUE)$name)), sort(ts_samples(ts3)$name))
+  expect_equal(sort(unique(ts_data(ts4, remembered = TRUE)$name)), sort(ts_samples(ts4)$name))
+})
