@@ -4,13 +4,15 @@
 \alias{ts_ancestors}
 \title{Infer spatio-temporal ancestral history for given nodes/individuals}
 \usage{
-ts_ancestors(ts, x = NULL)
+ts_ancestors(ts, x = NULL, verbose = FALSE)
 }
 \arguments{
 \item{ts}{\code{pyslim.SlimTreeSequence} object}
 
 \item{x}{Either a character vector with individual names, or an integer
 vector of node IDs}
+
+\item{verbose}{Report on the progress of ancestry path generation?}
 }
 \description{
 Infer spatio-temporal ancestral history for given nodes/individuals

@@ -52,7 +52,8 @@ First, let's program our spatial model. We will use the same demographic model o
 map <- world(
   xrange = c(-15, 60),
   yrange = c(20, 65),
-  crs = "EPSG:3035"
+  crs = "EPSG:3035",
+  ne_dir = "~/Documents/postdoc/data/ne_data"
 )
 
 # couple of broad geographic regions
@@ -133,17 +134,17 @@ plot_graph(model)
 
 ## Scheduling sampling events and simulation
 
-Now we will schedule the sampling of a single individual from each population every four thousand years, starting from 40 thousand years ago all the way to the present (this is a feature discussed in the basic [tree sequence overview](vignette-05-tree%20sequences.html#scheduling-of-sampling-events-1)):
+Now we will schedule the sampling of a single individual from each population every two thousand years, starting from 40 thousand years ago all the way to the present (this is a feature discussed in the basic [tree sequence overview](vignette-05-tree%20sequences.html#scheduling-of-sampling-events-1)):
 
 ```{r}
-# one ancient individual every 1 thousand years
+# one ancient individual every two thousand years
 ancient <- sampling(model,
                     times = seq(40000, 1, by = -1000),
                     list(ooa, 1), list(ehg, 1), list(eur, 1),
                     list(ana, 1), list(yam, 1))
 
 # present-day Africans and Europeans
-present <- sampling(model, times = 0, list(afr, 5), list(eur, 5))
+present <- sampling(model, times = 0, list(afr, 5), list(eur, 30))
 
 samples <- rbind(ancient, present)
 ```
@@ -161,10 +162,10 @@ slim(
 After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree%20sequences.html#loading-and-processing-tree%20sequence-output-files-1) of tree sequence features in *slendr*. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:
 
 ```{r}
-reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
-model <- read("~/Desktop/sims/")
-library(dplyr)
-map <- model$world
+# reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
+# model <- read("~/Desktop/sims/")
+# library(dplyr)
+# map <- model$world
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, recomb_rate = 1e-8, Ne = 10000)
 ```
 
@@ -306,6 +307,19 @@ In the figure above we can see the red focal node and `r nrow(level1_branches)` 
 
 A more convenient way to do this analysis is a companion function to `ts_ancestors()` called `plot_ancestors()`. This function accepts an `sf` object with the spatial branching data created by `ts_ancestors()` and plots the paths between nodes on a map leading from a focal node up to the root(s) of the tree sequence (instead of just paths to immediate parents shown in the previous figure). In this case, because we are working with a single diploid individual, we get two sets of paths for each of its nodes (chromosomes) and plot them in two facets:
 
+
+```{r, eval = FALSE, echo = FALSE}
+pdf("~/Desktop/x.pdf")
+for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) {
+
+lineages <- ts_ancestors(ts, i, verbose = TRUE)
+{ plot_ancestors(lineages, i) + ggtitle(i) } %>% print
+
+}
+dev.off()
+```
+
+
 ```{r plot_ancestors_time}
 plot_ancestors(lineages, ind)
 ```
@@ -317,14 +331,14 @@ Lets compare this result to the animation which recapitulates the simulation:
 After comparing our spatial tree sequence figure with the animation, we can immediately notice several things:
 
 ```{r, include = F}
-nodes <- lineages[!is.na(lineages$name), ]$node_id
+nodes <- unique(lineages[!is.na(lineages$name), ]$node_id)
 ```
 
 1.  All spatial tree sequence paths trace the ancestry of our single European individual `r ind` back to Africa. In fact, we also see a cluster of past ancestral nodes (i.e. concentrated coalescent events) in the place where the Out of Africa (OOA) migrant population settled around 40,000 thousand years ago (yellow population in the the animation).
 
-2.  The first chromosome (node `r nodes[1]`) only traces its ancestry to Yamnaya indicated by a star. This is expected because we programmed Yamnaya to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population). We can see a cluster of EHG nodes in one location because we did not specify any spatial dynamic for this population in our model
+2.  The first chromosome (node `r nodes[1]`) traces its ancestry to the Yamnaya population indicated by a star. This is expected because we programmed Yamnaya to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population). We can see a cluster of EHG nodes in one location because we did not specify any spatial dynamic for this population in our model
 
-3.  The second node of the individual (node `r nodes[2]` in the right panel representing the second chromosome) traces part of its ancestry to the EHG population (filled squares) and part to the Anatolia (triangles). This makes sense, because we have simulated European ancestry as being part Anatolian. In fact, we can see a nice "trace" of nodes (past individuals) of the Anatolian ancestry spreading to Europe over time.
+3.  We also see that the other chromosome traces of its ancestry to the Anatolia (triangles). This makes sense, because we have simulated European ancestry as being part Anatolian.
 
 By default, branches are colored by the time of coalescence. We can also plot the number of coalescent events separating a focal node (red crossed circle) and one of its ancestors by specifying `color = "level"` (where level 1 represents branches leading to all of the focal node's parents):
 
@@ -338,8 +352,21 @@ Let's look at the spatial ancestry of another sample. For instance, we know that
 ts_samples(ts) %>% filter(pop == "ANA")
 ```
 
+
+```{r, eval = FALSE, echo = FALSE}
+pdf("~/Desktop/y.pdf")
+for (i in ts_samples(ts) %>% filter(pop == "ANA") %>% .$name) {
+
+lineages <- ts_ancestors(ts, i, verbose = TRUE)
+{ plot_ancestors(lineages, i) + ggtitle(i) } %>% print
+
+}
+dev.off()
+```
+
+
 ```{r, include = FALSE}
-ana_ind <- ts_samples(ts) %>% filter(pop == "ANA") %>% tail(1)
+ana_ind <- ts_samples(ts) %>% filter(name == "ANA22")
 ```
 
 Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual (`r ana_ind$name`) and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
@@ -357,8 +384,11 @@ How can we summarise the spatial ancestral dynamics in the figures using some st
 Lets take one more look at the `sf` object with the locations and times of ancestral nodes of sampled individuals, focusing on the following subset of columns:
 
 ```{r}
-lineages <- ts_ancestors(ts)
-
+lineages <-
+  ts_samples(ts) %>%
+  pull(name) %>%
+  ts_ancestors(ts, x = .)
+  
 select(lineages, connection, child_time, parent_time)
 ```
 
@@ -374,88 +404,96 @@ distances <- lineages %>%
   select(name, pop, node_id, branch_length, distance, speed, parent_pop, parent_time, child_pop, child_time, epoch)
 ```
 
+Let's also convert the data (absolute distances or distance per generation -- i.e., the "speed") into a long format for easier plotting side by side:
+
 ```{r}
-distances %>%
+distances_long <- distances %>%
   filter(child_time < 60000) %>%
-  ggplot(aes(epoch, speed, color = child_pop)) +
+  filter(!pop %in% c("AFR", "OOA")) %>%
+  tidyr::pivot_longer(cols = c(distance, speed),
+                      names_to = "stat",
+                      values_to = "value") %>%
+  mutate(facet = case_when(
+    stat == "distance" ~ "absolute distance of a node from parent",
+    stat == "speed" ~ "distance traveled by a node per generation"))
+```
+
+Now we can plot the absolute distances "travelled" by nodes from the locations of their parents:
+
+```{r distr_abs_distances, fig.width = 9, fig.height = 6}
+distances_long %>%
+  filter(stat == "distance") %>%
+  ggplot(aes(epoch, value, color = child_pop)) +
+  geom_jitter(alpha = 0.25, size = 0.5) +
   geom_boxplot(color = "black", outlier.shape = NA) +
-  geom_jitter(alpha = 0.25) +
   facet_grid(pop ~ child_pop) +
-  labs(y = "speed [kilometers / generation]") +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+  labs(y = "absolute distance of node from parent [km]",
+       x = "time of a node [years ago]") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45, size = 6),
+        legend.position = "bottom") +
+  guides(color = guide_legend("ancestral node\npopulation"))
 ```
 
+Similarly, we can take a look at how fast those nodes must have travelled (i.e. the distance they travelled per generation):
 
-```{r}
-distances %>%
-  filter(child_time < 60000) %>%
-  ggplot(aes(child_time, distance, color = child_pop)) +
-  geom_point() +
+
+```{r distr_speed, fig.width = 9, fig.height = 6}
+distances_long %>%
+  filter(stat == "speed") %>%
+  ggplot(aes(epoch, value, color = child_pop)) +
+  geom_jitter(alpha = 0.25, size = 0.5) +
+  geom_boxplot(color = "black", outlier.shape = NA) +
   facet_grid(pop ~ child_pop) +
-  labs(y = "distance [kilometers]") +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+  labs(y = "distance traveled per generation [km]",
+       x = "time of a node [years ago]") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45, size = 6),
+        legend.position = "bottom") +
+  guides(color = guide_legend("ancestral node\npopulation")) +
+  coord_cartesian(ylim = c(0, 400))
 ```
 
+
+### Smoothed fits of travelled distances
+
+Still keeping an eye on the animated data above, let's try to summarise the information about distances "traveled" by nodes in different time period by fitting a spline (rather than plotting the raw data with individual nodes):
 
 ```{r}
-distances %>%
-  filter(child_time < 60000) %>%
-  ggplot(aes(child_time, speed, color = child_pop)) +
-  geom_point() +
-  facet_grid(pop ~ child_pop) +
-  labs(y = "speed [kilometers per generation]") +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45))
+distances_long %>% 
+  ggplot(aes(child_time, value, color = child_pop)) +
+  geom_smooth(method = "loess", aes(group = child_pop)) +
+  geom_hline(yintercept = 0, linetype = 2, size = 0.5) +
+  labs(y = "kilometers", x = "time [years ago]") +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45),
+        legend.position = "bottom") +
+  facet_wrap(~ facet, scales = "free_y") +
+  guides(color = guide_legend("ancestral node population"))
 ```
-
-
-```{r}
-distances %>%
-  filter(child_time < 60000) %>%
-  filter(pop == "EUR") %>%
-  ggplot(aes(child_time, distance, color = child_pop)) +
-  geom_point() +
-  geom_smooth(aes(group = child_pop)) +
-  labs(y = "distance [kilometers]") +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45))
-```
-
-
-```{r}
-distances %>%
-  filter(child_time < 60000) %>%
-  filter(pop == "EUR") %>%
-  ggplot(aes(child_time, speed, color = child_pop)) +
-  geom_point() +
-  geom_smooth(aes(group = child_pop)) +
-  labs(y = "speed [kilometers per generation]") +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45))
-```
-
-
 
 
 # Directional movement
 
+Rather then looking at absolute distances traveled (or the speed of movement), we might be interested in knowing something about the *direction* of movement.
+
 ```{r}
 directions <- lineages %>%
   mutate(direction = sf::st_coordinates(child_location - parent_location) / 1e3 / model$generation_time,
+         branch_length = abs(child_time - parent_time),
          horizontal = as.vector(direction[, "X"]),
          vertical = as.vector(direction[, "Y"])) %>%
-  mutate(epoch = cut(child_time, breaks = c(0, 3000, 4000, 5000, 20000, 30000, 40000, 50000, Inf), include.lowest = TRUE, dig.lab = 10)) %>%
+  mutate(epoch = cut(child_time, breaks = c(0, 3000, 4000, 5000, 20000, 25000, 30000, 40000, 50000, Inf), include.lowest = TRUE, dig.lab = 10)) %>%
 #  mutate(epoch = cut(child_time, breaks = c(Inf, seq(60000, 0, by = -5000)), include.lowest = TRUE, dig.lab = 10)) %>% 
   as_tibble() %>%
   distinct(child_id, parent_id, .keep_all = TRUE) %>%
-  select(name, pop, node_id, horizontal, vertical,
+  select(name, pop, node_id, horizontal, vertical, branch_length,
          parent_pop, parent_time, child_pop, child_time, epoch, horizontal)
 ```
 
 
-```{r}
+```{r plot_directions, fig.width = 9, fig.height = 6}
 # compute axes limits
 limits <- max(abs(c(directions$horizontal, directions$vertical))) %>% c(-., .)
 
 directions %>%
-  filter(!pop %in% c("OOA", "YAM")) %>%
   ggplot(aes(horizontal, vertical, color = child_pop)) +
   geom_point() +
   geom_hline(yintercept = 0, linetype = 2, alpha = 0.5) +
@@ -471,7 +509,10 @@ directions %>%
 
 ## Densities
 
-```{r}
+- TODO: Heatmaps of ancestry locations (similar to the discrete node location maps)
+- TODO: Effective population size heatmaps?
+
+```{r, eval = FALSE, echo = FALSE}
 nodes_sf <-
   as.data.frame(lineages) %>%
   distinct(parent_id, .keep_all = TRUE) %>%

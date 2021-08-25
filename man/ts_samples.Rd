@@ -2,10 +2,13 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_samples}
 \alias{ts_samples}
-\title{Extract information about permanently remembered individuals}
+\title{Extract names and times of individuals scheduled for sampling}
 \usage{
 ts_samples(ts)
 }
+\arguments{
+\item{ts}{\code{pyslim.SlimTreeSequence} object}
+}
 \description{
-Extract information about permanently remembered individuals
+Extract names and times of individuals scheduled for sampling
 }
