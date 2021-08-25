@@ -24,9 +24,9 @@ set.seed(314159)
 
 In this vignette, we will build a simple model of isolated populations laid out on a two-dimensional grid, each exchanging migrants with its immediate neighbors.
 
-The purpose of the vignette is to demonstrate the power of R as a foundation for building complex *slendr* models from simpler components. Although there is no built in functionality for such classic "demes on a regular grid" models in the R package, the fact that we have the complete functionality of R at our disposal makes it possible to easily program relatively complex models from the convenient environment of R using a couple of simple model building primitives and automatically execute such models in SLiM.
+The purpose of the vignette is to demonstrate the power of R as a foundation for building complex *slendr* models from simpler components. Although there is no built-in functionality for such classic "demes on a regular grid" models in the *slendr* package, the fact that we have the complete functionality of R at our disposal makes it possible to easily program relatively complex models from the convenient environment of R using a couple of simple model-building primitives and automatically execute such models in SLiM.
 
-If you have worked with SLiM before, you will recognize that a nearly identical idea is implemented in Eidos language in section 5.3.3. of the SLiM manual. One difference in this example is that our model is explicitly spatial, unlike the example from the manual where spatiality is only approximated using a random-mating model.
+If you have worked with SLiM before, you will recognize that a nearly identical idea is implemented in SLiM's Eidos language in section 5.3.3 of the SLiM manual. One difference in this example is that our model is explicitly spatial, unlike the example from the manual where spatiality is only approximated using a random-mating model.
 
 ## Simple two-dimensional grid model
 
@@ -44,7 +44,7 @@ map <- world(
 )
 ```
 
-Next, we define a helper function which will a) create a single *slendr* population object, b) place that population on an appropriate coordinate on the lattice on the world map based on the numeric identifier of the population *i* (where *i* runs from 1 to $n \times n$ , *n* being the total number of demes along one side of the regular grid):
+Next, we define a helper function which will a) create a single *slendr* population object, b) place that population at an appropriate coordinate on the lattice on the world map based on the numeric identifier of the population *i* (where *i* runs from 1 to $n \times n$ , *n* being the total number of demes along one side of the regular grid):
 
 ```{r}
 create_pop <- function(i, n_side, map, N, radius) {
@@ -82,7 +82,7 @@ Let's plot the whole spatial population configuration, to make sure we set up th
 do.call(plot, populations) + ggplot2::theme(legend.position = "none")
 ```
 
-So far, the way the model is specified, individuals of each population would be stuck on its own circular "island". We can change that by programming geneflow events using the *slendr* function `geneflow()`. Again, let's first program a simple helper function which will generate geneflow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its members (making sure the coordinates of each population stays within the grid using simple modulo arithmetic on the population index *i*).
+So far, the way the model is specified, each population would be stuck on its own circular "island". We can change that by programming gene flow events using the *slendr* function `geneflow()`. Again, let's first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index *i*).
 
 ```{r}
 set_geneflow <- function(i, n_side, rate, start, end, populations) {
@@ -114,13 +114,13 @@ set_geneflow <- function(i, n_side, rate, start, end, populations) {
 }
 ```
 
-Let's test this function. What would be the geneflow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above (population number `r n + 1`, because we defined a grid with `r n` populations on one side).
+Let's test this function. What would be the gene flow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above (population number `r n + 1`, because we defined a grid with `r n` populations on one side).
 
 ```{r}
 set_geneflow(1, n, rate = 0.1, start = 2, end = 1000, populations)
 ```
 
-Looks right! Lets generate the entire set of continuous geneflow events:
+Looks right! Let's generate the entire set of continuous gene flow events:
 
 ```{r}
 geneflows <-
@@ -130,7 +130,7 @@ geneflows <-
   unique # filter out duplicate events due to symmetries
 ```
 
-The total number of individual geneflow events is:
+The total number of individual gene flow events is:
 
 ```{r}
 nrow(geneflows)
@@ -148,7 +148,7 @@ model <- compile(
 )
 ```
 
-We can use the function `plot_graph()` to plot the layout of the population history graph in order to verify that the geneflow events have been specified correctly. The layout of the graph is a little bit wonky and crowded (that due to the complexity of spatiotemporal models, the `plot_graph()` function plots not just populations as nodes but also times of geneflow events and other demographic processes). Still, we can see that the geneflow events between populations have been specified correctly as all arrows are bidirectional and point only between immediate neighboring demes:
+We can use the function `plot_graph()` to plot the layout of the population history graph in order to verify that the geneflow events have been specified correctly. The layout of the graph is a little bit wonky and crowded (that's due to the complexity of spatiotemporal models; the `plot_graph()` function plots not just populations as nodes but also times of geneflow events and other demographic processes). Still, we can see that the gene flow events between populations have been specified correctly, since all arrows are bidirectional and point only between neighboring demes:
 
 ```{r, fig.width = 8, fig.height = 6}
 plot_graph(model) + ggplot2::theme(legend.position = "none")
@@ -166,7 +166,7 @@ slim(model, seq_length = 1, recomb_rate = 0, method = "batch")
 
 We can take things one step further. What if we wanted to do a similar thing (i.e. simulate regularly spaced demes) but in a real geographic context?
 
-Let's zoom in an some interesting part of the world and then create a grid of demes using the same helper function `create_pop` we defined above (each population boundary being 300 km in diameter):
+Let's zoom in on some interesting part of the world and then create a grid of demes using the same helper function `create_pop` we defined above (each population boundary being 300 km in diameter):
 
 ```{r, include = FALSE}
 map <- world(
@@ -197,7 +197,7 @@ populations <-
   lapply(create_pop, n_side = n, map = map, N = 100, radius = 150e3)
 ```
 
-Of course, when we lay out a regular grid across a map of the world, some population boundaries would fall outside the African continent. To solve this issue, we will go through the list of all populations and filter to those whose at least 50% area falls on land using another helper function (called `check_area` below).
+Of course, when we lay out a regular grid across a map of the world, some population boundaries would fall outside the African continent. To solve this issue, we will go through the list of all populations and filter to those with at least 50% of their area on land, using another helper function:
 
 ```{r}
 continent <- region(
@@ -234,4 +234,4 @@ Let's plot the layout of the population grid on the real geographic background:
 do.call(plot, filtered) + ggplot2::theme(legend.position = "none")
 ```
 
-If this were an example in a real study, we would probably set up some scenario of geneflow between subpopulations, perhaps we would be interested in studying how a selected allele spreads throughout the continent based on some factors of interest. Then, if we were to simulate data from this spatial model, we would first have to `compile()` it and them run it in SLiM via our `slim()` function. Given that this is the same process we described in the abstract example above, we won't be repeating it here.
+Next, we would probably set up some scenario of gene flow between subpopulations; perhaps we would be interested in studying how a selected allele spreads through the continent based on some factors of interest. Then, to simulate data from this spatial model, we would first have to `compile()` it and then run it in SLiM via the `slim()` function. Given that this is the same process we described in the example above, we won't be repeating it here.
