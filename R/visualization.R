@@ -415,34 +415,36 @@ plot_ancestors <- function(data, x = NULL, full_scale = TRUE,
     if (!all(x %in% data$name))
       stop("Unknown individual ", x[!x %in% data$name], " in the time range of the given data",
            call. = FALSE)
-    ids <- dplyr::filter(data, name %in% x)$node_id
+    ids <- dplyr::filter(data, name %in% x)$node_id %>% unique
   } else if (is.numeric(x)) {
-    if (!all(x %in% data$focal_id))
-      stop("Unknown node ", x[!x %in% data$focal_id], "in the time range of the given data",
+    if (!all(x %in% data$node_id))
+      stop("Unknown node ", x[!x %in% data$node_id], "in the time range of the given data",
            call. = FALSE)
-    ids <- dplyr::filter(data, focal_id %in% x)$node_id
+    ids <- dplyr::filter(data, node_id %in% x)$node_id
   } else
     stop("Unknown object given as an individual or a node", call. = FALSE)
 
   # add labels for facets (also labeled with individual names if individuals are
   # being plotted)
-  data <- dplyr::filter(data, focal_id %in% ids) %>%
-    dplyr::mutate(label = paste("focal node", focal_id))
+  data <- dplyr::filter(data, node_id %in% ids) %>%
+    dplyr::mutate(label = paste("focal node", node_id))
   if (is.character(x)) {
     ind_labels <- dplyr::as_tibble(data) %>%
       dplyr::filter(!is.na(name)) %>%
-      dplyr::distinct(name, focal_id)
+      dplyr::distinct(name, node_id)
     data <- dplyr::mutate(data, label = unlist(purrr::map2(
-      focal_id, label, ~ sprintf("%s (%s)", .y, ind_labels[ind_labels$focal_id == .x, ]$name)
+      node_id, label,
+      ~ sprintf("%s (%s)", .y, ind_labels[ind_labels$node_id == .x, ]$name)
     )))
   }
 
   # extract the focal individual or node
-  focal_node <- dplyr::filter(data, node_id == focal_id) %>%
+  focal_node <- dplyr::filter(data, node_id %in% ids, level == 1) %>%
+    dplyr::distinct(node_id, .keep_all = TRUE) %>%
     sf::st_as_sf() %>%
-    sf::st_set_geometry("location")
+    sf::st_set_geometry("child_location")
 
-  link_aes <- if (color == "time") aes(color = time) else aes(color = level)
+  link_aes <- if (color == "time") aes(color = parent_time) else aes(color = level)
   if (color == "level")
     color_scale <- scale_color_discrete(breaks = round(seq(1, max(as.integer(data$level)), length.out = 5)))
   else
