@@ -1,5 +1,5 @@
-env_present <- function(path) { tryCatch(
-  {
+env_present <- function(path) {
+  tryCatch({
     reticulate::use_virtualenv(path, required = TRUE)
     return(TRUE)
   },
@@ -11,7 +11,7 @@ skip_if(!env_present("~/.pyenv/versions/retipy"))
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
-N <- 100; y <- 350; r = 240
+N <- 100; y <- 350; r <- 240
 p1 <- population("pop1", time = 1, N = N, map = map, center = c(750, y), radius = r)
 p2 <- population("pop2", parent = p1, time = 2, N = N, map = map, center = c(1750, y), radius = r)
 
