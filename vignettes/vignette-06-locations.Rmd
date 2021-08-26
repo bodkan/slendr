@@ -66,12 +66,14 @@ anatolia <- region("Anatolia", map, polygon = list(c(28, 35), c(40, 35), c(42, 4
 
 # define population histories
 
-afr <- population( # African ancestral population
+# African ancestral population
+afr <- population(
   "AFR", parent = "ancestor", time = 52000, N = 3000,
   map = map, polygon = africa
 )
 
-ooa <- population( # population of the first migrants out of Africa
+# population of the first migrants out of Africa
+ooa <- population(
   "OOA", parent = afr, time = 51000, N = 500, remove = 25000,
   center = c(33, 30), radius = 400e3
 ) %>%
@@ -80,28 +82,32 @@ ooa <- population( # population of the first migrants out of Africa
     start = 50000, end = 40000, snapshots = 20
   )
 
-ehg <- population( # Eastern hunter-gatherers
+# Eastern hunter-gatherers
+ehg <- population(
   "EHG", parent = ooa, time = 28000, N = 1000, remove = 6000,
   polygon = list(
     c(26, 55), c(38, 53), c(48, 53), c(60, 53),
     c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
 
-eur <- population( # European population
+# European population
+eur <- population(
   name = "EUR", parent = ehg, time = 25000, N = 2000,
   polygon = europe
 )
 
-ana <- population( # Anatolian farmers
+# Anatolian farmers
+ana <- population(
   name = "ANA", time = 28000, N = 3000, parent = ooa, remove = 4000,
   center = c(34, 38), radius = 500e3, polygon = anatolia
 ) %>%
-  expand( # expand the range by 2.500 km
+  expand(
     by = 2500e3, start = 10000, end = 7000,
     polygon = join(europe, anatolia), snapshots = 20
-  )
+  ) # expand the range by 2.500 km
 
-yam <- population( # Yamnaya steppe population
+# Yamnaya steppe population
+yam <- population(
   name = "YAM", time = 7000, N = 500, parent = ehg, remove = 2500,
   polygon = list(c(26, 50), c(38, 49), c(48, 50),
                  c(48, 56), c(38, 59), c(26, 56))
@@ -161,6 +167,7 @@ slim(
 After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree%20sequences.html#loading-and-processing-tree%20sequence-output-files-1) of tree sequence features in *slendr*. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:
 
 ```{r}
+# devtools::load_all(".")
 # reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
 # model <- read("~/Desktop/sims/")
 # library(dplyr)
@@ -234,7 +241,7 @@ Because `sf` *simple features* objects (and, by extension, even `slendr_spatial`
 As an example, let's say we wanted to split the sampled individuals in the tree sequence into epochs and plot those individually using standard *ggplot2* features. We could simply first do this, adding a new column specifying to which epoch does each simulated individual belong:
 
 ```{r}
-epochs <- sampled_data %>% 
+epochs <- sampled_data %>%
   mutate(epoch = cut(time, breaks = c(40000, 30000, 10000, 4000, 0)),
          epoch = ifelse(is.na(epoch), 0, epoch),
          epoch = factor(epoch, labels = c("present", "(present, 4 ky]", "(4 ky, 10 ky]",
