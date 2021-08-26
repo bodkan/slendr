@@ -52,8 +52,7 @@ First, let's program our spatial model. We will use the same demographic model o
 map <- world(
   xrange = c(-15, 60),
   yrange = c(20, 65),
-  crs = "EPSG:3035",
-  ne_dir = "~/Documents/postdoc/data/ne_data"
+  crs = "EPSG:3035"
 )
 
 # couple of broad geographic regions
