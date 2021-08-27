@@ -167,11 +167,6 @@ slim(
 After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree%20sequences.html#loading-and-processing-tree%20sequence-output-files-1) of tree sequence features in *slendr*. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:
 
 ```{r}
-# devtools::load_all(".")
-# reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
-# model <- read("~/Desktop/sims/")
-# library(dplyr)
-# map <- model$world
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, recomb_rate = 1e-8, Ne = 10000)
 ```
 
