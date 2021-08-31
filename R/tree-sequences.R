@@ -342,8 +342,8 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
          call. = FALSE)
 
   if (!attr(ts, "mutated"))
-    warning("Attempting to extract genotypes from a tree sequence which has not been mutated",
-            call. = FALSE)
+    stop("Attempting to extract genotypes from a tree sequence which has not been mutated",
+         call. = FALSE)
 
   chrom_genotypes <- ts_genotypes(ts)
   chr1_genotypes <- dplyr::select(chrom_genotypes, dplyr::ends_with("_chr1"))
