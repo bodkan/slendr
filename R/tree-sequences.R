@@ -692,11 +692,18 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #'
 #' @export
 ts_coalesced <- function(ts, return_failed = FALSE) {
-  num_roots <- reticulate::iterate(ts$trees(), function(t) t$num_roots)
-  if (all(num_roots == 1))
+  tmp_var <- paste0("ts_py_object_", paste(sample(LETTERS, 20, TRUE), collapse = ""))
+  # this is the same performance hack used also in get_table_data(), avoiding
+  # the need to iterate with pure R with:
+  #   num_roots <- reticulate::iterate(ts$trees(), function(t) t$num_roots)
+  assign(tmp_var, ts, envir = globalenv())
+  single_root <- reticulate::py_run_string(sprintf("single_root = [not tree.has_multiple_roots for tree in r.%s.trees()]", tmp_var))$single_root
+  on.exit(rm(list = tmp_var, envir = globalenv()), add = TRUE)
+
+  if (all(single_root))
     return(TRUE)
   else if (return_failed)
-    return(which(num_roots) - 1)
+    return(which(!single_root) - 1)
   else
     return(FALSE)
 }
