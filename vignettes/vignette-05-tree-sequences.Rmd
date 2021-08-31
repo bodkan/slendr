@@ -366,13 +366,13 @@ The correspondence between the two looks good! 🎉 Again, note that the large a
 In case you need to process simulated data in some other software, you can use the function `ts_vcf()` to save the simulated genotypes in a VCF format:
 
 ```{r}
-ts_vcf(ts, vcf = file.path(tempdir(), "output.vcf.gz"))
+ts_vcf(ts, path = file.path(tempdir(), "output.vcf.gz"))
 ```
 
 You can also specify only a subset of individuals to be saved in the VCF:
 
 ```{r}
-ts_vcf(ts, vcf = file.path(tempdir(), "output_subset.vcf.gz"),
+ts_vcf(ts, path = file.path(tempdir(), "output_subset.vcf.gz"),
        individuals = c("CH1", "NEA1", "EUR1", "AFR1"))
 ```
 
