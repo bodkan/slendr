@@ -125,7 +125,7 @@ ts_recapitate <- function(ts, recomb_rate, Ne, spatial = TRUE,
 
   attr(ts_new, "recapitated") <- TRUE
   attr(ts_new, "simplified") <- attr(ts, "simplified")
-  attr(ts, "mutated") <- attr(ts, "mutated")
+  attr(ts_new, "mutated") <- attr(ts, "mutated")
 
   attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
