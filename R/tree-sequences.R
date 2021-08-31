@@ -392,7 +392,7 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
 #' Save genotypes from the tree sequenceas a VCF file
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object
-#' @param vcf Path to a VCF file
+#' @param path Path to a VCF file
 #' @param individuals A character vector of individuals in the tree sequence. If
 #'   missing, all individuals present in the tree sequence will be saved.
 #'
