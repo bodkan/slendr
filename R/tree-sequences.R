@@ -60,6 +60,10 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
   attr(ts, "model") <- model
   attr(ts, "sampling") <- get_sampling(ts)
 
+  attr(ts, "recapitated") <- FALSE
+  attr(ts, "simplified") <- FALSE
+  attr(ts, "mutated") <- FALSE
+
   class(ts) <- c("slendr_ts", class(ts))
 
   # process tree sequence tables only in case recapitation and simplification
@@ -118,6 +122,10 @@ ts_recapitate <- function(ts, recomb_rate, Ne, spatial = TRUE,
 
   attr(ts_new, "model") <- model
   attr(ts_new, "sampling") <- attr(ts, "sampling")
+
+  attr(ts_new, "recapitated") <- TRUE
+  attr(ts_new, "simplified") <- attr(ts, "simplified")
+  attr(ts, "mutated") <- attr(ts, "mutated")
 
   attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
@@ -220,13 +228,18 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
     dplyr::arrange(ind_id, time) %>%
     dplyr::select(ind_id, pedigree_id, time, alive, remembered, retained) %>%
     dplyr::inner_join(keep_data, by = "pedigree_id") %>%
-    dplyr::mutate(node_id = nodes_new)
+    dplyr::mutate(node_id = nodes_new) %>%
+    dplyr::as_tibble()
 
   if (spatial)
     data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
 
   attr(ts_new, "model") <- model
   attr(ts_new, "sampling") <- attr(ts, "sampling")
+
+  attr(ts_new, "recapitated") <- attr(ts, "recapitated")
+  attr(ts_new, "simplified") <- TRUE
+  attr(ts_new, "mutated") <- attr(ts, "mutated")
 
   attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
@@ -258,22 +271,26 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE) {
   check_ts_class(ts)
 
-  ts_mutated <-
+  ts_new <-
     msprime$mutate(ts, rate = mutation_rate, keep = keep_existing, random_seed = random_seed) %>%
     pyslim$SlimTreeSequence()
 
-  attr(ts_mutated, "model") <- attr(ts, "model")
-  attr(ts_mutated, "sampling") <- attr(ts, "sampling")
+  attr(ts_new, "model") <- attr(ts, "model")
+  attr(ts_new, "sampling") <- attr(ts, "sampling")
 
-  attr(ts_mutated, "nodes") <- attr(ts, "nodes")
-  attr(ts_mutated, "edges") <- attr(ts, "edges")
-  attr(ts_mutated, "individuals") <- attr(ts, "individuals")
+  attr(ts_new, "recapitated") <- attr(ts, "recapitated")
+  attr(ts_new, "simplified") <- attr(ts, "simplified")
+  attr(ts_new, "mutated") <- TRUE
 
-  attr(ts_mutated, "data") <- attr(ts, "data")
+  attr(ts_new, "nodes") <- attr(ts, "nodes")
+  attr(ts_new, "edges") <- attr(ts, "edges")
+  attr(ts_new, "individuals") <- attr(ts, "individuals")
 
-  class(ts_mutated) <- c("slendr_ts", class(ts_mutated))
+  attr(ts_new, "data") <- attr(ts, "data")
 
-  ts_mutated
+  class(ts_new) <- c("slendr_ts", class(ts_new))
+
+  ts_new
 }
 
 # genotype conversion -----------------------------------------------------
@@ -286,6 +303,10 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRU
 #'
 #' @export
 ts_genotypes <- function(ts) {
+  if (!attr(ts, "mutated"))
+    warning("Extracting genotypes from a tree sequence which has not been mutated",
+            call. = FALSE)
+
   genotypes <- ts$genotype_matrix()
 
   chromosomes <- ts_data(ts, remembered = TRUE) %>%
@@ -313,6 +334,10 @@ ts_genotypes <- function(ts) {
 #'
 #' @export
 ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
+  if (!attr(ts, "mutated"))
+    warning("Extracting genotypes from a tree sequence which has not been mutated",
+            call. = FALSE)
+
   chrom_genotypes <- ts_genotypes(ts)
   chr1_genotypes <- dplyr::select(chrom_genotypes, dplyr::ends_with("_chr1"))
   chr2_genotypes <- dplyr::select(chrom_genotypes, dplyr::ends_with("_chr2"))
@@ -365,7 +390,11 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
 #'   missing, all individuals present in the tree sequence will be saved.
 #'
 #' @export
-ts_vcf <- function(ts, vcf, individuals = NULL) {
+ts_vcf <- function(ts, path, individuals = NULL) {
+  if (!attr(ts, "mutated"))
+    warning("Extracting genotypes from a tree sequence which has not been mutated",
+            call. = FALSE)
+
   data <- ts_data(ts, remembered = TRUE) %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(name, ind_id)
@@ -378,7 +407,7 @@ ts_vcf <- function(ts, vcf, individuals = NULL) {
          " not present in the tree sequence", call. = FALSE)
 
   gzip <- reticulate::import("gzip")
-  with(reticulate::`%as%`(gzip$open(path.expand(vcf), "wt"), vcf_file), {
+  with(reticulate::`%as%`(gzip$open(path.expand(path), "wt"), vcf_file), {
     ts$write_vcf(vcf_file,
                  individuals = as.integer(data$ind_id),
                  individual_names = data$name)
@@ -1086,7 +1115,7 @@ get_table_data <- function(ts, model, spatial, simplify_to = NULL) {
     remembered, retained, alive, pedigree_id
   )
 
-  combined
+  dplyr::as_tibble(combined)
 }
 
 get_sampling <- function(ts) {
