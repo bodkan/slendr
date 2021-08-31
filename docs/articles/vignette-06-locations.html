@@ -161,7 +161,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>#&gt; OGR data source with driver: ESRI Shapefile 
-#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpHUojxK", layer: "ne_110m_land"
+#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmphBoE39", layer: "ne_110m_land"
 #&gt; with 127 features
 #&gt; It has 3 fields</code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -280,7 +280,8 @@
 <p>Even better, although we can see below that the returned object belongs to <em>slendr</em>’s own class <code>slendr_ts_data</code>, it is internally stored as a spatial <code>sf</code> object. This means that we can use all the functionality of the powerful <a href="https://r-spatial.github.io/sf/">R package <em>sf</em></a> as well as many other packages for geospatial analyses <em>directly on the data</em>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; [1] "slendr"        "slendr_tsdata" "sf"            "data.frame"</code></pre>
+<pre><code>#&gt; [1] "slendr"        "slendr_tsdata" "sf"            "tbl_df"       
+#&gt; [5] "tbl"           "data.frame"</code></pre>
 <p>Typing the object into the R console presents a user-friendly summary of the spatio-temporal data extracted from the tree sequence:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span></code></pre></div>
@@ -300,7 +301,7 @@
 #&gt; oldest sampled individual: 40000 backward time units
 #&gt; youngest sampled individual: 0 backward time units
 #&gt; 
-#&gt; oldest node: 3181073 backward time units
+#&gt; oldest node: 3764972 backward time units
 #&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
 #&gt; contents of the underlying sf object:
@@ -320,7 +321,7 @@
 #&gt; 5  TRUE    31383200
 #&gt; 6  TRUE    31383200
 #&gt; 
-#&gt; ... and 559 additional rows
+#&gt; ... and 563 additional rows
 #&gt; ---------------------- 
 #&gt; map: internal coordinate reference system EPSG 3035 
 #&gt; spatial limits (in degrees longitude and latitude):
@@ -329,34 +330,53 @@
 <p>In the first part of the summary, we see how many individuals (sampled or retained) and nodes are present in the tree sequence together with additional useful information, including a section of the internally stored <code>sf</code> object. And this is a crucial point—<strong>we can always access the internal <code>sf</code> object with the spatial data</strong> by running the following, which avoid the verbose summary above and exposes the underlying <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1"><em>sf</em> data frame</a> directly:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span><span class="op">[</span><span class="op">]</span></code></pre></div>
-<pre><code>#&gt; Simple feature collection with 565 features and 9 fields (with 8 geometries empty)
+<pre><code>#&gt; Simple feature collection with 569 features and 9 fields (with 12 geometries empty)
 #&gt; Geometry type: POINT
 #&gt; Dimension:     XY
 #&gt; Bounding box:  xmin: 2364888 ymin: 294002.8 xmax: 8577345 ymax: 4763638
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
-#&gt; First 10 features:
-#&gt;    name pop ind_id node_id time                 location remembered retained
-#&gt; 1  AFR1 AFR      0     180    0 POINT (3418405 352076.9)       TRUE     TRUE
-#&gt; 2  AFR1 AFR      0     181    0 POINT (3418405 352076.9)       TRUE     TRUE
-#&gt; 3  AFR2 AFR      1     182    0 POINT (3339936 637489.6)       TRUE     TRUE
-#&gt; 4  AFR2 AFR      1     183    0 POINT (3339936 637489.6)       TRUE     TRUE
-#&gt; 5  AFR3 AFR      2     184    0   POINT (3537950 690973)       TRUE     TRUE
-#&gt; 6  AFR3 AFR      2     185    0   POINT (3537950 690973)       TRUE     TRUE
-#&gt; 7  AFR4 AFR      3     186    0 POINT (3900334 294002.8)       TRUE     TRUE
-#&gt; 8  AFR4 AFR      3     187    0 POINT (3900334 294002.8)       TRUE     TRUE
-#&gt; 9  AFR5 AFR      4     188    0  POINT (3300800 1236864)       TRUE     TRUE
-#&gt; 10 AFR5 AFR      4     189    0  POINT (3300800 1236864)       TRUE     TRUE
-#&gt;    alive pedigree_id
-#&gt; 1   TRUE    31382270
-#&gt; 2   TRUE    31382270
-#&gt; 3   TRUE    31382990
-#&gt; 4   TRUE    31382990
-#&gt; 5   TRUE    31383200
-#&gt; 6   TRUE    31383200
-#&gt; 7   TRUE    31384619
-#&gt; 8   TRUE    31384619
-#&gt; 9   TRUE    31385053
-#&gt; 10  TRUE    31385053</code></pre>
+#&gt; slendr 'tsdata' object 
+#&gt; ---------------------- 
+#&gt; tree-sequence contents:
+#&gt;   AFR - 5 sampled, 31 retained individuals
+#&gt;   OOA - 16 sampled, 86 retained individuals
+#&gt;   EHG - 22 sampled, 62 retained individuals
+#&gt;   ANA - 24 sampled, 33 retained individuals
+#&gt;   EUR - 54 sampled, 82 retained individuals
+#&gt;   YAM - 4 sampled, 13 retained individuals
+#&gt; 
+#&gt; total: 125 sampled, 307 retained individuals and
+#&gt;  no nodes from an unassigned individual 
+#&gt; 
+#&gt; oldest sampled individual: 40000 backward time units
+#&gt; youngest sampled individual: 0 backward time units
+#&gt; 
+#&gt; oldest node: 3764972 backward time units
+#&gt; youngest node: 0 backward time units
+#&gt; ---------------------- 
+#&gt; contents of the underlying sf object:
+#&gt; 
+#&gt;   name pop ind_id node_id time                 location remembered retained
+#&gt; 1 AFR1 AFR      0     180    0 POINT (3418405 352076.9)       TRUE     TRUE
+#&gt; 2 AFR1 AFR      0     181    0 POINT (3418405 352076.9)       TRUE     TRUE
+#&gt; 3 AFR2 AFR      1     182    0 POINT (3339936 637489.6)       TRUE     TRUE
+#&gt; 4 AFR2 AFR      1     183    0 POINT (3339936 637489.6)       TRUE     TRUE
+#&gt; 5 AFR3 AFR      2     184    0   POINT (3537950 690973)       TRUE     TRUE
+#&gt; 6 AFR3 AFR      2     185    0   POINT (3537950 690973)       TRUE     TRUE
+#&gt;   alive pedigree_id
+#&gt; 1  TRUE    31382270
+#&gt; 2  TRUE    31382270
+#&gt; 3  TRUE    31382990
+#&gt; 4  TRUE    31382990
+#&gt; 5  TRUE    31383200
+#&gt; 6  TRUE    31383200
+#&gt; 
+#&gt; ... and 563 additional rows
+#&gt; ---------------------- 
+#&gt; map: internal coordinate reference system EPSG 3035 
+#&gt; spatial limits (in degrees longitude and latitude):
+#&gt;   - vertical -15 ... 60
+#&gt;   - horizontal 20 ... 65</code></pre>
 <p>Because the data returned by <code><a href="../reference/ts_data.html">ts_data()</a></code> is internally transformed to the projected CRS used by the model, we can use the returned object as any other data of the class <code>sf</code>. For instance, at the beginning of this vignette, we specified the world map of the model to be represented in projected CRS (EPSG 3035) which we can verify by typing:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span></code></pre></div>
