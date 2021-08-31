@@ -1136,7 +1136,10 @@ get_table_data <- function(ts, model, spatial, simplify_to = NULL) {
     remembered, retained, alive, pedigree_id
   )
 
-  dplyr::as_tibble(combined)
+  if (spatial)
+    combined
+  else
+    dplyr::as_tibble(combined)
 }
 
 get_sampling <- function(ts) {
