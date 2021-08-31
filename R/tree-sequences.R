@@ -334,8 +334,15 @@ ts_genotypes <- function(ts) {
 #'
 #' @export
 ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
+  if (!attr(ts, "recapitated") && !ts_coalesced(ts))
+    stop("Tree sequence was not recapitated and some nodes do not ",
+         "have parents over some portion of their genome. This is interpreted as ",
+         "missing data, which is not currently supported. For more context, take ",
+         "a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
+         call. = FALSE)
+
   if (!attr(ts, "mutated"))
-    warning("Extracting genotypes from a tree sequence which has not been mutated",
+    warning("Attempting to extract genotypes from a tree sequence which has not been mutated",
             call. = FALSE)
 
   chrom_genotypes <- ts_genotypes(ts)
@@ -391,8 +398,15 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
 #'
 #' @export
 ts_vcf <- function(ts, path, individuals = NULL) {
+  if (!attr(ts, "recapitated") && !ts_coalesced(ts))
+    stop("Tree sequence was not recapitated and some nodes do not ",
+         "have parents over some portion of their genome. This is interpreted as ",
+         "missing data, which is not currently supported by tskit. For more context, ",
+         "take a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
+         call. = FALSE)
+
   if (!attr(ts, "mutated"))
-    warning("Extracting genotypes from a tree sequence which has not been mutated",
+    warning("Attempting to extract genotypes from a tree sequence which has not been mutated",
             call. = FALSE)
 
   data <- ts_data(ts, remembered = TRUE) %>%
