@@ -990,7 +990,14 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 #' @param ... Lists of two elements (\code{slendr_pop} population object-<number
 #'   of individuals to sample), representing from which populations should how
 #'   many individuals be remembered at times given by \code{times}
+#' @param strict Should any occurence of a population not being present at a
+#'   given time result in an error? Default is \code{FALSE}, meaning that invalid
+#'   sampling times for any populations will be quietly ignored.
 #'
+#' @return Data frame with three columns: time of sampling, population
+#'   to sample from, how many individuals to sample
+#'
+#' @export
 sampling <- function(model, times, ..., strict = FALSE) {
   if (!inherits(model, "slendr_model"))
     stop("A slendr_model object must be specified", call. = FALSE)
