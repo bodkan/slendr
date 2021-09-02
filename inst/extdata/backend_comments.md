@@ -32,15 +32,15 @@ This is an excellent point. I have now changed to backend from an Eidos/SLiM-non
 
 ---
 
-### 
+### ✅ Done
 
 > You seem to be using two-space indents, I'd suggest tabs?  Note that SLiMgui can prettyprint your code for you, either shallowly (click the button) or deeply (option-click the button).
 
-I hope this won't ruin our friendship, but I'm a card-carrying member of the spaces-and-not-tabs camp. 😬 However, I do admit that the two-space indents actually comes from a tidyverse recommended R style guide which perhaps doesn't make sense to use for non-R code (it's just a default that RStudio has that I just stuck with). My eyes are already used to these shallow indents, but I changed these to four-space indents.
+I hope this won't ruin our friendship, but I'm a card-carrying member of the spaces-and-not-tabs camp. 😬 However, I do admit that the two-space indent style comes from an R style guide which perhaps doesn't make sense to use for non-R code (it's just a default that RStudio has that I just stuck with). My eyes are already used to these shallow indents, but I changed these to four-space indents. Hopefully a reasonable compromise.
 
 ---
 
-### ✅ done
+### ⏳ In-progress
 
 > Ah, so, I just tried to prettyprint your script in SLiMgui, since the tiny indents were bothering me.  :->  It gave an error, "unexpected token '{'", because of your {{seed}} type placeholders, which violate Eidos syntax.  It'd be nice if your script was syntax-compliant, so maybe you can look for a different way of doing this templating?  One possibility would be to just use a placeholder that already looks like a symbol, like X_X_SEED instead of {{seed}}, or something.  Another possibility would be to use a string, like "{{seed}}" including the quotes, and replace not just the {{seed}} part but the whole "{{seed}}" placeholder.  Etc.  Anything so the script parses as compliant Eidos code; without that, SLiMgui has one hand tied behind its back, and I pretty much always work in SLiMgui.
 
@@ -48,23 +48,29 @@ As explained above, I moved towards specifying the arguments on the command-line
 
 ---
 
+### 💡
+
 > Note that "asInteger({{seq_length}})" is unnecessary unless the string you put in place of {{seq_length}} is not an integer (which seems like it would be a bug?).  In Eidos, unlike in R, 10 is an integer, not numeric, and in fact 5e5 is also an integer.  Ah, but 5.5e5 is a float, which is arguably a bug in Eidos; that should be an integer too.  So OK, maybe you need that call.  Just thinking out loud, and now I'm curious whether you guys agree that 5.5e5 being float is a bug in Eidos.  :->
 
 My vote would be for 5e5 being an integer, if only because the "numeric but not integer" thing in R bothers me a bit. :)
 
---- ❓
+---
+
+### ☎️ Zoom call?
 
 > I see that you do "initializeMutationRate(0.0);".  So slendr simulations never have new mutations at all?  It looks like you define genomic element types only for ancestry inference, when tree sequence recording is turned off I suppose?  And I guess neutral mutations can be overlaid, with treeseq at least.
 
 Calling `initializeMutationRate(0.0)` is a remnant of me originally not knowing what is it all that *slendr* would be doing in the final version. The original plan (which included those user-defined SLiM "modules") was that this would be flexible, including specifying user-defined non-neutral mutation types. Now that we agreed that the optional selection (and other) modules will not be heavily emphasised in the first version, perhaps I could add `mutation_rate` as an optional argument of the `slim()` functions.
 
-This actually relates to my other point -- is there a reason (in the current *slendr* design) to support other output type than tree sequences? If tree sequences are to be the main output type (which I would make as trivial to use from R as possible by providing dedicated `ts_*()` functions for loading, processing, and analysing them even for users that are completely new to this), do we even want to support something else than `initializeMutationRate(0.0)`?
+This actually relates to my other point -- is there a reason (in the current *slendr* design) to support other output type than tree sequences? If tree sequences are to be the main output type (which I'm striving to make as easy to use from R as possible), do we even want to support something else than `initializeMutationRate(0.0)`? Thoughts @petrelharp @FerRacimo?
 
 W.r.t. ancestry tracking mutations, it would be great if SLiM could track ancestry proportions without this. This was initially a hack I used to get an idea whether I implemented gene flow correctly, which I kept because it seemed like a useful thing to have.
 
---- TODO
+--- ✅ Done
 
 - "g1.mutationTypes[mut_types]" seems odd, shouldn't that just be "g1.mutationTypes"?  And is there a need to set their stacking policy stuff?  They will never stack anyway, right?  How could they, if new mutations never occur?
+
+This sounds correct. I think this might be a result of some of my very early misunderstanding of how mutation types should be handled here (going back all the way to before *slendr* was even an R package).
 
 ---
 

@@ -181,8 +181,8 @@ test_that("forward and backward models yield the same simulation result (nonspat
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 
   # simulation runs are the same
-  slim(forward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
-  slim(backward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
+  slim(forward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE, overwrite = TRUE)
+  slim(backward, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE, overwrite = TRUE)
 
   # make sure the scripts are the same
   f_script <- file.path(forward$path, "output_script.slim") %>%
