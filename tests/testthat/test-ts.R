@@ -139,3 +139,39 @@ test_that("ts_eigenstrat requires recapitated and mutated data", {
   expect_warning(ts_vcf(ts2, path), "Attempting to extract genotypes")
   expect_silent(suppressMessages(ts_vcf(ts5, path)))
 })
+
+test_that("ts_eigenstrat and tsv_cf create correct data", {
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000) %>%
+    ts_mutate(mutation_rate = 1e-7)
+
+  ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
+
+  # match EIGENSTRAT contents
+  prefix <- file.path(tempdir(), "eigen")
+  eigenstrat <- ts_eigenstrat(ts, prefix)
+  ind_names <- sort(admixr::read_ind(eigenstrat)$id)
+  expect_true(all(ind_names == ts_names))
+
+  # match VCF contents
+  path <- file.path(tempdir(), "gt.vcf.gz")
+  ts_vcf(ts, path)
+  file <- gzfile(path)
+  vcf_names <- readLines(file) %>%
+    grep("^#CHROM", ., value = TRUE) %>%
+    strsplit("\t") %>% .[[1]] %>% .[10 : length(.)] %>% sort
+  on.exit(close(file))
+  expect_true(all(vcf_names == ts_names))
+})
+
+test_that("ts_eigenstrat correctly adds an outgroup when instructed", {
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000) %>%
+    ts_mutate(mutation_rate = 1e-7)
+
+  ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
+
+  # match EIGENSTRAT contents
+  prefix <- file.path(tempdir(), "eigen")
+  eigenstrat <- ts_eigenstrat(ts, prefix, outgroup = "outgroup_ind")
+  ind_names <- sort(admixr::read_ind(eigenstrat)$id)
+  expect_true(all(ind_names == c("outgroup_ind", ts_names)))
+})

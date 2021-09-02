@@ -4,12 +4,19 @@
 \alias{ts_eigenstrat}
 \title{Extract genotypes from the tree sequence in the EIGENSTRAT format}
 \usage{
-ts_eigenstrat(ts, prefix, chrom = "chr1", quiet = FALSE)
+ts_eigenstrat(ts, prefix, chrom = "chr1", outgroup = NULL)
 }
 \arguments{
 \item{ts}{\code{pyslim.SlimTreeSequence} object}
 
 \item{prefix}{EIGENSTRAT trio prefix}
+
+\item{chrom}{The name of the chromosome in the EIGENSTRAT snp file
+(default "chr1")}
+
+\item{outgroup}{Should a formal, artificial outgroup be added? If \code{NULL}
+(default), no outgroup is added. A non-NULL character name will serve as
+the name of the outgroup in an ind file.}
 }
 \value{
 Object of the class EIGENSTRAT created by the admixr package
@@ -17,4 +24,11 @@ Object of the class EIGENSTRAT created by the admixr package
 \description{
 EIGENSTRAT data produced by this function can be used by the admixr R package
 (\url{https://bodkan.net/admixr}).
+}
+\details{
+In case an outgroup was not formally specified in a slendr model which
+generated the tree sequence data, it is possible to artificially create an
+outgroup sample with the name specified by the \code{outgroup} argument,
+which will carry all ancestral alleles (i.e. value "2" in a geno file
+for each position in a snp file).
 }
