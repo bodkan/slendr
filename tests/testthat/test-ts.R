@@ -27,7 +27,7 @@ samples <- rbind(
   sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
-slim(model, seq_length = 1, recomb_rate = 0, save_locations = TRUE, burnin = 10,
+slim(model, seq_length = 100000, recomb_rate = 0, save_locations = TRUE, burnin = 10,
      ts_recording = TRUE, method = "batch", seed = 314159,
      sampling = samples, overwrite = TRUE, verbose = FALSE)
 
@@ -120,4 +120,58 @@ test_that("ts_samples() names match ts_data() information", {
   expect_equal(sort(unique(ts_data(ts2, remembered = TRUE)$name)), sort(ts_samples(ts2)$name))
   expect_equal(sort(unique(ts_data(ts3, remembered = TRUE)$name)), sort(ts_samples(ts3)$name))
   expect_equal(sort(unique(ts_data(ts4, remembered = TRUE)$name)), sort(ts_samples(ts4)$name))
+})
+
+test_that("ts_eigenstrat requires recapitated and mutated data", {
+  ts1 <- ts_load(model)
+  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recomb_rate = 0)
+  ts3 <- ts_load(model, simplify = TRUE, simplify_to = c("pop11", "pop12"))
+  ts4 <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000)
+  ts5 <- ts_mutate(ts4, mutation_rate = 1e-7)
+
+  prefix <- file.path(tempdir(), "eigen")
+  expect_error(ts_eigenstrat(ts1, prefix), "Tree sequence was not recapitated")
+  expect_error(ts_eigenstrat(ts2, prefix), "Attempting to extract genotypes")
+  expect_silent(suppressMessages(ts_eigenstrat(ts5, prefix)))
+
+  path <- file.path(tempdir(), "gt.vcf.gz")
+  expect_error(ts_vcf(ts1, path), "Tree sequence was not recapitated")
+  expect_warning(ts_vcf(ts2, path), "Attempting to extract genotypes")
+  expect_silent(suppressMessages(ts_vcf(ts5, path)))
+})
+
+test_that("ts_eigenstrat and tsv_cf create correct data", {
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000) %>%
+    ts_mutate(mutation_rate = 1e-7)
+
+  ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
+
+  # match EIGENSTRAT contents
+  prefix <- file.path(tempdir(), "eigen")
+  eigenstrat <- ts_eigenstrat(ts, prefix)
+  ind_names <- sort(admixr::read_ind(eigenstrat)$id)
+  expect_true(all(ind_names == ts_names))
+
+  # match VCF contents
+  path <- file.path(tempdir(), "gt.vcf.gz")
+  ts_vcf(ts, path)
+  file <- gzfile(path)
+  vcf_names <- readLines(file) %>%
+    grep("^#CHROM", ., value = TRUE) %>%
+    strsplit("\t") %>% .[[1]] %>% .[10 : length(.)] %>% sort
+  on.exit(close(file))
+  expect_true(all(vcf_names == ts_names))
+})
+
+test_that("ts_eigenstrat correctly adds an outgroup when instructed", {
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000) %>%
+    ts_mutate(mutation_rate = 1e-7)
+
+  ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
+
+  # match EIGENSTRAT contents
+  prefix <- file.path(tempdir(), "eigen")
+  eigenstrat <- ts_eigenstrat(ts, prefix, outgroup = "outgroup_ind")
+  ind_names <- sort(admixr::read_ind(eigenstrat)$id)
+  expect_true(all(ind_names == c("outgroup_ind", ts_names)))
 })

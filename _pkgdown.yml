@@ -25,7 +25,7 @@ navbar:
           href: articles/vignette-03-interactions.html
         - text: Traditional non-spatial models
           href: articles/vignette-04-nonspatial-models.html
-        - text: Tree-sequence processing and statistics
+        - text: Tree sequence processing and statistics
           href: articles/vignette-05-tree-sequences.html
         - text: Spatially annotated tree sequences
           href: articles/vignette-06-locations.html
@@ -72,6 +72,7 @@ reference:
     - print.slendr_pop
     - print.slendr_model
     - print.slendr_tsdata
+    - plot_ancestors
 
   - title: Compiling and running spatial models
     contents:
@@ -81,29 +82,31 @@ reference:
     - read
     - script
 
-  - title: Tree-sequence loading and processing
+  - title: Tree sequence loading and processing
     contents:
     - ts_load
     - ts_recapitate
     - ts_simplify
     - ts_mutate
+    - ts_coalesced
+
+  - title: Extracting genotypes from tree sequences
+    contents:
     - ts_genotypes
     - ts_eigenstrat
     - ts_vcf
-    - ts_coalesced
-    - ts_draw
-    - plot_ancestors
 
-  - title: Accessing tree-sequence components
+  - title: Accessing tree sequence components
     contents:
     - ts_data
     - ts_ancestors
     - ts_nodes
     - ts_edges
-    - ts_tree
     - ts_samples
+    - ts_tree
+    - ts_draw
 
-  - title: Tree-sequence statistics
+  - title: Tree sequence statistics
     contents:
     - ts_f2
     - ts_f3

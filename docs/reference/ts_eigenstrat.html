@@ -181,7 +181,7 @@
 (<a href='https://bodkan.net/admixr'>https://bodkan.net/admixr</a>).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_eigenstrat</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>prefix</span>, chrom <span class='op'>=</span> <span class='st'>"chr1"</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_eigenstrat</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>prefix</span>, chrom <span class='op'>=</span> <span class='st'>"chr1"</span>, outgroup <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -194,11 +194,29 @@
       <th>prefix</th>
       <td><p>EIGENSTRAT trio prefix</p></td>
     </tr>
+    <tr>
+      <th>chrom</th>
+      <td><p>The name of the chromosome in the EIGENSTRAT snp file
+(default "chr1")</p></td>
+    </tr>
+    <tr>
+      <th>outgroup</th>
+      <td><p>Should a formal, artificial outgroup be added? If <code>NULL</code>
+(default), no outgroup is added. A non-NULL character name will serve as
+the name of the outgroup in an ind file.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Object of the class EIGENSTRAT created by the admixr package</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>In case an outgroup was not formally specified in a slendr model which
+generated the tree sequence data, it is possible to artificially create an
+outgroup sample with the name specified by the <code>outgroup</code> argument,
+which will carry all ancestral alleles (i.e. value "2" in a geno file
+for each position in a snp file).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

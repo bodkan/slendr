@@ -4,12 +4,12 @@
 \alias{ts_vcf}
 \title{Save genotypes from the tree sequenceas a VCF file}
 \usage{
-ts_vcf(ts, vcf, individuals = NULL)
+ts_vcf(ts, path, individuals = NULL)
 }
 \arguments{
 \item{ts}{\code{pyslim.SlimTreeSequence} object}
 
-\item{vcf}{Path to a VCF file}
+\item{path}{Path to a VCF file}
 
 \item{individuals}{A character vector of individuals in the tree sequence. If
 missing, all individuals present in the tree sequence will be saved.}

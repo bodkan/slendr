@@ -60,6 +60,10 @@ ts_load <- function(model, output_dir = model$path, output_prefix = "output",
   attr(ts, "model") <- model
   attr(ts, "sampling") <- get_sampling(ts)
 
+  attr(ts, "recapitated") <- FALSE
+  attr(ts, "simplified") <- FALSE
+  attr(ts, "mutated") <- FALSE
+
   class(ts) <- c("slendr_ts", class(ts))
 
   # process tree sequence tables only in case recapitation and simplification
@@ -118,6 +122,10 @@ ts_recapitate <- function(ts, recomb_rate, Ne, spatial = TRUE,
 
   attr(ts_new, "model") <- model
   attr(ts_new, "sampling") <- attr(ts, "sampling")
+
+  attr(ts_new, "recapitated") <- TRUE
+  attr(ts_new, "simplified") <- attr(ts, "simplified")
+  attr(ts_new, "mutated") <- attr(ts, "mutated")
 
   attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
@@ -220,13 +228,18 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
     dplyr::arrange(ind_id, time) %>%
     dplyr::select(ind_id, pedigree_id, time, alive, remembered, retained) %>%
     dplyr::inner_join(keep_data, by = "pedigree_id") %>%
-    dplyr::mutate(node_id = nodes_new)
+    dplyr::mutate(node_id = nodes_new) %>%
+    dplyr::as_tibble()
 
   if (spatial)
     data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
 
   attr(ts_new, "model") <- model
   attr(ts_new, "sampling") <- attr(ts, "sampling")
+
+  attr(ts_new, "recapitated") <- attr(ts, "recapitated")
+  attr(ts_new, "simplified") <- TRUE
+  attr(ts_new, "mutated") <- attr(ts, "mutated")
 
   attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
@@ -258,22 +271,26 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE) {
   check_ts_class(ts)
 
-  ts_mutated <-
+  ts_new <-
     msprime$mutate(ts, rate = mutation_rate, keep = keep_existing, random_seed = random_seed) %>%
     pyslim$SlimTreeSequence()
 
-  attr(ts_mutated, "model") <- attr(ts, "model")
-  attr(ts_mutated, "sampling") <- attr(ts, "sampling")
+  attr(ts_new, "model") <- attr(ts, "model")
+  attr(ts_new, "sampling") <- attr(ts, "sampling")
 
-  attr(ts_mutated, "nodes") <- attr(ts, "nodes")
-  attr(ts_mutated, "edges") <- attr(ts, "edges")
-  attr(ts_mutated, "individuals") <- attr(ts, "individuals")
+  attr(ts_new, "recapitated") <- attr(ts, "recapitated")
+  attr(ts_new, "simplified") <- attr(ts, "simplified")
+  attr(ts_new, "mutated") <- TRUE
 
-  attr(ts_mutated, "data") <- attr(ts, "data")
+  attr(ts_new, "nodes") <- attr(ts, "nodes")
+  attr(ts_new, "edges") <- attr(ts, "edges")
+  attr(ts_new, "individuals") <- attr(ts, "individuals")
 
-  class(ts_mutated) <- c("slendr_ts", class(ts_mutated))
+  attr(ts_new, "data") <- attr(ts, "data")
 
-  ts_mutated
+  class(ts_new) <- c("slendr_ts", class(ts_new))
+
+  ts_new
 }
 
 # genotype conversion -----------------------------------------------------
@@ -286,6 +303,10 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRU
 #'
 #' @export
 ts_genotypes <- function(ts) {
+  if (!attr(ts, "mutated"))
+    warning("Extracting genotypes from a tree sequence which has not been mutated",
+            call. = FALSE)
+
   genotypes <- ts$genotype_matrix()
 
   chromosomes <- ts_data(ts, remembered = TRUE) %>%
@@ -306,13 +327,35 @@ ts_genotypes <- function(ts) {
 #' EIGENSTRAT data produced by this function can be used by the admixr R package
 #' (<https://bodkan.net/admixr>).
 #'
+#' In case an outgroup was not formally specified in a slendr model which
+#' generated the tree sequence data, it is possible to artificially create an
+#' outgroup sample with the name specified by the \code{outgroup} argument,
+#' which will carry all ancestral alleles (i.e. value "2" in a geno file
+#' for each position in a snp file).
+#'
 #' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param prefix EIGENSTRAT trio prefix
+#' @param chrom The name of the chromosome in the EIGENSTRAT snp file
+#'   (default "chr1")
+#' @param outgroup Should a formal, artificial outgroup be added? If \code{NULL}
+#'   (default), no outgroup is added. A non-NULL character name will serve as
+#'   the name of the outgroup in an ind file.
 #'
 #' @return Object of the class EIGENSTRAT created by the admixr package
 #'
 #' @export
-ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
+ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
+  if (!attr(ts, "recapitated") && !ts_coalesced(ts))
+    stop("Tree sequence was not recapitated and some nodes do not ",
+         "have parents over some portion of their genome. This is interpreted as ",
+         "missing data, which is not currently supported. For more context, take ",
+         "a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
+         call. = FALSE)
+
+  if (!attr(ts, "mutated"))
+    stop("Attempting to extract genotypes from a tree sequence which has not been mutated",
+         call. = FALSE)
+
   chrom_genotypes <- ts_genotypes(ts)
   chr1_genotypes <- dplyr::select(chrom_genotypes, dplyr::ends_with("_chr1"))
   chr2_genotypes <- dplyr::select(chrom_genotypes, dplyr::ends_with("_chr2"))
@@ -347,6 +390,17 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
     geno <- geno[!dup_muts, ]
   }
 
+  # add an artificial outgroup individual carrying ancestral alleles only
+  if (!is.null(outgroup)) {
+    geno[[as.character(outgroup)]] <- 2
+    ind <- data.frame(
+      id = as.character(outgroup),
+      sex = "U",
+      label = as.character(outgroup)
+    ) %>%
+        dplyr::bind_rows(ind, .)
+  }
+
   # save the EIGENSTRAT trio
   if (!dir.exists(dirname(prefix))) dir.create(dirname(prefix))
   admixr::write_geno(geno, paste0(prefix, ".geno"))
@@ -360,12 +414,23 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
 #' Save genotypes from the tree sequenceas a VCF file
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object
-#' @param vcf Path to a VCF file
+#' @param path Path to a VCF file
 #' @param individuals A character vector of individuals in the tree sequence. If
 #'   missing, all individuals present in the tree sequence will be saved.
 #'
 #' @export
-ts_vcf <- function(ts, vcf, individuals = NULL) {
+ts_vcf <- function(ts, path, individuals = NULL) {
+  if (!attr(ts, "recapitated") && !ts_coalesced(ts))
+    stop("Tree sequence was not recapitated and some nodes do not ",
+         "have parents over some portion of their genome. This is interpreted as ",
+         "missing data, which is not currently supported by tskit. For more context, ",
+         "take a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
+         call. = FALSE)
+
+  if (!attr(ts, "mutated"))
+    warning("Attempting to extract genotypes from a tree sequence which has not been mutated",
+            call. = FALSE)
+
   data <- ts_data(ts, remembered = TRUE) %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(name, ind_id)
@@ -378,7 +443,7 @@ ts_vcf <- function(ts, vcf, individuals = NULL) {
          " not present in the tree sequence", call. = FALSE)
 
   gzip <- reticulate::import("gzip")
-  with(reticulate::`%as%`(gzip$open(path.expand(vcf), "wt"), vcf_file), {
+  with(reticulate::`%as%`(gzip$open(path.expand(path), "wt"), vcf_file), {
     ts$write_vcf(vcf_file,
                  individuals = as.integer(data$ind_id),
                  individual_names = data$name)
@@ -649,11 +714,18 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #'
 #' @export
 ts_coalesced <- function(ts, return_failed = FALSE) {
-  num_roots <- reticulate::iterate(ts$trees(), function(t) t$num_roots)
-  if (all(num_roots == 1))
+  tmp_var <- paste0("ts_py_object_", paste(sample(LETTERS, 20, TRUE), collapse = ""))
+  # this is the same performance hack used also in get_table_data(), avoiding
+  # the need to iterate with pure R with:
+  #   num_roots <- reticulate::iterate(ts$trees(), function(t) t$num_roots)
+  assign(tmp_var, ts, envir = globalenv())
+  single_root <- reticulate::py_run_string(sprintf("single_root = [not tree.has_multiple_roots for tree in r.%s.trees()]", tmp_var))$single_root
+  on.exit(rm(list = tmp_var, envir = globalenv()), add = TRUE)
+
+  if (all(single_root))
     return(TRUE)
   else if (return_failed)
-    return(which(num_roots) - 1)
+    return(which(!single_root) - 1)
   else
     return(FALSE)
 }
@@ -1086,7 +1158,10 @@ get_table_data <- function(ts, model, spatial, simplify_to = NULL) {
     remembered, retained, alive, pedigree_id
   )
 
-  combined
+  if (spatial)
+    combined
+  else
+    dplyr::as_tibble(combined)
 }
 
 get_sampling <- function(ts) {
