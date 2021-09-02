@@ -126,7 +126,7 @@
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
     <li>
-      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
+      <a href="../articles/vignette-05-tree-sequences.html">Tree sequence processing and statistics</a>
     </li>
     <li>
       <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
@@ -369,6 +369,12 @@
           <p><code><a href="print.slendr_pop.html">print(<i>&lt;slendr_pop&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_region&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_map&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_model&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_tsdata&gt;</i>)</a></code> </p>
         </td>
         <td><p>Print a short summary of a <code>slendr</code> object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_ancestors.html">plot_ancestors()</a></code> </p>
+        </td>
+        <td><p>Plot locations of ancestors of given individual or node on a map</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -416,7 +422,7 @@
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-tree-sequence-loading-and-processing" class="hasAnchor"><a href="#section-tree-sequence-loading-and-processing" class="anchor"></a>Tree-sequence loading and processing</h2>
+          <h2 id="section-tree-sequence-loading-and-processing" class="hasAnchor"><a href="#section-tree-sequence-loading-and-processing" class="anchor"></a>Tree sequence loading and processing</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -452,6 +458,25 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="ts_coalesced.html">ts_coalesced()</a></code> </p>
+        </td>
+        <td><p>Check that all trees in the tree sequence are fully coalesced</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-extracting-genotypes-from-tree-sequences" class="hasAnchor"><a href="#section-extracting-genotypes-from-tree-sequences" class="anchor"></a>Extracting genotypes from tree sequences</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
           <p><code><a href="ts_genotypes.html">ts_genotypes()</a></code> </p>
         </td>
         <td><p>Extract genotype table from the tree sequence</p></td>
@@ -467,29 +492,11 @@
           <p><code><a href="ts_vcf.html">ts_vcf()</a></code> </p>
         </td>
         <td><p>Save genotypes from the tree sequenceas a VCF file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ts_coalesced.html">ts_coalesced()</a></code> </p>
-        </td>
-        <td><p>Check that all trees in the tree sequence are fully coalesced</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ts_draw.html">ts_draw()</a></code> </p>
-        </td>
-        <td><p>Plot a graphical representation of a single tree</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot_ancestors.html">plot_ancestors()</a></code> </p>
-        </td>
-        <td><p>Plot locations of ancestors of given individual or node on a map</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-accessing-tree-sequence-components" class="hasAnchor"><a href="#section-accessing-tree-sequence-components" class="anchor"></a>Accessing tree-sequence components</h2>
+          <h2 id="section-accessing-tree-sequence-components" class="hasAnchor"><a href="#section-accessing-tree-sequence-components" class="anchor"></a>Accessing tree sequence components</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -519,20 +526,26 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="ts_samples.html">ts_samples()</a></code> </p>
+        </td>
+        <td><p>Extract names and times of individuals scheduled for sampling</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="ts_tree.html">ts_tree()</a></code> </p>
         </td>
         <td><p>Get a tree from a given tree sequence</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ts_samples.html">ts_samples()</a></code> </p>
+          <p><code><a href="ts_draw.html">ts_draw()</a></code> </p>
         </td>
-        <td><p>Extract names and times of individuals scheduled for sampling</p></td>
+        <td><p>Plot a graphical representation of a single tree</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-tree-sequence-statistics" class="hasAnchor"><a href="#section-tree-sequence-statistics" class="anchor"></a>Tree-sequence statistics</h2>
+          <h2 id="section-tree-sequence-statistics" class="hasAnchor"><a href="#section-tree-sequence-statistics" class="anchor"></a>Tree sequence statistics</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
