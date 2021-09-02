@@ -327,13 +327,24 @@ ts_genotypes <- function(ts) {
 #' EIGENSTRAT data produced by this function can be used by the admixr R package
 #' (<https://bodkan.net/admixr>).
 #'
+#' In case an outgroup was not formally specified in a slendr model which
+#' generated the tree sequence data, it is possible to artificially create an
+#' outgroup sample with the name specified by the \code{outgroup} argument,
+#' which will carry all ancestral alleles (i.e. value "2" in a geno file
+#' for each position in a snp file).
+#'
 #' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param prefix EIGENSTRAT trio prefix
+#' @param chrom The name of the chromosome in the EIGENSTRAT snp file
+#'   (default "chr1")
+#' @param outgroup Should a formal, artificial outgroup be added? If \code{NULL}
+#'   (default), no outgroup is added. A non-NULL character name will serve as
+#'   the name of the outgroup in an ind file.
 #'
 #' @return Object of the class EIGENSTRAT created by the admixr package
 #'
 #' @export
-ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
+ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
   if (!attr(ts, "recapitated") && !ts_coalesced(ts))
     stop("Tree sequence was not recapitated and some nodes do not ",
          "have parents over some portion of their genome. This is interpreted as ",
@@ -377,6 +388,17 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", quiet = FALSE) {
             "genomic locations being integer values.")
     snp <- snp[!dup_muts, ]
     geno <- geno[!dup_muts, ]
+  }
+
+  # add an artificial outgroup individual carrying ancestral alleles only
+  if (!is.null(outgroup)) {
+    geno[[as.character(outgroup)]] <- 2
+    ind <- data.frame(
+      id = as.character(outgroup),
+      sex = "U",
+      label = as.character(outgroup)
+    ) %>%
+        dplyr::bind_rows(ind, .)
   }
 
   # save the EIGENSTRAT trio
