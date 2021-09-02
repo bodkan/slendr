@@ -1,26 +1,19 @@
-> OK, giving it a look now.  Comments:
+### ✅ Done
 
------
-
-### ✅ done
 > You should add formatted comments for the "jump menu" in SLiMgui.  For example, you have a big comment:
-> 
+> ```
 > //////////////////////////////////////////////////////////////////////
 > // Scheduled script blocks
 > //////////////////////////////////////////////////////////////////////
-> 
+> ```
 > If you instead write that as:
-> 
+> ```
 > ///
 > /// Scheduled script blocks
 > ///
-> 
+> ```
 > Then you'll get a jump menu that has a bold "scheduled script blocks" header with dividers above and below; very nice.  Do the same for your comment "Simulation utility functions".  The jump menu not only makes it easier to navigate around in a big file like this, but also makes it easy to approach an unfamiliar script by providing a top-level outline of what's going on.
-
-----
-
-### ❓
-
+> 
 > You could also annotate the individual script blocks with structured comments like this.  For example, if you rewrite your comment on 1 early() as:
 > 
 > 1 early() // Schedule script block events
@@ -28,7 +21,8 @@
 > 
 > then it displays in the Jump menu with the comment "Schedule script block events" after "1 early()", in the same menu item.  Doing this for most/all of your events and callbacks would be very useful, IMHO.  You can even use emoji if you want to, which seems silly at first, but actually makes it very visual - the eye then doesn't have to read, but can look for the "rocket ship" for simulation start, or the "baby" for reproduction, or whatever the case may be.  Probably not an emoji in every comment, but used sparingly for the most important spots, they can be useful.  I am increasingly enamored with this sort of annotation (not just emoji, but the jump menu annotations in general).
 
-This unfortunately doesn't work for me.
+
+Brilliant, I had no idea about this feature. 👍
 
 ---
 

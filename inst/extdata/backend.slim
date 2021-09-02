@@ -92,7 +92,7 @@ initialize() {
   initializeMutationRate(0.0);
 }
 
-1 early() { // Schedule script block events
+1 early() /* Schedule script block events */ {
   // announce the start of the burnin and of the simulation itself
   sim.rescheduleScriptBlock(s0, generations = SIM_START);
 
@@ -154,7 +154,7 @@ initialize() {
   } else
      sim.deregisterScriptBlock(s9);
 
-  // remember individuals for tree-sequence recording
+  // remember individuals for tree sequence recording
   if (TS_RECORDING) {
      sim.rescheduleScriptBlock(s10, start = SIM_START, end = SIM_END);
   } else
@@ -175,14 +175,14 @@ initialize() {
 /// Scheduled script blocks
 ///
 
-s0 late() { // Log the start of the simulation
+s0 late() /* Log the start of the simulation */ {
   if (sim.generation == 1 & BURNIN_LENGTH > 0)
     log_output("start of burnin");
   else
     log_output("starting the simulation");
 }
 
-s1 late() { // Population splits
+s1 late() /* Population splits */ {
   pops = filter(POPULATIONS, "tsplit", sim.generation);
 
   for (i in seqLen(num_rows(pops))) {
@@ -203,8 +203,7 @@ s1 late() { // Population splits
   }
 }
 
-// Geneflow events
-s2 late() {
+s2 late() /* Geneflow events */ {
   events = filter(GENEFLOWS, "tstart", sim.generation);
   for (i in seqLen(num_rows(events))) {
     event = events.getRowValues(i);
@@ -212,7 +211,7 @@ s2 late() {
   }
 }
 
-s3 late() { // Stopping geneflow
+s3 late() /* Stopping geneflow */ {
   events = filter(GENEFLOWS, "tend", sim.generation);
   for (i in seqLen(num_rows(events))) {
     event = events.getRowValues(i);
@@ -220,7 +219,7 @@ s3 late() { // Stopping geneflow
   }
 }
 
-s4 late() { // Update spatial population boundaries
+s4 late() /* Update spatial population boundaries */ {
   maps = filter(MAPS, "tmap", sim.generation);
 
   for (i in seqLen(num_rows(maps))) {
@@ -237,7 +236,7 @@ s4 late() { // Update spatial population boundaries
   }
 }
 
-s5 { // Step population size changes
+s5 /* Step population size changes */ {
   // get all step resize events active in this generation
   all_events = filter(RESIZES, "tresize", sim.generation);
   events = filter(all_events, "how", "step");
@@ -251,7 +250,7 @@ s5 { // Step population size changes
   }
 }
 
-s6 { // Exponential population size changes
+s6 /* Exponential population size changes */ {
   if (!num_rows(RESIZES)) return;
 
   // get exponential resize events active in (i.e. overlapping) this generation
@@ -286,7 +285,7 @@ s6 { // Exponential population size changes
   }
 }
 
-s7 late() { // Changing interaction distances and dispersals
+s7 late() /* Changing interaction distances and dispersals */ {
   events = filter(INTERACTIONS, "tdispersal", sim.generation);
 
   for (i in seqLen(num_rows(events))) {
@@ -327,7 +326,7 @@ s7 late() { // Changing interaction distances and dispersals
   evaluate_interactions();
 }
 
-s8 late() { // Save locations of all individuals
+s8 late() /* Save locations of all individuals */ {
   filename = output_path("ind_locations.tsv.gz");
   for (ind in sim.subpopulations.individuals) {
     ind_str = paste(sim.generation, original_time(sim.generation),
@@ -337,7 +336,7 @@ s8 late() { // Save locations of all individuals
   }
 }
 
-s9 late() { // Write ancestry proportions in the current generation
+s9 late() /* Write ancestry proportions in the current generation */ {
   for (pop in sim.subpopulations) {
     pop_name = filter(POPULATIONS, "pop_id", pop.id).getValue("pop");
     line = paste(SIM_END - sim.generation, calc_ancestry(pop), sep = "\t");
@@ -346,7 +345,7 @@ s9 late() { // Write ancestry proportions in the current generation
   }
 }
 
-s10 late() { // Remember individuals for tree-sequence recording
+s10 late() /* Remember individuals for tree sequence recording */ {
   events = filter(SAMPLING, "time", sim.generation);
 
   for (i in seqLen(num_rows(events))) {
@@ -381,14 +380,14 @@ s10 late() { // Remember individuals for tree-sequence recording
   }
 }
 
-1: late() { // Retain all individuals in each generation
+1: late() /* Retain all individuals in each generation */ {
   // note that permanent remembering takes priority in SLiM so this doesn't
   // override permanent remembering performed above
   if (TS_RECORDING)
     sim.treeSeqRememberIndividuals(sim.subpopulations.individuals, permanent = F);
 }
 
-s11 late() { // Schedule removal of populations
+s11 late() /* Schedule removal of populations */ {
   pops = filter(POPULATIONS, "tremove", sim.generation);
   for (i in seqLen(num_rows(pops))) {
     pop = pops.getRowValues(i);
@@ -398,9 +397,9 @@ s11 late() { // Schedule removal of populations
   }
 }
 
-s12 late() { // End of simulation
+s12 late() /* End of simulation */ {
   if (TS_RECORDING) {
-    log_output("saving the tree-sequence file");
+    log_output("saving the tree sequence file");
     filename = output_path("ts.trees");
     metadata = Dictionary("sampling", SAMPLING);
     sim.treeSeqOutput(filename, metadata = metadata);
@@ -414,23 +413,23 @@ s12 late() { // End of simulation
 /// Interaction and fitness callbacks
 ///
 
-1: late() { // Evaluate spatial interactions
+1: late() /* Evaluate spatial interactions */ {
   evaluate_interactions();
 }
 
-2: fitness(NULL) { // Compute fitness of individuals
+2: fitness(NULL) /* Compute fitness of individuals */ {
   if (!SPATIAL) return 1.0;
   interaction = sim.interactionTypes[2 * subpop.id];
   totalStrength = interaction.totalOfNeighborStrengths(individual);
   return 1.1 - totalStrength / subpop.individualCount;
 }
 
-2: mateChoice() { // Compute mating interaction
+2: mateChoice() /* Compute mating interaction */ {
   if (!SPATIAL) return NULL;
   return sim.interactionTypes[2 * subpop.id + 1].strength(individual);
 }
 
-modifyChild() { // Place offspring within its population's boundary
+modifyChild() /* Place offspring within its population's boundary */ {
   if (!SPATIAL) return T;
 
   // assign locations uniformly in spatially non-overlapping geneflow
@@ -552,8 +551,57 @@ function (lifso<Subpopulation>$) get_pop(si$ i) {
   return sim.subpopulations[i == sim.subpopulations.id];
 }
 
+// Convert times in a given table to absolute SLiM times by adding
+// the burnin length to each time point (except for events involving
+// ancestral populations which always start at 1 to include them
+// in the burnin)
+function (void) slim_time(No<Dictionary>$ table) {
+  if (!isNULL(table)) {
+    // list of all possible time columns to look for
+    time_columns = c("time", "tsplit", "tmap", "tremove",
+                     "tresize", "tstart", "tend", "tdispersal");
+
+    // get time columns present in the current table
+    columns = setIntersection(table.allKeys, time_columns + "_gen");
+    // for each time column, create a new column (without the "_gen" suffix)
+    for (col in columns) {
+      // shift the time by the burnin length
+      new_times = table.getValue(col);
+      new_times[new_times != -1] = BURNIN_LENGTH + new_times[new_times != -1];
+
+      // for ancestral populations, restore 'split times' and times of
+      // the first map update back to 1
+      if (col == "tsplit_gen")
+        new_times[POPULATIONS.getValue("parent") == "ancestor"] = 1;
+      else if (col == "tmap_gen") {
+        for (id in filter(POPULATIONS, "parent", "ancestor").getValue("pop_id"))
+          new_times[which(MAPS.getValue("pop_id") == id)[0]] = 1;
+      } else if (col == "tdispersal_gen") {
+        for (id in filter(POPULATIONS, "parent", "ancestor").getValue("pop_id"))
+          new_times[which(INTERACTIONS.getValue("pop_id") == id)[0]] = 1;
+      }
+
+      // add the new shifted time column to the table
+      new_col = strsplit(col, "_gen")[0]; // remove the "_gen" suffix
+      table.setValue(new_col, new_times);
+    }
+  }
+}
+
+// Convert current generation time into the original units
+function (i) original_time(i$ generation) {
+  if (DIRECTION == "forward") {
+    absolute_start = min(POPULATIONS.getValue("tsplit_gen"));
+    time = (sim.generation - SIM_START + absolute_start) * GENERATION_TIME;
+  } else {
+    absolute_end = SIM_START + round(max(POPULATIONS.getValue("tsplit_orig")) / GENERATION_TIME);
+    time = (absolute_end - sim.generation) * GENERATION_TIME;
+  }
+  return asInteger(time);
+}
+
 ///
-/// Output functions
+/// Input/output functions
 ///
 
 // Compose path to the given file in the current model directory
@@ -696,53 +744,4 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
 	  stop("Unknown column '" + column_name + "' in a dataframe");
 
 	return values;
-}
-
-// Convert times in a given table to absolute SLiM times by adding
-// the burnin length to each time point (except for events involving
-// ancestral populations which always start at 1 to include them
-// in the burnin)
-function (void) slim_time(No<Dictionary>$ table) {
-  if (!isNULL(table)) {
-    // list of all possible time columns to look for
-    time_columns = c("time", "tsplit", "tmap", "tremove",
-                     "tresize", "tstart", "tend", "tdispersal");
-
-    // get time columns present in the current table
-    columns = setIntersection(table.allKeys, time_columns + "_gen");
-    // for each time column, create a new column (without the "_gen" suffix)
-    for (col in columns) {
-      // shift the time by the burnin length
-      new_times = table.getValue(col);
-      new_times[new_times != -1] = BURNIN_LENGTH + new_times[new_times != -1];
-
-      // for ancestral populations, restore 'split times' and times of
-      // the first map update back to 1
-      if (col == "tsplit_gen")
-        new_times[POPULATIONS.getValue("parent") == "ancestor"] = 1;
-      else if (col == "tmap_gen") {
-        for (id in filter(POPULATIONS, "parent", "ancestor").getValue("pop_id"))
-          new_times[which(MAPS.getValue("pop_id") == id)[0]] = 1;
-      } else if (col == "tdispersal_gen") {
-        for (id in filter(POPULATIONS, "parent", "ancestor").getValue("pop_id"))
-          new_times[which(INTERACTIONS.getValue("pop_id") == id)[0]] = 1;
-      }
-
-      // add the new shifted time column to the table
-      new_col = strsplit(col, "_gen")[0]; // remove the "_gen" suffix
-      table.setValue(new_col, new_times);
-    }
-  }
-}
-
-// Convert current generation time into the original units
-function (i) original_time(i$ generation) {
-  if (DIRECTION == "forward") {
-    absolute_start = min(POPULATIONS.getValue("tsplit_gen"));
-    time = (sim.generation - SIM_START + absolute_start) * GENERATION_TIME;
-  } else {
-    absolute_end = SIM_START + round(max(POPULATIONS.getValue("tsplit_orig")) / GENERATION_TIME);
-    time = (absolute_end - sim.generation) * GENERATION_TIME;
-  }
-  return asInteger(time);
 }
