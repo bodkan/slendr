@@ -127,7 +127,7 @@
       <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
     </li>
     <li>
-      <a href="../articles/vignette-05-tree-sequences.html">Tree-sequence processing and statistics</a>
+      <a href="../articles/vignette-05-tree-sequences.html">Tree sequence processing and statistics</a>
     </li>
     <li>
       <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
@@ -199,8 +199,18 @@ schedule remembering of individuals in the tree-sequence</p></td>
 of individuals to sample), representing from which populations should how
 many individuals be remembered at times given by <code>times</code></p></td>
     </tr>
+    <tr>
+      <th>strict</th>
+      <td><p>Should any occurence of a population not being present at a
+given time result in an error? Default is <code>FALSE</code>, meaning that invalid
+sampling times for any populations will be quietly ignored.</p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Data frame with three columns: time of sampling, population
+to sample from, how many individuals to sample</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
