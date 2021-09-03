@@ -15,6 +15,14 @@ schedule remembering of individuals in the tree-sequence}
 \item{...}{Lists of two elements (\code{slendr_pop} population object-<number
 of individuals to sample), representing from which populations should how
 many individuals be remembered at times given by \code{times}}
+
+\item{strict}{Should any occurence of a population not being present at a
+given time result in an error? Default is \code{FALSE}, meaning that invalid
+sampling times for any populations will be quietly ignored.}
+}
+\value{
+Data frame with three columns: time of sampling, population
+to sample from, how many individuals to sample
 }
 \description{
 Define sampling events at specified times for a given set of populations
