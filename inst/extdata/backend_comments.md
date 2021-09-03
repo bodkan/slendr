@@ -66,9 +66,11 @@ This actually relates to my other point -- is there a reason (in the current *sl
 
 W.r.t. ancestry tracking mutations, it would be great if SLiM could track ancestry proportions without this. This was initially a hack I used to get an idea whether I implemented gene flow correctly, which I kept because it seemed like a useful thing to have.
 
---- ✅ Done
+---
 
-- "g1.mutationTypes[mut_types]" seems odd, shouldn't that just be "g1.mutationTypes"?  And is there a need to set their stacking policy stuff?  They will never stack anyway, right?  How could they, if new mutations never occur?
+### ✅ Done
+
+> "g1.mutationTypes[mut_types]" seems odd, shouldn't that just be "g1.mutationTypes"?  And is there a need to set their stacking policy stuff?  They will never stack anyway, right?  How could they, if new mutations never occur?
 
 This sounds correct. I think this might be a result of some of my very early misunderstanding of how mutation types should be handled here (going back all the way to before *slendr* was even an R package).
 
