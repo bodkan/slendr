@@ -369,7 +369,7 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
   ind <- dplyr::tibble(id = individuals, sex = "U", label = individuals)
 
   # create a snp file table
-  positions <- round(ts$tables$sites$position)
+  positions <- as.vector(round(ts$tables$sites$position))
   snp <- dplyr::tibble(
     id = sprintf("%s_%s", chrom, as.character(positions)),
     chrom = chrom,
