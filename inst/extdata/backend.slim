@@ -5,20 +5,24 @@ initialize() {
     defineConstant("SIM_SEED", {{seed}});
     setSeed(SIM_SEED); catn("SEED: " + SIM_SEED);
 
-    // optional behavior switches set by the R frontend
-    defineConstant("SPATIAL", {{spatial}});
-    defineConstant("TS_RECORDING", {{ts_recording}});
-    defineConstant("SAVE_LOCATIONS", {{save_locations}}  & SPATIAL);
-    defineConstant("TRACK_ANCESTRY", {{track_ancestry}});
-    defineConstant("N_MARKERS", {{ancestry_markers}});
+    required_arg("MODEL");
+    if (!fileExists(MODEL))
+        stop("Model directory does not exist");
 
-    defineConstant("MODEL_DIR", "{{model_dir}}");
-    defineConstant("OUTPUT_PREFIX", "{{output_prefix}}");
+    required_arg("OUTPUT");
+    if (fileExists(OUTPUT))
+        stop("Invalid output prefix (it must be a directory with a prefix shared by output files");
 
-    defineConstant("GENERATION_TIME", {{generation_time}});
-    defineConstant("DIRECTION", "{{direction}}");
-    defineConstant("BURNIN_LENGTH", {{burnin}});
-    defineConstant("SIM_LENGTH", {{length}});
+    required_arg("SPATIAL"); // TODO these should be deducible from the configuration
+    required_arg("GENERATION_TIME");
+    required_arg("DIRECTION");
+    required_arg("SIM_LENGTH");
+
+    optional_arg("TS_RECORDING", F);
+    optional_arg("SAVE_LOCATIONS", F);
+    optional_arg("TRACK_ANCESTRY", F);
+    optional_arg("N_MARKERS", 0);
+    optional_arg("BURNIN_LENGTH", 0);
 
     // load model definition tables
     defineConstant("POPULATIONS", read_table(config_path("splits.tsv")));
@@ -476,6 +480,16 @@ modifyChild() /* Place offspring within its population's boundary */ {
 /// Utility functions
 ///
 
+// Set a default value of a command-line argument.
+function (void)optional_arg(s arg, lifs default) {
+    if (!exists(arg)) defineConstant(arg, default);
+}
+
+// Check if a required command-line argument was specified.
+function (void)required_arg(s arg) {
+    if (!exists(arg)) stop("Required argument '" + arg + "' is missing\n");
+}
+
 function (void) evaluate_interactions(void) {
     if (SPATIAL) sim.interactionTypes.evaluate();
 }
@@ -608,11 +622,11 @@ function (i) original_time(i$ generation) {
 
 // Compose path to the given file in the current model directory
 function (s$) config_path(s$ file) {
-    return paste0(MODEL_DIR, "/", file);
+    return paste0(MODEL, "/", file);
 }
 
 function (s$) output_path(s$ file) {
-    return paste0(OUTPUT_PREFIX, "_", file);
+    return paste0(OUTPUT, "_", file);
 }
 
 
