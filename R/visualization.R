@@ -152,7 +152,7 @@ interactively.", call. = FALSE)
         geom_sf(data = pop_maps, aes(fill = pop), color = NA, alpha = 0.4) +
         geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
     }
-    p <- p + scale_fill_discrete(drop = FALSE, name = "")
+    p <- p + scale_fill_discrete(drop = FALSE, name = "") + guides(alpha = guide_legend("time"))
 
     # add geneflow arrows, if requested
     if (geneflows) {
