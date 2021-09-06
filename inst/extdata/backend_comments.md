@@ -44,7 +44,7 @@ I hope this won't ruin our friendship, but I'm a card-carrying member of the spa
 
 > Ah, so, I just tried to prettyprint your script in SLiMgui, since the tiny indents were bothering me.  :->  It gave an error, "unexpected token '{'", because of your {{seed}} type placeholders, which violate Eidos syntax.  It'd be nice if your script was syntax-compliant, so maybe you can look for a different way of doing this templating?  One possibility would be to just use a placeholder that already looks like a symbol, like X_X_SEED instead of {{seed}}, or something.  Another possibility would be to use a string, like "{{seed}}" including the quotes, and replace not just the {{seed}} part but the whole "{{seed}}" placeholder.  Etc.  Anything so the script parses as compliant Eidos code; without that, SLiMgui has one hand tied behind its back, and I pretty much always work in SLiMgui.
 
-As explained above, I moved towards specifying the arguments on the command-line.
+As explained above, I moved towards specifying the arguments on the command-line. The current implementation has a massive added benefit in that the user can execute the SLiM script outside of slendr/R, simply by specifying all parameters on the command-line.
 
 ---
 
