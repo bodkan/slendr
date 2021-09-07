@@ -271,7 +271,7 @@ Perhaps even more useful than plotting the locations of simulated individuals is
 
 Because we record the time and the location of every individual that happens to be the ancestor of at least one sampled individual, this means that, looking at the following tree, for instance, we know the true location of every node in this tree (and all other genealogies in the tree sequence as well):
 
-```{r, echo = FALSE}
+```{r, ts_small_tree, echo = FALSE}
 ts_small <- ts_simplify(ts, c("AFR1", "EUR1", "YAM1", "EHG1", "OOA1", "ANA1"))
 
 ts_tree(ts_small, 1) %>% ts_draw(labels = TRUE, ts = ts_small)
