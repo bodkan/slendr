@@ -42,7 +42,7 @@ library(ggplot2)
 
 # use a previously created Python virtual environment containing
 # tskit, pyslim and msprime
-reticulate::use_virtualenv("~/.pyenv/versions/retipy", required = TRUE)
+reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
 ```
 
 First, let's program our spatial model. We will use the same demographic model of modern human history in West Eurasia, which we extensively discussed in the [introductory tutorial](vignette-01-tutorial.html) and on the main [landing page](../index.html). Here is a complete model definition script, without further comments:
