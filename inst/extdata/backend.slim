@@ -407,7 +407,12 @@ s12 late() /* End of simulation */ {
     if (TS_RECORDING) {
         log_output("saving the tree sequence file");
         filename = output_path("ts.trees");
-        metadata = Dictionary("sampling", SAMPLING);
+
+        // add slendr-specific metadata to its own Dictionary key
+        metadata = Dictionary();
+        metadata.setValue("version", "{{slendr_version}}");
+        metadata.setValue("sampling", SAMPLING);
+
         sim.treeSeqOutput(filename, metadata = metadata);
     }
 
