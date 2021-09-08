@@ -1165,7 +1165,7 @@ get_table_data <- function(ts, model, spatial, simplify_to = NULL) {
 }
 
 get_sampling <- function(ts) {
-  ts$metadata$SLiM$user_metadata$sampling %>%
+  ts$metadata$SLiM$user_metadata$slendr$sampling %>%
     purrr::transpose() %>%
     dplyr::as_tibble() %>%
     tidyr::unnest(cols = c("n", "pop", "time", "time_gen", "time_orig")) %>%

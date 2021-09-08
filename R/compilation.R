@@ -342,7 +342,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     generation_time = model$generation_time,
     direction = model$direction,
     seed = if (is.null(seed)) "getSeed()" else seed,
-    sampling = sampling_path
+    sampling = sampling_path,
+    slendr_version = packageVersion("slendr")
   )
 
   # compile all script components, including the backend script, into one file
