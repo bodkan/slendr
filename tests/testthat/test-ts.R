@@ -7,7 +7,7 @@ env_present <- function(path) {
 )
 }
 
-skip_if(!env_present("~/venvs/retipy"))
+skip_if(!env_present("~/.venvs/retipy"))
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
