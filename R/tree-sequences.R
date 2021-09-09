@@ -719,7 +719,8 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
   # the need to iterate with pure R with:
   #   num_roots <- reticulate::iterate(ts$trees(), function(t) t$num_roots)
   assign(tmp_var, ts, envir = globalenv())
-  single_root <- reticulate::py_run_string(sprintf("single_root = [not tree.has_multiple_roots for tree in r.%s.trees()]", tmp_var))$single_root
+  py_code <- sprintf("res = [not tree.has_multiple_roots for tree in r.%s.trees()]", tmp_var)
+  single_root <- reticulate::py_run_string(py_code)$res
   on.exit(rm(list = tmp_var, envir = globalenv()), add = TRUE)
 
   if (all(single_root))
@@ -1081,12 +1082,13 @@ get_ts_individuals <- function(ts) {
 
   # pedigree_id is available as binary metadata encoded in the table of
   # individuals but I have no clue at the moment how to decode it directly in R
-  # -- for now I'm parsing it in Python via reticulate is pretty ugly (but
-  # reasonably fast)
+  # -- for now I'm parsing it in Python via reticulate which is pretty ugly (but
+  # much faster than the iterative solution through reticulate)
   tmp_var <- paste0("ts_py_object_", paste(sample(LETTERS, 20, TRUE), collapse = ""))
   # reticulate doesn't seem to be able to expose non-global objects :(
   assign(tmp_var, ts, envir = globalenv())
-  pedigree_ids <- reticulate::py_run_string(sprintf("pedigree_ids = [ind.metadata['pedigree_id'] for ind in r.%s.tables.individuals]", tmp_var))$pedigree_ids
+  py_code <- sprintf("ids = [ind.metadata['pedigree_id'] for ind in r.%s.individuals()]", tmp_var)
+  pedigree_ids <- reticulate::py_run_string(py_code)$ids
   on.exit(rm(list = tmp_var, envir = globalenv()), add = TRUE)
 
   dplyr::tibble(
