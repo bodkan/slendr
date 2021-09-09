@@ -2,27 +2,26 @@
 /// Initialization block
 ///
 initialize() {
-    defineConstant("SIM_SEED", {{seed}});
-    setSeed(SIM_SEED); catn("SEED: " + SIM_SEED);
-
     required_arg("MODEL");
-    if (!fileExists(MODEL))
-        stop("Model directory does not exist");
+    if (!fileExists(MODEL)) stop("Model directory does not exist");
 
-    required_arg("OUTPUT");
-    if (fileExists(OUTPUT))
-        stop("Invalid output prefix (it must be a directory with a prefix shared by output files");
+    required_arg("SEQ_LENGTH");
+    required_arg("RECOMB_RATE");
 
-    required_arg("SPATIAL"); // TODO these should be deducible from the configuration
-    required_arg("GENERATION_TIME");
-    required_arg("DIRECTION");
-    required_arg("SIM_LENGTH");
+    optional_arg("SEED", getSeed()); catn("SEED: " + SEED);
+    optional_arg("OUTPUT", paste0(MODEL, "/output"));
 
-    optional_arg("TS_RECORDING", F);
+    optional_arg("TS_RECORDING", T);
     optional_arg("SAVE_LOCATIONS", F);
     optional_arg("TRACK_ANCESTRY", F);
     optional_arg("N_MARKERS", 0);
     optional_arg("BURNIN_LENGTH", 0);
+    optional_arg("MUT_RATE", 0);
+
+    defineConstant("SPATIAL", fileExists(config_path("maps.tsv")));
+    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
+    defineConstant("SIM_LENGTH", asInteger(readFile(config_path("length.txt"))));
+    defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
 
     // load model definition tables
     defineConstant("POPULATIONS", read_table(config_path("splits.tsv")));
@@ -90,11 +89,9 @@ initialize() {
         initializeGenomicElementType("g1", m0, 1.0);
     }
 
-    defineConstant("SEQ_LENGTH", asInteger({{seq_length}}));
     initializeGenomicElement(g1, 0, SEQ_LENGTH - 1);
-
-    initializeRecombinationRate({{recomb_rate}});
-    initializeMutationRate(0.0);
+    initializeMutationRate(MUT_RATE);
+    initializeRecombinationRate(RECOMB_RATE);
 }
 
 1 early() /* Schedule script block events */ {
@@ -405,12 +402,12 @@ s11 late() /* Schedule removal of populations */ {
 
 s12 late() /* End of simulation */ {
     if (TS_RECORDING) {
-        log_output("saving the tree sequence file");
+        log_output("saving the tree sequence output");
         filename = output_path("ts.trees");
 
         // add slendr-specific metadata to its own Dictionary key
         metadata = Dictionary();
-        metadata.setValue("version", "{{slendr_version}}");
+        metadata.setValue("version", "__VERSION__");
         metadata.setValue("sampling", SAMPLING);
 
         sim.treeSeqOutput(filename, metadata = Dictionary("slendr", metadata));
