@@ -31,7 +31,7 @@ initialize() {
     defineConstant("POPULATIONS", read_table(config_path("splits.tsv")));
     defineConstant("GENEFLOWS", read_table(config_path("geneflow.tsv")));
     defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
-    defineConstant("SAMPLING", read_table(output_path("samples.tsv")));
+    defineConstant("SAMPLING", read_table(config_path("samples.tsv")));
 
     if (SPATIAL) {
         defineConstant("INTERACTIONS", read_table(config_path("dispersals.tsv")));
@@ -328,7 +328,7 @@ s7 late() /* Changing interaction distances and dispersals */ {
         }
     }
 
-    sim.interactionTypes.evaluate()
+    sim.interactionTypes.evaluate();
 }
 
 s8 late() /* Save locations of all individuals */ {
@@ -405,7 +405,7 @@ s11 late() /* Schedule removal of populations */ {
 s12 late() /* End of simulation */ {
     if (TS_RECORDING) {
         log_output("saving the tree sequence output");
-        filename = output_path("ts.trees");
+        filename = output_path(".trees");
 
         // add slendr-specific metadata to its own Dictionary key
         metadata = Dictionary();
