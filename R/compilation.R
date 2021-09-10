@@ -471,8 +471,8 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   saved_files["generation_time"] <- file.path(dir, "generation_time.txt")
   saved_files["length"] <- file.path(dir, "length.txt")
   saved_files["direction"] <- file.path(dir, "direction.txt")
-  base::write(as.integer(generation_time), file.path(dir, "generation_time.txt"))
-  base::write(as.integer(length), file.path(dir, "length.txt"))
+  base::write(generation_time, file.path(dir, "generation_time.txt"))
+  base::write(round(length / generation_time), file.path(dir, "length.txt"))
   base::write(direction, file.path(dir, "direction.txt"))
 
   checksums <- calculate_checksums(saved_files)
