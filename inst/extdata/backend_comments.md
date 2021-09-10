@@ -1,70 +1,36 @@
-### ✅ Done
+### Done ✅
 
-> You should add formatted comments for the "jump menu" in SLiMgui.  For example, you have a big comment:
-> ```
-> //////////////////////////////////////////////////////////////////////
-> // Scheduled script blocks
-> //////////////////////////////////////////////////////////////////////
-> ```
-> If you instead write that as:
-> ```
-> ///
-> /// Scheduled script blocks
-> ///
-> ```
-> Then you'll get a jump menu that has a bold "scheduled script blocks" header with dividers above and below; very nice.  Do the same for your comment "Simulation utility functions".  The jump menu not only makes it easier to navigate around in a big file like this, but also makes it easy to approach an unfamiliar script by providing a top-level outline of what's going on.
-> 
-> You could also annotate the individual script blocks with structured comments like this.  For example, if you rewrite your comment on 1 early() as:
-> 
-> 1 early() // Schedule script block events
-> {
-> 
-> then it displays in the Jump menu with the comment "Schedule script block events" after "1 early()", in the same menu item.  Doing this for most/all of your events and callbacks would be very useful, IMHO.  You can even use emoji if you want to, which seems silly at first, but actually makes it very visual - the eye then doesn't have to read, but can look for the "rocket ship" for simulation start, or the "baby" for reproduction, or whatever the case may be.  Probably not an emoji in every comment, but used sparingly for the most important spots, they can be useful.  I am increasingly enamored with this sort of annotation (not just emoji, but the jump menu annotations in general).
-
-
-Brilliant, I had no idea about this feature. 👍
+> You should add formatted comments for the "jump menu" in SLiMgui.
+>
+> [...]
+>
+> You could also annotate the individual script blocks with structured comments
+>
+> [...]
 
 ---
 
-> You have elements in the script that I guess get replaced by your R script, like "{{seed}}".  For those, maybe it would be nice to have a comment to the right saying what type they are?  It's just a bit hard to read the script when the very first thing it does is define a whole bunch of constants that, AFAIK, could be of any type and have any sort of value.  A comment hint would thus be helpful.  Of course, besides their type it would also be useful to say what they mean, very briefly; i.e., is GENERATION_TIME the total length of the simulation, or a scaling factor that translates between model ticks and biological generations, or what?
+### Done ✅
 
-This is an excellent point. I have now changed to backend from an Eidos/SLiM-noncompliant code (which used those `{{var}}` R templating substitution markers) to normal SLiM command-line parameters. I had originaly a specific idea for the R templating (it was supposed to power those custom user-defined SLiM "modules") but it's an overkill in this case.
-
----
-
-### ✅ Done
-
-> You seem to be using two-space indents, I'd suggest tabs?  Note that SLiMgui can prettyprint your code for you, either shallowly (click the button) or deeply (option-click the button).
-
-I hope this won't ruin our friendship, but I'm a card-carrying member of the spaces-and-not-tabs camp. 😬 However, I do admit that the two-space indent style comes from an R style guide which perhaps doesn't make sense to use for non-R code (it's just a default that RStudio has that I just stuck with). My eyes are already used to these shallow indents, but I changed these to four-space indents. Hopefully a reasonable compromise.
+> You have elements in the script that I guess get replaced by your R script, like "{{seed}}".  For those, maybe it would be nice to have a comment to the right saying what type they are? [...] Of course, besides their type it would also be useful to say what they mean [...].
 
 ---
 
-### ⏳ In-progress
+### Done ✅
 
-> Ah, so, I just tried to prettyprint your script in SLiMgui, since the tiny indents were bothering me.  :->  It gave an error, "unexpected token '{'", because of your {{seed}} type placeholders, which violate Eidos syntax.  It'd be nice if your script was syntax-compliant, so maybe you can look for a different way of doing this templating?  One possibility would be to just use a placeholder that already looks like a symbol, like X_X_SEED instead of {{seed}}, or something.  Another possibility would be to use a string, like "{{seed}}" including the quotes, and replace not just the {{seed}} part but the whole "{{seed}}" placeholder.  Etc.  Anything so the script parses as compliant Eidos code; without that, SLiMgui has one hand tied behind its back, and I pretty much always work in SLiMgui.
+> [...] It'd be nice if your script was syntax-compliant, so maybe you can look for a different way of doing this templating?  One possibility would be to just use a placeholder that already looks like a symbol, like X_X_SEED instead of {{seed}}, or something. [...]
 
-As explained above, I moved towards specifying the arguments on the command-line. The current implementation has a massive added benefit in that the user can execute the SLiM script outside of slendr/R, simply by specifying all parameters on the command-line.
+I have now changed the backend from an Eidos/SLiM-noncompliant code (which used those `{{var}}` R templating substitution markers which I unfortunately had no influence over) to normal SLiM command-line parameters. I had originaly a specific idea for the R templating (it was supposed to power those custom user-defined SLiM "modules" I mentioned and make them easy to work with in R) but it's an overkill in this case.
 
----
-
-### 💡
-
-> Note that "asInteger({{seq_length}})" is unnecessary unless the string you put in place of {{seq_length}} is not an integer (which seems like it would be a bug?).  In Eidos, unlike in R, 10 is an integer, not numeric, and in fact 5e5 is also an integer.  Ah, but 5.5e5 is a float, which is arguably a bug in Eidos; that should be an integer too.  So OK, maybe you need that call.  Just thinking out loud, and now I'm curious whether you guys agree that 5.5e5 being float is a bug in Eidos.  :->
-
-My vote would be for 5e5 being an integer, if only because the "numeric but not integer" thing in R bothers me a bit. :)
+The benefit of the current approach is that once a slendr user `compile()`s a model getting a SLiM script back, then can run it from the command-line as any other SLiM script. I.e., the `slim()` runner function passes the parameters via CLI instead of substituting the template variables.
 
 ---
 
-### ☎️ Zoom call?
+### Done ✅
 
-> I see that you do "initializeMutationRate(0.0);".  So slendr simulations never have new mutations at all?  It looks like you define genomic element types only for ancestry inference, when tree sequence recording is turned off I suppose?  And I guess neutral mutations can be overlaid, with treeseq at least.
+> You seem to be using two-space indents, I'd suggest tabs?
 
-Calling `initializeMutationRate(0.0)` is a remnant of me originally not knowing what is it all that *slendr* would be doing in the final version. The original plan (which included those user-defined SLiM "modules") was that this would be flexible, including specifying user-defined non-neutral mutation types. Now that we agreed that the optional selection (and other) modules will not be heavily emphasised in the first version, perhaps I could add `mutation_rate` as an optional argument of the `slim()` functions.
-
-This actually relates to my other point -- is there a reason (in the current *slendr* design) to support other output type than tree sequences? If tree sequences are to be the main output type (which I'm striving to make as easy to use from R as possible), do we even want to support something else than `initializeMutationRate(0.0)`? Thoughts @petrelharp @FerRacimo?
-
-W.r.t. ancestry tracking mutations, it would be great if SLiM could track ancestry proportions without this. This was initially a hack I used to get an idea whether I implemented gene flow correctly, which I kept because it seemed like a useful thing to have.
+I hope this won't ruin our friendship, but I'm a card-carrying member of the spaces-but-not-tabs camp. 😬 However, I do admit that the two-space indents come from an R style guide which doesn't fit SLiM code (or non-R code in general). I changed the code to four-space indents. Hopefully a reasonable compromise.
 
 ---
 
@@ -72,27 +38,85 @@ W.r.t. ancestry tracking mutations, it would be great if SLiM could track ancest
 
 > "g1.mutationTypes[mut_types]" seems odd, shouldn't that just be "g1.mutationTypes"?  And is there a need to set their stacking policy stuff?  They will never stack anyway, right?  How could they, if new mutations never occur?
 
-This sounds correct. I think this might be a result of some of my very early misunderstanding of how mutation types should be handled here (going back all the way to before *slendr* was even an R package).
-
----
-
-### ✅
-
-> I don't think I'm going to try to thoroughly grok your whole script; it's too complex and difficult to understand since it is table-driven etc.  That's nothing against your code or design, it looks very clean to me.  It just takes a lot of work to get deeply into a script like this without the help of the author.  :->  I'd be happy to have a zoom with you where we go over the script line by line, though; that would probably be useful for both of us.  Anyway, I'm going to limit myself to more superficial comments based on what I see just skimming your code without trying to deeply understand it.
-
-I agree, a separate Zoom call where we could go through this would be great. Let's do this some time after the tskit meeting.
-
-I admit that the script grew much larger than I expected. I'm very happy with the Dictionary/table-design because it made the code *much* easier for me to write to support all the possible *slendr* defined models regardless how crazy the model specification is (the alternative would be to generate lots of auto-generated SLiM code). But it does turn the backend kind of into its own thing (which is honestly a huge 👏 to SLiM/Eidos).
+You're right. I think this might be a result of some of my very early misunderstanding of how mutation types should be handled here (going back all the way to before *slendr* was even an R package).
 
 ---
 
 ### Done ✅
 
-> You do "N = event.getValue("N");", so N is a variable.  I know that's the standard popgen symbol of course, but I try to reserve all-caps symbols for defined constants to avoid confusion.  I first saw "N" being slightly later, and thought "oh, he defined a constant N, that's surprising", and only when I traced it back did I realize it's a variable.  Since "n" would not be great, how about "pop_size" or some such?
+> You do "N = event.getValue("N");", so N is a variable. [...] how about "pop_size" or some such?
 
 ---
 
-### Zoom ☎️
+### Done ✅
+
+> add_markers() checks if (TRACK_ANCESTRY) and does nothing if it's false.  Seems weird to me; more normal would be to put the if (TRACK_ANCESTRY) outside the function, in the caller not the function.  This is because the function name suggests that the function simply "adds markers"; if it does what you have it doing, it should be named "add_markers_if_tracking_ancestry" or some such.  A nit, but this sort of thing can cause confusion.  Functions/methods should do what their name says they do, to the extent possible.  Sorry for being pedantic, I feel a little guilty about this comment.  :->
+
+No reason to feel guilty. As a fellow nitpicker and code pedant, I appreciate this comment. 👍 In my quasi-semi-defense, I have no idea why this is even there. I think it must be a left-over of a pre-table/Dictionary iteration of the backend which probably did something slightly more in this function.
+
+---
+
+### In-progress ⏳
+
+> set_coordinates() could be made vastly more efficient by vectorizing it, but if it's not a bottleneck don't worry about it, because the way to vectorize it is a little bit gross (see https://github.com/MesserLab/SLiM-Extras/blob/master/models/Recipe_15.10_OnLand.slim)
+
+Ah, this is clever. Also, yet another case where I missed a clear vectorization possibility. I actually think it makes sense to optimize the code as much as possible. I will do some profiling (I've never actually used the SLiM profiler before 😬) and update the PR accordingly based on what I find.
+
+---
+
+### In-progress ⏳
+
+> I wonder whether any of the output you do should be done with LogFile?  Or if you might want to add the option for additional output of runtime stats/metrics using LogFile?
+
+Absolutely. That's something Peter also suggested at some point but I have never managed to get to this. Now that we are close to the final feature set, this is definitely a quality of life improvement worth revisiting.
+
+---
+
+### ⏳ In-progress
+
+> slim_time(), yikes.  That's a lot of complicated code just to translate times.  Would it be possible to do a different approach to this?  You could maybe (a) write out the translated times in the first place so they don't need to be shifted at runtime, or (b) do the shift by simply adding BURNIN_LENGTH when you *use* a time value that you just got from a table?  Don't know if any of this is practical, but this sort of complex dictionary-munging is definitely an obstacle to understanding how the script works.
+
+Hmmm, you're quite right. I agree that the time shifting shouldn't be something that should happen on the backend. I like the idea of the backend being as much of a clean tidy SLiM script as possible (well, as much as its table-driven nature allows). In some way, I'm already doing some of the forward-vs-backward/years-ago-vs-generations voodoo on the R side anyway, precisely for this reason.
+
+---
+
+### ⏳ In-progress
+
+> original_time(), I'm not really sure what it does.  In what units is "current generation time", in what units is "the original units", why are they different, etc.?  The comment on this function needs to be improved.
+
+Basically, very similar thing as the above (except converting times into the slendr model units). What this function does is, yet again, something that should probably happen in the R interface. I will probably tackle this together with the previous point.
+
+---
+
+### Zoom call ☎️
+
+> Note that "asInteger({{seq_length}})" is unnecessary unless the string you put in place of {{seq_length}} is not an integer (which seems like it would be a bug?).  In Eidos, unlike in R, 10 is an integer, not numeric, and in fact 5e5 is also an integer.  Ah, but 5.5e5 is a float, which is arguably a bug in Eidos; that should be an integer too.  So OK, maybe you need that call.  Just thinking out loud, and now I'm curious whether you guys agree that 5.5e5 being float is a bug in Eidos.  :->
+
+My vote would be for 5e5 being an integer and not a float, if only because the "numeric but not integer" thing in R bothers me a bit.
+
+---
+
+### Zoom call ☎️
+
+> I see that you do "initializeMutationRate(0.0);".  So slendr simulations never have new mutations at all?  It looks like you define genomic element types only for ancestry inference, when tree sequence recording is turned off I suppose?  And I guess neutral mutations can be overlaid, with treeseq at least.
+
+Calling `initializeMutationRate(0.0)` is a remnant of me originally not knowing what is it all that *slendr* would be doing. The original plan (which included those user-defined SLiM "modules") was that this would be flexible, including  user-defined non-neutral mutation types. Now that we agreed that the optional selection (and other) modules will not be emphasised in the first version, perhaps I could add `mutation_rate` as an optional argument of the `slim()` functions.
+
+This actually relates to my other point -- is there a reason (in the current *slendr* design) to support other output type than tree sequences? If tree sequences are to be the main output type (which I'm striving to make as easy to use from R as possible), do we even want to support something else than `initializeMutationRate(0.0)`? Thoughts @petrelharp @FerRacimo?
+
+W.r.t. ancestry tracking mutations, it would be great if SLiM could track ancestry proportions without this. This was initially a hack I used to get an idea whether I implemented gene flow correctly, which I kept because it seemed like a useful thing to have.
+
+---
+
+### Zoom call ☎️
+
+> I don't think I'm going to try to thoroughly grok your whole script; it's too complex and difficult to understand since it is table-driven etc.  That's nothing against your code or design, it looks very clean to me.  It just takes a lot of work to get deeply into a script like this without the help of the author.  :->  I'd be happy to have a zoom with you where we go over the script line by line, though; that would probably be useful for both of us.  Anyway, I'm going to limit myself to more superficial comments based on what I see just skimming your code without trying to deeply understand it.
+
+I agree, a separate Zoom call where we could go through this would be great.
+
+---
+
+### Zoom call ☎️
 
 > Your 2: fitness(NULL) callback would probably be considerably more efficient if it were rewritten to (a) not be a callback, (b) use fitnessScaling, and (c) be vectorized.  I don't know whether speed is an issue for your stuff or not.  If it is, you should do a profile in SLiMgui to see where your bottlenecks are, and then perhaps I can help you whittle them down.
 
@@ -102,37 +126,15 @@ I admit that the script grew much larger than I expected. I'm very happy with th
 
 ---
 
-### ✅
+### Done ✅ & Zoom call ☎️
 
 > evaluate_interactions() does "if (SPATIAL) sim.interactionTypes.evaluate();".  The whole existence of this function seems unnecessary to me.  If SPATIAL is F, there will be no defined interaction types, right?  So then calling "sim.interactionTypes.evaluate();" would do nothing, because sim.interactionTypes would evaluate to a zero-length vector.  Am I missing something?
 
-No, you're not missing anything. It's I who missed this obvious logical implication. :) Speaking about missing obvious things, I also didn't realize I could have simply called `sim.interactionTypes.evaluate()` anyway. For someone who's primary reason to love R is its ever-present vectorization I sure am not using it to it's full potential in SLiM...
-
---- ✅
-
-> add_markers() checks if (TRACK_ANCESTRY) and does nothing if it's false.  Seems weird to me; more normal would be to put the if (TRACK_ANCESTRY) outside the function, in the caller not the function.  This is because the function name suggests that the function simply "adds markers"; if it does what you have it doing, it should be named "add_markers_if_tracking_ancestry" or some such.  A nit, but this sort of thing can cause confusion.  Functions/methods should do what their name says they do, to the extent possible.  Sorry for being pedantic, I feel a little guilty about this comment.  :->
-
-No reason to feel guilty. As a fellow nitpicker and code pedant, I appreciate this comment. 👍 In my quasi-semi-defense, I have no idea why this is even there. 😅 I think it must be a left-over of a pre-table/Dictionary iteration of the backend which probably did something slightly more in this function. Thanks for bringing this to my attention. 
+Can't honestly remember why I wrote a dedicated function to this. I *think* I wasn't aware that calling a method on a zero-length vector wouldn't crash (as it would in some situations in R, for instance). There might be cases where I'm doing strange things with interactions and/or their evaluations. Might be worth keeping this in mind during the next Zoom session.
 
 ---
 
-### ⏳ in-progress
-
-> set_coordinates() could be made vastly more efficient by vectorizing it, but if it's not a bottleneck don't worry about it, because the way to vectorize it is a little bit gross (see https://github.com/MesserLab/SLiM-Extras/blob/master/models/Recipe_15.10_OnLand.slim)
-
-Ah, this is clever. Also, yet another case where I missed a clear vectorization possibility. I actually think it makes sense to optimize the code as much as possible. I will do some profiling (I've never actually used the SLiM profiler before 😬) and update the PR accordingly based on what I find.
-
----
-
-### ⏳
-
-> I wonder whether any of the output you do should be done with LogFile?  Or if you might want to add the option for additional output of runtime stats/metrics using LogFile?
-
-Absolutely. That's something Peter also suggested at some point but I have never managed to get to this. I think I even opened a Github issue at some point but closed it as there were so many other new features to implement. Now that we are closer to a final feature set, this is definitely a quality of life improvement worth revisiting.
-
----
-
-### ☎️ Zoom topic?
+### Zoom call ☎️
 
 > calc_ancestry(), interesting.  I really wish we could do this with tree-sequence recording.
 
@@ -140,15 +142,17 @@ Me too! I noticed you discussed this with Peter in our email thread recently. No
 
 ---
 
-### ☎️ Zoom topic?
+### Zoom call ☎️
 
 > Your functions to work with Dictionaries are interesting.  read_table() could instead use Dictionary's JSON-string constructor, if you wrote out your tables as JSON rather than .tsv.  But maybe being able to read a Dictionary from a .tsv is also useful functionality that ought to be in Eidos.  Not sure.  So far my focus has been on JSON because that's what Graham Gower seems to be interested in using.
 
-So, in hindsight, I wish I had figured out a way to save all configuration files to JSON from the get go. It's just that tables were much easier to work with and debug. All slendr tables are storing time-series configuration data, one row per time point, making it really easy to debug things just by looking at the tables, even when they were very long. If there was a way to load tabular data as JSON/Dictionaries, that would make the backend script much shorter and easier to debug... more on that later. :)
+The reason I went with simple plain text tables as the format for all model config files was that this made it much easier for me to debug and inspect issues just by looking at the tables (in shell or in R), even when they were very long. If there was a way to load tabular data as JSON/Dictionaries, that would make everything so much easier!
+
+In principle, what I have works, except for the crucial point of not being able to guess the column types.
 
 ---
 
-### ☎️ Zoom topic?
+### Zoom call ☎️
 
 > - filter(), also interesting.  Something like this could also conceivably be added to Eidos.
 > 
@@ -160,15 +164,7 @@ This would be all incredibly useful additions! I would be very happy if these wo
 
 ---
 
-### ✅ Done
-
-> iter() strikes me as maybe user-defined-function overkill.  What it does is trivial, and I think the code would be clearer if you just replaced calls to iter(d) with seqLen(num_rows(d)).  I was wondering, as I read your code, what this "iter" thing was and why you were using it.
-
-Hmm, good point, I think. Again, I think this functions originates from the first Dictionary-based backend reimplementation. I think that I originally tried to have something aking to Python's `iter` which would, in this case, return rows of the Dictionary one by one? I agree with your assessment though and replaced `iter` with your suggestion.
-
----
-
-### ☎️ Zoom topic?
+### Zoom call ☎️
 
 > convert_type(), eww.  :->  I'd like to better understand exactly why this is needed.  It might be that if you switched to JSON-serialized tables the need for this would disappear.
 
@@ -176,25 +172,11 @@ In a way, I'm happy to see that this awful piece of code is not just my least ha
 
 Long story short, unless I completely missed something, the `read_table` function doesn't have a way to know which columns are of which type. It uses `readFile()` to read the whole file, converting it to a matrix via `strsplit()` call. But my attempts at doing something like `try to convert a column to a type integer, or a float, or a logical and if an error is caught, keep it as a string` failed. Maybe I missed something?
 
-Again, reading the data as a JSON would obviously solve this and perhaps I could even keep the current R implementation by adding one layer which translates data frame representation of the configuration to JSON.
+Again, saving and reading the data as a JSON would obviously help, but I'd rather not change the guts of the package to do this (lots of code currently assumes the data is saved in a plan text tabular form).
 
-But related to the previous point -- is there any chance that a .tsv->Dictionary loading functionality could be added to Eidos? In terms of type conversion, I think even the various .tsv loading R packages simply try to read the first N elements of a column and then decide what the type should be (unless the user specifies the column types upfront).
+But related to the previous point -- is there any chance that a .tsv->Dictionary loading functionality could be added to Eidos? In terms of type guessing, Ivarious .tsv loading R packages simply try to read the first N elements of a column and then decide what the type should be (unless the user specifies the column types upfront).
 
----
-
-### ⏳ In-progress
-
-> slim_time(), yikes.  That's a lot of complicated code just to translate times.  Would it be possible to do a different approach to this?  You could maybe (a) write out the translated times in the first place so they don't need to be shifted at runtime, or (b) do the shift by simply adding BURNIN_LENGTH when you *use* a time value that you just got from a table?  Don't know if any of this is practical, but this sort of complex dictionary-munging is definitely an obstacle to understanding how the script works.
-
-Hmmm, you're very right. I agree that the time shifting shouldn't be something that should happen on the backend. I like the idea of the backend being as much of a clean tidy SLiM script as possible (except perhaps for the table-based stuff). In some way, I'm already doing some forward-vs-backward/years-ago-vs-generations voodoo on the R side anyway, precisely for this reason.
-
----
-
-### ⏳ In-progress
-
-> original_time(), I'm not really sure what it does.  In what units is "current generation time", in what units is "the original units", why are they different, etc.?  The comment on this function needs to be improved.
-
-Same as the above. I tried to help the user keep everything they do in the "time specification" of their choosing (not sure what the right way to call this is -- I mean the direction of time in their model as forward/backward, what is the generation length, etc.), both in the model configuration step (specifying splits, gene flows, spatial dynamics, etc.) and also in the output data. What this function does is, yet again, something that should happen in the R interface.
+Having a `can these values be converted to a given type, let me know` function would make the implementation of this much nicer. Then again, having a dedicated table-loading function would be even better.
 
 ---
 
