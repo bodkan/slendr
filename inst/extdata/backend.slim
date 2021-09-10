@@ -2,26 +2,30 @@
 /// Initialization block
 ///
 initialize() {
-    required_arg("MODEL");
-    if (!fileExists(MODEL)) stop("Model directory does not exist");
+    required_arg("MODEL"); // path to a slendr model directory
+    optional_arg("OUTPUT", paste0(MODEL, "/output")); // shared prefix path of output files
 
-    required_arg("SEQ_LENGTH");
-    required_arg("RECOMB_RATE");
+    if (!fileExists(MODEL))
+        stop("Model directory does not exist");
 
-    optional_arg("SEED", getSeed()); catn("SEED: " + SEED);
-    optional_arg("OUTPUT", paste0(MODEL, "/output"));
+    required_arg("SEQ_LENGTH"); // length of the simulated sequence in bp (integer)
+    required_arg("RECOMB_RATE"); // recombination rate along the simulated sequence (float)
 
-    optional_arg("TS_RECORDING", T);
-    optional_arg("SAVE_LOCATIONS", F);
-    optional_arg("TRACK_ANCESTRY", F);
-    optional_arg("N_MARKERS", 0);
-    optional_arg("BURNIN_LENGTH", 0);
-    optional_arg("MUT_RATE", 0);
+    optional_arg("SEED", getSeed()); // random seed (integer)
+    catn("SEED: " + SEED);
 
-    defineConstant("SPATIAL", fileExists(config_path("maps.tsv")));
-    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
-    defineConstant("SIM_LENGTH", asInteger(readFile(config_path("length.txt"))));
+    optional_arg("TS_RECORDING", T); // should tree sequence recording be on?
+    optional_arg("SAVE_LOCATIONS", F); // record locations of all individuals?
+    optional_arg("TRACK_ANCESTRY", F); // record ancestry proportions in populations?
+    optional_arg("N_MARKERS", 0); // number of regularly-spaced ancestry markers
+    optional_arg("BURNIN_LENGTH", 0); // length of the burnin period (integer, generations)
+
+    defineConstant("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
+
+    defineConstant("SIMULATION_LENGTH", asInteger(readFile(config_path("length.txt"))));
     defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
+
+    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
 
     // load model definition tables
     defineConstant("POPULATIONS", read_table(config_path("splits.tsv")));
@@ -65,8 +69,8 @@ initialize() {
     slim_time(INTERACTIONS);
     slim_time(SAMPLING);
 
-    defineConstant("SIM_START", BURNIN_LENGTH + min(POPULATIONS.getValue("tsplit_gen")));
-    defineConstant("SIM_END", SIM_START + SIM_LENGTH);
+    defineConstant("SIMULATION_START", BURNIN_LENGTH + min(POPULATIONS.getValue("tsplit_gen")));
+    defineConstant("SIMULATION_END", SIMULATION_START + SIMULATION_LENGTH);
 
     if (TS_RECORDING) initializeTreeSeq(retainCoalescentOnly = T);
 
@@ -79,24 +83,21 @@ initialize() {
 
         initializeGenomicElementType("g1", mut_types, rep(1.0, length(mut_types)));
 
-        // all ancestry informative neutral markers have to be prevented
-        // from stacking and from being removed after fixation
-        g1.mutationTypes[mut_types].convertToSubstitution = F;
-        g1.mutationTypes[mut_types].mutationStackPolicy = "l";
-        g1.mutationTypes[mut_types].mutationStackGroup = 0;
+        // prevent neutral ancestry markers from being removed after fixation
+        g1.mutationTypes.convertToSubstitution = F;
     } else {
         initializeMutationType("m0", 0.5, "f", 0.0);
         initializeGenomicElementType("g1", m0, 1.0);
     }
 
     initializeGenomicElement(g1, 0, SEQ_LENGTH - 1);
-    initializeMutationRate(MUT_RATE);
     initializeRecombinationRate(RECOMB_RATE);
+    initializeMutationRate(0.0);
 }
 
 1 early() /* Schedule script block events */ {
     // announce the start of the burnin and of the simulation itself
-    sim.rescheduleScriptBlock(s0, generations = SIM_START);
+    sim.rescheduleScriptBlock(s0, generations = SIMULATION_START);
 
     // population splits
     sim.rescheduleScriptBlock(s1, generations = unique(POPULATIONS.getValue("tsplit")));
@@ -144,21 +145,21 @@ initialize() {
 
     // output locations of individuals
     if (SAVE_LOCATIONS) {
-        sim.rescheduleScriptBlock(s8, start = SIM_START, end = SIM_END);
+        sim.rescheduleScriptBlock(s8, start = SIMULATION_START, end = SIMULATION_END);
         write_locations_header();
     } else
         sim.deregisterScriptBlock(s8);
 
     // output ancestry proportions
     if (TRACK_ANCESTRY) {
-         sim.rescheduleScriptBlock(s9, start = SIM_START, end = SIM_END);
+         sim.rescheduleScriptBlock(s9, start = SIMULATION_START, end = SIMULATION_END);
          write_ancestries_header();
     } else
          sim.deregisterScriptBlock(s9);
 
     // remember individuals for tree sequence recording
     if (TS_RECORDING) {
-         sim.rescheduleScriptBlock(s10, start = SIM_START, end = SIM_END);
+         sim.rescheduleScriptBlock(s10, start = SIMULATION_START, end = SIMULATION_END);
     } else
          sim.deregisterScriptBlock(s10);
 
@@ -170,7 +171,7 @@ initialize() {
          sim.deregisterScriptBlock(s11);
 
     // save data and stop the simulation
-    sim.rescheduleScriptBlock(s12, generations = SIM_END);
+    sim.rescheduleScriptBlock(s12, generations = SIMULATION_END);
 }
 
 ///
@@ -202,7 +203,7 @@ s1 late() /* Population splits */ {
 
         if (TRACK_ANCESTRY) add_markers(pop_id);
 
-        evaluate_interactions();
+        sim.interactionTypes.evaluate();
     }
 }
 
@@ -326,7 +327,8 @@ s7 late() /* Changing interaction distances and dispersals */ {
             get_pop(pop).setValue("dispersal_dist", dispersal_dist);
         }
     }
-    evaluate_interactions();
+
+    sim.interactionTypes.evaluate()
 }
 
 s8 late() /* Save locations of all individuals */ {
@@ -342,7 +344,7 @@ s8 late() /* Save locations of all individuals */ {
 s9 late() /* Write ancestry proportions in the current generation */ {
     for (pop in sim.subpopulations) {
         pop_name = filter(POPULATIONS, "pop_id", pop.id).getValue("pop");
-        line = paste(SIM_END - sim.generation, calc_ancestry(pop), sep = "\t");
+        line = paste(SIMULATION_END - sim.generation, calc_ancestry(pop), sep = "\t");
         filename = output_path("ancestry_" + pop_name + ".tsv");
         writeFile(filename, line, append = T);
     }
@@ -422,7 +424,7 @@ s12 late() /* End of simulation */ {
 ///
 
 1: late() /* Evaluate spatial interactions */ {
-    evaluate_interactions();
+    sim.interactionTypes.evaluate();
 }
 
 2: fitness(NULL) /* Compute fitness of individuals */ {
@@ -490,10 +492,6 @@ function (void)optional_arg(s arg, lifs default) {
 // Check if a required command-line argument was specified.
 function (void)required_arg(s arg) {
     if (!exists(arg)) stop("Required argument '" + arg + "' is missing\n");
-}
-
-function (void) evaluate_interactions(void) {
-    if (SPATIAL) sim.interactionTypes.evaluate();
 }
 
 // Assign a spatial map to a given population
@@ -610,9 +608,9 @@ function (void) slim_time(No<Dictionary>$ table) {
 function (i) original_time(i$ generation) {
     if (DIRECTION == "forward") {
         absolute_start = min(POPULATIONS.getValue("tsplit_gen"));
-        time = (sim.generation - SIM_START + absolute_start) * GENERATION_TIME;
+        time = (sim.generation - SIMULATION_START + absolute_start) * GENERATION_TIME;
     } else {
-        absolute_end = SIM_START + round(max(POPULATIONS.getValue("tsplit_orig")) / GENERATION_TIME);
+        absolute_end = SIMULATION_START + round(max(POPULATIONS.getValue("tsplit_orig")) / GENERATION_TIME);
         time = (absolute_end - sim.generation) * GENERATION_TIME;
     }
     return asInteger(time);
