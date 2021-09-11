@@ -1,8 +1,3 @@
-backend:
-	version=`awk '/Version/ { print $$2 }' DESCRIPTION`; \
-	hash=`git log --pretty=format:'%h' -n 1`; \
-	sed -i 's/__VERSION__/'"$${version}_$${hash}"'/' inst/extdata/backend.slim
-
 restore:
 	git restore man/figures/logo.png docs/reference/figures/logo.png docs/logo.png
 
