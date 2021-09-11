@@ -261,14 +261,12 @@ plot_graph <- function(model) {
 #' Plot simulated ancestry proportions
 #'
 #' @param model Compiled \code{slendr_model} model object
-#' @param output_dir A directory where to put simulation outputs (by default,
-#'   all output files are placed in a model directory)
-#' @param output_prefix A common prefix of output files (by default, all files
-#'   will share a prefix \code{"output"})
+#' @param output_prefix A shared prefix path to output files (by default, all files
+#'   will share a prefix \code{"output"} and are placed in the model directory)
 #'
 #' @export
-plot_ancestry <- function(model, output_dir = model$path, output_prefix = "output") {
-  anc_wide <- read_ancestries(output_dir, output_prefix)
+plot_ancestry <- function(model, output_prefix = file.path(model$path, "output")) {
+  anc_wide <- read_ancestries(output_prefix)
 
   # thank god for tidyverse, base R reshaping is truly awful...  but
   # it's not worth dragging along a huge dependency if we can do this
@@ -305,10 +303,7 @@ plot_ancestry <- function(model, output_dir = model$path, output_prefix = "outpu
 #' Animate the simulated population dynamics
 #'
 #' @param model Compiled \code{slendr_model} model object
-#' @param output_dir A directory where to look for simulation outputs (by default,
-#'   all output files are in a model directory)
-#' @param output_prefix A common prefix of output files (by default, all files
-#'   will share a prefix \code{"output"})
+#' @param file Path to the table of saved individual locations
 #' @param steps How many frames should the animation have?
 #' @param gif Path to an output GIF file (animation object returned
 #'   by default)
@@ -318,12 +313,11 @@ plot_ancestry <- function(model, output_dir = model$path, output_prefix = "outpu
 #'
 #' @import ggplot2
 #' @export
-animate <- function(model, output_dir = model$path, output_prefix = "output",
+animate <- function(model, file = file.path(model$path, "output_ind_locations.tsv.gz"),
                     steps, gif = NULL, width = 800, height = 560) {
   if (!inherits(model$world, "slendr_map"))
     stop("Cannot animate non-spatial models", call. = FALSE)
 
-  file <- file.path(output_dir, paste0(output_prefix, "_ind_locations.tsv.gz"))
   locs <- readr::read_tsv(file, col_types = "iiiidd", progress = FALSE)
   pop_names <- model$splits$pop
 
