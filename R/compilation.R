@@ -475,6 +475,17 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   base::write(round(length / generation_time), file.path(dir, "length.txt"))
   base::write(direction, file.path(dir, "direction.txt"))
 
+  saved_files["script"] <- file.path(dir, "script.slim")
+  # copy the script to the dedicated model directory, replacing the
+  # placeholders for model directory and slendr version accordingly
+  if (is.null(script_path)) {
+    script_path <- system.file("extdata", "backend.slim", package = "slendr")
+    readLines(script_path) %>%
+      gsub("__VERSION__", paste0("slendr_", packageVersion("slendr")), .) %>%
+      cat(file = saved_files["script"], sep = "\n")
+  } else
+    file.copy(script_path, saved_files["script"])
+
   checksums <- calculate_checksums(saved_files)
   utils::write.table(checksums, file.path(dir, "checksums.tsv"), sep = "\t",
                      quote = FALSE, row.names = FALSE)
