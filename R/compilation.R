@@ -111,6 +111,8 @@ setting `direction = 'backward'.`", call. = FALSE)
   } else
     max_time <- sim_length
 
+  length <- if (is.null(sim_length)) max_time else sim_length
+
   map <- get_map(populations[[1]])
 
   split_table <- compile_splits(populations, generation_time, time_dir, max_time)
@@ -134,7 +136,7 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   checksums <- write_model(
     dir, populations, admix_table, map_table, split_table, resize_table,
-    dispersal_table, generation_time, resolution, max_time, time_dir, script_path
+    dispersal_table, generation_time, resolution, length, time_dir, script_path
   )
 
   # compile the result
@@ -148,7 +150,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     dispersals = dispersal_table,
     generation_time = generation_time,
     resolution = resolution,
-    length = round(max_time / generation_time),
+    length = round(length / generation_time),
     direction = time_dir,
     checksums = checksums
   )
@@ -312,7 +314,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   } else
     markers_count <- as.integer(track_ancestry)
 
-  script_path <- file.path(model_dir, "script.slim")
+  script_path <- path.expand(file.path(model_dir, "script.slim"))
   if (!file.exists(script_path))
     stop("Backend script at '", script_path, "' not found", call. = FALSE)
 
@@ -335,39 +337,41 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   seed <- if (is.null(seed)) "" else paste0(" \\\n    -d SEED=", seed)
   samples <- if (is.null(sampling_path)) "" else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
 
-  slim_command <- sprintf("%s %s %s \\
-    -d 'MODEL=\"%s\"' \\
-    -d 'OUTPUT=\"%s\"' \\
-    -d SEQ_LENGTH=%i \\
-    -d RECOMB_RATE=%f \\
-    -d N_MARKERS=%i \\
-    -d TS_RECORDING=%s \\
-    -d SAVE_LOCATIONS=%s \\
-    %s",
-    binary,
-    seed,
-    samples,
-    path.expand(model_dir),
-    output,
-    seq_length,
-    recomb_rate,
-    markers_count,
-    ts_recording,
-    save_locations,
-    path.expand(script_path)
-  )
+  if (method == "gui")
+    system(sprintf("%s %s", binary, script_path))
+  else {
+    slim_command <- sprintf("%s %s %s \\
+      -d 'MODEL=\"%s\"' \\
+      -d 'OUTPUT=\"%s\"' \\
+      -d SEQ_LENGTH=%i \\
+      -d RECOMB_RATE=%f \\
+      -d N_MARKERS=%i \\
+      -d TS_RECORDING=%s \\
+      -d SAVE_LOCATIONS=%s \\
+      %s",
+      binary,
+      seed,
+      samples,
+      path.expand(model_dir),
+      output,
+      seq_length,
+      recomb_rate,
+      markers_count,
+      ts_recording,
+      save_locations,
+      script_path
+    )
 
-  if (verbose) {
-    cat("--------------------------------------------------\n")
-    cat("SLiM command to be executed:\n\n")
-    cat(slim_command, "\n")
-    cat("--------------------------------------------------\n\n")
+    if (verbose) {
+      cat("--------------------------------------------------\n")
+      cat("SLiM command to be executed:\n\n")
+      cat(slim_command, "\n")
+      cat("--------------------------------------------------\n\n")
+    }
+
+    if (system(slim_command, ignore.stdout = !verbose) != 0)
+      stop("SLiM simulation resulted in an error -- see the output above", call. = FALSE)
   }
-
-  if (system(slim_command, ignore.stdout = !verbose) != 0)
-    stop("SLiM simulation resulted in an error -- see the output above", call. = FALSE)
-
-  on.exit(unlink(sampling_path))
 }
 
 
