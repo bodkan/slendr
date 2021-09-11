@@ -2,23 +2,20 @@
 /// Initialization block
 ///
 initialize() {
-    required_arg("MODEL"); // path to a slendr model directory
-    optional_arg("OUTPUT", paste0(MODEL, "/output")); // shared prefix path of output files
+    required_arg("SEQ_LENGTH"); // length of the simulated sequence in bp
+    required_arg("RECOMB_RATE"); // recombination rate along the simulated sequenceoat)
 
-    if (!fileExists(MODEL))
-        stop("Model directory does not exist");
+    optional_arg("SEED", getSeed()); // random seed
+    setSeed(SEED); catn("SEED: " + SEED);
 
-    required_arg("SEQ_LENGTH"); // length of the simulated sequence in bp (integer)
-    required_arg("RECOMB_RATE"); // recombination rate along the simulated sequence (float)
-
-    optional_arg("SEED", getSeed()); // random seed (integer)
-    catn("SEED: " + SEED);
-
+    optional_arg("MODEL", ".");
+    optional_arg("OUTPUT", config_path("output")); // shared path of output files
+    optional_arg("SAMPLES", "");
     optional_arg("TS_RECORDING", T); // should tree sequence recording be on?
     optional_arg("SAVE_LOCATIONS", F); // record locations of all individuals?
-    optional_arg("TRACK_ANCESTRY", F); // record ancestry proportions in populations?
+    optional_arg("TRACK_ANCESTRY", F); // record ancestry proportions?
     optional_arg("N_MARKERS", 0); // number of regularly-spaced ancestry markers
-    optional_arg("BURNIN_LENGTH", 0); // length of the burnin period (integer, generations)
+    optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
 
     defineConstant("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
 
@@ -31,7 +28,7 @@ initialize() {
     defineConstant("POPULATIONS", read_table(config_path("splits.tsv")));
     defineConstant("GENEFLOWS", read_table(config_path("geneflow.tsv")));
     defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
-    defineConstant("SAMPLING", read_table(config_path("samples.tsv")));
+    defineConstant("SAMPLING", read_table(SAMPLES));
 
     if (SPATIAL) {
         defineConstant("INTERACTIONS", read_table(config_path("dispersals.tsv")));
@@ -175,7 +172,7 @@ initialize() {
 }
 
 ///
-/// Scheduled script blocks
+/// Scheduled event script blocks
 ///
 
 s0 late() /* Log the start of the simulation */ {
@@ -405,7 +402,7 @@ s11 late() /* Schedule removal of populations */ {
 s12 late() /* End of simulation */ {
     if (TS_RECORDING) {
         log_output("saving the tree sequence output");
-        filename = output_path(".trees");
+        filename = output_path("ts.trees");
 
         // add slendr-specific metadata to its own Dictionary key
         metadata = Dictionary();
@@ -620,7 +617,6 @@ function (i) original_time(i$ generation) {
 /// Input/output functions
 ///
 
-// Compose path to the given file in the current model directory
 function (s$) config_path(s$ file) {
     return paste0(MODEL, "/", file);
 }
