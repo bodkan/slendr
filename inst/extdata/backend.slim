@@ -19,12 +19,11 @@ initialize() {
     optional_arg("OUTPUT", config_path("output")); // shared path of output files
     optional_arg("SAMPLES", "");
     optional_arg("TS_RECORDING", T); // should tree sequence recording be on?
+    defineConstant("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
     optional_arg("SAVE_LOCATIONS", F); // record locations of all individuals?
     optional_arg("TRACK_ANCESTRY", F); // record ancestry proportions?
     optional_arg("N_MARKERS", 0); // number of regularly-spaced ancestry markers
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
-
-    defineConstant("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
 
     defineConstant("SIMULATION_LENGTH", asInteger(readFile(config_path("length.txt"))));
     defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
@@ -148,7 +147,7 @@ initialize() {
         sim.deregisterScriptBlock(s7);
 
     // output locations of individuals
-    if (SAVE_LOCATIONS) {
+    if (SAVE_LOCATIONS & SPATIAL) {
         sim.rescheduleScriptBlock(s8, start = SIMULATION_START, end = SIMULATION_END);
         write_locations_header();
     } else
