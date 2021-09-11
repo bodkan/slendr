@@ -148,7 +148,7 @@ test_that("ts_eigenstrat and tsv_cf create correct data", {
 
   # match EIGENSTRAT contents
   prefix <- file.path(tempdir(), "eigen")
-  eigenstrat <- ts_eigenstrat(ts, prefix)
+  eigenstrat <- suppressMessages(ts_eigenstrat(ts, prefix))
   ind_names <- sort(admixr::read_ind(eigenstrat)$id)
   expect_true(all(ind_names == ts_names))
 
@@ -171,7 +171,7 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed", {
 
   # match EIGENSTRAT contents
   prefix <- file.path(tempdir(), "eigen")
-  eigenstrat <- ts_eigenstrat(ts, prefix, outgroup = "outgroup_ind")
+  eigenstrat <- suppressMessages(ts_eigenstrat(ts, prefix, outgroup = "outgroup_ind"))
   ind_names <- sort(admixr::read_ind(eigenstrat)$id)
   expect_true(all(ind_names == c("outgroup_ind", ts_names)))
 })
