@@ -367,7 +367,7 @@ process_sampling <- function(samples, model, script_path, verbose) {
     convert_time(direction = model$direction,
                  columns = "time",
                  generation_time = model$generation_time,
-                 max_time = model$length) %>%
+                 max_time = model$length * model$generation_time) %>%
     dplyr::arrange(time_gen)
 
   script_dir <- dirname(script_path)

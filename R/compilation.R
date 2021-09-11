@@ -231,7 +231,7 @@ read <- function(dir) {
     maps = maps,
     generation_time = generation_time,
     resolution = resolution,
-    length = sim_length,
+    length = length,
     direction = direction,
     checksums = checksums
   )
