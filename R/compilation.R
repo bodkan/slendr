@@ -28,13 +28,16 @@
 #' @param direction Intended direction of time. Under normal
 #'   circumstances this parameter is inferred from the model and does
 #'   not need to be set manually.
+#' @param script_path Path to a SLiM script to be used for executing
+#'   the model (by default, a bundled backend script will be used)
 #'
 #' @return Compiled \code{slendr_model} model object
 #' @export
 compile <- function(populations, dir, generation_time, resolution = NULL,
                     competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
                     geneflow = list(), overwrite = FALSE,
-                    sim_length = NULL, direction = NULL) {
+                    sim_length = NULL, direction = NULL,
+                    script_path = NULL) {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   # make sure that all parents are present
@@ -77,8 +80,8 @@ compile <- function(populations, dir, generation_time, resolution = NULL,
   if (length(time_dir) > 1)
     stop("Inconsistent direction of time among the specified populations", call. = FALSE)
 
-  if (length(time_dir) == 0 | all(time_dir == "forward")) {
-    if (!is.null(direction) & all(direction == "backward"))
+  if (length(time_dir) == 0 || all(time_dir == "forward")) {
+    if (!is.null(direction) && all(direction == "backward"))
       time_dir <- "backward"
     else if (is.null(sim_length))
       stop("The specified model implies a forward direction of time. However,
@@ -90,14 +93,22 @@ setting `direction = 'backward'.`", call. = FALSE)
       time_dir <- "forward"
   }
 
-  if (time_dir == "backward" | is.null(sim_length))
-    max_time <- c(sapply(populations, function(pop) {
-      sapply(attr(pop, "history"), function(event)
-        c(event$time, event$tsplit, event$tstart, event$tend))
-      }),
+  # there's no need to specify simulation run length for backward models
+  # (those stop at time 0 by default) so we find the oldest time present
+  # in the model and take it as the total amount of time for the simulation
+  if (time_dir == "backward" || is.null(sim_length)) {
+    max_time <- c(
+      sapply(populations, function(pop) {
+        sapply(attr(pop, "history"), function(event)
+          c(event$time, event$tsplit, event$tstart, event$tend))
+        }
+      ),
       sapply(geneflow, function(x) max(x$tstart)),
-      sapply(geneflow, function(x) max(x$tend))) %>% unlist %>% max(na.rm = TRUE)
-  else
+      sapply(geneflow, function(x) max(x$tend))
+    ) %>%
+      unlist %>%
+      max(na.rm = TRUE)
+  } else
     max_time <- sim_length
 
   map <- get_map(populations[[1]])
@@ -123,7 +134,7 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   checksums <- write_model(
     dir, populations, admix_table, map_table, split_table, resize_table,
-    dispersal_table, generation_time, resolution, max_time, time_dir
+    dispersal_table, generation_time, resolution, max_time, time_dir, script_path
   )
 
   # compile the result
@@ -137,7 +148,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     dispersals = dispersal_table,
     generation_time = generation_time,
     resolution = resolution,
-    length = if (is.null(sim_length)) max_time else sim_length,
+    length = round(max_time / generation_time),
     direction = time_dir,
     checksums = checksums
   )
@@ -160,16 +171,12 @@ calculate_checksums <- function(files) {
 
 # Make sure the checksums of a given set of files matches the expectation
 verify_checksums <- function(files, hashes) {
-  failed <- FALSE
   for (i in seq_along(files)) {
     if (tools::md5sum(files[i]) != hashes[i]) {
-      message(sprintf("Checksum of '%s' does not match", basename(files[i])))
-      failed <- TRUE
+      warning("Checksum of '", basename(files[i]), "' does not match its compiled state",
+              call. = FALSE)
     }
   }
-  if (failed)
-    stop("Checksum test of some slendr configuration files failed -- see above.
-Please make sure that the configuration files have not been changed, overwritten, or otherwise tampered with.", call. = FALSE)
 }
 
 
@@ -201,7 +208,7 @@ read <- function(dir) {
   verify_checksums(file.path(dir, checksums$file), checksums$hash)
 
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
-  sim_length <- scan(path_length, what = integer(), quiet = TRUE)
+  length <- scan(path_length, what = integer(), quiet = TRUE)
 
   split_table <- utils::read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
 
@@ -251,10 +258,9 @@ read <- function(dir) {
 #' @param seq_length Total length of the simulated sequence (in base-pairs)
 #' @param recomb_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
-#' @param output_dir A directory where to put simulation outputs (by default,
-#'   all output files are placed in a model directory)
-#' @param output_prefix A common prefix of output files (by default, all files
-#'   will share a prefix \code{"output"})
+#' @param output A shared prefix path of output files that will be generated
+#'   by the model (by default, all files will share a prefix \code{"output"}
+#'   and will be placed in the model directory)
 #' @param ts_recording Turn on tree sequence recording during SLiM
 #'   initialization?
 #' @param save_locations Save location of each individual throughout the
@@ -263,37 +269,39 @@ read <- function(dir) {
 #'   throughout the simulations (default FALSE)? If a non-zero integer is
 #'   provided, ancestry will be tracked using the number number of neutral
 #'   ancestry markers equal to this number.
-#' @param samples A data frame of times at which a given number of individuals
+#' @param sampling A data frame of times at which a given number of individuals
 #'   should be remembered in the tree-sequence (see \code{sampling} for a
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
-#'   on the command-line, "script" - simply return the script)
-#' @param include Vector of paths to custom SLiM scripts which should be
-#'   combined with the backend SLiM code
+#'   on the command-line)
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param seed Random seed (if missing, SLiM's own seed will be used)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
-#' @param overwrite Overwrite the contents of the output directory (default
-#'   \code{FALSE})?
+#' @param save_sampling Save the sampling schedule table together with other
+#'   output files? If \code{FALSE} (default), the sampling table will be saved
+#'   to a temporary directory.
 #'
 #' @export
 slim <- function(model, seq_length, recomb_rate,
-                 output_dir = model$path, output_prefix = "output",
-                 save_locations = FALSE, track_ancestry = FALSE,
+                 output = file.path(model$path, "output"),
                  ts_recording = FALSE, sampling = NULL,
-                 method, verbose = TRUE, include = NULL, burnin = 0,
-                 seed = NULL, slim_path = NULL, overwrite = FALSE) {
-  dir <- model$path
-  if (!dir.exists(dir))
-    stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
+                 save_locations = FALSE, track_ancestry = FALSE,
+                 method = c("batch", "gui"), verbose = TRUE, burnin = 0,
+                 seed = NULL, slim_path = NULL, save_sampling = FALSE) {
+  model_dir <- model$path
+  if (!dir.exists(model_dir))
+    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
 
-  if (!method %in% c("gui", "batch", "script"))
-    stop("Only 'gui', 'batch', and 'script' are recognized as values of
-the 'method' argument", call. = FALSE)
+  # verify checksums of serialized model configuration files
+  checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
+                               col_types = "cc")
+  verify_checksums(file.path(model_dir, checksums$file), checksums$hash)
+
+  method <- match.arg(method)
 
   if (is.character(slim_path) && !all(file.exists(slim_path)))
     stop("SLiM binary not found at ", slim_path, call. = FALSE)
@@ -304,63 +312,62 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   } else
     markers_count <- as.integer(track_ancestry)
 
-  if (!file.exists(output_dir)) {
-    message("Directory '", output_dir, "' not existent. Creating...")
-    dir.create(output_dir)
-  }
-
-  script_path <- file.path(output_dir, paste0(output_prefix, "_script.slim"))
-
-  if (file.exists(script_path) && !overwrite)
-    stop("Generated script file already present in '", output_dir, "'. ",
-         "If you wish to proceed, set `overwrite = TRUE`.", call. = FALSE)
-
-  backend_script <- system.file("extdata", "backend.slim", package = "slendr")
+  script_path <- file.path(model_dir, "script.slim")
+  if (!file.exists(script_path))
+    stop("Backend script at '", script_path, "' not found", call. = FALSE)
 
   if (!is.null(sampling) && !ts_recording)
-    stop("Sampling (remembering) of individuals only makes sense when `ts_recording = TRUE`", call. = FALSE)
+    stop("Sampling individuals only makes sense when `ts_recording = TRUE`", call. = FALSE)
+
+  output <- path.expand(output)
+  ts_recording <- if (ts_recording) "T" else "F"
+  track_ancestry <- if (markers_count > 0) "T" else "F"
+  save_locations <- if (save_locations) "T" else "F"
+  burnin <- round(burnin / model$generation_time)
 
   if (ts_recording) {
-    sampling_path <- stringr::str_replace(script_path, "_script.slim", "_samples.tsv")
+    sampling_path <- ifelse(save_sampling, paste0(output, "_sampling.tsv"), tempfile())
     process_sampling(sampling, model, sampling_path, verbose)
   } else
     sampling_path <- NULL
 
-  base_script <- script(
-    spatial = if (inherits(model$world, "slendr_map")) "T" else "F",
-    path = backend_script,
-    model_dir = dir,
-    output_prefix = path.expand(file.path(output_dir, output_prefix)),
-    burnin = round(burnin / model$generation_time),
-    length = round(model$length / model$generation_time),
-    ts_recording = if (ts_recording) "T" else "F",
-    seq_length = seq_length,
-    recomb_rate = recomb_rate,
-    ancestry_markers = markers_count,
-    track_ancestry = if (markers_count > 0) "T" else "F",
-    save_locations = if (save_locations) "T" else "F",
-    generation_time = model$generation_time,
-    direction = model$direction,
-    seed = if (is.null(seed)) "getSeed()" else seed,
-    sampling = sampling_path,
-    slendr_version = packageVersion("slendr")
+  binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
+  seed <- if (is.null(seed)) "" else paste0(" \\\n    -d SEED=", seed)
+  samples <- if (is.null(sampling_path)) "" else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
+
+  slim_command <- sprintf("%s %s %s \\
+    -d 'MODEL=\"%s\"' \\
+    -d 'OUTPUT=\"%s\"' \\
+    -d SEQ_LENGTH=%i \\
+    -d RECOMB_RATE=%f \\
+    -d N_MARKERS=%i \\
+    -d TS_RECORDING=%s \\
+    -d SAVE_LOCATIONS=%s \\
+    %s",
+    binary,
+    seed,
+    samples,
+    path.expand(model_dir),
+    output,
+    seq_length,
+    recomb_rate,
+    markers_count,
+    ts_recording,
+    save_locations,
+    path.expand(script_path)
   )
 
-  # compile all script components, including the backend script, into one file
-  script_components <- unlist(lapply(c(base_script, include), readLines))
-  writeLines(script_components, script_path)
-
-  if (method == "script")
-    message("Final compiled SLiM script is in ", script_path)
-  else {
-    if (!is.null(slim_path)) {
-      cmd <- slim_path
-    } else {
-      cmd <- get_binary(method)
-    }
-    if (system(sprintf("%s %s", cmd, script_path), ignore.stdout = !verbose) != 0)
-      stop("SLiM simulation threw an error -- see the output above", call. = FALSE)
+  if (verbose) {
+    cat("--------------------------------------------------\n")
+    cat("SLiM command to be executed:\n\n")
+    cat(slim_command, "\n")
+    cat("--------------------------------------------------\n\n")
   }
+
+  if (system(slim_command, ignore.stdout = !verbose) != 0)
+    stop("SLiM simulation resulted in an error -- see the output above", call. = FALSE)
+
+  on.exit(unlink(sampling_path))
 }
 
 
@@ -415,7 +422,8 @@ script <- function(path, output = NULL, ...) {
 # checksums
 write_model <- function(dir, populations, admix_table, map_table, split_table,
                         resize_table, dispersal_table,
-                        generation_time, resolution, length, direction) {
+                        generation_time, resolution, length, direction,
+                        script_path) {
   saved_files <- c()
 
   # table of split times and initial population sizes
