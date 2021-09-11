@@ -2,8 +2,15 @@
 /// Initialization block
 ///
 initialize() {
-    required_arg("SEQ_LENGTH"); // length of the simulated sequence in bp
-    required_arg("RECOMB_RATE"); // recombination rate along the simulated sequenceoat)
+    // if the script is being run in SLiMgui, make it executable by
+    // specifying dummy values for the two required constants
+    if (exists("slimgui")) {
+        defineConstant("SEQ_LENGTH", 1);
+        defineConstant("RECOMB_RATE", 0);
+    } else {
+        required_arg("SEQ_LENGTH");
+        required_arg("RECOMB_RATE");
+    }
 
     optional_arg("SEED", getSeed()); // random seed
     setSeed(SEED); catn("SEED: " + SEED);
