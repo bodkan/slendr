@@ -136,10 +136,7 @@ test_that("checksums are enforced", {
   model_dir <- file.path(tempdir(), "tmp-checksums")
   model1 <- compile(pop, dir = model_dir, generation_time = 1, overwrite = TRUE, direction = "backward")
   model2 <- read(model_dir)
-  expect_error(
-    suppressMessages(verify_checksums(file.path(model_dir, model1$checksums$file),
-                                      paste0(model1$checksums$hash, "asdf"))),
-    "Checksum test of some slendr configuration files failed"
-  )
+  expect_warning(verify_checksums(file.path(model_dir, model1$checksums$file[1]),
+                 paste0(model1$checksums$hash[1], "asdf")), "Checksum of .* does not match")
   expect_equal(model1$checksums$hash, model2$checksums$hash)
 })
