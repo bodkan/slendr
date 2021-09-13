@@ -534,7 +534,7 @@ compile_splits <- function(populations, generation_time, direction, max_time) {
   }) %>% do.call(rbind, .)
 
   # convert times into a forward direction
-  split_table <- convert_time(
+  split_table <- convert_to_forward(
     split_table,
     direction = direction,
     columns = c("tsplit", "tremove"),
@@ -577,7 +577,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
   ))
   map_table$map <- I(lapply(maps, function(m) m$map))
 
-  map_table <- convert_time(
+  map_table <- convert_to_forward(
     map_table,
     direction = direction,
     columns = "tmap",
@@ -607,7 +607,7 @@ compile_geneflows <- function(geneflow, split_table, generation_time,
     return(NULL)
 
   admix_table <- do.call(rbind, geneflow)
-  admix_table <- convert_time(
+  admix_table <- convert_to_forward(
     admix_table,
     direction = direction,
     columns = c("tstart", "tend"),
@@ -644,7 +644,7 @@ compile_resizes <- function(populations, generation_time, direction,
   else
     resize_events$tend[is.na(resize_events$tend)] <- -1
 
-  resize_table <- convert_time(
+  resize_table <- convert_to_forward(
     resize_events,
     direction = direction,
     columns = c("tresize", "tend"),
@@ -684,7 +684,7 @@ compile_dispersals <- function(populations, generation_time, direction,
   dispersal_events$tdispersal <- dispersal_events$time
   dispersal_events$time <- NULL
 
-  dispersal_table <- convert_time(
+  dispersal_table <- convert_to_forward(
     dispersal_events,
     direction = direction,
     columns = "tdispersal",
@@ -698,7 +698,8 @@ compile_dispersals <- function(populations, generation_time, direction,
   ) %>% as.numeric
 
   # take care of missing interactions and offspring distances
-  dispersal_table <- set_distances(dispersal_table, resolution, competition_dist, mate_dist, dispersal_dist)
+  dispersal_table <- set_distances(dispersal_table, resolution, competition_dist,
+                                   mate_dist, dispersal_dist)
 
   dispersal_table <- dispersal_table[order(dispersal_table$tdispersal_gen, na.last = FALSE), ]
 
@@ -790,8 +791,9 @@ save_png <- function(raster, path) {
 }
 
 
-# Convert time from backward to forward direction (if necessary) and to generations
-convert_time <- function(df, direction, columns, max_time, generation_time) {
+# Convert times given in specified columns of a data frame into
+# a SLiM forward direction given in generations
+convert_to_forward <- function(df, direction, columns, max_time, generation_time) {
   for (column in columns) {
     times <- df[[column]]
 
@@ -809,8 +811,10 @@ convert_time <- function(df, direction, columns, max_time, generation_time) {
   df
 }
 
-# Convert SLiM time units as they are saved in the tree-sequence output to
-# user-specified time units (forward or backward)
+# Convert SLiM time units as they are saved in the tree-sequence output
+# (and also other slendr output formats such as the locations of individuals
+# or ancestry proportions over time) back to user-specified time units
+# (either forward or backward)
 convert_slim_time <- function(times, model) {
   if (model$direction == "backward")
     result <- times * model$generation_time
