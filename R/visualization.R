@@ -265,22 +265,10 @@ plot_graph <- function(model) {
 #'   will share a prefix \code{"output"} and are placed in the model directory)
 #'
 #' @export
-plot_ancestry <- function(model, output_prefix = file.path(model$path, "output")) {
-  anc_wide <- read_ancestries(output_prefix)
+plot_ancestries <- function(model, output_prefix = file.path(model$path, "output")) {
+  anc_long <- read_ancestries(output_prefix) %>%
+    tidyr::gather(ancestry, prop, -gen, -pop)
 
-  # thank god for tidyverse, base R reshaping is truly awful...  but
-  # it's not worth dragging along a huge dependency if we can do this
-  # sort of thing in base R...
-  anc_long <- stats::reshape(
-    data = anc_wide,
-    direction = "long",
-    timevar = "ancestry",
-    varying = 2:(ncol(anc_wide) - 1),
-    idvar = c("gen", "pop"),
-    v.names = "prop",
-    times = colnames(anc_wide)[2:(ncol(anc_wide) - 1)]
-  )
-  rownames(anc_long) <- NULL
 
   # order population names based on their split order
   split_order <- split(anc_long, anc_long$pop) %>%
