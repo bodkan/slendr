@@ -372,7 +372,7 @@ process_sampling <- function(samples, model, script_path, verbose) {
   df <- dplyr::group_by(samples, time, pop) %>%
     dplyr::summarise(n = sum(n), .groups = "drop") %>%
     dplyr::arrange(time) %>%
-    convert_time(direction = model$direction,
+    convert_to_forward(direction = model$direction,
                  columns = "time",
                  generation_time = model$generation_time,
                  max_time = model$length * model$generation_time) %>%
