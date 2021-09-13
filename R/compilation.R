@@ -97,7 +97,7 @@ setting `direction = 'backward'.`", call. = FALSE)
   # (those stop at time 0 by default) so we find the oldest time present
   # in the model and take it as the total amount of time for the simulation
   if (time_dir == "backward" || is.null(sim_length)) {
-    max_time <- c(
+    end_time <- c(
       sapply(populations, function(pop) {
         sapply(attr(pop, "history"), function(event)
           c(event$time, event$tsplit, event$tstart, event$tend))
@@ -109,15 +109,14 @@ setting `direction = 'backward'.`", call. = FALSE)
       unlist %>%
       max(na.rm = TRUE)
   } else
-    max_time <- sim_length
-
-  length <- if (is.null(sim_length)) max_time else sim_length
+    end_time <- sim_length
+  length <- if (is.null(sim_length)) end_time else sim_length
 
   map <- get_map(populations[[1]])
 
-  split_table <- compile_splits(populations, generation_time, time_dir, max_time)
-  admix_table <- compile_geneflows(geneflow, split_table, generation_time, time_dir, max_time)
-  resize_table <- compile_resizes(populations, generation_time, time_dir, max_time, split_table)
+  split_table <- compile_splits(populations, generation_time, time_dir, end_time)
+  admix_table <- compile_geneflows(geneflow, split_table, generation_time, time_dir, end_time)
+  resize_table <- compile_resizes(populations, generation_time, time_dir, end_time, split_table)
 
   if (inherits(map, "slendr_map")) {
     if (!is.null(competition_dist)) check_resolution(map, competition_dist)
@@ -125,8 +124,8 @@ setting `direction = 'backward'.`", call. = FALSE)
     if (!is.null(dispersal_dist)) check_resolution(map, dispersal_dist)
     check_resolution(map, resolution)
 
-    map_table <- compile_maps(populations, split_table, resolution, generation_time, time_dir, max_time, dir)
-    dispersal_table <- compile_dispersals(populations, generation_time, time_dir, max_time, split_table,
+    map_table <- compile_maps(populations, split_table, resolution, generation_time, time_dir, end_time, dir)
+    dispersal_table <- compile_dispersals(populations, generation_time, time_dir, end_time, split_table,
                                         resolution, competition_dist, mate_dist, dispersal_dist)
 
     return_maps <-  map_table[, c("pop", "pop_id", "tmap_orig", "tmap_gen", "path")]
@@ -151,6 +150,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     generation_time = generation_time,
     resolution = resolution,
     length = round(length / generation_time),
+    orig_length = length,
     direction = time_dir,
     checksums = checksums
   )
@@ -200,6 +200,7 @@ read <- function(dir) {
   path_generation_time <- file.path(dir, "generation_time.txt")
   path_resolution <- file.path(dir, "resolution.txt")
   path_length <- file.path(dir, "length.txt")
+  path_orig_length <- file.path(dir, "orig_length.txt")
   path_direction <- file.path(dir, "direction.txt")
 
   if (!dir.exists(dir))
@@ -211,6 +212,7 @@ read <- function(dir) {
 
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
   length <- scan(path_length, what = integer(), quiet = TRUE)
+  orig_length <- scan(path_orig_length, what = integer(), quiet = TRUE)
 
   split_table <- utils::read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
 
@@ -241,6 +243,7 @@ read <- function(dir) {
     generation_time = generation_time,
     resolution = resolution,
     length = length,
+    orig_length = orig_length,
     direction = direction,
     checksums = checksums
   )
@@ -378,54 +381,6 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   }
 }
 
-
-#' Substitute variables in a template SLiM script
-#'
-#' Variables in the template script must conform to the Mustache
-#' specification, i.e. specified as {{variable_name}}. For more
-#' information see the Mustache specification at:
-#' <http://mustache.github.io/>
-#'
-#' @param path Path to a template SLiM script
-#' @param output Where to save the substituted SLiM script (temporary location
-#'   by default)
-#' @param ... Variable values to be substituted
-#'
-#' @return Name of the substituted SLiM script
-#'
-#' @export
-script <- function(path, output = NULL, ...) {
-  if (!file.exists(path))
-    stop(sprintf("File '%s' not found", path), call. = FALSE)
-
-    if (is.null(output)) output <- paste0(tempfile(), ".slim")
-
-  template <- readLines(path)
-
-  # extract variables to be substituted in the template script
-  vars <- strsplit(template, split = "\\{\\{") %>%
-    unlist %>%
-    .[grepl("\\}\\}", .)] %>%
-    gsub("\\}\\}.*$", "", .)
-
-  # collect all variables provided by the user and make sure that
-  # none are missing
-  subst <- list(...)
-  if (!all(vars %in% names(subst))) {
-    stop(sprintf("Values of %s must be specified",
-                 paste(vars[!vars %in% names(subst)], collapse = ", ")),
-         call. = FALSE)
-  }
-
-  # fill in the variable substitution in the template script and
-  # save it to disk
-  rendered <- whisker::whisker.render(template, subst)
-  writeLines(rendered, output)
-
-  output
-}
-
-
 # Write a compiled slendr model to disk and return a table of
 # checksums
 write_model <- function(dir, populations, admix_table, map_table, split_table,
@@ -486,16 +441,18 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
 
   saved_files["generation_time"] <- file.path(dir, "generation_time.txt")
   saved_files["length"] <- file.path(dir, "length.txt")
+  saved_files["orig_length"] <- file.path(dir, "orig_length.txt")
   saved_files["direction"] <- file.path(dir, "direction.txt")
   base::write(generation_time, file.path(dir, "generation_time.txt"))
   base::write(round(length / generation_time), file.path(dir, "length.txt"))
+  base::write(length, file.path(dir, "orig_length.txt"))
   base::write(direction, file.path(dir, "direction.txt"))
 
   saved_files["script"] <- file.path(dir, "script.slim")
   # copy the script to the dedicated model directory, replacing the
   # placeholders for model directory and slendr version accordingly
   if (is.null(script_path)) {
-    script_path <- system.file("extdata", "backend.slim", package = "slendr")
+    script_path <- system.file("extdata", "script.slim", package = "slendr")
     readLines(script_path) %>%
       gsub("__VERSION__", paste0("slendr_", packageVersion("slendr")), .) %>%
       cat(file = saved_files["script"], sep = "\n")
@@ -512,7 +469,7 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
 
 # Iterate over population objects and convert he information about
 # population split hierarchy and split times into a data frame
-compile_splits <- function(populations, generation_time, direction, max_time) {
+compile_splits <- function(populations, generation_time, direction, end_time) {
   split_table <- lapply(populations, function(p) {
     parent <- attr(p, "parent")
     if (is.character(parent) && parent == "ancestor") {
@@ -538,7 +495,7 @@ compile_splits <- function(populations, generation_time, direction, max_time) {
     split_table,
     direction = direction,
     columns = c("tsplit", "tremove"),
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
 
@@ -560,7 +517,7 @@ compile_splits <- function(populations, generation_time, direction, max_time) {
 # Process vectorized population boundaries into a table with
 # rasterized map objects
 compile_maps <- function(populations, split_table, resolution, generation_time,
-                         direction, max_time, dir) {
+                         direction, end_time, dir) {
   # generate rasterized maps
   maps <- render(populations, resolution)
 
@@ -581,7 +538,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
     map_table,
     direction = direction,
     columns = "tmap",
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
 
@@ -602,7 +559,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
 
 
 compile_geneflows <- function(geneflow, split_table, generation_time,
-                              direction, max_time) {
+                              direction, end_time) {
   if (length(geneflow) == 0)
     return(NULL)
 
@@ -611,7 +568,7 @@ compile_geneflows <- function(geneflow, split_table, generation_time,
     admix_table,
     direction = direction,
     columns = c("tstart", "tend"),
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
   names(admix_table)[1:2] <- c("from", "to")
@@ -632,7 +589,7 @@ compile_geneflows <- function(geneflow, split_table, generation_time,
 
 # Compile table of population resize events
 compile_resizes <- function(populations, generation_time, direction,
-                            max_time, split_table) {
+                            end_time, split_table) {
   resize_events <- lapply(populations, function(p) {
     lapply(attr(p, "history"), function(event) {
       if (event$event == "resize") event
@@ -648,7 +605,7 @@ compile_resizes <- function(populations, generation_time, direction,
     resize_events,
     direction = direction,
     columns = c("tresize", "tend"),
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
 
@@ -663,7 +620,7 @@ compile_resizes <- function(populations, generation_time, direction,
 
 # Compile table of population resize events
 compile_dispersals <- function(populations, generation_time, direction,
-                               max_time, split_table, resolution,
+                               end_time, split_table, resolution,
                                competition_dist, mate_dist, dispersal_dist) {
   dispersal_events <- lapply(populations, function(p) {
     lapply(attr(p, "history"), function(event) {
@@ -688,7 +645,7 @@ compile_dispersals <- function(populations, generation_time, direction,
     dispersal_events,
     direction = direction,
     columns = "tdispersal",
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
 
@@ -793,13 +750,13 @@ save_png <- function(raster, path) {
 
 # Convert times given in specified columns of a data frame into
 # a SLiM forward direction given in generations
-convert_to_forward <- function(df, direction, columns, max_time, generation_time) {
+convert_to_forward <- function(df, direction, columns, end_time, generation_time) {
   for (column in columns) {
     times <- df[[column]]
 
     # if necessary, convert to forward direction
     if (direction == "backward")
-      times[times != -1] <- max_time - times[times != -1] + generation_time
+      times[times != -1] <- end_time - times[times != -1] + generation_time
 
     # convert to generations
     times[times != -1] <- as.integer(round(times[times != -1] / generation_time))
@@ -816,9 +773,20 @@ convert_to_forward <- function(df, direction, columns, max_time, generation_time
 # or ancestry proportions over time) back to user-specified time units
 # (either forward or backward)
 convert_slim_time <- function(times, model) {
-  if (model$direction == "backward")
+  ancestors <- dplyr::filter(model$splits, parent == "ancestor")
+
+  if (model$direction == "backward") {
     result <- times * model$generation_time
-  else
-    result <- model$length - times * model$generation_time + 1
+    # does the backward simulation model terminate sooner than "present-day"?
+    # if so, shift the times to start at the original time specified by user
+    if (max(ancestors[, ]$tsplit_orig) != model$orig_length)
+      result <- result + (ancestors[, ]$tsplit_orig - model$orig_length)
+  } else {
+    result <- (model$length - times + 1) * model$generation_time
+    # did the simulation start at a later time than "generation 1"?
+    # if it did, shoft the time appropriately
+    if (min(ancestors[, ]$tsplit_gen != 1))
+      result <- result + ancestors[1, ]$tsplit_orig - model$generation_time
+  }
   as.integer(result)
 }

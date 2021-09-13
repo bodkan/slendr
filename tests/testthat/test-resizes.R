@@ -11,8 +11,18 @@ run_sim <- function(pop, direction, sim_length = NULL, method = "batch") {
 
   slim(model, seq_length = 1, recomb_rate = 0, save_locations = TRUE, method = method, verbose = FALSE)
 
-  df <- suppressMessages(readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"), progress = FALSE))
-  suppressMessages(dplyr::group_by(df, gen, time, pop) %>% dplyr::summarise(N = dplyr::n()))
+  df <- suppressMessages(readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
+                   progress = FALSE)) %>%
+    dplyr::mutate(time = convert_slim_time(gen, model)) %>%
+    dplyr::group_by(gen, time, pop) %>%
+    dplyr::summarise(N = dplyr::n(), .groups = "keep")
+
+  if (direction == "forward")
+    df <- dplyr::arrange(df, time)
+  else
+     df <- dplyr::arrange(df, -time)
+
+  df
 }
 
 calculate_exp_sizes <- function(N1, N2, t1, t2) {

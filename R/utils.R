@@ -352,7 +352,7 @@ has_map <- function(x) {
 
 
 # Process the sampling schedue
-process_sampling <- function(samples, model, script_path, verbose) {
+process_sampling <- function(samples, model, sampling_path, verbose) {
   # if no explicit sampling schedule was given, try to generate it at least
   # for the populations which survive to the present
   if (is.null(samples)) {
@@ -378,13 +378,8 @@ process_sampling <- function(samples, model, script_path, verbose) {
     convert_to_forward(direction = model$direction,
                  columns = "time",
                  generation_time = model$generation_time,
-                 max_time = model$length * model$generation_time) %>%
+                 end_time = model$orig_length) %>%
     dplyr::arrange(time_gen)
-
-  script_dir <- dirname(script_path)
-
-  sampling_file <- stringr::str_replace(basename(script_path), "_script.slim", "_samples.tsv")
-  sampling_path <- file.path(script_dir, sampling_file)
 
   df <- df %>% dplyr::mutate(n = ifelse(is.infinite(n), "INF", n))
   readr::write_tsv(df, sampling_path)
