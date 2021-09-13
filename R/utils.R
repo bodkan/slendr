@@ -139,24 +139,27 @@ get_lineage_splits <- function(x) {
 }
 
 
-# Get direction of time implied by the model
+# Get direction of time implied by the history of the population
 get_time_direction <- function(pop) {
   split_times <- get_lineage_splits(pop)
 
   if (length(split_times) == 1) {
     event_times <- attr(pop, "history") %>%
-      sapply(function(event) c(event$time, event$tresize, event$tend, event$start, event$end)) %>%
+      sapply(function(event) c(event$time, event$tresize, event$tend,
+                               event$start, event$end)) %>%
       unlist %>%
       unique %>%
       na.omit
     if (length(event_times) == 1) {
       removal_time <- attr(pop, "remove")
-      if (removal_time != -1 & event_times > removal_time)
+      if (removal_time == -1)
+        "unknown"
+      else if (all(event_times > removal_time))
         "backward"
-      else if (removal_time != -1 & event_times < removal_time)
+      else if (all(event_times < removal_time))
         "forward"
       else
-        "unknown"
+        stop("Inconsistent time direction of population events", call. = FALSE)
     } else if (all(diff(event_times) < 0))
       "backward"
     else
