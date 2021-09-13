@@ -348,6 +348,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       -d N_MARKERS=%i \\
       -d TS_RECORDING=%s \\
       -d SAVE_LOCATIONS=%s \\
+      -d TRACK_ANCESTRY=%s \\
+      -d NUM_MARKERS=%i \\
       %s",
       binary,
       seed,
@@ -359,6 +361,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       markers_count,
       ts_recording,
       save_locations,
+      track_ancestry,
+      markers_count,
       script_path
     )
 
