@@ -318,16 +318,13 @@ animate <- function(model, file = file.path(model$path, "output_ind_locations.ts
   if (!inherits(model$world, "slendr_map"))
     stop("Cannot animate non-spatial models", call. = FALSE)
 
-  locs <- readr::read_tsv(file, col_types = "iiiidd", progress = FALSE)
   pop_names <- model$splits$pop
 
-  # label populations based on their original identifiers from the user
-  locs$pop <- factor(
-    locs$pop,
-    levels = sort(unique(locs$pop)),
-    labels = pop_names[sort(unique(locs$pop)) + 1]
-  )
-  locs$time <- as.integer(locs$time)
+  locs <- readr::read_tsv(file, col_types = "iicidd", progress = FALSE) %>%
+    dplyr::mutate(
+      time = convert_slim_time(gen, model),
+      pop = factor(pop)
+    )
   locs <- dplyr::filter(locs, time %in% sort(unique(
     c(min(time),
       time[seq(1, length(time), length.out = steps)],
