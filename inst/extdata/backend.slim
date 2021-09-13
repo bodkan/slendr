@@ -22,7 +22,7 @@ initialize() {
     defineConstant("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
     optional_arg("SAVE_LOCATIONS", F); // record locations of all individuals?
     optional_arg("TRACK_ANCESTRY", F); // record ancestry proportions?
-    optional_arg("N_MARKERS", 0); // number of regularly-spaced ancestry markers
+    optional_arg("N_MARKERS", 1); // number of regularly-spaced ancestry markers
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
 
     defineConstant("SIMULATION_LENGTH", asInteger(readFile(config_path("length.txt"))));
@@ -337,9 +337,14 @@ s7 late() /* Changing interaction distances and dispersals */ {
 s8 late() /* Save locations of all individuals */ {
     filename = output_path("ind_locations.tsv.gz");
     for (ind in sim.subpopulations.individuals) {
-        ind_str = paste(sim.generation, original_time(sim.generation),
-                                        ind.subpopulation.id, ind.pedigreeID, ind.spatialPosition,
-                                        sep = "\t");
+        ind_str = paste(
+            SIMULATION_END - sim.generation,
+            ind.subpopulation.id,
+            filter(POPULATIONS, "pop_id", ind.subpopulation.id).getValue("pop"),
+            ind.pedigreeID,
+            ind.spatialPosition,
+            sep = "\t"
+        );
         writeFile(filename, ind_str, append = T, compress = T);
     }
 }
@@ -570,26 +575,25 @@ function (lifso<Subpopulation>$) get_pop(si$ i) {
     return sim.subpopulations[i == sim.subpopulations.id];
 }
 
-// Convert times in a given table to absolute SLiM times by adding
-// the burnin length to each time point (except for events involving
-// ancestral populations which always start at 1 to include them
-// in the burnin)
+// Shift times by the length of the burnin
 function (void) slim_time(No<Dictionary>$ table) {
     if (!isNULL(table)) {
         // list of all possible time columns to look for
         time_columns = c("time", "tsplit", "tmap", "tremove",
-                                         "tresize", "tstart", "tend", "tdispersal");
+                         "tresize", "tstart", "tend", "tdispersal");
 
         // get time columns present in the current table
         columns = setIntersection(table.allKeys, time_columns + "_gen");
-        // for each time column, create a new column (without the "_gen" suffix)
+
+        // create a new column in the table which will store the time
+        // shifted by the burnin length
         for (col in columns) {
             // shift the time by the burnin length
             new_times = table.getValue(col);
             new_times[new_times != -1] = BURNIN_LENGTH + new_times[new_times != -1];
 
-            // for ancestral populations, restore 'split times' and times of
-            // the first map update back to 1
+            // the split times and the very first event of ancestral populations
+            // will always begin in generation 1, regardless of the burnin
             if (col == "tsplit_gen")
                 new_times[POPULATIONS.getValue("parent") == "ancestor"] = 1;
             else if (col == "tmap_gen") {
@@ -600,24 +604,13 @@ function (void) slim_time(No<Dictionary>$ table) {
                     new_times[which(INTERACTIONS.getValue("pop_id") == id)[0]] = 1;
             }
 
-            // add the new shifted time column to the table
+            // add the new time column to the table
             new_col = strsplit(col, "_gen")[0]; // remove the "_gen" suffix
             table.setValue(new_col, new_times);
         }
     }
 }
 
-// Convert current generation time into the original units
-function (i) original_time(i$ generation) {
-    if (DIRECTION == "forward") {
-        absolute_start = min(POPULATIONS.getValue("tsplit_gen"));
-        time = (sim.generation - SIMULATION_START + absolute_start) * GENERATION_TIME;
-    } else {
-        absolute_end = SIMULATION_START + round(max(POPULATIONS.getValue("tsplit_orig")) / GENERATION_TIME);
-        time = (absolute_end - sim.generation) * GENERATION_TIME;
-    }
-    return asInteger(time);
-}
 
 ///
 /// Input/output functions
@@ -632,14 +625,14 @@ function (s$) output_path(s$ file) {
 }
 
 
-// Write the locations file header line
+// Write the locations table header
 function (void) write_locations_header(void) {
     filename = output_path("ind_locations.tsv.gz");
-    header_str = "gen\ttime\tpop\tind\tx\ty";
+    header_str = "gen\tpop_id\tpop\tind\tx\ty";
     writeFile(filename, header_str, compress = T);
 }
 
-// Write the header of an ancestry proportion table
+// Write the ancestry proportion table header
 function (void) write_ancestries_header(void) {
     for (i in seqLen(num_rows(POPULATIONS))) {
         pop = POPULATIONS.getRowValues(i);
@@ -649,14 +642,14 @@ function (void) write_ancestries_header(void) {
     }
 }
 
-// Calculate a vector of ancestry proportions in a given population
+// Calculate the vector of ancestry proportions in a given population
 function (float) calc_ancestry(lifso<Subpopulation>$ pop) {
     // mutation IDs of all populations' ancestry markers
     mut_ids = POPULATIONS.getValue("pop_id");
     return sapply(mut_ids, "mean(pop.genomes.countOfMutationsOfType(applyValue) / N_MARKERS);");
 }
 
-// Write the given output string with the time stamp
+// Write the given log output message with the time stamp
 function (void) log_output(s$ str) {
     catn("Generation " + sim.generation + ": " + str);
 }
@@ -694,8 +687,7 @@ function (object<Dictionary>) read_table(s$ path) {
 
 // Filter the data frame `d` to rows where the `col` is equal to `val`
 // (or not equal if `negate` is TRUE)
-function (object<Dictionary>) filter(No<Dictionary> d, s$ col, ifsl$ val,
-                                                                         [l$ negate = F]) {
+function (object<Dictionary>) filter(No<Dictionary> d, s$ col, ifsl$ val, [l$ negate = F]) {
     if (isNULL(d)) return(NULL);
 
     if (!any(col == d.allKeys))
