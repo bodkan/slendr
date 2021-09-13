@@ -495,10 +495,10 @@ By default, simulation output files are put in the same directory where the mode
 
 ## Post-simulation diagnostics
 
-Since we instructed *slendr* to track ancestry proportions above, we can visualize them after the simulation is over using the built-in `plot_ancestry()` function. This functionality is quite bare-bones for now and the way diagnostics are generated is probably subject to change.
+Since we instructed *slendr* to track ancestry proportions above, we can visualize them after the simulation is over using the built-in `plot_ancestries()` function. This functionality is quite bare-bones for now and the way diagnostics are generated is probably subject to change.
 
 ```{r plot_ancestries}
-plot_ancestry(model = model)
+plot_ancestries(model = model)
 ```
 
 Similarly, we can recapitulate the spatial dynamics with the *slendr* function `animate()` (also very bare-bones at the moment):
