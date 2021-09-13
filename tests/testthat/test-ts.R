@@ -50,7 +50,8 @@ test_that("locations and times in the tree sequence match values saved by SLiM",
   ts <- ts_load(model, simplify = TRUE)
   individuals <- ts_data(ts, remembered = TRUE) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
   true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
-                                    col_types = "iicidd")
+                                    col_types = "iicidd") %>%
+    dplyr::mutate(time = convert_slim_time(gen, model))
   joined <- dplyr::inner_join(individuals, true_locations,
                               by = c("pedigree_id" = "ind")) %>%
     dplyr::mutate(location_x = as.vector(sf::st_coordinates(location)[, 1]),
