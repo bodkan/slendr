@@ -347,7 +347,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       -d 'MODEL=\"%s\"' \\
       -d 'OUTPUT=\"%s\"' \\
       -d SEQ_LENGTH=%i \\
-      -d RECOMB_RATE=%f \\
+      -d RECOMB_RATE=%s \\
+      -d BURNIN_LENGTH=%s \\
       -d N_MARKERS=%i \\
       -d TS_RECORDING=%s \\
       -d SAVE_LOCATIONS=%s \\
@@ -361,6 +362,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       output,
       seq_length,
       recomb_rate,
+      burnin,
       markers_count,
       ts_recording,
       save_locations,
