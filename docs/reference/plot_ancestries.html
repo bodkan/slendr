@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Substitute variables in a template SLiM script — script • slendr</title>
+<title>Plot simulated ancestry proportions — plot_ancestries • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,11 +52,8 @@
 
 
 
-<meta property="og:title" content="Substitute variables in a template SLiM script — script" />
-<meta property="og:description" content="Variables in the template script must conform to the Mustache
-specification, i.e. specified as variable_name. For more
-information see the Mustache specification at:
-http://mustache.github.io/" />
+<meta property="og:title" content="Plot simulated ancestry proportions — plot_ancestries" />
+<meta property="og:description" content="Plot simulated ancestry proportions" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -173,41 +170,31 @@ http://mustache.github.io/" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Substitute variables in a template SLiM script</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/compilation.R'><code>R/compilation.R</code></a></small>
-    <div class="hidden name"><code>script.Rd</code></div>
+    <h1>Plot simulated ancestry proportions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/visualization.R'><code>R/visualization.R</code></a></small>
+    <div class="hidden name"><code>plot_ancestries.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Variables in the template script must conform to the Mustache
-specification, i.e. specified as variable_name. For more
-information see the Mustache specification at:
-<a href='http://mustache.github.io/'>http://mustache.github.io/</a></p>
+    <p>Plot simulated ancestry proportions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>script</span><span class='op'>(</span><span class='va'>path</span>, output <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_ancestries</span><span class='op'>(</span><span class='va'>model</span>, output_prefix <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>path</span>, <span class='st'>"output"</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>path</th>
-      <td><p>Path to a template SLiM script</p></td>
+      <th>model</th>
+      <td><p>Compiled <code>slendr_model</code> model object</p></td>
     </tr>
     <tr>
-      <th>output</th>
-      <td><p>Where to save the substituted SLiM script (temporary location
-by default)</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Variable values to be substituted</p></td>
+      <th>output_prefix</th>
+      <td><p>A shared prefix path to output files (by default, all files
+will share a prefix <code>"output"</code> and are placed in the model directory)</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Name of the substituted SLiM script</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

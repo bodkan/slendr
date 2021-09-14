@@ -80,7 +80,6 @@ reference:
     - sampling
     - slim
     - read
-    - script
 
   - title: Tree sequence loading and processing
     contents:
