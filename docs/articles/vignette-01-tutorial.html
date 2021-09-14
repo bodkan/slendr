@@ -176,7 +176,7 @@
 <li>Install <em>slendr</em>:</li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bodkan/slendr"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bodkan/slendr"</span><span class="op">)</span></code></pre></div>
 <p>This is necessary because <em>slendr</em> is not on <a href="http://cran.r-project.org">CRAN</a> yet. Once it is there, it will be possible to install it by simply running <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("slendr")</a></code> in your R console.</p>
 <ol start="4" style="list-style-type: decimal">
 <li>That’s it! You can now load the package with the usual:</li>
@@ -577,7 +577,7 @@ between populations.</code></pre>
 <div id="running-the-simulation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-the-simulation" class="anchor"></a>Running the simulation</h2>
-<p>The way we feed the entire serialized model into SLiM is through the <code><a href="../reference/slim.html">slim()</a></code> function, which understands the format of the model directory created by the <code><a href="../reference/compile.html">compile()</a></code> function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling <code><a href="https://rdrr.io/r/base/system.file.html">system.file("inst/extdata/backend.slim", package = "slendr")</a></code>, in case you’d like to peek into its internals).</p>
+<p>The way we feed the entire serialized model into SLiM is through the <code><a href="../reference/slim.html">slim()</a></code> function, which understands the format of the model directory created by the <code><a href="../reference/compile.html">compile()</a></code> function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling <code><a href="https://rdrr.io/r/base/system.file.html">system.file("inst/extdata/script.slim", package = "slendr")</a></code>, in case you’d like to peek into its internals).</p>
 <p>Note that when you run this model in SLiMgui (which should automatically open by calling the command below), you will see populations pop up in individual panes within the window. This is how SLiMgui tracks spatial ranges of different populations. <em>Everyone is still simulated in the same world</em>, it’s just that the simulation visualizes individual population ranges separately to reduce clutter.</p>
 <p>Notice that the function accepts several parameters determining the length of the simulated genetic sequence, the recombination rate, the length of the burnin period (to generate genetic diversity prior to simulated population dynamics), the total time of the simulation run (excluding burnin), and the generation time for the simulated organism (which is used to convert all times defined during model specification above into SLiM’s internal units of generations).</p>
 <p>Finally, the parameter <code>track_ancestry</code> determines whether we want our SLiM script to track ancestry proportion changes in all simulations using neutral markers uniformly distributed along each genome. The default value of this parameter is <code>FALSE</code> and no ancestry tracking is performed. Any other non-zero, positive integer value specifies how many markers we want to use for tracking. Please note that this <em>significantly</em> increases the simulation overhead, not only because of the actual burden of mutation objects being simulated, but also because when this feature is enabled the ancestry is calculated in each generation for each simulated genome. In this case, we’re tracking ancestry using a single non-recombining marker, to minimize computational time for the purposes of this vignette.</p>
@@ -591,17 +591,34 @@ between populations.</code></pre>
   method <span class="op">=</span> <span class="st">"batch"</span>, <span class="co"># change to "gui" to execute the model in SLiMgui</span>
   seed <span class="op">=</span> <span class="fl">314159</span>
 <span class="op">)</span></code></pre></div>
+<pre><code>#&gt; --------------------------------------------------
+#&gt; SLiM command to be executed:
+#&gt; 
+#&gt; /usr/local/bin/slim  \
+#&gt;     -d SEED=314159  \
+#&gt;       -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmptwbOJB/tutorial-model"' \
+#&gt;       -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmptwbOJB/tutorial-model/output"' \
+#&gt;       -d SEQ_LENGTH=1 \
+#&gt;       -d RECOMB_RATE=0 \
+#&gt;       -d BURNIN_LENGTH=0 \
+#&gt;       -d N_MARKERS=1 \
+#&gt;       -d TS_RECORDING=F \
+#&gt;       -d SAVE_LOCATIONS=T \
+#&gt;       -d TRACK_ANCESTRY=T \
+#&gt;       -d NUM_MARKERS=1 \
+#&gt;       /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmptwbOJB/tutorial-model/script.slim 
+#&gt; --------------------------------------------------</code></pre>
 <p>By default, simulation output files are put in the same directory where the model configuration data is stored, and are given a common prefix <code>output_</code>. Both the directory and the output file prefix can be specified by setting the <code>output_dir</code> and <code>output_prefix</code> arguments of the function <code><a href="../reference/slim.html">slim()</a></code>.</p>
 </div>
 <div id="post-simulation-diagnostics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#post-simulation-diagnostics" class="anchor"></a>Post-simulation diagnostics</h2>
-<p>Since we instructed <em>slendr</em> to track ancestry proportions above, we can visualize them after the simulation is over using the built-in <code><a href="../reference/plot_ancestry.html">plot_ancestry()</a></code> function. This functionality is quite bare-bones for now and the way diagnostics are generated is probably subject to change.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_ancestry.html">plot_ancestry</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></code></pre></div>
+<p>Since we instructed <em>slendr</em> to track ancestry proportions above, we can visualize them after the simulation is over using the built-in <code><a href="../reference/plot_ancestries.html">plot_ancestries()</a></code> function. This functionality is quite bare-bones for now and the way diagnostics are generated is probably subject to change.</p>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_ancestries.html">plot_ancestries</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-01-tutorial_files/figure-html/plot_ancestries-1.png" width="480"></p>
 <p>Similarly, we can recapitulate the spatial dynamics with the <em>slendr</em> function <code><a href="../reference/animate.html">animate()</a></code> (also very bare-bones at the moment):</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, steps <span class="op">=</span> <span class="fl">100</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-01-tutorial_files/figure-html/plot_gif-1.gif"><!-- --></p>
 <p>If an argument <code>gif = ...</code> is provided, <code><a href="../reference/animate.html">animate()</a></code> will save the animation to the specified location as a GIF file. Note that unless your simulation is very short and/or involves only a small population, rendering of the animation can take several minutes.</p>

@@ -54,7 +54,7 @@ gf <- geneflow(from = nea, to = eur, rate = 0.03, start = 55000, end = 50000)
 model <- compile(
   populations = list(anc, chimp, nea, afr, eur), geneflow = gf,
   generation_time = 30,
-  dir = file.path(tempdir(), "introgression")
+  dir = file.path(tempdir(), "introgression"), overwrite = TRUE
 )
 ```
 
@@ -219,8 +219,8 @@ However, before we do that, we would first like to note that everything that we 
 We have spend a lot of time talking about how powerful the *tskit* library is. Another great example is tree(-sequence) visualisation. *tskit* [implements](https://tskit.dev/tutorials/viz.html) visualisation of data in an [SVG format](https://en.wikipedia.org/wiki/Scalable_Vector_Graphics) which we can use for quick interactive plotting directly from the R console. First, we introduce a function `ts_tree()` which allows us to extract one tree from the tree-sequence (either an *i*-th tree in the sequence, or a tree overlapping an *i*-th position of the simulated genome, depending on the value of its `mode` argument):
 
 ```{r}
-# take the 2nd tree in the sequence (mode = "index" by default)
-tree <- ts_tree(ts_small, i = 2)
+# take the 1st tree in the sequence (mode = "index" by default)
+tree <- ts_tree(ts_small, i = 1)
 tree
 ```
 
@@ -247,7 +247,7 @@ As an example, instead of calling the function `ts_coalesced()` on the tree-sequ
 # iterate over all trees in the tree-sequence and check if each
 # has only one root (i.e. is fully coalesced) - note that Python
 # lists are 0-based, which is something we need to take care of
-all(sapply(seq_len(ts$num_trees)[100],
+all(sapply(seq_len(ts$num_trees)[1:100],
            function(i) ts$at_index(i - 1)$num_roots == 1))
 ```
 

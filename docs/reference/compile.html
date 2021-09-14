@@ -200,7 +200,8 @@ the timing of simulation events.</p>
   geneflow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
   overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
   sim_length <span class='op'>=</span> <span class='cn'>NULL</span>,
-  direction <span class='op'>=</span> <span class='cn'>NULL</span>
+  direction <span class='op'>=</span> <span class='cn'>NULL</span>,
+  script_path <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -256,6 +257,11 @@ time units which by default run to "the present time")</p></td>
       <td><p>Intended direction of time. Under normal
 circumstances this parameter is inferred from the model and does
 not need to be set manually.</p></td>
+    </tr>
+    <tr>
+      <th>script_path</th>
+      <td><p>Path to a SLiM script to be used for executing
+the model (by default, a bundled backend script will be used)</p></td>
     </tr>
     </table>
 

@@ -95,7 +95,7 @@
 ## Changes to the SLiM backend
 
 - Significant overhaul of the entire [SLiM
-  layer](https://github.com/bodkan/slendr/blob/main/inst/extdata/backend.slim). Most
+  layer](https://github.com/bodkan/slendr/blob/main/inst/extdata/script.slim). Most
   importantly, complex and ugly hacks approximating dataframe behavior
   using SLiM matrices and custom functions are completely replaced by
   Dictionaries. The intention of the SLiM backend is to be as easy to

@@ -319,7 +319,24 @@
   save_locations <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># save the location of everyone who ever lived</span>
   method <span class="op">=</span> <span class="st">"batch"</span>, <span class="co"># change to "gui" to execute the model in SLiMgui</span>
   seed <span class="op">=</span> <span class="fl">314159</span>
-<span class="op">)</span></code></pre></div>
+<span class="op">)</span>
+<span class="co">#&gt; --------------------------------------------------</span>
+<span class="co">#&gt; SLiM command to be executed:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; /usr/local/bin/slim  \</span>
+<span class="co">#&gt;     -d SEED=314159  \</span>
+<span class="co">#&gt;       -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphW0E8B/readme-model"' \</span>
+<span class="co">#&gt;       -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphW0E8B/readme-model/output"' \</span>
+<span class="co">#&gt;       -d SEQ_LENGTH=1 \</span>
+<span class="co">#&gt;       -d RECOMB_RATE=0 \</span>
+<span class="co">#&gt;       -d BURNIN_LENGTH=0 \</span>
+<span class="co">#&gt;       -d N_MARKERS=0 \</span>
+<span class="co">#&gt;       -d TS_RECORDING=F \</span>
+<span class="co">#&gt;       -d SAVE_LOCATIONS=T \</span>
+<span class="co">#&gt;       -d TRACK_ANCESTRY=F \</span>
+<span class="co">#&gt;       -d NUM_MARKERS=0 \</span>
+<span class="co">#&gt;       /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphW0E8B/readme-model/script.slim </span>
+<span class="co">#&gt; --------------------------------------------------</span></code></pre></div>
 <p>As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.</p>
 </div>
 <div id="8-re-capitulate-the-slim-run-as-an-individual-based-animation" class="section level4">

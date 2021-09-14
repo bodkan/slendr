@@ -230,6 +230,23 @@ slim(
   method = "batch", # change to "gui" to execute the model in SLiMgui
   seed = 314159
 )
+#> --------------------------------------------------
+#> SLiM command to be executed:
+#> 
+#> /usr/local/bin/slim  \
+#>     -d SEED=314159  \
+#>       -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphW0E8B/readme-model"' \
+#>       -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphW0E8B/readme-model/output"' \
+#>       -d SEQ_LENGTH=1 \
+#>       -d RECOMB_RATE=0 \
+#>       -d BURNIN_LENGTH=0 \
+#>       -d N_MARKERS=0 \
+#>       -d TS_RECORDING=F \
+#>       -d SAVE_LOCATIONS=T \
+#>       -d TRACK_ANCESTRY=F \
+#>       -d NUM_MARKERS=0 \
+#>       /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphW0E8B/readme-model/script.slim 
+#> --------------------------------------------------
 ```
 
 As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.
