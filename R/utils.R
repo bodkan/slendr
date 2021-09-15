@@ -286,7 +286,7 @@ check_removal_time <- function(time, pop, direction = NULL) {
 compute_overlaps <- function(x) {
   sf::st_agr(x) <- "constant"
   sapply(
-    (1:nrow(x))[-1], function(i) {
+    seq_len(nrow(x))[-1], function(i) {
       a <- x[i - 1, ]
       b <- x[i, ]
       intersection <- sf::st_intersection(a, b)
