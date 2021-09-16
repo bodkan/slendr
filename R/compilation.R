@@ -30,6 +30,7 @@
 #'   not need to be set manually.
 #' @param script_path Path to a SLiM script to be used for executing
 #'   the model (by default, a bundled backend script will be used)
+#' @param description Optional short description of the model
 #'
 #' @return Compiled \code{slendr_model} model object
 #' @export
@@ -37,7 +38,8 @@ compile <- function(populations, dir, generation_time, resolution = NULL,
                     competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
                     geneflow = list(), overwrite = FALSE,
                     sim_length = NULL, direction = NULL,
-                    script_path = NULL) {
+                    script_path = system.file("extdata", "script.slim", package = "slendr"),
+                    description = "") {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   # make sure that all parents are present
@@ -135,7 +137,8 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   checksums <- write_model(
     dir, populations, admix_table, map_table, split_table, resize_table,
-    dispersal_table, generation_time, resolution, length, time_dir, script_path
+    dispersal_table, generation_time, resolution, length, time_dir, script_path,
+    description, map
   )
 
   # compile the result
@@ -268,6 +271,9 @@ read <- function(dir) {
 #'   and will be placed in the model directory)
 #' @param ts_recording Turn on tree sequence recording during SLiM
 #'   initialization?
+#' @param spatial Should the model be executed in spatial mode? By default, if a
+#'   world map was specified during model definition, simulation will proceed
+#'   in a spatial mode.
 #' @param save_locations Save location of each individual throughout the
 #'   simulation?
 #' @param track_ancestry Track ancestry proportion dynamics in all populations
@@ -293,7 +299,7 @@ read <- function(dir) {
 #' @export
 slim <- function(model, seq_length, recomb_rate,
                  output = file.path(model$path, "output"),
-                 ts_recording = FALSE, sampling = NULL,
+                 ts_recording = FALSE, spatial = !is.null(model$world), sampling = NULL,
                  save_locations = FALSE, track_ancestry = FALSE,
                  method = c("batch", "gui"), verbose = TRUE, burnin = 0,
                  seed = NULL, slim_path = NULL, save_sampling = FALSE) {
@@ -326,6 +332,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
 
   output <- path.expand(output)
   ts_recording <- if (ts_recording) "T" else "F"
+  spatial <- if (spatial) "T" else "F"
   track_ancestry <- if (markers_count > 0) "T" else "F"
   save_locations <- if (save_locations) "T" else "F"
   burnin <- round(burnin / model$generation_time)
@@ -344,11 +351,11 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     system(sprintf("%s %s", binary, script_path))
   else {
     slim_command <- sprintf("%s %s %s \\
-      -d 'MODEL=\"%s\"' \\
-      -d 'OUTPUT=\"%s\"' \\
-      -d SEQ_LENGTH=%i \\
-      -d RECOMB_RATE=%s \\
-      -d BURNIN_LENGTH=%s \\
+    -d 'MODEL=\"%s\"' \\
+    -d 'OUTPUT=\"%s\"' \\
+    -d SPATIAL=%s \\
+    -d SEQ_LENGTH=%i \\
+    -d RECOMB_RATE=%s \\
       -d N_MARKERS=%i \\
       -d TS_RECORDING=%s \\
       -d SAVE_LOCATIONS=%s \\
@@ -360,6 +367,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       samples,
       path.expand(model_dir),
       output,
+      spatial,
       seq_length,
       recomb_rate,
       burnin,
@@ -451,15 +459,7 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   base::write(direction, file.path(dir, "direction.txt"))
 
   saved_files["script"] <- file.path(dir, "script.slim")
-  # copy the script to the dedicated model directory, replacing the
-  # placeholders for model directory and slendr version accordingly
-  if (is.null(script_path)) {
-    script_path <- system.file("extdata", "script.slim", package = "slendr")
-    readLines(script_path) %>%
-      gsub("__VERSION__", paste0("slendr_", packageVersion("slendr")), .) %>%
-      cat(file = saved_files["script"], sep = "\n")
-  } else
-    file.copy(script_path, saved_files["script"])
+  write_script(saved_files["script"], script_source, map, resolution, description)
 
   checksums <- calculate_checksums(saved_files)
   utils::write.table(checksums, file.path(dir, "checksums.tsv"), sep = "\t",
@@ -468,6 +468,26 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   checksums
 }
 
+write_script <- function(script_target, script_source, map, resolution, description) {
+  # copy the script to the dedicated model directory, replacing the
+  # placeholders for model directory and slendr version accordingly
+  script_code <- readLines(script_source) %>%
+    stringr::str_replace("__VERSION__", paste0("slendr_", packageVersion("slendr"))) %>%
+    stringr::str_replace("__DESCRIPTION__", description)
+
+  if (!is.null(map)) {
+    crs <- ifelse(has_crs(map), sf::st_crs(map)$epsg, "NULL")
+    extent <- paste(deparse(as.vector(sf::st_bbox(map))), collapse = "")
+    script_code <- script_code %>%
+      stringr::str_replace("__CRS__", as.character(crs)) %>%
+      stringr::str_replace("__EXTENT__", extent) %>%
+      stringr::str_replace("__RESOLUTION__", as.character(resolution)) %>%
+      stringr::str_replace("__DESCRIPTION__", description)
+  }
+  cat(script_code, file = script_target, sep = "\n")
+
+  script_target
+}
 
 # Iterate over population objects and convert he information about
 # population split hierarchy and split times into a data frame

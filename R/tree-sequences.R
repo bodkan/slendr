@@ -49,12 +49,12 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
 
   if (!inherits(model, "slendr_model"))
-    stop("A compiled slendr model object must be provided to be able to fetch metadata from", call. = FALSE)
+    stop("A compiled slendr model object must be provided", call. = FALSE)
 
   ts <- pyslim$load(path.expand(file))
 
   attr(ts, "model") <- model
-  attr(ts, "sampling") <- get_sampling(ts)
+  attr(ts, "metadata") <- get_metadata(ts)
 
   attr(ts, "recapitated") <- FALSE
   attr(ts, "simplified") <- FALSE
@@ -117,7 +117,7 @@ ts_recapitate <- function(ts, recomb_rate, Ne, spatial = TRUE,
                           random_seed = random_seed)
 
   attr(ts_new, "model") <- model
-  attr(ts_new, "sampling") <- attr(ts, "sampling")
+  attr(ts_new, "metadata") <- attr(ts, "metadata")
 
   attr(ts_new, "recapitated") <- TRUE
   attr(ts_new, "simplified") <- attr(ts, "simplified")
@@ -216,6 +216,9 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 
   location_col <- if (spatial) "location" else NULL
 
+  attr(ts_new, "model") <- model
+  attr(ts_new, "metadata") <- attr(ts, "metadata")
+
   # get other data about individuals in the simplified tree sequence, sort them
   # also by their IDs and times, and add their node IDs extracted above
   # (this works because we sorted both in the same way)
@@ -229,9 +232,6 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 
   if (spatial)
     data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
-
-  attr(ts_new, "model") <- model
-  attr(ts_new, "sampling") <- attr(ts, "sampling")
 
   attr(ts_new, "recapitated") <- attr(ts, "recapitated")
   attr(ts_new, "simplified") <- TRUE
@@ -272,7 +272,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRU
     pyslim$SlimTreeSequence()
 
   attr(ts_new, "model") <- attr(ts, "model")
-  attr(ts_new, "sampling") <- attr(ts, "sampling")
+  attr(ts_new, "metadata") <- attr(ts, "metadata")
 
   attr(ts_new, "recapitated") <- attr(ts, "recapitated")
   attr(ts_new, "simplified") <- attr(ts, "simplified")
@@ -289,7 +289,17 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRU
   ts_new
 }
 
+#' Extract list with tree sequence metadata saved by SLiM
+#'
+#' @param ts \code{pyslim.SlimTreeSequence} object
+#'
+#' @return List of metadata fields extracted from the tree sequence object
+#'
+#' @export
 # genotype conversion -----------------------------------------------------
+ts_metadata <- function(ts) {
+  attr(ts, "metadata")
+}
 
 #' Extract genotype table from the tree sequence
 #'
@@ -537,7 +547,7 @@ ts_nodes <- function(ts) {
 #' @param ts \code{pyslim.SlimTreeSequence} object
 #' @export
 ts_samples <- function(ts) {
-  attr(ts, "sampling") %>%
+  attr(ts, "metadata")$sampling %>%
     dplyr::filter(name %in% ts_data(ts)$name)
 }
 
@@ -1121,7 +1131,7 @@ get_table_data <- function(ts, model, spatial, simplify_to = NULL) {
 
   # load information about samples at times and from populations of remembered
   # individuals
-  samples <- get_sampling(ts) %>% dplyr::arrange(-time, pop)
+  samples <- attr(ts, "metadata")$sampling %>% dplyr::arrange(-time, pop)
   if (!is.null(simplify_to))
     samples <- samples %>% dplyr::filter(name %in% simplify_to)
 
@@ -1160,26 +1170,6 @@ get_table_data <- function(ts, model, spatial, simplify_to = NULL) {
     combined
   else
     dplyr::as_tibble(combined)
-}
-
-get_sampling <- function(ts) {
-  ts$metadata$SLiM$user_metadata$slendr[[1]]$sampling %>%
-    purrr::transpose() %>%
-    dplyr::as_tibble() %>%
-    tidyr::unnest(cols = c("n", "pop", "time", "time_gen", "time_orig")) %>%
-    dplyr::select(-time, -time_gen) %>%
-    {
-      rbind(
-        dplyr::filter(., n == 1),
-        dplyr::filter(., n > 1) %>% .[rep(seq_len(nrow(.)), .$n), ]
-      )
-    } %>%
-    dplyr::group_by(pop) %>%
-    dplyr::mutate(name = paste0(pop, 1:dplyr::n())) %>%
-    dplyr::ungroup() %>%
-    dplyr::arrange(-time_orig, pop) %>%
-    dplyr::rename(time = time_orig) %>%
-    dplyr::select(name, time, pop)
 }
 
 check_ts_class <- function(x) {
@@ -1239,6 +1229,39 @@ collect_ancestors <- function(x, edges) {
     dplyr::select(child_id = child, parent_id = parent, left, right, level)
 
   result
+}
+
+# Convert SLiM's dictionaries with the sampling schedule table to
+# a normal R data frame
+get_sampling <- function(metadata) {
+  metadata$sampling %>%
+    purrr::transpose() %>%
+    dplyr::as_tibble() %>%
+    tidyr::unnest(cols = c("n", "pop", "time", "time_gen", "time_orig")) %>%
+    dplyr::select(-time, -time_gen) %>%
+    {
+      rbind(
+        dplyr::filter(., n == 1),
+        dplyr::filter(., n > 1) %>% .[rep(seq_len(nrow(.)), .$n), ]
+      )
+    } %>%
+    dplyr::group_by(pop) %>%
+    dplyr::mutate(name = paste0(pop, 1:dplyr::n())) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(-time_orig, pop) %>%
+    dplyr::rename(time = time_orig) %>%
+    dplyr::select(name, time, pop)
+}
+
+# Extract list with slendr metadata (created as Eidos Dictionaries by SLiM)
+get_metadata <- function(ts) {
+  metadata <- ts$metadata$SLiM$user_metadata$slendr[[1]]
+  list(
+    version = metadata$version,
+    description = metadata$description,
+    sampling = get_sampling(metadata),
+    map = metadata$map[[1]]
+  )
 }
 
 # Convert a data frame of information extracted from a tree sequence

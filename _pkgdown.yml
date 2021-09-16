@@ -88,6 +88,7 @@ reference:
     - ts_simplify
     - ts_mutate
     - ts_coalesced
+    - ts_metadata
 
   - title: Extracting genotypes from tree sequences
     contents:

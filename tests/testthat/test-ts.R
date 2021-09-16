@@ -15,11 +15,15 @@ N <- 100; y <- 350; r <- 240
 p1 <- population("pop1", time = 1, N = N, map = map, center = c(750, y), radius = r)
 p2 <- population("pop2", parent = p1, time = 2, N = N, map = map, center = c(1750, y), radius = r)
 
+res <- 1
+desc <- "Test model without CRS"
+
 model <- compile(
   populations = list(p1, p2),
-  generation_time = 1, resolution = 1, sim_length = 300,
+  generation_time = 1, resolution = res, sim_length = 300,
   competition_dist = 10, mate_dist = 10, dispersal_dist = 5,
-  dir = file.path(tempdir(), "spatial-interactions"), overwrite = TRUE
+  dir = file.path(tempdir(), "spatial-interactions"), overwrite = TRUE,
+  description = desc
 )
 
 samples <- rbind(
@@ -175,4 +179,30 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed", {
   eigenstrat <- suppressMessages(ts_eigenstrat(ts, prefix, outgroup = "outgroup_ind"))
   ind_names <- sort(admixr::read_ind(eigenstrat)$id)
   expect_true(all(ind_names == c("outgroup_ind", ts_names)))
+})
+
+test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
+  ts <- ts_load(model)
+  metadata <- ts_metadata(ts)
+
+  expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
+  expect_true(all(sf::st_bbox(map) == metadata$map$extent))
+  expect_true(metadata$map$resolution == res)
+  expect_true(is.null(metadata$map$crs))
+  expect_true(metadata$description == desc)
+})
+
+test_that("slendr metadata is correctly loaded (non-spatial model)", {
+  output <- paste0(tempfile(), "nonspatial_test")
+
+  slim(model, seq_length = 100, recomb_rate = 0, save_locations = FALSE,
+       ts_recording = TRUE, method = "batch", seed = 314159,
+       sampling = samples, verbose = FALSE, spatial = FALSE, output = output)
+
+  ts <- ts_load(model, file = paste0(output, "_ts.trees"))
+  metadata <- ts_metadata(ts)
+
+  expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
+  expect_true(is.null(metadata$map))
+  expect_true(metadata$description == desc)
 })

@@ -408,9 +408,7 @@ s12 late() /* End of simulation */ {
         filename = output_path("ts.trees");
 
         // add slendr-specific metadata to its own Dictionary key
-        metadata = Dictionary();
-        metadata.setValue("version", "__VERSION__");
-        metadata.setValue("sampling", SAMPLING);
+        metadata = collect_metadata();
 
         sim.treeSeqOutput(filename, metadata = Dictionary("slendr", metadata));
     }
@@ -492,6 +490,32 @@ function (void)optional_arg(s arg, lifs default) {
 // Check if a required command-line argument was specified.
 function (void)required_arg(s arg) {
     if (!exists(arg)) stop("Required argument '" + arg + "' is missing\n");
+}
+
+function (object<Dictionary>) collect_metadata(void) {
+    metadata = Dictionary();
+
+    // slendr version and commit hash that generated this script
+    metadata.setValue("version", "__VERSION__");
+    // model description
+    metadata.setValue("description", "__DESCRIPTION__");
+    // sampling schedule table
+    metadata.setValue("sampling", SAMPLING);
+
+    if (SPATIAL) {
+        spatial_metadata = Dictionary();
+        // EPSG code of the CRS used
+        spatial_metadata.setValue("crs", __CRS__);
+        // coordinates of the bounding box of the map
+        spatial_metadata.setValue("extent", __EXTENT__);
+        // how many pixels per unit of distance (i.e. meters for projected CRS)
+        spatial_metadata.setValue("resolution", __RESOLUTION__);
+    } else
+        spatial_metadata = NULL;
+
+    metadata.setValue("map", spatial_metadata);
+
+    return(metadata);
 }
 
 // Assign a spatial map to a given population
