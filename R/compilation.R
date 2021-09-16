@@ -196,8 +196,8 @@ verify_checksums <- function(files, hashes) {
 read <- function(dir) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function
-  path_populations <- file.path(dir, "populations.rds")
-  path_splits <- file.path(dir, "splits.tsv")
+  path_populations <- file.path(dir, "ranges.rds")
+  path_splits <- file.path(dir, "populations.tsv")
   path_geneflow <- file.path(dir, "geneflow.tsv")
   path_maps <- file.path(dir, "maps.tsv")
   path_generation_time <- file.path(dir, "generation_time.txt")
@@ -356,12 +356,14 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     -d SPATIAL=%s \\
     -d SEQ_LENGTH=%i \\
     -d RECOMB_RATE=%s \\
-      -d N_MARKERS=%i \\
-      -d TS_RECORDING=%s \\
-      -d SAVE_LOCATIONS=%s \\
-      -d TRACK_ANCESTRY=%s \\
-      -d NUM_MARKERS=%i \\
-      %s",
+    -d BURNIN_LENGTH=%s \\
+    -d SIMULATION_LENGTH=%s \\
+    -d N_MARKERS=%i \\
+    -d TS_RECORDING=%s \\
+    -d SAVE_LOCATIONS=%s \\
+    -d TRACK_ANCESTRY=%s \\
+    -d NUM_MARKERS=%i \\
+    %s",
       binary,
       seed,
       samples,
@@ -371,6 +373,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       seq_length,
       recomb_rate,
       burnin,
+      model$length,
       markers_count,
       ts_recording,
       save_locations,
@@ -396,11 +399,11 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
 write_model <- function(dir, populations, admix_table, map_table, split_table,
                         resize_table, dispersal_table,
                         generation_time, resolution, length, direction,
-                        script_path) {
+                        script_source, description, map) {
   saved_files <- c()
 
   # table of split times and initial population sizes
-  saved_files["splits"] <- file.path(dir, "splits.tsv")
+  saved_files["splits"] <- file.path(dir, "populations.tsv")
   utils::write.table(split_table, saved_files[["splits"]],
                      sep = "\t", quote = FALSE, row.names = FALSE)
 
@@ -439,7 +442,7 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   }
 
   # serialized population objects
-  saved_files["populations"] <- file.path(dir, "populations.rds")
+  saved_files["populations"] <- file.path(dir, "ranges.rds")
   saveRDS(populations, saved_files[["populations"]])
 
   # table of scheduled resize events
