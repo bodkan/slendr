@@ -2,8 +2,8 @@
 /// Initialization block
 ///
 initialize() {
-    // if the script is being run in SLiMgui, make it executable by
-    // specifying dummy values for the two required constants
+    // if the script is being run in SLiMgui, make it executable by specifying
+    // dummy values for total sequence length and recombination rate
     if (exists("slimgui")) {
         defineConstant("SEQ_LENGTH", 1);
         defineConstant("RECOMB_RATE", 0);
@@ -12,27 +12,23 @@ initialize() {
         required_arg("RECOMB_RATE");
     }
 
-    optional_arg("SEED", getSeed()); // random seed
+    optional_arg("SEED", getSeed());
     setSeed(SEED); catn("SEED: " + SEED);
 
-    defineConstant("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
-
-    optional_arg("MODEL", ".");
+    optional_arg("MODEL", "."); // directory containing model configuration files
     optional_arg("OUTPUT", config_path("output")); // shared path of output files
-    optional_arg("SAMPLES", "");
+    optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
     optional_arg("TS_RECORDING", T); // should tree sequence recording be on?
+    optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
     optional_arg("SAVE_LOCATIONS", F); // record locations of all individuals?
     optional_arg("TRACK_ANCESTRY", F); // record ancestry proportions?
     optional_arg("N_MARKERS", 1); // number of regularly-spaced ancestry markers
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
+    optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
+                 asInteger(readFile(config_path("length.txt"))));
 
-    defineConstant("SIMULATION_LENGTH", asInteger(readFile(config_path("length.txt"))));
-    defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
-
-    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
-
-    // load model definition tables
-    defineConstant("POPULATIONS", read_table(config_path("splits.tsv")));
+    // model configuration tables
+    defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
     defineConstant("GENEFLOWS", read_table(config_path("geneflow.tsv")));
     defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
     defineConstant("SAMPLING", read_table(SAMPLES));
@@ -483,12 +479,12 @@ modifyChild() /* Place offspring within its population's boundary */ {
 ///
 
 // Set a default value of a command-line argument.
-function (void)optional_arg(s arg, lifs default) {
+function (void) optional_arg(s arg, lifs default) {
     if (!exists(arg)) defineConstant(arg, default);
 }
 
 // Check if a required command-line argument was specified.
-function (void)required_arg(s arg) {
+function (void) required_arg(s arg) {
     if (!exists(arg)) stop("Required argument '" + arg + "' is missing\n");
 }
 
@@ -627,7 +623,6 @@ function (void) shift_times(No<Dictionary>$ table) {
     }
 }
 
-
 ///
 /// Input/output functions
 ///
@@ -755,10 +750,10 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
     // vectors of all possible column names in tables defined by slendr `compile()`
     string = c("pop", "parent", "how", "path", "from", "to", "how");
     integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N",
-                            "time_orig", "time_gen", "tmap_orig", "tmap_gen",
-                            "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
-                            "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
-                            "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
+                "time_orig", "time_gen", "tmap_orig", "tmap_gen",
+                "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
+                "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
+                "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
     float = c("rate", "competition_dist", "mate_dist", "dispersal_dist", "n");
     logical = c("overlap");
 
