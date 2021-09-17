@@ -1237,8 +1237,8 @@ get_sampling <- function(metadata) {
   metadata$sampling %>%
     purrr::transpose() %>%
     dplyr::as_tibble() %>%
-    tidyr::unnest(cols = c("n", "pop", "time", "time_gen", "time_orig")) %>%
-    dplyr::select(-time, -time_gen) %>%
+    tidyr::unnest(cols = c("n", "pop", "time_gen", "time_orig")) %>%
+    dplyr::select(-time_gen) %>%
     {
       rbind(
         dplyr::filter(., n == 1),

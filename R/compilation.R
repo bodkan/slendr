@@ -345,7 +345,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
   seed <- if (is.null(seed)) "" else paste0(" \\\n    -d SEED=", seed)
-  samples <- if (is.null(sampling_path)) "" else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
+  samples <- if (is.null(sampling_path)) ""
+             else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
 
   if (method == "gui") {
     # to be able to execute the script in the SLiMgui, we have to hardcode
@@ -511,11 +512,12 @@ compile_splits <- function(populations, generation_time, direction, end_time) {
     }
 
     tremove <- attr(p, "remove")
+    tsplit <- attr(p, "history")[[1]]$time
 
     data.frame(
       pop = unique(p$pop),
       parent = parent_name,
-      tsplit = attr(p, "history")[[1]]$time,
+      tsplit = tsplit,
       N = attr(p, "history")[[1]]$N,
       tremove = ifelse(!is.null(tremove), tremove, -1),
       stringsAsFactors = FALSE
@@ -543,7 +545,8 @@ compile_splits <- function(populations, generation_time, direction, end_time) {
     }
   ) %>% unlist()
 
-  split_table
+  split_table %>%
+    dplyr::mutate(tsplit_gen = ifelse(parent == "ancestor", 1, tsplit_gen))
 }
 
 # Process vectorized population boundaries into a table with
@@ -585,6 +588,13 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
     paste0(., ".png") %>%
     file.path(dir, .) %>%
     sub("//", "/", .)
+
+  # maps of ancestral populations have to be set in the first generation,
+  # regardless of the specified split time
+  ancestral_pops <- split_table[split_table$parent == "ancestor", ]$pop
+  ancestral_maps <- purrr::map(ancestral_pops, ~ which(map_table$pop == .x)) %>%
+    purrr::map_int(~ .x[1])
+  map_table[ancestral_maps, ]$tmap_gen <- 1
 
   map_table
 }
@@ -691,6 +701,13 @@ compile_dispersals <- function(populations, generation_time, direction,
                                    mate_dist, dispersal_dist)
 
   dispersal_table <- dispersal_table[order(dispersal_table$tdispersal_gen, na.last = FALSE), ]
+
+  # dispersals of ancestral populations have to be set in the first generation,
+  # regardless of the specified split time
+  ancestral_pops <- split_table[split_table$parent == "ancestor", ]$pop
+  indices <- purrr::map(ancestral_pops, ~ which(dispersal_table$pop == .x)) %>%
+    purrr::map_int(~ .x[1])
+  dispersal_table[indices, ]$tdispersal_gen <- 1
 
   dispersal_table[, c("pop", "pop_id", "tdispersal_gen", "tdispersal_orig",
                       "competition_dist", "mate_dist", "dispersal_dist")]
@@ -816,8 +833,9 @@ convert_slim_time <- function(times, model) {
   } else {
     result <- (model$length - times + 1) * model$generation_time
     # did the simulation start at a later time than "generation 1"?
-    # if it did, shoft the time appropriately
-    if (min(ancestors[, ]$tsplit_gen != 1))
+    # if it did, shift the time appropriately
+
+    if (min(round(ancestors[, ]$tsplit_orig / model$generation_time) != 1))
       result <- result + ancestors[1, ]$tsplit_orig - model$generation_time
   }
   as.integer(result)
