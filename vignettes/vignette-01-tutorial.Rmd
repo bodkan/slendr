@@ -427,7 +427,7 @@ It also contains a series of tab-delimited configuration tables. These tables co
 -   the table of population splits:
 
 ```{r}
-read.table(file.path(tempdir(), "tutorial-model", "splits.tsv"), header = TRUE)
+read.table(file.path(tempdir(), "tutorial-model", "populations.tsv"), header = TRUE)
 ```
 
 -   the table of geneflow events:
