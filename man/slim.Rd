@@ -10,6 +10,7 @@ slim(
   recomb_rate,
   output = file.path(model$path, "output"),
   ts_recording = FALSE,
+  spatial = !is.null(model$world),
   sampling = NULL,
   save_locations = FALSE,
   track_ancestry = FALSE,
@@ -35,6 +36,10 @@ and will be placed in the model directory)}
 
 \item{ts_recording}{Turn on tree sequence recording during SLiM
 initialization?}
+
+\item{spatial}{Should the model be executed in spatial mode? By default, if a
+world map was specified during model definition, simulation will proceed
+in a spatial mode.}
 
 \item{sampling}{A data frame of times at which a given number of individuals
 should be remembered in the tree-sequence (see \code{sampling} for a
