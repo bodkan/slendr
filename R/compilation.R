@@ -347,9 +347,16 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   seed <- if (is.null(seed)) "" else paste0(" \\\n    -d SEED=", seed)
   samples <- if (is.null(sampling_path)) "" else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
 
-  if (method == "gui")
-    system(sprintf("%s %s", binary, script_path))
-  else {
+  if (method == "gui") {
+    # to be able to execute the script in the SLiMgui, we have to hardcode
+    # the path to the model configuration directory
+    modif_path <- tempfile()
+    readLines(script_path) %>%
+      stringr::str_replace("\"MODEL\", \".\"",
+                           paste0("\"MODEL\", \"", model$path, "\"")) %>%
+      cat(file = modif_path, sep = "\n")
+    system(sprintf("%s %s", binary, modif_path))
+  } else {
     slim_command <- sprintf("%s %s %s \\
     -d 'MODEL=\"%s\"' \\
     -d 'OUTPUT=\"%s\"' \\
