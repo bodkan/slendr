@@ -702,17 +702,18 @@ function (object<Dictionary>) read_table(s$ path) {
 
 // Filter the data frame `d` to rows where the `col` is equal to `val`
 // (or not equal if `negate` is TRUE)
-function (object<Dictionary>) filter(No<Dictionary> d, s$ col, ifsl$ val, [l$ negate = F]) {
-    if (isNULL(d)) return(NULL);
+function (object<Dictionary>) filter(No<Dictionary> d, s$ col, ifsl val, [l$ negate = F]) {
+    if (isNULL(d) | num_rows(d) == 0) return(NULL);
 
     if (!any(col == d.allKeys))
         stop("Column '" + col + "' not present in the table");
 
     values = d.getValue(col);
-    if (negate)
-        return d.getRowValues(values != val);
-    else
-        return d.getRowValues(values == val);
+
+    matches = sapply(values, "any(applyValue == val);");
+    if (negate) matches = !matches;
+    
+    return d.getRowValues(matches);
 }
 
 // Get the number of rows of the given dataframe
