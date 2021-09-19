@@ -157,7 +157,7 @@ initialize() {
     // remove populations from the simulation
     cleanups = filter(POPULATIONS, "tremove_gen", -1, negate = T);
     if (num_rows(cleanups))
-         sim.rescheduleScriptBlock(s11, generations = BURNIN_LENGTH + unique(cleanup.getValue("tremove_gen")));
+         sim.rescheduleScriptBlock(s11, generations = BURNIN_LENGTH + unique(cleanups.getValue("tremove_gen")));
     else
          sim.deregisterScriptBlock(s11);
 
