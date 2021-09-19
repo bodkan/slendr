@@ -1,3 +1,7 @@
+# Done tasks
+
+---
+
 ### Done ✅
 
 > You should add formatted comments for the "jump menu" in SLiMgui.
@@ -16,13 +20,21 @@
 
 ---
 
-### Done ✅
+### Done ✅ (and more)
 
 > [...] It'd be nice if your script was syntax-compliant, so maybe you can look for a different way of doing this templating?  One possibility would be to just use a placeholder that already looks like a symbol, like X_X_SEED instead of {{seed}}, or something. [...]
 
-I have now changed the backend from an Eidos/SLiM-noncompliant code (which used those `{{var}}` R templating substitution markers which I unfortunately had no influence over) to normal SLiM command-line parameters. I had originaly a specific idea for the R templating (it was supposed to power those custom user-defined SLiM "modules" I mentioned and make them easy to work with in R) but it's an overkill in this case.
+I have now changed the backend from an Eidos/SLiM-noncompliant code (which used those `{{var}}` substitution tags) to normal SLiM command-line parameters. I had a specific idea for the R templating (it was supposed to power those custom user-defined SLiM "modules" I mentioned and make them easy to work with in R) but it's an overkill in this case.
 
-The benefit of the current approach is that once a slendr user `compile()`s a model getting a SLiM script back, then can run it from the command-line as any other SLiM script. I.e., the `slim()` runner function passes the parameters via CLI instead of substituting the template variables.
+There are two important benefits of his change:
+
+1. Once a user `compile()`s a slendr model, a dedicated SLiM script will be saved in the model directory and can be run from the command-line as any other SLiM script. I.e., the `slim()` runner function in slendr now passes the parameters via CLI instead of substituting the template `{{var}}` variables. The main benefit is increased flexibility. The models can be defined and compiled on one machine (in R), and then transfered to any computer with SLiM for execution. I know some institutions have very restricted cluster capabilities -- this is one way to get around that.
+
+Before this change, the script was saved as one "monolithic" unit with all parameter values via the `{{var}}` substitution, hardcoded by the parameters given to the `slim()` R function.
+
+2. The `compile()` function now accepts an optional argument specifying where it should look for the backend SLiM script. By default, it's the script bundled under `inst/extdata/script.slim` in the R package. But it could be also a slightly modified version of this script, with bits of added functionality (custom script blocks, etc.). As long as the core of the script remains the same, the (advanced) user can extend the functionality however they need, and still maintain the reproducibility of having the entire analysis/simulation workflow done from R. If the user does this, there will be a gentle warning that this is an experimental feature (and that the slendr model handling SLiM code mustn't change).
+
+This solves my issue with those optional "modules". There was always an option to modify the monolithic SLiM script compiled by the package, but that would break reproducibility because there wasn't a way to include it into the slendr workflow. This is not a problem anymore.
 
 ---
 
@@ -30,7 +42,7 @@ The benefit of the current approach is that once a slendr user `compile()`s a mo
 
 > You seem to be using two-space indents, I'd suggest tabs?
 
-I hope this won't ruin our friendship, but I'm a card-carrying member of the spaces-but-not-tabs camp. 😬 However, I do admit that the two-space indents come from an R style guide which doesn't fit SLiM code (or non-R code in general). I changed the code to four-space indents. Hopefully a reasonable compromise.
+I hope this won't ruin our friendship, but I'm a card-carrying member of the spaces-but-not-tabs camp. 😬 I do admit that the two-space indents come from an R style guide which doesn't fit SLiM code (or non-R code in general). I changed the code to four-space indents. Hopefully a reasonable compromise.
 
 ---
 
@@ -38,7 +50,7 @@ I hope this won't ruin our friendship, but I'm a card-carrying member of the spa
 
 > "g1.mutationTypes[mut_types]" seems odd, shouldn't that just be "g1.mutationTypes"?  And is there a need to set their stacking policy stuff?  They will never stack anyway, right?  How could they, if new mutations never occur?
 
-You're right. I think this might be a result of some of my very early misunderstanding of how mutation types should be handled here (going back all the way to before *slendr* was even an R package).
+You're right. I think this was a result of some of my very early misunderstanding of how mutation types should be handled here (going back all the way to before *slendr* was even an R package).
 
 ---
 
@@ -46,21 +58,43 @@ You're right. I think this might be a result of some of my very early misunderst
 
 > You do "N = event.getValue("N");", so N is a variable. [...] how about "pop_size" or some such?
 
+Given that UPPER_CASE_CONSTANTS are now basically all command-line arguments, I'm actually thinking about making them lower-case. I personally don't see much of a reason to call the default slendr SLiM script outside of R, but having to type out `-d UPPER_CASE_CLI_ARGUMENT=123` somehow bothers me a bit. A matter of esthetics though.
+
 ---
 
 ### Done ✅
 
-> add_markers() checks if (TRACK_ANCESTRY) and does nothing if it's false.  Seems weird to me; more normal would be to put the if (TRACK_ANCESTRY) outside the function, in the caller not the function.  This is because the function name suggests that the function simply "adds markers"; if it does what you have it doing, it should be named "add_markers_if_tracking_ancestry" or some such.  A nit, but this sort of thing can cause confusion.  Functions/methods should do what their name says they do, to the extent possible.  Sorry for being pedantic, I feel a little guilty about this comment.  :->
+> add_markers() checks if (TRACK_ANCESTRY) and does nothing if it's false.  Seems weird to me; more normal would be to put the if (TRACK_ANCESTRY) outside the function, in the caller not the function.  This is because the function name suggests that the function simply "adds markers" [...] A nit, but this sort of thing can cause confusion.  Functions/methods should do what their name says they do, to the extent possible.  Sorry for being pedantic, I feel a little guilty about this comment.  :->
 
-No reason to feel guilty. As a fellow nitpicker and code pedant, I appreciate this comment. 👍 In my quasi-semi-defense, I have no idea why this is even there. I think it must be a left-over of a pre-table/Dictionary iteration of the backend which probably did something slightly more in this function.
+No reason to feel guilty. As a fellow code pedant, I appreciate this comment. 👍 In my quasi-semi-defense, I have no idea why this condition was even there. I think it must be a left-over of a pre-table/Dictionary iteration of the backend which probably did something slightly more in this function.
 
 ---
 
-### In-progress ⏳
+### Done ✅
 
-> set_coordinates() could be made vastly more efficient by vectorizing it, but if it's not a bottleneck don't worry about it, because the way to vectorize it is a little bit gross (see https://github.com/MesserLab/SLiM-Extras/blob/master/models/Recipe_15.10_OnLand.slim)
+@peterlharp Does this look like a reasonable way to do #61 and #62? I modified the format of the metadata slightly (moved `"description"` one level "higher" in the hierarchy directly under the `"slendr"` key) and simplified it only to what's used by slendr in its current state. It appears that this metadata wouldn't currently be used for anything else except slendr itself, but it would be quite easy to expand/modify the format should other spatial tools pop up at some point.
 
-Ah, this is clever. Also, yet another case where I missed a clear vectorization possibility. I actually think it makes sense to optimize the code as much as possible. I will do some profiling (I've never actually used the SLiM profiler before 😬) and update the PR accordingly based on what I find.
+---
+
+### Done ✅
+
+> slim_time(), yikes.  That's a lot of complicated code just to translate times.  Would it be possible to do a different approach to this?  You could maybe (a) write out the translated times in the first place so they don't need to be shifted at runtime, or (b) do the shift by simply adding BURNIN_LENGTH when you *use* a time value that you just got from a table?  Don't know if any of this is practical, but this sort of complex dictionary-munging is definitely an obstacle to understanding how the script works.
+
+~~Three paragraphs of lame excuses and justification for why I can't or don't want to address this right now. 🤦‍♀️~~
+
+Wow, this was a brilliant point. It took me a whole week sitting on this, while I was implementing your other comments but when I actually found a good way to implement your suggestions (option (b)). This made the code *so much* cleaner. Thank you!
+
+---
+
+### Done ✅
+
+> original_time(), I'm not really sure what it does.  In what units is "current generation time", in what units is "the original units", why are they different, etc.?  The comment on this function needs to be improved.
+
+Same as the above. It was surprisingly painful to do this, but I'm so glad I did it. Lots of code was removed by doing this -- the best kind of refactoring. :)
+
+---
+
+# Tasks in progress
 
 ---
 
@@ -68,31 +102,21 @@ Ah, this is clever. Also, yet another case where I missed a clear vectorization 
 
 > I wonder whether any of the output you do should be done with LogFile?  Or if you might want to add the option for additional output of runtime stats/metrics using LogFile?
 
-Absolutely. That's something Peter also suggested at some point but I have never managed to get to this. Now that we are close to the final feature set, this is definitely a quality of life improvement worth revisiting.
+That's something Peter also suggested at some point but I have never managed to get to this. Now that we are close to the final feature set, this is definitely a quality of life improvement worth revisiting. I will read the appropriate section of the manual and see what I can do (in a separate PR, probably).
 
 ---
 
-### ⏳ In-progress
+### In-progress ⏳
 
-> slim_time(), yikes.  That's a lot of complicated code just to translate times.  Would it be possible to do a different approach to this?  You could maybe (a) write out the translated times in the first place so they don't need to be shifted at runtime, or (b) do the shift by simply adding BURNIN_LENGTH when you *use* a time value that you just got from a table?  Don't know if any of this is practical, but this sort of complex dictionary-munging is definitely an obstacle to understanding how the script works.
+> set_coordinates() could be made vastly more efficient by vectorizing it, but if it's not a bottleneck don't worry about it, because the way to vectorize it is a little bit gross (see https://github.com/MesserLab/SLiM-Extras/blob/master/models/Recipe_15.10_OnLand.slim)
 
-Hmmm, you're quite right. I agree that the time shifting shouldn't be something that should happen on the backend. I like the idea of the backend being as much of a clean tidy SLiM script as possible (well, as much as its table-driven nature allows). In some way, I'm already doing some of the forward-vs-backward/years-ago-vs-generations voodoo on the R side anyway, precisely for this reason.
-
----
-
-### ⏳ In-progress
-
-> original_time(), I'm not really sure what it does.  In what units is "current generation time", in what units is "the original units", why are they different, etc.?  The comment on this function needs to be improved.
-
-Basically, very similar thing as the above (except converting times into the slendr model units). What this function does is, yet again, something that should probably happen in the R interface. I will probably tackle this together with the previous point.
+Ah, this is clever. Also, yet another case where I missed a clear vectorization possibility. I actually think it makes sense to optimize the code as much as possible. I will do some profiling (I've never actually used the SLiM profiler before 😬) first and will tackle this in a separate PR. I might also just wait and see if there are problems down the line, as this would be simply an internal change, not something affecting potential slendr models in the wild.
 
 ---
-
-### Zoom call ☎️
 
 > Note that "asInteger({{seq_length}})" is unnecessary unless the string you put in place of {{seq_length}} is not an integer (which seems like it would be a bug?).  In Eidos, unlike in R, 10 is an integer, not numeric, and in fact 5e5 is also an integer.  Ah, but 5.5e5 is a float, which is arguably a bug in Eidos; that should be an integer too.  So OK, maybe you need that call.  Just thinking out loud, and now I'm curious whether you guys agree that 5.5e5 being float is a bug in Eidos.  :->
 
-My vote would be for 5e5 being an integer and not a float, if only because the "numeric but not integer" thing in R bothers me a bit.
+My vote would be for 5e5 being an integer and not a float, if only because the "an integer-looking number is numeric but not integer by default" thing in R always bothers me a bit.
 
 ---
 
@@ -100,7 +124,7 @@ My vote would be for 5e5 being an integer and not a float, if only because the "
 
 > I see that you do "initializeMutationRate(0.0);".  So slendr simulations never have new mutations at all?  It looks like you define genomic element types only for ancestry inference, when tree sequence recording is turned off I suppose?  And I guess neutral mutations can be overlaid, with treeseq at least.
 
-Calling `initializeMutationRate(0.0)` is a remnant of me originally not knowing what is it all that *slendr* would be doing. The original plan (which included those user-defined SLiM "modules") was that this would be flexible, including  user-defined non-neutral mutation types. Now that we agreed that the optional selection (and other) modules will not be emphasised in the first version, perhaps I could add `mutation_rate` as an optional argument of the `slim()` functions.
+In my original plan for slendr, mutation rate was supposed to be a flexible parameter (I was aiming to have those user-defined SLiM "modules" for selection etc. which would include user-defined non-neutral mutation types). Now that this is off the table for the nearest future, I'm actually thinking that the default way to add mutations would be ne
 
 This actually relates to my other point -- is there a reason (in the current *slendr* design) to support other output type than tree sequences? If tree sequences are to be the main output type (which I'm striving to make as easy to use from R as possible), do we even want to support something else than `initializeMutationRate(0.0)`? Thoughts @petrelharp @FerRacimo?
 
@@ -126,11 +150,11 @@ I agree, a separate Zoom call where we could go through this would be great.
 
 ---
 
-### Done ✅ & Zoom call ☎️
+### Done ✅
 
 > evaluate_interactions() does "if (SPATIAL) sim.interactionTypes.evaluate();".  The whole existence of this function seems unnecessary to me.  If SPATIAL is F, there will be no defined interaction types, right?  So then calling "sim.interactionTypes.evaluate();" would do nothing, because sim.interactionTypes would evaluate to a zero-length vector.  Am I missing something?
 
-Can't honestly remember why I wrote a dedicated function to this. I *think* I wasn't aware that calling a method on a zero-length vector wouldn't crash (as it would in some situations in R, for instance). There might be cases where I'm doing strange things with interactions and/or their evaluations. Might be worth keeping this in mind during the next Zoom session.
+Can't honestly remember why I wrote a dedicated function to this. I guess I wasn't aware that calling a method on a zero-length vector object wouldn't crash. There might be cases where I'm doing strange things with interactions and/or their evaluations. Might be worth keeping this in mind during the next Zoom session.
 
 ---
 
@@ -138,7 +162,7 @@ Can't honestly remember why I wrote a dedicated function to this. I *think* I wa
 
 > calc_ancestry(), interesting.  I really wish we could do this with tree-sequence recording.
 
-Me too! I noticed you discussed this with Peter in our email thread recently. Not sure if I can help with implementing this on the SLiM/tskit level, but this would be an *amazing* feature to have. Lots of human history reconstruction deals with estimating ancestry proportions coming from a set of populations into some target group of individuals and having this built in would be a huge help. I imagine it would speed things up quite a bit too.
+Me too! I noticed you discussed this with Peter in our email thread recently. This would be an *amazing* feature to have. Lots of human history reconstruction deals with estimating ancestry proportions coming from a set of populations into some target group of individuals and having this built in would be a huge help. I imagine it would speed things up quite a bit too.
 
 ---
 
