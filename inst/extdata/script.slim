@@ -462,17 +462,16 @@ modifyChild() /* Place offspring within its population's boundary */ {
     // for spatially overlapping geneflow and non-migrant offspring,
     // propose location in the neighborhood of one of its parents
     sigma_dist = get_pop(subpop.id).getValue("dispersal_dist");
-    jitter = rnorm(2, 0, sigma_dist);
-    pos = parent1.spatialPosition + jitter;
-
+    
     // make sure that offspring is generated in allowed locations on the map
     // (within it's population bounds and not in an inaccessible location)
-    if (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0) {
-        return F;
-    } else {
-        child.setSpatialPosition(pos);
-        return T;
-    }
+    do {
+        jitter = rnorm(2, 0, sigma_dist);
+        pos = parent1.spatialPosition + jitter;
+    } while (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0);
+
+    child.setSpatialPosition(pos);
+    return T;
 }
 
 ///
