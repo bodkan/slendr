@@ -390,7 +390,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
 }
 
 s11 late() /* Schedule removal of populations */ {
-    pops = filter(POPULATIONS, "tremove", sim.generation - BURNIN_LENGTH);
+    pops = filter(POPULATIONS, "tremove_gen", sim.generation - BURNIN_LENGTH);
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
         log_output("cleanup of " + pop.getValue("pop") +
