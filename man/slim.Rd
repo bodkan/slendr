@@ -12,6 +12,7 @@ slim(
   ts_recording = FALSE,
   spatial = !is.null(model$world),
   sampling = NULL,
+  attempts_limit = 100,
   save_locations = FALSE,
   track_ancestry = FALSE,
   method = c("batch", "gui"),
@@ -46,6 +47,10 @@ should be remembered in the tree-sequence (see \code{sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
+
+\item{attempts_limit}{How many attempts should be made to place an offspring
+near one of its parents? Serves to prevent infinite loops on the SLiM
+backend. Default value is 100.}
 
 \item{save_locations}{Save location of each individual throughout the
 simulation?}
