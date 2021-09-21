@@ -27,6 +27,10 @@ initialize() {
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
 
+    // how many attempts should be made to place an offspring on a map before
+    // discarding it?
+    optional_arg("ATTEMPTS_LIMIT", 100);
+
     // model configuration tables
     defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
     defineConstant("GENEFLOWS", read_table(config_path("geneflow.tsv")));
@@ -445,7 +449,7 @@ s12 late() /* End of simulation */ {
 modifyChild() /* Place offspring within its population's boundary */ {
     if (!SPATIAL) return T;
 
-    // assign locations uniformly in spatially non-overlapping geneflow
+    // in case of spatially non-overlapping geneflow, assign locations uniformly
     if (child.migrant) {
         // get indices of the currently active geneflow events
         active = (GENEFLOWS.getValue("tstart_gen") <= sim.generation - BURNIN_LENGTH) &
@@ -473,13 +477,20 @@ modifyChild() /* Place offspring within its population's boundary */ {
     
     // make sure that offspring is generated in allowed locations on the map
     // (within it's population bounds and not in an inaccessible location)
+    attempts = 0; // how many attempts have been made to place the offspring?
     do {
+        attempts = attempts + 1;
         jitter = rnorm(2, 0, sigma_dist);
         pos = parent1.spatialPosition + jitter;
-    } while (!subpop.pointInBounds(pos) | subpop.spatialMapValue("world", pos) == 1.0);
+        found = subpop.pointInBounds(pos) & subpop.spatialMapValue("world", pos) == 0.0;
+    } while (!found & attempts <= ATTEMPTS_LIMIT);
 
-    child.setSpatialPosition(pos);
-    return T;
+    if (found) {
+        child.setSpatialPosition(pos);
+        return T;
+    }
+
+    return F;
 }
 
 ///

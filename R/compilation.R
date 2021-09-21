@@ -285,6 +285,9 @@ read <- function(dir) {
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
+#' @param attempts_limit How many attempts should be made to place an offspring
+#'   near one of its parents? Serves to prevent infinite loops on the SLiM
+#'   backend. Default value is 100.
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
 #'   on the command-line)
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary
@@ -299,7 +302,8 @@ read <- function(dir) {
 #' @export
 slim <- function(model, seq_length, recomb_rate,
                  output = file.path(model$path, "output"),
-                 ts_recording = FALSE, spatial = !is.null(model$world), sampling = NULL,
+                 ts_recording = FALSE, spatial = !is.null(model$world),
+                 sampling = NULL, attempts_limit = 100,
                  save_locations = FALSE, track_ancestry = FALSE,
                  method = c("batch", "gui"), verbose = TRUE, burnin = 0,
                  seed = NULL, slim_path = NULL, save_sampling = FALSE) {
@@ -371,6 +375,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     -d SAVE_LOCATIONS=%s \\
     -d TRACK_ANCESTRY=%s \\
     -d NUM_MARKERS=%i \\
+    -d ATTEMPTS_LIMIT=%i \\
     %s",
       binary,
       seed,
@@ -387,6 +392,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       save_locations,
       track_ancestry,
       markers_count,
+      attempts_limit,
       script_path
     )
 
