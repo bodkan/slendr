@@ -182,7 +182,7 @@ s1 late() /* Population splits */ {
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
         // skip over ancestral populations, who have been created in generation 1
-        if (sim.generation > 1 & pop.getValue("parent") == "ancestor") next;
+        if (sim.generation > 1 & pop.getValue("tsplit_gen") == 1) next;
         create_pop(pop);
     }
 
@@ -210,6 +210,10 @@ s4 late() /* Update spatial population boundaries */ {
 
     for (i in seqLen(num_rows(maps))) {
         map = maps.getRowValues(i);
+
+        // skip over ancestral populations, whose maps have been set in generation 1
+        if (sim.generation > 1 & map.getValue("tmap_gen") == 1) next;
+
         id = map.getValue("pop_id");
 
         log_output("updating map for " + map.getValue("pop") + "(p" + id + ")");
@@ -286,6 +290,10 @@ s7 late() /* Changing interaction distances and dispersals */ {
 
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
+
+        // skip over ancestral populations, whose dispersal has been set in generation 1
+        if (sim.generation > 1 & event.getValue("tdispersal_gen") == 1) next;
+
         pop = event.getValue("pop"); pop_id = event.getValue("pop_id");
 
         competition_dist = event.getValue("competition_dist");
