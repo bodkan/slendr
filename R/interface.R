@@ -566,16 +566,19 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
     map <- sf::st_sf(geometry = sf::st_sfc()) %>%
       set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
   } else if (landscape == "naturalearth") {  # Natural Earth data vector landscape
-    scale <- "small"
-    type <- "land"
-    category <- "physical"
-
-    if (is.null(ne_dir)) {
-      map_raw <- rnaturalearth::ne_download(scale, type, category, returnclass = "sf")
-    } else {
-      map_raw <- rnaturalearth::ne_load(scale, type, category,
-                                        returnclass = "sf", destdir = ne_dir)
+      if (is.null(ne_dir)) {
+      ne_dir <- tempdir()
+      ne_file <- file.path(ne_dir, "ne_110m_land.zip")
+      download.file(
+        url = "https://naturalearth.s3.amazonaws.com/110m_physical/ne_110m_land.zip",
+        destfile = ne_file, quiet = TRUE
+      )
+      unzip(ne_file, exdir = ne_dir)
     }
+    map_raw <- rnaturalearth::ne_load(
+      scale = "small", type = "land", category = "physical",
+      returnclass = "sf", destdir = ne_dir
+    )
     sf::st_agr(map_raw) <- "constant"
 
     ## transform the map (default geographic CRS) into the target CRS
