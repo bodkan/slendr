@@ -468,7 +468,7 @@ ts_vcf <- function(ts, path, individuals = NULL) {
 #' package and the ways in which spatial data can be processed, analysed, and
 #' visualised.
 #'
-#' @seealso [\code{\ts_individuals}] [\code{{ts_nodes}]
+#' @seealso [\code{ts_individuals}] [\code{ts_nodes}]
 #'   [\code{ts_edges}] for accessing raw tree sequence tables without
 #'   added metadata annotation. See also [\code{ts_ancestors}] to learn
 #'   how to extract information about relationship beteween nodes in the tree
