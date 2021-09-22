@@ -34,9 +34,9 @@ package and the ways in which spatial data can be processed, analysed, and
 visualised.
 }
 \seealso{
-\link{\code{ts_individuals}} \link{\code{ts_nodes}}
-\link{\code{ts_edges}} for accessing raw tree sequence tables without
-added metadata annotation. See also \link{\code{ts_ancestors}} to learn
+\code{\link{ts_individuals}} \code{\link{ts_nodes}}
+\code{\link{ts_edges}} for accessing raw tree sequence tables without
+added metadata annotation. See also \code{\link{ts_ancestors}} to learn
 how to extract information about relationship beteween nodes in the tree
 sequence, and how to analysed data about distances between nodes in the
 spatial context.

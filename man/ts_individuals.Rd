@@ -29,6 +29,6 @@ table and further annotates it with useful information from the model
 configuration data.
 }
 \seealso{
-\link{\code{ts_data}} for accessing processed and annotated treee
+\code{\link{ts_data}} for accessing processed and annotated treee
 sequence table data
 }

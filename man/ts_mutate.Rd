@@ -22,7 +22,7 @@ ts_mutate(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE)
 Add mutations to the given tree sequence
 }
 \seealso{
-\link{\code{ts_data}} for extracting useful information about
+\code{\link{ts_data}} for extracting useful information about
 individuals, nodes, coalescent times and geospatial locations of nodes on a
 map
 }
