@@ -16,7 +16,7 @@ test_that("polygon boundary can be specified in two ways", {
   africa <- region("Africa", map, polygon = coords)
   afr1 <- population("AFR", parent = "ancestor", time = 1, N = 1, map = map, polygon = africa)
   afr2 <- population("AFR", parent = "ancestor", time = 1, N = 1, map = map, polygon = coords)
-  expect_equal(afr1, afr2)
+  expect_true(all(afr1 == afr2))
 })
 
 test_that("polygon ranges need at least three corners", {
@@ -142,14 +142,14 @@ test_that("distance between borders of regions is zero", {
 })
 
 test_that("distance between centers of regions is the same", {
-  expect_true(distance(r1, r2, measure = "center") == 100)
+  expect_true(all.equal(distance(r1, r2, measure = "center"), 100))
 })
 
 test_that("it is possible to calculate distances betwewen populations and regions", {
-  expect_true(distance(p1, r2, measure = "border", time = 0) == 0)
-  expect_true(distance(r1, p2, measure = "border", time = 0) == 0)
-  expect_true(distance(p1, r2, measure = "center", time = 0) == 100)
-  expect_true(distance(r1, p2, measure = "center", time = 0) == 100)
+  expect_true(all.equal(distance(p1, r2, measure = "border", time = 0), 0))
+  expect_true(all.equal(distance(r1, p2, measure = "border", time = 0), 0))
+  expect_true(all.equal(distance(p1, r2, measure = "center", time = 0), 100))
+  expect_true(all.equal(distance(r1, p2, measure = "center", time = 0), 100))
 })
 
 
