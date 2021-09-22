@@ -34,7 +34,7 @@
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
-#' @seealso [\code{\link{ts_data}}] for extracting useful information about
+#' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
@@ -97,7 +97,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
-#' @seealso [\code{\link{ts_data}}] for extracting useful information about
+#' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
@@ -169,7 +169,7 @@ ts_recapitate <- function(ts, recomb_rate, Ne, spatial = TRUE,
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
-#' @seealso [\code{\link{ts_data}}] for extracting useful information about
+#' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
@@ -259,7 +259,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
-#' @seealso [\code{\link{ts_data}}] for extracting useful information about
+#' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
@@ -474,9 +474,9 @@ ts_vcf <- function(ts, path, individuals = NULL) {
 #' package and the ways in which spatial data can be processed, analysed, and
 #' visualised.
 #'
-#' @seealso [\code{\link{ts_individuals}}] [\code{\link{ts_nodes}}]
-#'   [\code{\link{ts_edges}}] for accessing raw tree sequence tables without
-#'   added metadata annotation. See also [\code{\link{ts_ancestors}}] to learn
+#' @seealso \code{\link{ts_individuals}} \code{\link{ts_nodes}}
+#'   \code{\link{ts_edges}} for accessing raw tree sequence tables without
+#'   added metadata annotation. See also \code{\link{ts_ancestors}} to learn
 #'   how to extract information about relationship beteween nodes in the tree
 #'   sequence, and how to analysed data about distances between nodes in the
 #'   spatial context.
@@ -516,7 +516,7 @@ ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
 #' table and further annotates it with useful information from the model
 #' configuration data.
 #'
-#' @seealso [\code{\link{ts_data}}] for accessing processed and annotated treee
+#' @seealso \code{\link{ts_data}} for accessing processed and annotated treee
 #'   sequence table data
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object

@@ -172,8 +172,7 @@ Let's zoom in on some interesting part of the world and then create a grid of de
 map <- world(
   xrange = c(-25, 55),
   yrange = c(-32, 35),
-  crs = 4326,
-  ne_dir = "~/Documents/postdoc/data/ne_data/"
+  crs = 4326
 )
 
 n <- 20
