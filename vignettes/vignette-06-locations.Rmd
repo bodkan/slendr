@@ -165,7 +165,7 @@ Because we want to explore how to handle spatio-temporal population genomic tree
 
 ```{r}
 slim(
-  model, seq_length = 10e6, recomb_rate = 1e-8,
+  model, seq_length = 100e3, recomb_rate = 1e-8, burnin = 200e3,
   ts_recording = TRUE, sampling = samples,
   method = "batch", seed = 314159
 )
