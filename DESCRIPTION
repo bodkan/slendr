@@ -32,7 +32,6 @@ Imports:
     rgdal,
     sf,
     rnaturalearth,
-    rnaturalearthdata,
     magrittr,
     stars,
     gganimate,
