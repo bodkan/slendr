@@ -303,7 +303,7 @@ read <- function(dir) {
 slim <- function(model, seq_length, recomb_rate,
                  output = file.path(model$path, "output"),
                  ts_recording = FALSE, spatial = !is.null(model$world),
-                 sampling = NULL, attempts_limit = 100,
+                 sampling = NULL, attempts_limit = 10,
                  save_locations = FALSE, track_ancestry = FALSE,
                  method = c("batch", "gui"), verbose = TRUE, burnin = 0,
                  seed = NULL, slim_path = NULL, save_sampling = FALSE) {
