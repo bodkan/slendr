@@ -266,6 +266,8 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 #' @export
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE) {
   check_ts_class(ts)
+  if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
+
 
   ts_new <-
     msprime$mutate(ts, rate = mutation_rate, keep = keep_existing, random_seed = random_seed) %>%

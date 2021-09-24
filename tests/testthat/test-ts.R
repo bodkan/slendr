@@ -145,6 +145,13 @@ test_that("ts_eigenstrat requires recapitated and mutated data", {
   expect_silent(suppressMessages(ts_vcf(ts5, path)))
 })
 
+test_that("ts_mutate cannot be called on an already mutated tree sequence", {
+  ts <- ts_load(model)
+  ts_mut <- ts_mutate(ts, mutation_rate = 1e-7)
+  expect_error(ts_mutate(ts_mut, mutation_rate = 1e-7),
+               "Tree sequence already mutated")
+})
+
 test_that("ts_eigenstrat and tsv_cf create correct data", {
   ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000) %>%
     ts_mutate(mutation_rate = 1e-7)
