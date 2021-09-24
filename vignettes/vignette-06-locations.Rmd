@@ -68,8 +68,7 @@ anatolia <- region("Anatolia", map, polygon = list(c(28, 35), c(40, 35), c(42, 4
 
 # African ancestral population
 afr <- population(
-  "AFR", parent = "ancestor", time = 52000, N = 10000,
-  competition_dist = 250e3, mate_dist = 200e3, dispersal_dist = 70e3,
+  "AFR", parent = "ancestor", time = 52000, N = 3000,
   map = map, polygon = africa
 )
 
@@ -92,9 +91,7 @@ ehg <- population(
 )
 
 # European population
-eur <- population(
-  name = "EUR", parent = ehg, time = 25000, N = 5000, polygon = europe, competition_dist = 400e3, mate_dist = 200e3, dispersal_dist = 25e3
-)
+eur <- population(name = "EUR", parent = ehg, time = 25000, N = 2000, polygon = europe)
 
 # Anatolian farmers
 ana <- population(
@@ -126,7 +123,7 @@ model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   geneflow = gf,
   generation_time = 30, resolution = 10e3,
-  competition_dist = 200e3, mate_dist = 200e3, dispersal_dist = 70e3,
+  competition_dist = 130e3, mate_dist = 100e3, dispersal_dist = 70e3,
   dir = file.path(tempdir(), "spatial-ts"), overwrite = TRUE
 )
 ```
@@ -166,7 +163,7 @@ Because we want to explore how to handle spatio-temporal population genomic tree
 slim(
   model, seq_length = 100e3, recomb_rate = 1e-8, burnin = 200e3,
   ts_recording = TRUE, sampling = samples,
-  method = "batch", seed = 314159
+  method = "batch", seed = 314159, attempts_limit = 1
 )
 ```
 
