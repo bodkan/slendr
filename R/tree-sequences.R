@@ -256,6 +256,10 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 #' @param mutation_rate Mutation rate used by msprime to simulate mutations
 #' @param random_seed Random seed passed to msprime's \code{mutate} method
 #' @param keep_existing Keep existing mutations?
+#' @param mut_type Assign SLiM mutation type to neutral mutations? If
+#'   \code{NULL} (default), no special mutation type will be used. If an
+#'   integer number is given, mutations of the SLiM mutation type with that
+#'   integer identifier will be created.
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
@@ -264,13 +268,22 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
 #'   map
 #'
 #' @export
-ts_mutate <- function(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE) {
+ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
+                      keep_existing = TRUE, mut_type = NULL) {
   check_ts_class(ts)
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
 
+  if (is.numeric(mut_type))
+    mut_type <- msprime$SLiMMutationModel(type = as.integer(mut_type))
 
   ts_new <-
-    msprime$mutate(ts, rate = mutation_rate, keep = keep_existing, random_seed = random_seed) %>%
+    msprime$sim_mutations(
+      ts,
+      rate = mutation_rate,
+      model = mut_type,
+      keep = keep_existing,
+      random_seed = random_seed
+    ) %>%
     pyslim$SlimTreeSequence()
 
   attr(ts_new, "model") <- attr(ts, "model")
