@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compile the spatial demographic model — compile • slendr</title>
+<title>Extract list with tree sequence metadata saved by SLiM — ts_metadata • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,13 +52,8 @@
 
 
 
-<meta property="og:title" content="Compile the spatial demographic model — compile" />
-<meta property="og:description" content="First, compiles the vectorized population spatial maps into a series of
-binary raster PNG files, which is the format that SLiM understands and uses
-it to define population boundaries. Then extracts the demographic model
-defined by the user (i.e. population divergences and gene flow events) into a
-series of tables which are later used by the built-in SLiM script to program
-the timing of simulation events." />
+<meta property="og:title" content="Extract list with tree sequence metadata saved by SLiM — ts_metadata" />
+<meta property="og:description" content="Extract list with tree sequence metadata saved by SLiM" />
 <meta property="og:image" content="https://bodkan.net/slendr/logo.png" />
 
 
@@ -175,104 +170,29 @@ the timing of simulation events." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compile the spatial demographic model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/compilation.R'><code>R/compilation.R</code></a></small>
-    <div class="hidden name"><code>compile.Rd</code></div>
+    <h1>Extract list with tree sequence metadata saved by SLiM</h1>
+    <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
+    <div class="hidden name"><code>ts_metadata.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>First, compiles the vectorized population spatial maps into a series of
-binary raster PNG files, which is the format that SLiM understands and uses
-it to define population boundaries. Then extracts the demographic model
-defined by the user (i.e. population divergences and gene flow events) into a
-series of tables which are later used by the built-in SLiM script to program
-the timing of simulation events.</p>
+    <p>Extract list with tree sequence metadata saved by SLiM</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compile</span><span class='op'>(</span>
-  <span class='va'>populations</span>,
-  <span class='va'>dir</span>,
-  <span class='va'>generation_time</span>,
-  resolution <span class='op'>=</span> <span class='cn'>NULL</span>,
-  competition_dist <span class='op'>=</span> <span class='cn'>NULL</span>,
-  mate_dist <span class='op'>=</span> <span class='cn'>NULL</span>,
-  dispersal_dist <span class='op'>=</span> <span class='cn'>NULL</span>,
-  geneflow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
-  overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  sim_length <span class='op'>=</span> <span class='cn'>NULL</span>,
-  direction <span class='op'>=</span> <span class='cn'>NULL</span>,
-  script_path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"script.slim"</span>, package <span class='op'>=</span> <span class='st'>"slendr"</span><span class='op'>)</span>,
-  description <span class='op'>=</span> <span class='st'>""</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_metadata</span><span class='op'>(</span><span class='va'>ts</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>populations</th>
-      <td><p>Object(s) of the <code>slendr_pop</code> class
-(multiple objects need to be specified in a <code>list</code>)</p></td>
-    </tr>
-    <tr>
-      <th>dir</th>
-      <td><p>Output directory for the model configuration files which
-will be loaded by the backend SLiM script</p></td>
-    </tr>
-    <tr>
-      <th>generation_time</th>
-      <td><p>Generation time (in model time units)</p></td>
-    </tr>
-    <tr>
-      <th>resolution</th>
-      <td><p>How many distance units per pixel?</p></td>
-    </tr>
-    <tr>
-      <th>competition_dist, mate_dist</th>
-      <td><p>Maximum spatial competition and
-mating choice distance</p></td>
-    </tr>
-    <tr>
-      <th>dispersal_dist</th>
-      <td><p>Standard deviation of the normal distribution
-of the parent-offspring distance</p></td>
-    </tr>
-    <tr>
-      <th>geneflow</th>
-      <td><p>Geneflow events generated by the <code>geneflow</code>
-function (either a list of data.frame objects in the format
-defined by the <code>geneflow</code> function, or a single data.frame)</p></td>
-    </tr>
-    <tr>
-      <th>overwrite</th>
-      <td><p>Overwrite the contents of the output directory in
-case it already exists?</p></td>
-    </tr>
-    <tr>
-      <th>sim_length</th>
-      <td><p>Total length of the simulation (required for
-forward time models, optional for models specified in backward
-time units which by default run to "the present time")</p></td>
-    </tr>
-    <tr>
-      <th>direction</th>
-      <td><p>Intended direction of time. Under normal
-circumstances this parameter is inferred from the model and does
-not need to be set manually.</p></td>
-    </tr>
-    <tr>
-      <th>script_path</th>
-      <td><p>Path to a SLiM script to be used for executing
-the model (by default, a bundled backend script will be used)</p></td>
-    </tr>
-    <tr>
-      <th>description</th>
-      <td><p>Optional short description of the model</p></td>
+      <th>ts</th>
+      <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Compiled <code>slendr_model</code> model object</p>
+    <p>List of metadata fields extracted from the tree sequence object</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

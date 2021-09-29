@@ -4,7 +4,13 @@
 \alias{ts_mutate}
 \title{Add mutations to the given tree sequence}
 \usage{
-ts_mutate(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE)
+ts_mutate(
+  ts,
+  mutation_rate,
+  random_seed = NULL,
+  keep_existing = TRUE,
+  mut_type = NULL
+)
 }
 \arguments{
 \item{ts}{Object of the type \code{pyslim.SlimTreeSequence}}
@@ -14,6 +20,11 @@ ts_mutate(ts, mutation_rate, random_seed = NULL, keep_existing = TRUE)
 \item{random_seed}{Random seed passed to msprime's \code{mutate} method}
 
 \item{keep_existing}{Keep existing mutations?}
+
+\item{mut_type}{Assign SLiM mutation type to neutral mutations? If
+\code{NULL} (default), no special mutation type will be used. If an
+integer number is given, mutations of the SLiM mutation type with that
+integer identifier will be created.}
 }
 \value{
 \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}

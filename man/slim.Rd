@@ -12,7 +12,7 @@ slim(
   ts_recording = FALSE,
   spatial = !is.null(model$world),
   sampling = NULL,
-  attempts_limit = 100,
+  attempts_limit = 10,
   save_locations = FALSE,
   track_ancestry = FALSE,
   method = c("batch", "gui"),
