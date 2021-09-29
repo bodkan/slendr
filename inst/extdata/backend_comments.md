@@ -16,19 +16,19 @@
 
 ### Done ✅ (and more)
 
-> [...] It'd be nice if your script was syntax-compliant, so maybe you can look for a different way of doing this templating?  One possibility would be to just use a placeholder that already looks like a symbol, like X_X_SEED instead of {{seed}}, or something. [...]
+> [...] It'd be nice if your script was syntax-compliant, so maybe you can look for a different way of doing this [`{{var}}`] templating?  One possibility would be to just use a placeholder that already looks like a symbol, like X_X_SEED instead of {{seed}}, or something. [...]
 
 I have now changed the backend from an Eidos/SLiM-noncompliant code (which used those `{{var}}` substitution tags) to normal SLiM command-line parameters. I had a specific idea for the R templating (it was supposed to power those custom user-defined SLiM "modules" I mentioned and make them easy to work with in R) but it's an overkill in this case.
 
 There are two important benefits of his change:
 
-1. Once a user `compile()`s a slendr model, a dedicated SLiM script will be saved in the model directory and can be run from the command-line as any other SLiM script. I.e., the `slim()` runner function in slendr now simply passes all the parameters via CLI instead of substituting/hardcoding the values via the template `{{var}}` variables. The main benefit is increased flexibility. The models can now be programmed and compiled on one machine (in R), and then transfered to any computer with SLiM for execution. I know some institutions have very restricted cluster capabilities -- this is one way to get around that.
+1. Once a user `compile()`s a slendr model, a dedicated SLiM script will be saved in the model directory and can be run from the command-line as any other SLiM script. I.e., the `slim()` runner function in slendr now simply passes all the parameters via CLI instead of substituting/hardcoding the values via the template `{{var}}` variables. The main benefit is increased flexibility. The models can now be programmed and compiled on one machine (in R), and then transfered to any computer with SLiM for execution. Some institutions have very restricted cluster capabilities--this is one way to get around that, because those environments will now only require a compiled SLiM binary, nothing else.
 
-Before this change, the script was saved as one "monolithic" unit with all parameter values hardcoded via the `{{var}}` substitution by the `slim()` R function "at runtime". Not by design, really. Just a historical artifact of how slendr evolved over time.
+Before this change, the script was saved as one "monolithic" unit with all parameter values hardcoded via the `{{var}}` substitution by the `slim()` R function "at runtime". Not for a specific reason, just a historical artifact of how slendr evolved over time.
 
 2. The `compile()` function now accepts an optional argument specifying where it should look for the backend SLiM script. By default, it's the script bundled under `inst/extdata/script.slim` in the R package. But it could be also a slightly modified version of this script, with bits of added functionality (custom script blocks, etc.). As long as the core of the script remains the same, any advanced SLiM user can extend the functionality however they need, and still maintain the reproducibility of having the entire analysis/simulation workflow done from R (the only thing that changes is specifying `script_path = <...>` in the `compile()` function).
 
-This solves my issue with those optional "modules". There was always an option to modify the monolithic SLiM script compiled by the package, but that would break reproducibility because there wasn't a way to include it into the slendr workflow and the user would end up with 50% slendr, 50% non-slendr workflow. This is not a problem anymore.
+3. This solves my issue with those optional "modules". There was always an option to modify the monolithic SLiM script compiled by the package, but that would break reproducibility because there wasn't a way to include it into the slendr workflow and the user would end up with 50% slendr, 50% non-slendr workflow. This is not a problem anymore.
 
 ---
 
@@ -52,7 +52,7 @@ You're right. I think this was a result of some of my very early misunderstandin
 
 > You do "N = event.getValue("N");", so N is a variable. [...] how about "pop_size" or some such?
 
-OK, I made this change. However, given that UPPER_CASE_CONSTANTS are now basically all command-line arguments, I'm actually thinking about making them lower-case. I personally don't see much of a reason to call the default slendr SLiM script outside of R for 99% of use-cases, but having to type out `-d UPPER_CASE_CLI_ARGUMENT=123` somehow bothers me a bit. :) A matter of esthetics.
+OK, I made this change. However, given that UPPER_CASE_CONSTANTS are now basically all command-line arguments, I'm actually thinking about making them lower-case. I personally don't see much of a reason to call the default slendr SLiM script outside of R for 99% of use-cases, but having to type out `-d UPPER_CASE_CLI_ARGUMENT=123` somehow bothers me a bit. :) A matter of esthetics...
 
 ---
 
@@ -66,7 +66,7 @@ No reason to feel guilty. As a fellow code pedant, I appreciate this comment. �
 
 ### Done ✅
 
-@peterlharp Does this look like a reasonable way to do #61 and #62? I modified the format of the metadata slightly (moved `"description"` one level "higher" in the hierarchy directly under the `"slendr"` key) and simplified it only to what's used by slendr in its current state. It appears that this metadata wouldn't currently be used for anything else except slendr itself, but it would be quite easy to expand/modify the format should other spatial tools pop up at some point. I have not yet made the internal changes to actually use this metadata in loading tree sequence output by slendr -- but I'll do this soon.
+@peterlharp Does this look like a reasonable way to do #61 and #62? I modified the format of the metadata slightly (moved `"description"` one level "higher" in the hierarchy directly under the `"slendr"` key) and simplified it only to what's currently used by slendr as of now. It will be quite easy to expand/modify the format should other spatial tools pop up at some point. I have not yet made the internal changes to actually use this metadata in loading tree sequence output by slendr -- but I'll do this soon.
 
 ---
 
@@ -90,7 +90,7 @@ Same as the above. It was surprisingly painful to do this, but I'm so glad I did
 
 > In your modifyChild() callback you do "return F;" if a location is generated that can't be used. [... ]I'd suggest "reprising boundaries", which would loop until a legal position is generated.  If it is plausible that that could be an infinite loop, then you could set a maximum number of tries by using a for loop with a return on success, and return F if the for loop completes.
 
-That's a good point, I implemented reprising boundaries exactly as you suggested, making the "number of attempts before failing" an optional parameter (I have no intuition as to what is and what isn't reasonable default here).
+That's a good point, I implemented reprising boundaries exactly as you suggested, making the "number of attempts before failing" an optional parameter I have no intuition as to what is and what isn't reasonable default here, so I put it at 10 and gave the user the option to change this if needed.
 
 ---
 
@@ -98,7 +98,7 @@ That's a good point, I implemented reprising boundaries exactly as you suggested
 
 > evaluate_interactions() does "if (SPATIAL) sim.interactionTypes.evaluate();".  The whole existence of this function seems unnecessary to me.  If SPATIAL is F, there will be no defined interaction types, right?  So then calling "sim.interactionTypes.evaluate();" would do nothing, because sim.interactionTypes would evaluate to a zero-length vector.  Am I missing something?
 
-Can't honestly remember why I wrote a dedicated function to this. I guess I wasn't aware that calling a method on a zero-length vector object wouldn't crash.
+Can't honestly remember why I wrote a dedicated function for this. I guess I wasn't aware that calling a method on a zero-length vector object wouldn't crash.
 
 ---
 
@@ -132,13 +132,11 @@ My vote would be for 5e5 being an integer and not a float, if only because the "
 
 > I see that you do "initializeMutationRate(0.0);".  So slendr simulations never have new mutations at all?  It looks like you define genomic element types only for ancestry inference, when tree sequence recording is turned off I suppose?  And I guess neutral mutations can be overlaid, with treeseq at least.
 
-In my original plan for slendr, mutation rate was supposed to be a flexible parameter (I was aiming to have those user-defined SLiM "modules" for selection etc. which would include user-defined non-neutral mutation types). Now that this is off the table for the nearest future, I'm not sure anymore.
+In my original plan for slendr, mutation rate was supposed to be a flexible parameter. I was aiming to have those user-defined SLiM "modules" for selection etc., which would include user-defined non-neutral mutation types. Now that this is off the table for the nearest future, I'm not sure anymore.
 
-I'm personally such a big fan of overlaying mutations after the simulation that I'm considering fully embracing tree sequences as the only output of slendr models, implicitly assuming that neutral mutations will be overlaid later.
+I've become such a big fan of overlaying mutations after the simulation that I have fully embraced tree sequences as the default output of slendr models, implicitly assuming that neutral mutations will be overlaid later.
 
-Thoughts @petrelharp @FerRacimo?
-
-W.r.t. ancestry tracking mutations and tracing ancestry proportions in all individuals "in real time": I'm almost leaning towards removing this completely. I implemented this before it was possible to schedule the remembering of ancient individuals which now gives us the option to calculate these "ancestry proportion trajectories" from the simulated data... I don't know. The current implementation seems really inelegant. On the other hand, computing ancestry proportions is not implemented in tskit at the moment, so maybe keeping those ancestry markers makes sense for now to help with debugging models? On the *OTHER* other hand, if a user wants this, maybe they can add this to the backend themselves.
+W.r.t. ancestry tracking mutations and computing ancestry proportions in all individuals "in real time": I'm almost leaning towards removing this completely. The current implementation is a bit awkward and I really don't like hijacking mutation types for something that will almost never be used in practice (I implemented it mostly for my own debugging purposes very early on). Maybe I could instead try to find a way how to do the same thing by calculating the true ancestry proportions on the tree sequence outputs directly. Actually, I should take a look at whether this functionality has not landed in tskit in the meantime because this is where it belongs, not here.
 
 ---
 
@@ -154,13 +152,15 @@ I agree, a separate Zoom call where we could go through this would be great.
 
 > Your 2: fitness(NULL) callback would probably be considerably more efficient if it were rewritten to (a) not be a callback, (b) use fitnessScaling, and (c) be vectorized.  I don't know whether speed is an issue for your stuff or not.  If it is, you should do a profile in SLiMgui to see where your bottlenecks are, and then perhaps I can help you whittle them down.
 
+I will look at this soon. 👍
+
 ---
 
 ### Zoom call ☎️
 
 > calc_ancestry(), interesting.  I really wish we could do this with tree-sequence recording.
 
-Me too! I noticed you discussed this with Peter in our email thread recently. This would be an *amazing* feature to have. I imagine it would speed things up quite a bit too.
+Me too! I noticed you discussed this with Peter in our email thread recently. This would be an *amazing* feature to have and--as I mentioned above--I would actually prefer not to have to do the neutral ancestry markers shenanigans in the backend script. I imagine it would speed things up quite a bit too.
 
 ---
 
@@ -168,9 +168,9 @@ Me too! I noticed you discussed this with Peter in our email thread recently. Th
 
 > Your functions to work with Dictionaries are interesting.  read_table() could instead use Dictionary's JSON-string constructor, if you wrote out your tables as JSON rather than .tsv.  But maybe being able to read a Dictionary from a .tsv is also useful functionality that ought to be in Eidos.  Not sure.  So far my focus has been on JSON because that's what Graham Gower seems to be interested in using.
 
-The reason I went with simple plain text tables as the format for all model config files was that this made it much easier for me to debug and inspect issues just by looking at the tables (in shell or in R), even when they were very long. If there was a way to load tabular data as JSON/Dictionaries, that would make everything so much easier.
+Good point on reading the tables as JSON. AFAIK this package started a bit before the JSON-loading functionality landed in Eidos and I never made the switch from the plain text tables, mostly because it made it very easy to debug things just by looking at the tables (in shell or in R), even when they were very long.
 
-In principle, what I have works well, except for the crucial point of not being able to guess the column types. I guess at some point I could have the model serialization sit on top of something that saves JSON files but for now I'd prefer to stick to the plain text tables just to make my own life easier.
+My mid-to-long-term plan is to save slendr config data in a Demes-like format--Demes for the non-spatial part, and some slendr-specific extension for the spatial bits. But for now I'd leave things the way they are and only switched the backend config format once things settle down for the first release.
 
 > - filter(), also interesting.  Something like this could also conceivably be added to Eidos.
 > 
@@ -178,7 +178,7 @@ In principle, what I have works well, except for the crucial point of not being 
 > 
 > - print_table(), ah, interesting.  Yes, the default print for Dictionary is not so readable when the Dictionary is, conceptually, a dataframe.  Again, if DataFrame were a subclass this could be handled in Eidos.
 
-These would be very useful additions indeed. I would be very happy if these wouldn't have to be implemented in the backend code. Anything that makes the script shorter is great and if these (or similar) functions made it into Eidos and the user could look them up in the manual, that would be awesome.
+These would be very useful additions indeed, even after I make the JSON switch once the slendr "format" settles down.
 
 ---
 
@@ -186,14 +186,16 @@ These would be very useful additions indeed. I would be very happy if these woul
 
 > convert_type(), eww.  :->  I'd like to better understand exactly why this is needed.  It might be that if you switched to JSON-serialized tables the need for this would disappear.
 
-In a way, I'm happy to see your reaction because I hate this piece of code too.
+I'm not happy with this piece of code either.
 
-Why this is needed: unless I completely missed something, the `read_table` function doesn't have a way to detect which columns are of which type. It uses `readFile()` to read the whole file, converting it to a matrix via `strsplit()` call. But my attempts at doing something like `try to convert a column to a type integer, or a float, or a logical and if an error is caught, keep it as a string` failed. I guess I could save the data type as a first column. This is ugly, but it would make this function go away -- but it would just move the ugliness to the R interface internals (where it perhaps belongs).
+Why this is needed: unless I completely missed something, the `read_table` function doesn't have a way to detect which columns are of which type. It uses `readFile()` to read the whole file, converting it to a matrix via `strsplit()` call. But my attempts at figuring out which type (integer, float, string, logical) is particular column of using Eidos code at runtime have failed (maybe I missed something).
 
-As I explained above, given that the configs are represented as tables (in both R and SLiM components of slendr), I would prefer to save them as tables too, at least for the time being.
+Given that the long-term plan is saving the model config as JSON files (unless some .tsv support lands in Eidos before that), I'll probably leave this as it is.
 
 ---
 
 > Hmm.  Well, my initial reaction is that this whole idea of "modules" etc. sounds like a large increase in complexity for slendr, and I wonder whether it will really make people happy.  There are a million different ways that people might want to extend a slendr model, and I think you might drive yourself crazy trying to support all of them.  Let slendr do what it does; it does it very well.  If people want to go beyond that, maybe it would be best for them to generate the slendr SLiM script, and then start hand-modifying it to go beyond slendr's capabilities.  Otherwise you end up trying to re-implement in slendr everything that SLiM can do, and that will never end.  If, on the other hand, you say "oh, but that kind of open-ended kitchen-sink thing isn't really what I want to do, I just want to add support for very simple selection models", then maybe a more directed fix that doesn't involve "modules" etc. would be better?  But I'm not sure, that's just my gut reaction.
 
-We already talked about this in the last meeting but it's worth repeating here: thank you for your perspective. What you said makes perfect sense. I should focus to make slendr to what it currently does best. In fact, now that I made it all the way here to this comment, I see that I've actually arrived at a very satisfying conclusion to this problem.
+We already talked about this in the our meeting but it's worth repeating here: thank you for sharing your perspective. What you said makes perfect sense -- I should focus on making slendr do what it currently does best.
+
+In fact, now that I made it all the way here to this comment, I see that I've actually arrived at a very satisfying conclusion to this problem. The SLiM backend is now a normal flexible SLiM script. It can be left as it is (in case the problem at hand involves neutral spatial or non-spatial simulations) but can be easily weaked by custom SLiM code, yet still be plugged into a normal slendr workflow which will still be fully reproducible.

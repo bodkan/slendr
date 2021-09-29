@@ -179,7 +179,13 @@
     <p>Add mutations to the given tree sequence</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_mutate</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>mutation_rate</span>, random_seed <span class='op'>=</span> <span class='cn'>NULL</span>, keep_existing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_mutate</span><span class='op'>(</span>
+  <span class='va'>ts</span>,
+  <span class='va'>mutation_rate</span>,
+  random_seed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  keep_existing <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  mut_type <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -199,6 +205,13 @@
     <tr>
       <th>keep_existing</th>
       <td><p>Keep existing mutations?</p></td>
+    </tr>
+    <tr>
+      <th>mut_type</th>
+      <td><p>Assign SLiM mutation type to neutral mutations? If
+<code>NULL</code> (default), no special mutation type will be used. If an
+integer number is given, mutations of the SLiM mutation type with that
+integer identifier will be created.</p></td>
     </tr>
     </table>
 
