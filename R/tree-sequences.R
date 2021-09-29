@@ -328,7 +328,19 @@ ts_genotypes <- function(ts) {
     warning("Extracting genotypes from a tree sequence which has not been mutated",
             call. = FALSE)
 
-  genotypes <- ts$genotype_matrix()
+  gts <- ts$genotype_matrix()
+  positions <- ts$tables$sites$position
+
+  biallelic_pos <- get_biallelic_indices(ts)
+  n_multiallelic <- sum(!biallelic_pos)
+
+  if (n_multiallelic > 0) {
+    warning(sprintf("%i multiallelic sites (%.3f%% out of %i total) detected and removed",
+                    n_multiallelic, n_multiallelic / length(positions) * 100,
+                    length(positions)), call. = FALSE)
+    gts <- gts[biallelic_pos, ]
+    positions <- positions[biallelic_pos]
+  }
 
   chromosomes <- ts_data(ts, remembered = TRUE) %>%
     dplyr::as_tibble() %>%
@@ -336,10 +348,10 @@ ts_genotypes <- function(ts) {
     dplyr::select(chr_name, node_id) %>%
     dplyr::arrange(node_id)
 
-  colnames(genotypes) <- chromosomes$chr_name
+  colnames(gts) <- chromosomes$chr_name
 
-  dplyr::as_tibble(genotypes) %>%
-    dplyr::mutate(pos = ts$tables$sites$position) %>%
+  dplyr::as_tibble(gts) %>%
+    dplyr::mutate(pos = as.integer(positions)) %>%
     dplyr::select(pos, dplyr::everything())
 }
 
@@ -390,7 +402,7 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
   ind <- dplyr::tibble(id = individuals, sex = "U", label = individuals)
 
   # create a snp file table
-  positions <- as.vector(round(ts$tables$sites$position))
+  positions <- chrom_genotypes$pos
   snp <- dplyr::tibble(
     id = sprintf("%s_%s", chrom, as.character(positions)),
     chrom = chrom,
@@ -399,17 +411,6 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
     ref = "G",
     alt = "T"
   )
-
-  dup_muts <- duplicated(positions)
-  if (any(dup_muts)) {
-    message(sum(dup_muts), " mutations (out of ", nrow(snp), ") have been ",
-            "removed because they appeared on a position already occupied by ",
-            "another mutation. This is a consequence of mutations ",
-            "positions in tskit being in floating-point values but normal ",
-            "genomic locations being integer values.")
-    snp <- snp[!dup_muts, ]
-    geno <- geno[!dup_muts, ]
-  }
 
   # add an artificial outgroup individual carrying ancestral alleles only
   if (!is.null(outgroup)) {
@@ -1277,6 +1278,12 @@ get_metadata <- function(ts) {
     sampling = get_sampling(metadata),
     map = metadata$map[[1]]
   )
+}
+
+get_biallelic_indices <- function(ts) {
+  gts <- ts$genotype_matrix()
+  biallelic_pos <- rowSums(gts == 0 | gts == 1) == ncol(gts)
+  biallelic_pos
 }
 
 # Convert a data frame of information extracted from a tree sequence
