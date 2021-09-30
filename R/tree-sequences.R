@@ -330,11 +330,20 @@ ts_metadata <- function(ts) {
 #' @export
 ts_genotypes <- function(ts) {
   if (!attr(ts, "mutated"))
-    warning("Extracting genotypes from a tree sequence which has not been mutated",
-            call. = FALSE)
+    stop("Extracting genotypes from a tree sequence which has not been mutated",
+         call. = FALSE)
+
+  data <- ts_data(ts)
 
   gts <- ts$genotype_matrix()
   positions <- ts$tables$sites$position
+
+  if (any(!data$remembered)) {
+    message("Only extacting genotypes for permanently remembered individuals")
+    gts <- dplyr::filter(data, remembered) %>%
+      dplyr::pull(node_id) %>%
+      { gts[, . + 1] }
+  }
 
   biallelic_pos <- get_biallelic_indices(ts)
   n_multiallelic <- sum(!biallelic_pos)
