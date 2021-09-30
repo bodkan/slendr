@@ -26,7 +26,8 @@
 #'   implied by the model. If TRUE (default), reprojection of coordinates will
 #'   be performed. If the model was non-spatial, the value of this parameter is
 #'   disregarded.
-#' @param recomb_rate,Ne Arguments passed to \code{ts_recapitate}
+#' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
+#' @param mutation_rate Mutation rate passed to \code{ts_mutate}
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #' @param simplify_to A character vector of individual names. If NULL, all
 #'   remembered individuals will be retained. Only used when \code{simplify =
@@ -41,11 +42,11 @@
 #' @export
 ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
                     recapitate = FALSE, simplify = FALSE,
-                    spatial = TRUE, recomb_rate = NULL,
+                    spatial = TRUE, recombination_rate = NULL, mutation_rate = NULL,
                     Ne = NULL, random_seed = NULL, simplify_to = NULL) {
   if (is.null(model$world)) spatial <- FALSE
 
-  if (recapitate && (is.null(recomb_rate) || is.null(Ne)))
+  if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
 
   if (!inherits(model, "slendr_model"))
@@ -74,10 +75,14 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
   }
 
   if (recapitate)
-    ts <- ts_recapitate(ts, recomb_rate = recomb_rate, Ne = Ne,
+    ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
                         random_seed = random_seed, spatial = spatial)
 
-  if (simplify) ts <- ts_simplify(ts, simplify_to, spatial = spatial)
+  if (simplify)
+    ts <- ts_simplify(ts, simplify_to, spatial = spatial)
+
+  if (!is.null(mutation_rate))
+    ts <- ts_mutate(ts, mutation_rate = mutation_rate, random_seed = random_seed)
 
   ts
 }
@@ -85,7 +90,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 #' Recapitate the tree sequence
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}
-#' @param recomb_rate A constant value of the recombination rate
+#' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
 #' @param spatial Should spatial information encoded in the tree sequence data
 #'   be converted to spatial R data structures? If FALSE, pixel-based
@@ -102,7 +107,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 #'   map
 #'
 #' @export
-ts_recapitate <- function(ts, recomb_rate, Ne, spatial = TRUE,
+ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
                           random_seed = NULL) {
   check_ts_class(ts)
 
@@ -113,7 +118,7 @@ ts_recapitate <- function(ts, recomb_rate, Ne, spatial = TRUE,
   if (ts_coalesced(ts))
     message("No need to recapitate, all trees already coalesced")
 
-  ts_new <- ts$recapitate(recombination_rate = recomb_rate, Ne = Ne,
+  ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
                           random_seed = random_seed)
 
   attr(ts_new, "model") <- model
@@ -1262,7 +1267,7 @@ get_sampling <- function(metadata) {
       )
     } %>%
     dplyr::group_by(pop) %>%
-    dplyr::mutate(name = paste0(pop, 1:dplyr::n())) %>%
+    dplyr::mutate(name = paste0(pop, "_", 1:dplyr::n())) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(-time_orig, pop) %>%
     dplyr::rename(time = time_orig) %>%

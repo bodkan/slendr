@@ -85,7 +85,7 @@ model <- compile(
 In order to let the populations reach an equilibrium spatial spread at the beginning of the simulation, we will let the simulation run through a burnin period of 100 generations. We will also save the spatial locations of all individuals in order to visualize the spatial population dynamics with an animation later.
 
 ```{r}
-slim(model, seq_length = 1, recomb_rate = 0, save_locations = TRUE,
+slim(model, seq_length = 1, recombination_rate = 0, save_locations = TRUE,
      burnin = 100, method = "batch", verbose = TRUE, seed = 314159)
 ```
 

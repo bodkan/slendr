@@ -107,7 +107,7 @@ Now that we already have the `model` object ready, we can simulate data from it,
 
 ```{r}
 slim(
-  model, seq_length = 10e6, recomb_rate = 1e-8,
+  model, seq_length = 10e6, recombination_rate = 1e-8,
   ts_recording = TRUE,
   sampling = rbind(nea_samples, present_samples, emh_samples),
   method = "batch", verbose = TRUE,
@@ -188,7 +188,7 @@ Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapi
 
 ```{r, eval = FALSE}
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
-              recomb_rate = 1e-8, Ne = 10000)
+              recombination_rate = 1e-8, Ne = 10000)
 ```
 
 If we were to run this code chunk, we would get a message informing that the recapitation was not necessary because all genealogies in the tree-sequence are already coalesced (i.e. have each only one root node). We can do this check ourselves by calling another *slendr* function `ts_coalesced()` which verifies that all trees in the sequence are fully coalesced:
@@ -202,6 +202,13 @@ You might have noticed that we did not simulate any mutations during the SLiM ru
 ```{r}
 ts <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 314159)
 ts
+```
+
+Even this step can be performed in one go throught the `ts_load` function like this:
+
+```{r, eval = FALSE}
+ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
+              recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
 ```
 
 Having done that, we can calculate some basic statistics on our simulated data.

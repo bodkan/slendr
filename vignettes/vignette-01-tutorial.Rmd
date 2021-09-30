@@ -474,7 +474,7 @@ Ancestry tracking is very useful to monitor that the spatial gene flow model as 
 ```{r}
 slim(
   model,
-  seq_length = 1, recomb_rate = 0, # simulate only a single locus
+  seq_length = 1, recombination_rate = 0, # simulate only a single locus
   save_locations = TRUE, # save the location of everyone who ever lived
   track_ancestry = 1,
   method = "batch", # change to "gui" to execute the model in SLiMgui

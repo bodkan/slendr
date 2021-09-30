@@ -264,7 +264,7 @@ read <- function(dir) {
 #'
 #' @param model Model object created by the \code{compile} function
 #' @param seq_length Total length of the simulated sequence (in base-pairs)
-#' @param recomb_rate Recombination rate of the simulated sequence (in
+#' @param recombination_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
 #' @param output A shared prefix path of output files that will be generated
 #'   by the model (by default, all files will share a prefix \code{"output"}
@@ -300,7 +300,7 @@ read <- function(dir) {
 #'   to a temporary directory.
 #'
 #' @export
-slim <- function(model, seq_length, recomb_rate,
+slim <- function(model, seq_length, recombination_rate,
                  output = file.path(model$path, "output"),
                  ts_recording = FALSE, spatial = !is.null(model$world),
                  sampling = NULL, attempts_limit = 10,
@@ -384,7 +384,7 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       output,
       spatial,
       seq_length,
-      recomb_rate,
+      recombination_rate,
       burnin,
       model$length,
       markers_count,

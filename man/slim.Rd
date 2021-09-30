@@ -7,7 +7,7 @@
 slim(
   model,
   seq_length,
-  recomb_rate,
+  recombination_rate,
   output = file.path(model$path, "output"),
   ts_recording = FALSE,
   spatial = !is.null(model$world),
@@ -28,7 +28,7 @@ slim(
 
 \item{seq_length}{Total length of the simulated sequence (in base-pairs)}
 
-\item{recomb_rate}{Recombination rate of the simulated sequence (in
+\item{recombination_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
 
 \item{output}{A shared prefix path of output files that will be generated
