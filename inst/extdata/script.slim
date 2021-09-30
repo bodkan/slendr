@@ -26,6 +26,7 @@ initialize() {
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
+    optional_arg("MUT_RATE", 0);
 
     // how many attempts should be made to place an offspring on a map before
     // discarding it?
@@ -55,8 +56,8 @@ initialize() {
             competition = filter(INTERACTIONS, "pop_id", i).getValue("competition_dist")[0];
             mating = filter(INTERACTIONS, "pop_id", i).getValue("mate_dist")[0];
 
-            initializeInteractionType(2*i, "xy", reciprocal = T, maxDistance = competition);
-            initializeInteractionType(2*i+1, "xy", reciprocal = T, maxDistance = mating);
+            initializeInteractionType(2 * i - 1, "xy", reciprocal = T, maxDistance = competition);
+            initializeInteractionType(2 * i, "xy", reciprocal = T, maxDistance = mating);
         }
     } else {
         initializeSLiMOptions(keepPedigrees = T);
@@ -73,21 +74,16 @@ initialize() {
     // (one for each population)
     if (TRACK_ANCESTRY) {
         mut_types = POPULATIONS.getValue("pop_id");
-        for (i in mut_types)
-            initializeMutationType(i, 0.5, "f", 0.0);
-
-        initializeGenomicElementType("g1", mut_types, rep(1.0, length(mut_types)));
-
-        // prevent neutral ancestry markers from being removed after fixation
-        g1.mutationTypes.convertToSubstitution = F;
-    } else {
-        initializeMutationType("m0", 0.5, "f", 0.0);
-        initializeGenomicElementType("g1", m0, 1.0);
+        for (i in mut_types) initializeMutationType(i, 0.5, "f", 0.0);
     }
 
+    initializeMutationType("m0", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m0, 1.0);
     initializeGenomicElement(g1, 0, SEQ_LENGTH - 1);
+
     initializeRecombinationRate(RECOMB_RATE);
-    initializeMutationRate(0.0);
+    initializeMutationRate(MUT_RATE);
 }
 
 1 early() /* Schedule script block events */ {
@@ -178,6 +174,12 @@ s0 late() /* Log the start of the simulation */ {
         log_output("start of burnin");
     else
         log_output("starting the simulation");
+
+    // prevent neutral ancestry markers from being removed after fixation
+    if (TRACK_ANCESTRY) {
+        mut_types = POPULATIONS.getValue("pop_id");
+        sim.mutationTypes[mut_types].convertToSubstitution = F;
+    }
 }
 
 s1 late() /* Population splits */ {
@@ -307,8 +309,8 @@ s7 late() /* Changing interaction distances and dispersals */ {
         // interaction parameters are accessed in the same way they were created
         // in the initialize() block -- for an i-th population, we have the
         // 'competition' maxDistance at 2*i and mate choice maxDistance at 2*i + 1
-        competition = sim.interactionTypes[2 * pop_id];
-        mating = sim.interactionTypes[2 * pop_id + 1];
+        competition = sim.interactionTypes[2 * (pop_id - 1)];
+        mating = sim.interactionTypes[2 * (pop_id - 1) + 1];
         dispersal = get_pop(pop).getValue("dispersal_dist");
 
         // only change parameters that are scheduled for change in this event
@@ -436,14 +438,14 @@ s12 late() /* End of simulation */ {
 
 2: fitness(NULL) /* Compute fitness of individuals */ {
     if (!SPATIAL) return 1.0;
-    interaction = sim.interactionTypes[2 * subpop.id];
+    interaction = sim.interactionTypes[2 * (subpop.id - 1)];
     totalStrength = interaction.totalOfNeighborStrengths(individual);
     return 1.1 - totalStrength / subpop.individualCount;
 }
 
 2: mateChoice() /* Compute mating interaction */ {
     if (!SPATIAL) return NULL;
-    return sim.interactionTypes[2 * subpop.id + 1].strength(individual);
+    return sim.interactionTypes[2 * (subpop.id - 1) + 1].strength(individual);
 }
 
 modifyChild() /* Place offspring within its population's boundary */ {
@@ -556,8 +558,8 @@ function (void) add_markers(i$ pop_id) {
 // Distribute individuals uniformly within the boundary of the given population
 function (void) set_coordinates(lifso<Individual> inds, i$ id, [l$ log = T]) {
     if (log) log_output("distributing individuals of " +
-                                            filter(POPULATIONS, "pop_id", id).getValue("pop") +
-                                            "(p" + id + ")");
+                        filter(POPULATIONS, "pop_id", id).getValue("pop") +
+                        "(p" + id + ")");
     for (ind in inds) {
         do pos = c(runif(1, 0, WIDTH), runif(1, 0, HEIGHT));
         while (get_pop(id).spatialMapValue("world", pos) == 1.0);
