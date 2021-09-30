@@ -335,7 +335,7 @@ ts_genotypes <- function(ts) {
   n_multiallelic <- sum(!biallelic_pos)
 
   if (n_multiallelic > 0) {
-    warning(sprintf("%i multiallelic sites (%.3f%% out of %i total) detected and removed",
+    message(sprintf("%i multiallelic sites (%.3f%% out of %i total) detected and removed",
                     n_multiallelic, n_multiallelic / length(positions) * 100,
                     length(positions)), call. = FALSE)
     gts <- gts[biallelic_pos, ]
