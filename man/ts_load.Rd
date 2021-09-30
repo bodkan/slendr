@@ -10,7 +10,8 @@ ts_load(
   recapitate = FALSE,
   simplify = FALSE,
   spatial = TRUE,
-  recomb_rate = NULL,
+  recombination_rate = NULL,
+  mutation_rate = NULL,
   Ne = NULL,
   random_seed = NULL,
   simplify_to = NULL
@@ -33,7 +34,9 @@ implied by the model. If TRUE (default), reprojection of coordinates will
 be performed. If the model was non-spatial, the value of this parameter is
 disregarded.}
 
-\item{recomb_rate, Ne}{Arguments passed to \code{ts_recapitate}}
+\item{recombination_rate, Ne}{Arguments passed to \code{ts_recapitate}}
+
+\item{mutation_rate}{Mutation rate passed to \code{ts_mutate}}
 
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 

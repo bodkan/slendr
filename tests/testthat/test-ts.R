@@ -31,7 +31,7 @@ samples <- rbind(
   sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
-slim(model, seq_length = 100000, recomb_rate = 0, save_locations = TRUE, burnin = 10,
+slim(model, seq_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
      ts_recording = TRUE, method = "batch", seed = 314159,
      sampling = samples, verbose = FALSE)
 
@@ -71,10 +71,10 @@ test_that("extracted individual, node and edge counts match the tree sequence", 
   ts1 <- ts_load(model)
   table1 <- ts_data(ts1)
 
-  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recomb_rate = 0)
+  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
   table2 <- ts_data(ts2)
 
-  ts3 <- ts_load(model, recapitate = TRUE, simplify = TRUE, Ne = 1000, recomb_rate = 0)
+  ts3 <- ts_load(model, recapitate = TRUE, simplify = TRUE, Ne = 1000, recombination_rate = 0)
   table3 <- ts_data(ts3)
 
   expect_true(ts1$num_individuals == sum(!is.na(unique(table1$ind_id))))
@@ -104,8 +104,8 @@ test_that("simplification works only for present samples", {
 })
 
 test_that("simplification retains only specified samples", {
-  ts <- ts_load(model, simplify = TRUE, simplify_to = c("pop11", "pop12"))
-  expect_true(all(na.omit(unique(ts_data(ts)$name)) == c("pop11", "pop12")))
+  ts <- ts_load(model, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2"))
+  expect_true(all(na.omit(unique(ts_data(ts)$name)) == c("pop1_1", "pop1_2")))
 
   ts2 <- ts_load(model)
   simplify_to <- sample(ts_samples(ts2)$name, 10)
@@ -116,8 +116,8 @@ test_that("simplification retains only specified samples", {
 
 test_that("ts_samples() names match ts_data() information", {
   ts1 <- ts_load(model)
-  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recomb_rate = 0)
-  ts3 <- ts_load(model, simplify = TRUE, simplify_to = c("pop11", "pop12"))
+  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
+  ts3 <- ts_load(model, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2"))
   simplify_to <- sample(ts_samples(ts1)$name, 10)
   ts4 <- ts_simplify(ts1, simplify_to = simplify_to)
 
@@ -129,20 +129,23 @@ test_that("ts_samples() names match ts_data() information", {
 
 test_that("ts_eigenstrat requires recapitated and mutated data", {
   ts1 <- ts_load(model)
-  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recomb_rate = 0)
-  ts3 <- ts_load(model, simplify = TRUE, simplify_to = c("pop11", "pop12"))
-  ts4 <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000)
+  ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
+  ts3 <- ts_load(model, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2"))
+  ts4 <- ts_load(model, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000)
   ts5 <- ts_mutate(ts4, mutation_rate = 1e-7)
+  ts6 <- ts_load(model, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000,
+                 mutation_rate = 1e-7)
 
   prefix <- file.path(tempdir(), "eigen")
   expect_error(ts_eigenstrat(ts1, prefix), "Tree sequence was not recapitated")
   expect_error(ts_eigenstrat(ts2, prefix), "Attempting to extract genotypes")
-  expect_silent(suppressMessages(ts_eigenstrat(ts5, prefix)))
+  expect_silent(suppressMessages(ts_eigenstrat(ts6, prefix)))
 
   path <- file.path(tempdir(), "gt.vcf.gz")
   expect_error(ts_vcf(ts1, path), "Tree sequence was not recapitated")
   expect_warning(ts_vcf(ts2, path), "Attempting to extract genotypes")
   expect_silent(suppressMessages(ts_vcf(ts5, path)))
+  expect_silent(suppressMessages(ts_vcf(ts6, path)))
 })
 
 test_that("ts_mutate cannot be called on an already mutated tree sequence", {
@@ -153,7 +156,7 @@ test_that("ts_mutate cannot be called on an already mutated tree sequence", {
 })
 
 test_that("ts_eigenstrat and tsv_cf create correct data", {
-  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000) %>%
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000) %>%
     ts_mutate(mutation_rate = 1e-7)
 
   ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
@@ -176,7 +179,7 @@ test_that("ts_eigenstrat and tsv_cf create correct data", {
 })
 
 test_that("ts_eigenstrat correctly adds an outgroup when instructed", {
-  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recomb_rate = 0, Ne = 10000) %>%
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000) %>%
     ts_mutate(mutation_rate = 1e-7)
 
   ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
@@ -202,7 +205,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
 test_that("slendr metadata is correctly loaded (non-spatial model)", {
   output <- paste0(tempfile(), "nonspatial_test")
 
-  slim(model, seq_length = 100, recomb_rate = 0, save_locations = FALSE,
+  slim(model, seq_length = 100, recombination_rate = 0, save_locations = FALSE,
        ts_recording = TRUE, method = "batch", seed = 314159,
        sampling = samples, verbose = FALSE, spatial = FALSE, output = output)
 
@@ -212,4 +215,14 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
   expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
   expect_true(is.null(metadata$map))
   expect_true(metadata$description == desc)
+})
+
+test_that("ts_mutate and mutation through ts_load give the same result", {
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
+                recombination_rate = 0, Ne = 100)
+  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
+  ts_mut2 <- ts_load(model, simplify = TRUE, recapitate = TRUE, mutation_rate = 1e-7,
+                     random_seed = 123, recombination_rate = 0, Ne = 100)
+  expect_equal(suppressMessages(ts_genotypes(ts_mut1)),
+               suppressMessages(ts_genotypes(ts_mut2)))
 })
