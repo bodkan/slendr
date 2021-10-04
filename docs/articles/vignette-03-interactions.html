@@ -183,15 +183,15 @@
 <span class="op">)</span></code></pre></div>
 <p>In order to let the populations reach an equilibrium spatial spread at the beginning of the simulation, we will let the simulation run through a burnin period of 100 generations. We will also save the spatial locations of all individuals in order to visualize the spatial population dynamics with an animation later.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, seq_length <span class="op">=</span> <span class="fl">1</span>, recomb_rate <span class="op">=</span> <span class="fl">0</span>, save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
+<code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, seq_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
      burnin <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
 <pre><code>#&gt; --------------------------------------------------
 #&gt; SLiM command to be executed:
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcxY8ea/spatial-interactions"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcxY8ea/spatial-interactions/output"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpucz33h/spatial-interactions"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpucz33h/spatial-interactions/output"' \
 #&gt;     -d SPATIAL=T \
 #&gt;     -d SEQ_LENGTH=1 \
 #&gt;     -d RECOMB_RATE=0 \
@@ -203,7 +203,7 @@
 #&gt;     -d TRACK_ANCESTRY=F \
 #&gt;     -d NUM_MARKERS=0 \
 #&gt;     -d ATTEMPTS_LIMIT=10 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcxY8ea/spatial-interactions/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpucz33h/spatial-interactions/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 <p>Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
