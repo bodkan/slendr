@@ -338,20 +338,13 @@ ts_genotypes <- function(ts) {
   gts <- ts$genotype_matrix()
   positions <- ts$tables$sites$position
 
-  if (any(!data$remembered)) {
-    message("Only extacting genotypes for permanently remembered individuals")
-    gts <- dplyr::filter(data, remembered) %>%
-      dplyr::pull(node_id) %>%
-      { gts[, . + 1] }
-  }
-
   biallelic_pos <- get_biallelic_indices(ts)
   n_multiallelic <- sum(!biallelic_pos)
 
   if (n_multiallelic > 0) {
     message(sprintf("%i multiallelic sites (%.3f%% out of %i total) detected and removed",
                     n_multiallelic, n_multiallelic / length(positions) * 100,
-                    length(positions)), call. = FALSE)
+                    length(positions)))
     gts <- gts[biallelic_pos, ]
     positions <- positions[biallelic_pos]
   }

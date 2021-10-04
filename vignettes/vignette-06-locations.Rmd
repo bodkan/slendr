@@ -268,7 +268,7 @@ Perhaps even more useful than plotting the locations of simulated individuals is
 Because we record the time and the location of every individual that happens to be the ancestor of at least one sampled individual, this means that, looking at the following tree, for instance, we know the true location of every node in this tree (and all other genealogies in the tree sequence as well):
 
 ```{r, ts_small_tree, echo = FALSE}
-ts_small <- ts_simplify(ts, c("AFR1", "EUR1", "YAM1", "EHG1", "OOA1", "ANA1"))
+ts_small <- ts_simplify(ts, c("AFR_1", "EUR_1", "YAM_1", "EHG_1", "OOA_1", "ANA_1"))
 
 ts_tree(ts_small, 1) %>% ts_draw(labels = TRUE, ts = ts_small)
 ```
@@ -276,7 +276,7 @@ ts_tree(ts_small, 1) %>% ts_draw(labels = TRUE, ts = ts_small)
 The simplest use case is determining the locations and times of every single node in the genealogical history of an individual along the tree sequence (it is possible to recover ancestral relationships for multiple samples at once too):
 
 ```{r}
-ind <- "EUR25"
+ind <- "EUR_25"
 
 lineages <- ts_ancestors(ts, ind, verbose = TRUE)
 ```
@@ -304,7 +304,7 @@ We can see that the individual `r ind` has `r sum(counts$n)` different parent no
 As we mentioned above, there are three columns encoding spatial information: `location` and `parent_location` carry information about the location of the child and parent node (`POINT` class), and the `connection` object (`LINESTRING` class) contains the line connecting the two nodes (both a branch in the tree sequence and also the spatial connection). We can plot all three spatial features (two points and a line) individually on a map:
 
 ```{r level1_branches}
-level1_branches <- ts_ancestors(ts, "EUR10") %>% filter(level == 1)
+level1_branches <- ts_ancestors(ts, "EUR_10") %>% filter(level == 1)
 
 ggplot() +
   geom_sf(data = map, fill = "lightgray", color = NA) +
@@ -404,13 +404,13 @@ dev.off()
 
 
 ```{r, include = FALSE}
-ana_ind <- ts_samples(ts) %>% filter(name == "ANA22")
+ana_ind <- ts_samples(ts) %>% filter(name == "ANA_22")
 ```
 
 Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual (`r ana_ind$name`) and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
 
 ```{r, plot_ancestors_levels_ana}
-ts_ancestors(ts, "ANA22") %>% plot_ancestors(color = "level")
+ts_ancestors(ts, "ANA_22") %>% plot_ancestors(color = "level")
 ```
 
 As we might expect given the late age of the sample (`r ana_ind$time`), its position in the map above (red crossed circle) is not in Anatolia but in Europe because it represents one of the descendants of migrants who moved from Anatolia into Europe. This can be clearly seen in the position of its parental nodes in the tree sequence: these nodes represent real individuals who lived at some point in the past, and we can see that they did, indeed, lived in Anatolia.
@@ -496,7 +496,7 @@ distances_long %>%
 Still keeping an eye on the animated data above, let's try to summarise the information about distances "traveled" by nodes in different time period by fitting a spline (rather than plotting the raw data with individual nodes):
 
 ```{r, smooth_distance_fits}
-distances_long %>% 
+distances_long %>%
   ggplot(aes(child_time, value, color = child_pop)) +
   geom_smooth(method = "loess", aes(group = child_pop)) +
   geom_hline(yintercept = 0, linetype = 2, size = 0.5) +
@@ -561,4 +561,3 @@ ggplot() +
   geom_sf(data = map) +
   geom_sf(data = nodes_sf, aes(color = parent_time), alpha = 0.5)
 ```
-

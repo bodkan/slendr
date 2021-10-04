@@ -225,7 +225,7 @@ The `slim` function generates a complete SLiM script tailored to run the spatial
 ```r
 slim(
   model,
-  seq_length = 1, recomb_rate = 0, # simulate only a single locus
+  seq_length = 1, recombination_rate = 0, # simulate only a single locus
   save_locations = TRUE, # save the location of everyone who ever lived
   method = "batch", # change to "gui" to execute the model in SLiMgui
   seed = 314159
@@ -235,8 +235,8 @@ slim(
 #> 
 #> /usr/local/bin/slim  \
 #>     -d SEED=314159  \
-#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpq2dupT/readme-model"' \
-#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpq2dupT/readme-model/output"' \
+#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMrUo4g/readme-model"' \
+#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMrUo4g/readme-model/output"' \
 #>     -d SPATIAL=T \
 #>     -d SEQ_LENGTH=1 \
 #>     -d RECOMB_RATE=0 \
@@ -248,7 +248,7 @@ slim(
 #>     -d TRACK_ANCESTRY=F \
 #>     -d NUM_MARKERS=0 \
 #>     -d ATTEMPTS_LIMIT=10 \
-#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpq2dupT/readme-model/script.slim 
+#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMrUo4g/readme-model/script.slim 
 #> --------------------------------------------------
 ```
 
