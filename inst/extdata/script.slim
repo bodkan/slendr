@@ -30,7 +30,7 @@ initialize() {
 
     // how many attempts should be made to place an offspring on a map before
     // discarding it?
-    optional_arg("ATTEMPTS_LIMIT", 1);
+    optional_arg("MAX_ATTEMPTS", 1);
 
     // model configuration tables
     defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
@@ -485,7 +485,7 @@ modifyChild() /* Place offspring within its population's boundary */ {
         jitter = rnorm(2, 0, sigma_dist);
         pos = parent1.spatialPosition + jitter;
         found = subpop.pointInBounds(pos) & subpop.spatialMapValue("world", pos) == 0.0;
-    } while (!found & attempts < ATTEMPTS_LIMIT);
+    } while (!found & attempts < MAX_ATTEMPTS);
 
     if (found) {
         child.setSpatialPosition(pos);
