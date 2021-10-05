@@ -1149,7 +1149,7 @@ get_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # get data from the original individual table
   individuals <- get_ts_individuals(ts) %>%
     dplyr::mutate(time = convert_slim_time(time, model),
-                  pop = model$splits$pop[pop_id + 1]) %>%
+                  pop = model$splits$pop[pop_id]) %>%
     dplyr::arrange(-time, pop)
 
   # load information about samples at times and from populations of remembered
