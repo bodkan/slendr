@@ -12,7 +12,7 @@ slim(
   ts_recording = FALSE,
   spatial = !is.null(model$world),
   sampling = NULL,
-  attempts_limit = 10,
+  max_attempts = 10,
   save_locations = FALSE,
   track_ancestry = FALSE,
   method = c("batch", "gui"),
@@ -48,7 +48,7 @@ function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
-\item{attempts_limit}{How many attempts should be made to place an offspring
+\item{max_attempts}{How many attempts should be made to place an offspring
 near one of its parents? Serves to prevent infinite loops on the SLiM
 backend. Default value is 100.}
 
