@@ -193,7 +193,7 @@ the generated SLiM script to a given location for later use.</p>
   ts_recording <span class='op'>=</span> <span class='cn'>FALSE</span>,
   spatial <span class='op'>=</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>world</span><span class='op'>)</span>,
   sampling <span class='op'>=</span> <span class='cn'>NULL</span>,
-  attempts_limit <span class='op'>=</span> <span class='fl'>10</span>,
+  max_attempts <span class='op'>=</span> <span class='fl'>10</span>,
   save_locations <span class='op'>=</span> <span class='cn'>FALSE</span>,
   track_ancestry <span class='op'>=</span> <span class='cn'>FALSE</span>,
   method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"batch"</span>, <span class='st'>"gui"</span><span class='op'>)</span>,
@@ -246,7 +246,7 @@ missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></td>
     </tr>
     <tr>
-      <th>attempts_limit</th>
+      <th>max_attempts</th>
       <td><p>How many attempts should be made to place an offspring
 near one of its parents? Serves to prevent infinite loops on the SLiM
 backend. Default value is 100.</p></td>
