@@ -18,7 +18,6 @@ initialize() {
     optional_arg("MODEL", "."); // directory containing model configuration files
     optional_arg("OUTPUT", config_path("output")); // shared path of output files
     optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
-    optional_arg("TS_RECORDING", T); // should tree sequence recording be on?
     optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
     optional_arg("SAVE_LOCATIONS", F); // record locations of all individuals?
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
@@ -66,7 +65,7 @@ initialize() {
     defineConstant("SIMULATION_START", BURNIN_LENGTH + min(POPULATIONS.getValue("tsplit_gen")));
     defineConstant("SIMULATION_END", SIMULATION_START + SIMULATION_LENGTH);
 
-    if (TS_RECORDING) initializeTreeSeq(retainCoalescentOnly = T);
+    initializeTreeSeq(retainCoalescentOnly = T);
 
     initializeMutationType("m0", 0.5, "f", 0.0);
     initializeGenomicElementType("g1", m0, 1.0);
@@ -132,10 +131,7 @@ initialize() {
         sim.deregisterScriptBlock(s8);
 
     // remember individuals for tree sequence recording
-    if (TS_RECORDING) {
-         sim.rescheduleScriptBlock(s10, start = SIMULATION_START, end = SIMULATION_END);
-    } else
-         sim.deregisterScriptBlock(s10);
+    sim.rescheduleScriptBlock(s10, start = SIMULATION_START, end = SIMULATION_END);
 
     // remove populations from the simulation
     cleanups = filter(POPULATIONS, "tremove_gen", -1, negate = T);
@@ -367,8 +363,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
 1: late() /* Retain all individuals in each generation */ {
     // note that permanent remembering takes priority in SLiM so this doesn't
     // override permanent remembering performed above
-    if (TS_RECORDING)
-        sim.treeSeqRememberIndividuals(sim.subpopulations.individuals, permanent = F);
+    sim.treeSeqRememberIndividuals(sim.subpopulations.individuals, permanent = F);
 }
 
 s11 late() /* Schedule removal of populations */ {
@@ -382,15 +377,13 @@ s11 late() /* Schedule removal of populations */ {
 }
 
 s12 late() /* End of simulation */ {
-    if (TS_RECORDING) {
-        log_output("saving the tree sequence output");
-        filename = output_path("ts.trees");
+    log_output("saving the tree sequence output");
+    filename = output_path("ts.trees");
 
-        // add slendr-specific metadata to its own Dictionary key
-        metadata = collect_metadata();
+    // add slendr-specific metadata to its own Dictionary key
+    metadata = collect_metadata();
 
-        sim.treeSeqOutput(filename, metadata = Dictionary("slendr", metadata));
-    }
+    sim.treeSeqOutput(filename, metadata = Dictionary("slendr", metadata));
 
     log_output("simulation finished");
     sim.simulationFinished();

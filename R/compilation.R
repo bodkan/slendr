@@ -269,8 +269,6 @@ read <- function(dir) {
 #' @param output A shared prefix path of output files that will be generated
 #'   by the model (by default, all files will share a prefix \code{"output"}
 #'   and will be placed in the model directory)
-#' @param ts_recording Turn on tree sequence recording during SLiM
-#'   initialization?
 #' @param spatial Should the model be executed in spatial mode? By default, if a
 #'   world map was specified during model definition, simulation will proceed
 #'   in a spatial mode.
@@ -298,7 +296,7 @@ read <- function(dir) {
 #' @export
 slim <- function(model, seq_length, recombination_rate,
                  output = file.path(model$path, "output"),
-                 ts_recording = FALSE, spatial = !is.null(model$world),
+                 spatial = !is.null(model$world),
                  sampling = NULL, max_attempts = 10,
                  save_locations = FALSE,
                  method = c("batch", "gui"), verbose = TRUE, burnin = 0,
@@ -321,20 +319,13 @@ slim <- function(model, seq_length, recombination_rate,
   if (!file.exists(script_path))
     stop("Backend script at '", script_path, "' not found", call. = FALSE)
 
-  if (!is.null(sampling) && !ts_recording)
-    stop("Sampling individuals only makes sense when `ts_recording = TRUE`", call. = FALSE)
-
   output <- path.expand(output)
-  ts_recording <- if (ts_recording) "T" else "F"
   spatial <- if (spatial) "T" else "F"
   save_locations <- if (save_locations) "T" else "F"
   burnin <- round(burnin / model$generation_time)
 
-  if (ts_recording) {
-    sampling_path <- ifelse(save_sampling, paste0(output, "_sampling.tsv"), tempfile())
-    process_sampling(sampling, model, sampling_path, verbose)
-  } else
-    sampling_path <- NULL
+  sampling_path <- ifelse(save_sampling, paste0(output, "_sampling.tsv"), tempfile())
+  process_sampling(sampling, model, sampling_path, verbose)
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
   seed <- if (is.null(seed)) "" else paste0(" \\\n    -d SEED=", seed)
@@ -359,7 +350,6 @@ slim <- function(model, seq_length, recombination_rate,
     -d RECOMB_RATE=%s \\
     -d BURNIN_LENGTH=%s \\
     -d SIMULATION_LENGTH=%s \\
-    -d TS_RECORDING=%s \\
     -d SAVE_LOCATIONS=%s \\
     -d MAX_ATTEMPTS=%i \\
     %s",
@@ -373,7 +363,6 @@ slim <- function(model, seq_length, recombination_rate,
       recombination_rate,
       burnin,
       model$length,
-      ts_recording,
       save_locations,
       max_attempts,
       script_path

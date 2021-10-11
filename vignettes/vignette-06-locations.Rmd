@@ -157,13 +157,10 @@ present <- sampling(model, times = 0, list(afr, 5), list(eur, 30))
 samples <- rbind(ancient, present)
 ```
 
-Because we want to explore how to handle spatio-temporal population genomic tree sequence data in *slendr*, we have to turn on the tree sequence recording (`ts_recording = TRUE`):
-
 ```{r}
 slim(
   model, seq_length = 100e3, recombination_rate = 1e-8, burnin = 200e3,
-  ts_recording = TRUE, sampling = samples,
-  method = "batch", seed = 314159, max_attempts = 1
+  sampling = samples, method = "batch", seed = 314159, max_attempts = 1
 )
 ```
 

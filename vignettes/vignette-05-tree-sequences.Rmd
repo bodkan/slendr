@@ -103,21 +103,19 @@ sampling(model, times = 10000, list(nea, 1), strict = TRUE)
 
     Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.
 
-Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the `slim()` function as usual, but this time we set `ts_recording = TRUE` (which switches on the tree-sequence recording on the SLiM backend) and we specify the sampling events with the `sampling =` argument. Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such):
+Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the `slim()` function as usual and specifying the sampling events with the `sampling =` argument. Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such):
 
 ```{r}
 slim(
   model, seq_length = 10e6, recombination_rate = 1e-8,
-  ts_recording = TRUE,
   sampling = rbind(nea_samples, present_samples, emh_samples),
-  method = "batch", verbose = TRUE,
-  seed = 314159
+  method = "batch", verbose = TRUE, seed = 314159
 )
 ```
 
 ## R interface for *tskit* and *pyslim*
 
-The result of switching on `ts_recording = TRUE` in the `slim()` call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
+When we execute the model, *slendr* will instruct SLiM to save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
 
 ```{r}
 ts_file <- file.path(model$path, "output_ts.trees")
