@@ -226,3 +226,24 @@ test_that("ts_mutate and mutation through ts_load give the same result", {
   expect_equal(suppressMessages(ts_genotypes(ts_mut1)),
                suppressMessages(ts_genotypes(ts_mut2)))
 })
+
+test_that("ts_mutate correctly specifies the SLiM mutation type", {
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
+                recombination_rate = 0, Ne = 100)
+  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
+  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123, mut_type = 123456789)
+
+  get_mut_type <- function(m) {
+    mut_metadata <- m$metadata$mutation_list
+    if (length(mut_metadata) > 0)
+      return(mut_metadata[[1]]$mutation_type)
+    else
+      return(NULL)
+  }
+
+  mut_types1 <- unlist(reticulate::iterate(ts_mut1$mutations(), get_mut_type))
+  mut_types2 <- unlist(reticulate::iterate(ts_mut2$mutations(), get_mut_type))
+
+  expect_true(is.null(mut_types1))
+  expect_true(all(mut_types2 == 123456789))
+})
