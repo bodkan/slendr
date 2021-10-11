@@ -258,36 +258,6 @@ plot_graph <- function(model) {
     coord_cartesian(clip = "off")
 }
 
-#' Plot simulated ancestry proportions
-#'
-#' @param model Compiled \code{slendr_model} model object
-#' @param output_prefix A shared prefix path to output files (by default, all files
-#'   will share a prefix \code{"output"} and are placed in the model directory)
-#'
-#' @export
-plot_ancestries <- function(model, output_prefix = file.path(model$path, "output")) {
-  anc_long <- read_ancestries(output_prefix) %>%
-    tidyr::gather(ancestry, prop, -gen, -pop)
-
-
-  # order population names based on their split order
-  split_order <- split(anc_long, anc_long$pop) %>%
-    sapply(function(df) max(df$gen)) %>%
-    sort(decreasing = TRUE) %>%
-    names
-  anc_long$pop <- factor(anc_long$pop, levels = split_order)
-
-  anc_long$time <- anc_long$gen * model$generation_time
-
-  anc_long %>%
-  ggplot(aes(-time, prop, color = ancestry)) +
-    geom_line() +
-    facet_wrap(~ pop) +
-    coord_cartesian(ylim = c(0, 1)) +
-    ggtitle("Ancestry proportions in populations during the course of their existence") +
-    theme_minimal()
-}
-
 #' Animate the simulated population dynamics
 #'
 #' @param model Compiled \code{slendr_model} model object

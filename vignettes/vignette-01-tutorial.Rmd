@@ -467,16 +467,11 @@ Note that when you run this model in SLiMgui (which should automatically open by
 
 Notice that the function accepts several parameters determining the length of the simulated genetic sequence, the recombination rate, the length of the burnin period (to generate genetic diversity prior to simulated population dynamics), the total time of the simulation run (excluding burnin), and the generation time for the simulated organism (which is used to convert all times defined during model specification above into SLiM's internal units of generations).
 
-Finally, the parameter `track_ancestry` determines whether we want our SLiM script to track ancestry proportion changes in all simulations using neutral markers uniformly distributed along each genome. The default value of this parameter is `FALSE` and no ancestry tracking is performed. Any other non-zero, positive integer value specifies how many markers we want to use for tracking. Please note that this *significantly* increases the simulation overhead, not only because of the actual burden of mutation objects being simulated, but also because when this feature is enabled the ancestry is calculated in each generation for each simulated genome. In this case, we're tracking ancestry using a single non-recombining marker, to minimize computational time for the purposes of this vignette.
-
-Ancestry tracking is very useful to monitor that the spatial gene flow model as defined in R really behaves as expected on the SLiM side. This can be verified by inspecting files named as `output_ancestry_XXX.tsv` in the specified output directory. See the manpage of `slim()` for more details.
-
 ```{r}
 slim(
   model,
   seq_length = 1, recombination_rate = 0, # simulate only a single locus
   save_locations = TRUE, # save the location of everyone who ever lived
-  track_ancestry = 1,
   method = "batch", # change to "gui" to execute the model in SLiMgui
   seed = 314159
 )
@@ -486,13 +481,7 @@ By default, simulation output files are put in the same directory where the mode
 
 ## Post-simulation diagnostics
 
-Since we instructed *slendr* to track ancestry proportions above, we can visualize them after the simulation is over using the built-in `plot_ancestries()` function. This functionality is quite bare-bones for now and the way diagnostics are generated is probably subject to change.
-
-```{r plot_ancestries}
-plot_ancestries(model = model)
-```
-
-Similarly, we can recapitulate the spatial dynamics with the *slendr* function `animate()` (also very bare-bones at the moment):
+We can recapitulate the spatial dynamics with the *slendr* function `animate()` (also very bare-bones at the moment):
 
 ```{r plot_gif}
 animate(model = model, steps = 100, width = 500, height = 300)
