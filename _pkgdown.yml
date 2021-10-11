@@ -64,7 +64,6 @@ reference:
     contents:
     - plot.slendr
     - plot_graph
-    - plot_ancestries
     - animate
     - explore
     - print.slendr_map

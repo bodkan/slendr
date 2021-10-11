@@ -14,7 +14,6 @@ slim(
   sampling = NULL,
   max_attempts = 10,
   save_locations = FALSE,
-  track_ancestry = FALSE,
   method = c("batch", "gui"),
   verbose = TRUE,
   burnin = 0,
@@ -54,11 +53,6 @@ backend. Default value is 100.}
 
 \item{save_locations}{Save location of each individual throughout the
 simulation?}
-
-\item{track_ancestry}{Track ancestry proportion dynamics in all populations
-throughout the simulations (default FALSE)? If a non-zero integer is
-provided, ancestry will be tracked using the number number of neutral
-ancestry markers equal to this number.}
 
 \item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
 on the command-line)}

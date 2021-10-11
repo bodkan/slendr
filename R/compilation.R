@@ -276,10 +276,6 @@ read <- function(dir) {
 #'   in a spatial mode.
 #' @param save_locations Save location of each individual throughout the
 #'   simulation?
-#' @param track_ancestry Track ancestry proportion dynamics in all populations
-#'   throughout the simulations (default FALSE)? If a non-zero integer is
-#'   provided, ancestry will be tracked using the number number of neutral
-#'   ancestry markers equal to this number.
 #' @param sampling A data frame of times at which a given number of individuals
 #'   should be remembered in the tree-sequence (see \code{sampling} for a
 #'   function that can generate the sampling schedule in the correct format). If
@@ -304,7 +300,7 @@ slim <- function(model, seq_length, recombination_rate,
                  output = file.path(model$path, "output"),
                  ts_recording = FALSE, spatial = !is.null(model$world),
                  sampling = NULL, max_attempts = 10,
-                 save_locations = FALSE, track_ancestry = FALSE,
+                 save_locations = FALSE,
                  method = c("batch", "gui"), verbose = TRUE, burnin = 0,
                  seed = NULL, slim_path = NULL, save_sampling = FALSE) {
   model_dir <- model$path
@@ -321,12 +317,6 @@ slim <- function(model, seq_length, recombination_rate,
   if (is.character(slim_path) && !all(file.exists(slim_path)))
     stop("SLiM binary not found at ", slim_path, call. = FALSE)
 
-  if (!is.logical(track_ancestry) & !is.numeric(track_ancestry)) {
-    stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
-a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
-  } else
-    markers_count <- as.integer(track_ancestry)
-
   script_path <- path.expand(file.path(model_dir, "script.slim"))
   if (!file.exists(script_path))
     stop("Backend script at '", script_path, "' not found", call. = FALSE)
@@ -337,7 +327,6 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
   output <- path.expand(output)
   ts_recording <- if (ts_recording) "T" else "F"
   spatial <- if (spatial) "T" else "F"
-  track_ancestry <- if (markers_count > 0) "T" else "F"
   save_locations <- if (save_locations) "T" else "F"
   burnin <- round(burnin / model$generation_time)
 
@@ -370,11 +359,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
     -d RECOMB_RATE=%s \\
     -d BURNIN_LENGTH=%s \\
     -d SIMULATION_LENGTH=%s \\
-    -d N_MARKERS=%i \\
     -d TS_RECORDING=%s \\
     -d SAVE_LOCATIONS=%s \\
-    -d TRACK_ANCESTRY=%s \\
-    -d NUM_MARKERS=%i \\
     -d MAX_ATTEMPTS=%i \\
     %s",
       binary,
@@ -387,11 +373,8 @@ a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
       recombination_rate,
       burnin,
       model$length,
-      markers_count,
       ts_recording,
       save_locations,
-      track_ancestry,
-      markers_count,
       max_attempts,
       script_path
     )
