@@ -32,7 +32,7 @@ samples <- rbind(
 )
 
 slim(model, seq_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-     ts_recording = TRUE, method = "batch", seed = 314159,
+     method = "batch", seed = 314159,
      sampling = samples, verbose = FALSE)
 
 test_that("ts_load generates an object of the correct type", {
