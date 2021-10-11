@@ -1283,7 +1283,8 @@ get_metadata <- function(ts) {
     version = metadata$version,
     description = metadata$description,
     sampling = get_sampling(metadata),
-    map = metadata$map[[1]]
+    map = metadata$map[[1]],
+    arguments = metadata$arguments[[1]]
   )
 }
 

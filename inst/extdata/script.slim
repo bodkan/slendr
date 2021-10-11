@@ -23,7 +23,6 @@ initialize() {
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
-    optional_arg("MUT_RATE", 0);
 
     // how many attempts should be made to place an offspring on a map before
     // discarding it?
@@ -550,6 +549,15 @@ function (object<Dictionary>) collect_metadata(void) {
         spatial_metadata = NULL;
 
     metadata.setValue("map", spatial_metadata);
+
+    metadata.setValue("arguments", Dictionary(
+        "SEQ_LENGTH", SEQ_LENGTH,
+        "RECOMB_RATE", RECOMB_RATE,
+        "SEED", SEED,
+        "BURNIN_LENGTH", BURNIN_LENGTH,
+        "SIMULATION_LENGTH", SIMULATION_LENGTH,
+        "MAX_ATTEMPTS", MAX_ATTEMPTS
+    ));
 
     return(metadata);
 }

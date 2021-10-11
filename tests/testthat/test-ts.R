@@ -192,22 +192,51 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed", {
 })
 
 test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
-  ts <- ts_load(model)
+  output <- paste0(tempfile(), "spatial_test")
+
+  burnin_length <- 123
+  max_attempts <- 3
+  recomb_rate <- 0.001
+  save_locations <- FALSE
+  seed <- 987
+  seq_length <- 999
+
+  slim(model, seq_length = seq_length, recombination_rate = recomb_rate,
+       save_locations = save_locations, burnin = burnin_length,
+       method = "batch", seed = seed, max_attempts = max_attempts,
+       sampling = samples, verbose = FALSE, output = output)
+
+  ts <- ts_load(model, file = paste0(output, "_ts.trees"))
   metadata <- ts_metadata(ts)
 
   expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
-  expect_true(all(sf::st_bbox(map) == metadata$map$extent))
+  expect_true(all(sf::st_bbox(map) == metadata$map$EXTENT))
   expect_true(metadata$map$resolution == res)
   expect_true(is.null(metadata$map$crs))
   expect_true(metadata$description == desc)
+
+  args <- metadata$arguments
+  expect_equal(args$BURNIN_LENGTH, burnin_length)
+  expect_equal(args$MAX_ATTEMPTS, max_attempts)
+  expect_equal(args$RECOMB_RATE, recomb_rate)
+  expect_equal(args$SEED, seed)
+  expect_equal(args$SEQ_LENGTH, seq_length)
 })
 
 test_that("slendr metadata is correctly loaded (non-spatial model)", {
-  output <- paste0(tempfile(), "nonspatial_test")
+  output <- paste0(tempfile(), "non-spatial_test")
 
-  slim(model, seq_length = 100, recombination_rate = 0, save_locations = FALSE,
-       ts_recording = TRUE, method = "batch", seed = 314159,
-       sampling = samples, verbose = FALSE, spatial = FALSE, output = output)
+  burnin_length <- 123
+  recomb_rate <- 0.001
+  save_locations <- FALSE
+  seed <- 987
+  seq_length <- 999
+  spatial <- FALSE
+
+  slim(model, seq_length = seq_length, recombination_rate = recomb_rate,
+       save_locations = save_locations, burnin = burnin_length,
+       method = "batch", seed = seed, max_attempts = max_attempts,
+       sampling = samples, verbose = FALSE, spatial = spatial, output = output)
 
   ts <- ts_load(model, file = paste0(output, "_ts.trees"))
   metadata <- ts_metadata(ts)
@@ -215,6 +244,12 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
   expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
   expect_true(is.null(metadata$map))
   expect_true(metadata$description == desc)
+
+  args <- metadata$arguments
+  expect_equal(args$BURNIN_LENGTH, burnin_length)
+  expect_equal(args$RECOMB_RATE, recomb_rate)
+  expect_equal(args$SEED, seed)
+  expect_equal(args$SEQ_LENGTH, seq_length)
 })
 
 test_that("ts_mutate and mutation through ts_load give the same result", {
