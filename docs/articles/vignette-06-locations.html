@@ -161,7 +161,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>#&gt; OGR data source with driver: ESRI Shapefile 
-#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpiOo7Sl", layer: "ne_110m_land"
+#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpRUASIo", layer: "ne_110m_land"
 #&gt; with 127 features
 #&gt; It has 3 fields</code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -276,21 +276,18 @@
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpiOo7Sl/file180a619b1f12f"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpiOo7Sl/spatial-ts"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpiOo7Sl/spatial-ts/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpRUASIo/file64bc2aa95379"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpRUASIo/spatial-ts"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpRUASIo/spatial-ts/output"' \
 #&gt;     -d SPATIAL=T \
 #&gt;     -d SEQ_LENGTH=100000 \
 #&gt;     -d RECOMB_RATE=1e-08 \
 #&gt;     -d BURNIN_LENGTH=6667 \
 #&gt;     -d SIMULATION_LENGTH=1733 \
-#&gt;     -d N_MARKERS=0 \
 #&gt;     -d TS_RECORDING=T \
 #&gt;     -d SAVE_LOCATIONS=F \
-#&gt;     -d TRACK_ANCESTRY=F \
-#&gt;     -d NUM_MARKERS=0 \
 #&gt;     -d MAX_ATTEMPTS=1 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpiOo7Sl/spatial-ts/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpRUASIo/spatial-ts/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 <p>After the simulation is done, we can load the data in the same way we did in our <a href="vignette-05-tree%20sequences.html#loading-and-processing-tree%20sequence-output-files-1">first exploration</a> of tree sequence features in <em>slendr</em>. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -327,7 +324,7 @@
 #&gt; oldest sampled individual: 40000 backward time units
 #&gt; youngest sampled individual: 0 backward time units
 #&gt; 
-#&gt; oldest node: 1558413 backward time units
+#&gt; oldest node: 1441736 backward time units
 #&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
 #&gt; contents of the underlying sf object:
@@ -347,7 +344,7 @@
 #&gt; 5  TRUE    31383200
 #&gt; 6  TRUE    31383200
 #&gt; 
-#&gt; ... and 562 additional rows
+#&gt; ... and 559 additional rows
 #&gt; ---------------------- 
 #&gt; map: internal coordinate reference system EPSG 3035 
 #&gt; spatial limits (in degrees longitude and latitude):
@@ -356,7 +353,7 @@
 <p>In the first part of the summary, we see how many individuals (sampled or retained) and nodes are present in the tree sequence together with additional useful information, including a section of the internally stored <code>sf</code> object. And this is a crucial point—<strong>we can always access the internal <code>sf</code> object with the spatial data</strong> by running the following, which avoid the verbose summary above and exposes the underlying <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1"><em>sf</em> data frame</a> directly:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span><span class="op">[</span><span class="op">]</span></code></pre></div>
-<pre><code>#&gt; Simple feature collection with 568 features and 9 fields (with 11 geometries empty)
+<pre><code>#&gt; Simple feature collection with 565 features and 9 fields (with 8 geometries empty)
 #&gt; Geometry type: POINT
 #&gt; Dimension:     XY
 #&gt; Bounding box:  xmin: 2364888 ymin: 294002.8 xmax: 8577345 ymax: 4763638
@@ -377,7 +374,7 @@
 #&gt; oldest sampled individual: 40000 backward time units
 #&gt; youngest sampled individual: 0 backward time units
 #&gt; 
-#&gt; oldest node: 1558413 backward time units
+#&gt; oldest node: 1441736 backward time units
 #&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
 #&gt; contents of the underlying sf object:
@@ -397,7 +394,7 @@
 #&gt; 5  TRUE    31383200
 #&gt; 6  TRUE    31383200
 #&gt; 
-#&gt; ... and 562 additional rows
+#&gt; ... and 559 additional rows
 #&gt; ---------------------- 
 #&gt; map: internal coordinate reference system EPSG 3035 
 #&gt; spatial limits (in degrees longitude and latitude):

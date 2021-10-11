@@ -235,20 +235,17 @@ slim(
 #> 
 #> /usr/local/bin/slim  \
 #>     -d SEED=314159  \
-#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpTxPYHR/readme-model"' \
-#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpTxPYHR/readme-model/output"' \
+#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpk7rJoS/readme-model"' \
+#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpk7rJoS/readme-model/output"' \
 #>     -d SPATIAL=T \
 #>     -d SEQ_LENGTH=1 \
 #>     -d RECOMB_RATE=0 \
 #>     -d BURNIN_LENGTH=0 \
 #>     -d SIMULATION_LENGTH=1733 \
-#>     -d N_MARKERS=0 \
 #>     -d TS_RECORDING=F \
 #>     -d SAVE_LOCATIONS=T \
-#>     -d TRACK_ANCESTRY=F \
-#>     -d NUM_MARKERS=0 \
 #>     -d MAX_ATTEMPTS=10 \
-#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpTxPYHR/readme-model/script.slim 
+#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmpk7rJoS/readme-model/script.slim 
 #> --------------------------------------------------
 ```
 
