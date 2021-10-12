@@ -235,7 +235,7 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
 
   slim(model, seq_length = seq_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
-       method = "batch", seed = seed, max_attempts = max_attempts,
+       method = "batch", seed = seed,
        sampling = samples, verbose = FALSE, spatial = spatial, output = output)
 
   ts <- ts_load(model, file = paste0(output, "_ts.trees"))
@@ -281,4 +281,39 @@ test_that("ts_mutate correctly specifies the SLiM mutation type", {
 
   expect_true(is.null(mut_types1))
   expect_true(all(mut_types2 == 123456789))
+})
+
+
+test_that("tree sequence contains the specified number of sampled individuals (default sampling)", {
+  slim(model, seq_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
+     method = "batch", seed = 314159,
+     verbose = FALSE)
+
+  ts <- ts_load(model, simplify = TRUE)
+  counts <- ts_data(ts, remembered = TRUE) %>%
+    dplyr::as_tibble() %>%
+    dplyr::distinct(ind_id, time, pop) %>%
+    dplyr::count(time, pop)
+  expect_true(all(counts$n == N))
+})
+
+test_that("locations and times in the tree sequence match values saved by SLiM (default sampling)", {
+  slim(model, seq_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
+     method = "batch", seed = 314159,
+     verbose = FALSE)
+
+  ts <- ts_load(model, simplify = TRUE)
+  individuals <- ts_data(ts, remembered = TRUE) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
+  true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
+                                    col_types = "iicidd") %>%
+    dplyr::mutate(time = convert_slim_time(gen, model))
+  joined <- dplyr::inner_join(individuals, true_locations,
+                              by = c("pedigree_id" = "ind")) %>%
+    dplyr::mutate(location_x = as.vector(sf::st_coordinates(location)[, 1]),
+                  location_y = as.vector(sf::st_coordinates(location)[, 2]))
+  # for some reason the values differ in terms of decimal digits saved?
+  # but they *are* equal
+  expect_true(all.equal(joined$x, joined$location_x, tolerance = 1e-5))
+  expect_true(all.equal(joined$y, joined$location_y, tolerance = 1e-5))
+  expect_true(all.equal(joined$time.x, joined$time.y))
 })
