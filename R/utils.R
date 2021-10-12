@@ -336,7 +336,17 @@ process_sampling <- function(samples, model, sampling_path, verbose) {
       message("Tree-sequence recording is on but no sampling schedule was given. ",
               "Generating one at least for populations surviving to the end of the simulation...")
     surviving_pops <- purrr::keep(model$populations, ~ attr(.x, "remove") == -1)
-    end_time <- if (model$direction == "backward") 0 else model$length
+
+    # generate sampling schedule, remembering all individuals from all populations
+    # surviving to the end of the simulation (which will happen at `end_time`)
+    start_times <- purrr::map_int(model$populations, ~ attr(.x, "history")[[1]]$time)
+    if (model$direction == "backward") {
+      start <- max(start_times)
+      end_time <- start - model$orig_length
+    } else {
+      start <- min(start_times)
+      end_time <- start + model$orig_length
+    }
     samples <- do.call(
       sampling,
       c(list(model = model, times = end_time), purrr::map(surviving_pops, ~ list(.x, Inf)))
