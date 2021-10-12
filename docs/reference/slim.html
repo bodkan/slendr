@@ -190,7 +190,6 @@ the generated SLiM script to a given location for later use.</p>
   <span class='va'>seq_length</span>,
   <span class='va'>recombination_rate</span>,
   output <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>path</span>, <span class='st'>"output"</span><span class='op'>)</span>,
-  ts_recording <span class='op'>=</span> <span class='cn'>FALSE</span>,
   spatial <span class='op'>=</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>world</span><span class='op'>)</span>,
   sampling <span class='op'>=</span> <span class='cn'>NULL</span>,
   max_attempts <span class='op'>=</span> <span class='fl'>10</span>,
@@ -224,11 +223,6 @@ recombinations per basepair per generation)</p></td>
       <td><p>A shared prefix path of output files that will be generated
 by the model (by default, all files will share a prefix <code>"output"</code>
 and will be placed in the model directory)</p></td>
-    </tr>
-    <tr>
-      <th>ts_recording</th>
-      <td><p>Turn on tree sequence recording during SLiM
-initialization?</p></td>
     </tr>
     <tr>
       <th>spatial</th>
