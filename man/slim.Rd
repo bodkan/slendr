@@ -9,7 +9,6 @@ slim(
   seq_length,
   recombination_rate,
   output = file.path(model$path, "output"),
-  ts_recording = FALSE,
   spatial = !is.null(model$world),
   sampling = NULL,
   max_attempts = 10,
@@ -33,9 +32,6 @@ recombinations per basepair per generation)}
 \item{output}{A shared prefix path of output files that will be generated
 by the model (by default, all files will share a prefix \code{"output"}
 and will be placed in the model directory)}
-
-\item{ts_recording}{Turn on tree sequence recording during SLiM
-initialization?}
 
 \item{spatial}{Should the model be executed in spatial mode? By default, if a
 world map was specified during model definition, simulation will proceed

@@ -217,39 +217,36 @@
 <span class="co"># are already extinct, resulting in an error</span>
 <span class="fu"><a href="../reference/sampling.html">sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">10000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span>, strict <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.</code></pre>
-<p>Now that we already have the <code>model</code> object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the <code><a href="../reference/slim.html">slim()</a></code> function as usual, but this time we set <code>ts_recording = TRUE</code> (which switches on the tree-sequence recording on the SLiM backend) and we specify the sampling events with the <code>sampling =</code> argument. Note that we bind the individual sampling schedule data frames using the <code>rbind</code> function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such):</p>
+<p>Now that we already have the <code>model</code> object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the <code><a href="../reference/slim.html">slim()</a></code> function as usual and specifying the sampling events with the <code>sampling =</code> argument. Note that we bind the individual sampling schedule data frames using the <code>rbind</code> function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such):</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span>
   <span class="va">model</span>, seq_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,
-  ts_recording <span class="op">=</span> <span class="cn">TRUE</span>,
   sampling <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">nea_samples</span>, <span class="va">present_samples</span>, <span class="va">emh_samples</span><span class="op">)</span>,
-  method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  seed <span class="op">=</span> <span class="fl">314159</span>
+  method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, seed <span class="op">=</span> <span class="fl">314159</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>#&gt; --------------------------------------------------
 #&gt; SLiM command to be executed:
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpH0Fcd6/file63aafe4cbf2"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpH0Fcd6/introgression"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpH0Fcd6/introgression/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpITvmfZ/filedcc43c35e749"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpITvmfZ/introgression"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpITvmfZ/introgression/output"' \
 #&gt;     -d SPATIAL=F \
 #&gt;     -d SEQ_LENGTH=10000000 \
 #&gt;     -d RECOMB_RATE=1e-08 \
 #&gt;     -d BURNIN_LENGTH=0 \
 #&gt;     -d SIMULATION_LENGTH=216667 \
-#&gt;     -d TS_RECORDING=T \
 #&gt;     -d SAVE_LOCATIONS=F \
 #&gt;     -d MAX_ATTEMPTS=10 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpH0Fcd6/introgression/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpITvmfZ/introgression/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 </div>
 <div id="r-interface-for-tskit-and-pyslim" class="section level2">
 <h2 class="hasAnchor">
 <a href="#r-interface-for-tskit-and-pyslim" class="anchor"></a>R interface for <em>tskit</em> and <em>pyslim</em>
 </h2>
-<p>The result of switching on <code>ts_recording = TRUE</code> in the <code><a href="../reference/slim.html">slim()</a></code> call above is that SLiM will save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:</p>
+<p>When we execute the model, <em>slendr</em> will instruct SLiM to save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">path</span>, <span class="st">"output_ts.trees"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">ts_file</span><span class="op">)</span></code></pre></div>
@@ -316,9 +313,9 @@
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Nodes      │ 90201│ 2.9 MiB│         Yes║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Populations│     6│ 3.1 KiB│         Yes║
+#&gt; ║Populations│     5│ 3.1 KiB│         Yes║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Provenances│     1│29.4 KiB│          No║
+#&gt; ║Provenances│     1│29.3 KiB│          No║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Sites      │     0│ 8 Bytes│          No║
 #&gt; ╚═══════════╧══════╧════════╧════════════╝</code></pre>
@@ -350,9 +347,9 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Nodes      │ 9705│322.9 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Populations│    6│  3.1 KiB│         Yes║
+#&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    2│ 29.9 KiB│          No║
+#&gt; ║Provenances│    2│ 29.8 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │    0│  8 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
@@ -384,9 +381,9 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Nodes      │ 3659│122.2 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Populations│    6│  3.1 KiB│         Yes║
+#&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 30.4 KiB│          No║
+#&gt; ║Provenances│    3│ 30.3 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │    0│  8 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
@@ -426,9 +423,9 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Nodes      │ 9705│322.9 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Populations│    6│  3.1 KiB│         Yes║
+#&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 30.7 KiB│          No║
+#&gt; ║Provenances│    3│ 30.6 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │58089│964.4 KiB│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>

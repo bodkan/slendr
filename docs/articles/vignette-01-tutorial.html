@@ -200,7 +200,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># projected CRS used internally</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>#&gt; OGR data source with driver: ESRI Shapefile 
-#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpO6XMm7", layer: "ne_110m_land"
+#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpLAJjBN", layer: "ne_110m_land"
 #&gt; with 127 features
 #&gt; It has 3 fields</code></pre>
 <p>Internally, the <code>map</code> object is currently a normal <code>sf</code> class object without additional components. This is unlike other <code>slendr</code> objects described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -530,28 +530,28 @@ between populations.</code></pre>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"tutorial-model"</span>, <span class="st">"populations.tsv"</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>#&gt;   pop   parent    N tsplit_gen tsplit_orig tremove_gen tremove_orig pop_id
-#&gt; 1 AFR ancestor 3000          1       52000          -1           -1      1
-#&gt; 2 OOA      AFR  500         34       51000         901        25000      2
-#&gt; 3 EHG      OOA 1000        801       28000        1534         6000      3
-#&gt; 4 ANA      OOA 3000        801       28000        1601         4000      4
-#&gt; 5 EUR      EHG 2000        901       25000          -1           -1      5
-#&gt; 6 YAM      EHG  500       1501        7000        1651         2500      6
+#&gt; 1 AFR ancestor 3000          1       52000          -1           -1      0
+#&gt; 2 OOA      AFR  500         34       51000         901        25000      1
+#&gt; 3 EHG      OOA 1000        801       28000        1534         6000      2
+#&gt; 4 ANA      OOA 3000        801       28000        1601         4000      3
+#&gt; 5 EUR      EHG 2000        901       25000          -1           -1      4
+#&gt; 6 YAM      EHG  500       1501        7000        1651         2500      5
 #&gt;   parent_id
 #&gt; 1        -1
-#&gt; 2         1
-#&gt; 3         2
-#&gt; 4         2
-#&gt; 5         3
-#&gt; 6         3</code></pre>
+#&gt; 2         0
+#&gt; 3         1
+#&gt; 4         1
+#&gt; 5         2
+#&gt; 6         2</code></pre>
 <ul>
 <li>the table of geneflow events:</li>
 </ul>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"tutorial-model"</span>, <span class="st">"geneflow.tsv"</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>#&gt;   from  to rate overlap tstart_gen tstart_orig tend_gen tend_orig from_id to_id
-#&gt; 1  ANA YAM 0.50       0       1518        6500     1521      6400       4     6
-#&gt; 2  ANA EUR 0.50       1       1468        8000     1534      6000       4     5
-#&gt; 3  YAM EUR 0.75       1       1601        4000     1634      3000       6     5</code></pre>
+#&gt; 1  ANA YAM 0.50       0       1518        6500     1521      6400       3     5
+#&gt; 2  ANA EUR 0.50       1       1468        8000     1534      6000       3     4
+#&gt; 3  YAM EUR 0.75       1       1601        4000     1634      3000       5     4</code></pre>
 <ul>
 <li>and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather large, so we’re not showing it here).</li>
 </ul>
@@ -592,22 +592,23 @@ between populations.</code></pre>
   method <span class="op">=</span> <span class="st">"batch"</span>, <span class="co"># change to "gui" to execute the model in SLiMgui</span>
   seed <span class="op">=</span> <span class="fl">314159</span>
 <span class="op">)</span></code></pre></div>
+<pre><code>#&gt; Tree-sequence recording is on but no sampling schedule was given. Generating one at least for populations surviving to the end of the simulation...</code></pre>
 <pre><code>#&gt; --------------------------------------------------
 #&gt; SLiM command to be executed:
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpO6XMm7/tutorial-model"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpO6XMm7/tutorial-model/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpLAJjBN/filed9e52e82e4c4"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpLAJjBN/tutorial-model"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpLAJjBN/tutorial-model/output"' \
 #&gt;     -d SPATIAL=T \
 #&gt;     -d SEQ_LENGTH=1 \
 #&gt;     -d RECOMB_RATE=0 \
 #&gt;     -d BURNIN_LENGTH=0 \
 #&gt;     -d SIMULATION_LENGTH=1733 \
-#&gt;     -d TS_RECORDING=F \
 #&gt;     -d SAVE_LOCATIONS=T \
 #&gt;     -d MAX_ATTEMPTS=10 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpO6XMm7/tutorial-model/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpLAJjBN/tutorial-model/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 <p>By default, simulation output files are put in the same directory where the model configuration data is stored, and are given a common prefix <code>output_</code>. Both the directory and the output file prefix can be specified by setting the <code>output_dir</code> and <code>output_prefix</code> arguments of the function <code><a href="../reference/slim.html">slim()</a></code>.</p>
 </div>
@@ -615,7 +616,7 @@ between populations.</code></pre>
 <h2 class="hasAnchor">
 <a href="#post-simulation-diagnostics" class="anchor"></a>Post-simulation diagnostics</h2>
 <p>We can recapitulate the spatial dynamics with the <em>slendr</em> function <code><a href="../reference/animate.html">animate()</a></code> (also very bare-bones at the moment):</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, steps <span class="op">=</span> <span class="fl">100</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-01-tutorial_files/figure-html/plot_gif-1.gif"><!-- --></p>
 <p>If an argument <code>gif = ...</code> is provided, <code><a href="../reference/animate.html">animate()</a></code> will save the animation to the specified location as a GIF file. Note that unless your simulation is very short and/or involves only a small population, rendering of the animation can take several minutes.</p>
