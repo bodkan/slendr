@@ -514,7 +514,7 @@ compile_splits <- function(populations, generation_time, direction, end_time) {
   # order populations by split time and assign a numeric identifier to each
   split_table <- split_table[
     order(split_table$tsplit_gen, decreasing = FALSE, na.last = FALSE), ]
-  split_table$pop_id <- seq_len(nrow(split_table))
+  split_table$pop_id <- seq_len(nrow(split_table)) - 1
   split_table$parent_id <- lapply(
     split_table$parent,
     function(i) {
