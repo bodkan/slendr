@@ -258,57 +258,10 @@ plot_graph <- function(model) {
     coord_cartesian(clip = "off")
 }
 
-#' Plot simulated ancestry proportions
-#'
-#' @param model Compiled \code{slendr_model} model object
-#' @param output_dir A directory where to put simulation outputs (by default,
-#'   all output files are placed in a model directory)
-#' @param output_prefix A common prefix of output files (by default, all files
-#'   will share a prefix \code{"output"})
-#'
-#' @export
-plot_ancestry <- function(model, output_dir = model$path, output_prefix = "output") {
-  anc_wide <- read_ancestries(output_dir, output_prefix)
-
-  # thank god for tidyverse, base R reshaping is truly awful...  but
-  # it's not worth dragging along a huge dependency if we can do this
-  # sort of thing in base R...
-  anc_long <- stats::reshape(
-    data = anc_wide,
-    direction = "long",
-    timevar = "ancestry",
-    varying = 2:(ncol(anc_wide) - 1),
-    idvar = c("gen", "pop"),
-    v.names = "prop",
-    times = colnames(anc_wide)[2:(ncol(anc_wide) - 1)]
-  )
-  rownames(anc_long) <- NULL
-
-  # order population names based on their split order
-  split_order <- split(anc_long, anc_long$pop) %>%
-    sapply(function(df) max(df$gen)) %>%
-    sort(decreasing = TRUE) %>%
-    names
-  anc_long$pop <- factor(anc_long$pop, levels = split_order)
-
-  anc_long$time <- anc_long$gen * model$generation_time
-
-  anc_long %>%
-  ggplot(aes(-time, prop, color = ancestry)) +
-    geom_line() +
-    facet_wrap(~ pop) +
-    coord_cartesian(ylim = c(0, 1)) +
-    ggtitle("Ancestry proportions in populations during the course of their existence") +
-    theme_minimal()
-}
-
 #' Animate the simulated population dynamics
 #'
 #' @param model Compiled \code{slendr_model} model object
-#' @param output_dir A directory where to look for simulation outputs (by default,
-#'   all output files are in a model directory)
-#' @param output_prefix A common prefix of output files (by default, all files
-#'   will share a prefix \code{"output"})
+#' @param file Path to the table of saved individual locations
 #' @param steps How many frames should the animation have?
 #' @param gif Path to an output GIF file (animation object returned
 #'   by default)
@@ -318,22 +271,18 @@ plot_ancestry <- function(model, output_dir = model$path, output_prefix = "outpu
 #'
 #' @import ggplot2
 #' @export
-animate <- function(model, output_dir = model$path, output_prefix = "output",
+animate <- function(model, file = file.path(model$path, "output_ind_locations.tsv.gz"),
                     steps, gif = NULL, width = 800, height = 560) {
   if (!inherits(model$world, "slendr_map"))
     stop("Cannot animate non-spatial models", call. = FALSE)
 
-  file <- file.path(output_dir, paste0(output_prefix, "_ind_locations.tsv.gz"))
-  locs <- readr::read_tsv(file, col_types = "iiiidd", progress = FALSE)
   pop_names <- model$splits$pop
 
-  # label populations based on their original identifiers from the user
-  locs$pop <- factor(
-    locs$pop,
-    levels = sort(unique(locs$pop)),
-    labels = pop_names[sort(unique(locs$pop)) + 1]
-  )
-  locs$time <- as.integer(locs$time)
+  locs <- readr::read_tsv(file, col_types = "iicidd", progress = FALSE) %>%
+    dplyr::mutate(
+      time = convert_slim_time(gen, model),
+      pop = factor(pop)
+    )
   locs <- dplyr::filter(locs, time %in% sort(unique(
     c(min(time),
       time[seq(1, length(time), length.out = steps)],

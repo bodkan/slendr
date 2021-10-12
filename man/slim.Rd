@@ -7,20 +7,18 @@
 slim(
   model,
   seq_length,
-  recomb_rate,
-  output_dir = model$path,
-  output_prefix = "output",
-  save_locations = FALSE,
-  track_ancestry = FALSE,
-  ts_recording = FALSE,
+  recombination_rate,
+  output = file.path(model$path, "output"),
+  spatial = !is.null(model$world),
   sampling = NULL,
-  method,
+  max_attempts = 10,
+  save_locations = FALSE,
+  method = c("batch", "gui"),
   verbose = TRUE,
-  include = NULL,
   burnin = 0,
   seed = NULL,
   slim_path = NULL,
-  overwrite = FALSE
+  save_sampling = FALSE
 )
 }
 \arguments{
@@ -28,34 +26,35 @@ slim(
 
 \item{seq_length}{Total length of the simulated sequence (in base-pairs)}
 
-\item{recomb_rate}{Recombination rate of the simulated sequence (in
+\item{recombination_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
 
-\item{output_dir}{A directory where to put simulation outputs (by default,
-all output files are placed in a model directory)}
+\item{output}{A shared prefix path of output files that will be generated
+by the model (by default, all files will share a prefix \code{"output"}
+and will be placed in the model directory)}
 
-\item{output_prefix}{A common prefix of output files (by default, all files
-will share a prefix \code{"output"})}
+\item{spatial}{Should the model be executed in spatial mode? By default, if a
+world map was specified during model definition, simulation will proceed
+in a spatial mode.}
+
+\item{sampling}{A data frame of times at which a given number of individuals
+should be remembered in the tree-sequence (see \code{sampling} for a
+function that can generate the sampling schedule in the correct format). If
+missing, only individuals present at the end of the simulation will be
+recorded in the tree-sequence output file.}
+
+\item{max_attempts}{How many attempts should be made to place an offspring
+near one of its parents? Serves to prevent infinite loops on the SLiM
+backend. Default value is 100.}
 
 \item{save_locations}{Save location of each individual throughout the
 simulation?}
 
-\item{track_ancestry}{Track ancestry proportion dynamics in all populations
-throughout the simulations (default FALSE)? If a non-zero integer is
-provided, ancestry will be tracked using the number number of neutral
-ancestry markers equal to this number.}
-
-\item{ts_recording}{Turn on tree sequence recording during SLiM
-initialization?}
-
 \item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
-on the command-line, "script" - simply return the script)}
+on the command-line)}
 
 \item{verbose}{Write the SLiM output log to the console (default
 \code{FALSE})?}
-
-\item{include}{Vector of paths to custom SLiM scripts which should be
-combined with the backend SLiM code}
 
 \item{burnin}{Length of the burnin (in model's time units, i.e. years)}
 
@@ -63,14 +62,9 @@ combined with the backend SLiM code}
 
 \item{slim_path}{Optional way to specify path to an appropriate SLiM binary}
 
-\item{overwrite}{Overwrite the contents of the output directory (default
-\code{FALSE})?}
-
-\item{samples}{A data frame of times at which a given number of individuals
-should be remembered in the tree-sequence (see \code{sampling} for a
-function that can generate the sampling schedule in the correct format). If
-missing, only individuals present at the end of the simulation will be
-recorded in the tree-sequence output file.}
+\item{save_sampling}{Save the sampling schedule table together with other
+output files? If \code{FALSE} (default), the sampling table will be saved
+to a temporary directory.}
 }
 \description{
 Generates a SLiM script from a built-in slendr template, substituting all
