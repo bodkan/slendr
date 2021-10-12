@@ -81,7 +81,7 @@ plot_graph(model)
 Even the final step---execution of the model in SLiM---is the same, using the built-in `slim()` function:
 
 ```{r, eval = FALSE}
-slim(model, seq_length = 1, recomb_rate = 0, method = "batch")
+slim(model, seq_length = 1, recombination_rate = 0, method = "batch")
 ```
 
 Even for non-spatial models, this function still uses the same SLiM backend script used for spatial models. The only difference is that all spatial features are switched off, making the model run as a simple random-mating simulation.

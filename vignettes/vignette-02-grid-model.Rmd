@@ -78,7 +78,7 @@ populations <-
 
 Let's plot the whole spatial population configuration, to make sure we set up things correctly:
 
-```{r}
+```{r demes_grid}
 do.call(plot, populations) + ggplot2::theme(legend.position = "none")
 ```
 
@@ -150,7 +150,7 @@ model <- compile(
 
 We can use the function `plot_graph()` to plot the layout of the population history graph in order to verify that the geneflow events have been specified correctly. The layout of the graph is a little bit wonky and crowded (that's due to the complexity of spatiotemporal models; the `plot_graph()` function plots not just populations as nodes but also times of geneflow events and other demographic processes). Still, we can see that the gene flow events between populations have been specified correctly, since all arrows are bidirectional and point only between neighboring demes:
 
-```{r, fig.width = 8, fig.height = 6}
+```{r demes_geneflow, fig.width = 8, fig.height = 6}
 plot_graph(model) + ggplot2::theme(legend.position = "none")
 ```
 
@@ -159,7 +159,7 @@ Again, those familiar with the SLiM manual will recognize a similar figure in se
 Finally, we can run our simulation using the `slim()` function.
 
 ```{r, eval = FALSE}
-slim(model, seq_length = 1, recomb_rate = 0, method = "batch")
+slim(model, seq_length = 1, recombination_rate = 0, method = "batch")
 ```
 
 ## Population grid on a real geographic landscape
@@ -168,21 +168,7 @@ We can take things one step further. What if we wanted to do a similar thing (i.
 
 Let's zoom in on some interesting part of the world and then create a grid of demes using the same helper function `create_pop` we defined above (each population boundary being 300 km in diameter):
 
-```{r, include = FALSE}
-map <- world(
-  xrange = c(-25, 55),
-  yrange = c(-32, 35),
-  crs = 4326
-)
-
-n <- 20
-
-populations <-
-  seq(1, n * n) %>%
-  lapply(create_pop, n_side = n, map = map, N = 100, radius = 150e3)
-```
-
-```{r, eval = FALSE}
+```{r}
 map <- world(
   xrange = c(-25, 55),
   yrange = c(-32, 35),
@@ -229,7 +215,7 @@ filtered <- lapply(populations, check_area, map, continent) %>%
 
 Let's plot the layout of the population grid on the real geographic background:
 
-```{r}
+```{r, demes_africa}
 do.call(plot, filtered) + ggplot2::theme(legend.position = "none")
 ```
 

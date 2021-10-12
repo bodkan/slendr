@@ -34,7 +34,6 @@ Imports:
     rnaturalearth,
     magrittr,
     stars,
-    whisker,
     gganimate,
     png,
     ijtiff,

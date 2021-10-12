@@ -15,7 +15,9 @@ compile(
   geneflow = list(),
   overwrite = FALSE,
   sim_length = NULL,
-  direction = NULL
+  direction = NULL,
+  script_path = system.file("extdata", "script.slim", package = "slendr"),
+  description = ""
 )
 }
 \arguments{
@@ -49,6 +51,11 @@ time units which by default run to "the present time")}
 \item{direction}{Intended direction of time. Under normal
 circumstances this parameter is inferred from the model and does
 not need to be set manually.}
+
+\item{script_path}{Path to a SLiM script to be used for executing
+the model (by default, a bundled backend script will be used)}
+
+\item{description}{Optional short description of the model}
 }
 \value{
 Compiled \code{slendr_model} model object

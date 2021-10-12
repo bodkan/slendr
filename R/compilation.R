@@ -28,13 +28,18 @@
 #' @param direction Intended direction of time. Under normal
 #'   circumstances this parameter is inferred from the model and does
 #'   not need to be set manually.
+#' @param script_path Path to a SLiM script to be used for executing
+#'   the model (by default, a bundled backend script will be used)
+#' @param description Optional short description of the model
 #'
 #' @return Compiled \code{slendr_model} model object
 #' @export
 compile <- function(populations, dir, generation_time, resolution = NULL,
                     competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
                     geneflow = list(), overwrite = FALSE,
-                    sim_length = NULL, direction = NULL) {
+                    sim_length = NULL, direction = NULL,
+                    script_path = system.file("extdata", "script.slim", package = "slendr"),
+                    description = "") {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   # make sure that all parents are present
@@ -77,8 +82,8 @@ compile <- function(populations, dir, generation_time, resolution = NULL,
   if (length(time_dir) > 1)
     stop("Inconsistent direction of time among the specified populations", call. = FALSE)
 
-  if (length(time_dir) == 0 | all(time_dir == "forward")) {
-    if (!is.null(direction) & all(direction == "backward"))
+  if (length(time_dir) == 0 || all(time_dir == "forward")) {
+    if (!is.null(direction) && all(direction == "backward"))
       time_dir <- "backward"
     else if (is.null(sim_length))
       stop("The specified model implies a forward direction of time. However,
@@ -90,21 +95,30 @@ setting `direction = 'backward'.`", call. = FALSE)
       time_dir <- "forward"
   }
 
-  if (time_dir == "backward" | is.null(sim_length))
-    max_time <- c(sapply(populations, function(pop) {
-      sapply(attr(pop, "history"), function(event)
-        c(event$time, event$tsplit, event$tstart, event$tend))
-      }),
+  # there's no need to specify simulation run length for backward models
+  # (those stop at time 0 by default) so we find the oldest time present
+  # in the model and take it as the total amount of time for the simulation
+  if (time_dir == "backward" || is.null(sim_length)) {
+    end_time <- c(
+      sapply(populations, function(pop) {
+        sapply(attr(pop, "history"), function(event)
+          c(event$time, event$tsplit, event$tstart, event$tend))
+        }
+      ),
       sapply(geneflow, function(x) max(x$tstart)),
-      sapply(geneflow, function(x) max(x$tend))) %>% unlist %>% max(na.rm = TRUE)
-  else
-    max_time <- sim_length
+      sapply(geneflow, function(x) max(x$tend))
+    ) %>%
+      unlist %>%
+      max(na.rm = TRUE)
+  } else
+    end_time <- sim_length
+  length <- if (is.null(sim_length)) end_time else sim_length
 
   map <- get_map(populations[[1]])
 
-  split_table <- compile_splits(populations, generation_time, time_dir, max_time)
-  admix_table <- compile_geneflows(geneflow, split_table, generation_time, time_dir, max_time)
-  resize_table <- compile_resizes(populations, generation_time, time_dir, max_time, split_table)
+  split_table <- compile_splits(populations, generation_time, time_dir, end_time)
+  admix_table <- compile_geneflows(geneflow, split_table, generation_time, time_dir, end_time)
+  resize_table <- compile_resizes(populations, generation_time, time_dir, end_time, split_table)
 
   if (inherits(map, "slendr_map")) {
     if (!is.null(competition_dist)) check_resolution(map, competition_dist)
@@ -112,8 +126,8 @@ setting `direction = 'backward'.`", call. = FALSE)
     if (!is.null(dispersal_dist)) check_resolution(map, dispersal_dist)
     check_resolution(map, resolution)
 
-    map_table <- compile_maps(populations, split_table, resolution, generation_time, time_dir, max_time, dir)
-    dispersal_table <- compile_dispersals(populations, generation_time, time_dir, max_time, split_table,
+    map_table <- compile_maps(populations, split_table, resolution, generation_time, time_dir, end_time, dir)
+    dispersal_table <- compile_dispersals(populations, generation_time, time_dir, end_time, split_table,
                                         resolution, competition_dist, mate_dist, dispersal_dist)
 
     return_maps <-  map_table[, c("pop", "pop_id", "tmap_orig", "tmap_gen", "path")]
@@ -123,7 +137,8 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   checksums <- write_model(
     dir, populations, admix_table, map_table, split_table, resize_table,
-    dispersal_table, generation_time, resolution, max_time, time_dir
+    dispersal_table, generation_time, resolution, length, time_dir, script_path,
+    description, map
   )
 
   # compile the result
@@ -137,7 +152,8 @@ setting `direction = 'backward'.`", call. = FALSE)
     dispersals = dispersal_table,
     generation_time = generation_time,
     resolution = resolution,
-    length = if (is.null(sim_length)) max_time else sim_length,
+    length = round(length / generation_time),
+    orig_length = length,
     direction = time_dir,
     checksums = checksums
   )
@@ -160,16 +176,12 @@ calculate_checksums <- function(files) {
 
 # Make sure the checksums of a given set of files matches the expectation
 verify_checksums <- function(files, hashes) {
-  failed <- FALSE
   for (i in seq_along(files)) {
     if (tools::md5sum(files[i]) != hashes[i]) {
-      message(sprintf("Checksum of '%s' does not match", basename(files[i])))
-      failed <- TRUE
+      warning("Checksum of '", basename(files[i]), "' does not match its compiled state",
+              call. = FALSE)
     }
   }
-  if (failed)
-    stop("Checksum test of some slendr configuration files failed -- see above.
-Please make sure that the configuration files have not been changed, overwritten, or otherwise tampered with.", call. = FALSE)
 }
 
 
@@ -184,13 +196,14 @@ Please make sure that the configuration files have not been changed, overwritten
 read <- function(dir) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function
-  path_populations <- file.path(dir, "populations.rds")
-  path_splits <- file.path(dir, "splits.tsv")
+  path_populations <- file.path(dir, "ranges.rds")
+  path_splits <- file.path(dir, "populations.tsv")
   path_geneflow <- file.path(dir, "geneflow.tsv")
   path_maps <- file.path(dir, "maps.tsv")
   path_generation_time <- file.path(dir, "generation_time.txt")
   path_resolution <- file.path(dir, "resolution.txt")
   path_length <- file.path(dir, "length.txt")
+  path_orig_length <- file.path(dir, "orig_length.txt")
   path_direction <- file.path(dir, "direction.txt")
 
   if (!dir.exists(dir))
@@ -201,7 +214,8 @@ read <- function(dir) {
   verify_checksums(file.path(dir, checksums$file), checksums$hash)
 
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
-  sim_length <- scan(path_length, what = integer(), quiet = TRUE)
+  length <- scan(path_length, what = integer(), quiet = TRUE)
+  orig_length <- scan(path_orig_length, what = integer(), quiet = TRUE)
 
   split_table <- utils::read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
 
@@ -231,7 +245,8 @@ read <- function(dir) {
     maps = maps,
     generation_time = generation_time,
     resolution = resolution,
-    length = sim_length,
+    length = length,
+    orig_length = orig_length,
     direction = direction,
     checksums = checksums
   )
@@ -249,176 +264,132 @@ read <- function(dir) {
 #'
 #' @param model Model object created by the \code{compile} function
 #' @param seq_length Total length of the simulated sequence (in base-pairs)
-#' @param recomb_rate Recombination rate of the simulated sequence (in
+#' @param recombination_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
-#' @param output_dir A directory where to put simulation outputs (by default,
-#'   all output files are placed in a model directory)
-#' @param output_prefix A common prefix of output files (by default, all files
-#'   will share a prefix \code{"output"})
-#' @param ts_recording Turn on tree sequence recording during SLiM
-#'   initialization?
+#' @param output A shared prefix path of output files that will be generated
+#'   by the model (by default, all files will share a prefix \code{"output"}
+#'   and will be placed in the model directory)
+#' @param spatial Should the model be executed in spatial mode? By default, if a
+#'   world map was specified during model definition, simulation will proceed
+#'   in a spatial mode.
 #' @param save_locations Save location of each individual throughout the
 #'   simulation?
-#' @param track_ancestry Track ancestry proportion dynamics in all populations
-#'   throughout the simulations (default FALSE)? If a non-zero integer is
-#'   provided, ancestry will be tracked using the number number of neutral
-#'   ancestry markers equal to this number.
-#' @param samples A data frame of times at which a given number of individuals
+#' @param sampling A data frame of times at which a given number of individuals
 #'   should be remembered in the tree-sequence (see \code{sampling} for a
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
+#' @param max_attempts How many attempts should be made to place an offspring
+#'   near one of its parents? Serves to prevent infinite loops on the SLiM
+#'   backend. Default value is 100.
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
-#'   on the command-line, "script" - simply return the script)
-#' @param include Vector of paths to custom SLiM scripts which should be
-#'   combined with the backend SLiM code
+#'   on the command-line)
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param seed Random seed (if missing, SLiM's own seed will be used)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
-#' @param overwrite Overwrite the contents of the output directory (default
-#'   \code{FALSE})?
+#' @param save_sampling Save the sampling schedule table together with other
+#'   output files? If \code{FALSE} (default), the sampling table will be saved
+#'   to a temporary directory.
 #'
 #' @export
-slim <- function(model, seq_length, recomb_rate,
-                 output_dir = model$path, output_prefix = "output",
-                 save_locations = FALSE, track_ancestry = FALSE,
-                 ts_recording = FALSE, sampling = NULL,
-                 method, verbose = TRUE, include = NULL, burnin = 0,
-                 seed = NULL, slim_path = NULL, overwrite = FALSE) {
-  dir <- model$path
-  if (!dir.exists(dir))
-    stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
+slim <- function(model, seq_length, recombination_rate,
+                 output = file.path(model$path, "output"),
+                 spatial = !is.null(model$world),
+                 sampling = NULL, max_attempts = 10,
+                 save_locations = FALSE,
+                 method = c("batch", "gui"), verbose = TRUE, burnin = 0,
+                 seed = NULL, slim_path = NULL, save_sampling = FALSE) {
+  model_dir <- model$path
+  if (!dir.exists(model_dir))
+    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
 
-  if (!method %in% c("gui", "batch", "script"))
-    stop("Only 'gui', 'batch', and 'script' are recognized as values of
-the 'method' argument", call. = FALSE)
+  # verify checksums of serialized model configuration files
+  checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
+                               col_types = "cc")
+  verify_checksums(file.path(model_dir, checksums$file), checksums$hash)
+
+  method <- match.arg(method)
 
   if (is.character(slim_path) && !all(file.exists(slim_path)))
     stop("SLiM binary not found at ", slim_path, call. = FALSE)
 
-  if (!is.logical(track_ancestry) & !is.numeric(track_ancestry)) {
-    stop("'track_ancestry' must be either FALSE or 0 (no tracking), or
-a non-zero integer number (number of neutral ancestry markers)", call. = FALSE)
-  } else
-    markers_count <- as.integer(track_ancestry)
+  script_path <- path.expand(file.path(model_dir, "script.slim"))
+  if (!file.exists(script_path))
+    stop("Backend script at '", script_path, "' not found", call. = FALSE)
 
-  if (!file.exists(output_dir)) {
-    message("Directory '", output_dir, "' not existent. Creating...")
-    dir.create(output_dir)
-  }
+  output <- path.expand(output)
+  spatial <- if (spatial) "T" else "F"
+  save_locations <- if (save_locations) "T" else "F"
+  burnin <- round(burnin / model$generation_time)
 
-  script_path <- file.path(output_dir, paste0(output_prefix, "_script.slim"))
+  sampling_path <- ifelse(save_sampling, paste0(output, "_sampling.tsv"), tempfile())
+  process_sampling(sampling, model, sampling_path, verbose)
 
-  if (file.exists(script_path) && !overwrite)
-    stop("Generated script file already present in '", output_dir, "'. ",
-         "If you wish to proceed, set `overwrite = TRUE`.", call. = FALSE)
+  binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
+  seed <- if (is.null(seed)) "" else paste0(" \\\n    -d SEED=", seed)
+  samples <- if (is.null(sampling_path)) ""
+             else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
 
-  backend_script <- system.file("extdata", "backend.slim", package = "slendr")
+  if (method == "gui") {
+    # to be able to execute the script in the SLiMgui, we have to hardcode
+    # the path to the model configuration directory
+    modif_path <- tempfile()
+    readLines(script_path) %>%
+      stringr::str_replace("\"MODEL\", \".\"",
+                           paste0("\"MODEL\", \"", model$path, "\"")) %>%
+      cat(file = modif_path, sep = "\n")
+    system(sprintf("%s %s", binary, modif_path))
+  } else {
+    slim_command <- sprintf("%s %s %s \\
+    -d 'MODEL=\"%s\"' \\
+    -d 'OUTPUT=\"%s\"' \\
+    -d SPATIAL=%s \\
+    -d SEQ_LENGTH=%i \\
+    -d RECOMB_RATE=%s \\
+    -d BURNIN_LENGTH=%s \\
+    -d SIMULATION_LENGTH=%s \\
+    -d SAVE_LOCATIONS=%s \\
+    -d MAX_ATTEMPTS=%i \\
+    %s",
+      binary,
+      seed,
+      samples,
+      path.expand(model_dir),
+      output,
+      spatial,
+      seq_length,
+      recombination_rate,
+      burnin,
+      model$length,
+      save_locations,
+      max_attempts,
+      script_path
+    )
 
-  if (!is.null(sampling) && !ts_recording)
-    stop("Sampling (remembering) of individuals only makes sense when `ts_recording = TRUE`", call. = FALSE)
-
-  if (ts_recording) {
-    sampling_path <- stringr::str_replace(script_path, "_script.slim", "_samples.tsv")
-    process_sampling(sampling, model, sampling_path, verbose)
-  } else
-    sampling_path <- NULL
-
-  base_script <- script(
-    spatial = if (inherits(model$world, "slendr_map")) "T" else "F",
-    path = backend_script,
-    model_dir = dir,
-    output_prefix = path.expand(file.path(output_dir, output_prefix)),
-    burnin = round(burnin / model$generation_time),
-    length = round(model$length / model$generation_time),
-    ts_recording = if (ts_recording) "T" else "F",
-    seq_length = seq_length,
-    recomb_rate = recomb_rate,
-    ancestry_markers = markers_count,
-    track_ancestry = if (markers_count > 0) "T" else "F",
-    save_locations = if (save_locations) "T" else "F",
-    generation_time = model$generation_time,
-    direction = model$direction,
-    seed = if (is.null(seed)) "getSeed()" else seed,
-    sampling = sampling_path
-  )
-
-  # compile all script components, including the backend script, into one file
-  script_components <- unlist(lapply(c(base_script, include), readLines))
-  writeLines(script_components, script_path)
-
-  if (method == "script")
-    message("Final compiled SLiM script is in ", script_path)
-  else {
-    if (!is.null(slim_path)) {
-      cmd <- slim_path
-    } else {
-      cmd <- get_binary(method)
+    if (verbose) {
+      cat("--------------------------------------------------\n")
+      cat("SLiM command to be executed:\n\n")
+      cat(slim_command, "\n")
+      cat("--------------------------------------------------\n\n")
     }
-    if (system(sprintf("%s %s", cmd, script_path), ignore.stdout = !verbose) != 0)
-      stop("SLiM simulation threw an error -- see the output above", call. = FALSE)
+
+    if (system(slim_command, ignore.stdout = !verbose) != 0)
+      stop("SLiM simulation resulted in an error -- see the output above", call. = FALSE)
   }
 }
-
-
-#' Substitute variables in a template SLiM script
-#'
-#' Variables in the template script must conform to the Mustache
-#' specification, i.e. specified as {{variable_name}}. For more
-#' information see the Mustache specification at:
-#' <http://mustache.github.io/>
-#'
-#' @param path Path to a template SLiM script
-#' @param output Where to save the substituted SLiM script (temporary location
-#'   by default)
-#' @param ... Variable values to be substituted
-#'
-#' @return Name of the substituted SLiM script
-#'
-#' @export
-script <- function(path, output = NULL, ...) {
-  if (!file.exists(path))
-    stop(sprintf("File '%s' not found", path), call. = FALSE)
-
-    if (is.null(output)) output <- paste0(tempfile(), ".slim")
-
-  template <- readLines(path)
-
-  # extract variables to be substituted in the template script
-  vars <- strsplit(template, split = "\\{\\{") %>%
-    unlist %>%
-    .[grepl("\\}\\}", .)] %>%
-    gsub("\\}\\}.*$", "", .)
-
-  # collect all variables provided by the user and make sure that
-  # none are missing
-  subst <- list(...)
-  if (!all(vars %in% names(subst))) {
-    stop(sprintf("Values of %s must be specified",
-                 paste(vars[!vars %in% names(subst)], collapse = ", ")),
-         call. = FALSE)
-  }
-
-  # fill in the variable substitution in the template script and
-  # save it to disk
-  rendered <- whisker::whisker.render(template, subst)
-  writeLines(rendered, output)
-
-  output
-}
-
 
 # Write a compiled slendr model to disk and return a table of
 # checksums
 write_model <- function(dir, populations, admix_table, map_table, split_table,
                         resize_table, dispersal_table,
-                        generation_time, resolution, length, direction) {
+                        generation_time, resolution, length, direction,
+                        script_source, description, map) {
   saved_files <- c()
 
   # table of split times and initial population sizes
-  saved_files["splits"] <- file.path(dir, "splits.tsv")
+  saved_files["splits"] <- file.path(dir, "populations.tsv")
   utils::write.table(split_table, saved_files[["splits"]],
                      sep = "\t", quote = FALSE, row.names = FALSE)
 
@@ -457,7 +428,7 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   }
 
   # serialized population objects
-  saved_files["populations"] <- file.path(dir, "populations.rds")
+  saved_files["populations"] <- file.path(dir, "ranges.rds")
   saveRDS(populations, saved_files[["populations"]])
 
   # table of scheduled resize events
@@ -469,10 +440,15 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
 
   saved_files["generation_time"] <- file.path(dir, "generation_time.txt")
   saved_files["length"] <- file.path(dir, "length.txt")
+  saved_files["orig_length"] <- file.path(dir, "orig_length.txt")
   saved_files["direction"] <- file.path(dir, "direction.txt")
-  base::write(as.integer(generation_time), file.path(dir, "generation_time.txt"))
-  base::write(as.integer(length), file.path(dir, "length.txt"))
+  base::write(generation_time, file.path(dir, "generation_time.txt"))
+  base::write(round(length / generation_time), file.path(dir, "length.txt"))
+  base::write(length, file.path(dir, "orig_length.txt"))
   base::write(direction, file.path(dir, "direction.txt"))
+
+  saved_files["script"] <- file.path(dir, "script.slim")
+  write_script(saved_files["script"], script_source, map, resolution, description)
 
   checksums <- calculate_checksums(saved_files)
   utils::write.table(checksums, file.path(dir, "checksums.tsv"), sep = "\t",
@@ -481,10 +457,30 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   checksums
 }
 
+write_script <- function(script_target, script_source, map, resolution, description) {
+  # copy the script to the dedicated model directory, replacing the
+  # placeholders for model directory and slendr version accordingly
+  script_code <- readLines(script_source) %>%
+    stringr::str_replace("__VERSION__", paste0("slendr_", packageVersion("slendr"))) %>%
+    stringr::str_replace("__DESCRIPTION__", description)
+
+  if (!is.null(map)) {
+    crs <- ifelse(has_crs(map), sf::st_crs(map)$epsg, "NULL")
+    extent <- paste(deparse(as.vector(sf::st_bbox(map))), collapse = "")
+    script_code <- script_code %>%
+      stringr::str_replace("__CRS__", as.character(crs)) %>%
+      stringr::str_replace("__EXTENT__", extent) %>%
+      stringr::str_replace("__RESOLUTION__", as.character(resolution)) %>%
+      stringr::str_replace("__DESCRIPTION__", description)
+  }
+  cat(script_code, file = script_target, sep = "\n")
+
+  script_target
+}
 
 # Iterate over population objects and convert he information about
 # population split hierarchy and split times into a data frame
-compile_splits <- function(populations, generation_time, direction, max_time) {
+compile_splits <- function(populations, generation_time, direction, end_time) {
   split_table <- lapply(populations, function(p) {
     parent <- attr(p, "parent")
     if (is.character(parent) && parent == "ancestor") {
@@ -494,11 +490,12 @@ compile_splits <- function(populations, generation_time, direction, max_time) {
     }
 
     tremove <- attr(p, "remove")
+    tsplit <- attr(p, "history")[[1]]$time
 
     data.frame(
       pop = unique(p$pop),
       parent = parent_name,
-      tsplit = attr(p, "history")[[1]]$time,
+      tsplit = tsplit,
       N = attr(p, "history")[[1]]$N,
       tremove = ifelse(!is.null(tremove), tremove, -1),
       stringsAsFactors = FALSE
@@ -506,11 +503,11 @@ compile_splits <- function(populations, generation_time, direction, max_time) {
   }) %>% do.call(rbind, .)
 
   # convert times into a forward direction
-  split_table <- convert_time(
+  split_table <- convert_to_forward(
     split_table,
     direction = direction,
     columns = c("tsplit", "tremove"),
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
 
@@ -526,13 +523,14 @@ compile_splits <- function(populations, generation_time, direction, max_time) {
     }
   ) %>% unlist()
 
-  split_table
+  split_table %>%
+    dplyr::mutate(tsplit_gen = ifelse(parent == "ancestor", 1, tsplit_gen))
 }
 
 # Process vectorized population boundaries into a table with
 # rasterized map objects
 compile_maps <- function(populations, split_table, resolution, generation_time,
-                         direction, max_time, dir) {
+                         direction, end_time, dir) {
   # generate rasterized maps
   maps <- render(populations, resolution)
 
@@ -549,11 +547,11 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
   ))
   map_table$map <- I(lapply(maps, function(m) m$map))
 
-  map_table <- convert_time(
+  map_table <- convert_to_forward(
     map_table,
     direction = direction,
     columns = "tmap",
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
 
@@ -569,21 +567,28 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
     file.path(dir, .) %>%
     sub("//", "/", .)
 
+  # maps of ancestral populations have to be set in the first generation,
+  # regardless of the specified split time
+  ancestral_pops <- split_table[split_table$parent == "ancestor", ]$pop
+  ancestral_maps <- purrr::map(ancestral_pops, ~ which(map_table$pop == .x)) %>%
+    purrr::map_int(~ .x[1])
+  map_table[ancestral_maps, ]$tmap_gen <- 1
+
   map_table
 }
 
 
 compile_geneflows <- function(geneflow, split_table, generation_time,
-                              direction, max_time) {
+                              direction, end_time) {
   if (length(geneflow) == 0)
     return(NULL)
 
   admix_table <- do.call(rbind, geneflow)
-  admix_table <- convert_time(
+  admix_table <- convert_to_forward(
     admix_table,
     direction = direction,
     columns = c("tstart", "tend"),
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
   names(admix_table)[1:2] <- c("from", "to")
@@ -604,7 +609,7 @@ compile_geneflows <- function(geneflow, split_table, generation_time,
 
 # Compile table of population resize events
 compile_resizes <- function(populations, generation_time, direction,
-                            max_time, split_table) {
+                            end_time, split_table) {
   resize_events <- lapply(populations, function(p) {
     lapply(attr(p, "history"), function(event) {
       if (event$event == "resize") event
@@ -616,11 +621,11 @@ compile_resizes <- function(populations, generation_time, direction,
   else
     resize_events$tend[is.na(resize_events$tend)] <- -1
 
-  resize_table <- convert_time(
+  resize_table <- convert_to_forward(
     resize_events,
     direction = direction,
     columns = c("tresize", "tend"),
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
 
@@ -635,7 +640,7 @@ compile_resizes <- function(populations, generation_time, direction,
 
 # Compile table of population resize events
 compile_dispersals <- function(populations, generation_time, direction,
-                               max_time, split_table, resolution,
+                               end_time, split_table, resolution,
                                competition_dist, mate_dist, dispersal_dist) {
   dispersal_events <- lapply(populations, function(p) {
     lapply(attr(p, "history"), function(event) {
@@ -656,11 +661,11 @@ compile_dispersals <- function(populations, generation_time, direction,
   dispersal_events$tdispersal <- dispersal_events$time
   dispersal_events$time <- NULL
 
-  dispersal_table <- convert_time(
+  dispersal_table <- convert_to_forward(
     dispersal_events,
     direction = direction,
     columns = "tdispersal",
-    max_time = max_time,
+    end_time = end_time,
     generation_time = generation_time
   )
 
@@ -670,9 +675,17 @@ compile_dispersals <- function(populations, generation_time, direction,
   ) %>% as.numeric
 
   # take care of missing interactions and offspring distances
-  dispersal_table <- set_distances(dispersal_table, resolution, competition_dist, mate_dist, dispersal_dist)
+  dispersal_table <- set_distances(dispersal_table, resolution, competition_dist,
+                                   mate_dist, dispersal_dist)
 
   dispersal_table <- dispersal_table[order(dispersal_table$tdispersal_gen, na.last = FALSE), ]
+
+  # dispersals of ancestral populations have to be set in the first generation,
+  # regardless of the specified split time
+  ancestral_pops <- split_table[split_table$parent == "ancestor", ]$pop
+  indices <- purrr::map(ancestral_pops, ~ which(dispersal_table$pop == .x)) %>%
+    purrr::map_int(~ .x[1])
+  dispersal_table[indices, ]$tdispersal_gen <- 1
 
   dispersal_table[, c("pop", "pop_id", "tdispersal_gen", "tdispersal_orig",
                       "competition_dist", "mate_dist", "dispersal_dist")]
@@ -762,14 +775,15 @@ save_png <- function(raster, path) {
 }
 
 
-# Convert time from backward to forward direction (if necessary) and to generations
-convert_time <- function(df, direction, columns, max_time, generation_time) {
+# Convert times given in specified columns of a data frame into
+# a SLiM forward direction given in generations
+convert_to_forward <- function(df, direction, columns, end_time, generation_time) {
   for (column in columns) {
     times <- df[[column]]
 
     # if necessary, convert to forward direction
     if (direction == "backward")
-      times[times != -1] <- max_time - times[times != -1] + generation_time
+      times[times != -1] <- end_time - times[times != -1] + generation_time
 
     # convert to generations
     times[times != -1] <- as.integer(round(times[times != -1] / generation_time))
@@ -781,12 +795,26 @@ convert_time <- function(df, direction, columns, max_time, generation_time) {
   df
 }
 
-# Convert SLiM time units as they are saved in the tree-sequence output to
-# user-specified time units (forward or backward)
+# Convert SLiM time units as they are saved in the tree-sequence output
+# (and also other slendr output formats such as the locations of individuals
+# or ancestry proportions over time) back to user-specified time units
+# (either forward or backward)
 convert_slim_time <- function(times, model) {
-  if (model$direction == "backward")
+  ancestors <- dplyr::filter(model$splits, parent == "ancestor")
+
+  if (model$direction == "backward") {
     result <- times * model$generation_time
-  else
-    result <- model$length - times * model$generation_time + 1
+    # does the backward simulation model terminate sooner than "present-day"?
+    # if so, shift the times to start at the original time specified by user
+    if (max(ancestors[, ]$tsplit_orig) != model$orig_length)
+      result <- result + (ancestors[, ]$tsplit_orig - model$orig_length)
+  } else {
+    result <- (model$length - times + 1) * model$generation_time
+    # did the simulation start at a later time than "generation 1"?
+    # if it did, shift the time appropriately
+
+    if (min(round(ancestors[, ]$tsplit_orig / model$generation_time) != 1))
+      result <- result + ancestors[1, ]$tsplit_orig - model$generation_time
+  }
   as.integer(result)
 }
