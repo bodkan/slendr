@@ -228,13 +228,23 @@
       <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
     </tr>
     <tr>
+      <th>mode</th>
+      <td><p>The mode for the calculation ("sites" or "branch")</p></td>
+    </tr>
+    <tr>
       <th>span_normalise</th>
       <td><p>Divide the result by the span of the window? Default
 TRUE, see the tskit documentation for more detail.</p></td>
     </tr>
     <tr>
-      <th>w, x, y, z, a, b, c, o</th>
-      <td><p>Character vectors of  individual names (following the
+      <th>windows</th>
+      <td><p>Coordinates of breakpoints between windows. The first
+coordinate (0) and the last coordinate (equal to <code>ts$sequence_length</code>)
+do not have to be specified as they are added automatically.</p></td>
+    </tr>
+    <tr>
+      <th>W, X, Y, Z, A, B, C, O</th>
+      <td><p>Character vectors of individual names (following the
 nomenclature of Patterson et al. 2021)</p></td>
     </tr>
     </table>

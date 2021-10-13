@@ -191,6 +191,10 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>data</th>
+      <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
+    </tr>
+    <tr>
       <th>x</th>
       <td><p>Either a string representing an individual name, or an integer
 number specifying a node in a tree sequence. If <code>NULL</code> (default), the
@@ -202,19 +206,15 @@ spatial ancestry of all focal nodes will be plotted.</p></td>
 sampled individual to the present)</p></td>
     </tr>
     <tr>
+      <th>younger_than</th>
+      <td><p>Time boundaries for the samples</p></td>
+    </tr>
+    <tr>
       <th>color</th>
       <td><p>How to color connecting lines? Allowed values are either
 <code>"time"</code> (continuous variable specifying the age of the parental node)
 or <code>"level"</code> (factor variable indicating the number of coalescent
 events separating the 'focal node' and the given ancestral node).</p></td>
-    </tr>
-    <tr>
-      <th>ts</th>
-      <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
-    </tr>
-    <tr>
-      <th>older_than, younger_than</th>
-      <td><p>Time boundaries for the samples</p></td>
     </tr>
     </table>
 
