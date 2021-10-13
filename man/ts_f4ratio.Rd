@@ -51,10 +51,16 @@ ts_f4ratio(
 \arguments{
 \item{ts}{\code{pyslim.SlimTreeSequence} object}
 
+\item{mode}{The mode for the calculation ("sites" or "branch")}
+
 \item{span_normalise}{Divide the result by the span of the window? Default
 TRUE, see the tskit documentation for more detail.}
 
-\item{w, x, y, z, a, b, c, o}{Character vectors of  individual names (following the
+\item{windows}{Coordinates of breakpoints between windows. The first
+coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
+do not have to be specified as they are added automatically.}
+
+\item{W, X, Y, Z, A, B, C, O}{Character vectors of individual names (following the
 nomenclature of Patterson et al. 2021)}
 }
 \value{

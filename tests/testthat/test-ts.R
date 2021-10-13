@@ -105,13 +105,13 @@ test_that("simplification works only for present samples", {
 
 test_that("simplification retains only specified samples", {
   ts <- ts_load(model, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2"))
-  expect_true(all(na.omit(unique(ts_data(ts)$name)) == c("pop1_1", "pop1_2")))
+  expect_true(all(stats::na.omit(unique(ts_data(ts)$name)) == c("pop1_1", "pop1_2")))
 
   ts2 <- ts_load(model)
   simplify_to <- sample(ts_samples(ts2)$name, 10)
 
   ts2 <- ts_simplify(ts2, simplify_to = simplify_to)
-  expect_true(length(intersect(na.omit(unique(ts_data(ts2)$name)), simplify_to)) == length(simplify_to))
+  expect_true(length(intersect(stats::na.omit(unique(ts_data(ts2)$name)), simplify_to)) == length(simplify_to))
 })
 
 test_that("ts_samples() names match ts_data() information", {

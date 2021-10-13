@@ -29,13 +29,13 @@ RoxygenNote: 7.1.1
 SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information.
 Imports: 
     ggplot2,
-    rgdal,
     sf,
     rnaturalearth,
     magrittr,
     stars,
     gganimate,
     png,
+    rsvg,
     ijtiff,
     ggraph,
     shinyWidgets,
@@ -46,14 +46,14 @@ Imports:
     readr,
     stringr,
     reticulate,
-    magick,
-    admixr,
     tidyr
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    devtools
+    devtools,
+    magick,
+    admixr
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues

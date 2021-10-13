@@ -34,6 +34,9 @@ are expected to be in the \code{data.frame} specified in the
 \item{add}{Add column coordinates to the input data.frame
 \code{coords} (coordinates otherwise returned as a separate
 object)?}
+
+\item{input_prefix, output_prefix}{Input and output prefixes of data
+frame columns with spatial coordinates}
 }
 \value{
 Data.frame with converted two-dimensional coordinates
