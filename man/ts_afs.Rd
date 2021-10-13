@@ -26,6 +26,9 @@ for all individuals in the tree sequence will be computed.}
 coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
 are added automatically)}
 
+\item{span_normalise}{Argument passed to tskit's \code{allele_frequency_spectrum}
+method}
+
 \item{polarised}{When FALSE (the default) the allele frequency spectrum will
 be folded (i.e. the counts will not depend on knowing which allele is
 ancestral)}

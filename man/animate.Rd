@@ -22,6 +22,8 @@ animate(
 
 \item{gif}{Path to an output GIF file (animation object returned
 by default)}
+
+\item{width, height}{Dimensions of the animation in pixels}
 }
 \value{
 If \code{gif = NULL}, return gganimate animation object. Otherwise a GIF

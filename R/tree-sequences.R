@@ -385,6 +385,10 @@ ts_genotypes <- function(ts) {
 #'
 #' @export
 ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
+  if (!"admixr" %in% utils::installed.packages()[, 1])
+    message("For EIGENSTRAT conversion, please install the R package ",
+            "admixr by calling `install.packages(\"admixr\")")
+
   if (!attr(ts, "recapitated") && !ts_coalesced(ts))
     stop("Tree sequence was not recapitated and some nodes do not ",
          "have parents over some portion of their genome. This is interpreted as ",
@@ -662,6 +666,9 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 #'   an i-th tree will be returned (in one-based indexing), if \code{mode =
 #'   "position"}, a tree covering an i-th base of the simulated genome will be
 #'   returned.
+#' @param mode How should the \code{i} argument be interpreted? Either "index"
+#'   as an i-th tree in the sequence of genealogies, or "position" along the
+#'   simulated genome.
 #' @param ... Additional keyword arguments accepted by
 #'   \code{tskit.TreeSequence.at and tskit.TreeSequence.at_index} methods
 #'
@@ -720,16 +727,16 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
   rsvg::rsvg_png(svg = raw, file = tmp_file, width = width, height = height)
 
   # set margins to zero, save original settings
-  orig_par <- par(mar = c(0, 0, 0, 0))
+  orig_par <- graphics::par(mar = c(0, 0, 0, 0))
 
   # plot the PNG image, filling the entire plotting window
   img <- png::readPNG(tmp_file)
-  plot.new()
-  plot.window(0:1, 0:1)
-  rasterImage(img, 0, 0, 1, 1)
+  graphics::plot.new()
+  graphics::plot.window(0:1, 0:1)
+  graphics::rasterImage(img, 0, 0, 1, 1)
 
   # restor original settings
-  par(orig_par)
+  graphics::par(orig_par)
 }
 
 #' Check that all trees in the tree sequence are fully coalesced
@@ -743,19 +750,13 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #'
 #' @export
 ts_coalesced <- function(ts, return_failed = FALSE) {
-  tmp_var <- paste0("ts_py_object_", paste(sample(LETTERS, 20, TRUE), collapse = ""))
-  # this is the same performance hack used also in get_table_data(), avoiding
-  # the need to iterate with pure R with:
-  #   num_roots <- reticulate::iterate(ts$trees(), function(t) t$num_roots)
-  assign(tmp_var, ts, envir = globalenv())
-  py_code <- sprintf("res = [not tree.has_multiple_roots for tree in r.%s.trees()]", tmp_var)
-  single_root <- reticulate::py_run_string(py_code)$res
-  on.exit(rm(list = tmp_var, envir = globalenv()), add = TRUE)
+  reticulate::py_run_string("def mult_roots(ts): return [not tree.has_multiple_roots for tree in ts.trees()]")
+  single_roots <- reticulate::py$mult_roots(ts)
 
-  if (all(single_root))
+  if (all(single_roots))
     return(TRUE)
   else if (return_failed)
-    return(which(!single_root) - 1)
+    return(which(!single_roots) - 1)
   else
     return(FALSE)
 }
@@ -805,10 +806,14 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' Calculate the f2, f3, f4, and f4-ratio statistics
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object
-#' @param w,x,y,z,a,b,c,o Character vectors of  individual names (following the
+#' @param W,X,Y,Z,A,B,C,O Character vectors of individual names (following the
 #'   nomenclature of Patterson et al. 2021)
 #' @param span_normalise Divide the result by the span of the window? Default
 #'   TRUE, see the tskit documentation for more detail.
+#' @param windows Coordinates of breakpoints between windows. The first
+#'   coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
+#'   do not have to be specified as they are added automatically.
+#' @param mode The mode for the calculation ("sites" or "branch")
 #'
 #' @return Data frame with statistics calculated for given sets of individuals
 #'
@@ -840,7 +845,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 
   # generate all pairwise indexes required by tskit for more than
   # two sample sets
-  indexes <- combn(n_sets, m = k, simplify = FALSE,
+  indexes <- utils::combn(n_sets, m = k, simplify = FALSE,
                    FUN = function(x) as.integer(x - 1))
 
   fun <- switch(
@@ -902,7 +907,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
   if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
   multiway_stat(ts, "fst", k = 2, sample_sets, mode, windows, span_normalise) %>%
-    setNames(c("x", "y", "Fst"))
+    stats::setNames(c("x", "y", "Fst"))
 }
 
 #' Calculate pairwise divergence between sets of individuals
@@ -919,7 +924,7 @@ ts_divergence <- function(ts, sample_sets, mode = c("site", "branch", "node"),
   if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
   multiway_stat(ts, "divergence", k = 2, sample_sets, mode, windows, span_normalise) %>%
-    setNames(c("x", "y", "divergence"))
+    stats::setNames(c("x", "y", "divergence"))
 }
 
 # oneway statistics -------------------------------------------------------
@@ -1044,6 +1049,8 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @param polarised When FALSE (the default) the allele frequency spectrum will
 #'   be folded (i.e. the counts will not depend on knowing which allele is
 #'   ancestral)
+#' @param span_normalise Argument passed to tskit's \code{allele_frequency_spectrum}
+#'   method
 #'
 #' @return Either a single Fst value or a vector of Fst values (one for each
 #'   window)
@@ -1109,16 +1116,8 @@ get_ts_nodes <- function(ts) {
 get_ts_individuals <- function(ts) {
   table <- ts$tables$individuals
 
-  # pedigree_id is available as binary metadata encoded in the table of
-  # individuals but I have no clue at the moment how to decode it directly in R
-  # -- for now I'm parsing it in Python via reticulate which is pretty ugly (but
-  # much faster than the iterative solution through reticulate)
-  tmp_var <- paste0("ts_py_object_", paste(sample(LETTERS, 20, TRUE), collapse = ""))
-  # reticulate doesn't seem to be able to expose non-global objects :(
-  assign(tmp_var, ts, envir = globalenv())
-  py_code <- sprintf("ids = [ind.metadata['pedigree_id'] for ind in r.%s.individuals()]", tmp_var)
-  pedigree_ids <- reticulate::py_run_string(py_code)$ids
-  on.exit(rm(list = tmp_var, envir = globalenv()), add = TRUE)
+  reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id'] for ind in ts.individuals()]")
+  pedigree_ids <- reticulate::py$get_pedigree_ids(ts)
 
   dplyr::tibble(
     ind_id = seq_len(table$num_rows) - 1,
@@ -1299,8 +1298,8 @@ get_biallelic_indices <- function(ts) {
 convert_to_sf <- function(df, model) {
   crs <- sf::st_crs(model$world)
 
-  with_locations <- df[complete.cases(df[, c("raster_x", "raster_y")]), ]
-  without_locations <- df[!complete.cases(df[, c("raster_x", "raster_y")]), ]
+  with_locations <- df[stats::complete.cases(df[, c("raster_x", "raster_y")]), ]
+  without_locations <- df[!stats::complete.cases(df[, c("raster_x", "raster_y")]), ]
 
   # reproject coordinates to the original crs
   if (has_crs(model$world)) {

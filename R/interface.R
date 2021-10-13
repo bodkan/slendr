@@ -251,6 +251,8 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 #' @param snapshots The number of intermediate snapshots (overrides the
 #'   \code{overlap} parameter)
 #' @param polygon Geographic region to restrict the expansion to
+#' @param verbose Report on the progress of generating intermediate spatial
+#'   boundaries?
 #'
 #' @return Object of the class \code{slendr_pop}
 #'
@@ -273,6 +275,8 @@ expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @param overlap Minimum overlap between subsequent spatial boundaries
 #' @param snapshots The number of intermediate snapshots (overrides the
 #'   \code{overlap} parameter)
+#' @param verbose Report on the progress of generating intermediate spatial
+#'   boundaries?
 #'
 #' @return Object of the class \code{slendr_pop}
 #'
@@ -374,7 +378,7 @@ resize <- function(pop, N, how, time, end = NULL) {
   prev_N <- sapply(attr(pop, "history"), function(event) event$N) %>%
     Filter(Negate(is.null), .) %>%
     unlist %>%
-    tail(1)
+    utils::tail(1)
 
   change <- data.frame(
     pop =  unique(pop$pop),
@@ -569,11 +573,11 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
       if (is.null(ne_dir)) {
       ne_dir <- tempdir()
       ne_file <- file.path(ne_dir, "ne_110m_land.zip")
-      download.file(
+      utils::download.file(
         url = "https://naturalearth.s3.amazonaws.com/110m_physical/ne_110m_land.zip",
         destfile = ne_file, quiet = TRUE
       )
-      unzip(ne_file, exdir = ne_dir)
+      utils::unzip(ne_file, exdir = ne_dir)
     }
     map_raw <- rnaturalearth::ne_load(
       scale = "small", type = "land", category = "physical",
@@ -660,6 +664,8 @@ region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygo
 #' @param add Add column coordinates to the input data.frame
 #'   \code{coords} (coordinates otherwise returned as a separate
 #'   object)?
+#' @param input_prefix,output_prefix Input and output prefixes of data
+#'   frame columns with spatial coordinates
 #'
 #' @return Data.frame with converted two-dimensional coordinates
 #'
@@ -877,8 +883,8 @@ area <- function(x) {
   if (!inherits(x, "slendr") & !inherits(x, "sf"))
     stop("Input must be of the type 'slendr' or 'sf'", call. = FALSE)
 
-  if (!has_crs(x) & !nrow(x))
-    return(prod(dimension(x)))
+  if (!has_crs(x) && !nrow(x))
+    return(prod(dimensions(x)))
 
   as.numeric(sum(sf::st_area(x)))
 }

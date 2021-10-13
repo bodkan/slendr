@@ -265,6 +265,7 @@ plot_graph <- function(model) {
 #' @param steps How many frames should the animation have?
 #' @param gif Path to an output GIF file (animation object returned
 #'   by default)
+#' @param width,height Dimensions of the animation in pixels
 #'
 #' @return If `gif = NULL`, return gganimate animation object. Otherwise a GIF
 #'   file is saved and no value is returned.
@@ -273,6 +274,10 @@ plot_graph <- function(model) {
 #' @export
 animate <- function(model, file = file.path(model$path, "output_ind_locations.tsv.gz"),
                     steps, gif = NULL, width = 800, height = 560) {
+  if (!"magick" %in% utils::installed.packages()[, 1])
+    message("For rendering animated GIFs, please install the R package ",
+            "magick by calling `install.packages(\"magick\")")
+
   if (!inherits(model$world, "slendr_map"))
     stop("Cannot animate non-spatial models", call. = FALSE)
 
@@ -335,13 +340,13 @@ animate <- function(model, file = file.path(model$path, "output_ind_locations.ts
 
 #' Plot locations of ancestors of given individual or node on a map
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param data \code{pyslim.SlimTreeSequence} object
 #' @param x Either a string representing an individual name, or an integer
 #'   number specifying a node in a tree sequence. If \code{NULL} (default), the
 #'   spatial ancestry of all focal nodes will be plotted.
 #' @param full_scale Plot time gradient on the full scale (spanning the oldest
 #'   sampled individual to the present)
-#' @param older_than,younger_than Time boundaries for the samples
+#' @param younger_than Time boundaries for the samples
 #' @param color How to color connecting lines? Allowed values are either
 #'   \code{"time"} (continuous variable specifying the age of the parental node)
 #'   or \code{"level"} (factor variable indicating the number of coalescent

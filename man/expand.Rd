@@ -28,6 +28,9 @@ expand(
 \code{overlap} parameter)}
 
 \item{polygon}{Geographic region to restrict the expansion to}
+
+\item{verbose}{Report on the progress of generating intermediate spatial
+boundaries?}
 }
 \value{
 Object of the class \code{slendr_pop}

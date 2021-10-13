@@ -17,6 +17,9 @@ shrink(pop, by, end, start, overlap = 0.8, snapshots = NULL, verbose = TRUE)
 
 \item{snapshots}{The number of intermediate snapshots (overrides the
 \code{overlap} parameter)}
+
+\item{verbose}{Report on the progress of generating intermediate spatial
+boundaries?}
 }
 \value{
 Object of the class \code{slendr_pop}

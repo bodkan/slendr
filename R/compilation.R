@@ -210,7 +210,7 @@ read <- function(dir) {
     stop(sprintf("Model directory '%s' does not exist", dir), call. = FALSE)
 
   # verify checksums of serialized model configuration files
-  checksums <- read.table(file.path(dir, "checksums.tsv"), header = TRUE)
+  checksums <- utils::read.table(file.path(dir, "checksums.tsv"), header = TRUE)
   verify_checksums(file.path(dir, checksums$file), checksums$hash)
 
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
@@ -221,14 +221,14 @@ read <- function(dir) {
 
   admix_table <- NULL
   if (file.exists(path_geneflow)) {
-    admix_table <- read.table(path_geneflow, header = TRUE, stringsAsFactors = FALSE)
+    admix_table <- utils::read.table(path_geneflow, header = TRUE, stringsAsFactors = FALSE)
     admix_table$overlap <- admix_table$overlap == 1
   }
 
   populations <- readRDS(path_populations)
 
   if (file.exists(path_maps)) {
-    maps <- read.table(path_maps, header = TRUE, stringsAsFactors = FALSE)
+    maps <- utils::read.table(path_maps, header = TRUE, stringsAsFactors = FALSE)
     resolution <- scan(path_resolution, what = integer(), quiet = TRUE)
     world <- attr(populations[[1]], "map")
   } else
@@ -461,7 +461,7 @@ write_script <- function(script_target, script_source, map, resolution, descript
   # copy the script to the dedicated model directory, replacing the
   # placeholders for model directory and slendr version accordingly
   script_code <- readLines(script_source) %>%
-    stringr::str_replace("__VERSION__", paste0("slendr_", packageVersion("slendr"))) %>%
+    stringr::str_replace("__VERSION__", paste0("slendr_", utils::packageVersion("slendr"))) %>%
     stringr::str_replace("__DESCRIPTION__", description)
 
   if (!is.null(map)) {

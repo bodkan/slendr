@@ -21,6 +21,8 @@
 \arguments{
 \item{x}{Object of a class \code{slendr} (either \code{slendr_pop},
 \code{slendr_map}, \code{slendr_region}, or \code{slendr_tsdata})}
+
+\item{...}{Additional arguments passed to \code{print}}
 }
 \description{
 All spatial objects in the slendr package are internally represented as

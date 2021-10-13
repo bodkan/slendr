@@ -125,7 +125,7 @@ get_time_direction <- function(pop) {
                                event$start, event$end)) %>%
       unlist %>%
       unique %>%
-      na.omit
+      stats::na.omit()
     if (length(event_times) == 1) {
       removal_time <- attr(pop, "remove")
       if (removal_time == -1)
@@ -175,7 +175,7 @@ get_previous_time <- function(pop) {
     unlist %>%
     Filter(Negate(is.null), .) %>%
     Filter(Negate(is.na), .) %>%
-    tail(1)
+    utils::tail(1)
 }
 
 
@@ -385,8 +385,15 @@ process_sampling <- function(samples, model, sampling_path, verbose) {
 NULL
 
 utils::globalVariables(
-  names = c("time", "prop", "ancestry", "newx", "newy", "pop",
-  "tblock", "start", ".", "tstart_orig", "tend_orig", "type", "rate",
-  "node1.name", "node2.name", "from_x", "from_y", "from", "to_x", "to_y",
-  "to"), package = "slendr"
+  names = c(
+    ".", "node_id", "location", "name", "level", "child_id", "child_time",
+    "parent_id", "parent_time", "child_pop", "parent_pop", "child_location",
+    "parent_location", "connection", "left", "right", "parent", "tsplit_gen",
+    "tstart_orig", "tend_orig", "time_gen", "n", "pop", "time_orig", "time",
+    "pop_is", "time.x", "time.y", "ind_id", "remembered", "retained", "alive",
+    "pedigree_id", "from_x", "from_y", "from", "to_x", "to_y", "to",
+    "node1.name", "node2.name", "type", "label", "rate", "pop_id", "vcf_file",
+    "gen", "newx", "newy", "child", "tmap", "node_label", "chr_name", "pos",
+    ""
+  ), package = "slendr"
 )

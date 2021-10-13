@@ -13,6 +13,8 @@ plot_ancestors(
 )
 }
 \arguments{
+\item{data}{\code{pyslim.SlimTreeSequence} object}
+
 \item{x}{Either a string representing an individual name, or an integer
 number specifying a node in a tree sequence. If \code{NULL} (default), the
 spatial ancestry of all focal nodes will be plotted.}
@@ -20,14 +22,12 @@ spatial ancestry of all focal nodes will be plotted.}
 \item{full_scale}{Plot time gradient on the full scale (spanning the oldest
 sampled individual to the present)}
 
+\item{younger_than}{Time boundaries for the samples}
+
 \item{color}{How to color connecting lines? Allowed values are either
 \code{"time"} (continuous variable specifying the age of the parental node)
 or \code{"level"} (factor variable indicating the number of coalescent
 events separating the 'focal node' and the given ancestral node).}
-
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
-
-\item{older_than, younger_than}{Time boundaries for the samples}
 }
 \description{
 Plot locations of ancestors of given individual or node on a map

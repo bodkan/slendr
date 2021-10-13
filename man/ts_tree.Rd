@@ -14,6 +14,10 @@ an i-th tree will be returned (in one-based indexing), if \code{mode =
   "position"}, a tree covering an i-th base of the simulated genome will be
 returned.}
 
+\item{mode}{How should the \code{i} argument be interpreted? Either "index"
+as an i-th tree in the sequence of genealogies, or "position" along the
+simulated genome.}
+
 \item{...}{Additional keyword arguments accepted by
 \code{tskit.TreeSequence.at and tskit.TreeSequence.at_index} methods}
 }
