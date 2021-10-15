@@ -16,10 +16,10 @@
 # https://cran.r-project.org/web/packages/reticulate/vignettes/package.html
 tskit <- NULL
 pyslim <- NULL
-msprime <- NULL
+msp <- NULL
 
 .onLoad <- function(libname, pkgname) {
   tskit <<- reticulate::import("tskit", delay_load = TRUE)
   pyslim <<- reticulate::import("pyslim", delay_load = TRUE)
-  msprime <<- reticulate::import("msprime", delay_load = TRUE)
+  msp <<- reticulate::import("msprime", delay_load = TRUE)
 }

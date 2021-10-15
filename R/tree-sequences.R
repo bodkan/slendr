@@ -279,10 +279,10 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
 
   if (is.numeric(mut_type))
-    mut_type <- msprime$SLiMMutationModel(type = as.integer(mut_type))
+    mut_type <- msp$SLiMMutationModel(type = as.integer(mut_type))
 
   ts_new <-
-    msprime$sim_mutations(
+    msp$sim_mutations(
       ts,
       rate = mutation_rate,
       model = mut_type,
