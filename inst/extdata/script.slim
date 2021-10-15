@@ -532,6 +532,7 @@ function (object<Dictionary>) collect_metadata(void) {
 
     // slendr version and commit hash that generated this script
     metadata.setValue("version", "__VERSION__");
+    metadata.setValue("backend", "SLiM");
     // model description
     metadata.setValue("description", "__DESCRIPTION__");
     // sampling schedule table
