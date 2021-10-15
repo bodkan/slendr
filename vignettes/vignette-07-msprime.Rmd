@@ -1,0 +1,162 @@
+---
+title: "Executing slendr models in msprime"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Spatially annotated tree sequences}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4,
+  dpi = 80,
+  eval = TRUE
+)
+
+# for some reason knitr/reticulate sets this to default, sabotaging
+# our efforts to make reticulate use our custom environment -- this
+# appears to solve the problem
+Sys.unsetenv("RETICULATE_PYTHON")
+
+devtools::load_all(".")
+set.seed(314159)
+```
+
+The main purpose of the *slendr* R package is to allow programming of complex spatial population models using the SLiM forward population genetic simulator as a backend engine. However, sometimes we might want to evaluate the same model in a non-spatial setting, perhaps to see the effect that various spatial parameters might have on some statistics of interest compared to a standard model of random mating. This is why *slendr* supports even non-spatial SLiM models, which can be executed by *slendr* simply by excluding the map component from a SLiM simulation (briefly discussed in [this vignette]()).
+
+In some cases, the forward nature of a SLiM simulation and the fact that many individuals need to be tracked in each generation could make some simulations a little slower than might be desirable. For instance, running an Approximate Bayesian Computation (ABC) analysis often requires running tens, hundreds, or sometimes even millions of simulations.
+
+For these cases, the *slendr* package also provides an alternative backend for simulating non-spatial population models using the Python simulation framework [*msprime*](https://tskit.dev/msprime/docs/stable/intro.html). Unlike forward time simulators, coalescent simulations such as *msprime* only reconstruct the genealogical history of a sample of individuals of interest backwards in time, which makes it much more computational efficient (at the expense of lower flexibility).
+
+The goal of this vignette is to demonstrate that a single *slendr* model configuration can be run using the built-in SLiM and msprime backend engines _without any change_!
+
+Let's load the *slendr* package and instruct *reticulate* where to look for a Python environment with the tskit/pyslim/msprime and numpy modules that we are going to need for the analysis below:
+
+```{r}
+library(slendr)
+
+reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
+```
+
+## Defining a model
+
+First, let's set up a simple *non-spatial* model of Neanderthal introgression using *slendr.* This is essentially the same procedure which we have shown in another vignette introducing [non-spatial *slendr* models](vignette-04-nonspatial-models.html). Again, note that this is no different from how we would normally specify a spatial model, except that we left out the `map` argument in calling `population()`.
+
+```{r}
+# two populations of anatomically modern humans: Africans and Europeans
+afr <- population("AFR", time = 700e3, N = 10000)
+eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
+
+# Neanderthal population splitting at 600 ky ago from modern humans
+# (becomes extinct by 40 ky ago)
+nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 40e3)
+
+# 3% Neanderthal introgression into Europeans between 55-50 ky ago
+gf <- geneflow(from = nea, to = eur, rate = 0.03, start = 55000, end = 50000)
+
+model <- compile(
+  populations = list(nea, afr, eur), geneflow = gf, generation_time = 30,
+  dir = "~/Desktop/test", overwrite = TRUE
+)
+```
+
+```{r}
+nea_samples <- sampling(model, times = c(70000, 40000), list(nea, 1))
+
+present_samples <- sampling(model, times = 0, list(afr, 5), list(eur, 10))
+
+emh_samples <- sampling(model, times = runif(n = 40, min = 10000, max = 40000),
+                        list(eur, 1))
+```
+
+Let's execute the model with the SLiM backend:
+
+```{r}
+slim(
+  model, sequence_length = 10e6, recombination_rate = 1e-8,
+  sampling = rbind(nea_samples, present_samples, emh_samples),
+  method = "batch", verbose = TRUE, seed = 314159
+)
+```
+
+And then with the msprime backend:
+
+```{r}
+msprime(
+  model, sequence_length = 10e6, recombination_rate = 1e-8,
+  sampling = rbind(nea_samples, present_samples, emh_samples),
+  verbose = TRUE, seed = 314159
+)
+```
+
+Because by default *slendr* puts all output files to the model directory,
+we can verify the presence of two distinct tree sequence output files:
+
+```{r}
+system(paste("ls -l", file.path(model$path, "*.trees")))
+```
+
+Not that the files have very different sizes. In particular, the `output_msprime.ts` file which is saved by *slendr*'s msprime backend script is much, much smaller. This is because msprime, as a coalescent simulator, only saves information about nodes which are coalescent nodes somewhere and some time in the tree sequence. This is unlike SLiM, which carries information about many more individuals/nodes than would be needed for a minimum description of the coalescent history of a requested sample of individuals (i.e. individuals that have been explicitly remembered).
+
+## Comparing the outputs of msprime and SLiM runs of a *slendr* model
+
+Now let's load both tree sequences and check their contents.
+
+First, let's load the tree sequences generated by msprime and *slendr*/SLiM into Python:
+
+```{python}
+import os
+
+import tskit
+import pyslim
+import numpy
+
+ts_msp = tskit.load(os.path.expanduser(r.model["path"] + "/output_msprime.trees"))
+ts_slim = pyslim.load(os.path.expanduser(r.model["path"] + "/output_ts.trees"))
+```
+
+Because the SLiM tree sequence contains much more data than we want, let's simplify it only to the individuals/nodes that we explicitly scheduled for remembering:
+
+```{python}
+# get indices of individuals which have been remembered
+ind_indices = ts_slim.tables.individuals.flags & pyslim.INDIVIDUAL_REMEMBERED
+remembered_inds = numpy.where(ind_indices != 0)[0]
+
+# collect nodes of remembered individuals
+remembered_nodes = []
+for i in remembered_inds:
+    remembered_nodes.extend(ts_slim.individual(i).nodes)
+
+# recapitate the tree sequence, and simplify it only to remembered individuals
+ts_slim = ts_slim \
+  .recapitate(recombination_rate = 0, Ne = 10000, random_seed = 314159) \
+  .simplify(remembered_nodes)
+```
+
+After simplification, we can see that both tree sequence objects contain the same number of sample nodes:
+
+```{python}
+print(ts_msp)
+print(ts_slim)
+```
+
+And let's also load the SLiM tree sequence with the *slendr* interface to pyslim/tskit and simplify it:
+
+```{r}
+ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, Ne = 10000, recombination_rate = 0)
+
+ts
+```
+
+As we can see, *slendr*'s own `ts_load()` function gives exactly the same result as what we did manually in Python above. This is not surprising at all, given that `ts_load()` (and many other `ts_*()` functions in *slendr*) are actually implemented using tskit/pyslim functions, but still a good sanity check.
+
+
+## FAQ: Can I load tree sequences generated by msprime backend with *slendr*?
+
+The `ts_load()` and other *slendr* functions for working with tree sequences currently assume that the data was generated by SLiM. As such, loading and handling msprime tree sequences is not yet supported.
+
+However, it is definitely on our to-do list.
