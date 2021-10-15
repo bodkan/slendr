@@ -73,11 +73,12 @@ reference:
     - print.slendr_tsdata
     - plot_ancestors
 
-  - title: Compiling and running spatial models
+  - title: Compiling and running population genetic models
     contents:
+    - slim
+    - msprime
     - compile
     - sampling
-    - slim
     - read
 
   - title: Tree sequence loading and processing
