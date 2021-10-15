@@ -200,8 +200,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
   else
     samples <- dplyr::filter(data, name %in% simplify_to)$node_id
 
-  ts_new <- ts$simplify(as.integer(samples),
-                        filter_populations = FALSE)
+  ts_new <- ts$simplify(sort(as.integer(samples)), filter_populations = FALSE)
 
   # get the name and location from the original table with the pedigree_id key
   cols <- c("pedigree_id", "pop", "name")
