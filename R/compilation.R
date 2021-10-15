@@ -28,7 +28,7 @@
 #' @param direction Intended direction of time. Under normal
 #'   circumstances this parameter is inferred from the model and does
 #'   not need to be set manually.
-#' @param script_path Path to a SLiM script to be used for executing
+#' @param slim_script Path to a SLiM script to be used for executing
 #'   the model (by default, a bundled backend script will be used)
 #' @param description Optional short description of the model
 #'
@@ -38,7 +38,7 @@ compile <- function(populations, dir, generation_time, resolution = NULL,
                     competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
                     geneflow = list(), overwrite = FALSE,
                     sim_length = NULL, direction = NULL,
-                    script_path = system.file("extdata", "script.slim", package = "slendr"),
+                    slim_script = system.file("extdata", "script.slim", package = "slendr"),
                     description = "") {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
@@ -137,7 +137,7 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   checksums <- write_model(
     dir, populations, admix_table, map_table, split_table, resize_table,
-    dispersal_table, generation_time, resolution, length, time_dir, script_path,
+    dispersal_table, generation_time, resolution, length, time_dir, slim_script,
     description, map
   )
 
@@ -314,8 +314,6 @@ slim <- function(model, sequence_length, recombination_rate,
     stop("SLiM binary not found at ", slim_path, call. = FALSE)
 
   script_path <- path.expand(file.path(model_dir, "script.slim"))
-  if (!file.exists(script_path))
-    stop("Backend script at '", script_path, "' not found", call. = FALSE)
 
   output <- path.expand(output)
   spatial <- if (spatial) "T" else "F"
@@ -378,8 +376,84 @@ slim <- function(model, sequence_length, recombination_rate,
   }
 }
 
-# Write a compiled slendr model to disk and return a table of
-# checksums
+#' Run a slendr model in msprime
+#'
+#' This function will execute a built-in msprime script and run a compiled
+#' slendr demographic model.
+#'
+#' @param model Model object created by the \code{compile} function
+#' @param sequence_length Total length of the simulated sequence (in base-pairs)
+#' @param recombination_rate Recombination rate of the simulated sequence (in
+#'   recombinations per basepair per generation)
+#' @param output A shared prefix path of output files that will be generated
+#'   by the model (by default, all files will share a prefix \code{"output"}
+#'   and will be placed in the model directory)
+#' @param sampling A data frame of times at which a given number of individuals
+#'   should be remembered in the tree-sequence (see \code{sampling} for a
+#'   function that can generate the sampling schedule in the correct format). If
+#'   missing, only individuals present at the end of the simulation will be
+#'   recorded in the tree-sequence output file.
+#' @param seed Random seed (if missing, SLiM's own seed will be used)
+#' @param verbose Write the SLiM output log to the console (default
+#'   \code{FALSE})?
+#'
+#' @export
+msprime <- function(model, sequence_length, recombination_rate,
+                    output = file.path(model$path, "output_msprime.trees"),
+                    sampling = NULL, verbose = TRUE, seed = NULL) {
+  model_dir <- model$path
+  if (!dir.exists(model_dir))
+    stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+
+  # verify checksums of serialized model configuration files
+  checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
+                               col_types = "cc")
+  verify_checksums(file.path(model_dir, checksums$file), checksums$hash)
+
+  script_path <- path.expand(file.path(model_dir, "script.py"))
+
+  output <- path.expand(output)
+
+  if (!is.null(sampling)) {
+    sampling_path <- tempfile()
+    process_sampling(sampling, model, sampling_path, verbose)
+    sampling <- paste("--sampling-schedule", sampling_path)
+  } else
+    sampling <- ""
+
+  msprime_command <- sprintf("python3 \\
+    %s \\
+    %s \\
+    --model %s \\
+    --output %s \\
+    --sequence-length %d \\
+    --recombination-rate %f \\
+    %s \\
+    %s",
+    script_path,
+    ifelse(is.null(seed), "", paste("--seed", seed)),
+    path.expand(model_dir),
+    output,
+    sequence_length,
+    recombination_rate,
+    sampling,
+    ifelse(verbose, "--verbose", "")
+  )
+
+  if (verbose) {
+    cat("--------------------------------------------------\n")
+    cat("msprime command to be executed:\n\n")
+    cat(msprime_command, "\n")
+    cat("--------------------------------------------------\n\n")
+  }
+
+  reticulate::py_run_string(sprintf("import os; os.system('%s')", msprime_command))
+
+  # if (system(msprime_command, ignore.stdout = !verbose) != 0)
+  #   stop("msprime simulation resulted in an error -- see the output above", call. = FALSE)
+}
+
+# Write a compiled slendr model to disk and return a table of checksums
 write_model <- function(dir, populations, admix_table, map_table, split_table,
                         resize_table, dispersal_table,
                         generation_time, resolution, length, direction,
@@ -445,8 +519,11 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   base::write(length, file.path(dir, "orig_length.txt"))
   base::write(direction, file.path(dir, "direction.txt"))
 
-  saved_files["script"] <- file.path(dir, "script.slim")
-  write_script(saved_files["script"], script_source, map, resolution, description)
+  saved_files["slim_script"] <- file.path(dir, "script.slim")
+  saved_files["msprime_script"] <- file.path(dir, "script.py")
+  write_script(saved_files["slim_script"], script_source, map, resolution, description)
+  write_script(saved_files["msprime_script"],
+               system.file("inst/extdata/script.py", package = "slendr"))
 
   checksums <- calculate_checksums(saved_files)
   utils::write.table(checksums, file.path(dir, "checksums.tsv"), sep = "\t",
@@ -455,7 +532,8 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   checksums
 }
 
-write_script <- function(script_target, script_source, map, resolution, description) {
+write_script <- function(script_target, script_source,
+                         map = NULL, resolution = NULL, description = "") {
   # copy the script to the dedicated model directory, replacing the
   # placeholders for model directory and slendr version accordingly
   script_code <- readLines(script_source) %>%
@@ -468,8 +546,7 @@ write_script <- function(script_target, script_source, map, resolution, descript
     script_code <- script_code %>%
       stringr::str_replace("__CRS__", as.character(crs)) %>%
       stringr::str_replace("__EXTENT__", extent) %>%
-      stringr::str_replace("__RESOLUTION__", as.character(resolution)) %>%
-      stringr::str_replace("__DESCRIPTION__", description)
+      stringr::str_replace("__RESOLUTION__", as.character(resolution))
   }
   cat(script_code, file = script_target, sep = "\n")
 
