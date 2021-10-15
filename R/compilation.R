@@ -214,8 +214,8 @@ read <- function(dir) {
   verify_checksums(file.path(dir, checksums$file), checksums$hash)
 
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
-  length <- scan(path_length, what = integer(), quiet = TRUE)
-  orig_length <- scan(path_orig_length, what = integer(), quiet = TRUE)
+  length <- as.integer(scan(path_length, what = numeric(), quiet = TRUE))
+  orig_length <- as.integer(scan(path_orig_length, what = numeric(), quiet = TRUE))
 
   split_table <- utils::read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
 
