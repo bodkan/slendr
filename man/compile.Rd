@@ -16,7 +16,7 @@ compile(
   overwrite = FALSE,
   sim_length = NULL,
   direction = NULL,
-  script_path = system.file("extdata", "script.slim", package = "slendr"),
+  slim_script = system.file("extdata", "script.slim", package = "slendr"),
   description = ""
 )
 }
@@ -52,7 +52,7 @@ time units which by default run to "the present time")}
 circumstances this parameter is inferred from the model and does
 not need to be set manually.}
 
-\item{script_path}{Path to a SLiM script to be used for executing
+\item{slim_script}{Path to a SLiM script to be used for executing
 the model (by default, a bundled backend script will be used)}
 
 \item{description}{Optional short description of the model}
