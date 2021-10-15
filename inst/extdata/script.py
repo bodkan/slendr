@@ -3,30 +3,39 @@ import os
 import sys
 import pathlib
 import hashlib
+import logging
 
 import tskit
 import pyslim
 import msprime
 import pandas
 
-parser = argparse.ArgumentParser("msprime script for executing slendr models")
-parser.add_argument("--model", metavar="DIRECTORY", required=True,
-                   help="Location of a slendr model directory")
-parser.add_argument("--output", metavar="FILE", required=True,
-                    help="Tree sequence output path")
-parser.add_argument("--seq-length", required=True, type=float,
-                    help="Amount of sequence to simulate")
-parser.add_argument("--recomb-rate", required=True, type=float, help="Recombination rate")
-parser.add_argument("--mutation-rate", default=0.0, type=float, help="Mutation rate")
-parser.add_argument("--sampling-schedule", metavar="FILE", required=True,
-                    help="Path to table with sampling schedule created by slendr `sampling()`")
-parser.add_argument("--seed", type=int, help="Random seed value")
+VERSION = "__VERSION__"
 
-#args = parser.parse_args()
-args = parser.parse_args("--model ~/Desktop/test --output ./test.ts --seq-length 1000 --recomb-rate 0 --mutation-rate 0 --sampling-schedule ~/Desktop/test/sampling.tsv".split())
+parser = argparse.ArgumentParser("msprime script for executing slendr models")
+parser.add_argument("--model", metavar="DIRECTORY", default=".",
+                   help="Location of a slendr model directory")
+parser.add_argument("--output", metavar="FILE",
+                    help="Tree sequence output path")
+parser.add_argument("--sequence-length", required=True, type=float,
+                    help="Amount of sequence to simulate")
+parser.add_argument("--recombination-rate", required=True, type=float,
+                    help="Recombination rate")
+parser.add_argument("--sampling-schedule", metavar="FILE", required=True,
+                    help="Path to the table created by slendr's sampling()")
+parser.add_argument("--seed", type=int, help="Random seed value")
+parser.add_argument("--verbose", action="store_true", default=False)
+
+args = parser.parse_args()
+
+if args.verbose:
+    logging.basicConfig(level=logging.INFO)
 
 model_dir = os.path.expanduser(args.model)
 sampling_schedule = os.path.expanduser(args.sampling_schedule)
+
+if not args.output:
+    args.output = pathlib.Path(model_dir, "output_msprime_ts.trees")
 
 if not os.path.exists(model_dir):
     sys.exit(f"Model directory {model_dir} does not exist")
@@ -55,6 +64,8 @@ if os.path.exists(sampling_schedule):
 else:
     sys.exit(f"Sampling schedule table is missing")
 
+logging.info("Setting up an msprime demographic model")
+
 samples = [msprime.SampleSet(n, population=pop, time=length - time_gen + 1, ploidy=2)
                              for (_, pop, n, time_gen, _) in samples_df.itertuples()]
 
@@ -72,19 +83,35 @@ for pop in populations.itertuples():
 
 # set gene flow events
 for event in geneflows.itertuples():
-    demography.set_migration_rate(source=event.to, dest=event.source, rate=event.rate)
-    demography.set_migration_rate(source=event.to, dest=event.source, rate=0)
+    demography.add_migration_rate_change(
+        time=length - event.tstart_gen + 1,
+        rate=event.rate,
+        source=event.to,
+        dest=event.source,
+    )
+    demography.add_migration_rate_change(
+        time=length - event.tend_gen + 1,
+        rate=0,
+        source=event.to,
+        dest=event.source,
+    )
 
 # make sure all slendr events are sorted by time of occurence
 # (otherwise msprime complains)
 demography.sort_events()
 
+logging.info("Running the simulation")
+
 ts = msprime.sim_ancestry(
     samples=samples,
     demography=demography,
-    sequence_length=args.seq_length,
-    recombination_rate=args.recomb_rate,
+    sequence_length=args.sequence_length,
+    recombination_rate=args.recombination_rate,
     random_seed=args.seed
 )
 
+logging.info("Saving the tree sequence output")
+
 ts.dump(args.output)
+
+logging.info("DONE")
