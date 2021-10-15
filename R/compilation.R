@@ -427,7 +427,7 @@ msprime <- function(model, sequence_length, recombination_rate,
     --model %s \\
     --output %s \\
     --sequence-length %d \\
-    --recombination-rate %f \\
+    --recombination-rate %s \\
     %s \\
     %s",
     script_path,
