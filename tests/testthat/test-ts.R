@@ -31,7 +31,7 @@ samples <- rbind(
   sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
-slim(model, seq_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
+slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
      method = "batch", seed = 314159,
      sampling = samples, verbose = FALSE)
 
@@ -199,9 +199,9 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   recomb_rate <- 0.001
   save_locations <- FALSE
   seed <- 987
-  seq_length <- 999
+  sequence_length <- 999
 
-  slim(model, seq_length = seq_length, recombination_rate = recomb_rate,
+  slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
        method = "batch", seed = seed, max_attempts = max_attempts,
        sampling = samples, verbose = FALSE, output = output)
@@ -220,7 +220,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   expect_equal(args$MAX_ATTEMPTS, max_attempts)
   expect_equal(args$RECOMB_RATE, recomb_rate)
   expect_equal(args$SEED, seed)
-  expect_equal(args$SEQ_LENGTH, seq_length)
+  expect_equal(args$SEQUENCE_LENGTH, sequence_length)
 })
 
 test_that("slendr metadata is correctly loaded (non-spatial model)", {
@@ -230,10 +230,10 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
   recomb_rate <- 0.001
   save_locations <- FALSE
   seed <- 987
-  seq_length <- 999
+  sequence_length <- 999
   spatial <- FALSE
 
-  slim(model, seq_length = seq_length, recombination_rate = recomb_rate,
+  slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
        method = "batch", seed = seed,
        sampling = samples, verbose = FALSE, spatial = spatial, output = output)
@@ -249,7 +249,7 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
   expect_equal(args$BURNIN_LENGTH, burnin_length)
   expect_equal(args$RECOMB_RATE, recomb_rate)
   expect_equal(args$SEED, seed)
-  expect_equal(args$SEQ_LENGTH, seq_length)
+  expect_equal(args$SEQUENCE_LENGTH, sequence_length)
 })
 
 test_that("ts_mutate and mutation through ts_load give the same result", {
@@ -285,7 +285,7 @@ test_that("ts_mutate correctly specifies the SLiM mutation type", {
 
 
 test_that("tree sequence contains the specified number of sampled individuals (default sampling)", {
-  slim(model, seq_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
+  slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
      method = "batch", seed = 314159,
      verbose = FALSE)
 
@@ -298,7 +298,7 @@ test_that("tree sequence contains the specified number of sampled individuals (d
 })
 
 test_that("locations and times in the tree sequence match values saved by SLiM (default sampling)", {
-  slim(model, seq_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
+  slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
      method = "batch", seed = 314159,
      verbose = FALSE)
 

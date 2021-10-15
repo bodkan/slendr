@@ -9,7 +9,7 @@ run_sim <- function(pop, direction, sim_length = NULL, method = "batch", verbose
     dir = model_dir, direction = direction, sim_length = sim_length, overwrite = TRUE
   )
 
-  slim(model, seq_length = 1, recombination_rate = 0, save_locations = TRUE,
+  slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
        method = method, verbose = verbose)
 
   df <- suppressMessages(readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),

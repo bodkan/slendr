@@ -5,10 +5,10 @@ initialize() {
     // if the script is being run in SLiMgui, specify dummy values for
     // total sequence length and recombination rate
     if (exists("slimgui")) {
-        defineConstant("SEQ_LENGTH", 1);
+        defineConstant("SEQUENCE_LENGTH", 1);
         defineConstant("RECOMB_RATE", 0);
     } else {
-        required_arg("SEQ_LENGTH");
+        required_arg("SEQUENCE_LENGTH");
         required_arg("RECOMB_RATE");
     }
 
@@ -68,7 +68,7 @@ initialize() {
 
     initializeMutationType("m0", 0.5, "f", 0.0);
     initializeGenomicElementType("g1", m0, 1.0);
-    initializeGenomicElement(g1, 0, SEQ_LENGTH - 1);
+    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
     initializeMutationRate(0);
 
     initializeRecombinationRate(RECOMB_RATE);
@@ -551,7 +551,7 @@ function (object<Dictionary>) collect_metadata(void) {
     metadata.setValue("map", spatial_metadata);
 
     metadata.setValue("arguments", Dictionary(
-        "SEQ_LENGTH", SEQ_LENGTH,
+        "SEQUENCE_LENGTH", SEQUENCE_LENGTH,
         "RECOMB_RATE", RECOMB_RATE,
         "SEED", SEED,
         "BURNIN_LENGTH", BURNIN_LENGTH,
