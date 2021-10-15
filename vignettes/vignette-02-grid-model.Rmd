@@ -159,7 +159,7 @@ Again, those familiar with the SLiM manual will recognize a similar figure in se
 Finally, we can run our simulation using the `slim()` function.
 
 ```{r, eval = FALSE}
-slim(model, seq_length = 1, recombination_rate = 0, method = "batch")
+slim(model, sequence_length = 1, recombination_rate = 0, method = "batch")
 ```
 
 ## Population grid on a real geographic landscape
