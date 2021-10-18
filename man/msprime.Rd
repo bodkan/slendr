@@ -11,7 +11,8 @@ msprime(
   output = file.path(model$path, "output_msprime.trees"),
   sampling = NULL,
   verbose = TRUE,
-  seed = NULL
+  seed = NULL,
+  debug = FALSE
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ recorded in the tree-sequence output file.}
 \code{FALSE})?}
 
 \item{seed}{Random seed (if missing, SLiM's own seed will be used)}
+
+\item{debug}{Print a msprime model debugging summary?}
 }
 \description{
 This function will execute a built-in msprime script and run a compiled

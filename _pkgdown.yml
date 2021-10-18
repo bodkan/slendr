@@ -76,7 +76,6 @@ reference:
   - title: Compiling and running population genetic models
     contents:
     - slim
-    - msprime
     - compile
     - sampling
     - read
