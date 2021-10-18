@@ -188,7 +188,8 @@ slendr demographic model.</p>
   output <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>path</span>, <span class='st'>"output_msprime.trees"</span><span class='op'>)</span>,
   sampling <span class='op'>=</span> <span class='cn'>NULL</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  seed <span class='op'>=</span> <span class='cn'>NULL</span>
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  debug <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -229,6 +230,10 @@ recorded in the tree-sequence output file.</p></td>
     <tr>
       <th>seed</th>
       <td><p>Random seed (if missing, SLiM's own seed will be used)</p></td>
+    </tr>
+    <tr>
+      <th>debug</th>
+      <td><p>Print a msprime model debugging summary?</p></td>
     </tr>
     </table>
 
