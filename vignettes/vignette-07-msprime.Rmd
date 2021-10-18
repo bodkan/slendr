@@ -53,17 +53,16 @@ First, let's set up a simple *non-spatial* model of Neanderthal introgression us
 ```{r}
 # create the ancestor of everyone and a chimpanzee outgroup
 # (we set both N = 1 to reduce the computational time for this model)
-anc <- population("ANC", time = 6.5e6, N = 1)
-chimp <- population("CH", parent = anc, time = 6e6, N = 1)
+outgroup <- population("OUT", time = 6.5e6, N = 1)
 
 # two populations of anatomically modern humans: Africans and Europeans
-afr <- population("AFR", parent = anc, time = 600e3, N = 10000)
+afr <- population("AFR", parent = outgroup, time = 6e6, N = 10000)
 eur <- population("EUR", parent = afr, time = 70e3, N = 10000)
 asn <- population("ASN", parent = eur, time = 45e3, N = 10000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
 # (becomes extinct by 40 ky ago)
-nea <- population("NEA", parent = anc, time = 600e3, N = 1000, remove = 35e3)
+nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 35e3)
 
 # 3% Neanderthal introgression into Europeans between 55-50 ky ago
 gf <- list(
@@ -72,7 +71,7 @@ gf <- list(
 )
 
 model <- compile(
-  populations = list(anc, chimp, nea, afr, eur, asn), geneflow = gf,
+  populations = list(outgroup, nea, afr, eur, asn), geneflow = gf,
   generation_time = 30,
   dir = "~/Desktop/test", overwrite = TRUE
 )
@@ -81,7 +80,7 @@ model <- compile(
 ```{r}
 nea_samples <- sampling(model, times = c(70000, 40000), list(nea, 1))
 
-present_samples <- sampling(model, times = 0, list(chimp, 1), list(afr, 1),
+present_samples <- sampling(model, times = 0, list(outgroup, 1), list(afr, 1),
                                               list(eur, 20), list(asn, 20))
 
 samples <- rbind(nea_samples, present_samples)
