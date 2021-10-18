@@ -4,7 +4,7 @@
 \alias{ts_simplify}
 \title{Simplify the tree sequence down to a given set of individuals}
 \usage{
-ts_simplify(ts, simplify_to = NULL, spatial = TRUE)
+ts_simplify(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE)
 }
 \arguments{
 \item{ts}{\code{pyslim.SlimTreeSequence} object}
@@ -20,6 +20,9 @@ raster-dimensions will not be converted to the coordinate reference system
 implied by the model. If TRUE (default), reprojection of coordinates will
 be performed. If the model was non-spatial, the value of this parameter is
 disregarded.}
+
+\item{keep_input_roots}{Should the history ancestral to the MRCA of all
+samplbee retained in the tree sequence? Default is \code{FALSE}.}
 }
 \value{
 \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
