@@ -32,6 +32,8 @@
 #' @param simplify_to A character vector of individual names. If NULL, all
 #'   remembered individuals will be retained. Only used when \code{simplify =
 #'   TRUE}.
+#' @param ... Additional parameters specific to \code{ts_recapitate} or
+#' \code{ts_simplify}, which can be found in the tskit manual.
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
@@ -43,7 +45,7 @@
 ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
                     recapitate = FALSE, simplify = FALSE,
                     spatial = TRUE, recombination_rate = NULL, mutation_rate = NULL,
-                    Ne = NULL, random_seed = NULL, simplify_to = NULL) {
+                    Ne = NULL, random_seed = NULL, simplify_to = NULL, ...) {
   if (is.null(model$world)) spatial <- FALSE
 
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
@@ -79,7 +81,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
                         random_seed = random_seed, spatial = spatial)
 
   if (simplify)
-    ts <- ts_simplify(ts, simplify_to, spatial = spatial)
+    ts <- ts_simplify(ts, simplify_to, spatial = spatial, ...)
 
   if (!is.null(mutation_rate))
     ts <- ts_mutate(ts, mutation_rate = mutation_rate, random_seed = random_seed)
@@ -171,6 +173,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #'   implied by the model. If TRUE (default), reprojection of coordinates will
 #'   be performed. If the model was non-spatial, the value of this parameter is
 #'   disregarded.
+#' @param keep_input_roots Should the history ancestral to the MRCA of all
+#' samplbee retained in the tree sequence? Default is \code{FALSE}.
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
@@ -179,7 +183,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #'   map
 #'
 #' @export
-ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
+ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE ) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -200,7 +204,9 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE) {
   else
     samples <- dplyr::filter(data, name %in% simplify_to)$node_id
 
-  ts_new <- ts$simplify(sort(as.integer(samples)), filter_populations = FALSE)
+  ts_new <- ts$simplify(as.integer(samples),
+                        filter_populations = FALSE,
+                        keep_input_roots = keep_input_roots)
 
   # get the name and location from the original table with the pedigree_id key
   cols <- c("pedigree_id", "pop", "name")
