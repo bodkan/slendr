@@ -24,7 +24,8 @@ parser.add_argument("--recombination-rate", required=True, type=float,
 parser.add_argument("--sampling-schedule", metavar="FILE", required=True,
                     help="Path to the table created by slendr's sampling()")
 parser.add_argument("--seed", type=int, help="Random seed value")
-parser.add_argument("--verbose", action="store_true", default=False)
+parser.add_argument("--debug", action="store_true", default=False,
+                    help="Print a model debugging summary?")
 
 args = parser.parse_args()
 
@@ -99,6 +100,9 @@ for event in geneflows.itertuples():
 # make sure all slendr events are sorted by time of occurence
 # (otherwise msprime complains)
 demography.sort_events()
+
+if args.debug:
+    print(demography.debug())
 
 logging.info("Running the simulation")
 

@@ -396,11 +396,12 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @param seed Random seed (if missing, SLiM's own seed will be used)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
+#' @param debug Print a msprime model debugging summary?
 #'
 #' @export
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
-                    sampling = NULL, verbose = TRUE, seed = NULL) {
+                    sampling = NULL, verbose = TRUE, seed = NULL, debug = FALSE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -429,6 +430,7 @@ msprime <- function(model, sequence_length, recombination_rate,
     --sequence-length %d \\
     --recombination-rate %s \\
     %s \\
+    %s \\
     %s",
     script_path,
     ifelse(is.null(seed), "", paste("--seed", seed)),
@@ -437,7 +439,8 @@ msprime <- function(model, sequence_length, recombination_rate,
     sequence_length,
     recombination_rate,
     sampling,
-    ifelse(verbose, "--verbose", "")
+    ifelse(verbose, "--verbose", ""),
+    ifelse(debug, "--debug", "")
   )
 
   if (verbose) {
