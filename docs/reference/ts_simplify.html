@@ -183,7 +183,7 @@ implemented in tskit, designed to work on tree sequence data simulated by
 SLiM using the <span class="pkg">slendr</span> R package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_simplify</span><span class='op'>(</span><span class='va'>ts</span>, simplify_to <span class='op'>=</span> <span class='cn'>NULL</span>, spatial <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_simplify</span><span class='op'>(</span><span class='va'>ts</span>, simplify_to <span class='op'>=</span> <span class='cn'>NULL</span>, spatial <span class='op'>=</span> <span class='cn'>TRUE</span>, keep_input_roots <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -207,6 +207,11 @@ raster-dimensions will not be converted to the coordinate reference system
 implied by the model. If TRUE (default), reprojection of coordinates will
 be performed. If the model was non-spatial, the value of this parameter is
 disregarded.</p></td>
+    </tr>
+    <tr>
+      <th>keep_input_roots</th>
+      <td><p>Should the history ancestral to the MRCA of all
+samplbee retained in the tree sequence? Default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 

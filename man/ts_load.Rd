@@ -14,7 +14,8 @@ ts_load(
   mutation_rate = NULL,
   Ne = NULL,
   random_seed = NULL,
-  simplify_to = NULL
+  simplify_to = NULL,
+  ...
 )
 }
 \arguments{
@@ -43,6 +44,9 @@ disregarded.}
 \item{simplify_to}{A character vector of individual names. If NULL, all
 remembered individuals will be retained. Only used when \code{simplify =
   TRUE}.}
+
+\item{...}{Additional parameters specific to \code{ts_recapitate} or
+\code{ts_simplify}, which can be found in the tskit manual.}
 }
 \value{
 \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
