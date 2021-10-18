@@ -35,7 +35,6 @@ Imports:
     stars,
     gganimate,
     png,
-    rsvg,
     ijtiff,
     ggraph,
     shinyWidgets,
