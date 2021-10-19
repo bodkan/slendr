@@ -40,6 +40,9 @@
     <loc>https://bodkan.net/slendr/reference/move.html</loc>
   </url>
   <url>
+    <loc>https://bodkan.net/slendr/reference/msprime.html</loc>
+  </url>
+  <url>
     <loc>https://bodkan.net/slendr/reference/overlap.html</loc>
   </url>
   <url>
@@ -170,5 +173,8 @@
   </url>
   <url>
     <loc>https://bodkan.net/slendr/articles/vignette-06-locations.html</loc>
+  </url>
+  <url>
+    <loc>https://bodkan.net/slendr/articles/vignette-07-msprime.html</loc>
   </url>
 </urlset>

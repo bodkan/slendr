@@ -315,7 +315,7 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span>
   <span class="va">model</span>,
-  seq_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, <span class="co"># simulate only a single locus</span>
+  sequence_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, <span class="co"># simulate only a single locus</span>
   save_locations <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># save the location of everyone who ever lived</span>
   method <span class="op">=</span> <span class="st">"batch"</span>, <span class="co"># change to "gui" to execute the model in SLiMgui</span>
   seed <span class="op">=</span> <span class="fl">314159</span>
@@ -326,17 +326,17 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; /usr/local/bin/slim  \</span>
 <span class="co">#&gt;     -d SEED=314159  \</span>
-<span class="co">#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpFLDGMj/file17f6811a11ffc"' \</span>
-<span class="co">#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpFLDGMj/readme-model"' \</span>
-<span class="co">#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpFLDGMj/readme-model/output"' \</span>
+<span class="co">#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8lGO96/filec9116f4a201"' \</span>
+<span class="co">#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8lGO96/readme-model"' \</span>
+<span class="co">#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8lGO96/readme-model/output"' \</span>
 <span class="co">#&gt;     -d SPATIAL=T \</span>
-<span class="co">#&gt;     -d SEQ_LENGTH=1 \</span>
+<span class="co">#&gt;     -d SEQUENCE_LENGTH=1 \</span>
 <span class="co">#&gt;     -d RECOMB_RATE=0 \</span>
 <span class="co">#&gt;     -d BURNIN_LENGTH=0 \</span>
 <span class="co">#&gt;     -d SIMULATION_LENGTH=1733 \</span>
 <span class="co">#&gt;     -d SAVE_LOCATIONS=T \</span>
 <span class="co">#&gt;     -d MAX_ATTEMPTS=10 \</span>
-<span class="co">#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpFLDGMj/readme-model/script.slim </span>
+<span class="co">#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8lGO96/readme-model/script.slim </span>
 <span class="co">#&gt; --------------------------------------------------</span></code></pre></div>
 <p>As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.</p>
 </div>
