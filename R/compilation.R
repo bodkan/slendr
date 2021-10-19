@@ -526,7 +526,7 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   saved_files["msprime_script"] <- file.path(dir, "script.py")
   write_script(saved_files["slim_script"], script_source, map, resolution, description)
   write_script(saved_files["msprime_script"],
-               system.file("inst/extdata/script.py", package = "slendr"))
+               system.file("extdata/script.py", package = "slendr"))
 
   checksums <- calculate_checksums(saved_files)
   utils::write.table(checksums, file.path(dir, "checksums.tsv"), sep = "\t",
