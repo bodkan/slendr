@@ -220,7 +220,7 @@
 <p>Now that we already have the <code>model</code> object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the <code><a href="../reference/slim.html">slim()</a></code> function as usual and specifying the sampling events with the <code>sampling =</code> argument. Note that we bind the individual sampling schedule data frames using the <code>rbind</code> function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such):</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span>
-  <span class="va">model</span>, seq_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,
+  <span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,
   sampling <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">nea_samples</span>, <span class="va">present_samples</span>, <span class="va">emh_samples</span><span class="op">)</span>,
   method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, seed <span class="op">=</span> <span class="fl">314159</span>
 <span class="op">)</span></code></pre></div>
@@ -229,17 +229,17 @@
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpFiPqnT/filea77443332de"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpFiPqnT/introgression"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpFiPqnT/introgression/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcyT4gA/file11f64f351ae3"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcyT4gA/introgression"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcyT4gA/introgression/output"' \
 #&gt;     -d SPATIAL=F \
-#&gt;     -d SEQ_LENGTH=10000000 \
+#&gt;     -d SEQUENCE_LENGTH=10000000 \
 #&gt;     -d RECOMB_RATE=1e-08 \
 #&gt;     -d BURNIN_LENGTH=0 \
 #&gt;     -d SIMULATION_LENGTH=216667 \
 #&gt;     -d SAVE_LOCATIONS=F \
 #&gt;     -d MAX_ATTEMPTS=10 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpFiPqnT/introgression/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcyT4gA/introgression/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 </div>
 <div id="r-interface-for-tskit-and-pyslim" class="section level2">
@@ -315,7 +315,7 @@
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Populations│     5│ 3.1 KiB│         Yes║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Provenances│     1│29.3 KiB│          No║
+#&gt; ║Provenances│     1│29.4 KiB│          No║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Sites      │     0│ 8 Bytes│          No║
 #&gt; ╚═══════════╧══════╧════════╧════════════╝</code></pre>
@@ -349,7 +349,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    2│ 29.8 KiB│          No║
+#&gt; ║Provenances│    2│ 29.9 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │    0│  8 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
@@ -383,7 +383,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 30.3 KiB│          No║
+#&gt; ║Provenances│    3│ 30.4 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │    0│  8 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
@@ -425,7 +425,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 30.6 KiB│          No║
+#&gt; ║Provenances│    3│ 30.7 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │58089│964.4 KiB│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
