@@ -10,7 +10,7 @@
 #' script which can be extended by the user to perform arbitrary simulations.
 #'
 #' You can find installation instructions, reference manual, and tutorials at
-#' <https://bodkan.net/slendr>.
+#' <https://www.slendr.net>.
 #' @docType package
 #' @name slendr
 #' @keywords internal

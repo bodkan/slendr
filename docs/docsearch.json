@@ -2,21 +2,21 @@
   "index_name": "slendr",
   "start_urls": [
     {
-      "url": "https://bodkan.net/slendr/index.html",
+      "url": "https://www.slendr.net/index.html",
       "selectors_key": "homepage",
       "tags": [
         "homepage"
       ]
     },
     {
-      "url": "https://bodkan.net/slendr/reference",
+      "url": "https://www.slendr.net/reference",
       "selectors_key": "reference",
       "tags": [
         "reference"
       ]
     },
     {
-      "url": "https://bodkan.net/slendr/articles",
+      "url": "https://www.slendr.net/articles",
       "selectors_key": "articles",
       "tags": [
         "articles"
@@ -30,7 +30,7 @@
     "/articles/index.html"
   ],
   "sitemap_urls": [
-    "https://bodkan.net/slendr/sitemap.xml"
+    "https://www.slendr.net/sitemap.xml"
   ],
   "selectors": {
     "homepage": {

@@ -17,7 +17,7 @@ script which can be extended by the user to perform arbitrary simulations.
 }
 \details{
 You can find installation instructions, reference manual, and tutorials at
-\url{https://bodkan.net/slendr}.
+\url{https://www.slendr.net}.
 }
 \seealso{
 Useful links:

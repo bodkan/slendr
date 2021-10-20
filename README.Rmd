@@ -15,7 +15,7 @@ set.seed(314159)
 
 ## Spatial Simulations for Population Genetics in R & SLiM
 
-### *Overview* <a href='https://bodkan.net/slendr'><img src="man/figures/logo.png" align="right" height="139"/></a>
+### *Overview* <a href='https://www.slendr.net'><img src="man/figures/logo.png" align="right" height="139"/></a>
 
 *slendr* is an R package for simulating spatially-explicit genomic data. It allows to programmatically and visually encode spatial population boundaries and temporal dynamics across a geographic landscape (leveraging real cartographic data or abstract, user-defined landscapes), and specify population divergences and geneflow events based on an arbitrary graph of demographic history.
 
@@ -27,7 +27,7 @@ The goal of *slendr* is to provide a convenient R interface for defining arbitra
 
 **This software is still under development!** We have been making steady progress towards the first beta version, but the package still has some way to go before being production ready. If you are interested, you can see the list of changes between versions [here](news/index.html).
 
-That said, if you would like to learn more, or if you're feeling brave and would like to test the package yourself, take a look at some of our tutorial vignettes (either the main [tutorial](articles/vignette-01-tutorial.html) or other vignettes available under the "Articles" menu on the [project website](https://bodkan.net/slendr/)).
+That said, if you would like to learn more, or if you're feeling brave and would like to test the package yourself, take a look at some of our tutorial vignettes (either the main [tutorial](articles/vignette-01-tutorial.html) or other vignettes available under the "Articles" menu on the [project website](https://www.slendr.net/)).
 
 If you would like to stay updated with the developments:
 
