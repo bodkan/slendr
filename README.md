@@ -4,7 +4,7 @@
 
 ## Spatial Simulations for Population Genetics in R & SLiM
 
-### *Overview* <a href='https://bodkan.net/slendr'><img src="man/figures/logo.png" align="right" height="139"/></a>
+### *Overview* <a href='https://www.slendr.net'><img src="man/figures/logo.png" align="right" height="139"/></a>
 
 *slendr* is an R package for simulating spatially-explicit genomic data. It allows to programmatically and visually encode spatial population boundaries and temporal dynamics across a geographic landscape (leveraging real cartographic data or abstract, user-defined landscapes), and specify population divergences and geneflow events based on an arbitrary graph of demographic history.
 
@@ -16,7 +16,7 @@ The goal of *slendr* is to provide a convenient R interface for defining arbitra
 
 **This software is still under development!** We have been making steady progress towards the first beta version, but the package still has some way to go before being production ready. If you are interested, you can see the list of changes between versions [here](news/index.html).
 
-That said, if you would like to learn more, or if you're feeling brave and would like to test the package yourself, take a look at some of our tutorial vignettes (either the main [tutorial](articles/vignette-01-tutorial.html) or other vignettes available under the "Articles" menu on the [project website](https://bodkan.net/slendr/)).
+That said, if you would like to learn more, or if you're feeling brave and would like to test the package yourself, take a look at some of our tutorial vignettes (either the main [tutorial](articles/vignette-01-tutorial.html) or other vignettes available under the "Articles" menu on the [project website](https://www.slendr.net/)).
 
 If you would like to stay updated with the developments:
 
@@ -236,9 +236,9 @@ slim(
 #> 
 #> /usr/local/bin/slim  \
 #>     -d SEED=314159  \
-#>     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8lGO96/filec9116f4a201"' \
-#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8lGO96/readme-model"' \
-#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8lGO96/readme-model/output"' \
+#>     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpkluVZv/file836917c177aa"' \
+#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpkluVZv/readme-model"' \
+#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpkluVZv/readme-model/output"' \
 #>     -d SPATIAL=T \
 #>     -d SEQUENCE_LENGTH=1 \
 #>     -d RECOMB_RATE=0 \
@@ -246,7 +246,7 @@ slim(
 #>     -d SIMULATION_LENGTH=1733 \
 #>     -d SAVE_LOCATIONS=T \
 #>     -d MAX_ATTEMPTS=10 \
-#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8lGO96/readme-model/script.slim 
+#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpkluVZv/readme-model/script.slim 
 #> --------------------------------------------------
 ```
 
