@@ -15,7 +15,7 @@ ts_load(
   Ne = NULL,
   random_seed = NULL,
   simplify_to = NULL,
-  ...
+  keep_input_roots = FALSE
 )
 }
 \arguments{
@@ -45,8 +45,8 @@ disregarded.}
 remembered individuals will be retained. Only used when \code{simplify =
   TRUE}.}
 
-\item{...}{Additional parameters specific to \code{ts_recapitate} or
-\code{ts_simplify}, which can be found in the tskit manual.}
+\item{keep_input_roots}{Should the history ancestral to the MRCA of all
+samplbee retained in the tree sequence? Default is \code{FALSE}.}
 }
 \value{
 \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}

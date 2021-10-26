@@ -4,14 +4,7 @@
 \alias{ts_recapitate}
 \title{Recapitate the tree sequence}
 \usage{
-ts_recapitate(
-  ts,
-  recombination_rate,
-  Ne,
-  spatial = TRUE,
-  random_seed = NULL,
-  ...
-)
+ts_recapitate(ts, recombination_rate, Ne, spatial = TRUE, random_seed = NULL)
 }
 \arguments{
 \item{ts}{\code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}}
@@ -28,8 +21,6 @@ be performed. If the model was non-spatial, the value of this parameter is
 disregarded.}
 
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
-
-\item{...}{Optional parameters for the underlying tskit method}
 }
 \value{
 \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
