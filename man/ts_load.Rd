@@ -15,7 +15,8 @@ ts_load(
   Ne = NULL,
   random_seed = NULL,
   simplify_to = NULL,
-  keep_input_roots = FALSE
+  keep_input_roots = FALSE,
+  migration_matrix = NULL
 )
 }
 \arguments{
@@ -47,6 +48,9 @@ remembered individuals will be retained. Only used when \code{simplify =
 
 \item{keep_input_roots}{Should the history ancestral to the MRCA of all
 samplbee retained in the tree sequence? Default is \code{FALSE}.}
+
+\item{migration_matrix}{Migration matrix used for coalescence of ancient lineages
+(passed to \code{ts_recapitate})}
 }
 \value{
 \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}

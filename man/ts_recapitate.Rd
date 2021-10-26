@@ -4,7 +4,14 @@
 \alias{ts_recapitate}
 \title{Recapitate the tree sequence}
 \usage{
-ts_recapitate(ts, recombination_rate, Ne, spatial = TRUE, random_seed = NULL)
+ts_recapitate(
+  ts,
+  recombination_rate,
+  Ne,
+  spatial = TRUE,
+  migration_matrix = NULL,
+  random_seed = NULL
+)
 }
 \arguments{
 \item{ts}{\code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}}
@@ -19,6 +26,9 @@ raster-dimensions will not be converted to the coordinate reference system
 implied by the model. If TRUE (default), reprojection of coordinates will
 be performed. If the model was non-spatial, the value of this parameter is
 disregarded.}
+
+\item{migration_matrix}{Migration matrix used for coalescence of ancient lineages
+(passed to \code{ts_recapitate})}
 
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 }
