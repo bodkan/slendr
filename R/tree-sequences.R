@@ -78,7 +78,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 
   if (recapitate)
     ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                        random_seed = random_seed, spatial = spatial)
+                        random_seed = random_seed, spatial = spatial, ...)
 
   if (simplify)
     ts <- ts_simplify(ts, simplify_to, spatial = spatial, ...)
@@ -101,6 +101,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 #'   be performed. If the model was non-spatial, the value of this parameter is
 #'   disregarded.
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
+#' @param ... Optional parameters for the underlying tskit method
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
@@ -110,7 +111,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 #'
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
-                          random_seed = NULL) {
+                          random_seed = NULL, ...) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -121,7 +122,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
     message("No need to recapitate, all trees already coalesced")
 
   ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
-                          random_seed = random_seed)
+                          random_seed = random_seed, ...)
 
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")
