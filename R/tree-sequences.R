@@ -32,8 +32,8 @@
 #' @param simplify_to A character vector of individual names. If NULL, all
 #'   remembered individuals will be retained. Only used when \code{simplify =
 #'   TRUE}.
-#' @param ... Additional parameters specific to \code{ts_recapitate} or
-#' \code{ts_simplify}, which can be found in the tskit manual.
+#' @param keep_input_roots Should the history ancestral to the MRCA of all
+#' samplbee retained in the tree sequence? Default is \code{FALSE}.
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
@@ -45,7 +45,7 @@
 ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
                     recapitate = FALSE, simplify = FALSE,
                     spatial = TRUE, recombination_rate = NULL, mutation_rate = NULL,
-                    Ne = NULL, random_seed = NULL, simplify_to = NULL, ...) {
+                    Ne = NULL, random_seed = NULL, simplify_to = NULL, keep_input_roots = FALSE) {
   if (is.null(model$world)) spatial <- FALSE
 
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
@@ -78,10 +78,10 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 
   if (recapitate)
     ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                        random_seed = random_seed, spatial = spatial, ...)
+                        random_seed = random_seed, spatial = spatial)
 
   if (simplify)
-    ts <- ts_simplify(ts, simplify_to, spatial = spatial, ...)
+    ts <- ts_simplify(ts, simplify_to, spatial = spatial, keep_input_roots = keep_input_roots)
 
   if (!is.null(mutation_rate))
     ts <- ts_mutate(ts, mutation_rate = mutation_rate, random_seed = random_seed)
@@ -101,7 +101,6 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 #'   be performed. If the model was non-spatial, the value of this parameter is
 #'   disregarded.
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
-#' @param ... Optional parameters for the underlying tskit method
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
@@ -111,7 +110,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 #'
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
-                          random_seed = NULL, ...) {
+                          random_seed = NULL) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -122,7 +121,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
     message("No need to recapitate, all trees already coalesced")
 
   ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
-                          random_seed = random_seed, ...)
+                          random_seed = random_seed)
 
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")

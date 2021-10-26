@@ -192,7 +192,7 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
   Ne <span class='op'>=</span> <span class='cn'>NULL</span>,
   random_seed <span class='op'>=</span> <span class='cn'>NULL</span>,
   simplify_to <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>...</span>
+  keep_input_roots <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -243,9 +243,9 @@ remembered individuals will be retained. Only used when <code>simplify =
   TRUE</code>.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional parameters specific to <code>ts_recapitate</code> or
-<code>ts_simplify</code>, which can be found in the tskit manual.</p></td>
+      <th>keep_input_roots</th>
+      <td><p>Should the history ancestral to the MRCA of all
+samplbee retained in the tree sequence? Default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
