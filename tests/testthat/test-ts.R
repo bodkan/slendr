@@ -36,13 +36,13 @@ slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = T
      sampling = samples, verbose = FALSE)
 
 test_that("ts_load generates an object of the correct type", {
-  ts <- ts_load(model, simplify = TRUE)
+  ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
   expect_true(inherits(ts, "pyslim.slim_tree_sequence.SlimTreeSequence"))
   expect_true(inherits(ts, "tskit.trees.TreeSequence"))
 })
 
 test_that("tree sequence contains the specified number of sampled individuals", {
-  ts <- ts_load(model, simplify = TRUE)
+  ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
   counts <- ts_data(ts, remembered = TRUE) %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(ind_id, time, pop) %>%
@@ -51,7 +51,7 @@ test_that("tree sequence contains the specified number of sampled individuals", 
 })
 
 test_that("locations and times in the tree sequence match values saved by SLiM", {
-  ts <- ts_load(model, simplify = TRUE)
+  ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
   individuals <- ts_data(ts, remembered = TRUE) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
   true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
                                     col_types = "iicidd") %>%
@@ -100,14 +100,15 @@ test_that("extracted individual, node and edge counts match the tree sequence", 
 
 test_that("simplification works only for present samples", {
   msg <- "The following individuals are not present"
-  expect_error(ts_load(model, simplify = TRUE, simplify_to = "xyz"), msg)
+  expect_error(ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE, simplify_to = "xyz"), msg)
 })
 
 test_that("simplification retains only specified samples", {
-  ts <- ts_load(model, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2"))
+  ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,         
+                simplify_to = c("pop1_1", "pop1_2"))
   expect_true(all(stats::na.omit(unique(ts_data(ts)$name)) == c("pop1_1", "pop1_2")))
 
-  ts2 <- ts_load(model)
+  ts2 <- ts_load(model, recapitate = TRUE, recombination_rate = 0, Ne = 1)
   simplify_to <- sample(ts_samples(ts2)$name, 10)
 
   ts2 <- ts_simplify(ts2, simplify_to = simplify_to)
@@ -115,9 +116,10 @@ test_that("simplification retains only specified samples", {
 })
 
 test_that("ts_samples() names match ts_data() information", {
-  ts1 <- ts_load(model)
+  ts1 <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0)
   ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
-  ts3 <- ts_load(model, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2"))
+  ts3 <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0,
+                 simplify = TRUE, simplify_to = c("pop1_1", "pop1_2"))
   simplify_to <- sample(ts_samples(ts1)$name, 10)
   ts4 <- ts_simplify(ts1, simplify_to = simplify_to)
 
@@ -130,11 +132,12 @@ test_that("ts_samples() names match ts_data() information", {
 test_that("ts_eigenstrat requires recapitated and mutated data", {
   ts1 <- ts_load(model)
   ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
-  ts3 <- ts_load(model, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2"))
+  ts3 <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE, 
+                 simplify_to = c("pop1_1", "pop1_2"))
   ts4 <- ts_load(model, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000)
   ts5 <- ts_mutate(ts4, mutation_rate = 1e-7)
   ts6 <- ts_load(model, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000,
-                 mutation_rate = 1e-7)
+                 mutate = TRUE, mutation_rate = 1e-7)
 
   prefix <- file.path(tempdir(), "eigen")
   expect_error(ts_eigenstrat(ts1, prefix), "Tree sequence was not recapitated")
@@ -159,6 +162,10 @@ test_that("ts_simplify-ing a non-recapitated tree sequence gives a warning", {
   ts <- ts_load(model)
   expect_warning(ts_simplify(ts), "Simplifying a non-recapitated tree sequence.")
   expect_silent(ts_simplify(ts, keep_input_roots = TRUE))
+})
+
+test_that("mutation rate must be present in order to mutate a tree sequence", {
+  expect_error(ts_load(model, mutate = TRUE), "Mutation rate must be given ")
 })
 
 test_that("ts_eigenstrat and tsv_cf create correct data", {
@@ -262,7 +269,7 @@ test_that("ts_mutate and mutation through ts_load give the same result", {
   ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
                 recombination_rate = 0, Ne = 100)
   ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
-  ts_mut2 <- ts_load(model, simplify = TRUE, recapitate = TRUE, mutation_rate = 1e-7,
+  ts_mut2 <- ts_load(model, simplify = TRUE, recapitate = TRUE, mutate = TRUE, mutation_rate = 1e-7,
                      random_seed = 123, recombination_rate = 0, Ne = 100)
   expect_equal(suppressMessages(ts_genotypes(ts_mut1)),
                suppressMessages(ts_genotypes(ts_mut2)))
@@ -289,13 +296,14 @@ test_that("ts_mutate correctly specifies the SLiM mutation type", {
   expect_true(all(mut_types2 == 123456789))
 })
 
-
 test_that("tree sequence contains the specified number of sampled individuals (default sampling)", {
   slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
      method = "batch", seed = 314159,
      verbose = FALSE)
 
-  ts <- ts_load(model, simplify = TRUE)
+  suppressMessages(
+    ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
+  )
   counts <- ts_data(ts, remembered = TRUE) %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(ind_id, time, pop) %>%
@@ -308,7 +316,9 @@ test_that("locations and times in the tree sequence match values saved by SLiM (
      method = "batch", seed = 314159,
      verbose = FALSE)
 
-  ts <- ts_load(model, simplify = TRUE)
+  suppressMessages(
+    ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
+  )
   individuals <- ts_data(ts, remembered = TRUE) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
   true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
                                     col_types = "iicidd") %>%

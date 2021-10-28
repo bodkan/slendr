@@ -186,6 +186,7 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
   file <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>path</span>, <span class='st'>"output_ts.trees"</span><span class='op'>)</span>,
   recapitate <span class='op'>=</span> <span class='cn'>FALSE</span>,
   simplify <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  mutate <span class='op'>=</span> <span class='cn'>FALSE</span>,
   spatial <span class='op'>=</span> <span class='cn'>TRUE</span>,
   recombination_rate <span class='op'>=</span> <span class='cn'>NULL</span>,
   mutation_rate <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -215,6 +216,10 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
       <th>simplify</th>
       <td><p>Should the tree sequence be simplified down to only
 remembered (i.e. "sampled", in <em>slendr</em> parlance) individuals?</p></td>
+    </tr>
+    <tr>
+      <th>mutate</th>
+      <td><p>Should the tree sequence be mutated?</p></td>
     </tr>
     <tr>
       <th>spatial</th>
