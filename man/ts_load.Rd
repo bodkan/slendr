@@ -9,6 +9,7 @@ ts_load(
   file = file.path(model$path, "output_ts.trees"),
   recapitate = FALSE,
   simplify = FALSE,
+  mutate = FALSE,
   spatial = TRUE,
   recombination_rate = NULL,
   mutation_rate = NULL,
@@ -28,6 +29,8 @@ ts_load(
 
 \item{simplify}{Should the tree sequence be simplified down to only
 remembered (i.e. "sampled", in \emph{slendr} parlance) individuals?}
+
+\item{mutate}{Should the tree sequence be mutated?}
 
 \item{spatial}{Should spatial information encoded in the tree sequence data
 be converted to spatial R datastructures? If FALSE, pixel-based

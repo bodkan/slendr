@@ -20,6 +20,7 @@
 #' @param recapitate Should the tree sequence be recapitated?
 #' @param simplify Should the tree sequence be simplified down to only
 #'   remembered (i.e. "sampled", in \emph{slendr} parlance) individuals?
+#' @param mutate Should the tree sequence be mutated?
 #' @param spatial Should spatial information encoded in the tree sequence data
 #'   be converted to spatial R datastructures? If FALSE, pixel-based
 #'   raster-dimensions will not be converted to the coordinate reference system
@@ -45,7 +46,7 @@
 #'
 #' @export
 ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
-                    recapitate = FALSE, simplify = FALSE,
+                    recapitate = FALSE, simplify = FALSE, mutate = FALSE,
                     spatial = TRUE, recombination_rate = NULL, mutation_rate = NULL,
                     Ne = NULL, random_seed = NULL, simplify_to = NULL, keep_input_roots = FALSE,
                     migration_matrix = NULL) {
@@ -53,6 +54,10 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
 
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
+
+  if (mutate && is.null(mutation_rate))
+    stop("Mutation rate must be given in order to be able to mutate the tree sequence",
+         call. = FALSE)
 
   if (!inherits(model, "slendr_model"))
     stop("A compiled slendr model object must be provided", call. = FALSE)
@@ -87,7 +92,7 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
   if (simplify)
     ts <- ts_simplify(ts, simplify_to, spatial = spatial, keep_input_roots = keep_input_roots)
 
-  if (!is.null(mutation_rate))
+  if (mutate)
     ts <- ts_mutate(ts, mutation_rate = mutation_rate, random_seed = random_seed)
 
   ts
