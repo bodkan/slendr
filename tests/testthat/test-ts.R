@@ -151,8 +151,14 @@ test_that("ts_eigenstrat requires recapitated and mutated data", {
 test_that("ts_mutate cannot be called on an already mutated tree sequence", {
   ts <- ts_load(model)
   ts_mut <- ts_mutate(ts, mutation_rate = 1e-7)
-  expect_error(ts_mutate(ts_mut, mutation_rate = 1e-7),
+  expect_error(ts_mutate(ts_mut, mutation_rate = 2e-7),
                "Tree sequence already mutated")
+})
+
+test_that("ts_simplify-ing a non-recapitated tree sequence gives a warning", {
+  ts <- ts_load(model)
+  expect_warning(ts_simplify(ts), "Simplifying a non-recapitated tree sequence.")
+  expect_silent(ts_simplify(ts, keep_input_roots = TRUE))
 })
 
 test_that("ts_eigenstrat and tsv_cf create correct data", {

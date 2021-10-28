@@ -192,6 +192,10 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE ) {
   check_ts_class(ts)
 
+  if (!attr(ts, "recapitated") && !keep_input_roots)
+    warning("Simplifying a non-recapitated tree sequence. Make sure this is what you really want",
+            call. = FALSE)
+
   model <- attr(ts, "model")
   if (is.null(model$world)) spatial <- FALSE
 
