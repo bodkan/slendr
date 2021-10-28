@@ -45,7 +45,8 @@ Imports:
     readr,
     stringr,
     reticulate,
-    tidyr
+    tidyr,
+    rsvg
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
