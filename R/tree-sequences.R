@@ -468,11 +468,12 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object
 #' @param path Path to a VCF file
+#' @param chrom Chromosome name to be written in the CHROM column of the VCF
 #' @param individuals A character vector of individuals in the tree sequence. If
 #'   missing, all individuals present in the tree sequence will be saved.
 #'
 #' @export
-ts_vcf <- function(ts, path, individuals = NULL) {
+ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
   if (!attr(ts, "recapitated") && !ts_coalesced(ts))
     stop("Tree sequence was not recapitated and some nodes do not ",
          "have parents over some portion of their genome. This is interpreted as ",
@@ -498,6 +499,7 @@ ts_vcf <- function(ts, path, individuals = NULL) {
   gzip <- reticulate::import("gzip")
   with(reticulate::`%as%`(gzip$open(path.expand(path), "wt"), vcf_file), {
     ts$write_vcf(vcf_file,
+                 contig_id = chrom,
                  individuals = as.integer(data$ind_id),
                  individual_names = data$name)
   })
