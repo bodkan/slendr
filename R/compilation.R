@@ -42,6 +42,10 @@ compile <- function(populations, dir, generation_time, resolution = NULL,
                     description = "") {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
+  map <- get_map(populations[[1]])
+  if (!is.null(map) && is.null(resolution))
+    stop("A map resolution must be specified for spatial models", call. = FALSE)
+
   # make sure that all parents are present
   pop_names <- purrr::map_chr(populations, ~ .x$pop[1])
   parent_names <- unique(purrr::map_chr(populations, function(pop) {
@@ -113,8 +117,6 @@ setting `direction = 'backward'.`", call. = FALSE)
   } else
     end_time <- sim_length
   length <- if (is.null(sim_length)) end_time else sim_length
-
-  map <- get_map(populations[[1]])
 
   split_table <- compile_splits(populations, generation_time, time_dir, end_time)
   admix_table <- compile_geneflows(geneflow, split_table, generation_time, time_dir, end_time)
@@ -334,7 +336,7 @@ slim <- function(model, sequence_length, recombination_rate,
     modif_path <- tempfile()
     readLines(script_path) %>%
       stringr::str_replace("\"MODEL\", \".\"",
-                           paste0("\"MODEL\", \"", model$path, "\"")) %>%
+                           paste0("\"MODEL\", \"", file.path(getwd(), model$path), "\"")) %>%
       cat(file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
@@ -640,10 +642,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
   # for one population - this removes the duplicates, but ideally this kind
   # of problem should be caught somewhere upstream
   map_table <- map_table[!duplicated(map_table[, c("pop", "tmap_gen")]), ]
-  map_table$path <- seq_len(nrow(map_table)) %>%
-    paste0(., ".png") %>%
-    file.path(dir, .) %>%
-    sub("//", "/", .)
+  map_table$path <- seq_len(nrow(map_table)) %>% paste0(., ".png")
 
   # maps of ancestral populations have to be set in the first generation,
   # regardless of the specified split time

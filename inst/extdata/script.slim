@@ -39,7 +39,7 @@ initialize() {
         defineConstant("MAPS", read_table(config_path("maps.tsv")));
 
         // load all spatial maps (image objects)
-        MAPS.setValue("image", sapply(MAPS.getValue("path"), "Image(applyValue);"));
+        MAPS.setValue("image", sapply(config_path(MAPS.getValue("path")), "Image(applyValue);"));
 
         // world map dimensions
         defineConstant("WIDTH", MAPS.getValue("image")[0].width);
