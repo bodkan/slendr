@@ -436,7 +436,7 @@ modifyChild() /* Place offspring within its population's boundary */ {
     // for spatially overlapping geneflow and non-migrant offspring,
     // propose location in the neighborhood of one of its parents
     sigma_dist = get_pop(subpop.id).getValue("dispersal_dist");
-    
+
     // make sure that offspring is generated in allowed locations on the map
     // (within it's population bounds and not in an inaccessible location)
     attempts = 0; // how many attempts have been made to place the offspring?
@@ -568,8 +568,8 @@ function (object<Dictionary>) collect_metadata(void) {
 ///
 
 // Compose a path to a configuration file
-function (s$) config_path(s$ file) {
-    return paste0(MODEL, "/", file);
+function (s) config_path(s file) {
+    return MODEL + "/" + file;
 }
 
 // Compose a path to an output file
@@ -632,7 +632,7 @@ function (object<Dictionary>) filter(No<Dictionary> d, s$ col, ifsl val, [l$ neg
 
     matches = sapply(values, "any(applyValue == val);");
     if (negate) matches = !matches;
-    
+
     return d.getRowValues(matches);
 }
 
