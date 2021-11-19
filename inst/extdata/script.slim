@@ -198,9 +198,18 @@ s4 late() /* Update spatial population boundaries */ {
 
         img = map.getValue("image");
         pop = get_pop(map.getValue("pop"));
+
+        // take care of an edge case in which the entire map is habitable
+        // (i.e. minimum observed pixel value is equal to the maximum value)
+        // -- in these cases, defineSpatialMap crashes complaining about invalid
+        //    valueRange
+        min_pixel = min(img.floatK);
+        max_pixel = max(img.floatK);
+        if (min_pixel == max_pixel) min_pixel = 0;
+
         pop.defineSpatialMap(
             "world", "xy", 1.0 - img.floatK,
-            valueRange=c(min(img.floatK), max(img.floatK)),
+            valueRange=c(min_pixel, max_pixel),
             colors=c("#000000", "#FFFFFF")
         );
         pop.setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
