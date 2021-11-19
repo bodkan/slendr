@@ -336,7 +336,7 @@ slim <- function(model, sequence_length, recombination_rate,
     modif_path <- tempfile()
     readLines(script_path) %>%
       stringr::str_replace("\"MODEL\", \".\"",
-                           paste0("\"MODEL\", \"", file.path(getwd(), model$path), "\"")) %>%
+                           paste0("\"MODEL\", \"", path.expand(model$path), "\"")) %>%
       cat(file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
