@@ -693,7 +693,7 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
 
     # dimension of the rasterized map in pixel units
     # (x/y dimensions of PNGs are reversed)
-    raster_dim <- dim(png::readPNG(model$maps$path[1]))[2:1]
+    raster_dim <- dim(png::readPNG(file.path(model$path, model$maps$path[1])))[2:1]
   }
 
   if (to == "world") to <- sf::st_crs(model$world)
