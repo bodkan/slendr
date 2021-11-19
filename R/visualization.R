@@ -99,7 +99,7 @@ objects are specified", call. = FALSE)
 
   p <- ggplot()
 
-  if (nrow(map) & show_map)
+  if (!is.null(map) && show_map)
     p <- p + geom_sf(data = map, aes(frame = NULL), fill = "lightgray", color = NA)
 
   if (length(pops)) {
