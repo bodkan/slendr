@@ -98,6 +98,18 @@ ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
   ts
 }
 
+#' Save a tree sequence to a file
+#'
+#' @param ts \code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}
+#' @param file File to which the tree sequence should be saved
+#'
+#' @export
+ts_save <- function(ts, file) {
+  check_ts_class(ts)
+  ts$dump(file)
+}
+
+
 #' Recapitate the tree sequence
 #'
 #' @param ts \code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}

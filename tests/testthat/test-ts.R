@@ -1,13 +1,14 @@
-env_present <- function(path) {
+# conda create --name retipy tskit pyslim msprime 
+env_present <- function(env) {
   tryCatch({
-    reticulate::use_virtualenv(path, required = TRUE)
+    reticulate::use_condaenv(env, required = TRUE)
     return(TRUE)
   },
   error = function(cond) FALSE
 )
 }
 
-skip_if(!env_present("~/.venvs/retipy"))
+skip_if(!env_present("retipy"))
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
@@ -39,6 +40,19 @@ test_that("ts_load generates an object of the correct type", {
   ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
   expect_true(inherits(ts, "pyslim.slim_tree_sequence.SlimTreeSequence"))
   expect_true(inherits(ts, "tskit.trees.TreeSequence"))
+})
+
+test_that("ts_save and ts_load result in the same tree sequence", {
+  ts1 <- ts_load(model)
+  file <- tempfile()
+  ts_save(ts1, file)
+  ts2 <- ts_load(model, file = file)
+
+  data1 <- ts_data(ts1); data2 <- ts_data(ts2)
+  samples1 <- ts_samples(ts1); samples2 <- ts_samples(ts2)
+
+  expect_equal(data1, data2)
+  expect_equal(samples1, samples2)
 })
 
 test_that("tree sequence contains the specified number of sampled individuals", {
