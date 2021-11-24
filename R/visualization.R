@@ -308,20 +308,22 @@ animate <- function(model, file = file.path(model$path, "output_ind_locations.ts
           axis.title.y = element_blank(),
           legend.title = element_blank())
 
-  if (length(unique(locs$pop)) == 1) p <- p + theme(legend.position = "none")
+  if (length(unique(locs$pop)) == 1)
+    p <- p + theme(legend.position = "none")
 
-  if (model$direction == "backward")
+  if (model$direction == "backward") {
     transition <- gganimate::transition_states(
       -time,
       transition_length = 1,
       state_length = 0
     )
-  else
+  } else {
     transition <- gganimate::transition_states(
       time,
       transition_length = 1,
       state_length = 0
     )
+  }
 
   gganim <- p + transition + ggtitle("time: {abs(as.integer(closest_state))}")
 
