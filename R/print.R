@@ -205,6 +205,12 @@ print_map_info <- function(x) {
 print_pop_history <- function(x) {
   cat("\npopulation history overview:\n")
   history <- attr(x, "history")
+
+  first_event <- attr(pop, "history")[[1]]
+  prev_competition_dist <- first_event$competition_dist
+  prev_mate_dist <- first_event$mate_dist
+  prev_dispersal_dist <- first_event$dispersal_dist
+
   for (event in history) {
     cat("  - time ")
 
@@ -239,10 +245,19 @@ print_pop_history <- function(x) {
 
     # change of dispersal parameters
     else if (event$event == "dispersal") {
-      cat(sprintf("%d: change in spatial interaction", event$tdispersal))
-      if (!is.na(event$competition_dist)) cat("\n        - competition distance:", event$competition_dist)
-      if (!is.na(event$mate_dist)) cat("\n        - mate choice distance:", event$competition_dist)
-      if (!is.na(event$dispersal_dist)) cat("\n        - dispersal from parent:", event$competition_dist)
+      cat(sprintf("%d: change in spatial interaction", event$time))
+      if (!is.na(event$competition_dist) && event$competition_dist != prev_competition_dist) {
+        cat("\n        - competition distance:", event$competition_dist)
+        prev_competition_dist <- event$competition_dist
+      }
+      if (!is.na(event$mate_dist) && event$mate_dist != prev_mate_dist) {
+        cat("\n        - mate choice distance:", event$mate_dist)
+        prev_mate_dist <- event$mate_dist
+      }
+      if (!is.na(event$dispersal_dist) && event$dispersal_dist != prev_dispersal_dist) {
+        cat("\n        - dispersal from parent:", event$dispersal_dist)
+        prev_dispersal_dist <- event$dispersal_dist
+      }
     } else
       stop("Unknown event type", call. = FALSE)
 
