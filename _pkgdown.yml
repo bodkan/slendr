@@ -83,6 +83,7 @@ reference:
   - title: Tree sequence loading and processing
     contents:
     - ts_load
+    - ts_save
     - ts_recapitate
     - ts_simplify
     - ts_mutate
