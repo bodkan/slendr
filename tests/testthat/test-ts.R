@@ -1,14 +1,14 @@
-# conda create --name retipy tskit pyslim msprime 
+# conda create --name retipy tskit pyslim msprime
 env_present <- function(env) {
   tryCatch({
-    reticulate::use_condaenv(env, required = TRUE)
+    reticulate::use_virtualenv(env, required = TRUE)
     return(TRUE)
   },
   error = function(cond) FALSE
 )
 }
 
-skip_if(!env_present("retipy"))
+skip_if(!env_present("~/.venvs/retipy"))
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
@@ -118,7 +118,7 @@ test_that("simplification works only for present samples", {
 })
 
 test_that("simplification retains only specified samples", {
-  ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,         
+  ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
                 simplify_to = c("pop1_1", "pop1_2"))
   expect_true(all(stats::na.omit(unique(ts_data(ts)$name)) == c("pop1_1", "pop1_2")))
 
@@ -146,7 +146,7 @@ test_that("ts_samples() names match ts_data() information", {
 test_that("ts_eigenstrat requires recapitated and mutated data", {
   ts1 <- ts_load(model)
   ts2 <- ts_load(model, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
-  ts3 <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE, 
+  ts3 <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
                  simplify_to = c("pop1_1", "pop1_2"))
   ts4 <- ts_load(model, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000)
   ts5 <- ts_mutate(ts4, mutation_rate = 1e-7)
