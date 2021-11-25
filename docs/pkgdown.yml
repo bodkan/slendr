@@ -1,4 +1,4 @@
-pandoc: '2.13'
+pandoc: 2.14.0.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
@@ -9,7 +9,7 @@ articles:
   vignette-05-tree-sequences: vignette-05-tree-sequences.html
   vignette-06-locations: vignette-06-locations.html
   vignette-07-msprime: vignette-07-msprime.html
-last_built: 2021-10-20T18:02Z
+last_built: 2021-11-25T00:10Z
 urls:
   reference: https://www.slendr.net/reference
   article: https://www.slendr.net/articles
