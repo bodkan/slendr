@@ -206,7 +206,7 @@ print_pop_history <- function(x) {
   cat("\npopulation history overview:\n")
   history <- attr(x, "history")
 
-  first_event <- attr(pop, "history")[[1]]
+  first_event <- attr(x, "history")[[1]]
   prev_competition_dist <- first_event$competition_dist
   prev_mate_dist <- first_event$mate_dist
   prev_dispersal_dist <- first_event$dispersal_dist
