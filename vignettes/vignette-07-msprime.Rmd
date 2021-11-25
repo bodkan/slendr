@@ -3,7 +3,7 @@ title: "Simulating slendr models with msprime"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{Spatially annotated tree sequences}
+  %\VignetteIndexEntry{Simulating slendr models with msprime}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
