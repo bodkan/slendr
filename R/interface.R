@@ -946,6 +946,19 @@ sampling <- function(model, times, ..., strict = FALSE) {
   if (!all(purrr::map_lgl(sample_counts, ~ .x == round(.x))))
     stop("Sample counts must be integer numbers", call. = FALSE)
 
+  # make sure that all sampling times fall in the time window of the simulation itself
+  split_times <- purrr::map_int(model$populations, ~ attr(., "history")[[1]]$time)
+  if ((model$direction == "forward" && (any(times > min(split_times) + model$orig_length)
+                                        || any(times < min(split_times)))) ||
+      (model$direction == "backward" && (any(times < max(split_times) - model$orig_length)
+                                         || any(times > max(split_times))))) {
+
+    if (strict)
+      stop("A sampling event was scheduled outside of the simulation time window", call. = FALSE)
+    else
+      times <- times[times <= model$orig_length]
+  }
+
   sampling_schedule <- purrr::map_dfr(times, function(t) {
     purrr::map_dfr(samples, function(s) {
       pop <- s[[1]]
