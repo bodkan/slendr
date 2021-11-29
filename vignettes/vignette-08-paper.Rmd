@@ -1,0 +1,130 @@
+---
+title: "Examples from the slendr paper"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Examples from the slendr paper}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4,
+  dpi = 80,
+  eval = FALSE
+)
+
+# for some reason knitr/reticulate sets this to default, sabotaging
+# our efforts to make reticulate use our custom environment -- this
+# appears to solve the problem
+Sys.unsetenv("RETICULATE_PYTHON")
+
+devtools::load_all(".")
+
+RANDOM_SEED <- 314159L
+set.seed(RANDOM_SEED)
+```
+
+```{r abstract_world}
+map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+plot(map)
+```
+
+```{r}
+epoch_times <- c(3000, 6000, 9000, 12000, 15000)
+
+pop <-
+  population(
+    "pop", time = 1, N = 10000, map = map, center = c(50, 50), radius = 50,
+    competition_dist = 5, mate_dist = 5, dispersal_dist = 0.5
+  ) %>%
+  dispersal(time = 3000, competition_dist = 10) %>%
+  dispersal(time = 6000, competition_dist = 15) %>%
+  dispersal(time = 9000, competition_dist = 20) %>% 
+  dispersal(time = 12000, competition_dist = 25) %>% 
+  dispersal(time = 15000, competition_dist = 30)
+  
+model <- compile(
+    pop, generation_time = 1, resolution = 1, sim_length = 18000,
+    dir = "~/Desktop/slendr-paper/dispersal-model/", overwrite = TRUE
+)
+
+samples <- sampling(model, times = seq(100, 18000, by = 100), list(pop, 50))
+
+slim(
+  model, sampling = samples,
+  sequence_length = 100e3, recombination_rate = 1e-8, burnin = 3000,
+  save_locations = TRUE, method = "batch",
+  verbose = TRUE, seed = 314159
+)
+```
+
+
+```{r}
+animate(model, steps = 1000,
+        gif = "~/Desktop/slendr-paper/dispersal-model/animation.gif")
+```
+
+```{r}
+locations <- readr::read_tsv(file.path(model$path, "/output_ind_locations.tsv.gz"))
+```
+
+```{r}
+locs <- filter(locations, gen %in% c(0, epoch_times, 18000)) %>% mutate(time = 18000 - gen)
+```
+
+```{r}
+time_labeller <- function(value) paste("   time:", value)
+
+locs %>%
+  ggplot(aes(x, y)) +
+  geom_point(size = 0.1, alpha = 0.5) +
+  facet_grid(time ~ ., labeller = labeller(time = time_labeller)) +
+  theme_void() +
+  theme(
+    axis.title = element_blank(), axis.text = element_blank(),
+    strip.text.y = element_text(angle = 0, hjust = 0)
+  ) +
+  coord_fixed()
+```
+
+
+```{r}
+model <- read("~/Desktop/slendr-paper/dispersal-model/")
+reticulate::use_condaenv("retipy")
+reticulate::py_config()
+```
+
+```{r}
+ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+              Ne = 10000, recombination_rate = 1e-8, mutation_rate = 1e-8)
+```
+
+```{r}
+samples <- ts_samples(ts)
+```
+
+```{r}
+groups <- split(samples, samples$time) %>% purrr::map(~ .$name)
+```
+
+```{r}
+diversity <- ts_diversity(ts, groups)
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+diversity %>%
+  mutate(time = as.numeric(set)) %>% 
+  ggplot(aes(time, diversity)) +
+  geom_point() +
+  geom_smooth(color = "blue") +
+  geom_vline(xintercept = epoch_times, linetype = 2, color = "red") +
+  coord_cartesian(xlim = c(0, 18000))
+```
+
