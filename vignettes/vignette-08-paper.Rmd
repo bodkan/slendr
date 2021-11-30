@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, include = FALSE}
+```{r, setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
@@ -26,105 +26,113 @@ devtools::load_all(".")
 
 RANDOM_SEED <- 314159L
 set.seed(RANDOM_SEED)
+
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(purrr)
+
+reticulate::use_condaenv("retipy")
+reticulate::py_config()
 ```
 
-```{r abstract_world}
-map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
-plot(map)
-```
+## Example 2
 
 ```{r}
-epoch_times <- c(3000, 6000, 9000, 12000, 15000)
+EX2_DIR <- "~/projects/slendr-paper"
+```
 
-pop <-
-  population(
+```{r, example2_model_definition}
+# define an abstract square world map
+map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+
+# create a population with a circular range and schedule a series of
+# changes in spatial interaction between individuals over time
+pop <- population(
     "pop", time = 1, N = 10000, map = map, center = c(50, 50), radius = 50,
     competition_dist = 5, mate_dist = 5, dispersal_dist = 0.5
   ) %>%
   dispersal(time = 3000, competition_dist = 10) %>%
   dispersal(time = 6000, competition_dist = 15) %>%
-  dispersal(time = 9000, competition_dist = 20) %>% 
-  dispersal(time = 12000, competition_dist = 25) %>% 
+  dispersal(time = 9000, competition_dist = 20) %>%
+  dispersal(time = 12000, competition_dist = 25) %>%
   dispersal(time = 15000, competition_dist = 30)
-  
-model <- compile(
-    pop, generation_time = 1, resolution = 1, sim_length = 18000,
-    dir = "~/Desktop/slendr-paper/dispersal-model/", overwrite = TRUE
-)
 
-samples <- sampling(model, times = seq(100, 18000, by = 100), list(pop, 50))
+# compile a slendr model to a serialized form
+model_ex2 <- compile(pop, generation_time = 1, resolution = 1,
+                     sim_length = 18000, dir = EX2_DIR)
 
-slim(
-  model, sampling = samples,
-  sequence_length = 100e3, recombination_rate = 1e-8, burnin = 3000,
-  save_locations = TRUE, method = "batch",
-  verbose = TRUE, seed = 314159
-)
+# record 50 individuals every hundred generations in the tree sequence
+samples <- sampling(model_ex2, seq(100, 18000, by = 100), list(pop, 50))
+
+# execute the model in SLiM, simulationg 100 kb of sequence and saving
+# the location of each individual throughout the simulation
+slim(model_ex2, sampling = samples, save_locations = TRUE,
+     sequence_length = 100e3, recombination_rate = 1e-8, seed = SEED)
 ```
 
-
-```{r}
-animate(model, steps = 1000,
-        gif = "~/Desktop/slendr-paper/dispersal-model/animation.gif")
+We can animate the entire model dynamics using the function `animate()`:
+```{r, example2_gif}
+animate(model_ex2, steps = 1000)
 ```
 
-```{r}
-locations <- readr::read_tsv(file.path(model$path, "/output_ind_locations.tsv.gz"))
+Load the location of everyone who ever lived:
+
+```{r, example2_load_locations}
+epoch_times <- c(3000, 6000, 9000, 12000, 15000, 18000)
+
+locations <- file.path(model_ex2$path, "/output_ind_locations.tsv.gz") %>%
+  read_tsv() %>%
+  mutate(time = 18000 - gen) %>%
+  filter(time %in% epoch_times)
 ```
 
-```{r}
-locs <- filter(locations, gen %in% c(0, epoch_times, 18000)) %>% mutate(time = 18000 - gen)
-```
+We can't include the GIF animation of the simulation run in the paper. Instead, let's just take a couple of snapshots from the spatial simulation at each moment when we change the dynamics:
 
-```{r}
-time_labeller <- function(value) paste("   time:", value)
+```{r, example2_paper_figure}
+time_labeller <- function(value) paste(" ", value, "generations")
 
-locs %>%
-  ggplot(aes(x, y)) +
-  geom_point(size = 0.1, alpha = 0.5) +
+ggplot(locations, aes(x, y, color = factor(time))) +
+  geom_point(size = 0.05, alpha = 0.25) +
   facet_grid(time ~ ., labeller = labeller(time = time_labeller)) +
   theme_void() +
   theme(
     axis.title = element_blank(), axis.text = element_blank(),
     strip.text.y = element_text(angle = 0, hjust = 0)
   ) +
-  coord_fixed()
+  coord_fixed() +
+  guides(color = "none")
 ```
 
+## Example 4
 
-```{r}
-model <- read("~/Desktop/slendr-paper/dispersal-model/")
-reticulate::use_condaenv("retipy")
-reticulate::py_config()
-```
+Load a couple of libraries for processing and visualising the results, link to the Python environment which contains the necessary Python modules:
 
-```{r}
-ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+```{r, example4_paper_figure}
+# load the output tree sequence, recapitate it, simplify it, add mutations
+ts <- ts_load(model_ex2, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
               Ne = 10000, recombination_rate = 1e-8, mutation_rate = 1e-8)
-```
 
-```{r}
+# extract table with names and times of sampled individuals
 samples <- ts_samples(ts)
-```
 
-```{r}
-groups <- split(samples, samples$time) %>% purrr::map(~ .$name)
-```
+# extract names of individuals in each time point
+groups <- split(samples, samples$time) %>% map(pull, name)
 
-```{r}
-diversity <- ts_diversity(ts, groups)
-```
+# compute nucleotide diversity in each time point and add additional
+# information to the table of results for easier plotting
+diversity <- ts_diversity(ts, groups) %>%
+  mutate(
+    time = as.numeric(set),
+    epoch = findInterval(time, epoch_times, rightmost.closed = TRUE)
+  )
 
-```{r}
-library(dplyr)
-library(ggplot2)
-
-diversity %>%
-  mutate(time = as.numeric(set)) %>% 
-  ggplot(aes(time, diversity)) +
+# plot diversity over time computed from the tree sequence data
+ggplot(diversity, aes(time, diversity, color = factor(epoch))) +
   geom_point() +
-  geom_smooth(color = "blue") +
-  geom_vline(xintercept = epoch_times, linetype = 2, color = "red") +
-  coord_cartesian(xlim = c(0, 18000))
+  geom_smooth(color = "black") +
+  geom_vline(xintercept = epoch_times, size = 0.75, alpha = 0.25) +
+  scale_x_continuous(breaks = epoch_times, labels = epoch_times) +
+  labs(x = "time since the start of the simulation") +
+  theme_minimal() + guides(color = "none")
 ```
-
