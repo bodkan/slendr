@@ -229,14 +229,14 @@ check_event_time <- function(time, pop) {
     stop(sprintf("Unknown time direction %s", direction), call. = FALSE)
 }
 
-check_present_time <- function(time, pop, direction = NULL) {
+check_present_time <- function(time, pop, direction = NULL, offset = 0) {
   if (is.null(direction))
     direction <- get_time_direction(pop)
   split_time <- get_lineage_splits(pop)[1]
 
-  if (direction == "backward" & time >= split_time)
+  if (direction == "backward" & time >= split_time - offset)
     stop("Population ", pop$pop[1], " is not present at a time ", time, call. = FALSE)
-  else if (direction == "forward" & time <= split_time)
+  else if (direction == "forward" & time <= split_time + offset)
     stop("Population ", pop$pop[1], " is not present at a time ", time, call. = FALSE)
 }
 
