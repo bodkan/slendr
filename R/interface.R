@@ -933,6 +933,8 @@ sampling <- function(model, times, ..., strict = FALSE) {
   if (!inherits(model, "slendr_model"))
     stop("A slendr_model object must be specified", call. = FALSE)
 
+  times <- unique(as.integer(sort(times)))
+
   samples <- list(...)
   sample_pops <- purrr::map(samples, 1)
   sample_counts <- purrr::map(samples, 2)
@@ -965,9 +967,8 @@ sampling <- function(model, times, ..., strict = FALSE) {
       n <- s[[2]]
       tryCatch(
         {
-          t <- as.integer(t)
           check_removal_time(t, pop, direction = model$direction)
-          check_present_time(t, pop, direction = model$direction)
+          check_present_time(t, pop, direction = model$direction, offset = model$generation_time)
           if (!is.infinite(n)) n <- as.integer(n)
           dplyr::tibble(time = t, pop = pop$pop[1], n = n)
         },
