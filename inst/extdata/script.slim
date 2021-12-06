@@ -342,6 +342,9 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         pop = event.getValue("pop"); n = event.getValue("n");
         all_inds = get_pop(pop).individuals;
 
+        // only individuals not yet sampled are eligible for remembering
+        all_inds = all_inds[all_inds.tag != 1];
+
         if (isInfinite(n)) {
             n = length(all_inds);
             n_str = "all (" + n + ")";
@@ -364,6 +367,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         }
 
         inds = sample(all_inds, asInteger(n));
+        inds.tag = 1; // tag sampled individuals as remembered
         sim.treeSeqRememberIndividuals(inds, permanent = T);
     }
 }
@@ -418,6 +422,9 @@ s12 late() /* End of simulation */ {
 }
 
 modifyChild() /* Place offspring within its population's boundary */ {
+    // set flag marking availability for sampling
+    child.tag = 0;
+
     if (!SPATIAL) return T;
 
     // in case of spatially non-overlapping geneflow, assign locations uniformly
