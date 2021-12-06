@@ -236,9 +236,9 @@ slim(
 #> 
 #> /usr/local/bin/slim  \
 #>     -d SEED=314159  \
-#>     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpBVZCpY/file7fbd53fb84b3"' \
-#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpBVZCpY/readme-model"' \
-#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpBVZCpY/readme-model/output"' \
+#>     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp85i4q9/file168538bc8ff7"' \
+#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp85i4q9/readme-model"' \
+#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp85i4q9/readme-model/output"' \
 #>     -d SPATIAL=T \
 #>     -d SEQUENCE_LENGTH=1 \
 #>     -d RECOMB_RATE=0 \
@@ -246,7 +246,7 @@ slim(
 #>     -d SIMULATION_LENGTH=1733 \
 #>     -d SAVE_LOCATIONS=T \
 #>     -d MAX_ATTEMPTS=10 \
-#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpBVZCpY/readme-model/script.slim 
+#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp85i4q9/readme-model/script.slim 
 #> --------------------------------------------------
 ```
 
