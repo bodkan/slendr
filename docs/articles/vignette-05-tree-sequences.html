@@ -179,8 +179,8 @@
 <pre><code>#&gt; # A tibble: 2 × 3
 #&gt;    time pop       n
 #&gt;   &lt;int&gt; &lt;chr&gt; &lt;int&gt;
-#&gt; 1 70000 NEA       1
-#&gt; 2 40000 NEA       1</code></pre>
+#&gt; 1 40000 NEA       1
+#&gt; 2 70000 NEA       1</code></pre>
 <p>As you can see, the <code><a href="../reference/sampling.html">sampling()</a></code> function simply accepts the vector of times at which remembering should be schedule, and then a list of pairs <code>(&lt;slendr population&gt;, &lt;number of individuals&gt;)</code> encoding from which populations should how many individuals be remembered at time points given in the <code>times</code> vector.</p>
 <p>Next, we want to sample some present-day individuals: an outgroup representing a chimpanzee, and a couple of Africans and Europeans:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -199,16 +199,16 @@
 <pre><code>#&gt; # A tibble: 40 × 3
 #&gt;     time pop       n
 #&gt;    &lt;int&gt; &lt;chr&gt; &lt;int&gt;
-#&gt;  1 16361 EUR       1
-#&gt;  2 29322 EUR       1
-#&gt;  3 16979 EUR       1
-#&gt;  4 22342 EUR       1
-#&gt;  5 37738 EUR       1
-#&gt;  6 25728 EUR       1
-#&gt;  7 28594 EUR       1
-#&gt;  8 18357 EUR       1
-#&gt;  9 20367 EUR       1
-#&gt; 10 24655 EUR       1
+#&gt;  1 10319 EUR       1
+#&gt;  2 11187 EUR       1
+#&gt;  3 11395 EUR       1
+#&gt;  4 11529 EUR       1
+#&gt;  5 11927 EUR       1
+#&gt;  6 12675 EUR       1
+#&gt;  7 13689 EUR       1
+#&gt;  8 13744 EUR       1
+#&gt;  9 14774 EUR       1
+#&gt; 10 16361 EUR       1
 #&gt; # … with 30 more rows</code></pre>
 <p>This samples a single ancient European individuals at randomly chosen times between 40 and 10 ky ago.</p>
 <p>One nice feature of the <code><a href="../reference/sampling.html">sampling()</a></code> function is that it only schedules sampling events for a population, if that population is present in the simulation at a given time. This makes it possible to simply take a wide time range for sampling, specify all populations and sizes of the samples, and let the function generate sampling events only for populations present at each time. If for some reason a stricter control over sampling is required, this behavior can be switched off by setting <code>strict = TRUE</code> like this:</p>
@@ -229,9 +229,9 @@
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpAONOpJ/file853021830dde"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpAONOpJ/introgression"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpAONOpJ/introgression/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpgXWavv/file18f229f8466"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpgXWavv/introgression"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpgXWavv/introgression/output"' \
 #&gt;     -d SPATIAL=F \
 #&gt;     -d SEQUENCE_LENGTH=10000000 \
 #&gt;     -d RECOMB_RATE=1e-08 \
@@ -239,7 +239,7 @@
 #&gt;     -d SIMULATION_LENGTH=216667 \
 #&gt;     -d SAVE_LOCATIONS=F \
 #&gt;     -d MAX_ATTEMPTS=10 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpAONOpJ/introgression/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpgXWavv/introgression/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 </div>
 <div id="r-interface-for-tskit-and-pyslim" class="section level2">
@@ -315,7 +315,7 @@
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Populations│     5│ 3.1 KiB│         Yes║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Provenances│     1│29.8 KiB│          No║
+#&gt; ║Provenances│     1│30.0 KiB│          No║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Sites      │     0│ 8 Bytes│          No║
 #&gt; ╚═══════════╧══════╧════════╧════════════╝</code></pre>
@@ -352,7 +352,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    2│ 30.3 KiB│          No║
+#&gt; ║Provenances│    2│ 30.5 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │    0│  8 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
@@ -389,7 +389,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 30.8 KiB│          No║
+#&gt; ║Provenances│    3│ 31.0 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │    0│  8 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
@@ -431,7 +431,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 31.0 KiB│          No║
+#&gt; ║Provenances│    3│ 31.3 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │58089│964.4 KiB│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>

@@ -43,3 +43,15 @@ test_that("sampling before a simulation start (backward)", {
   expect_error(sampling(model, time = 1005, list(p1, 3), strict = TRUE), msg) # pre-split
   expect_error(sampling(model, time = 10, list(p1, 3), strict = TRUE), msg) # post-removal
 })
+
+test_that("sampling in the same generation of the split is prevented (forward)", {
+  p1 <- population(name = "p1", time = 1, N = 1, remove = 50)
+  model <- compile(populations = p1, dir = tempdir(), generation_time = 25, sim_length = 100, overwrite = TRUE)
+  expect_warning(sampling(model, time = 3, list(p1, 3)), "No valid sampling")
+})
+
+test_that("sampling in the same generation of the split is prevented (backward)", {
+  p1 <- population(name = "p1", time = 100, N = 1, remove = 10)
+  model <- compile(populations = p1, dir = tempdir(), generation_time = 25, overwrite = TRUE)
+  expect_warning(sampling(model, time = 97, list(p1, 3)), "No valid sampling")
+})

@@ -176,7 +176,7 @@
 <li>Install <em>slendr</em>:</li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bodkan/slendr"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bodkan/slendr"</span><span class="op">)</span></code></pre></div>
 <p>This is necessary because <em>slendr</em> is not on <a href="http://cran.r-project.org">CRAN</a> yet. Once it is there, it will be possible to install it by simply running <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("slendr")</a></code> in your R console.</p>
 <ol start="4" style="list-style-type: decimal">
 <li>That’s it! You can now load the package with the usual:</li>
@@ -200,7 +200,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># projected CRS used internally</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>#&gt; OGR data source with driver: ESRI Shapefile 
-#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp8iKMAr", layer: "ne_110m_land"
+#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpCkOEZt", layer: "ne_110m_land"
 #&gt; with 127 features
 #&gt; It has 3 fields</code></pre>
 <p>Internally, the <code>map</code> object is currently a normal <code>sf</code> class object without additional components. This is unlike other <code>slendr</code> objects described below, which are also <code>sf</code> objects but which carry additional internal components.</p>
@@ -598,9 +598,9 @@ between populations.</code></pre>
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8iKMAr/file806d146b1545"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8iKMAr/tutorial-model"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8iKMAr/tutorial-model/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpCkOEZt/file175f178a53fd"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpCkOEZt/tutorial-model"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpCkOEZt/tutorial-model/output"' \
 #&gt;     -d SPATIAL=T \
 #&gt;     -d SEQUENCE_LENGTH=1 \
 #&gt;     -d RECOMB_RATE=0 \
@@ -608,7 +608,7 @@ between populations.</code></pre>
 #&gt;     -d SIMULATION_LENGTH=1733 \
 #&gt;     -d SAVE_LOCATIONS=T \
 #&gt;     -d MAX_ATTEMPTS=10 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8iKMAr/tutorial-model/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpCkOEZt/tutorial-model/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 <p>By default, simulation output files are put in the same directory where the model configuration data is stored, and are given a common prefix <code>output_</code>. Both the directory and the output file prefix can be specified by setting the <code>output_dir</code> and <code>output_prefix</code> arguments of the function <code><a href="../reference/slim.html">slim()</a></code>.</p>
 </div>

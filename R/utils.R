@@ -229,14 +229,18 @@ check_event_time <- function(time, pop) {
     stop(sprintf("Unknown time direction %s", direction), call. = FALSE)
 }
 
-check_present_time <- function(time, pop, direction = NULL) {
+# Check whether a given population will be present for sampling
+# (used exclusively in the sampling() function to avoid situations when
+# a user would sample from a population in the same generation that it
+# would be created)
+check_present_time <- function(time, pop, offset, direction = NULL) {
   if (is.null(direction))
     direction <- get_time_direction(pop)
   split_time <- get_lineage_splits(pop)[1]
 
-  if (direction == "backward" & time >= split_time)
-    stop("Population ", pop$pop[1], " is not present at a time ", time, call. = FALSE)
-  else if (direction == "forward" & time <= split_time)
+  if (time == split_time |
+      (direction == "backward" & time > split_time - offset) |
+      (direction == "forward" & time < split_time + offset))
     stop("Population ", pop$pop[1], " is not present at a time ", time, call. = FALSE)
 }
 

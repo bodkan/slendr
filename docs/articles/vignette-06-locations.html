@@ -161,7 +161,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>#&gt; OGR data source with driver: ESRI Shapefile 
-#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp5IMvr4", layer: "ne_110m_land"
+#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpXIfmrf", layer: "ne_110m_land"
 #&gt; with 127 features
 #&gt; It has 3 fields</code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -274,9 +274,9 @@
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp5IMvr4/file85ce77c4fc79"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp5IMvr4/spatial-ts"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp5IMvr4/spatial-ts/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpXIfmrf/file1eb3527a74ae"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpXIfmrf/spatial-ts"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpXIfmrf/spatial-ts/output"' \
 #&gt;     -d SPATIAL=T \
 #&gt;     -d SEQUENCE_LENGTH=100000 \
 #&gt;     -d RECOMB_RATE=1e-08 \
@@ -284,7 +284,7 @@
 #&gt;     -d SIMULATION_LENGTH=1733 \
 #&gt;     -d SAVE_LOCATIONS=F \
 #&gt;     -d MAX_ATTEMPTS=1 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp5IMvr4/spatial-ts/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpXIfmrf/spatial-ts/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 <p>After the simulation is done, we can load the data in the same way we did in our <a href="vignette-05-tree%20sequences.html#loading-and-processing-tree%20sequence-output-files-1">first exploration</a> of tree sequence features in <em>slendr</em>. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -321,7 +321,7 @@
 #&gt; oldest sampled individual: 40000 backward time units
 #&gt; youngest sampled individual: 0 backward time units
 #&gt; 
-#&gt; oldest node: 1757270 backward time units
+#&gt; oldest node: 2192941 backward time units
 #&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
 #&gt; contents of the underlying sf object:
@@ -371,7 +371,7 @@
 #&gt; oldest sampled individual: 40000 backward time units
 #&gt; youngest sampled individual: 0 backward time units
 #&gt; 
-#&gt; oldest node: 1757270 backward time units
+#&gt; oldest node: 2192941 backward time units
 #&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
 #&gt; contents of the underlying sf object:
@@ -474,18 +474,18 @@
 #&gt; Bounding box:  xmin: 2364888 ymin: 435446 xmax: 8488953 ymax: 4763638
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
 #&gt; # A tibble: 95 × 15
-#&gt;    name   pop   node_id level child_id child_time parent_id parent_time child_pop
-#&gt;  * &lt;chr&gt;  &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;    &lt;int&gt;      &lt;int&gt;     &lt;int&gt;       &lt;int&gt; &lt;fct&gt;    
-#&gt;  1 EUR_25 EUR       190 1          190          0       260         450 EUR      
-#&gt;  2 EUR_25 EUR       190 2          260        450       262         510 EUR      
-#&gt;  3 EUR_25 EUR       190 3          262        510       263         570 EUR      
-#&gt;  4 EUR_25 EUR       190 4          263        570       282        3090 EUR      
-#&gt;  5 EUR_25 EUR       190 5          282       3090       292        4290 EUR      
-#&gt;  6 EUR_25 EUR       190 6          292       4290       300        6000 YAM      
-#&gt;  7 EUR_25 EUR       190 7          300       6000       307        6840 YAM      
-#&gt;  8 EUR_25 EUR       190 8          307       6840       332       10830 YAM      
-#&gt;  9 EUR_25 EUR       190 8          307       6840       347       13800 YAM      
-#&gt; 10 EUR_25 EUR       190 9          332      10830       390       19860 EHG      
+#&gt;    name  pop   node_id level child_id child_time parent_id parent_time child_pop
+#&gt;  * &lt;chr&gt; &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;    &lt;int&gt;      &lt;int&gt;     &lt;int&gt;       &lt;int&gt; &lt;fct&gt;    
+#&gt;  1 EUR_… EUR       190 1          190          0       260         450 EUR      
+#&gt;  2 EUR_… EUR       190 2          260        450       262         510 EUR      
+#&gt;  3 EUR_… EUR       190 3          262        510       263         570 EUR      
+#&gt;  4 EUR_… EUR       190 4          263        570       282        3090 EUR      
+#&gt;  5 EUR_… EUR       190 5          282       3090       292        4290 EUR      
+#&gt;  6 EUR_… EUR       190 6          292       4290       300        6000 YAM      
+#&gt;  7 EUR_… EUR       190 7          300       6000       307        6840 YAM      
+#&gt;  8 EUR_… EUR       190 8          307       6840       332       10830 YAM      
+#&gt;  9 EUR_… EUR       190 8          307       6840       347       13800 YAM      
+#&gt; 10 EUR_… EUR       190 9          332      10830       390       19860 EHG      
 #&gt; # … with 85 more rows, and 6 more variables: parent_pop &lt;fct&gt;,
 #&gt; #   child_location &lt;POINT [m]&gt;, parent_location &lt;POINT [m]&gt;,
 #&gt; #   connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;, right_pos &lt;dbl&gt;</code></pre>
