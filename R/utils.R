@@ -381,6 +381,20 @@ process_sampling <- function(samples, model, sampling_path, verbose) {
   readr::write_tsv(df, sampling_path)
 }
 
+# Make sure all given locations fall within world bounding box
+check_location_bounds <- function(locations, map) {
+  xrange <- attr(map, "xrange")
+  yrange <- attr(map, "yrange")
+
+  checks <- sapply(locations, function(loc) {
+    loc[1] >= xrange[1] & loc[1] <= xrange[2] &
+    loc[2] >= yrange[1] & loc[2] <= yrange[2]
+  })
+
+  if (!all(checks))
+    stop("The following locations fall outside of the world map: ",
+         paste(locations[!checks], collapse = ", "), call. = FALSE)
+}
 
 #' Pipe operator
 #'
