@@ -732,8 +732,8 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
     colnames(new_point) <- c(outx, outy)
   }
 
-  if (nrow(new_point) == 1)
-    return(as.vector(unlist(new_point)))
+  # if (nrow(new_point) == 1)
+  #   return(as.vector(unlist(new_point)))
 
   if (add) new_point <- cbind(coords, new_point) %>% dplyr::as_tibble()
 
@@ -1010,7 +1010,7 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   }
 
   if (!is.null(locations)) {
-    check_location_bounds(locations, map)
+    check_location_bounds(locations, model$world)
 
     # convert the list of coordinate pairs into a data frame with x and y
     # columns transformed from world-based coordinates into raster-based
