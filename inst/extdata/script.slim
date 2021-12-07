@@ -691,7 +691,8 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
                 "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
                 "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
-    float = c("rate", "competition_dist", "mate_dist", "dispersal_dist", "n");
+    float = c("rate", "competition_dist", "mate_dist", "dispersal_dist", "n",
+              "x", "y", "x_orig", "y_orig");
     logical = c("overlap");
 
     if (any(column_name == integer))
