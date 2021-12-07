@@ -55,3 +55,13 @@ test_that("sampling in the same generation of the split is prevented (backward)"
   model <- compile(populations = p1, dir = tempdir(), generation_time = 25, overwrite = TRUE)
   expect_warning(sampling(model, time = 97, list(p1, 3)), "No valid sampling")
 })
+
+# spatial sampling --------------------------------------------------------
+
+test_that("only locations within world bounds are valid", {
+  map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+  valid <- list(c(100, 100), c(0, 0), c(30, 5))
+  invalid <- list(c(1000, 100), c(0, 0), c(30, 5))
+  expect_error(check_location_bounds(invalid, map), "locations fall outside")
+  expect_silent(check_location_bounds(valid, map))
+})
