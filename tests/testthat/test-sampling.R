@@ -65,3 +65,59 @@ test_that("only locations within world bounds are valid", {
   expect_error(check_location_bounds(invalid, map), "locations fall outside")
   expect_silent(check_location_bounds(valid, map))
 })
+
+test_that("sampling takes place as close to the specified position as possible", {
+  skip_if(!env_present("retipy"))
+
+  n_samples <- 5
+  times <- c(10, 100)
+  locations <- list(c(50, 50))
+  sim_length <- 100
+
+  map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+  pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
+  model <- compile(pop, dir = tempdir(), generation_time = 1,
+                   competition_dist = 10, mate_dist = 10, dispersal_dist = 10,
+                   sim_length = sim_length, resolution = 1, overwrite = TRUE)
+
+  samples <- sampling(model, times = times, locations = locations, list(pop, n_samples))
+  slim(model, sequence_length = 1, recombination_rate = 0, sampling = samples,
+       method = "batch", save_locations = TRUE, verbose = FALSE)
+
+  # load the locations of all individuals throughout the simulation, and filter
+  # down to `n_sample` of the ones closest to the sampling location [50, 50] in
+  # each time point (essentially replicating what we're doing on the SLiM
+  # backend during the simulation run)
+  locations <- file.path(model$path, "output_ind_locations.tsv.gz") %>%
+    readr::read_tsv(show_col_types = FALSE) %>%
+    dplyr::mutate(time = sim_length - gen + 1) %>%
+    dplyr::filter(time %in% times) %>%
+    dplyr::group_by(time) %>%
+    dplyr::mutate(distance = sqrt((50 - x)^2 + (50 - y)^2)) %>%
+    dplyr::arrange(time, distance) %>%
+    dplyr::mutate(i = 1:dplyr::n()) %>%
+    dplyr::filter(i %in% 1:n_samples) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(ind, time, x, y, distance) %>%
+    dplyr::arrange(time, distance) %>%
+    as.data.frame()
+
+  # load locations of individuals remembered in the tree sequence
+  ts <- ts_load(model)
+  individuals <- ts_data(ts, remembered = TRUE) %>%
+    dplyr::select(-node_id) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(
+      x = sf::st_coordinates(.)[, "X"],
+      y = sf::st_coordinates(.)[, "Y"]
+    ) %>%
+    dplyr::as_tibble() %>%
+    dplyr::select(ind_id, time, x, y) %>%
+    dplyr::mutate(distance = sqrt((50 - x)^2 + (50 - y)^2)) %>%
+    dplyr::arrange(time, distance) %>%
+    as.data.frame()
+
+  expect_true(all.equal(individuals$x, locations$x, tolerance = 0.001))
+  expect_true(all.equal(individuals$y, locations$y, tolerance = 0.001))
+  expect_true(all.equal(individuals$distance, locations$distance, tolerance = 0.001))
+})

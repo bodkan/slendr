@@ -1,13 +1,3 @@
-# conda create --name retipy tskit pyslim msprime
-env_present <- function(env) {
-  tryCatch({
-    reticulate::use_condaenv(env, required = TRUE)
-    return(TRUE)
-  },
-  error = function(cond) FALSE
-)
-}
-
 skip_if(!env_present("retipy"))
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
