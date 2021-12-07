@@ -51,7 +51,7 @@ test_that("tree sequence contains the specified number of sampled individuals", 
     dplyr::as_tibble() %>%
     dplyr::distinct(ind_id, time, pop) %>%
     dplyr::count(time, pop)
-  expect_true(all(counts == samples))
+  expect_true(all(counts == samples[, c("time", "pop", "n")]))
 })
 
 test_that("locations and times in the tree sequence match values saved by SLiM", {
