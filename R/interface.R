@@ -977,7 +977,7 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
       times <- times[times <= model$orig_length]
   }
 
-  sampling_schedule <- purrr::map_dfr(times, function(t) {
+  schedule <- purrr::map_dfr(times, function(t) {
     purrr::map_dfr(samples, function(s) {
       pop <- s[[1]]
       n <- s[[2]]
@@ -1001,10 +1001,10 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
     })
   })
 
-  if (is.null(sampling_schedule))
+  if (is.null(schedule))
     stop("No sampling events have been generated", call. = FALSE)
 
-  if (!nrow(sampling_schedule)) {
+  if (!nrow(schedule)) {
     warning("No valid sampling events were retained", call. = FALSE)
     return(NULL)
   }
@@ -1012,6 +1012,9 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   if (!is.null(locations)) {
     check_location_bounds(locations, map)
 
+    # convert the list of coordinate pairs into a data frame with x and y
+    # columns transformed from world-based coordinates into raster-based
+    # coordinates
     locations_df <- dplyr::tibble(
       orig_x = purrr::map_dbl(locations, ~ .[[1]]),
       orig_y = purrr::map_dbl(locations, ~ .[[2]])
@@ -1021,12 +1024,15 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
         from = "world", to = "raster",
         input_prefix = "orig_", output_prefix = "",
         add = TRUE
-      )
+      ) %>%
+      dplyr::rename(x_orig = orig_x, y_orig = orig_y)
 
-    sampling_schedule <- merge(sampling_schedule, locations_df)
+    schedule <- merge(schedule, locations_df)
+  } else {
+    schedule$x <- schedule$y <- schedule$x_orig <- schedule$y_orig <- NA
   }
 
-  sampling_schedule
+  schedule
 }
 
 

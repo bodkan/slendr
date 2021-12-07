@@ -338,7 +338,7 @@ has_map <- function(x) {
 
 
 # Process the sampling schedue
-process_sampling <- function(samples, model, sampling_path, verbose) {
+process_sampling <- function(samples, model, verbose = FALSE) {
   # if no explicit sampling schedule was given, try to generate it at least
   # for the populations which survive to the present
   if (is.null(samples)) {
@@ -365,20 +365,26 @@ process_sampling <- function(samples, model, sampling_path, verbose) {
       warning("No populations survive to the end of the simulations which means ",
               "that no individuals will be remembered.", call. = FALSE)
       return(NULL)
-    }
+    } else
+      samples$x <- samples$y <- samples$x_orig <- samples$y_orig <- NA
   }
 
-  df <- dplyr::group_by(samples, time, pop) %>%
+  df <- dplyr::group_by(samples, time, pop, x, y, x_orig, y_orig) %>%
     dplyr::summarise(n = sum(n), .groups = "drop") %>%
     dplyr::arrange(time) %>%
     convert_to_forward(direction = model$direction,
                  columns = "time",
                  generation_time = model$generation_time,
                  end_time = model$orig_length) %>%
-    dplyr::arrange(time_gen)
+    dplyr::arrange(time_gen) %>%
+    dplyr::select(pop, n, time_gen, x, y, time_orig, x_orig, y_orig)
+
+  # if locations are missing, replace NA with -1 values for SLiM to understand
+  df <- replace(df, is.na(df), -1)
 
   df <- df %>% dplyr::mutate(n = ifelse(is.infinite(n), "INF", n))
-  readr::write_tsv(df, sampling_path)
+
+  df
 }
 
 # Make sure all given locations fall within world bounding box
