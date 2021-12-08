@@ -346,8 +346,12 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         all_inds = all_inds[all_inds.tag != 1];
 
         x = event.getValue("x"); y = event.getValue("y");
-        if (x != -1 & y != -1)
+        if (x != -1 & y != -1) {
             distances = sqrt((x - all_inds.x) ^ 2 + (y - all_inds.y) ^ 2);
+            where = " around [" + x + ", " + y + "]";
+        } else {
+            where = " (sampled randomly)";
+        }
 
         if (isInfinite(n)) {
             n = length(all_inds);
@@ -360,7 +364,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
             n_str = asString(n);
 
         log_output("remembering " + n_str + " individuals of " +
-                             pop + "(p" + get_pop(pop).id + ")");
+                             pop + "(p" + get_pop(pop).id + ")" + where);
 
         // give a warning in case more individuals are scheduled for sampling
         // than are present in the population
