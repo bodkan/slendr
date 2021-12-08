@@ -917,14 +917,18 @@ dimensions <- function(map, original = FALSE) {
 
 #' Define sampling events for a given set of populations
 #'
-#' Schedule sampling events at specified times and, optionally, locations on a
-#' landscape
+#' Schedule sampling events at specified times and, optionally, a given set of
+#' locations on a landscape
 #'
 #' If both times and locations are given, the the sampling will be scheduled on
 #' each specified location in each given time-point. Note that for the
 #' time-being, in the interest of simplicity, no sanity checks are performed on
-#' the locations given. The R package will simply instruct SLiM to sample given
-#' individuals as close to the sampling points given as possible.
+#' the locations given except the restriction that the sampling points must fall
+#' within the bounding box around the simulated world map. Other than that,
+#' slendr will simply instruct its SLiM backend script to sample individuals as
+#' close to the sampling points given as possible, regardless of whethere those
+#' points lie within a population spatial boundary at that particular moment of
+#' time.
 #'
 #' @param model Object of the class \code{slendr_model}
 #' @param times Integer vector of times (in model time units) at which to
