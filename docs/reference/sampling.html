@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Define sampling events at specified times for a given set of populations — sampling • slendr</title>
+<title>Define sampling events for a given set of populations — sampling • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,9 @@
 
 
 
-<meta property="og:title" content="Define sampling events at specified times for a given set of populations — sampling" />
-<meta property="og:description" content="Define sampling events at specified times for a given set of populations" />
+<meta property="og:title" content="Define sampling events for a given set of populations — sampling" />
+<meta property="og:description" content="Schedule sampling events at specified times and, optionally, a given set of
+locations on a landscape" />
 <meta property="og:image" content="https://www.slendr.net/logo.png" />
 
 
@@ -170,16 +171,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Define sampling events at specified times for a given set of populations</h1>
+    <h1>Define sampling events for a given set of populations</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
     <div class="hidden name"><code>sampling.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Define sampling events at specified times for a given set of populations</p>
+    <p>Schedule sampling events at specified times and, optionally, a given set of
+locations on a landscape</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sampling</span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>times</span>, <span class='va'>...</span>, strict <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>sampling</span><span class='op'>(</span><span class='va'>model</span>, <span class='va'>times</span>, <span class='va'>...</span>, locations <span class='op'>=</span> <span class='cn'>NULL</span>, strict <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -200,17 +202,39 @@ of individuals to sample), representing from which populations should how
 many individuals be remembered at times given by <code>times</code></p></td>
     </tr>
     <tr>
+      <th>locations</th>
+      <td><p>List of vector pairs, defining two-dimensional coordinates
+of locations at which the closest number of individuals from given
+populations should be sampled. If <code>NULL</code> (the default), individuals
+will be sampled randomly throughout their spatial boundary.</p></td>
+    </tr>
+    <tr>
       <th>strict</th>
       <td><p>Should any occurence of a population not being present at a
-given time result in an error? Default is <code>FALSE</code>, meaning that invalid
-sampling times for any populations will be quietly ignored.</p></td>
+given time result in an error? Default is <code>FALSE</code>, meaning that
+invalid sampling times for any populations will be quietly ignored.</p></td>
+    </tr>
+    <tr>
+      <th>remove</th>
+      <td><p>Time at which the population should be removed</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Data frame with three columns: time of sampling, population
-to sample from, how many individuals to sample</p>
+    <p>Data frame with three columns: time of sampling, population to sample
+from, how many individuals to sample</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If both times and locations are given, the the sampling will be scheduled on
+each specified location in each given time-point. Note that for the
+time-being, in the interest of simplicity, no sanity checks are performed on
+the locations given except the restriction that the sampling points must fall
+within the bounding box around the simulated world map. Other than that,
+slendr will simply instruct its SLiM backend script to sample individuals as
+close to the sampling points given as possible, regardless of whethere those
+points lie within a population spatial boundary at that particular moment of
+time.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
