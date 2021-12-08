@@ -323,7 +323,8 @@ slim <- function(model, sequence_length, recombination_rate,
   burnin <- round(burnin / model$generation_time)
 
   sampling_path <- ifelse(save_sampling, paste0(output, "_sampling.tsv"), tempfile())
-  process_sampling(sampling, model, sampling_path, verbose)
+  sampling_df <- process_sampling(sampling, model, verbose)
+  readr::write_tsv(sampling_df, sampling_path)
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
   seed <- if (is.null(seed)) "" else paste0(" \\\n    -d SEED=", seed)

@@ -40,15 +40,7 @@ test_that("'x' and 'y' columns are present in each input data.frame", {
 # conversion returns correct type
 ######################################################################
 
-test_that("single point conversion returns a vector", {
-  coord <- c(0, 0)
-  expect_type(
-    reproject(coord[1], coord[2], from = "raster", to = "raster", model = model),
-    "double"
-  )
-})
-
-test_that("single point conversion returns a vector", {
+test_that("coordinate conversion returns a data frame", {
   expect_s3_class(reproject(x = c(1, 10), y = c(0, 5), from = "raster", to = "raster", model = model), "data.frame")
 })
 
@@ -70,28 +62,33 @@ test_that("coordinates are correctly added to a given data.frame", {
 ######################################################################
 
 test_that("raster coordinates project onto themselves", {
-  coord <- c(0, 0)
-  expect_equal(coord, reproject(coord[1], coord[2], from = "raster", to = "raster", model = model))
+  coord <- data.frame(x = 0, y = 0)
+  new_coord <- reproject(coords = coord, from = "raster", to = "raster", model = model, output_prefix = "")
+  expect_equal(coord, new_coord)
 })
 
 test_that("longitude-latitude coordinates project onto themselves", {
   coord <- c(0, 0)
-  expect_equal(coord, reproject(coord[1], coord[2], from = 4326, to = 4326))
+  new_coord <- reproject(coord[1], coord[2], from = 4326, to = 4326, output_prefix = "")
+  expect_equal(coord, as.vector(unlist(new_coord)))
 })
 
 test_that("projected coordinates project onto themselves", {
   coord <- c(0, 0)
-  expect_equal(coord, reproject(coord[1], coord[2], from = 3035, to = 3035))
+  new_coord <- reproject(coord[1], coord[2], from = 3035, to = 3035)
+  expect_equal(coord, as.vector(unlist(new_coord)))
 })
 
 test_that("geographic coordinates project onto projected coordinates", {
   coord <- c(0, 0)
-  new_coord <- reproject(coord[1], coord[2], from = 4326, to = 3035)
-  expect_equal(coord, reproject(new_coord[1], new_coord[2], from = 3035, to = 4326))
+  new_coord <- reproject(coord[1], coord[2], from = 4326, to = 3035, output_prefix = "")
+  orig_coord <- reproject(new_coord[1], new_coord[2], from = 3035, to = 4326, output_prefix = "")
+  expect_equal(coord, as.vector(unlist(orig_coord)))
 })
 
 test_that("projected coordinates project onto geographic coordinates", {
   coord <- c(1000000, 1000000)
   new_coord <- reproject(coord[1], coord[2], from = 3035, to = 4326)
-  expect_equal(coord, reproject(new_coord[1], new_coord[2], from = 4326, to = 3035))
+  orig_coord <- reproject(new_coord[1], new_coord[2], from = 4326, to = 3035)
+  expect_equal(coord, as.vector(unlist(orig_coord)))
 })

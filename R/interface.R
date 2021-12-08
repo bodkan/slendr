@@ -697,7 +697,7 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
   }
 
   if (to == "world") to <- sf::st_crs(model$world)
-  if (from == "world") from <- sf::st_crs(model$world)
+  if (from == "world" && has_crs(model$world)) from <- sf::st_crs(model$world)
 
   if (is.null(coords)) {
     df <- data.frame(x = x, y = y)
@@ -717,11 +717,13 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
   }
 
   if (to == "raster") {
-    point_coords <- sf::st_transform(point, crs = sf::st_crs(model$world)) %>%
-      sf::st_coordinates()
+    if (has_crs(model$world))
+      point<- sf::st_transform(point, crs = sf::st_crs(model$world))
+    point_coords <- sf::st_coordinates(point)
     newx <- abs((point_coords[, "X"] - bbox["xmin"])) / map_dim[1] * raster_dim[1]
     newy <- abs((point_coords[, "Y"] - bbox["ymin"])) / map_dim[2] * raster_dim[2]
     new_point <- data.frame(newx = round(as.vector(newx)), newy = round(as.vector(newy)))
+    colnames(new_point) <- c(outx, outy)
   } else if (!is.na(to)) {
     new_point <- sf::st_transform(point, crs = to) %>% sf::st_coordinates()
     colnames(new_point) <- c(outx, outy)
@@ -730,8 +732,8 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
     colnames(new_point) <- c(outx, outy)
   }
 
-  if (nrow(new_point) == 1)
-    return(as.vector(unlist(new_point)))
+  # if (nrow(new_point) == 1)
+  #   return(as.vector(unlist(new_point)))
 
   if (add) new_point <- cbind(coords, new_point) %>% dplyr::as_tibble()
 
@@ -913,7 +915,20 @@ dimensions <- function(map, original = FALSE) {
 }
 
 
-#' Define sampling events at specified times for a given set of populations
+#' Define sampling events for a given set of populations
+#'
+#' Schedule sampling events at specified times and, optionally, a given set of
+#' locations on a landscape
+#'
+#' If both times and locations are given, the the sampling will be scheduled on
+#' each specified location in each given time-point. Note that for the
+#' time-being, in the interest of simplicity, no sanity checks are performed on
+#' the locations given except the restriction that the sampling points must fall
+#' within the bounding box around the simulated world map. Other than that,
+#' slendr will simply instruct its SLiM backend script to sample individuals as
+#' close to the sampling points given as possible, regardless of whethere those
+#' points lie within a population spatial boundary at that particular moment of
+#' time.
 #'
 #' @param model Object of the class \code{slendr_model}
 #' @param times Integer vector of times (in model time units) at which to
@@ -921,15 +936,20 @@ dimensions <- function(map, original = FALSE) {
 #' @param ... Lists of two elements (\code{slendr_pop} population object-<number
 #'   of individuals to sample), representing from which populations should how
 #'   many individuals be remembered at times given by \code{times}
+#' @param locations List of vector pairs, defining two-dimensional coordinates
+#'   of locations at which the closest number of individuals from given
+#'   populations should be sampled. If \code{NULL} (the default), individuals
+#'   will be sampled randomly throughout their spatial boundary.
+#' @param remove Time at which the population should be removed
 #' @param strict Should any occurence of a population not being present at a
-#'   given time result in an error? Default is \code{FALSE}, meaning that invalid
-#'   sampling times for any populations will be quietly ignored.
+#'   given time result in an error? Default is \code{FALSE}, meaning that
+#'   invalid sampling times for any populations will be quietly ignored.
 #'
-#' @return Data frame with three columns: time of sampling, population
-#'   to sample from, how many individuals to sample
+#' @return Data frame with three columns: time of sampling, population to sample
+#'   from, how many individuals to sample
 #'
 #' @export
-sampling <- function(model, times, ..., strict = FALSE) {
+sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   if (!inherits(model, "slendr_model"))
     stop("A slendr_model object must be specified", call. = FALSE)
 
@@ -961,7 +981,7 @@ sampling <- function(model, times, ..., strict = FALSE) {
       times <- times[times <= model$orig_length]
   }
 
-  sampling_schedule <- purrr::map_dfr(times, function(t) {
+  schedule <- purrr::map_dfr(times, function(t) {
     purrr::map_dfr(samples, function(s) {
       pop <- s[[1]]
       n <- s[[2]]
@@ -985,15 +1005,38 @@ sampling <- function(model, times, ..., strict = FALSE) {
     })
   })
 
-  if (is.null(sampling_schedule))
+  if (is.null(schedule))
     stop("No sampling events have been generated", call. = FALSE)
 
-  if (!nrow(sampling_schedule)) {
+  if (!nrow(schedule)) {
     warning("No valid sampling events were retained", call. = FALSE)
     return(NULL)
   }
 
-  sampling_schedule
+  if (!is.null(locations)) {
+    check_location_bounds(locations, model$world)
+
+    # convert the list of coordinate pairs into a data frame with x and y
+    # columns transformed from world-based coordinates into raster-based
+    # coordinates
+    locations_df <- dplyr::tibble(
+      orig_x = purrr::map_dbl(locations, ~ .[[1]]),
+      orig_y = purrr::map_dbl(locations, ~ .[[2]])
+    ) %>%
+      reproject(
+        coords = ., model = model,
+        from = "world", to = "raster",
+        input_prefix = "orig_", output_prefix = "",
+        add = TRUE
+      ) %>%
+      dplyr::rename(x_orig = orig_x, y_orig = orig_y)
+
+    schedule <- merge(schedule, locations_df)
+  } else {
+    schedule$x <- schedule$y <- schedule$x_orig <- schedule$y_orig <- NA
+  }
+
+  schedule
 }
 
 

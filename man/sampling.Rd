@@ -2,9 +2,9 @@
 % Please edit documentation in R/interface.R
 \name{sampling}
 \alias{sampling}
-\title{Define sampling events at specified times for a given set of populations}
+\title{Define sampling events for a given set of populations}
 \usage{
-sampling(model, times, ..., strict = FALSE)
+sampling(model, times, ..., locations = NULL, strict = FALSE)
 }
 \arguments{
 \item{model}{Object of the class \code{slendr_model}}
@@ -16,14 +16,33 @@ schedule remembering of individuals in the tree-sequence}
 of individuals to sample), representing from which populations should how
 many individuals be remembered at times given by \code{times}}
 
+\item{locations}{List of vector pairs, defining two-dimensional coordinates
+of locations at which the closest number of individuals from given
+populations should be sampled. If \code{NULL} (the default), individuals
+will be sampled randomly throughout their spatial boundary.}
+
 \item{strict}{Should any occurence of a population not being present at a
-given time result in an error? Default is \code{FALSE}, meaning that invalid
-sampling times for any populations will be quietly ignored.}
+given time result in an error? Default is \code{FALSE}, meaning that
+invalid sampling times for any populations will be quietly ignored.}
+
+\item{remove}{Time at which the population should be removed}
 }
 \value{
-Data frame with three columns: time of sampling, population
-to sample from, how many individuals to sample
+Data frame with three columns: time of sampling, population to sample
+from, how many individuals to sample
 }
 \description{
-Define sampling events at specified times for a given set of populations
+Schedule sampling events at specified times and, optionally, a given set of
+locations on a landscape
+}
+\details{
+If both times and locations are given, the the sampling will be scheduled on
+each specified location in each given time-point. Note that for the
+time-being, in the interest of simplicity, no sanity checks are performed on
+the locations given except the restriction that the sampling points must fall
+within the bounding box around the simulated world map. Other than that,
+slendr will simply instruct its SLiM backend script to sample individuals as
+close to the sampling points given as possible, regardless of whethere those
+points lie within a population spatial boundary at that particular moment of
+time.
 }

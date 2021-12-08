@@ -1,4 +1,4 @@
-pandoc: '2.13'
+pandoc: 2.16.2
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
@@ -10,7 +10,7 @@ articles:
   vignette-06-locations: vignette-06-locations.html
   vignette-07-msprime: vignette-07-msprime.html
   vignette-08-paper: vignette-08-paper.html
-last_built: 2021-12-06T10:18Z
+last_built: 2021-12-08T12:29Z
 urls:
   reference: https://www.slendr.net/reference
   article: https://www.slendr.net/articles
