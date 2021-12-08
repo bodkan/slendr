@@ -176,39 +176,39 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nea_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampling.html">sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">70000</span>, <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="va">nea_samples</span></code></pre></div>
-<pre><code>#&gt; # A tibble: 2 × 3
-#&gt;    time pop       n
-#&gt;   &lt;int&gt; &lt;chr&gt; &lt;int&gt;
-#&gt; 1 40000 NEA       1
-#&gt; 2 70000 NEA       1</code></pre>
+<pre><code>#&gt; # A tibble: 2 × 7
+#&gt;    time pop       n y_orig x_orig y     x    
+#&gt;   &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;lgl&gt;  &lt;lgl&gt;  &lt;lgl&gt; &lt;lgl&gt;
+#&gt; 1 40000 NEA       1 NA     NA     NA    NA   
+#&gt; 2 70000 NEA       1 NA     NA     NA    NA</code></pre>
 <p>As you can see, the <code><a href="../reference/sampling.html">sampling()</a></code> function simply accepts the vector of times at which remembering should be schedule, and then a list of pairs <code>(&lt;slendr population&gt;, &lt;number of individuals&gt;)</code> encoding from which populations should how many individuals be remembered at time points given in the <code>times</code> vector.</p>
 <p>Next, we want to sample some present-day individuals: an outgroup representing a chimpanzee, and a couple of Africans and Europeans:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">present_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampling.html">sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span>
 <span class="va">present_samples</span></code></pre></div>
-<pre><code>#&gt; # A tibble: 3 × 3
-#&gt;    time pop       n
-#&gt;   &lt;int&gt; &lt;chr&gt; &lt;int&gt;
-#&gt; 1     0 CH        1
-#&gt; 2     0 AFR       5
-#&gt; 3     0 EUR      10</code></pre>
+<pre><code>#&gt; # A tibble: 3 × 7
+#&gt;    time pop       n y_orig x_orig y     x    
+#&gt;   &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;lgl&gt;  &lt;lgl&gt;  &lt;lgl&gt; &lt;lgl&gt;
+#&gt; 1     0 CH        1 NA     NA     NA    NA   
+#&gt; 2     0 AFR       5 NA     NA     NA    NA   
+#&gt; 3     0 EUR      10 NA     NA     NA    NA</code></pre>
 <p>As you can see above, the <code><a href="../reference/sampling.html">sampling()</a></code> function returns a plain old data frame with a very simple structure with three columns: time, population name, and the number of individuals. This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated ancient DNA samples from an Excel sheet from some publication). For instance, there has been a <a href="https://www.nature.com/articles/nature17993">lot</a> of <a href="https://www.pnas.org/content/116/5/1639">interest</a> to estimate the trajectory of Neanderthal ancestry in Europe over time using ancient DNA data from anatomically modern human individuals (also called early modern humans, EMH) across the last couple of tens of thousands of years. We can simulate something close to the available <a href="https://www.nature.com/articles/nature17993">EMH ancient DNA data set</a> over the last 50 thousand years by running doing this:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">emh_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampling.html">sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">40</span>, min <span class="op">=</span> <span class="fl">10000</span>, max <span class="op">=</span> <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="va">emh_samples</span></code></pre></div>
-<pre><code>#&gt; # A tibble: 40 × 3
-#&gt;     time pop       n
-#&gt;    &lt;int&gt; &lt;chr&gt; &lt;int&gt;
-#&gt;  1 10319 EUR       1
-#&gt;  2 11187 EUR       1
-#&gt;  3 11395 EUR       1
-#&gt;  4 11529 EUR       1
-#&gt;  5 11927 EUR       1
-#&gt;  6 12675 EUR       1
-#&gt;  7 13689 EUR       1
-#&gt;  8 13744 EUR       1
-#&gt;  9 14774 EUR       1
-#&gt; 10 16361 EUR       1
+<pre><code>#&gt; # A tibble: 40 × 7
+#&gt;     time pop       n y_orig x_orig y     x    
+#&gt;    &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;lgl&gt;  &lt;lgl&gt;  &lt;lgl&gt; &lt;lgl&gt;
+#&gt;  1 10319 EUR       1 NA     NA     NA    NA   
+#&gt;  2 11187 EUR       1 NA     NA     NA    NA   
+#&gt;  3 11395 EUR       1 NA     NA     NA    NA   
+#&gt;  4 11529 EUR       1 NA     NA     NA    NA   
+#&gt;  5 11927 EUR       1 NA     NA     NA    NA   
+#&gt;  6 12675 EUR       1 NA     NA     NA    NA   
+#&gt;  7 13689 EUR       1 NA     NA     NA    NA   
+#&gt;  8 13744 EUR       1 NA     NA     NA    NA   
+#&gt;  9 14774 EUR       1 NA     NA     NA    NA   
+#&gt; 10 16361 EUR       1 NA     NA     NA    NA   
 #&gt; # … with 30 more rows</code></pre>
 <p>This samples a single ancient European individuals at randomly chosen times between 40 and 10 ky ago.</p>
 <p>One nice feature of the <code><a href="../reference/sampling.html">sampling()</a></code> function is that it only schedules sampling events for a population, if that population is present in the simulation at a given time. This makes it possible to simply take a wide time range for sampling, specify all populations and sizes of the samples, and let the function generate sampling events only for populations present at each time. If for some reason a stricter control over sampling is required, this behavior can be switched off by setting <code>strict = TRUE</code> like this:</p>
@@ -229,9 +229,9 @@
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpgXWavv/file18f229f8466"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpgXWavv/introgression"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpgXWavv/introgression/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcXzudM/fileb2fe2e3f1389"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcXzudM/introgression"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcXzudM/introgression/output"' \
 #&gt;     -d SPATIAL=F \
 #&gt;     -d SEQUENCE_LENGTH=10000000 \
 #&gt;     -d RECOMB_RATE=1e-08 \
@@ -239,7 +239,7 @@
 #&gt;     -d SIMULATION_LENGTH=216667 \
 #&gt;     -d SAVE_LOCATIONS=F \
 #&gt;     -d MAX_ATTEMPTS=10 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpgXWavv/introgression/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpcXzudM/introgression/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 </div>
 <div id="r-interface-for-tskit-and-pyslim" class="section level2">
@@ -315,7 +315,7 @@
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Populations│     5│ 3.1 KiB│         Yes║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Provenances│     1│30.0 KiB│          No║
+#&gt; ║Provenances│     1│30.5 KiB│          No║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Sites      │     0│ 8 Bytes│          No║
 #&gt; ╚═══════════╧══════╧════════╧════════════╝</code></pre>
@@ -352,7 +352,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    2│ 30.5 KiB│          No║
+#&gt; ║Provenances│    2│ 31.0 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │    0│  8 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
@@ -389,7 +389,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 31.0 KiB│          No║
+#&gt; ║Provenances│    3│ 31.5 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │    0│  8 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
@@ -431,7 +431,7 @@
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Populations│    5│  3.1 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 31.3 KiB│          No║
+#&gt; ║Provenances│    3│ 31.7 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Sites      │58089│964.4 KiB│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>

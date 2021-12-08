@@ -1,13 +1,3 @@
-# conda create --name retipy tskit pyslim msprime
-env_present <- function(env) {
-  tryCatch({
-    reticulate::use_condaenv(env, required = TRUE)
-    return(TRUE)
-  },
-  error = function(cond) FALSE
-)
-}
-
 skip_if(!env_present("retipy"))
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
@@ -61,7 +51,7 @@ test_that("tree sequence contains the specified number of sampled individuals", 
     dplyr::as_tibble() %>%
     dplyr::distinct(ind_id, time, pop) %>%
     dplyr::count(time, pop)
-  expect_true(all(counts == samples))
+  expect_true(all(counts == samples[, c("time", "pop", "n")]))
 })
 
 test_that("locations and times in the tree sequence match values saved by SLiM", {

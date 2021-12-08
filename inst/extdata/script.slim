@@ -345,6 +345,14 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         // only individuals not yet sampled are eligible for remembering
         all_inds = all_inds[all_inds.tag != 1];
 
+        x = event.getValue("x"); y = event.getValue("y");
+        if (x != -1 & y != -1) {
+            distances = sqrt((x - all_inds.x) ^ 2 + (y - all_inds.y) ^ 2);
+            where = " around [" + x + ", " + y + "]";
+        } else {
+            where = " (sampled randomly)";
+        }
+
         if (isInfinite(n)) {
             n = length(all_inds);
             n_str = "all (" + n + ")";
@@ -356,7 +364,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
             n_str = asString(n);
 
         log_output("remembering " + n_str + " individuals of " +
-                             pop + "(p" + get_pop(pop).id + ")");
+                             pop + "(p" + get_pop(pop).id + ")" + where);
 
         // give a warning in case more individuals are scheduled for sampling
         // than are present in the population
@@ -366,7 +374,11 @@ s10 late() /* Remember individuals for tree sequence recording */ {
             n = length(all_inds);
         }
 
-        inds = sample(all_inds, asInteger(n));
+        if (exists("distances"))
+            inds = all_inds[order(distances)][0 : (n - 1)];
+        else
+            inds = sample(all_inds, asInteger(n));
+
         inds.tag = 1; // tag sampled individuals as remembered
         sim.treeSeqRememberIndividuals(inds, permanent = T);
     }
@@ -691,7 +703,8 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
                 "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
                 "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
-    float = c("rate", "competition_dist", "mate_dist", "dispersal_dist", "n");
+    float = c("rate", "competition_dist", "mate_dist", "dispersal_dist", "n",
+              "x", "y", "x_orig", "y_orig");
     logical = c("overlap");
 
     if (any(column_name == integer))
