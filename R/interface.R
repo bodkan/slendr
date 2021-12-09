@@ -484,9 +484,9 @@ geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
              to$tmap[1] >= start & to$tmap[1] >= end)
       comp <- `>=`
     else
-      stop(sprintf("Specified times are not consistent with the assumed direction of time (geneflow %s -> %s in the time window %s-%s)",
-                   from_name, to_name, start, end),
-           call. = FALSE)
+      stop(sprintf("Specified times are not consistent with the assumed direction of
+time (geneflow %s -> %s in the time window %s-%s)",
+                   from_name, to_name, start, end), call. = FALSE)
 
     # get the last specified spatial maps before the geneflow time
     region_from <- intersect_features(from[comp(from$tmap, start), ] %>% .[nrow(.), ])
@@ -505,7 +505,7 @@ geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
     region_overlap <- sf::st_intersection(region_from, region_to)
     area_overlap <- as.numeric(sum(sf::st_area(region_overlap)))
 
-    if (overlap & area_overlap == 0) {
+    if (overlap && area_overlap == 0) {
       stop(sprintf("No overlap between population ranges of %s and %s at time %d.
 
   Please check the spatial maps of both populations by running
