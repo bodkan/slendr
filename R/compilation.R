@@ -726,7 +726,8 @@ compile_dispersals <- function(populations, generation_time, direction,
     lapply(attr(p, "history"), function(event) {
       if (event$event == "split") {
         event$N <- NULL
-        names(event) <- c("pop", "event", "time", "competition_dist", "mate_dist", "dispersal_dist")
+        names(event) <- c("pop", "event", "time", "competition_dist",
+                          "mate_dist", "dispersal_dist", "dispersal_fun")
         event$event <- "dispersal"
         event
       } else if (event$event == "dispersal") {
@@ -768,7 +769,8 @@ compile_dispersals <- function(populations, generation_time, direction,
   dispersal_table[indices, ]$tdispersal_gen <- 1
 
   dispersal_table[, c("pop", "pop_id", "tdispersal_gen", "tdispersal_orig",
-                      "competition_dist", "mate_dist", "dispersal_dist")]
+                      "competition_dist", "mate_dist", "dispersal_dist",
+                      "dispersal_fun")]
 }
 
 
