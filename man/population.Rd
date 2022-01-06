@@ -18,6 +18,7 @@ population(
   competition_dist = NA,
   mate_dist = NA,
   dispersal_dist = NA,
+  dispersal_fun = NULL,
   aquatic = FALSE
 )
 }
@@ -55,6 +56,9 @@ choice distance}
 
 \item{dispersal_dist}{Standard deviation of the normal distribution of the
 distance that offspring disperses from its parent}
+
+\item{dispersal_fun}{Distribution function governing the dispersal of
+offspring. One of "normal", "uniform", "cauchy", or "exponential".}
 
 \item{aquatic}{Is the species aquatic (\code{FALSE} by default, i.e.
 terrestrial species)?}
