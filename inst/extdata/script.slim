@@ -217,7 +217,7 @@ s4 late() /* Update spatial population boundaries */ {
         // uniformly distribute individuals if this is the very first boundary
         // of the population
         tsplit = filter(POPULATIONS, "pop_id", id).getValue("tsplit_gen");
-        if (tsplit == 1 | tsplit == sim.generation - BURNIN_LENGTH)
+        if (tsplit == sim.generation - BURNIN_LENGTH)
             set_coordinates(get_pop(id).individuals, id);
     }
 }
