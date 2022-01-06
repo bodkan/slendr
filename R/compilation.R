@@ -297,7 +297,7 @@ read <- function(dir) {
 slim <- function(model, sequence_length, recombination_rate,
                  output = file.path(model$path, "output"),
                  spatial = !is.null(model$world),
-                 sampling = NULL, max_attempts = 10,
+                 sampling = NULL, max_attempts = 1,
                  save_locations = FALSE,
                  method = c("batch", "gui"), verbose = TRUE, burnin = 0,
                  seed = NULL, slim_path = NULL, save_sampling = FALSE) {
