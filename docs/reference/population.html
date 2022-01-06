@@ -193,6 +193,7 @@
   competition_dist <span class='op'>=</span> <span class='cn'>NA</span>,
   mate_dist <span class='op'>=</span> <span class='cn'>NA</span>,
   dispersal_dist <span class='op'>=</span> <span class='cn'>NA</span>,
+  dispersal_fun <span class='op'>=</span> <span class='cn'>NULL</span>,
   aquatic <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
@@ -256,6 +257,11 @@ choice distance</p></td>
       <th>dispersal_dist</th>
       <td><p>Standard deviation of the normal distribution of the
 distance that offspring disperses from its parent</p></td>
+    </tr>
+    <tr>
+      <th>dispersal_fun</th>
+      <td><p>Distribution function governing the dispersal of
+offspring. One of "normal", "uniform", "cauchy", or "exponential".</p></td>
     </tr>
     <tr>
       <th>aquatic</th>
