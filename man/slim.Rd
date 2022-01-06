@@ -11,7 +11,7 @@ slim(
   output = file.path(model$path, "output"),
   spatial = !is.null(model$world),
   sampling = NULL,
-  max_attempts = 10,
+  max_attempts = 1,
   save_locations = FALSE,
   method = c("batch", "gui"),
   verbose = TRUE,
