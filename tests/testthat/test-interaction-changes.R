@@ -96,7 +96,7 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
     else if (fun == "rexp")
       distance = rexp(1, rate = 1/param)
     else
-      stop("Unknown distribution function", call. = FALSE)
+      stop("Unknown distribution function", fun, call. = FALSE)
     angle = runif(1, min = 0, max = 2 * pi);
     x <- distance * cos(angle);
     y <- distance * sin(angle);
@@ -122,29 +122,32 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
     coord_cartesian(xlim = c(0, 50)) +
     facet_wrap(~ fun, scales = "free") +
     guides(color = guide_legend("simulation"))
+
   output_png <- paste0(tempfile(), ".png")
   ggsave(output_png, p, width = 8, height = 5)
+  first_output_png <- "dispersal_dist.png"
+  # ggsave(first_output_png, p, width = 8, height = 5)
 
   # make sure that the distributions as they were originally inspected and
   # verified visually match the new distributions plot
-  expect_true(tools::md5sum(output_png) == tools::md5sum("dispersal_dist.png"))
+  expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
 
   # compare the SLiM dispersal distributions to the distributions randomly
   # sampled in R using the Kolmogorov-Smirnov test
   expect_true(ks.test(
     slim_distances[slim_distances$fun == "normal", ]$distance,
     r_distances[r_distances$fun == "normal", ]$distance
-  )$p.value > 0.1)
+  )$p.value > 0.05)
   expect_true(ks.test(
     slim_distances[slim_distances$fun == "uniform", ]$distance,
     r_distances[r_distances$fun == "uniform", ]$distance
-  )$p.value > 0.1)
+  )$p.value > 0.05)
   expect_true(ks.test(
     slim_distances[slim_distances$fun == "cauchy", ]$distance,
     r_distances[r_distances$fun == "cauchy", ]$distance
-  )$p.value > 0.1)
+  )$p.value > 0.05)
   expect_true(ks.test(
     slim_distances[slim_distances$fun == "exponential", ]$distance,
     r_distances[r_distances$fun == "exponential", ]$distance
-  )$p.value > 0.1)
+  )$p.value > 0.05)
 })
