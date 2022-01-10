@@ -293,25 +293,35 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL, verbose
 
 #' Update the population range
 #'
-#' This function allows a more manual control of spatial map changes in addition to the
-#' \code{expand} and \code{move} functions
+#' This function allows a more manual control of spatial map changes
+#' in addition to the \code{expand} and \code{move} functions
 #'
 #' @param pop Object of the class \code{slendr_pop}
 #' @param time Time of the change
-#' @param center Two-dimensional vector specifying the center of the circular range
+#' @param center Two-dimensional vector specifying the center of the
+#'   circular range
 #' @param radius Radius of the circular range
-#' @param polygon List of vector pairs, defining corners of the polygon range (see also the
-#'   \code{region} argument) or a geographic region of the class \code{slendr_region} from which the
-#'   polygon coordinates will be extracted
-#' @param overlap Minimum required overlap with the previous active population boundary (set to 0 to
-#'   disable the check)
+#' @param polygon List of vector pairs, defining corners of the
+#'   polygon range (see also the \code{region} argument) or a
+#'   geographic region of the class \code{slendr_region} from which
+#'   the polygon coordinates will be extracted
+#' @param overlap Minimum required overlap with the previous active
+#'   population boundary (set to 0 to disable the check)
+#' @param lock Maintain the same density of individuals. If
+#'   \code{FALSE} (the default), the number of individuals in the
+#'   population will not change. If \code{TRUE}, the number of
+#'   individuals simulated will be changed (increased or decreased)
+#'   appropriately, to match the new population range area.
 #'
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
 boundary <- function(pop, time, center = NULL, radius = NULL,
-                     polygon = NULL, overlap = 0.8) {
-  if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
+                     polygon = NULL, lock = FALSE, overlap = 0) {
+
+  if (!has_map(pop))
+    stop("This operation is only allowed for spatial models", call. = FALSE)
+
   check_event_time(time, pop)
   check_removal_time(time, pop)
 
@@ -347,11 +357,19 @@ boundary <- function(pop, time, center = NULL, radius = NULL,
     time = time
   )))
 
+  if (lock) {
+    areas <- slendr::area(result)$area
+    area_change <- areas[length(areas)] / areas[length(areas) - 1]
+    prev_N <- tail(sapply(attributes(pop)$history, function(event) event$N), 1)
+    new_N <- round(area_change * prev_N)
+    result <- resize(result, N = new_N, time = time, how = "step")
+  }
+
   result
 }
 
 
-#' Resize the population size
+#' Change the population size
 #'
 #' Resizes the population starting from the current value of \code{N}
 #' individuals to the specified value
@@ -576,7 +594,12 @@ time (geneflow %s -> %s in the time window %s-%s)",
 #' @export
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
   if (inherits(landscape, "sf")) { # a landscape defined by the user
-    map <- sf::st_sf(landscape = sf::st_geometry(landscape)) %>%
+    cropped_landscape <- sf::st_crop(
+      landscape,
+      xmin = xrange[1], xmax = xrange[2],
+      ymin = yrange[1], ymax = yrange[2]
+    )
+    map <- sf::st_sf(landscape = sf::st_geometry(cropped_landscape)) %>%
       set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
   } else if (landscape == "blank") { # an empty abstract landscape
     map <- sf::st_sf(geometry = sf::st_sfc()) %>%
@@ -888,19 +911,26 @@ distance between population boundaries", call. = FALSE)
 #'
 #' @param x Object of the class \code{slendr}
 #'
-#' @return Area covered by the input object. If the coordinate reference system
-#'   was specified, the area in projected units (i.e. m^2) is returned.
-#'   Otherwise the function returns area without units.
+#' @return Area covered by the input object. If a \code{slendr_pop}
+#'   was given, a table with an population range area in each time
+#'   point will be returned. If a \code{slendr_region} or
+#'   \code{slendr_world} object was specified, the total area covered
+#'   by this object's spatial boundary will be returned.
 #'
 #' @export
 area <- function(x) {
   if (!inherits(x, "slendr") & !inherits(x, "sf"))
     stop("Input must be of the type 'slendr' or 'sf'", call. = FALSE)
 
-  if (!has_crs(x) && !nrow(x))
-    return(prod(dimensions(x)))
-
-  as.numeric(sum(sf::st_area(x)))
+  if (inherits(x, "slendr_pop")) {
+    areas <- purrr::map_dbl(seq_len(nrow(x)), ~ as.numeric(sum(sf::st_area(x[.x, ]))))
+    times <- x$tmap
+    return(dplyr::tibble(time = times, area = areas))
+  } else if (inherits(x, "slendr_map") || inherits(x, "slendr_region"))
+    return(as.numeric(sum(sf::st_area(x))))
+  else
+    stop("Only the areas covered by slendr_(pop/region/world) objects can be computed",
+         call. = FALSE)
 }
 
 
