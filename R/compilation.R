@@ -297,7 +297,7 @@ read <- function(dir) {
 slim <- function(model, sequence_length, recombination_rate,
                  output = file.path(model$path, "output"),
                  spatial = !is.null(model$world),
-                 sampling = NULL, max_attempts = 10,
+                 sampling = NULL, max_attempts = 1,
                  save_locations = FALSE,
                  method = c("batch", "gui"), verbose = TRUE, burnin = 0,
                  seed = NULL, slim_path = NULL, save_sampling = FALSE) {
@@ -726,7 +726,8 @@ compile_dispersals <- function(populations, generation_time, direction,
     lapply(attr(p, "history"), function(event) {
       if (event$event == "split") {
         event$N <- NULL
-        names(event) <- c("pop", "event", "time", "competition_dist", "mate_dist", "dispersal_dist")
+        names(event) <- c("pop", "event", "time", "competition_dist",
+                          "mate_dist", "dispersal_dist", "dispersal_fun")
         event$event <- "dispersal"
         event
       } else if (event$event == "dispersal") {
@@ -768,7 +769,8 @@ compile_dispersals <- function(populations, generation_time, direction,
   dispersal_table[indices, ]$tdispersal_gen <- 1
 
   dispersal_table[, c("pop", "pop_id", "tdispersal_gen", "tdispersal_orig",
-                      "competition_dist", "mate_dist", "dispersal_dist")]
+                      "competition_dist", "mate_dist", "dispersal_dist",
+                      "dispersal_fun")]
 }
 
 
@@ -828,6 +830,12 @@ This would cause SLiM to crash as it would not be able to place
 any individuals on the map. Please check the spatial boundary for
 this population at this time point.", x$pop, x$time), call. = FALSE)
   }
+
+  if (length(table(as.numeric(raster$fill))) < 2)
+    stop("No occupiable pixel on a rasterized map for population '",
+         x$pop[1], "' at time ", x$tmap[1], ". Make sure that the specified",
+         " population boundary has sufficient space for the population to occupy.",
+         call. = FALSE)
 
   raster
 }

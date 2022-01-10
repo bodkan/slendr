@@ -217,7 +217,7 @@ s4 late() /* Update spatial population boundaries */ {
         // uniformly distribute individuals if this is the very first boundary
         // of the population
         tsplit = filter(POPULATIONS, "pop_id", id).getValue("tsplit_gen");
-        if (tsplit == 1 | tsplit == sim.generation - BURNIN_LENGTH)
+        if (tsplit == sim.generation | tsplit == sim.generation - BURNIN_LENGTH)
             set_coordinates(get_pop(id).individuals, id);
     }
 }
@@ -286,6 +286,7 @@ s7 late() /* Changing interaction distances and dispersals */ {
         competition_dist = event.getValue("competition_dist");
         mate_dist = event.getValue("mate_dist");
         dispersal_dist = event.getValue("dispersal_dist");
+        dispersal_fun = event.getValue("dispersal_fun");
 
         // interaction parameters are accessed in the same way they were created
         // in the initialize() block -- for an i-th population, we have the
@@ -293,11 +294,12 @@ s7 late() /* Changing interaction distances and dispersals */ {
         competition = sim.interactionTypes[2 * pop_id];
         mating = sim.interactionTypes[2 * pop_id + 1];
         dispersal = get_pop(pop).getValue("dispersal_dist");
+        fun = get_pop(pop).getValue("dispersal_fun");
 
         // only change parameters that are scheduled for change in this event
         if (competition_dist != competition.maxDistance) {
             log_output("setting competition interaction distance for " + pop + "(p" +
-                                 pop_id + ") to " + competition_dist);
+                       pop_id + ") to " + competition_dist);
             competition.unevaluate();
             competition.maxDistance = competition_dist;
         }
@@ -310,8 +312,14 @@ s7 late() /* Changing interaction distances and dispersals */ {
         if (dispersal_dist != dispersal) {
             if (dispersal != -1)
                 log_output("setting offspring dispersal distance for " + pop +
-                                     "(p" + pop_id + ") to " + dispersal_dist);
+                           "(p" + pop_id + ") to " + dispersal_dist);
             get_pop(pop).setValue("dispersal_dist", dispersal_dist);
+        }
+        if (dispersal_fun != fun) {
+            if (fun != "")
+                log_output("changing dispersal kernel for " + pop +
+                           "(p" + pop_id + ") to " + dispersal_fun);
+            get_pop(pop).setValue("dispersal_fun", dispersal_fun);
         }
     }
 
@@ -349,9 +357,8 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         if (x != -1 & y != -1) {
             distances = sqrt((x - all_inds.x) ^ 2 + (y - all_inds.y) ^ 2);
             where = " around [" + x + ", " + y + "]";
-        } else {
-            where = " (sampled randomly)";
-        }
+        } else
+            where = "";
 
         if (isInfinite(n)) {
             n = length(all_inds);
@@ -461,17 +468,18 @@ modifyChild() /* Place offspring within its population's boundary */ {
         }
     }
 
-    // for spatially overlapping geneflow and non-migrant offspring,
-    // propose location in the neighborhood of one of its parents
-    sigma_dist = get_pop(subpop.id).getValue("dispersal_dist");
-
     // make sure that offspring is generated in allowed locations on the map
     // (within it's population bounds and not in an inaccessible location)
     attempts = 0; // how many attempts have been made to place the offspring?
     do {
         attempts = attempts + 1;
-        jitter = rnorm(2, 0, sigma_dist);
-        pos = parent1.spatialPosition + jitter;
+
+        dispersal_param = get_pop(subpop.id).getValue("dispersal_dist");
+        dispersal_fun = get_pop(subpop.id).getValue("dispersal_fun");
+
+        movement = dispersal_fun(dispersal_fun, dispersal_param);
+        pos = parent1.spatialPosition + movement;
+
         found = subpop.pointInBounds(pos) & subpop.spatialMapValue("world", pos) == 0.0;
     } while (!found & attempts < MAX_ATTEMPTS);
 
@@ -513,6 +521,7 @@ function (void) create_pop(object<Dictionary> pop) {
 
     // dispersal distance is set in a script block (here we just create the variable)
     get_pop(pop_id).setValue("dispersal_dist", -1);
+    get_pop(pop_id).setValue("dispersal_fun", "");
 }
 
 // Start or stop geneflow
@@ -543,6 +552,30 @@ function (void) set_coordinates(lifso<Individual> inds, i$ id, [l$ log = T]) {
         while (get_pop(id).spatialMapValue("world", pos) == 1.0);
         ind.setSpatialPosition(pos);
     }
+}
+
+// Compute the dispersal of an offspring from its parent
+function (f) dispersal_fun(s$ fun, f$ param) {
+    // first draw the distance from a given distribution
+    if (fun == "normal")
+        distance = rnorm(1, mean = 0, sd = param);
+    else if (fun == "uniform")
+        distance = runif(1, min = 0, max = param);
+    else if (fun == "cauchy")
+        distance = rcauchy(1, location = 0, scale = param);
+    else if (fun == "exponential")
+        distance = rexp(1, mu = param);
+    else
+        stop("Invalid dispersal function '" + fun + "' specified");
+
+    // draw an angle from a uniform distribution of angles around a circle
+    angle = runif(1, min = 0, max = 2 * PI);
+
+    // convert the polar coordinate <angle, distance> into cartesian system
+    x = distance * cos(angle);
+    y = distance * sin(angle);
+
+    return(c(x, y));
 }
 
 // Get subpopulation object based on a given identifier
@@ -697,7 +730,7 @@ function (void) print_table(object<Dictionary> d) {
 // for every column among all slendr-generated TSV files)
 function (ifsl) convert_type(s$ column_name, s string_values) {
     // vectors of all possible column names in tables defined by slendr `compile()`
-    string = c("pop", "parent", "how", "path", "from", "to", "how");
+    string = c("pop", "parent", "how", "path", "from", "to", "how", "dispersal_fun");
     integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N",
                 "time_orig", "time_gen", "tmap_orig", "tmap_gen",
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",

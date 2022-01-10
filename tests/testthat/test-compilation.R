@@ -34,3 +34,13 @@ test_that("presence of all parents is enforced", {
   expect_error(compile(populations = p2, dir = file.path(tempdir(), "missing-parent"), generation_time = 30),
                "The following parent populations are missing: pop1")
 })
+
+test_that("invalid blank maps are prevented", {
+  map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+  pop <- population("pop", time = 1, N = 100, map = map, center = c(50, 50), radius = 0.5)
+
+  expect_error(compile(pop, tempdir(), generation_time = 1, competition_dist = 1,
+                       mate_dist = 50, dispersal_dist = 1, sim_length = 300,
+                       resolution = 1, overwrite = TRUE),
+               "No occupiable pixel on a rasterized map")
+})
