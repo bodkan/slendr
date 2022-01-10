@@ -45,3 +45,109 @@ test_that("interaction parameter change is correctly recorded", {
   expect_true(hist4$competition_dist == 50 && hist4$dispersal_dist == 10)
 })
 
+test_that("SLiM dispersals match expectations laid by R distributions", {
+  seed <- 42
+  set.seed(seed)
+
+  map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+
+  slim_sim <- function(dispersal_fun, dispersal_dist, seed) {
+
+    pop <- population("pop", time = 1, N = 3000, map = map, center = c(50, 50), radius = 0.5,
+                       dispersal_dist = 0.1) %>%
+      boundary(time = 2, center = c(50, 50), radius = 50) %>%
+      dispersal(time = 2, dispersal_dist = dispersal_dist, dispersal_fun = dispersal_fun)
+
+    model <- compile(
+      pop, file.path(tempdir(), paste0("model_", dispersal_fun)),
+      generation_time = 1, competition_dist = 0, mate_dist = 1,
+      sim_length = 2, resolution = 0.1, overwrite = TRUE
+    )
+
+    slim(model, sequence_length = 1, recombination_rate = 0, method = "batch",
+         save_locations = TRUE, max_attempts = 1, verbose = FALSE, seed = seed)
+
+    locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
+                                 show_col_types = FALSE, progress = FALSE) %>%
+      reproject(coords = ., from = "raster", to = "world", model = model, add = TRUE) %>%
+      dplyr::filter(gen == 0) %>%
+      dplyr::mutate(distance = sqrt((newx - 50)^2 + (newy - 50)^2)) %>%
+      dplyr::mutate(fun = dispersal_fun)
+
+    locations
+  }
+
+  normal <- slim_sim("normal", 10, seed)
+  uniform <- slim_sim("uniform", 10, seed)
+  cauchy <- slim_sim("cauchy", 10, seed)
+  exp <- slim_sim("exponential", 10, seed)
+
+  slim_distances <- rbind(normal, uniform, cauchy, exp) %>%
+    dplyr::select(distance, fun) %>%
+    dplyr::mutate(source = "SLiM")
+
+  r_sim <- function(param, fun) {
+    if (fun == "rnorm")
+      distance = rnorm(1, mean = 0, sd = param)
+    else if (fun == "runif")
+      distance = runif(1, min = 0, max = param)
+    else if (fun == "rcauchy")
+      distance = rcauchy(1, location = 0, scale = param)
+    else if (fun == "rexp")
+      distance = rexp(1, rate = 1/param)
+    else
+      stop("Unknown distribution function", fun, call. = FALSE)
+    angle = runif(1, min = 0, max = 2 * pi);
+    x <- distance * cos(angle);
+    y <- distance * sin(angle);
+    c(x, y);
+  }
+
+  n <- 10000
+  r_distances <- dplyr::tibble(
+    distance = c(
+      sqrt(colSums(replicate(n, r_sim(10, "rnorm"))^2)),
+      sqrt(colSums(replicate(n, r_sim(10, "runif"))^2)),
+      sqrt(colSums(replicate(n, r_sim(10, "rcauchy"))^2)),
+      sqrt(colSums(replicate(n, r_sim(10, "rexp"))^2))
+    ),
+    fun = c(rep("normal", n), rep("uniform", n), rep("cauchy", n), rep("exponential", n)),
+    source = "R"
+  ) %>%
+    dplyr::filter(distance <= 50)
+
+  p <- rbind(slim_distances, r_distances) %>%
+  ggplot2::ggplot(aes(distance, color = source)) +
+    geom_density() +
+    coord_cartesian(xlim = c(0, 50)) +
+    facet_wrap(~ fun, scales = "free") +
+    guides(color = guide_legend("simulation"))
+
+  output_png <- paste0(tempfile(), ".png")
+  ggsave(output_png, p, width = 8, height = 5)
+  first_output_png <- "dispersal_dist.png"
+  # ggsave(first_output_png, p, width = 8, height = 5)
+
+  # make sure that the distributions as they were originally inspected and
+  # verified visually match the new distributions plot
+  expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
+
+  # compare the SLiM dispersal distributions to the distributions randomly
+  # sampled in R using the Kolmogorov-Smirnov test
+  expect_true(ks.test(
+    slim_distances[slim_distances$fun == "normal", ]$distance,
+    r_distances[r_distances$fun == "normal", ]$distance
+  )$p.value > 0.05)
+  expect_true(ks.test(
+    slim_distances[slim_distances$fun == "uniform", ]$distance,
+    r_distances[r_distances$fun == "uniform", ]$distance
+  )$p.value > 0.05)
+  expect_true(ks.test(
+    slim_distances[slim_distances$fun == "cauchy", ]$distance,
+    r_distances[r_distances$fun == "cauchy", ]$distance
+  )$p.value > 0.05)
+  expect_true(ks.test(
+    slim_distances[slim_distances$fun == "exponential", ]$distance,
+    r_distances[r_distances$fun == "exponential", ]$distance
+  )$p.value > 0.05)
+})

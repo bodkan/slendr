@@ -161,7 +161,7 @@
   crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>
 <span class="op">)</span></code></pre></div>
 <pre><code>#&gt; OGR data source with driver: ESRI Shapefile 
-#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmphhLFxN", layer: "ne_110m_land"
+#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpbXAsCU", layer: "ne_110m_land"
 #&gt; with 127 features
 #&gt; It has 3 fields</code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -274,9 +274,9 @@
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphhLFxN/fileb662301b6c68"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphhLFxN/spatial-ts"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphhLFxN/spatial-ts/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpbXAsCU/file1446d1174cd77"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpbXAsCU/spatial-ts"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpbXAsCU/spatial-ts/output"' \
 #&gt;     -d SPATIAL=T \
 #&gt;     -d SEQUENCE_LENGTH=100000 \
 #&gt;     -d RECOMB_RATE=1e-08 \
@@ -284,7 +284,7 @@
 #&gt;     -d SIMULATION_LENGTH=1733 \
 #&gt;     -d SAVE_LOCATIONS=F \
 #&gt;     -d MAX_ATTEMPTS=1 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmphhLFxN/spatial-ts/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpbXAsCU/spatial-ts/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 <p>After the simulation is done, we can load the data in the same way we did in our <a href="vignette-05-tree%20sequences.html#loading-and-processing-tree%20sequence-output-files-1">first exploration</a> of tree sequence features in <em>slendr</em>. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -308,40 +308,40 @@
 <pre><code>#&gt; slendr 'tsdata' object 
 #&gt; ---------------------- 
 #&gt; tree-sequence contents:
-#&gt;   AFR - 5 sampled, 31 retained individuals
-#&gt;   OOA - 16 sampled, 86 retained individuals
-#&gt;   EHG - 22 sampled, 62 retained individuals
-#&gt;   ANA - 24 sampled, 33 retained individuals
-#&gt;   EUR - 54 sampled, 82 retained individuals
-#&gt;   YAM - 4 sampled, 13 retained individuals
+#&gt;   AFR - 5 sampled, 19 retained individuals
+#&gt;   OOA - 16 sampled, 89 retained individuals
+#&gt;   EHG - 22 sampled, 61 retained individuals
+#&gt;   ANA - 24 sampled, 32 retained individuals
+#&gt;   EUR - 54 sampled, 84 retained individuals
+#&gt;   YAM - 4 sampled, 11 retained individuals
 #&gt; 
-#&gt; total: 125 sampled, 307 retained individuals and
+#&gt; total: 125 sampled, 296 retained individuals and
 #&gt;  no nodes from an unassigned individual 
 #&gt; 
 #&gt; oldest sampled individual: 40000 backward time units
 #&gt; youngest sampled individual: 0 backward time units
 #&gt; 
-#&gt; oldest node: 2281375 backward time units
+#&gt; oldest node: 2269845 backward time units
 #&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
 #&gt; contents of the underlying sf object:
 #&gt; 
 #&gt;    name pop ind_id node_id time                 location remembered retained
-#&gt; 1 AFR_1 AFR      0     180    0 POINT (3418405 352076.9)       TRUE     TRUE
-#&gt; 2 AFR_1 AFR      0     181    0 POINT (3418405 352076.9)       TRUE     TRUE
-#&gt; 3 AFR_2 AFR      1     182    0 POINT (3339936 637489.6)       TRUE     TRUE
-#&gt; 4 AFR_2 AFR      1     183    0 POINT (3339936 637489.6)       TRUE     TRUE
-#&gt; 5 AFR_3 AFR      2     184    0   POINT (3537950 690973)       TRUE     TRUE
-#&gt; 6 AFR_3 AFR      2     185    0   POINT (3537950 690973)       TRUE     TRUE
+#&gt; 1 AFR_1 AFR      0     180    0 POINT (3374195 979360.5)       TRUE     TRUE
+#&gt; 2 AFR_1 AFR      0     181    0 POINT (3374195 979360.5)       TRUE     TRUE
+#&gt; 3 AFR_2 AFR      1     182    0 POINT (5165586 730509.2)       TRUE     TRUE
+#&gt; 4 AFR_2 AFR      1     183    0 POINT (5165586 730509.2)       TRUE     TRUE
+#&gt; 5 AFR_3 AFR      2     184    0  POINT (2878172 1192667)       TRUE     TRUE
+#&gt; 6 AFR_3 AFR      2     185    0  POINT (2878172 1192667)       TRUE     TRUE
 #&gt;   alive pedigree_id
-#&gt; 1  TRUE    31382270
-#&gt; 2  TRUE    31382270
-#&gt; 3  TRUE    31382990
-#&gt; 4  TRUE    31382990
-#&gt; 5  TRUE    31383200
-#&gt; 6  TRUE    31383200
+#&gt; 1  TRUE    31010657
+#&gt; 2  TRUE    31010657
+#&gt; 3  TRUE    31011202
+#&gt; 4  TRUE    31011202
+#&gt; 5  TRUE    31011240
+#&gt; 6  TRUE    31011240
 #&gt; 
-#&gt; ... and 561 additional rows
+#&gt; ... and 572 additional rows
 #&gt; ---------------------- 
 #&gt; map: internal coordinate reference system EPSG 3035 
 #&gt; spatial limits (in degrees longitude and latitude):
@@ -350,48 +350,48 @@
 <p>In the first part of the summary, we see how many individuals (sampled or retained) and nodes are present in the tree sequence together with additional useful information, including a section of the internally stored <code>sf</code> object. And this is a crucial point—<strong>we can always access the internal <code>sf</code> object with the spatial data</strong> by running the following, which avoid the verbose summary above and exposes the underlying <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1"><em>sf</em> data frame</a> directly:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span><span class="op">[</span><span class="op">]</span></code></pre></div>
-<pre><code>#&gt; Simple feature collection with 567 features and 9 fields (with 10 geometries empty)
+<pre><code>#&gt; Simple feature collection with 578 features and 9 fields (with 32 geometries empty)
 #&gt; Geometry type: POINT
 #&gt; Dimension:     XY
-#&gt; Bounding box:  xmin: 2364888 ymin: 294002.8 xmax: 8577345 ymax: 4763638
+#&gt; Bounding box:  xmin: 2234450 ymin: 368874.9 xmax: 8559748 ymax: 4814330
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
 #&gt; slendr 'tsdata' object 
 #&gt; ---------------------- 
 #&gt; tree-sequence contents:
-#&gt;   AFR - 5 sampled, 31 retained individuals
-#&gt;   OOA - 16 sampled, 86 retained individuals
-#&gt;   EHG - 22 sampled, 62 retained individuals
-#&gt;   ANA - 24 sampled, 33 retained individuals
-#&gt;   EUR - 54 sampled, 82 retained individuals
-#&gt;   YAM - 4 sampled, 13 retained individuals
+#&gt;   AFR - 5 sampled, 19 retained individuals
+#&gt;   OOA - 16 sampled, 89 retained individuals
+#&gt;   EHG - 22 sampled, 61 retained individuals
+#&gt;   ANA - 24 sampled, 32 retained individuals
+#&gt;   EUR - 54 sampled, 84 retained individuals
+#&gt;   YAM - 4 sampled, 11 retained individuals
 #&gt; 
-#&gt; total: 125 sampled, 307 retained individuals and
+#&gt; total: 125 sampled, 296 retained individuals and
 #&gt;  no nodes from an unassigned individual 
 #&gt; 
 #&gt; oldest sampled individual: 40000 backward time units
 #&gt; youngest sampled individual: 0 backward time units
 #&gt; 
-#&gt; oldest node: 2281375 backward time units
+#&gt; oldest node: 2269845 backward time units
 #&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
 #&gt; contents of the underlying sf object:
 #&gt; 
 #&gt;    name pop ind_id node_id time                 location remembered retained
-#&gt; 1 AFR_1 AFR      0     180    0 POINT (3418405 352076.9)       TRUE     TRUE
-#&gt; 2 AFR_1 AFR      0     181    0 POINT (3418405 352076.9)       TRUE     TRUE
-#&gt; 3 AFR_2 AFR      1     182    0 POINT (3339936 637489.6)       TRUE     TRUE
-#&gt; 4 AFR_2 AFR      1     183    0 POINT (3339936 637489.6)       TRUE     TRUE
-#&gt; 5 AFR_3 AFR      2     184    0   POINT (3537950 690973)       TRUE     TRUE
-#&gt; 6 AFR_3 AFR      2     185    0   POINT (3537950 690973)       TRUE     TRUE
+#&gt; 1 AFR_1 AFR      0     180    0 POINT (3374195 979360.5)       TRUE     TRUE
+#&gt; 2 AFR_1 AFR      0     181    0 POINT (3374195 979360.5)       TRUE     TRUE
+#&gt; 3 AFR_2 AFR      1     182    0 POINT (5165586 730509.2)       TRUE     TRUE
+#&gt; 4 AFR_2 AFR      1     183    0 POINT (5165586 730509.2)       TRUE     TRUE
+#&gt; 5 AFR_3 AFR      2     184    0  POINT (2878172 1192667)       TRUE     TRUE
+#&gt; 6 AFR_3 AFR      2     185    0  POINT (2878172 1192667)       TRUE     TRUE
 #&gt;   alive pedigree_id
-#&gt; 1  TRUE    31382270
-#&gt; 2  TRUE    31382270
-#&gt; 3  TRUE    31382990
-#&gt; 4  TRUE    31382990
-#&gt; 5  TRUE    31383200
-#&gt; 6  TRUE    31383200
+#&gt; 1  TRUE    31010657
+#&gt; 2  TRUE    31010657
+#&gt; 3  TRUE    31011202
+#&gt; 4  TRUE    31011202
+#&gt; 5  TRUE    31011240
+#&gt; 6  TRUE    31011240
 #&gt; 
-#&gt; ... and 561 additional rows
+#&gt; ... and 572 additional rows
 #&gt; ---------------------- 
 #&gt; map: internal coordinate reference system EPSG 3035 
 #&gt; spatial limits (in degrees longitude and latitude):
@@ -467,26 +467,26 @@
 <p>The function starts at a given node (or, if a name of a sampled diploid individual is provided, two nodes), extracts information about all the parent nodes of that node in the entire tree sequence, records their locations and times, then proceeds one level “higher” in the genealogical history to gather information about the parents of those parent nodes, etc., until it reaches a root node. The result of this process is another <code>sf</code> object in which each row of the table encodes information about single branch in the genealogy of the “focal” node or individual (in our example, EUR_25):</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lineages</span></code></pre></div>
-<pre><code>#&gt; Simple feature collection with 95 features and 12 fields
+<pre><code>#&gt; Simple feature collection with 90 features and 12 fields
 #&gt; Active geometry column: connection
 #&gt; Geometry type: LINESTRING
 #&gt; Dimension:     XY
-#&gt; Bounding box:  xmin: 2364888 ymin: 435446 xmax: 8488953 ymax: 4763638
+#&gt; Bounding box:  xmin: 2802639 ymin: 368874.9 xmax: 8456543 ymax: 4741097
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
-#&gt; # A tibble: 95 × 15
+#&gt; # A tibble: 90 × 15
 #&gt;    name  pop   node_id level child_id child_time parent_id parent_time child_pop
 #&gt;  * &lt;chr&gt; &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;    &lt;int&gt;      &lt;int&gt;     &lt;int&gt;       &lt;int&gt; &lt;fct&gt;    
-#&gt;  1 EUR_… EUR       190 1          190          0       260         450 EUR      
-#&gt;  2 EUR_… EUR       190 2          260        450       262         510 EUR      
-#&gt;  3 EUR_… EUR       190 3          262        510       263         570 EUR      
-#&gt;  4 EUR_… EUR       190 4          263        570       282        3090 EUR      
-#&gt;  5 EUR_… EUR       190 5          282       3090       292        4290 EUR      
-#&gt;  6 EUR_… EUR       190 6          292       4290       300        6000 YAM      
-#&gt;  7 EUR_… EUR       190 7          300       6000       307        6840 YAM      
-#&gt;  8 EUR_… EUR       190 8          307       6840       332       10830 YAM      
-#&gt;  9 EUR_… EUR       190 8          307       6840       347       13800 YAM      
-#&gt; 10 EUR_… EUR       190 9          332      10830       390       19860 EHG      
-#&gt; # … with 85 more rows, and 6 more variables: parent_pop &lt;fct&gt;,
+#&gt;  1 EUR_… EUR       190 1          190          0       266        1140 EUR      
+#&gt;  2 EUR_… EUR       190 2          266       1140       298        4470 EUR      
+#&gt;  3 EUR_… EUR       190 2          266       1140       371       18660 EUR      
+#&gt;  4 EUR_… EUR       190 3          298       4470       306        5820 EUR      
+#&gt;  5 EUR_… EUR       190 3          298       4470       332       11760 EUR      
+#&gt;  6 EUR_… EUR       190 3          371      18660       430       26040 EUR      
+#&gt;  7 EUR_… EUR       190 4          306       5820       334       12780 EUR      
+#&gt;  8 EUR_… EUR       190 4          332      11760       395       22290 EUR      
+#&gt;  9 EUR_… EUR       190 4          430      26040       443       27810 EHG      
+#&gt; 10 EUR_… EUR       190 5          334      12780       336       13080 EUR      
+#&gt; # … with 80 more rows, and 6 more variables: parent_pop &lt;fct&gt;,
 #&gt; #   child_location &lt;POINT [m]&gt;, parent_location &lt;POINT [m]&gt;,
 #&gt; #   connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;, right_pos &lt;dbl&gt;</code></pre>
 <p>In each row of the table, two columns <code>location</code> and <code>parent_location</code> carry the spatial location of a node (<code>node_id</code>) and its parent node (<code>parent_id</code>), respectively, same with the columns <code>time</code> and <code>parent_time</code> (times of nodes) and <code>pop</code> and <code>parent_pop</code> (populations to which the nodes belong). The column <code>connection</code> contains an <code>sf</code> geometry object of the line connecting the two nodes in the coordinate reference system of the “model world”. The column <code>focal_id</code> tells us to which focal node’s genealogy the rows of the table belong to, and the <code>level</code> column shows how deep in the genealogical past does each branch (i.e. row of the table) belong to.</p>
@@ -497,13 +497,13 @@
 #&gt; Active geometry column: connection
 #&gt; Geometry type: LINESTRING
 #&gt; Dimension:     XY
-#&gt; Bounding box:  xmin: 4752735 ymin: 2692162 xmax: 4858852 ymax: 3146148
+#&gt; Bounding box:  xmin: 4623438 ymin: 2643195 xmax: 5514323 ymax: 3263463
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
 #&gt; # A tibble: 2 × 15
 #&gt;   name   pop   node_id level child_id child_time parent_id parent_time child_pop
 #&gt; * &lt;chr&gt;  &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;    &lt;int&gt;      &lt;int&gt;     &lt;int&gt;       &lt;int&gt; &lt;fct&gt;    
-#&gt; 1 EUR_25 EUR       190 1          190          0       260         450 EUR      
-#&gt; 2 EUR_25 EUR       191 1          191          0       274        2130 EUR      
+#&gt; 1 EUR_25 EUR       190 1          190          0       266        1140 EUR      
+#&gt; 2 EUR_25 EUR       191 1          191          0       296        4080 EUR      
 #&gt; # … with 6 more variables: parent_pop &lt;fct&gt;, child_location &lt;POINT [m]&gt;,
 #&gt; #   parent_location &lt;POINT [m]&gt;, connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;,
 #&gt; #   right_pos &lt;dbl&gt;</code></pre>
@@ -520,7 +520,7 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Parent nodes (blue) of a focal individual (red)"</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-06-locations_files/figure-html/level1_branches-1.png" width="700"></p>
-<p>In the figure above we can see the red focal node and 4 of its immediate parents in the tree sequence genealogy (in the coalescent sense, not immediate parents of that individual!).</p>
+<p>In the figure above we can see the red focal node and 3 of its immediate parents in the tree sequence genealogy (in the coalescent sense, not immediate parents of that individual!).</p>
 <p>A more convenient way to do this analysis is a companion function to <code><a href="../reference/ts_ancestors.html">ts_ancestors()</a></code> called <code><a href="../reference/plot_ancestors.html">plot_ancestors()</a></code>. This function accepts an <code>sf</code> object with the spatial branching data created by <code><a href="../reference/ts_ancestors.html">ts_ancestors()</a></code> and plots the paths between nodes on a map leading from a focal node up to the root(s) of the tree sequence (instead of just paths to immediate parents shown in the previous figure). In this case, because we are working with a single diploid individual, we get two sets of paths for each of its nodes (chromosomes) and plot them in two facets:</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_ancestors.html">plot_ancestors</a></span><span class="op">(</span><span class="va">lineages</span>, <span class="va">ind</span><span class="op">)</span></code></pre></div>
@@ -572,25 +572,25 @@
   <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, x <span class="op">=</span> <span class="va">.</span><span class="op">)</span>
   
 <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">lineages</span>, <span class="va">connection</span>, <span class="va">child_time</span>, <span class="va">parent_time</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; Simple feature collection with 13986 features and 2 fields
+<pre><code>#&gt; Simple feature collection with 6789 features and 2 fields
 #&gt; Geometry type: LINESTRING
 #&gt; Dimension:     XY
-#&gt; Bounding box:  xmin: 2364888 ymin: 294002.8 xmax: 8577345 ymax: 4763638
+#&gt; Bounding box:  xmin: 2234450 ymin: 368874.9 xmax: 8559748 ymax: 4814330
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
-#&gt; # A tibble: 13,986 × 3
+#&gt; # A tibble: 6,789 × 3
 #&gt;                              connection child_time parent_time
 #&gt;                        &lt;LINESTRING [m]&gt;      &lt;int&gt;       &lt;int&gt;
-#&gt;  1   (8544826 3137554, 8221772 2556362)      40000       41610
-#&gt;  2   (8221772 2556362, 7889369 1835665)      41610       45150
-#&gt;  3   (7889369 1835665, 7693627 1421280)      45150       45540
-#&gt;  4  (7693627 1421280, 3298452 604898.6)      45540       65640
-#&gt;  5   (3298452 604898.6, 2582127 705807)      65640       67980
-#&gt;  6   (3298452 604898.6, 2582127 705807)      65640       67980
-#&gt;  7 (3298452 604898.6, 3833176 810601.8)      65640       76050
-#&gt;  8 (3298452 604898.6, 3231013 919276.7)      65640       92010
-#&gt;  9 (3298452 604898.6, 3301136 795167.7)      65640      103110
-#&gt; 10 (3298452 604898.6, 3124509 855263.7)      65640      130920
-#&gt; # … with 13,976 more rows</code></pre>
+#&gt;  1   (8559748 3193326, 7794902 2294646)      40000       42630
+#&gt;  2   (8559748 3193326, 7044473 1221506)      40000       48600
+#&gt;  3   (7794902 2294646, 7044473 1221506)      42630       48600
+#&gt;  4  (7044473 1221506, 4644641 558702.5)      48600       70170
+#&gt;  5   (7044473 1221506, 4132744 1097930)      48600       85680
+#&gt;  6  (7044473 1221506, 3459546 578367.8)      48600      103410
+#&gt;  7  (7044473 1221506, 3844983 368874.9)      48600      104430
+#&gt;  8 (4644641 558702.5, 3459546 578367.8)      70170      103410
+#&gt;  9  (4132744 1097930, 3844983 368874.9)      85680      104430
+#&gt; 10    (4132744 1097930, 4018395 805860)      85680      192690
+#&gt; # … with 6,779 more rows</code></pre>
 <p>We can use standard <em>dplyr</em> table manipulation functions to compute the distances between connected notes and the times that separate them (i.e. branch lengths in the traditional phylogenetic sense). We can then use those two quantities to compute how fast (if any at all) was the movement between ancestral individuals in different time periods of the history of a sample:</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distances</span> <span class="op">&lt;-</span> <span class="va">lineages</span> <span class="op">%&gt;%</span>

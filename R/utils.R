@@ -402,6 +402,10 @@ check_location_bounds <- function(locations, map) {
          paste(locations[!checks], collapse = ", "), call. = FALSE)
 }
 
+kernel_fun <- function(fun = c("normal", "uniform", "cauchy", "exponential")) {
+  match.arg(fun)
+}
+
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.

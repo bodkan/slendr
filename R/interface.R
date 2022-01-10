@@ -29,6 +29,8 @@
 #'   choice distance
 #' @param dispersal_dist Standard deviation of the normal distribution of the
 #'   distance that offspring disperses from its parent
+#' @param dispersal_fun Distribution function governing the dispersal of
+#'   offspring. One of "normal", "uniform", "cauchy", or "exponential".
 #' @param aquatic Is the species aquatic (\code{FALSE} by default, i.e.
 #'   terrestrial species)?
 #'
@@ -39,7 +41,7 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
                        competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
-                       aquatic = FALSE) {
+                       dispersal_fun = NULL, aquatic = FALSE) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
     if (!is.logical(map) && !inherits(map, "slendr_map"))
@@ -84,6 +86,8 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
 
   attr(pop, "map") <- map
 
+  dispersal_fun <- kernel_fun(dispersal_fun)
+
   # create the first population history event - population split
   attr(pop, "history") <- list(data.frame(
     pop =  name,
@@ -92,7 +96,8 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
     N = N,
     competition_dist = competition_dist,
     mate_dist = mate_dist,
-    dispersal_dist = dispersal_dist
+    dispersal_dist = dispersal_dist,
+    dispersal_fun = dispersal_fun
   ))
 
   class(pop) <- set_class(pop, "pop")
@@ -417,16 +422,22 @@ resize <- function(pop, N, how, time, end = NULL) {
 #'   choice distance
 #' @param dispersal_dist Standard deviation of the normal distribution of the
 #'   distance that offspring disperses from its parent
+#' @param dispersal_fun Distribution function governing the dispersal of
+#'   offspring. One of "normal", "uniform", "cauchy", or "exponential".
 #'
 #' @export
-dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersal_dist = NA) {
+dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
+                      dispersal_fun = NULL) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
 
-  if (is.na(competition_dist) & is.na(mate_dist) & is.na(dispersal_dist))
+  if (is.na(competition_dist) && is.na(mate_dist) && is.na(dispersal_dist) &&
+      is.null(dispersal_fun))
     stop("At least one spatial interaction parameter must be specified", call. = FALSE)
 
   if (any(c(competition_dist, mate_dist, dispersal_dist) < 0, na.rm = TRUE))
     stop("Spatial interaction parameters can only have positive, non-zero values", call. = FALSE)
+
+  dispersal_fun <- kernel_fun(dispersal_fun)
 
   map <- attr(pop, "map")
   if (!is.na(competition_dist)) check_resolution(map, competition_dist)
@@ -442,7 +453,8 @@ dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersa
     time = time,
     competition_dist = competition_dist,
     mate_dist = mate_dist,
-    dispersal_dist = dispersal_dist
+    dispersal_dist = dispersal_dist,
+    dispersal_fun = dispersal_fun
   )
 
   attr(pop, "history") <- append(attr(pop, "history"), list(change))
