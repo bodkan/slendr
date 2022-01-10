@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 80,
-  eval = FALSE
+  eval = TRUE
 )
 
 # for some reason knitr/reticulate sets this to default, sabotaging
@@ -60,15 +60,15 @@ pop <- population(
 
 # compile a slendr model to a serialized form
 model_ex2 <- compile(pop, generation_time = 1, resolution = 1,
-                     sim_length = 18000, dir = EX2_DIR)
+                     sim_length = 18000, dir = EX2_DIR, overwrite = TRUE)
 
 # record 50 individuals every hundred generations in the tree sequence
-samples <- sampling(model_ex2, seq(100, 18000, by = 100), list(pop, 50))
+samples <- sampling(model_ex2, seq(100, 18000, by = 200), list(pop, 50))
 
 # execute the model in SLiM, simulationg 100 kb of sequence and saving
 # the location of each individual throughout the simulation
 slim(model_ex2, sampling = samples, save_locations = TRUE,
-     sequence_length = 100e3, recombination_rate = 1e-8, seed = SEED)
+     sequence_length = 100e3, recombination_rate = 1e-8, seed = RANDOM_SEED)
 ```
 
 We can animate the entire model dynamics using the function `animate()`:
@@ -82,7 +82,7 @@ Load the location of everyone who ever lived:
 epoch_times <- c(3000, 6000, 9000, 12000, 15000, 18000)
 
 locations <- file.path(model_ex2$path, "/output_ind_locations.tsv.gz") %>%
-  read_tsv() %>%
+  read_tsv(show_col_types = FALSE, progress = FALSE) %>%
   mutate(time = 18000 - gen) %>%
   filter(time %in% epoch_times)
 ```
@@ -108,6 +108,7 @@ ggplot(locations, aes(x, y, color = factor(time))) +
 
 Load a couple of libraries for processing and visualising the results, link to the Python environment which contains the necessary Python modules:
 
+
 ```{r, example4_paper_figure}
 # load the output tree sequence, recapitate it, simplify it, add mutations
 ts <- ts_load(model_ex2, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
@@ -116,19 +117,25 @@ ts <- ts_load(model_ex2, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
 # extract table with names and times of sampled individuals
 samples <- ts_samples(ts)
 
-# extract names of individuals in each time point
-groups <- split(samples, samples$time) %>% map(pull, name)
+# extract just the names of individuals which are used as identifiers in
+# various ts_*() statistics functions
+groups <- as.list(samples$name)
 
-# compute nucleotide diversity in each time point and add additional
-# information to the table of results for easier plotting
-diversity <- ts_diversity(ts, groups) %>%
+# compute nucleotide diversity in each simulated individual -- given that
+# each SLiM individual carries two chromosome, this is effectively the
+# heterozygosity in each individual
+result <- ts_diversity(ts, groups)
+
+# add the heterozygosity as a new column to the table of samples
+samples <- samples |>
   mutate(
-    time = as.numeric(set),
+    heterozygosity = result$diversity,
     epoch = findInterval(time, epoch_times, rightmost.closed = TRUE)
   )
 
-# plot diversity over time computed from the tree sequence data
-ggplot(diversity, aes(time, diversity, color = factor(epoch))) +
+# plot heterozygosity over time computed from the tree sequence data,
+# coloring each "epoch" corresponding to the change in spatial dynamics
+ggplot(samples, aes(time, heterozygosity, color = factor(epoch))) +
   geom_point() +
   geom_smooth(color = "black") +
   geom_vline(xintercept = epoch_times, size = 0.75, alpha = 0.25) +
@@ -136,3 +143,34 @@ ggplot(diversity, aes(time, diversity, color = factor(epoch))) +
   labs(x = "time since the start of the simulation") +
   theme_minimal() + guides(color = "none")
 ```
+
+
+
+<!-- ```{r, example4_paper_figure} -->
+<!-- # load the output tree sequence, recapitate it, simplify it, add mutations -->
+<!-- ts <- ts_load(model_ex2, recapitate = TRUE, simplify = TRUE, mutate = TRUE, -->
+<!--               Ne = 10000, recombination_rate = 1e-8, mutation_rate = 1e-8) -->
+
+<!-- # extract table with names and times of sampled individuals -->
+<!-- samples <- ts_samples(ts) -->
+
+<!-- # extract names of individuals in each time point -->
+<!-- groups <- split(samples, samples$time) %>% map(pull, name) -->
+
+<!-- # compute nucleotide diversity in each time point and add additional -->
+<!-- # information to the table of results for easier plotting -->
+<!-- diversity <- ts_diversity(ts, groups) %>% -->
+<!--   mutate( -->
+<!--     time = as.numeric(set), -->
+<!--     epoch = findInterval(time, epoch_times, rightmost.closed = TRUE) -->
+<!--   ) -->
+
+<!-- # plot diversity over time computed from the tree sequence data -->
+<!-- ggplot(diversity, aes(time, diversity, color = factor(epoch))) + -->
+<!--   geom_point() + -->
+<!--   geom_smooth(color = "black") + -->
+<!--   geom_vline(xintercept = epoch_times, size = 0.75, alpha = 0.25) + -->
+<!--   scale_x_continuous(breaks = epoch_times, labels = epoch_times) + -->
+<!--   labs(x = "time since the start of the simulation") + -->
+<!--   theme_minimal() + guides(color = "none") -->
+<!-- ``` -->
