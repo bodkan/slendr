@@ -692,7 +692,7 @@ compile_resizes <- function(populations, generation_time, direction,
                             end_time, split_table) {
   resize_events <- lapply(populations, function(p) {
     lapply(attr(p, "history"), function(event) {
-      if (event$event == "resize") event
+      if (unique(event$event) == "resize") event
     }) %>% do.call(rbind, .)
   }) %>% do.call(rbind, .)
 
@@ -724,13 +724,13 @@ compile_dispersals <- function(populations, generation_time, direction,
                                competition_dist, mate_dist, dispersal_dist) {
   dispersal_events <- lapply(populations, function(p) {
     lapply(attr(p, "history"), function(event) {
-      if (event$event == "split") {
+      if (unique(event$event) == "split") {
         event$N <- NULL
         names(event) <- c("pop", "event", "time", "competition_dist",
                           "mate_dist", "dispersal_dist", "dispersal_fun")
         event$event <- "dispersal"
         event
-      } else if (event$event == "dispersal") {
+      } else if (unique(event$event) == "dispersal") {
         event
       }
     }) %>% do.call(rbind, .)

@@ -88,3 +88,47 @@ test_that("population size is correctly decreased upon expanding square boundary
   expect_true(all(ind_df[ind_df$time < 50, "N"] == N1))
   expect_true(all(ind_df[ind_df$time >= 50, "N"] == N2))
 })
+
+test_that("population size is correctly increased during range expansion", {
+  r_start <- 100e3
+  by <- 300e3
+  N_start <- 100
+  snapshots <- 10
+
+  pop <- population("pop", time = 1, N = N_start, map = map, center = c(500e3, 500e3),
+                    radius = r_start) |>
+    expand(by = by, start = 50, end = 100, lock = TRUE, snapshots = snapshots)
+
+  ind_df <- run_sim(pop, "forward", sim_length = 150, verbose = FALSE)
+
+  area_start <- pi * r_start^2
+  N_observed <- unique(ind_df$N)
+
+  # compute predicted values of N as the circular range expands
+  r_values <- seq(r_start, r_start + by, length = snapshots + 1)
+  N_expected <- round(N_start * pi * r_values^2 / area_start)
+
+  expect_true(all(N_observed == N_expected))
+})
+
+test_that("population size is correctly increased during range contraction", {
+  r_start <- 400e3
+  by <- 300e3
+  N_start <- 100
+  snapshots <- 10
+
+  pop <- population("pop", time = 1, N = N_start, map = map, center = c(500e3, 500e3),
+                    radius = r_start) |>
+    shrink(by = by, start = 50, end = 100, lock = TRUE, snapshots = snapshots)
+
+  ind_df <- run_sim(pop, "forward", sim_length = 150, verbose = FALSE)
+
+  area_start <- pi * r_start^2
+  N_observed <- unique(ind_df$N)
+
+  # compute predicted values of N as the circular range expands
+  r_values <- seq(r_start, r_start - by, length = snapshots + 1)
+  N_expected <- round(N_start * pi * r_values^2 / area_start)
+
+  expect_true(all(N_observed == N_expected))
+})

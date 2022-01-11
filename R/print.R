@@ -214,8 +214,14 @@ print_pop_history <- function(x) {
   for (event in history) {
     cat("  - time ")
 
+    if (nrow(event) > 1 && event$event == "resize" && event$how == "step") {
+      tstart <- event$tresize[1]
+      tend <- tail(event$tresize, 1)
+      sizes <- tail(attr(x, "history"), 1)[[1]][1, c("N", "prev_N")]
+      action <- ifelse(sizes$N < sizes$prev_N, "decrease", "increase")
+      cat(sprintf("%d-%d: automatic %s from %d to %d individuals\n", tstart, tend, action, event$prev_N[1], tail(event$N, 1)))
     # population split
-    if (event$event == "split") {
+    } else if (event$event == "split") {
       cat(event$time, ": ", sep = "")
       parent <- attr(x, "parent")
       if (is.character(parent) && parent == "ancestor")
@@ -230,6 +236,8 @@ print_pop_history <- function(x) {
       cat(sprintf("%d-%d: movement across a landscape", event$tstart, event$tend))
     } else if (event$event == "expand") {
       cat(sprintf("%d-%d: range expansion", event$tstart, event$tend))
+    } else if (event$event == "contract") {
+      cat(sprintf("%d-%d: range contraction", event$tstart, event$tend))
     } else if (event$event == "range") {
       cat(sprintf("%d: change of the spatial boundary", event$time))
     }

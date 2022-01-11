@@ -263,9 +263,9 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 #'
 #' @export
 expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
-                   polygon = NULL, verbose = TRUE) {
+                   polygon = NULL, lock = FALSE, verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
-  shrink_or_expand(pop, by, end, start, overlap, snapshots, polygon, verbose)
+  shrink_or_expand(pop, by, end, start, overlap, snapshots, polygon, lock, verbose)
 }
 
 
@@ -286,8 +286,9 @@ expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
-shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL, verbose = TRUE) {
-  shrink_or_expand(pop, -by, end, start, overlap, snapshots, polygon = NULL, verbose)
+shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
+                   lock = FALSE, verbose = TRUE) {
+  shrink_or_expand(pop, -by, end, start, overlap, snapshots, polygon = NULL, lock, verbose)
 }
 
 
@@ -305,8 +306,6 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL, verbose
 #'   polygon range (see also the \code{region} argument) or a
 #'   geographic region of the class \code{slendr_region} from which
 #'   the polygon coordinates will be extracted
-#' @param overlap Minimum required overlap with the previous active
-#'   population boundary (set to 0 to disable the check)
 #' @param lock Maintain the same density of individuals. If
 #'   \code{FALSE} (the default), the number of individuals in the
 #'   population will not change. If \code{TRUE}, the number of
@@ -317,7 +316,7 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL, verbose
 #'
 #' @export
 boundary <- function(pop, time, center = NULL, radius = NULL,
-                     polygon = NULL, lock = FALSE, overlap = 0) {
+                     polygon = NULL, lock = FALSE) {
 
   if (!has_map(pop))
     stop("This operation is only allowed for spatial models", call. = FALSE)
@@ -1085,12 +1084,19 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
 
 
 # Internal implementation of expand() and shrink() functions
-shrink_or_expand <- function(pop, by, end, start, overlap, snapshots, polygon, verbose) {
+shrink_or_expand <- function(pop, by, end, start, overlap, snapshots, polygon,
+                             lock, verbose) {
   check_event_time(c(start, end), pop)
   check_removal_time(start, pop)
   check_removal_time(end, pop)
 
   map <- attr(pop, "map")
+
+  # get the last active population size
+  prev_N <- sapply(attr(pop, "history"), function(event) event$N) %>%
+    Filter(Negate(is.null), .) %>%
+    unlist %>%
+    utils::tail(1)
 
   # get the last available population boundary
   region_start <- pop[nrow(pop), ]
@@ -1144,7 +1150,7 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
     }
   }
 
-  all_maps <- do.call(rbind, inter_regions) %>% rbind(pop, .)
+  all_maps <- do.call(rbind, inter_regions[-1]) %>% rbind(pop, .)
   sf::st_agr(all_maps) <- "constant"
 
   result <- copy_attributes(
@@ -1152,12 +1158,37 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
     c("map", "parent", "remove", "intersect", "aquatic", "history")
   )
 
+  start_area <- sf::st_area(head(inter_regions, 1)[[1]])
+  end_area <- sf::st_area(tail(inter_regions, 1)[[1]])
+  action <- ifelse(start_area < end_area, "expand", "contract")
+
   attr(result, "history") <- append(attr(result, "history"), list(data.frame(
     pop =  unique(region_start$pop),
-    event = "expand",
+    event = action,
     tstart = start,
     tend = end
   )))
+
+
+  if (lock) {
+    areas <- as.numeric(sapply(inter_regions, sf::st_area))
+    area_changes <- areas[-1] / areas[-length(areas)]
+    new_N <- round(cumprod(area_changes) * prev_N)
+    changes <- data.frame(
+      pop =  unique(pop$pop),
+      event = "resize",
+      how = "step",
+      N = new_N,
+      prev_N = c(prev_N, new_N[-length(new_N)]),
+      tresize = sapply(inter_regions[-1], `[[`, "tmap"),
+      tend = NA
+    )
+    attr(result, "history") <- append(attr(result, "history"), list(changes))
+    # for (i in seq_along(inter_regions)[-1]) {
+    #   time <- inter_regions[[i]]$tmap
+    #   result <- resize(result, N = new_N[i - 1], time = time, how = "step")
+    # }
+  }
 
   result
 }
