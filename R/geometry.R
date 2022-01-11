@@ -11,7 +11,7 @@ intersect_features <- function(pop) {
     intersected <- sf::st_intersection(pop, sf::st_geometry(map))
     if (attr(pop, "aquatic"))
       intersected <- sf::st_difference(pop, sf::st_combine(intersected))
-    if (area(intersected)$area == 0)
+    if (any(area(intersected)$area == 0))
       stop(sprintf("No area left for %s after intersection with landscape at time %s",
                    pop$pop, pop$tmap), call. = FALSE)
   }
