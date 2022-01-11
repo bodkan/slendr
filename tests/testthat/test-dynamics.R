@@ -28,24 +28,11 @@ test_that("move generates the correct number of snapshots", {
 test_that("only positive population sizes allowed", {
   p <- population(name = "pop", map = map, time = 30000, N = 500, center = c(10, 25), radius = 300000)
   expect_error(resize(p, N = -1, time = 1000),
-               "Only positive population sizes allowed")
+               "resize\\(\\): Only positive, non-zero population sizes are allowed")
 })
 
 test_that("only three values of population size changes allowed", {
   p <- population(name = "pop", map = map, time = 30000, N = 500, center = c(10, 25), radius = 300000)
   expect_error(resize(p, N = 10, how = "asdf"),
-               "Only 'step' or 'exponential' are allowed")
-})
-
-test_that("no overlap with a manually specified boundary is caught", {
-  map <- readRDS("map.rds")
-  africa <- region("Africa", map, polygon = list(c(-18, 20), c(40, 20), c(30, 33),
-                                                 c(20, 32), c(10, 35), c(-8, 35)))
-  europe <- region("Europe", map, polygon = list(c(-8, 35), c(-5, 36), c(10, 38), c(20, 35), c(25, 35),
-                                                 c(33, 45), c(20, 58), c(-5, 60), c(-15, 50)))
-  yam <- population(name = "YAM", time = 7000, N = 500, map = map,
-                    polygon = list(c(26, 50), c(38, 49), c(48, 50), c(48, 56), c(38, 59), c(26, 56))) %>%
-    move(trajectory = list(c(15, 50)), start = 5000, end = 3000, snapshots = 10)
-  expect_error(boundary(yam, time = 2800, polygon = africa), "Insufficient overlap")
-  expect_silent(boundary(yam, time = 2800, polygon = africa, overlap = 0))
+               "resize\\(\\): Only 'step' or 'exponential' are allowed")
 })
