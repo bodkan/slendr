@@ -339,10 +339,12 @@ boundary <- function(pop, time, center = NULL, radius = NULL,
     geometry = geometry
   )
 
-  if (compute_overlaps(rbind(updated, pop[nrow(pop), ])) < overlap)
-    stop("Insufficient overlap with the last active spatial boundary (",
-         "please adjust the new spatial boundary or adjust the `overlap = `",
-         "parameter for less stringent checking)", call. = FALSE)
+  # Let's not enforce this given that the point of this function is to allow
+  # full manual control over the boundary dynamics:
+  # if (compute_overlaps(rbind(updated, pop[nrow(pop), ])) < overlap)
+  #   stop("Insufficient overlap with the last active spatial boundary (",
+  #        "please adjust the new spatial boundary or adjust the `overlap = `",
+  #        "parameter for less stringent checking)", call. = FALSE)
 
   combined <- rbind(pop, updated)
   sf::st_agr(combined) <- "constant"
