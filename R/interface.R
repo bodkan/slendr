@@ -389,13 +389,13 @@ boundary <- function(pop, time, center = NULL, radius = NULL,
 #'
 #' @export
 resize <- function(pop, N, how, time, end = NULL) {
-  if (N < 1) stop("Only positive population sizes allowed", call. = FALSE)
+  if (N < 1) stop("resize(): Only positive, non-zero population sizes are allowed", call. = FALSE)
 
   if (!how %in% c("step", "exponential"))
-    stop("Only 'step' or 'exponential' are allowed as arguments for the 'how' parameter", call. = FALSE)
+    stop("resize(): Only 'step' or 'exponential' are allowed as arguments for the 'how' parameter", call. = FALSE)
 
   if (how == "exponential" & is.null(end))
-    stop("Start-end period of the exponential growth must be specified", call. = FALSE)
+    stop("resize(): Start-end period of the exponential growth must be specified", call. = FALSE)
 
   # get the last active population size
   prev_N <- sapply(attr(pop, "history"), function(event) event$N) %>%
