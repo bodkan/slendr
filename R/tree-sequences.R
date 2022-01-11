@@ -143,8 +143,12 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
   if (ts_coalesced(ts))
     message("No need to recapitate, all trees already coalesced")
 
-  ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
-                          random_seed = random_seed, migration_matrix = migration_matrix)
+  # suppress pyslim warning until we figure out how to switch to the new
+  # pyslim.recapitate(ts, ...) method
+  reticulate::py_capture_output(
+    ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
+                            random_seed = random_seed, migration_matrix = migration_matrix)
+  )
 
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")
