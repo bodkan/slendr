@@ -1099,7 +1099,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
                    polarised = FALSE) {
   mode <- match.arg(mode)
   if (is.null(sample_sets))
-    sample_sets <- list(ts_individuals(ts)$name)
+    sample_sets <- list(ts_samples(ts)$name)
   else if (!is.list(sample_sets))
     sample_sets <- list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
