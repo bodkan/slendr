@@ -300,7 +300,7 @@ slim <- function(model, sequence_length, recombination_rate,
                  sampling = NULL, max_attempts = 1,
                  save_locations = FALSE,
                  method = c("batch", "gui"), verbose = TRUE, burnin = 0,
-                 seed = NULL, slim_path = NULL, save_sampling = FALSE) {
+                 seed = NULL, slim_path = NULL, save_sampling = TRUE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -322,7 +322,7 @@ slim <- function(model, sequence_length, recombination_rate,
   save_locations <- if (save_locations) "T" else "F"
   burnin <- round(burnin / model$generation_time)
 
-  sampling_path <- ifelse(save_sampling, paste0(output, "_sampling.tsv"), tempfile())
+  sampling_path <- ifelse(save_sampling, paste0(output, "_slim_sampling.tsv"), tempfile())
   sampling_df <- process_sampling(sampling, model, verbose)
   readr::write_tsv(sampling_df, sampling_path)
 
@@ -390,9 +390,7 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @param sequence_length Total length of the simulated sequence (in base-pairs)
 #' @param recombination_rate Recombination rate of the simulated sequence (in
 #'   recombinations per basepair per generation)
-#' @param output A shared prefix path of output files that will be generated
-#'   by the model (by default, all files will share a prefix \code{"output"}
-#'   and will be placed in the model directory)
+#' @param output Path to the output tree sequence
 #' @param sampling A data frame of times at which a given number of individuals
 #'   should be remembered in the tree-sequence (see \code{sampling} for a
 #'   function that can generate the sampling schedule in the correct format). If
@@ -402,11 +400,15 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
 #' @param debug Print a msprime model debugging summary?
+#' @param save_sampling Save the sampling schedule table together with other
+#'   output files? If \code{FALSE} (default), the sampling table will be saved
+#'   to a temporary directory.
 #'
 #' @export
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
-                    sampling = NULL, verbose = TRUE, seed = NULL, debug = FALSE) {
+                    sampling, verbose = TRUE, seed = NULL, debug = FALSE,
+                    save_sampling = TRUE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -421,11 +423,12 @@ msprime <- function(model, sequence_length, recombination_rate,
   output <- path.expand(output)
 
   if (!is.null(sampling)) {
-    sampling_path <- tempfile()
-    process_sampling(sampling, model, sampling_path, verbose)
+    sampling_path <- ifelse(save_sampling, paste0(gsub(".trees$", "", output), "_sampling.tsv"), tempfile())
+    sampling_df <- process_sampling(sampling, model, verbose)
+    readr::write_tsv(sampling_df, sampling_path)
     sampling <- paste("--sampling-schedule", sampling_path)
   } else
-    sampling <- ""
+    stop("Unlike SLiM models in slendr, explicit sampling schedule must be provided", call. = FALSE)
 
   msprime_command <- sprintf("python3 \\
     %s \\
