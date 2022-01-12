@@ -256,6 +256,11 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 #' @param snapshots The number of intermediate snapshots (overrides the
 #'   \code{overlap} parameter)
 #' @param polygon Geographic region to restrict the expansion to
+#' @param lock Maintain the same density of individuals. If
+#'   \code{FALSE} (the default), the number of individuals in the
+#'   population will not change. If \code{TRUE}, the number of
+#'   individuals simulated will be changed (increased or decreased)
+#'   appropriately, to match the new population range area.
 #' @param verbose Report on the progress of generating intermediate spatial
 #'   boundaries?
 #'
@@ -280,6 +285,11 @@ expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @param overlap Minimum overlap between subsequent spatial boundaries
 #' @param snapshots The number of intermediate snapshots (overrides the
 #'   \code{overlap} parameter)
+#' @param lock Maintain the same density of individuals. If
+#'   \code{FALSE} (the default), the number of individuals in the
+#'   population will not change. If \code{TRUE}, the number of
+#'   individuals simulated will be changed (increased or decreased)
+#'   appropriately, to match the new population range area.
 #' @param verbose Report on the progress of generating intermediate spatial
 #'   boundaries?
 #'

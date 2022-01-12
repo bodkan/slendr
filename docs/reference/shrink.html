@@ -181,7 +181,16 @@ time-window" />
 time-window</p>
     </div>
 
-    <pre class="usage"><span class='fu'>shrink</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>by</span>, <span class='va'>end</span>, <span class='va'>start</span>, overlap <span class='op'>=</span> <span class='fl'>0.8</span>, snapshots <span class='op'>=</span> <span class='cn'>NULL</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>shrink</span><span class='op'>(</span>
+  <span class='va'>pop</span>,
+  <span class='va'>by</span>,
+  <span class='va'>end</span>,
+  <span class='va'>start</span>,
+  overlap <span class='op'>=</span> <span class='fl'>0.8</span>,
+  snapshots <span class='op'>=</span> <span class='cn'>NULL</span>,
+  lock <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -206,6 +215,14 @@ time-window</p>
       <th>snapshots</th>
       <td><p>The number of intermediate snapshots (overrides the
 <code>overlap</code> parameter)</p></td>
+    </tr>
+    <tr>
+      <th>lock</th>
+      <td><p>Maintain the same density of individuals. If
+<code>FALSE</code> (the default), the number of individuals in the
+population will not change. If <code>TRUE</code>, the number of
+individuals simulated will be changed (increased or decreased)
+appropriately, to match the new population range area.</p></td>
     </tr>
     <tr>
       <th>verbose</th>

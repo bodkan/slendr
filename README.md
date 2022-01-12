@@ -234,11 +234,11 @@ slim(
 #> --------------------------------------------------
 #> SLiM command to be executed:
 #> 
-#> /usr/local/bin/slim  \
+#> /Users/martin_petr/.my_local/bin/slim  \
 #>     -d SEED=314159  \
-#>     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp190k6C/file13bb1b1ecce7"' \
-#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp190k6C/readme-model"' \
-#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp190k6C/readme-model/output"' \
+#>     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMd8VQx/filee07611f25e10"' \
+#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMd8VQx/readme-model"' \
+#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMd8VQx/readme-model/output"' \
 #>     -d SPATIAL=T \
 #>     -d SEQUENCE_LENGTH=1 \
 #>     -d RECOMB_RATE=0 \
@@ -246,7 +246,7 @@ slim(
 #>     -d SIMULATION_LENGTH=1733 \
 #>     -d SAVE_LOCATIONS=T \
 #>     -d MAX_ATTEMPTS=1 \
-#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp190k6C/readme-model/script.slim 
+#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMd8VQx/readme-model/script.slim 
 #> --------------------------------------------------
 ```
 

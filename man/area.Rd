@@ -10,9 +10,11 @@ area(x)
 \item{x}{Object of the class \code{slendr}}
 }
 \value{
-Area covered by the input object. If the coordinate reference system
-was specified, the area in projected units (i.e. m^2) is returned.
-Otherwise the function returns area without units.
+Area covered by the input object. If a \code{slendr_pop}
+was given, a table with an population range area in each time
+point will be returned. If a \code{slendr_region} or
+\code{slendr_world} object was specified, the total area covered
+by this object's spatial boundary will be returned.
 }
 \description{
 Calculate the area covered by the given slendr object

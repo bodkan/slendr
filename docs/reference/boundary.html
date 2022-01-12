@@ -53,8 +53,8 @@
 
 
 <meta property="og:title" content="Update the population range — boundary" />
-<meta property="og:description" content="This function allows a more manual control of spatial map changes in addition to the
-expand and move functions" />
+<meta property="og:description" content="This function allows a more manual control of spatial map changes
+in addition to the expand and move functions" />
 <meta property="og:image" content="https://www.slendr.net/logo.png" />
 
 
@@ -177,18 +177,11 @@ expand and move functions" />
     </div>
 
     <div class="ref-description">
-    <p>This function allows a more manual control of spatial map changes in addition to the
-<code>expand</code> and <code>move</code> functions</p>
+    <p>This function allows a more manual control of spatial map changes
+in addition to the <code>expand</code> and <code>move</code> functions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>boundary</span><span class='op'>(</span>
-  <span class='va'>pop</span>,
-  <span class='va'>time</span>,
-  center <span class='op'>=</span> <span class='cn'>NULL</span>,
-  radius <span class='op'>=</span> <span class='cn'>NULL</span>,
-  polygon <span class='op'>=</span> <span class='cn'>NULL</span>,
-  overlap <span class='op'>=</span> <span class='fl'>0.8</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>boundary</span><span class='op'>(</span><span class='va'>pop</span>, <span class='va'>time</span>, center <span class='op'>=</span> <span class='cn'>NULL</span>, radius <span class='op'>=</span> <span class='cn'>NULL</span>, polygon <span class='op'>=</span> <span class='cn'>NULL</span>, lock <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -203,7 +196,8 @@ expand and move functions" />
     </tr>
     <tr>
       <th>center</th>
-      <td><p>Two-dimensional vector specifying the center of the circular range</p></td>
+      <td><p>Two-dimensional vector specifying the center of the
+circular range</p></td>
     </tr>
     <tr>
       <th>radius</th>
@@ -211,14 +205,18 @@ expand and move functions" />
     </tr>
     <tr>
       <th>polygon</th>
-      <td><p>List of vector pairs, defining corners of the polygon range (see also the
-<code>region</code> argument) or a geographic region of the class <code>slendr_region</code> from which the
-polygon coordinates will be extracted</p></td>
+      <td><p>List of vector pairs, defining corners of the
+polygon range (see also the <code>region</code> argument) or a
+geographic region of the class <code>slendr_region</code> from which
+the polygon coordinates will be extracted</p></td>
     </tr>
     <tr>
-      <th>overlap</th>
-      <td><p>Minimum required overlap with the previous active population boundary (set to 0 to
-disable the check)</p></td>
+      <th>lock</th>
+      <td><p>Maintain the same density of individuals. If
+<code>FALSE</code> (the default), the number of individuals in the
+population will not change. If <code>TRUE</code>, the number of
+individuals simulated will be changed (increased or decreased)
+appropriately, to match the new population range area.</p></td>
     </tr>
     </table>
 

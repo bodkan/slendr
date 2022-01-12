@@ -227,11 +227,11 @@
 <pre><code>#&gt; --------------------------------------------------
 #&gt; SLiM command to be executed:
 #&gt; 
-#&gt; /usr/local/bin/slim  \
+#&gt; /Users/martin_petr/.my_local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp602sTC/file142397899c46"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp602sTC/introgression"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp602sTC/introgression/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpX3ZX1w/filee2536f1b2b45"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpX3ZX1w/introgression"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpX3ZX1w/introgression/output"' \
 #&gt;     -d SPATIAL=F \
 #&gt;     -d SEQUENCE_LENGTH=10000000 \
 #&gt;     -d RECOMB_RATE=1e-08 \
@@ -239,7 +239,7 @@
 #&gt;     -d SIMULATION_LENGTH=216667 \
 #&gt;     -d SAVE_LOCATIONS=F \
 #&gt;     -d MAX_ATTEMPTS=1 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp602sTC/introgression/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpX3ZX1w/introgression/script.slim 
 #&gt; --------------------------------------------------</code></pre>
 </div>
 <div id="r-interface-for-tskit-and-pyslim" class="section level2">
@@ -289,35 +289,37 @@
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
 <span class="va">ts</span></code></pre></div>
-<pre><code>#&gt; ╔══════════════════════════╗
-#&gt; ║TreeSequence              ║
-#&gt; ╠═══════════════╤══════════╣
-#&gt; ║Trees          │     56441║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Sequence Length│10000000.0║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Sample Nodes   │     30088║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Total Size     │  16.6 MiB║
-#&gt; ╚═══════════════╧══════════╝
+<pre><code>#&gt; ╔═══════════════════════════╗
+#&gt; ║TreeSequence               ║
+#&gt; ╠═══════════════╤═══════════╣
+#&gt; ║Trees          │      56441║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Sequence Length│   10000000║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Time Units     │generations║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Sample Nodes   │      30088║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Total Size     │   20.4 MiB║
+#&gt; ╚═══════════════╧═══════════╝
 #&gt; ╔═══════════╤══════╤════════╤════════════╗
 #&gt; ║Table      │Rows  │Size    │Has Metadata║
 #&gt; ╠═══════════╪══════╪════════╪════════════╣
-#&gt; ║Edges      │268943│ 7.2 MiB│          No║
+#&gt; ║Edges      │268943│ 8.2 MiB│          No║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Individuals│ 71917│ 4.4 MiB│         Yes║
+#&gt; ║Individuals│ 71917│ 6.9 MiB│         Yes║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Migrations │     0│ 4 Bytes│          No║
+#&gt; ║Migrations │     0│ 8 Bytes│          No║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Mutations  │     0│ 1.2 KiB│          No║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Nodes      │ 90201│ 2.9 MiB│         Yes║
+#&gt; ║Nodes      │ 90201│ 3.3 MiB│         Yes║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Populations│     5│ 3.1 KiB│         Yes║
+#&gt; ║Populations│     5│ 2.6 KiB│         Yes║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
 #&gt; ║Provenances│     1│31.8 KiB│          No║
 #&gt; ╟───────────┼──────┼────────┼────────────╢
-#&gt; ║Sites      │     0│ 8 Bytes│          No║
+#&gt; ║Sites      │     0│16 Bytes│          No║
 #&gt; ╚═══════════╧══════╧════════╧════════════╝</code></pre>
 <p>We can see that the tree-sequence data is very large and contains many more individuals than we need (much more than we explicitly specified for sampling): there are in total 71917 individuals in the tree-sequence which is a lot more than the 58 we scheduled for sampling! To avoid this issue, <code><a href="../reference/ts_load.html">ts_load()</a></code> accepts an optional argument <code>simplify</code> which triggers the <a href="https://pyslim.readthedocs.io/en/latest/tutorial.html#simplification">simplification process</a> to narrow down the set of recorded individuals just to those that we explicitly remembered:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -326,35 +328,37 @@
 #&gt; really want</code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts</span></code></pre></div>
-<pre><code>#&gt; ╔══════════════════════════╗
-#&gt; ║TreeSequence              ║
-#&gt; ╠═══════════════╤══════════╣
-#&gt; ║Trees          │     17204║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Sequence Length│10000000.0║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Sample Nodes   │       116║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Total Size     │   3.2 MiB║
-#&gt; ╚═══════════════╧══════════╝
+<pre><code>#&gt; ╔═══════════════════════════╗
+#&gt; ║TreeSequence               ║
+#&gt; ╠═══════════════╤═══════════╣
+#&gt; ║Trees          │      17204║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Sequence Length│   10000000║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Time Units     │generations║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Sample Nodes   │        116║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Total Size     │    3.8 MiB║
+#&gt; ╚═══════════════╧═══════════╝
 #&gt; ╔═══════════╤═════╤═════════╤════════════╗
 #&gt; ║Table      │Rows │Size     │Has Metadata║
 #&gt; ╠═══════════╪═════╪═════════╪════════════╣
-#&gt; ║Edges      │65125│  1.7 MiB│          No║
+#&gt; ║Edges      │65125│  2.0 MiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Individuals│ 9643│604.2 KiB│         Yes║
+#&gt; ║Individuals│ 9643│943.5 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Migrations │    0│  4 Bytes│          No║
+#&gt; ║Migrations │    0│  8 Bytes│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Mutations  │    0│  1.2 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Nodes      │ 9705│322.9 KiB│         Yes║
+#&gt; ║Nodes      │ 9705│360.8 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Populations│    5│  3.1 KiB│         Yes║
+#&gt; ║Populations│    5│  2.6 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Provenances│    2│ 32.3 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Sites      │    0│  8 Bytes│          No║
+#&gt; ║Sites      │    0│ 16 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
 <p>By default, simplification in <code><a href="../reference/ts_load.html">ts_load()</a></code> simplified the tree-sequence down to only remembered individuals (i.e. those we explicitly scheduled for sampling). We can also narrow down the simplification to a defined set of individuals using the <code>simplify_to =</code> argument. Internally, simplification is implemented in a dedicated function <code><a href="../reference/ts_simplify.html">ts_simplify()</a></code> which we can always call explicitly, like this:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -363,35 +367,37 @@
 #&gt; really want</code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts_small</span></code></pre></div>
-<pre><code>#&gt; ╔══════════════════════════╗
-#&gt; ║TreeSequence              ║
-#&gt; ╠═══════════════╤══════════╣
-#&gt; ║Trees          │      7000║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Sequence Length│10000000.0║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Sample Nodes   │        14║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Total Size     │   1.2 MiB║
-#&gt; ╚═══════════════╧══════════╝
+<pre><code>#&gt; ╔═══════════════════════════╗
+#&gt; ║TreeSequence               ║
+#&gt; ╠═══════════════╤═══════════╣
+#&gt; ║Trees          │       7000║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Sequence Length│   10000000║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Time Units     │generations║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Sample Nodes   │         14║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Total Size     │    1.5 MiB║
+#&gt; ╚═══════════════╧═══════════╝
 #&gt; ╔═══════════╤═════╤═════════╤════════════╗
 #&gt; ║Table      │Rows │Size     │Has Metadata║
 #&gt; ╠═══════════╪═════╪═════════╪════════════╣
-#&gt; ║Edges      │24698│675.3 KiB│          No║
+#&gt; ║Edges      │24698│771.8 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Individuals│ 3651│229.7 KiB│         Yes║
+#&gt; ║Individuals│ 3651│358.4 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Migrations │    0│  4 Bytes│          No║
+#&gt; ║Migrations │    0│  8 Bytes│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Mutations  │    0│  1.2 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Nodes      │ 3659│122.2 KiB│         Yes║
+#&gt; ║Nodes      │ 3659│136.5 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Populations│    5│  3.1 KiB│         Yes║
+#&gt; ║Populations│    5│  2.6 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
 #&gt; ║Provenances│    3│ 32.8 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Sites      │    0│  8 Bytes│          No║
+#&gt; ║Sites      │    0│ 16 Bytes│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
 <p>Similarly, <em>slendr</em> provides a function <code><a href="../reference/ts_recapitate.html">ts_recapitate()</a></code> which performs <a href="https://pyslim.readthedocs.io/en/latest/tutorial.html#recapitation">recapitation</a>. Again, we can do this in one go, by specifying <code>recapitate = TRUE</code> in the call to <code><a href="../reference/ts_load.html">ts_load()</a></code> after specifying a couple of additional arguments required for recapitation (see the pyslim documentation in the <a href="https://pyslim.readthedocs.io/en/latest/tutorial.html#recapitation">recapitation</a> section for more detail):</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
@@ -405,35 +411,37 @@
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span><span class="va">ts</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span>
 <span class="va">ts</span></code></pre></div>
-<pre><code>#&gt; ╔══════════════════════════╗
-#&gt; ║TreeSequence              ║
-#&gt; ╠═══════════════╤══════════╣
-#&gt; ║Trees          │     17204║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Sequence Length│10000000.0║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Sample Nodes   │       116║
-#&gt; ╟───────────────┼──────────╢
-#&gt; ║Total Size     │   5.7 MiB║
-#&gt; ╚═══════════════╧══════════╝
+<pre><code>#&gt; ╔═══════════════════════════╗
+#&gt; ║TreeSequence               ║
+#&gt; ╠═══════════════╤═══════════╣
+#&gt; ║Trees          │      17204║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Sequence Length│   10000000║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Time Units     │generations║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Sample Nodes   │        116║
+#&gt; ╟───────────────┼───────────╢
+#&gt; ║Total Size     │    7.2 MiB║
+#&gt; ╚═══════════════╧═══════════╝
 #&gt; ╔═══════════╤═════╤═════════╤════════════╗
 #&gt; ║Table      │Rows │Size     │Has Metadata║
 #&gt; ╠═══════════╪═════╪═════════╪════════════╣
-#&gt; ║Edges      │65125│  1.7 MiB│          No║
+#&gt; ║Edges      │65125│  2.0 MiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Individuals│ 9643│604.2 KiB│         Yes║
+#&gt; ║Individuals│ 9643│943.5 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Migrations │    0│  4 Bytes│          No║
+#&gt; ║Migrations │    0│  8 Bytes│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Mutations  │58284│  1.6 MiB│          No║
+#&gt; ║Mutations  │58284│  2.1 MiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Nodes      │ 9705│322.9 KiB│         Yes║
+#&gt; ║Nodes      │ 9705│360.8 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Populations│    5│  3.1 KiB│         Yes║
+#&gt; ║Populations│    5│  2.6 KiB│         Yes║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Provenances│    3│ 33.0 KiB│          No║
+#&gt; ║Provenances│    3│ 33.1 KiB│          No║
 #&gt; ╟───────────┼─────┼─────────┼────────────╢
-#&gt; ║Sites      │58089│964.4 KiB│          No║
+#&gt; ║Sites      │58089│  1.4 MiB│          No║
 #&gt; ╚═══════════╧═════╧═════════╧════════════╝</code></pre>
 <p>Even this step can be performed in one go throught the <code>ts_load</code> function like this:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
@@ -462,7 +470,7 @@
 #&gt; ╟───────────────────┼─────────────╢
 #&gt; ║Roots              │            1║
 #&gt; ╟───────────────────┼─────────────╢
-#&gt; ║Nodes              │         3659║
+#&gt; ║Nodes              │           27║
 #&gt; ╟───────────────────┼─────────────╢
 #&gt; ║Sites              │            0║
 #&gt; ╟───────────────────┼─────────────╢
@@ -494,72 +502,76 @@
 <p>We believe it makes sense to use the R interface whenever possible (even if only because it makes many operations a little bit more convenient). However, if there is some functionality in <em>slendr</em> missing, you can always resort to accessing the Python objects directly as we have just demonstrated. You can verify that all <a href="https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence">methods and attributes</a> of a Python tree-sequence object is still accessible in R:</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt;   [1] "allele_frequency_spectrum"       "aslist"                         
-#&gt;   [3] "at"                              "at_index"                       
-#&gt;   [5] "breakpoints"                     "coiterate"                      
-#&gt;   [7] "count_topologies"                "delete_intervals"               
-#&gt;   [9] "delete_sites"                    "diffs"                          
-#&gt;  [11] "divergence"                      "diversity"                      
-#&gt;  [13] "draw_svg"                        "draw_text"                      
-#&gt;  [15] "dump"                            "dump_tables"                    
-#&gt;  [17] "dump_text"                       "edge"                           
-#&gt;  [19] "edge_diffs"                      "edges"                          
-#&gt;  [21] "edgesets"                        "equals"                         
-#&gt;  [23] "f2"                              "f3"                             
-#&gt;  [25] "f4"                              "file_uuid"                      
-#&gt;  [27] "first"                           "first_generation_individuals"   
-#&gt;  [29] "Fst"                             "genealogical_nearest_neighbours"
-#&gt;  [31] "general_stat"                    "genetic_relatedness"            
-#&gt;  [33] "genotype_matrix"                 "get_ll_tree_sequence"           
-#&gt;  [35] "get_num_mutations"               "get_num_nodes"                  
-#&gt;  [37] "get_num_records"                 "get_num_sites"                  
-#&gt;  [39] "get_num_trees"                   "get_pairwise_diversity"         
-#&gt;  [41] "get_population"                  "get_sample_size"                
-#&gt;  [43] "get_samples"                     "get_sequence_length"            
-#&gt;  [45] "get_time"                        "haplotypes"                     
-#&gt;  [47] "has_individual_parents"          "individual"                     
-#&gt;  [49] "individual_ages"                 "individual_ages_at"             
-#&gt;  [51] "individual_locations"            "individual_parents"             
-#&gt;  [53] "individual_populations"          "individual_times"               
-#&gt;  [55] "individuals"                     "individuals_alive_at"           
-#&gt;  [57] "kc_distance"                     "keep_intervals"                 
-#&gt;  [59] "last"                            "legacy_metadata"                
-#&gt;  [61] "ll_tree_sequence"                "load"                           
-#&gt;  [63] "load_tables"                     "ltrim"                          
-#&gt;  [65] "max_root_time"                   "mean_descendants"               
-#&gt;  [67] "metadata"                        "metadata_schema"                
-#&gt;  [69] "migration"                       "migrations"                     
-#&gt;  [71] "model_type"                      "mutation"                       
-#&gt;  [73] "mutation_at"                     "mutations"                      
-#&gt;  [75] "nbytes"                          "newick_trees"                   
-#&gt;  [77] "node"                            "nodes"                          
-#&gt;  [79] "nucleotide_at"                   "num_edges"                      
-#&gt;  [81] "num_individuals"                 "num_migrations"                 
-#&gt;  [83] "num_mutations"                   "num_nodes"                      
-#&gt;  [85] "num_populations"                 "num_provenances"                
-#&gt;  [87] "num_samples"                     "num_sites"                      
-#&gt;  [89] "num_trees"                       "pairwise_diversity"             
-#&gt;  [91] "parse_windows"                   "population"                     
-#&gt;  [93] "populations"                     "provenance"                     
-#&gt;  [95] "provenances"                     "recapitate"                     
-#&gt;  [97] "records"                         "reference_sequence"             
-#&gt;  [99] "rtrim"                           "sample_count_stat"              
-#&gt; [101] "sample_size"                     "samples"                        
-#&gt; [103] "segregating_sites"               "sequence_length"                
-#&gt; [105] "simplify"                        "site"                           
-#&gt; [107] "sites"                           "slim_generation"                
-#&gt; [109] "slim_provenance"                 "slim_provenances"               
-#&gt; [111] "slim_time"                       "subset"                         
-#&gt; [113] "table_metadata_schemas"          "tables"                         
-#&gt; [115] "tables_dict"                     "Tajimas_D"                      
-#&gt; [117] "to_macs"                         "to_nexus"                       
-#&gt; [119] "trait_correlation"               "trait_covariance"               
-#&gt; [121] "trait_linear_model"              "trait_regression"               
-#&gt; [123] "trees"                           "trim"                           
-#&gt; [125] "union"                           "variants"                       
-#&gt; [127] "write_fasta"                     "write_vcf"                      
-#&gt; [129] "Y1"                              "Y2"                             
-#&gt; [131] "Y3"</code></pre>
+<pre><code>#&gt;   [1] "alignments"                      "allele_frequency_spectrum"      
+#&gt;   [3] "as_fasta"                        "as_nexus"                       
+#&gt;   [5] "aslist"                          "at"                             
+#&gt;   [7] "at_index"                        "breakpoints"                    
+#&gt;   [9] "coiterate"                       "count_topologies"               
+#&gt;  [11] "delete_intervals"                "delete_sites"                   
+#&gt;  [13] "diffs"                           "discrete_genome"                
+#&gt;  [15] "discrete_time"                   "divergence"                     
+#&gt;  [17] "diversity"                       "draw_svg"                       
+#&gt;  [19] "draw_text"                       "dump"                           
+#&gt;  [21] "dump_tables"                     "dump_text"                      
+#&gt;  [23] "edge"                            "edge_diffs"                     
+#&gt;  [25] "edges"                           "edgesets"                       
+#&gt;  [27] "equals"                          "f2"                             
+#&gt;  [29] "f3"                              "f4"                             
+#&gt;  [31] "file_uuid"                       "first"                          
+#&gt;  [33] "first_generation_individuals"    "Fst"                            
+#&gt;  [35] "genealogical_nearest_neighbours" "general_stat"                   
+#&gt;  [37] "genetic_relatedness"             "genotype_matrix"                
+#&gt;  [39] "get_ll_tree_sequence"            "get_num_mutations"              
+#&gt;  [41] "get_num_nodes"                   "get_num_records"                
+#&gt;  [43] "get_num_sites"                   "get_num_trees"                  
+#&gt;  [45] "get_pairwise_diversity"          "get_population"                 
+#&gt;  [47] "get_sample_size"                 "get_samples"                    
+#&gt;  [49] "get_sequence_length"             "get_time"                       
+#&gt;  [51] "haplotypes"                      "has_individual_parents"         
+#&gt;  [53] "has_reference_sequence"          "ibd_segments"                   
+#&gt;  [55] "individual"                      "individual_ages"                
+#&gt;  [57] "individual_ages_at"              "individual_locations"           
+#&gt;  [59] "individual_parents"              "individual_populations"         
+#&gt;  [61] "individual_times"                "individuals"                    
+#&gt;  [63] "individuals_alive_at"            "kc_distance"                    
+#&gt;  [65] "keep_intervals"                  "last"                           
+#&gt;  [67] "ll_tree_sequence"                "load"                           
+#&gt;  [69] "load_tables"                     "ltrim"                          
+#&gt;  [71] "max_root_time"                   "mean_descendants"               
+#&gt;  [73] "metadata"                        "metadata_schema"                
+#&gt;  [75] "migration"                       "migrations"                     
+#&gt;  [77] "model_type"                      "mutation"                       
+#&gt;  [79] "mutation_at"                     "mutations"                      
+#&gt;  [81] "nbytes"                          "newick_trees"                   
+#&gt;  [83] "node"                            "nodes"                          
+#&gt;  [85] "nucleotide_at"                   "num_edges"                      
+#&gt;  [87] "num_individuals"                 "num_migrations"                 
+#&gt;  [89] "num_mutations"                   "num_nodes"                      
+#&gt;  [91] "num_populations"                 "num_provenances"                
+#&gt;  [93] "num_samples"                     "num_sites"                      
+#&gt;  [95] "num_trees"                       "pairwise_diversity"             
+#&gt;  [97] "parse_windows"                   "population"                     
+#&gt;  [99] "populations"                     "provenance"                     
+#&gt; [101] "provenances"                     "recapitate"                     
+#&gt; [103] "records"                         "reference_sequence"             
+#&gt; [105] "rtrim"                           "sample_count_stat"              
+#&gt; [107] "sample_size"                     "samples"                        
+#&gt; [109] "segregating_sites"               "sequence_length"                
+#&gt; [111] "simplify"                        "site"                           
+#&gt; [113] "sites"                           "slim_generation"                
+#&gt; [115] "slim_provenance"                 "slim_provenances"               
+#&gt; [117] "slim_time"                       "subset"                         
+#&gt; [119] "table_metadata_schemas"          "tables"                         
+#&gt; [121] "tables_dict"                     "Tajimas_D"                      
+#&gt; [123] "time_units"                      "to_macs"                        
+#&gt; [125] "to_nexus"                        "trait_correlation"              
+#&gt; [127] "trait_covariance"                "trait_linear_model"             
+#&gt; [129] "trait_regression"                "trees"                          
+#&gt; [131] "trim"                            "union"                          
+#&gt; [133] "variants"                        "write_fasta"                    
+#&gt; [135] "write_nexus"                     "write_vcf"                      
+#&gt; [137] "Y1"                              "Y2"                             
+#&gt; [139] "Y3"</code></pre>
 <p>In fact, you will recognize some of the elements in the output above from examples involving <code>ts_</code> functions in this vignette! In short, there is no blackbox—<em>slendr</em> only provides a slightly more convenient layer over <em>tskit</em> for R users.</p>
 </div>
 <div id="calculating-f-statistics" class="section level2">
