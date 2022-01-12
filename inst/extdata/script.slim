@@ -368,7 +368,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
             orig_n = SAMPLING.getValue("n"); orig_n[i] = n;
             SAMPLING.setValue("n", orig_n);
         } else
-            n_str = asString(n);
+            n_str = asString(asInteger(n));
 
         log_output("remembering " + n_str + " individuals of " +
                              pop + "(p" + get_pop(pop).id + ")" + where);
