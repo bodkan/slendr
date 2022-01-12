@@ -4,7 +4,16 @@
 \alias{shrink}
 \title{Shrink the population range}
 \usage{
-shrink(pop, by, end, start, overlap = 0.8, snapshots = NULL, verbose = TRUE)
+shrink(
+  pop,
+  by,
+  end,
+  start,
+  overlap = 0.8,
+  snapshots = NULL,
+  lock = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{pop}{Object of the class \code{slendr_pop}}
@@ -17,6 +26,12 @@ shrink(pop, by, end, start, overlap = 0.8, snapshots = NULL, verbose = TRUE)
 
 \item{snapshots}{The number of intermediate snapshots (overrides the
 \code{overlap} parameter)}
+
+\item{lock}{Maintain the same density of individuals. If
+\code{FALSE} (the default), the number of individuals in the
+population will not change. If \code{TRUE}, the number of
+individuals simulated will be changed (increased or decreased)
+appropriately, to match the new population range area.}
 
 \item{verbose}{Report on the progress of generating intermediate spatial
 boundaries?}

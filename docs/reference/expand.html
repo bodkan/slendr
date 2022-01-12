@@ -189,6 +189,7 @@ time-window</p>
   overlap <span class='op'>=</span> <span class='fl'>0.8</span>,
   snapshots <span class='op'>=</span> <span class='cn'>NULL</span>,
   polygon <span class='op'>=</span> <span class='cn'>NULL</span>,
+  lock <span class='op'>=</span> <span class='cn'>FALSE</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
@@ -219,6 +220,14 @@ time-window</p>
     <tr>
       <th>polygon</th>
       <td><p>Geographic region to restrict the expansion to</p></td>
+    </tr>
+    <tr>
+      <th>lock</th>
+      <td><p>Maintain the same density of individuals. If
+<code>FALSE</code> (the default), the number of individuals in the
+population will not change. If <code>TRUE</code>, the number of
+individuals simulated will be changed (increased or decreased)
+appropriately, to match the new population range area.</p></td>
     </tr>
     <tr>
       <th>verbose</th>

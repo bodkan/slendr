@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{resize}
 \alias{resize}
-\title{Resize the population size}
+\title{Change the population size}
 \usage{
 resize(pop, N, how, time, end = NULL)
 }

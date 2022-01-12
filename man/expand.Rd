@@ -12,6 +12,7 @@ expand(
   overlap = 0.8,
   snapshots = NULL,
   polygon = NULL,
+  lock = FALSE,
   verbose = TRUE
 )
 }
@@ -28,6 +29,12 @@ expand(
 \code{overlap} parameter)}
 
 \item{polygon}{Geographic region to restrict the expansion to}
+
+\item{lock}{Maintain the same density of individuals. If
+\code{FALSE} (the default), the number of individuals in the
+population will not change. If \code{TRUE}, the number of
+individuals simulated will be changed (increased or decreased)
+appropriately, to match the new population range area.}
 
 \item{verbose}{Report on the progress of generating intermediate spatial
 boundaries?}

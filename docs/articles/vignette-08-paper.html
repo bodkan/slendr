@@ -157,28 +157,46 @@
 
 <span class="co"># compile a slendr model to a serialized form</span>
 <span class="va">model_ex2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span><span class="va">pop</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, resolution <span class="op">=</span> <span class="fl">1</span>,
-                     sim_length <span class="op">=</span> <span class="fl">18000</span>, dir <span class="op">=</span> <span class="va">EX2_DIR</span><span class="op">)</span>
+                     sim_length <span class="op">=</span> <span class="fl">18000</span>, dir <span class="op">=</span> <span class="va">EX2_DIR</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># record 50 individuals every hundred generations in the tree sequence</span>
-<span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampling.html">sampling</a></span><span class="op">(</span><span class="va">model_ex2</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">18000</span>, by <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">pop</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
+<span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampling.html">sampling</a></span><span class="op">(</span><span class="va">model_ex2</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">18000</span>, by <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">pop</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># execute the model in SLiM, simulationg 100 kb of sequence and saving</span>
 <span class="co"># the location of each individual throughout the simulation</span>
 <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_ex2</span>, sampling <span class="op">=</span> <span class="va">samples</span>, save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
-     sequence_length <span class="op">=</span> <span class="fl">100e3</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, seed <span class="op">=</span> <span class="va">SEED</span><span class="op">)</span></code></pre></div>
+     sequence_length <span class="op">=</span> <span class="fl">100e3</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, seed <span class="op">=</span> <span class="va">RANDOM_SEED</span><span class="op">)</span></code></pre></div>
+<pre><code>#&gt; --------------------------------------------------
+#&gt; SLiM command to be executed:
+#&gt; 
+#&gt; /Users/martin_petr/.my_local/bin/slim  \
+#&gt;     -d SEED=314159  \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8UJP6T/filee3e923a500ac"' \
+#&gt;     -d 'MODEL="/Users/martin_petr/projects/slendr-paper"' \
+#&gt;     -d 'OUTPUT="/Users/martin_petr/projects/slendr-paper/output"' \
+#&gt;     -d SPATIAL=T \
+#&gt;     -d SEQUENCE_LENGTH=100000 \
+#&gt;     -d RECOMB_RATE=1e-08 \
+#&gt;     -d BURNIN_LENGTH=0 \
+#&gt;     -d SIMULATION_LENGTH=18000 \
+#&gt;     -d SAVE_LOCATIONS=T \
+#&gt;     -d MAX_ATTEMPTS=1 \
+#&gt;     /Users/martin_petr/projects/slendr-paper/script.slim 
+#&gt; --------------------------------------------------</code></pre>
 <p>We can animate the entire model dynamics using the function <code><a href="../reference/animate.html">animate()</a></code>:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model_ex2</span>, steps <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></code></pre></div>
-<p>Load the location of everyone who ever lived:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model_ex2</span>, steps <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></code></pre></div>
+<p><img src="vignette-08-paper_files/figure-html/example2_gif-1.gif"><!-- --></p>
+<p>Load the location of everyone who ever lived:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">epoch_times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3000</span>, <span class="fl">6000</span>, <span class="fl">9000</span>, <span class="fl">12000</span>, <span class="fl">15000</span>, <span class="fl">18000</span><span class="op">)</span>
 
 <span class="va">locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">model_ex2</span><span class="op">$</span><span class="va">path</span>, <span class="st">"/output_ind_locations.tsv.gz"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">read_tsv</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">read_tsv</span><span class="op">(</span>show_col_types <span class="op">=</span> <span class="cn">FALSE</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">18000</span> <span class="op">-</span> <span class="va">gen</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">%in%</span> <span class="va">epoch_times</span><span class="op">)</span></code></pre></div>
 <p>We can’t include the GIF animation of the simulation run in the paper. Instead, let’s just take a couple of snapshots from the spatial simulation at each moment when we change the dynamics:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">time_labeller</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">" "</span>, <span class="va">value</span>, <span class="st">"generations"</span><span class="op">)</span>
 
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">locations</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -191,12 +209,13 @@
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_fixed</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
+<p><img src="vignette-08-paper_files/figure-html/example2_paper_figure-1.png" width="480"></p>
 </div>
 <div id="example-4" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-4" class="anchor"></a>Example 4</h2>
 <p>Load a couple of libraries for processing and visualising the results, link to the Python environment which contains the necessary Python modules:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># load the output tree sequence, recapitate it, simplify it, add mutations</span>
 <span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model_ex2</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, mutate <span class="op">=</span> <span class="cn">TRUE</span>,
               Ne <span class="op">=</span> <span class="fl">10000</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span>
@@ -204,25 +223,57 @@
 <span class="co"># extract table with names and times of sampled individuals</span>
 <span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span>
 
-<span class="co"># extract names of individuals in each time point</span>
-<span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="va">samples</span>, <span class="va">samples</span><span class="op">$</span><span class="va">time</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">map</span><span class="op">(</span><span class="va">pull</span>, <span class="va">name</span><span class="op">)</span>
+<span class="co"># extract just the names of individuals which are used as identifiers in</span>
+<span class="co"># various ts_*() statistics functions</span>
+<span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">samples</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>
 
-<span class="co"># compute nucleotide diversity in each time point and add additional</span>
-<span class="co"># information to the table of results for easier plotting</span>
-<span class="va">diversity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">groups</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="co"># compute nucleotide diversity in each simulated individual -- given that</span>
+<span class="co"># each SLiM individual carries two chromosome, this is effectively the</span>
+<span class="co"># heterozygosity in each individual</span>
+<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">groups</span><span class="op">)</span>
+
+<span class="co"># add the heterozygosity as a new column to the table of samples</span>
+<span class="va">samples</span> <span class="op">&lt;-</span> <span class="va">samples</span> |&gt;
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
-    time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">set</span><span class="op">)</span>,
+    heterozygosity <span class="op">=</span> <span class="va">result</span><span class="op">$</span><span class="va">diversity</span>,
     epoch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/findInterval.html">findInterval</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">epoch_times</span>, rightmost.closed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
   <span class="op">)</span>
 
-<span class="co"># plot diversity over time computed from the tree sequence data</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">diversity</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">diversity</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">epoch</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+<span class="co"># plot heterozygosity over time computed from the tree sequence data,</span>
+<span class="co"># coloring each "epoch" corresponding to the change in spatial dynamics</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">samples</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">heterozygosity</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">epoch</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">epoch_times</span>, size <span class="op">=</span> <span class="fl">0.75</span>, alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">epoch_times</span>, labels <span class="op">=</span> <span class="va">epoch_times</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"time since the start of the simulation"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
+<pre><code>#&gt; `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'</code></pre>
+<p><img src="vignette-08-paper_files/figure-html/example4_paper_figure-1.png" width="480"></p>
+<!-- ```{r, example4_paper_figure} -->
+<!-- # load the output tree sequence, recapitate it, simplify it, add mutations -->
+<!-- ts <- ts_load(model_ex2, recapitate = TRUE, simplify = TRUE, mutate = TRUE, -->
+<!--               Ne = 10000, recombination_rate = 1e-8, mutation_rate = 1e-8) -->
+<!-- # extract table with names and times of sampled individuals -->
+<!-- samples <- ts_samples(ts) -->
+<!-- # extract names of individuals in each time point -->
+<!-- groups <- split(samples, samples$time) %>% map(pull, name) -->
+<!-- # compute nucleotide diversity in each time point and add additional -->
+<!-- # information to the table of results for easier plotting -->
+<!-- diversity <- ts_diversity(ts, groups) %>% -->
+<!--   mutate( -->
+<!--     time = as.numeric(set), -->
+<!--     epoch = findInterval(time, epoch_times, rightmost.closed = TRUE) -->
+<!--   ) -->
+<!-- # plot diversity over time computed from the tree sequence data -->
+<!-- ggplot(diversity, aes(time, diversity, color = factor(epoch))) + -->
+<!--   geom_point() + -->
+<!--   geom_smooth(color = "black") + -->
+<!--   geom_vline(xintercept = epoch_times, size = 0.75, alpha = 0.25) + -->
+<!--   scale_x_continuous(breaks = epoch_times, labels = epoch_times) + -->
+<!--   labs(x = "time since the start of the simulation") + -->
+<!--   theme_minimal() + guides(color = "none") -->
+<!-- ``` -->
 </div>
   </div>
 
