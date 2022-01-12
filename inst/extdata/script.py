@@ -9,6 +9,7 @@ import tskit
 import pyslim
 import msprime
 import pandas
+import numpy
 
 VERSION = "__VERSION__"
 
@@ -28,17 +29,20 @@ parser.add_argument("--sampling-schedule", metavar="FILE", required=True,
                          "(see the manpage of the `sampling()` function for "
                          "more details)")
 parser.add_argument("--seed", type=int, help="Random seed value")
-parser.add_argument("--verbose", action="store_true", default=False,
+parser.add_argument("--verbose", action="store_true", default=True,
                     help="Print detailed logging information?")
 parser.add_argument("--debug", action="store_true", default=False,
                     help="Print a model debugging summary?")
 
 args = parser.parse_args()
+# args = parser.parse_args("--model ~/Desktop/msprime-test/ --output ~/Desktop/msprime-test/msprime.trees --sequence-length 100000 --recombination-rate 0 --sampling-schedule ~/Desktop/msprime-test/output_sampling.tsv".split())
 
 if args.verbose:
     logging.basicConfig(level=logging.INFO)
 
 model_dir = os.path.expanduser(args.model)
+
+logging.info(f"Loading slendr model configuration files from {model_dir}")
 
 if not args.output:
     args.output = pathlib.Path(model_dir, "output_msprime_ts.trees")
@@ -66,19 +70,22 @@ if os.path.exists(geneflows_path):
 
 length = int(float(open(length_path, "r").readline().rstrip()))
 
-# read the sampling schedule table or create a default one
 if os.path.exists(sampling_path):
     samples_df = pandas.read_table(sampling_path)
 else:
     sys.exit(f"Sampling schedule table at '{sampling_path}' does not exist")
 
-logging.info("Setting up an msprime demographic model")
+logging.info(f"Loading the sampling schedule")
 
 samples = [
     msprime.SampleSet(
-        n, population=pop, time=length - time_gen + 1, ploidy=2
-    ) for (_, pop, n, time_gen, _) in samples_df.itertuples()
+        row.n, population=row.pop, time=length - row.time_gen + 1, ploidy=2
+    ) for row in samples_df.itertuples(index=False)
 ]
+if any(sample.num_samples == numpy.inf for sample in samples):
+    sys.exit("Please provide the number of individuals to sample")
+
+logging.info("Setting up an msprime demographic model")
 
 # set up demographic history
 demography = msprime.Demography()
@@ -138,8 +145,10 @@ ts = msprime.sim_ancestry(
     random_seed=args.seed
 )
 
-logging.info("Saving the tree sequence output")
+output_path = os.path.expanduser(args.output)
 
-ts.dump(args.output)
+logging.info(f"Saving tree sequence output to {output_path}")
+
+ts.dump(output_path)
 
 logging.info("DONE")
