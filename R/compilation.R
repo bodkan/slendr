@@ -409,7 +409,13 @@ msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
                     sampling, verbose = FALSE, seed = NULL, debug = FALSE,
                     save_sampling = TRUE) {
-  message("Please not that msprime engine for executing is still experimental")
+  warning("Please note that msprime engine for executing non-spatial versions ",
+"of slendr models is still experimental. Taking extra ",
+"caution when simulating tree sequence data with the msprime backend is ",
+"recommended, double checking the simulation runs against tree sequences ",
+"produced by the SLiM backend (note that the same slendr model can be ",
+"run by the two backend without any changes).")
+
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
