@@ -29,7 +29,7 @@ parser.add_argument("--sampling-schedule", metavar="FILE", required=True,
                          "(see the manpage of the `sampling()` function for "
                          "more details)")
 parser.add_argument("--seed", type=int, help="Random seed value")
-parser.add_argument("--verbose", action="store_true", default=True,
+parser.add_argument("--verbose", action="store_true", default=False,
                     help="Print detailed logging information?")
 parser.add_argument("--debug", action="store_true", default=False,
                     help="Print a model debugging summary?")
@@ -55,6 +55,7 @@ populations_path = pathlib.Path(model_dir, "populations.tsv")
 resizes_path = pathlib.Path(model_dir, "resizes.tsv")
 geneflows_path = pathlib.Path(model_dir, "geneflow.tsv")
 length_path = pathlib.Path(model_dir, "length.txt")
+direction_path = pathlib.Path(model_dir, "direction.txt")
 sampling_path = os.path.expanduser(args.sampling_schedule)
 
 # read model configuration files
@@ -69,6 +70,9 @@ if os.path.exists(geneflows_path):
         .rename(columns={"from" : "source"})
 
 length = int(float(open(length_path, "r").readline().rstrip()))
+
+direction = open(direction_path, "r").readline().rstrip()
+logging.info(f"Loaded model is specified in the {direction} direction")
 
 if os.path.exists(sampling_path):
     samples_df = pandas.read_table(sampling_path)
@@ -90,7 +94,21 @@ logging.info("Setting up an msprime demographic model")
 # set up demographic history
 demography = msprime.Demography()
 for pop in populations.itertuples():
-    demography.add_population(name=pop.pop, initial_size=pop.N, initially_active=True)
+    # get the initial population size (in backwards direction) -- this is
+    # either the last (in forward direction) resize event recorded for the
+    # population, or its size after split
+    name = pop.pop
+    if len(resizes):
+        resize_events = resizes.query(f"pop == '{name}'")
+        initial_size = resize_events.tail(1).N[0]
+    else:
+        initial_size = pop.N
+
+    demography.add_population(
+        name=pop.pop,
+        initial_size=initial_size,
+        initially_active=True
+    )
     # for non-ancestral populations, specify the correct split event
     if (pop.parent != "ancestor"):
         demography.add_population_split(
@@ -99,19 +117,28 @@ for pop in populations.itertuples():
             ancestral=pop.parent
         )
 
-# # schedule population size changes
-# for event in resizes.itertuples():
-#     if event.how == "step":
-#         demography.add_population_parameters_change(
-#             time=length - event.tresize
-#         )
-#     else:
-#         demography.add_population_parameters_change(
-#             time=length - event.tresize
-#         )
-
-# resize_table[, c("pop", "pop_id", "how", "N", "prev_N",
-#                    "tresize_orig", "tresize_gen", "tend_orig", "tend_gen")]
+# schedule population size changes
+for event in resizes.itertuples(index=False):
+    if event.how == "step":
+        demography.add_population_parameters_change(
+            time=length - event.tresize_gen,
+            initial_size=event.prev_N,
+            population=event.pop
+        )
+    elif event.how == "exponential":
+        r = math.log(event.prev_N / event.N) / (event.tend_gen - event.tresize_gen)
+        demography.add_population_parameters_change(
+            time=length - event.tresize_gen,
+            growth_rate=r,
+            population=event.pop
+        )
+        demography.add_population_parameters_change(
+            time=length - event.tresize_gen,
+            growth_rate=0,
+            population=event.pop
+        )
+    else:
+        sys.exit(f"Unknown event type '{event.how}")
 
 # schedule gene flow events
 for event in geneflows.itertuples():
