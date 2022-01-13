@@ -134,32 +134,35 @@ afs <- dplyr::bind_rows(
 ) |>
   dplyr::mutate(sim = factor(sim, levels = c("slim", "msprime")))
 
-# msprime forward and backward sims on the same slendr model give the same result
-expect_true({
-  df <- afs[afs$sim == "msprime" & afs$model == "const", ]
-  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
-})
-expect_true({
-  df <- afs[afs$sim == "msprime" & afs$model == "contraction", ]
-  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
-})
-expect_true({
-  df <- afs[afs$sim == "msprime" & afs$model == "expansion", ]
-  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+
+test_that("msprime forward/backward sims give the same result", {
+  expect_true({
+    df <- afs[afs$sim == "msprime" & afs$model == "const", ]
+    all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+  })
+  expect_true({
+    df <- afs[afs$sim == "msprime" & afs$model == "contraction", ]
+    all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+  })
+  expect_true({
+    df <- afs[afs$sim == "msprime" & afs$model == "expansion", ]
+    all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+  })
 })
 
-# slim forward and backward sims on the same slendr model give the same result
-expect_true({
-  df <- afs[afs$sim == "slim" & afs$model == "const", ]
-  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
-})
-expect_true({
-  df <- afs[afs$sim == "slim" & afs$model == "contraction", ]
-  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
-})
-expect_true({
-  df <- afs[afs$sim == "slim" & afs$model == "expansion", ]
-  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+test_that("SLiM forward/backward sims give the same result", {
+  expect_true({
+    df <- afs[afs$sim == "slim" & afs$model == "const", ]
+    all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+  })
+  expect_true({
+    df <- afs[afs$sim == "slim" & afs$model == "contraction", ]
+    all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+  })
+  expect_true({
+    df <- afs[afs$sim == "slim" & afs$model == "expansion", ]
+    all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+  })
 })
 
 # SLiM and msprime simulations from the same model give the same result
@@ -175,4 +178,6 @@ first_output_png <- "afs.png"
 
 # make sure that the distributions as they were originally inspected and
 # verified visually match the new distributions plot
-expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
+test_that("AFS distributions from SLiM and msprime simulations match", {
+  expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
+})
