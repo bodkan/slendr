@@ -8,6 +8,8 @@ env_present <- function(env) {
   )
 }
 
+# Function used in unit tests verifying the correct number of individuals after
+# various demographic changes
 run_sim <- function(pop, direction, sim_length = NULL, method = "batch", verbose = FALSE) {
   model_dir <- tempdir()
 
@@ -34,6 +36,8 @@ run_sim <- function(pop, direction, sim_length = NULL, method = "batch", verbose
   df
 }
 
+# Function used to cross-test the consistency of msprime and SLiM simulations
+# executed by the two slendr backends on the same slendr model configuration
 run_slim_msprime <- function(forward_model, backward_model,
                              forward_samples, backward_samples,
                              seq_len, rec_rate, seed, verbose, debug = FALSE) {
