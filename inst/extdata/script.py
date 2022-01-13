@@ -104,17 +104,25 @@ for pop in populations.itertuples():
     else:
         initial_size = pop.N
 
-    demography.add_population(
-        name=pop.pop,
-        initial_size=initial_size,
-        initially_active=True
-    )
-    # for non-ancestral populations, specify the correct split event
-    if (pop.parent != "ancestor"):
+    if pop.parent == "ancestor":
+        demography.add_population(
+            name=pop.pop,
+            initial_size=initial_size,
+            initially_active=True
+        )
+    # for non-ancestral populations, specify the correct split event and re-set
+    # the effective population size (by default in msprime inherited from the
+    # parent population)
+    else:
         demography.add_population_split(
             time=length - pop.tsplit_gen,
             derived=[pop.pop],
             ancestral=pop.parent
+        )
+        demography.add_population_parameters_change(
+            time=length - pop.tsplit_gen,
+            initial_size=initial_size,
+            population=pop.pop
         )
 
 # schedule population size changes
