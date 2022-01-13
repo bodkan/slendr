@@ -299,7 +299,7 @@ slim <- function(model, sequence_length, recombination_rate,
                  spatial = !is.null(model$world),
                  sampling = NULL, max_attempts = 1,
                  save_locations = FALSE,
-                 method = c("batch", "gui"), verbose = TRUE, burnin = 0,
+                 method = c("batch", "gui"), verbose = FALSE, burnin = 0,
                  seed = NULL, slim_path = NULL, save_sampling = TRUE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
@@ -407,8 +407,9 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @export
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
-                    sampling, verbose = TRUE, seed = NULL, debug = FALSE,
+                    sampling, verbose = FALSE, seed = NULL, debug = FALSE,
                     save_sampling = TRUE) {
+  message("Please not that msprime engine for executing is still experimental")
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
