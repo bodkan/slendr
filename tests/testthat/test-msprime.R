@@ -1,85 +1,178 @@
 env_present("retipy")
 
-SEED <- 42
+seed <- 42
 N <- 1000
 n_samples <- 50
+seq_len <- 200e6
+rec_rate <- 1e-8
+mut_rate <- 1e-8
 
-forward_pop <- population("forward_pop", time = 1, N = N, map = FALSE)
-forward_model <- compile(forward_pop, "~/Desktop/msprime-forward", generation_time = 1,
-                         overwrite = TRUE, direction = "forward", sim_length = 5000)
+# constant population size models - forward and backward direction, SLiM and msprime
 
-backward_pop <- population("backward_pop", time = 5000, N = N, map = FALSE)
-backward_model <- compile(backward_pop, "~/Desktop/msprime-backward", generation_time = 1,
-                          overwrite = TRUE, direction = "backward")
+forward_const_dir <- file.path(tempdir(), "forward_const")
+forward_const_pop <- population("forward_const_pop", time = 1, N = N, map = FALSE)
+forward_const_model <- compile(forward_const_pop, forward_const_dir, generation_time = 1,
+                               overwrite = TRUE, direction = "forward", sim_length = 5000)
+forward_const_samples <- sampling(forward_const_model, times = 5001, list(forward_const_pop, n_samples))
 
-forward_samples <- sampling(forward_model, times = 5001, list(forward_pop, n_samples))
-backward_samples <- sampling(backward_model, times = 0, list(backward_pop, n_samples))
+backward_const_dir <- file.path(tempdir(), "backward_const")
+backward_const_pop <- population("backward_const_pop", time = 5000, N = N, map = FALSE)
+backward_const_model <- compile(backward_const_pop, backward_const_dir , generation_time = 1,
+                                overwrite = TRUE, direction = "backward")
+backward_const_samples <- sampling(backward_const_model, times = 0, list(backward_const_pop, n_samples))
 
-slim(forward_model, sequence_length = 100e6, recombination_rate = 1e-8, sampling = forward_samples, seed = SEED)
-msprime(forward_model, sequence_length = 100e6, recombination_rate = 1e-8, sampling = forward_samples, seed = SEED)
-
-slim(backward_model, sequence_length = 100e6, recombination_rate = 1e-8, sampling = backward_samples, seed = SEED)
-msprime(backward_model, sequence_length = 100e6, recombination_rate = 1e-8, sampling = backward_samples, seed = SEED)
-
-reticulate::repl_python()
-
-load_msprime_ts <- function(path) {
-  ts <- tskit$load(path)
-  ts <- msp$sim_mutations(
-    ts,
-    rate=1e-8,
-    random_seed=123
-  )
-  ts
-}
-
-msprime_forward_ts <- load_msprime_ts("/Users/martin_petr/Desktop/msprime-forward/output_msprime.trees")
-msprime_backward_ts <- load_msprime_ts("/Users/martin_petr/Desktop/msprime-backward/output_msprime.trees")
-
-msprime_forward_afs <- msprime_forward_ts$allele_frequency_spectrum()
-msprime_backward_afs <- msprime_backward_ts$allele_frequency_spectrum()
-
-slim_forward_ts <- ts_load(
-  forward_model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-  Ne = N, recombination_rate = 1e-8, mutation_rate = 1e-8,
-  random_seed = SEED
-)
-slim_backward_ts <- ts_load(
-  backward_model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-  Ne = N, recombination_rate = 1e-8, mutation_rate = 1e-8,
-  random_seed = SEED
+run_slim_msprime(
+  forward_const_model, backward_const_model,
+  forward_const_samples, backward_const_samples,
+  seq_len, rec_rate, seed, verbose = FALSE
 )
 
-slim_forward_afs <- ts_afs(slim_forward_ts)
-slim_backward_afs <- ts_afs(slim_backward_ts)
+# population size contraction models - forward and backward direction, SLiM and msprime
 
-n_afs <- 2 * n_samples + 1
+forward_contr_dir <- file.path(tempdir(), "forward_contr")
+forward_contr_pop <- population("forward_contr_pop", time = 1, N = N, map = FALSE) |>
+  resize(time = 2001, N = 200, how = "step")
+forward_contr_model <- compile(forward_contr_pop, forward_contr_dir, generation_time = 1,
+                               overwrite = TRUE, direction = "forward", sim_length = 5000)
+forward_contr_samples <- sampling(forward_contr_model, times = 5001, list(forward_contr_pop, n_samples))
 
-df <- dplyr::tibble(
-  sim = c(rep("msprime", 2 * n_afs), rep("SLiM", 2 * n_afs)),
-  dir = c(rep("forward", n_afs), rep("backward", n_afs),
-          rep("forward", n_afs), rep("backward", n_afs)),
-  f = c(msprime_forward_afs, msprime_backward_afs,
-        slim_forward_afs, slim_backward_afs)
+backward_contr_dir <- file.path(tempdir(), "backward_contr")
+backward_contr_pop <- population("backward_contr_pop", time = 5000, N = N, map = FALSE) |>
+  resize(time = 3000, N = 200, how = "step")
+backward_contr_model <- compile(backward_contr_pop, backward_contr_dir, generation_time = 1,
+                                overwrite = TRUE, direction = "backward")
+backward_contr_samples <- sampling(backward_contr_model, times = 0, list(backward_contr_pop, n_samples))
+
+run_slim_msprime(
+  forward_contr_model, backward_contr_model,
+  forward_contr_samples, backward_contr_samples,
+  seq_len, rec_rate, seed, verbose = FALSE
 )
 
-ggplot(df, aes(f, color = sim, linetype = dir)) + geom_density() + facet_wrap(~ dir)
-ggplot(df, aes(f, color = sim, linetype = dir)) + geom_density() + facet_wrap(~ sim)
 
-ggplot() +
-  geom_point(aes(msprime_forward_afs, msprime_backward_afs)) +
-  coord_equal() +
-  geom_abline(slope = 1)
+# population size increase models - forward and backward direction, SLiM and msprime
 
-expect_true(all(msprime_forward_afs == msprime_backward_afs))
+forward_expansion_dir <- file.path(tempdir(), "forward_expansion")
+forward_expansion_pop <- population("forward_expansion_pop", time = 1, N = N, map = FALSE) |>
+  resize(time = 2001, N = 5*N, how = "step")
+forward_expansion_model <- compile(forward_expansion_pop, forward_expansion_dir, generation_time = 1,
+                                   overwrite = TRUE, direction = "forward", sim_length = 5000)
+forward_expansion_samples <- sampling(forward_expansion_model, times = 5001, list(forward_expansion_pop, n_samples))
 
-ggplot() +
-  geom_point(aes(slim_forward_afs, slim_backward_afs)) +
-  coord_equal() +
-  geom_abline(slope = 1)
-expect_true(all(slim_forward_afs == slim_backward_afs))
+backward_expansion_dir <- file.path(tempdir(), "backward_expansion")
+backward_expansion_pop <- population("backward_expansion_pop", time = 5000, N = N, map = FALSE) |>
+  resize(time = 3000, N = 5*N, how = "step")
+backward_expansion_model <- compile(backward_expansion_pop, backward_expansion_dir, generation_time = 1,
+                                    overwrite = TRUE, direction = "backward")
+backward_expansion_samples <- sampling(backward_expansion_model, times = 0, list(backward_expansion_pop, n_samples))
 
-ggplot() +
-  geom_point(aes(msprime_forward_afs, slim_forward_afs)) +
-  coord_equal() +
-  geom_abline(slope = 1)
+run_slim_msprime(
+  forward_expansion_model, backward_expansion_model,
+  forward_expansion_samples, backward_expansion_samples,
+  seq_len, rec_rate, seed, verbose = FALSE
+)
+
+
+# load tree sequence files from msprime
+msprime_forward_const_ts <- load_msprime_ts(file.path(forward_const_model$path, "output_msprime.trees"))
+msprime_backward_const_ts <- load_msprime_ts(file.path(backward_const_model$path, "output_msprime.trees"))
+
+msprime_forward_contr_ts <- load_msprime_ts(file.path(forward_contr_model$path, "output_msprime.trees"))
+msprime_backward_contr_ts <- load_msprime_ts(file.path(backward_contr_model$path, "output_msprime.trees"))
+
+msprime_forward_expansion_ts <- load_msprime_ts(file.path(forward_expansion_model$path, "output_msprime.trees"))
+msprime_backward_expansion_ts <- load_msprime_ts(file.path(backward_expansion_model$path, "output_msprime.trees"))
+
+# load tree sequence files from SLiM
+slim_forward_const_ts <- load_slim_ts(forward_const_model, N, rec_rate, mut_rate, seed)
+slim_backward_const_ts <- load_slim_ts(backward_const_model, N, rec_rate, mut_rate, seed)
+
+slim_forward_contr_ts <- load_slim_ts(forward_contr_model, N, rec_rate, mut_rate, seed)
+slim_backward_contr_ts <- load_slim_ts(backward_contr_model, N, rec_rate, mut_rate, seed)
+
+slim_forward_expansion_ts <- load_slim_ts(forward_expansion_model, N, rec_rate, mut_rate, seed)
+slim_backward_expansion_ts <- load_slim_ts(backward_expansion_model, N, rec_rate, mut_rate, seed)
+
+# compute AFS from all tree sequence files - msprime
+msprime_forward_const_afs <- msprime_forward_const_ts$allele_frequency_spectrum(polarised = TRUE, span_normalise = FALSE)[-1]
+msprime_backward_const_afs <- msprime_backward_const_ts$allele_frequency_spectrum(polarised = TRUE, span_normalise = FALSE)[-1]
+
+msprime_forward_contr_afs <- msprime_forward_contr_ts$allele_frequency_spectrum(polarised = TRUE, span_normalise = FALSE)[-1]
+msprime_backward_contr_afs <- msprime_backward_contr_ts$allele_frequency_spectrum(polarised = TRUE, span_normalise = FALSE)[-1]
+
+msprime_forward_expansion_afs <- msprime_forward_expansion_ts$allele_frequency_spectrum(polarised = TRUE, span_normalise = FALSE)[-1]
+msprime_backward_expansion_afs <- msprime_backward_expansion_ts$allele_frequency_spectrum(polarised = TRUE, span_normalise = FALSE)[-1]
+
+# compute AFS from all tree sequence files - SLiM
+slim_forward_const_afs <- ts_afs(slim_forward_const_ts, polarised = TRUE, span_normalise = FALSE)[-1]
+slim_backward_const_afs <- ts_afs(slim_backward_const_ts, polarised = TRUE, span_normalise = FALSE)[-1]
+
+slim_forward_contr_afs <- ts_afs(slim_forward_contr_ts, polarised = TRUE, span_normalise = FALSE)[-1]
+slim_backward_contr_afs <- ts_afs(slim_backward_contr_ts, polarised = TRUE, span_normalise = FALSE)[-1]
+
+slim_forward_expansion_afs <- ts_afs(slim_forward_expansion_ts, polarised = TRUE, span_normalise = FALSE)[-1]
+slim_backward_expansion_afs <- ts_afs(slim_backward_expansion_ts, polarised = TRUE, span_normalise = FALSE)[-1]
+
+afs <- dplyr::bind_rows(
+  dplyr::tibble(f = msprime_forward_const_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = "const"),
+  dplyr::tibble(f = msprime_backward_const_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = "const"),
+
+  dplyr::tibble(f = msprime_forward_contr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = "contraction"),
+  dplyr::tibble(f = msprime_backward_contr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = "contraction"),
+
+  dplyr::tibble(f = msprime_forward_expansion_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = "expansion"),
+  dplyr::tibble(f = msprime_backward_expansion_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = "expansion"),
+
+  dplyr::tibble(f = slim_forward_const_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "const"),
+  dplyr::tibble(f = slim_backward_const_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "const"),
+
+  dplyr::tibble(f = slim_forward_contr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "contraction"),
+  dplyr::tibble(f = slim_backward_contr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "contraction"),
+
+  dplyr::tibble(f = slim_forward_expansion_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "expansion"),
+  dplyr::tibble(f = slim_backward_expansion_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "expansion")
+) |>
+  dplyr::mutate(sim = factor(sim, levels = c("slim", "msprime")))
+
+# msprime forward and backward sims on the same slendr model give the same result
+expect_true({
+  df <- afs[afs$sim == "msprime" & afs$model == "const", ]
+  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+})
+expect_true({
+  df <- afs[afs$sim == "msprime" & afs$model == "contraction", ]
+  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+})
+expect_true({
+  df <- afs[afs$sim == "msprime" & afs$model == "expansion", ]
+  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+})
+
+# slim forward and backward sims on the same slendr model give the same result
+expect_true({
+  df <- afs[afs$sim == "slim" & afs$model == "const", ]
+  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+})
+expect_true({
+  df <- afs[afs$sim == "slim" & afs$model == "contraction", ]
+  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+})
+expect_true({
+  df <- afs[afs$sim == "slim" & afs$model == "expansion", ]
+  all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
+})
+
+# SLiM and msprime simulations from the same model give the same result
+# (tested by comparing the distribution plots)
+p <- ggplot(afs, aes(n, f, color = direction, linetype = sim)) +
+  geom_line(stat = "identity") +
+  facet_wrap(~ model)
+
+output_png <- paste0(tempfile(), ".png")
+ggsave(output_png, p, width = 8, height = 5)
+first_output_png <- "afs.png"
+# ggsave(first_output_png, p, width = 8, height = 5)
+
+# make sure that the distributions as they were originally inspected and
+# verified visually match the new distributions plot
+expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))

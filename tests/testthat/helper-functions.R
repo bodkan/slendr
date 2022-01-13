@@ -33,3 +33,35 @@ run_sim <- function(pop, direction, sim_length = NULL, method = "batch", verbose
 
   df
 }
+
+run_slim_msprime <- function(forward_model, backward_model,
+                             forward_samples, backward_samples,
+                             seq_len, rec_rate, seed, verbose, debug = FALSE) {
+  slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+       sampling = forward_samples, seed = seed, verbose = verbose)
+  msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+          sampling = forward_samples, seed = seed, verbose = verbose, debug = debug)
+
+  slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+       sampling = backward_samples, seed = seed, verbose = verbose)
+  msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+          sampling = backward_samples, seed = seed, verbose = verbose, debug = debug)
+}
+
+load_msprime_ts <- function(path) {
+  ts <- tskit$load(path.expand(path))
+  ts <- msp$sim_mutations(
+    ts,
+    rate=1e-8,
+    random_seed=123
+  )
+  ts
+}
+
+load_slim_ts <- function(model, N, rec_rate, mut_rate, seed) {
+  ts_load(
+    model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+    Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate,
+    random_seed = seed
+  )
+}
