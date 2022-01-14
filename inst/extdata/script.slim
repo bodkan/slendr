@@ -265,10 +265,13 @@ s6 /* Exponential population size changes */ {
         else
             event_type = "shrinking";
 
+        current_size = get_pop(id).individualCount;
         if (sim.generation == tstart)
-            log_output("start of exponential " + event_type + " of " + pop + "(p" + id + ")");
+            log_output("start of exponential " + event_type + " of " + pop + "(p" + id +
+                       ") from size " + current_size);
         if (sim.generation == tend)
-            log_output("end of exponential " + event_type + " of " + pop + "(p" + id + ")");
+            log_output("end of exponential " + event_type + " of " + pop + "(p" + id +
+                       ") at size " + current_size);
     }
 }
 
