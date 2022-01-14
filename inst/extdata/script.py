@@ -10,6 +10,7 @@ import pyslim
 import msprime
 import pandas
 import numpy
+import math
 
 VERSION = "__VERSION__"
 
@@ -31,11 +32,8 @@ parser.add_argument("--sampling-schedule", metavar="FILE", required=True,
 parser.add_argument("--seed", type=int, help="Random seed value")
 parser.add_argument("--verbose", action="store_true", default=False,
                     help="Print detailed logging information?")
-parser.add_argument("--debug", action="store_true", default=False,
-                    help="Print a model debugging summary?")
 
 args = parser.parse_args()
-# args = parser.parse_args("--model ~/Desktop/msprime-test/ --output ~/Desktop/msprime-test/msprime.trees --sequence-length 100000 --recombination-rate 0 --sampling-schedule ~/Desktop/msprime-test/output_sampling.tsv".split())
 
 if args.verbose:
     logging.basicConfig(level=logging.INFO)
@@ -98,7 +96,7 @@ for pop in populations.itertuples():
     # either the last (in forward direction) resize event recorded for the
     # population, or its size after split
     name = pop.pop
-    if len(resizes):
+    if len(resizes) and name in resizes["pop"]:
         resize_events = resizes.query(f"pop == '{name}'")
         initial_size = resize_events.tail(1).N[0]
     else:
@@ -134,9 +132,9 @@ for event in resizes.itertuples(index=False):
             population=event.pop
         )
     elif event.how == "exponential":
-        r = math.log(event.prev_N / event.N) / (event.tend_gen - event.tresize_gen)
+        r = math.log(event.N / event.prev_N) / (event.tend_gen - event.tresize_gen)
         demography.add_population_parameters_change(
-            time=length - event.tresize_gen,
+            time=length - event.tend_gen,
             growth_rate=r,
             population=event.pop
         )
@@ -167,7 +165,7 @@ for event in geneflows.itertuples():
 # (otherwise msprime complains)
 demography.sort_events()
 
-if args.debug:
+if args.verbose:
     print(demography.debug())
 
 logging.info("Running the simulation")
