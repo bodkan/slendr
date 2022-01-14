@@ -24,7 +24,7 @@ Sys.unsetenv("RETICULATE_PYTHON")
 
 devtools::load_all(".")
 
-RANDOM_SEED <- 314159L
+RANDOM_SEED <- 42
 set.seed(RANDOM_SEED)
 ```
 
@@ -100,7 +100,7 @@ And then with the msprime backend:
 ```{r}
 msprime(
   model, sequence_length = 50e6, recombination_rate = 1e-8,
-  sampling = samples, verbose = TRUE, seed = RANDOM_SEED, debug=T
+  sampling = samples, verbose = TRUE, seed = RANDOM_SEED
 )
 
 reticulate::repl_python()

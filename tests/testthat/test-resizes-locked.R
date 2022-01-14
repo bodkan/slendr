@@ -6,7 +6,7 @@ test_that("population size is correctly decreased upon reducing circular boundar
   N1 <- 100
 
   pop <- population("pop", time = 1, N = N1, map = map, center = c(500, 500),
-                    radius = r1) |>
+                    radius = r1) %>%
     boundary(time = 50, center = c(500, 500), radius = r2, lock = TRUE)
 
   ind_df <- run_sim(pop, "forward", sim_length = 55, verbose = FALSE)
@@ -28,7 +28,7 @@ test_that("population size is correctly increased upon exanding circular baounda
   N1 <- 100
 
   pop <- population("pop", time = 1, N = N1, map = map, center = c(500, 500),
-                    radius = r1) |>
+                    radius = r1) %>%
     boundary(time = 50, center = c(500, 500), radius = r2, lock = TRUE)
 
   ind_df <- run_sim(pop, "forward", sim_length = 55, verbose = FALSE)
@@ -50,7 +50,7 @@ test_that("population size is correctly decreased upon reducing square boundary"
   N1 <- 100
 
   pop <- population("pop", time = 1, N = N1, map = map,
-                    polygon = list(c(0, 0), c(a1, 0), c(a1, a1), c(0, a1))) |>
+                    polygon = list(c(0, 0), c(a1, 0), c(a1, a1), c(0, a1))) %>%
     boundary(time = 50, lock = TRUE, polygon = list(c(0, 0), c(a2, 0), c(a2, a2), c(0, a2)))
 
   ind_df <- run_sim(pop, "forward", sim_length = 55, verbose = FALSE)
@@ -73,7 +73,7 @@ test_that("population size is correctly decreased upon expanding square boundary
   N1 <- 100
 
   pop <- population("pop", time = 1, N = N1, map = map,
-                    polygon = list(c(0, 0), c(a1, 0), c(a1, a1), c(0, a1))) |>
+                    polygon = list(c(0, 0), c(a1, 0), c(a1, a1), c(0, a1))) %>%
     boundary(time = 50, lock = TRUE, polygon = list(c(0, 0), c(a2, 0), c(a2, a2), c(0, a2)))
 
   ind_df <- run_sim(pop, "forward", sim_length = 55, verbose = FALSE)
@@ -96,7 +96,7 @@ test_that("population size is correctly increased during range expansion", {
   snapshots <- 10
 
   pop <- population("pop", time = 1, N = N_start, map = map, center = c(500e3, 500e3),
-                    radius = r_start) |>
+                    radius = r_start) %>%
     expand(by = by, start = 50, end = 100, lock = TRUE, snapshots = snapshots)
 
   ind_df <- run_sim(pop, "forward", sim_length = 150, verbose = FALSE)
@@ -118,7 +118,7 @@ test_that("population size is correctly increased during range contraction", {
   snapshots <- 10
 
   pop <- population("pop", time = 1, N = N_start, map = map, center = c(500e3, 500e3),
-                    radius = r_start) |>
+                    radius = r_start) %>%
     shrink(by = by, start = 50, end = 100, lock = TRUE, snapshots = snapshots)
 
   ind_df <- run_sim(pop, "forward", sim_length = 150, verbose = FALSE)

@@ -56,14 +56,14 @@ run_slim_msprime(
 # population size contraction models - forward and backward direction, SLiM and msprime
 
 forward_contr_dir <- file.path(tempdir(), "forward_contr")
-forward_contr_pop <- population("forward_contr_pop", time = 1, N = N, map = FALSE) |>
+forward_contr_pop <- population("forward_contr_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, N = N / N_factor, how = "step")
 forward_contr_model <- compile(forward_contr_pop, forward_contr_dir, generation_time = 1,
                                overwrite = TRUE, direction = "forward", sim_length = 5000)
 forward_contr_samples <- sampling(forward_contr_model, times = 5001, list(forward_contr_pop, n_samples))
 
 backward_contr_dir <- file.path(tempdir(), "backward_contr")
-backward_contr_pop <- population("backward_contr_pop", time = 5000, N = N, map = FALSE) |>
+backward_contr_pop <- population("backward_contr_pop", time = 5000, N = N, map = FALSE) %>%
   resize(time = 3000, N = N / N_factor, how = "step")
 backward_contr_model <- compile(backward_contr_pop, backward_contr_dir, generation_time = 1,
                                 overwrite = TRUE, direction = "backward")
@@ -81,14 +81,14 @@ run_slim_msprime(
 # population size increase models - forward and backward direction, SLiM and msprime
 
 forward_expansion_dir <- file.path(tempdir(), "forward_expansion")
-forward_expansion_pop <- population("forward_expansion_pop", time = 1, N = N, map = FALSE) |>
+forward_expansion_pop <- population("forward_expansion_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, N = N * N_factor, how = "step")
 forward_expansion_model <- compile(forward_expansion_pop, forward_expansion_dir, generation_time = 1,
                                    overwrite = TRUE, direction = "forward", sim_length = 5000)
 forward_expansion_samples <- sampling(forward_expansion_model, times = 5001, list(forward_expansion_pop, n_samples))
 
 backward_expansion_dir <- file.path(tempdir(), "backward_expansion")
-backward_expansion_pop <- population("backward_expansion_pop", time = 5000, N = N, map = FALSE) |>
+backward_expansion_pop <- population("backward_expansion_pop", time = 5000, N = N, map = FALSE) %>%
   resize(time = 3000, N = N * N_factor, how = "step")
 backward_expansion_model <- compile(backward_expansion_pop, backward_expansion_dir, generation_time = 1,
                                     overwrite = TRUE, direction = "backward")
@@ -106,14 +106,14 @@ run_slim_msprime(
 # exponential increase  models - forward and backward direction, SLiM and msprime
 
 forward_exp_inc_dir <- file.path(tempdir(), "forward_exp_inc")
-forward_exp_inc_pop <- population("forward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) |>
+forward_exp_inc_pop <- population("forward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N, how = "exponential")
 forward_exp_inc_model <- compile(forward_exp_inc_pop, forward_exp_inc_dir, generation_time = 1,
                                    overwrite = TRUE, direction = "forward", sim_length = 5000)
 forward_exp_inc_samples <- sampling(forward_exp_inc_model, times = 5001, list(forward_exp_inc_pop, n_samples))
 
 backward_exp_inc_dir <- file.path(tempdir(), "backward_exp_inc")
-backward_exp_inc_pop <- population("backward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) |>
+backward_exp_inc_pop <- population("backward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N, how = "exponential")
 backward_exp_inc_model <- compile(backward_exp_inc_pop, backward_exp_inc_dir, generation_time = 1,
                                    overwrite = TRUE, direction = "forward", sim_length = 5000)
@@ -131,14 +131,14 @@ run_slim_msprime(
 # exponential decrease  models - forward and backward direction, SLiM and msprime
 
 forward_exp_decr_dir <- file.path(tempdir(), "forward_exp_decr")
-forward_exp_decr_pop <- population("forward_exp_decr_pop", time = 1, N = N, map = FALSE) |>
+forward_exp_decr_pop <- population("forward_exp_decr_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N / N_factor, how = "exponential")
 forward_exp_decr_model <- compile(forward_exp_decr_pop, forward_exp_decr_dir, generation_time = 1,
                                  overwrite = TRUE, direction = "forward", sim_length = 5000)
 forward_exp_decr_samples <- sampling(forward_exp_decr_model, times = 5001, list(forward_exp_decr_pop, n_samples))
 
 backward_exp_decr_dir <- file.path(tempdir(), "backward_exp_decr")
-backward_exp_decr_pop <- population("backward_exp_decr_pop", time = 1, N = N, map = FALSE) |>
+backward_exp_decr_pop <- population("backward_exp_decr_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N / N_factor, how = "exponential")
 backward_exp_decr_model <- compile(backward_exp_decr_pop, backward_exp_decr_dir, generation_time = 1,
                                   overwrite = TRUE, direction = "forward", sim_length = 5000)
@@ -245,7 +245,7 @@ afs <- dplyr::bind_rows(
 
   dplyr::tibble(f = slim_forward_exp_decr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = sprintf("exponential decrease %d to %d", N, N / N_factor)),
   dplyr::tibble(f = slim_backward_exp_decr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = sprintf("exponential decrease %d to %d", N, N / N_factor))
-) |>
+) %>%
   dplyr::mutate(sim = factor(sim, levels = c("msprime", "slim")),
                 model = factor(
                   model,
