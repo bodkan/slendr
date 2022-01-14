@@ -77,7 +77,7 @@ if os.path.exists(sampling_path):
 else:
     sys.exit(f"Sampling schedule table at '{sampling_path}' does not exist")
 
-logging.info(f"Loading the sampling schedule")
+logging.info("Loading the sampling schedule")
 
 samples = [
     msprime.SampleSet(
@@ -87,7 +87,7 @@ samples = [
 if any(sample.num_samples == numpy.inf for sample in samples):
     sys.exit("Please provide the number of individuals to sample")
 
-logging.info("Setting up an msprime demographic model")
+logging.info("Setting up populations")
 
 # set up demographic history
 demography = msprime.Demography()
@@ -96,13 +96,14 @@ for pop in populations.itertuples():
     # either the last (in forward direction) resize event recorded for the
     # population, or its size after split
     name = pop.pop
-    if len(resizes) and name in resizes["pop"]:
+    if len(resizes) and name in set(resizes["pop"]):
         resize_events = resizes.query(f"pop == '{name}'")
         initial_size = resize_events.tail(1).N[0]
     else:
         initial_size = pop.N
 
     if pop.parent == "ancestor":
+        logging.info(f"Setting up ancestral population {pop.pop} with Ne {initial_size}")
         demography.add_population(
             name=pop.pop,
             initial_size=initial_size,
@@ -112,6 +113,7 @@ for pop in populations.itertuples():
     # the effective population size (by default in msprime inherited from the
     # parent population)
     else:
+        logging.info(f"Setting up daughter population {pop.pop} with Ne {initial_size}")
         demography.add_population_split(
             time=length - pop.tsplit_gen,
             derived=[pop.pop],
@@ -123,39 +125,51 @@ for pop in populations.itertuples():
             population=pop.pop
         )
 
+logging.info("Setting up population resize events")
+
 # schedule population size changes
 for event in resizes.itertuples(index=False):
     if event.how == "step":
+        time = length - event.tresize_gen
+        logging.info(f"Step resize of population {pop.pop} to {event.prev_N} from {event.N} at time {time}")
         demography.add_population_parameters_change(
-            time=length - event.tresize_gen,
+            time=time,
             initial_size=event.prev_N,
             population=event.pop
         )
     elif event.how == "exponential":
-        r = math.log(event.N / event.prev_N) / (event.tend_gen - event.tresize_gen)
+        tstart = length - event.tend_gen
+        tend = length - event.tresize_gen
+        r = math.log(event.prev_N / event.N) / (tstart - tend)
+        logging.info(f"Exponential resize of population {pop.pop} from {event.N} to {event.prev_N}, growth rate {r}, from {tstart} to {tend} generations")
         demography.add_population_parameters_change(
-            time=length - event.tend_gen,
+            time=tstart,
             growth_rate=r,
             population=event.pop
         )
         demography.add_population_parameters_change(
-            time=length - event.tresize_gen,
+            time=tend,
             growth_rate=0,
             population=event.pop
         )
     else:
-        sys.exit(f"Unknown event type '{event.how}")
+        sys.exit(f"Unknown event type '{event.how}'")
+
+logging.info("Setting up gene flow events")
 
 # schedule gene flow events
 for event in geneflows.itertuples():
+    tstart = length - event.tend_gen + 1
+    tend = length - event.tstart_gen + 1
+    logging.info(f"Gene flow from {event.source} to {event.to} between {tstart} and {tend}")
     demography.add_migration_rate_change(
-        time=length - event.tend_gen + 1,
+        time=tstart,
         rate=event.rate,
         source=event.to,
         dest=event.source,
     )
     demography.add_migration_rate_change(
-        time=length - event.tstart_gen + 1,
+        time=tend,
         rate=0,
         source=event.to,
         dest=event.source,

@@ -44,6 +44,9 @@ backward_const_model <- compile(backward_const_pop, backward_const_dir , generat
                                 overwrite = TRUE, direction = "backward")
 backward_const_samples <- sampling(backward_const_model, times = 0, list(backward_const_pop, n_samples))
 
+# msprime(forward_const_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_const_samples, seed = seed, verbose = TRUE)
+# msprime(backward_const_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_const_samples, seed = seed, verbose = TRUE)
+
 run_slim_msprime(
   forward_const_model, backward_const_model,
   forward_const_samples, backward_const_samples,
@@ -65,6 +68,9 @@ backward_contr_pop <- population("backward_contr_pop", time = 5000, N = N, map =
 backward_contr_model <- compile(backward_contr_pop, backward_contr_dir, generation_time = 1,
                                 overwrite = TRUE, direction = "backward")
 backward_contr_samples <- sampling(backward_contr_model, times = 0, list(backward_contr_pop, n_samples))
+
+# msprime(forward_contr_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_contr_samples, seed = seed, verbose = TRUE)
+# msprime(backward_contr_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_contr_samples, seed = seed, verbose = TRUE)
 
 run_slim_msprime(
   forward_contr_model, backward_contr_model,
@@ -88,6 +94,9 @@ backward_expansion_model <- compile(backward_expansion_pop, backward_expansion_d
                                     overwrite = TRUE, direction = "backward")
 backward_expansion_samples <- sampling(backward_expansion_model, times = 0, list(backward_expansion_pop, n_samples))
 
+# msprime(forward_expansion_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_expansion_samples, seed = seed, verbose = TRUE)
+# msprime(backward_expansion_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_expansion_samples, seed = seed, verbose = TRUE)
+
 run_slim_msprime(
   forward_expansion_model, backward_expansion_model,
   forward_expansion_samples, backward_expansion_samples,
@@ -97,18 +106,21 @@ run_slim_msprime(
 # exponential increase  models - forward and backward direction, SLiM and msprime
 
 forward_exp_inc_dir <- file.path(tempdir(), "forward_exp_inc")
-forward_exp_inc_pop <- population("forward_exp_inc_pop", time = 1, N = N, map = FALSE) |>
-  resize(time = 2001, end = 3001, N = N * N_factor, how = "exponential")
+forward_exp_inc_pop <- population("forward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) |>
+  resize(time = 2001, end = 3001, N = N, how = "exponential")
 forward_exp_inc_model <- compile(forward_exp_inc_pop, forward_exp_inc_dir, generation_time = 1,
                                    overwrite = TRUE, direction = "forward", sim_length = 5000)
 forward_exp_inc_samples <- sampling(forward_exp_inc_model, times = 5001, list(forward_exp_inc_pop, n_samples))
 
 backward_exp_inc_dir <- file.path(tempdir(), "backward_exp_inc")
-backward_exp_inc_pop <- population("backward_exp_inc_pop", time = 1, N = N, map = FALSE) |>
-  resize(time = 2001, end = 3001, N = N * N_factor, how = "exponential")
+backward_exp_inc_pop <- population("backward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) |>
+  resize(time = 2001, end = 3001, N = N, how = "exponential")
 backward_exp_inc_model <- compile(backward_exp_inc_pop, backward_exp_inc_dir, generation_time = 1,
                                    overwrite = TRUE, direction = "forward", sim_length = 5000)
 backward_exp_inc_samples <- sampling(backward_exp_inc_model, times = 5001, list(backward_exp_inc_pop, n_samples))
+
+# msprime(forward_exp_inc_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_exp_inc_samples, seed = seed, verbose = TRUE)
+# msprime(backward_exp_inc_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_exp_inc_samples, seed = seed, verbose = TRUE)
 
 run_slim_msprime(
   forward_exp_inc_model, backward_exp_inc_model,
@@ -234,7 +246,7 @@ afs <- dplyr::bind_rows(
   dplyr::tibble(f = slim_forward_exp_decr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "exponential decrease"),
   dplyr::tibble(f = slim_backward_exp_decr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "exponential decrease"),
 ) |>
-  dplyr::mutate(sim = factor(sim, levels = c("slim", "msprime")),
+  dplyr::mutate(sim = factor(sim, levels = c("msprime", "slim")),
                 model = factor(
                   model,
                   levels = c("constant", "step contraction", "step expansion",
@@ -290,13 +302,13 @@ test_that("SLiM forward/backward sims are exactly the same", {
 # SLiM and msprime simulations from the same model give the same result
 # (tested by comparing the distribution plots)
 p <- ggplot(afs, aes(n, f, color = direction, linetype = sim)) +
-  geom_line(stat = "identity") +
+  geom_line(stat = "identity", alpha = 1/2) +
   facet_wrap(~ model)
 
 output_png <- paste0(tempfile(), ".png")
 ggsave(output_png, p, width = 8, height = 5)
-first_output_png <- "afs.png"
-# ggsave(first_output_png, p, width = 8, height = 5)
+# first_output_png <- "tests/testthat/afs.png"
+ggsave(first_output_png, p, width = 8, height = 5)
 
 # make sure that the distributions as they were originally inspected and
 # verified visually match the new distributions plot -- this is obviously not
