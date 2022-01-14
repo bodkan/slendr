@@ -14,11 +14,11 @@ slim(
   max_attempts = 1,
   save_locations = FALSE,
   method = c("batch", "gui"),
-  verbose = TRUE,
+  verbose = FALSE,
   burnin = 0,
   seed = NULL,
   slim_path = NULL,
-  save_sampling = FALSE
+  save_sampling = TRUE
 )
 }
 \arguments{
