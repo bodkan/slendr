@@ -40,19 +40,19 @@ run_sim <- function(pop, direction, sim_length = NULL, method = "batch", verbose
 # executed by the two slendr backends on the same slendr model configuration
 run_slim_msprime <- function(forward_model, backward_model,
                              forward_samples, backward_samples,
-                             seq_len, rec_rate, seed, verbose, debug = FALSE) {
+                             seq_len, rec_rate, seed, verbose) {
   slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
        sampling = forward_samples, seed = seed, verbose = verbose)
   suppressWarnings({
     msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
-          sampling = forward_samples, seed = seed, verbose = verbose, debug = debug)
+          sampling = forward_samples, seed = seed, verbose = verbose)
   })
 
   slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
        sampling = backward_samples, seed = seed, verbose = verbose)
   suppressWarnings({
   msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
-          sampling = backward_samples, seed = seed, verbose = verbose, debug = debug)
+          sampling = backward_samples, seed = seed, verbose = verbose)
   })
 }
 

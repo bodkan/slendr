@@ -399,7 +399,6 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @param seed Random seed (if missing, SLiM's own seed will be used)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
-#' @param debug Print a msprime model debugging summary?
 #' @param save_sampling Save the sampling schedule table together with other
 #'   output files? If \code{FALSE} (default), the sampling table will be saved
 #'   to a temporary directory.
@@ -407,14 +406,14 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @export
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
-                    sampling, verbose = FALSE, seed = NULL, debug = FALSE,
+                    sampling, verbose = FALSE, seed = NULL,
                     save_sampling = TRUE) {
   warning("Please note that msprime engine for executing non-spatial versions ",
 "of slendr models is still experimental. Taking extra ",
 "caution when simulating tree sequence data with the msprime backend is ",
 "recommended, double checking the simulation runs against tree sequences ",
 "produced by the SLiM backend (note that the same slendr model can be ",
-"run by the two backend without any changes).")
+"run by the two backend without any changes).", call. = FALSE)
 
   model_dir <- model$path
   if (!dir.exists(model_dir))
@@ -445,7 +444,6 @@ msprime <- function(model, sequence_length, recombination_rate,
     --sequence-length %d \\
     --recombination-rate %s \\
     %s \\
-    %s \\
     %s",
     script_path,
     ifelse(is.null(seed), "", paste("--seed", seed)),
@@ -454,8 +452,7 @@ msprime <- function(model, sequence_length, recombination_rate,
     sequence_length,
     recombination_rate,
     sampling,
-    ifelse(verbose, "--verbose", ""),
-    ifelse(debug, "--debug", "")
+    ifelse(verbose, "--verbose", "")
   )
 
   if (verbose) {

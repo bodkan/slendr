@@ -9,10 +9,10 @@ msprime(
   sequence_length,
   recombination_rate,
   output = file.path(model$path, "output_msprime.trees"),
-  sampling = NULL,
-  verbose = TRUE,
+  sampling,
+  verbose = FALSE,
   seed = NULL,
-  debug = FALSE
+  save_sampling = TRUE
 )
 }
 \arguments{
@@ -23,9 +23,7 @@ msprime(
 \item{recombination_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
 
-\item{output}{A shared prefix path of output files that will be generated
-by the model (by default, all files will share a prefix \code{"output"}
-and will be placed in the model directory)}
+\item{output}{Path to the output tree sequence}
 
 \item{sampling}{A data frame of times at which a given number of individuals
 should be remembered in the tree-sequence (see \code{sampling} for a
@@ -38,7 +36,9 @@ recorded in the tree-sequence output file.}
 
 \item{seed}{Random seed (if missing, SLiM's own seed will be used)}
 
-\item{debug}{Print a msprime model debugging summary?}
+\item{save_sampling}{Save the sampling schedule table together with other
+output files? If \code{FALSE} (default), the sampling table will be saved
+to a temporary directory.}
 }
 \description{
 This function will execute a built-in msprime script and run a compiled
