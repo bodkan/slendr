@@ -216,85 +216,88 @@ slim_backward_exp_decr_afs <- ts_afs(slim_backward_exp_decr_ts, polarised = TRUE
 
 # bind together all allele frequency spectra results
 afs <- dplyr::bind_rows(
-  dplyr::tibble(f = msprime_forward_const_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = "constant"),
-  dplyr::tibble(f = msprime_backward_const_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = "constant"),
+  dplyr::tibble(f = msprime_forward_const_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = sprintf("constant %d", N)),
+  dplyr::tibble(f = msprime_backward_const_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = sprintf("constant %d", N)),
 
-  dplyr::tibble(f = msprime_forward_contr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = "step contraction"),
-  dplyr::tibble(f = msprime_backward_contr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = "step contraction"),
+  dplyr::tibble(f = msprime_forward_contr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = sprintf("step contraction %d to %d", N, N / N_factor)),
+  dplyr::tibble(f = msprime_backward_contr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = sprintf("step contraction %d to %d", N, N / N_factor)),
 
-  dplyr::tibble(f = msprime_forward_expansion_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = "step expansion"),
-  dplyr::tibble(f = msprime_backward_expansion_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = "step expansion"),
+  dplyr::tibble(f = msprime_forward_expansion_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = sprintf("step expansion %d to %d", N, N * N_factor)),
+  dplyr::tibble(f = msprime_backward_expansion_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = sprintf("step expansion %d to %d", N, N * N_factor)),
 
-  dplyr::tibble(f = msprime_forward_exp_inc_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = "exponential increase"),
-  dplyr::tibble(f = msprime_backward_exp_inc_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = "exponential increase"),
+  dplyr::tibble(f = msprime_forward_exp_inc_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = sprintf("exponential increase %d to %d", N / N_factor, N)),
+  dplyr::tibble(f = msprime_backward_exp_inc_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = sprintf("exponential increase %d to %d", N / N_factor, N)),
 
-  dplyr::tibble(f = msprime_forward_exp_decr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = "exponential decrease"),
-  dplyr::tibble(f = msprime_backward_exp_decr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = "exponential decrease"),
+  dplyr::tibble(f = msprime_forward_exp_decr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "forward", model = sprintf("exponential decrease %d to %d", N, N / N_factor)),
+  dplyr::tibble(f = msprime_backward_exp_decr_afs, n = 1:(2 * n_samples), sim = "msprime", direction = "backward", model = sprintf("exponential decrease %d to %d", N, N / N_factor)),
 
-  dplyr::tibble(f = slim_forward_const_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "constant"),
-  dplyr::tibble(f = slim_backward_const_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "constant"),
+  dplyr::tibble(f = slim_forward_const_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = sprintf("constant %d", N)),
+  dplyr::tibble(f = slim_backward_const_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = sprintf("constant %d", N)),
 
-  dplyr::tibble(f = slim_forward_contr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "step contraction"),
-  dplyr::tibble(f = slim_backward_contr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "step contraction"),
+  dplyr::tibble(f = slim_forward_contr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = sprintf("step contraction %d to %d", N, N / N_factor)),
+  dplyr::tibble(f = slim_backward_contr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = sprintf("step contraction %d to %d", N, N / N_factor)),
 
-  dplyr::tibble(f = slim_forward_expansion_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "step expansion"),
-  dplyr::tibble(f = slim_backward_expansion_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "step expansion"),
+  dplyr::tibble(f = slim_forward_expansion_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = sprintf("step expansion %d to %d", N, N * N_factor)),
+  dplyr::tibble(f = slim_backward_expansion_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = sprintf("step expansion %d to %d", N, N * N_factor)),
 
-  dplyr::tibble(f = slim_forward_exp_inc_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "exponential increase"),
-  dplyr::tibble(f = slim_backward_exp_inc_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "exponential increase"),
+  dplyr::tibble(f = slim_forward_exp_inc_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = sprintf("exponential increase %d to %d", N / N_factor, N)),
+  dplyr::tibble(f = slim_backward_exp_inc_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = sprintf("exponential increase %d to %d", N / N_factor, N)),
 
-  dplyr::tibble(f = slim_forward_exp_decr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = "exponential decrease"),
-  dplyr::tibble(f = slim_backward_exp_decr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = "exponential decrease"),
+  dplyr::tibble(f = slim_forward_exp_decr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "forward", model = sprintf("exponential decrease %d to %d", N, N / N_factor)),
+  dplyr::tibble(f = slim_backward_exp_decr_afs, n = 1:(2 * n_samples), sim = "slim", direction = "backward", model = sprintf("exponential decrease %d to %d", N, N / N_factor))
 ) |>
   dplyr::mutate(sim = factor(sim, levels = c("msprime", "slim")),
                 model = factor(
                   model,
-                  levels = c("constant", "step contraction", "step expansion",
-                             "exponential decrease", "exponential increase")))
+                  levels = c(sprintf("constant %d", N),
+                             sprintf("step contraction %d to %d", N, N / N_factor),
+                             sprintf("step expansion %d to %d", N, N * N_factor),
+                             sprintf("exponential increase %d to %d", N / N_factor, N),
+                             sprintf("exponential decrease %d to %d", N, N / N_factor))))
 
 
 test_that("msprime forward/backward sims are exactly the same", {
   expect_true({
-    df <- afs[afs$sim == "msprime" & afs$model == "constant", ]
+    df <- afs[afs$sim == "msprime" & grepl("constant", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
   expect_true({
-    df <- afs[afs$sim == "msprime" & afs$model == "step contraction", ]
+    df <- afs[afs$sim == "msprime" & grepl("step contraction", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
   expect_true({
-    df <- afs[afs$sim == "msprime" & afs$model == "step expansion", ]
+    df <- afs[afs$sim == "msprime" & grepl("step expansion", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
   expect_true({
-    df <- afs[afs$sim == "msprime" & afs$model == "exponential increase", ]
+    df <- afs[afs$sim == "msprime" & grepl("exponential increase", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
   expect_true({
-    df <- afs[afs$sim == "msprime" & afs$model == "exponential decrease", ]
+    df <- afs[afs$sim == "msprime" & grepl("exponential decrease", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
 })
 
 test_that("SLiM forward/backward sims are exactly the same", {
   expect_true({
-    df <- afs[afs$sim == "slim" & afs$model == "constant", ]
+    df <- afs[afs$sim == "slim" & grepl("constant", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
   expect_true({
-    df <- afs[afs$sim == "slim" & afs$model == "step contraction", ]
+    df <- afs[afs$sim == "slim" & grepl("step contraction", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
   expect_true({
-    df <- afs[afs$sim == "slim" & afs$model == "step expansion", ]
+    df <- afs[afs$sim == "slim" & grepl("step expansion", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
   expect_true({
-    df <- afs[afs$sim == "slim" & afs$model == "exponential increase", ]
+    df <- afs[afs$sim == "slim" & grepl("exponential increase", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
   expect_true({
-    df <- afs[afs$sim == "slim" & afs$model == "exponential decrease", ]
+    df <- afs[afs$sim == "slim" & grepl("exponential decrease", afs$model), ]
     all(df[df$direction == "forward", "f"] == df[df$direction == "backward", "f"])
   })
 })
@@ -302,12 +305,20 @@ test_that("SLiM forward/backward sims are exactly the same", {
 # SLiM and msprime simulations from the same model give the same result
 # (tested by comparing the distribution plots)
 p <- ggplot(afs, aes(n, f, color = direction, linetype = sim)) +
-  geom_line(stat = "identity", alpha = 1/2) +
-  facet_wrap(~ model)
+  geom_line(stat = "identity", alpha = 0.5) +
+  facet_wrap(~ model) +
+  labs(x = "number of derived alleles", y = "count",
+       title = "Site frequency spectra obtained from five demographic models",
+       subtitle = "Each model was specified in forward or backward direction of time and executed by
+two different backend scripts in slendr (implemented in SLiM and msprime)") +
+  guides(color = guide_legend("direction of\ntime in slendr"),
+         linetype = guide_legend("slendr backend\nengine used")) +
+  scale_x_continuous(breaks = c(1, seq(20, 2 * n_samples, 20)),
+                     limits = c(1, 2 * n_samples))
 
 output_png <- paste0(tempfile(), ".png")
 ggsave(output_png, p, width = 8, height = 5)
-# first_output_png <- "tests/testthat/afs.png"
+first_output_png <- "tests/testthat/afs.png"
 ggsave(first_output_png, p, width = 8, height = 5)
 
 # make sure that the distributions as they were originally inspected and
