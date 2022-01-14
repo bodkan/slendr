@@ -318,8 +318,8 @@ two different backend scripts in slendr (implemented in SLiM and msprime)") +
 
 output_png <- paste0(tempfile(), ".png")
 ggsave(output_png, p, width = 8, height = 5)
-# first_output_png <- "tests/testthat/afs.png"
-ggsave(first_output_png, p, width = 8, height = 5)
+first_output_png <- "tests/testthat/afs.png"
+# ggsave(first_output_png, p, width = 8, height = 5)
 
 # make sure that the distributions as they were originally inspected and
 # verified visually match the new distributions plot -- this is obviously not
