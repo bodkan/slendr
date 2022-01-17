@@ -152,6 +152,9 @@ print.slendr_tsdata <- function(x, ...) {
 
     print_map_info(model$world)
   }
+
+  cat(sep)
+  print(dplyr::as_tibble(x))
 }
 
 
