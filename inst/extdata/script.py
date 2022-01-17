@@ -102,27 +102,20 @@ for pop in populations.itertuples():
     else:
         initial_size = pop.N
 
-    if pop.parent == "ancestor":
-        logging.info(f"Setting up ancestral population {pop.pop} with Ne {initial_size}")
-        demography.add_population(
-            name=pop.pop,
-            initial_size=initial_size,
-            initially_active=True
-        )
+    logging.info(f"Setting up population {pop.pop} with Ne {initial_size}")
+    demography.add_population(
+        name=pop.pop,
+        initial_size=initial_size,
+        initially_active=True
+    )
     # for non-ancestral populations, specify the correct split event and re-set
     # the effective population size (by default in msprime inherited from the
     # parent population)
-    else:
-        logging.info(f"Setting up daughter population {pop.pop} with Ne {initial_size}")
+    if pop.parent != "ancestor":
         demography.add_population_split(
             time=length - pop.tsplit_gen,
             derived=[pop.pop],
             ancestral=pop.parent
-        )
-        demography.add_population_parameters_change(
-            time=length - pop.tsplit_gen,
-            initial_size=initial_size,
-            population=pop.pop
         )
 
 logging.info("Setting up population resize events")
@@ -164,7 +157,7 @@ for event in geneflows.itertuples():
     logging.info(f"Gene flow from {event.source} to {event.to} between {tstart} and {tend}")
     demography.add_migration_rate_change(
         time=tstart,
-        rate=event.rate,
+        rate=event.rate / (tend - tstart),
         source=event.to,
         dest=event.source,
     )
