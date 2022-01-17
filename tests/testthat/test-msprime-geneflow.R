@@ -79,8 +79,18 @@ df_slim_f4ratio <- dplyr::bind_rows(
 # sequence data with slendr's R interface regardless of which simulator produced
 # it), it will be instructive to show how this can be done.
 
-msprime_nogf <- load_msprime_ts(file.path(model_nogf$path, "output_msprime.trees"))
-msprime_gf <- load_msprime_ts(file.path(model_gf$path, "output_msprime.trees"))
+# msprime alternative for slendr's ts_load() function
+load_msprime_ts <- function(model) {
+  path <- file.path(model$path, "output_msprime.trees")
+
+  ts <- tskit$load(path.expand(path))
+  ts <- msp$sim_mutations(
+    ts,
+    rate=1e-8,
+    random_seed=123
+  )
+  ts
+}
 
 # First, let's write a function which will pull out node IDs of each individual
 # (i.e. its two chromosome IDs) from the tree sequence table metadata:
@@ -120,14 +130,18 @@ msprime_f4ratio <- function(ts, x, a, b, c, o) {
   num / den
 }
 
-# With the variants of slendr functions which can operate on msprime-produced
-# tree sequences in place, let's repeat the same analyses we performed on
+# With the variants of slendr functions operating on msprime-produced tree
+# sequences in place, let's repeat the same analyses we performed on
 # SLiM-produced tree sequences above.
 
-# First, we compute the f4-statistic test for the presence of evidence of gene
-# flow from the 'b' population to the 'x1' population (and its absence for the
-# 'x2' population). For this, we will use the same vector of names of the 'x1'
-# and 'x2' individuals created from the SLiM-produced tree sequence above:
+# First, let's load the tree sequences we got from slendr's msprime backend:
+msprime_nogf <- load_msprime_ts(model_nogf)
+msprime_gf <- load_msprime_ts(model_gf)
+
+# Now we compute the f4-statistic test for the presence of evidence of gene flow
+# from the `b` population to the `x1` population (and its absence for the `x2`
+# population). For this, we will use the same vector of names of the `x1`` and
+# `x2` individuals created from the SLiM-produced tree sequence above:
 
 df_msprime_f4 <- rbind(
   dplyr::tibble(
@@ -201,5 +215,5 @@ from 'b' in gene flow models, 'x2' never does") +
 # variance of the statistics between different simulation back ends and see that
 # they are, indeed, extremely similar between both simulators:
 
-df_f4 %>% dplyr::group_by(model, simulator) %>% dplyr::summarise(var(f4))
-df_f4ratio %>% dplyr::group_by(model, simulator) %>% dplyr::summarise(var(alpha))
+# df_f4 %>% dplyr::group_by(model, simulator) %>% dplyr::summarise(var(f4))
+# df_f4ratio %>% dplyr::group_by(model, simulator) %>% dplyr::summarise(var(alpha))
