@@ -270,20 +270,20 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
 })
 
 test_that("ts_mutate and mutation through ts_load give the same result", {
-  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, seed = 123,
                 recombination_rate = 0, Ne = 100)
-  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
+  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, seed = 123)
   ts_mut2 <- ts_load(model, simplify = TRUE, recapitate = TRUE, mutate = TRUE, mutation_rate = 1e-7,
-                     random_seed = 123, recombination_rate = 0, Ne = 100)
+                     seed = 123, recombination_rate = 0, Ne = 100)
   expect_equal(suppressMessages(ts_genotypes(ts_mut1)),
                suppressMessages(ts_genotypes(ts_mut2)))
 })
 
 test_that("ts_mutate correctly specifies the SLiM mutation type", {
-  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, seed = 123,
                 recombination_rate = 0, Ne = 100)
-  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
-  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123, mut_type = 123456789)
+  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, seed = 123)
+  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, seed = 123, mut_type = 123456789)
 
   get_mut_type <- function(m) {
     mut_metadata <- m$metadata$mutation_list
