@@ -207,7 +207,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #'   map
 #'
 #' @export
-ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE ) {
+ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE) {
   check_ts_class(ts)
 
   if (!attr(ts, "recapitated") && !keep_input_roots && !ts_coalesced(ts))
