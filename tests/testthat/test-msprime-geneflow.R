@@ -2,7 +2,6 @@ env_present("retipy")
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
-N <- 100 # baseline Ne value for all populations (except 'x1' and 'x2')
 seq_len <- 250e6 # amount of sequence to simulate
 rec_rate <- 1e-8 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
@@ -18,41 +17,47 @@ mut_rate <- 1e-8 # mutation rate
 #
 # (Of course, this is all done for demonstration purposes only and to speed up
 # the SLiM simulations by making the Ne of the other populations smaller.)
-o <- population("o", time = 1, N = N)
-b <- population("b", parent = o, time = 2000, N = N)
-c <- population("c", parent = b, time = 3000, N = N)
-x1 <- population("x1", parent = c, time = 6000, N = 100*N)
-x2 <- population("x2", parent = c, time = 6000, N = 100*N)
-a <- population("a", parent = b, time = 7000, N = N)
+o <- population("o", time = 10, N = 1)
+b <- population("b", parent = o, time = 1000, N = 10)
+c <- population("c", parent = b, time = 2000, N = 10)
+x1 <- population("x1", parent = c, time = 4000, N = 5000)
+x2 <- population("x2", parent = c, time = 4000, N = 5000)
+a <- population("a", parent = b, time = 2200, N = 10)
 
 # no gene flow model
-model_nogf <- compile(populations = list(a, b, x1, x2, c, o), generation_time = 1, overwrite = TRUE, sim_length = 10000)
+model_nogf <- compile(populations = list(a, b, x1, x2, c, o), generation_time = 1, overwrite = TRUE, sim_length = 4200)
 
-samples <- sampling(model_nogf, times = 10001, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+samples <- sampling(model_nogf, times = 4200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples)
 msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples)
 
 # model with gene flow
-gf <- geneflow(from = b, to = x1, start = 9000, end = 9050, rate = 0.1)
+gf <- geneflow(from = b, to = x1, start = 4100, end = 4150, rate = 0.1)
 
-model_gf <- compile(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, overwrite = TRUE, sim_length = 10000)
+model_gf <- compile(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, overwrite = TRUE, sim_length = 4200)
 
-samples <- sampling(model_gf, times = 10001, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+samples <- sampling(model_gf, times = 4200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples)
 msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples)
 
+# Load tree sequence files saved by the SLiM backend script from the two models:
+suppressWarnings({
 slim_nogf <- ts_load(model_nogf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-                   Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate)
+                     Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate)
 
 slim_gf <- ts_load(model_gf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-                 Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate)
+                   Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate)
+})
 
+# Extract vector of names of the "test individuals" in populations `x1` and `x2`:
 X_individuals <- ts_samples(slim_gf) %>%
   dplyr::filter(pop %in% c("x1", "x2")) %>%
   dplyr::pull(name)
 
+# Calculate f4-statistics on individuals of `x1` and `x2` populations using data
+# from the two models (a model with no gene flow and a gene flow model):
 df_slim_f4 <- rbind(
   purrr::map_dfr(X_individuals, ~ ts_f4(slim_nogf, "c_1", .x, "b_1", "o_1")) %>% dplyr::mutate(model = "no gene flow"),
   purrr::map_dfr(X_individuals, ~ ts_f4(slim_gf, "c_1", .x, "b_1", "o_1")) %>% dplyr::mutate(model = "gene flow")
@@ -60,13 +65,14 @@ df_slim_f4 <- rbind(
   dplyr::select(X, f4, model) %>%
   dplyr::mutate(simulator = "SLiM backend")
 
+# Compute the proportions of `b` ancestry in `x1` (expected 10%) and `x2`
+# (expected 0% because this population did not receive any gene flow from `b`):
 df_slim_f4ratio <- dplyr::bind_rows(
   purrr::map_dfr(X_individuals, ~ ts_f4ratio(slim_nogf, .x, "a_1", "b_1", "c_1", "o_1")) %>% dplyr::mutate(model = "no gene flow"),
   purrr::map_dfr(X_individuals, ~ ts_f4ratio(slim_gf, .x, "a_1", "b_1", "c_1", "o_1")) %>% dplyr::mutate(model = "gene flow")
 ) %>%
   dplyr::select(X, alpha, model) %>%
   dplyr::mutate(simulator = "SLiM backend")
-
 
 # Although we can run slendr model with an msprime setting, for most of the time
 # of existence of slendr the tree sequences from SLiM and msprime were not 100%
@@ -79,16 +85,13 @@ df_slim_f4ratio <- dplyr::bind_rows(
 # sequence data with slendr's R interface regardless of which simulator produced
 # it), it will be instructive to show how this can be done.
 
-# msprime alternative for slendr's ts_load() function
-load_msprime_ts <- function(model) {
+# msprime alternative of slendr's ts_load() function for tree sequences
+# generated by the msprime backend
+load_msprime_ts <- function(model, seed) {
   path <- file.path(model$path, "output_msprime.trees")
 
   ts <- tskit$load(path.expand(path))
-  ts <- msp$sim_mutations(
-    ts,
-    rate=1e-8,
-    random_seed=123
-  )
+  ts <- msp$sim_mutations(ts, rate = 1e-8, random_seed = seed)
   ts
 }
 
@@ -135,8 +138,8 @@ msprime_f4ratio <- function(ts, x, a, b, c, o) {
 # SLiM-produced tree sequences above.
 
 # First, let's load the tree sequences we got from slendr's msprime backend:
-msprime_nogf <- load_msprime_ts(model_nogf)
-msprime_gf <- load_msprime_ts(model_gf)
+msprime_nogf <- load_msprime_ts(model_nogf, seed)
+msprime_gf <- load_msprime_ts(model_gf, seed)
 
 # Now we compute the f4-statistic test for the presence of evidence of gene flow
 # from the `b` population to the `x1` population (and its absence for the `x2`
@@ -145,14 +148,14 @@ msprime_gf <- load_msprime_ts(model_gf)
 
 df_msprime_f4 <- rbind(
   dplyr::tibble(
-    X = X,
-    f4 = sapply(X, function(i) msprime_f4(msprime_nogf, "c_1", i, "b_1", "o_1")),
+    X = X_individuals,
+    f4 = sapply(X_individuals, function(i) msprime_f4(msprime_nogf, "c_1", i, "b_1", "o_1")),
     model = "no gene flow",
     simulator = "msprime backend"
   ),
   dplyr::tibble(
-    X = X,
-    f4 = sapply(X, function(i) msprime_f4(msprime_gf, "c_1", i, "b_1", "o_1")),
+    X = X_individuals,
+    f4 = sapply(X_individuals, function(i) msprime_f4(msprime_gf, "c_1", i, "b_1", "o_1")),
     model = "gene flow",
     simulator = "msprime backend"
   )
@@ -163,14 +166,14 @@ df_msprime_f4 <- rbind(
 
 df_msprime_f4ratio <- rbind(
   dplyr::tibble(
-    X = X,
-    alpha = sapply(X, function(i) msprime_f4ratio(msprime_nogf, i, "a_1", "b_1", "c_1", "o_1")),
+    X = X_individuals,
+    alpha = sapply(X_individuals, function(i) msprime_f4ratio(msprime_nogf, i, "a_1", "b_1", "c_1", "o_1")),
     model = "no gene flow",
     simulator = "msprime backend"
   ),
   dplyr::tibble(
-    X = X,
-    alpha = sapply(X, function(i) msprime_f4ratio(msprime_gf, i, "a_1", "b_1", "c_1", "o_1")),
+    X = X_individuals,
+    alpha = sapply(X_individuals, function(i) msprime_f4ratio(msprime_gf, i, "a_1", "b_1", "c_1", "o_1")),
     model = "gene flow",
     simulator = "msprime backend"
   )
@@ -187,7 +190,7 @@ df_f4 <- rbind(df_slim_f4, df_msprime_f4) %>%
                                     "x1 (received gene flow)",
                                     "x2 (no gene flow)"))
 
-ggplot(df_f4, aes(f4, fill = population)) +
+p_f4 <- ggplot(df_f4, aes(f4, fill = population)) +
   geom_histogram(bins = 50) +
   facet_grid(simulator ~ model) +
   geom_vline(xintercept = 0, linetype = 2) +
@@ -196,12 +199,20 @@ ggplot(df_f4, aes(f4, fill = population)) +
        subtitle = "Note that for f4 values ~0, the hypothesis of no gene flow can't be rejected") +
   theme(legend.position = "bottom")
 
+test_that("f4 distributions from SLiM and msprime simulations match", {
+  output_png <- paste0(tempfile(), "f4.png")
+  ggsave(output_png, p_f4, width = 8, height = 5)
+  first_output_png <- "msprime_slim_f4.png"
+  # ggsave(first_output_png, p_f4, width = 8, height = 5)
+  expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
+})
+
 df_f4ratio <- rbind(df_slim_f4ratio, df_msprime_f4ratio) %>%
   dplyr::mutate(population = ifelse(grepl("x1_", X),
                                     "x1 (received gene flow)",
                                     "x2 (no gene flow)"))
 
-ggplot(df_f4ratio, aes(alpha, fill = population)) +
+p_f4ratio <- ggplot(df_f4ratio, aes(alpha, fill = population)) +
   geom_histogram(bins = 30) +
   facet_grid(simulator ~ model) +
   geom_vline(xintercept = 0.1, linetype = 2) +
@@ -211,9 +222,17 @@ ggplot(df_f4ratio, aes(alpha, fill = population)) +
 from 'b' in gene flow models, 'x2' never does") +
   theme(legend.position = "bottom")
 
+test_that("f4-ratio distributions from SLiM and msprime simulations match", {
+  output_png <- paste0(tempfile(), "f4ratio.png")
+  ggsave(output_png, p_f4ratio, width = 8, height = 5)
+  first_output_png <- "msprime_slim_f4ratio.png"
+  # ggsave(first_output_png, p_f4ratio, width = 8, height = 5)
+  expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
+})
+
 # Great! We got almost the same results, as expected! We can also inspect the
 # variance of the statistics between different simulation back ends and see that
 # they are, indeed, extremely similar between both simulators:
-
+#
 # df_f4 %>% dplyr::group_by(model, simulator) %>% dplyr::summarise(var(f4))
 # df_f4ratio %>% dplyr::group_by(model, simulator) %>% dplyr::summarise(var(alpha))
