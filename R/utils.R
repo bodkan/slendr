@@ -428,6 +428,6 @@ utils::globalVariables(
     "pedigree_id", "from_x", "from_y", "from", "to_x", "to_y", "to",
     "node1.name", "node2.name", "type", "label", "rate", "pop_id", "vcf_file",
     "gen", "newx", "newy", "child", "tmap", "node_label", "chr_name", "pos",
-    ""
+    "pyslim", "tskit", "msprime"
   ), package = "slendr"
 )

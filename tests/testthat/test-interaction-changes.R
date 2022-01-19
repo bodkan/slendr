@@ -88,16 +88,16 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
 
   r_sim <- function(param, fun) {
     if (fun == "rnorm")
-      distance = rnorm(1, mean = 0, sd = param)
+      distance <- rnorm(1, mean = 0, sd = param)
     else if (fun == "runif")
-      distance = runif(1, min = 0, max = param)
+      distance <- runif(1, min = 0, max = param)
     else if (fun == "rcauchy")
-      distance = rcauchy(1, location = 0, scale = param)
+      distance <- rcauchy(1, location = 0, scale = param)
     else if (fun == "rexp")
-      distance = rexp(1, rate = 1/param)
+      distance <- rexp(1, rate = 1 / param)
     else
       stop("Unknown distribution function", fun, call. = FALSE)
-    angle = runif(1, min = 0, max = 2 * pi);
+    angle <- runif(1, min = 0, max = 2 * pi);
     x <- distance * cos(angle);
     y <- distance * sin(angle);
     c(x, y);
