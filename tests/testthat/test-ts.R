@@ -223,7 +223,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
        method = "batch", seed = seed, max_attempts = max_attempts,
        sampling = samples, verbose = FALSE, output = output)
 
-  ts <- ts_load(model, file = paste0(output, "_ts.trees"))
+  ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
 
   expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
@@ -255,7 +255,7 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
        method = "batch", seed = seed,
        sampling = samples, verbose = FALSE, spatial = spatial, output = output)
 
-  ts <- ts_load(model, file = paste0(output, "_ts.trees"))
+  ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
 
   expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
