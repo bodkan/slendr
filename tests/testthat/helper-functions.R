@@ -56,12 +56,12 @@ run_slim_msprime <- function(forward_model, backward_model,
   })
 }
 
-load_msprime_ts <- function(path) {
+load_msprime_ts <- function(path, mut_rate, seed) {
   ts <- tskit$load(path.expand(path))
   ts <- msp$sim_mutations(
     ts,
-    rate=1e-8,
-    random_seed=123
+    rate = mut_rate,
+    random_seed = seed
   )
   ts
 }
@@ -70,6 +70,6 @@ load_slim_ts <- function(model, N, rec_rate, mut_rate, seed) {
   ts_load(
     model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
     Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate,
-    random_seed = seed
+    seed = seed
   )
 }

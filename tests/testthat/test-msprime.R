@@ -151,20 +151,20 @@ run_slim_msprime(
 )
 
 # load tree sequence files from msprime
-msprime_forward_const_ts <- load_msprime_ts(file.path(forward_const_model$path, "output_msprime.trees"))
-msprime_backward_const_ts <- load_msprime_ts(file.path(backward_const_model$path, "output_msprime.trees"))
+msprime_forward_const_ts <- load_msprime_ts(file.path(forward_const_model$path, "output_msprime.trees"), mut_rate, seed)
+msprime_backward_const_ts <- load_msprime_ts(file.path(backward_const_model$path, "output_msprime.trees"), mut_rate, seed)
 
-msprime_forward_contr_ts <- load_msprime_ts(file.path(forward_contr_model$path, "output_msprime.trees"))
-msprime_backward_contr_ts <- load_msprime_ts(file.path(backward_contr_model$path, "output_msprime.trees"))
+msprime_forward_contr_ts <- load_msprime_ts(file.path(forward_contr_model$path, "output_msprime.trees"), mut_rate, seed)
+msprime_backward_contr_ts <- load_msprime_ts(file.path(backward_contr_model$path, "output_msprime.trees"), mut_rate, seed)
 
-msprime_forward_expansion_ts <- load_msprime_ts(file.path(forward_expansion_model$path, "output_msprime.trees"))
-msprime_backward_expansion_ts <- load_msprime_ts(file.path(backward_expansion_model$path, "output_msprime.trees"))
+msprime_forward_expansion_ts <- load_msprime_ts(file.path(forward_expansion_model$path, "output_msprime.trees"), mut_rate, seed)
+msprime_backward_expansion_ts <- load_msprime_ts(file.path(backward_expansion_model$path, "output_msprime.trees"), mut_rate, seed)
 
-msprime_forward_exp_inc_ts <- load_msprime_ts(file.path(forward_exp_inc_model$path, "output_msprime.trees"))
-msprime_backward_exp_inc_ts <- load_msprime_ts(file.path(backward_exp_inc_model$path, "output_msprime.trees"))
+msprime_forward_exp_inc_ts <- load_msprime_ts(file.path(forward_exp_inc_model$path, "output_msprime.trees"), mut_rate, seed)
+msprime_backward_exp_inc_ts <- load_msprime_ts(file.path(backward_exp_inc_model$path, "output_msprime.trees"), mut_rate, seed)
 
-msprime_forward_exp_decr_ts <- load_msprime_ts(file.path(forward_exp_decr_model$path, "output_msprime.trees"))
-msprime_backward_exp_decr_ts <- load_msprime_ts(file.path(backward_exp_decr_model$path, "output_msprime.trees"))
+msprime_forward_exp_decr_ts <- load_msprime_ts(file.path(forward_exp_decr_model$path, "output_msprime.trees"), mut_rate, seed)
+msprime_backward_exp_decr_ts <- load_msprime_ts(file.path(backward_exp_decr_model$path, "output_msprime.trees"), mut_rate, seed)
 
 # load tree sequence files from SLiM
 slim_forward_const_ts <- load_slim_ts(forward_const_model, N, rec_rate, mut_rate, seed)

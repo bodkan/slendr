@@ -29,7 +29,7 @@
 #'   disregarded.
 #' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
 #' @param mutation_rate Mutation rate passed to \code{ts_mutate}
-#' @param random_seed Random seed passed to pyslim's \code{recapitate} method
+#' @param seed Random seed passed to pyslim's \code{recapitate} method
 #' @param simplify_to A character vector of individual names. If NULL, all
 #'   remembered individuals will be retained. Only used when \code{simplify =
 #'   TRUE}.
@@ -48,7 +48,7 @@
 ts_load <- function(model, file = file.path(model$path, "output_slim.trees"),
                     recapitate = FALSE, simplify = FALSE, mutate = FALSE,
                     spatial = TRUE, recombination_rate = NULL, mutation_rate = NULL,
-                    Ne = NULL, random_seed = NULL, simplify_to = NULL, keep_input_roots = FALSE,
+                    Ne = NULL, seed = NULL, simplify_to = NULL, keep_input_roots = FALSE,
                     migration_matrix = NULL) {
   if (is.null(model$world)) spatial <- FALSE
 
@@ -86,14 +86,14 @@ ts_load <- function(model, file = file.path(model$path, "output_slim.trees"),
 
   if (recapitate)
     ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                        random_seed = random_seed, spatial = spatial,
+                        seed = seed, spatial = spatial,
                         migration_matrix = migration_matrix)
 
   if (simplify)
     ts <- ts_simplify(ts, simplify_to, spatial = spatial, keep_input_roots = keep_input_roots)
 
   if (mutate)
-    ts <- ts_mutate(ts, mutation_rate = mutation_rate, random_seed = random_seed)
+    ts <- ts_mutate(ts, mutation_rate = mutation_rate, seed = seed)
 
   ts
 }
@@ -123,7 +123,7 @@ ts_save <- function(ts, file) {
 #'   disregarded.
 #' @param migration_matrix Migration matrix used for coalescence of ancient lineages
 #'   (passed to \code{ts_recapitate})
-#' @param random_seed Random seed passed to pyslim's \code{recapitate} method
+#' @param seed Random seed passed to pyslim's \code{recapitate} method
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
@@ -133,7 +133,7 @@ ts_save <- function(ts, file) {
 #'
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
-                          migration_matrix = NULL, random_seed = NULL) {
+                          migration_matrix = NULL, seed = NULL) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -144,7 +144,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
   # pyslim.recapitate(ts, ...) method
   reticulate::py_capture_output(
     ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
-                            random_seed = random_seed, migration_matrix = migration_matrix)
+                            random_seed = seed, migration_matrix = migration_matrix)
   )
 
   attr(ts_new, "model") <- model
@@ -292,7 +292,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 #'
 #' @param ts Object of the type \code{pyslim.SlimTreeSequence}
 #' @param mutation_rate Mutation rate used by msprime to simulate mutations
-#' @param random_seed Random seed passed to msprime's \code{mutate} method
+#' @param seed Random seed passed to msprime's \code{mutate} method
 #' @param keep_existing Keep existing mutations?
 #' @param mut_type Assign SLiM mutation type to neutral mutations? If
 #'   \code{NULL} (default), no special mutation type will be used. If an
@@ -306,7 +306,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 #'   map
 #'
 #' @export
-ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
+ts_mutate <- function(ts, mutation_rate, seed = NULL,
                       keep_existing = TRUE, mut_type = NULL) {
   check_ts_class(ts)
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
@@ -320,7 +320,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
       rate = mutation_rate,
       model = mut_type,
       keep = keep_existing,
-      random_seed = random_seed
+      random_seed = seed
     ) %>%
     pyslim$SlimTreeSequence()
 
