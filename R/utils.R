@@ -115,19 +115,27 @@ get_lineage_splits <- function(x) {
 }
 
 
-# Get direction of time implied by the history of the population
-get_time_direction <- function(pop) {
-  split_times <- get_lineage_splits(pop)
+#' Get direction of time implied by the history of the population
+#'
+#' @param x Object of the class \code{slendr_pop} or \code{slendr_model}
+#'
+#' @return Either "forward", "backward", or "unknown"
+#'
+#' @export
+time_direction <- function(x) {
+  if (inherits(x, "slendr_model")) return(x$direction)
+
+  split_times <- get_lineage_splits(x)
 
   if (length(split_times) == 1) {
-    event_times <- attr(pop, "history") %>%
+    event_times <- attr(x, "history") %>%
       sapply(function(event) c(event$time, event$tresize, event$tend,
                                event$start, event$end)) %>%
       unlist %>%
       unique %>%
       stats::na.omit()
     if (length(event_times) == 1) {
-      removal_time <- attr(pop, "remove")
+      removal_time <- attr(x, "remove")
       if (removal_time == -1)
         "unknown"
       else if (all(event_times > removal_time))
@@ -150,7 +158,7 @@ get_time_direction <- function(pop) {
 # Check the consistency of the given split time to the parent population
 check_split_time <- function(time, parent) {
   parent_time <- attr(parent, "history")[[1]]$time
-  direction <- get_time_direction(parent)
+  direction <- time_direction(parent)
   if (direction == "forward" & time <= parent_time) {
     stop(sprintf("The model implies forward time direction but the specified split
 time (%d) is lower than the parent's (%s)",
@@ -183,7 +191,7 @@ check_event_time <- function(time, pop) {
   if (length(time) > 1 & time[1] == time[2])
     stop("Start time of the event is equal to the end time of the event", call. = FALSE)
 
-  direction <- get_time_direction(pop)
+  direction <- time_direction(pop)
 
   previous_time <- get_previous_time(pop)
 
@@ -235,7 +243,7 @@ check_event_time <- function(time, pop) {
 # would be created)
 check_present_time <- function(time, pop, offset, direction = NULL) {
   if (is.null(direction))
-    direction <- get_time_direction(pop)
+    direction <- time_direction(pop)
   split_time <- get_lineage_splits(pop)[1]
 
   if (time == split_time |
@@ -246,7 +254,7 @@ check_present_time <- function(time, pop, offset, direction = NULL) {
 
 check_removal_time <- function(time, pop, direction = NULL) {
   if (is.null(direction))
-    direction <- get_time_direction(pop)
+    direction <- time_direction(pop)
   removal_time <- attr(pop, "remove")
 
   if (removal_time != -1 & direction == "forward" & any(time > removal_time)) {
