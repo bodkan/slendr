@@ -80,7 +80,7 @@ compile <- function(populations, generation_time, dir = NULL, resolution = NULL,
     stop("Populations must be either all spatial or non-spatial, but not both", call. = FALSE)
 
   # make sure all populations share the same direction of time
-  time_dir <- setdiff(unique(sapply(populations, get_time_direction)), "unknown")
+  time_dir <- setdiff(unique(sapply(populations, time_direction)), "unknown")
 
   if (!is.null(direction) & any(direction != time_dir))
     stop("The direction that was explicitly specified contradicts the direction implied by the model", call. = FALSE)
@@ -379,7 +379,7 @@ slim <- function(model, sequence_length, recombination_rate,
     }
 
     if (system(slim_command, ignore.stdout = !verbose) != 0)
-      stop("SLiM simulation resulted in an error -- see the output above", call. = FALSE)
+      stop("SLiM simulation resulted in an error -- see the output above for and indication of what could have gone wrong", call. = FALSE)
   }
 }
 
@@ -429,7 +429,8 @@ msprime <- function(model, sequence_length, recombination_rate,
     readr::write_tsv(sampling_df, sampling_path)
     sampling <- paste("--sampling-schedule", sampling_path)
   } else
-    stop("Unlike SLiM models in slendr, explicit sampling schedule must be provided", call. = FALSE)
+    stop("Unlike SLiM models in slendr, explicit sampling schedule must be provided for the msprime backend",
+         call. = FALSE)
 
   msprime_command <- sprintf("python3 \\
     %s \\
