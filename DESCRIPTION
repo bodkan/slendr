@@ -43,7 +43,6 @@ Imports:
     dplyr,
     purrr,
     readr,
-    stringr,
     reticulate,
     tidyr,
     rsvg

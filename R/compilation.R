@@ -338,10 +338,8 @@ slim <- function(model, sequence_length, recombination_rate,
     # the path to the model configuration directory
     modif_path <- tempfile()
     readLines(script_path) %>%
-      stringr::str_replace("\"MODEL\", \".\"",
-                           paste0("\"MODEL\", \"", normalizePath(model$path), "\"")) %>%
-      stringr::str_replace("\"SAMPLES\", \"\"",
-                           paste0("\"SAMPLES\", \"", normalizePath(sampling_path), "\"")) %>%
+      gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path), "\""), .) %>%
+      gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path), "\""), .) %>%
       cat(file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
@@ -548,16 +546,16 @@ write_script <- function(script_target, script_source,
   # copy the script to the dedicated model directory, replacing the
   # placeholders for model directory and slendr version accordingly
   script_code <- readLines(script_source) %>%
-    stringr::str_replace("__VERSION__", paste0("slendr_", utils::packageVersion("slendr"))) %>%
-    stringr::str_replace("__DESCRIPTION__", description)
+    gsub("__VERSION__", paste0("slendr_", utils::packageVersion("slendr")), .) %>%
+    gsub("__DESCRIPTION__", description, .)
 
   if (!is.null(map)) {
     crs <- ifelse(has_crs(map), sf::st_crs(map)$epsg, "NULL")
     extent <- paste(deparse(as.vector(sf::st_bbox(map))), collapse = "")
     script_code <- script_code %>%
-      stringr::str_replace("__CRS__", as.character(crs)) %>%
-      stringr::str_replace("__EXTENT__", extent) %>%
-      stringr::str_replace("__RESOLUTION__", as.character(resolution))
+      gsub("__CRS__", as.character(crs), .) %>%
+      gsub("__EXTENT__", extent, .) %>%
+      gsub("__RESOLUTION__", as.character(resolution), .)
   }
   cat(script_code, file = script_target, sep = "\n")
 
