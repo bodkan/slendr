@@ -44,9 +44,6 @@ backward_const_model <- compile(backward_const_pop, backward_const_dir , generat
                                 overwrite = TRUE, direction = "backward")
 backward_const_samples <- sampling(backward_const_model, times = 0, list(backward_const_pop, n_samples))
 
-# msprime(forward_const_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_const_samples, seed = seed, verbose = TRUE)
-# msprime(backward_const_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_const_samples, seed = seed, verbose = TRUE)
-
 run_slim_msprime(
   forward_const_model, backward_const_model,
   forward_const_samples, backward_const_samples,
@@ -68,9 +65,6 @@ backward_contr_pop <- population("backward_contr_pop", time = 5000, N = N, map =
 backward_contr_model <- compile(backward_contr_pop, backward_contr_dir, generation_time = 1,
                                 overwrite = TRUE, direction = "backward")
 backward_contr_samples <- sampling(backward_contr_model, times = 0, list(backward_contr_pop, n_samples))
-
-# msprime(forward_contr_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_contr_samples, seed = seed, verbose = TRUE)
-# msprime(backward_contr_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_contr_samples, seed = seed, verbose = TRUE)
 
 run_slim_msprime(
   forward_contr_model, backward_contr_model,
@@ -94,9 +88,6 @@ backward_expansion_model <- compile(backward_expansion_pop, backward_expansion_d
                                     overwrite = TRUE, direction = "backward")
 backward_expansion_samples <- sampling(backward_expansion_model, times = 0, list(backward_expansion_pop, n_samples))
 
-# msprime(forward_expansion_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_expansion_samples, seed = seed, verbose = TRUE)
-# msprime(backward_expansion_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_expansion_samples, seed = seed, verbose = TRUE)
-
 run_slim_msprime(
   forward_expansion_model, backward_expansion_model,
   forward_expansion_samples, backward_expansion_samples,
@@ -118,9 +109,6 @@ backward_exp_inc_pop <- population("backward_exp_inc_pop", time = 1, N = N / N_f
 backward_exp_inc_model <- compile(backward_exp_inc_pop, backward_exp_inc_dir, generation_time = 1,
                                    overwrite = TRUE, direction = "forward", sim_length = 5000)
 backward_exp_inc_samples <- sampling(backward_exp_inc_model, times = 5001, list(backward_exp_inc_pop, n_samples))
-
-# msprime(forward_exp_inc_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_exp_inc_samples, seed = seed, verbose = TRUE)
-# msprime(backward_exp_inc_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_exp_inc_samples, seed = seed, verbose = TRUE)
 
 run_slim_msprime(
   forward_exp_inc_model, backward_exp_inc_model,

@@ -68,7 +68,7 @@ samples <- sampling(model_ex2, seq(100, 18000, by = 200), list(pop, 50))
 # execute the model in SLiM, simulationg 100 kb of sequence and saving
 # the location of each individual throughout the simulation
 slim(model_ex2, sampling = samples, save_locations = TRUE,
-     sequence_length = 100e3, recombination_rate = 1e-8, seed = RANDOM_SEED)
+     sequence_length = 100e3, recombination_rate = 1e-8, random_seed = RANDOM_SEED)
 ```
 
 We can animate the entire model dynamics using the function `animate()`:

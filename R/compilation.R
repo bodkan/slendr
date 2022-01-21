@@ -288,7 +288,7 @@ read <- function(dir) {
 #'   on the command-line)
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
-#' @param seed Random seed (if missing, SLiM's own seed will be used)
+#' @param random_seed Random seed (if missing, SLiM's own seed will be used)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
 #' @param save_sampling Save the sampling schedule table together with other
@@ -302,7 +302,7 @@ slim <- function(model, sequence_length, recombination_rate,
                  sampling = NULL, max_attempts = 1,
                  save_locations = FALSE,
                  method = c("batch", "gui"), verbose = FALSE, burnin = 0,
-                 seed = NULL, slim_path = NULL, save_sampling = TRUE) {
+                 random_seed = NULL, slim_path = NULL, save_sampling = TRUE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -329,7 +329,7 @@ slim <- function(model, sequence_length, recombination_rate,
   readr::write_tsv(sampling_df, sampling_path)
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
-  seed <- if (is.null(seed)) "" else paste0(" \\\n    -d SEED=", seed)
+  seed <- if (is.null(random_seed)) "" else paste0(" \\\n    -d SEED=", random_seed)
   samples <- if (is.null(sampling_path)) ""
              else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
 
@@ -398,7 +398,7 @@ slim <- function(model, sequence_length, recombination_rate,
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
-#' @param seed Random seed (if missing, SLiM's own seed will be used)
+#' @param random_seed Random seed (if missing, SLiM's own seed will be used)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
 #' @param save_sampling Save the sampling schedule table together with other
@@ -408,7 +408,7 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @export
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
-                    sampling, verbose = FALSE, seed = NULL,
+                    sampling, verbose = FALSE, random_seed = NULL,
                     save_sampling = TRUE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
@@ -442,7 +442,7 @@ msprime <- function(model, sequence_length, recombination_rate,
     %s \\
     %s",
     script_path,
-    ifelse(is.null(seed), "", paste("--seed", seed)),
+    ifelse(is.null(random_seed), "", paste("--seed", random_seed)),
     path.expand(model_dir),
     output,
     sequence_length,

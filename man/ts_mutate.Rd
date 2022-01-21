@@ -7,7 +7,7 @@
 ts_mutate(
   ts,
   mutation_rate,
-  seed = NULL,
+  random_seed = NULL,
   keep_existing = TRUE,
   mut_type = NULL
 )
@@ -17,7 +17,7 @@ ts_mutate(
 
 \item{mutation_rate}{Mutation rate used by msprime to simulate mutations}
 
-\item{seed}{Random seed passed to msprime's \code{mutate} method}
+\item{random_seed}{Random seed passed to msprime's \code{mutate} method}
 
 \item{keep_existing}{Keep existing mutations?}
 

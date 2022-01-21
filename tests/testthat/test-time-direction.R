@@ -111,8 +111,8 @@ test_that("forward and backward models yield the same simulation result", {
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 
   # simulation runs are the same
-  slim(forward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
-  slim(backward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
+  slim(forward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", random_seed = 123, verbose = FALSE)
+  slim(backward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", random_seed = 123, verbose = FALSE)
 
   # make sure the scripts are the same
   f_script <- file.path(forward$path, "script.slim") %>% readLines
@@ -179,8 +179,8 @@ test_that("forward and backward models yield the same simulation result (nonspat
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 
   # simulation runs are the same
-  slim(forward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
-  slim(backward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", seed = 123, verbose = FALSE)
+  slim(forward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", random_seed = 123, verbose = FALSE)
+  slim(backward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", random_seed = 123, verbose = FALSE)
 
   # make sure the scripts are the same
   f_script <- file.path(forward$path, "script.slim") %>% readLines

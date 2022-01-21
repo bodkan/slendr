@@ -88,7 +88,13 @@
     <loc>https://www.slendr.net/reference/slim.html</loc>
   </url>
   <url>
+    <loc>https://www.slendr.net/reference/split_time.html</loc>
+  </url>
+  <url>
     <loc>https://www.slendr.net/reference/subtract.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/time_direction.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_afs.html</loc>
@@ -178,7 +184,7 @@
     <loc>https://www.slendr.net/articles/vignette-06-locations.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/articles/vignette-07-msprime.html</loc>
+    <loc>https://www.slendr.net/articles/vignette-07-backends.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/articles/vignette-08-paper.html</loc>

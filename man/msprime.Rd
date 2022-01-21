@@ -11,7 +11,7 @@ msprime(
   output = file.path(model$path, "output_msprime.trees"),
   sampling,
   verbose = FALSE,
-  seed = NULL,
+  random_seed = NULL,
   save_sampling = TRUE
 )
 }
@@ -34,7 +34,7 @@ recorded in the tree-sequence output file.}
 \item{verbose}{Write the SLiM output log to the console (default
 \code{FALSE})?}
 
-\item{seed}{Random seed (if missing, SLiM's own seed will be used)}
+\item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
 
 \item{save_sampling}{Save the sampling schedule table together with other
 output files? If \code{FALSE} (default), the sampling table will be saved
