@@ -8,6 +8,8 @@ env_present <- function(env) {
   )
 }
 
+# Function used in unit tests verifying the correct number of individuals after
+# various demographic changes
 run_sim <- function(pop, direction, sim_length = NULL, method = "batch", verbose = FALSE) {
   model_dir <- tempdir()
 
@@ -32,4 +34,42 @@ run_sim <- function(pop, direction, sim_length = NULL, method = "batch", verbose
     df <- dplyr::arrange(df, -time)
 
   df
+}
+
+# Function used to cross-test the consistency of msprime and SLiM simulations
+# executed by the two slendr backends on the same slendr model configuration
+run_slim_msprime <- function(forward_model, backward_model,
+                             forward_samples, backward_samples,
+                             seq_len, rec_rate, seed, verbose) {
+  slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+       sampling = forward_samples, random_seed = seed, verbose = verbose)
+  suppressWarnings({
+    msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+          sampling = forward_samples, random_seed = seed, verbose = verbose)
+  })
+
+  slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+       sampling = backward_samples, random_seed = seed, verbose = verbose)
+  suppressWarnings({
+  msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+          sampling = backward_samples, random_seed = seed, verbose = verbose)
+  })
+}
+
+load_msprime_ts <- function(path, mut_rate, seed) {
+  ts <- tskit$load(path.expand(path))
+  ts <- msp$sim_mutations(
+    ts,
+    rate = mut_rate,
+    random_seed = seed
+  )
+  ts
+}
+
+load_slim_ts <- function(model, N, rec_rate, mut_rate, seed) {
+  ts_load(
+    model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+    Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate,
+    random_seed = seed
+  )
 }

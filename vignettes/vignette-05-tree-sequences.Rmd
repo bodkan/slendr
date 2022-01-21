@@ -109,7 +109,7 @@ Now that we already have the `model` object ready, we can simulate data from it,
 slim(
   model, sequence_length = 10e6, recombination_rate = 1e-8,
   sampling = rbind(nea_samples, present_samples, emh_samples),
-  method = "batch", verbose = TRUE, seed = 314159
+  method = "batch", verbose = TRUE, random_seed = 314159
 )
 ```
 
@@ -140,7 +140,7 @@ python3 -m venv retipy ~/.venvs/retipy
 source ~/.venvs/retipy/bin/activate
 
 # 3. install the required modules into this fresh environment
-python3 -m pip install tskit pyslim msprime
+python3 -m pip install tskit pyslim msprime pandas
 ```
 
 That's it! By creating a separate new environment and installing the modules into it, we're making sure that we don't cause problems for other Python projects or scripts you might already have and which might potentially use different versions of those modules.

@@ -14,11 +14,11 @@ slim(
   max_attempts = 1,
   save_locations = FALSE,
   method = c("batch", "gui"),
-  verbose = TRUE,
+  verbose = FALSE,
   burnin = 0,
-  seed = NULL,
+  random_seed = NULL,
   slim_path = NULL,
-  save_sampling = FALSE
+  save_sampling = TRUE
 )
 }
 \arguments{
@@ -58,7 +58,7 @@ on the command-line)}
 
 \item{burnin}{Length of the burnin (in model's time units, i.e. years)}
 
-\item{seed}{Random seed (if missing, SLiM's own seed will be used)}
+\item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
 
 \item{slim_path}{Optional way to specify path to an appropriate SLiM binary}
 

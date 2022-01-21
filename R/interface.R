@@ -1202,3 +1202,11 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 
   result
 }
+
+#' Get split time of the given population
+#'
+#' @param pop Object of the class \code{slendr_pop}
+#'
+#' @return Split time of the population
+#' @export
+split_time <- function(pop) attr(pop, "history")[[1]]$time

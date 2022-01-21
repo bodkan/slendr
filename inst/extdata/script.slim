@@ -265,10 +265,13 @@ s6 /* Exponential population size changes */ {
         else
             event_type = "shrinking";
 
+        current_size = get_pop(id).individualCount;
         if (sim.generation == tstart)
-            log_output("start of exponential " + event_type + " of " + pop + "(p" + id + ")");
+            log_output("start of exponential " + event_type + " of " + pop + "(p" + id +
+                       ") from size " + current_size);
         if (sim.generation == tend)
-            log_output("end of exponential " + event_type + " of " + pop + "(p" + id + ")");
+            log_output("end of exponential " + event_type + " of " + pop + "(p" + id +
+                       ") at size " + current_size);
     }
 }
 
@@ -368,7 +371,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
             orig_n = SAMPLING.getValue("n"); orig_n[i] = n;
             SAMPLING.setValue("n", orig_n);
         } else
-            n_str = asString(n);
+            n_str = asString(asInteger(n));
 
         log_output("remembering " + n_str + " individuals of " +
                              pop + "(p" + get_pop(pop).id + ")" + where);
@@ -408,13 +411,13 @@ s11 late() /* Schedule removal of populations */ {
 }
 
 s12 late() /* End of simulation */ {
-    log_output("saving the tree sequence output");
-    filename = output_path("ts.trees");
+    filename = output_path("slim.trees");
 
     // add slendr-specific metadata to its own Dictionary key
     metadata = collect_metadata();
 
     sim.treeSeqOutput(filename, metadata = Dictionary("slendr", metadata));
+    log_output("saving the tree sequence output");
 
     log_output("simulation finished");
     sim.simulationFinished();

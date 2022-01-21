@@ -9,6 +9,8 @@ import tskit
 import pyslim
 import msprime
 import pandas
+import numpy
+import math
 
 VERSION = "__VERSION__"
 
@@ -30,8 +32,6 @@ parser.add_argument("--sampling-schedule", metavar="FILE", required=True,
 parser.add_argument("--seed", type=int, help="Random seed value")
 parser.add_argument("--verbose", action="store_true", default=False,
                     help="Print detailed logging information?")
-parser.add_argument("--debug", action="store_true", default=False,
-                    help="Print a model debugging summary?")
 
 args = parser.parse_args()
 
@@ -39,6 +39,8 @@ if args.verbose:
     logging.basicConfig(level=logging.INFO)
 
 model_dir = os.path.expanduser(args.model)
+
+logging.info(f"Loading slendr model configuration files from {model_dir}")
 
 if not args.output:
     args.output = pathlib.Path(model_dir, "output_msprime_ts.trees")
@@ -51,6 +53,7 @@ populations_path = pathlib.Path(model_dir, "populations.tsv")
 resizes_path = pathlib.Path(model_dir, "resizes.tsv")
 geneflows_path = pathlib.Path(model_dir, "geneflow.tsv")
 length_path = pathlib.Path(model_dir, "length.txt")
+direction_path = pathlib.Path(model_dir, "direction.txt")
 sampling_path = os.path.expanduser(args.sampling_schedule)
 
 # read model configuration files
@@ -66,56 +69,100 @@ if os.path.exists(geneflows_path):
 
 length = int(float(open(length_path, "r").readline().rstrip()))
 
-# read the sampling schedule table or create a default one
+direction = open(direction_path, "r").readline().rstrip()
+logging.info(f"Loaded model is specified in the {direction} direction")
+
 if os.path.exists(sampling_path):
     samples_df = pandas.read_table(sampling_path)
 else:
     sys.exit(f"Sampling schedule table at '{sampling_path}' does not exist")
 
-logging.info("Setting up an msprime demographic model")
+logging.info("Loading the sampling schedule")
 
 samples = [
     msprime.SampleSet(
-        n, population=pop, time=length - time_gen + 1, ploidy=2
-    ) for (_, pop, n, time_gen, _) in samples_df.itertuples()
+        row.n, population=row.pop, time=length - row.time_gen + 1, ploidy=2
+    ) for row in samples_df.itertuples(index=False)
 ]
+if any(sample.num_samples == numpy.inf for sample in samples):
+    sys.exit("Please provide the number of individuals to sample")
+
+logging.info("Setting up populations")
 
 # set up demographic history
 demography = msprime.Demography()
 for pop in populations.itertuples():
-    demography.add_population(name=pop.pop, initial_size=pop.N, initially_active=True)
-    # for non-ancestral populations, specify the correct split event
-    if (pop.parent != "ancestor"):
+    # get the initial population size (in backwards direction) -- this is
+    # either the last (in forward direction) resize event recorded for the
+    # population, or its size after split
+    name = pop.pop
+    if len(resizes) and name in set(resizes["pop"]):
+        resize_events = resizes.query(f"pop == '{name}'")
+        initial_size = resize_events.tail(1).N[0]
+    else:
+        initial_size = pop.N
+
+    logging.info(f"Setting up population {pop.pop} with Ne {initial_size}")
+    demography.add_population(
+        name=pop.pop,
+        initial_size=initial_size,
+        initially_active=True
+    )
+    # for non-ancestral populations, specify the correct split event and re-set
+    # the effective population size (by default in msprime inherited from the
+    # parent population)
+    if pop.parent != "ancestor":
         demography.add_population_split(
             time=length - pop.tsplit_gen,
             derived=[pop.pop],
             ancestral=pop.parent
         )
 
-# # schedule population size changes
-# for event in resizes.itertuples():
-#     if event.how == "step":
-#         demography.add_population_parameters_change(
-#             time=length - event.tresize
-#         )
-#     else:
-#         demography.add_population_parameters_change(
-#             time=length - event.tresize
-#         )
+logging.info("Setting up population resize events")
 
-# resize_table[, c("pop", "pop_id", "how", "N", "prev_N",
-#                    "tresize_orig", "tresize_gen", "tend_orig", "tend_gen")]
+# schedule population size changes
+for event in resizes.itertuples(index=False):
+    if event.how == "step":
+        time = length - event.tresize_gen
+        logging.info(f"Step resize of population {pop.pop} to {event.prev_N} from {event.N} at time {time}")
+        demography.add_population_parameters_change(
+            time=time,
+            initial_size=event.prev_N,
+            population=event.pop
+        )
+    elif event.how == "exponential":
+        tstart = length - event.tend_gen
+        tend = length - event.tresize_gen
+        r = math.log(event.prev_N / event.N) / (tstart - tend)
+        logging.info(f"Exponential resize of population {pop.pop} from {event.N} to {event.prev_N}, growth rate {r}, from {tstart} to {tend} generations")
+        demography.add_population_parameters_change(
+            time=tstart,
+            growth_rate=r,
+            population=event.pop
+        )
+        demography.add_population_parameters_change(
+            time=tend,
+            growth_rate=0,
+            population=event.pop
+        )
+    else:
+        sys.exit(f"Unknown event type '{event.how}'")
+
+logging.info("Setting up gene flow events")
 
 # schedule gene flow events
 for event in geneflows.itertuples():
+    tstart = length - event.tend_gen + 1
+    tend = length - event.tstart_gen + 1
+    logging.info(f"Gene flow from {event.source} to {event.to} between {tstart} and {tend}")
     demography.add_migration_rate_change(
-        time=length - event.tend_gen + 1,
-        rate=event.rate,
+        time=tstart,
+        rate=event.rate / (tend - tstart),
         source=event.to,
         dest=event.source,
     )
     demography.add_migration_rate_change(
-        time=length - event.tstart_gen + 1,
+        time=tend,
         rate=0,
         source=event.to,
         dest=event.source,
@@ -125,7 +172,7 @@ for event in geneflows.itertuples():
 # (otherwise msprime complains)
 demography.sort_events()
 
-if args.debug:
+if args.verbose:
     print(demography.debug())
 
 logging.info("Running the simulation")
@@ -138,8 +185,10 @@ ts = msprime.sim_ancestry(
     random_seed=args.seed
 )
 
-logging.info("Saving the tree sequence output")
+output_path = os.path.expanduser(args.output)
 
-ts.dump(args.output)
+logging.info(f"Saving tree sequence output to {output_path}")
+
+ts.dump(output_path)
 
 logging.info("DONE")
