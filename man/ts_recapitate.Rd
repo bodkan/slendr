@@ -10,7 +10,7 @@ ts_recapitate(
   Ne,
   spatial = TRUE,
   migration_matrix = NULL,
-  seed = NULL
+  random_seed = NULL
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ disregarded.}
 \item{migration_matrix}{Migration matrix used for coalescence of ancient lineages
 (passed to \code{ts_recapitate})}
 
-\item{seed}{Random seed passed to pyslim's \code{recapitate} method}
+\item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 }
 \value{
 \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}

@@ -86,6 +86,9 @@
     <li>
       <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
     </li>
+    <li>
+      <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -165,30 +168,12 @@
 <span class="co"># execute the model in SLiM, simulationg 100 kb of sequence and saving</span>
 <span class="co"># the location of each individual throughout the simulation</span>
 <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_ex2</span>, sampling <span class="op">=</span> <span class="va">samples</span>, save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
-     sequence_length <span class="op">=</span> <span class="fl">100e3</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, seed <span class="op">=</span> <span class="va">RANDOM_SEED</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; --------------------------------------------------
-#&gt; SLiM command to be executed:
-#&gt; 
-#&gt; /Users/martin_petr/.my_local/bin/slim  \
-#&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp8UJP6T/filee3e923a500ac"' \
-#&gt;     -d 'MODEL="/Users/martin_petr/projects/slendr-paper"' \
-#&gt;     -d 'OUTPUT="/Users/martin_petr/projects/slendr-paper/output"' \
-#&gt;     -d SPATIAL=T \
-#&gt;     -d SEQUENCE_LENGTH=100000 \
-#&gt;     -d RECOMB_RATE=1e-08 \
-#&gt;     -d BURNIN_LENGTH=0 \
-#&gt;     -d SIMULATION_LENGTH=18000 \
-#&gt;     -d SAVE_LOCATIONS=T \
-#&gt;     -d MAX_ATTEMPTS=1 \
-#&gt;     /Users/martin_petr/projects/slendr-paper/script.slim 
-#&gt; --------------------------------------------------</code></pre>
+     sequence_length <span class="op">=</span> <span class="fl">100e3</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="va">RANDOM_SEED</span><span class="op">)</span></code></pre></div>
 <p>We can animate the entire model dynamics using the function <code><a href="../reference/animate.html">animate()</a></code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model_ex2</span>, steps <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></code></pre></div>
-<p><img src="vignette-08-paper_files/figure-html/example2_gif-1.gif"><!-- --></p>
 <p>Load the location of everyone who ever lived:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">epoch_times</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3000</span>, <span class="fl">6000</span>, <span class="fl">9000</span>, <span class="fl">12000</span>, <span class="fl">15000</span>, <span class="fl">18000</span><span class="op">)</span>
 
 <span class="va">locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">model_ex2</span><span class="op">$</span><span class="va">path</span>, <span class="st">"/output_ind_locations.tsv.gz"</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -196,7 +181,7 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">18000</span> <span class="op">-</span> <span class="va">gen</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">%in%</span> <span class="va">epoch_times</span><span class="op">)</span></code></pre></div>
 <p>We can’t include the GIF animation of the simulation run in the paper. Instead, let’s just take a couple of snapshots from the spatial simulation at each moment when we change the dynamics:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">time_labeller</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">value</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">" "</span>, <span class="va">value</span>, <span class="st">"generations"</span><span class="op">)</span>
 
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">locations</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -209,13 +194,12 @@
   <span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_fixed</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
-<p><img src="vignette-08-paper_files/figure-html/example2_paper_figure-1.png" width="480"></p>
 </div>
 <div id="example-4" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-4" class="anchor"></a>Example 4</h2>
 <p>Load a couple of libraries for processing and visualising the results, link to the Python environment which contains the necessary Python modules:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># load the output tree sequence, recapitate it, simplify it, add mutations</span>
 <span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model_ex2</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, mutate <span class="op">=</span> <span class="cn">TRUE</span>,
               Ne <span class="op">=</span> <span class="fl">10000</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span>
@@ -248,8 +232,6 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="va">epoch_times</span>, labels <span class="op">=</span> <span class="va">epoch_times</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"time since the start of the simulation"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'</code></pre>
-<p><img src="vignette-08-paper_files/figure-html/example4_paper_figure-1.png" width="480"></p>
 <!-- ```{r, example4_paper_figure} -->
 <!-- # load the output tree sequence, recapitate it, simplify it, add mutations -->
 <!-- ts <- ts_load(model_ex2, recapitate = TRUE, simplify = TRUE, mutate = TRUE, -->

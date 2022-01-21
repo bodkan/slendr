@@ -19,8 +19,8 @@ knitr::opts_chunk$set(
 
 devtools::load_all(".")
 
-RANDOM_SEED <- 42
-set.seed(RANDOM_SEED)
+seed <- 42
+set.seed(seed)
 ```
 
 Even though the most distinguishing feature of the *slendr* R package is programming spatial population genetic models across real and abstract geographic landscapes, having the ability to run "standard", non-spatial models directly from an R environment could be often quite useful. This is why *slendr* supports also non-spatial SLiM models, which can be executed by *slendr* simply by excluding the map component from a SLiM simulation (briefly discussed in [this vignette](vignette-04-nonspatial-models.html)).
@@ -66,12 +66,12 @@ seq_len <- 250e6 # amount of sequence to simulate
 rec_rate <- 1e-8 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
 
-o <- population("outgroup", time = 10, N = 1)
-b <- population("b", parent = o, time = 1000, N = 100)
-c <- population("c", parent = b, time = 2000, N = 100)
-x1 <- population("x1", parent = c, time = 4000, N = 10000)
-x2 <- population("x2", parent = c, time = 4000, N = 10000)
-a <- population("a", parent = b, time = 2200, N = 100)
+o <- population("outgroup", time = 1, N = 10)
+b <- population("b", parent = o, time = 500, N = 10)
+c <- population("c", parent = b, time = 1000, N = 10)
+x1 <- population("x1", parent = c, time = 2000, N = 10000)
+x2 <- population("x2", parent = c, time = 2000, N = 10000)
+a <- population("a", parent = b, time = 1500, N = 10)
 ```
 
 Note that the Ne of the populations `x1` and `x2` is set to be much higher than the rest. We set the $N_e$ of the other populations to lower values to speed up the forward SLiM simulations (they won't affect the results we're interested in anyway). Higher values of the $N_e$ of `x1` and `x2` populations will ensure that the effect of the drift acting on those two populations will be much smaller. Because we will simulate and later measure the proportion of ancestry from the population `b` to `x1`, this will ensure that the ancestry proportion will not drift too far away from the expectation and it will make the interesting patterns stand out more clearly.
@@ -84,23 +84,18 @@ We will now use those populations to compile two models: the first model will be
 
 ```{r}
 # no gene flow model
-model_nogf <- compile(populations = list(a, b, x1, x2, c, o), generation_time = 1, sim_length = 5000)
+model_nogf <- compile(populations = list(a, b, x1, x2, c, o), generation_time = 1, sim_length = 2200)
 
-samples <- sampling(
-  model_nogf, times = 4200,
-  list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1)
-)
+samples <- sampling(model_nogf, times = 2200,
+                    list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 # model with gene flow
-gf <- geneflow(from = b, to = x1, start = 4010, end = 4050, rate = 0.1)
+gf <- geneflow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
 
-model_gf <- compile(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, sim_length = 4200) 
+model_gf <- compile(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, sim_length = 2200) 
 
-samples <- sampling(
-  model_gf, times = 4200,
-  list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1)
-)
-
+samples <- sampling(model_gf, times = 2200,
+                    list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 ```
 
 Now we will run both models (with and without gene flow) in the two *slendr* backends, SLiM and msprime:
@@ -198,10 +193,10 @@ Now let's load SLiM and msprime tree sequence outputs from our models:
 ```{r}
 # SLiM outputs -- we can use built-in slendr functions for those
 slim_nogf <- ts_load(model_nogf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-                     Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, seed = seed)
+                     Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, random_seed = seed)
 
 slim_gf <- ts_load(model_gf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-                   Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, seed = seed)
+                   Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, random_seed = seed)
 
 # msprime outputs -- for the moment, we have to use msprime-specific
 # functions defined above
@@ -419,17 +414,17 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
 
   # run the model in SLiM
   slim(model, sequence_length = seq_len, recombination_rate = rec_rate,
-       sampling = samples, seed = seed, verbose = FALSE)
+       sampling = samples, random_seed = seed, verbose = FALSE)
 
   # run the same model in msprim
   msprime(model, sequence_length = seq_len, recombination_rate = rec_rate,
-          sampling = samples, seed = seed, verbose = FALSE)
+          sampling = samples, random_seed = seed, verbose = FALSE)
 
   # load the SLiM tree sequence
   slim_ts <- ts_load(
     model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
     Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate,
-    seed = seed
+    random_seed = seed
   )
 
   # load the msprime tree sequence
@@ -490,7 +485,8 @@ two different backend scripts in slendr (SLiM and msprime)") +
   guides(color = guide_legend("direction of\ntime in slendr"),
          linetype = guide_legend("slendr backend\nengine used")) +
   scale_linetype_manual(values = c(3, 2)) +
-  scale_x_continuous(breaks = c(1, seq(20, 100, 20)), limits = c(1, 100))
+  scale_x_continuous(breaks = c(1, seq(20, 100, 20)), limits = c(1, 100)) +
+  theme(legend.position = "bottom")
 ```
 
 Again, a couple of things to note:

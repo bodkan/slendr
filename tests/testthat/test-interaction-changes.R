@@ -65,7 +65,7 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
     )
 
     slim(model, sequence_length = 1, recombination_rate = 0, method = "batch",
-         save_locations = TRUE, max_attempts = 1, verbose = FALSE, seed = seed)
+         save_locations = TRUE, max_attempts = 1, verbose = FALSE, random_seed = seed)
 
     locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
                                  show_col_types = FALSE, progress = FALSE) %>%
