@@ -23,7 +23,7 @@ samples <- rbind(
 )
 
 slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-     method = "batch", seed = 314159,
+     method = "batch", random_seed = 314159,
      sampling = samples, verbose = FALSE)
 
 test_that("ts_load generates an object of the correct type", {
@@ -220,7 +220,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
 
   slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
-       method = "batch", seed = seed, max_attempts = max_attempts,
+       method = "batch", random_seed = seed, max_attempts = max_attempts,
        sampling = samples, verbose = FALSE, output = output)
 
   ts <- ts_load(model, file = paste0(output, "_slim.trees"))
@@ -252,7 +252,7 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
 
   slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
-       method = "batch", seed = seed,
+       method = "batch", random_seed = seed,
        sampling = samples, verbose = FALSE, spatial = spatial, output = output)
 
   ts <- ts_load(model, file = paste0(output, "_slim.trees"))
@@ -270,20 +270,20 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
 })
 
 test_that("ts_mutate and mutation through ts_load give the same result", {
-  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, seed = 123,
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
                 recombination_rate = 0, Ne = 100)
-  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, seed = 123)
+  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
   ts_mut2 <- ts_load(model, simplify = TRUE, recapitate = TRUE, mutate = TRUE, mutation_rate = 1e-7,
-                     seed = 123, recombination_rate = 0, Ne = 100)
+                     random_seed = 123, recombination_rate = 0, Ne = 100)
   expect_equal(suppressMessages(ts_genotypes(ts_mut1)),
                suppressMessages(ts_genotypes(ts_mut2)))
 })
 
 test_that("ts_mutate correctly specifies the SLiM mutation type", {
-  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, seed = 123,
+  ts <- ts_load(model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
                 recombination_rate = 0, Ne = 100)
-  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, seed = 123)
-  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, seed = 123, mut_type = 123456789)
+  ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
+  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123, mut_type = 123456789)
 
   get_mut_type <- function(m) {
     mut_metadata <- m$metadata$mutation_list
@@ -302,8 +302,7 @@ test_that("ts_mutate correctly specifies the SLiM mutation type", {
 
 test_that("tree sequence contains the specified number of sampled individuals (default sampling)", {
   slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-     method = "batch", seed = 314159,
-     verbose = FALSE)
+       method = "batch", random_seed = 314159, verbose = FALSE)
 
   suppressMessages(
     ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
@@ -317,8 +316,7 @@ test_that("tree sequence contains the specified number of sampled individuals (d
 
 test_that("locations and times in the tree sequence match values saved by SLiM (default sampling)", {
   slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-     method = "batch", seed = 314159,
-     verbose = FALSE)
+       method = "batch", random_seed = 314159, verbose = FALSE)
 
   suppressMessages(
     ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)

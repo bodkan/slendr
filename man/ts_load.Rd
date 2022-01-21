@@ -14,7 +14,7 @@ ts_load(
   recombination_rate = NULL,
   mutation_rate = NULL,
   Ne = NULL,
-  seed = NULL,
+  random_seed = NULL,
   simplify_to = NULL,
   keep_input_roots = FALSE,
   migration_matrix = NULL
@@ -43,7 +43,7 @@ disregarded.}
 
 \item{mutation_rate}{Mutation rate passed to \code{ts_mutate}}
 
-\item{seed}{Random seed passed to pyslim's \code{recapitate} method}
+\item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 
 \item{simplify_to}{A character vector of individual names. If NULL, all
 remembered individuals will be retained. Only used when \code{simplify =
