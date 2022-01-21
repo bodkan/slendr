@@ -226,7 +226,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
 
-  expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
+  expect_true(gsub("slendr_", "", metadata$version) == packageVersion("slendr"))
   expect_true(all(sf::st_bbox(map) == metadata$map$EXTENT))
   expect_true(metadata$map$resolution == res)
   expect_true(is.null(metadata$map$crs))
@@ -258,7 +258,7 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
   ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
 
-  expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
+  expect_true(gsub("slendr_", "", metadata$version) == packageVersion("slendr"))
   expect_true(is.null(metadata$map))
   expect_true(metadata$description == desc)
 
