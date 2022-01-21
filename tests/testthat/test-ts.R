@@ -23,7 +23,7 @@ samples <- rbind(
 )
 
 slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-     method = "batch", seed = 314159,
+     method = "batch", random_seed = 314159,
      sampling = samples, verbose = FALSE)
 
 test_that("ts_load generates an object of the correct type", {
@@ -220,10 +220,10 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
 
   slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
-       method = "batch", seed = seed, max_attempts = max_attempts,
+       method = "batch", random_seed = seed, max_attempts = max_attempts,
        sampling = samples, verbose = FALSE, output = output)
 
-  ts <- ts_load(model, file = paste0(output, "_ts.trees"))
+  ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
 
   expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
@@ -252,10 +252,10 @@ test_that("slendr metadata is correctly loaded (non-spatial model)", {
 
   slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
-       method = "batch", seed = seed,
+       method = "batch", random_seed = seed,
        sampling = samples, verbose = FALSE, spatial = spatial, output = output)
 
-  ts <- ts_load(model, file = paste0(output, "_ts.trees"))
+  ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
 
   expect_true(stringr::str_replace(metadata$version, "slendr_", "") == packageVersion("slendr"))
@@ -302,8 +302,7 @@ test_that("ts_mutate correctly specifies the SLiM mutation type", {
 
 test_that("tree sequence contains the specified number of sampled individuals (default sampling)", {
   slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-     method = "batch", seed = 314159,
-     verbose = FALSE)
+       method = "batch", random_seed = 314159, verbose = FALSE)
 
   suppressMessages(
     ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
@@ -317,8 +316,7 @@ test_that("tree sequence contains the specified number of sampled individuals (d
 
 test_that("locations and times in the tree sequence match values saved by SLiM (default sampling)", {
   slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-     method = "batch", seed = 314159,
-     verbose = FALSE)
+       method = "batch", random_seed = 314159, verbose = FALSE)
 
   suppressMessages(
     ts <- ts_load(model, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)

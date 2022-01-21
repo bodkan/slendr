@@ -228,26 +228,8 @@ slim(
   sequence_length = 1, recombination_rate = 0, # simulate only a single locus
   save_locations = TRUE, # save the location of everyone who ever lived
   method = "batch", # change to "gui" to execute the model in SLiMgui
-  seed = 314159
+  random_seed = 314159
 )
-#> Tree-sequence recording is on but no sampling schedule was given. Generating one at least for populations surviving to the end of the simulation...
-#> --------------------------------------------------
-#> SLiM command to be executed:
-#> 
-#> /Users/martin_petr/.my_local/bin/slim  \
-#>     -d SEED=314159  \
-#>     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMd8VQx/filee07611f25e10"' \
-#>     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMd8VQx/readme-model"' \
-#>     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMd8VQx/readme-model/output"' \
-#>     -d SPATIAL=T \
-#>     -d SEQUENCE_LENGTH=1 \
-#>     -d RECOMB_RATE=0 \
-#>     -d BURNIN_LENGTH=0 \
-#>     -d SIMULATION_LENGTH=1733 \
-#>     -d SAVE_LOCATIONS=T \
-#>     -d MAX_ATTEMPTS=1 \
-#>     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpMd8VQx/readme-model/script.slim 
-#> --------------------------------------------------
 ```
 
 As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.

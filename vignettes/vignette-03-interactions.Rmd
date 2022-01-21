@@ -86,7 +86,7 @@ In order to let the populations reach an equilibrium spatial spread at the begin
 
 ```{r}
 slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
-     burnin = 100, method = "batch", verbose = TRUE, seed = 314159)
+     burnin = 100, method = "batch", verbose = TRUE, random_seed = 314159)
 ```
 
 Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF:

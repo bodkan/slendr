@@ -45,7 +45,7 @@
 #'   map
 #'
 #' @export
-ts_load <- function(model, file = file.path(model$path, "output_ts.trees"),
+ts_load <- function(model, file = file.path(model$path, "output_slim.trees"),
                     recapitate = FALSE, simplify = FALSE, mutate = FALSE,
                     spatial = TRUE, recombination_rate = NULL, mutation_rate = NULL,
                     Ne = NULL, random_seed = NULL, simplify_to = NULL, keep_input_roots = FALSE,
@@ -140,9 +140,6 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 
   if (is.null(model$world)) spatial <- FALSE
 
-  if (ts_coalesced(ts))
-    message("No need to recapitate, all trees already coalesced")
-
   # suppress pyslim warning until we figure out how to switch to the new
   # pyslim.recapitate(ts, ...) method
   reticulate::py_capture_output(
@@ -210,10 +207,10 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #'   map
 #'
 #' @export
-ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE ) {
+ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE) {
   check_ts_class(ts)
 
-  if (!attr(ts, "recapitated") && !keep_input_roots)
+  if (!attr(ts, "recapitated") && !keep_input_roots && !ts_coalesced(ts))
     warning("Simplifying a non-recapitated tree sequence. Make sure this is what you really want",
             call. = FALSE)
 
@@ -1099,7 +1096,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
                    polarised = FALSE) {
   mode <- match.arg(mode)
   if (is.null(sample_sets))
-    sample_sets <- list(ts_individuals(ts)$name)
+    sample_sets <- list(ts_samples(ts)$name)
   else if (!is.list(sample_sets))
     sample_sets <- list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)

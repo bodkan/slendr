@@ -29,6 +29,8 @@ navbar:
           href: articles/vignette-05-tree-sequences.html
         - text: Spatially annotated tree sequences
           href: articles/vignette-06-locations.html
+        - text: Simulating data with SLiM and msprime backends
+          href: articles/vignette-07-backends.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/fleventy5
@@ -72,10 +74,13 @@ reference:
     - print.slendr_model
     - print.slendr_tsdata
     - plot_ancestors
+    - time_direction
+    - split_time
 
   - title: Compiling and running population genetic models
     contents:
     - slim
+    - msprime
     - compile
     - sampling
     - read
