@@ -13,20 +13,10 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 4,
-  dpi = 100,
-  eval = TRUE
+  dpi = 80,
+  eval = Sys.which("slim") != ""
 )
-
-# for some reason knitr/reticulate sets this to default, sabotaging
-# our efforts to make reticulate use our custom environment -- this
-# appears to solve the problem
-Sys.unsetenv("RETICULATE_PYTHON")
-
-devtools::load_all(".")
-set.seed(314159)
 ```
-
-**Note:** This vignette is a work in progress as we are currently figuring out the best way to expose the spatially annotated tree sequence data for analyses and visualization. Please check back regularly to see if this notice has been removed.
 
 ## Introduction
 
@@ -39,6 +29,8 @@ library(slendr)
 
 library(dplyr)
 library(ggplot2)
+
+set.seed(314159)
 
 # use a previously created Python virtual environment containing
 # tskit, pyslim and msprime
@@ -128,11 +120,7 @@ model <- compile(
 )
 ```
 
-As a sanity check that we defined the demography correctly, here is a graph summarizing population divergences and geneflow events which we will refer to later in this vignette:
-
-```{r, model_graph, fig.width = 7, fig.height = 7}
-plot_graph(model)
-```
+(As a sanity check that we defined the demography correctly, you can plot a graph summarizing population divergences and geneflow events by calling `plot_graph(model)`).
 
 And for completeness, here is a (slightly busy) overview of the spatial population ranges that we defined above:
 
@@ -262,13 +250,7 @@ We hope this little excursion to handling *slendr* spatial objects (and, by exte
 
 Perhaps even more useful than plotting the locations of simulated individuals is accessing the locations (and times) of *all ancestors* of a particular tree sequence node (a "focal node"). Starting from the focal node or individual, we can trace the geographical location of nodes in its lineage going back all the way to the root with the function `ts_ancestors()`.
 
-Because we record the time and the location of every individual that happens to be the ancestor of at least one sampled individual, this means that, looking at the following tree, for instance, we know the true location of every node in this tree (and all other genealogies in the tree sequence as well):
-
-```{r, ts_small_tree, echo = FALSE}
-ts_small <- ts_simplify(ts, c("AFR_1", "EUR_1", "YAM_1", "EHG_1", "OOA_1", "ANA_1"))
-
-ts_tree(ts_small, 1) %>% ts_draw(labels = TRUE, ts = ts_small)
-```
+Because we record the time and the location of every individual that happens to be the ancestor of at least one sampled individual, this means that we know the true location of every node of the tree sequence.
 
 The simplest use case is determining the locations and times of every single node in the genealogical history of an individual along the tree sequence (it is possible to recover ancestral relationships for multiple samples at once too):
 
@@ -318,14 +300,14 @@ A more convenient way to do this analysis is a companion function to `ts_ancesto
 
 
 ```{r, eval = FALSE, echo = FALSE}
-pdf("~/Desktop/x.pdf")
-for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) {
-
-lineages <- ts_ancestors(ts, i, verbose = TRUE)
-{ plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-
-}
-dev.off()
+# pdf("~/Desktop/x.pdf")
+# for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) {
+# 
+# lineages <- ts_ancestors(ts, i, verbose = TRUE)
+# { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
+# 
+# }
+# dev.off()
 ```
 
 
@@ -333,9 +315,7 @@ dev.off()
 plot_ancestors(lineages, ind)
 ```
 
-Lets compare this result to the animation which recapitulates the simulation:
-
-![](images/plot_gif-1.gif)
+You can compare this result to the animation which recapitulates the simulation, presented in [the first vignette](vignette-01-tutoria.html).
 
 After comparing our spatial tree sequence figure with the animation, we can immediately notice several things:
 
@@ -363,39 +343,39 @@ ts_samples(ts) %>% filter(pop == "ANA")
 
 
 ```{r, eval = FALSE, echo = FALSE}
-pdf("~/Desktop/y.pdf")
-for (i in ts_samples(ts) %>% filter(pop == "ANA") %>% .$name) {
-
-lineages <- ts_ancestors(ts, i, verbose = TRUE)
-{ plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-
-}
-dev.off()
+# pdf("~/Desktop/y.pdf")
+# for (i in ts_samples(ts) %>% filter(pop == "ANA") %>% .$name) {
+# 
+# lineages <- ts_ancestors(ts, i, verbose = TRUE)
+# { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
+# 
+# }
+# dev.off()
 ```
 
 
 
 ```{r, eval = FALSE, echo = FALSE}
-pdf("~/Desktop/z.pdf")
-for (i in ts_samples(ts) %>% filter(pop == "OOA") %>% .$name) {
-
-lineages <- ts_ancestors(ts, i, verbose = TRUE)
-{ plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-
-}
-dev.off()
+# pdf("~/Desktop/z.pdf")
+# for (i in ts_samples(ts) %>% filter(pop == "OOA") %>% .$name) {
+# 
+# lineages <- ts_ancestors(ts, i, verbose = TRUE)
+# { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
+# 
+# }
+# dev.off()
 ```
 
 
 ```{r, eval = FALSE, echo = FALSE}
-pdf("~/Desktop/w.pdf")
-for (i in ts_samples(ts) %>% filter(pop == "AFR") %>% .$name) {
-
-lineages <- ts_ancestors(ts, i, verbose = TRUE)
-{ plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-
-}
-dev.off()
+# pdf("~/Desktop/w.pdf")
+# for (i in ts_samples(ts) %>% filter(pop == "AFR") %>% .$name) {
+# 
+# lineages <- ts_ancestors(ts, i, verbose = TRUE)
+# { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
+# 
+# }
+# dev.off()
 ```
 
 
@@ -453,44 +433,7 @@ distances_long <- distances %>%
     stat == "speed" ~ "distance traveled by a node per generation"))
 ```
 
-Now we can plot the absolute distances "travelled" by nodes from the locations of their parents:
-
-```{r distr_abs_distances, fig.width = 9, fig.height = 6}
-distances_long %>%
-  filter(stat == "distance") %>%
-  ggplot(aes(epoch, value, color = child_pop)) +
-  geom_jitter(alpha = 0.25, size = 0.5) +
-  geom_boxplot(color = "black", outlier.shape = NA) +
-  facet_grid(pop ~ child_pop) +
-  labs(y = "absolute distance of node from parent [km]",
-       x = "time of a node [years ago]") +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45, size = 6),
-        legend.position = "bottom") +
-  guides(color = guide_legend("ancestral node\npopulation"))
-```
-
-Similarly, we can take a look at how fast those nodes must have travelled (i.e. the distance they travelled per generation):
-
-
-```{r distr_speed, fig.width = 9, fig.height = 6}
-distances_long %>%
-  filter(stat == "speed") %>%
-  ggplot(aes(epoch, value, color = child_pop)) +
-  geom_jitter(alpha = 0.25, size = 0.5) +
-  geom_boxplot(color = "black", outlier.shape = NA) +
-  facet_grid(pop ~ child_pop) +
-  labs(y = "distance traveled per generation [km]",
-       x = "time of a node [years ago]") +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45, size = 6),
-        legend.position = "bottom") +
-  guides(color = guide_legend("ancestral node\npopulation")) +
-  coord_cartesian(ylim = c(0, 400))
-```
-
-
-### Smoothed fits of travelled distances
-
-Still keeping an eye on the animated data above, let's try to summarise the information about distances "traveled" by nodes in different time period by fitting a spline (rather than plotting the raw data with individual nodes):
+Let's try to summarise the information about distances "traveled" by nodes in different time period by fitting a spline (rather than plotting the raw data with individual nodes):
 
 ```{r, smooth_distance_fits}
 distances_long %>%
@@ -505,56 +448,43 @@ distances_long %>%
 ```
 
 
-# Directional movement
+<!-- # Directional movement -->
 
-Rather then looking at absolute distances traveled (or the speed of movement), we might be interested in knowing something about the *direction* of movement.
+<!-- Rather then looking at absolute distances traveled (or the speed of movement), we might be interested in knowing something about the *direction* of movement. -->
 
-```{r}
-directions <- lineages %>%
-  mutate(direction = sf::st_coordinates(child_location - parent_location) / 1e3 / model$generation_time,
-         branch_length = abs(child_time - parent_time),
-         horizontal = as.vector(direction[, "X"]),
-         vertical = as.vector(direction[, "Y"])) %>%
-  mutate(epoch = cut(child_time, breaks = c(0, 3000, 4000, 5000, 20000, 25000, 30000, 40000, 50000, Inf), include.lowest = TRUE, dig.lab = 10)) %>%
-#  mutate(epoch = cut(child_time, breaks = c(Inf, seq(60000, 0, by = -5000)), include.lowest = TRUE, dig.lab = 10)) %>% 
-  as_tibble() %>%
-  distinct(child_id, parent_id, .keep_all = TRUE) %>%
-  select(name, pop, node_id, horizontal, vertical, branch_length,
-         parent_pop, parent_time, child_pop, child_time, epoch, horizontal)
-```
-
-
-```{r plot_directions, fig.width = 9, fig.height = 6}
-# compute axes limits
-limits <- max(abs(c(directions$horizontal, directions$vertical))) %>% c(-., .)
-
-directions %>%
-  ggplot(aes(horizontal, vertical, color = child_pop)) +
-  geom_point() +
-  geom_hline(yintercept = 0, linetype = 2, alpha = 0.5) +
-  geom_vline(xintercept = 0, linetype = 2, alpha = 0.5) +
-  facet_grid(pop ~ epoch) +
-  labs(x = "West-East movement [kilometers / generation]",
-       y = "North-South movement [kilometers / generation]") +
-#  coord_cartesian(xlim = limits, ylim = limits) +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45))
-```
+<!-- ```{r} -->
+<!-- directions <- lineages %>% -->
+<!--   mutate(direction = sf::st_coordinates(child_location - parent_location) / 1e3 / model$generation_time, -->
+<!--          branch_length = abs(child_time - parent_time), -->
+<!--          horizontal = as.vector(direction[, "X"]), -->
+<!--          vertical = as.vector(direction[, "Y"])) %>% -->
+<!--   mutate(epoch = cut(child_time, breaks = c(0, 3000, 4000, 5000, 20000, 25000, 30000, 40000, 50000, Inf), include.lowest = TRUE, dig.lab = 10)) %>% -->
+<!-- #  mutate(epoch = cut(child_time, breaks = c(Inf, seq(60000, 0, by = -5000)), include.lowest = TRUE, dig.lab = 10)) %>%  -->
+<!--   as_tibble() %>% -->
+<!--   distinct(child_id, parent_id, .keep_all = TRUE) %>% -->
+<!--   select(name, pop, node_id, horizontal, vertical, branch_length, -->
+<!--          parent_pop, parent_time, child_pop, child_time, epoch, horizontal) -->
+<!-- ``` -->
 
 
+<!-- ```{r plot_directions, fig.width = 9, fig.height = 6} -->
+<!-- # compute axes limits -->
+<!-- limits <- max(abs(c(directions$horizontal, directions$vertical))) %>% c(-., .) -->
 
-## Densities
+<!-- directions %>% -->
+<!--   ggplot(aes(horizontal, vertical, color = child_pop)) + -->
+<!--   geom_point() + -->
+<!--   geom_hline(yintercept = 0, linetype = 2, alpha = 0.5) + -->
+<!--   geom_vline(xintercept = 0, linetype = 2, alpha = 0.5) + -->
+<!--   facet_grid(pop ~ epoch) + -->
+<!--   labs(x = "West-East movement [kilometers / generation]", -->
+<!--        y = "North-South movement [kilometers / generation]") + -->
+<!-- #  coord_cartesian(xlim = limits, ylim = limits) + -->
+<!--   theme(axis.text.x = element_text(hjust = 1, angle = 45)) -->
+<!-- ``` -->
 
-- TODO: Heatmaps of ancestry locations (similar to the discrete node location maps)
-- TODO: Effective population size heatmaps?
+<!-- ## Densities -->
 
-```{r, eval = FALSE, echo = FALSE}
-nodes_sf <-
-  as.data.frame(lineages) %>%
-  distinct(parent_id, .keep_all = TRUE) %>%
-  sf::st_as_sf() %>%
-  sf::st_set_geometry("parent_location")
-
-ggplot() +
-  geom_sf(data = map) +
-  geom_sf(data = nodes_sf, aes(color = parent_time), alpha = 0.5)
-```
+<!-- A couple of ideas: -->
+<!-- - Heatmaps of ancestry locations (similar to the discrete node location maps) -->
+<!-- - Effective population size heatmaps? -->

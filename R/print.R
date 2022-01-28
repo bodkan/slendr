@@ -219,10 +219,11 @@ print_pop_history <- function(x) {
 
     if (nrow(event) > 1 && event$event == "resize" && event$how == "step") {
       tstart <- event$tresize[1]
-      tend <- tail(event$tresize, 1)
-      sizes <- tail(attr(x, "history"), 1)[[1]][1, c("N", "prev_N")]
+      tend <- utils::tail(event$tresize, 1)
+      sizes <- utils::tail(attr(x, "history"), 1)[[1]][1, c("N", "prev_N")]
       action <- ifelse(sizes$N < sizes$prev_N, "decrease", "increase")
-      cat(sprintf("%d-%d: automatic %s from %d to %d individuals\n", tstart, tend, action, event$prev_N[1], tail(event$N, 1)))
+      cat(sprintf("%d-%d: automatic %s from %d to %d individuals\n", tstart,
+                  tend, action, event$prev_N[1], utils::tail(event$N, 1)))
     # population split
     } else if (event$event == "split") {
       cat(event$time, ": ", sep = "")

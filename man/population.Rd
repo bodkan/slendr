@@ -75,3 +75,27 @@ specified using a center coordinate and a radisu, ii) polygon specified as a
 list of two-dimensional vector coordinates, iii) polygon as in ii), but
 defined (and named) using the \code{region} function.
 }
+\examples{
+# create abstract landscape object of a given dimension
+map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
+
+# maps can be plotted by the generic function `plot`
+plot(map)
+
+# create a circular population with the center of a population boundary at
+# [600, 700] and a radius of 100 distance units, 1000 individuals at time 1
+# occupying a map just specified
+pop1 <- population("pop1", N = 1000, time = 1,
+                   map = map, center = c(600, 700), radius = 100)
+
+# create another population occupying a polygon range, splitting from pop1
+# at a given time point (note that specifying a map is not necessary because
+# it is "inherited" from the parent)
+pop2 <- population("pop2", N = 100, time = 50, parent = pop1,
+                   polygon = list(c(100, 100), c(500, 200),
+                                  c(500, 400), c(100, 400)))
+
+# check the position of both populations interactively by plotting their
+# ranges on a map
+plot(pop1, pop2)
+}

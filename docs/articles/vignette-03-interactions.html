@@ -21,7 +21,6 @@
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Programming dispersion dynamics">
 <meta property="og:description" content="slendr">
-<meta property="og:image" content="https://www.slendr.net/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -91,9 +90,6 @@
     </li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -149,9 +145,11 @@
 </ol>
 <p>All three parameters can be specified for each simulated population individually in the <code><a href="../reference/population.html">population()</a></code> call. Alternatively, default values for these parameters can be given in a <code><a href="../reference/compile.html">compile()</a></code> call and are then used for all populations in the model. Importantly, each population must be given values for all three of these parameters, whether as specific values for that particular population or as default values passed to <code><a href="../reference/compile.html">compile()</a></code>.</p>
 <p>Finally, as with other functions for programming model spatial dynamics, the <em>slendr</em> package provides a simple way to change the spatial interaction dynamics throughout the course of the simulation. Even complex models can be programmed using only a couple of lines of extremely simple R code, resulting in a robust SLiM simulation script being generated under the hood.</p>
-<p>To demonstrate this feature, let’s look at a simple example. Let’s make a rectangular world first:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr">slendr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr">slendr</a></span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">314159</span><span class="op">)</span></code></pre></div>
+<p>To demonstrate this feature, let’s look at a simple example. Let’s make a rectangular world map first:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3500</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">700</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span></code></pre></div>
 <p>We have constructed seven populations, each occupying a discrete circular range on a blank landscape 3500 distances units wide and 700 distance units tall. All are programmed to appear in the simulation in generation one and have the same number of individuals.</p>
@@ -194,9 +192,9 @@
 #&gt; 
 #&gt; /usr/local/bin/slim  \
 #&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpNdEpSx/spatial-interactions/output_slim_sampling.tsv"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpNdEpSx/spatial-interactions"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpNdEpSx/spatial-interactions/output"' \
+#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpyWoQQC/spatial-interactions/output_slim_sampling.tsv"' \
+#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpyWoQQC/spatial-interactions"' \
+#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpyWoQQC/spatial-interactions/output"' \
 #&gt;     -d SPATIAL=T \
 #&gt;     -d SEQUENCE_LENGTH=1 \
 #&gt;     -d RECOMB_RATE=0 \
@@ -204,11 +202,11 @@
 #&gt;     -d SIMULATION_LENGTH=1000 \
 #&gt;     -d SAVE_LOCATIONS=T \
 #&gt;     -d MAX_ATTEMPTS=1 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpNdEpSx/spatial-interactions/script.slim 
+#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpyWoQQC/spatial-interactions/script.slim 
 #&gt; --------------------------------------------------</code></pre>
-<p>Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF:</p>
+<p>Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (the animation is significantly sped up to satisfy the vignette size limits put on by CRAN):</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">150</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">80</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-03-interactions_files/figure-html/plot_gif_interactions-1.gif"><!-- --></p>
 <p>Fun animation, isn’t it? If you compare the result to the model dynamics we programmed above, you can see that the spatial dynamics follow what we would expect based on the parameter values. As time progresses, the spatial competition for each successive population gets fiercer and fiercer (the distance at which individuals can “feel” the competition is getting larger and larger), forcing the individuals to form more and more distant clusters. Compare this to the starting state of the simulation, in which all populations form a single randomly shifting “blob” of individuals which is allowed by the model because individuals barely compete with each other.</p>
 <p>Depending on a species or population under study, these abstract parameters (and the spatial clustering or “clumpiness” they represent) could mean all sorts of things and could be used to model various phenomena in nature (competition for resources, shifting metapopulation dynamics, formation of “tribes”, etc.).</p>

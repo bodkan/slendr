@@ -2,15 +2,16 @@
 
 
 
-## Spatial Simulations for Population Genetics in R & SLiM
+## Spatio-temporal Population Genetics Simulations in R
 
 ### *Overview* <a href='https://www.slendr.net'><img src="man/figures/logo.png" align="right" height="139"/></a>
 
-*slendr* is an R package for simulating spatially-explicit genomic data. It allows to programmatically and visually encode spatial population boundaries and temporal dynamics across a geographic landscape (leveraging real cartographic data or abstract, user-defined landscapes), and specify population divergences and geneflow events based on an arbitrary graph of demographic history.
+*slendr* is an R package which has been primarily designed for simulating spatially-explicit genomic data on real and abstract geographic
+landscapes. It allows to programmatically and visually encode spatial population boundaries and temporal dynamics across a geographic landscape (leveraging real cartographic data or abstract, user-defined landscapes), and specify population divergences and geneflow events based on an arbitrary graph of demographic history. Additionally, it provides features for simulating large-scale non-spatial population genetics models entirely from R, using both [SLiM](https://messerlab.org/slim/) and [*msprime*](https://tskit.dev/msprime/docs/) as simulation back ends, all without having to leave the convenience of the R environment.
 
-Its strength comes from combining the flexibility of R with its wealth of libraries for graphics, geospatial analysis and statistics, with the power of the forward population genetics simulator [SLiM](https://messerlab.org/slim/) and its [massive library](http://benhaller.com/slim/SLiM_Manual.pdf) of features for simulating genomic data.
+By default, output data is saved in a [tree-sequence](https://tskit.dev/learn.html#what) format, allowing efficient simulations of genome-scale and population-scale data. The R package also provides basic functionality for processing the simulated tree-sequence outputs and for calculating the most frequently used population genetics statistics by implementing an interface to the tree-sequence library [tskit](https://tskit.dev) via the [reticulate](https://rstudio.github.io/reticulate/index.html) package.
 
-The goal of *slendr* is to provide a convenient R interface for defining arbitrary complex spatial (and [non-spatial](articles/vignette-04-nonspatial-models.html)) models of population history and execute them automatically by SLiM as a backend engine, all without having to leave the convenience of the R environment. By default, output data is saved in a [tree-sequence](https://tskit.dev/learn.html#what) format, allowing efficient simulations of genome-scale and population-scale data. The R package also provides basic functionality for processing the simulated tree-sequence outputs and for calculating the most frequently used population genetics statistics by implementing an interface to the tree-sequence library [tskit](https://tskit.dev) via the [reticulate](https://rstudio.github.io/reticulate/index.html) package. *slendr* can also serve as a tool for simulating data from non-spatial models, making it possible to write entire simulation and analytic pipelines entirely from R.
+By utilizing the flexibility of R with its wealth of libraries for graphics, geospatial analysis and statistics, with the power of the population genetics simulators SLiM and *msprime* for executing simulations automatically in the background, the *slendr* R package makes it possible to write entire simulation and analytic pipelines without the need to leave the R environment.
 
 -----------
 
@@ -41,8 +42,6 @@ Here is a small demonstration of what *slendr* is designed to do. We want to sim
 First, we define the spatial context of the simulation. This will be the entire "world" which will be occupied by populations in our model. Note that in the world definition, we are explicitly stating which projected [Coordinate Reference System](https://en.wikipedia.org/wiki/Spatial_reference_system) (CRS) will be used to represent landscape features, distances in kilometers, etc.
 
 
-
-
 ```r
 library(slendr)
 
@@ -51,6 +50,10 @@ map <- world(
   yrange = c(20, 65),  # min-max latitude
   crs = "EPSG:3035"    # real projected CRS used internally
 )
+#> OGR data source with driver: ESRI Shapefile 
+#> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmpo0twSy", layer: "ne_110m_land"
+#> with 127 features
+#> It has 3 fields
 ```
 
 We can visualize the defined world map using the generic function `plot` provided by the package.
@@ -209,11 +212,11 @@ The function has two modes:
 
 a\) Plotting spatial map dynamics:
 
-![](man/figures/shiny_maps.png)
+![](man/figures/shiny_maps.jpg)
 
 b\) Displaying the demographic history graph (splits and geneflow events) embedded in the specified model:
 
-![](man/figures/shiny_graph.png)
+![](man/figures/shiny_graph.jpg)
 
 #### 7. Run the model in SLiM
 
@@ -236,11 +239,11 @@ As specified, the SLiM run will save ancestry proportions in each population ove
 
 #### 8. Re-capitulate the SLiM run as an individual-based animation
 
-We can use the saved locations of every individual that lived throughout the course of the simulation to generate a simple GIF animation:
+We can use the saved locations of every individual that lived throughout the course of the simulation to generate a simple GIF animation (please note that the animation has been significantly sped up to decrease the GIF file size):
 
 
 ```r
-animate(model = model, steps = 100, width = 500, height = 300)
+animate(model = model, steps = 50, width = 500, height = 300)
 ```
 
 ![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
@@ -255,7 +258,7 @@ The example above provides only a very brief overview of the functionality of th
 
 - You can tweak parameters influencing dispersal dynamics (how "clumpy" populations are, how far can offspring migrate from their parents, etc.) and define how these should change over time. For instance, you can see that in the animation above, the African population forms a single "blob" that really isn't spread out across its entire population range. Tweaking the dispersal parameters as show [this vignette](articles/vignette-03-interactions.html) helps avoid that.
 
-- You can use *slendr* to program non-spatial models, which means that any concievable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an [Approximate Bayesian Computation](https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation) pipeline or other use any other R package for downstream analysis in the same R script. You can find more in [this vignette](articles/vignette-04-nonspatial-models.html).
+- You can use *slendr* to program non-spatial models, which means that any concievable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an [Approximate Bayesian Computation](https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation) pipeline or other use any other R package for downstream analysis in the same R script. You can find more in [this vignette](articles/vignette-04-nonspatial-models.html). Because SLiM simulations can be often quite slow compared to their coalescent counterperts, we also provide functionality allowing to simulate *slendr* models (without any change!) using a built-in *msprime* back end script. See [this vignette](articles/vignette-07-backends.html) for a tutorial on how this works.
 
 - You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [this vignette](articles/vignette-02-grid-model.html).
 

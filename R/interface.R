@@ -37,6 +37,30 @@
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @examples
+#' # create abstract landscape object of a given dimension
+#' map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
+#'
+#' # maps can be plotted by the generic function `plot`
+#' plot(map)
+#'
+#' # create a circular population with the center of a population boundary at
+#' # [600, 700] and a radius of 100 distance units, 1000 individuals at time 1
+#' # occupying a map just specified
+#' pop1 <- population("pop1", N = 1000, time = 1,
+#'                    map = map, center = c(600, 700), radius = 100)
+#'
+#' # create another population occupying a polygon range, splitting from pop1
+#' # at a given time point (note that specifying a map is not necessary because
+#' # it is "inherited" from the parent)
+#' pop2 <- population("pop2", N = 100, time = 50, parent = pop1,
+#'                    polygon = list(c(100, 100), c(500, 200),
+#'                                   c(500, 400), c(100, 400)))
+#'
+#' # check the position of both populations interactively by plotting their
+#' # ranges on a map
+#' plot(pop1, pop2)
 population <- function(name, time, N, parent = "ancestor", map = FALSE,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
@@ -327,7 +351,6 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @export
 boundary <- function(pop, time, center = NULL, radius = NULL,
                      polygon = NULL, lock = FALSE) {
-
   if (!has_map(pop))
     stop("This operation is only allowed for spatial models", call. = FALSE)
 
@@ -371,7 +394,7 @@ boundary <- function(pop, time, center = NULL, radius = NULL,
   if (lock) {
     areas <- slendr::area(result)$area
     area_change <- areas[length(areas)] / areas[length(areas) - 1]
-    prev_N <- tail(sapply(attributes(pop)$history, function(event) event$N), 1)
+    prev_N <- utils::tail(sapply(attributes(pop)$history, function(event) event$N), 1)
     new_N <- round(area_change * prev_N)
     result <- resize(result, N = new_N, time = time, how = "step")
   }
@@ -993,7 +1016,6 @@ dimensions <- function(map, original = FALSE) {
 #'   of locations at which the closest number of individuals from given
 #'   populations should be sampled. If \code{NULL} (the default), individuals
 #'   will be sampled randomly throughout their spatial boundary.
-#' @param remove Time at which the population should be removed
 #' @param strict Should any occurence of a population not being present at a
 #'   given time result in an error? Default is \code{FALSE}, meaning that
 #'   invalid sampling times for any populations will be quietly ignored.
@@ -1168,8 +1190,8 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
     c("map", "parent", "remove", "intersect", "aquatic", "history")
   )
 
-  start_area <- sf::st_area(head(inter_regions, 1)[[1]])
-  end_area <- sf::st_area(tail(inter_regions, 1)[[1]])
+  start_area <- sf::st_area(utils::head(inter_regions, 1)[[1]])
+  end_area <- sf::st_area(utils::tail(inter_regions, 1)[[1]])
   action <- ifelse(start_area < end_area, "expand", "contract")
 
   attr(result, "history") <- append(attr(result, "history"), list(data.frame(

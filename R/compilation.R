@@ -329,6 +329,11 @@ slim <- function(model, sequence_length, recombination_rate,
   readr::write_tsv(sampling_df, sampling_path)
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
+  if (Sys.which(binary) == "")
+    stop(sprintf("%s binary not found. Please modify your $PATH accordingly or
+  specify the path manually by setting the 'binary_path' argument.", binary),
+  call. = FALSE)
+
   seed <- if (is.null(random_seed)) "" else paste0(" \\\n    -d SEED=", random_seed)
   samples <- if (is.null(sampling_path)) ""
              else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")

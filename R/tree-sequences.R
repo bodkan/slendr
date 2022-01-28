@@ -349,10 +349,11 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 #' @return List of metadata fields extracted from the tree sequence object
 #'
 #' @export
-# genotype conversion -----------------------------------------------------
 ts_metadata <- function(ts) {
   attr(ts, "metadata")
 }
+
+# genotype conversion -----------------------------------------------------
 
 #' Extract genotype table from the tree sequence
 #'
@@ -814,6 +815,7 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 }
 
 #' @rdname ts_f4ratio
+#' @export
 ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
   mode <- match.arg(mode)
@@ -822,6 +824,7 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 }
 
 #' @rdname ts_f4ratio
+#' @export
 ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
   mode <- match.arg(mode)
@@ -830,6 +833,7 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
 }
 
 #' @rdname ts_f4ratio
+#' @export
 ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
   mode <- match.arg(mode)

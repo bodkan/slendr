@@ -13,13 +13,9 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 6,
   fig.height = 3,
-  dpi = 80
+  dpi = 80,
+  eval = Sys.which("slim") != ""
 )
-```
-
-```{r, echo = FALSE, message = FALSE}
-devtools::load_all(".")
-set.seed(314159)
 ```
 
 In addition to buidling models that capture movement or expansion using a set of [simple R functions](../reference/index.html#section-population-dynamics), *slendr* makes it possible to program more subtle parameters of spatial population dynamics.
@@ -34,11 +30,13 @@ All three parameters can be specified for each simulated population individually
 
 Finally, as with other functions for programming model spatial dynamics, the *slendr* package provides a simple way to change the spatial interaction dynamics throughout the course of the simulation. Even complex models can be programmed using only a couple of lines of extremely simple R code, resulting in a robust SLiM simulation script being generated under the hood.
 
-To demonstrate this feature, let's look at a simple example.  Let's make a rectangular world first:
-
-```{r, eval = FALSE}
+```{r}
 library(slendr)
+
+set.seed(314159)
 ```
+
+To demonstrate this feature, let's look at a simple example.  Let's make a rectangular world map first:
 
 ```{r abstract_world}
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
@@ -89,10 +87,10 @@ slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
      burnin = 100, method = "batch", verbose = TRUE, random_seed = 314159)
 ```
 
-Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF:
+Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (the animation is significantly sped up to satisfy the vignette size limits put on by CRAN):
 
 ```{r plot_gif_interactions, message = FALSE}
-animate(model, steps = 150, width = 500, height = 200)
+animate(model, steps = 80, width = 500, height = 200)
 ```
 
 Fun animation, isn't it? If you compare the result to the model dynamics we programmed above, you can see that the spatial dynamics follow what we would expect based on the parameter values. As time progresses, the spatial competition for each successive population gets fiercer and fiercer (the distance at which individuals can "feel" the competition is getting larger and larger), forcing the individuals to form more and more distant clusters. Compare this to the starting state of the simulation, in which all populations form a single randomly shifting "blob" of individuals which is allowed by the model because individuals barely compete with each other.

@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 80,
-  eval = TRUE
+  eval = Sys.which("slim") != ""
 )
 ```
 
@@ -22,19 +22,19 @@ knitr::opts_chunk$set(
 
 Our motivation for starting this project was to create a programmable simulation framework which would add an explicit spatial dimension to population genetics models. Specifically, the original idea was to be able to take models such as the one here---
 
-![](figures/geneflow_graph.png){width="80%"}
+![](images/geneflow_graph.jpg){width="80%"}
 
 representing a very simplified view of the history of anatomically modern humans (AMH) in West Eurasia over the last \~50 thousand years (a comprehensive overview can be found in a review by [Lazaridis](https://arxiv.org/abs/1805.01579))---and design a tool which makes it possible to simulate such models in an explicit geographical context to capture processes similar to those in the following figure (taken from a study by [Haak et al. 2015](https://www.nature.com/articles/nature14317)):
 
-![](figures/haak_map.png){width="80%"}
+![](images/haak_map.jpg){width="80%"}
 
 The reason for doing this is probably clear. A lot of what we do in studying the history of humans and other species is focused on reconstructing population movements, expansions and gene flow events, all of which happen in a geographic context. In fact, this geographic component is often what we are most interested in (i.e., "Where did the ancestors of some population come from?", "By which route and how fast did they migrate?", etc.). However, this goes beyond just simulating demographic history. For instance, selection pressure driving adaptation can often be spatially heterogeneous: members of a population occupying one part of the continent could be exposed to a different environmental pressure than individuals elsewhere, and allele frequency distributions shaped by the adaptation process would reflect this spatial heterogeneity accordingly. Having a framework that enables the simulation of explicitly spatial genomic data in such situations would allow us to build more realistic models and test more specific hypotheses, goals that are simply not possible using non-spatial simulation methods.
 
 The R package *slendr* introduced in this vignette presents such a framework. Internally, the package has two independent but tightly interconnected units:
 
-1.  An **R interface** which provides a set of functional primitives (a "mini-language" of sorts) for encoding various features of spatiotemporal models: population migrations, expansions and gene flow, all happening on a real geographic landscape defined by freely available cartographic data. Populations are represented as simple R objects with easily visualized spatial boundaries, making it possible to build very complex models interactively from a set of small and simple building blocks.
+1.  An **R interface** which provides a set of functional primitives (a "mini-language" of sorts) for encoding various features of spatio-temporal models: population migrations, expansions and gene flow, all happening on a real geographic landscape defined by freely available cartographic data. Populations are represented as simple R objects with easily visualized spatial boundaries, making it possible to build very complex models interactively from a set of small and simple building blocks.
 
-2.  A **SLiM simulation back end** represented by a built-in generic SLiM script designed to read all the spatiotemporal parameters and objects established by the R interface, and tailor the simulation run to the user-defined model.
+2.  A **SLiM simulation back end** represented by a built-in generic SLiM script designed to read all the spatio-temporal model configuration parameters and objects established in step 1. above, and tailor the simulation run to the user-defined model. Alternatively, *slendr* also supports executing standard population genetics models in a random-mating setting. This means that models do not need an explicit geographic map and can be simulated either with the same built-in SLiM back end script, or with a more efficient [*msprime* back end](vignette-07-backends.html) which is also provided with the package.
 
 The most important design objective was to make the integration of parts 1. and 2. appear completely seamless. Even for extremely complex models, the model building and execution (i.e., simulation) can be performed without leaving the convenience of an R interface such as RStudio. All the simulation complexities happen automatically under the hood and knowledge of SLiM is not required. In fact, the motto of the *slendr* package is "Write complex spatiotemporal population genetics models as a simple R script."
 
@@ -72,17 +72,14 @@ On some systems, *devtools* installation fails because of a missing `libgit` dep
 devtools::install_github("bodkan/slendr")
 ```
 
-```{r, echo = FALSE, message = FALSE}
-devtools::load_all(".")
-set.seed(314159)
-```
-
 This is necessary because *slendr* is not on [CRAN](http://cran.r-project.org) yet. Once it is there, it will be possible to install it by simply running `install.packages("slendr")` in your R console.
 
 4.  That's it! You can now load the package with the usual:
 
-```{r, eval = FALSE}
+```{r}
 library(slendr)
+
+set.seed(314159)
 ```
 
 Finally: because the package is actively being worked on, improvements and bug fixes are being added every couple of hours. **Make sure to install the latest development version (step 3. above) each time you're about to test something (such as the examples in this vignette).** You can track changes between development releases in the [changelog](https://github.com/bodkan/slendr/blob/main/NEWS.md).
@@ -119,13 +116,7 @@ map
 
 The *slendr* package implements its own plotting function called `plot()`.
 
-We do this in order to make it easier and more convenient to iteratively build more complex models. The function can intelligently decide (based on given input arguments) the right way to present the data to the user, which helps to define models more quickly without relying on the lower-level mechanisms of the `sf` package.
-
-More on that below, but here we will just plot the world context we just created:
-
-```{r plot_world}
-plot(map, title = "Zoomed-in world map context")
-```
+We do this in order to make it easier and more convenient to iteratively build more complex models. The function can intelligently decide (based on given input arguments) the right way to present the data to the user, which helps to define models more quickly without relying on the lower-level mechanisms of the `sf` package. You will see some examples of `plot()` in action below.
 
 ## Defining smaller geographic regions
 
@@ -219,8 +210,7 @@ If we call the `plot()` function on the returned object, we have the option to e
 The intersected form is what is ultimately exported in a serialized format (see below) to be loaded as a spatial map into SLiM. This is why the `plot()` function renders intersected population ranges by default.
 
 ```{r plot_ooa}
-plot(ooa, intersect = FALSE, title = "'Raw' population range")
-plot(ooa, title = "'Intersected' population range")
+plot(ooa, intersect = TRUE, title = "'Intersected' population range")
 ```
 
 ## Population movement across a landscape
@@ -255,8 +245,6 @@ ehg <- population(
     c(26, 55), c(38, 53), c(48, 53), c(60, 53),
     c(60, 60), c(48, 63), c(38, 63), c(26, 60))
 )
-
-plot(ehg)
 ```
 
 While we're at it, let's also create a population of Western Hunter Gatherers (WHG). Because the people living in this region eventually became present day Europeans after receiving gene flow from other groups over time (see below), we will call them "EUR" to simplify the modeling code a little bit:
@@ -266,8 +254,6 @@ eur <- population( # European population
   name = "EUR", parent = ehg, time = 25000, N = 2000,
   polygon = europe
 )
-
-plot(eur)
 ```
 
 ## Spatial population expansion
@@ -301,9 +287,9 @@ We can (and should) check the results visually:
 plot(ana, title = "Anatolian expansion into Europe")
 ```
 
-To visually see what is really going on behind the scenes, we can plot the raw, non-intersected form of the expansion:
+To visually see what is really going on behind the scenes, you can also plot the raw, non-intersected form of the expansion with:
 
-```{r plot_ana_raw}
+```{r plot_ana_raw, eval = FALSE}
 plot(ana, title = "Anatolian expansion into Europe (not intersected)", intersect = FALSE)
 ```
 
@@ -313,20 +299,12 @@ Let's add a couple more populations and migrations before we move on to implemen
 
 Yamnaya steppe herders:
 
-```{r plot_yam}
+```{r plot_yam_migr}
 yam <- population( # Yamnaya steppe population
   name = "YAM", time = 7000, N = 500, parent = ehg, remove = 2500,
   polygon = list(c(26, 50), c(38, 49), c(48, 50),
                  c(48, 56), c(38, 59), c(26, 56))
-)
-
-plot(yam)
-```
-
-Yamnaya invading Europe:
-
-```{r plot_yam_migr, message = FALSE}
-yam <- yam %>%
+) %>%
   move(
     trajectory = c(15, 50),
     start = 5000, end = 3000, snapshots = 8
@@ -367,11 +345,7 @@ geneflows <- geneflow(from = eur, to = afr, rate = 0.1, start = 20000, end = 150
     will instruct slendr to simulate geneflow without spatial overlap
     between populations.
 
-The error message instructs us to visually verify that this is the case, which can be done by *slendr*'s `plot()` function and the optional parameter `pop_facets = F` (which is set to `TRUE` by default):
-
-```{r plot_nonoverlapping}
-plot(eur, afr)
-```
+The error message instructs us to visually verify that this is the case, which can be done by *slendr*'s `plot()` function and the optional parameter `pop_facets = F` (which is set to `TRUE` by default).
 
 Many models will include multiple gene flow events, which we can collect in a simple R list:
 
@@ -410,7 +384,7 @@ What do the files in the model directory look like? Ideally, you as a user shoul
 First of all, we can inspect the contents of the directory and see that it does, indeed, contain all defined spatial maps (now PNG files, which is what SLiM requires).
 
 ```{r}
-list.files(file.path(tempdir(), "tutorial-model"), pattern = "*.png")
+list.files(file.path(tempdir(), "tutorial-model"), pattern = "*.jpg")
 ```
 
 It also contains a series of tab-delimited configuration tables. These tables contain summaries of the model parameters that we defined graphically above, namely:
@@ -445,7 +419,7 @@ For this purpose, the package includes a function named `plot_graph()` which tak
 
 One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full *slendr* graph a single population can participate in many gene flow events over the course of its history. This is visualized by assigning a color to each population, and different nodes of the same color represent snapshots in time when a demographic event affecting that population happens.
 
-```{r plot_graph, fig.width = 12, fig.height = 12}
+```{r plot_graph, fig.width = 8, fig.height = 7}
 plot_graph(model)
 ```
 
@@ -457,7 +431,9 @@ A slightly fancier way to visualize models is implemented in the function `explo
 explore(model)
 ```
 
-![](figures/shiny_graph.png) ![](figures/shiny_maps.png)
+![Graph of demographic history (sometimes called "admixture graph")](images/shiny_graph.jpg){width="80%"}
+
+![Interactive explorer of the spatial dynamics](images/shiny_maps.jpg){width="80%"}
 
 ## Running the simulation
 
@@ -479,15 +455,17 @@ slim(
 
 By default, simulation output files are put in the same directory where the model configuration data is stored, and are given a common prefix `output_`. Both the directory and the output file prefix can be specified by setting the `output_dir` and `output_prefix` arguments of the function `slim()`.
 
-## Post-simulation diagnostics
+In case the `save_locations` parameter was provided, you can generate an animation of the model dynamics across time by calling:
 
-We can recapitulate the spatial dynamics with the *slendr* function `animate()` (also very bare-bones at the moment):
-
-```{r plot_gif}
-animate(model = model, steps = 100, width = 500, height = 300)
+```{r, eval = FALSE}
+animate(model = model, steps = 70, width = 500, height = 300)
 ```
 
-If an argument `gif = ...` is provided, `animate()` will save the animation to the specified location as a GIF file. Note that unless your simulation is very short and/or involves only a small population, rendering of the animation can take several minutes.
+If an argument `gif = ...` is provided, `animate()` will save the animation to the specified location as a GIF file. In this case, the command would produce the animation you can see on the *slendr* package [landing page](https://www.slendr.net).
+
+However, note that unless your simulation is very short and/or involves only a small population, saving the location of every individual who ever lived will slow down your simulations significantly and that rendering of the animation can take also several minutes.
+
+For troubleshooting your models, executing them with `slim(..., method = "gui")` is a more efficient option as you will be able to inspect model dynamics in real-time in SLiMgui. We suggest that you only use the animation feature for creating animations for publications and presentation, not for your daily *slendr* work.
 
 ## More information
 
@@ -495,8 +473,8 @@ This vignette described only the most basic features of the *slendr* package but
 
 - You can tweak parameters influencing dispersal dynamics (how "clumpy" populations are, how far offspring can migrate from their parents, etc.) and change how those dynamics evolve over time. See [this vignette](vignette-03-interactions.html) for more information.
 
-- You can use *slendr* to program non-spatial models, which means that any conceivable demographic model can be simulated with only a few lines of R code and, for instance, plugged into an [Approximate Bayesian Computation](https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation) pipeline or other analyses leveraging readily available R packages. You can find more in [this vignette](vignette-04-nonspatial-models.html).
+- You can use *slendr* to program non-spatial models, which means that any standard, Wright-Fisher demographic model can be simulated with only a few lines of R code and, for instance, plugged into an [Approximate Bayesian Computation](https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation) pipeline or other analyses leveraging readily available R packages. You can find more in [this vignette](vignette-04-nonspatial-models.html) and a much more detailed example in a vignette about [SLiM and *msprime* back ends](vignette-07-backends.html).
 
 - You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [in this vignette](vignette-02-grid-model.html).
 
-- Because SLiM saves data in the `.trees` tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html) for interfacing with Python code you have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/)and [*pyslim*](https://pyslim.readthedocs.io) to process simulated data at a massive scale right at your fingertips, all within the convenient environment of R.
+- Because SLiM saves data in the `.trees` tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html) for interfacing with Python code you have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/) and [*pyslim*](https://pyslim.readthedocs.io) to process simulated data at a massive scale right at your fingertips, all within the convenient environment of R. See a much more detailed example in a vignette about [this vignette](vignette-07-backends.html) for an extensive tutorial of this feature.
