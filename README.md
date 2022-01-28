@@ -51,7 +51,7 @@ map <- world(
   crs = "EPSG:3035"    # real projected CRS used internally
 )
 #> OGR data source with driver: ESRI Shapefile 
-#> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmpo0twSy", layer: "ne_110m_land"
+#> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp2yntk0", layer: "ne_110m_land"
 #> with 127 features
 #> It has 3 fields
 ```
