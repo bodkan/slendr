@@ -47,6 +47,7 @@ Imports:
     rsvg,
     png,
     ijtiff,
+    magick,
     ggraph,
     tidygraph,
     shinyWidgets,
@@ -55,7 +56,6 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    magick,
     admixr,
     units
 VignetteBuilder: knitr
