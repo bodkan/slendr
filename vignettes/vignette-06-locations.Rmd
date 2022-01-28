@@ -8,13 +8,20 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+env_present <- tryCatch(
+  {
+    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
+    TRUE
+  }, error = function(cond) FALSE
+)
+
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   fig.width = 7,
   fig.height = 4,
   dpi = 80,
-  eval = Sys.which("slim") != ""
+  eval = Sys.which("slim") != "" && env_present
 )
 ```
 
