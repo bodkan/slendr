@@ -54,7 +54,6 @@
 
 <meta property="og:title" content="Define a population and its original spatial range — population" />
 <meta property="og:description" content="Defines a spatial range of a population and its most important parameters." />
-<meta property="og:image" content="https://www.slendr.net/logo.png" />
 
 
 
@@ -136,9 +135,6 @@
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -283,6 +279,33 @@ specified using a center coordinate and a radisu, ii) polygon specified as a
 list of two-dimensional vector coordinates, iii) polygon as in ii), but
 defined (and named) using the <code>region</code> function.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># create abstract landscape object of a given dimension</span>
+<span class='va'>map</span> <span class='op'>&lt;-</span> <span class='fu'><a href='world.html'>world</a></span><span class='op'>(</span>xrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1000</span><span class='op'>)</span>, yrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1000</span><span class='op'>)</span>, landscape <span class='op'>=</span> <span class='st'>"blank"</span><span class='op'>)</span>
+
+<span class='co'># maps can be plotted by the generic function `plot`</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>map</span><span class='op'>)</span>
+</div><div class='img'><img src='population-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='co'># create a circular population with the center of a population boundary at</span>
+<span class='co'># [600, 700] and a radius of 100 distance units, 1000 individuals at time 1</span>
+<span class='co'># occupying a map just specified</span>
+<span class='va'>pop1</span> <span class='op'>&lt;-</span> <span class='fu'>population</span><span class='op'>(</span><span class='st'>"pop1"</span>, N <span class='op'>=</span> <span class='fl'>1000</span>, time <span class='op'>=</span> <span class='fl'>1</span>,
+                   map <span class='op'>=</span> <span class='va'>map</span>, center <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600</span>, <span class='fl'>700</span><span class='op'>)</span>, radius <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
+
+<span class='co'># create another population occupying a polygon range, splitting from pop1</span>
+<span class='co'># at a given time point (note that specifying a map is not necessary because</span>
+<span class='co'># it is "inherited" from the parent)</span>
+<span class='va'>pop2</span> <span class='op'>&lt;-</span> <span class='fu'>population</span><span class='op'>(</span><span class='st'>"pop2"</span>, N <span class='op'>=</span> <span class='fl'>100</span>, time <span class='op'>=</span> <span class='fl'>50</span>, parent <span class='op'>=</span> <span class='va'>pop1</span>,
+                   polygon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>100</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>200</span><span class='op'>)</span>,
+                                  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>400</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>400</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># check the position of both populations interactively by plotting their</span>
+<span class='co'># ranges on a map</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pop1</span>, <span class='va'>pop2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Attempting to plot population ranges at multiple time points on</span>
+#&gt; <span class='warning'>a single map. This is very hard to do in a satisfying way. Please</span>
+#&gt; <span class='warning'>consider using the function `explore()` to plot the model dynamics</span>
+#&gt; <span class='warning'>interactively.</span></div><div class='img'><img src='population-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

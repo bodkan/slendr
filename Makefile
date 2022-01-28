@@ -1,16 +1,19 @@
+.PHONY: vignettes
+
 website:
+	R -e 'devtools::install()'
 	rm -rf docs/ man/; mkdir -p man/figures
-	cp vignettes/figures/shiny_graph.png man/figures/
-	cp vignettes/figures/shiny_maps.png man/figures/
-	R -e 'devtools::document(); source("logo.R"); knitr::knit("README.Rmd", output = "README.md"); options(pkgdown.internet = FALSE); pkgdown::build_site();'
-
-vignettes:
-	R -e 'knitr::knit("README.Rmd.orig", output = "README.md")'
-	cd vignettes/; \
-	for rmd in *.Rmd.orig; do \
-		R -e "knitr::knit(\"$$rmd\", \"$${rmd%.orig}\")"; \
-	done
-
-restore:
-	git restore man/figures/logo.png docs/reference/figures/logo.png docs/logo.png
+	cp vignettes/images/shiny_graph.jpg man/figures/
+	cp vignettes/images/shiny_maps.jpg man/figures/
+	R -e 'devtools::document(); knitr::knit("README.Rmd", output = "README.md"); options(pkgdown.internet = FALSE); pkgdown::build_site()'
 	git restore docs/CNAME
+	git restore man/figures/logo.png docs/reference/figures/logo.png docs/logo.png
+
+check:
+	R -e 'devools::check()'
+	R -e 'devtools::check_win_devel()'
+	R -e 'devtools::check_win_release()'
+	R -e 'devtools::check_rhub()'
+
+logo:
+	R -e 'source("logo.R")'

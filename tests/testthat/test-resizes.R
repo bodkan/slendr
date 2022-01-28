@@ -1,3 +1,5 @@
+skip_on_cran()
+
 map <- readRDS("map.rds")
 
 calculate_exp_sizes <- function(N1, N2, t1, t2) {

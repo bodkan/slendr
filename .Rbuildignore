@@ -5,7 +5,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README.Rmd
-^build_docs.R
 ^logo.R
 ^.lintr
 ^Makefile
+^tests/testthat/_snaps
+^tests/testthat/.*\.png

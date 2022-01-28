@@ -1,3 +1,5 @@
+skip_on_cran()
+
 # Run a given forward/backward simulation with different combinations
 # of start-end and burnin parameters
 simulation_run <- function(direction, start, burnin, gen_time, sim_length = NULL, method = "batch") {
