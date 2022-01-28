@@ -18,10 +18,11 @@ Description: A framework for simulating spatially-explicit genomic
     geographic location are supported, and users can also simulate data from
     standard, non-spatial, random-mating models. These can be simulated either
     with the 'SLiM' built-in back end script, or using a much more efficient
-    coalescent population genetics simulator 'msprime'. Simulated sequence data
+    coalescent population genetics simulator 'msprime' with a custom-built
+    Python script bundled with the R package. Simulated sequence data
     is saved in a tree-sequence format and can be loaded, manipulated, and
-    summarised using tree-sequence functionality provided by Python modules
-    'tskit' and 'pyslim'. Thus, complete model configuration, simulation and
+    summarised using tree-sequence functionality via an R interface to the
+    Python module 'tskit'. Thus, complete model configuration, simulation and
     analysis pipelines can be constructed without a need to leave the
     R environment, eliminating friction between disparate tools for population
     genetics and genome analysis and facilitating reproducibility.
@@ -30,7 +31,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The alternative 'msprime' Python coalescent framework can by installed by following the instructions at <https://tskit.dev/msprime/docs>.
+SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The alternative 'msprime' Python coalescent framework and the 'tskit' module can by installed by following the instructions at <https://tskit.dev/msprime/docs>.
 Imports: 
     sf,
     stars,
@@ -54,9 +55,9 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    devtools,
     magick,
-    admixr
+    admixr,
+    units
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues
