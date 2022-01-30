@@ -23,7 +23,7 @@ Object of the class EIGENSTRAT created by the admixr package
 }
 \description{
 EIGENSTRAT data produced by this function can be used by the admixr R package
-(\url{https://bodkan.net/admixr}).
+(\url{https://bodkan.net/admixr/}).
 }
 \details{
 In case an outgroup was not formally specified in a slendr model which

@@ -620,7 +620,7 @@ time (geneflow %s -> %s in the time window %s-%s)",
 #'   landscape was defined (\code{landscape = "naturalearth"}).
 #' @param ne_dir Path to the directory where Natural Earth data was
 #'   manually downloaded and unzipped from
-#'   <https://www.naturalearthdata.com/downloads/110m-physical-vectors>
+#'   <https://www.naturalearthdata.com/downloads/110m-physical-vectors/>
 #'   (used only when \code{landscape = "naturalearth"})
 #'
 #' @return Object of the class \code{slendr_map}

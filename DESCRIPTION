@@ -1,6 +1,6 @@
 Package: slendr
-Title: Spatio-temporal Population Genetics Simulations in R
-Version: 0.0.0.9000
+Title: A Simulation Framework for Spatio-Temporal Population Genetics
+Version: 0.9
 Authors@R: 
     person(given = "Martin",
            family = "Petr",
@@ -8,8 +8,8 @@ Authors@R:
            email = "contact@bodkan.net",
            comment = c(ORCID = "0000-0003-4879-8421"))
 Description: A framework for simulating spatially-explicit genomic
-    data which leverages real cartographic information to programmatically
-    and visually encode spatial population boundaries and temporal dynamics
+    data which leverages real cartographic information for programmatic
+    and visual encoding of spatial population boundaries and temporal dynamics
     across a real geographic landscape, specify population divergences
     and encode gene flow events based on an arbitrary graph of demographic history.
     Such population genetic models are then automatically executed by the
@@ -25,13 +25,13 @@ Description: A framework for simulating spatially-explicit genomic
     Python module 'tskit'. Thus, complete model configuration, simulation and
     analysis pipelines can be constructed without a need to leave the
     R environment, eliminating friction between disparate tools for population
-    genetics and genome analysis and facilitating reproducibility.
+    genetics and genome analysis and facilitating reproducible research.
 Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The alternative 'msprime' Python coalescent framework and the 'tskit' module can by installed by following the instructions at <https://tskit.dev/msprime/docs>.
+SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The 'msprime' Python coalescent framework and the 'tskit' module can by installed by following the instructions at <https://tskit.dev/msprime/docs>.
 Imports: 
     sf,
     stars,
@@ -47,7 +47,6 @@ Imports:
     rsvg,
     png,
     ijtiff,
-    magick,
     ggraph,
     tidygraph,
     shinyWidgets,
@@ -57,7 +56,9 @@ Suggests:
     knitr,
     rmarkdown,
     admixr,
-    units
+    units,
+    rgdal,
+    magick
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues

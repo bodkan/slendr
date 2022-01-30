@@ -18,7 +18,7 @@ env_present <- tryCatch(
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
-  fig.width = 7,
+  fig.width = 6,
   fig.height = 4,
   dpi = 80,
   eval = Sys.which("slim") != "" && env_present
@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-The main selling point of the *slendr* R package is programming complex *spatially explicit* population genetic models. Because we use SLiM as the simulation engine, we can store simulated data efficiently in a tree sequence format which allows us to run large population-scale simulations. In the previous vignettes, we described how you can specify spatial population dynamics and how you can access tree sequence data and calculate population genetic statistics on it (focusing on [non-spatial models](vignette-05-tree%20sequences) for simplicity). Now it's time to show you how to work with simulated tree sequence in a spatial context.
+The main selling point of the *slendr* R package is programming complex *spatially explicit* population genetic models. Because we use SLiM as the simulation engine, we can store simulated data efficiently in a tree sequence format which allows us to run large population-scale simulations. In the previous vignettes, we described how you can specify spatial population dynamics and how you can access tree sequence data and calculate population genetic statistics on it (focusing on [non-spatial models](vignette-05-tree-sequences.html) for simplicity). Now it's time to show you how to work with simulated tree sequence in a spatial context.
 
 ## Model specification
 
@@ -137,7 +137,7 @@ plot(afr, ooa, ehg, eur, ana, yam)
 
 ## Scheduling sampling events and simulation
 
-Now we will schedule the sampling of a single individual from each population every two thousand years, starting from 40 thousand years ago all the way to the present (this is a feature discussed in the basic [tree sequence overview](vignette-05-tree%20sequences.html#scheduling-of-sampling-events-1)):
+Now we will schedule the sampling of a single individual from each population every two thousand years, starting from 40 thousand years ago all the way to the present (this is a feature discussed in the basic [tree sequence overview](vignette-05-tree-sequences.html#scheduling-of-sampling-events-1)):
 
 ```{r}
 # one ancient individual every two thousand years
@@ -159,7 +159,7 @@ slim(
 )
 ```
 
-After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree%20sequences.html#loading-and-processing-tree%20sequence-output-files-1) of tree sequence features in *slendr*. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:
+After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1) of tree sequence features in *slendr*. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:
 
 ```{r}
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, recombination_rate = 1e-8, Ne = 10000)
@@ -267,7 +267,7 @@ ind <- "EUR_25"
 lineages <- ts_ancestors(ts, ind, verbose = TRUE)
 ```
 
-The function starts at a given node (or, if a name of a sampled diploid individual is provided, two nodes), extracts information about all the parent nodes of that node in the entire tree sequence, records their locations and times, then proceeds one level "higher" in the genealogical history to gather information about the parents of those parent nodes, etc., until it reaches a root node. The result of this process is another `sf` object in which each row of the table encodes information about single branch in the genealogy of the "focal" node or individual (in our example, `r ind`):
+The function starts at a given node (or, if a name of a sampled diploid individual is provided, two nodes), extracts information about all the parent nodes of that node in the entire tree sequence, records their locations and times, then proceeds one level "higher" in the genealogical history to gather information about the parents of those parent nodes, etc., until it reaches a root node. The result of this process is another `sf` object in which each row of the table encodes information about single branch in the genealogy of the "focal" node or individual (in our example, `"EUR_25"`):
 
 ```{r}
 lineages
@@ -275,7 +275,7 @@ lineages
 
 In each row of the table, two columns `location` and `parent_location` carry the spatial location of a node (`node_id`) and its parent node (`parent_id`), respectively, same with the columns `time` and `parent_time` (times of nodes) and `pop` and `parent_pop` (populations to which the nodes belong). The column `connection` contains an `sf` geometry object of the line connecting the two nodes in the coordinate reference system of the "model world". The column `focal_id` tells us to which focal node's genealogy the rows of the table belong to, and the `level` column shows how deep in the genealogical past does each branch (i.e. row of the table) belong to.
 
-This table contains a complete information about spatio-temporal relationships between the nodes in the genealogy of the given focal sample. In the spirit of demonstrating of *slendr* tree sequence tables interact with the *sf* and *ggplot2* environments, let's look at the most immediate parent nodes of the two nodes in the sampled individual `r ind` (i.e. nodes at the level 1) using the `filter` function from the R package [dplyr](https://r4ds.had.co.nz/transform.html#filter-rows-with-filter):
+This table contains a complete information about spatio-temporal relationships between the nodes in the genealogy of the given focal sample. In the spirit of demonstrating of *slendr* tree sequence tables interact with the *sf* and *ggplot2* environments, let's look at the most immediate parent nodes of the two nodes in the sampled individual (i.e. nodes at the level 1) using the `filter` function from the R package [dplyr](https://r4ds.had.co.nz/transform.html#filter-rows-with-filter):
 
 ```{r}
 filter(lineages, level == 1)
@@ -284,8 +284,6 @@ filter(lineages, level == 1)
 ```{r, include = FALSE}
 counts <- filter(lineages, name == ind, level == 1) %>% as.data.frame() %>% count(node_id)
 ```
-
-We can see that the individual `r ind` has `r sum(counts$n)` different parent nodes in the tree sequence---`r counts[1, ]$n` ancestors of the first chromosome/node, `r counts[2, ]$n` ancestors of the second node.
 
 As we mentioned above, there are three columns encoding spatial information: `location` and `parent_location` carry information about the location of the child and parent node (`POINT` class), and the `connection` object (`LINESTRING` class) contains the line connecting the two nodes (both a branch in the tree sequence and also the spatial connection). We can plot all three spatial features (two points and a line) individually on a map:
 
@@ -301,7 +299,7 @@ ggplot() +
   ggtitle("Parent nodes (blue) of a focal individual (red)")
 ```
 
-In the figure above we can see the red focal node and `r nrow(level1_branches)` of its immediate parents in the tree sequence genealogy (in the coalescent sense, not immediate parents of that individual!).
+In the figure above we can see the red focal node and its immediate parents in the tree sequence genealogy (in the coalescent sense, not immediate parents of that individual!).
 
 A more convenient way to do this analysis is a companion function to `ts_ancestors()` called `plot_ancestors()`. This function accepts an `sf` object with the spatial branching data created by `ts_ancestors()` and plots the paths between nodes on a map leading from a focal node up to the root(s) of the tree sequence (instead of just paths to immediate parents shown in the previous figure). In this case, because we are working with a single diploid individual, we get two sets of paths for each of its nodes (chromosomes) and plot them in two facets:
 
@@ -322,7 +320,7 @@ A more convenient way to do this analysis is a companion function to `ts_ancesto
 plot_ancestors(lineages, ind)
 ```
 
-You can compare this result to the animation which recapitulates the simulation, presented in [the first vignette](vignette-01-tutoria.html).
+You can compare this result to the animation which recapitulates the simulation, presented in [the first vignette](vignette-01-tutorial.html).
 
 After comparing our spatial tree sequence figure with the animation, we can immediately notice several things:
 
@@ -330,9 +328,9 @@ After comparing our spatial tree sequence figure with the animation, we can imme
 nodes <- unique(lineages[!is.na(lineages$name), ]$node_id)
 ```
 
-1.  All spatial tree sequence paths trace the ancestry of our single European individual `r ind` back to Africa. In fact, we also see a cluster of past ancestral nodes (i.e. concentrated coalescent events) in the place where the Out of Africa (OOA) migrant population settled around 40,000 thousand years ago (yellow population in the the animation).
+1.  All spatial tree sequence paths trace the ancestry of our single European individual back to Africa. In fact, we also see a cluster of past ancestral nodes (i.e. concentrated coalescent events) in the place where the Out of Africa (OOA) migrant population settled around 40,000 thousand years ago (yellow population in the the animation).
 
-2.  The first chromosome (node `r nodes[1]`) traces its ancestry to the Yamnaya population indicated by a star. This is expected because we programmed Yamnaya to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population). We can see a cluster of EHG nodes in one location because we did not specify any spatial dynamic for this population in our model
+2.  The first chromosome traces its ancestry to the Yamnaya population indicated by a star. This is expected because we programmed Yamnaya to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population). We can see a cluster of EHG nodes in one location because we did not specify any spatial dynamic for this population in our model
 
 3.  We also see that the other chromosome traces of its ancestry to the Anatolia (triangles). This makes sense, because we have simulated European ancestry as being part Anatolian.
 
@@ -391,13 +389,13 @@ ts_samples(ts) %>% filter(pop == "ANA")
 ana_ind <- ts_samples(ts) %>% filter(name == "ANA_22")
 ```
 
-Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual (`r ana_ind$name`) and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
+Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
 
 ```{r, plot_ancestors_levels_ana}
 ts_ancestors(ts, "ANA_22") %>% plot_ancestors(color = "level")
 ```
 
-As we might expect given the late age of the sample (`r ana_ind$time`), its position in the map above (red crossed circle) is not in Anatolia but in Europe because it represents one of the descendants of migrants who moved from Anatolia into Europe. This can be clearly seen in the position of its parental nodes in the tree sequence: these nodes represent real individuals who lived at some point in the past, and we can see that they did, indeed, lived in Anatolia.
+As we might expect given the late age of the sample, its position in the map above (red crossed circle) is not in Anatolia but in Europe because it represents one of the descendants of migrants who moved from Anatolia into Europe. This can be clearly seen in the position of its parental nodes in the tree sequence: these nodes represent real individuals who lived at some point in the past, and we can see that they did, indeed, lived in Anatolia.
 
 ## Calculating distances and other statistics using the *sf* package
 
