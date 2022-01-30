@@ -8,13 +8,20 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+env_present <- tryCatch(
+  {
+    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
+    TRUE
+  }, error = function(cond) FALSE
+)
+
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   fig.width = 6,
-  fig.height = 3,
+  fig.height = 4,
   dpi = 80,
-  eval = Sys.which("slim") != ""
+  eval = Sys.which("slim") != "" && env_present
 )
 ```
 
@@ -42,7 +49,7 @@ To demonstrate this feature, let's look at a simple example.  Let's make a recta
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 ```
 
-We have constructed seven populations, each occupying a discrete circular range on a blank landscape `r dimensions(map)[1]` distances units wide and `r dimensions(map)[2]` distance units tall. All are programmed to appear in the simulation in generation one and have the same number of individuals.
+We have constructed seven populations, each occupying a discrete circular range on a blank landscape 3500 distances units wide and 700 distance units tall. All are programmed to appear in the simulation in generation one and have the same number of individuals.
 
 ```{r pop_ranges}
 N <- 3000; y <- 350; r = 240
@@ -97,4 +104,4 @@ Fun animation, isn't it? If you compare the result to the model dynamics we prog
 
 Depending on a species or population under study, these abstract parameters (and the spatial clustering or "clumpiness" they represent) could mean all sorts of things and could be used to model various phenomena in nature (competition for resources, shifting metapopulation dynamics, formation of "tribes", etc.).
 
-It needs to be said that unlike the spatial population dynamics functionality described in the main [tutorial](slendr.html), which is a unique feature of *slendr*, the example in this vignette could be reproduced in pure SLiM using vanilla Eidos code. However, I think it is fair to say that the *slendr* R code is much more flexible and easier to tweak and extend towards much more complex scenarios. Again, as mentioned several times throughout the documentation, this is another good example of how the simple *slendr* R interface lets you focus on the difficult part of modeling (specifying spatiotemporal model dynamics), get immediate visual feedback during model building, and leverage the powerful SLiM simulation framework as a low-level computational engine.
+It needs to be said that unlike the spatial population dynamics functionality described in the main [tutorial](vignette-01-tutorial.html), which is a unique feature of *slendr*, the example in this vignette could be reproduced in pure SLiM using vanilla Eidos code. However, I think it is fair to say that the *slendr* R code is much more flexible and easier to tweak and extend towards much more complex scenarios. Again, as mentioned several times throughout the documentation, this is another good example of how the simple *slendr* R interface lets you focus on the difficult part of modeling (specifying spatiotemporal model dynamics), get immediate visual feedback during model building, and leverage the powerful SLiM simulation framework as a low-level computational engine.

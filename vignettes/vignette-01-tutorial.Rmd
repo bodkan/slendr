@@ -8,13 +8,20 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+env_present <- tryCatch(
+  {
+    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
+    TRUE
+  }, error = function(cond) FALSE
+)
+
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   fig.width = 6,
   fig.height = 4,
   dpi = 80,
-  eval = Sys.which("slim") != "" 
+  eval = Sys.which("slim") != "" && env_present
 )
 ```
 
@@ -72,7 +79,7 @@ On some systems, *devtools* installation fails because of a missing `libgit` dep
 devtools::install_github("bodkan/slendr")
 ```
 
-This is necessary because *slendr* is not on [CRAN](http://cran.r-project.org) yet. Once it is there, it will be possible to install it by simply running `install.packages("slendr")` in your R console.
+This is necessary because *slendr* is not on [CRAN](https://cran.r-project.org) yet. Once it is there, it will be possible to install it by simply running `install.packages("slendr")` in your R console.
 
 4.  That's it! You can now load the package with the usual:
 
@@ -88,7 +95,7 @@ Finally: because the package is actively being worked on, improvements and bug f
 
 Before we do anything else, we need to define a section of the map of the world which will provide context for all downstream spatio-temporal manipulation of population ranges.
 
-In principle, any source of geospatial data which can be manipulated using the [simple features (sf)](https://r-spatial.github.io/sf/) infrastructure could be used. For now the *slendr* package implicitly uses the [Natural Earth](https://www.naturalearthdata.com/) project data (in its vectorized form!), which it internally loads using the [rnaturalearth](https://cran.r-project.org/web/packages/rnaturalearth/README.html) interface.
+In principle, any source of geospatial data which can be manipulated using the [simple features (sf)](https://r-spatial.github.io/sf/) infrastructure could be used. For now the *slendr* package implicitly uses the [Natural Earth](https://www.naturalearthdata.com/) project data (in its vectorized form!), which it internally loads using the [rnaturalearth](https://cran.r-project.org/package=rnaturalearth/README.html) interface.
 
 The first *slendr* function we will look at is `map()`. This function will load the map of the entire world in a vectorized format and zoom in to a specified section of the world.
 
@@ -477,4 +484,4 @@ This vignette described only the most basic features of the *slendr* package but
 
 - You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [in this vignette](vignette-02-grid-model.html).
 
-- Because SLiM saves data in the `.trees` tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html) for interfacing with Python code you have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/) and [*pyslim*](https://pyslim.readthedocs.io) to process simulated data at a massive scale right at your fingertips, all within the convenient environment of R. See a much more detailed example in a vignette about [this vignette](vignette-07-backends.html) for an extensive tutorial of this feature.
+- Because SLiM saves data in the `.trees` tree-sequence file format, thanks to the R package [*reticulate*](https://rstudio.github.io/reticulate/index.html) for interfacing with Python code you have the incredible power of [*tskit*](https://tskit.dev/tskit/docs/stable/) and [*pyslim*](https://tskit.dev/pyslim/docs/latest/introduction.html) to process simulated data at a massive scale right at your fingertips, all within the convenient environment of R. See a much more detailed example in a vignette about [this vignette](vignette-07-backends.html) for an extensive tutorial of this feature.

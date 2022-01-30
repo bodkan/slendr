@@ -10,3 +10,4 @@
 ^Makefile
 ^tests/testthat/_snaps
 ^tests/testthat/.*\.png
+^build/$

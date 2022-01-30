@@ -29,7 +29,7 @@ landscape was defined (\code{landscape = "naturalearth"}).}
 
 \item{ne_dir}{Path to the directory where Natural Earth data was
 manually downloaded and unzipped from
-\url{https://www.naturalearthdata.com/downloads/110m-physical-vectors}
+\url{https://www.naturalearthdata.com/downloads/110m-physical-vectors/}
 (used only when \code{landscape = "naturalearth"})}
 }
 \value{

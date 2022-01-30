@@ -1,4 +1,7 @@
-.PHONY: vignettes
+.PHONY: build vignettes
+
+version := $(shell less DESCRIPTION | grep 'Version' | sed 's/Version: \(.*\)$$/\1/')
+pkg := build/slendr_$(version).tar.gz
 
 website:
 	R -e 'devtools::install()'
@@ -9,11 +12,18 @@ website:
 	git restore docs/CNAME
 	git restore man/figures/logo.png docs/reference/figures/logo.png docs/logo.png
 
-check:
-	R -e 'devools::check()'
-	R -e 'devtools::check_win_devel()'
-	R -e 'devtools::check_win_release()'
-	R -e 'devtools::check_rhub()'
-
 logo:
 	R -e 'source("logo.R")'
+
+build: $(pkg)
+
+check: $(pkg)
+	cd build; R CMD check --as-cran $(notdir $<)
+
+$(pkg):
+	R -e 'knitr::knit("README.Rmd", output = "README.md")'
+	rm -rf build; mkdir build; cd build; \
+	R CMD build --log ../../slendr
+
+clean:
+	rm -rf build
