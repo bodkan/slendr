@@ -37,6 +37,8 @@
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 population <- function(name, time, N, parent = "ancestor", map = FALSE,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
@@ -124,6 +126,8 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
                  verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
@@ -267,6 +271,8 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                    polygon = NULL, lock = FALSE, verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
@@ -296,6 +302,8 @@ expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                    lock = FALSE, verbose = TRUE) {
   shrink_or_expand(pop, -by, end, start, overlap, snapshots, polygon = NULL, lock, verbose)
@@ -325,6 +333,8 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 boundary <- function(pop, time, center = NULL, radius = NULL,
                      polygon = NULL, lock = FALSE) {
   if (!has_map(pop))
@@ -398,6 +408,8 @@ boundary <- function(pop, time, center = NULL, radius = NULL,
 #'   change events)
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 resize <- function(pop, N, how, time, end = NULL) {
   if (N < 1) stop("resize(): Only positive, non-zero population sizes are allowed", call. = FALSE)
 
@@ -454,6 +466,8 @@ resize <- function(pop, N, how, time, end = NULL) {
 #'   offspring. One of "normal", "uniform", "cauchy", or "exponential".
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
                       dispersal_fun = NULL) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
@@ -503,6 +517,8 @@ dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersa
 #' @return Object of the class data.frame
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   if ((has_map(from) && !has_map(to)) || (!has_map(from) && has_map(to)))
     stop("Both or neither populations must be spatial", call. = FALSE)
@@ -602,6 +618,8 @@ time (geneflow %s -> %s in the time window %s-%s)",
 #' @return Object of the class \code{slendr_map}
 #'
 #' @export
+#'
+#' @example man/examples/spatial_functions.R
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
   if (inherits(landscape, "sf")) { # a landscape defined by the user
     cropped_landscape <- sf::st_crop(
@@ -675,6 +693,8 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 #' @return Object of the class \code{slendr_region}
 #'
 #' @export
+#'
+#' @example man/examples/spatial_functions.R
 region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
   if (is.null(name)) name <- "unnamed region"
   region <- sf::st_sf(
@@ -796,6 +816,8 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
 #' @return Object of the class \code{slendr_region}
 #'
 #' @export
+#'
+#' @example man/examples/spatial_functions.R
 join <- function(x, y, name = NULL) {
   if (!inherits(x, "slendr")) x <- region(polygon = x)
   if (!inherits(y, "slendr")) y <- region(polygon = y)
@@ -1210,4 +1232,8 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 #'
 #' @return Split time of the population
 #' @export
+#'
+#' @examples
+#' pop <- population("pop1", N = 1000, time = 42)
+#' split_time(pop)
 split_time <- function(pop) attr(pop, "history")[[1]]$time

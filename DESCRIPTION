@@ -1,5 +1,5 @@
 Package: slendr
-Title: A Simulation Framework for Spatio-Temporal Population Genetics
+Title: A Simulation Framework for Spatiotemporal Population Genetics
 Version: 0.9
 Authors@R: 
     person(given = "Martin",
