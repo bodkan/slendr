@@ -239,8 +239,11 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' ts_simplified <- ts_simplify(ts)
 #'
 #' # simplify to a subset of sampled individuals
-#' ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
-#'                                             "AFR_2", "EUR_20", "EUR_50"))
+#' ts_small <- ts_simplify(
+#'   ts,
+#'   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
+#'                   "AFR_2", "EUR_20", "EUR_50")
+#' )
 #' }
 #'
 #' @export

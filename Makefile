@@ -38,4 +38,4 @@ README.md: README.Rmd
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 
 clean:
-	rm -rf build README.md
+	rm -rf build
