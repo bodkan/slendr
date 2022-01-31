@@ -52,7 +52,7 @@ Here is a small demonstration of what *slendr* is designed to do. We want to sim
 
 First, we define the spatial context of the simulation. This will be the entire "world" which will be occupied by populations in our model. Note that in the world definition, we are explicitly stating which projected [Coordinate Reference System](https://en.wikipedia.org/wiki/Spatial_reference_system) (CRS) will be used to represent landscape features, distances in kilometers, etc.
 
-```{r, message = FALSE}
+```{r, results = FALSE}
 library(slendr)
 
 map <- world(

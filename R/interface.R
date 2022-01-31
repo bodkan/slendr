@@ -633,7 +633,7 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
     map <- sf::st_sf(geometry = sf::st_sfc()) %>%
       set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
   } else if (landscape == "naturalearth") {  # Natural Earth data vector landscape
-      if (is.null(ne_dir)) {
+    if (is.null(ne_dir)) {
       ne_dir <- tempdir()
       ne_file <- file.path(ne_dir, "ne_110m_land.zip")
       utils::download.file(
