@@ -44,6 +44,29 @@
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
+#' @examples
+#' \dontrun{
+#' # load tree sequence from its default location in a model directory
+#' ts <- ts_load(model)
+#'
+#' # load tree sequence from its default location in a model directory
+#' ts <- ts_load(model, file = "/path/to/tree/sequence/output.trees")
+#'
+#' # load tree sequence and immediately simplify it only to sampled individuals
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # load tree sequence and simplify it to a subset of sampled individuals
+#' ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1", "AFR_2", "EUR_20", "EUR_50"))
+#'
+#' # load tree sequence, recapitate it and simplify it
+#' ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
+#'               recombination_rate = 1e-8, Ne = 10000)
+#'
+#' # load tree sequence, recapitate it, simplify it and overlay neutral mutations
+#' ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
+#'               recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+#' }
+#'
 #' @export
 ts_load <- function(model, file = file.path(model$path, "output_slim.trees"),
                     recapitate = FALSE, simplify = FALSE, mutate = FALSE,
@@ -131,6 +154,11 @@ ts_save <- function(ts, file) {
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
+#' @examples
+#' \dontrun{
+#' ts_rec <- ts_recapitate(ts, recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
+#' }
+#'
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
                           migration_matrix = NULL, random_seed = NULL) {
@@ -205,6 +233,15 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
+#'
+#' @examples
+#' \dontrun{ # simplify tree sequence to sampled individuals
+#' ts_simplified <- ts_simplify(ts)
+#'
+#' # simplify to a subset of sampled individuals
+#' ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
+#'                                             "AFR_2", "EUR_20", "EUR_50"))
+#' }
 #'
 #' @export
 ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE) {
@@ -304,6 +341,11 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 #' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
+#'
+#' @examples
+#' \dontrun{
+#' ts_mutate <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 42)
+#' }
 #'
 #' @export
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
@@ -485,6 +527,11 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 #' @param chrom Chromosome name to be written in the CHROM column of the VCF
 #' @param individuals A character vector of individuals in the tree sequence. If
 #'   missing, all individuals present in the tree sequence will be saved.
+#'
+#' @examples
+#' \dontrun{ # save a VCF file from a given tree sequence object ts
+#' ts_vcf(ts, path = "/path/to/target/output.vcf.gz")
+#' }
 #'
 #' @export
 ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
@@ -710,6 +757,14 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 #'
 #' @return Object of the type tskit.trees.Tree
 #'
+#' @examples
+#' \dontrun{ # extract the first tree in the tree sequence
+#' tree <- ts_tree(ts, i = 1)
+#'
+#' # extract the tree at a position 100000bp in the tree sequence
+#' tree <- ts_tree(ts, i = 100000, mode = "position")
+#' }
+#'
 #' @export
 ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
   mode <- match.arg(mode)
@@ -815,6 +870,16 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 }
 
 #' @rdname ts_f4ratio
+#'
+#' @examples
+#' \dontrun{ # calculate f2 for two individuals in a previously loaded tree sequence
+#' ts_f2(ts, A = "pop1_1", B = "pop2_1")
+#'
+#' # calculate f2 for two sets of individuals
+#' ts_f2(ts, A = c("pop1_1", "pop1_2", "pop1_3"),
+#'           B = c("pop2_1", "pop2_2"))
+#' }
+#'
 #' @export
 ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -824,6 +889,17 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 }
 
 #' @rdname ts_f4ratio
+#'
+#' @examples
+#' \dontrun{ # calculate f2 for two individuals in a previously loaded tree sequence
+#' ts_f3(ts, A = "pop1_1", B = "pop2_1", C = "outgroup_1")
+#'
+#' # calculate f2 for two sets of individuals
+#' ts_f3(ts, A = c("pop1_1", "pop1_2", "pop1_3"),
+#'           B = c("pop2_1", "pop2_2"),
+#'           C = "outgroup_1")
+#' }
+#'
 #' @export
 ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -833,6 +909,18 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
 }
 
 #' @rdname ts_f4ratio
+#'
+#' @examples
+#' \dontrun{ # calculate f4 for single individuals
+#' ts_f4(ts, W = "pop1_1", X = "pop2_1", Y = "pop3_1", Z = "pop4_1")
+#'
+#' # calculate f4 for sets of individuals
+#' ts_f4(ts, W = c("pop1_1", "pop1_2", "pop1_3"),
+#'           X = c("pop2_1", "pop2_2"),
+#'           Y = c("pop3_1", "pop3_2"),
+#'           Z = c("pop4_1", "pop4_2"))
+#' }
+#'
 #' @export
 ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -855,6 +943,11 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' @param mode The mode for the calculation ("sites" or "branch")
 #'
 #' @return Data frame with statistics calculated for given sets of individuals
+#'
+#' @examples
+#' \dontrun{ # calculate f2 for two samples in a previously loaded tree sequence
+#' ts_f4ratio(ts, X = "test_1", A = "p1_1", B = "p2_1", B = "p3_1", C = "p4_1", O = "outgroup_1")
+#' }
 #'
 #' @export
 ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch"), span_normalise = TRUE) {
@@ -939,6 +1032,11 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #' @return For each pairwise calculation, either a single Fst value or a vector
 #'   of Fst values (one for each window)
 #'
+#' @examples
+#' \dontrun{ # compute F_st between two sets of individuals in a given tree sequence ts
+#' ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
+#'                               eur = c("EUR_1", "EUR_2")))
+#' }
 #' @export
 ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = TRUE) {
@@ -955,6 +1053,17 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'
 #' @return For each pairwise calculation, either a single divergence value or a
 #'   vector of divergence values (one for each window)
+#'
+#' @examples
+#' \dontrun{ #' # collect sampled individuals from all populations in a list
+#' sample_sets <- ts_samples(ts) %>%
+#'   split(., .$pop) %>%
+#'   lapply(function(pop) pop$name)
+#'
+#' # compute the divergence between individuals from each sample set (list of
+#' # individual names generated in the previous step)
+#' ts_divergence(ts, sample_sets) %>% dplyr::arrange(divergence)
+#' }
 #'
 #' @export
 ts_divergence <- function(ts, sample_sets, mode = c("site", "branch", "node"),
@@ -1031,6 +1140,17 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @return For each set of individuals either a single diversity value or a
 #'   vector of diversity values (one for each window)
 #'
+#' @examples
+#' \dontrun{ #' # collect sampled individuals from all populations in a list
+#' sample_sets <- ts_samples(ts) %>%
+#'   split(., .$pop) %>%
+#'   lapply(function(pop) pop$name)
+#'
+#' # compute diversity in each population based on sample sets extracted
+#' # in the previous step
+#' ts_diversity(ts, sample_sets) %>% dplyr::arrange(diversity)
+#' }
+#'
 #' @export
 ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                          windows = NULL, span_normalise = TRUE) {
@@ -1056,6 +1176,12 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'
 #' @return For each set of individuals either a single Tajima's D value or a
 #'   vector of Tajima's D values (one for each window)
+#'
+#' @examples
+#' \dontrun{ # calculate Tajima's D for given sets of individuals in a tree sequence ts
+#' ts_tajima(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3"),
+#'                    eur = c("EUR_1", "EUR_2")))
+#' }
 #'
 #' @export
 ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),

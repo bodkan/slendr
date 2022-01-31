@@ -48,6 +48,16 @@ and how to use these techniques to implement historical individuals (i.e.
 ancient DNA samples) is in the pyslim documentation at
 \url{https://tskit.dev/pyslim/docs/latest/tutorial.html#historical-individuals}.
 }
+\examples{
+\dontrun{ # simplify tree sequence to sampled individuals
+ts_simplified <- ts_simplify(ts)
+
+# simplify to a subset of sampled individuals
+ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
+                                            "AFR_2", "EUR_20", "EUR_50"))
+}
+
+}
 \seealso{
 \code{\link{ts_data}} for extracting useful information about
 individuals, nodes, coalescent times and geospatial locations of nodes on a
