@@ -270,7 +270,7 @@ In fact, you will recognize some of the elements in the output above from exampl
 
 ## Calculating *f*-statistics
 
-In addition to being a revolutionary breakthrough in terms of computation efficiency, many statistics that we are often interested in population genetics are a natural consequence of having a direct access to tree sequence genealogies, simply because those genealogies capture the true demographic history of a sample. Again, we can't go into too much detail here but we encourage you to take a look at a paper by [Ralph *et al.*](https://academic.oup.com/genetics/article/215/3/779/5930459) on the duality between statistics expressed in terms of branch lengths and the traditional summaries based on samples of genetic variation.
+In addition to being a revolutionary breakthrough in terms of computation efficiency, many statistics that we are often interested in population genetics are a natural consequence of having a direct access to tree sequence genealogies, simply because those genealogies capture the true demographic history of a sample. Again, we can't go into too much detail here but we encourage you to take a look at a paper by [Ralph *et al.*](https://doi.org/10.1534/genetics.120.303253) on the duality between statistics expressed in terms of branch lengths and the traditional summaries based on samples of genetic variation.
 
 For instance, we have functions such as `ts_f2()`, `ts_f3()`, `ts_f4()` and `ts_f4ratio()` which calculate the well-known set of Patterson's $f$-statistics:
 
@@ -340,7 +340,7 @@ Again, this is a result consistent with empirical estimates of Neanderthal ances
 
 ## ADMIXTOOLS analyses
 
-In case you would like to verify some *f*-statistics results using the venerable [ADMIXTOOLS](https://academic.oup.com/genetics/article/192/3/1065/5935193) software (see the linked paper which formally introduced these statistics in the first place), you can convert the tree-sequence data to a file format called EIGENSTRAT using the `ts_eigenstrat()` function. The file conversion is internally handled by the R package [*admixr*](https://bodkan.net/admixr/) and returns an `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together (see the [tutorial](https://bodkan.net/admixr/articles/tutorial.html) to *admixr* for an extensive overview). *admixr* is an R package for running automated ADMIXTOOLS analyses entirely from R and makes these types of analyses very convenient.
+In case you would like to verify some *f*-statistics results using the venerable [ADMIXTOOLS](https://doi.org/10.1534/genetics.112.145037) software (see the linked paper which formally introduced these statistics in the first place), you can convert the tree-sequence data to a file format called EIGENSTRAT using the `ts_eigenstrat()` function. The file conversion is internally handled by the R package [*admixr*](https://bodkan.net/admixr/) and returns an `EIGENSTRAT` object which ties all individual `EIGENSTRAT` file components together (see the [tutorial](https://bodkan.net/admixr/articles/tutorial.html) to *admixr* for an extensive overview). *admixr* is an R package for running automated ADMIXTOOLS analyses entirely from R and makes these types of analyses very convenient.
 
 ```{r}
 snps <- ts_eigenstrat(ts, prefix = file.path(tempdir(), "eigenstrat", "data"))

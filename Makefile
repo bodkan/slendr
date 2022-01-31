@@ -3,12 +3,12 @@
 version := $(shell less DESCRIPTION | grep 'Version' | sed 's/Version: \(.*\)$$/\1/')
 pkg := build/slendr_$(version).tar.gz
 
-website:
+website: README.md
 	R -e 'devtools::install()'
 	rm -rf docs/ man/; mkdir -p man/figures
 	cp vignettes/images/shiny_graph.jpg man/figures/
 	cp vignettes/images/shiny_maps.jpg man/figures/
-	R -e 'devtools::document(); knitr::knit("README.Rmd", output = "README.md"); options(pkgdown.internet = FALSE); pkgdown::build_site()'
+	R -e 'devtools::document(); options(pkgdown.internet = FALSE); pkgdown::build_site()'
 	git restore docs/CNAME
 	git restore man/figures/logo.png docs/reference/figures/logo.png docs/logo.png
 
@@ -20,10 +20,21 @@ build: $(pkg)
 check: $(pkg)
 	cd build; R CMD check --as-cran $(notdir $<)
 
-$(pkg):
-	R -e 'knitr::knit("README.Rmd", output = "README.md")'
+winbuilder: README.md
+	R -e 'devtools::install()'
+	R -e 'devtools::check_win_release()'
+	R -e 'devtools::check_win_devel()'
+	R -e 'devtools::check_win_oldrelease()'
+
+$(pkg): README.md
+	R -e 'devtools::install()'
+	R -e 'devtools::document()'
 	rm -rf build; mkdir build; cd build; \
 	R CMD build --log ../../slendr
+
+README.md: README.Rmd
+	R -e 'devtools::install()'
+	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 
 clean:
 	rm -rf build

@@ -33,7 +33,10 @@
 #' @param description Optional short description of the model
 #'
 #' @return Compiled \code{slendr_model} model object
+#'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 compile <- function(populations, generation_time, dir = NULL, resolution = NULL,
                     competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
                     geneflow = list(), overwrite = FALSE,
@@ -197,6 +200,8 @@ verify_checksums <- function(files, hashes) {
 #' @param dir Directory with all required configuration files
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 read <- function(dir) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function
@@ -296,6 +301,11 @@ read <- function(dir) {
 #'   to a temporary directory.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{ # run a simulation using the SLiM back end from a compiled slendr model object
+#' slim(model, sequence_length = 100e6, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
+#' }
 slim <- function(model, sequence_length, recombination_rate,
                  output = file.path(model$path, "output"),
                  spatial = !is.null(model$world),
@@ -409,6 +419,11 @@ slim <- function(model, sequence_length, recombination_rate,
 #'   to a temporary directory.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{ # run a simulation using the msprime back end from a compiled slendr model object
+#' msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
+#' }
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
                     sampling, verbose = FALSE, random_seed = NULL,
