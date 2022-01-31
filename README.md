@@ -51,7 +51,7 @@ map <- world(
   crs = "EPSG:3035"    # real projected CRS used internally
 )
 #> OGR data source with driver: ESRI Shapefile 
-#> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp1s6p1d", layer: "ne_110m_land"
+#> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp6BmknZ", layer: "ne_110m_land"
 #> with 127 features
 #> It has 3 fields
 ```
@@ -161,10 +161,6 @@ We can use the function `plot` again, but we get a warning informing us that plo
 
 ```r
 plot(afr, ooa, ehg, eur, ana, yam)
-#> Warning: Attempting to plot population ranges at multiple time points on
-#> a single map. This is very hard to do in a satisfying way. Please
-#> consider using the function `explore()` to plot the model dynamics
-#> interactively.
 ```
 
 ![plot of chunk plot_popmaps](man/figures/README-plot_popmaps-1.png)

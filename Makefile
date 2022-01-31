@@ -20,10 +20,16 @@ build: $(pkg)
 check: $(pkg)
 	cd build; R CMD check --as-cran $(notdir $<)
 
-winbuilder: README.md
+winrel: README.md
 	R -e 'devtools::install()'
 	R -e 'devtools::check_win_release()'
+
+windev: README.md
+	R -e 'devtools::install()'
 	R -e 'devtools::check_win_devel()'
+
+winold: README.md
+	R -e 'devtools::install()'
 	R -e 'devtools::check_win_oldrelease()'
 
 $(pkg): README.md
