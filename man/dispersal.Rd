@@ -37,6 +37,9 @@ or the dispersal of offspring from its parent
 # create a blank abstract world 1000x1000 distance units in size
 map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
 
+# all slendr objects can be visualised with a generic function plot()
+plot(map)
+
 # create a circular population with the center of a population boundary at
 # [200, 800] and a radius of 100 distance units, 1000 individuals at time 1
 # occupying a map just specified
@@ -44,7 +47,6 @@ pop1 <- population("pop1", N = 1000, time = 1,
                    map = map, center = c(200, 800), radius = 100)
 
 # printing a population object to a console shows a brief summary
-# (spatial boundaries can be plotted with a function plot())
 pop1
 
 # create another population occupying a polygon range, splitting from pop1
@@ -89,6 +91,9 @@ pop1 <-
     c(600, 100), c(500, 50))
   )
 
+# spatial boundaries can be plotted with a function plot()
+plot(pop1)
+
 # population ranges can expand by a given distance in all directions
 pop2 <- expand(pop2, by = 200, start = 50, end = 150, snapshots = 10)
 
@@ -120,4 +125,7 @@ model <- compile(
 
 # serialized models can be read from disk to their R representation again
 loaded_model <- read(model_dir)
+
+# clean up the model directory
+unlink(model_dir, recursive = TRUE, force = TRUE)
 }

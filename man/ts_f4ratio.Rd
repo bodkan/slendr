@@ -69,3 +69,36 @@ Data frame with statistics calculated for given sets of individuals
 \description{
 Calculate the f2, f3, f4, and f4-ratio statistics
 }
+\examples{
+\dontrun{ # calculate f2 for two individuals in a previously loaded tree sequence
+ts_f2(ts, A = "pop1_1", B = "pop2_1")
+
+# calculate f2 for two sets of individuals
+ts_f2(ts, A = c("pop1_1", "pop1_2", "pop1_3"),
+          B = c("pop2_1", "pop2_2"))
+}
+
+\dontrun{ # calculate f2 for two individuals in a previously loaded tree sequence
+ts_f3(ts, A = "pop1_1", B = "pop2_1", C = "outgroup_1")
+
+# calculate f2 for two sets of individuals
+ts_f3(ts, A = c("pop1_1", "pop1_2", "pop1_3"),
+          B = c("pop2_1", "pop2_2"),
+          C = "outgroup_1")
+}
+
+\dontrun{ # calculate f4 for single individuals
+ts_f4(ts, W = "pop1_1", X = "pop2_1", Y = "pop3_1", Z = "pop4_1")
+
+# calculate f4 for sets of individuals
+ts_f4(ts, W = c("pop1_1", "pop1_2", "pop1_3"),
+          X = c("pop2_1", "pop2_2"),
+          Y = c("pop3_1", "pop3_2"),
+          Z = c("pop4_1", "pop4_2"))
+}
+
+\dontrun{ # calculate f2 for two samples in a previously loaded tree sequence
+ts_f4ratio(ts, X = "test_1", A = "p1_1", B = "p2_1", B = "p3_1", C = "p4_1", O = "outgroup_1")
+}
+
+}

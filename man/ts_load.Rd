@@ -73,6 +73,30 @@ The recapitation and simplification steps can also be performed individually
 using the functions \code{\link{ts_recapitate}} and
 \code{\link{ts_simplify}}.
 }
+\examples{
+\dontrun{
+# load tree sequence from its default location in a model directory
+ts <- ts_load(model)
+
+# load tree sequence from its default location in a model directory
+ts <- ts_load(model, file = "/path/to/tree/sequence/output.trees")
+
+# load tree sequence and immediately simplify it only to sampled individuals
+ts <- ts_load(model, simplify = TRUE)
+
+# load tree sequence and simplify it to a subset of sampled individuals
+ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1", "AFR_2", "EUR_20", "EUR_50"))
+
+# load tree sequence, recapitate it and simplify it
+ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
+              recombination_rate = 1e-8, Ne = 10000)
+
+# load tree sequence, recapitate it, simplify it and overlay neutral mutations
+ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
+              recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+}
+
+}
 \seealso{
 \code{\link{ts_data}} for extracting useful information about
 individuals, nodes, coalescent times and geospatial locations of nodes on a
