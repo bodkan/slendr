@@ -459,6 +459,11 @@ ts_genotypes <- function(ts) {
 #'
 #' @return Object of the class EIGENSTRAT created by the admixr package
 #'
+#' @examples
+#' \dontrun{ # save genotypes as a trio of files eigenprefix.snp, eigenprefix.ind, eigenprefix.geno
+#' ts_eigenstrat(ts, prefix = "/path/to/eigenprefix")
+#' }
+#'
 #' @export
 ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
   if (!"admixr" %in% utils::installed.packages()[, 1])
