@@ -215,17 +215,16 @@ print_pop_history <- function(x) {
   prev_dispersal_dist <- first_event$dispersal_dist
 
   for (event in history) {
-    cat("  - time ")
-
     if (nrow(event) > 1 && event$event == "resize" && event$how == "step") {
-      tstart <- event$tresize[1]
-      tend <- utils::tail(event$tresize, 1)
+      # tstart <- base::round(event$tresize[1])
+      # tend <- utils::tail(event$tresize, 1)
       sizes <- utils::tail(attr(x, "history"), 1)[[1]][1, c("N", "prev_N")]
       action <- ifelse(sizes$N < sizes$prev_N, "decrease", "increase")
-      cat(sprintf("%d-%d: automatic %s from %d to %d individuals\n", tstart,
-                  tend, action, event$prev_N[1], utils::tail(event$N, 1)))
+      cat(sprintf("     [automatic %s from %d to %d individuals]\n",
+                  action, event$prev_N[1], utils::tail(event$N, 1)))
     # population split
     } else if (event$event == "split") {
+      cat("  - time ")
       cat(event$time, ": ", sep = "")
       parent <- attr(x, "parent")
       if (is.character(parent) && parent == "ancestor")
@@ -237,27 +236,27 @@ print_pop_history <- function(x) {
 
     # spatial dynamics events
     else if (event$event == "move") {
-      cat(sprintf("%d-%d: movement across a landscape", event$tstart, event$tend))
+      cat(sprintf("  - time %d-%d: movement across a landscape", event$tstart, event$tend))
     } else if (event$event == "expand") {
-      cat(sprintf("%d-%d: range expansion", event$tstart, event$tend))
+      cat(sprintf("  - time %d-%d: range expansion", event$tstart, event$tend))
     } else if (event$event == "contract") {
-      cat(sprintf("%d-%d: range contraction", event$tstart, event$tend))
+      cat(sprintf("  - time %d-%d: range contraction", event$tstart, event$tend))
     } else if (event$event == "range") {
-      cat(sprintf("%d: change of the spatial boundary", event$time))
+      cat(sprintf("  - time %d: change of the spatial boundary", event$time))
     }
 
     # population size change
     else if (event$event == "resize" && event$how == "step") {
-      cat(sprintf("%d: resize from %d to %d individuals",
+      cat(sprintf("  - time %d: resize from %d to %d individuals",
                   event$tresize, event$prev_N, event$N))
     } else if (event$event == "resize" && event$how == "exponential") {
-      cat(sprintf("%d-%d: exponential resize from %d to %d individuals",
+      cat(sprintf("  - time %d-%d: exponential resize from %d to %d individuals",
                   event$tresize, event$tend, event$prev_N, event$N))
     }
 
     # change of dispersal parameters
     else if (event$event == "dispersal") {
-      cat(sprintf("%d: change in spatial interaction", event$time))
+      cat(sprintf("  - time %d: change in spatial interaction", event$time))
       if (!is.na(event$competition_dist) && event$competition_dist != prev_competition_dist) {
         cat("\n        - competition distance:", event$competition_dist)
         prev_competition_dist <- event$competition_dist
