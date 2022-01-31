@@ -79,7 +79,8 @@ model_dir <- paste0(tempdir(), "_slendr_model")
 # slendr model object
 model <- compile(
   populations = list(pop1, pop2, pop3), generation_time = 1,
-  dir = model_dir, resolution = 1, sim_length = 500,
+  dir = model_dir, overwrite = TRUE,
+  resolution = 1, sim_length = 500,
   competition_dist = 5, mate_dist = 5, dispersal_dist = 1
 )
 
