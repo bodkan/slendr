@@ -139,10 +139,6 @@ objects are specified", call. = FALSE)
     pop_maps$pop <- factor(pop_maps$pop, levels = pop_names)
 
     if (length(unique(pop_maps$tmap)) > 1) {
-      warning("Attempting to plot population ranges at multiple time points on
-a single map. This is very hard to do in a satisfying way. Please
-consider using the function `explore()` to plot the model dynamics
-interactively.", call. = FALSE)
       # build a base map with geographic features
       p <- p +
         geom_sf(data = pop_maps, aes(fill = pop, alpha = tmap), color = NA) +
