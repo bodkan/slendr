@@ -50,10 +50,6 @@ map <- world(
   yrange = c(20, 65),  # min-max latitude
   crs = "EPSG:3035"    # real projected CRS used internally
 )
-#> OGR data source with driver: ESRI Shapefile 
-#> Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/Rtmp6BmknZ", layer: "ne_110m_land"
-#> with 127 features
-#> It has 3 fields
 ```
 
 We can visualize the defined world map using the generic function `plot` provided by the package.
