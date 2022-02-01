@@ -6,6 +6,7 @@
 ^\.Rproj\.user$
 ^README.Rmd
 ^logo.R
+^logo.png
 ^.lintr
 ^Makefile
 ^tests/testthat/_snaps

@@ -20,6 +20,9 @@ windev: README.md
 winold: README.md
 	R -e 'devtools::check_win_oldrelease()'
 
+rhub: $(pkg)
+	R -e 'rhub::check_for_cran("$<")'
+
 $(pkg): README.md logo.png
 	R -e 'devtools::document()'
 	mkdir -p build; cd build; R CMD build --log ../../slendr
