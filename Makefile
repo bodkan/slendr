@@ -22,10 +22,9 @@ winold: README.md
 
 $(pkg): README.md logo.png
 	R -e 'devtools::document()'
-	rm -rf build; mkdir build; cd build; \
-	R CMD build --log ../../slendr
+	mkdir -p build; cd build; R CMD build --log ../../slendr
 
-README.md: README.Rmd logo.png
+README.md: README.Rmd
 	R -e 'devtools::install()'
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 
