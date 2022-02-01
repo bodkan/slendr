@@ -18,6 +18,7 @@ map <- rnaturalearth::ne_load(
   returnclass = "sf", destdir = ne_dir
 ) %>% st_make_valid
 
+st_agr(map) <- "constant"
 map <- st_crop(
   map,
   st_bbox(c(xmin = -28, xmax = 80, ymin = -49, ymax = 70),
@@ -91,6 +92,6 @@ sticker(
   filename = file.path(".", "logo.png")
 )
 
-unlink("man/figures/logo.png", force = TRUE)
 usethis::use_logo("logo.png")
+system("convert man/figures/logo.png -define png:include-chunk=none man/figures/logo.png")
 unlink("logo.png")
