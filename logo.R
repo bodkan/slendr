@@ -94,3 +94,4 @@ sticker(
 
 usethis::use_logo("logo.png")
 system("convert man/figures/logo.png -define png:include-chunk=none man/figures/logo.png")
+unlink("logo.png")

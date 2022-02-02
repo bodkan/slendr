@@ -54,6 +54,7 @@
 
 <meta property="og:title" content="Define a population and its original spatial range — population" />
 <meta property="og:description" content="Defines a spatial range of a population and its most important parameters." />
+<meta property="og:image" content="https://www.slendr.net/logo.png" />
 
 
 
@@ -85,7 +86,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9</span>
       </span>
     </div>
 
@@ -280,32 +281,103 @@ list of two-dimensional vector coordinates, iii) polygon as in ii), but
 defined (and named) using the <code>region</code> function.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># create abstract landscape object of a given dimension</span>
+    <pre class="examples"><span class='co'># spatial definitions -----------------------------------------------------</span>
+
+<span class='co'># create a blank abstract world 1000x1000 distance units in size</span>
 <span class='va'>map</span> <span class='op'>&lt;-</span> <span class='fu'><a href='world.html'>world</a></span><span class='op'>(</span>xrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1000</span><span class='op'>)</span>, yrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1000</span><span class='op'>)</span>, landscape <span class='op'>=</span> <span class='st'>"blank"</span><span class='op'>)</span>
 
-<span class='co'># maps can be plotted by the generic function `plot`</span>
+<span class='co'># all slendr objects can be visualised with a generic function plot()</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>map</span><span class='op'>)</span>
-</div><div class='img'><img src='population-1.png' alt='' width='700' height='433' /></div><div class='input'>
+
 <span class='co'># create a circular population with the center of a population boundary at</span>
-<span class='co'># [600, 700] and a radius of 100 distance units, 1000 individuals at time 1</span>
+<span class='co'># [200, 800] and a radius of 100 distance units, 1000 individuals at time 1</span>
 <span class='co'># occupying a map just specified</span>
 <span class='va'>pop1</span> <span class='op'>&lt;-</span> <span class='fu'>population</span><span class='op'>(</span><span class='st'>"pop1"</span>, N <span class='op'>=</span> <span class='fl'>1000</span>, time <span class='op'>=</span> <span class='fl'>1</span>,
-                   map <span class='op'>=</span> <span class='va'>map</span>, center <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600</span>, <span class='fl'>700</span><span class='op'>)</span>, radius <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
+                   map <span class='op'>=</span> <span class='va'>map</span>, center <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>200</span>, <span class='fl'>800</span><span class='op'>)</span>, radius <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
+
+<span class='co'># printing a population object to a console shows a brief summary</span>
+<span class='va'>pop1</span>
 
 <span class='co'># create another population occupying a polygon range, splitting from pop1</span>
 <span class='co'># at a given time point (note that specifying a map is not necessary because</span>
 <span class='co'># it is "inherited" from the parent)</span>
 <span class='va'>pop2</span> <span class='op'>&lt;-</span> <span class='fu'>population</span><span class='op'>(</span><span class='st'>"pop2"</span>, N <span class='op'>=</span> <span class='fl'>100</span>, time <span class='op'>=</span> <span class='fl'>50</span>, parent <span class='op'>=</span> <span class='va'>pop1</span>,
-                   polygon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>100</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>200</span><span class='op'>)</span>,
-                                  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>400</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>400</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+                        polygon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>100</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>320</span>, <span class='fl'>30</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>200</span><span class='op'>)</span>,
+                                  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>400</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>300</span>, <span class='fl'>450</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>400</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># check the position of both populations interactively by plotting their</span>
-<span class='co'># ranges on a map</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pop1</span>, <span class='va'>pop2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Attempting to plot population ranges at multiple time points on</span>
-#&gt; <span class='warning'>a single map. This is very hard to do in a satisfying way. Please</span>
-#&gt; <span class='warning'>consider using the function `explore()` to plot the model dynamics</span>
-#&gt; <span class='warning'>interactively.</span></div><div class='img'><img src='population-2.png' alt='' width='700' height='433' /></div></pre>
+<span class='va'>pop3</span> <span class='op'>&lt;-</span> <span class='fu'>population</span><span class='op'>(</span><span class='st'>"pop3"</span>, N <span class='op'>=</span> <span class='fl'>200</span>, time <span class='op'>=</span> <span class='fl'>80</span>, parent <span class='op'>=</span> <span class='va'>pop2</span>,
+                   center <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>800</span><span class='op'>)</span>, radius <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
+
+<span class='co'># move "pop1" to another location along a specified trajectory and saved the</span>
+<span class='co'># resulting object to the same variable (the number of intermediate spatial</span>
+<span class='co'># snapshots can be also determined automatically by leaving out the</span>
+<span class='co'># `snapshots = ` argument)</span>
+<span class='va'>pop1_moved</span> <span class='op'>&lt;-</span> <span class='fu'><a href='move.html'>move</a></span><span class='op'>(</span><span class='va'>pop1</span>, start <span class='op'>=</span> <span class='fl'>100</span>, end <span class='op'>=</span> <span class='fl'>200</span>, snapshots <span class='op'>=</span> <span class='fl'>10</span>,
+                   trajectory <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600</span>, <span class='fl'>820</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>400</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>150</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>pop1_moved</span>
+
+<span class='co'># many slendr functions are pipe-friendly, making it possible to construct</span>
+<span class='co'># pipelines which construct entire history of a population</span>
+<span class='va'>pop1</span> <span class='op'>&lt;-</span> <span class='fu'>population</span><span class='op'>(</span><span class='st'>"pop1"</span>, N <span class='op'>=</span> <span class='fl'>1000</span>, time <span class='op'>=</span> <span class='fl'>1</span>,
+                   map <span class='op'>=</span> <span class='va'>map</span>, center <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>200</span>, <span class='fl'>800</span><span class='op'>)</span>, radius <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='move.html'>move</a></span><span class='op'>(</span>start <span class='op'>=</span> <span class='fl'>100</span>, end <span class='op'>=</span> <span class='fl'>200</span>, snapshots <span class='op'>=</span> <span class='fl'>10</span>,
+       trajectory <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>400</span>, <span class='fl'>800</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600</span>, <span class='fl'>700</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>400</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>150</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># a population boundary at a given time can be "manually" created by calling</span>
+<span class='co'># the function boundary() -- here we extend the pipeline from the previous</span>
+<span class='co'># command to set the final spatial map of pop1 to another polygon</span>
+<span class='va'>pop1</span> <span class='op'>&lt;-</span>
+  <span class='fu'>population</span><span class='op'>(</span>
+    <span class='st'>"pop1"</span>, N <span class='op'>=</span> <span class='fl'>1000</span>, time <span class='op'>=</span> <span class='fl'>1</span>,
+    map <span class='op'>=</span> <span class='va'>map</span>, center <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>200</span>, <span class='fl'>800</span><span class='op'>)</span>, radius <span class='op'>=</span> <span class='fl'>100</span>
+  <span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='move.html'>move</a></span><span class='op'>(</span>
+    start <span class='op'>=</span> <span class='fl'>100</span>, end <span class='op'>=</span> <span class='fl'>200</span>, snapshots <span class='op'>=</span> <span class='fl'>10</span>,
+    trajectory <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>400</span>, <span class='fl'>800</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600</span>, <span class='fl'>700</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>400</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>150</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='boundary.html'>boundary</a></span><span class='op'>(</span>time <span class='op'>=</span> <span class='fl'>300</span>, polygon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>400</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1000</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1000</span>, <span class='fl'>600</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>900</span>, <span class='fl'>400</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>250</span><span class='op'>)</span>,
+    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600</span>, <span class='fl'>100</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>500</span>, <span class='fl'>50</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='op'>)</span>
+
+<span class='co'># spatial boundaries can be plotted with a function plot()</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pop1</span><span class='op'>)</span>
+
+<span class='co'># population ranges can expand by a given distance in all directions</span>
+<span class='va'>pop2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='expand.html'>expand</a></span><span class='op'>(</span><span class='va'>pop2</span>, by <span class='op'>=</span> <span class='fl'>200</span>, start <span class='op'>=</span> <span class='fl'>50</span>, end <span class='op'>=</span> <span class='fl'>150</span>, snapshots <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+
+<span class='co'># we can check the positions of all populations interactively by plotting their</span>
+<span class='co'># ranges together on a single map</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pop1</span>, <span class='va'>pop2</span>, <span class='va'>pop3</span><span class='op'>)</span>
+
+<span class='co'># gene flow events --------------------------------------------------------</span>
+
+<span class='co'># individual gene flow events can be saved to a list</span>
+<span class='va'>gf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+  <span class='fu'><a href='geneflow.html'>geneflow</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='va'>pop1</span>, to <span class='op'>=</span> <span class='va'>pop3</span>, start <span class='op'>=</span> <span class='fl'>150</span>, end <span class='op'>=</span> <span class='fl'>200</span>, rate <span class='op'>=</span> <span class='fl'>0.15</span><span class='op'>)</span>,
+  <span class='fu'><a href='geneflow.html'>geneflow</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='va'>pop1</span>, to <span class='op'>=</span> <span class='va'>pop2</span>, start <span class='op'>=</span> <span class='fl'>300</span>, end <span class='op'>=</span> <span class='fl'>330</span>, rate <span class='op'>=</span> <span class='fl'>0.25</span><span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='co'># compilation -------------------------------------------------------------</span>
+
+<span class='co'># location where to save slendr model configuration files</span>
+<span class='va'>model_dir</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"_slendr_model"</span><span class='op'>)</span>
+
+<span class='co'># compile model components in a serialized form to dist, returning a single</span>
+<span class='co'># slendr model object (in practice, the resolution should be smaller)</span>
+<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='compile.html'>compile</a></span><span class='op'>(</span>
+  populations <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>pop1</span>, <span class='va'>pop2</span>, <span class='va'>pop3</span><span class='op'>)</span>, generation_time <span class='op'>=</span> <span class='fl'>1</span>,
+  dir <span class='op'>=</span> <span class='va'>model_dir</span>, overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  resolution <span class='op'>=</span> <span class='fl'>10</span>, sim_length <span class='op'>=</span> <span class='fl'>500</span>,
+  competition_dist <span class='op'>=</span> <span class='fl'>5</span>, mate_dist <span class='op'>=</span> <span class='fl'>5</span>, dispersal_dist <span class='op'>=</span> <span class='fl'>1</span>
+<span class='op'>)</span>
+
+<span class='co'># serialized models can be read from disk to their R representation again</span>
+<span class='va'>loaded_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='read.html'>read</a></span><span class='op'>(</span><span class='va'>model_dir</span><span class='op'>)</span>
+
+<span class='co'># clean up the model directory</span>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>model_dir</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span>, force <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
