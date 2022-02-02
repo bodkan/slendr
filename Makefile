@@ -12,6 +12,7 @@ website:
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 	R -e 'devtools::document()'
 	R -e 'pkgdown::build_site(examples = FALSE)'
+	git restore docs/pkgdown.yml
 
 build: $(pkg)
 
@@ -27,8 +28,8 @@ windev: README.md
 winold: README.md
 	R -e 'devtools::check_win_oldrelease()'
 
-rhub: $(pkg)
-	R -e 'rhub::check_for_cran("$<")'
+rhub: README.md
+	R -e 'rhub::check_for_cran()'
 
 $(pkg): README.md
 	R -e 'devtools::document()'
