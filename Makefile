@@ -2,9 +2,11 @@
 
 version := $(shell less DESCRIPTION | grep 'Version' | sed 's/Version: \(.*\)$$/\1/')
 pkg := build/slendr_$(version).tar.gz
+logo := man/figures/logo.png
 
-website: README.md logo.png
-	R -e 'devtools::document(); options(pkgdown.internet = FALSE); pkgdown::build_site()'
+website: README.md $(logo)
+	R -e 'devtools::document()'
+	R -e 'pkgdown::build_site(examples = FALSE)'
 
 build: $(pkg)
 
@@ -23,15 +25,15 @@ winold: README.md
 rhub: $(pkg)
 	R -e 'rhub::check_for_cran("$<")'
 
-$(pkg): README.md logo.png
+$(pkg): README.md
 	R -e 'devtools::document()'
 	mkdir -p build; cd build; R CMD build --log ../../slendr
 
-README.md: README.Rmd
+README.md: README.Rmd $(logo)
 	R -e 'devtools::install()'
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 
-logo.png: logo.R
+$(logo): logo.R
 	R -e 'source("logo.R")'
 
 clean:

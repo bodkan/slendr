@@ -55,6 +55,7 @@
 <meta property="og:title" content="Run a slendr model in msprime — msprime" />
 <meta property="og:description" content="This function will execute a built-in msprime script and run a compiled
 slendr demographic model." />
+<meta property="og:image" content="https://www.slendr.net/logo.png" />
 
 
 
@@ -86,7 +87,7 @@ slendr demographic model." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9</span>
       </span>
     </div>
 
@@ -237,6 +238,11 @@ to a temporary directory.</p></td>
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span>  <span class='co'># run a simulation using the msprime back end from a compiled slendr model object</span>
+<span class='fu'>msprime</span><span class='op'>(</span><span class='va'>model</span>, sequence_length <span class='op'>=</span> <span class='fl'>100e6</span>, recombination_rate <span class='op'>=</span> <span class='fl'>1e-8</span>, method <span class='op'>=</span> <span class='st'>"batch"</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
