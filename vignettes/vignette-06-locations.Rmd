@@ -37,7 +37,8 @@ library(slendr)
 library(dplyr)
 library(ggplot2)
 
-set.seed(314159)
+seed <- 314159
+set.seed(seed)
 
 # use a previously created Python virtual environment containing
 # tskit, pyslim and msprime
@@ -46,7 +47,7 @@ reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
 
 First, let's program our spatial model. We will use the same demographic model of modern human history in West Eurasia, which we extensively discussed in the [introductory tutorial](vignette-01-tutorial.html) and on the main [landing page](../index.html). Here is a complete model definition script, without further comments:
 
-```{r}
+```{r, results = FALSE}
 # simulated world map
 map <- world(
   xrange = c(-15, 60),
@@ -162,7 +163,7 @@ slim(
 After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1) of tree sequence features in *slendr*. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:
 
 ```{r}
-ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, recombination_rate = 1e-8, Ne = 10000)
+ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, recombination_rate = 1e-8, Ne = 10000, random_seed = seed)
 ```
 
 ## Extracting spatial tree sequence infrmation
