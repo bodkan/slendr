@@ -255,19 +255,15 @@
   xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">25</span>, <span class="fl">55</span><span class="op">)</span>,
   yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">32</span>, <span class="fl">35</span><span class="op">)</span>,
   crs <span class="op">=</span> <span class="fl">4326</span>
-<span class="op">)</span></code></pre></div>
-<pre><code>#&gt; OGR data source with driver: ESRI Shapefile 
-#&gt; Source: "/private/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T/RtmpqrayGN", layer: "ne_110m_land"
-#&gt; with 127 features
-#&gt; It has 3 fields</code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">20</span>
+<span class="op">)</span>
+
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 
 <span class="va">populations</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">150e3</span><span class="op">)</span></code></pre></div>
 <p>Of course, when we lay out a regular grid across a map of the world, some population boundaries would fall outside the African continent. To solve this issue, we will go through the list of all populations and filter to those with at least 50% of their area on land, using another helper function:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">continent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/region.html">region</a></span><span class="op">(</span>
   map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
     <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>,
@@ -295,7 +291,7 @@
 <span class="va">filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">populations</span>, <span class="va">check_area</span>, <span class="va">map</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Negate</a></span><span class="op">(</span><span class="va">is.null</span><span class="op">)</span>, <span class="va">.</span><span class="op">)</span></code></pre></div>
 <p>Let’s plot the layout of the population grid on the real geographic background:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">plot</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/demes_africa-1.png" width="480"></p>
 <p>Next, we would probably set up some scenario of gene flow between subpopulations; perhaps we would be interested in studying how a selected allele spreads through the continent based on some factors of interest. Then, to simulate data from this spatial model, we would first have to <code><a href="../reference/compile.html">compile()</a></code> it and then run it in SLiM via the <code><a href="../reference/slim.html">slim()</a></code> function. Given that this is the same process we described in the example above, we won’t be repeating it here.</p>

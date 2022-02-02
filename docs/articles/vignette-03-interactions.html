@@ -186,27 +186,9 @@
 <p>In order to let the populations reach an equilibrium spatial spread at the beginning of the simulation, we will let the simulation run through a burnin period of 100 generations. We will also save the spatial locations of all individuals in order to visualize the spatial population dynamics with an animation later.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
-     burnin <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; Tree-sequence recording is on but no sampling schedule was given. Generating one at least for populations surviving to the end of the simulation...</code></pre>
-<pre><code>#&gt; --------------------------------------------------
-#&gt; SLiM command to be executed:
-#&gt; 
-#&gt; /usr/local/bin/slim  \
-#&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp20Af5h/spatial-interactions/output_slim_sampling.tsv"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp20Af5h/spatial-interactions"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp20Af5h/spatial-interactions/output"' \
-#&gt;     -d SPATIAL=T \
-#&gt;     -d SEQUENCE_LENGTH=1 \
-#&gt;     -d RECOMB_RATE=0 \
-#&gt;     -d BURNIN_LENGTH=100 \
-#&gt;     -d SIMULATION_LENGTH=1000 \
-#&gt;     -d SAVE_LOCATIONS=T \
-#&gt;     -d MAX_ATTEMPTS=1 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//Rtmp20Af5h/spatial-interactions/script.slim 
-#&gt; --------------------------------------------------</code></pre>
+     burnin <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
 <p>Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (the animation is significantly sped up to satisfy the vignette size limits put on by CRAN):</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">80</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-03-interactions_files/figure-html/plot_gif_interactions-1.gif"><!-- --></p>
 <p>Fun animation, isn’t it? If you compare the result to the model dynamics we programmed above, you can see that the spatial dynamics follow what we would expect based on the parameter values. As time progresses, the spatial competition for each successive population gets fiercer and fiercer (the distance at which individuals can “feel” the competition is getting larger and larger), forcing the individuals to form more and more distant clusters. Compare this to the starting state of the simulation, in which all populations form a single randomly shifting “blob” of individuals which is allowed by the model because individuals barely compete with each other.</p>
