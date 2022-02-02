@@ -60,7 +60,7 @@ We now define up a simple *non-spatial* model of gene flow between populations (
 
 To demonstrate additional features of the *slendr* interface to the [*tskit*](https://tskit.dev/tskit/docs/stable/introduction.html) Python library, we will perform gene flow detection test using the so-called $f_4$ and $f_4$-ratio statistics (very briefly introduces in [this vignette](vignette-05-tree-sequences.html)). To make things a little more interesting, we will define two population models: one model without any gene flow, and another which includes gene flow. In defining this model and expressing the $f$-statistics we will use the same nomenclature used in the first study by [Patterson _et al._](https://academic.oup.com/genetics/article/192/3/1065/5935193) that described $f_4-ratio$ statistic in the first place. if you're not familiar with these statistical tests of gene flow, we recommend that you take a look at the relevant sections of the linked paper.
 
-![](images/f4_tree.jpg){width="90%"}
+![](../reference/figures/f4_tree.jpg){width="90%"}
 
 Let's start by first defining the populations and their splits as established in the figure above:
 
@@ -324,7 +324,7 @@ Things seem to be looking good and behave as expected! A couple of observations:
 
 Let's look at one more example. Imagine the following five demographic models describing the changes in the population size of some abstract population:
 
-![](images/demographic_models.jpg){width="90%"}
+![](../reference/figures/demographic_models.jpg){width="90%"}
 
 These models and the population size change events could be, depending on the specifics of our project, defined using different time units. If you work with radiocarbon-dated samples and ancient DNA you might be used to thinking about population history in units of "years before present"&mdash;in this case, the "present" time (bottom of the figure) would be at time 0 and earlier events  would be specified as "5000 years before present", etc.
 

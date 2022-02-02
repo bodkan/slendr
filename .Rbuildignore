@@ -12,3 +12,4 @@
 ^tests/testthat/_snaps
 ^tests/testthat/.*\.png
 ^build/$
+^man/figures/.*\.jpg

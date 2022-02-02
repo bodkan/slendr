@@ -4,7 +4,12 @@ version := $(shell less DESCRIPTION | grep 'Version' | sed 's/Version: \(.*\)$$/
 pkg := build/slendr_$(version).tar.gz
 logo := man/figures/logo.png
 
-website: README.md $(logo)
+website:
+	rm -rf docs/
+	git restore docs/CNAME
+	R -e 'devtools::install()'
+	R -e 'source("logo.R")'
+	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 	R -e 'devtools::document()'
 	R -e 'pkgdown::build_site(examples = FALSE)'
 
