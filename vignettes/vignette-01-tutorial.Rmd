@@ -1,6 +1,11 @@
 ---
 title: "Introduction and basic tutorial"
 output: rmarkdown::html_vignette
+resource_files:
+  - images/haak_map.jpg
+  - images/geneflow_graph.jpg
+  - images/shiny_graph.jpg
+  - images/shiny_maps.jpg
 vignette: >
   %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{Introduction and basic tutorial}
@@ -29,11 +34,11 @@ knitr::opts_chunk$set(
 
 Our motivation for starting this project was to create a programmable simulation framework which would add an explicit spatial dimension to population genetics models. Specifically, the original idea was to be able to take models such as the one here---
 
-![](../reference/figures/geneflow_graph.jpg){width="80%"}
+![](images/geneflow_graph.jpg){width="80%"}
 
 representing a very simplified view of the history of anatomically modern humans (AMH) in West Eurasia over the last \~50 thousand years (a comprehensive overview can be found in a review by [Lazaridis](https://arxiv.org/abs/1805.01579))---and design a tool which makes it possible to simulate such models in an explicit geographical context to capture processes similar to those in the following figure (taken from a study by [Haak et al. 2015](https://www.nature.com/articles/nature14317)):
 
-![](../reference/figures/haak_map.jpg){width="80%"}
+![](images/haak_map.jpg){width="80%"}
 
 The reason for doing this is probably clear. A lot of what we do in studying the history of humans and other species is focused on reconstructing population movements, expansions and gene flow events, all of which happen in a geographic context. In fact, this geographic component is often what we are most interested in (i.e., "Where did the ancestors of some population come from?", "By which route and how fast did they migrate?", etc.). However, this goes beyond just simulating demographic history. For instance, selection pressure driving adaptation can often be spatially heterogeneous: members of a population occupying one part of the continent could be exposed to a different environmental pressure than individuals elsewhere, and allele frequency distributions shaped by the adaptation process would reflect this spatial heterogeneity accordingly. Having a framework that enables the simulation of explicitly spatial genomic data in such situations would allow us to build more realistic models and test more specific hypotheses, goals that are simply not possible using non-spatial simulation methods.
 
@@ -438,9 +443,9 @@ A slightly fancier way to visualize models is implemented in the function `explo
 explore(model)
 ```
 
-![Graph of demographic history (sometimes called "admixture graph")](../reference/figures/shiny_graph.jpg){width="80%"}
+![Graph of demographic history (sometimes called "admixture graph")](images/shiny_graph.jpg){width="80%"}
 
-![Interactive explorer of the spatial dynamics](../reference/figures/shiny_maps.jpg){width="80%"}
+![Interactive explorer of the spatial dynamics](images/shiny_maps.jpg){width="80%"}
 
 ## Running the simulation
 

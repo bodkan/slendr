@@ -138,9 +138,9 @@
 <h2 class="hasAnchor">
 <a href="#motivation" class="anchor"></a>Motivation</h2>
 <p>Our motivation for starting this project was to create a programmable simulation framework which would add an explicit spatial dimension to population genetics models. Specifically, the original idea was to be able to take models such as the one here—</p>
-<p><img src="../reference/figures/geneflow_graph.jpg" style="width:80.0%"></p>
+<p><img src="images/geneflow_graph.jpg" style="width:80.0%"></p>
 <p>representing a very simplified view of the history of anatomically modern humans (AMH) in West Eurasia over the last ~50 thousand years (a comprehensive overview can be found in a review by <a href="https://arxiv.org/abs/1805.01579">Lazaridis</a>)—and design a tool which makes it possible to simulate such models in an explicit geographical context to capture processes similar to those in the following figure (taken from a study by <a href="https://www.nature.com/articles/nature14317">Haak et al. 2015</a>):</p>
-<p><img src="../reference/figures/haak_map.jpg" style="width:80.0%"></p>
+<p><img src="images/haak_map.jpg" style="width:80.0%"></p>
 <p>The reason for doing this is probably clear. A lot of what we do in studying the history of humans and other species is focused on reconstructing population movements, expansions and gene flow events, all of which happen in a geographic context. In fact, this geographic component is often what we are most interested in (i.e., “Where did the ancestors of some population come from?”, “By which route and how fast did they migrate?”, etc.). However, this goes beyond just simulating demographic history. For instance, selection pressure driving adaptation can often be spatially heterogeneous: members of a population occupying one part of the continent could be exposed to a different environmental pressure than individuals elsewhere, and allele frequency distributions shaped by the adaptation process would reflect this spatial heterogeneity accordingly. Having a framework that enables the simulation of explicitly spatial genomic data in such situations would allow us to build more realistic models and test more specific hypotheses, goals that are simply not possible using non-spatial simulation methods.</p>
 <p>The R package <em>slendr</em> introduced in this vignette presents such a framework. Internally, the package has two independent but tightly interconnected units:</p>
 <ol style="list-style-type: decimal">
@@ -521,10 +521,10 @@ between populations.</code></pre>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/explore.html">explore</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<img src="../reference/figures/shiny_graph.jpg" style="width:80.0%" alt=""><p class="caption">Graph of demographic history (sometimes called “admixture graph”)</p>
+<img src="images/shiny_graph.jpg" style="width:80.0%" alt=""><p class="caption">Graph of demographic history (sometimes called “admixture graph”)</p>
 </div>
 <div class="figure">
-<img src="../reference/figures/shiny_maps.jpg" style="width:80.0%" alt=""><p class="caption">Interactive explorer of the spatial dynamics</p>
+<img src="images/shiny_maps.jpg" style="width:80.0%" alt=""><p class="caption">Interactive explorer of the spatial dynamics</p>
 </div>
 </div>
 <div id="running-the-simulation" class="section level2">
