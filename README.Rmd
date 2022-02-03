@@ -1,6 +1,13 @@
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
 ```{r, include = FALSE}
+env_present <- tryCatch(
+  {
+    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
+    TRUE
+  }, error = function(cond) FALSE
+)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -8,7 +15,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 80,
-  eval = TRUE
+  eval = Sys.which("slim") != "" && env_present
 )
 set.seed(314159)
 ```
