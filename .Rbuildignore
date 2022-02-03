@@ -13,4 +13,4 @@
 ^tests/testthat/.*\.png
 ^build/$
 ^man/figures/.*\.jpg
-^man/figures/logo.png
+^man/figures/.*\.png
