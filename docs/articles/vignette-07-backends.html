@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9</span>
       </span>
     </div>
 
@@ -90,9 +90,6 @@
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -144,12 +141,16 @@
 <p>To start off, let’s load the <em>slendr</em> package together with some standard R data analysis packages, and instruct <em>reticulate</em> where to look for a Python environment with all necessary Python dependencies (see <a href="vignette-05-tree-sequences.html#r-interface-for-tskit-and-pyslim-1">this</a> section of another vignette for instructions how to setup the Python environment the easiest way possible):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr">slendr</a></span><span class="op">)</span>
+
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org">purrr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html">use_virtualenv</a></span><span class="op">(</span><span class="st">"~/.venvs/retipy"</span>, required <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
+
+<span class="va">seed</span> <span class="op">&lt;-</span> <span class="fl">42</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span>
+
+<span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html">use_virtualenv</a></span><span class="op">(</span><span class="st">"~/.venvs/retipy"</span>, required <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># let's make sure reticulate found the correct Python environment</span>
 <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_config.html">py_config</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -161,7 +162,7 @@
 #&gt; numpy_version:  1.21.4
 #&gt; tskit:          /Users/martin_petr/.venvs/retipy/lib/python3.9/site-packages/tskit
 #&gt; 
-#&gt; NOTE: Python version was forced by RETICULATE_PYTHON</code></pre>
+#&gt; NOTE: Python version was forced by use_python function</code></pre>
 <div id="detecting-gene-flow-from-msprime-and-slim-tree-sequences" class="section level2">
 <h2 class="hasAnchor">
 <a href="#detecting-gene-flow-from-msprime-and-slim-tree-sequences" class="anchor"></a>Detecting gene flow from msprime and SLiM tree sequences</h2>
@@ -169,12 +170,10 @@
 <h3 class="hasAnchor">
 <a href="#defining-a-model" class="anchor"></a>Defining a model</h3>
 <p>We now define up a simple <em>non-spatial</em> model of gene flow between populations (also known as population admixture or introgression). This will involve essentially the same procedure which we have shown in another vignette introducing <a href="vignette-04-nonspatial-models.html">non-spatial <em>slendr</em> models</a>. Note that this is no different from how we would normally specify a spatial model, except that we left out the <code>map</code> argument in making the <code><a href="../reference/population.html">population()</a></code> calls.</p>
-<p>To demonstrate additional features of the <em>slendr</em> interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html"><em>tskit</em></a> Python library, we will perform gene flow detection test using the so-called <span class="math inline">\(f_4\)</span> and <span class="math inline">\(f_4\)</span>-ratio statistics (very briefly introduces in <a href="vignette-05-tree-sequences.html">this vignette</a>). To make things a little more interesting, we will define two population models: one model without any gene flow, and another which includes gene flow. In defining this model and expressing the <span class="math inline">\(f\)</span>-statistics we will use the same nomenclature used in the first study by <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193">Patterson <em>et al.</em></a> that described <span class="math inline">\(f_4-ratio\)</span> statistic in the first place. if you’re not familiar with these statistical tests of gene flow, we recommend that you take a look at the relevant sections of the linked paper.</p>
-<p><img src="figures/f4_tree.png" style="width:90.0%"></p>
+<p>To demonstrate additional features of the <em>slendr</em> interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html"><em>tskit</em></a> Python library, we will perform gene flow detection test using the so-called <span class="math inline">\(f_4\)</span> and <span class="math inline">\(f_4\)</span>-ratio statistics (very briefly introduces in <a href="vignette-05-tree-sequences.html">this vignette</a>). To make things a little more interesting, we will define two population models: one model without any gene flow, and another which includes gene flow. In defining this model and expressing the <span class="math inline">\(f\)</span>-statistics we will use the same nomenclature used in the first study by <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193">Patterson <em>et al.</em></a> that described <span class="math inline">\(f_4-ratio\)</span> statistic in the first place. if you’re not familiar with these statistical tests of gene flow, we recommend that you take a look at the relevant sections of the linked paper. shiny_graph <img src="images/f4_tree.jpg" style="width:90.0%"></p>
 <p>Let’s start by first defining the populations and their splits as established in the figure above:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seed</span> <span class="op">&lt;-</span> <span class="fl">42</span> <span class="co"># random seed</span>
-<span class="va">seq_len</span> <span class="op">&lt;-</span> <span class="fl">250e6</span> <span class="co"># amount of sequence to simulate</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">seq_len</span> <span class="op">&lt;-</span> <span class="fl">250e6</span> <span class="co"># amount of sequence to simulate</span>
 <span class="va">rec_rate</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span> <span class="co"># uniform recombination rate</span>
 <span class="va">mut_rate</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span> <span class="co"># mutation rate</span>
 
@@ -192,7 +191,7 @@
 <h2 class="hasAnchor">
 <a href="#compiling-the-model-and-simulating-data" class="anchor"></a>Compiling the model and simulating data</h2>
 <p>We will now use those populations to compile two models: the first model will be without any geneflow (left panel in the figure wo above), the second model will include 10% gene flow from <code>b</code> to <code>x1</code> (right panel in the figure above). We will also schedule sampling of a couple of individuals at the very end of the simulation: 50 individuals each from populations <code>x1</code> and <code>x2</code> to capture a bit more of the natural variation of <code>b</code> ancestry in <code>x1</code>, and only one individual from the rest.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># no gene flow model</span>
 <span class="va">model_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, sim_length <span class="op">=</span> <span class="fl">2200</span><span class="op">)</span>
 
@@ -207,25 +206,25 @@
 <span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampling.html">sampling</a></span><span class="op">(</span><span class="va">model_gf</span>, times <span class="op">=</span> <span class="fl">2200</span>,
                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">b</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">x1</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">x2</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">c</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">o</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Now we will run both models (with and without gene flow) in the two <em>slendr</em> backends, SLiM and msprime:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># model without gene flow</span>
-<span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_nogf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, sampling <span class="op">=</span> <span class="va">samples</span><span class="op">)</span>
-<span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model_nogf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, sampling <span class="op">=</span> <span class="va">samples</span><span class="op">)</span>
+<span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_nogf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, sampling <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span>
+<span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model_nogf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, sampling <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span>
 
 <span class="co"># model with b -&gt; x1 gene flow</span>
-<span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_gf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, sampling <span class="op">=</span> <span class="va">samples</span><span class="op">)</span>
-<span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model_gf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, sampling <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model_gf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, sampling <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span>
+<span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model_gf</span>, sequence_length <span class="op">=</span> <span class="va">seq_len</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, sampling <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></code></pre></div>
 <p>Note that we are using exactly the same model configuration object in both simulation runs! In fact, even the function interface looks nearly exactly the same. It doesn’t matter what the specific details of your demographic models are, <em>slendr</em> will interpret them correctly regardless of which back end simulation engine you choose to use.</p>
 <p>Because <em>slendr</em> saves all output files directly to the model directory by default, we can detect two distinct tree sequence output files, one generated by <em>slendr</em>’s SLiM backend, another by its msprime backend:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"cd"</span>, <span class="va">model_nogf</span><span class="op">$</span><span class="va">path</span>, <span class="st">"; ls -l *.trees"</span><span class="op">)</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; -rw-r--r-- 1 martin_petr staff  12349252 Jan 21 13:16 output_msprime.trees
-#&gt; -rw-r--r-- 1 martin_petr staff 162920220 Jan 21 13:16 output_slim.trees</code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"cd"</span>, <span class="va">model_gf</span><span class="op">$</span><span class="va">path</span>, <span class="st">"; ls -l *.trees"</span><span class="op">)</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; -rw-r--r-- 1 martin_petr staff  12277748 Jan 21 13:16 output_msprime.trees
-#&gt; -rw-r--r-- 1 martin_petr staff 161826508 Jan 21 13:16 output_slim.trees</code></pre>
-<p>However, note that the files have very different sizes. In particular, the <code>output_msprime.trees</code> much smaller. This is because being a coalescent simulator, msprime only saves information about nodes which are coalescent nodes somewhere (and some time) in the tree sequence.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"cd"</span>, <span class="va">model_nogf</span><span class="op">$</span><span class="va">path</span>, <span class="st">"; ls *.trees"</span><span class="op">)</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></code></pre></div>
+<pre><code>#&gt; output_msprime.trees
+#&gt; output_slim.trees</code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"cd"</span>, <span class="va">model_gf</span><span class="op">$</span><span class="va">path</span>, <span class="st">"; ls *.trees"</span><span class="op">)</span>, intern <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></code></pre></div>
+<pre><code>#&gt; output_msprime.trees
+#&gt; output_slim.trees</code></pre>
+<p>However, on a closer inspection of the files you would notice they have very different sizes. In particular, the <code>output_msprime.trees</code> much smaller. This is because being a coalescent simulator, msprime only saves information about nodes which are coalescent nodes somewhere (and some time) in the tree sequence.</p>
 <div id="comparing-the-outputs-of-msprime-and-slim-runs-of-a-slendr-model" class="section level3">
 <h3 class="hasAnchor">
 <a href="#comparing-the-outputs-of-msprime-and-slim-runs-of-a-slendr-model" class="anchor"></a>Comparing the outputs of msprime and SLiM runs of a <em>slendr</em> model</h3>
@@ -233,14 +232,14 @@
 <p>First, we will load the tree sequences generated by msprime and <em>slendr</em>/SLiM into Python. We can load the SLiM tree sequence output using <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1">dedicated tskit functionality</a> in R (and we do so below). However, although we can run <em>slendr</em> model with an msprime back end, for most of the time of existence of <em>slendr</em> the tree sequences from SLiM and msprime were not 100% interchangeable. Until this is resolved (and it will be resolved soon), we will demonstrate how to repeat the same f4 an f4-ratio analysis we will perform below using the slendr/tskit interface using a “raw” <em>reticulate</em> interface to the Python tskit and msprime modules.</p>
 <p>Although mildly annoying (the ultimate goal is to be able to analyse tree sequence data with slendr’s R interface regardless of which simulator produced it), it will be instructive to show how this can be done.</p>
 <p>First a couple of necessary msprime-adjacent custom functions:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># msprime alternative of slendr's ts_load() function for tree sequences</span>
 <span class="co"># generated by the msprime backend</span>
 <span class="va">load_msprime_ts</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">mut_rate</span>, <span class="va">seed</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">path</span>, <span class="st">"output_msprime.trees"</span><span class="op">)</span>
 
-  <span class="va">ts</span> <span class="op">&lt;-</span> <span class="va">tskit</span><span class="op">$</span><span class="fu">load</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/path.expand.html">path.expand</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span>
-  <span class="va">ts</span> <span class="op">&lt;-</span> <span class="va">msp</span><span class="op">$</span><span class="fu">sim_mutations</span><span class="op">(</span><span class="va">ts</span>, rate <span class="op">=</span> <span class="va">mut_rate</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span>
+  <span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">slendr</span><span class="fu">:::</span><span class="va">tskit</span><span class="op">$</span><span class="fu">load</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/path.expand.html">path.expand</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">slendr</span><span class="fu">:::</span><span class="va">msp</span><span class="op">$</span><span class="fu">sim_mutations</span><span class="op">(</span><span class="va">ts</span>, rate <span class="op">=</span> <span class="va">mut_rate</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span>
   <span class="va">ts</span>
 <span class="op">}</span>
 
@@ -282,7 +281,7 @@
   <span class="va">num</span> <span class="op">/</span> <span class="va">den</span>
 <span class="op">}</span></code></pre></div>
 <p>Now let’s load SLiM and msprime tree sequence outputs from our models:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># SLiM outputs -- we can use built-in slendr functions for those</span>
 <span class="va">slim_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model_nogf</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, mutate <span class="op">=</span> <span class="cn">TRUE</span>,
                      Ne <span class="op">=</span> <span class="fl">10</span>, recombination_rate <span class="op">=</span> <span class="va">rec_rate</span>, mutation_rate <span class="op">=</span> <span class="va">mut_rate</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span>
@@ -295,12 +294,12 @@
 <span class="va">msprime_nogf</span> <span class="op">&lt;-</span> <span class="fu">load_msprime_ts</span><span class="op">(</span><span class="va">model_nogf</span>, <span class="va">mut_rate</span>, <span class="va">seed</span><span class="op">)</span>
 <span class="va">msprime_gf</span> <span class="op">&lt;-</span> <span class="fu">load_msprime_ts</span><span class="op">(</span><span class="va">model_gf</span>, <span class="va">mut_rate</span>, <span class="va">seed</span><span class="op">)</span></code></pre></div>
 <p>As we can see below, the tree sequence summary of the data loaded and processed by <em>slendr</em>’s <code><a href="../reference/ts_load.html">ts_load()</a></code> function (data produced by the SLiM backend) is very similar to what we got “manually” for the msprime-produced tree sequence using the custom defined functions. This is somehow obvious but it is a nice and cheap sanity check indicating that the tree sequence data structure produced by the two backends from the same demographic model is almost the same.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">slim_nogf</span></code></pre></div>
 <pre><code>#&gt; ╔═══════════════════════════╗
 #&gt; ║TreeSequence               ║
 #&gt; ╠═══════════════╤═══════════╣
-#&gt; ║Trees          │      80439║
+#&gt; ║Trees          │      79863║
 #&gt; ╟───────────────┼───────────╢
 #&gt; ║Sequence Length│  250000000║
 #&gt; ╟───────────────┼───────────╢
@@ -308,33 +307,33 @@
 #&gt; ╟───────────────┼───────────╢
 #&gt; ║Sample Nodes   │        208║
 #&gt; ╟───────────────┼───────────╢
-#&gt; ║Total Size     │   14.6 MiB║
+#&gt; ║Total Size     │   14.5 MiB║
 #&gt; ╚═══════════════╧═══════════╝
 #&gt; ╔═══════════╤══════╤═════════╤════════════╗
 #&gt; ║Table      │Rows  │Size     │Has Metadata║
 #&gt; ╠═══════════╪══════╪═════════╪════════════╣
-#&gt; ║Edges      │160137│  4.9 MiB│          No║
+#&gt; ║Edges      │158738│  4.8 MiB│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
-#&gt; ║Individuals│ 21219│  2.0 MiB│         Yes║
+#&gt; ║Individuals│ 21028│  2.0 MiB│         Yes║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
 #&gt; ║Migrations │     0│  8 Bytes│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
-#&gt; ║Mutations  │ 95528│  3.4 MiB│          No║
+#&gt; ║Mutations  │ 95424│  3.4 MiB│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
-#&gt; ║Nodes      │ 21744│807.6 KiB│         Yes║
+#&gt; ║Nodes      │ 21539│800.0 KiB│         Yes║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
 #&gt; ║Populations│     6│  2.7 KiB│         Yes║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
-#&gt; ║Provenances│     4│ 35.1 KiB│          No║
+#&gt; ║Provenances│     4│ 35.2 KiB│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
-#&gt; ║Sites      │ 95510│  2.3 MiB│          No║
+#&gt; ║Sites      │ 95410│  2.3 MiB│          No║
 #&gt; ╚═══════════╧══════╧═════════╧════════════╝</code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">msprime_nogf</span></code></pre></div>
 <pre><code>#&gt; ╔═══════════════════════════╗
 #&gt; ║TreeSequence               ║
 #&gt; ╠═══════════════╤═══════════╣
-#&gt; ║Trees          │      81483║
+#&gt; ║Trees          │      81304║
 #&gt; ╟───────────────┼───────────╢
 #&gt; ║Sequence Length│  250000000║
 #&gt; ╟───────────────┼───────────╢
@@ -347,21 +346,21 @@
 #&gt; ╔═══════════╤══════╤═════════╤════════════╗
 #&gt; ║Table      │Rows  │Size     │Has Metadata║
 #&gt; ╠═══════════╪══════╪═════════╪════════════╣
-#&gt; ║Edges      │325031│  9.9 MiB│          No║
+#&gt; ║Edges      │324243│  9.9 MiB│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
 #&gt; ║Individuals│   104│  2.9 KiB│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
 #&gt; ║Migrations │     0│  8 Bytes│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
-#&gt; ║Mutations  │ 95152│  3.4 MiB│          No║
+#&gt; ║Mutations  │ 94911│  3.3 MiB│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
-#&gt; ║Nodes      │ 26565│726.4 KiB│          No║
+#&gt; ║Nodes      │ 26533│725.5 KiB│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
 #&gt; ║Populations│     6│414 Bytes│         Yes║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
 #&gt; ║Provenances│     2│  3.8 KiB│          No║
 #&gt; ╟───────────┼──────┼─────────┼────────────╢
-#&gt; ║Sites      │ 95132│  2.3 MiB│          No║
+#&gt; ║Sites      │ 94896│  2.3 MiB│          No║
 #&gt; ╚═══════════╧══════╧═════════╧════════════╝</code></pre>
 </div>
 <div id="comparing-results-of-population-genetics-statistics" class="section level3">
@@ -369,7 +368,7 @@
 <a href="#comparing-results-of-population-genetics-statistics" class="anchor"></a>Comparing results of population genetics statistics</h3>
 <p>Having loaded both msprime and SLiM tree sequences generated by the same model, let’s see if we can get comparable results when we calculate some statistics of interest.</p>
 <p>Let’s first extract all individuals from populations <code>x1</code> and <code>x2</code> and estimate the values of <span class="math inline">\(f_4(c, x1 \textrm{ or } x2; b, o)\)</span> (which should be significantly negative for individuals in the population <code>x1</code> due to it’s ancestry coming from <code>b</code> in the introgression models but consistent with zero for <code>x2</code>) and <span class="math inline">\(f_4\textrm{-ratio}(a, b, \textrm{ or } x2; c, o)\)</span>, which estimates the <em>proportion</em> of <code>b</code>-like ancestry in <code>x1</code> and <code>x2</code>:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># extract vector of names of the "test individuals" in populations `x1` and `x2`</span>
 <span class="va">X_individuals</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">slim_gf</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span>
 <span class="va">X_individuals</span></code></pre></div>
@@ -385,7 +384,7 @@
 #&gt;  [82] "x2_32" "x2_33" "x2_34" "x2_35" "x2_36" "x2_37" "x2_38" "x2_39" "x2_40"
 #&gt;  [91] "x2_41" "x2_42" "x2_43" "x2_44" "x2_45" "x2_46" "x2_47" "x2_48" "x2_49"
 #&gt; [100] "x2_50"</code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># calculate f4-statistics on individuals of `x1` and `x2` populations using data</span>
 <span class="co"># from the two models (a model with no gene flow and a gene flow model) -- we use</span>
 <span class="co"># map_dfr to iterate across all individuals from `X_individuals` and binding all</span>
@@ -406,7 +405,7 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">alpha</span>, <span class="va">model</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>simulator <span class="op">=</span> <span class="st">"SLiM backend"</span><span class="op">)</span></code></pre></div>
 <p>Now, let’s repeat the same analysis on tree sequences produced by the <em>msprime</em> backend from the same two <em>slendr</em> demographic models (again, we use variants of <em>slendr</em> functions used in the previous code block because <em>msprime</em> tree sequences are not 100% compatible with SLiM tree sequences as of time of this writing).</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate f4 and f4-ratio statistics from the msprime sequences and format the</span>
 <span class="co"># result in a way that's compatible with ts_f4() and ts_f4ratio() outputs of</span>
 <span class="co"># standard slendr population genetics functions</span>
@@ -433,7 +432,7 @@
   <span class="op">)</span>
 <span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>simulator <span class="op">=</span> <span class="st">"msprime backend"</span><span class="op">)</span></code></pre></div>
 <p>Finally we can proceed with plotting both SLiM and msprime backend results of the two models and compare them together. As noted above, despite the fact that SLiM is a forward simulator and msprime is a coalescent simulator, population genetic expectations from both the gene flow and no gene flow models should match very closely (barring a level of uncertainty expected due to randomness of the population genetic processes at play).</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df_f4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">df_slim_f4</span>, <span class="va">df_msprime_f4</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>population <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"x1_"</span>, <span class="va">X</span><span class="op">)</span>,
                              <span class="st">"x1 (received gene flow)"</span>,
@@ -448,7 +447,7 @@
        subtitle <span class="op">=</span> <span class="st">"f4 ~0 is consistent with no gene flow, negative value indicates gene flow with 'b'"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-07-backends_files/figure-html/msprime_slim_f4_distributions-1.png" width="640"></p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df_f4ratio</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">df_slim_f4ratio</span>, <span class="va">df_msprime_f4ratio</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>population <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"x1_"</span>, <span class="va">X</span><span class="op">)</span>,
                              <span class="st">"x1 (received gene flow)"</span>,
@@ -476,7 +475,7 @@
 <h2 class="hasAnchor">
 <a href="#computing-allele-frequency-spectra" class="anchor"></a>Computing allele frequency spectra</h2>
 <p>Let’s look at one more example. Imagine the following five demographic models describing the changes in the population size of some abstract population:</p>
-<p><img src="figures/demographic_models.png" style="width:90.0%"></p>
+<p><img src="images/demographic_models.jpg" style="width:90.0%"></p>
 <p>These models and the population size change events could be, depending on the specifics of our project, defined using different time units. If you work with radiocarbon-dated samples and ancient DNA you might be used to thinking about population history in units of “years before present”—in this case, the “present” time (bottom of the figure) would be at time 0 and earlier events would be specified as “5000 years before present”, etc.</p>
 <p>On the other hand, if you were interested in modelling some theoretical population, you might not want to concern yourselves with this and would be quite happy starting our simulation at “generation 1” and continue until some specified “generation X”.</p>
 <p>The <em>slendr</em> package makes all of this extremely easy, because you can specify times in whatever direction and units you want, as long as they are kept consistent for all populations and events in your model. This is a rather unique feature among popgen simulation software as most programs either make you express your model in “generations in forward direction”, or you have to explicitly convert time in generations going backwards.</p>
@@ -485,7 +484,7 @@
 <div id="model-definition" class="section level3">
 <h3 class="hasAnchor">
 <a href="#model-definition" class="anchor"></a>Model definition</h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
 <span class="va">N_factor</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># by what factor should Ne change</span>
 
@@ -493,7 +492,7 @@
 <span class="va">rec_rate</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span>
 <span class="va">mut_rate</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span></code></pre></div>
 <p>First, let’s define the five population histories in a forward time direction:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># constant Ne model</span>
 <span class="va">forward_const</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"const"</span>, time <span class="op">=</span> <span class="fl">1</span>, N <span class="op">=</span> <span class="va">N</span><span class="op">)</span>
 
@@ -513,7 +512,7 @@
 <span class="va">forward_exp_decr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"exp_decr"</span>, time <span class="op">=</span> <span class="fl">1</span>, N <span class="op">=</span> <span class="va">N</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/resize.html">resize</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">2000</span>, end <span class="op">=</span> <span class="fl">3000</span>, N <span class="op">=</span> <span class="va">N</span> <span class="op">/</span> <span class="va">N_factor</span>, how <span class="op">=</span> <span class="st">"exponential"</span><span class="op">)</span></code></pre></div>
 <p>Now let’s flip the flow of time around and define the population histories in units of “time ago”:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># constant Ne model</span>
 <span class="va">backward_const</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"const"</span>, time <span class="op">=</span> <span class="fl">5000</span>, N <span class="op">=</span> <span class="va">N</span><span class="op">)</span>
 
@@ -533,7 +532,7 @@
 <span class="va">backward_exp_decr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"exp_decr"</span>, time <span class="op">=</span> <span class="fl">5000</span>, N <span class="op">=</span> <span class="va">N</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="../reference/resize.html">resize</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">3000</span>, end <span class="op">=</span> <span class="fl">2000</span>, N <span class="op">=</span> <span class="va">N</span> <span class="op">/</span> <span class="va">N_factor</span>, how <span class="op">=</span> <span class="st">"exponential"</span><span class="op">)</span></code></pre></div>
 <p>For convenience, we will write a helper function which will, for a given population history object (ten objects just above), compile a <em>slendr</em> model, run it in both SLiM and <em>msprime</em> back ends, load the tree sequence, and compute allele frequency spectrum (AFS) from it. This will save us lots of code repetition (always a good thing), minimize the chance of copy-pasting bugs (definitely a good thing!) and compare the AFS patterns across different models and the two <em>slendr</em> simulation back ends (they should be the same according to population genetics theory).</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">compile_run_afs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">model_name</span>, <span class="va">pop</span>, <span class="va">seed</span> <span class="op">=</span> <span class="fl">42</span><span class="op">)</span> <span class="op">{</span>
   <span class="co"># maximum length of the simulation (necessary for forward models which start</span>
   <span class="co"># in generation 1)</span>
@@ -590,7 +589,7 @@
 <span class="op">}</span></code></pre></div>
 <p>Now that this function doesn’t do anything special. It simply wraps a standard <em>slendr</em> simulation pipeline (1. create population(s); 2. compile a model object; 3. simulate the model; 4. load the results; 5. analyse the data) into a single function.</p>
 <p>Now that we have the whole pipeline, we can generate all of our simulated data and bind all the result into a single data frame:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">afs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span>
   <span class="fu">compile_run_afs</span><span class="op">(</span><span class="st">"constant"</span>, <span class="va">forward_const</span><span class="op">)</span>,
   <span class="fu">compile_run_afs</span><span class="op">(</span><span class="st">"constant"</span>, <span class="va">backward_const</span><span class="op">)</span>,
@@ -608,7 +607,7 @@
                       <span class="st">"exponential decrease"</span>, <span class="st">"exponential increase"</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
 <p>Finally, we can plot the allele frequency spectra from all models, for the two time directions, and for the two simulation back ends:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">afs</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">f</span>, color <span class="op">=</span> <span class="va">direction</span>, linetype <span class="op">=</span> <span class="va">simulator</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">model</span><span class="op">)</span> <span class="op">+</span>

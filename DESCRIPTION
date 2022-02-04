@@ -1,6 +1,6 @@
 Package: slendr
-Title: Spatiotemporal Population Genetics Simulations in R
-Version: 0.0.0.9000
+Title: A Simulation Framework for Spatiotemporal Population Genetics
+Version: 0.9
 Authors@R: 
     person(given = "Martin",
            family = "Petr",
@@ -8,51 +8,57 @@ Authors@R:
            email = "contact@bodkan.net",
            comment = c(ORCID = "0000-0003-4879-8421"))
 Description: A framework for simulating spatially-explicit genomic
-    data which leverages real cartographic information to programmatically
-    and visually encode spatial population boundaries and temporal dynamics
-    across a real geographic landscape, and specify population divergences
-    and geneflow events based on an arbitrary graph of demographic history.
-    Models specified by the package are then automatically executed by the
-    'SLiM' software behind the scenes, using a custom built-in 'SLiM' script.
-    In addition to models on real geographic landscape, fully abstract spatial
-    models are also supported, but the users can also simulate data from
-    traditional non-spatial models. Simulated sequence data is saved in
-    a tree-sequence format and can be loaded, manipulated and summarised using
-    tree-sequence functionality provided by Python modules 'tskit' and
-    'pyslim', all without having to leave the R interface.
+    data which leverages real cartographic information for programmatic
+    and visual encoding of spatial population boundaries and temporal dynamics
+    across a real geographic landscape, specify population divergences
+    and encode gene flow events based on an arbitrary graph of demographic history.
+    Such population genetic models are then automatically executed by the
+    'SLiM' software behind the scenes, using a custom built-in simulation 'SLiM'
+    script. Additionally, fully abstract spatial models not tied to a specific
+    geographic location are supported, and users can also simulate data from
+    standard, non-spatial, random-mating models. These can be simulated either
+    with the 'SLiM' built-in back end script, or using a much more efficient
+    coalescent population genetics simulator 'msprime' with a custom-built
+    Python script bundled with the R package. Simulated sequence data
+    is saved in a tree-sequence format and can be loaded, manipulated, and
+    summarised using tree-sequence functionality via an R interface to the
+    Python module 'tskit'. Thus, complete model configuration, simulation and
+    analysis pipelines can be constructed without a need to leave the
+    R environment, eliminating friction between disparate tools for population
+    genetics and genome analysis and facilitating reproducible research.
 Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information.
+SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The 'msprime' Python coalescent framework and the 'tskit' module can by installed by following the instructions at <https://tskit.dev/msprime/docs>.
 Imports: 
-    ggplot2,
     sf,
-    rnaturalearth,
-    magrittr,
     stars,
-    gganimate,
-    png,
-    ijtiff,
-    ggraph,
-    shinyWidgets,
-    shiny,
-    tidygraph,
+    ggplot2,
     dplyr,
     purrr,
     readr,
+    magrittr,
     reticulate,
     tidyr,
-    rsvg
+    rnaturalearth,
+    gganimate,
+    rsvg,
+    png,
+    ijtiff,
+    ggraph,
+    tidygraph,
+    shinyWidgets,
+    shiny
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    devtools,
-    magick,
-    admixr
+    admixr,
+    units,
+    rgdal,
+    magick
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues

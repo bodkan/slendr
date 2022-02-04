@@ -37,6 +37,8 @@
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 population <- function(name, time, N, parent = "ancestor", map = FALSE,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
@@ -124,6 +126,8 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
                  verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
@@ -267,6 +271,8 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                    polygon = NULL, lock = FALSE, verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
@@ -296,6 +302,8 @@ expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                    lock = FALSE, verbose = TRUE) {
   shrink_or_expand(pop, -by, end, start, overlap, snapshots, polygon = NULL, lock, verbose)
@@ -325,9 +333,10 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @return Object of the class \code{slendr_pop}
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 boundary <- function(pop, time, center = NULL, radius = NULL,
                      polygon = NULL, lock = FALSE) {
-
   if (!has_map(pop))
     stop("This operation is only allowed for spatial models", call. = FALSE)
 
@@ -371,7 +380,7 @@ boundary <- function(pop, time, center = NULL, radius = NULL,
   if (lock) {
     areas <- slendr::area(result)$area
     area_change <- areas[length(areas)] / areas[length(areas) - 1]
-    prev_N <- tail(sapply(attributes(pop)$history, function(event) event$N), 1)
+    prev_N <- utils::tail(sapply(attributes(pop)$history, function(event) event$N), 1)
     new_N <- round(area_change * prev_N)
     result <- resize(result, N = new_N, time = time, how = "step")
   }
@@ -399,6 +408,8 @@ boundary <- function(pop, time, center = NULL, radius = NULL,
 #'   change events)
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 resize <- function(pop, N, how, time, end = NULL) {
   if (N < 1) stop("resize(): Only positive, non-zero population sizes are allowed", call. = FALSE)
 
@@ -455,6 +466,8 @@ resize <- function(pop, N, how, time, end = NULL) {
 #'   offspring. One of "normal", "uniform", "cauchy", or "exponential".
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
                       dispersal_fun = NULL) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
@@ -504,6 +517,8 @@ dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersa
 #' @return Object of the class data.frame
 #'
 #' @export
+#'
+#' @example man/examples/model_definition.R
 geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   if ((has_map(from) && !has_map(to)) || (!has_map(from) && has_map(to)))
     stop("Both or neither populations must be spatial", call. = FALSE)
@@ -597,12 +612,14 @@ time (geneflow %s -> %s in the time window %s-%s)",
 #'   landscape was defined (\code{landscape = "naturalearth"}).
 #' @param ne_dir Path to the directory where Natural Earth data was
 #'   manually downloaded and unzipped from
-#'   <https://www.naturalearthdata.com/downloads/110m-physical-vectors>
+#'   <https://www.naturalearthdata.com/downloads/110m-physical-vectors/>
 #'   (used only when \code{landscape = "naturalearth"})
 #'
 #' @return Object of the class \code{slendr_map}
 #'
 #' @export
+#'
+#' @example man/examples/spatial_functions.R
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
   if (inherits(landscape, "sf")) { # a landscape defined by the user
     cropped_landscape <- sf::st_crop(
@@ -616,7 +633,7 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
     map <- sf::st_sf(geometry = sf::st_sfc()) %>%
       set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
   } else if (landscape == "naturalearth") {  # Natural Earth data vector landscape
-      if (is.null(ne_dir)) {
+    if (is.null(ne_dir)) {
       ne_dir <- tempdir()
       ne_file <- file.path(ne_dir, "ne_110m_land.zip")
       utils::download.file(
@@ -676,6 +693,8 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
 #' @return Object of the class \code{slendr_region}
 #'
 #' @export
+#'
+#' @example man/examples/spatial_functions.R
 region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
   if (is.null(name)) name <- "unnamed region"
   region <- sf::st_sf(
@@ -797,6 +816,8 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
 #' @return Object of the class \code{slendr_region}
 #'
 #' @export
+#'
+#' @example man/examples/spatial_functions.R
 join <- function(x, y, name = NULL) {
   if (!inherits(x, "slendr")) x <- region(polygon = x)
   if (!inherits(y, "slendr")) y <- region(polygon = y)
@@ -993,7 +1014,6 @@ dimensions <- function(map, original = FALSE) {
 #'   of locations at which the closest number of individuals from given
 #'   populations should be sampled. If \code{NULL} (the default), individuals
 #'   will be sampled randomly throughout their spatial boundary.
-#' @param remove Time at which the population should be removed
 #' @param strict Should any occurence of a population not being present at a
 #'   given time result in an error? Default is \code{FALSE}, meaning that
 #'   invalid sampling times for any populations will be quietly ignored.
@@ -1147,7 +1167,10 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 
     if (!is.null(snapshots)) break
 
-    overlaps <- compute_overlaps(do.call(rbind, inter_regions))
+    # if the boundary is supposed to be shrinking, the order of spatial maps
+    # must be reversed in order to check the amount of overlap
+    direction <- ifelse(by < 0, rev, identity)
+    overlaps <- compute_overlaps(do.call(rbind, direction(inter_regions)))
 
     if (all(overlaps >= overlap)) {
       message("The required ", sprintf("%.1f%%", 100 * overlap),
@@ -1168,8 +1191,8 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
     c("map", "parent", "remove", "intersect", "aquatic", "history")
   )
 
-  start_area <- sf::st_area(head(inter_regions, 1)[[1]])
-  end_area <- sf::st_area(tail(inter_regions, 1)[[1]])
+  start_area <- sf::st_area(utils::head(inter_regions, 1)[[1]])
+  end_area <- sf::st_area(utils::tail(inter_regions, 1)[[1]])
   action <- ifelse(start_area < end_area, "expand", "contract")
 
   attr(result, "history") <- append(attr(result, "history"), list(data.frame(
@@ -1209,4 +1232,8 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 #'
 #' @return Split time of the population
 #' @export
+#'
+#' @examples
+#' pop <- population("pop1", N = 1000, time = 42)
+#' split_time(pop)
 split_time <- function(pop) attr(pop, "history")[[1]]$time

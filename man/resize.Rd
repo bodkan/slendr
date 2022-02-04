@@ -29,3 +29,101 @@ the current size, the population will be exponentially growing over the
 specified time period until it reaches \code{N} individuals. If \code{N} is
 smaller, the population will shrink exponentially.
 }
+\examples{
+# spatial definitions -----------------------------------------------------
+
+# create a blank abstract world 1000x1000 distance units in size
+map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
+
+# all slendr objects can be visualised with a generic function plot()
+plot(map)
+
+# create a circular population with the center of a population boundary at
+# [200, 800] and a radius of 100 distance units, 1000 individuals at time 1
+# occupying a map just specified
+pop1 <- population("pop1", N = 1000, time = 1,
+                   map = map, center = c(200, 800), radius = 100)
+
+# printing a population object to a console shows a brief summary
+pop1
+
+# create another population occupying a polygon range, splitting from pop1
+# at a given time point (note that specifying a map is not necessary because
+# it is "inherited" from the parent)
+pop2 <- population("pop2", N = 100, time = 50, parent = pop1,
+                        polygon = list(c(100, 100), c(320, 30), c(500, 200),
+                                  c(500, 400), c(300, 450), c(100, 400)))
+
+pop3 <- population("pop3", N = 200, time = 80, parent = pop2,
+                   center = c(800, 800), radius = 200)
+
+# move "pop1" to another location along a specified trajectory and saved the
+# resulting object to the same variable (the number of intermediate spatial
+# snapshots can be also determined automatically by leaving out the
+# `snapshots = ` argument)
+pop1_moved <- move(pop1, start = 100, end = 200, snapshots = 10,
+                   trajectory = list(c(600, 820), c(800, 400), c(800, 150)))
+pop1_moved
+
+# many slendr functions are pipe-friendly, making it possible to construct
+# pipelines which construct entire history of a population
+pop1 <- population("pop1", N = 1000, time = 1,
+                   map = map, center = c(200, 800), radius = 100) \%>\%
+  move(start = 100, end = 200, snapshots = 10,
+       trajectory = list(c(400, 800), c(600, 700), c(800, 400), c(800, 150)))
+
+# a population boundary at a given time can be "manually" created by calling
+# the function boundary() -- here we extend the pipeline from the previous
+# command to set the final spatial map of pop1 to another polygon
+pop1 <-
+  population(
+    "pop1", N = 1000, time = 1,
+    map = map, center = c(200, 800), radius = 100
+  ) \%>\%
+  move(
+    start = 100, end = 200, snapshots = 10,
+    trajectory = list(c(400, 800), c(600, 700), c(800, 400), c(800, 150))
+  ) \%>\%
+  boundary(time = 300, polygon = list(
+    c(400, 0), c(1000, 0), c(1000, 600), c(900, 400), c(800, 250),
+    c(600, 100), c(500, 50))
+  )
+
+# spatial boundaries can be plotted with a function plot()
+plot(pop1)
+
+# population ranges can expand by a given distance in all directions
+pop2 <- expand(pop2, by = 200, start = 50, end = 150, snapshots = 10)
+
+# we can check the positions of all populations interactively by plotting their
+# ranges together on a single map
+plot(pop1, pop2, pop3)
+
+# gene flow events --------------------------------------------------------
+
+# individual gene flow events can be saved to a list
+gf <- list(
+  geneflow(from = pop1, to = pop3, start = 150, end = 200, rate = 0.15),
+  geneflow(from = pop1, to = pop2, start = 300, end = 330, rate = 0.25)
+)
+
+# compilation -------------------------------------------------------------
+
+# location where to save slendr model configuration files
+model_dir <- paste0(tempdir(), "_slendr_model")
+
+# compile model components in a serialized form to dist, returning a single
+# slendr model object (in practice, the resolution should be smaller)
+model <- compile(
+  populations = list(pop1, pop2, pop3), generation_time = 1,
+  dir = model_dir, overwrite = TRUE,
+  resolution = 10, sim_length = 500,
+  competition_dist = 5, mate_dist = 5, dispersal_dist = 1
+)
+
+# serialized models can be read from disk to their R representation again
+loaded_model <- read(model_dir)
+
+# clean up the model directory
+unlink(model_dir, recursive = TRUE, force = TRUE)
+}

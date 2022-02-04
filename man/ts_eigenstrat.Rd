@@ -23,7 +23,7 @@ Object of the class EIGENSTRAT created by the admixr package
 }
 \description{
 EIGENSTRAT data produced by this function can be used by the admixr R package
-(\url{https://bodkan.net/admixr}).
+(\url{https://bodkan.net/admixr/}).
 }
 \details{
 In case an outgroup was not formally specified in a slendr model which
@@ -31,4 +31,10 @@ generated the tree sequence data, it is possible to artificially create an
 outgroup sample with the name specified by the \code{outgroup} argument,
 which will carry all ancestral alleles (i.e. value "2" in a geno file
 for each position in a snp file).
+}
+\examples{
+\dontrun{ # save genotypes as a trio of files eigenprefix.snp, eigenprefix.ind, eigenprefix.geno
+ts_eigenstrat(ts, prefix = "/path/to/eigenprefix")
+}
+
 }

@@ -27,3 +27,10 @@ For a discussion on the difference between "site" and "branch" options of the
 \code{mode} argument, please see the tskit documentation at
 \url{https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode}
 }
+\examples{
+\dontrun{ # calculate Tajima's D for given sets of individuals in a tree sequence ts
+ts_tajima(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3"),
+                   eur = c("EUR_1", "EUR_2")))
+}
+
+}

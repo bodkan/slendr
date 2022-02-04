@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9</span>
       </span>
     </div>
 
@@ -90,9 +90,6 @@
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -149,9 +146,11 @@
 </ol>
 <p>All three parameters can be specified for each simulated population individually in the <code><a href="../reference/population.html">population()</a></code> call. Alternatively, default values for these parameters can be given in a <code><a href="../reference/compile.html">compile()</a></code> call and are then used for all populations in the model. Importantly, each population must be given values for all three of these parameters, whether as specific values for that particular population or as default values passed to <code><a href="../reference/compile.html">compile()</a></code>.</p>
 <p>Finally, as with other functions for programming model spatial dynamics, the <em>slendr</em> package provides a simple way to change the spatial interaction dynamics throughout the course of the simulation. Even complex models can be programmed using only a couple of lines of extremely simple R code, resulting in a robust SLiM simulation script being generated under the hood.</p>
-<p>To demonstrate this feature, let’s look at a simple example. Let’s make a rectangular world first:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr">slendr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr">slendr</a></span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">314159</span><span class="op">)</span></code></pre></div>
+<p>To demonstrate this feature, let’s look at a simple example. Let’s make a rectangular world map first:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3500</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">700</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span></code></pre></div>
 <p>We have constructed seven populations, each occupying a discrete circular range on a blank landscape 3500 distances units wide and 700 distance units tall. All are programmed to appear in the simulation in generation one and have the same number of individuals.</p>
@@ -187,32 +186,14 @@
 <p>In order to let the populations reach an equilibrium spatial spread at the beginning of the simulation, we will let the simulation run through a burnin period of 100 generations. We will also save the spatial locations of all individuals in order to visualize the spatial population dynamics with an animation later.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, save_locations <span class="op">=</span> <span class="cn">TRUE</span>,
-     burnin <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; Tree-sequence recording is on but no sampling schedule was given. Generating one at least for populations surviving to the end of the simulation...</code></pre>
-<pre><code>#&gt; --------------------------------------------------
-#&gt; SLiM command to be executed:
-#&gt; 
-#&gt; /usr/local/bin/slim  \
-#&gt;     -d SEED=314159  \
-#&gt;     -d 'SAMPLES="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpNdEpSx/spatial-interactions/output_slim_sampling.tsv"' \
-#&gt;     -d 'MODEL="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpNdEpSx/spatial-interactions"' \
-#&gt;     -d 'OUTPUT="/var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpNdEpSx/spatial-interactions/output"' \
-#&gt;     -d SPATIAL=T \
-#&gt;     -d SEQUENCE_LENGTH=1 \
-#&gt;     -d RECOMB_RATE=0 \
-#&gt;     -d BURNIN_LENGTH=100 \
-#&gt;     -d SIMULATION_LENGTH=1000 \
-#&gt;     -d SAVE_LOCATIONS=T \
-#&gt;     -d MAX_ATTEMPTS=1 \
-#&gt;     /var/folders/hr/_t1b0f5n7c76yrfsg8yk9l100000gn/T//RtmpNdEpSx/spatial-interactions/script.slim 
-#&gt; --------------------------------------------------</code></pre>
-<p>Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">150</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
+     burnin <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
+<p>Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (the animation is significantly sped up to satisfy the vignette size limits put on by CRAN):</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span><span class="va">model</span>, steps <span class="op">=</span> <span class="fl">80</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-03-interactions_files/figure-html/plot_gif_interactions-1.gif"><!-- --></p>
 <p>Fun animation, isn’t it? If you compare the result to the model dynamics we programmed above, you can see that the spatial dynamics follow what we would expect based on the parameter values. As time progresses, the spatial competition for each successive population gets fiercer and fiercer (the distance at which individuals can “feel” the competition is getting larger and larger), forcing the individuals to form more and more distant clusters. Compare this to the starting state of the simulation, in which all populations form a single randomly shifting “blob” of individuals which is allowed by the model because individuals barely compete with each other.</p>
 <p>Depending on a species or population under study, these abstract parameters (and the spatial clustering or “clumpiness” they represent) could mean all sorts of things and could be used to model various phenomena in nature (competition for resources, shifting metapopulation dynamics, formation of “tribes”, etc.).</p>
-<p>It needs to be said that unlike the spatial population dynamics functionality described in the main <a href="slendr.html">tutorial</a>, which is a unique feature of <em>slendr</em>, the example in this vignette could be reproduced in pure SLiM using vanilla Eidos code. However, I think it is fair to say that the <em>slendr</em> R code is much more flexible and easier to tweak and extend towards much more complex scenarios. Again, as mentioned several times throughout the documentation, this is another good example of how the simple <em>slendr</em> R interface lets you focus on the difficult part of modeling (specifying spatiotemporal model dynamics), get immediate visual feedback during model building, and leverage the powerful SLiM simulation framework as a low-level computational engine.</p>
+<p>It needs to be said that unlike the spatial population dynamics functionality described in the main <a href="vignette-01-tutorial.html">tutorial</a>, which is a unique feature of <em>slendr</em>, the example in this vignette could be reproduced in pure SLiM using vanilla Eidos code. However, I think it is fair to say that the <em>slendr</em> R code is much more flexible and easier to tweak and extend towards much more complex scenarios. Again, as mentioned several times throughout the documentation, this is another good example of how the simple <em>slendr</em> R interface lets you focus on the difficult part of modeling (specifying spatiotemporal model dynamics), get immediate visual feedback during model building, and leverage the powerful SLiM simulation framework as a low-level computational engine.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

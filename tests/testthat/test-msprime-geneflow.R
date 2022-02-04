@@ -1,4 +1,4 @@
-env_present("retipy")
+skip_if(!env_present("retipy"))
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
@@ -188,46 +188,56 @@ df_msprime_f4ratio <- rbind(
 df_f4 <- rbind(df_slim_f4, df_msprime_f4) %>%
   dplyr::mutate(population = ifelse(grepl("x1_", X),
                                     "x1 (received gene flow)",
-                                    "x2 (no gene flow)"))
+                                    "x2 (no gene flow)")) %>%
+  as.data.frame()
 
-p_f4 <- ggplot(df_f4, aes(f4, fill = population)) +
-  geom_histogram(bins = 50) +
-  facet_grid(simulator ~ model) +
-  geom_vline(xintercept = 0, linetype = 2) +
-  labs(y = "number of individuals", x = "f4 statistic",
-       title = "f4 statistics calculated on simulated data",
-       subtitle = "Note that for f4 values ~0, the hypothesis of no gene flow can't be rejected") +
-  theme(legend.position = "bottom")
+current_f4_tsv <- paste0(tempfile(), ".tsv.gz")
+readr::write_tsv(df_f4, current_f4_tsv, progress = FALSE)
+original_f4_tsv <- "f4.tsv.gz"
+# readr::write_tsv(df_f4, original_f4_tsv, progress = FALSE)
+orig_df_f4 <- readr::read_tsv(original_f4_tsv, show_col_types = FALSE, progress = FALSE) %>%
+  as.data.frame()
+
+# p_f4 <- ggplot(df_f4, aes(f4, fill = population)) +
+#   geom_histogram(bins = 50) +
+#   facet_grid(simulator ~ model) +
+#   geom_vline(xintercept = 0, linetype = 2) +
+#   labs(y = "number of individuals", x = "f4 statistic",
+#        title = "f4 statistics calculated on simulated data",
+#        subtitle = "Note that for f4 values ~0, the hypothesis of no gene flow can't be rejected") +
+#   theme(legend.position = "bottom")
+# ggsave("f4.png", p_f4, width = 8, height = 5)
 
 test_that("f4 distributions from SLiM and msprime simulations match", {
-  output_png <- paste0(tempfile(), "f4.png")
-  ggsave(output_png, p_f4, width = 8, height = 5)
-  first_output_png <- "msprime_slim_f4.png"
-  # ggsave(first_output_png, p_f4, width = 8, height = 5)
-  expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
+  expect_equal(df_f4, orig_df_f4, tolerance = 1e-15)
 })
 
 df_f4ratio <- rbind(df_slim_f4ratio, df_msprime_f4ratio) %>%
   dplyr::mutate(population = ifelse(grepl("x1_", X),
                                     "x1 (received gene flow)",
-                                    "x2 (no gene flow)"))
+                                    "x2 (no gene flow)")) %>%
+  as.data.frame()
 
-p_f4ratio <- ggplot(df_f4ratio, aes(alpha, fill = population)) +
-  geom_histogram(bins = 30) +
-  facet_grid(simulator ~ model) +
-  geom_vline(xintercept = 0.1, linetype = 2) +
-  labs(y = "number of individuals", x = "ancestry proportion (f4-ratio statistic)",
-       title = "f4-ratio estimate of 'b' ancestry calculated from simulated data",
-       subtitle = "Population 'x1' receives 10% gene flow (vertical dotted line)
-from 'b' in gene flow models, 'x2' never does") +
-  theme(legend.position = "bottom")
+current_f4r_tsv <- paste0(tempfile(), ".tsv.gz")
+readr::write_tsv(df_f4ratio, current_f4r_tsv, progress = FALSE)
+original_f4r_tsv <- "f4ratio.tsv.gz"
+# readr::write_tsv(df_f4ratio, original_f4r_tsv, progress = FALSE)
+orig_df_f4ratio <- readr::read_tsv(original_f4r_tsv, show_col_types = FALSE, progress = FALSE) %>%
+  as.data.frame()
+
+# p_f4ratio <- ggplot(df_f4ratio, aes(alpha, fill = population)) +
+#   geom_histogram(bins = 30) +
+#   facet_grid(simulator ~ model) +
+#   geom_vline(xintercept = 0.1, linetype = 2) +
+#   labs(y = "number of individuals", x = "ancestry proportion (f4-ratio statistic)",
+#        title = "f4-ratio estimate of 'b' ancestry calculated from simulated data",
+#        subtitle = "Population 'x1' receives 10% gene flow (vertical dotted line)
+# from 'b' in gene flow models, 'x2' never does") +
+#   theme(legend.position = "bottom")
+# ggsave("f4ratio.png", p_f4ratio, width = 8, height = 5)
 
 test_that("f4-ratio distributions from SLiM and msprime simulations match", {
-  output_png <- paste0(tempfile(), "f4ratio.png")
-  ggsave(output_png, p_f4ratio, width = 8, height = 5)
-  first_output_png <- "msprime_slim_f4ratio.png"
-  # ggsave(first_output_png, p_f4ratio, width = 8, height = 5)
-  expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
+  expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-15)
 })
 
 # Great! We got almost the same results, as expected! We can also inspect the

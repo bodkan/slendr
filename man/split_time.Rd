@@ -15,3 +15,7 @@ Split time of the population
 \description{
 Get split time of the given population
 }
+\examples{
+pop <- population("pop1", N = 1000, time = 42)
+split_time(pop)
+}

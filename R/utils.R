@@ -9,12 +9,7 @@ get_binary <- function(method) {
     binary <- "slim"
 
   binary_path <- Sys.which(binary)
-  if (all(binary_path == ""))
-    stop(sprintf("%s binary not found. Please modify your $PATH accordingly or
-specify the path manually by setting the 'binary_path' argument.", binary),
-call. = FALSE)
-  else
-    return(as.character(binary_path))
+  as.character(binary_path)
 }
 
 
@@ -294,7 +289,7 @@ set_distances <- function(dispersal_table, resolution,
       stop("Parameter 'competition_dist' missing for ", pop_names, " and a general
   value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
-      competition_dist <- tail(dispersal_table$competition_dist[which(!is.na(dispersal_table$competition_dist))], 1)
+      competition_dist <- utils::tail(dispersal_table$competition_dist[which(!is.na(dispersal_table$competition_dist))], 1)
   }
   # replace all NA values with the last specified competition distance
   dispersal_table$competition_dist[is.na(dispersal_table$competition_dist)] <- competition_dist
@@ -305,7 +300,7 @@ set_distances <- function(dispersal_table, resolution,
       stop("Parameter 'mate_dist' missing for ", pop_names, " and a general
     value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
-      mate_dist <- tail(dispersal_table$mate_dist[which(!is.na(dispersal_table$mate_dist))], 1)
+      mate_dist <- utils::tail(dispersal_table$mate_dist[which(!is.na(dispersal_table$mate_dist))], 1)
   }
   # replace all NA values with the last specified mate choice distance
   dispersal_table$mate_dist[is.na(dispersal_table$mate_dist)] <- mate_dist
@@ -316,7 +311,7 @@ set_distances <- function(dispersal_table, resolution,
       stop("Parameter 'dispersal_dist' missing for ", pop_names, " and a general
     value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
-      dispersal_dist <- tail(dispersal_table$dispersal_dist[which(!is.na(dispersal_table$dispersal_dist))], 1)
+      dispersal_dist <- utils::tail(dispersal_table$dispersal_dist[which(!is.na(dispersal_table$dispersal_dist))], 1)
   }
   # replace all NA values with the last specified dispersalchoice distance
   dispersal_table$dispersal_dist[is.na(dispersal_table$dispersal_dist)] <- dispersal_dist
@@ -436,6 +431,7 @@ utils::globalVariables(
     "pedigree_id", "from_x", "from_y", "from", "to_x", "to_y", "to",
     "node1.name", "node2.name", "type", "label", "rate", "pop_id", "vcf_file",
     "gen", "newx", "newy", "child", "tmap", "node_label", "chr_name", "pos",
-    "pyslim", "tskit", "msprime"
+    "pyslim", "tskit", "msprime", "x", "y", "x_orig", "y_orig",
+    "orig_x", "orig_y"
   ), package = "slendr"
 )
