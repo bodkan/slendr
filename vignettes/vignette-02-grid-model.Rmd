@@ -13,13 +13,9 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 6,
   fig.height = 4,
-  dpi = 80
+  dpi = 80,
+  eval = TRUE
 )
-```
-
-```{r, echo = FALSE, message = FALSE}
-devtools::load_all(".")
-set.seed(314159)
 ```
 
 In this vignette, we will build a simple model of isolated populations laid out on a two-dimensional grid, each exchanging migrants with its immediate neighbors.
@@ -32,7 +28,7 @@ If you have worked with SLiM before, you will recognize that a nearly identical 
 
 First, let's load the *slendr* R package and create a two-dimensional abstract world map:
 
-```{r, eval = FALSE}
+```{r}
 library(slendr)
 ```
 
@@ -168,7 +164,7 @@ We can take things one step further. What if we wanted to do a similar thing (i.
 
 Let's zoom in on some interesting part of the world and then create a grid of demes using the same helper function `create_pop` we defined above (each population boundary being 300 km in diameter):
 
-```{r}
+```{r, results = FALSE}
 map <- world(
   xrange = c(-25, 55),
   yrange = c(-32, 35),

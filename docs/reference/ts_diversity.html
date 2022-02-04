@@ -86,7 +86,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9</span>
       </span>
     </div>
 
@@ -136,9 +136,6 @@
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -224,6 +221,18 @@ TRUE, see the tskit documentation for more detail.</p></td>
     <p>For each set of individuals either a single diversity value or a
 vector of diversity values (one for each window)</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span>  <span class='co'>#' # collect sampled individuals from all populations in a list</span>
+<span class='va'>sample_sets</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ts_samples.html'>ts_samples</a></span><span class='op'>(</span><span class='va'>ts</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/split.html'>split</a></span><span class='op'>(</span><span class='va'>.</span>, <span class='va'>.</span><span class='op'>$</span><span class='va'>pop</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>pop</span><span class='op'>)</span> <span class='va'>pop</span><span class='op'>$</span><span class='va'>name</span><span class='op'>)</span>
+
+<span class='co'># compute diversity in each population based on sample sets extracted</span>
+<span class='co'># in the previous step</span>
+<span class='fu'>ts_diversity</span><span class='op'>(</span><span class='va'>ts</span>, <span class='va'>sample_sets</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>diversity</span><span class='op'>)</span>
+
+
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -46,6 +46,8 @@ test_that("interaction parameter change is correctly recorded", {
 })
 
 test_that("SLiM dispersals match expectations laid by R distributions", {
+  skip_on_cran()
+
   seed <- 42
   set.seed(seed)
 
@@ -116,21 +118,16 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   ) %>%
     dplyr::filter(distance <= 50)
 
-  p <- rbind(slim_distances, r_distances) %>%
-  ggplot2::ggplot(aes(distance, color = source)) +
-    geom_density() +
-    coord_cartesian(xlim = c(0, 50)) +
-    facet_wrap(~ fun, scales = "free") +
-    guides(color = guide_legend("simulation"))
+  distances <- rbind(slim_distances, r_distances)
 
-  output_png <- paste0(tempfile(), ".png")
-  ggsave(output_png, p, width = 8, height = 5)
-  first_output_png <- "dispersal_dist.png"
-  # ggsave(first_output_png, p, width = 8, height = 5)
-
-  # make sure that the distributions as they were originally inspected and
-  # verified visually match the new distributions plot
-  expect_true(tools::md5sum(output_png) == tools::md5sum(first_output_png))
+  # p <- ggplot2::ggplot(distances, aes(distance, color = source)) +
+  #   geom_density() +
+  #   coord_cartesian(xlim = c(0, 50)) +
+  #   facet_wrap(~ fun, scales = "free") +
+  #   guides(color = guide_legend("simulation"))
+  #
+  # original_png <- "distances.png"
+  # ggsave(original_png, p, width = 8, height = 5)
 
   # compare the SLiM dispersal distributions to the distributions randomly
   # sampled in R using the Kolmogorov-Smirnov test
@@ -150,4 +147,17 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
     slim_distances[slim_distances$fun == "exponential", ]$distance,
     r_distances[r_distances$fun == "exponential", ]$distance
   )$p.value > 0.05)
+
+  # decrease the gigantic table to make the package smaller overall
+  set.seed(42)
+  distances <- distances[sort(sample(1:nrow(distances), size = 5000)), ]
+
+  current_tsv <- paste0(tempfile(), ".tsv.gz")
+  readr::write_tsv(distances, current_tsv, progress = FALSE)
+  original_tsv <- "distances.tsv.gz"
+  # readr::write_tsv(distances, original_tsv, progress = FALSE)
+  orig_distances <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
+
+  # make sure that the current distance distribution matches the original one
+  expect_equal(distances, orig_distances, tolerance = 1e-15)
 })

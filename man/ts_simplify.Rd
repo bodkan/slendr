@@ -41,12 +41,25 @@ For more information on how simplification works in pyslim and tskit, see the
 official documentation at
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify}
 and
-\url{https://pyslim.readthedocs.io/en/latest/python_api.html?pyslim.SlimTreeSequence.simplify#pyslim.SlimTreeSequence.simplify}.
+\url{https://tskit.dev/pyslim/docs/latest/tutorial.html#simplification}.
 
 A very clear description of the difference between remembering and retaining
 and how to use these techniques to implement historical individuals (i.e.
 ancient DNA samples) is in the pyslim documentation at
-\url{https://pyslim.readthedocs.io/en/latest/tutorial.html?highlight=retainCoalescentOnly#historical-individuals}.
+\url{https://tskit.dev/pyslim/docs/latest/tutorial.html#historical-individuals}.
+}
+\examples{
+\dontrun{ # simplify tree sequence to sampled individuals
+ts_simplified <- ts_simplify(ts)
+
+# simplify to a subset of sampled individuals
+ts_small <- ts_simplify(
+  ts,
+  simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
+                  "AFR_2", "EUR_20", "EUR_50")
+)
+}
+
 }
 \seealso{
 \code{\link{ts_data}} for extracting useful information about

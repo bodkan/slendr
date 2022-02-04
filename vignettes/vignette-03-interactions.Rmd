@@ -8,18 +8,21 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+env_present <- tryCatch(
+  {
+    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
+    TRUE
+  }, error = function(cond) FALSE
+)
+
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   fig.width = 6,
-  fig.height = 3,
-  dpi = 80
+  fig.height = 4,
+  dpi = 80,
+  eval = Sys.which("slim") != "" && env_present
 )
-```
-
-```{r, echo = FALSE, message = FALSE}
-devtools::load_all(".")
-set.seed(314159)
 ```
 
 In addition to buidling models that capture movement or expansion using a set of [simple R functions](../reference/index.html#section-population-dynamics), *slendr* makes it possible to program more subtle parameters of spatial population dynamics.
@@ -34,17 +37,19 @@ All three parameters can be specified for each simulated population individually
 
 Finally, as with other functions for programming model spatial dynamics, the *slendr* package provides a simple way to change the spatial interaction dynamics throughout the course of the simulation. Even complex models can be programmed using only a couple of lines of extremely simple R code, resulting in a robust SLiM simulation script being generated under the hood.
 
-To demonstrate this feature, let's look at a simple example.  Let's make a rectangular world first:
-
-```{r, eval = FALSE}
+```{r}
 library(slendr)
+
+set.seed(314159)
 ```
+
+To demonstrate this feature, let's look at a simple example.  Let's make a rectangular world map first:
 
 ```{r abstract_world}
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 ```
 
-We have constructed seven populations, each occupying a discrete circular range on a blank landscape `r dimensions(map)[1]` distances units wide and `r dimensions(map)[2]` distance units tall. All are programmed to appear in the simulation in generation one and have the same number of individuals.
+We have constructed seven populations, each occupying a discrete circular range on a blank landscape 3500 distances units wide and 700 distance units tall. All are programmed to appear in the simulation in generation one and have the same number of individuals.
 
 ```{r pop_ranges}
 N <- 3000; y <- 350; r = 240
@@ -86,17 +91,17 @@ In order to let the populations reach an equilibrium spatial spread at the begin
 
 ```{r}
 slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
-     burnin = 100, method = "batch", verbose = TRUE, random_seed = 314159)
+     burnin = 100, method = "batch", verbose = FALSE, random_seed = 314159)
 ```
 
-Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF:
+Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (the animation is significantly sped up to satisfy the vignette size limits put on by CRAN):
 
 ```{r plot_gif_interactions, message = FALSE}
-animate(model, steps = 150, width = 500, height = 200)
+animate(model, steps = 80, width = 500, height = 200)
 ```
 
 Fun animation, isn't it? If you compare the result to the model dynamics we programmed above, you can see that the spatial dynamics follow what we would expect based on the parameter values. As time progresses, the spatial competition for each successive population gets fiercer and fiercer (the distance at which individuals can "feel" the competition is getting larger and larger), forcing the individuals to form more and more distant clusters. Compare this to the starting state of the simulation, in which all populations form a single randomly shifting "blob" of individuals which is allowed by the model because individuals barely compete with each other.
 
 Depending on a species or population under study, these abstract parameters (and the spatial clustering or "clumpiness" they represent) could mean all sorts of things and could be used to model various phenomena in nature (competition for resources, shifting metapopulation dynamics, formation of "tribes", etc.).
 
-It needs to be said that unlike the spatial population dynamics functionality described in the main [tutorial](slendr.html), which is a unique feature of *slendr*, the example in this vignette could be reproduced in pure SLiM using vanilla Eidos code. However, I think it is fair to say that the *slendr* R code is much more flexible and easier to tweak and extend towards much more complex scenarios. Again, as mentioned several times throughout the documentation, this is another good example of how the simple *slendr* R interface lets you focus on the difficult part of modeling (specifying spatiotemporal model dynamics), get immediate visual feedback during model building, and leverage the powerful SLiM simulation framework as a low-level computational engine.
+It needs to be said that unlike the spatial population dynamics functionality described in the main [tutorial](vignette-01-tutorial.html), which is a unique feature of *slendr*, the example in this vignette could be reproduced in pure SLiM using vanilla Eidos code. However, I think it is fair to say that the *slendr* R code is much more flexible and easier to tweak and extend towards much more complex scenarios. Again, as mentioned several times throughout the documentation, this is another good example of how the simple *slendr* R interface lets you focus on the difficult part of modeling (specifying spatiotemporal model dynamics), get immediate visual feedback during model building, and leverage the powerful SLiM simulation framework as a low-level computational engine.

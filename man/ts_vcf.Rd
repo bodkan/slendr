@@ -19,3 +19,9 @@ missing, all individuals present in the tree sequence will be saved.}
 \description{
 Save genotypes from the tree sequenceas a VCF file
 }
+\examples{
+\dontrun{ # save a VCF file from a given tree sequence object ts
+ts_vcf(ts, path = "/path/to/target/output.vcf.gz")
+}
+
+}

@@ -1,3 +1,5 @@
+skip_on_cran()
+
 map <- world(xrange = c(0, 1e6), yrange = c(0, 1e6), landscape = "blank")
 
 test_that("population size is correctly decreased upon reducing circular boundary", {

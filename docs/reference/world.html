@@ -89,7 +89,7 @@ cartographic data from the Natural Earth project
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9</span>
       </span>
     </div>
 
@@ -139,9 +139,6 @@ cartographic data from the Natural Earth project
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -225,7 +222,7 @@ landscape was defined (<code>landscape = "naturalearth"</code>).</p></td>
       <th>ne_dir</th>
       <td><p>Path to the directory where Natural Earth data was
 manually downloaded and unzipped from
-<a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors'>https://www.naturalearthdata.com/downloads/110m-physical-vectors</a>
+<a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/'>https://www.naturalearthdata.com/downloads/110m-physical-vectors/</a>
 (used only when <code>landscape = "naturalearth"</code>)</p></td>
     </tr>
     </table>
@@ -234,6 +231,25 @@ manually downloaded and unzipped from
 
     <p>Object of the class <code>slendr_map</code></p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># create a blank abstract world 1000x1000 distance units in size</span>
+<span class='va'>blank_map</span> <span class='op'>&lt;-</span> <span class='fu'>world</span><span class='op'>(</span>xrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1000</span><span class='op'>)</span>, yrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1000</span><span class='op'>)</span>, landscape <span class='op'>=</span> <span class='st'>"blank"</span><span class='op'>)</span>
+
+<span class='co'># it is possible to construct custom landscapes (islands, corridors, etc.)</span>
+<span class='va'>island1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='region.html'>region</a></span><span class='op'>(</span><span class='st'>"island1"</span>, polygon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>, <span class='fl'>30</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>50</span>, <span class='fl'>30</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>40</span>, <span class='fl'>50</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>40</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>island2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='region.html'>region</a></span><span class='op'>(</span><span class='st'>"island2"</span>, polygon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>60</span>, <span class='fl'>60</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>80</span>, <span class='fl'>40</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>60</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>80</span>, <span class='fl'>80</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>island3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='region.html'>region</a></span><span class='op'>(</span><span class='st'>"island3"</span>, center <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>20</span>, <span class='fl'>80</span><span class='op'>)</span>, radius <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+<span class='va'>archipelago</span> <span class='op'>&lt;-</span> <span class='va'>island1</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='join.html'>join</a></span><span class='op'>(</span><span class='va'>island2</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='join.html'>join</a></span><span class='op'>(</span><span class='va'>island3</span><span class='op'>)</span>
+
+<span class='va'>custom_map</span> <span class='op'>&lt;-</span> <span class='fu'>world</span><span class='op'>(</span>xrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>100</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>100</span><span class='op'>)</span>, landscape <span class='op'>=</span> <span class='va'>archipelago</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>custom_map</span><span class='op'>)</span>
+
+<span class='co'># real Earth landscapes can be defined using freely-available Natural Earth</span>
+<span class='co'># project data and with the possibility to specify an appropriate Coordinate</span>
+<span class='co'># Reference System</span>
+<span class='va'>real_map</span> <span class='op'>&lt;-</span> <span class='fu'>world</span><span class='op'>(</span>xrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>15</span>, <span class='fl'>60</span><span class='op'>)</span>, yrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>20</span>, <span class='fl'>65</span><span class='op'>)</span>, crs <span class='op'>=</span> <span class='st'>"EPSG:3035"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>real_map</span><span class='op'>)</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

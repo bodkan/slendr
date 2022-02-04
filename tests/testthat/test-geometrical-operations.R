@@ -83,7 +83,7 @@ test_that("custom landscapes can be specified", {
   map <- world(xrange = c(-20, 20), yrange = c(-20, 20), landscape = comb)
   # is the geometry component of the builtin map equal to the are of
   # the original regions?
-  expect_true(sf::st_area(map$landscape) == sf::st_area(comb))
+  expect_equal(sf::st_area(map$landscape), sf::st_area(comb), tolerance = 0.0001)
 })
 
 test_that("boundaries are either circles or polygons", {

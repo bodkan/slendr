@@ -29,7 +29,7 @@ landscape was defined (\code{landscape = "naturalearth"}).}
 
 \item{ne_dir}{Path to the directory where Natural Earth data was
 manually downloaded and unzipped from
-\url{https://www.naturalearthdata.com/downloads/110m-physical-vectors}
+\url{https://www.naturalearthdata.com/downloads/110m-physical-vectors/}
 (used only when \code{landscape = "naturalearth"})}
 }
 \value{
@@ -40,4 +40,23 @@ Defines either an abstract geographic landscape (blank or
 containing user-defined landscape) or using a real Earth
 cartographic data from the Natural Earth project
 (\url{https://www.naturalearthdata.com}).
+}
+\examples{
+# create a blank abstract world 1000x1000 distance units in size
+blank_map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
+
+# it is possible to construct custom landscapes (islands, corridors, etc.)
+island1 <- region("island1", polygon = list(c(10, 30), c(50, 30), c(40, 50), c(0, 40)))
+island2 <- region("island2", polygon = list(c(60, 60), c(80, 40), c(100, 60), c(80, 80)))
+island3 <- region("island3", center = c(20, 80), radius = 10)
+archipelago <- island1 \%>\% join(island2) \%>\% join(island3)
+
+custom_map <- world(xrange = c(1, 100), c(1, 100), landscape = archipelago)
+plot(custom_map)
+
+# real Earth landscapes can be defined using freely-available Natural Earth
+# project data and with the possibility to specify an appropriate Coordinate
+# Reference System
+real_map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = "EPSG:3035")
+plot(real_map)
 }

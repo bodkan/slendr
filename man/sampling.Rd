@@ -24,8 +24,6 @@ will be sampled randomly throughout their spatial boundary.}
 \item{strict}{Should any occurence of a population not being present at a
 given time result in an error? Default is \code{FALSE}, meaning that
 invalid sampling times for any populations will be quietly ignored.}
-
-\item{remove}{Time at which the population should be removed}
 }
 \value{
 Data frame with three columns: time of sampling, population to sample
