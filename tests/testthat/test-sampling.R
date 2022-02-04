@@ -67,7 +67,7 @@ test_that("only locations within world bounds are valid", {
 })
 
 test_that("sampling is as close to the a single specified position as possible", {
-  skip_if(!env_present("retipy"))
+  skip_if(!env_present("slendr-env"))
 
   n_samples <- 5
   times <- c(10, 100)
@@ -123,7 +123,7 @@ test_that("sampling is as close to the a single specified position as possible",
 })
 
 test_that("sampling is as close to the multiple specified positions as possible", {
-  skip_if(!env_present("retipy"))
+  skip_if(!env_present("slendr-env"))
 
   n_samples <- 5
   times <- c(10, 100)

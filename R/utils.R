@@ -409,6 +409,13 @@ kernel_fun <- function(fun = c("normal", "uniform", "cauchy", "exponential")) {
   match.arg(fun)
 }
 
+ask_install <- function(module) {
+  answer <- utils::menu(c("No", "Yes"),
+                        title = paste("Python module", module,
+                                      "is missing in the environment. Install?"))
+  answer == 2
+}
+
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
