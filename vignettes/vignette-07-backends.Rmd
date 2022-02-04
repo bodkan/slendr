@@ -10,7 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 env_present <- tryCatch(
   {
-    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
+    reticulate::use_condaenv("slendr-env", required = TRUE)
     TRUE
   }, error = function(cond) FALSE
 )
@@ -43,13 +43,12 @@ library(ggplot2)
 library(purrr)
 library(tidyr)
 
+# activate slendr's Python interface, installing all dependencies automatically
+# if necessary
+slendr_env()
+
 seed <- 42
 set.seed(seed)
-
-reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
-
-# let's make sure reticulate found the correct Python environment
-reticulate::py_config()
 ```
 
 ## Detecting gene flow from msprime and SLiM tree sequences

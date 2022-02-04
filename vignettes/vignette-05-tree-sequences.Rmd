@@ -10,7 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 env_present <- tryCatch(
   {
-    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
+    reticulate::use_condaenv("slendr-env", required = TRUE)
     TRUE
   }, error = function(cond) FALSE
 )
@@ -36,6 +36,10 @@ library(slendr)
 
 library(ggplot2)
 library(dplyr)
+
+# activate slendr's Python interface, installing all dependencies automatically
+# if necessary
+slendr_env()
 
 set.seed(314159)
 
@@ -151,13 +155,13 @@ That's it! By creating a separate new environment and installing the modules int
 
 Now we can instruct the *reticulate* package to use the newly created Python environment (if you use conda, pyenv-virtualenv or one of the other solutions for managing virtual environments, take a look [here](https://rstudio.github.io/reticulate/reference/use_python.html) for a specific function to use in your case):
 
-```{r}
+```{r, eval = FALSE}
 reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
 ```
 
 We can make sure that *reticulate* is indeed using our environment by calling:
 
-```{r}
+```{r, eval = FALSE}
 reticulate::py_config()
 ```
 
