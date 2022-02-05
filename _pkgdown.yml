@@ -124,6 +124,11 @@ reference:
     - ts_tajima
     - ts_segregating
 
+  - title: Installation and setup
+    contents:
+    - create_env
+    - clear_env
+
 news:
   one_page: true
 
