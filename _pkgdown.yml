@@ -126,7 +126,7 @@ reference:
 
   - title: Installation and setup
     contents:
-    - create_env
+    - setup_env
     - clear_env
 
 news:

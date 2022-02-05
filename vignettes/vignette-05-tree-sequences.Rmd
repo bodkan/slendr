@@ -39,7 +39,7 @@ library(dplyr)
 
 # activate slendr's Python interface, installing all dependencies automatically
 # if necessary
-slendr_env()
+setup_env()
 
 set.seed(314159)
 

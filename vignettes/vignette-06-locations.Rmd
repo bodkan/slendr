@@ -39,7 +39,7 @@ library(ggplot2)
 
 # activate slendr's Python interface, installing all dependencies automatically
 # if necessary
-slendr_env()
+setup_env()
 
 seed <- 314159
 set.seed(seed)
