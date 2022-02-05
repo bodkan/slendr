@@ -1248,7 +1248,7 @@ split_time <- function(pop) attr(pop, "history")[[1]]$time
 #'   name of a conda environment
 #'
 #' @export
-slendr_env <- function(env = NULL) {
+setup_env <- function(env = NULL) {
   if (!is.null(env)) {
     # check for the presence of a regular virtual environment (if the user
     # provided their own environment)
@@ -1288,7 +1288,7 @@ slendr_env <- function(env = NULL) {
     } else
       stop("The specified Python environment '", env, "' not found among ",
            "regular Python virtual environments or conda environments.\n\n",
-           "Note: If you run slendr_env() without any arguments, slendr will set up",
+           "Note: If you run setup_env() without any arguments, slendr will set up",
            " your Python environment for you completely automatically.",
            call. = FALSE)
   } else if ("slendr-env" %in% reticulate::conda_list()$name) {
@@ -1306,7 +1306,7 @@ slendr_env <- function(env = NULL) {
         "affect your system or your other Python installations at all.)",
         "\n\nIf your answer is \"no\", you are free to set up a virtual environment",
         "or a conda environment with Python >= 3.9, msprime, tskit, pyslim, and pandas",
-        "yourself and provide it to the slendr_env() function using its `env = ` argument.\n\n",
+        "yourself and provide it to the setup_env() function using its `env = ` argument.\n\n",
         "Setup Python environment for slendr?")
       )
     if (answer == 2) {
@@ -1322,7 +1322,7 @@ slendr_env <- function(env = NULL) {
 
       message("Python environment for slendr has been successfuly created, and ",
               "the R interface to msprime, tskit, and pyslim modules has been activated. ",
-              "In the future, you may simply call slendr_env() again and slendr ",
+              "In the future, you may simply call setup_env() again and slendr ",
               "will activate this environment automatically on its own.")
     } else
       warning("Your Python environment is not set up correctly which means that",
@@ -1331,9 +1331,13 @@ slendr_env <- function(env = NULL) {
   }
 }
 
-#' Remove previously created slendr miniconda Python environment
+#' Remove the automatically created slendr miniconda Python environment
 #'
 #' @export
 clear_env <- function() {
-  reticulate::conda_remove("slendr-env")
+  if ("slendr-env" %in% reticulate::conda_list()$name)
+    reticulate::conda_remove("slendr-env")
+  else
+    warning("No conda environment named 'slendr-env' has been found",
+            call. = FALSE)
 }
