@@ -23,7 +23,7 @@ If you would like to stay updated with the developments:
 
 1.  Click on the "Watch" button on the project's [Github website](https://github.com/bodkan/slendr/).
 
-2.  Follow me on [Twitter](https://twitter.com/fleventy5). I might post some updates once the software is a bit more ready.
+2.  Follow me on [Twitter](https://twitter.com/dr_bodkan). I might post some updates once the software is a bit more ready.
 
 -----------
 
