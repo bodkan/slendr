@@ -47,6 +47,14 @@ test_that("msprime and SLiM sampling tables are exactly the same (forward model)
   expect_true(all(ts_samples(forward_sts) == ts_samples(forward_mts)))
 })
 
+test_that("sampling more individuals than is the current N triggers warning (forward model)", {
+  forward_samples <- sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(x1, 1000), list(x2, 1000))
+  expect_warning(
+    slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_samples, random_seed = seed),
+    "There were some warnings during the simulation run"
+  )
+})
+
 # backward models ---------------------------------------------------------
 
 o <- population("o", time = 2500, N = 1)
@@ -95,4 +103,12 @@ test_that("msprime and SLiM metadata is exactly the same (backward model)", {
 
 test_that("msprime and SLiM sampling tables are exactly the same (backward model)", {
   expect_true(all(ts_samples(backward_sts) == ts_samples(backward_mts)))
+})
+
+test_that("sampling more individuals than is the current N triggers warning (backward model)", {
+  backward_samples <- sampling(backward_model, times = c(123, 250, 1000), list(a, 1000), list(x1, 10), list(x2, 10), list(c, 1000))
+  expect_warning(
+    slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_samples, random_seed = seed),
+    "There were some warnings during the simulation run"
+  )
 })
