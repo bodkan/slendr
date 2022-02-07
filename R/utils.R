@@ -7,9 +7,6 @@ get_binary <- function(method) {
       binary <- "SLiMgui"
   } else
     binary <- "slim"
-
-  binary_path <- Sys.which(binary)
-  as.character(binary_path)
 }
 
 

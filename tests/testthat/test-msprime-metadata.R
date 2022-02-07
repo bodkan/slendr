@@ -1,5 +1,4 @@
-devtools::load_all(".")
-setup_env()
+skip_if(!env_present("slendr-env"))
 
 seed <- 42 # random seed
 seq_len <- 2e5 # amount of sequence to simulate
@@ -11,8 +10,8 @@ mut_rate <- 1e-8 # mutation rate
 o <- population("o", time = 1, N = 1)
 b <- population("b", parent = o, time = 500, N = 10)
 c <- population("c", parent = b, time = 1000, N = 10)
-x1 <- population("x1", parent = c, time = 2000, N = 100)
-x2 <- population("x2", parent = c, time = 2000, N = 100)
+x1 <- population("x1", parent = c, time = 2000, N = 10)
+x2 <- population("x2", parent = c, time = 2000, N = 10)
 a <- population("a", parent = b, time = 1500, N = 10)
 
 forward_model_dir <- paste0(tempfile(), "_forward")
@@ -21,13 +20,13 @@ forward_model <- compile(populations = list(a, b, x1, x2, c, o), dir = forward_m
                  generation_time = 1, overwrite = TRUE, sim_length = 2200,
                  description = "The most incredible popgen model ever")
 
-samples <- rbind(
-  sampling(forward_model, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1)),
-  sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+forward_samples <- rbind(
+  sampling(forward_model, times = 2200, list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1)),
+  sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
-slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
-msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
+slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_samples, random_seed = seed)
+msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_samples, random_seed = seed)
 
 forward_sts <- ts_load(forward_model, file = file.path(forward_model_dir, "output_slim.trees"))
 forward_mts <- ts_load(forward_model, file = file.path(forward_model_dir, "output_msprime.trees"))
@@ -71,13 +70,13 @@ backward_model <- compile(populations = list(a, b, x1, x2, c, o), dir = backward
 # sampling than the number of individuals in the simulation being present (SLiM
 # should only sample the maximum that is available, but what does msprime do
 # here?)
-samples <- rbind(
+backward_samples <- rbind(
   sampling(backward_model, times = 0, list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1)),
   sampling(backward_model, times = c(123, 250, 1000), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
-slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
-msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
+slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_samples, random_seed = seed)
+msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_samples, random_seed = seed)
 
 backward_sts <- ts_load(backward_model, file = file.path(backward_model_dir, "output_slim.trees"))
 backward_mts <- ts_load(backward_model, file = file.path(backward_model_dir, "output_msprime.trees"))

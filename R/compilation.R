@@ -339,7 +339,7 @@ slim <- function(model, sequence_length, recombination_rate,
   readr::write_tsv(sampling_df, sampling_path)
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
-  if (Sys.which(binary) == "")
+  if (binary != "open -a SLiMgui" && Sys.which(binary) == "")
     stop(sprintf("%s binary not found. Please modify your $PATH accordingly or
   specify the path manually by setting the 'binary_path' argument.", binary),
   call. = FALSE)
@@ -391,8 +391,23 @@ slim <- function(model, sequence_length, recombination_rate,
       cat("--------------------------------------------------\n\n")
     }
 
-    if (system(slim_command, ignore.stdout = !verbose) != 0)
-      stop("SLiM simulation resulted in an error -- see the output above for and indication of what could have gone wrong", call. = FALSE)
+    # execute the command, capture all log output and decide whether to print
+    # any of the log information to the console
+    log_output <- system(slim_command, intern = TRUE)
+    log_warnings <- grep("WARNING", log_output, value = TRUE)
+    if (verbose)
+      cat(log_output, sep = "\n")
+    else if (length(log_warnings)) {
+      warning("There were some warnings during the simulation run:\n",
+              paste(log_warnings, collapse = "\n"), call. = FALSE)
+    }
+
+    if (!grepl("simulation finished", log_output[length(log_output)])) {
+      if (!verbose) cat(log_output, sep = "\n")
+      stop("SLiM simulation was terminated before finishing ",
+           "-- see the output above for an indication of what could ",
+           "have gone wrong", call. = FALSE)
+    }
   }
 }
 
