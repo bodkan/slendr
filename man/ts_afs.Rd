@@ -9,7 +9,7 @@ ts_afs(
   sample_sets = NULL,
   mode = c("site", "branch", "node"),
   windows = NULL,
-  span_normalise = TRUE,
+  span_normalise = FALSE,
   polarised = FALSE
 )
 }

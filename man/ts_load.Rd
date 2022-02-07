@@ -6,7 +6,7 @@
 \usage{
 ts_load(
   model,
-  file = file.path(model$path, "output_slim.trees"),
+  file = NULL,
   recapitate = FALSE,
   simplify = FALSE,
   mutate = FALSE,
