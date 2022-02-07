@@ -2,11 +2,13 @@
 get_binary <- function(method) {
   if (method == "gui") {
     if (Sys.info()["sysname"] == "Darwin")
-      return("open -a SLiMgui")
+      binary <- "open -a SLiMgui"
     else
       binary <- "SLiMgui"
   } else
     binary <- "slim"
+
+  binary
 }
 
 
