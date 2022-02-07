@@ -366,7 +366,23 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         } else
             where = "";
 
-        log_output("remembering " + n + " individuals of " +
+        if (isInfinite(n)) {
+            n = length(all_inds);
+            n_str = "all (" + n + ")";
+            // replace the original INF value with a real number of individuals
+            // for later serialization of metadata
+            // for later serialization of metadata
+            replace_which =
+                SAMPLING.getValue("n") == INF &
+                SAMPLING.getValue("pop") == pop &
+                SAMPLING.getValue("time_gen") == sim.generation - BURNIN_LENGTH;
+            n_values = SAMPLING.getValue("n");
+            n_values[replace_which] = n;
+            SAMPLING.setValue("n", n_values);
+        } else
+            n_str = asString(asInteger(n));
+
+        log_output("remembering " + n_str + " individuals of " +
                              pop + "(p" + get_pop(pop).id + ")" + where);
 
         // give a warning in case more individuals are scheduled for sampling
@@ -742,12 +758,12 @@ function (void) print_table(object<Dictionary> d) {
 function (ifsl) convert_type(s$ column_name, s string_values) {
     // vectors of all possible column names in tables defined by slendr `compile()`
     string = c("pop", "parent", "how", "path", "from", "to", "how", "dispersal_fun");
-    integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N", "n",
+    integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N",
                 "time_orig", "time_gen", "tmap_orig", "tmap_gen",
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
                 "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
                 "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
-    float = c("rate", "competition_dist", "mate_dist", "dispersal_dist",
+    float = c("rate", "competition_dist", "mate_dist", "dispersal_dist", "n",
               "x", "y", "x_orig", "y_orig");
     logical = c("overlap");
 

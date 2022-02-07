@@ -344,7 +344,7 @@ process_sampling <- function(samples, model, verbose = FALSE) {
   if (is.null(samples)) {
     if (verbose)
       message("Tree-sequence recording is on but no sampling schedule was given. ",
-              "Generating one at least for populations surviving to the end of the simulation...")
+              "Generating one for all individuals surviving to the end of the simulation.")
     surviving_pops <- purrr::keep(model$populations, ~ attr(.x, "remove") == -1)
 
     # generate sampling schedule, remembering all individuals from all populations
