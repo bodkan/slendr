@@ -93,8 +93,8 @@ ts_load <- function(model, file = NULL,
     else if (length(ts_files) > 1) {
       stop("Multiple tree sequence files found in the model directory:\n",
               paste(ts_files, collapse = "\n"),
-              "\nPlease use the `file = ` argument of `ts_load()` to specify ",
-              "the tree sequence to be loaded manually.", call. = FALSE)
+              "\n\nPlease use the `file = ` argument of `ts_load()` to specify ",
+              "which tree sequence should be loaded.", call. = FALSE)
     }
   }
 
