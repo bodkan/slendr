@@ -56,20 +56,13 @@ run_slim_msprime <- function(forward_model, backward_model,
   })
 }
 
-load_msprime_ts <- function(path, mut_rate, seed) {
-  ts <- tskit$load(path.expand(path))
-  ts <- msp$sim_mutations(
-    ts,
-    rate = mut_rate,
-    random_seed = seed
-  )
-  ts
-}
-
-load_slim_ts <- function(model, N, rec_rate, mut_rate, seed) {
-  ts_load(
-    model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-    Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate,
-    random_seed = seed
-  )
+load_tree_sequence <- function(backend, model, N, rec_rate, mut_rate, seed) {
+  if (backend == "SLiM")
+    ts_load(
+      model, file = file.path(model$path, "output_slim.trees"), recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+      Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate,
+      random_seed = seed
+    )
+  else
+    ts_load(model, file = file.path(model$path, "output_msprime.trees"), mutate = TRUE, mutation_rate = mut_rate, random_seed = seed)
 }

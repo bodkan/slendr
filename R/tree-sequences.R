@@ -207,6 +207,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")
+  attr(ts_new, "source") <- attr(ts, "source")
 
   attr(ts_new, "recapitated") <- TRUE
   attr(ts_new, "simplified") <- attr(ts, "simplified")
@@ -326,6 +327,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")
+  attr(ts_new, "source") <- attr(ts, "source")
 
   # get other data about individuals in the simplified tree sequence, sort them
   # also by their IDs and times, and add their node IDs extracted above
@@ -386,7 +388,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   check_ts_class(ts)
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
 
-  if (is.numeric(mut_type))
+  if (is.numeric(mut_type) && attr(ts, "source") == "slim")
     mut_type <- msp$SLiMMutationModel(type = as.integer(mut_type))
 
   ts_new <-
@@ -396,11 +398,13 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
       model = mut_type,
       keep = keep_existing,
       random_seed = random_seed
-    ) %>%
-    pyslim$SlimTreeSequence()
+    )
+
+  if (attr(ts, "source") == "slim") ts_new <- pyslim$SlimTreeSequence(ts_new)
 
   attr(ts_new, "model") <- attr(ts, "model")
   attr(ts_new, "metadata") <- attr(ts, "metadata")
+  attr(ts_new, "source") <- attr(ts, "source")
 
   attr(ts_new, "recapitated") <- attr(ts, "recapitated")
   attr(ts_new, "simplified") <- attr(ts, "simplified")
@@ -1261,7 +1265,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'
 #' @export
 ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
-                   windows = NULL, span_normalise = TRUE,
+                   windows = NULL, span_normalise = FALSE,
                    polarised = FALSE) {
   mode <- match.arg(mode)
   if (is.null(sample_sets))
@@ -1281,6 +1285,9 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
     span_normalise = span_normalise,
     polarised = polarised
   )
+
+  # drop the useless 0-th element when there's no windowing
+  if (is.null(windows)) result <- result[-1]
 
   result
 }
