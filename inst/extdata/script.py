@@ -4,6 +4,7 @@ import sys
 import pathlib
 import hashlib
 import logging
+import random
 
 import tskit
 import pyslim
@@ -21,7 +22,7 @@ parser.add_argument("--model", metavar="DIRECTORY", default=".",
                    help="Path to a slendr model directory")
 parser.add_argument("--output", metavar="FILE",
                     help="Path to a tree sequence output file")
-parser.add_argument("--sequence-length", required=True, type=float,
+parser.add_argument("--sequence-length", required=True, type=int,
                     help="The length of a sequence to simulate")
 parser.add_argument("--recombination-rate", required=True, type=float,
                     help="Uniform recombination rate")
@@ -38,6 +39,9 @@ args = parser.parse_args()
 if args.verbose:
     logging.basicConfig(level=logging.INFO)
 
+if not args.seed:
+  args.seed = random.randint(1, sys.maxsize)
+  
 model_dir = os.path.expanduser(args.model)
 
 logging.info(f"Loading slendr model configuration files from {model_dir}")
@@ -54,6 +58,7 @@ resizes_path = pathlib.Path(model_dir, "resizes.tsv")
 geneflows_path = pathlib.Path(model_dir, "geneflow.tsv")
 length_path = pathlib.Path(model_dir, "length.txt")
 direction_path = pathlib.Path(model_dir, "direction.txt")
+description_path = pathlib.Path(model_dir, "description.txt")
 sampling_path = os.path.expanduser(args.sampling_schedule)
 
 # read model configuration files
@@ -71,6 +76,9 @@ length = int(float(open(length_path, "r").readline().rstrip()))
 
 direction = open(direction_path, "r").readline().rstrip()
 logging.info(f"Loaded model is specified in the {direction} direction")
+
+description = open(description_path, "r").readline().rstrip()
+logging.info(f"Model description: {description}")
 
 if os.path.exists(sampling_path):
     samples_df = pandas.read_table(sampling_path)
@@ -189,6 +197,36 @@ output_path = os.path.expanduser(args.output)
 
 logging.info(f"Saving tree sequence output to {output_path}")
 
-ts.dump(output_path)
+slendr_metadata = {
+    "slendr": {
+        "version": "__VERSION__",
+        "backend": "msprime",
+        "description": description,
+        "sampling": {
+            "pop" : list(samples_df["pop"].values),
+            "n" : list(samples_df["n"].astype(numpy.int32)),
+            "time_gen" : list(samples_df["time_gen"].astype(numpy.int32)),
+            "x" : list(samples_df["x"].astype(numpy.int32)),
+            "y" : list(samples_df["y"].astype(numpy.int32)),
+            "time_orig" : list(samples_df["time_orig"].astype(numpy.float32)),
+            "x_orig" : list(samples_df["x_orig"].astype(numpy.float32)),
+            "y_orig" : list(samples_df["y_orig"].astype(numpy.float32))
+        },
+        "arguments": {
+          "SEQUENCE_LENGTH"   : args.sequence_length,
+          "RECOMB_RATE"       : args.recombination_rate,
+          "SEED"              : args.seed,
+          "SIMULATION_LENGTH" : length
+        }
+    }
+}
+
+tables = ts.dump_tables()
+tables.metadata_schema = tskit.MetadataSchema({"codec": "json"})
+tables.metadata = slendr_metadata
+
+ts_metadata = tables.tree_sequence()
+
+ts_metadata.dump(output_path)
 
 logging.info("DONE")
