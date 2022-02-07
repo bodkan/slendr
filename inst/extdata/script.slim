@@ -34,6 +34,8 @@ initialize() {
     defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
     defineConstant("SAMPLING", read_table(SAMPLES));
 
+    defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
+
     if (SPATIAL) {
         defineConstant("INTERACTIONS", read_table(config_path("dispersals.tsv")));
         defineConstant("MAPS", read_table(config_path("maps.tsv")));
@@ -597,8 +599,9 @@ function (object<Dictionary>) collect_metadata(void) {
     // slendr version and commit hash that generated this script
     metadata.setValue("version", "__VERSION__");
     metadata.setValue("backend", "SLiM");
-    // model description
-    metadata.setValue("description", "__DESCRIPTION__");
+
+    metadata.setValue("description", DESCRIPTION);
+
     // sampling schedule table
     metadata.setValue("sampling", SAMPLING);
 

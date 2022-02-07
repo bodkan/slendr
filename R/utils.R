@@ -405,6 +405,39 @@ check_location_bounds <- function(locations, map) {
          paste(locations[!checks], collapse = ", "), call. = FALSE)
 }
 
+# Convert SLiM time units as they are saved in the tree-sequence output
+# (and also other slendr output formats such as the locations of individuals
+# or ancestry proportions over time) back to user-specified time units
+# (either forward or backward)
+convert_slim_time <- function(times, model) {
+  ancestors <- dplyr::filter(model$splits, parent == "ancestor")
+
+  if (model$direction == "backward") {
+    result <- times * model$generation_time
+    # does the backward simulation model terminate sooner than "present-day"?
+    # if so, shift the times to start at the original time specified by user
+    if (max(ancestors[, ]$tsplit_orig) != model$orig_length)
+      result <- result + (ancestors[, ]$tsplit_orig - model$orig_length)
+  } else {
+    result <- (model$length - times + 1) * model$generation_time
+    # did the simulation start at a later time than "generation 1"?
+    # if it did, shift the time appropriately
+
+    if (min(round(ancestors[, ]$tsplit_orig / model$generation_time) != 1))
+      result <- result + ancestors[1, ]$tsplit_orig - model$generation_time
+  }
+  as.integer(result)
+}
+
+# Convert msprime node time units into the user-specified time units
+convert_msprime_time <- function(time, model) {
+  if (model$direction == "forward")
+    model$orig_length - (time - 1) * model$generation_time
+  else {
+    time * model$generation_time
+  }
+}
+
 kernel_fun <- function(fun = c("normal", "uniform", "cauchy", "exponential")) {
   match.arg(fun)
 }
