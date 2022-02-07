@@ -25,5 +25,6 @@ test_that("SLiMgui is found correctly", {
 test_that("slim is found correctly", {
   skip_on_cran()
   skip_on_os("windows")
-  expect_equal(get_binary("batch"), as.character(Sys.which("slim")))
+  expect_equal(Sys.which(get_binary("batch")),
+               Sys.which("slim"))
 })

@@ -34,7 +34,7 @@ test_that("ts_load generates an object of the correct type", {
 
 test_that("ts_save and ts_load result in the same tree sequence", {
   ts1 <- ts_load(model)
-  file <- tempfile()
+  file <- paste0(tempfile(), "_slim.trees")
   ts_save(ts1, file)
   ts2 <- ts_load(model, file = file)
 
