@@ -8,12 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- tryCatch(
-  {
-    reticulate::use_condaenv("slendr-env", required = TRUE)
-    TRUE
-  }, error = function(cond) FALSE
-)
+env_present <- "slendr-env" %in% reticulate::conda_list()$name
 
 knitr::opts_chunk$set(
   collapse = FALSE,
