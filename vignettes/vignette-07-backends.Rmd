@@ -357,14 +357,15 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
 
   # load the SLiM tree sequence
   slim_ts <- ts_load(
-    model, file = file.path(model$path, "output_slim.trees"), recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+    model, file = file.path(model$path, "output_slim.trees"),
+    recapitate = TRUE, simplify = TRUE, mutate = TRUE,
     Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate,
     random_seed = seed
   )
 
   # load the msprime tree sequence
   msprime_ts <- ts_load(
-    model, file = file.path(model$path, "output_slim.trees"),
+    model, file = file.path(model$path, "output_msprime.trees"),
     mutate = TRUE, mutation_rate = mut_rate, random_seed = seed
   )
 
