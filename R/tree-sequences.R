@@ -382,6 +382,10 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
                                          "time", location_col, "remembered",
                                          "retained", "alive", "pedigree_id")]
   } else { # generate updated data table for the msprime tree sequence case
+    # TODO: This is suspiciously more simple than the SLiM case above -- I should
+    # take a look if the old SLiM simplification code can be simplified (ummm...).
+    # Maybe I just learned to navigate the tree sequence tables better and the
+    # pedigree IDs juggling is no longer necessary?
     attr(ts_new, "data") <- get_msprime_table_data(ts_new, model, simplify_to)
   }
 
