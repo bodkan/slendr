@@ -98,15 +98,22 @@ ts_load <- function(model, file = NULL,
     }
   }
 
-  # decide which tree sequence (SLiM or msprime) to load
-  if (grepl("_slim\\.trees", file)) {
-    ts <- pyslim$load(path.expand(file))
-    backend <- "slim"
-  } else if (grepl("_msprime\\.trees", file)) {
-    ts <- tskit$load(path.expand(file))
-    backend <- "msprime"
+  # load the tree sequence, converting it to a SLiM tree sequence if necessary
+  ts <- tskit$load(path.expand(file))
+  if (!is.null(ts$metadata$SLiM)) {
+    ts <- pyslim$SlimTreeSequence(ts)
+    backend <- "SLiM"
   } else
-    stop("Unknown tree sequence slendr output file '", file, "'", call. = FALSE)
+    backend <- "msprime"
+
+  # if (grepl("_slim\\.trees", file)) {
+  #   ts <- pyslim$load(path.expand(file))
+  #   backend <- "SLiM"
+  # } else if (grepl("_msprime\\.trees", file)) {
+  #   ts <- tskit$load(path.expand(file))
+  #   backend <- "msprime"
+  # } else
+  #   stop("Unknown tree sequence slendr output file '", file, "'", call. = FALSE)
 
   attr(ts, "source") <- backend
 
@@ -127,7 +134,7 @@ ts_load <- function(model, file = NULL,
     attr(ts, "edges") <- get_ts_edges(ts)
     attr(ts, "individuals") <- get_ts_individuals(ts)
 
-    if (backend == "slim")
+    if (backend == "SLiM")
       attr(ts, "data") <- get_slim_table_data(ts, model, spatial)
     else
       attr(ts, "data") <- get_msprime_table_data(ts, model)
@@ -190,20 +197,23 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
                           migration_matrix = NULL, random_seed = NULL) {
   check_ts_class(ts)
 
-  if (attr(ts, "source") != "slim")
-    warning("There is no need to recapitate an already coalesced msprime tree sequence",
-            call. = FALSE)
-
   model <- attr(ts, "model")
 
   if (is.null(model$world)) spatial <- FALSE
 
-  # suppress pyslim warning until we figure out how to switch to the new
-  # pyslim.recapitate(ts, ...) method
-  reticulate::py_capture_output(
-    ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
-                            random_seed = random_seed, migration_matrix = migration_matrix)
-  )
+
+  if (attr(ts, "source") == "SLiM") {
+    # suppress pyslim warning until we figure out how to switch to the new
+    # pyslim.recapitate(ts, ...) method
+    reticulate::py_capture_output(
+      ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
+                              random_seed = random_seed, migration_matrix = migration_matrix)
+    )
+  } else {
+    ts_new <- ts
+    warning("There is no need to recapitate an already coalesced msprime tree sequence",
+            call. = FALSE)
+  }
 
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")
@@ -217,7 +227,10 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
   attr(ts_new, "individuals") <- get_ts_individuals(ts_new)
 
-  attr(ts_new, "data") <- get_slim_table_data(ts_new, model, spatial)
+  if (attr(ts_new, "source") == "SLiM")
+    attr(ts_new, "data") <- get_slim_table_data(ts_new, model, spatial)
+  else
+    attr(ts_new, "data") <- get_msprime_table_data(ts_new, model)
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -280,6 +293,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' @export
 ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE) {
   check_ts_class(ts)
+  backend <- attr(ts, "source")
 
   if (!attr(ts, "recapitated") && !keep_input_roots && !ts_coalesced(ts))
     warning("Simplifying a non-recapitated tree sequence. Make sure this is what you really want",
@@ -291,10 +305,22 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
   data <- attr(ts, "data")
   # table data was not processed yet (i.e. simplification is being performed
   # during loading of the tree sequence data)
-  if (is.null(data))
-    data <- get_slim_table_data(ts, model, spatial)
+  if (is.null(data)) {
+    if (backend == "SLiM")
+      data <- get_slim_table_data(ts, model, spatial)
+    else
+      data <- get_msprime_table_data(ts, model)
+    attr(ts, "data") <- data
+  }
 
-  if (is.null(simplify_to))
+  if (is.null(simplify_to) && backend == "msprime") {
+    warning("If you want to simplify an msprime tree sequence, you must specify ",
+            "the names of individuals to simplify to via the `simplify_to = ` ",
+            "function argument.", call. = FALSE)
+    return(ts)
+  }
+
+  if (is.null(simplify_to) && backend == "SLiM")
     samples <- dplyr::filter(data, remembered)$node_id
   else if (!all(simplify_to %in% data$name))
       stop("The following individuals are not present in the tree sequence: ",
@@ -307,41 +333,9 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
                         filter_populations = FALSE,
                         keep_input_roots = keep_input_roots)
 
-  # get the name and location from the original table with the pedigree_id key
-  cols <- c("pedigree_id", "pop", "name")
-  if (spatial) cols <- c(cols, "location")
-  # we need to deduplicate the rows because the table is stored in a long format
-  # (but we removed the node_id column which each diploid individual has two
-  # values of)
-  keep_data <- data[, cols] %>%
-    dplyr::filter(!duplicated(pedigree_id))
-
-  # get node IDs of individuals present in the simplified tree sequence
-  # (sort by individual ID and time)
-  nodes_new <- get_ts_nodes(ts_new) %>%
-    dplyr::arrange(ind_id, time) %>%
-    dplyr::select(node_id, ind_id) %>%
-    .$node_id
-
-  location_col <- if (spatial) "location" else NULL
-
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")
   attr(ts_new, "source") <- attr(ts, "source")
-
-  # get other data about individuals in the simplified tree sequence, sort them
-  # also by their IDs and times, and add their node IDs extracted above
-  # (this works because we sorted both in the same way)
-  data_new <- get_slim_table_data(ts_new, model, spatial, simplify_to) %>%
-    as.data.frame() %>%
-    dplyr::arrange(ind_id, time) %>%
-    dplyr::select(ind_id, pedigree_id, time, alive, remembered, retained) %>%
-    dplyr::inner_join(keep_data, by = "pedigree_id") %>%
-    dplyr::mutate(node_id = nodes_new) %>%
-    dplyr::as_tibble()
-
-  if (spatial)
-    data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
 
   attr(ts_new, "recapitated") <- attr(ts, "recapitated")
   attr(ts_new, "simplified") <- TRUE
@@ -351,9 +345,45 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
   attr(ts_new, "individuals") <- get_ts_individuals(ts_new)
 
-  attr(ts_new, "data") <- data_new[, c("name", "pop", "ind_id", "node_id",
-                                       "time", location_col, "remembered",
-                                       "retained", "alive", "pedigree_id")]
+  # use pedigree IDs to cross-check the original data with simplified table
+  if (backend == "SLiM") {
+    # get the name and location from the original table with the pedigree_id key
+    cols <- c("pedigree_id", "pop", "name")
+    if (spatial) cols <- c(cols, "location")
+    # we need to deduplicate the rows because the table is stored in a long format
+    # (but we removed the node_id column which each diploid individual has two
+    # values of)
+    keep_data <- data[, cols] %>% dplyr::filter(!duplicated(pedigree_id))
+
+    # get node IDs of individuals present in the simplified tree sequence
+    # (sort by individual ID and time)
+    nodes_new <- get_ts_nodes(ts_new) %>%
+      dplyr::arrange(ind_id, time) %>%
+      dplyr::select(node_id, ind_id) %>%
+      .$node_id
+
+    location_col <- if (spatial) "location" else NULL
+
+    # get other data about individuals in the simplified tree sequence, sort them
+    # also by their IDs and times, and add their node IDs extracted above
+    # (this works because we sorted both in the same way)
+    data_new <- get_slim_table_data(ts_new, model, spatial, simplify_to) %>%
+      as.data.frame() %>%
+      dplyr::arrange(ind_id, time) %>%
+      dplyr::select(ind_id, pedigree_id, time, alive, remembered, retained) %>%
+      dplyr::inner_join(keep_data, by = "pedigree_id") %>%
+      dplyr::mutate(node_id = nodes_new) %>%
+      dplyr::as_tibble()
+
+    if (spatial)
+      data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
+
+    attr(ts_new, "data") <- data_new[, c("name", "pop", "ind_id", "node_id",
+                                         "time", location_col, "remembered",
+                                         "retained", "alive", "pedigree_id")]
+  } else { # generate updated data table for the msprime tree sequence case
+    attr(ts_new, "data") <- get_msprime_table_data(ts_new, model, simplify_to)
+  }
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -388,7 +418,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   check_ts_class(ts)
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
 
-  if (is.numeric(mut_type) && attr(ts, "source") == "slim")
+  if (is.numeric(mut_type) && attr(ts, "source") == "SLiM")
     mut_type <- msp$SLiMMutationModel(type = as.integer(mut_type))
 
   ts_new <-
@@ -400,7 +430,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
       random_seed = random_seed
     )
 
-  if (attr(ts, "source") == "slim") ts_new <- pyslim$SlimTreeSequence(ts_new)
+  if (attr(ts, "source") == "SLiM") ts_new <- pyslim$SlimTreeSequence(ts_new)
 
   attr(ts_new, "model") <- attr(ts, "model")
   attr(ts_new, "metadata") <- attr(ts, "metadata")
@@ -463,7 +493,8 @@ ts_genotypes <- function(ts) {
     positions <- positions[biallelic_pos]
   }
 
-  chromosomes <- ts_data(ts, remembered = TRUE) %>%
+  chromosomes <- ts_data(ts, remembered = TRUE) %>% # applies also for msprime
+    stats::na.omit() %>% # effectively filters for sampled for msprime
     dplyr::as_tibble() %>%
     dplyr::mutate(chr_name = sprintf("%s_chr%i", name, 1:2)) %>%
     dplyr::select(chr_name, node_id) %>%
@@ -586,10 +617,11 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
          call. = FALSE)
 
   if (!attr(ts, "mutated"))
-    warning("Attempting to extract genotypes from a tree sequence which has not been mutated",
-            call. = FALSE)
+    stop("Attempting to extract genotypes from a tree sequence which has not been mutated",
+         call. = FALSE)
 
   data <- ts_data(ts, remembered = TRUE) %>%
+    stats::na.omit() %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(name, ind_id)
 
@@ -647,12 +679,15 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
   check_ts_class(ts)
 
+  backend <- attr(ts, "source")
   data <- attr(ts, "data")
+
   if (!is.null(remembered)) data <- dplyr::filter(data, remembered)
   if (!is.null(retained)) data <- dplyr::filter(data, retained)
   if (!is.null(alive)) data <- dplyr::filter(data, alive)
 
   attr(data, "model") <- attr(ts, "model")
+  attr(data, "source") <- attr(ts, "source")
 
   class(data) <- set_class(data, "tsdata")
 
@@ -1331,7 +1366,7 @@ get_ts_individuals <- function(ts) {
     ind_id = seq_len(ts$num_individuals) - 1
   )
 
-  if (attr(ts, "source") == "slim") {
+  if (attr(ts, "source") == "SLiM") {
     reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id'] for ind in ts.individuals()]")
 
     ind_table <- dplyr::tibble(
@@ -1422,9 +1457,10 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
 get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
   # load information about samples at times and from populations of remembered
   # individuals
-  samples <- attr(ts, "metadata")$sampling %>% dplyr::arrange(-time, pop)
+  samples <- attr(ts, "metadata")$sampling
   if (!is.null(simplify_to))
-    samples <- samples %>% dplyr::filter(name %in% simplify_to)
+    samples <- dplyr::filter(samples, name %in% simplify_to)
+  samples <- dplyr::arrange(samples, -time, pop)
 
   # get data from the original individual table
   individuals <- get_ts_individuals(ts) %>%
@@ -1539,7 +1575,7 @@ get_sampling <- function(metadata) {
 get_metadata <- function(ts) {
   # SLiM forces metadata into a certain structure, so the slendr metadata
   # must be extracted differently for the two backends
-  if (attr(ts, "source") == "slim") {
+  if (attr(ts, "source") == "SLiM") {
     metadata <- ts$metadata$SLiM$user_metadata$slendr[[1]]
     arguments = metadata$arguments[[1]]
   } else {

@@ -447,6 +447,10 @@ msprime <- function(model, sequence_length, recombination_rate,
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
 
+  if (!hasArg(sampling))
+    stop("Unlike SLiM simulations, explicit sampling schedule must be provided for msprime simulations",
+         call. = FALSE)
+
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
                                col_types = "cc")
