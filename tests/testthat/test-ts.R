@@ -607,3 +607,74 @@ test_that("locations and times in the tree sequence match values saved by SLiM (
   expect_true(all.equal(joined$y, joined$location_y, tolerance = 1e-5))
   expect_true(all.equal(joined$time.x, joined$time.y))
 })
+
+test_that("metadata is the same for SLiM and msprime conditional on a model", {
+  samples <- rbind(
+    sampling(model, times = 2, list(p1, 2), list(p2, 2)),
+    sampling(model, times = 212, list(p1, 5), list(p2, 3)),
+    sampling(model, times = 300, list(p1, 10), list(p2, 10))
+  )
+
+  slim_ts <- file.path(model_dir, "output_slim.trees")
+  msprime_ts <- file.path(model_dir, "msprime_output.trees")
+
+  slim(model, sequence_length = 100000, recombination_rate = 0,
+       save_locations = TRUE, burnin = 10,
+       method = "batch", random_seed = 314159,
+       sampling = samples, verbose = FALSE)
+
+  msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprime_ts,
+          random_seed = 314159, sampling = samples, verbose = FALSE)
+
+  simplify_to <- c("pop1_1", "pop1_2", "pop1_17")
+
+  sts1 <- ts_load(model, file = slim_ts)
+  sts2 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
+  sts3 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
+                 simplify_to = simplify_to)
+  sts4 <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000)
+  sts5 <- ts_mutate(sts4, mutation_rate = 1e-7)
+  sts6 <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000,
+                 mutate = TRUE, mutation_rate = 1e-7)
+
+  mts1 <- ts_load(model, file = msprime_ts)
+  mts2 <- ts_load(model, file = msprime_ts)
+  mts3 <- ts_load(model, file = msprime_ts, simplify = TRUE, simplify_to = simplify_to)
+  suppressWarnings(mts4 <- ts_load(model, file = msprime_ts, simplify = TRUE))
+  mts5 <- ts_mutate(mts4, mutation_rate = 1e-7)
+  mts6 <- ts_load(model, file = msprime_ts, mutate = TRUE, mutation_rate = 1e-7)
+
+  expect_equal(ts_samples(sts1), ts_samples(mts1))
+  expect_equal(ts_samples(sts2), ts_samples(mts2))
+  expect_equal(ts_samples(sts3), ts_samples(mts3))
+  expect_equal(ts_samples(sts4), ts_samples(mts4))
+  expect_equal(ts_samples(sts5), ts_samples(mts5))
+  expect_equal(ts_samples(sts6), ts_samples(mts6))
+
+  sdata1 <- ts_data(sts1, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  mdata1 <- ts_data(mts1) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata2 <- ts_data(sts2, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  mdata2 <- ts_data(mts2) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata3 <- ts_data(sts3, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  mdata3 <- ts_data(mts3) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata4 <- ts_data(sts4, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  mdata4 <- ts_data(mts4) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata5 <- ts_data(sts5, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  mdata5 <- ts_data(mts5) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata6 <- ts_data(sts6, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  mdata6 <- ts_data(mts6) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
+
+  expect_equal(sdata1$name, mdata1$name)
+  expect_equal(sdata2$name, mdata2$name)
+  expect_equal(sdata3$name, mdata3$name)
+  expect_equal(sdata4$name, mdata4$name)
+  expect_equal(sdata5$name, mdata5$name)
+  expect_equal(sdata6$name, mdata6$name)
+
+  expect_equal(sdata1$time, mdata1$time)
+  expect_equal(sdata2$time, mdata2$time)
+  expect_equal(sdata3$time, mdata3$time)
+  expect_equal(sdata4$time, mdata4$time)
+  expect_equal(sdata5$time, mdata5$time)
+  expect_equal(sdata6$time, mdata6$time)
+})

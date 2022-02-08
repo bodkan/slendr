@@ -425,15 +425,15 @@ convert_slim_time <- function(times, model) {
     if (min(round(ancestors[, ]$tsplit_orig / model$generation_time) != 1))
       result <- result + ancestors[1, ]$tsplit_orig - model$generation_time
   }
-  as.integer(result)
+  as.numeric(result)
 }
 
 # Convert msprime node time units into the user-specified time units
 convert_msprime_time <- function(time, model) {
   if (model$direction == "forward")
-    model$orig_length - (time - 1) * model$generation_time
+    as.numeric(model$orig_length - (time - 1) * model$generation_time)
   else {
-    time * model$generation_time
+    as.numeric(time * model$generation_time)
   }
 }
 
