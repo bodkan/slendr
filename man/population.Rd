@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{population}
 \alias{population}
-\title{Define a population and its original spatial range}
+\title{Define a population}
 \usage{
 population(
   name,
@@ -67,7 +67,7 @@ terrestrial species)?}
 Object of the class \code{slendr_pop}
 }
 \description{
-Defines a spatial range of a population and its most important parameters.
+Defines the parameters of a population (non-spatial and spatial).
 }
 \details{
 There are three ways to specify a spatial boundary: i) circular range

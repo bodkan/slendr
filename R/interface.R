@@ -1,6 +1,6 @@
-#' Define a population and its original spatial range
+#' Define a population
 #'
-#' Defines a spatial range of a population and its most important parameters.
+#' Defines the parameters of a population (non-spatial and spatial).
 #'
 #' There are three ways to specify a spatial boundary: i) circular range
 #' specified using a center coordinate and a radisu, ii) polygon specified as a
@@ -505,7 +505,7 @@ dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersa
 }
 
 
-#' Define a geneflow event
+#' Define a gene flow event between two populations
 #'
 #' @param from,to Objects of the class \code{slendr_pop}
 #' @param rate Scalar value in the range (0, 1] specifying the
