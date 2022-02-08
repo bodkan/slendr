@@ -281,7 +281,9 @@
 <code class="sourceCode R"><span class="va">data</span></code></pre></div>
 <pre><code>#&gt; slendr 'tsdata' object 
 #&gt; ---------------------- 
-#&gt; tree-sequence contents:
+#&gt; tree sequence saved by the SLiM backend from a backward time model
+#&gt; 
+#&gt; summary of the contents:
 #&gt;   AFR - 5 sampled, 19 retained individuals
 #&gt;   OOA - 16 sampled, 89 retained individuals
 #&gt;   EHG - 22 sampled, 61 retained individuals
@@ -291,52 +293,37 @@
 #&gt; 
 #&gt; total: 125 sampled, 296 retained individuals and
 #&gt;  no nodes from an unassigned individual 
-#&gt; 
-#&gt; oldest sampled individual: 40000 backward time units
-#&gt; youngest sampled individual: 0 backward time units
-#&gt; 
-#&gt; oldest node: 2702915 backward time units
-#&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
-#&gt; contents of the underlying sf object:
+#&gt; oldest sampled individual: 40000 time units 'before present' 
+#&gt; youngest sampled individual: 0 time units 'before present' 
 #&gt; 
-#&gt;    name pop ind_id node_id time                 location remembered retained
-#&gt; 1 AFR_1 AFR      0     180    0 POINT (3374195 979360.5)       TRUE     TRUE
-#&gt; 2 AFR_1 AFR      0     181    0 POINT (3374195 979360.5)       TRUE     TRUE
-#&gt; 3 AFR_2 AFR      1     182    0 POINT (5165586 730509.2)       TRUE     TRUE
-#&gt; 4 AFR_2 AFR      1     183    0 POINT (5165586 730509.2)       TRUE     TRUE
-#&gt; 5 AFR_3 AFR      2     184    0  POINT (2878172 1192667)       TRUE     TRUE
-#&gt; 6 AFR_3 AFR      2     185    0  POINT (2878172 1192667)       TRUE     TRUE
-#&gt;   alive pedigree_id
-#&gt; 1  TRUE    31010657
-#&gt; 2  TRUE    31010657
-#&gt; 3  TRUE    31011202
-#&gt; 4  TRUE    31011202
-#&gt; 5  TRUE    31011240
-#&gt; 6  TRUE    31011240
+#&gt; oldest node: 2702915 time units 'before present' 
+#&gt; youngest node: 0 time units 'before present' 
+#&gt; ---------------------- 
+#&gt; overview of the underlying sf object:
 #&gt; 
-#&gt; ... and 567 additional rows
+#&gt; # A tibble: 573 × 10
+#&gt;    name  pop   ind_id node_id  time          location remembered
+#&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;   &lt;int&gt; &lt;dbl&gt;       &lt;POINT [m]&gt; &lt;lgl&gt;     
+#&gt;  1 OOA_1 OOA       56       0 40000 (8559748 3193326) TRUE      
+#&gt;  2 OOA_1 OOA       56       1 40000 (8559748 3193326) TRUE      
+#&gt;  3 OOA_2 OOA       58       2 39000 (8388098 3151908) TRUE      
+#&gt;  4 OOA_2 OOA       58       3 39000 (8388098 3151908) TRUE      
+#&gt;  5 OOA_3 OOA       63       4 38000 (8275635 3180032) TRUE      
+#&gt;  6 OOA_3 OOA       63       5 38000 (8275635 3180032) TRUE      
+#&gt;  7 OOA_4 OOA       67       6 37000 (8278986 3586068) TRUE      
+#&gt;  8 OOA_4 OOA       67       7 37000 (8278986 3586068) TRUE      
+#&gt;  9 OOA_5 OOA       69       8 36000 (8381127 3051721) TRUE      
+#&gt; 10 OOA_5 OOA       69       9 36000 (8381127 3051721) TRUE      
+#&gt; # … with 563 more rows, and 3 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,
+#&gt; #   pedigree_id &lt;int&gt;
+#&gt; 
+#&gt; Note: NA values belong to unsampled individuals
 #&gt; ---------------------- 
 #&gt; map: internal coordinate reference system EPSG 3035 
 #&gt; spatial limits (in degrees longitude and latitude):
 #&gt;   - vertical -15 ... 60
-#&gt;   - horizontal 20 ... 65
-#&gt; ---------------------- 
-#&gt; # A tibble: 573 × 10
-#&gt;    name  pop   ind_id node_id  time           location remembered
-#&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;   &lt;int&gt; &lt;int&gt;        &lt;POINT [m]&gt; &lt;lgl&gt;     
-#&gt;  1 AFR_1 AFR        0     180     0 (3374195 979360.5) TRUE      
-#&gt;  2 AFR_1 AFR        0     181     0 (3374195 979360.5) TRUE      
-#&gt;  3 AFR_2 AFR        1     182     0 (5165586 730509.2) TRUE      
-#&gt;  4 AFR_2 AFR        1     183     0 (5165586 730509.2) TRUE      
-#&gt;  5 AFR_3 AFR        2     184     0  (2878172 1192667) TRUE      
-#&gt;  6 AFR_3 AFR        2     185     0  (2878172 1192667) TRUE      
-#&gt;  7 AFR_4 AFR        3     186     0 (4630275 916663.3) TRUE      
-#&gt;  8 AFR_4 AFR        3     187     0 (4630275 916663.3) TRUE      
-#&gt;  9 AFR_5 AFR        4     188     0 (2234450 791214.7) TRUE      
-#&gt; 10 AFR_5 AFR        4     189     0 (2234450 791214.7) TRUE      
-#&gt; # … with 563 more rows, and 3 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,
-#&gt; #   pedigree_id &lt;int&gt;</code></pre>
+#&gt;   - horizontal 20 ... 65</code></pre>
 <p>In the first part of the summary, we see how many individuals (sampled or retained) and nodes are present in the tree sequence together with additional useful information, including a section of the internally stored <code>sf</code> object. And this is a crucial point—<strong>we can always access the internal <code>sf</code> object with the spatial data</strong> by running the following, which avoid the verbose summary above and exposes the underlying <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1"><em>sf</em> data frame</a> directly:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span><span class="op">[</span><span class="op">]</span></code></pre></div>
@@ -347,7 +334,9 @@
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
 #&gt; slendr 'tsdata' object 
 #&gt; ---------------------- 
-#&gt; tree-sequence contents:
+#&gt; tree sequence saved by the SLiM backend from a backward time model
+#&gt; 
+#&gt; summary of the contents:
 #&gt;   AFR - 5 sampled, 19 retained individuals
 #&gt;   OOA - 16 sampled, 89 retained individuals
 #&gt;   EHG - 22 sampled, 61 retained individuals
@@ -357,52 +346,37 @@
 #&gt; 
 #&gt; total: 125 sampled, 296 retained individuals and
 #&gt;  no nodes from an unassigned individual 
-#&gt; 
-#&gt; oldest sampled individual: 40000 backward time units
-#&gt; youngest sampled individual: 0 backward time units
-#&gt; 
-#&gt; oldest node: 2702915 backward time units
-#&gt; youngest node: 0 backward time units
 #&gt; ---------------------- 
-#&gt; contents of the underlying sf object:
+#&gt; oldest sampled individual: 40000 time units 'before present' 
+#&gt; youngest sampled individual: 0 time units 'before present' 
 #&gt; 
-#&gt;    name pop ind_id node_id time                 location remembered retained
-#&gt; 1 AFR_1 AFR      0     180    0 POINT (3374195 979360.5)       TRUE     TRUE
-#&gt; 2 AFR_1 AFR      0     181    0 POINT (3374195 979360.5)       TRUE     TRUE
-#&gt; 3 AFR_2 AFR      1     182    0 POINT (5165586 730509.2)       TRUE     TRUE
-#&gt; 4 AFR_2 AFR      1     183    0 POINT (5165586 730509.2)       TRUE     TRUE
-#&gt; 5 AFR_3 AFR      2     184    0  POINT (2878172 1192667)       TRUE     TRUE
-#&gt; 6 AFR_3 AFR      2     185    0  POINT (2878172 1192667)       TRUE     TRUE
-#&gt;   alive pedigree_id
-#&gt; 1  TRUE    31010657
-#&gt; 2  TRUE    31010657
-#&gt; 3  TRUE    31011202
-#&gt; 4  TRUE    31011202
-#&gt; 5  TRUE    31011240
-#&gt; 6  TRUE    31011240
+#&gt; oldest node: 2702915 time units 'before present' 
+#&gt; youngest node: 0 time units 'before present' 
+#&gt; ---------------------- 
+#&gt; overview of the underlying sf object:
 #&gt; 
-#&gt; ... and 567 additional rows
+#&gt; # A tibble: 573 × 10
+#&gt;    name  pop   ind_id node_id  time          location remembered
+#&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;   &lt;int&gt; &lt;dbl&gt;       &lt;POINT [m]&gt; &lt;lgl&gt;     
+#&gt;  1 OOA_1 OOA       56       0 40000 (8559748 3193326) TRUE      
+#&gt;  2 OOA_1 OOA       56       1 40000 (8559748 3193326) TRUE      
+#&gt;  3 OOA_2 OOA       58       2 39000 (8388098 3151908) TRUE      
+#&gt;  4 OOA_2 OOA       58       3 39000 (8388098 3151908) TRUE      
+#&gt;  5 OOA_3 OOA       63       4 38000 (8275635 3180032) TRUE      
+#&gt;  6 OOA_3 OOA       63       5 38000 (8275635 3180032) TRUE      
+#&gt;  7 OOA_4 OOA       67       6 37000 (8278986 3586068) TRUE      
+#&gt;  8 OOA_4 OOA       67       7 37000 (8278986 3586068) TRUE      
+#&gt;  9 OOA_5 OOA       69       8 36000 (8381127 3051721) TRUE      
+#&gt; 10 OOA_5 OOA       69       9 36000 (8381127 3051721) TRUE      
+#&gt; # … with 563 more rows, and 3 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,
+#&gt; #   pedigree_id &lt;int&gt;
+#&gt; 
+#&gt; Note: NA values belong to unsampled individuals
 #&gt; ---------------------- 
 #&gt; map: internal coordinate reference system EPSG 3035 
 #&gt; spatial limits (in degrees longitude and latitude):
 #&gt;   - vertical -15 ... 60
-#&gt;   - horizontal 20 ... 65
-#&gt; ---------------------- 
-#&gt; # A tibble: 573 × 10
-#&gt;    name  pop   ind_id node_id  time           location remembered
-#&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;   &lt;int&gt; &lt;int&gt;        &lt;POINT [m]&gt; &lt;lgl&gt;     
-#&gt;  1 AFR_1 AFR        0     180     0 (3374195 979360.5) TRUE      
-#&gt;  2 AFR_1 AFR        0     181     0 (3374195 979360.5) TRUE      
-#&gt;  3 AFR_2 AFR        1     182     0 (5165586 730509.2) TRUE      
-#&gt;  4 AFR_2 AFR        1     183     0 (5165586 730509.2) TRUE      
-#&gt;  5 AFR_3 AFR        2     184     0  (2878172 1192667) TRUE      
-#&gt;  6 AFR_3 AFR        2     185     0  (2878172 1192667) TRUE      
-#&gt;  7 AFR_4 AFR        3     186     0 (4630275 916663.3) TRUE      
-#&gt;  8 AFR_4 AFR        3     187     0 (4630275 916663.3) TRUE      
-#&gt;  9 AFR_5 AFR        4     188     0 (2234450 791214.7) TRUE      
-#&gt; 10 AFR_5 AFR        4     189     0 (2234450 791214.7) TRUE      
-#&gt; # … with 563 more rows, and 3 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,
-#&gt; #   pedigree_id &lt;int&gt;</code></pre>
+#&gt;   - horizontal 20 ... 65</code></pre>
 <p>Because the data returned by <code><a href="../reference/ts_data.html">ts_data()</a></code> is internally transformed to the projected CRS used by the model, we can use the returned object as any other data of the class <code>sf</code>. For instance, at the beginning of this vignette, we specified the world map of the model to be represented in projected CRS (EPSG 3035) which we can verify by typing:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span></code></pre></div>
@@ -480,7 +454,7 @@
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
 #&gt; # A tibble: 90 × 15
 #&gt;    name  pop   node_id level child_id child_time parent_id parent_time child_pop
-#&gt;  * &lt;chr&gt; &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;    &lt;int&gt;      &lt;int&gt;     &lt;int&gt;       &lt;int&gt; &lt;fct&gt;    
+#&gt;  * &lt;chr&gt; &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;    &lt;int&gt;      &lt;dbl&gt;     &lt;int&gt;       &lt;dbl&gt; &lt;fct&gt;    
 #&gt;  1 EUR_… EUR       190 1          190          0       266        1140 EUR      
 #&gt;  2 EUR_… EUR       190 2          266       1140       298        4470 EUR      
 #&gt;  3 EUR_… EUR       190 2          266       1140       371       18660 EUR      
@@ -506,7 +480,7 @@
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
 #&gt; # A tibble: 2 × 15
 #&gt;   name   pop   node_id level child_id child_time parent_id parent_time child_pop
-#&gt; * &lt;chr&gt;  &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;    &lt;int&gt;      &lt;int&gt;     &lt;int&gt;       &lt;int&gt; &lt;fct&gt;    
+#&gt; * &lt;chr&gt;  &lt;fct&gt;   &lt;int&gt; &lt;fct&gt;    &lt;int&gt;      &lt;dbl&gt;     &lt;int&gt;       &lt;dbl&gt; &lt;fct&gt;    
 #&gt; 1 EUR_25 EUR       190 1          190          0       266        1140 EUR      
 #&gt; 2 EUR_25 EUR       191 1          191          0       296        4080 EUR      
 #&gt; # … with 6 more variables: parent_pop &lt;fct&gt;, child_location &lt;POINT [m]&gt;,
@@ -582,7 +556,7 @@
 #&gt; Projected CRS: ETRS89-extended / LAEA Europe
 #&gt; # A tibble: 6,789 × 3
 #&gt;                              connection child_time parent_time
-#&gt;                        &lt;LINESTRING [m]&gt;      &lt;int&gt;       &lt;int&gt;
+#&gt;                        &lt;LINESTRING [m]&gt;      &lt;dbl&gt;       &lt;dbl&gt;
 #&gt;  1   (8559748 3193326, 7794902 2294646)      40000       42630
 #&gt;  2   (8559748 3193326, 7044473 1221506)      40000       48600
 #&gt;  3   (7794902 2294646, 7044473 1221506)      42630       48600
