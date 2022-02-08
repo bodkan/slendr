@@ -6,7 +6,7 @@ logo := man/figures/logo.png
 
 website:
 	rm -rf docs/
-	R -e 'devtools::install()'
+	R -e 'devtools::install(upgrade = "never")'
 	R -e 'source("logo.R")'
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 	R -e 'devtools::document()'
@@ -36,7 +36,7 @@ $(pkg): README.md
 	mkdir -p build; cd build; R CMD build --log ../../slendr
 
 README.md: README.Rmd $(logo)
-	R -e 'devtools::install()'
+	R -e 'devtools::install(upgrade = "never")'
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 
 $(logo): logo.R
