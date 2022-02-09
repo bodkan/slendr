@@ -1366,17 +1366,17 @@ check_env <- function() {
     py <- reticulate::py_discover_config()
 
     if (reticulate::py_module_available("tskit"))
-      tskit_version <- paste("version", slendr:::tskit[["_version"]]$tskit_version)
+      tskit_version <- paste("version", slendr:::tskit[["_version"]]$tskit_version, "✅ ")
     else
       tskit_version <- "MISSING"
 
     if (reticulate::py_module_available("msprime"))
-      msprime_version <- paste("version", slendr:::msp[["_version"]]$version)
+      msprime_version <- paste("version", slendr:::msp[["_version"]]$version, "✅ ")
     else
       msprime_version <- "MISSING"
 
     if (reticulate::py_module_available("pyslim"))
-      pyslim_version <- paste("version", slendr:::pyslim$pyslim_version)
+      pyslim_version <- paste("version", slendr:::pyslim$pyslim_version, "✅ ")
     else
       pyslim_version <- "MISSING"
 
