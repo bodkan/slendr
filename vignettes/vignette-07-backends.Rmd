@@ -38,9 +38,11 @@ library(ggplot2)
 library(purrr)
 library(tidyr)
 
-# activate slendr's Python interface, installing all dependencies automatically
-# if necessary
+# activate slendr's Python interface, installing all dependencies if necessary
 setup_env()
+
+# check that we have the correct environment
+check_env()
 
 seed <- 42
 set.seed(seed)
