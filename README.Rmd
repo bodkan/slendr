@@ -3,7 +3,7 @@
 ```{r, include = FALSE}
 env_present <- tryCatch(
   {
-    reticulate::use_condaenv("slendr-env", required = TRUE)
+    reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
     TRUE
   }, error = function(cond) FALSE
 )
