@@ -20,15 +20,15 @@
 tskit <- NULL
 pyslim <- NULL
 msp <- NULL
-pylib <- NULL
+# pylib <- NULL
 
 .onLoad <- function(libname, pkgname) {
   tskit <<- reticulate::import("tskit", delay_load = TRUE)
   pyslim <<- reticulate::import("pyslim", delay_load = TRUE)
   msp <<- reticulate::import("msprime", delay_load = TRUE)
-  pylib <<- reticulate::import_from_path(
-    "pylib",
-    path = system.file("python", package = "slendr"),
-    delay_load = TRUE
-  )
+  # pylib <<- reticulate::import_from_path(
+  #   "pylib",
+  #   path = system.file("python", package = "slendr"),
+  #   delay_load = TRUE
+  # )
 }
