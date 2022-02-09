@@ -923,7 +923,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #'
 #' @export
 ts_coalesced <- function(ts, return_failed = FALSE) {
-  reticulate::py_run_string("def mult_roots(ts): return [not tree.has_multiple_roots for tree in ts.trees()]")
+  # reticulate::py_run_string("def mult_roots(ts): return [not tree.has_multiple_roots for tree in ts.trees()]")
   single_roots <- reticulate::py$mult_roots(ts)
 
   if (all(single_roots))
@@ -1371,7 +1371,7 @@ get_ts_individuals <- function(ts) {
   )
 
   if (attr(ts, "source") == "SLiM") {
-    reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id'] for ind in ts.individuals()]")
+    # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id'] for ind in ts.individuals()]")
 
     ind_table <- dplyr::tibble(
       ind_table,
