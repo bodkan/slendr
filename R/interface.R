@@ -1246,9 +1246,10 @@ split_time <- function(pop) attr(pop, "history")[[1]]$time
 #'
 #' @param env Either a name of or a path to a Python virtual environment, or a
 #'   name of a conda environment
+#' @param quiet Print out information messages?
 #'
 #' @export
-setup_env <- function(env = NULL) {
+setup_env <- function(env = NULL, quiet = FALSE) {
   if (!is.null(env)) {
     # check for the presence of a regular virtual environment (if the user
     # provided their own environment)
@@ -1272,9 +1273,10 @@ setup_env <- function(env = NULL) {
     }
 
     if (env_type %in% c("virtualenv", "conda")) {
-      message("Successfully connected to the specified ",
-              ifelse(env_type == "virtualenv", "Python", "conda"),
-              " virtual environment '", env, "'")
+      if (!quiet)
+        message("Successfully connected to the specified ",
+                ifelse(env_type == "virtualenv", "Python", "conda"),
+                " virtual environment '", env, "'")
       # check if all Python dependencies are present in the activated environment
       if (!reticulate::py_module_available("msprime") && ask_install("msprime"))
         reticulate::py_install("msprime=1.1.0", envname = env)
@@ -1311,7 +1313,7 @@ setup_env <- function(env = NULL) {
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
            " environment is recommended.")
-    } else
+    } else if (!quiet)
       message("The slendr interface to required Python modules ",
               "has been successfully activated.")
   } else {
@@ -1340,10 +1342,11 @@ setup_env <- function(env = NULL) {
 
       reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
 
-      message("Python environment for slendr has been successfuly created, and ",
-              "the R\ninterface to msprime, tskit, and pyslim modules has been activated. ",
-              "In\nthe future, you may simply call setup_env() again and slendr ",
-              "will activate\nthis environment automatically on its own.")
+      if (!quiet)
+        message("Python environment for slendr has been successfuly created, and ",
+                "the R\ninterface to msprime, tskit, and pyslim modules has been activated. ",
+                "In\nthe future, you may simply call setup_env() again and slendr ",
+                "will activate\nthis environment automatically on its own.")
     } else
       warning("Your Python environment is not set up correctly which means that the tree\n",
               "sequence functionality of slendr will not work.", call. = FALSE)
