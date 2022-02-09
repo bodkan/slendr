@@ -1,4 +1,4 @@
-skip_if(!env_present("automatic_slendr_python_env"))
+skip_if(!env_present("automatic_slendr_python_env")); setup_env(quiet = TRUE)
 
 seed <- 42 # random seed
 seq_len <- 2e5 # amount of sequence to simulate

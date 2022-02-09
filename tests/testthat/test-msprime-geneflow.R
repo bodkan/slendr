@@ -1,4 +1,4 @@
-skip_if(!env_present("automatic_slendr_python_env"))
+skip_if(!env_present("automatic_slendr_python_env")); slendr::setup_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed

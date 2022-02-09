@@ -1,11 +1,5 @@
-# conda create --name retipy tskit pyslim msprime
 env_present <- function(env) {
-  tryCatch({
-    reticulate::use_condaenv(env, required = TRUE)
-    return(TRUE)
-  },
-  error = function(cond) FALSE
-  )
+  "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 }
 
 # Function used in unit tests verifying the correct number of individuals after
