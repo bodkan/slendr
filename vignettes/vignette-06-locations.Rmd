@@ -44,6 +44,7 @@ Let's also set up the Python _slendr_ environment which we will use to analyse t
 # activate slendr's Python interface, installing all dependencies if necessary
 setup_env()
 
+# check that we have the correct environment
 check_env()
 ```
 
