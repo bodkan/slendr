@@ -22,11 +22,11 @@
 #'   remembered (i.e. "sampled", in \emph{slendr} parlance) individuals?
 #' @param mutate Should the tree sequence be mutated?
 #' @param spatial Should spatial information encoded in the tree sequence data
-#'   be converted to spatial R datastructures? If FALSE, pixel-based
+#'   be converted to spatial R data structures? If \code{FALSE}, pixel-based
 #'   raster-dimensions will not be converted to the coordinate reference system
-#'   implied by the model. If TRUE (default), reprojection of coordinates will
-#'   be performed. If the model was non-spatial, the value of this parameter is
-#'   disregarded.
+#'   implied by the model. If \code{TRUE} (default), reprojection of coordinates
+#'   will be performed. If the model was non-spatial, the value of this
+#'   parameter is disregarded.
 #' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
 #' @param mutation_rate Mutation rate passed to \code{ts_mutate}
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
@@ -34,9 +34,9 @@
 #'   remembered individuals will be retained. Only used when \code{simplify =
 #'   TRUE}.
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
-#' samplbee retained in the tree sequence? Default is \code{FALSE}.
-#' @param migration_matrix Migration matrix used for coalescence of ancient lineages
-#'   (passed to \code{ts_recapitate})
+#'   samplbee retained in the tree sequence? Default is \code{FALSE}.
+#' @param migration_matrix Migration matrix used for coalescence of ancient
+#'   lineages (passed to \code{ts_recapitate})
 #'
 #' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
 #'
@@ -112,10 +112,9 @@ ts_load <- function(model, file = NULL,
   #     TypeError: integer argument expected, got float
   # in places with no integer/float conversion in sight
   #
-  # at least it prevents having to do
+  # at least it prevents having to do things like:
   # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
   #                                                              for ind in ts.individuals()]")
-  # below
   reticulate::source_python(file = system.file("python/pylib.py", package = "slendr"))
 
   attr(ts, "source") <- backend
