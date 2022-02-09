@@ -2,10 +2,12 @@
 #'
 #' Defines the parameters of a population (non-spatial and spatial).
 #'
-#' There are three ways to specify a spatial boundary: i) circular range
+#' There are four ways to specify a spatial boundary: i) circular range
 #' specified using a center coordinate and a radisu, ii) polygon specified as a
 #' list of two-dimensional vector coordinates, iii) polygon as in ii), but
-#' defined (and named) using the \code{region} function.
+#' defined (and named) using the \code{region} function, iv) with just a world
+#' map specified (but no circular or polygon range), the population will be
+#' allowed to occupy the entire landscape.
 #'
 #' @param name Name of the population
 #' @param time Time of the population's first appearance

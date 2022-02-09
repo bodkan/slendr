@@ -131,6 +131,7 @@ reference:
     contents:
     - setup_env
     - clear_env
+    - check_env
 
 news:
   one_page: true
