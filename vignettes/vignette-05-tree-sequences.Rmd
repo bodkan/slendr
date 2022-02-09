@@ -32,10 +32,6 @@ library(slendr)
 library(ggplot2)
 library(dplyr)
 
-# activate slendr's Python interface, installing all dependencies automatically
-# if necessary
-setup_env()
-
 set.seed(314159)
 
 # create the ancestor of everyone and a chimpanzee outgroup
@@ -133,34 +129,15 @@ Of course, if you are a proficient Python user, it needs to be said that once yo
 
 First, in order to be able to interface with *tskit* and *pyslim* using the *reticulate* package, you will need a working Python environment with the required Python modules `pyslim`, `tskit` and `msprime` already installed. I personally manage Python installations and separate package environments using [pyenv](https://github.com/pyenv/pyenv) and [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv). However, this is only my own personal preference. If you prefer using conda or any [other Python management solution](https://xkcd.com/1987/), feel free to use that. In any case, I recommend using tooling which is supported by [reticulate](https://rstudio.github.io/reticulate/index.html) itself, because it will be easy to find support should you run into any trouble.
 
-For completeness, here is probably the simplest possible way to get started, assuming you have a reasonably up-to-date version of Python available at your system. We will use the built-in Python virtual environment management module `venv` which is available at least since Python version 3.5, put it under the `~/.venvs/retipy` so that it doesn't clutter out home directory, and install the required Python modules into it:
+Because setting up Python environments can be quite a hassle, _slendr_ provides a single function `setup_env()`. If you call it without any arguments, _slendr_ will automatically download, install, and setup a **completely separate** Python environment just for _slendr_ and activate it in the background. Even if you're an advanced Python user, I recommend going through this route because it will make sure that all dependencies are at their right versions that have been tested in _slendr_.
 
-``` {.bash}
-# 1. create a separate virtual environment called 'retipy'
-python3 -m venv retipy ~/.venvs/retipy
+(If you insist on managing your own Python environment, that's OK too. Take a look at [this guide](https://CRAN.R-project.org/package=reticulate/vignettes/versions.html). You will be interested in the function `reticulate::user_virtualenv()` or `reticulate::use_condaenv()`.)
 
-# 2. activate it for the current shell session
-source ~/.venvs/retipy/bin/activate
+Let's now activate the _slendr_ Python environment (potentially installing it if it's not present yet):
 
-# 3. install the required modules into this fresh environment
-python3 -m pip install tskit pyslim msprime pandas
+```{r}
+setup_env()
 ```
-
-That's it! By creating a separate new environment and installing the modules into it, we're making sure that we don't cause problems for other Python projects or scripts you might already have and which might potentially use different versions of those modules.
-
-Now we can instruct the *reticulate* package to use the newly created Python environment (if you use conda, pyenv-virtualenv or one of the other solutions for managing virtual environments, take a look [here](https://rstudio.github.io/reticulate/reference/use_python.html) for a specific function to use in your case):
-
-```{r, eval = FALSE}
-reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
-```
-
-We can make sure that *reticulate* is indeed using our environment by calling:
-
-```{r, eval = FALSE}
-reticulate::py_config()
-```
-
-See [this guide](https://CRAN.R-project.org/package=reticulate/vignettes/versions.html) for more information about setting up R to work with different Python environment management tools, including conda.
 
 ## Loading and processing tree-sequence output files
 
