@@ -1380,6 +1380,11 @@ check_env <- function() {
     else
       pyslim_version <- "MISSING"
 
+    if (is.null(slendr:::pylib))
+      pylib_status <- "NOT LOADED"
+    else
+      pylib_status <- "successfully loaded ✅ "
+
     cat("Summary of the activated Python environment:\n\n")
     cat("Python binary:", py$python, "\n")
     cat("Python version:", py$version_string, "\n")
@@ -1388,6 +1393,7 @@ check_env <- function() {
     cat(" - tskit:", tskit_version, "\n")
     cat(" - msprime:", msprime_version, "\n")
     cat(" - pyslim:", pyslim_version, "\n")
+    cat(" - slendr module:", pylib_status, "\n")
 
     # cat("\n-----\nNote that due to the limitations of embedded Python,",
     #     " if you want to switch to another Python environment you will have",
