@@ -8,12 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- tryCatch(
-  {
-    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
-    TRUE
-  }, error = function(cond) FALSE
-)
+env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 
 knitr::opts_chunk$set(
   collapse = FALSE,
