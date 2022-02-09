@@ -106,14 +106,17 @@ ts_load <- function(model, file = NULL,
   } else
     backend <- "msprime"
 
-  # if (grepl("_slim\\.trees", file)) {
-  #   ts <- pyslim$load(path.expand(file))
-  #   backend <- "SLiM"
-  # } else if (grepl("_msprime\\.trees", file)) {
-  #   ts <- tskit$load(path.expand(file))
-  #   backend <- "msprime"
-  # } else
-  #   stop("Unknown tree sequence slendr output file '", file, "'", call. = FALSE)
+  # this is an awful workaround around the reticulate/Python bug which prevents
+  # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
+  #   Error in py_call_impl(callable, dots$args, dots$keywords) :
+  #     TypeError: integer argument expected, got float
+  # in places with no integer/float conversion in sight
+  #
+  # at least it prevents having to do
+  # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
+  #                                                              for ind in ts.individuals()]")
+  # below
+  reticulate::source_python(file = system.file("python/pylib.py", package = "slendr"))
 
   attr(ts, "source") <- backend
 
@@ -923,9 +926,11 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #'
 #' @export
 ts_coalesced <- function(ts, return_failed = FALSE) {
-  reticulate::py_run_string("def mult_roots(ts): return [not tree.has_multiple_roots for tree in ts.trees()]")
-  single_roots <- reticulate::py$mult_roots(ts)
+  # reticulate::py_run_string("def mult_roots(ts): return [not tree.has_multiple_roots for tree in ts.trees()]")
+
   # single_roots <- pylib$mult_roots(ts)
+
+  single_roots <- reticulate::py$mult_roots(ts)
 
   if (all(single_roots))
     return(TRUE)
@@ -1372,7 +1377,7 @@ get_ts_individuals <- function(ts) {
   )
 
   if (attr(ts, "source") == "SLiM") {
-    reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id'] for ind in ts.individuals()]")
+    # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id'] for ind in ts.individuals()]")
 
     ind_table <- dplyr::tibble(
       ind_table,

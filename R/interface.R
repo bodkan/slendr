@@ -1376,7 +1376,7 @@ check_env <- function() {
   has_tskit <- reticulate::py_module_available("tskit")
   has_msprime <- reticulate::py_module_available("msprime")
   has_pyslim <- reticulate::py_module_available("pyslim")
-  has_pylib <- !is.null(slendr:::pylib)
+  # has_pylib <- !is.null(slendr:::pylib)
 
   if (has_tskit)
     tskit_version <- paste("version", slendr:::tskit[["_version"]]$tskit_version, "✅ ")
@@ -1393,10 +1393,10 @@ check_env <- function() {
   else
     pyslim_version <- "MISSING ❌"
 
-  if (has_pylib)
-    pylib_status <- "successfully loaded ✅ "
-  else
-    pylib_status <- "NOT LOADED ❌"
+  # if (has_pylib)
+  #   pylib_status <- "successfully loaded ✅ "
+  # else
+  #   pylib_status <- "NOT LOADED ❌"
 
   cat("Summary of the currently active Python environment:\n\n")
   cat("Python binary:", py$python, "\n")
@@ -1406,9 +1406,9 @@ check_env <- function() {
   cat(" - tskit:", tskit_version, "\n")
   cat(" - msprime:", msprime_version, "\n")
   cat(" - pyslim:", pyslim_version, "\n")
-  cat(" - slendr module:", pylib_status, "\n")
+  # cat(" - slendr module:", pylib_status, "\n")
 
-  if (!all(c(has_tskit, has_pyslim, has_msprime, has_pylib)))
+  if (!all(c(has_tskit, has_pyslim, has_msprime)))
     cat("-----\nNote that due to the limitations of embedded Python,",
         "if you want to switch to another Python environment you need",
         "to restart your R session first.\n")
