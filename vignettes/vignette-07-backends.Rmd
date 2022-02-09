@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- "slendr-env" %in% reticulate::conda_list()$name
+env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 
 knitr::opts_chunk$set(
   collapse = FALSE,

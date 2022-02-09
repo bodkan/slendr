@@ -1240,7 +1240,7 @@ split_time <- function(pop) attr(pop, "history")[[1]]$time
 
 #' Setup a dedicated Python virtual environment for slendr
 #'
-#' The environment will be called 'slendr-env' and if missing when loading the
+#' The environment will be called 'automatic_slendr_python_env' and if missing when loading the
 #' slendr package, it will be automatically created and population with required
 #' Python modules.
 #'
@@ -1291,10 +1291,19 @@ setup_env <- function(env = NULL) {
            "Note: If you run setup_env() without any arguments, slendr will set up",
            " your Python environment for you completely automatically.",
            call. = FALSE)
-  } else if ("slendr-env" %in% reticulate::conda_list()$name) {
-    message("The slendr interface to all required Python modules ",
-            "has been successfully activated.")
-    reticulate::use_condaenv("slendr-env", required = TRUE)
+  } else if ("automatic_slendr_python_env" %in% reticulate::conda_list()$name) {
+    reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
+    if (!reticulate::py_module_available("msprime") ||
+        !reticulate::py_module_available("tskit") ||
+        !reticulate::py_module_available("pyslim")) {
+      stop("Python environment 'automatic_slendr_python_env' has been found but it",
+           " does not appear to have msprime, tskit and pyslim modules all",
+           " installed. Perhaps the environment got corrupted somehow?",
+           " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
+           " environment is recommended.")
+    } else
+      message("The slendr interface to required Python modules ",
+              "has been successfully activated.")
   } else {
     answer <- utils::menu(
       c("No", "Yes"),
@@ -1315,10 +1324,10 @@ setup_env <- function(env = NULL) {
 
       reticulate::conda_create(
         packages = c("msprime=1.1.0", "tskit=0.4.1", "pyslim=0.700", "pandas=1.3.5"),
-        envname = "slendr-env"
+        envname = "automatic_slendr_python_env"
       )
 
-      reticulate::use_condaenv("slendr-env", required = TRUE)
+      reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
 
       message("Python environment for slendr has been successfuly created, and ",
               "the R interface to msprime, tskit, and pyslim modules has been activated. ",
@@ -1335,9 +1344,54 @@ setup_env <- function(env = NULL) {
 #'
 #' @export
 clear_env <- function() {
-  if ("slendr-env" %in% reticulate::conda_list()$name)
-    reticulate::conda_remove("slendr-env")
+  if ("automatic_slendr_python_env" %in% reticulate::conda_list()$name)
+    reticulate::conda_remove("automatic_slendr_python_env")
   else
-    warning("No conda environment named 'slendr-env' has been found",
+    warning("No conda environment named 'automatic_slendr_python_env' has been found",
             call. = FALSE)
+}
+
+#' Check that the slendr Python environment is setup correctly
+#'
+#' Extract the components of the Python environment that would be currently used
+#' by reticulate and prints versions of all Python dependencies.
+#'
+#' @export
+check_env <- function() {
+  if (!reticulate:::is_python_initialized()) {
+    stop("No Python environment has been activated. To setup and activate a",
+         " Python environment you can simply call `setup_env()` without any arguments.",
+         call. = FALSE)
+  } else {
+    py <- reticulate::py_discover_config()
+
+    if (reticulate::py_module_available("tskit"))
+      tskit_version <- paste("version", slendr:::tskit[["_version"]]$tskit_version)
+    else
+      tskit_version <- "MISSING"
+
+    if (reticulate::py_module_available("msprime"))
+      msprime_version <- paste("version", slendr:::msp[["_version"]]$version)
+    else
+      msprime_version <- "MISSING"
+
+    if (reticulate::py_module_available("pyslim"))
+      pyslim_version <- paste("version", slendr:::pyslim$pyslim_version)
+    else
+      pyslim_version <- "MISSING"
+
+    cat("Summary of the activated Python environment:\n\n")
+    cat("Python binary:", py$python, "\n")
+    cat("Python version:", py$version_string, "\n")
+
+    cat("\nslendr requirements:\n")
+    cat(" - tskit:", tskit_version, "\n")
+    cat(" - msprime:", msprime_version, "\n")
+    cat(" - pyslim:", pyslim_version, "\n")
+
+    # cat("\n-----\nNote that due to the limitations of embedded Python,",
+    #     " if you want to switch to another Python environment you will have",
+    #     " to restart your R session first.\n")
+    # reference: https://github.com/rstudio/reticulate/issues/27#issuecomment-512256949
+  }
 }

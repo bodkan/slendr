@@ -11,7 +11,7 @@ setup_env(env = NULL)
 name of a conda environment}
 }
 \description{
-The environment will be called 'slendr-env' and if missing when loading the
+The environment will be called 'automatic_slendr_python_env' and if missing when loading the
 slendr package, it will be automatically created and population with required
 Python modules.
 }
