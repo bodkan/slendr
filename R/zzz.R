@@ -7,8 +7,11 @@
       "The slim binary was not found in your $PATH variable. Most of\n",
       "the functionality in this package will work without any issues\n",
       "but you will not be able to simulate data with the `slim()` function.\n",
-      "\nMake sure to modify the $PATH variable in your .Renviron file so \n",
-      "that it points to the directory containing the slim program.")
+      "\nIf you set up a Python environment with `setup_env()`, you will be\n",
+      "able to simulate non-spatial with slendr's msprime back end.\n",
+      "\nIf you want to run SLiM spatial simulations, make sure to modify the $PATH\n",
+      "variable in your ~/.Renviron file so that it points to the directory\n",
+      "containing the slim command-line program.")
   }
 }
 
