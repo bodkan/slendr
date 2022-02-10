@@ -36,6 +36,12 @@ navbar:
       href: https://twitter.com/dr_bodkan
 
 reference:
+  - title: Installation and configuration of Python dependencies
+    contents:
+    - setup_env
+    - clear_env
+    - check_env
+
   - title: Model components
     contents:
     - population
@@ -126,12 +132,6 @@ reference:
     - ts_fst
     - ts_tajima
     - ts_segregating
-
-  - title: Installation and setup
-    contents:
-    - setup_env
-    - clear_env
-    - check_env
 
 news:
   one_page: true

@@ -2,10 +2,13 @@
 % Please edit documentation in R/interface.R
 \name{clear_env}
 \alias{clear_env}
-\title{Remove the automatically created slendr miniconda Python environment}
+\title{Remove the automatically created slendr Python environment}
 \usage{
-clear_env()
+clear_env(force = FALSE)
+}
+\arguments{
+\item{force}{Ask before deleting the environment?}
 }
 \description{
-Remove the automatically created slendr miniconda Python environment
+Remove the automatically created slendr Python environment
 }

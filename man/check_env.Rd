@@ -2,11 +2,12 @@
 % Please edit documentation in R/interface.R
 \name{check_env}
 \alias{check_env}
-\title{Check that the currently active Python environment is setup correctly}
+\title{Check that the active Python environment is correctly setup for slendr}
 \usage{
 check_env()
 }
 \description{
-Extracts the components of the Python environment that would be currently
-used by reticulate and prints versions of all Python dependencies.
+This function inspects the Python environment which has been activated by the
+reticulate package and prints the versions of all slendr Python dependencies
+to the console.
 }

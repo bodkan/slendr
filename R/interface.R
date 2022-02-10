@@ -1245,13 +1245,16 @@ split_time <- function(pop) attr(pop, "history")[[1]]$time
 
 #' Setup a dedicated Python virtual environment for slendr
 #'
-#' The environment will be called 'automatic_slendr_python_env' and if missing
-#' when loading the slendr package, it will be automatically created and
-#' population with required Python modules.
-#'
-#' @param env Either a full path to a Python virtual environment, or a name of a
-#'   conda environment
-#' @param quiet Print out information messages?
+#' @param env Either a name of a conda environment, or a path to a standard
+#'   Python virtual environment (such as one created by \code{python3 -m venv
+#'   <path to an environment>}) with necessary Python dependencies (msprime,
+#'   tskit, pyslim, and pandas). If \code{NULL} (the default), the user will be
+#'   offered to install and configure an entirely isolated Miniconda Python
+#'   environment just for slendr. If this environment is already present,
+#'   calling \code{setup_env()} without the \code{env} argument will simply
+#'   activate this environment.
+#' @param quiet Should informative messages be printed to the console? Default
+#'   is \code{FALSE}.
 #'
 #' @export
 setup_env <- function(env = NULL, quiet = FALSE) {
@@ -1325,16 +1328,18 @@ setup_env <- function(env = NULL, quiet = FALSE) {
     answer <- utils::menu(
       c("No", "Yes"),
       title = paste0(
-        "No properly configured slendr Python environment has been found.\n",
-        "Do you wish to install miniconda and all required Python modules\nautomatically?",
+        "No pre-configured Python environment for slendr has been found.\n\n",
+        "Do you wish to install a Miniconda Python distribution and create\n",
+        "an isolated environment with all required Python modules automatically?\n",
         "\n(No need to worry, everything will be installed into a completely\n",
         "separate location into an isolated environment. This won't affect\n",
         "your system or your other Python installations at all.)\n\n",
         "If your answer is \"no\", you can set up your own virtual environment\n",
-        "or a conda environment with Python >= 3.8, msprime >= 1.1.0,\n",
-        "tskit >= 0.4.1, pyslim >= 0.700, and pandas and provide it to\n",
-        "the setup_env() function using its `env = ` argument.\n\n",
-        "Setup Python environment for slendr?")
+        "with Python >= 3.8, msprime >= 1.1.0, tskit >= 0.4.1, pyslim >= 0.700,\n",
+        "and pandas and provide it to the setup_env() function using its\n",
+        "`env` argument (see `?setup_env` for more detail).\n\n",
+        "Do you wish to setup a Python virtual environment just for slendr and\n",
+        "populate it with the required Python modules?")
       )
     if (answer == 2) {
       if (!dir.exists(reticulate::miniconda_path()))
@@ -1358,21 +1363,33 @@ setup_env <- function(env = NULL, quiet = FALSE) {
   }
 }
 
-#' Remove the automatically created slendr miniconda Python environment
+#' Remove the automatically created slendr Python environment
+#'
+#' @param force Ask before deleting the environment?
 #'
 #' @export
-clear_env <- function() {
-  if ("automatic_slendr_python_env" %in% reticulate::conda_list()$name)
-    reticulate::conda_remove("automatic_slendr_python_env")
-  else
-    warning("No conda environment named 'automatic_slendr_python_env' has been found",
-            call. = FALSE)
+clear_env <- function(force = FALSE) {
+  if ("automatic_slendr_python_env" %in% reticulate::conda_list()$name) {
+    answer <- utils::menu(
+      c("No", "Yes"),
+      title = paste0(
+        "Are you sure you want to delete the automatically created slendr ",
+        "Python\nenvironment? If you do, you can create it again by running",
+        "`setup_env()`\nwithout any arguments in a new R session."
+      )
+    )
+    if (answer == 2) reticulate::conda_remove("automatic_slendr_python_env")
+    message("The slendr Python environment has been sucessfully removed.")
+  } else
+    stop("No conda environment named 'automatic_slendr_python_env' has been found",
+         call. = FALSE)
 }
 
-#' Check that the currently active Python environment is setup correctly
+#' Check that the active Python environment is correctly setup for slendr
 #'
-#' Extracts the components of the Python environment that would be currently
-#' used by reticulate and prints versions of all Python dependencies.
+#' This function inspects the Python environment which has been activated by the
+#' reticulate package and prints the versions of all slendr Python dependencies
+#' to the console.
 #'
 #' @export
 check_env <- function() {
