@@ -1,6 +1,9 @@
 ---
 title: "Simulating data with SLiM and msprime backends"
 output: rmarkdown::html_vignette
+resource_files:
+  - images/f4_tree.jpg
+  - images/demographic_models.jpg
 vignette: >
   %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{Simulating data with SLiM and msprime backends}
