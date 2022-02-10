@@ -89,7 +89,7 @@ library(slendr)
 set.seed(314159)
 ```
 
-Finally: because the package is actively being worked on, improvements and bug fixes are being added every couple of hours. **Make sure to install the latest development version (step 3. above) each time you're about to test something (such as the examples in this vignette).** You can track changes between development releases in the [changelog](https://github.com/bodkan/slendr/blob/main/NEWS.md).
+Finally: because the package is actively being worked on, improvements and bug fixes are being added every couple of hours. **Make sure to install the latest development version (step 3. above) each time you're about to test something (such as the examples in this vignette).**
 
 ## Defining the overall world map
 

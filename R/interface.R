@@ -1378,27 +1378,27 @@ check_env <- function() {
   has_tskit <- reticulate::py_module_available("tskit")
   has_msprime <- reticulate::py_module_available("msprime")
   has_pyslim <- reticulate::py_module_available("pyslim")
-  # has_pylib <- !is.null(slendr:::pylib)
+  # has_pylib <- !is.null(pylib)
 
   if (has_tskit)
-    tskit_version <- paste("version", slendr:::tskit[["_version"]]$tskit_version, "✅ ")
+    tskit_version <- paste("version", tskit[["_version"]]$tskit_version, "\u2713")
   else
-    tskit_version <- "MISSING ❌"
+    tskit_version <- "MISSING \u274C"
 
   if (has_msprime)
-    msprime_version <- paste("version", slendr:::msp[["_version"]]$version, "✅ ")
+    msprime_version <- paste("version", msp[["_version"]]$version, "\u2713")
   else
-    msprime_version <- "MISSING ❌"
+    msprime_version <- "MISSING \u274C"
 
   if (has_pyslim)
-    pyslim_version <- paste("version", slendr:::pyslim$pyslim_version, "✅ ")
+    pyslim_version <- paste("version", pyslim$pyslim_version, "\u2713")
   else
-    pyslim_version <- "MISSING ❌"
+    pyslim_version <- "MISSING \u274C"
 
   # if (has_pylib)
-  #   pylib_status <- "successfully loaded ✅ "
+  #   pylib_status <- "successfully loaded \u2713"
   # else
-  #   pylib_status <- "NOT LOADED ❌"
+  #   pylib_status <- "NOT LOADED \u274C"
 
   cat("Summary of the currently active Python environment:\n\n")
   cat("Python binary:", py$python, "\n")

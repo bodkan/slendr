@@ -447,7 +447,7 @@ msprime <- function(model, sequence_length, recombination_rate,
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
 
-  if (!hasArg(sampling))
+  if (!methods::hasArg(sampling))
     stop("Unlike SLiM simulations, explicit sampling schedule must be provided for msprime simulations",
          call. = FALSE)
 
