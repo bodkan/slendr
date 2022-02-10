@@ -1,12 +1,7 @@
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
 ```{r, include = FALSE}
-env_present <- tryCatch(
-  {
-    reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
-    TRUE
-  }, error = function(cond) FALSE
-)
+env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 
 knitr::opts_chunk$set(
   collapse = TRUE,
