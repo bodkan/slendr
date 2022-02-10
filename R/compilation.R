@@ -41,7 +41,7 @@ compile <- function(populations, generation_time, dir = NULL, resolution = NULL,
                     competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
                     geneflow = list(), overwrite = FALSE,
                     sim_length = NULL, direction = NULL,
-                    slim_script = system.file("extdata", "script.slim", package = "slendr"),
+                    slim_script = system.file("scripts", "script.slim", package = "slendr"),
                     description = "") {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
@@ -573,7 +573,7 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   saved_files["msprime_script"] <- file.path(dir, "script.py")
   write_script(saved_files["slim_script"], script_source, map, resolution)
   write_script(saved_files["msprime_script"],
-               system.file("extdata/script.py", package = "slendr"))
+               system.file("scripts/script.py", package = "slendr"))
 
   checksums <- calculate_checksums(saved_files)
   utils::write.table(checksums, file.path(dir, "checksums.tsv"), sep = "\t",

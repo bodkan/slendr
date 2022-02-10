@@ -4,4 +4,4 @@ inst/doc
 .Rhistory
 .vscode/
 build/
-inst/python/__pycache__/
+inst/pylib/__pycache__/

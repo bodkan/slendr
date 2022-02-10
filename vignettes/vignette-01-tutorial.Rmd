@@ -444,7 +444,7 @@ explore(model)
 
 ## Running the simulation
 
-The way we feed the entire serialized model into SLiM is through the `slim()` function, which understands the format of the model directory created by the `compile()` function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling `system.file("inst/extdata/script.slim", package = "slendr")`, in case you'd like to peek into its internals).
+The way we feed the entire serialized model into SLiM is through the `slim()` function, which understands the format of the model directory created by the `compile()` function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling `system.file("inst/scripts/script.slim", package = "slendr")`, in case you'd like to peek into its internals).
 
 Note that when you run this model in SLiMgui (which should automatically open by calling the command below), you will see populations pop up in individual panes within the window. This is how SLiMgui tracks spatial ranges of different populations. *Everyone is still simulated in the same world*, it's just that the simulation visualizes individual population ranges separately to reduce clutter.
 
