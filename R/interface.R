@@ -1242,12 +1242,12 @@ split_time <- function(pop) attr(pop, "history")[[1]]$time
 
 #' Setup a dedicated Python virtual environment for slendr
 #'
-#' The environment will be called 'automatic_slendr_python_env' and if missing when loading the
-#' slendr package, it will be automatically created and population with required
-#' Python modules.
+#' The environment will be called 'automatic_slendr_python_env' and if missing
+#' when loading the slendr package, it will be automatically created and
+#' population with required Python modules.
 #'
-#' @param env Either a name of or a path to a Python virtual environment, or a
-#'   name of a conda environment
+#' @param env Either a full path to a Python virtual environment, or a name of a
+#'   conda environment
 #' @param quiet Print out information messages?
 #'
 #' @export
@@ -1373,6 +1373,12 @@ clear_env <- function() {
 #'
 #' @export
 check_env <- function() {
+  # if there is no Python available on user's system, don't immediately
+  # jump to installing miniconda (let's deal with that in setup_env())
+  orig_env <- Sys.getenv("RETICULATE_MINICONDA_ENABLED")
+  Sys.setenv(RETICULATE_MINICONDA_ENABLED = FALSE)
+  on.exit(Sys.setenv(RETICULATE_MINICONDA_ENABLED = orig_env))
+
   py <- reticulate::py_discover_config()
 
   has_tskit <- reticulate::py_module_available("tskit")
@@ -1411,8 +1417,8 @@ check_env <- function() {
   # cat(" - slendr module:", pylib_status, "\n")
 
   if (!all(c(has_tskit, has_pyslim, has_msprime)))
-    cat("-----\nNote that due to the limitations of embedded Python,",
-        "if you want to switch to another Python environment you need",
-        "to restart your R session first.\n")
+    cat("\nNote that due to the technical limitations of embedded Python,",
+        "if you\nwant to switch to another Python environment you will need",
+        "to restart\nyour R session first.\n")
     # reference: https://github.com/rstudio/reticulate/issues/27#issuecomment-512256949
 }
