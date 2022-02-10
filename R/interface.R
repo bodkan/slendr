@@ -6,8 +6,9 @@
 #' specified using a center coordinate and a radisu, ii) polygon specified as a
 #' list of two-dimensional vector coordinates, iii) polygon as in ii), but
 #' defined (and named) using the \code{region} function, iv) with just a world
-#' map specified (but no circular or polygon range), the population will be
-#' allowed to occupy the entire landscape.
+#' map specified (circular or polygon range parameters set to the default
+#' \code{NULL} value), the population will be allowed to occupy the entire
+#' landscape.
 #'
 #' @param name Name of the population
 #' @param time Time of the population's first appearance
@@ -62,7 +63,9 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
   if (inherits(map, "slendr_map")) {
     # define the population range as a simple geometry object
     # and bind it with the annotation info into an sf object
-    if (!is.null(polygon) & inherits(polygon, "slendr_region"))
+    if (is.null(polygon) && is.null(center) && is.null(radius))
+      geometry <- sf::st_bbox(map) %>% sf::st_as_sfc()
+    else if (!is.null(polygon) & inherits(polygon, "slendr_region"))
       geometry <- sf::st_geometry(polygon)
     else
       geometry <- define_boundary(map, center, radius, polygon)
