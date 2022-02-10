@@ -7,13 +7,13 @@
 setup_env(env = NULL, quiet = FALSE)
 }
 \arguments{
-\item{env}{Either a name of or a path to a Python virtual environment, or a
-name of a conda environment}
+\item{env}{Either a full path to a Python virtual environment, or a name of a
+conda environment}
 
 \item{quiet}{Print out information messages?}
 }
 \description{
-The environment will be called 'automatic_slendr_python_env' and if missing when loading the
-slendr package, it will be automatically created and population with required
-Python modules.
+The environment will be called 'automatic_slendr_python_env' and if missing
+when loading the slendr package, it will be automatically created and
+population with required Python modules.
 }
