@@ -2,14 +2,13 @@
 get_binary <- function(method) {
   if (method == "gui") {
     if (Sys.info()["sysname"] == "Darwin")
-      return("open -a SLiMgui")
+      binary <- "open -a SLiMgui"
     else
       binary <- "SLiMgui"
   } else
     binary <- "slim"
 
-  binary_path <- Sys.which(binary)
-  as.character(binary_path)
+  binary
 }
 
 
@@ -347,7 +346,7 @@ process_sampling <- function(samples, model, verbose = FALSE) {
   if (is.null(samples)) {
     if (verbose)
       message("Tree-sequence recording is on but no sampling schedule was given. ",
-              "Generating one at least for populations surviving to the end of the simulation...")
+              "Generating one for all individuals surviving to the end of the simulation.")
     surviving_pops <- purrr::keep(model$populations, ~ attr(.x, "remove") == -1)
 
     # generate sampling schedule, remembering all individuals from all populations
@@ -403,6 +402,39 @@ check_location_bounds <- function(locations, map) {
   if (!all(checks))
     stop("The following locations fall outside of the world map: ",
          paste(locations[!checks], collapse = ", "), call. = FALSE)
+}
+
+# Convert SLiM time units as they are saved in the tree-sequence output
+# (and also other slendr output formats such as the locations of individuals
+# or ancestry proportions over time) back to user-specified time units
+# (either forward or backward)
+convert_slim_time <- function(times, model) {
+  ancestors <- dplyr::filter(model$splits, parent == "ancestor")
+
+  if (model$direction == "backward") {
+    result <- times * model$generation_time
+    # does the backward simulation model terminate sooner than "present-day"?
+    # if so, shift the times to start at the original time specified by user
+    if (max(ancestors[, ]$tsplit_orig) != model$orig_length)
+      result <- result + (ancestors[, ]$tsplit_orig - model$orig_length)
+  } else {
+    result <- (model$length - times + 1) * model$generation_time
+    # did the simulation start at a later time than "generation 1"?
+    # if it did, shift the time appropriately
+
+    if (min(round(ancestors[, ]$tsplit_orig / model$generation_time) != 1))
+      result <- result + ancestors[1, ]$tsplit_orig - model$generation_time
+  }
+  as.numeric(result)
+}
+
+# Convert msprime node time units into the user-specified time units
+convert_msprime_time <- function(time, model) {
+  if (model$direction == "forward")
+    as.numeric(model$orig_length - (time - 1) * model$generation_time)
+  else {
+    as.numeric(time * model$generation_time)
+  }
 }
 
 kernel_fun <- function(fun = c("normal", "uniform", "cauchy", "exponential")) {

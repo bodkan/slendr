@@ -183,7 +183,7 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
 
     <pre class="usage"><span class='fu'>ts_load</span><span class='op'>(</span>
   <span class='va'>model</span>,
-  file <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>$</span><span class='va'>path</span>, <span class='st'>"output_slim.trees"</span><span class='op'>)</span>,
+  file <span class='op'>=</span> <span class='cn'>NULL</span>,
   recapitate <span class='op'>=</span> <span class='cn'>FALSE</span>,
   simplify <span class='op'>=</span> <span class='cn'>FALSE</span>,
   mutate <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -224,11 +224,11 @@ remembered (i.e. "sampled", in <em>slendr</em> parlance) individuals?</p></td>
     <tr>
       <th>spatial</th>
       <td><p>Should spatial information encoded in the tree sequence data
-be converted to spatial R datastructures? If FALSE, pixel-based
+be converted to spatial R data structures? If <code>FALSE</code>, pixel-based
 raster-dimensions will not be converted to the coordinate reference system
-implied by the model. If TRUE (default), reprojection of coordinates will
-be performed. If the model was non-spatial, the value of this parameter is
-disregarded.</p></td>
+implied by the model. If <code>TRUE</code> (default), reprojection of coordinates
+will be performed. If the model was non-spatial, the value of this
+parameter is disregarded.</p></td>
     </tr>
     <tr>
       <th>recombination_rate, Ne</th>
@@ -255,8 +255,8 @@ samplbee retained in the tree sequence? Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>migration_matrix</th>
-      <td><p>Migration matrix used for coalescence of ancient lineages
-(passed to <code>ts_recapitate</code>)</p></td>
+      <td><p>Migration matrix used for coalescence of ancient
+lineages (passed to <code>ts_recapitate</code>)</p></td>
     </tr>
     </table>
 

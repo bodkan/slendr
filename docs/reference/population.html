@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Define a population and its original spatial range — population • slendr</title>
+<title>Define a population — population • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,8 @@
 
 
 
-<meta property="og:title" content="Define a population and its original spatial range — population" />
-<meta property="og:description" content="Defines a spatial range of a population and its most important parameters." />
+<meta property="og:title" content="Define a population — population" />
+<meta property="og:description" content="Defines the parameters of a population (non-spatial and spatial)." />
 <meta property="og:image" content="https://www.slendr.net/logo.png" />
 
 
@@ -170,13 +170,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Define a population and its original spatial range</h1>
+    <h1>Define a population</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/interface.R'><code>R/interface.R</code></a></small>
     <div class="hidden name"><code>population.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Defines a spatial range of a population and its most important parameters.</p>
+    <p>Defines the parameters of a population (non-spatial and spatial).</p>
     </div>
 
     <pre class="usage"><span class='fu'>population</span><span class='op'>(</span>
@@ -275,10 +275,12 @@ terrestrial species)?</p></td>
     <p>Object of the class <code>slendr_pop</code></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>There are three ways to specify a spatial boundary: i) circular range
+    <p>There are four ways to specify a spatial boundary: i) circular range
 specified using a center coordinate and a radisu, ii) polygon specified as a
 list of two-dimensional vector coordinates, iii) polygon as in ii), but
-defined (and named) using the <code>region</code> function.</p>
+defined (and named) using the <code>region</code> function, iv) with just a world
+map specified (but no circular or polygon range), the population will be
+allowed to occupy the entire landscape.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># spatial definitions -----------------------------------------------------</span>

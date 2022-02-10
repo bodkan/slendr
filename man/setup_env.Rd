@@ -4,14 +4,16 @@
 \alias{setup_env}
 \title{Setup a dedicated Python virtual environment for slendr}
 \usage{
-setup_env(env = NULL)
+setup_env(env = NULL, quiet = FALSE)
 }
 \arguments{
 \item{env}{Either a name of or a path to a Python virtual environment, or a
 name of a conda environment}
+
+\item{quiet}{Print out information messages?}
 }
 \description{
-The environment will be called 'slendr-env' and if missing when loading the
+The environment will be called 'automatic_slendr_python_env' and if missing when loading the
 slendr package, it will be automatically created and population with required
 Python modules.
 }

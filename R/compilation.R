@@ -41,7 +41,7 @@ compile <- function(populations, generation_time, dir = NULL, resolution = NULL,
                     competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
                     geneflow = list(), overwrite = FALSE,
                     sim_length = NULL, direction = NULL,
-                    slim_script = system.file("extdata", "script.slim", package = "slendr"),
+                    slim_script = system.file("scripts", "script.slim", package = "slendr"),
                     description = "") {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
@@ -339,7 +339,7 @@ slim <- function(model, sequence_length, recombination_rate,
   readr::write_tsv(sampling_df, sampling_path)
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
-  if (Sys.which(binary) == "")
+  if (binary != "open -a SLiMgui" && Sys.which(binary) == "")
     stop(sprintf("%s binary not found. Please modify your $PATH accordingly or
   specify the path manually by setting the 'binary_path' argument.", binary),
   call. = FALSE)
@@ -391,8 +391,23 @@ slim <- function(model, sequence_length, recombination_rate,
       cat("--------------------------------------------------\n\n")
     }
 
-    if (system(slim_command, ignore.stdout = !verbose) != 0)
-      stop("SLiM simulation resulted in an error -- see the output above for and indication of what could have gone wrong", call. = FALSE)
+    # execute the command, capture all log output and decide whether to print
+    # any of the log information to the console
+    log_output <- system(slim_command, intern = TRUE)
+    log_warnings <- grep("WARNING", log_output, value = TRUE)
+    if (verbose)
+      cat(log_output, sep = "\n")
+    else if (length(log_warnings)) {
+      warning("There were some warnings during the simulation run:\n",
+              paste(log_warnings, collapse = "\n"), call. = FALSE)
+    }
+
+    if (!grepl("simulation finished", log_output[length(log_output)])) {
+      if (!verbose) cat(log_output, sep = "\n")
+      stop("SLiM simulation was terminated before finishing ",
+           "-- see the output above for an indication of what could ",
+           "have gone wrong", call. = FALSE)
+    }
   }
 }
 
@@ -431,6 +446,10 @@ msprime <- function(model, sequence_length, recombination_rate,
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+
+  if (!methods::hasArg(sampling))
+    stop("Unlike SLiM simulations, explicit sampling schedule must be provided for msprime simulations",
+         call. = FALSE)
 
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
@@ -543,16 +562,18 @@ write_model <- function(dir, populations, admix_table, map_table, split_table,
   saved_files["length"] <- file.path(dir, "length.txt")
   saved_files["orig_length"] <- file.path(dir, "orig_length.txt")
   saved_files["direction"] <- file.path(dir, "direction.txt")
+  saved_files["description"] <- file.path(dir, "description.txt")
   base::write(generation_time, file.path(dir, "generation_time.txt"))
   base::write(round(length / generation_time), file.path(dir, "length.txt"))
   base::write(length, file.path(dir, "orig_length.txt"))
   base::write(direction, file.path(dir, "direction.txt"))
+  base::write(description, file.path(dir, "description.txt"))
 
   saved_files["slim_script"] <- file.path(dir, "script.slim")
   saved_files["msprime_script"] <- file.path(dir, "script.py")
-  write_script(saved_files["slim_script"], script_source, map, resolution, description)
+  write_script(saved_files["slim_script"], script_source, map, resolution)
   write_script(saved_files["msprime_script"],
-               system.file("extdata/script.py", package = "slendr"))
+               system.file("scripts/script.py", package = "slendr"))
 
   checksums <- calculate_checksums(saved_files)
   utils::write.table(checksums, file.path(dir, "checksums.tsv"), sep = "\t",
@@ -566,8 +587,7 @@ write_script <- function(script_target, script_source,
   # copy the script to the dedicated model directory, replacing the
   # placeholders for model directory and slendr version accordingly
   script_code <- readLines(script_source) %>%
-    gsub("__VERSION__", paste0("slendr_", utils::packageVersion("slendr")), .) %>%
-    gsub("__DESCRIPTION__", description, .)
+    gsub("__VERSION__", paste0("slendr_", utils::packageVersion("slendr")), .)
 
   if (!is.null(map)) {
     crs <- ifelse(has_crs(map), sf::st_crs(map)$epsg, "NULL")
@@ -902,28 +922,4 @@ convert_to_forward <- function(df, direction, columns, end_time, generation_time
     df[[column]] <- NULL
   }
   df
-}
-
-# Convert SLiM time units as they are saved in the tree-sequence output
-# (and also other slendr output formats such as the locations of individuals
-# or ancestry proportions over time) back to user-specified time units
-# (either forward or backward)
-convert_slim_time <- function(times, model) {
-  ancestors <- dplyr::filter(model$splits, parent == "ancestor")
-
-  if (model$direction == "backward") {
-    result <- times * model$generation_time
-    # does the backward simulation model terminate sooner than "present-day"?
-    # if so, shift the times to start at the original time specified by user
-    if (max(ancestors[, ]$tsplit_orig) != model$orig_length)
-      result <- result + (ancestors[, ]$tsplit_orig - model$orig_length)
-  } else {
-    result <- (model$length - times + 1) * model$generation_time
-    # did the simulation start at a later time than "generation 1"?
-    # if it did, shift the time appropriately
-
-    if (min(round(ancestors[, ]$tsplit_orig / model$generation_time) != 1))
-      result <- result + ancestors[1, ]$tsplit_orig - model$generation_time
-  }
-  as.integer(result)
 }

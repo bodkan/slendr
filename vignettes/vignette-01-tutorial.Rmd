@@ -13,12 +13,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- tryCatch(
-  {
-    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
-    TRUE
-  }, error = function(cond) FALSE
-)
+env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 
 knitr::opts_chunk$set(
   collapse = FALSE,
@@ -94,7 +89,7 @@ library(slendr)
 set.seed(314159)
 ```
 
-Finally: because the package is actively being worked on, improvements and bug fixes are being added every couple of hours. **Make sure to install the latest development version (step 3. above) each time you're about to test something (such as the examples in this vignette).** You can track changes between development releases in the [changelog](https://github.com/bodkan/slendr/blob/main/NEWS.md).
+Finally: because the package is actively being worked on, improvements and bug fixes are being added every couple of hours. **Make sure to install the latest development version (step 3. above) each time you're about to test something (such as the examples in this vignette).**
 
 ## Defining the overall world map
 
@@ -449,7 +444,7 @@ explore(model)
 
 ## Running the simulation
 
-The way we feed the entire serialized model into SLiM is through the `slim()` function, which understands the format of the model directory created by the `compile()` function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling `system.file("inst/extdata/script.slim", package = "slendr")`, in case you'd like to peek into its internals).
+The way we feed the entire serialized model into SLiM is through the `slim()` function, which understands the format of the model directory created by the `compile()` function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling `system.file("inst/scripts/script.slim", package = "slendr")`, in case you'd like to peek into its internals).
 
 Note that when you run this model in SLiMgui (which should automatically open by calling the command below), you will see populations pop up in individual panes within the window. This is how SLiMgui tracks spatial ranges of different populations. *Everyone is still simulated in the same world*, it's just that the simulation visualizes individual population ranges separately to reduce clutter.
 

@@ -14,3 +14,4 @@
 ^build/$
 ^man/figures/.*\.jpg
 ^man/figures/.*\.png
+^inst/pylib/__pycache__

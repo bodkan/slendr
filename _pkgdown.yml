@@ -40,20 +40,31 @@ reference:
     contents:
     - population
     - world
-    - geneflow
-    - region
 
-  - title: Population dynamics
+  - title: Spatial population dynamics
     contents:
     - move
     - expand
     - shrink
     - boundary
-    - resize
     - dispersal
+
+  - title: Non-spatial population dynamics
+    contents:
+    - geneflow
+    - resize
+
+  - title: Compiling and running population genetic models
+    contents:
+    - slim
+    - msprime
+    - compile
+    - sampling
+    - read
 
   - title: Manipulation of spatial objects
     contents:
+    - region
     - join
     - overlap
     - subtract
@@ -77,14 +88,6 @@ reference:
     - time_direction
     - split_time
 
-  - title: Compiling and running population genetic models
-    contents:
-    - slim
-    - msprime
-    - compile
-    - sampling
-    - read
-
   - title: Tree sequence loading and processing
     contents:
     - ts_load
@@ -93,7 +96,8 @@ reference:
     - ts_simplify
     - ts_mutate
     - ts_coalesced
-    - ts_metadata
+    - ts_data
+    - ts_samples
 
   - title: Extracting genotypes from tree sequences
     contents:
@@ -103,13 +107,12 @@ reference:
 
   - title: Accessing tree sequence components
     contents:
-    - ts_data
     - ts_ancestors
     - ts_nodes
     - ts_edges
-    - ts_samples
     - ts_tree
     - ts_draw
+    - ts_metadata
 
   - title: Tree sequence statistics
     contents:
@@ -128,6 +131,7 @@ reference:
     contents:
     - setup_env
     - clear_env
+    - check_env
 
 news:
   one_page: true

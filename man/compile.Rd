@@ -16,7 +16,7 @@ compile(
   overwrite = FALSE,
   sim_length = NULL,
   direction = NULL,
-  slim_script = system.file("extdata", "script.slim", package = "slendr"),
+  slim_script = system.file("scripts", "script.slim", package = "slendr"),
   description = ""
 )
 }

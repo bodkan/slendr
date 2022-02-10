@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{geneflow}
 \alias{geneflow}
-\title{Define a geneflow event}
+\title{Define a gene flow event between two populations}
 \usage{
 geneflow(from, to, rate, start, end, overlap = TRUE)
 }
@@ -21,7 +21,7 @@ populations?  (default \code{TRUE})}
 Object of the class data.frame
 }
 \description{
-Define a geneflow event
+Define a gene flow event between two populations
 }
 \examples{
 # spatial definitions -----------------------------------------------------

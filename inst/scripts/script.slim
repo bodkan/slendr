@@ -34,6 +34,8 @@ initialize() {
     defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
     defineConstant("SAMPLING", read_table(SAMPLES));
 
+    defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
+
     if (SPATIAL) {
         defineConstant("INTERACTIONS", read_table(config_path("dispersals.tsv")));
         defineConstant("MAPS", read_table(config_path("maps.tsv")));
@@ -350,7 +352,8 @@ s10 late() /* Remember individuals for tree sequence recording */ {
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         // which population and how many individuals to sample from it?
-        pop = event.getValue("pop"); n = event.getValue("n");
+        pop = event.getValue("pop");
+        n = event.getValue("n");
         all_inds = get_pop(pop).individuals;
 
         // only individuals not yet sampled are eligible for remembering
@@ -366,10 +369,16 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         if (isInfinite(n)) {
             n = length(all_inds);
             n_str = "all (" + n + ")";
-            // replace the original INF value with the actual number of individuals
+            // replace the original INF value with a real number of individuals
             // for later serialization of metadata
-            orig_n = SAMPLING.getValue("n"); orig_n[i] = n;
-            SAMPLING.setValue("n", orig_n);
+            // for later serialization of metadata
+            replace_which =
+                SAMPLING.getValue("n") == INF &
+                SAMPLING.getValue("pop") == pop &
+                SAMPLING.getValue("time_gen") == sim.generation - BURNIN_LENGTH;
+            n_values = SAMPLING.getValue("n");
+            n_values[replace_which] = n;
+            SAMPLING.setValue("n", n_values);
         } else
             n_str = asString(asInteger(n));
 
@@ -379,9 +388,23 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         // give a warning in case more individuals are scheduled for sampling
         // than are present in the population
         if (n > length(all_inds)) {
-            catn("(population has " + length(all_inds) + " but remembering of " + n +
-                     " was requested - capping at " + length(all_inds) + ")");
+            catn("\nWARNING: Population " + pop + "(p" + get_pop(pop).id + ") has " +
+                 length(all_inds) + " individuals " +
+                 "but remembering of " + n +
+                 " was requested. Only " + length(all_inds) +
+                 " individuals will be recorded in time " +
+                 event.getValue("time_orig") + ".\n");
+
+            // replace the original n with the actual number of individuals
+            // for later serialization of metadata
+            replace_which =
+                SAMPLING.getValue("n") == n &
+                SAMPLING.getValue("pop") == pop &
+                SAMPLING.getValue("time_gen") == sim.generation - BURNIN_LENGTH;
             n = length(all_inds);
+            n_values = SAMPLING.getValue("n");
+            n_values[replace_which] = n;
+            SAMPLING.setValue("n", n_values);
         }
 
         if (exists("distances"))
@@ -597,8 +620,9 @@ function (object<Dictionary>) collect_metadata(void) {
     // slendr version and commit hash that generated this script
     metadata.setValue("version", "__VERSION__");
     metadata.setValue("backend", "SLiM");
-    // model description
-    metadata.setValue("description", "__DESCRIPTION__");
+
+    metadata.setValue("description", DESCRIPTION);
+
     // sampling schedule table
     metadata.setValue("sampling", SAMPLING);
 

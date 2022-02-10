@@ -8,12 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- tryCatch(
-  {
-    reticulate::use_virtualenv("~/.venvs/retipy", required = TRUE)
-    TRUE
-  }, error = function(cond) FALSE
-)
+env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 
 knitr::opts_chunk$set(
   collapse = FALSE,
@@ -31,21 +26,29 @@ The main selling point of the *slendr* R package is programming complex *spatial
 
 ## Model specification
 
+Let's first load all required R libraries:
+
 ```{r, collapse = TRUE, message = FALSE}
 library(slendr)
 
 library(dplyr)
 library(ggplot2)
 
-# activate slendr's Python interface, installing all dependencies automatically
-# if necessary
-setup_env()
-
 seed <- 314159
 set.seed(seed)
 ```
 
-First, let's program our spatial model. We will use the same demographic model of modern human history in West Eurasia, which we extensively discussed in the [introductory tutorial](vignette-01-tutorial.html) and on the main [landing page](../index.html). Here is a complete model definition script, without further comments:
+Let's also set up the Python _slendr_ environment which we will use to analyse tree sequence data:
+
+```{r}
+# activate slendr's Python interface, installing all dependencies if necessary
+setup_env()
+
+# check that we have the correct environment
+check_env()
+```
+
+We begin by specifying our spatial model. We will use the same demographic model of modern human history in West Eurasia, which we extensively discussed in the [introductory tutorial](vignette-01-tutorial.html) and on the main [landing page](../index.html). Here is a complete model definition script, without further comments:
 
 ```{r, results = FALSE}
 # simulated world map

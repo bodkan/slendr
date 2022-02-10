@@ -6,7 +6,7 @@
 \usage{
 ts_load(
   model,
-  file = file.path(model$path, "output_slim.trees"),
+  file = NULL,
   recapitate = FALSE,
   simplify = FALSE,
   mutate = FALSE,
@@ -33,11 +33,11 @@ remembered (i.e. "sampled", in \emph{slendr} parlance) individuals?}
 \item{mutate}{Should the tree sequence be mutated?}
 
 \item{spatial}{Should spatial information encoded in the tree sequence data
-be converted to spatial R datastructures? If FALSE, pixel-based
+be converted to spatial R data structures? If \code{FALSE}, pixel-based
 raster-dimensions will not be converted to the coordinate reference system
-implied by the model. If TRUE (default), reprojection of coordinates will
-be performed. If the model was non-spatial, the value of this parameter is
-disregarded.}
+implied by the model. If \code{TRUE} (default), reprojection of coordinates
+will be performed. If the model was non-spatial, the value of this
+parameter is disregarded.}
 
 \item{recombination_rate, Ne}{Arguments passed to \code{ts_recapitate}}
 
@@ -52,8 +52,8 @@ remembered individuals will be retained. Only used when \code{simplify =
 \item{keep_input_roots}{Should the history ancestral to the MRCA of all
 samplbee retained in the tree sequence? Default is \code{FALSE}.}
 
-\item{migration_matrix}{Migration matrix used for coalescence of ancient lineages
-(passed to \code{ts_recapitate})}
+\item{migration_matrix}{Migration matrix used for coalescence of ancient
+lineages (passed to \code{ts_recapitate})}
 }
 \value{
 \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
