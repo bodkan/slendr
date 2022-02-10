@@ -58,7 +58,8 @@ Suggests:
     admixr,
     units,
     rgdal,
-    magick
+    magick,
+    methods
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues
