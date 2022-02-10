@@ -115,7 +115,7 @@ ts_load <- function(model, file = NULL,
   # at least it prevents having to do things like:
   # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
   #                                                              for ind in ts.individuals()]")
-  reticulate::source_python(file = system.file("python/pylib.py", package = "slendr"))
+  reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
   attr(ts, "source") <- backend
 
