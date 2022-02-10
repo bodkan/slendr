@@ -40,7 +40,7 @@ if args.verbose:
     logging.basicConfig(level=logging.INFO)
 
 if not args.seed:
-  args.seed = random.randint(1, sys.maxsize)
+  args.seed = random.randint(0, 2^32 - 1)
   
 model_dir = os.path.expanduser(args.model)
 
