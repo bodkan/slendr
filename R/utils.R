@@ -371,13 +371,26 @@ process_sampling <- function(samples, model, verbose = FALSE) {
       samples$x <- samples$y <- samples$x_orig <- samples$y_orig <- NA
   }
 
+  # in case a backwards time model is not to be simulated all the way to the
+  # present (i.e. time 0), the conversion of sampling times from absolute model
+  # time units into SLiM's forward time units needs to be adjusted relative
+  # to the actual start of the population (the oldest split in the model), not
+  # to the `orig_length` which would be the duration time of the simulation
+  # (if not, `convert_to_forward` would translate into negative SLiM generations)
+  if (model$direction == "backward" && model$orig_length != get_oldest_time(model$populations))
+    end_time <- get_oldest_time(model$populations)
+  else
+    end_time <- model$orig_length
+
   df <- dplyr::group_by(samples, time, pop, x, y, x_orig, y_orig) %>%
     dplyr::summarise(n = sum(n), .groups = "drop") %>%
     dplyr::arrange(time) %>%
-    convert_to_forward(direction = model$direction,
-                 columns = "time",
-                 generation_time = model$generation_time,
-                 end_time = model$orig_length) %>%
+    convert_to_forward(
+      direction = model$direction,
+      columns = "time",
+      generation_time = model$generation_time,
+      end_time = end_time
+    ) %>%
     dplyr::arrange(time_gen) %>%
     dplyr::select(pop, n, time_gen, x, y, time_orig, x_orig, y_orig)
 
@@ -435,6 +448,10 @@ convert_msprime_time <- function(time, model) {
   else {
     as.numeric(time * model$generation_time)
   }
+}
+
+get_oldest_time <- function(populations) {
+  max(sapply(populations, function(pop) attr(pop, "history")[[1]]$time))
 }
 
 kernel_fun <- function(fun = c("normal", "uniform", "cauchy", "exponential")) {

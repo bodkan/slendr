@@ -115,17 +115,7 @@ setting `direction = 'backward'.`", call. = FALSE)
   # (those stop at time 0 by default) so we find the oldest time present
   # in the model and take it as the total amount of time for the simulation
   if (time_dir == "backward" || is.null(sim_length)) {
-    end_time <- c(
-      sapply(populations, function(pop) {
-        sapply(attr(pop, "history"), function(event)
-          c(event$time, event$tsplit, event$tstart, event$tend))
-        }
-      ),
-      sapply(geneflow, function(x) max(x$tstart)),
-      sapply(geneflow, function(x) max(x$tend))
-    ) %>%
-      unlist %>%
-      max(na.rm = TRUE)
+    end_time <- get_oldest_time(populations)
   } else
     end_time <- sim_length
   length <- if (is.null(sim_length)) end_time else sim_length

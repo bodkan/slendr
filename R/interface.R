@@ -1075,7 +1075,7 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
             return(NULL)
           else
             stop("Cannot schedule sampling for '", pop$pop, "' at time ", t,
-                 " because the population will not be present in the simulation",
+                 " because the population will not yet be present in the simulation",
                  " at that point. Consider running this function with `strict = FALSE`",
                  " which will automatically retain only valid sampling events.",
                  call. = FALSE)
