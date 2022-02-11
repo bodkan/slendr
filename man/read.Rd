@@ -4,10 +4,10 @@
 \alias{read}
 \title{Read a previously serialized model configuration}
 \usage{
-read(dir)
+read(path)
 }
 \arguments{
-\item{dir}{Directory with all required configuration files}
+\item{path}{Directory with all required configuration files}
 }
 \description{
 Reads all configuration tables and other model data from a location

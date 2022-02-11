@@ -78,7 +78,7 @@ model <- compile(
   populations = list(p0, p1, p2, p3, p4, p5, p6),
   generation_time = 1, resolution = 1, sim_length = 1000,
   competition_dist = 10, mate_dist = 10, dispersal_dist = 5,
-  dir = file.path(tempdir(), "spatial-interactions"), overwrite = TRUE
+  path = file.path(tempdir(), "spatial-interactions"), overwrite = TRUE
 )
 ```
 

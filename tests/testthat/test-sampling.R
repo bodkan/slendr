@@ -4,7 +4,7 @@ test_that("sampling from a population which is not present is prevented (forward
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   p1 <- population(name = "p1", time = 10, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 20, N = 1, center = c(1, 1), radius = 10, remove = 100)
-  model <- compile(populations = list(p1, p2), dir = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
+  model <- compile(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
   expect_error(sampling(model, time = 15, list(p2, 3), strict = TRUE), msg) # pre-split
   expect_error(sampling(model, time = 1000, list(p2, 3), strict = TRUE), msg) # post-removal
 })
@@ -13,7 +13,7 @@ test_that("sampling from a population which is not present is prevented (backwar
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   p1 <- population(name = "p1", time = 1000, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 900, N = 1, center = c(1, 1), radius = 10, remove = 100)
-  model <- compile(populations = list(p1, p2), dir = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
+  model <- compile(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
   expect_error(sampling(model, time = 950, list(p2, 3), strict = TRUE), msg) # pre-split
   expect_error(sampling(model, time = 5, list(p2, 3), strict = TRUE), msg) # post-removal
 })
@@ -22,7 +22,7 @@ test_that("invalid sampling results in a warning", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   p1 <- population(name = "p1", time = 10, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 20, N = 1, center = c(1, 1), radius = 10, remove = 100)
-  model <- compile(populations = list(p1, p2), dir = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
+  model <- compile(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
   expect_warning(sampling(model, times = 10000, list(p1, 1), list(p2, 1)), "No valid sampling events were retained")
   suppressWarnings({res <- sampling(model, times = 10000, list(p1, 1), list(p2, 1))})
   expect_null(res)
@@ -32,27 +32,27 @@ msg <- "A sampling event was scheduled outside of the simulation time window"
 
 test_that("sampling before a simulation start (forward)", {
   p1 <- population(name = "p1", time = 10, N = 1, remove = 100)
-  model <- compile(populations = p1, dir = tempdir(), generation_time = 1, sim_length = 1000, overwrite = TRUE)
+  model <- compile(populations = p1, path = tempdir(), generation_time = 1, sim_length = 1000, overwrite = TRUE)
   expect_error(sampling(model, time = 5, list(p1, 3), strict = TRUE), msg) # pre-split
   expect_error(sampling(model, time = 2000, list(p1, 3), strict = TRUE), msg) # post-removal
 })
 
 test_that("sampling before a simulation start (backward)", {
   p1 <- population(name = "p1", time = 1000, N = 1, remove = 100)
-  model <- compile(populations = p1, dir = tempdir(), generation_time = 1, sim_length = 100, overwrite = TRUE)
+  model <- compile(populations = p1, path = tempdir(), generation_time = 1, sim_length = 100, overwrite = TRUE)
   expect_error(sampling(model, time = 1005, list(p1, 3), strict = TRUE), msg) # pre-split
   expect_error(sampling(model, time = 10, list(p1, 3), strict = TRUE), msg) # post-removal
 })
 
 test_that("sampling in the same generation of the split is prevented (forward)", {
   p1 <- population(name = "p1", time = 1, N = 1, remove = 50)
-  model <- compile(populations = p1, dir = tempdir(), generation_time = 25, sim_length = 100, overwrite = TRUE)
+  model <- compile(populations = p1, path = tempdir(), generation_time = 25, sim_length = 100, overwrite = TRUE)
   expect_warning(sampling(model, time = 3, list(p1, 3)), "No valid sampling")
 })
 
 test_that("sampling in the same generation of the split is prevented (backward)", {
   p1 <- population(name = "p1", time = 100, N = 1, remove = 10)
-  model <- compile(populations = p1, dir = tempdir(), generation_time = 25, overwrite = TRUE)
+  model <- compile(populations = p1, path = tempdir(), generation_time = 25, overwrite = TRUE)
   expect_warning(sampling(model, time = 97, list(p1, 3)), "No valid sampling")
 })
 
@@ -76,7 +76,7 @@ test_that("sampling is as close to the a single specified position as possible",
 
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
-  model <- compile(pop, dir = tempdir(), generation_time = 1,
+  model <- compile(pop, path = tempdir(), generation_time = 1,
                    competition_dist = 10, mate_dist = 10, dispersal_dist = 10,
                    sim_length = sim_length, resolution = 1, overwrite = TRUE)
 
@@ -132,7 +132,7 @@ test_that("sampling is as close to the multiple specified positions as possible"
 
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
-  model <- compile(pop, dir = tempdir(), generation_time = 1,
+  model <- compile(pop, path = tempdir(), generation_time = 1,
                    competition_dist = 10, mate_dist = 10, dispersal_dist = 10,
                    sim_length = sim_length, resolution = 1, overwrite = TRUE)
 

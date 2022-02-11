@@ -1,37 +1,37 @@
 test_that("'competition_dist' must be specified in compile() if missing", {
   map <- readRDS("map.rds")
   p <- population(mate_dist = 10, dispersal_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
-  expect_error(compile(populations = list(p), generation_time = 30, resolution = 11e3, dir = tempfile(), overwrite = TRUE, direction = "backward"),
+  expect_error(compile(populations = list(p), generation_time = 30, resolution = 11e3, path = tempfile(), overwrite = TRUE, direction = "backward"),
                "Parameter 'competition_dist' missing", fixed = TRUE)
-  expect_silent(compile(competition_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, dir = tempfile(), overwrite = TRUE, direction = "backward"))
+  expect_silent(compile(competition_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, direction = "backward"))
 })
 
 test_that("'mate_dist' must be specified in compile() if missing", {
   map <- readRDS("map.rds")
   p <- population(competition_dist = 10, dispersal_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
-  expect_error(compile(populations = list(p), generation_time = 30, resolution = 10e3, dir = tempfile(), overwrite = TRUE, direction = "backward"),
+  expect_error(compile(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, direction = "backward"),
                "Parameter 'mate_dist' missing", fixed = TRUE)
-  expect_silent(compile(mate_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, dir = tempfile(), overwrite = TRUE, direction = "backward"))
+  expect_silent(compile(mate_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, direction = "backward"))
 })
 
 test_that("'dispersal_dist' must be specified in compile() if missing", {
   map <- readRDS("map.rds")
   p <- population(competition_dist = 10, mate_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
-  expect_error(compile(populations = list(p), generation_time = 30, resolution = 10e3, dir = tempfile(), overwrite = TRUE, direction = "backward"),
+  expect_error(compile(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, direction = "backward"),
                "Parameter 'dispersal_dist' missing", fixed = TRUE)
-  expect_silent(compile(dispersal_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, dir = tempfile(), overwrite = TRUE, direction = "backward"))
+  expect_silent(compile(dispersal_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, direction = "backward"))
 })
 
 test_that("'competition_dist', 'mate_dist', and 'dispersal_dist' do not have to be specified in compile() if already present", {
   map <- readRDS("map.rds")
   p <- population(competition_dist = 10, mate_dist = 10, dispersal_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
-  expect_silent(compile(populations = list(p), generation_time = 30, resolution = 10e3, dir = tempfile(), overwrite = TRUE, direction = "backward"))
+  expect_silent(compile(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, direction = "backward"))
 })
 
 test_that("presence of all parents is enforced", {
   p1 <- population(name = "pop1", N = 700, time = 40000)
   p2 <- population(name = "pop2", parent = p1, N = 700, time = 4000)
-  expect_error(compile(populations = p2, dir = file.path(tempdir(), "missing-parent"), generation_time = 30),
+  expect_error(compile(populations = p2, path = file.path(tempdir(), "missing-parent"), generation_time = 30),
                "The following parent populations are missing: pop1")
 })
 

@@ -15,7 +15,7 @@ model <- compile(
   populations = list(p1, p2),
   generation_time = 1, resolution = res, sim_length = 300,
   competition_dist = 10, mate_dist = 10, dispersal_dist = 5,
-  dir = model_dir, overwrite = TRUE,
+  path = model_dir, overwrite = TRUE,
   description = desc
 )
 

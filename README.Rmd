@@ -184,7 +184,7 @@ model <- compile(
   resolution = 10e3, # resolution in meters per pixel
   competition_dist = 130e3, mate_dist = 100e3, # spatial interaction in SLiM
   dispersal_dist = 70e3, # how far will offspring end up from their parents
-  dir = file.path(tempdir(), "readme-model"), overwrite = TRUE
+  path = file.path(tempdir(), "readme-model"), overwrite = TRUE
 )
 ```
 

@@ -53,7 +53,7 @@ gf <- geneflow(from = nea, to = eur, rate = 0.03, start = 55000, end = 50000)
 model <- compile(
   populations = list(anc, chimp, nea, afr, eur), geneflow = gf,
   generation_time = 30,
-  dir = file.path(tempdir(), "introgression"), overwrite = TRUE
+  path = file.path(tempdir(), "introgression"), overwrite = TRUE
 )
 ```
 

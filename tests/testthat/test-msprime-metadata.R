@@ -16,7 +16,7 @@ a <- population("a", parent = b, time = 1500, N = 10)
 
 forward_model_dir <- paste0(tempfile(), "_forward")
 
-forward_model <- compile(populations = list(a, b, x1, x2, c, o), dir = forward_model_dir,
+forward_model <- compile(populations = list(a, b, x1, x2, c, o), path = forward_model_dir,
                  generation_time = 1, overwrite = TRUE, sim_length = 2200,
                  description = "The most incredible popgen model ever")
 
@@ -66,7 +66,7 @@ a <- population("a", parent = b, time = 1000, N = 10)
 
 backward_model_dir <- paste0(tempfile(), "_backward")
 
-backward_model <- compile(populations = list(a, b, x1, x2, c, o), dir = backward_model_dir,
+backward_model <- compile(populations = list(a, b, x1, x2, c, o), path = backward_model_dir,
                  generation_time = 1, overwrite = TRUE,
                  description = "The most incredible backward model ever")
 

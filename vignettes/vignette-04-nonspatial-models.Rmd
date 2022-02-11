@@ -61,7 +61,7 @@ The compilation step is also the same. The only (internal) difference is that we
 model <- compile(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   geneflow = gf, generation_time = 30,
-  dir = file.path(tempdir(), "non-spatial-model"), overwrite = TRUE
+  path = file.path(tempdir(), "non-spatial-model"), overwrite = TRUE
 )
 ```
 

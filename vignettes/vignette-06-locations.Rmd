@@ -127,7 +127,7 @@ model <- compile(
   geneflow = gf,
   generation_time = 30, resolution = 10e3,
   competition_dist = 130e3, mate_dist = 100e3, dispersal_dist = 70e3,
-  dir = file.path(tempdir(), "spatial-ts"), overwrite = TRUE
+  path = file.path(tempdir(), "spatial-ts"), overwrite = TRUE
 )
 ```
 

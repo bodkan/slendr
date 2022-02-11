@@ -6,7 +6,7 @@ test_that("read() restores a single-map model object", {
                     center = c(10, 40), radius = 100000, map = map)
 
   model_dir <- file.path(tempdir(), "tmp-single-map-model-serialization")
-  model1 <- compile(pop, dir = model_dir, resolution = 10000, generation_time = 1, overwrite = TRUE,
+  model1 <- compile(pop, path = model_dir, resolution = 10000, generation_time = 1, overwrite = TRUE,
                     competition_dist = 100e3, mate_dist = 100e3, dispersal_dist = 10e3, direction = "backward")
   model2 <- read(model1$path)
 
@@ -36,7 +36,7 @@ test_that("read() restores a complex model object", {
 
   model_dir <- file.path(tempdir(), "tmp-complex-map-model-serialization")
   model1 <- compile(
-    dir = model_dir,
+    path = model_dir,
     populations = list(p1, p2, p3, p4, p5),
     geneflow = geneflow,
     generation_time = 30,
@@ -59,7 +59,7 @@ test_that("non-unique population names lead to error", {
   p3 <- population(name = "pop2", N = 700, time = 1, radius = 600000, center = c(10, 25), map = map)
   model_dir <- file.path(tempdir(), "tmp-name-uniqueness")
   expect_error(
-    compile(dir = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, sim_length = 10, competition_dist = 100e3, mate_dist = 100e3, dispersal_dist = 10e3),
+    compile(path = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, sim_length = 10, competition_dist = 100e3, mate_dist = 100e3, dispersal_dist = 10e3),
     "All populations must have unique names"
   )
 
@@ -67,7 +67,7 @@ test_that("non-unique population names lead to error", {
   p2 <- population(name = "pop2", N = 700, time = 1, radius = 600000, center = c(10, 25), map = map)
   p3 <- population(name = "pop3", N = 700, time = 1, radius = 600000, center = c(10, 25), map = map)
   model_dir <- file.path(tempdir(), "tmp-name-uniqueness")
-  expect_silent(compile(dir = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, sim_length = 10, competition_dist = 100e3, mate_dist = 100e3, dispersal_dist = 10e3))
+  expect_silent(compile(path = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, sim_length = 10, competition_dist = 100e3, mate_dist = 100e3, dispersal_dist = 10e3))
 })
 
 # non-spatial models ------------------------------------------------------
@@ -76,7 +76,7 @@ test_that("read() restores a single-map model object (nonspatial)", {
   pop <- population("pop", N = 10, time = 100)
 
   model_dir <- file.path(tempdir(), "tmp-single-map-model-serialization")
-  model1 <- compile(pop, dir = model_dir, generation_time = 1, overwrite = TRUE, direction = "backward")
+  model1 <- compile(pop, path = model_dir, generation_time = 1, overwrite = TRUE, direction = "backward")
   model2 <- read(model1$path)
 
   # make sure that all components of the model list object before and after
@@ -100,7 +100,7 @@ test_that("read() restores a complex model object (nonspatial)", {
 
   model_dir <- file.path(tempdir(), "tmp-complex-map-model-serialization-nonspatial")
   model1 <- compile(
-    dir = model_dir,
+    path = model_dir,
     populations = list(p1, p2, p3, p4, p5),
     geneflow = geneflow,
     generation_time = 30,
@@ -119,7 +119,7 @@ test_that("non-unique population names lead to error (nonspatial)", {
   p3 <- population(name = "pop2", N = 700, time = 1)
   model_dir <- file.path(tempdir(), "tmp-name-uniqueness-nonspatial")
   expect_error(
-    compile(dir = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, sim_length = 10),
+    compile(path = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, sim_length = 10),
     "All populations must have unique names"
   )
 
@@ -127,14 +127,14 @@ test_that("non-unique population names lead to error (nonspatial)", {
   p2 <- population(name = "pop2", N = 700, time = 1)
   p3 <- population(name = "pop3", N = 700, time = 1)
   model_dir <- file.path(tempdir(), "tmp-name-uniqueness-nonspatial")
-  expect_silent(compile(dir = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, sim_length = 10))
+  expect_silent(compile(path = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, sim_length = 10))
 })
 
 test_that("checksums are enforced", {
   pop <- population("pop", N = 10, time = 100)
 
   model_dir <- file.path(tempdir(), "tmp-checksums")
-  model1 <- compile(pop, dir = model_dir, generation_time = 1, overwrite = TRUE, direction = "backward")
+  model1 <- compile(pop, path = model_dir, generation_time = 1, overwrite = TRUE, direction = "backward")
   model2 <- read(model_dir)
   expect_warning(verify_checksums(file.path(model_dir, model1$checksums$file[1]),
                  paste0(model1$checksums$hash[1], "asdf")), "Checksum of .* does not match")

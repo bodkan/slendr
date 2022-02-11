@@ -7,7 +7,7 @@
 compile(
   populations,
   generation_time,
-  dir = NULL,
+  path = NULL,
   resolution = NULL,
   competition_dist = NULL,
   mate_dist = NULL,
@@ -17,7 +17,8 @@ compile(
   sim_length = NULL,
   direction = NULL,
   slim_script = system.file("scripts", "script.slim", package = "slendr"),
-  description = ""
+  description = "",
+  dir = NULL
 )
 }
 \arguments{
@@ -26,7 +27,7 @@ need to be specified in a \code{list})}
 
 \item{generation_time}{Generation time (in model time units)}
 
-\item{dir}{Output directory for the model configuration files which will be
+\item{path}{Output directory for the model configuration files which will be
 loaded by the backend SLiM script. If \code{NULL}, model configuration
 files will be saved to a temporary directory.}
 
@@ -56,6 +57,8 @@ parameter is inferred from the model and does not need to be set manually.}
 (by default, a bundled backend script will be used)}
 
 \item{description}{Optional short description of the model}
+
+\item{dir}{Deprecated. Use \code{path} instead.}
 }
 \value{
 Compiled \code{slendr_model} model object

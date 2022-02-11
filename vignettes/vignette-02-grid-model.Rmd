@@ -136,7 +136,7 @@ Finally, we can compile the whole model:
 
 ```{r}
 model <- compile(
-  dir = file.path(tempdir(), "grid-model"), 
+  path = file.path(tempdir(), "grid-model"), 
   populations = populations, geneflow = geneflows,
   generation_time = 1, resolution = 10,
   competition_dist = 10, mate_dist = 10, dispersal_dist = 10,
