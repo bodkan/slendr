@@ -284,14 +284,14 @@ map specified (circular or polygon range parameters set to the default
 landscape.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># spatial definitions -----------------------------------------------------</span>
+    <pre class="examples"><span class='co'># spatial definitions -----------------------------------------------------</span>
 
 <span class='co'># create a blank abstract world 1000x1000 distance units in size</span>
 <span class='va'>map</span> <span class='op'>&lt;-</span> <span class='fu'><a href='world.html'>world</a></span><span class='op'>(</span>xrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1000</span><span class='op'>)</span>, yrange <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1000</span><span class='op'>)</span>, landscape <span class='op'>=</span> <span class='st'>"blank"</span><span class='op'>)</span>
 
 <span class='co'># all slendr objects can be visualised with a generic function plot()</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>map</span><span class='op'>)</span>
-</div><div class='img'><img src='population-1.png' alt='' width='700' height='433' /></div><div class='input'>
+
 <span class='co'># create a circular population with the center of a population boundary at</span>
 <span class='co'># [200, 800] and a radius of 100 distance units, 1000 individuals at time 1</span>
 <span class='co'># occupying a map just specified</span>
@@ -300,17 +300,7 @@ landscape.</p>
 
 <span class='co'># printing a population object to a console shows a brief summary</span>
 <span class='va'>pop1</span>
-</div><div class='output co'>#&gt; slendr 'population' object 
-#&gt; -------------------------- 
-#&gt; name: pop1 
-#&gt; habitat: terrestrial
-#&gt; 
-#&gt; number of spatial maps: 1 
-#&gt; map: abstract spatial landscape with custom features
-#&gt; stays until the end of the simulation
-#&gt; 
-#&gt; population history overview:
-#&gt;   - time 1: created as an ancestral population</div><div class='input'>
+
 <span class='co'># create another population occupying a polygon range, splitting from pop1</span>
 <span class='co'># at a given time point (note that specifying a map is not necessary because</span>
 <span class='co'># it is "inherited" from the parent)</span>
@@ -328,18 +318,7 @@ landscape.</p>
 <span class='va'>pop1_moved</span> <span class='op'>&lt;-</span> <span class='fu'><a href='move.html'>move</a></span><span class='op'>(</span><span class='va'>pop1</span>, start <span class='op'>=</span> <span class='fl'>100</span>, end <span class='op'>=</span> <span class='fl'>200</span>, snapshots <span class='op'>=</span> <span class='fl'>10</span>,
                    trajectory <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600</span>, <span class='fl'>820</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>400</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>800</span>, <span class='fl'>150</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>pop1_moved</span>
-</div><div class='output co'>#&gt; slendr 'population' object 
-#&gt; -------------------------- 
-#&gt; name: pop1 
-#&gt; habitat: terrestrial
-#&gt; 
-#&gt; number of spatial maps: 14 
-#&gt; map: abstract spatial landscape with custom features
-#&gt; stays until the end of the simulation
-#&gt; 
-#&gt; population history overview:
-#&gt;   - time 1: created as an ancestral population
-#&gt;   - time 100-200: movement across a landscape</div><div class='input'>
+
 <span class='co'># many slendr functions are pipe-friendly, making it possible to construct</span>
 <span class='co'># pipelines which construct entire history of a population</span>
 <span class='va'>pop1</span> <span class='op'>&lt;-</span> <span class='fu'>population</span><span class='op'>(</span><span class='st'>"pop1"</span>, N <span class='op'>=</span> <span class='fl'>1000</span>, time <span class='op'>=</span> <span class='fl'>1</span>,
@@ -366,14 +345,14 @@ landscape.</p>
 
 <span class='co'># spatial boundaries can be plotted with a function plot()</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pop1</span><span class='op'>)</span>
-</div><div class='img'><img src='population-2.png' alt='' width='700' height='433' /></div><div class='input'>
+
 <span class='co'># population ranges can expand by a given distance in all directions</span>
 <span class='va'>pop2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='expand.html'>expand</a></span><span class='op'>(</span><span class='va'>pop2</span>, by <span class='op'>=</span> <span class='fl'>200</span>, start <span class='op'>=</span> <span class='fl'>50</span>, end <span class='op'>=</span> <span class='fl'>150</span>, snapshots <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># we can check the positions of all populations interactively by plotting their</span>
 <span class='co'># ranges together on a single map</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pop1</span>, <span class='va'>pop2</span>, <span class='va'>pop3</span><span class='op'>)</span>
-</div><div class='img'><img src='population-3.png' alt='' width='700' height='433' /></div><div class='input'>
+
 <span class='co'># gene flow events --------------------------------------------------------</span>
 
 <span class='co'># individual gene flow events can be saved to a list</span>
@@ -401,7 +380,7 @@ landscape.</p>
 
 <span class='co'># clean up the model directory</span>
 <span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>model_dir</span>, recursive <span class='op'>=</span> <span class='cn'>TRUE</span>, force <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div></pre>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
