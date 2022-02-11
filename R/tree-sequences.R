@@ -1587,10 +1587,10 @@ get_metadata <- function(ts) {
   # must be extracted differently for the two backends
   if (attr(ts, "source") == "SLiM") {
     metadata <- ts$metadata$SLiM$user_metadata$slendr[[1]]
-    arguments = metadata$arguments[[1]]
+    arguments <- metadata$arguments[[1]]
   } else {
     metadata <- ts$metadata$slendr
-    arguments = metadata$arguments
+    arguments <- metadata$arguments
   }
 
   list(
