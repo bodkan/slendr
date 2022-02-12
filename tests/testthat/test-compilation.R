@@ -44,3 +44,10 @@ test_that("invalid blank maps are prevented", {
                        resolution = 1, overwrite = TRUE),
                "No occupiable pixel on a rasterized map")
 })
+
+test_that("`dir is deprecated in favor of `path`", {
+  p <- population(name = "pop", N = 700, time = 100) %>% resize(N = 100, time = 50, how = "step")
+  expect_warning(model <- compile(p, dir = file.path(tempdir(), "dir-rerouted-to-path"), generation_time = 30, overwrite = TRUE),
+                 "The `dir =` argument of the `compile\\(\\)` function is now deprecated.")
+  expect_true(grepl("dir-rerouted-to-path$", model$path))
+})
