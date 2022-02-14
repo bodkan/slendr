@@ -7,7 +7,7 @@
 ts_simplify(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{simplify_to}{A character vector of individual names. If NULL, all
 explicitly remembered individuals (i.e. those specified via the
@@ -25,7 +25,7 @@ disregarded.}
 samplbee retained in the tree sequence? Default is \code{FALSE}.}
 }
 \value{
-\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+Tree sequence object of the class \code{slendr_ts}
 }
 \description{
 This function is a convenience wrapper around the \code{simplify} method

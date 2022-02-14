@@ -13,7 +13,7 @@ ts_edges(ts)
 ts_nodes(ts)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 }
 \value{
 Data frame with the information from the give tree sequence table

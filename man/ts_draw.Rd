@@ -13,9 +13,9 @@ ts_draw(x, width = 1500, height = 500, labels = FALSE, ts = NULL, ...)
 
 \item{labels}{Label each node with the individual name?}
 
-\item{ts}{\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
-obtained by \code{link{ts_load}}, \code{link{ts_recapitate}},
-\code{link{ts_simplify}}, or \code{link{ts_mutate}}}
+\item{ts}{Tree sequence object of the class \code{slendr_ts} obtained by
+\code{link{ts_load}}, \code{link{ts_recapitate}}, \code{link{ts_simplify}},
+or \code{link{ts_mutate}}}
 
 \item{...}{Keyword arguments to the tskit \code{draw_svg} function.}
 }

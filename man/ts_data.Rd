@@ -7,7 +7,7 @@
 ts_data(ts, remembered = NULL, retained = NULL, alive = NULL)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{remembered, retained, alive}{Only extract information about nodes and
 times of individuals with the specific flag}

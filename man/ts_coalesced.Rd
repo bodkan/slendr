@@ -7,7 +7,7 @@
 ts_coalesced(ts, return_failed = FALSE)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{return_failed}{Report back which trees failed the coalescence
 check?}

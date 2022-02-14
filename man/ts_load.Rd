@@ -56,7 +56,7 @@ samplbee retained in the tree sequence? Default is \code{FALSE}.}
 lineages (passed to \code{ts_recapitate})}
 }
 \value{
-\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+Tree sequence object of the class \code{slendr_ts}
 }
 \description{
 This function loads a tree sequence file simulated from a given slendr model.

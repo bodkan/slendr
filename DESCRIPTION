@@ -50,7 +50,8 @@ Imports:
     ggraph,
     tidygraph,
     shinyWidgets,
-    shiny
+    shiny,
+    ape
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

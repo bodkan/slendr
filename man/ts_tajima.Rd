@@ -7,7 +7,7 @@
 ts_tajima(ts, sample_sets, mode = c("site", "branch", "node"), windows = NULL)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{sample_sets}{A list (optionally a named list) of character vectors with
 individual names (one vector per set)}

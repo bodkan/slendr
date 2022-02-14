@@ -49,7 +49,7 @@ ts_f4ratio(
 )
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{mode}{The mode for the calculation ("sites" or "branch")}
 

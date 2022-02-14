@@ -7,7 +7,7 @@
 ts_metadata(ts)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 }
 \value{
 List of metadata fields extracted from the tree sequence object

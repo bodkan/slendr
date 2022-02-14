@@ -105,8 +105,9 @@ reference:
     - ts_data
     - ts_samples
 
-  - title: Extracting genotypes from tree sequences
+  - title: Tree sequence format conversion
     contents:
+    - ts_phylo
     - ts_genotypes
     - ts_eigenstrat
     - ts_vcf

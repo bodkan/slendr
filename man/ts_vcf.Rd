@@ -7,7 +7,7 @@
 ts_vcf(ts, path, chrom = NULL, individuals = NULL)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{path}{Path to a VCF file}
 

@@ -7,7 +7,7 @@
 ts_samples(ts)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 }
 \description{
 Extract names and times of individuals scheduled for sampling

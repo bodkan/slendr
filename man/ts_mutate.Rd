@@ -13,7 +13,7 @@ ts_mutate(
 )
 }
 \arguments{
-\item{ts}{Object of the type \code{pyslim.SlimTreeSequence}}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{mutation_rate}{Mutation rate used by msprime to simulate mutations}
 
@@ -27,7 +27,7 @@ integer number is given, mutations of the SLiM mutation type with that
 integer identifier will be created.}
 }
 \value{
-\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+Tree sequence object of the class \code{slendr_ts}
 }
 \description{
 Add mutations to the given tree sequence

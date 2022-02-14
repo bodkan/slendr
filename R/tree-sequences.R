@@ -38,7 +38,7 @@
 #' @param migration_matrix Migration matrix used for coalescence of ancient
 #'   lineages (passed to \code{ts_recapitate})
 #'
-#' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+#' @return Tree sequence object of the class \code{slendr_ts}
 #'
 #' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
@@ -158,7 +158,7 @@ ts_load <- function(model, file = NULL,
 
 #' Save a tree sequence to a file
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}
+#' @param ts Tree sequence object loaded by \code{ts_load}
 #' @param file File to which the tree sequence should be saved
 #'
 #' @export
@@ -170,7 +170,7 @@ ts_save <- function(ts, file) {
 
 #' Recapitate the tree sequence
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}
+#' @param ts Tree sequence object loaded by \code{ts_load}
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
 #' @param spatial Should spatial information encoded in the tree sequence data
@@ -183,7 +183,7 @@ ts_save <- function(ts, file) {
 #'   (passed to \code{ts_recapitate})
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #'
-#' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+#' @return Tree sequence object of the class \code{slendr_ts}
 #'
 #' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
@@ -260,7 +260,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' ancient DNA samples) is in the pyslim documentation at
 #' <https://tskit.dev/pyslim/docs/latest/tutorial.html#historical-individuals>.
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param simplify_to A character vector of individual names. If NULL, all
 #'   explicitly remembered individuals (i.e. those specified via the
 #'   \code{\link{sampling}} function will be left in the tree sequence after the
@@ -274,7 +274,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
 #' samplbee retained in the tree sequence? Default is \code{FALSE}.
 #'
-#' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+#' @return Tree sequence object of the class \code{slendr_ts}
 #'
 #' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
@@ -398,7 +398,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 
 #' Add mutations to the given tree sequence
 #'
-#' @param ts Object of the type \code{pyslim.SlimTreeSequence}
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param mutation_rate Mutation rate used by msprime to simulate mutations
 #' @param random_seed Random seed passed to msprime's \code{mutate} method
 #' @param keep_existing Keep existing mutations?
@@ -407,7 +407,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 #'   integer number is given, mutations of the SLiM mutation type with that
 #'   integer identifier will be created.
 #'
-#' @return \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+#' @return Tree sequence object of the class \code{slendr_ts}
 #'
 #' @seealso \code{\link{ts_data}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
@@ -459,7 +459,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 
 #' Extract list with tree sequence metadata saved by SLiM
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #'
 #' @return List of metadata fields extracted from the tree sequence object
 #'
@@ -469,11 +469,11 @@ ts_metadata <- function(ts) {
   attr(ts, "metadata")
 }
 
-# genotype conversion -----------------------------------------------------
+# output formats ----------------------------------------------------------
 
 #' Extract genotype table from the tree sequence
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #'
 #' @return Data frame object of the class \code{tibble}
 #'
@@ -524,7 +524,7 @@ ts_genotypes <- function(ts) {
 #' which will carry all ancestral alleles (i.e. value "2" in a geno file
 #' for each position in a snp file).
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param prefix EIGENSTRAT trio prefix
 #' @param chrom The name of the chromosome in the EIGENSTRAT snp file
 #'   (default "chr1")
@@ -602,7 +602,7 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 
 #' Save genotypes from the tree sequenceas a VCF file
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param path Path to a VCF file
 #' @param chrom Chromosome name to be written in the CHROM column of the VCF
 #' @param individuals A character vector of individuals in the tree sequence. If
@@ -647,6 +647,72 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
   })
 }
 
+#' Convert a tree in the tree sequence to an object of the class \code{phylo}
+#' @inheritParams ts_tajima
+#' @param quiet Should ape's internal phylo validity test be printed out?
+#' @export
+ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
+  if (!attr(ts, "recapitated") && !ts_coalesced(ts))
+    stop("The tree sequence must be fully coalesced or recapitated (see\n",
+         "?ts_recapitate for more details)", call. = FALSE)
+
+  if (!attr(ts, "simplified") && attr(ts, "source") != "msprime")
+    stop("Please simplify your tree sequence down to sampled individuals first\n",
+         "(see ?ts_simplify for more details)", call. = FALSE)
+
+  tree <- ts_tree(ts, i, mode)
+  start <- tree$interval$left
+  end <- tree$interval$right
+
+  edges <- ts_edges(ts) %>% dplyr::filter(left <= start, right <= end)
+  nodes <- ts_nodes(ts)
+  individuals <- ts_data(ts, remembered = TRUE)
+
+  tip_labels <- sprintf("%s (%d)", individuals$name, individuals$node_id)
+
+  # convert the edge table to a proper ape phylo object
+  # see http://ape-package.ird.fr/misc/FormatTreeR.pdf for more details
+  n_tips <- length(tip_labels)
+  n_all <- nrow(nodes)
+  n_internal <- n_all - n_tips
+
+  # start by creating a phylo-compatible edge matrix (different order of columns
+  # to the tskit edge table, node IDs as integers starting from 1)
+  edge <- as.matrix(edges[, c("parent", "child")]) + 1
+  mode(edge) <- "integer"
+
+  # in ape phylo, leaves must be numbered `1...n`, root must be the node `n +
+  # 1`, and all internal nodes must be larger than `n` -- we need to flip around
+  # some indices in the edge matrix
+  root_ts <- n_all # root ID in the original tree sequence tree object
+  root_ape <- n_tips + 1 # root ID in the target phylo tree object
+
+  # replace the node ID of the internal node with the lowest integer ID in
+  # the tree sequence with the root ID and vice-versa
+  parents_ape <- edge[, 1]
+  children_ape <- edge[, 2]
+
+  parents_ape[edge[, 1] == root_ts] <- root_ape
+  parents_ape[edge[, 1] == root_ape] <- root_ts
+
+  children_ape[edge[, 2] == root_ape] <- root_ts
+
+  # bind the two columns back into an edge matrix
+  edge <- cbind(as.integer(parents_ape), as.integer(children_ape))
+
+  tree <- list(edge = edge, tip.label = tip_labels, Nnode = n_internal)
+  class(tree) <- "phylo"
+
+  check_log <- capture.output(ape::checkValidPhylo(tree))
+
+  # if there are fatal issues, report them and signal an error
+  if (any(grepl("FATAL", check_log)))
+    stop(paste(check_log, collapse = "\n"), call. = FALSE)
+
+  if (!quiet) cat(check_log, sep = "\n")
+
+  tree
+}
 
 # tree sequence tables ----------------------------------------------------
 
@@ -672,7 +738,7 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #'   sequence, and how to analysed data about distances between nodes in the
 #'   spatial context.
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param remembered,retained,alive Only extract information about nodes and
 #'   times of individuals with the specific flag
 #'
@@ -713,7 +779,7 @@ ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
 #' @seealso \code{\link{ts_data}} for accessing processed and annotated treee
 #'   sequence table data
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #'
 #' @return Data frame with the information from the give tree sequence table
 #'
@@ -738,7 +804,7 @@ ts_nodes <- function(ts) {
 }
 
 #' Extract names and times of individuals scheduled for sampling
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @export
 ts_samples <- function(ts) {
   attr(ts, "metadata")$sampling %>%
@@ -747,7 +813,7 @@ ts_samples <- function(ts) {
 
 #' Infer spatio-temporal ancestral history for given nodes/individuals
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param x Either a character vector with individual names, or an integer
 #'   vector of node IDs
 #' @param verbose Report on the progress of ancestry path generation?
@@ -828,7 +894,7 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 #' For more information about optional keyword arguments see tskit documentation:
 #' <https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class>
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param i Position of the tree in the tree sequence. If \code{mode = "index"},
 #'   an i-th tree will be returned (in one-based indexing), if \code{mode =
 #'   "position"}, a tree covering an i-th base of the simulated genome will be
@@ -869,9 +935,9 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @param x A single tree extracted by \code{\link{ts_tree}}
 #' @param width,height Pixel dimensions of the rendered bitmap
 #' @param labels Label each node with the individual name?
-#' @param ts \code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
-#'   obtained by \code{link{ts_load}}, \code{link{ts_recapitate}},
-#'   \code{link{ts_simplify}}, or \code{link{ts_mutate}}
+#' @param ts Tree sequence object of the class \code{slendr_ts} obtained by
+#'   \code{link{ts_load}}, \code{link{ts_recapitate}}, \code{link{ts_simplify}},
+#'   or \code{link{ts_mutate}}
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
 #'
 #' @export
@@ -916,7 +982,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 
 #' Check that all trees in the tree sequence are fully coalesced
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param return_failed Report back which trees failed the coalescence
 #'   check?
 #'
@@ -1019,7 +1085,7 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 
 #' Calculate the f2, f3, f4, and f4-ratio statistics
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param W,X,Y,Z,A,B,C,O Character vectors of individual names (following the
 #'   nomenclature of Patterson et al. 2021)
 #' @param span_normalise Divide the result by the span of the window? Default
@@ -1106,7 +1172,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #' options of the \code{mode} argument, please see the tskit documentation at
 #' <https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode>.
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param sample_sets A list (optionally a named list) of character vectors with
 #'   individual names (one vector per set)
 #' @param mode The mode for the calculation ("sites" or "branch")
@@ -1253,7 +1319,7 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' \code{mode} argument, please see the tskit documentation at
 #' <https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode>
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param sample_sets A list (optionally a named list) of character vectors with
 #'   individual names (one vector per set)
 #' @param mode The mode for the calculation ("sites" or "branch")
@@ -1290,7 +1356,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' please see the tskit manual at
 #' <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum>
 #'
-#' @param ts \code{pyslim.SlimTreeSequence} object
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param sample_sets A list (optionally a named list) of character vectors with
 #'   individual names (one vector per set). If NULL, allele frequency spectrum
 #'   for all individuals in the tree sequence will be computed.

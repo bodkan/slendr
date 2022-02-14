@@ -7,7 +7,7 @@
 ts_save(ts, file)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}}
+\item{ts}{Tree sequence object loaded by \code{ts_load}}
 
 \item{file}{File to which the tree sequence should be saved}
 }

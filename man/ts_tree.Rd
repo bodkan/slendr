@@ -7,7 +7,7 @@
 ts_tree(ts, i, mode = c("index", "position"), ...)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{i}{Position of the tree in the tree sequence. If \code{mode = "index"},
 an i-th tree will be returned (in one-based indexing), if \code{mode =

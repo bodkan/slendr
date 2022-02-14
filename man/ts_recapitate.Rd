@@ -14,7 +14,7 @@ ts_recapitate(
 )
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object loaded by \code{ts_load}}
+\item{ts}{Tree sequence object loaded by \code{ts_load}}
 
 \item{recombination_rate}{A constant value of the recombination rate}
 
@@ -33,7 +33,7 @@ disregarded.}
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 }
 \value{
-\code{pyslim.SlimTreeSequence} object of the class \code{slendr_ts}
+Tree sequence object of the class \code{slendr_ts}
 }
 \description{
 Recapitate the tree sequence

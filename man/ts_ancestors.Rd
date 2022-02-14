@@ -7,7 +7,7 @@
 ts_ancestors(ts, x = NULL, verbose = FALSE)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{x}{Either a character vector with individual names, or an integer
 vector of node IDs}

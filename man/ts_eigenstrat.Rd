@@ -7,7 +7,7 @@
 ts_eigenstrat(ts, prefix, chrom = "chr1", outgroup = NULL)
 }
 \arguments{
-\item{ts}{\code{pyslim.SlimTreeSequence} object}
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{prefix}{EIGENSTRAT trio prefix}
 
