@@ -181,19 +181,15 @@ nodes into a single data frame which can be used in downstream analyses." />
 nodes into a single data frame which can be used in downstream analyses.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ts_data</span><span class='op'>(</span><span class='va'>ts</span>, remembered <span class='op'>=</span> <span class='cn'>NULL</span>, retained <span class='op'>=</span> <span class='cn'>NULL</span>, alive <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ts_data</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ts</th>
-      <td><p>Tree sequence object of the class <code>slendr_ts</code></p></td>
-    </tr>
-    <tr>
-      <th>remembered, retained, alive</th>
-      <td><p>Only extract information about nodes and
-times of individuals with the specific flag</p></td>
+      <th>x</th>
+      <td><p>Tree sequence object of the class <code>slendr_ts</code> or a <code>phylo</code>
+object extracted by <code>ts_phylo</code></p></td>
     </tr>
     </table>
 
@@ -201,8 +197,7 @@ times of individuals with the specific flag</p></td>
 
     <p>Data frame with processed information from the tree sequence object.
 If the model which generated this data was spatial, result will be returned
-as a spatial object of the class <code>sf</code>. See description for more
-information.</p>
+as a spatial object of the class <code>sf</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The source of data (tables of individuals and nodes recorded in the tree
@@ -217,11 +212,11 @@ visualised.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='ts_individuals.html'>ts_individuals</a></code> <code><a href='ts_individuals.html'>ts_nodes</a></code>
-<code><a href='ts_individuals.html'>ts_edges</a></code> for accessing raw tree sequence tables without
-added metadata annotation. See also <code><a href='ts_ancestors.html'>ts_ancestors</a></code> to learn
-how to extract information about relationship beteween nodes in the tree
-sequence, and how to analysed data about distances between nodes in the
-spatial context.</p></div>
+<code><a href='ts_individuals.html'>ts_edges</a></code> for accessing raw tree sequence tables without added
+metadata annotation. See also <code><a href='ts_ancestors.html'>ts_ancestors</a></code> to learn how to
+extract information about relationship beteween nodes in the tree sequence,
+and how to analysed data about distances between nodes in the spatial
+context.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -486,6 +486,8 @@ ts_genotypes <- function(ts) {
     stop("Extracting genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
 
+  backend <- attr(ts, "source")
+
   data <- ts_data(ts)
 
   gts <- ts$genotype_matrix()
@@ -502,8 +504,8 @@ ts_genotypes <- function(ts) {
     positions <- positions[biallelic_pos]
   }
 
-  chromosomes <- ts_data(ts, remembered = TRUE) %>% # applies also for msprime
-    stats::na.omit() %>% # effectively filters for sampled for msprime
+  chromosomes <- ts_data(ts) %>%
+    dplyr::filter(!is.na(name)) %>%
     dplyr::as_tibble() %>%
     dplyr::mutate(chr_name = sprintf("%s_chr%i", name, 1:2)) %>%
     dplyr::select(chr_name, node_id) %>%
@@ -629,8 +631,8 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
     stop("Attempting to extract genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
 
-  data <- ts_data(ts, remembered = TRUE) %>%
-    stats::na.omit() %>%
+  data <- ts_data(ts) %>%
+    dplyr::filter(!is.na(name)) %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(name, ind_id)
 
@@ -1423,13 +1425,14 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 # Function for extracting numerical node IDs for various statistics
 get_node_ids <- function(ts, x) {
   if (is.null(x)) {
-    ts_data(ts, remembered = TRUE) %>%
+    ts_data(ts) %>%
+      dplyr::filter(!is.na(name)) %>%
       .$node_id %>%
       return()
   } else if (is.numeric(x)) {
     return(x)
   } else if (is.character(x)) {
-    ts_data(ts, remembered = TRUE) %>%
+    ts_data(ts) %>%
       dplyr::filter(name %in% x) %>%
       .$node_id %>%
       return()

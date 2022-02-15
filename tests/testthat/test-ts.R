@@ -90,7 +90,8 @@ test_that("ts_save and ts_load result in the same tree sequence (msprime)", {
 test_that("tree sequence contains the right number of sampled individuals (SLiM)", {
   ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1,
                 recombination_rate = 0, simplify = TRUE)
-  counts <- ts_data(ts, remembered = TRUE) %>%
+  counts <- ts_data(ts) %>%
+    dplyr::filter(remembered) %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(ind_id, time, pop) %>%
     dplyr::count(time, pop)
@@ -99,7 +100,7 @@ test_that("tree sequence contains the right number of sampled individuals (SLiM)
 
 test_that("locations and times in the tree sequence match values saved by SLiM", {
   ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
-  individuals <- ts_data(ts, remembered = TRUE) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
+  individuals <- ts_data(ts) %>% dplyr::filter(remembered) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
   true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
                                     col_types = "iicidd") %>%
     dplyr::mutate(time = convert_slim_time(gen, model))
@@ -405,7 +406,7 @@ test_that("ts_eigenstrat and tsv_cf create correct data (SLiM)", {
                 recombination_rate = 0, Ne = 10000) %>%
     ts_mutate(mutation_rate = 1e-7)
 
-  ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
+  ts_names <- sort(unique(ts_data(ts) %>% dplyr::filter(remembered) %>% .$name))
 
   # match EIGENSTRAT contents
   prefix <- file.path(tempdir(), "eigen")
@@ -427,7 +428,7 @@ test_that("ts_eigenstrat and tsv_cf create correct data (SLiM)", {
 test_that("ts_eigenstrat and tsv_cf create correct data (msprime)", {
   ts <- ts_load(model, file = msprime_ts) %>% ts_mutate(mutation_rate = 1e-7)
 
-  ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
+  ts_names <- sort(unique(ts_data(ts) %>% dplyr::filter(remembered) %>% .$name))
 
   # match EIGENSTRAT contents
   prefix <- file.path(tempdir(), "eigen")
@@ -450,7 +451,7 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed (SLiM)", {
   ts <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000) %>%
     ts_mutate(mutation_rate = 1e-7)
 
-  ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
+  ts_names <- sort(unique(ts_data(ts) %>% dplyr::filter(remembered) %>% .$name))
 
   # match EIGENSTRAT contents
   prefix <- file.path(tempdir(), "eigen")
@@ -462,7 +463,7 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed (SLiM)", {
 test_that("ts_eigenstrat correctly adds an outgroup when instructed (msprime)", {
   ts <- ts_load(model, file = msprime_ts) %>% ts_mutate(mutation_rate = 1e-7)
 
-  ts_names <- sort(unique(ts_data(ts, remembered = TRUE)$name))
+  ts_names <- sort(unique(ts_data(ts) %>% dplyr::filter(remembered) %>% .$name))
 
   # match EIGENSTRAT contents
   prefix <- file.path(tempdir(), "eigen")
@@ -605,7 +606,8 @@ test_that("tree sequence contains the specified number of sampled individuals (d
     ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1,
                   recombination_rate = 0, simplify = TRUE)
   )
-  counts <- ts_data(ts, remembered = TRUE) %>%
+  counts <- ts_data(ts) %>%
+    dplyr::filter(remembered) %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(ind_id, time, pop) %>%
     dplyr::count(time, pop)
@@ -625,7 +627,7 @@ test_that("locations and times in the tree sequence match values saved by SLiM (
   suppressMessages(
     ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
   )
-  individuals <- ts_data(ts, remembered = TRUE) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
+  individuals <- ts_data(ts) %>% dplyr::filter(remembered) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
   true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
                                     col_types = "iicidd") %>%
     dplyr::mutate(time = convert_slim_time(gen, model))
@@ -683,17 +685,17 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
   expect_equal(ts_samples(sts5), ts_samples(mts5))
   expect_equal(ts_samples(sts6), ts_samples(mts6))
 
-  sdata1 <- ts_data(sts1, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata1 <- ts_data(sts1) %>% dplyr::filter(remembered) %>% dplyr::arrange(name) %>% as.data.frame()
   mdata1 <- ts_data(mts1) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
-  sdata2 <- ts_data(sts2, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata2 <- ts_data(sts2) %>% dplyr::filter(remembered) %>% dplyr::arrange(name) %>% as.data.frame()
   mdata2 <- ts_data(mts2) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
-  sdata3 <- ts_data(sts3, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata3 <- ts_data(sts3) %>% dplyr::filter(remembered) %>% dplyr::arrange(name) %>% as.data.frame()
   mdata3 <- ts_data(mts3) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
-  sdata4 <- ts_data(sts4, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata4 <- ts_data(sts4) %>% dplyr::filter(remembered) %>% dplyr::arrange(name) %>% as.data.frame()
   mdata4 <- ts_data(mts4) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
-  sdata5 <- ts_data(sts5, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata5 <- ts_data(sts5) %>% dplyr::filter(remembered) %>% dplyr::arrange(name) %>% as.data.frame()
   mdata5 <- ts_data(mts5) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
-  sdata6 <- ts_data(sts6, remembered = TRUE) %>% dplyr::arrange(name) %>% as.data.frame()
+  sdata6 <- ts_data(sts6) %>% dplyr::filter(remembered) %>% dplyr::arrange(name) %>% as.data.frame()
   mdata6 <- ts_data(mts6) %>% stats::na.omit() %>% dplyr::arrange(name) %>% as.data.frame()
 
   expect_equal(sdata1$name, mdata1$name)

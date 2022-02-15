@@ -220,7 +220,7 @@ In the remainder of this vignette we will look at a couple of examples.
 Every spatial object in *slendr* is internally of the class `sf`. The flexibility of of [*ggplot2*](https://ggplot2.tidyverse.org) and [*sf*](https://r-spatial.github.io/sf/) packages means that we can overlay the locations of sampled individuals (saved in a `sf` format by `ts_data()`) on top of our world map (also an `sf` object):
 
 ```{r, slendr_map_ts}
-sampled_data <- ts_data(ts, remembered = TRUE)
+sampled_data <- ts_data(ts) %>% filter(remembered)
 
 ggplot() +
   geom_sf(data = map, fill = "lightgray", color = NA) +
