@@ -8,10 +8,9 @@ island3 <- region("island3", center = c(20, 80), radius = 10)
 archipelago <- island1 %>% join(island2) %>% join(island3)
 
 custom_map <- world(xrange = c(1, 100), c(1, 100), landscape = archipelago)
-plot(custom_map)
 
 # real Earth landscapes can be defined using freely-available Natural Earth
 # project data and with the possibility to specify an appropriate Coordinate
-# Reference System
-real_map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = "EPSG:3035")
-plot(real_map)
+# Reference System, such as this example of a map of Europe
+
+# real_map <- world(xrange = c(-15, 40), yrange = c(30, 60), crs = "EPSG:3035")

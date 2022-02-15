@@ -84,7 +84,7 @@ model_dir <- paste0(tempdir(), "_slendr_model")
 # slendr model object (in practice, the resolution should be smaller)
 model <- compile(
   populations = list(pop1, pop2, pop3), generation_time = 1,
-  dir = model_dir, overwrite = TRUE,
+  path = model_dir, overwrite = TRUE,
   resolution = 10, sim_length = 500,
   competition_dist = 5, mate_dist = 5, dispersal_dist = 1
 )
@@ -92,5 +92,5 @@ model <- compile(
 # serialized models can be read from disk to their R representation again
 loaded_model <- read(model_dir)
 
-# clean up the model directory
+# clean up the model temporary directory
 unlink(model_dir, recursive = TRUE, force = TRUE)
