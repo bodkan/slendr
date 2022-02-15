@@ -185,8 +185,8 @@ map</p></div>
 <span class="co"># load tree sequence from its default location in a model directory</span>
 <span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
 
-<span class="co"># load tree sequence from its default location in a model directory</span>
-<span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">model</span>, file <span class="op">=</span> <span class="st">"/path/to/tree/sequence/output.trees"</span><span class="op">)</span>
+<span class="co"># load tree sequence from another location</span>
+<span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">model</span>, file <span class="op">=</span> <span class="st">"output.trees"</span><span class="op">)</span>
 
 <span class="co"># load tree sequence and immediately simplify it only to sampled individuals</span>
 <span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">model</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>

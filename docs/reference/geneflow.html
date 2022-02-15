@@ -210,7 +210,7 @@ populations?  (default <code>TRUE</code>)</p></dd>
 <span class="co"># slendr model object (in practice, the resolution should be smaller)</span>
 <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="compile.html">compile</a></span><span class="op">(</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pop1</span>, <span class="va">pop2</span>, <span class="va">pop3</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>,
-  dir <span class="op">=</span> <span class="va">model_dir</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
+  path <span class="op">=</span> <span class="va">model_dir</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
   resolution <span class="op">=</span> <span class="fl">10</span>, sim_length <span class="op">=</span> <span class="fl">500</span>,
   competition_dist <span class="op">=</span> <span class="fl">5</span>, mate_dist <span class="op">=</span> <span class="fl">5</span>, dispersal_dist <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span>
@@ -218,7 +218,7 @@ populations?  (default <code>TRUE</code>)</p></dd>
 <span class="co"># serialized models can be read from disk to their R representation again</span>
 <span class="va">loaded_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read.html">read</a></span><span class="op">(</span><span class="va">model_dir</span><span class="op">)</span>
 
-<span class="co"># clean up the model directory</span>
+<span class="co"># clean up the model temporary directory</span>
 <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">model_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 </code></pre></div>
     </div>

@@ -78,8 +78,8 @@ using the functions \code{\link{ts_recapitate}} and
 # load tree sequence from its default location in a model directory
 ts <- ts_load(model)
 
-# load tree sequence from its default location in a model directory
-ts <- ts_load(model, file = "/path/to/tree/sequence/output.trees")
+# load tree sequence from another location
+ts <- ts_load(model, file = "output.trees")
 
 # load tree sequence and immediately simplify it only to sampled individuals
 ts <- ts_load(model, simplify = TRUE)
