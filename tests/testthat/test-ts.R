@@ -114,7 +114,7 @@ test_that("locations and times in the tree sequence match values saved by SLiM",
   expect_true(all.equal(joined$time.x, joined$time.y))
 })
 
-test_that("extracted individual, node and edge counts match the tree sequence (SLiM)", {
+test_that("extracted individual, node, edge, and mutation counts match the tree sequence (SLiM)", {
   ts1 <- ts_load(model, file = slim_ts)
   table1 <- ts_data(ts1)
 
@@ -124,58 +124,90 @@ test_that("extracted individual, node and edge counts match the tree sequence (S
   ts3 <- ts_load(model, file = slim_ts, recapitate = TRUE, simplify = TRUE, Ne = 1000, recombination_rate = 0)
   table3 <- ts_data(ts3)
 
+  suppressWarnings(ts4 <- ts_load(model, file = slim_ts, recapitate = TRUE,
+                                  simplify = TRUE, Ne = 1000, recombination_rate = 0,
+                                  mutate = TRUE, mutation_rate = 1e-6))
+  table4 <- ts_data(ts4)
+
   expect_true(ts1$num_individuals == sum(!is.na(unique(table1$ind_id))))
   expect_true(ts2$num_individuals == sum(!is.na(unique(table2$ind_id))))
   expect_true(ts3$num_individuals == sum(!is.na(unique(table3$ind_id))))
+  expect_true(ts4$num_individuals == sum(!is.na(unique(table4$ind_id))))
 
   expect_true(ts1$num_nodes == nrow(table1))
   expect_true(ts2$num_nodes == nrow(table2))
   expect_true(ts3$num_nodes == nrow(table3))
+  expect_true(ts4$num_nodes == nrow(table4))
 
   expect_true(all(sort(table1$node_id) == seq(0, ts1$num_nodes - 1)))
   expect_true(all(sort(table2$node_id) == seq(0, ts2$num_nodes - 1)))
   expect_true(all(sort(table3$node_id) == seq(0, ts3$num_nodes - 1)))
+  expect_true(all(sort(table4$node_id) == seq(0, ts4$num_nodes - 1)))
 
   expect_true(all(sort(unique(table1$ind_id)) == seq(0, ts1$num_individuals - 1)))
   expect_true(all(sort(unique(table2$ind_id)) == seq(0, ts2$num_individuals - 1)))
   expect_true(all(sort(unique(table3$ind_id)) == seq(0, ts3$num_individuals - 1)))
+  expect_true(all(sort(unique(table4$ind_id)) == seq(0, ts4$num_individuals - 1)))
 
   expect_true(ts1$num_edges == nrow(ts_edges(ts1)))
   expect_true(ts2$num_edges == nrow(ts_edges(ts2)))
   expect_true(ts3$num_edges == nrow(ts_edges(ts3)))
+  expect_true(ts4$num_edges == nrow(ts_edges(ts4)))
+
+  expect_true(ts1$num_mutations == nrow(ts_mutations(ts1)))
+  expect_true(ts2$num_mutations == nrow(ts_mutations(ts2)))
+  expect_true(ts3$num_mutations == nrow(ts_mutations(ts3)))
+  expect_true(ts4$num_mutations == nrow(ts_mutations(ts4)))
 })
 
-test_that("extracted individual, node and edge counts match the tree sequence (msprime)", {
+test_that("extracted individual, node, edge, and mutation counts match the tree sequence (msprime)", {
   # this is not a super useful test as no recapitation or simplification would
   # be performed -- but a good sanity check to enforce that ts1 == ts2 == ts3
   ts1 <- ts_load(model, file = msprime_ts)
   table1 <- ts_data(ts1)
 
-  suppressWarnings(ts2 <- ts_load(model, file = msprime_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0))
+  suppressWarnings(ts2 <- ts_load(model, file = msprime_ts, recapitate = TRUE,
+                                  Ne = 1000, recombination_rate = 0))
   table2 <- ts_data(ts2)
 
-  suppressWarnings(ts3 <- ts_load(model, file = msprime_ts, recapitate = TRUE, simplify = TRUE, Ne = 1000, recombination_rate = 0))
+  suppressWarnings(ts3 <- ts_load(model, file = msprime_ts, recapitate = TRUE,
+                                  simplify = TRUE, Ne = 1000, recombination_rate = 0))
   table3 <- ts_data(ts3)
+
+  suppressWarnings(ts4 <- ts_load(model, file = msprime_ts, recapitate = TRUE,
+                                  simplify = TRUE, Ne = 1000, recombination_rate = 0,
+                                  mutate = TRUE, mutation_rate = 1e-6))
+  table4 <- ts_data(ts4)
 
   expect_true(ts1$num_individuals == sum(!is.na(unique(table1$ind_id))))
   expect_true(ts2$num_individuals == sum(!is.na(unique(table2$ind_id))))
   expect_true(ts3$num_individuals == sum(!is.na(unique(table3$ind_id))))
+  expect_true(ts4$num_individuals == sum(!is.na(unique(table4$ind_id))))
 
   expect_true(ts1$num_nodes == nrow(table1))
   expect_true(ts2$num_nodes == nrow(table2))
   expect_true(ts3$num_nodes == nrow(table3))
+  expect_true(ts4$num_nodes == nrow(table4))
 
   expect_true(all(sort(table1$node_id) == seq(0, ts1$num_nodes - 1)))
   expect_true(all(sort(table2$node_id) == seq(0, ts2$num_nodes - 1)))
   expect_true(all(sort(table3$node_id) == seq(0, ts3$num_nodes - 1)))
+  expect_true(all(sort(table4$node_id) == seq(0, ts4$num_nodes - 1)))
 
   expect_true(all(sort(unique(table1$ind_id)) == seq(0, ts1$num_individuals - 1)))
   expect_true(all(sort(unique(table2$ind_id)) == seq(0, ts2$num_individuals - 1)))
   expect_true(all(sort(unique(table3$ind_id)) == seq(0, ts3$num_individuals - 1)))
+  expect_true(all(sort(unique(table4$ind_id)) == seq(0, ts4$num_individuals - 1)))
 
   expect_true(ts1$num_edges == nrow(ts_edges(ts1)))
   expect_true(ts2$num_edges == nrow(ts_edges(ts2)))
   expect_true(ts3$num_edges == nrow(ts_edges(ts3)))
+  expect_true(ts4$num_edges == nrow(ts_edges(ts4)))
+
+  expect_true(ts1$num_mutations == nrow(ts_mutations(ts1)))
+  expect_true(ts2$num_mutations == nrow(ts_mutations(ts2)))
+  expect_true(ts3$num_mutations == nrow(ts_mutations(ts3)))
+  expect_true(ts4$num_mutations == nrow(ts_mutations(ts4)))
 
   expect_true(ts1 == ts2)
   expect_true(ts1 == ts3)

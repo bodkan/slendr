@@ -228,6 +228,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
   attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
   attr(ts_new, "individuals") <- get_ts_individuals(ts_new)
+  attr(ts_new, "mutations") <- get_ts_mutations(ts_new)
 
   if (attr(ts_new, "source") == "SLiM")
     attr(ts_new, "data") <- get_slim_table_data(ts_new, model, spatial)
@@ -346,6 +347,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
   attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
   attr(ts_new, "edges") <- get_ts_edges(ts_new)
   attr(ts_new, "individuals") <- get_ts_individuals(ts_new)
+  attr(ts_new, "mutations") <- get_ts_mutations(ts_new)
 
   # use pedigree IDs to cross-check the original data with simplified table
   if (backend == "SLiM") {
@@ -449,6 +451,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   attr(ts_new, "nodes") <- attr(ts, "nodes")
   attr(ts_new, "edges") <- attr(ts, "edges")
   attr(ts_new, "individuals") <- attr(ts, "individuals")
+  attr(ts_new, "mutations") <- get_ts_mutations(ts_new)
 
   attr(ts_new, "data") <- attr(ts, "data")
 
@@ -774,15 +777,16 @@ ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
   data
 }
 
-#' Get the table of individuals/nodes/edges from the tree sequence
+#' Get the table of individuals/nodes/edges/mutations from the tree sequence
 #'
-#' This function extract data from a given tree sequence table
+#' This function extracts data from a given tree sequence table. All times are
+#' converted to model-specific time units from tskit's "generations backwards"
+#' time direction.
 #'
-#' This function extracts the raw table data. For further processing and
-#' analyses, the output of the function \code{\link{ts_data}} might be more
-#' useful, as it merges the information in node and individual tables into one
-#' table and further annotates it with useful information from the model
-#' configuration data.
+#' For further processing and analyses, the output of the function
+#' \code{\link{ts_data}} might be more useful, as it merges the information in
+#' node and individual tables into one table and further annotates it with
+#' useful information from the model configuration data.
 #'
 #' @seealso \code{\link{ts_data}} for accessing processed and annotated treee
 #'   sequence table data
@@ -809,6 +813,13 @@ ts_edges <- function(ts) {
 ts_nodes <- function(ts) {
   check_ts_class(ts)
   attr(ts, "nodes")
+}
+
+#' @rdname ts_individuals
+#' @export
+ts_mutations <- function(ts) {
+  check_ts_class(ts)
+  attr(ts, "mutations")
 }
 
 #' Extract names and times of individuals scheduled for sampling
