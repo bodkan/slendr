@@ -9,7 +9,14 @@ ts_phylo(ts, i, mode = c("index", "position"), quiet = FALSE)
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
-\item{mode}{The mode for the calculation ("sites" or "branch")}
+\item{i}{Position of the tree in the tree sequence. If \code{mode = "index"},
+an i-th tree will be returned (in one-based indexing), if \code{mode =
+  "position"}, a tree covering an i-th base of the simulated genome will be
+returned.}
+
+\item{mode}{How should the \code{i} argument be interpreted? Either "index"
+as an i-th tree in the sequence of genealogies, or "position" along the
+simulated genome.}
 
 \item{quiet}{Should ape's internal phylo validity test be printed out?}
 }

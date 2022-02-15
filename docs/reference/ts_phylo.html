@@ -108,8 +108,15 @@
     <h2>Arguments</h2>
     <dl><dt>ts</dt>
 <dd><p>Tree sequence object of the class <code>slendr_ts</code></p></dd>
+<dt>i</dt>
+<dd><p>Position of the tree in the tree sequence. If <code>mode = "index"</code>,
+an i-th tree will be returned (in one-based indexing), if <code>mode =
+  "position"</code>, a tree covering an i-th base of the simulated genome will be
+returned.</p></dd>
 <dt>mode</dt>
-<dd><p>The mode for the calculation ("sites" or "branch")</p></dd>
+<dd><p>How should the <code>i</code> argument be interpreted? Either "index"
+as an i-th tree in the sequence of genealogies, or "position" along the
+simulated genome.</p></dd>
 <dt>quiet</dt>
 <dd><p>Should ape's internal phylo validity test be printed out?</p></dd>
 </dl></div>
