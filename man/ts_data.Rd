@@ -4,19 +4,16 @@
 \alias{ts_data}
 \title{Extract combined annotated table of individuals and nodes}
 \usage{
-ts_data(ts, remembered = NULL, retained = NULL, alive = NULL)
+ts_data(x)
 }
 \arguments{
-\item{ts}{Tree sequence object of the class \code{slendr_ts}}
-
-\item{remembered, retained, alive}{Only extract information about nodes and
-times of individuals with the specific flag}
+\item{x}{Tree sequence object of the class \code{slendr_ts} or a \code{phylo}
+object extracted by \code{ts_phylo}}
 }
 \value{
 Data frame with processed information from the tree sequence object.
 If the model which generated this data was spatial, result will be returned
-as a spatial object of the class \code{sf}. See description for more
-information.
+as a spatial object of the class \code{sf}.
 }
 \description{
 This function combines information from the table of individuals and table of
@@ -35,9 +32,9 @@ visualised.
 }
 \seealso{
 \code{\link{ts_individuals}} \code{\link{ts_nodes}}
-\code{\link{ts_edges}} for accessing raw tree sequence tables without
-added metadata annotation. See also \code{\link{ts_ancestors}} to learn
-how to extract information about relationship beteween nodes in the tree
-sequence, and how to analysed data about distances between nodes in the
-spatial context.
+\code{\link{ts_edges}} for accessing raw tree sequence tables without added
+metadata annotation. See also \code{\link{ts_ancestors}} to learn how to
+extract information about relationship beteween nodes in the tree sequence,
+and how to analysed data about distances between nodes in the spatial
+context.
 }

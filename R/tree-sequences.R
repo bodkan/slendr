@@ -685,13 +685,13 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 
   # define a 1:N lookup table for node IDs between tskit and phylo
   present_nodes <- data %>%
-    dplyr::filter(node_id %in% c(children_array, parents_array)) %>%
-    dplyr::arrange(node_id) %>%
-    dplyr::pull(node_id)
+    dplyr::filter(node_id %in% c(children_array, parents_array))
+
+  present_ids <- present_nodes %>% dplyr::arrange(node_id) %>% dplyr::pull(node_id)
   lookup_nodes <- seq_len(n_all)
 
-  children <- sapply(children_array, function(i) lookup_nodes[present_nodes == i])
-  parents <- sapply(parents_array, function(i) lookup_nodes[present_nodes == i])
+  children <- sapply(children_array, function(i) lookup_nodes[present_ids == i])
+  parents <- sapply(parents_array, function(i) lookup_nodes[present_ids == i])
 
   # in ape phylo, leaves must be numbered `1...n`, root must be the node `n +
   # 1`, and all internal nodes must be larger than `n` -- we need to flip around
@@ -712,7 +712,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   edge <- cbind(as.integer(parents_ape), as.integer(children_ape))
 
   tree <- list(edge = edge, tip.label = tip_labels, Nnode = n_internal)
-  class(tree) <- "phylo"
+  class(tree) <- c("phylo", "slendr_phylo")
 
   check_log <- capture.output(ape::checkValidPhylo(tree))
 
@@ -721,6 +721,15 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     stop(paste(check_log, collapse = "\n"), call. = FALSE)
 
   if (!quiet) cat(check_log, sep = "\n")
+
+  # subset ts_data result to only those nodes that are present in the phylo
+  # object, adding another column with the rearranged node IDs
+  attr(tree, "data") <- present_nodes %>%
+    dplyr::mutate(phylo_id = sapply(present_ids, function(i) lookup_nodes[present_ids == i])) %>%
+    dplyr::select(name, pop, node_id, phylo_id, time, location, remembered,
+                  retained, alive, pedigree_id, ind_id)
+  attr(tree, "model") <- attr(ts, "model")
+  attr(tree, "source") <- attr(ts, "source")
 
   tree
 }
@@ -743,31 +752,22 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 #' visualised.
 #'
 #' @seealso \code{\link{ts_individuals}} \code{\link{ts_nodes}}
-#'   \code{\link{ts_edges}} for accessing raw tree sequence tables without
-#'   added metadata annotation. See also \code{\link{ts_ancestors}} to learn
-#'   how to extract information about relationship beteween nodes in the tree
-#'   sequence, and how to analysed data about distances between nodes in the
-#'   spatial context.
+#'   \code{\link{ts_edges}} for accessing raw tree sequence tables without added
+#'   metadata annotation. See also \code{\link{ts_ancestors}} to learn how to
+#'   extract information about relationship beteween nodes in the tree sequence,
+#'   and how to analysed data about distances between nodes in the spatial
+#'   context.
 #'
-#' @param ts Tree sequence object of the class \code{slendr_ts}
-#' @param remembered,retained,alive Only extract information about nodes and
-#'   times of individuals with the specific flag
+#' @param x Tree sequence object of the class \code{slendr_ts} or a \code{phylo}
+#'   object extracted by \code{ts_phylo}
 #'
 #' @return Data frame with processed information from the tree sequence object.
 #'   If the model which generated this data was spatial, result will be returned
-#'   as a spatial object of the class \code{sf}. See description for more
-#'   information.
+#'   as a spatial object of the class \code{sf}.
 #'
 #' @export
-ts_data <- function(ts, remembered = NULL, retained = NULL, alive = NULL) {
-  check_ts_class(ts)
-
-  backend <- attr(ts, "source")
-  data <- attr(ts, "data")
-
-  if (!is.null(remembered)) data <- dplyr::filter(data, remembered)
-  if (!is.null(retained)) data <- dplyr::filter(data, retained)
-  if (!is.null(alive)) data <- dplyr::filter(data, alive)
+ts_data <- function(x) {
+  data <- attr(x, "data")
 
   attr(data, "model") <- attr(ts, "model")
   attr(data, "source") <- attr(ts, "source")

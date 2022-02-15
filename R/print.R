@@ -97,12 +97,13 @@ print.slendr_tsdata <- function(x, ...) {
 
   sep <- print_header_info(x)
 
-  cat("tree sequence saved by the", backend, "backend from a",
-      model$direction, "time model\n\n")
+  cat("data was extracted from a", backend, model$direction, "time model\n\n")
 
-  cat("summary of the contents:\n")
+  cat("summary of the table data contents:\n")
 
-  individuals <- as.data.frame(x) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
+  individuals <- as.data.frame(x) %>%
+    dplyr::filter(!is.na(ind_id)) %>%
+    dplyr::distinct(ind_id, .keep_all = TRUE)
 
   if (backend == "SLiM") {
     remembered <- individuals %>%
@@ -115,32 +116,37 @@ print.slendr_tsdata <- function(x, ...) {
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
-    n_other <- sum(is.na(individuals$ind_id))
+    n_other <- sum(is.na(x$ind_id))
 
     for (pop in model$splits$pop) {
       n_remembered <- remembered[remembered$pop == pop, ]$n
       n_retained <- retained[retained$pop == pop, ]$n
       cat(" ", pop, "-",
-          ifelse(!length(n_remembered), 0, n_remembered), "sampled,",
-          ifelse(!length(n_retained), 0, n_retained), "retained individuals\n")
+          ifelse(!length(n_remembered), 0, n_remembered), "'sampled',",
+          ifelse(!length(n_retained), 0, n_retained), "'retained' individuals\n")
     }
 
-    cat("\ntotal:", sum(remembered$n), "sampled,",
-        sum(retained$n), "retained individuals",
-        "and\n", ifelse(n_other > 1, paste(n_other, "nodes"), "no nodes"),
-        "from", ifelse(n_other > 1, "unnasigned individuals", "an unassigned individual"),
-        "\n")
+    if (n_other == 0)
+      node_str <- "no nodes"
+    else if (n_other == 1)
+      node_str <- "node"
+    else
+      node_str <- "nodes"
+
+    cat("\ntotal:\n  -", sum(remembered$n), "'sampled' individuals\n  -",
+        sum(retained$n), "'retained' individuals\n  -",
+        n_other, node_str, "from 'recapitated' individuals\n")
   } else {
     # dummy column for later printing of sampled individuals' times
     individuals$remembered <- TRUE
     for (pop in model$splits$pop) {
       n_sampled <- length(individuals[individuals$pop == pop, ]$ind_id)
       n_unsampled <- sum(is.na(individuals$ind_id))
-      cat(" ", pop, "-", n_sampled, "sampled,",
-          n_unsampled, "unsampled individuals\n")
+      cat(" ", pop, "-", n_sampled, "'sampled',",
+          n_unsampled, "'unsampled' individuals\n")
     }
     cat("\ntotal:", length(individuals[!is.na(individuals$ind_id), ]),
-        "sampled individuals")
+        "'sampled' individuals")
   }
 
   cat(sep)
@@ -166,13 +172,6 @@ print.slendr_tsdata <- function(x, ...) {
   dplyr::as_tibble(x) %>%
     dplyr::arrange(is.na(name), -time, node_id) %>%
     print()
-
-  cat("\nNote: NA values belong to unsampled individuals\n")
-
-  if (!is.null(model$world) && backend == "SLiM") {
-    cat(sep)
-    print_map_info(model$world)
-  }
 }
 
 
