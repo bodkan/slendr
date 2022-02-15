@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the table of individuals/nodes/edges from the tree sequence — ts_individuals • slendr</title>
+<title>Get the table of individuals/nodes/edges/mutations from the tree sequence — ts_individuals • slendr</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,10 @@
 
 
 
-<meta property="og:title" content="Get the table of individuals/nodes/edges from the tree sequence — ts_individuals" />
-<meta property="og:description" content="This function extract data from a given tree sequence table" />
+<meta property="og:title" content="Get the table of individuals/nodes/edges/mutations from the tree sequence — ts_individuals" />
+<meta property="og:description" content="This function extracts data from a given tree sequence table. All times are
+converted to model-specific time units from tskit's &quot;generations backwards&quot;
+time direction." />
 <meta property="og:image" content="https://www.slendr.net/logo.png" />
 
 
@@ -170,27 +172,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get the table of individuals/nodes/edges from the tree sequence</h1>
+    <h1>Get the table of individuals/nodes/edges/mutations from the tree sequence</h1>
     <small class="dont-index">Source: <a href='https://github.com/bodkan/slendr/blob/master/R/tree-sequences.R'><code>R/tree-sequences.R</code></a></small>
     <div class="hidden name"><code>ts_individuals.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function extract data from a given tree sequence table</p>
+    <p>This function extracts data from a given tree sequence table. All times are
+converted to model-specific time units from tskit's "generations backwards"
+time direction.</p>
     </div>
 
     <pre class="usage"><span class='fu'>ts_individuals</span><span class='op'>(</span><span class='va'>ts</span><span class='op'>)</span>
 
 <span class='fu'>ts_edges</span><span class='op'>(</span><span class='va'>ts</span><span class='op'>)</span>
 
-<span class='fu'>ts_nodes</span><span class='op'>(</span><span class='va'>ts</span><span class='op'>)</span></pre>
+<span class='fu'>ts_nodes</span><span class='op'>(</span><span class='va'>ts</span><span class='op'>)</span>
+
+<span class='fu'>ts_mutations</span><span class='op'>(</span><span class='va'>ts</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ts</th>
-      <td><p><code>pyslim.SlimTreeSequence</code> object</p></td>
+      <td><p>Tree sequence object of the class <code>slendr_ts</code></p></td>
     </tr>
     </table>
 
@@ -199,11 +205,10 @@
     <p>Data frame with the information from the give tree sequence table</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function extracts the raw table data. For further processing and
-analyses, the output of the function <code><a href='ts_data.html'>ts_data</a></code> might be more
-useful, as it merges the information in node and individual tables into one
-table and further annotates it with useful information from the model
-configuration data.</p>
+    <p>For further processing and analyses, the output of the function
+<code><a href='ts_data.html'>ts_data</a></code> might be more useful, as it merges the information in
+node and individual tables into one table and further annotates it with
+useful information from the model configuration data.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='ts_data.html'>ts_data</a></code> for accessing processed and annotated treee

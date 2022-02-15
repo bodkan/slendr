@@ -4,13 +4,16 @@
 \alias{ts_individuals}
 \alias{ts_edges}
 \alias{ts_nodes}
-\title{Get the table of individuals/nodes/edges from the tree sequence}
+\alias{ts_mutations}
+\title{Get the table of individuals/nodes/edges/mutations from the tree sequence}
 \usage{
 ts_individuals(ts)
 
 ts_edges(ts)
 
 ts_nodes(ts)
+
+ts_mutations(ts)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -19,14 +22,15 @@ ts_nodes(ts)
 Data frame with the information from the give tree sequence table
 }
 \description{
-This function extract data from a given tree sequence table
+This function extracts data from a given tree sequence table. All times are
+converted to model-specific time units from tskit's "generations backwards"
+time direction.
 }
 \details{
-This function extracts the raw table data. For further processing and
-analyses, the output of the function \code{\link{ts_data}} might be more
-useful, as it merges the information in node and individual tables into one
-table and further annotates it with useful information from the model
-configuration data.
+For further processing and analyses, the output of the function
+\code{\link{ts_data}} might be more useful, as it merges the information in
+node and individual tables into one table and further annotates it with
+useful information from the model configuration data.
 }
 \seealso{
 \code{\link{ts_data}} for accessing processed and annotated treee

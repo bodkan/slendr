@@ -102,7 +102,6 @@ reference:
     - ts_simplify
     - ts_mutate
     - ts_coalesced
-    - ts_data
     - ts_samples
 
   - title: Tree sequence format conversion
@@ -114,12 +113,15 @@ reference:
 
   - title: Accessing tree sequence components
     contents:
-    - ts_ancestors
+    - ts_data
     - ts_nodes
     - ts_edges
+    - ts_individuals
+    - ts_mutations
     - ts_tree
     - ts_draw
     - ts_metadata
+    - ts_ancestors
 
   - title: Tree sequence statistics
     contents:
