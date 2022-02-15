@@ -819,7 +819,11 @@ ts_nodes <- function(ts) {
 #' @export
 ts_mutations <- function(ts) {
   check_ts_class(ts)
-  attr(ts, "mutations")
+  table <- attr(ts, "mutations")
+  if (is.null(table))
+    return(dplyr::tibble())
+  else
+    return(table)
 }
 
 #' Extract names and times of individuals scheduled for sampling
