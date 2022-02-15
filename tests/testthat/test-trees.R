@@ -7,7 +7,7 @@ pop <- population("POP", time = 1, N = 100, center = c(50, 50), radius = 50, map
 model <- compile(
   populations = pop,
   generation_time = 1,
-  sim_length = 10,
+  sim_length = 100,
   resolution = 1,
   competition_dist = 10, mate_dist = 2, dispersal_dist = 1,
   overwrite = TRUE
