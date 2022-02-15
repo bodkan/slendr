@@ -5,7 +5,9 @@ pkg := build/slendr_$(version).tar.gz
 logo := man/figures/logo.png
 
 docs:
-	R -e 'devtools::document(); pkgdown::build_reference(examples = FALSE)'
+	R -e 'devtools::document()'
+	R -e 'pkgdown::build_reference(examples = FALSE)'
+	R -e 'pkgdown::build_reference_index()'
 
 website:
 	rm -rf docs/
