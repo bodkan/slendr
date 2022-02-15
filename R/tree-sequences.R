@@ -713,8 +713,18 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   # bind the two columns back into an edge matrix
   edge <- cbind(as.integer(parents_ape), as.integer(children_ape))
 
-  tree <- list(edge = edge, tip.label = tip_labels, Nnode = n_internal)
-  class(tree) <- c("phylo", "slendr_phylo")
+  nodes <- ts_nodes(ts)
+  children_times <- sapply(children_array, function(i) nodes[nodes$node_id == i, ]$time)
+  parent_times <- sapply(parents_array, function(i) nodes[nodes$node_id == i, ]$time)
+  edge_lengths <- abs(parent_times - children_times)
+
+  tree <- list(
+    edge = edge,
+    edge.length = edge_lengths,
+    tip.label = tip_labels,
+    Nnode = n_internal
+  )
+  class(tree) <- "phylo"
 
   check_log <- capture.output(ape::checkValidPhylo(tree))
 
@@ -769,7 +779,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 #'
 #' @export
 ts_data <- function(x) {
-  if (!inherits(x, "slendr_ts") || !inherits(x, "slendr_phylo"))
+  if (!inherits(x, "slendr_ts") && !(inherits(x, "phylo") && !is.null(attr(x, "data"))))
     stop("Annotation data table can be only extracted for a slendr tree sequence\n",
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 
@@ -836,8 +846,9 @@ ts_mutations <- function(ts) {
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @export
 ts_samples <- function(ts) {
+  data <- ts_data(ts) %>% dplyr::filter(!is.na(name))
   attr(ts, "metadata")$sampling %>%
-    dplyr::filter(name %in% ts_data(ts)$name)
+    dplyr::filter(name %in% data$name)
 }
 
 #' Infer spatio-temporal ancestral history for given nodes/individuals
