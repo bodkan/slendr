@@ -63,9 +63,11 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
   if (inherits(map, "slendr_map")) {
     # define the population range as a simple geometry object
     # and bind it with the annotation info into an sf object
-    if (is.null(polygon) && is.null(center) && is.null(radius))
-      geometry <- sf::st_bbox(map) %>% sf::st_as_sfc()
-    else if (!is.null(polygon) & inherits(polygon, "slendr_region"))
+    if (is.null(polygon) && is.null(center) && is.null(radius)) {
+      bbox <- sf::st_bbox(map)
+      poly <- list(c(bbox[1], bbox[3]), c(bbox[2], bbox[3]), c(bbox[2], bbox[4]), c(bbox[1], bbox[4]))
+      geometry <- define_boundary(map, center, radius, coords = poly)
+    } else if (!is.null(polygon) & inherits(polygon, "slendr_region"))
       geometry <- sf::st_geometry(polygon)
     else
       geometry <- define_boundary(map, center, radius, polygon)

@@ -869,7 +869,8 @@ any individuals on the map. Please check the spatial boundary for
 this population at this time point.", x$pop, x$time), call. = FALSE)
   }
 
-  if (length(table(as.numeric(raster$fill))) < 2)
+  pixel_values <- unique(as.numeric(raster$fill))
+  if (length(pixel_values) == 1 && pixel_values == 0)
     stop("No occupiable pixel on a rasterized map for population '",
          x$pop[1], "' at time ", x$tmap[1], ". Make sure that the specified",
          " population boundary has sufficient space for the population to occupy.",
