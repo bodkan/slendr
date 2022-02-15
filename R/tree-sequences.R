@@ -769,6 +769,10 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 #'
 #' @export
 ts_data <- function(x) {
+  if (!inherits(x, "slendr_ts") || !inherits(x, "slendr_phylo"))
+    stop("Annotation data table can be only extracted for a slendr tree sequence\n",
+         "object or a phylo object created by the ts_phylo function", call. = FALSE)
+
   data <- attr(x, "data")
 
   attr(data, "model") <- attr(ts, "model")
