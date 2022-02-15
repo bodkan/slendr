@@ -648,8 +648,10 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 }
 
 #' Convert a tree in the tree sequence to an object of the class \code{phylo}
+#'
 #' @inheritParams ts_tajima
 #' @param quiet Should ape's internal phylo validity test be printed out?
+#'
 #' @export
 ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   if (!attr(ts, "recapitated") && !ts_coalesced(ts))
@@ -923,11 +925,13 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 #'
 #' @export
 ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
+  check_ts_class(ts)
   mode <- match.arg(mode)
   if (mode == "index")
     tree <- ts$at_index(index = i - 1, ...)
   else
     tree <- ts$at(position = i - 1, ...)
+  attr(tree, "tree_sequence") <- ts
   tree
 }
 
@@ -941,22 +945,12 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @param x A single tree extracted by \code{\link{ts_tree}}
 #' @param width,height Pixel dimensions of the rendered bitmap
 #' @param labels Label each node with the individual name?
-#' @param ts Tree sequence object of the class \code{slendr_ts} obtained by
-#'   \code{link{ts_load}}, \code{link{ts_recapitate}}, \code{link{ts_simplify}},
-#'   or \code{link{ts_mutate}}
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
 #'
 #' @export
-ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
-                    ts = NULL, ...) {
+ts_draw <- function(x, width = 1500, height = 500, labels = FALSE, ...) {
   if (labels) {
-    if (inherits(x, "tskit.trees.Tree") & is.null(ts))
-      stop("For plotting individual names, please provide the ",
-           "original tree sequence object for annotation using ",
-           "the `ts = ` argument to `ts_draw()", call. = FALSE)
-    else if (inherits(x, "tskit.trees.TreeSequence"))
-      ts <- x
-
+    ts <- attr(x, "tree_sequence")
     df_labels <- ts_data(ts) %>%
       dplyr::select(node_id, name) %>%
       dplyr::mutate(node_label = sprintf("%s (%s)", name, node_id),
@@ -1430,10 +1424,11 @@ get_node_ids <- function(ts, x) {
 
 # Extract information from the nodes table
 get_ts_nodes <- function(ts) {
+  model <- attr(ts, "model")
   table <- ts$tables$nodes
   dplyr::tibble(
     node_id = as.integer(seq_len(table$num_rows) - 1),
-    time = table$time,
+    time = time_fun(ts)(table$time, model),
     ind_id = ifelse(table$individual == -1, NA, table$individual),
     pop_id = as.integer(table$population)
   )
@@ -1441,6 +1436,8 @@ get_ts_nodes <- function(ts) {
 
 # Extract information from the table of individual table
 get_ts_individuals <- function(ts) {
+  model <- attr(ts, "model")
+
   table <- ts$tables$individuals
 
   ind_table <- dplyr::tibble(
@@ -1454,7 +1451,7 @@ get_ts_individuals <- function(ts) {
       ind_table,
       # pedigree_id = pylib$get_pedigree_ids(ts),
       pedigree_id = reticulate::py$get_pedigree_ids(ts),
-      time = ts$individual_times,
+      time = time_fun(ts)(ts$individual_times, model),
       raster_x = ts$individual_locations[, 1],
       raster_y = ts$individual_locations[, 2],
       pop_id = ts$individual_populations,
@@ -1466,7 +1463,7 @@ get_ts_individuals <- function(ts) {
       nodes_table <- dplyr::tibble(
         ind_id = ts$tables$nodes$individual,
         pop_id = ts$tables$nodes$population,
-        time = ts$tables$nodes$time
+        time = time_fun(ts)(ts$tables$nodes$time, model)
       ) %>% dplyr::distinct()
       ind_table <- dplyr::inner_join(ind_table, nodes_table, by = "ind_id")
   }
@@ -1486,11 +1483,29 @@ get_ts_edges <- function(ts) {
   )
 }
 
+# Extract information from the muations table
+get_ts_mutations <- function(ts) {
+  model <- attr(ts, "model")
+  table <- ts$tables$mutations
+  dplyr::tibble(
+    id = seq_len(table$num_rows) - 1,
+    site = as.vector(table[["site"]]),
+    node = as.vector(table[["node"]]),
+    time = time_fun(ts)(as.vector(table[["time"]]), model)
+  )
+}
+
+time_fun <- function(ts) {
+  if (attr(ts, "source") == "SLiM")
+    convert_slim_time
+  else
+    convert_msprime_time
+}
+
 get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # get data from the original individual table
   individuals <- get_ts_individuals(ts) %>%
-    dplyr::mutate(time = convert_slim_time(time, model),
-                  pop = model$splits$pop[pop_id + 1]) %>%
+    dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
     dplyr::arrange(-time, pop)
 
   # load information about samples at times and from populations of remembered
@@ -1511,7 +1526,7 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
-  nodes <- get_ts_nodes(ts) %>% dplyr::mutate(time = convert_slim_time(time, model))
+  nodes <- get_ts_nodes(ts)
 
   # add numeric node IDs to each individual
   combined <-
@@ -1546,16 +1561,14 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
 
   # get data from the original individual table
   individuals <- get_ts_individuals(ts) %>%
-    dplyr::mutate(time = convert_msprime_time(time, model),
-                  pop = model$splits$pop[pop_id + 1]) %>%
+    dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
     dplyr::arrange(-time, pop) %>%
     dplyr::mutate(name = samples$name)
 
   # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
-  nodes <- get_ts_nodes(ts) %>%
-    dplyr::mutate(time = convert_msprime_time(time, model))
+  nodes <- get_ts_nodes(ts)
 
   # add numeric node IDs to each individual
   combined <- dplyr::select(individuals, -time, -pop_id) %>%
