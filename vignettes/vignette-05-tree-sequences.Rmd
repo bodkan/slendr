@@ -232,7 +232,7 @@ ts_draw(tree, width = 1000, height = 600)
 If we specify `labels = TRUE` and provide the tree-sequence object itself (because that carries all the required model metadata such as individual names), we get a slightly more readable figure. We can also provide keyword arguments specific to *tskit* `draw_svg()` function, such as `time_scale` here:
 
 ```{r, tree_labels}
-ts_draw(tree, width = 1000, height = 600, labels = TRUE, ts = ts_small, time_scale = "rank")
+ts_draw(tree, width = 1000, height = 600, labels = TRUE, time_scale = "rank")
 ```
 
 
