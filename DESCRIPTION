@@ -30,7 +30,7 @@ Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The 'msprime' Python coalescent framework and the 'tskit' module can by installed by following the instructions at <https://tskit.dev/msprime/docs>.
 Imports: 
     sf,

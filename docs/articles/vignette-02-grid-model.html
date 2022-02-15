@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9</span>
       </span>
     </div>
 
@@ -94,13 +96,13 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bodkan/slendr/">
+  <a href="https://github.com/bodkan/slendr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://twitter.com/dr_bodkan">
+  <a href="https://twitter.com/dr_bodkan" class="external-link">
     <span class="fa fa-twitter"></span>
      
   </a>
@@ -121,13 +123,13 @@
 
       
 
-      </header><script src="vignette-02-grid-model_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Demes on a regular spatial grid</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/master/vignettes/vignette-02-grid-model.Rmd"><code>vignettes/vignette-02-grid-model.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/vignettes/vignette-02-grid-model.Rmd" class="external-link"><code>vignettes/vignette-02-grid-model.Rmd</code></a></small>
       <div class="hidden name"><code>vignette-02-grid-model.Rmd</code></div>
 
     </div>
@@ -137,16 +139,16 @@
 <p>In this vignette, we will build a simple model of isolated populations laid out on a two-dimensional grid, each exchanging migrants with its immediate neighbors.</p>
 <p>The purpose of the vignette is to demonstrate the power of R as a foundation for building complex <em>slendr</em> models from simpler components. Although there is no built-in functionality for such classic “demes on a regular grid” models in the <em>slendr</em> package, the fact that we have the complete functionality of R at our disposal makes it possible to easily program relatively complex models from the convenient environment of R using a couple of simple model-building primitives and automatically execute such models in SLiM.</p>
 <p>If you have worked with SLiM before, you will recognize that a nearly identical idea is implemented in SLiM’s Eidos language in section 5.3.3 of the SLiM manual. One difference in this example is that our model is explicitly spatial, unlike the example from the manual where spatiality is only approximated using a random-mating model.</p>
-<div id="simple-two-dimensional-grid-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#simple-two-dimensional-grid-model" class="anchor"></a>Simple two-dimensional grid model</h2>
+<div class="section level2">
+<h2 id="simple-two-dimensional-grid-model">Simple two-dimensional grid model<a class="anchor" aria-label="anchor" href="#simple-two-dimensional-grid-model"></a>
+</h2>
 <p>First, let’s load the <em>slendr</em> R package and create a two-dimensional abstract world map:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr">slendr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>
-  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,
-  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,
+  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,
+  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,
   landscape <span class="op">=</span> <span class="st">"blank"</span>
 <span class="op">)</span></code></pre></div>
 <p>Next, we define a helper function which will a) create a single <em>slendr</em> population object, b) place that population at an appropriate coordinate on the lattice on the world map based on the numeric identifier of the population <em>i</em> (where <em>i</em> runs from 1 to <span class="math inline">\(n \times n\)</span> , <em>n</em> being the total number of demes along one side of the regular grid):</p>
@@ -155,15 +157,15 @@
   <span class="va">dim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimensions.html">dimensions</a></span><span class="op">(</span><span class="va">map</span>, original <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
   <span class="co"># position of the i-th population on the two-dimensional lattice grid</span>
-  <span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%%</span> <span class="va">n_side</span>, <span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%/%</span> <span class="va">n_side</span><span class="op">)</span>
+  <span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">n_side</span>, <span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%/%</a></span> <span class="va">n_side</span><span class="op">)</span>
   <span class="va">center</span> <span class="op">&lt;-</span> <span class="va">coords</span> <span class="op">/</span> <span class="va">n_side</span> <span class="op">*</span> <span class="va">dim</span> <span class="op">+</span> <span class="va">dim</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">n_side</span><span class="op">)</span>
 
   <span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span>
-    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"pop%d"</span>, <span class="va">i</span><span class="op">)</span>,
+    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"pop%d"</span>, <span class="va">i</span><span class="op">)</span>,
     N <span class="op">=</span> <span class="va">N</span>,
     time <span class="op">=</span> <span class="fl">1</span>,
     map <span class="op">=</span> <span class="va">map</span>,
-    center <span class="op">=</span> <span class="va">center</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"xrange"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"yrange"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
+    center <span class="op">=</span> <span class="va">center</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"xrange"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"yrange"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,
     radius <span class="op">=</span> <span class="va">radius</span>
   <span class="op">)</span>
   
@@ -173,11 +175,11 @@
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 
 <span class="va">populations</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
 <p>Let’s plot the whole spatial population configuration, to make sure we set up things correctly:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">plot</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" width="480"></p>
 <p>So far, the way the model is specified, each population would be stuck on its own circular “island”. We can change that by programming gene flow events using the <em>slendr</em> function <code><a href="../reference/geneflow.html">geneflow()</a></code>. Again, let’s first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index <em>i</em>).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -185,52 +187,52 @@
   <span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">populations</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>
 
   <span class="co"># get the position of the i-th population on the n*n grid</span>
-  <span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%%</span> <span class="va">n_side</span>, <span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">%/%</span> <span class="va">n_side</span><span class="op">)</span>
+  <span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">n_side</span>, <span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%/%</a></span> <span class="va">n_side</span><span class="op">)</span>
 
    <span class="co"># get coordinates of the i-th population's neighbors on the grid</span>
-  <span class="va">neighbor_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span>, <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>
+  <span class="va">neighbor_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span>, <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="fl">1</span>, <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">coords</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">coords</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>
   <span class="op">)</span>
 
   <span class="co"># generate geneflow events for population coordinates inside the grid</span>
-  <span class="va">geneflows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">neighbor_pos</span>, <span class="kw">function</span><span class="op">(</span><span class="va">pos</span><span class="op">)</span> <span class="op">{</span>
-    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="va">pos</span> <span class="op">&lt;</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">pos</span> <span class="op">&gt;=</span> <span class="va">n_side</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
+  <span class="va">geneflows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">neighbor_pos</span>, <span class="kw">function</span><span class="op">(</span><span class="va">pos</span><span class="op">)</span> <span class="op">{</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="va">pos</span> <span class="op">&lt;</span> <span class="fl">0</span> <span class="op">|</span> <span class="va">pos</span> <span class="op">&gt;=</span> <span class="va">n_side</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
     <span class="va">neighbor</span> <span class="op">&lt;-</span> <span class="va">populations</span><span class="op">[[</span><span class="va">pos</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">*</span> <span class="va">n_side</span> <span class="op">+</span> <span class="va">pos</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">neighbor</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
+    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">neighbor</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
 
-    <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>
       <span class="fu"><a href="../reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop</span>, to <span class="op">=</span> <span class="va">neighbor</span>, rate <span class="op">=</span> <span class="va">rate</span>, start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
       <span class="fu"><a href="../reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">neighbor</span>, to <span class="op">=</span> <span class="va">pop</span>, rate <span class="op">=</span> <span class="va">rate</span>, start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
     <span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span>
 
   <span class="va">geneflows</span>
 <span class="op">}</span></code></pre></div>
 <p>Let’s test this function. What would be the gene flow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above (population number 6, because we defined a grid with 5 populations on one side).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">set_geneflow</span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.1</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt;   from_name to_name tstart tend rate overlap
-#&gt; 1      pop1    pop2      2 1000  0.1   FALSE
-#&gt; 2      pop2    pop1      2 1000  0.1   FALSE
-#&gt; 3      pop1    pop6      2 1000  0.1   FALSE
-#&gt; 4      pop6    pop1      2 1000  0.1   FALSE</code></pre>
+<pre><code><span class="co">#&gt;   from_name to_name tstart tend rate overlap</span>
+<span class="co">#&gt; 1      pop1    pop2      2 1000  0.1   FALSE</span>
+<span class="co">#&gt; 2      pop2    pop1      2 1000  0.1   FALSE</span>
+<span class="co">#&gt; 3      pop1    pop6      2 1000  0.1   FALSE</span>
+<span class="co">#&gt; 4      pop6    pop1      2 1000  0.1   FALSE</span></code></pre>
 <p>Looks right! Let’s generate the entire set of continuous gene flow events:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">geneflows</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">set_geneflow</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.05</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">set_geneflow</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.05</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="va">unique</span> <span class="co"># filter out duplicate events due to symmetries</span></code></pre></div>
 <p>The total number of individual gene flow events is:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">geneflows</span><span class="op">)</span></code></pre></div>
-<pre><code>#&gt; [1] 80</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">geneflows</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">#&gt; [1] 80</span></code></pre>
 <p>Finally, we can compile the whole model:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
-  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"grid-model"</span><span class="op">)</span>, 
+  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"grid-model"</span><span class="op">)</span>, 
   populations <span class="op">=</span> <span class="va">populations</span>, geneflow <span class="op">=</span> <span class="va">geneflows</span>,
   generation_time <span class="op">=</span> <span class="fl">1</span>, resolution <span class="op">=</span> <span class="fl">10</span>,
   competition_dist <span class="op">=</span> <span class="fl">10</span>, mate_dist <span class="op">=</span> <span class="fl">10</span>, dispersal_dist <span class="op">=</span> <span class="fl">10</span>,
@@ -238,37 +240,37 @@
 <span class="op">)</span></code></pre></div>
 <p>We can use the function <code><a href="../reference/plot_graph.html">plot_graph()</a></code> to plot the layout of the population history graph in order to verify that the geneflow events have been specified correctly. The layout of the graph is a little bit wonky and crowded (that’s due to the complexity of spatiotemporal models; the <code><a href="../reference/plot_graph.html">plot_graph()</a></code> function plots not just populations as nodes but also times of geneflow events and other demographic processes). Still, we can see that the gene flow events between populations have been specified correctly, since all arrows are bidirectional and point only between neighboring demes:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_graph.html">plot_graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_graph.html">plot_graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/demes_geneflow-1.png" width="640"></p>
 <p>Again, those familiar with the SLiM manual will recognize a similar figure in section 5.3.3.</p>
 <p>Finally, we can run our simulation using the <code><a href="../reference/slim.html">slim()</a></code> function.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, method <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="population-grid-on-a-real-geographic-landscape" class="section level2">
-<h2 class="hasAnchor">
-<a href="#population-grid-on-a-real-geographic-landscape" class="anchor"></a>Population grid on a real geographic landscape</h2>
+<div class="section level2">
+<h2 id="population-grid-on-a-real-geographic-landscape">Population grid on a real geographic landscape<a class="anchor" aria-label="anchor" href="#population-grid-on-a-real-geographic-landscape"></a>
+</h2>
 <p>We can take things one step further. What if we wanted to do a similar thing (i.e. simulate regularly spaced demes) but in a real geographic context?</p>
 <p>Let’s zoom in on some interesting part of the world and then create a grid of demes using the same helper function <code>create_pop</code> we defined above (each population boundary being 300 km in diameter):</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>
-  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">25</span>, <span class="fl">55</span><span class="op">)</span>,
-  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">32</span>, <span class="fl">35</span><span class="op">)</span>,
+  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">25</span>, <span class="fl">55</span><span class="op">)</span>,
+  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">32</span>, <span class="fl">35</span><span class="op">)</span>,
   crs <span class="op">=</span> <span class="fl">4326</span>
 <span class="op">)</span>
 
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 
 <span class="va">populations</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">150e3</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">150e3</span><span class="op">)</span></code></pre></div>
 <p>Of course, when we lay out a regular grid across a map of the world, some population boundaries would fall outside the African continent. To solve this issue, we will go through the list of all populations and filter to those with at least 50% of their area on land, using another helper function:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">continent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/region.html">region</a></span><span class="op">(</span>
-  map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="op">-</span><span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">35</span>, <span class="op">-</span><span class="fl">32</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="op">-</span><span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0</span><span class="op">)</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">53</span>, <span class="fl">13</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">37</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">32</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">16</span>, <span class="fl">38</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">38</span><span class="op">)</span>
+  map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="op">-</span><span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">35</span>, <span class="op">-</span><span class="fl">32</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="op">-</span><span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">55</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">0</span><span class="op">)</span>,
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">53</span>, <span class="fl">13</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">37</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">32</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">16</span>, <span class="fl">38</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">38</span><span class="op">)</span>
   <span class="op">)</span>
 <span class="op">)</span>
 
@@ -283,16 +285,16 @@
   <span class="co"># at least 50% of population's boundary be on land, and it must fall</span>
   <span class="co"># on to the African continent itself</span>
   <span class="kw">if</span> <span class="op">(</span><span class="va">continent_area</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">||</span> <span class="op">(</span><span class="va">map_area</span> <span class="op">/</span> <span class="va">pop_area</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.5</span><span class="op">)</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
+    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
   <span class="kw">else</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>
+    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">populations</span>, <span class="va">check_area</span>, <span class="va">map</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/funprog.html">Negate</a></span><span class="op">(</span><span class="va">is.null</span><span class="op">)</span>, <span class="va">.</span><span class="op">)</span></code></pre></div>
+<span class="va">filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">populations</span>, <span class="va">check_area</span>, <span class="va">map</span>, <span class="va">continent</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Negate</a></span><span class="op">(</span><span class="va">is.null</span><span class="op">)</span>, <span class="va">.</span><span class="op">)</span></code></pre></div>
 <p>Let’s plot the layout of the population grid on the real geographic background:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">plot</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/demes_africa-1.png" width="480"></p>
 <p>Next, we would probably set up some scenario of gene flow between subpopulations; perhaps we would be interested in studying how a selected allele spreads through the continent based on some factors of interest. Then, to simulate data from this spatial model, we would first have to <code><a href="../reference/compile.html">compile()</a></code> it and then run it in SLiM via the <code><a href="../reference/slim.html">slim()</a></code> function. Given that this is the same process we described in the example above, we won’t be repeating it here.</p>
 </div>
@@ -309,11 +311,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Martin Petr.</p>
+  <p></p>
+<p>Developed by Martin Petr.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>

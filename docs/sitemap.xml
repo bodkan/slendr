@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.slendr.net/404.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/articles/vignette-01-tutorial.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/articles/vignette-02-grid-model.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/articles/vignette-03-interactions.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/articles/vignette-04-nonspatial-models.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/articles/vignette-05-tree-sequences.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/articles/vignette-06-locations.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/articles/vignette-07-backends.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/authors.html</loc>
+  </url>
+  <url>
     <loc>https://www.slendr.net/index.html</loc>
   </url>
   <url>
@@ -38,6 +71,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/geneflow.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/index.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/join.html</loc>
@@ -148,6 +184,9 @@
     <loc>https://www.slendr.net/reference/ts_mutate.html</loc>
   </url>
   <url>
+    <loc>https://www.slendr.net/reference/ts_phylo.html</loc>
+  </url>
+  <url>
     <loc>https://www.slendr.net/reference/ts_recapitate.html</loc>
   </url>
   <url>
@@ -173,26 +212,5 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/world.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/articles/vignette-01-tutorial.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/articles/vignette-02-grid-model.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/articles/vignette-03-interactions.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/articles/vignette-04-nonspatial-models.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/articles/vignette-05-tree-sequences.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/articles/vignette-06-locations.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/articles/vignette-07-backends.html</loc>
   </url>
 </urlset>
