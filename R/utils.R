@@ -488,6 +488,6 @@ utils::globalVariables(
     "node1.name", "node2.name", "type", "label", "rate", "pop_id", "vcf_file",
     "gen", "newx", "newy", "child", "tmap", "node_label", "chr_name", "pos",
     "pyslim", "tskit", "msprime", "x", "y", "x_orig", "y_orig",
-    "orig_x", "orig_y"
+    "orig_x", "orig_y", "phylo_id"
   ), package = "slendr"
 )

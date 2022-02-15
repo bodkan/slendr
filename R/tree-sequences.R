@@ -654,7 +654,7 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 
 #' Convert a tree in the tree sequence to an object of the class \code{phylo}
 #'
-#' @inheritParams ts_tajima
+#' @inheritParams ts_tree
 #' @param quiet Should ape's internal phylo validity test be printed out?
 #'
 #' @export
@@ -726,7 +726,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   )
   class(tree) <- "phylo"
 
-  check_log <- capture.output(ape::checkValidPhylo(tree))
+  check_log <- utils::capture.output(ape::checkValidPhylo(tree))
 
   # if there are fatal issues, report them and signal an error
   if (any(grepl("FATAL", check_log)))
@@ -785,8 +785,8 @@ ts_data <- function(x) {
 
   data <- attr(x, "data")
 
-  attr(data, "model") <- attr(ts, "model")
-  attr(data, "source") <- attr(ts, "source")
+  attr(data, "model") <- attr(x, "model")
+  attr(data, "source") <- attr(x, "source")
 
   class(data) <- set_class(data, "tsdata")
 
