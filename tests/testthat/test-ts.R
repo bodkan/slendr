@@ -428,7 +428,7 @@ test_that("ts_eigenstrat and tsv_cf create correct data (SLiM)", {
 test_that("ts_eigenstrat and tsv_cf create correct data (msprime)", {
   ts <- ts_load(model, file = msprime_ts) %>% ts_mutate(mutation_rate = 1e-7)
 
-  ts_names <- sort(unique(ts_data(ts) %>% dplyr::filter(remembered) %>% .$name))
+  ts_names <- sort(unique(ts_data(ts) %>% .$name))
 
   # match EIGENSTRAT contents
   prefix <- file.path(tempdir(), "eigen")
@@ -463,7 +463,7 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed (SLiM)", {
 test_that("ts_eigenstrat correctly adds an outgroup when instructed (msprime)", {
   ts <- ts_load(model, file = msprime_ts) %>% ts_mutate(mutation_rate = 1e-7)
 
-  ts_names <- sort(unique(ts_data(ts) %>% dplyr::filter(remembered) %>% .$name))
+  ts_names <- sort(unique(ts_data(ts) %>% .$name))
 
   # match EIGENSTRAT contents
   prefix <- file.path(tempdir(), "eigen")

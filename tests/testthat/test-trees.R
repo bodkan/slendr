@@ -67,7 +67,7 @@ test_that("ape phylo and tskit.Tree objects are equivalent", {
   expect_true(length(t1_nodes) == length(t2_nodes))
 })
 
-test_that("ts_data output contains the correct information for a given phylo tree", {
+test_that("ts_data only works on slendr_ts and phylo objects", {
   i <- 1
 
   t1 <- ts_tree(ts, i, mode = "index")
@@ -83,4 +83,22 @@ test_that("ts_data output contains the correct information for a given phylo tre
 
   expect_true(nrow(data) == t2$Nnode + length(t2$tip.label))
   expect_true(nrow(data) == length(intersect(t2_nodes, data$phylo_id)))
+})
+
+test_that("ts_data output contains the correct information for a given phylo tree", {
+  for (i in seq_len(ts$num_trees)) {
+    t1 <- ts_tree(ts, i, mode = "index")
+    t2 <- ts_phylo(ts, i, mode = "index", quiet = TRUE)
+
+    t1_internal <- t1$parent_array %>% .[. != -1] %>% unique()
+    t1_leaves <- reticulate::iterate(t1$leaves(t1$root))
+    t1_nodes <- c(t1_internal, t1_leaves)
+
+    t2_nodes <- unique(as.vector(t2$edge))
+
+    data <- ts_data(t2)
+
+    expect_true(nrow(data) == t2$Nnode + length(t2$tip.label))
+    expect_true(nrow(data) == length(intersect(t2_nodes, data$phylo_id)))
+  }
 })
