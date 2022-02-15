@@ -664,22 +664,29 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   start <- tree$interval$left
   end <- tree$interval$right
 
-  edges <- ts_edges(ts) %>% dplyr::filter(left <= start, right <= end)
-  nodes <- ts_nodes(ts)
-  individuals <- ts_data(ts, remembered = TRUE)
-
-  tip_labels <- sprintf("%s (%d)", individuals$name, individuals$node_id)
+  parent_array <- tree$parent_array
+  children_array <- which(parent_array != -1) - 1
+  parents_array <- parent_array[parent_array != -1]
 
   # convert the edge table to a proper ape phylo object
   # see http://ape-package.ird.fr/misc/FormatTreeR.pdf for more details
-  n_tips <- length(tip_labels)
-  n_all <- nrow(nodes)
-  n_internal <- n_all - n_tips
+  n_tips <- tree$num_samples(tree$root)
+  n_internal <- length(unique(parents_array))
+  n_all <- n_internal + n_tips
 
-  # start by creating a phylo-compatible edge matrix (different order of columns
-  # to the tskit edge table, node IDs as integers starting from 1)
-  edge <- as.matrix(edges[, c("parent", "child")]) + 1
-  mode(edge) <- "integer"
+  data <- ts_data(ts)
+
+  tip_labels <- dplyr::filter(data, remembered) %>% { sprintf("%s (%d)", .$name, .$node_id) }
+
+  # define a 1:N lookup table for node IDs between tskit and phylo
+  present_nodes <- data %>%
+    dplyr::filter(node_id %in% c(children_array, parents_array)) %>%
+    dplyr::arrange(node_id) %>%
+    dplyr::pull(node_id)
+  lookup_nodes <- seq_len(n_all)
+
+  children <- sapply(children_array, function(i) lookup_nodes[present_nodes == i])
+  parents <- sapply(parents_array, function(i) lookup_nodes[present_nodes == i])
 
   # in ape phylo, leaves must be numbered `1...n`, root must be the node `n +
   # 1`, and all internal nodes must be larger than `n` -- we need to flip around
@@ -687,15 +694,14 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   root_ts <- n_all # root ID in the original tree sequence tree object
   root_ape <- n_tips + 1 # root ID in the target phylo tree object
 
+  children_ape <- children
+  parents_ape <- parents
+
   # replace the node ID of the internal node with the lowest integer ID in
   # the tree sequence with the root ID and vice-versa
-  parents_ape <- edge[, 1]
-  children_ape <- edge[, 2]
-
-  parents_ape[edge[, 1] == root_ts] <- root_ape
-  parents_ape[edge[, 1] == root_ape] <- root_ts
-
-  children_ape[edge[, 2] == root_ape] <- root_ts
+  parents_ape[parents == root_ts] <- root_ape
+  parents_ape[parents == root_ape] <- root_ts
+  children_ape[children == root_ape] <- root_ts
 
   # bind the two columns back into an edge matrix
   edge <- cbind(as.integer(parents_ape), as.integer(children_ape))
