@@ -29,6 +29,7 @@
       "completely isolated Python\nenvironment automatically for you, without affecting ",
       "your system\nat all."
     )
+  }
 }
 
 # global references to required Python packages - inspired by:
