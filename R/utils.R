@@ -465,6 +465,13 @@ ask_install <- function(module) {
   answer == 2
 }
 
+check_env_present <- function() {
+  tryCatch({
+      "automatic_slendr_python_env" %in% reticulate::conda_list()$name
+  }, error = function(cond) FALSE
+  )
+}
+ 
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.

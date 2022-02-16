@@ -21,7 +21,7 @@
         "\nis required. Please upgrade SLiM.\n--------------------"
       )
   }
-  if (!"automatic_slendr_python_env" %in% reticulate::conda_list()$name)
+  if (!check_env_present()) {
     packageStartupMessage(
       "In order to setup a pre-configured Python environment with all\ndependencies",
       " for tree sequence analyses (Python modules tskit,\npyslim, and msprime)",
