@@ -1,4 +1,4 @@
-skip_on_cran()
+skip_if(!env_present("automatic_slendr_python_env")); setup_env(quiet = TRUE)
 
 # Run a given forward/backward simulation with different combinations
 # of start-end and burnin parameters

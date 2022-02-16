@@ -401,11 +401,14 @@ slim <- function(model, sequence_length, recombination_rate,
 
     if (!grepl("simulation finished", log_output[length(log_output)])) {
       if (!verbose) cat(log_output, sep = "\n")
-      stop("Unfortunately SLiM crashed before the tree sequence was saved.\n",
-           "See the output above for an indication of what could ",
-           "have gone wrong.\n\n",
-           "SLiM exit status: ", attr(log_output, "status"), "\n",
-           "Message: ", attr(log_output, "errmsg") , call. = FALSE)
+      stop("Unfortunately SLiM terminated before a tree sequence was saved.\n",
+           "See the above for an indication of where things ",
+           "could have gone wrong.",
+           ifelse(!is.null(attr(log_output, "status")),
+                  paste0("\n\nSLiM exit status: ",
+                         attr(log_output, "status"), "\n",
+                         "Message: ", attr(log_output, "errmsg")),
+                  ""), call. = FALSE)
     }
   }
 }
