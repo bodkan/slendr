@@ -15,7 +15,3 @@ rm -rf SLiM
 
 export PATH=/home/jovyan/bin:/home/jovyan/.cargo/bin:$PATH
 echo "PATH=$PATH" > ~/.Renviron
-
-# create the Miniconda environment so that users don't have to wait
-# for setup_env() in the vignette examples
-R -e 'slendr::setup_env()'
