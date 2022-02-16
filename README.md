@@ -16,7 +16,7 @@ By utilizing the flexibility of R with its wealth of libraries for graphics, geo
 
 You can open an RStudio session and test examples from the vignettes directly in your web browser by clicking this button (no installation is needed):
 
-[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/bodkan/smbe2021/main?urlpath=rstudio)
+[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio)
 
 In case the RStudio instance appears to be starting very slowly, please be patient. The binder cloud server can sometimes take a minute to load up. Sometimes it even crashes completely. If that happens, try reloading the page - this will restart the binder session.
 
