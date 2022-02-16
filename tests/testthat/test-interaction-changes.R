@@ -46,7 +46,7 @@ test_that("interaction parameter change is correctly recorded", {
 })
 
 test_that("SLiM dispersals match expectations laid by R distributions", {
-  skip_on_cran()
+  skip_if(!env_present("automatic_slendr_python_env"));
 
   seed <- 42
   set.seed(seed)
