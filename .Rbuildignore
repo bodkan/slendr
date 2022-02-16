@@ -16,3 +16,4 @@
 ^man/figures/.*\.png
 ^inst/pylib/__pycache__
 ^binder$
+^\.github$

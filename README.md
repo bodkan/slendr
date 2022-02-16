@@ -2,6 +2,10 @@
 
 ## Spatio-temporal Population Genetics Simulations in R
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/bodkan/slendr/workflows/R-CMD-check/badge.svg)](https://github.com/bodkan/slendr/actions)
+<!-- badges: end -->
+
 ### *Overview* <a href='https://www.slendr.net'><img src="man/figures/logo.png" align="right" height="139"/></a>
 
 *slendr* is an R package which has been primarily designed for simulating spatially-explicit genomic data on real and abstract geographic landscapes. It allows to programmatically and visually encode spatial population boundaries and temporal dynamics across a geographic landscape (leveraging real cartographic data or abstract, user-defined landscapes), and specify population divergences and geneflow events based on an arbitrary graph of demographic history. Additionally, it provides features for simulating large-scale non-spatial population genetics models entirely from R, using both [SLiM](https://messerlab.org/slim/) and [*msprime*](https://tskit.dev/msprime/docs/) as simulation back ends, all without having to leave the convenience of the R environment.

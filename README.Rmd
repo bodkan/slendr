@@ -17,6 +17,10 @@ set.seed(314159)
 
 ## Spatio-temporal Population Genetics Simulations in R
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/bodkan/slendr/workflows/R-CMD-check/badge.svg)](https://github.com/bodkan/slendr/actions)
+<!-- badges: end -->
+
 ### *Overview* <a href='https://www.slendr.net'><img src="man/figures/logo.png" align="right" height="139"/></a>
 
 *slendr* is an R package which has been primarily designed for simulating spatially-explicit genomic data on real and abstract geographic
