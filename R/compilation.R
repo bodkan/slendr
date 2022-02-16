@@ -390,7 +390,7 @@ slim <- function(model, sequence_length, recombination_rate,
 
     # execute the command, capture all log output and decide whether to print
     # any of the log information to the console
-    log_output <- system(slim_command, intern = TRUE)
+    log_output <- suppressWarnings(system(paste(slim_command, "2>&1"), intern = TRUE))
     log_warnings <- grep("WARNING", log_output, value = TRUE)
     if (verbose)
       cat(log_output, sep = "\n")
@@ -401,9 +401,11 @@ slim <- function(model, sequence_length, recombination_rate,
 
     if (!grepl("simulation finished", log_output[length(log_output)])) {
       if (!verbose) cat(log_output, sep = "\n")
-      stop("SLiM simulation was terminated before finishing ",
-           "-- see the output above for an indication of what could ",
-           "have gone wrong", call. = FALSE)
+      stop("Unfortunately SLiM crashed before the tree sequence was saved.\n",
+           "See the output above for an indication of what could ",
+           "have gone wrong.\n\n",
+           "SLiM exit status: ", attr(log_output, "status"), "\n",
+           "Message: ", attr(log_output, "errmsg") , call. = FALSE)
     }
   }
 }
