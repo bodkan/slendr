@@ -1335,7 +1335,7 @@ setup_env <- function(env = NULL, quiet = FALSE) {
               "has been successfully activated.")
   } else {
     answer <- utils::menu(
-      c("No", "Yes"),
+      c("Yes", "No"),
       title = paste0(
         "No pre-configured Python environment for slendr has been found.\n\n",
         "Do you wish to install a Miniconda Python distribution and create\n",

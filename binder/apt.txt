@@ -1,0 +1,10 @@
+# sf
+libudunits2-dev
+gdal-bin
+libgdal-dev
+libgeos-dev
+proj-bin
+libproj-dev
+
+# SLiM compilation
+cmake

@@ -1,0 +1,21 @@
+mkdir bin
+
+# installation instructions from the SLiM manual:
+wget http://benhaller.com/slim/SLiM.zip
+unzip SLiM.zip
+cd SLiM
+cmake .
+make slim
+
+# move the compiled SLiM binary
+cd ../
+mv SLiM/slim bin/
+rm SLiM.zip
+rm -rf SLiM
+
+export PATH=/home/jovyan/bin:/home/jovyan/.cargo/bin:$PATH
+echo "PATH=$PATH" > ~/.Renviron
+
+# create the Miniconda environment so that users don't have to wait
+# for setup_env() in the vignette examples
+R -e 'slendr::setup_env()'
