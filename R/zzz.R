@@ -7,12 +7,28 @@
       "The slim binary was not found in your $PATH variable. Most of\n",
       "the functionality in this package will work without any issues\n",
       "but you will not be able to simulate data with the `slim()` function.\n",
-      "\nIf you set up a Python environment with `setup_env()`, you will be\n",
-      "able to simulate non-spatial with slendr's msprime back end.\n",
-      "\nIf you want to run SLiM spatial simulations, make sure to modify the $PATH\n",
+      "\nIf you want to run SLiM simulations, make sure to modify the $PATH\n",
       "variable in your ~/.Renviron file so that it points to the directory\n",
-      "containing the slim command-line program.")
+      "containing the slim command-line program.\n--------------------")
+  } else {
+    required_version <- "3.7.1"
+    slim_version <- system("slim -v", intern = TRUE) %>%
+      gsub("SLiM version (\\d+\\.\\d+\\.\\d+),.*$", "\\1", .)
+    if (utils::compareVersion(slim_version, required_version) < 0)
+      packageStartupMessage(
+        "You are running SLiM version ", slim_version,
+        " but at least a version ", required_version,
+        "\nis required. Please upgrade SLiM.\n--------------------"
+      )
   }
+  if (!"automatic_slendr_python_env" %in% reticulate::conda_list()$name)
+    packageStartupMessage(
+      "In order to setup a pre-configured Python environment with all\ndependencies",
+      " for tree sequence analyses (Python modules tskit,\npyslim, and msprime)",
+      " you can run the function setup_env().\n\nThis will install and configure a ",
+      "completely isolated Python\nenvironment automatically for you, without affecting ",
+      "your system\nat all."
+    )
 }
 
 # global references to required Python packages - inspired by:
