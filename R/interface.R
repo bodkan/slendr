@@ -1350,7 +1350,7 @@ setup_env <- function(env = NULL, quiet = FALSE) {
         "Do you wish to setup a Python virtual environment just for slendr and\n",
         "populate it with the required Python modules?")
       )
-    if (answer == 2) {
+    if (answer == 1) {
       if (!dir.exists(reticulate::miniconda_path()))
         reticulate::install_miniconda()
 
