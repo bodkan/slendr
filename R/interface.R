@@ -596,38 +596,38 @@ time (geneflow %s -> %s in the time window %s-%s)",
 
 #' Define a world map for all spatial operations
 #'
-#' Defines either an abstract geographic landscape (blank or
-#' containing user-defined landscape) or using a real Earth
-#' cartographic data from the Natural Earth project
-#' (<https://www.naturalearthdata.com>).
+#' Defines either an abstract geographic landscape (blank or containing
+#' user-defined landscape) or using a real Earth cartographic data from the
+#' Natural Earth project (<https://www.naturalearthdata.com>).
 #'
 #' @param xrange Two-dimensional vector specifying minimum and maximum
-#'   horizontal range ("longitude" if using real Earth cartographic
-#'   data)
-#' @param yrange Two-dimensional vector specifying minimum and maximum
-#'   vertical range ("latitude" if using real Earth cartographic data)
+#'   horizontal range ("longitude" if using real Earth cartographic data)
+#' @param yrange Two-dimensional vector specifying minimum and maximum vertical
+#'   range ("latitude" if using real Earth cartographic data)
 #' @param landscape Either "blank" (for blank abstract geography),
-#'   "naturalearth" (for real Earth geography) or an object of the
-#'   class \code{sf} defining abstract geographic features of the
-#'   world
-#' @param crs EPSG code of a coordinate reference system to use for
-#'   spatial operations. No CRS is assumed by default (\code{NULL}),
-#'   implying an abstract landscape not tied to any real-world
-#'   geographic region (when \code{landscape = "blank"} or when
-#'   \code{landscape} is a custom-defined geographic landscape), or
-#'   implying WGS-84 (EPSG 4326) coordinate system when a real Earth
-#'   landscape was defined (\code{landscape = "naturalearth"}).
-#' @param ne_dir Path to the directory where Natural Earth data was
-#'   manually downloaded and unzipped from
-#'   <https://www.naturalearthdata.com/downloads/110m-physical-vectors/>
-#'   (used only when \code{landscape = "naturalearth"})
+#'   "naturalearth" (for real Earth geography) or an object of the class
+#'   \code{sf} defining abstract geographic features of the world
+#' @param crs EPSG code of a coordinate reference system to use for spatial
+#'   operations. No CRS is assumed by default (\code{NULL}), implying an
+#'   abstract landscape not tied to any real-world geographic region (when
+#'   \code{landscape = "blank"} or when \code{landscape} is a custom-defined
+#'   geographic landscape), or implying WGS-84 (EPSG 4326) coordinate system
+#'   when a real Earth landscape was defined (\code{landscape =
+#'   "naturalearth"}).
+#' @param scale If Natural Earth geographic data is used (i.e. \code{landscape =
+#'   "naturalearth"}), this parameter determines the resolution of the data
+#'   used. The value "small" corresponds to 1:110m data and is provided with the
+#'   package, values "medium" and "large" correspond to 1:50m and 1:10m
+#'   respectively and will be downloaded from the internet. Default value is
+#'   "small".
 #'
 #' @return Object of the class \code{slendr_map}
 #'
 #' @export
 #'
 #' @example man/examples/spatial_functions.R
-world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL) {
+world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
+                  scale = c("small", "medium", "large")) {
   if (inherits(landscape, "sf")) { # a landscape defined by the user
     cropped_landscape <- sf::st_crop(
       landscape,
@@ -640,13 +640,24 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
     map <- sf::st_sf(geometry = sf::st_sfc()) %>%
       set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
   } else if (landscape == "naturalearth") {  # Natural Earth data vector landscape
-    if (is.null(ne_dir)) {
-      ne_dir <- tempdir()
-      ne_file <- system.file("naturalearth/ne_110m_land.zip", package = "slendr")
-      utils::unzip(ne_file, exdir = ne_dir)
+    scale <- match.arg(scale)
+    # the small scale Natural Earth data is bundled with slendr
+    ne_dir <- file.path(tempdir(), "naturalearth")
+    if (scale == "small") {
+      utils::unzip(system.file("naturalearth/ne_110m_land.zip", package = "slendr"),
+                   exdir = ne_dir)
+    } else {
+      size <- ifelse(scale == "large", 10, 50)
+      file <- sprintf("ne_%sm_land.zip", size)
+      path <- file.path(ne_dir, file)
+      utils::download.file(
+        url = sprintf("https://naturalearth.s3.amazonaws.com/%sm_physical/%s", size, file),
+        destfile = path, quiet = TRUE
+      )
+      utils::unzip(path, exdir = ne_dir)
     }
     map_raw <- rnaturalearth::ne_load(
-      scale = "small", type = "land", category = "physical",
+      scale = scale, type = "land", category = "physical",
       returnclass = "sf", destdir = ne_dir
     )
     sf::st_agr(map_raw) <- "constant"

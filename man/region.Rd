@@ -47,5 +47,5 @@ custom_map <- world(xrange = c(1, 100), c(1, 100), landscape = archipelago)
 # project data and with the possibility to specify an appropriate Coordinate
 # Reference System, such as this example of a map of Europe
 
-# real_map <- world(xrange = c(-15, 40), yrange = c(30, 60), crs = "EPSG:3035")
+real_map <- world(xrange = c(-15, 40), yrange = c(30, 60), crs = "EPSG:3035")
 }

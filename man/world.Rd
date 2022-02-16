@@ -4,42 +4,47 @@
 \alias{world}
 \title{Define a world map for all spatial operations}
 \usage{
-world(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir = NULL)
+world(
+  xrange,
+  yrange,
+  landscape = "naturalearth",
+  crs = NULL,
+  scale = c("small", "medium", "large")
+)
 }
 \arguments{
 \item{xrange}{Two-dimensional vector specifying minimum and maximum
-horizontal range ("longitude" if using real Earth cartographic
-data)}
+horizontal range ("longitude" if using real Earth cartographic data)}
 
-\item{yrange}{Two-dimensional vector specifying minimum and maximum
-vertical range ("latitude" if using real Earth cartographic data)}
+\item{yrange}{Two-dimensional vector specifying minimum and maximum vertical
+range ("latitude" if using real Earth cartographic data)}
 
 \item{landscape}{Either "blank" (for blank abstract geography),
-"naturalearth" (for real Earth geography) or an object of the
-class \code{sf} defining abstract geographic features of the
-world}
+"naturalearth" (for real Earth geography) or an object of the class
+\code{sf} defining abstract geographic features of the world}
 
-\item{crs}{EPSG code of a coordinate reference system to use for
-spatial operations. No CRS is assumed by default (\code{NULL}),
-implying an abstract landscape not tied to any real-world
-geographic region (when \code{landscape = "blank"} or when
-\code{landscape} is a custom-defined geographic landscape), or
-implying WGS-84 (EPSG 4326) coordinate system when a real Earth
-landscape was defined (\code{landscape = "naturalearth"}).}
+\item{crs}{EPSG code of a coordinate reference system to use for spatial
+operations. No CRS is assumed by default (\code{NULL}), implying an
+abstract landscape not tied to any real-world geographic region (when
+\code{landscape = "blank"} or when \code{landscape} is a custom-defined
+geographic landscape), or implying WGS-84 (EPSG 4326) coordinate system
+when a real Earth landscape was defined (\code{landscape =
+  "naturalearth"}).}
 
-\item{ne_dir}{Path to the directory where Natural Earth data was
-manually downloaded and unzipped from
-\url{https://www.naturalearthdata.com/downloads/110m-physical-vectors/}
-(used only when \code{landscape = "naturalearth"})}
+\item{scale}{If Natural Earth geographic data is used (i.e. \code{landscape =
+  "naturalearth"}), this parameter determines the resolution of the data
+used. The value "small" corresponds to 1:110m data and is provided with the
+package, values "medium" and "large" correspond to 1:50m and 1:10m
+respectively and will be downloaded from the internet. Default value is
+"small".}
 }
 \value{
 Object of the class \code{slendr_map}
 }
 \description{
-Defines either an abstract geographic landscape (blank or
-containing user-defined landscape) or using a real Earth
-cartographic data from the Natural Earth project
-(\url{https://www.naturalearthdata.com}).
+Defines either an abstract geographic landscape (blank or containing
+user-defined landscape) or using a real Earth cartographic data from the
+Natural Earth project (\url{https://www.naturalearthdata.com}).
 }
 \examples{
 # create a blank abstract world 1000x1000 distance units in size
@@ -57,5 +62,5 @@ custom_map <- world(xrange = c(1, 100), c(1, 100), landscape = archipelago)
 # project data and with the possibility to specify an appropriate Coordinate
 # Reference System, such as this example of a map of Europe
 
-# real_map <- world(xrange = c(-15, 40), yrange = c(30, 60), crs = "EPSG:3035")
+real_map <- world(xrange = c(-15, 40), yrange = c(30, 60), crs = "EPSG:3035")
 }
