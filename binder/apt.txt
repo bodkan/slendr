@@ -6,5 +6,8 @@ libgeos-dev
 proj-bin
 libproj-dev
 
+# ggraph/igraph
+libglpk-dev
+
 # SLiM compilation
 cmake
