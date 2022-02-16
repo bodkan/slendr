@@ -4,4 +4,4 @@ devtools::install_github("bodkan/slendr")
 
 # create the Miniconda environment so that users don't have to wait
 # for setup_env() in the vignette examples
-R -e 'slendr::setup_env()'
+slendr::setup_env()
