@@ -642,11 +642,7 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL, ne_dir
   } else if (landscape == "naturalearth") {  # Natural Earth data vector landscape
     if (is.null(ne_dir)) {
       ne_dir <- tempdir()
-      ne_file <- file.path(ne_dir, "ne_110m_land.zip")
-      utils::download.file(
-        url = "https://naturalearth.s3.amazonaws.com/110m_physical/ne_110m_land.zip",
-        destfile = ne_file, quiet = TRUE
-      )
+      ne_file <- system.file("naturalearth/ne_110m_land.zip", package = "slendr")
       utils::unzip(ne_file, exdir = ne_dir)
     }
     map_raw <- rnaturalearth::ne_load(
