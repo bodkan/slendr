@@ -1,0 +1,209 @@
+---
+title: "Examples from the slendr paper"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Examples from the slendr paper}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include = FALSE}
+env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
+
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4,
+  dpi = 80,
+  eval = FALSE #Sys.which("slim") != "" && env_present
+)
+```
+
+```{r}
+SEED <- 42
+set.seed(SEED)
+
+library(slendr)
+
+# load the bare minimum of R packages for analysis
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(tidyr)
+library(cowplot)
+```
+
+Automatically setup the Python environment with all dependencies for tree sequence processing and analysis:
+
+```{r}
+setup_env()
+check_env()
+```
+
+## Example 2
+
+In the second model, we demonstrate the possibility to finely tune within-population spatial dynamics using parameters which determine how clustered or uniformly distributed individuals are over the population boundary, and affect their dispersal and mating behavior. We define nine isolated populations which occupy a circular "island", each with an increasing value of the so-called "competition distance" parameter which controls to what distance does a given individual compete. Based on the value of this parameter, the number of individuals in the population and the size of the occupiable space, different spatial dynamic behavior emerges from the population.
+
+
+```{r}
+map <- world(xrange = c(0, 10), yrange = c(0, 10),
+             landscape = region(center = c(5, 5), radius = 5))
+
+p1 <- population("pop1", time = 1, N = 2000, map = map, competition_dist = 0.01)
+p2 <- population("pop2", time = 1, N = 2000, map = map, competition_dist = 9)
+p3 <- population("pop3", time = 1, N = 2000, map = map, competition_dist = 6)
+p4 <- population("pop4", time = 1, N = 2000, map = map, competition_dist = 5)
+p5 <- population("pop5", time = 1, N = 2000, map = map, competition_dist = 4)
+p6 <- population("pop6", time = 1, N = 2000, map = map, competition_dist = 3)
+p7 <- population("pop7", time = 1, N = 2000, map = map, competition_dist = 2)
+p8 <- population("pop8", time = 1, N = 2000, map = map, competition_dist = 1)
+
+ex2_model <- compile(
+  populations = list(p1, p2, p3, p4, p5, p6, p7, p8),
+  generation_time = 1, sim_length = 2000,
+  resolution = 0.1, mate_dist = 0.1, dispersal_dist = 0.05
+)
+
+slim(ex2_model, sequence_length = 100e6, recombination_rate = 1e-8)
+```
+
+Load the locations of all individuals in the last generation (the file with all locations ever is gigantic, so we ourselves by pre-filtering it first using `grep`):
+
+```{r}
+ex2_model = read("~/Desktop/ex2/"); map = ex2_model$world; ts <- ts_load(ex2_model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
+
+locations <- ts_data(ts) %>% filter(time == 2001)
+```
+
+We can't include the GIF animation of the simulation run in the paper. Instead, let's just plot the locations of the last generation of individuals in each population:
+
+## Example 4
+
+Load a couple of libraries for processing and visualising the results, link to the Python environment which contains the necessary Python modules:
+
+```{r, ex4_diversity}
+ts <- ts_load(ex2_model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
+
+samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
+
+diversity <- mutate(samples, pi = ts_diversity(ts, name)$diversity)
+```
+
+```{r}
+p_ex2_clustering <- ggplot() +
+  geom_sf(data = map) +
+  geom_sf(data = locations, aes(color = pop), size = 0.05, alpha = 0.25) +
+  facet_grid(. ~ pop, switch = "x") +
+  xlab("spatial population distributions emerged from the simulation") +
+  theme(
+    strip.background = element_blank(),
+    strip.text = element_text(size = 11),
+    panel.grid = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    panel.background = element_blank()
+  ) +
+  guides(color = "none"); p_ex2_clustering
+
+p_ex2_diversity <- ggplot(diversity, aes(pop, pi, color = pop)) +
+  geom_violin(color = "black") +
+  geom_jitter(alpha = 0.5) +
+  labs(y = "individual heterozygosity") +
+  guides(color = "none") +
+  theme_minimal() +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(), panel.grid.major.x = element_blank(),
+        plot.margin = margin(t = 0.2, r = 0.2, b = -0.1, l = 0.2, "cm")); p_ex2_diversity
+
+plot_grid(
+  p_ex2_diversity,
+  p_ex2_clustering +
+    theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 1.9, "cm")),
+  nrow = 2,
+  rel_heights = c(1, 0.5)
+)
+```
+
+```{r}
+pops <- ts_samples(ts) %>% group_split(pop) %>% map("name")
+map(pops, ts_afs, ts)
+
+x = map(pops, ~ ts_afs(ts, .))
+x = bind_cols(x) %>% setNames(sprintf("p%d", 1:8))
+x = mutate(x, i = 1:n())
+
+pivot_longer(x, cols = p1:p8, names_to = "pop", values_to = "f") %>% 
+  ggplot(aes(i, f, color = pop)) +
+  geom_line(stat = "identity", alpha = 0.5)
+```
+
+## Example 3
+
+```{r}
+o  <- population("o",  time = 1,    N = 10)
+b  <- population("b",  time = 500,  N = 10,    parent = o)
+c  <- population("c",  time = 1000, N = 10,    parent = b)
+x1 <- population("x1", time = 2000, N = 10000, parent = c)
+x2 <- population("x2", time = 2000, N = 10000, parent = c)
+a  <- population("a",  time = 1500, N = 10,    parent = b)
+
+gf <- geneflow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
+
+ex3_model <- compile(populations = list(a, b, x1, x2, c, o), geneflow = gf,
+                     generation_time = 1, sim_length = 2200) 
+```
+
+## Example 4
+
+In the fourth and final example, we return to the abstract toy model of West Eurasian prehistory. The main output of a _slendr_ simulation is a tree sequence which, in case of _non-spatial_ population genetic models, records the complete information about _when_ did the ancestors of a set of sampled individuals lived throughout the entire history of that sample. However, in case of _spatial_ _slendr_ models simulated by SLiM, the output tree sequences also contain the exact _spatial location_ of each individual ancestral node.
+
+To highlight the richness of the spatio-temporal information encoded by tree sequence data structure and showcase the novel, we demonstrate 
+
+<!-- ```{r, example4_paper_figure} -->
+
+<!-- # load the output tree sequence, recapitate it, simplify it, add mutations -->
+
+<!-- ts <- ts_load(model_ex2, recapitate = TRUE, simplify = TRUE, mutate = TRUE, -->
+
+<!--               Ne = 10000, recombination_rate = 1e-8, mutation_rate = 1e-8) -->
+
+<!-- # extract table with names and times of sampled individuals -->
+
+<!-- samples <- ts_samples(ts) -->
+
+<!-- # extract names of individuals in each time point -->
+
+<!-- groups <- split(samples, samples$time) %>% map(pull, name) -->
+
+<!-- # compute nucleotide diversity in each time point and add additional -->
+
+<!-- # information to the table of results for easier plotting -->
+
+<!-- diversity <- ts_diversity(ts, groups) %>% -->
+
+<!--   mutate( -->
+
+<!--     time = as.numeric(set), -->
+
+<!--     epoch = findInterval(time, epoch_times, rightmost.closed = TRUE) -->
+
+<!--   ) -->
+
+<!-- # plot diversity over time computed from the tree sequence data -->
+
+<!-- ggplot(diversity, aes(time, diversity, color = factor(epoch))) + -->
+
+<!--   geom_point() + -->
+
+<!--   geom_smooth(color = "black") + -->
+
+<!--   geom_vline(xintercept = epoch_times, size = 0.75, alpha = 0.25) + -->
+
+<!--   scale_x_continuous(breaks = epoch_times, labels = epoch_times) + -->
+
+<!--   labs(x = "time since the start of the simulation") + -->
+
+<!--   theme_minimal() + guides(color = "none") -->
+
+<!-- ``` -->
