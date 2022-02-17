@@ -33,7 +33,7 @@ jobs:
 
       - name: Install ADMIXTOOLS dependencies (Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
+        run: sudo apt-get install perl libopenblas-dev libgsl-dev liblapack-dev
 
       - name: Install ADMIXTOOLS dependencies (macOS)
         if: runner.os == 'macOS'
