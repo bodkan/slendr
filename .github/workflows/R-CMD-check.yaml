@@ -78,11 +78,7 @@ jobs:
           ./mklog
           cd ../
 
-          # add the compiled binaries to $PATH
-          export PATH=$PATH:$PWD/bin
-          echo "PATH=$PATH" > ~/.Renviron
-
-          # we need to run this in bash because of $OSTYPE
+          # we need to do this in bash because of $OSTYPE above
         shell: bash
 
       - name: Compile and install SLiM
@@ -99,8 +95,10 @@ jobs:
           cmake .
           make slim
 
-          # make sure R/slendr will be able to find SLiM in the $PATH
-          export PATH=$PWD:$PATH
+      - name: Populate PATH with compiled binaries
+        if: runner.os != 'Windows'
+        run: |
+          export PATH=~/deps/SLiM:~/deps/AdmixTools-7.0.2/bin:$PATH
           echo "PATH=$PATH" > ~/.Renviron
 
       - name: Setup dedicated Python environment for slendr
