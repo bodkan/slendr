@@ -34,6 +34,7 @@ jobs:
       - name: Compile and install ADMIXTOOLS
         if: runner.os != 'Windows'
         run: |
+          apt-get install libopenblas-dev libgsl-dev liblapack-dev
           mkdir -p ~/deps
           cd ~/deps
           curl -LO https://github.com/DReichLab/AdmixTools/archive/v5.0.tar.gz
