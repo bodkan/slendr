@@ -1264,9 +1264,10 @@ split_time <- function(pop) attr(pop, "history")[[1]]$time
 #'   activate this environment.
 #' @param quiet Should informative messages be printed to the console? Default
 #'   is \code{FALSE}.
+#' @param agree Automatically agree to all questions?
 #'
 #' @export
-setup_env <- function(env = NULL, quiet = FALSE) {
+setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
   if (!is.null(env)) {
     # check for the presence of a regular virtual environment (if the user
     # provided their own environment)
@@ -1334,23 +1335,26 @@ setup_env <- function(env = NULL, quiet = FALSE) {
       message("The slendr interface to required Python modules ",
               "has been successfully activated.")
   } else {
-    answer <- utils::menu(
-      c("Yes", "No"),
-      title = paste0(
-        "No pre-configured Python environment for slendr has been found.\n\n",
-        "Do you wish to install a Miniconda Python distribution and create\n",
-        "an isolated environment with all required Python modules automatically?\n",
-        "\n(No need to worry, everything will be installed into a completely\n",
-        "separate location into an isolated environment. This won't affect\n",
-        "your system or your other Python installations at all.)\n\n",
-        "If your answer is \"no\", you can set up your own virtual environment\n",
-        "with Python >= 3.8, msprime >= 1.1.0, tskit >= 0.4.1, pyslim >= 0.700,\n",
-        "and pandas and provide it to the setup_env() function using its\n",
-        "`env` argument (see `?setup_env` for more detail).\n\n",
-        "Do you wish to setup a Python virtual environment just for slendr and\n",
-        "populate it with the required Python modules?")
-      )
-    if (answer == 1) {
+    if (agree)
+      answer <- 2
+    else
+      answer <- utils::menu(
+        c("No", "Yes"),
+        title = paste0(
+          "No pre-configured Python environment for slendr has been found.\n\n",
+          "Do you wish to install a Miniconda Python distribution and create\n",
+          "an isolated environment with all required Python modules automatically?\n",
+          "\n(No need to worry, everything will be installed into a completely\n",
+          "separate location into an isolated environment. This won't affect\n",
+          "your system or your other Python installations at all.)\n\n",
+          "If your answer is \"no\", you can set up your own virtual environment\n",
+          "with Python >= 3.8, msprime >= 1.1.0, tskit >= 0.4.1, pyslim >= 0.700,\n",
+          "and pandas and provide it to the setup_env() function using its\n",
+          "`env` argument (see `?setup_env` for more detail).\n\n",
+          "Do you wish to setup a Python virtual environment just for slendr and\n",
+          "populate it with the required Python modules?")
+        )
+    if (answer == 2) {
       if (!dir.exists(reticulate::miniconda_path()))
         reticulate::install_miniconda()
 

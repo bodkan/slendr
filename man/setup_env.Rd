@@ -4,7 +4,7 @@
 \alias{setup_env}
 \title{Setup a dedicated Python virtual environment for slendr}
 \usage{
-setup_env(env = NULL, quiet = FALSE)
+setup_env(env = NULL, quiet = FALSE, agree = FALSE)
 }
 \arguments{
 \item{env}{Either a name of a conda environment, or a path to a standard
@@ -18,6 +18,8 @@ activate this environment.}
 
 \item{quiet}{Should informative messages be printed to the console? Default
 is \code{FALSE}.}
+
+\item{agree}{Automatically agree to all questions?}
 }
 \description{
 Setup a dedicated Python virtual environment for slendr
