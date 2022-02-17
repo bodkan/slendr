@@ -31,12 +31,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Compile and install SLiM
+      - name: Compile and install SLiM on unix systems
+        if: runner.os != 'Windows'
         run: |
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            exit 1;
-          fi
-
           # download SLiM into a separate directory to avoid CRAN errors
           mkdir -p ~/deps
           cd ~/deps
