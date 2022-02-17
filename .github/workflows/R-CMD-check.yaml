@@ -58,10 +58,14 @@ jobs:
           tar xf AdmixTools_Example_Data.tar_.gz
           cd examples
           # fix unportable Perl shebang
-          sed -i "1s/.*/\#\!\/usr\/bin\/env perl -w/" mklog
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "1s/.*/\#\!\/usr\/bin\/env perl -w/" mklog
+          else
+            sed -i "1s/.*/\#\!\/usr\/bin\/env perl -w/" mklog
           ./mklog
           cd ../
           export PATH=$PATH:$PWD/bin
+        shell: bash
 
       - name: Compile and install SLiM
         if: runner.os != 'Windows'
