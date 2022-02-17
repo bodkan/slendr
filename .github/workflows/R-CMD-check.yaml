@@ -80,6 +80,7 @@ jobs:
 
           # add the compiled binaries to $PATH
           export PATH=$PATH:$PWD/bin
+          echo "PATH=$PATH" > ~/.Renviron
 
           # we need to run this in bash because of $OSTYPE
         shell: bash
