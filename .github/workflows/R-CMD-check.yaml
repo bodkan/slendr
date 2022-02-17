@@ -33,23 +33,32 @@ jobs:
 
       - name: Install ADMIXTOOLS dependencies (Linux)
         if: runner.os == 'Linux'
-        run: apt-get install libopenblas-dev libgsl-dev liblapack-dev
+        run: sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
 
       - name: Install ADMIXTOOLS dependencies (macOS)
         if: runner.os == 'macOS'
         run: brew install openblas gsl lapack
 
-      - name: Compile and install ADMIXTOOLS
+      - name: Compile and install ADMIXTOOLS (Linux + macOS)
         if: runner.os != 'Windows'
         run: |
           mkdir -p ~/deps
           cd ~/deps
-          curl -LO https://github.com/DReichLab/AdmixTools/archive/v5.0.tar.gz
-          tar xf v5.0.tar.gz
-          cd AdmixTools-5.0
-          cd src; make clobber; make LDLIBS="-llapack" all; make install; cd ../
+          curl -LO https://github.com/DReichLab/AdmixTools/archive/v7.0.2.tar.gz
+          tar xf v7.0.2.tar.gz
+          cd AdmixTools-7.0.2
+          cd src
+          make clobber
+          export LDFLAGS="-L/usr/local/opt/openblas/lib"
+          export CPPFLAGS="-I/usr/local/opt/openblas/include"
+          make LDLIBS="-llapack" all
+          make install
+          cd ../
           curl -LO https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/AdmixTools_Example_Data.tar_.gz
           tar xf AdmixTools_Example_Data.tar_.gz
+          cd examples
+          ./mklog
+          cd ../
           export PATH=$PATH:$PWD/bin
 
       - name: Compile and install SLiM
