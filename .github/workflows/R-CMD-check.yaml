@@ -32,8 +32,11 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Compile and install SLiM
-        if: ${{ !startsWith(matrix.os, 'windows') }}
         run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            exit 1;
+          fi
+
           # download SLiM into a separate directory to avoid CRAN errors
           mkdir -p ~/deps
           cd ~/deps
