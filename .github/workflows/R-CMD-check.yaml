@@ -31,9 +31,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install ADMIXTOOLS dependencies
+      - name: Install ADMIXTOOLS dependencies (Linux)
         if: runner.os == 'Linux'
         run: apt-get install libopenblas-dev libgsl-dev liblapack-dev
+
+      - name: Install ADMIXTOOLS dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install openblas gsl lapack
 
       - name: Compile and install ADMIXTOOLS
         if: runner.os != 'Windows'
