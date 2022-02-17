@@ -712,3 +712,17 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
   expect_equal(sdata5$time, mdata5$time)
   expect_equal(sdata6$time, mdata6$time)
 })
+
+test_that("ts_load gives error when no .trees file is present", {
+  new_dir <- tempfile()
+  dir.create(new_dir)
+  file.copy(model$path, new_dir, recursive = TRUE)
+  new_dir <- file.path(new_dir, "ts")
+  new_model <- read(new_dir)
+  ts_files <- list.files(new_model$path, "*.trees", full.names = TRUE)
+  unlink(ts_files)
+  expect_error(
+    ts_load(new_model),
+    "No SLiM or msprime tree sequence file found in the model directory"
+  )
+})

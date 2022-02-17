@@ -95,7 +95,9 @@ ts_load <- function(model, file = NULL,
               paste(ts_files, collapse = "\n"),
               "\n\nPlease use the `file = ` argument of `ts_load()` to specify ",
               "which tree sequence should be loaded.", call. = FALSE)
-    }
+    } else
+      stop("No SLiM or msprime tree sequence file found in the model directory ",
+           model$path, call. = FALSE)
   }
 
   # load the tree sequence, converting it to a SLiM tree sequence if necessary
