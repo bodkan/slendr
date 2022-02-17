@@ -13,5 +13,5 @@ mv SLiM/slim bin/
 rm SLiM.zip
 rm -rf SLiM
 
-export PATH=/home/jovyan/bin:/home/jovyan/.cargo/bin:$PATH
+export PATH=/home/jovyan/bin:$PATH
 echo "PATH=$PATH" > ~/.Renviron
