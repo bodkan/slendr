@@ -31,6 +31,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Compile and install SLiM
+        run: |
+          # installation instructions copied from the SLiM manual:
+          wget http://benhaller.com/slim/SLiM.zip
+          unzip SLiM.zip
+          cd SLiM
+          cmake .
+          make slim
+          # make sure slendr will be able to find SLiM in the $PATH
+          export PATH="`pwd`:$PATH"
+          echo "PATH=$PATH" > ~/.Renviron
+
       - uses: r-lib/actions/setup-pandoc@v1
 
       - uses: r-lib/actions/setup-r@v1
