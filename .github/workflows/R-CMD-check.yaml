@@ -33,6 +33,10 @@ jobs:
 
       - name: Compile and install SLiM
         run: |
+          # download SLiM into a separate directory to avoid CRAN errors
+          mkdir -p ~/deps
+          cd ~/deps
+
           # installation instructions copied from the SLiM manual:
           wget http://benhaller.com/slim/SLiM.zip
           unzip SLiM.zip
