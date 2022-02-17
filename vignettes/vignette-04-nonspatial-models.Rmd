@@ -74,15 +74,19 @@ plot_graph(model)
 Even the final step---execution of the model in SLiM---is the same, using the built-in `slim()` function:
 
 ```{r, eval = FALSE}
-slim(model, sequence_length = 1, recombination_rate = 0, method = "batch")
+slim(model, sequence_length = 100e6, recombination_rate = 1e-8)
 ```
 
 Even for non-spatial models, this function still uses the same SLiM back end script used for spatial models. The only difference is that all spatial features are switched off, making the model run as a simple random-mating simulation.
 
-Given that we are running a non-spatial simulation, you might wonder if it wouldn't be more efficient to use a coalescent simulator. Indeed, *slendr* also provides an alternative *msprime* back end just for this purpose. We could run the exact same simulation with *msprime* like this:
+Given that we are running a non-spatial simulation, you might wonder if it wouldn't be more efficient to use a coalescent simulator. Indeed, *slendr* also provides an alternative *msprime* back end just for this purpose. We could run the exact same simulation with *msprime* like this (in this case we also need to specify a schedule of individuals whose genomes should be recorded in the tree sequence):
 
 ```{r, eval = FALSE}
-msprime(model, sequence_length = 1, recombination_rate = 0, method = "batch")
+samples <- sampling(model, times = runif(50, 0, 50000),
+                    list(afr, 1), list(ooa, 1), list(ehg, 1),
+                    list(eur, 1), list(ana, 1), list(yam, 1))
+
+msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, sampling = samples)
 ```
 
 In fact, because both SLiM and *msprime* back ends save outputs in a tree sequence format, we can analyse them using the same tools. See [this vignette](vignette-05-tree-sequences.html) for more information about tree sequence analysis with *slendr*, and for more discussion on alternative simulation back ends and more extensive examples of data analysis with tree sequences you can read [this tutorial](vignette-07-backends.html).
