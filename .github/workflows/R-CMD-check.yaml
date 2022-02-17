@@ -31,6 +31,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Compile and install ADMIXTOOLS
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p ~/deps
+          cd ~/deps
+          curl -LO https://github.com/DReichLab/AdmixTools/archive/v5.0.tar.gz
+          tar xf v5.0.tar.gz
+          cd AdmixTools-5.0
+          cd src; make clobber; make LDLIBS="-llapack" all; make install; cd ../
+          curl -LO https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/AdmixTools_Example_Data.tar_.gz
+          tar xf AdmixTools_Example_Data.tar_.gz
+          export PATH=$PATH:$PWD/bin
+
       - name: Compile and install SLiM
         if: runner.os != 'Windows'
         run: |
@@ -45,7 +58,7 @@ jobs:
           cmake .
           make slim
           # make sure slendr will be able to find SLiM in the $PATH
-          export PATH="`pwd`:$PATH"
+          export PATH=$PWD:$PATH
           echo "PATH=$PATH" > ~/.Renviron
 
       - name: Setup dedicated Python environment for slendr
