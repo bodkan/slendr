@@ -42,20 +42,32 @@ jobs:
       - name: Compile and install ADMIXTOOLS (Linux + macOS)
         if: runner.os != 'Windows'
         run: |
+          # create a single directory for all external software
           mkdir -p ~/deps
           cd ~/deps
+
+          # download and unpack the ADMIXTOOLS source code
           curl -LO https://github.com/DReichLab/AdmixTools/archive/v7.0.2.tar.gz
           tar xf v7.0.2.tar.gz
           cd AdmixTools-7.0.2
-          cd src
-          make clobber
+
+          # set compiler flags (compilation on macOS was failing unable to find
+          # openblas library files)
           export LDFLAGS="-L/usr/local/opt/openblas/lib"
           export CPPFLAGS="-I/usr/local/opt/openblas/include"
+
+          # compile ADMIXTOOLS and move binaries under bin/
+          cd src
+          make clobber
           make LDLIBS="-llapack" all
           make install
+
+          # download testing data for unit tests
           cd ../
           curl -LO https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/AdmixTools_Example_Data.tar_.gz
           tar xf AdmixTools_Example_Data.tar_.gz
+
+          # run the Perl script with tests for the compiled binaries
           cd examples
           # fix unportable Perl shebang
           if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -65,7 +77,11 @@ jobs:
           fi
           ./mklog
           cd ../
+
+          # add the compiled binaries to $PATH
           export PATH=$PATH:$PWD/bin
+
+          # we need to run this in bash because of $OSTYPE
         shell: bash
 
       - name: Compile and install SLiM
@@ -81,7 +97,8 @@ jobs:
           cd SLiM
           cmake .
           make slim
-          # make sure slendr will be able to find SLiM in the $PATH
+
+          # make sure R/slendr will be able to find SLiM in the $PATH
           export PATH=$PWD:$PATH
           echo "PATH=$PATH" > ~/.Renviron
 
