@@ -235,7 +235,7 @@ read <- function(path) {
 
   if (file.exists(path_maps)) {
     maps <- utils::read.table(path_maps, header = TRUE, stringsAsFactors = FALSE)
-    resolution <- scan(path_resolution, what = integer(), quiet = TRUE)
+    resolution <- scan(path_resolution, what = numeric(), quiet = TRUE)
     world <- attr(populations[[1]], "map")
   } else
     maps <- world <- resolution <- NULL
