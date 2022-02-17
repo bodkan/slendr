@@ -61,7 +61,7 @@ jobs:
           if [[ "$OSTYPE" == "darwin"* ]]; then
             sed -i '' "1s/.*/\#\!\/usr\/bin\/env perl -w/" mklog
           else
-            sed -i "1s/.*/\#\!\/usr\/bin\/env perl -w/" mklog
+            sed -i "1s/.*/\#\!\/usr\/bin\/env \"perl -w\"/" mklog
           fi
           ./mklog
           cd ../
