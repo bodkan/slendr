@@ -64,7 +64,7 @@ shiny_graph
 Let's start by first defining the populations and their splits as established in the figure above:
 
 ```{r}
-seq_len <- 250e6 # amount of sequence to simulate
+seq_len <- 200e6 # amount of sequence to simulate
 rec_rate <- 1e-8 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
 
