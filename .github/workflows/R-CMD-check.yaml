@@ -57,6 +57,8 @@ jobs:
           curl -LO https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/AdmixTools_Example_Data.tar_.gz
           tar xf AdmixTools_Example_Data.tar_.gz
           cd examples
+          # fix unportable Perl shebang
+          sed -i "1s/.*/\#\!\/usr\/bin\/env perl -w/" mklog
           ./mklog
           cd ../
           export PATH=$PATH:$PWD/bin
