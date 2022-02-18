@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
-  eval = Sys.getenv("$RUNNER_OS") != "macOS"
+  eval = Sys.getenv("RUNNER_OS") != "macOS"
 )
 ```
 
