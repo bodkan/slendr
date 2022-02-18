@@ -1737,15 +1737,10 @@ convert_to_sf <- function(df, model) {
   without_locations <- df[!stats::complete.cases(df[, c("raster_x", "raster_y")]), ]
 
   # reproject coordinates to the original crs
-  if (has_crs(model$world)) {
-    with_locations <- reproject(
-      from = "raster", to = crs, coords = with_locations, model = model,
-      input_prefix = "raster_", output_prefix = "", add = TRUE
-    )
-  } else {
-    with_locations$x <- with_locations$raster_x
-    with_locations$y <- with_locations$raster_y
-  }
+  with_locations <- reproject(
+    from = "raster", to = crs, coords = with_locations, model = model,
+    input_prefix = "raster_", output_prefix = "", add = TRUE
+  )
 
   result <- sf::st_as_sf(with_locations,
                          coords = c("x", "y"),
