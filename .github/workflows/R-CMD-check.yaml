@@ -18,7 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - {os: macOS-latest,   r: 'release'}
+          # vignette rendering is switched off though because of:
+          #  - https://github.com/tidyverse/ggplot2/issues/2252#issuecomment-1006713187
+          #  - https://github.com/lcolladotor/biocthis/issues/27
+          - {os: macOS-latest,   r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}

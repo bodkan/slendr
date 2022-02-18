@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = FALSE,
-  comment = "#>"
+  comment = "#>",
+  eval = Sys.getenv("$RUNNER_OS") != "macOS"
 )
 ```
 
