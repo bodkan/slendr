@@ -13,12 +13,12 @@
   } else {
     required_version <- "3.7.1"
     slim_version <- system("slim -v", intern = TRUE) %>%
-      gsub("SLiM version (\\d+\\.\\d+\\.\\d+),.*$", "\\1", .)
+      gsub("SLiM version (.*),.*$", "\\1", .)
     if (utils::compareVersion(slim_version, required_version) < 0)
       packageStartupMessage(
         "You are running SLiM version ", slim_version,
         " but at least a version ", required_version,
-        "\nis required. Please upgrade SLiM.\n--------------------"
+        "\nis required. Please upgrade SLiM to the latest version.\n--------------------"
       )
   }
   if (!check_env_present()) {
