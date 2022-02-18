@@ -8,13 +8,15 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
+
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   fig.width = 6,
   fig.height = 4,
   dpi = 80,
-  eval = Sys.getenv("RUNNER_OS") != "macOS"
+  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
 )
 ```
 
@@ -110,7 +112,7 @@ set_geneflow <- function(i, n_side, rate, start, end, populations) {
 }
 ```
 
-Let's test this function. What would be the gene flow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above (population number `r n + 1`, because we defined a grid with `r n` populations on one side).
+Let's test this function. What would be the gene flow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above.
 
 ```{r}
 set_geneflow(1, n, rate = 0.1, start = 2, end = 1000, populations)
