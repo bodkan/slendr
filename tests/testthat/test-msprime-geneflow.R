@@ -1,4 +1,4 @@
-skip_if(!env_present("automatic_slendr_python_env") && Sys.getenv("bodkan_test") != TRUE)
+skip_if(!env_present("automatic_slendr_python_env") || Sys.getenv("bodkan_test") != TRUE)
 setup_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
