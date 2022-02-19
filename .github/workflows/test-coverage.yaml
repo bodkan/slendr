@@ -95,5 +95,5 @@ jobs:
           extra-packages: covr
 
       - name: Test coverage
-        run: covr::codecov()
+        run: covr::codecov(type = c("tests", "vignettes"))
         shell: Rscript {0}
