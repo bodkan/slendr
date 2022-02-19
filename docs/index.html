@@ -147,6 +147,7 @@
 <div class="section level2">
 <h2 id="spatio-temporal-population-genetics-simulations-in-r">Spatio-temporal Population Genetics Simulations in R<a class="anchor" aria-label="anchor" href="#spatio-temporal-population-genetics-simulations-in-r"></a>
 </h2>
+
 <div class="section level3">
 <h3 id="overview-">
 <em>Overview</em> <a href="https://www.slendr.net"><img src="reference/figures/logo.png" align="right" height="139"></a>
@@ -155,6 +156,15 @@
 <p><em>slendr</em> is an R package which has been primarily designed for simulating spatially-explicit genomic data on real and abstract geographic landscapes. It allows to programmatically and visually encode spatial population boundaries and temporal dynamics across a geographic landscape (leveraging real cartographic data or abstract, user-defined landscapes), and specify population divergences and geneflow events based on an arbitrary graph of demographic history. Additionally, it provides features for simulating large-scale non-spatial population genetics models entirely from R, using both <a href="https://messerlab.org/slim/" class="external-link">SLiM</a> and <a href="https://tskit.dev/msprime/docs/" class="external-link"><em>msprime</em></a> as simulation back ends, all without having to leave the convenience of the R environment.</p>
 <p>By default, output data is saved in a <a href="https://tskit.dev/learn.html#what" class="external-link">tree-sequence</a> format, allowing efficient simulations of genome-scale and population-scale data. The R package also provides basic functionality for processing the simulated tree-sequence outputs and for calculating the most frequently used population genetics statistics by implementing an interface to the tree-sequence library <a href="https://tskit.dev" class="external-link">tskit</a> via the <a href="https://rstudio.github.io/reticulate/index.html" class="external-link">reticulate</a> package.</p>
 <p>By utilizing the flexibility of R with its wealth of libraries for graphics, geospatial analysis and statistics, with the power of the population genetics simulators SLiM and <em>msprime</em> for executing simulations automatically in the background, the <em>slendr</em> R package makes it possible to write entire simulation and analytic pipelines without the need to leave the R environment.</p>
+<hr>
+</div>
+<div class="section level3">
+<h3 id="playing-with-the-r-package-in-an-online-rstudio-session">Playing with the R package in an online RStudio session<a class="anchor" aria-label="anchor" href="#playing-with-the-r-package-in-an-online-rstudio-session"></a>
+</h3>
+<p>You can open an RStudio session and test examples from the vignettes directly in your web browser by clicking this button (no installation is needed):</p>
+<p><a href="http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio" class="external-link"><img src="http://mybinder.org/badge.svg" alt="Binder"></a></p>
+<p>In case the RStudio instance appears to be starting very slowly, please be patient. The binder cloud server can sometimes take a minute to load up. Sometimes it even crashes completely. If that happens, try reloading the page - this will restart the binder session.</p>
+<p>Once you get a browser-based RStudio session, you can navigate to the <code>vignettes/</code> directory and test the examples on your own!</p>
 <hr>
 <p><strong>This software is still under development!</strong> We have been making steady progress towards the first beta version, but the package still has some way to go before being production ready. Please update the <em>slendr</em> installation by running <code>devtools::install_github("bodkan/slendr")</code> regularly.</p>
 <p>That said, if you would like to learn more, or if you’re feeling brave and would like to test the package yourself, take a look at some of our tutorial vignettes (either the main <a href="https://www.slendr.net/articles/vignette-01-tutorial.html">tutorial</a> or other vignettes available under the “Articles” menu on the <a href="https://www.slendr.net/">project website</a>).</p>
@@ -395,7 +405,13 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/bodkan/slendr/actions" class="external-link"><img src="https://github.com/bodkan/slendr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio" class="external-link"><img src="http://mybinder.org/badge.svg" alt="Binder"></a></li>
+</ul>
+</div>
 
   </div>
 </div>
