@@ -1,11 +1,11 @@
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
-
-
-## Spatio-temporal Population Genetics Simulations in R
-
 [![R-CMD-check](https://github.com/bodkan/slendr/workflows/R-CMD-check/badge.svg)](https://github.com/bodkan/slendr/actions) 
+[![Coverage status](https://codecov.io/gh/bodkan/slendr/branch/master/graph/badge.svg)](https://codecov.io/github/bodkan/slendr?branch=master)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio)
+
+# Spatio-temporal Population Genetics Simulations in R
 
 ### *Overview* <a href='https://www.slendr.net'><img src="man/figures/logo.png" align="right" height="139"/></a>
 
