@@ -76,7 +76,7 @@ jobs:
 
       - name: Populate PATH with compiled binaries
         run: |
-          export PATH="$HOME/deps/SLiM:$HOME/deps/AdmixTools-7.0.2/bin:$PATH""
+          export PATH="$HOME/deps/SLiM:$HOME/deps/AdmixTools-7.0.2/bin:$PATH"
           echo "PATH=$PATH" > ~/.Renviron
 
       - name: Setup dedicated Python environment for slendr
