@@ -259,30 +259,6 @@
 </h2>
 <p>In the fourth and final example, we return to the abstract toy model of West Eurasian prehistory. The main output of a <em>slendr</em> simulation is a tree sequence which, in case of <em>non-spatial</em> population genetic models, records the complete information about <em>when</em> did the ancestors of a set of sampled individuals lived throughout the entire history of that sample. However, in case of <em>spatial</em> <em>slendr</em> models simulated by SLiM, the output tree sequences also contain the exact <em>spatial location</em> of each individual ancestral node.</p>
 <p>To highlight the richness of the spatio-temporal information encoded by tree sequence data structure and showcase the novel, we demonstrate</p>
-<!-- ```{r, example4_paper_figure} -->
-<!-- # load the output tree sequence, recapitate it, simplify it, add mutations -->
-<!-- ts <- ts_load(model_ex2, recapitate = TRUE, simplify = TRUE, mutate = TRUE, -->
-<!--               Ne = 10000, recombination_rate = 1e-8, mutation_rate = 1e-8) -->
-<!-- # extract table with names and times of sampled individuals -->
-<!-- samples <- ts_samples(ts) -->
-<!-- # extract names of individuals in each time point -->
-<!-- groups <- split(samples, samples$time) %>% map(pull, name) -->
-<!-- # compute nucleotide diversity in each time point and add additional -->
-<!-- # information to the table of results for easier plotting -->
-<!-- diversity <- ts_diversity(ts, groups) %>% -->
-<!--   mutate( -->
-<!--     time = as.numeric(set), -->
-<!--     epoch = findInterval(time, epoch_times, rightmost.closed = TRUE) -->
-<!--   ) -->
-<!-- # plot diversity over time computed from the tree sequence data -->
-<!-- ggplot(diversity, aes(time, diversity, color = factor(epoch))) + -->
-<!--   geom_point() + -->
-<!--   geom_smooth(color = "black") + -->
-<!--   geom_vline(xintercept = epoch_times, size = 0.75, alpha = 0.25) + -->
-<!--   scale_x_continuous(breaks = epoch_times, labels = epoch_times) + -->
-<!--   labs(x = "time since the start of the simulation") + -->
-<!--   theme_minimal() + guides(color = "none") -->
-<!-- ``` -->
 </div>
   </div>
 
