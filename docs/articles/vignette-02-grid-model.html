@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9000</span>
       </span>
     </div>
 
@@ -154,7 +154,8 @@
 <p>Next, we define a helper function which will a) create a single <em>slendr</em> population object, b) place that population at an appropriate coordinate on the lattice on the world map based on the numeric identifier of the population <em>i</em> (where <em>i</em> runs from 1 to <span class="math inline">\(n \times n\)</span> , <em>n</em> being the total number of demes along one side of the regular grid):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">create_pop</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span>, <span class="va">n_side</span>, <span class="va">map</span>, <span class="va">N</span>, <span class="va">radius</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">dim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dimensions.html">dimensions</a></span><span class="op">(</span><span class="va">map</span>, original <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+  <span class="co"># get dimensions of the world map</span>
+  <span class="va">dim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"xrange"</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"yrange"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
   <span class="co"># position of the i-th population on the two-dimensional lattice grid</span>
   <span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="va">n_side</span>, <span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%/%</a></span> <span class="va">n_side</span><span class="op">)</span>
@@ -276,7 +277,7 @@
 
 <span class="va">check_area</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pop</span>, <span class="va">map</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">{</span>
   <span class="co"># total population area</span>
-  <span class="va">pop_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/area.html">area</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>
+  <span class="va">pop_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/area.html">area</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span><span class="op">$</span><span class="va">area</span>
   <span class="co"># population area overlapping a map</span>
   <span class="va">map_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/area.html">area</a></span><span class="op">(</span><span class="fu"><a href="../reference/overlap.html">overlap</a></span><span class="op">(</span><span class="va">pop</span>, <span class="va">map</span><span class="op">)</span><span class="op">)</span>
   <span class="co"># population area overlapping African continent</span>
