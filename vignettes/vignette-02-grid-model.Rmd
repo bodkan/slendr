@@ -46,7 +46,8 @@ Next, we define a helper function which will a) create a single *slendr* populat
 
 ```{r}
 create_pop <- function(i, n_side, map, N, radius) {
-  dim <- dimensions(map, original = TRUE)
+  # get dimensions of the world map
+  dim <- c(diff(attr(map, "xrange")), diff(attr(map, "yrange")))
 
   # position of the i-th population on the two-dimensional lattice grid
   coords <- c((i - 1) %% n_side, (i - 1) %/% n_side)
@@ -193,7 +194,7 @@ continent <- region(
 
 check_area <- function(pop, map, continent) {
   # total population area
-  pop_area <- area(pop)
+  pop_area <- area(pop)$area
   # population area overlapping a map
   map_area <- area(overlap(pop, map))
   # population area overlapping African continent

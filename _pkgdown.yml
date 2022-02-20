@@ -77,7 +77,6 @@ reference:
     - reproject
     - distance
     - area
-    - dimensions
 
   - title: Model visualization and diagnostics
     contents:

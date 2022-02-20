@@ -979,30 +979,6 @@ area <- function(x) {
          call. = FALSE)
 }
 
-
-#' Return the dimensions of the world map
-#'
-#' @param map Object of the type \code{slendr_map}
-#' @param original Return dimensions in the original coordinate system (CRS)
-#'   instead of the internal projected CRS?
-#'
-#' @return If the coordinate reference system was specified, the function
-#'   returns a two-dimensional vector of the world dimensions in the projected
-#'   units. Otherwise the dimensions of the two-dimensional abstract plane are
-#'   returned.
-#'
-#' @export
-dimensions <- function(map, original = FALSE) {
-  if (!inherits(map, "slendr_map"))
-    stop("Incorrect input type. Object of the type 'slendr_map' expected", call. = FALSE)
-  if (has_crs(map) && original)
-    return(c(diff(attr(map, "xrange")), diff(attr(map, "yrange"))))
-  else
-    c(as.vector(diff(sf::st_bbox(map)[c("xmin", "xmax")])),
-      as.vector(diff(sf::st_bbox(map)[c("ymin", "ymax")])))
-}
-
-
 #' Define sampling events for a given set of populations
 #'
 #' Schedule sampling events at specified times and, optionally, a given set of
