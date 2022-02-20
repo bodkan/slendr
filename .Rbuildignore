@@ -17,3 +17,4 @@
 ^inst/pylib/__pycache__
 ^\.binder$
 ^\.github$
+^\.covrignore$
