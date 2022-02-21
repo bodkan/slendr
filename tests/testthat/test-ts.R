@@ -614,12 +614,6 @@ test_that("tree sequence contains the specified number of sampled individuals (d
   expect_true(all(counts$n == N))
 })
 
-test_that("default sampling of 'everyone alive' is not allowed for msprime", {
-  expect_error(msprime(model, sequence_length = 100000, recombination_rate = 0,
-                       random_seed = 314159, verbose = FALSE),
-               "Unlike SLiM simulations, explicit sampling")
-})
-
 test_that("locations and times in the tree sequence match values saved by SLiM (default sampling)", {
   slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
        method = "batch", random_seed = 314159, verbose = FALSE)

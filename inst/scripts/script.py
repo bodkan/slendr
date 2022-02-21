@@ -26,7 +26,7 @@ parser.add_argument("--sequence-length", required=True, type=int,
                     help="The length of a sequence to simulate")
 parser.add_argument("--recombination-rate", required=True, type=float,
                     help="Uniform recombination rate")
-parser.add_argument("--sampling-schedule", metavar="FILE", required=True,
+parser.add_argument("--sampling-schedule", metavar="FILE",
                     help="Path to the slendr sampling schedule table "
                          "(see the manpage of the `sampling()` function for "
                          "more details)")
@@ -59,7 +59,6 @@ geneflows_path = pathlib.Path(model_dir, "geneflow.tsv")
 length_path = pathlib.Path(model_dir, "length.txt")
 direction_path = pathlib.Path(model_dir, "direction.txt")
 description_path = pathlib.Path(model_dir, "description.txt")
-sampling_path = os.path.expanduser(args.sampling_schedule)
 
 # read model configuration files
 populations = pandas.read_table(populations_path)
@@ -79,21 +78,6 @@ logging.info(f"Loaded model is specified in the {direction} direction")
 
 description = open(description_path, "r").readline().rstrip()
 logging.info(f"Model description: {description}")
-
-if os.path.exists(sampling_path):
-    samples_df = pandas.read_table(sampling_path)
-else:
-    sys.exit(f"Sampling schedule table at '{sampling_path}' does not exist")
-
-logging.info("Loading the sampling schedule")
-
-samples = [
-    msprime.SampleSet(
-        row.n, population=row.pop, time=length - row.time_gen + 1, ploidy=2
-    ) for row in samples_df.itertuples(index=False)
-]
-if any(sample.num_samples == numpy.inf for sample in samples):
-    sys.exit("Please provide the number of individuals to sample")
 
 logging.info("Setting up populations")
 
@@ -125,6 +109,26 @@ for pop in populations.itertuples():
             derived=[pop.pop],
             ancestral=pop.parent
         )
+
+if args.sampling_schedule:
+    sampling_path = os.path.expanduser(args.sampling_schedule)
+    samples_df = pandas.read_table(sampling_path)
+else:
+    logging.info("No sampling schedule given, generating one automatically")
+    samples_df = pandas.DataFrame(
+        [
+          (pop.initial_size, pop.name, length + 1, -1, -1, 0, -1, -1)
+          for pop in demography.populations
+        ],
+        columns=["n", "pop", "time_gen", "x", "y", "time_orig", "x_orig", "y_orig"]
+    )
+
+logging.info("Loading the sampling schedule")
+samples = [
+    msprime.SampleSet(
+       row.n, population=row.pop, time=length - row.time_gen + 1, ploidy=2
+    ) for row in samples_df.itertuples(index=False)
+]
 
 logging.info("Setting up population resize events")
 

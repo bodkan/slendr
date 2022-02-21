@@ -443,15 +443,11 @@ slim <- function(model, sequence_length, recombination_rate,
 #' }
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
-                    sampling, verbose = FALSE, random_seed = NULL,
+                    sampling = NULL, verbose = FALSE, random_seed = NULL,
                     save_sampling = TRUE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
-
-  if (!methods::hasArg(sampling))
-    stop("Unlike SLiM simulations, explicit sampling schedule must be provided for msprime simulations",
-         call. = FALSE)
 
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
@@ -468,8 +464,7 @@ msprime <- function(model, sequence_length, recombination_rate,
     readr::write_tsv(sampling_df, sampling_path)
     sampling <- paste("--sampling-schedule", sampling_path)
   } else
-    stop("Unlike SLiM models in slendr, explicit sampling schedule must be provided for the msprime backend",
-         call. = FALSE)
+    sampling <- ""
 
   msprime_command <- sprintf("python3 \\
     %s \\
