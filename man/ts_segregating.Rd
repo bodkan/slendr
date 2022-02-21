@@ -16,7 +16,9 @@ ts_segregating(
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{sample_sets}{A list (optionally a named list) of character vectors with
-individual names (one vector per set)}
+individual names (one vector per set). If a simple vector is provided, it
+will be interpreted as \code{as.list(sample_sets)}, meaning that a given
+statistic will be calculated for each individual separately.}
 
 \item{mode}{The mode for the calculation ("sites" or "branch")}
 

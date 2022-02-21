@@ -1228,7 +1228,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = TRUE) {
   mode <- match.arg(mode)
-  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.list(sample_sets)) sample_sets <- as.list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
   multiway_stat(ts, "fst", k = 2, sample_sets, mode, windows, span_normalise) %>%
     stats::setNames(c("x", "y", "Fst"))
@@ -1256,7 +1256,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 ts_divergence <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = TRUE) {
   mode <- match.arg(mode)
-  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.list(sample_sets)) sample_sets <- as.list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
   multiway_stat(ts, "divergence", k = 2, sample_sets, mode, windows, span_normalise) %>%
     stats::setNames(c("x", "y", "divergence"))
@@ -1290,7 +1290,9 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
   if (is.matrix(values))
     values <- split(values, col(values))
 
-  if (is.null(names(sample_sets)))
+  if (all(sapply(sample_sets, length) == 1))
+    set_names <- unlist(sample_sets)
+  else if (is.null(names(sample_sets)))
     set_names <- paste0("set_", seq_len(n_sets))
   else
     set_names <- names(sample_sets)
@@ -1313,7 +1315,7 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                            windows = NULL, span_normalise = TRUE) {
   mode <- match.arg(mode)
-  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.list(sample_sets)) sample_sets <- as.list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
   oneway_stat(ts, "segsites", sample_sets, mode, windows, span_normalise)
 }
@@ -1342,7 +1344,7 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                          windows = NULL, span_normalise = TRUE) {
   mode <- match.arg(mode)
-  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.list(sample_sets)) sample_sets <- as.list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
   oneway_stat(ts, "diversity", sample_sets, mode, windows, span_normalise)
 }
@@ -1355,7 +1357,9 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param sample_sets A list (optionally a named list) of character vectors with
-#'   individual names (one vector per set)
+#'   individual names (one vector per set). If a simple vector is provided, it
+#'   will be interpreted as \code{as.list(sample_sets)}, meaning that a given
+#'   statistic will be calculated for each individual separately.
 #' @param mode The mode for the calculation ("sites" or "branch")
 #' @param windows Coordinates of breakpoints between windows. The first
 #'   coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
@@ -1374,7 +1378,7 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                       windows = NULL) {
   mode <- match.arg(mode)
-  if (!is.list(sample_sets)) sample_sets <- list(sample_sets)
+  if (!is.list(sample_sets)) sample_sets <- as.list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
   oneway_stat(ts, "D", sample_sets, mode, windows)
 }
@@ -1415,7 +1419,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
   if (is.null(sample_sets))
     sample_sets <- list(ts_samples(ts)$name)
   else if (!is.list(sample_sets))
-    sample_sets <- list(sample_sets)
+    sample_sets <- as.list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
 
   node_sets <- purrr::map(sample_sets, function(set) {
