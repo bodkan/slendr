@@ -21,17 +21,17 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
-SEED <- 42
-set.seed(SEED)
-
 library(slendr)
 
-# load the bare minimum of R packages for analysis
 library(dplyr)
 library(ggplot2)
 library(purrr)
 library(tidyr)
 library(cowplot)
+library(forcats)
+
+SEED <- 42
+set.seed(SEED)
 ```
 
 Automatically setup the Python environment with all dependencies for tree sequence processing and analysis:
@@ -59,43 +59,32 @@ p6 <- population("pop6", time = 1, N = 2000, map = map, competition_dist = 3)
 p7 <- population("pop7", time = 1, N = 2000, map = map, competition_dist = 2)
 p8 <- population("pop8", time = 1, N = 2000, map = map, competition_dist = 1)
 
-ex2_model <- compile(
+model <- compile(
   populations = list(p1, p2, p3, p4, p5, p6, p7, p8),
-  generation_time = 1, sim_length = 2000,
-  resolution = 0.1, mate_dist = 0.1, dispersal_dist = 0.05
+  generation_time = 1, sim_length = 5000, resolution = 0.1,
+  mate_dist = 0.1, dispersal_dist = 0.05
 )
 
-slim(ex2_model, sequence_length = 100e6, recombination_rate = 1e-8)
+slim(model, sequence_length = 100e6, recombination_rate = 1e-8)
+
+ts <- ts_load(model) %>%
+  ts_simplify() %>%
+  ts_mutate(mutation_rate = 1e-7)
+
+diversity <- ts_samples(ts) %>%
+  group_by(pop) %>%
+  sample_n(100) %>%
+  mutate(pi = ts_diversity(ts, name)$diversity)
 ```
 
-Load the locations of all individuals in the last generation (the file with all locations ever is gigantic, so we ourselves by pre-filtering it first using `grep`):
+```{r, echo = FALSE}
+locations <- ts_data(ts) %>% filter(time == 5001)
 
-```{r}
-ex2_model = read("~/Desktop/ex2/"); map = ex2_model$world; ts <- ts_load(ex2_model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
-
-locations <- ts_data(ts) %>% filter(time == 2001)
-```
-
-We can't include the GIF animation of the simulation run in the paper. Instead, let's just plot the locations of the last generation of individuals in each population:
-
-## Example 4
-
-Load a couple of libraries for processing and visualising the results, link to the Python environment which contains the necessary Python modules:
-
-```{r, ex4_diversity}
-ts <- ts_load(ex2_model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
-
-samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
-
-diversity <- mutate(samples, pi = ts_diversity(ts, name)$diversity)
-```
-
-```{r}
 p_ex2_clustering <- ggplot() +
   geom_sf(data = map) +
   geom_sf(data = locations, aes(color = pop), size = 0.05, alpha = 0.25) +
   facet_grid(. ~ pop, switch = "x") +
-  xlab("spatial population distributions emerged from the simulation") +
+  xlab("spatial distributions emerged from the simulation") +
   theme(
     strip.background = element_blank(),
     strip.text = element_text(size = 11),
@@ -125,33 +114,86 @@ plot_grid(
 )
 ```
 
-```{r}
-pops <- ts_samples(ts) %>% group_split(pop) %>% map("name")
-map(pops, ts_afs, ts)
-
-x = map(pops, ~ ts_afs(ts, .))
-x = bind_cols(x) %>% setNames(sprintf("p%d", 1:8))
-x = mutate(x, i = 1:n())
-
-pivot_longer(x, cols = p1:p8, names_to = "pop", values_to = "f") %>% 
-  ggplot(aes(i, f, color = pop)) +
-  geom_line(stat = "identity", alpha = 0.5)
-```
-
 ## Example 3
 
 ```{r}
-o  <- population("o",  time = 1,    N = 10)
-b  <- population("b",  time = 500,  N = 10,    parent = o)
-c  <- population("c",  time = 1000, N = 10,    parent = b)
-x1 <- population("x1", time = 2000, N = 10000, parent = c)
-x2 <- population("x2", time = 2000, N = 10000, parent = c)
-a  <- population("a",  time = 1500, N = 10,    parent = b)
+o  <- population("o",  time = 1,    N = 100)
+a  <- population("a",  time = 500,  N = 100,   parent = o)
+b  <- population("b",  time = 1500, N = 100,   parent = a)
+c  <- population("c",  time = 1000, N = 1000,  parent = a)
+x1 <- population("x1", time = 1900, N = 10000, parent = c)
+x2 <- population("x2", time = 1900, N = 10000, parent = c)
 
-gf <- geneflow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
+gf <- geneflow(from = b, to = x1, start = 2000, end = 2050, rate = 0.1)
 
-ex3_model <- compile(populations = list(a, b, x1, x2, c, o), geneflow = gf,
-                     generation_time = 1, sim_length = 2200) 
+model <- compile(
+  populations = list(o, a, b, c, x1, x2), geneflow = gf,
+  generation_time = 1, sim_length = 2200
+)
+
+slim(model, sequence_length = 100e6, recombination_rate = 1e-8)
+msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
+
+ts <- ts_load(model, file = file.path(model$path, "output_msprime.trees")) %>%
+  ts_mutate(mutation_rate = 1e-8)
+
+samples <- ts_samples(ts)
+
+populations <- split(samples, samples$pop) %>% map("name")
+divergence <- ts_divergence(ts, populations) %>% arrange(divergence)
+
+X <- filter(samples, pop %in% c("x1", "x2")) %>% pull("name") %>% sample(100)
+f4ratios <- ts_f4ratio(ts, A = "a_1", B = "b_1", X = X, C = "c_1", O = "o_1")
+```
+
+```{r, include = FALSE}
+ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>%
+  ts_mutate(mutation_rate = 1e-8)
+
+divergence_slim <- ts_divergence(ts_slim, populations) %>% arrange(divergence)
+
+f4ratios_slim <- ts_f4ratio(ts_slim, A = "a_1", B = "b_1", X = X, C = "c_1", O = "o_1")
+
+divergence_both <- bind_rows(
+  divergence %>% mutate(backend = "msprime"),
+  divergence_slim %>% mutate(backend = "SLiM")
+) %>%
+  mutate(pair = paste0(x, "-", y))
+
+f4ratios_both <- bind_rows(
+  f4ratios %>% mutate(backend = "msprime"),
+  f4ratios_slim %>% mutate(backend = "SLiM")
+) %>% mutate(population = gsub("^(.*)_.*$", "\\1", X), alpha = alpha * 100)
+```
+
+```{r}
+p_ex3_divergence <- divergence_both %>%
+  ggplot(aes(fct_reorder(pair, divergence), divergence)) +
+  geom_point(aes(shape = backend, alpha = backend)) +
+  xlab("population pair") +
+  theme_minimal() +
+  scale_alpha_manual(values = c(1, 0.25)) +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(hjust = 1, angle = 45, size = 11)); p_ex3_divergence
+
+p_ex3_f4ratios <- f4ratios_both %>%
+  ggplot(aes(population, alpha, color = backend)) + 
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5, size = 0.75,
+              position = position_jitterdodge(jitter.width = 0.25)) +
+  scale_alpha_manual(values = c(1, 0.25)) +
+  ylab("f4-ratio ancestry proportion [%]") +
+  theme_minimal() +
+  theme(legend.position = "bottom", axis.text.x = element_text(size = 11),
+        panel.grid.major.x = element_blank()); p_ex3_f4ratios
+
+plot_grid(
+  p_ex3_divergence,
+  p_ex3_f4ratios,
+  ncol = 2,
+  rel_widths = c(1, 0.7)
+)
 ```
 
 ## Example 4
