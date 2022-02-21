@@ -45,7 +45,6 @@ check_env()
 
 In the second model, we demonstrate the possibility to finely tune within-population spatial dynamics using parameters which determine how clustered or uniformly distributed individuals are over the population boundary, and affect their dispersal and mating behavior. We define nine isolated populations which occupy a circular "island", each with an increasing value of the so-called "competition distance" parameter which controls to what distance does a given individual compete. Based on the value of this parameter, the number of individuals in the population and the size of the occupiable space, different spatial dynamic behavior emerges from the population.
 
-
 ```{r}
 map <- world(xrange = c(0, 10), yrange = c(0, 10),
              landscape = region(center = c(5, 5), radius = 5))
@@ -67,9 +66,7 @@ model <- compile(
 
 slim(model, sequence_length = 100e6, recombination_rate = 1e-8)
 
-ts <- ts_load(model) %>%
-  ts_simplify() %>%
-  ts_mutate(mutation_rate = 1e-7)
+ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
 
 diversity <- ts_samples(ts) %>%
   group_by(pop) %>%
@@ -77,7 +74,7 @@ diversity <- ts_samples(ts) %>%
   mutate(pi = ts_diversity(ts, name)$diversity)
 ```
 
-```{r, echo = FALSE}
+```{r, include = FALSE}
 locations <- ts_data(ts) %>% filter(time == 5001)
 
 p_ex2_clustering <- ggplot() +
@@ -158,42 +155,53 @@ divergence_both <- bind_rows(
   divergence %>% mutate(backend = "msprime"),
   divergence_slim %>% mutate(backend = "SLiM")
 ) %>%
-  mutate(pair = paste0(x, "-", y))
+  mutate(pair = paste0(x, "\u2014", y))
 
 f4ratios_both <- bind_rows(
   f4ratios %>% mutate(backend = "msprime"),
   f4ratios_slim %>% mutate(backend = "SLiM")
-) %>% mutate(population = gsub("^(.*)_.*$", "\\1", X), alpha = alpha * 100)
+) %>% mutate(population = gsub("^(.*)_.*$", "population \\1", X), alpha = alpha * 100)
 ```
 
-```{r}
+```{r, include = FALSE}
 p_ex3_divergence <- divergence_both %>%
-  ggplot(aes(fct_reorder(pair, divergence), divergence)) +
-  geom_point(aes(shape = backend, alpha = backend)) +
-  xlab("population pair") +
+  ggplot(aes(fct_reorder(pair, divergence), color = backend, shape = backend, divergence)) +
+  geom_point() +
+  xlab("population pair") + ylab("pairwise divergence") +
   theme_minimal() +
   scale_alpha_manual(values = c(1, 0.25)) +
-  theme(legend.position = "bottom",
-        axis.text.x = element_text(hjust = 1, angle = 45, size = 11)); p_ex3_divergence
+  theme(legend.position = "none",
+        axis.text.x = element_text(hjust = 1, angle = 45, size = 11),
+        axis.title.x = element_blank()); p_ex3_divergence
 
 p_ex3_f4ratios <- f4ratios_both %>%
-  ggplot(aes(population, alpha, color = backend)) + 
+  ggplot(aes(population, alpha)) + 
   geom_hline(yintercept = 0, linetype = 2) +
-  geom_boxplot() +
-  geom_jitter(alpha = 0.5, size = 0.75,
+  geom_boxplot(aes(group = interaction(population, backend)),
+               outlier.shape = NA, color = alpha("black", 0.5)) +
+  geom_jitter(aes(color = backend, shape = backend), alpha = 0.75,
               position = position_jitterdodge(jitter.width = 0.25)) +
-  scale_alpha_manual(values = c(1, 0.25)) +
+  guides(color = guide_legend("slendr simulation engine", override.aes = list(size = 3)),
+         shape = guide_legend("slendr simulation engine")) +
   ylab("f4-ratio ancestry proportion [%]") +
   theme_minimal() +
-  theme(legend.position = "bottom", axis.text.x = element_text(size = 11),
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 11),
+        axis.text.x = element_text(size = 11),
+        axis.title.x = element_blank(),
         panel.grid.major.x = element_blank()); p_ex3_f4ratios
 
+# let's avoid ggpubr as another dependency:
+# https://github.com/kassambara/ggpubr/blob/master/R/as_ggplot.R#L27
+p_ex3_legend <- ggdraw() + draw_grob(grid::grobTree(get_legend(p_ex3_f4ratios)))
+
 plot_grid(
-  p_ex3_divergence,
-  p_ex3_f4ratios,
-  ncol = 2,
-  rel_widths = c(1, 0.7)
-)
+  plot_grid(
+    p_ex3_divergence,
+    p_ex3_f4ratios + theme(legend.position = "none"),
+    ncol = 2, rel_widths = c(1, 0.8)
+  ),
+  p_ex3_legend, nrow = 2, rel_heights = c(1, 0.1))
 ```
 
 ## Example 4
