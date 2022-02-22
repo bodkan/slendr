@@ -327,12 +327,25 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 
   if (is.null(simplify_to) && backend == "SLiM")
     samples <- dplyr::filter(data, remembered)$node_id
-  else if (!all(simplify_to %in% data$name))
+  else if (is.character(simplify_to)) {
+    if (!all(simplify_to %in% data$name))
       stop("The following individuals are not present in the tree sequence: ",
            paste0(simplify_to[!simplify_to %in% data$name], collapse = ", "),
            call. = FALSE)
-  else
-    samples <- dplyr::filter(data, name %in% simplify_to)$node_id
+    else
+      samples <- dplyr::filter(data, name %in% simplify_to)$node_id
+  } else if (is.numeric(simplify_to)) {
+    if (!all(simplify_to %in% data$node_id))
+      stop("The following nodes are not present in the tree sequence: ",
+           paste0(simplify_to[!simplify_to %in% data$node_id], collapse = ", "),
+           call. = FALSE)
+    else if (!all(simplify_to %in% data[data$remembered, ]$node_id))
+      stop("The following nodes are not among the remembered nodes: ",
+           paste0(simplify_to[!simplify_to %in% data[data$remembered, ]$node_id], collapse = ", "),
+           call. = FALSE)
+    else
+      samples <- simplify_to
+  }
 
   ts_new <- ts$simplify(as.integer(samples),
                         filter_populations = FALSE,
