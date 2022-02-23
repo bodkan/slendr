@@ -1308,8 +1308,7 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
            " environment is recommended.")
     } else if (!quiet)
-      message("The slendr interface to required Python modules ",
-              "has been successfully activated.")
+      message("The interface to the required Python modules is now activated.")
   } else {
     if (agree)
       answer <- 2
