@@ -678,7 +678,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     stop("The tree sequence must be fully coalesced or recapitated (see\n",
          "?ts_recapitate for more details)", call. = FALSE)
 
-  if (!attr(ts, "simplified") && attr(ts, "source") != "msprime")
+  if (ts$num_samples != 2 * nrow(ts_samples(ts)))
     stop("Please simplify your tree sequence down to sampled individuals first\n",
          "(see ?ts_simplify for more details)", call. = FALSE)
 
@@ -686,9 +686,10 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   start <- tree$interval$left
   end <- tree$interval$right
 
-  parent_array <- tree$parent_array
-  children_array <- which(parent_array != -1) - 1
-  parents_array <- parent_array[parent_array != -1]
+  tree_array <- tree$parent_array
+
+  children_array <- which(tree_array != -1) - 1
+  parents_array <- tree_array[tree_array != -1]
 
   # convert the edge table to a proper ape phylo object
   # see http://ape-package.ird.fr/misc/FormatTreeR.pdf for more details
@@ -700,11 +701,11 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 
   tip_labels <- dplyr::filter(data, remembered) %>% { sprintf("%s (%d)", .$name, .$node_id) }
 
-  # define a 1:N lookup table for node IDs between tskit and phylo
+  # get tree sequence nodes which are present in the tskit tree object
   present_nodes <- data %>%
     dplyr::filter(node_id %in% c(children_array, parents_array))
 
-  present_ids <- present_nodes %>% dplyr::arrange(node_id) %>% dplyr::pull(node_id)
+  present_ids <- dplyr::arrange(present_nodes, node_id) %>% dplyr::pull(node_id)
   lookup_nodes <- seq_len(n_all)
 
   children <- sapply(children_array, function(i) lookup_nodes[present_ids == i])
@@ -713,17 +714,22 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   # in ape phylo, leaves must be numbered `1...n`, root must be the node `n +
   # 1`, and all internal nodes must be larger than `n` -- we need to flip around
   # some indices in the edge matrix
-  root_ts <- n_all # root ID in the original tree sequence tree object
-  root_ape <- n_tips + 1 # root ID in the target phylo tree object
-
-  children_ape <- children
-  parents_ape <- parents
+  root_orig <- setdiff(parents, children) # root ID in the original tree sequence tree object
+  root_new <- n_tips + 1 # root ID in the target phylo tree object
 
   # replace the node ID of the internal node with the lowest integer ID in
   # the tree sequence with the root ID and vice-versa
-  parents_ape[parents == root_ts] <- root_ape
-  parents_ape[parents == root_ape] <- root_ts
-  children_ape[children == root_ape] <- root_ts
+  children_ape <- children
+  parents_ape <- parents
+
+  parents_ape[parents == root_orig] <- root_new
+  parents_ape[parents == root_new] <- root_orig
+  children_ape[children == root_new] <- root_orig
+
+  # switch the root IDs also in the original tskit node IDs table
+  lookup_ts <- present_ids
+  lookup_ts[lookup_nodes == root_orig] <- root_new - 1
+  lookup_ts[lookup_nodes == root_new] <- setdiff(parents_array, children_array)
 
   # bind the two columns back into an edge matrix
   edge <- cbind(as.integer(parents_ape), as.integer(children_ape))
@@ -752,7 +758,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   # subset ts_data result to only those nodes that are present in the phylo
   # object, adding another column with the rearranged node IDs
   attr(tree, "data") <- present_nodes %>%
-    dplyr::mutate(phylo_id = sapply(present_ids, function(i) lookup_nodes[present_ids == i])) %>%
+    dplyr::mutate(phylo_id = match(node_id, lookup_ts)) %>%
     dplyr::select(name, pop, node_id, phylo_id, time, location, remembered,
                   retained, alive, pedigree_id, ind_id)
   attr(tree, "model") <- attr(ts, "model")
