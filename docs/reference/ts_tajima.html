@@ -114,7 +114,9 @@ https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode'><meta property="o
 <dd><p>Tree sequence object of the class <code>slendr_ts</code></p></dd>
 <dt>sample_sets</dt>
 <dd><p>A list (optionally a named list) of character vectors with
-individual names (one vector per set)</p></dd>
+individual names (one vector per set). If a simple vector is provided, it
+will be interpreted as <code>as.list(sample_sets)</code>, meaning that a given
+statistic will be calculated for each individual separately.</p></dd>
 <dt>mode</dt>
 <dd><p>The mode for the calculation ("sites" or "branch")</p></dd>
 <dt>windows</dt>

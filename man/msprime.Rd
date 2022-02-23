@@ -9,7 +9,7 @@ msprime(
   sequence_length,
   recombination_rate,
   output = file.path(model$path, "output_msprime.trees"),
-  sampling,
+  sampling = NULL,
   verbose = FALSE,
   random_seed = NULL,
   save_sampling = TRUE
