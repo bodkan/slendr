@@ -29,8 +29,7 @@
       "completely isolated Python\nenvironment automatically for you, without affecting ",
       "your system\nat all."
     )
-  } else
-    setup_env()
+  }
 }
 
 # global references to required Python packages - inspired by:
