@@ -25,7 +25,7 @@ slim(
 test_that("ape phylo conversion only works on simplified, coalesced trees", {
   ts1 <- ts_load(model)
   suppressWarnings(ts2 <- ts_load(model, simplify = TRUE))
-  ts3 <- ts_load(model, recapitate = TRUE, Ne = 100, recombination_rate = 0)
+  ts3 <- ts_load(model, recapitate = TRUE, Ne = 100, recombination_rate = 1e-8)
 
   expect_error(
     ts_phylo(ts1, 1, mode = "index", quiet = TRUE),
