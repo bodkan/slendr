@@ -102,3 +102,21 @@ test_that("ts_data output contains the correct information for a given phylo tre
     expect_true(nrow(data) == length(intersect(t2_nodes, data$phylo_id)))
   }
 })
+
+test_that("ts_phylo refuses a non-coalesced tree sequence", {
+  ts <- ts_load(model)
+  expect_error(ts_phylo(ts, 1), "A tree sequence tree which is not fully coalesced")
+})
+
+test_that("ts_phylo errors on a not-yet-simplified tree sequence", {
+  ts <- ts_load(model, recapitate = TRUE, Ne = 10, recombination_rate = 0)
+  expect_error(ts_phylo(ts, 1), "Please simplify your tree sequence")
+  ts <- ts_load(model, recapitate = TRUE, Ne = 10, recombination_rate = 0, simplify = TRUE)
+  expect_s3_class(ts_phylo(ts, 1), "slendr_phylo")
+})
+
+test_that("ts_phylo errors on a not-yet-simplified tree sequence", {
+  ts <- ts_load(model, recapitate = TRUE, Ne = 10, recombination_rate = 0)
+  expect_error(ts_phylo(ts, 1), "Please simplify your tree sequence")
+})
+

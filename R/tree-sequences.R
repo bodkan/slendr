@@ -674,15 +674,18 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #'
 #' @export
 ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
-  if (!attr(ts, "recapitated") && !ts_coalesced(ts))
-    stop("The tree sequence must be fully coalesced or recapitated (see\n",
-         "?ts_recapitate for more details)", call. = FALSE)
+  tree <- ts_tree(ts, i, mode)
+
+  if (tree$num_roots > 1)
+    stop("A tree sequence tree which is not fully coalesced or recapitated\n",
+         "cannot be converted to an R phylo tree representation (see the help\n",
+         "page of ?ts_recapitate for more details)", call. = FALSE)
 
   if (ts$num_samples != 2 * nrow(ts_samples(ts)))
-    stop("Please simplify your tree sequence down to sampled individuals first\n",
-         "(see ?ts_simplify for more details)", call. = FALSE)
+    stop("Please simplify your tree sequence down to sampled individuals\nfirst ",
+         "before converting a tree to an R phylo tree object format (see the\n",
+         "help page of ?ts_simplify for more details)", call. = FALSE)
 
-  tree <- ts_tree(ts, i, mode)
   start <- tree$interval$left
   end <- tree$interval$right
 
@@ -745,7 +748,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     tip.label = tip_labels,
     Nnode = n_internal
   )
-  class(tree) <- "phylo"
+  class(tree) <- c("phylo", "slendr_phylo")
 
   check_log <- utils::capture.output(ape::checkValidPhylo(tree))
 
@@ -763,6 +766,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
                   retained, alive, pedigree_id, ind_id)
   attr(tree, "model") <- attr(ts, "model")
   attr(tree, "source") <- attr(ts, "source")
+
+  if (inherits(attr(ts, "model")$world, "slendr_map"))
+    attr(tree, "branches") <- get_sf_branches(tree)
 
   tree
 }
@@ -800,7 +806,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 #'
 #' @export
 ts_data <- function(x) {
-  if (!inherits(x, "slendr_ts") && !(inherits(x, "phylo") && !is.null(attr(x, "data"))))
+  if (!inherits(x, "slendr_ts") && !(inherits(x, "slendr_phylo")))
     stop("Annotation data table can be only extracted for a slendr tree sequence\n",
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 
@@ -1635,6 +1641,60 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
     dplyr::select(name, pop, ind_id, node_id, time)
 
   combined
+}
+
+get_sf_branches <- function(tree) {
+  data <- attr(tree, "data")
+
+  # prepare a table of spatial branch start-end locations and times which will
+  # be saved in the ts_phylo result metadata (below)
+  edges <- dplyr::tibble(parent = tree$edge[, 1], child = tree$edge[, 2])
+
+  # create a new table of node times/locations by running a join operation
+  # against the `edges` table above
+  parent_nodes <- data %>%
+    dplyr::as_tibble() %>%
+    dplyr::filter(phylo_id %in% edges$parent) %>%
+    dplyr::select(parent_pop = pop,
+                  parent_phylo_id = phylo_id, parent_node_id = node_id,
+                  parent_time = time, parent_location = location) %>%
+    dplyr::left_join(edges, by = c("parent_phylo_id" = "parent")) %>%
+    dplyr::arrange(parent_phylo_id)
+
+  # take the `parent_nodes` able above and do another join operation, this time
+  # with the table of child nodes' times/locations
+  branch_nodes <- data %>%
+    dplyr::as_tibble() %>%
+    dplyr::filter(phylo_id %in% edges$child) %>%
+    dplyr::select(child_pop  = pop,
+                  child_phylo_id = phylo_id, child_node_id = node_id,
+                  child_time = time, child_location = location) %>%
+    dplyr::inner_join(parent_nodes, by = c("child_phylo_id" = "child")) %>%
+    dplyr::arrange(child_phylo_id)
+
+  # transforming individual child/parent location columns (type POINT) into a
+  # line (type LINESTRING)
+  connections <- purrr::map2(
+    branch_nodes$child_location, branch_nodes$parent_location, ~
+      sf::st_union(.x, .y) %>%
+      sf::st_cast("LINESTRING") %>%
+      sf::st_sfc() %>%
+      sf::st_sf(connection = ., crs = sf::st_crs(branch_nodes))) %>%
+    dplyr::bind_rows()
+
+  # create an sf table with all the locations in columns (child_location,
+  # parent_location, connect)
+  branches <-
+    dplyr::bind_cols(branch_nodes, connections) %>%
+    sf::st_set_geometry("connection") %>%
+    dplyr::select(parent_phylo_id, child_phylo_id,
+                  connection,
+                  parent_time, child_time,
+                  parent_pop, child_pop,
+                  parent_node_id, child_node_id,
+                  parent_location, child_location)
+
+  branches
 }
 
 check_ts_class <- function(x) {
