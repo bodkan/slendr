@@ -191,11 +191,7 @@ Typing the object into the R console presents a user-friendly summary of the spa
 data
 ```
 
-In the first part of the summary, we see how many individuals (sampled or retained) and nodes are present in the tree sequence together with additional useful information, including a section of the internally stored `sf` object. And this is a crucial point---**we can always access the internal `sf` object with the spatial data** by running the following, which avoid the verbose summary above and exposes the underlying [*sf* data frame](https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1) directly:
-
-```{r}
-data[]
-```
+In the first part of the summary, we see how many individuals (sampled or retained) and nodes are present in the tree sequence together with additional useful information, including a section of the internally stored `sf` object. And this is a crucial point---**we can always use the internal `sf` object with the [spatial data](https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1) directly*.
 
 Because the data returned by `ts_data()` is internally transformed to the projected CRS used by the model, we can use the returned object as any other data of the class `sf`. For instance, at the beginning of this vignette, we specified the world map of the model to be represented in projected CRS (EPSG 3035) which we can verify by typing:
 
