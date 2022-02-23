@@ -681,7 +681,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
          "cannot be converted to an R phylo tree representation (see the help\n",
          "page of ?ts_recapitate for more details)", call. = FALSE)
 
-  if (ts$num_samples != 2 * nrow(ts_samples(ts)))
+  if (!attr(ts, "simplified") && attr(ts, "source") != "msprime")
     stop("Please simplify your tree sequence down to sampled individuals\nfirst ",
          "before converting a tree to an R phylo tree object format (see the\n",
          "help page of ?ts_simplify for more details)", call. = FALSE)
@@ -764,11 +764,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     dplyr::mutate(phylo_id = match(node_id, lookup_ts)) %>%
     dplyr::select(name, pop, node_id, phylo_id, time, location, remembered,
                   retained, alive, pedigree_id, ind_id)
+  attr(tree, "branches") <- get_sf_branches(tree)
   attr(tree, "model") <- attr(ts, "model")
   attr(tree, "source") <- attr(ts, "source")
-
-  if (inherits(attr(ts, "model")$world, "slendr_map"))
-    attr(tree, "branches") <- get_sf_branches(tree)
 
   tree
 }
@@ -1645,6 +1643,18 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
 
 get_sf_branches <- function(tree) {
   data <- attr(tree, "data")
+
+  # only generate the sf branches object if the tree is spatial
+  if (!inherits(data, "sf")) return(NULL)
+
+  if (any(sf::st_is_empty(data$location))) {
+    warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
+            "non-spatial coalescent recapitation after a spatial SLiM simulation?\n",
+            "The returned phylogenetic tree will not have spatial information\n",
+            "associated with it. If this is a problem, run a longer spatial\n",
+            "simulation, perhaps by adding a burnin phase.", call. = FALSE)
+    return(NULL)
+  }
 
   # prepare a table of spatial branch start-end locations and times which will
   # be saved in the ts_phylo result metadata (below)
