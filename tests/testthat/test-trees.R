@@ -54,7 +54,7 @@ test_that("ape phylo and tskit.Tree objects are created by ts_tree/ts_phylo", {
 
 test_that("ape phylo and tskit.Tree objects are equivalent", {
   t1 <- ts_tree(ts, 1, mode = "index")
-  suppressWarnings(t3 <- ts_phylo(ts, 1, mode = "index", quiet = TRUE))
+  suppressWarnings(t2 <- ts_phylo(ts, 1, mode = "index", quiet = TRUE))
 
   expect_true(t1$num_edges == nrow(t2$edge))
   expect_true(t1$num_samples() == length(t2$tip.label))
