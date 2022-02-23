@@ -169,9 +169,7 @@ print.slendr_tsdata <- function(x, ...) {
   else
     cat("overview of the underlying table object:\n\n")
 
-  dplyr::as_tibble(x) %>%
-    dplyr::arrange(is.na(name), -time, node_id) %>%
-    print()
+  dplyr::as_tibble(x) %>% print()
 }
 
 
