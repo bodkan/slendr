@@ -13,7 +13,7 @@ intersect_features <- function(pop) {
       intersected <- sf::st_difference(pop, sf::st_combine(intersected))
     if (any(area(intersected)$area == 0))
       stop(sprintf("No area left for %s after intersection with landscape at time %s",
-                   pop$pop, pop$tmap), call. = FALSE)
+                   pop$pop, pop$time), call. = FALSE)
   }
 
   sf::st_agr(intersected) <- "constant"

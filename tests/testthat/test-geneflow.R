@@ -29,3 +29,10 @@ test_that("populations must be present for them to mix", {
   expect_error(geneflow(from = pop1, to = pop2, start = 1000, end = 0, rate = 0.1),
                "Specified times are not consistent with the assumed direction", fixed = TRUE)
 })
+
+test_that("populations must be present for them to mix (non-spatial models)", {
+  pop1 <- population("pop1", N = 100, time = 100)
+  pop2 <- population("pop2", N = 100, time = 100)
+  expect_error(geneflow(from = pop1, to = pop2, start = 1000, end = 0, rate = 0.1),
+               "Specified times are not consistent with the assumed direction", fixed = TRUE)
+})

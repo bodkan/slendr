@@ -10,7 +10,7 @@ fill_maps <- function(pops, time = NULL) {
     0,
     time,
     removal_times,
-    unlist(sapply(pops, function(i) i$tmap))
+    unlist(sapply(pops, function(i) i$time))
   ))) %>% .[. != Inf & . != -1]
 
   all_maps <- lapply(seq_along(pops), function(i) {
@@ -19,16 +19,16 @@ fill_maps <- function(pops, time = NULL) {
     # needs to be filled in
     missing_times <- all_times[
       all_times >= removal_times[i] &
-        !all_times %in% pops[[i]]$tmap
+        !all_times %in% pops[[i]]$time
     ]
 
     # generate the missing maps
     new_maps <- lapply(missing_times, function(t) {
       # get all preceding maps
-      previous_map <- pops[[i]] %>% .[.$tmap > t, ]
+      previous_map <- pops[[i]] %>% .[.$time > t, ]
       if (!nrow(previous_map)) return(NULL)
       latest_map <- previous_map[nrow(previous_map), ]
-      latest_map$tmap <- t
+      latest_map$time <- t
       latest_map
     }) %>%
       do.call(rbind, .)
@@ -36,8 +36,8 @@ fill_maps <- function(pops, time = NULL) {
     if (!is.null(new_maps)) {
       combined_maps <-
         rbind(pops[[i]], new_maps) %>%
-        .[order(-.$tmap), ] %>%
-        .[.$tmap != Inf, ]
+        .[order(-.$time), ] %>%
+        .[.$time != Inf, ]
 
       attributes(combined_maps) <- attributes(pops[[i]])
     } else {

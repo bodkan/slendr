@@ -40,8 +40,8 @@ test_that("forward and backward time model objects are equivalent", {
                         backward$splits[, grep("_orig", colnames(backward$splits), value = TRUE, invert = TRUE)]))
   expect_true(all.equal(forward$geneflow[, grep("_orig", colnames(forward$geneflow), value = TRUE, invert = TRUE)],
                         backward$geneflow[, grep("_orig", colnames(forward$geneflow), value = TRUE, invert = TRUE)]))
-  expect_true(all.equal(forward$maps[, c("pop", "pop_id", "tmap_gen")],
-                        backward$maps[, c("pop", "pop_id","tmap_gen")]))
+  expect_true(all.equal(forward$maps[, c("pop", "pop_id", "time_gen")],
+                        backward$maps[, c("pop", "pop_id","time_gen")]))
 
   components <- c("generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
@@ -106,8 +106,8 @@ test_that("forward and backward models yield the same simulation result", {
                         backward$splits[, grep("_orig", colnames(backward$splits), value = TRUE, invert = TRUE)]))
   expect_true(all.equal(forward$geneflow[, grep("_orig", colnames(forward$geneflow), value = TRUE, invert = TRUE)],
                         backward$geneflow[, grep("_orig", colnames(forward$geneflow), value = TRUE, invert = TRUE)]))
-  expect_true(all.equal(forward$maps[, c("pop", "pop_id", "tmap_gen")],
-                        backward$maps[, c("pop", "pop_id","tmap_gen")]))
+  expect_true(all.equal(forward$maps[, c("pop", "pop_id", "time_gen")],
+                        backward$maps[, c("pop", "pop_id","time_gen")]))
 
   components <- c("generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
@@ -176,8 +176,8 @@ test_that("forward and backward models yield the same simulation result (nonspat
                         backward$splits[, grep("_orig", colnames(backward$splits), value = TRUE, invert = TRUE)]))
   expect_true(all.equal(forward$geneflow[, grep("_orig", colnames(forward$geneflow), value = TRUE, invert = TRUE)],
                         backward$geneflow[, grep("_orig", colnames(forward$geneflow), value = TRUE, invert = TRUE)]))
-  expect_true(all.equal(forward$maps[, c("pop", "pop_id", "tmap_gen")],
-                        backward$maps[, c("pop", "pop_id","tmap_gen")]))
+  expect_true(all.equal(forward$maps[, c("pop", "pop_id", "time_gen")],
+                        backward$maps[, c("pop", "pop_id","time_gen")]))
 
   components <- c("generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))

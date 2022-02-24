@@ -73,7 +73,7 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
       geometry <- define_boundary(map, center, radius, polygon)
 
     pop <- sf::st_sf(
-      data.frame(pop = name, tmap = time, stringsAsFactors = FALSE),
+      data.frame(pop = name, time = time, stringsAsFactors = FALSE),
       geometry = geometry
     )
     sf::st_agr(pop) <- "constant"
@@ -159,7 +159,7 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 
   # get the last available population boundary
   region_start <- pop[nrow(pop), ]
-  region_start$tmap <- start
+  region_start$time <- start
   sf::st_agr(region_start) <- "constant"
 
   # prepend the coordinates of the first region to the list of "checkpoints"
@@ -211,7 +211,7 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
       inter_regions[[i + 1]] <- sf::st_sf(
         data.frame(
           pop = region_start$pop,
-          tmap = traj_diffs[i, "time"],
+          time = traj_diffs[i, "time"],
           stringsAsFactors = FALSE
         ),
         geometry = shifted_region,
@@ -360,7 +360,7 @@ boundary <- function(pop, time, center = NULL, radius = NULL,
     geometry <- define_boundary(map, center, radius, polygon)
 
   updated <- sf::st_sf(
-    data.frame(pop = unique(pop$pop), tmap = time, stringsAsFactors = FALSE),
+    data.frame(pop = unique(pop$pop), time = time, stringsAsFactors = FALSE),
     geometry = geometry
   )
 
@@ -539,21 +539,21 @@ geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
-  if (has_map(from) && has_map(to)) {
-    if (from$tmap[1] <= start & from$tmap[1] <= end &
-        to$tmap[1] <= start & to$tmap[1] <= end)
-      comp <- `<=`
-    else if (from$tmap[1] >= start & from$tmap[1] >= end &
-             to$tmap[1] >= start & to$tmap[1] >= end)
-      comp <- `>=`
-    else
-      stop(sprintf("Specified times are not consistent with the assumed direction of
+  if (from$time[1] <= start & from$time[1] <= end &
+      to$time[1] <= start & to$time[1] <= end)
+    comp <- `<=`
+  else if (from$time[1] >= start & from$time[1] >= end &
+           to$time[1] >= start & to$time[1] >= end)
+    comp <- `>=`
+  else
+    stop(sprintf("Specified times are not consistent with the assumed direction of
 time (geneflow %s -> %s in the time window %s-%s)",
-                   from_name, to_name, start, end), call. = FALSE)
+                 from_name, to_name, start, end), call. = FALSE)
 
+  if (has_map(from) && has_map(to)) {
     # get the last specified spatial maps before the geneflow time
-    region_from <- intersect_features(from[comp(from$tmap, start), ] %>% .[nrow(.), ])
-    region_to <- intersect_features(to[comp(to$tmap, start), ] %>% .[nrow(.), ])
+    region_from <- intersect_features(from[comp(from$time, start), ] %>% .[nrow(.), ])
+    region_to <- intersect_features(to[comp(to$time, start), ] %>% .[nrow(.), ])
 
     if (nrow(region_from) == 0)
       stop(sprintf("No spatial map defined for %s at/before the time %d",
@@ -941,8 +941,8 @@ distance <- function(x, y, measure, time = NULL) {
     stop("Time of the nearest spatial snapshot must be be given when calculating
 distance between population boundaries", call. = FALSE)
 
-  if (inherits(x, "slendr_pop")) x <- x[which.min(abs(x$tmap - time)), ]
-  if (inherits(y, "slendr_pop")) y <- y[which.min(abs(y$tmap - time)), ]
+  if (inherits(x, "slendr_pop")) x <- x[which.min(abs(x$time - time)), ]
+  if (inherits(y, "slendr_pop")) y <- y[which.min(abs(y$time - time)), ]
 
   if (measure == "center") {
     x <- sf::st_centroid(x)
@@ -970,7 +970,7 @@ area <- function(x) {
 
   if (inherits(x, "slendr_pop")) {
     areas <- purrr::map_dbl(seq_len(nrow(x)), ~ as.numeric(sum(sf::st_area(x[.x, ]))))
-    times <- x$tmap
+    times <- x$time
     return(dplyr::tibble(time = times, area = areas))
   } else if (inherits(x, "slendr_map") || inherits(x, "slendr_region"))
     return(as.numeric(sum(sf::st_area(x))))
@@ -1140,7 +1140,7 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
     inter_regions[[1]] <- region_start
     for (i in seq_along(times)) {
       exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / n))
-      exp_region$tmap <- times[i]
+      exp_region$time <- times[i]
       sf::st_agr(exp_region) <- "constant"
 
       # restrict the next spatial boundary to the region of interest
@@ -1203,12 +1203,12 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
       how = "step",
       N = new_N,
       prev_N = c(prev_N, new_N[-length(new_N)]),
-      tresize = sapply(inter_regions[-1], `[[`, "tmap"),
+      tresize = sapply(inter_regions[-1], `[[`, "time"),
       tend = NA
     )
     attr(result, "history") <- append(attr(result, "history"), list(changes))
     # for (i in seq_along(inter_regions)[-1]) {
-    #   time <- inter_regions[[i]]$tmap
+    #   time <- inter_regions[[i]]$time
     #   result <- resize(result, N = new_N[i - 1], time = time, how = "step")
     # }
   }

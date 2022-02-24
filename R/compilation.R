@@ -134,7 +134,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     dispersal_table <- compile_dispersals(populations, generation_time, time_dir, end_time, split_table,
                                         resolution, competition_dist, mate_dist, dispersal_dist)
 
-    return_maps <-  map_table[, c("pop", "pop_id", "tmap_orig", "tmap_gen", "path")]
+    return_maps <-  map_table[, c("pop", "pop_id", "time_orig", "time_gen", "path")]
   } else {
     map_table <- return_maps <- dispersal_table <- NULL
   }
@@ -529,7 +529,7 @@ write_model <- function(path, populations, admix_table, map_table, split_table,
     # table of paths to raster files
     saved_files["maps"] <- file.path(path, "maps.tsv")
     utils::write.table(
-      map_table[, c("pop", "pop_id", "tmap_orig", "tmap_gen", "path")],
+      map_table[, c("pop", "pop_id", "time_orig", "time_gen", "path")],
       saved_files[["maps"]], sep = "\t", quote = FALSE, row.names = FALSE
     )
 
@@ -658,7 +658,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
   # convert list of rasters into data frame, adding the spatial
   # maps themselves as a list column
   map_table <- lapply(maps, function(m) {
-    as.data.frame(m[c("pop", "tmap")], stringsAsFactors = FALSE)
+    as.data.frame(m[c("pop", "time")], stringsAsFactors = FALSE)
   }) %>%
     do.call(rbind, .)
   # add column with a numeric population identifier (used later by SLiM)
@@ -671,18 +671,18 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
   map_table <- convert_to_forward(
     map_table,
     direction = direction,
-    columns = "tmap",
+    columns = "time",
     end_time = end_time,
     generation_time = generation_time
   )
 
   # number maps sequentially in the order SLiM will be swapping them
   # later (each map number X corresponds to X.png)
-  map_table <- map_table[order(map_table$tmap_gen, na.last = FALSE), ]
+  map_table <- map_table[order(map_table$time_gen, na.last = FALSE), ]
   # in some situations, multiple maps are scheduled for a single generation
   # for one population - this removes the duplicates, but ideally this kind
   # of problem should be caught somewhere upstream
-  map_table <- map_table[!duplicated(map_table[, c("pop", "tmap_gen")]), ]
+  map_table <- map_table[!duplicated(map_table[, c("pop", "time_gen")]), ]
   map_table$path <- seq_len(nrow(map_table)) %>% paste0(., ".png")
 
   # maps of ancestral populations have to be set in the first generation,
@@ -690,7 +690,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
   ancestral_pops <- split_table[split_table$parent == "ancestor", ]$pop
   ancestral_maps <- purrr::map(ancestral_pops, ~ which(map_table$pop == .x)) %>%
     purrr::map_int(~ .x[1])
-  map_table[ancestral_maps, ]$tmap_gen <- 1
+  map_table[ancestral_maps, ]$time_gen <- 1
 
   map_table
 }
@@ -816,8 +816,8 @@ compile_dispersals <- function(populations, generation_time, direction,
 render <- function(pops, resolution) {
   raster_list <- lapply(pops, function(pop) {
     # iterate over temporal maps for the current population
-    snapshots <- lapply(unique(pop$tmap), function(t) {
-      snapshot <- pop[pop$tmap == t, ]
+    snapshots <- lapply(unique(pop$time), function(t) {
+      snapshot <- pop[pop$time == t, ]
       class(snapshot) <- set_class(snapshot, "pop")
 
       # render the population if needed
@@ -831,7 +831,7 @@ render <- function(pops, resolution) {
       # the spatial object into multiple disjoint features)
       list(
         pop = unique(snapshot$pop),
-        tmap = unique(snapshot$tmap),
+        time = unique(snapshot$time),
         map = raster_map
       )
     })
@@ -872,7 +872,7 @@ this population at this time point.", x$pop, x$time), call. = FALSE)
   pixel_values <- unique(as.numeric(raster$fill))
   if (length(pixel_values) == 1 && pixel_values == 0)
     stop("No occupiable pixel on a rasterized map for population '",
-         x$pop[1], "' at time ", x$tmap[1], ". Make sure that the specified",
+         x$pop[1], "' at time ", x$time[1], ". Make sure that the specified",
          " population boundary has sufficient space for the population to occupy.",
          call. = FALSE)
 

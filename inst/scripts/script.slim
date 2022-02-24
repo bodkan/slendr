@@ -94,7 +94,7 @@ initialize() {
 
     // spatial map changes
     if (num_rows(MAPS))
-         sim.rescheduleScriptBlock(s4, generations = unique(c(1, BURNIN_LENGTH + MAPS.getValue("tmap_gen"))));
+         sim.rescheduleScriptBlock(s4, generations = unique(c(1, BURNIN_LENGTH + MAPS.getValue("time_gen"))));
     else
          sim.deregisterScriptBlock(s4);
 
@@ -186,13 +186,13 @@ s3 late() /* Stopping geneflow */ {
 }
 
 s4 late() /* Update spatial population boundaries */ {
-    maps = filter(MAPS, "tmap_gen", c(1, sim.generation - BURNIN_LENGTH));
+    maps = filter(MAPS, "time_gen", c(1, sim.generation - BURNIN_LENGTH));
 
     for (i in seqLen(num_rows(maps))) {
         map = maps.getRowValues(i);
 
         // skip over ancestral populations, whose maps have been set in generation 1
-        if (sim.generation > 1 & map.getValue("tmap_gen") == 1) next;
+        if (sim.generation > 1 & map.getValue("time_gen") == 1) next;
 
         id = map.getValue("pop_id");
 
@@ -759,7 +759,7 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
     // vectors of all possible column names in tables defined by slendr `compile()`
     string = c("pop", "parent", "how", "path", "from", "to", "how", "dispersal_fun");
     integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N",
-                "time_orig", "time_gen", "tmap_orig", "tmap_gen",
+                "time_orig", "time_gen", 
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
                 "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
                 "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");

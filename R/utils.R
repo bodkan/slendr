@@ -68,11 +68,11 @@ get_geneflows <- function(model, time) {
   migr_coords <- lapply(seq_len(nrow(geneflows)), function(row_i) {
 
     from <- model$populations[pop_names == geneflows[row_i, ]$from][[1]] %>%
-      .[.$tmap >= time, ] %>%
+      .[.$time >= time, ] %>%
       .[nrow(.), ]
 
     to <- model$populations[pop_names == geneflows[row_i, ]$to][[1]] %>%
-      .[.$tmap >= time, ] %>%
+      .[.$time >= time, ] %>%
       .[nrow(.), ]
 
     from_center <- sf::st_centroid(from) %>% sf::st_coordinates()
@@ -493,7 +493,7 @@ utils::globalVariables(
     "pop_is", "time.x", "time.y", "ind_id", "remembered", "retained", "alive",
     "pedigree_id", "from_x", "from_y", "from", "to_x", "to_y", "to",
     "node1.name", "node2.name", "type", "label", "rate", "pop_id", "vcf_file",
-    "gen", "newx", "newy", "child", "tmap", "node_label", "chr_name", "pos",
+    "gen", "newx", "newy", "child", "time", "node_label", "chr_name", "pos",
     "pyslim", "tskit", "msprime", "x", "y", "x_orig", "y_orig",
     "orig_x", "orig_y", "phylo_id"
   ), package = "slendr"

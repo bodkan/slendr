@@ -113,7 +113,7 @@ objects are specified", call. = FALSE)
         interpolated_maps <- fill_maps(pops, time)
 
       # get all time points defined by the user
-      all_times <- sort(unique(unlist(lapply(pops, `[[`, "tmap"))))
+      all_times <- sort(unique(unlist(lapply(pops, `[[`, "time"))))
 
       # get split and removal times of all specified populations
       split_times <- sapply(pops, function(p) { attr(p, "history")[[1]]$time })
@@ -125,7 +125,7 @@ objects are specified", call. = FALSE)
       present_pops <- interpolated_maps[split_times >= time & removal_times <= time]
       # ... and extract their spatial maps
       pop_maps <- lapply(present_pops, function(pop) {
-        snapshot <- pop[pop$tmap == previous_time, ]
+        snapshot <- pop[pop$time == previous_time, ]
         attributes(snapshot) <- attributes(pop)
         snapshot
       })
@@ -138,10 +138,10 @@ objects are specified", call. = FALSE)
     pop_maps <- do.call(rbind, pop_maps)
     pop_maps$pop <- factor(pop_maps$pop, levels = pop_names)
 
-    if (length(unique(pop_maps$tmap)) > 1) {
+    if (length(unique(pop_maps$time)) > 1) {
       # build a base map with geographic features
       p <- p +
-        geom_sf(data = pop_maps, aes(fill = pop, alpha = tmap), color = NA) +
+        geom_sf(data = pop_maps, aes(fill = pop, alpha = time), color = NA) +
         geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
     } else {
       p <- p +
