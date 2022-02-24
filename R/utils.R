@@ -356,12 +356,12 @@ process_sampling <- function(samples, model, verbose = FALSE) {
       start <- max(start_times)
       end_time <- start - model$orig_length
     } else {
-      start <- min(start_times)
-      end_time <- start + model$orig_length
+      end_time <- model$orig_length + 1
     }
     samples <- do.call(
       sampling,
-      c(list(model = model, times = end_time), purrr::map(surviving_pops, ~ list(.x, Inf)))
+      c(list(model = model, times = end_time),
+        purrr::map(surviving_pops, ~ list(.x, Inf)))
     )
     if (is.null(samples)) {
       warning("No populations survive to the end of the simulations which means ",
@@ -471,7 +471,7 @@ check_env_present <- function() {
   }, error = function(cond) FALSE
   )
 }
- 
+
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
