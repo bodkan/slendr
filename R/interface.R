@@ -1297,7 +1297,7 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
            "Note: If you run setup_env() without any arguments, slendr will set up",
            "\nyour Python environment for you and configure it automatically.",
            call. = FALSE)
-  } else if ("automatic_slendr_python_env" %in% reticulate::conda_list()$name) {
+  } else if (check_env_present()) {
     reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
     if (!reticulate::py_module_available("msprime") ||
         !reticulate::py_module_available("tskit") ||
