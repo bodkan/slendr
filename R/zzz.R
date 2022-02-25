@@ -29,7 +29,8 @@
       " for tree sequence analyses (Python modules tskit,\npyslim, and msprime)",
       " you can run the function setup_env().\n\nThis will install and configure a ",
       "completely isolated Python\nenvironment automatically for you, without affecting ",
-      "your system\nat all."
+      "your system\nat all (regardless of which Python or conda installations you\n",
+      "might already have, don't worry)."
     )
   }
 }
