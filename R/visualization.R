@@ -1,4 +1,3 @@
-
 #' Plot \code{slendr} geographic features on a map
 #'
 #' Plots objects of the three \code{slendr} spatial classes (\code{slendr_map},
@@ -21,10 +20,10 @@
 #' @export
 #'
 #' @import ggplot2
-plot.slendr <- function(..., time = NULL, geneflows = FALSE,
-                        graticules = "original",
-                        intersect = TRUE, show_map = TRUE,
-                        title = NULL, interpolated_maps = NULL) {
+plot_map <- function(..., time = NULL, geneflows = FALSE,
+                     graticules = "original",
+                     intersect = TRUE, show_map = TRUE,
+                     title = NULL, interpolated_maps = NULL) {
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
@@ -77,8 +76,8 @@ objects are specified", call. = FALSE)
 
   if (graticules == "original" & has_crs(map)) {
     graticule_crs <- "EPSG:4326"
-    xlab <- "degrees longitude"
-    ylab <- "degrees latitude"
+    xlab <- "longitude"
+    ylab <- "latitude"
   } else {
     graticule_crs <- sf::st_crs(map)
     xlab <- ylab <- NULL
