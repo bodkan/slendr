@@ -145,6 +145,8 @@ setting `direction = 'backward'.`", call. = FALSE)
     description, map
   )
 
+  names(populations) <- pop_names
+
   # compile the result
   result <- list(
     path = path,
@@ -232,6 +234,7 @@ read <- function(path) {
   }
 
   populations <- readRDS(path_populations)
+  names(populations) <- purrr::map_chr(populations, ~ .x$pop[1])
 
   if (file.exists(path_maps)) {
     maps <- utils::read.table(path_maps, header = TRUE, stringsAsFactors = FALSE)
