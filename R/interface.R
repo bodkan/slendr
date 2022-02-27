@@ -1197,16 +1197,20 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
     areas <- as.numeric(sapply(inter_regions, sf::st_area))
     area_changes <- areas[-1] / areas[-length(areas)]
     new_N <- round(cumprod(area_changes) * prev_N)
-    changes <- data.frame(
-      pop =  unique(pop$pop),
-      event = "resize",
-      how = "step",
-      N = new_N,
-      prev_N = c(prev_N, new_N[-length(new_N)]),
-      tresize = sapply(inter_regions[-1], `[[`, "time"),
-      tend = NA
-    )
-    attr(result, "history") <- append(attr(result, "history"), list(changes))
+    prev_N <- c(prev_N, new_N[-length(new_N)])
+    times <- sapply(inter_regions[-1], `[[`, "time")
+    changes <- lapply(seq_len(length(new_N)), function(i) {
+      data.frame(
+        pop =  unique(pop$pop),
+        event = "resize",
+        how = "step",
+        N = new_N[i],
+        prev_N = prev_N[i],
+        tresize = times[i],
+        tend = NA
+      )
+    })
+    attr(result, "history") <- append(attr(result, "history"), changes)
     # for (i in seq_along(inter_regions)[-1]) {
     #   time <- inter_regions[[i]]$time
     #   result <- resize(result, N = new_N[i - 1], time = time, how = "step")
