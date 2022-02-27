@@ -183,75 +183,214 @@ objects are specified", call. = FALSE)
     p_coord
 }
 
-#' Plot geneflow graph based on given model configuration
+#' Plot gene flow graph based on given model configuration
 #'
 #' @param model Compiled \code{slendr_model} model object
 #'
-#' @import ggplot2 ggraph
 #' @export
 plot_graph <- function(model) {
-  # plot times in their original direction
-  split_table <- model$splits
-  split_table[, c("tsplit", "tremove")] <- split_table[, c("tsplit_orig", "tremove_orig")]
-  geneflow_table <- model$geneflow
-  geneflow_table[, c("tstart", "tend")] <- geneflow_table[, c("tstart_orig", "tend_orig")]
+  .Deprecated("plot_model")
+}
 
-  split_edges <- get_split_edges(split_table)
-  geneflow_edges <- get_geneflow_edges(geneflow_table)
-  intermediate_edges <- get_intermediate_edges(split_edges, geneflow_edges)
+#' Plot demographic history encoded in a slendr model
+#'
+#' @param model Compiled \code{slendr_model} model object
+#' @param sizes Should population size changes be visualized?
+#'
+#' @return Plot object of the class \code{ggplot}
+#' @export
+plot_model <- function(model, sizes = TRUE) {
+  populations <- model$populations
 
-  edges <- rbind(
-    split_edges,
-    geneflow_edges,
-    intermediate_edges
-  )
+  # extract population split times and order population names in the order of
+  # their appearance in the simulation
+  split_times <- purrr::map_int(populations, function(pop) {
+    attr(pop, "history")[[1]]$time
+  })
+  if (model$direction == "backward") {
+    split_times <- sort(split_times, decreasing = TRUE)
+  } else {
+    split_times <- sort(split_times)
+  }
+  pop_names <- names(split_times)
 
-  nodes <- get_graph_nodes(edges)
+  # extract times at which each population will be removed from the simulation
+  default_end <- if (model$direction == "backward") 0 else model$orig_length
+  end_times <- purrr::map_int(populations, function(pop) {
+    remove <- attr(pop, "remove")
+    if (remove == -1)
+      return(as.integer(default_end))
+    else if (remove > 0)
+      return(as.integer(remove))
+    else
+      stop("Unknown end time", call. = FALSE)
+  })
+  end_times <- end_times[pop_names]
 
-  g <- tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = TRUE)
-  layout <- create_layout(g, layout = "sugiyama")
-  layout$pop <- factor(layout$pop, levels = split_table$pop)
+  # extract the size of each population at the end of its existence
+  if (sizes) {
+    final_sizes <- purrr::map_int(populations, function(pop) {
+      history <- rev(attr(pop, "history"))
+      purrr::map(history, ~ .$N) %>%
+        purrr::keep(~ !is.null(.x)) %>%
+        .[[1]] %>%
+        as.integer()
+    })
+    final_sizes <- final_sizes[pop_names]
+  } else {
+    default_N <- 10000
+    final_sizes <- rep(default_N, length(populations))
+  }
 
-  ggraph(layout) +
+  # compute center of each "population column" along the bottom of the x-axis
+  centers <- dplyr::tibble(
+    pop = factor(pop_names, levels = pop_names),
+    N = final_sizes,
+    time = split_times,
+  ) %>%
+    dplyr::mutate(xmax = cumsum(N + median(N)),
+                  xmin = xmax - N,
+                  center = xmin + N / 2) %>%
+    dplyr::select(pop, center, time)
 
-    # geneflow edges along with geneflow rates
-    geom_edge_link(
-      aes(filter = type == "geneflow", label = rate,
-          start_cap = label_rect(node1.name),
-          end_cap = label_rect(node2.name),
-          linetype = "geneflow"),
-      angle_calc = "along",
-      label_dodge = unit(3, "mm"),
-      arrow = arrow(length = unit(4, "mm"))
-    ) +
+  # iterate over each population's demographic history and compose the
+  # coordinates of polygons in each epoch
+  size_changes <- lapply(populations, function(pop) {
+    # pop <- populations[[i]]
+    name <- pop$pop[1]
+    center <- centers[centers$pop == name, ]$center
+    history <- attr(pop, "history") %>%
+      purrr::keep(~ .$event %in% c("split", "resize")) %>%
+      rev() %>%
+      c(list(dplyr::tibble(pop = name, time = end_times[name], N = .[[1]]$N, event = "remove")), .)
 
-    # population split/continuation edges (no rates labeled)
-    geom_edge_link(
-      aes(filter = type  == "split",
-          start_cap = label_rect(node1.name),
-          end_cap = label_rect(node2.name),
-          linetype = "split"),
-      label_dodge = unit(10, "mm"),
-      arrow = arrow(length = unit(4, "mm"))
-    ) +
+    purrr::map(seq_len(length(history))[-length(history)], function(j) {
+      current_event <- history[[j]]
+      next_event <- history[[j + 1]]
 
-    # continuation edges
-    geom_edge_link(aes(filter = type == "intermediate",
-                       linetype = "continuation")) +
+      # time of the current event
+      if (current_event$event == "remove")
+        ys <- rep(current_event$time, 2)
+      else if (current_event$event == "resize")
+        ys <- rep(current_event$tresize, 2)
+      else
+        stop("Invalid 'current event'. This is a slendr bug! (1)", call. = FALSE)
 
-    geom_node_label(aes(fill = pop, label = label)) +
+      # time of the next event
+      if (next_event$event == "split")
+        ys <- c(ys, rep(next_event$time, 2))
+      else if (next_event$event == "resize")
+        ys <- c(ys, rep(next_event$tresize, 2))
+      else
+        stop("Invalid 'next event'. This is a slendr bug! (2)", call. = FALSE)
 
-    scale_edge_linetype_manual(values = c("split" = "solid",
-                                          "continuation" = "solid",
-                                          "geneflow" = "solid")) +
+      if (!sizes) {
+        current_event$prev_N <- current_event$N <- default_N
+        next_event$prev_N <- next_event$N <- default_N
+      }
+      # population sizes
+      if (current_event$event == "resize")
+        xs <- c(center - current_event$prev_N / 2, center + current_event$prev_N / 2)
+      else
+        xs <- c(center - current_event$N / 2, center + current_event$N / 2)
 
-    guides(fill = guide_legend(""), edge_linetype = "none") +
+      if (next_event$event == "split" || next_event$how == "step")
+        xs <- c(xs, center + next_event$N / 2, center - next_event$N / 2)
+      else if (next_event$event == "split" || next_event$how == "exponential")
+        xs <- c(xs, center + next_event$prev_N / 2, center - next_event$prev_N / 2)
+      else
+        stop("Invalid 'next event'. This is a slendr bug! (4)", call. = FALSE)
 
-    theme_void() +
-    theme(legend.position = "right",
-          plot.margin = unit(c(1, 1, 1, 1), "cm"),
-          legend.justification = "top") +
-    coord_cartesian(clip = "off")
+      dplyr::tibble(pop = factor(name, levels = pop_names), x = xs, y = ys)
+    })
+  })
+
+  # generate a table of population split times and population sizes to be used
+  # for plotting horizontal split lines
+  splits <- list()
+  for (pop in populations) {
+    pop_name <- pop$pop[1]
+    parent <- attr(pop, "parent")
+    event <- attr(pop, "history")[[1]]
+    if (inherits(parent, "slendr_pop")) {
+      parent_name <- parent$pop[1]
+      from_x <- centers[centers$pop == parent_name, ]$center
+      to_x <- centers[centers$pop == pop_name, ]$center
+      time_y <- event$time
+      splits[[length(splits) + 1]] <- dplyr::tibble(
+        pop = factor(pop_name, levels = pop_names),
+        from = factor(parent_name, levels = pop_names),
+        x = from_x,
+        xend = to_x,
+        y = time_y,
+        yend = time_y
+      )
+    }
+  }
+  splits <- do.call(rbind, splits)
+
+  # generate a table of gene flow events to be used for plotting gene flow
+  # arrows
+  if (!is.null(model$geneflow)) {
+    geneflows <- model$geneflow %>%
+      dplyr::mutate(x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
+             xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
+             y = tstart_orig,
+             yend = tend_orig)
+  } else
+    geneflows <- NULL
+
+  # setup a figure outline
+  p <- ggplot()  +
+    scale_color_discrete(drop = FALSE) +
+    scale_fill_discrete(drop = FALSE) +
+    labs(y = "time since the start of the simulation") +
+    theme_classic() +
+    theme(
+      legend.position = "none",
+      axis.text.x = element_blank(),
+      axis.title.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.line.x = element_blank(),
+      axis.line.y = element_line(arrow = grid::arrow(
+        length = unit(0.25, "cm"),
+        ends = "first"
+      ))
+    )
+
+  if (model$direction == "forward") p <- p + scale_y_reverse()
+
+  # add horizontal split lines
+  if (!is.null(splits)) {
+    p <- p + geom_segment(
+      data = splits,
+      aes(x = x, xend = xend, y = y, yend = yend, color = from),
+      size = 3
+    )
+  }
+
+  # add each each epoch resize segment
+  for (lineage in size_changes) {
+    for (event in lineage)
+      p <- p + geom_polygon(data = event, aes(x, y, fill = pop))
+  }
+
+  # add gene flow arrows and proportion labels
+  if (!is.null(geneflows)) {
+    p <- p + geom_segment(data = geneflows,
+                          aes(x = x, xend = xend, y = y, yend = yend),
+                          arrow = arrow(length = unit(0.2, "cm")))
+    p <- p + geom_point(data = geneflows, aes(x = x, y = y))
+    p <- p + geom_label(data = geneflows, aes(label = sprintf("%s%%", 100 * rate),
+                                              x = xend - (xend - x) / 2,
+                                              y = yend - (yend - y) / 2))
+  }
+
+  # labels with population names
+  p <- p + geom_label(data = centers, aes(label = pop, x = center, y = time,
+                                          fill = pop))
+
+  p
 }
 
 #' Animate the simulated population dynamics
