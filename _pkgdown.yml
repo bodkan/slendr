@@ -50,10 +50,10 @@ reference:
   - title: Spatial population dynamics
     contents:
     - move
-    - expand
-    - shrink
-    - boundary
-    - dispersal
+    - expand_range
+    - shrink_range
+    - set_range
+    - set_dispersal
 
   - title: Non-spatial population dynamics
     contents:
@@ -64,9 +64,9 @@ reference:
     contents:
     - slim
     - msprime
-    - compile
-    - sampling
-    - read
+    - compile_model
+    - read_model
+    - schedule_sampling
 
   - title: Manipulation of spatial objects
     contents:
@@ -80,16 +80,16 @@ reference:
 
   - title: Model visualization and diagnostics
     contents:
-    - plot.slendr
-    - plot_graph
-    - animate
-    - explore
+    - plot_map
+    - plot_model
+    - animate_model
+    - explore_model
+    - plot_ancestors
     - print.slendr_map
     - print.slendr_region
     - print.slendr_pop
     - print.slendr_model
     - print.slendr_tsdata
-    - plot_ancestors
     - time_direction
     - split_time
 

@@ -4,28 +4,28 @@ pop <- population("pop", time = 1000, N = 10, map = map, center = c(0, 40), radi
   move(trajectory = c(10, 10), start = 900, end = 700, snapshots = 3)
 
 test_that("temporal consistency of interaction parameter changes is enforced", {
-  expect_error(dispersal(pop, time = 950, competition_dist = 100),
+  expect_error(set_dispersal(pop, time = 950, competition_dist = 100),
                "The new event (.*) pre-dates the last specified active event (.*)")
-  expect_silent(dispersal(pop, time = 50, competition_dist = 100))
+  expect_silent(set_dispersal(pop, time = 50, competition_dist = 100))
 })
 
 test_that("at least one interaction parameter is specified", {
-  expect_error(dispersal(pop, time = 1000),
+  expect_error(set_dispersal(pop, time = 1000),
                "At least one spatial interaction parameter must be specified")
 })
 
 test_that("interaction parameter must be positive, non-zero values", {
   msg <- "Spatial interaction parameters can only have positive"
-  expect_error(dispersal(pop, time = 1000, competition_dist = -100), msg)
-  expect_error(dispersal(pop, time = 1000, mate_dist = -100), msg)
-  expect_error(dispersal(pop, time = 1000, dispersal_dist = -100), msg)
+  expect_error(set_dispersal(pop, time = 1000, competition_dist = -100), msg)
+  expect_error(set_dispersal(pop, time = 1000, mate_dist = -100), msg)
+  expect_error(set_dispersal(pop, time = 1000, dispersal_dist = -100), msg)
 })
 
 test_that("interaction parameter change is correctly recorded", {
-  x1 <- dispersal(pop, time = 100, competition_dist = 100)
-  x2 <- dispersal(pop, time = 100, mate_dist = 50)
-  x3 <- dispersal(pop, time = 100, dispersal_dist = 20)
-  x4 <- dispersal(pop, time = 100, competition_dist = 50, dispersal_dist = 10)
+  x1 <- set_dispersal(pop, time = 100, competition_dist = 100)
+  x2 <- set_dispersal(pop, time = 100, mate_dist = 50)
+  x3 <- set_dispersal(pop, time = 100, dispersal_dist = 20)
+  x4 <- set_dispersal(pop, time = 100, competition_dist = 50, dispersal_dist = 10)
 
   hist1 <- attr(x1, "history") %>% .[[length(.)]]
   expect_true(hist1$pop == pop$pop[1])
@@ -57,10 +57,10 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
 
     pop <- population("pop", time = 1, N = 3000, map = map, center = c(50, 50), radius = 0.5,
                        dispersal_dist = 0.1) %>%
-      boundary(time = 2, center = c(50, 50), radius = 50) %>%
-      dispersal(time = 2, dispersal_dist = dispersal_dist, dispersal_fun = dispersal_fun)
+      set_range(time = 2, center = c(50, 50), radius = 50) %>%
+      set_dispersal(time = 2, dispersal_dist = dispersal_dist, dispersal_fun = dispersal_fun)
 
-    model <- compile(
+    model <- compile_model(
       pop, file.path(tempdir(), paste0("model_", dispersal_fun)),
       generation_time = 1, competition_dist = 0, mate_dist = 1,
       sim_length = 2, resolution = 0.1, overwrite = TRUE

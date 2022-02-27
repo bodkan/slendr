@@ -38,12 +38,12 @@
 #' @export
 #'
 #' @example man/examples/model_definition.R
-compile <- function(populations, generation_time, path = NULL, resolution = NULL,
-                    competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
-                    geneflow = list(), overwrite = FALSE,
-                    sim_length = NULL, direction = NULL,
-                    slim_script = system.file("scripts", "script.slim", package = "slendr"),
-                    description = "", dir = NULL) {
+compile_model <- function(populations, generation_time, path = NULL, resolution = NULL,
+                          competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
+                          geneflow = list(), overwrite = FALSE,
+                          sim_length = NULL, direction = NULL,
+                          slim_script = system.file("scripts", "script.slim", package = "slendr"),
+                          description = "", dir = NULL) {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   if (!is.null(dir) && is.null(path)) {
@@ -201,7 +201,7 @@ verify_checksums <- function(files, hashes) {
 #' @export
 #'
 #' @example man/examples/model_definition.R
-read <- function(path) {
+read_model <- function(path) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function
   path_populations <- file.path(path, "ranges.rds")

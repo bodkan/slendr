@@ -280,8 +280,8 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 #' @export
 #'
 #' @example man/examples/model_definition.R
-expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
-                   polygon = NULL, lock = FALSE, verbose = TRUE) {
+expand_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
+                         polygon = NULL, lock = FALSE, verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
   shrink_or_expand(pop, by, end, start, overlap, snapshots, polygon, lock, verbose)
 }
@@ -311,8 +311,8 @@ expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @export
 #'
 #' @example man/examples/model_definition.R
-shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
-                   lock = FALSE, verbose = TRUE) {
+shrink_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
+                         lock = FALSE, verbose = TRUE) {
   shrink_or_expand(pop, -by, end, start, overlap, snapshots, polygon = NULL, lock, verbose)
 }
 
@@ -342,8 +342,8 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @export
 #'
 #' @example man/examples/model_definition.R
-boundary <- function(pop, time, center = NULL, radius = NULL,
-                     polygon = NULL, lock = FALSE) {
+set_range <- function(pop, time, center = NULL, radius = NULL,
+                      polygon = NULL, lock = FALSE) {
   if (!has_map(pop))
     stop("This operation is only allowed for spatial models", call. = FALSE)
 
@@ -475,8 +475,8 @@ resize <- function(pop, N, how, time, end = NULL) {
 #' @export
 #'
 #' @example man/examples/model_definition.R
-dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
-                      dispersal_fun = NULL) {
+set_dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
+                          dispersal_fun = NULL) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
 
   if (is.na(competition_dist) && is.na(mate_dist) && is.na(dispersal_dist) &&
@@ -1012,7 +1012,7 @@ area <- function(x) {
 #'   from, how many individuals to sample
 #'
 #' @export
-sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
+schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   if (!inherits(model, "slendr_model"))
     stop("A slendr_model object must be specified", call. = FALSE)
 
@@ -1103,7 +1103,7 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
 }
 
 
-# Internal implementation of expand() and shrink() functions
+# Internal implementation of expand_range() and shrink_range() functions
 shrink_or_expand <- function(pop, by, end, start, overlap, snapshots, polygon,
                              lock, verbose) {
   check_event_time(c(start, end), pop)

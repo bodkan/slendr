@@ -101,7 +101,7 @@ ana <- population(
   name = "ANA", time = 28000, N = 3000, parent = ooa, remove = 4000,
   center = c(34, 38), radius = 500e3, polygon = anatolia
 ) %>%
-  expand(
+  expand_range(
     by = 2500e3, start = 10000, end = 7000,
     polygon = join(europe, anatolia), snapshots = 20
   ) # expand the range by 2.500 km
@@ -122,7 +122,7 @@ gf <- list(
 )
 
 # compile the spatial model
-model <- compile(
+model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   geneflow = gf,
   generation_time = 30, resolution = 10e3,
@@ -131,7 +131,7 @@ model <- compile(
 )
 ```
 
-(As a sanity check that we defined the demography correctly, you can plot a graph summarizing population divergences and geneflow events by calling `plot_graph(model)`).
+(As a sanity check that we defined the demography correctly, you can plot a graph summarizing population divergences and geneflow events by calling `plot_model(model)`).
 
 And for completeness, here is a (slightly busy) overview of the spatial population ranges that we defined above:
 
@@ -145,13 +145,13 @@ Now we will schedule the sampling of a single individual from each population ev
 
 ```{r}
 # one ancient individual every two thousand years
-ancient <- sampling(model,
+ancient <- schedule_sampling(model,
                     times = seq(40000, 1, by = -1000),
                     list(ooa, 1), list(ehg, 1), list(eur, 1),
                     list(ana, 1), list(yam, 1))
 
 # present-day Africans and Europeans
-present <- sampling(model, times = 0, list(afr, 5), list(eur, 30))
+present <- schedule_sampling(model, times = 0, list(afr, 5), list(eur, 30))
 
 samples <- rbind(ancient, present)
 ```

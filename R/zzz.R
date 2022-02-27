@@ -32,7 +32,8 @@
       "your system\nat all (regardless of which Python or conda installations you\n",
       "might already have, don't worry)."
     )
-  }
+  } else
+    setup_env()
 }
 
 # global references to required Python packages - inspired by:

@@ -182,15 +182,6 @@ objects are specified", call. = FALSE)
     p_coord
 }
 
-#' Plot gene flow graph based on given model configuration
-#'
-#' @param model Compiled \code{slendr_model} model object
-#'
-#' @export
-plot_graph <- function(model) {
-  .Deprecated("plot_model")
-}
-
 #' Plot demographic history encoded in a slendr model
 #'
 #' @param model Compiled \code{slendr_model} model object
@@ -406,8 +397,8 @@ plot_model <- function(model, sizes = TRUE) {
 #'
 #' @import ggplot2
 #' @export
-animate <- function(model, file = file.path(model$path, "output_ind_locations.tsv.gz"),
-                    steps, gif = NULL, width = 800, height = 560) {
+animate_model <- function(model, file = file.path(model$path, "output_ind_locations.tsv.gz"),
+                          steps, gif = NULL, width = 800, height = 560) {
   if (!"magick" %in% utils::installed.packages()[, 1])
     message("For rendering animated GIFs, please install the R package ",
             "magick by calling `install.packages(\"magick\")")
@@ -461,7 +452,7 @@ animate <- function(model, file = file.path(model$path, "output_ind_locations.ts
 
   gganim <- p + transition + ggtitle("time: {abs(as.integer(closest_state))}")
 
-  anim <- gganimate::animate(
+  anim <- gganimate::animate_model(
     gganim,
     nframes = length(unique(locs$time)),
     width = width,

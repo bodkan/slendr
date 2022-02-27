@@ -1,4 +1,4 @@
-skip_if(!env_present("automatic_slendr_python_env")); setup_env(quiet = TRUE)
+skip_if(!env_present("automatic_slendr_python_env"))
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
@@ -11,7 +11,7 @@ desc <- "Test model without CRS"
 
 model_dir <- file.path(tempdir(), "ts")
 
-model <- compile(
+model <- compile_model(
   populations = list(p1, p2),
   generation_time = 1, resolution = res, sim_length = 300,
   competition_dist = 10, mate_dist = 10, dispersal_dist = 5,
@@ -20,8 +20,8 @@ model <- compile(
 )
 
 samples <- rbind(
-  sampling(model, times = 2, list(p1, 2), list(p2, 2)),
-  sampling(model, times = 300, list(p1, 10), list(p2, 10))
+  schedule_sampling(model, times = 2, list(p1, 2), list(p2, 2)),
+  schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
 slim_ts <- file.path(model_dir, "output_slim.trees")
@@ -638,9 +638,9 @@ test_that("locations and times in the tree sequence match values saved by SLiM (
 
 test_that("metadata is the same for SLiM and msprime conditional on a model", {
   samples <- rbind(
-    sampling(model, times = 2, list(p1, 2), list(p2, 2)),
-    sampling(model, times = 212, list(p1, 5), list(p2, 3)),
-    sampling(model, times = 300, list(p1, 10), list(p2, 10))
+    schedule_sampling(model, times = 2, list(p1, 2), list(p2, 2)),
+    schedule_sampling(model, times = 212, list(p1, 5), list(p2, 3)),
+    schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
   )
 
   slim_ts <- file.path(model_dir, "output_slim.trees")
@@ -712,7 +712,7 @@ test_that("ts_load gives error when no .trees file is present", {
   dir.create(new_dir)
   file.copy(model$path, new_dir, recursive = TRUE)
   new_dir <- file.path(new_dir, "ts")
-  new_model <- read(new_dir)
+  new_model <- read_model(new_dir)
   ts_files <- list.files(new_model$path, "*.trees", full.names = TRUE)
   unlink(ts_files)
   expect_error(

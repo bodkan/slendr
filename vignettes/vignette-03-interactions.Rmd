@@ -28,7 +28,7 @@ Among such parameters are those governing so-called spatial interactions, descri
 2.  *Mate choice* *distance* - governed by the parameter `mate_dist`, which determines how the maximum distance over which an individual will find a potential mate.
 3.  *Dispersal distance* - determined by the parameter `dispersal_dist`, which establishes how far from a parent offspring can migrate before the next generation (when the offspring potentially becomes a parent itself). More accurately, this parameter determines the standard deviation of a normal distribution of such dispersal distances.
 
-All three parameters can be specified for each simulated population individually in the `population()` call. Alternatively, default values for these parameters can be given in a `compile()` call and are then used for all populations in the model. Importantly, each population must be given values for all three of these parameters, whether as specific values for that particular population or as default values passed to `compile()`.
+All three parameters can be specified for each simulated population individually in the `population()` call. Alternatively, default values for these parameters can be given in a `compile_model()` call and are then used for all populations in the model. Importantly, each population must be given values for all three of these parameters, whether as specific values for that particular population or as default values passed to `compile_model()`.
 
 Finally, as with other functions for programming model spatial dynamics, the *slendr* package provides a simple way to change the spatial interaction dynamics throughout the course of the simulation. Even complex models can be programmed using only a couple of lines of extremely simple R code, resulting in a robust SLiM simulation script being generated under the hood.
 
@@ -63,18 +63,18 @@ plot(p0, p1, p2, p3, p4, p5, p6)
 Next, we will program a series of changes in the parameter governing the maximum competition distance of these populations; this parameter influences how "clumpy" the population spread is. If there is lots of competition, individuals will tend to minimize this competition by separating from each other as much as possible. We will change one population at a time, so that we can see each population respond in turn to the change in its spatial dynamics. This is not a realistic model for any evolutionary scenario, of course, but when animated, it will allow us to see the influence of the parameter choice on the spatial dynamics that emerge from the simulation.
 
 ```{r}
-p1 <- dispersal(p1, time = 100, competition_dist = 80)
-p2 <- dispersal(p2, time = 200, competition_dist = 130)
-p3 <- dispersal(p3, time = 300, competition_dist = 170)
-p4 <- dispersal(p4, time = 400, competition_dist = 220)
-p5 <- dispersal(p5, time = 500, competition_dist = 300)
-p6 <- dispersal(p6, time = 600, competition_dist = 380)
+p1 <- set_dispersal(p1, time = 100, competition_dist = 80)
+p2 <- set_dispersal(p2, time = 200, competition_dist = 130)
+p3 <- set_dispersal(p3, time = 300, competition_dist = 170)
+p4 <- set_dispersal(p4, time = 400, competition_dist = 220)
+p5 <- set_dispersal(p5, time = 500, competition_dist = 300)
+p6 <- set_dispersal(p6, time = 600, competition_dist = 380)
 ```
 
 Having defined the spatial dynamics, we will compile this model and execute the simulation. Note that because this model starts at the present and runs into the future (unlike previous models that started in the past and ran up to the present), we need to specify the total length of the simulation with `sim_length = 1000` to know when to terminate it.
 
 ```{r}
-model <- compile(
+model <- compile_model(
   populations = list(p0, p1, p2, p3, p4, p5, p6),
   generation_time = 1, resolution = 1, sim_length = 1000,
   competition_dist = 10, mate_dist = 10, dispersal_dist = 5,
@@ -92,7 +92,7 @@ slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
 Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (the animation is significantly sped up to satisfy the vignette size limits put on by CRAN):
 
 ```{r plot_gif_interactions, message = FALSE}
-animate(model, steps = 80, width = 500, height = 200)
+animate_model(model, steps = 80, width = 500, height = 200)
 ```
 
 Fun animation, isn't it? If you compare the result to the model dynamics we programmed above, you can see that the spatial dynamics follow what we would expect based on the parameter values. As time progresses, the spatial competition for each successive population gets fiercer and fiercer (the distance at which individuals can "feel" the competition is getting larger and larger), forcing the individuals to form more and more distant clusters. Compare this to the starting state of the simulation, in which all populations form a single randomly shifting "blob" of individuals which is allowed by the model because individuals barely compete with each other.

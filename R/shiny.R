@@ -82,11 +82,10 @@ get_time_point <- function(times, current_value, what) {
 #'
 #' @import shiny
 #' @export
-explore <- function(model) {
-
+explore_model <- function(model) {
   if (!has_map(model$populations[[1]]))
     stop("Cannot plot spatial map dynamics for non-spatial models.
-As an alternative, consider using the plot_graph() function to explore
+As an alternative, consider using the plot_model() function to explore
 the demographic history encapsulated in your model.",
           call. = FALSE)
 
@@ -318,7 +317,7 @@ the demographic history encapsulated in your model.",
       } else return(NULL)
     }, sanitize.text.function = identity)
 
-    output$slendr_graph <- renderPlot({ plot_graph(model) }, height = 600)
+    output$slendr_graph <- renderPlot({ plot_model(model) }, height = 600)
 
   }
 

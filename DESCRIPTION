@@ -47,8 +47,6 @@ Imports:
     rsvg,
     png,
     ijtiff,
-    ggraph,
-    tidygraph,
     shinyWidgets,
     shiny,
     ape

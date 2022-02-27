@@ -1,10 +1,10 @@
-skip_if(!env_present("automatic_slendr_python_env")); setup_env(quiet = TRUE)
+skip_if(!env_present("automatic_slendr_python_env"))
 
 map <- world(xrange = c(1, 100), yrange = c(1, 100), landscape = "blank")
 
 pop <- population("POP", time = 1, N = 100, center = c(50, 50), radius = 50, map = map)
 
-model <- compile(
+model <- compile_model(
   populations = pop,
   generation_time = 1,
   sim_length = 100,
@@ -13,7 +13,7 @@ model <- compile(
   overwrite = TRUE
 )
 
-samples <- sampling(model, times = 100, list(pop, 10))
+samples <- schedule_sampling(model, times = 100, list(pop, 10))
 
 slim(
   model, sampling = samples,
@@ -123,7 +123,7 @@ test_that("ts_phylo gives a warning when a tree sequence is not fully spatial", 
 
   pop2 <- population("POP", time = 1, N = 10, center = c(50, 50), radius = 50, map = map)
 
-  model2 <- compile(populations = pop2, generation_time = 1, sim_length = 1000,
+  model2 <- compile_model(populations = pop2, generation_time = 1, sim_length = 1000,
     resolution = 1, competition_dist = 10, mate_dist = 50, dispersal_dist = 1)
 
   slim(model2, sequence_length = 1, recombination_rate = 0, method = "batch", random_seed = 42 )

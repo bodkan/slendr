@@ -232,7 +232,7 @@ check_event_time <- function(time, pop) {
 }
 
 # Check whether a given population will be present for sampling
-# (used exclusively in the sampling() function to avoid situations when
+# (used exclusively in the schedule_sampling() function to avoid situations when
 # a user would sample from a population in the same generation that it
 # would be created)
 check_present_time <- function(time, pop, offset, direction = NULL) {
@@ -359,7 +359,7 @@ process_sampling <- function(samples, model, verbose = FALSE) {
       end_time <- model$orig_length + 1
     }
     samples <- do.call(
-      sampling,
+      schedule_sampling,
       c(list(model = model, times = end_time),
         purrr::map(surviving_pops, ~ list(.x, Inf)))
     )

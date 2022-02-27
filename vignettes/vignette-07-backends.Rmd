@@ -86,17 +86,17 @@ We will now use those populations to compile two models: the first model will be
 
 ```{r}
 # no gene flow model
-model_nogf <- compile(populations = list(a, b, x1, x2, c, o), generation_time = 1, sim_length = 2200)
+model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, sim_length = 2200)
 
-samples <- sampling(model_nogf, times = 2200,
+samples <- schedule_sampling(model_nogf, times = 2200,
                     list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 # model with gene flow
 gf <- geneflow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
 
-model_gf <- compile(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, sim_length = 2200) 
+model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, sim_length = 2200) 
 
-samples <- sampling(model_gf, times = 2200,
+samples <- schedule_sampling(model_gf, times = 2200,
                     list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 ```
 
@@ -343,9 +343,9 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
   }
 
   # compile model
-  model <- compile(pop, generation_time = 15, direction = direction, sim_length = sim_length)
+  model <- compile_model(pop, generation_time = 15, direction = direction, sim_length = sim_length)
 
-  samples <- sampling(model, times = sampling_time, list(pop, 50))
+  samples <- schedule_sampling(model, times = sampling_time, list(pop, 50))
 
   # run the model in SLiM
   slim(model, sequence_length = seq_len, recombination_rate = rec_rate,

@@ -1,4 +1,4 @@
-skip_if(!env_present("automatic_slendr_python_env")); setup_env(quiet = TRUE)
+skip_if(!env_present("automatic_slendr_python_env"))
 
 map <- readRDS("map.rds")
 

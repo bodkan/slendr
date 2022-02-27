@@ -26,9 +26,9 @@ x2 <- population("x2", parent = c, time = 2000, N = 10000)
 a <- population("a", parent = b, time = 1500, N = 10)
 
 # no gene flow model
-model_nogf <- compile(populations = list(a, b, x1, x2, c, o), generation_time = 1, overwrite = TRUE, sim_length = 2200)
+model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, overwrite = TRUE, sim_length = 2200)
 
-samples <- sampling(model_nogf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+samples <- schedule_sampling(model_nogf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
 msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
@@ -36,9 +36,9 @@ msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sa
 # model with gene flow
 gf <- geneflow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
 
-model_gf <- compile(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, overwrite = TRUE, sim_length = 2200)
+model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, overwrite = TRUE, sim_length = 2200)
 
-samples <- sampling(model_gf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+samples <- schedule_sampling(model_gf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
 msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)

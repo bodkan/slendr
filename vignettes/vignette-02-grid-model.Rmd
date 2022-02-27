@@ -138,7 +138,7 @@ nrow(geneflows)
 Finally, we can compile the whole model:
 
 ```{r}
-model <- compile(
+model <- compile_model(
   path = file.path(tempdir(), "grid-model"), 
   populations = populations, geneflow = geneflows,
   generation_time = 1, resolution = 10,
@@ -147,13 +147,7 @@ model <- compile(
 )
 ```
 
-We can use the function `plot_graph()` to plot the layout of the population history graph in order to verify that the geneflow events have been specified correctly. The layout of the graph is a little bit wonky and crowded (that's due to the complexity of spatiotemporal models; the `plot_graph()` function plots not just populations as nodes but also times of geneflow events and other demographic processes). Still, we can see that the gene flow events between populations have been specified correctly, since all arrows are bidirectional and point only between neighboring demes:
-
-```{r demes_geneflow, fig.width = 8, fig.height = 6}
-plot_graph(model) + ggplot2::theme(legend.position = "none")
-```
-
-Again, those familiar with the SLiM manual will recognize a similar figure in section 5.3.3.
+Tthose familiar with the SLiM manual will recognize a model described in section 5.3.3.
 
 Finally, we can run our simulation using the `slim()` function.
 
@@ -218,4 +212,4 @@ Let's plot the layout of the population grid on the real geographic background:
 do.call(plot, filtered) + ggplot2::theme(legend.position = "none")
 ```
 
-Next, we would probably set up some scenario of gene flow between subpopulations; perhaps we would be interested in studying how a selected allele spreads through the continent based on some factors of interest. Then, to simulate data from this spatial model, we would first have to `compile()` it and then run it in SLiM via the `slim()` function. Given that this is the same process we described in the example above, we won't be repeating it here.
+Next, we would probably set up some scenario of gene flow between subpopulations; perhaps we would be interested in studying how a selected allele spreads through the continent based on some factors of interest. Then, to simulate data from this spatial model, we would first have to `compile_model()` it and then run it in SLiM via the `slim()` function. Given that this is the same process we described in the example above, we won't be repeating it here.

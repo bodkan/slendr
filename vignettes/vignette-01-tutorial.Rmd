@@ -265,7 +265,7 @@ eur <- population( # European population
 
 ## Spatial population expansion
 
-We can simulate the expanding range of a population using the function `expand()`, which accepts parameters specifying how many kilometers the boundary should expand by (the `by` argument), how long should the expansion should take (the `duration` argument) and how many intermediate spatial map snapshots should be exported representing the expansion (the `snapshots` argument).
+We can simulate the expanding range of a population using the function `expand_range()`, which accepts parameters specifying how many kilometers the boundary should expand by (the `by` argument), how long should the expansion should take (the `duration` argument) and how many intermediate spatial map snapshots should be exported representing the expansion (the `snapshots` argument).
 
 For instance, let's represent the expansion of Anatolian farmers, who also split from the OOA population at 28000 years ago at the time of the split of the EHG population. Note that we use an optional parameter, `polygon`, which restricts the expansion only to Europe, instead of all around Anatolia:
 
@@ -274,7 +274,7 @@ ana <- population( # Anatolian farmers
   name = "ANA", time = 28000, N = 3000, parent = ooa, remove = 4000,
   center = c(34, 38), radius = 500e3, polygon = anatolia
 ) %>%
-  expand( # expand the range by 2.500 km
+  expand_range( # expand the range by 2.500 km
     by = 2500e3, start = 10000, end = 7000,
     polygon = join(europe, anatolia)
   )
@@ -282,7 +282,7 @@ ana <- population( # Anatolian farmers
 
 Note that, in principle, you could specify the entire spatio-temporal history of a population in a single pipeline using the pipe operator `%>%`.
 
-Again, we can inspect the object returned by the `expand()` function and see that it contains the spatial maps ("snapshots") of the expansion process across time:
+Again, we can inspect the object returned by the `expand_range()` function and see that it contains the spatial maps ("snapshots") of the expansion process across time:
 
 ```{r}
 ana
@@ -364,7 +364,7 @@ gf <- list(
 )
 ```
 
-The `geneflow()` function simply returns a data frame collecting all the geneflow parameters for the `compile()` step below:
+The `geneflow()` function simply returns a data frame collecting all the geneflow parameters for the `compile_model()` step below:
 
 ```{r}
 gf
@@ -372,10 +372,10 @@ gf
 
 ## Compile the whole model and load it in SLiM
 
-The most crucial function of *slendr* is `compile()`. It takes all population ranges defined across space and time, together with a list of gene flow events (optional, since some models won't include gene flow), and then proceeds by converting all vectorized spatial ranges into raster bitmaps. Furthermore, it compiles all information about split times, $N_e$ values, gene flow directions, times, and rates into a series of tables. All of that will be saved automatically in a dedicated directory in a format that is understood by the back end SLiM script provided by *slendr* (more on that below).
+The most crucial function of *slendr* is `compile_model()`. It takes all population ranges defined across space and time, together with a list of gene flow events (optional, since some models won't include gene flow), and then proceeds by converting all vectorized spatial ranges into raster bitmaps. Furthermore, it compiles all information about split times, $N_e$ values, gene flow directions, times, and rates into a series of tables. All of that will be saved automatically in a dedicated directory in a format that is understood by the back end SLiM script provided by *slendr* (more on that below).
 
 ```{r}
-model <- compile(
+model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam), # populations defined above
   geneflow = gf, # geneflow events defined above
   generation_time = 30,
@@ -410,32 +410,32 @@ read.table(file.path(tempdir(), "tutorial-model", "geneflow.tsv"), header = TRUE
 
 -   and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather large, so we're not showing it here).
 
-The object returned by the `compile()` function (called `model` here) binds all of this information together. In fact, for easier debugging and sanity checking, it carries the locations of these tables (as well as other important information) inside itself, as elements of a list: `model$splits`, `model$geneflows`, etc.
+The object returned by the `compile_model()` function (called `model` here) binds all of this information together. In fact, for easier debugging and sanity checking, it carries the locations of these tables (as well as other important information) inside itself, as elements of a list: `model$splits`, `model$geneflows`, etc.
 
-In case you'd want to separate model specification and running into different scripts, *slendr* includes a function `read()` just for this purpose:
+In case you'd want to separate model specification and running into different scripts, *slendr* includes a function `read_model()` just for this purpose:
 
 ```{r}
-loaded_model <- read(file.path(tempdir(), "tutorial-model"))
+loaded_model <- read_model(file.path(tempdir(), "tutorial-model"))
 ```
 
 ## Visualize the entire history of splits and gene flow
 
 With the code snippets above, we have defined a simple history of European populations over the last 50000 years. This history includes population splits and gene flow events, as well as other demographic changes. While *slendr* tries to make the formal specification of spatio-temporal population dynamics as concise as possible, it is hard to really visualize everything that will happen on the SLiM side after the simulation starts just from the code alone.
 
-For this purpose, the package includes a function named `plot_graph()` which takes in all the information about the relationships between populations (i.e., the population and gene flow objects we defined above) and plots it all in the form of a so-called *admixture graph* (see [here](https://academic.oup.com/genetics/article/192/3/1065/5935193) for a discussion of the admixture graph concept).
+For this purpose, the package includes a function named `plot_model()` which takes in all the information about the relationships between populations (i.e., the population and gene flow objects we defined above) and plots it all in the form of a so-called *admixture graph* (see [here](https://academic.oup.com/genetics/article/192/3/1065/5935193) for a discussion of the admixture graph concept).
 
 One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full *slendr* graph a single population can participate in many gene flow events over the course of its history. This is visualized by assigning a color to each population, and different nodes of the same color represent snapshots in time when a demographic event affecting that population happens.
 
-```{r plot_graph, fig.width = 8, fig.height = 7}
-plot_graph(model)
+```{r plot_model, fig.width = 8, fig.height = 7}
+plot_model(model)
 ```
 
 ## Interactive exploration of spatio-temporal models
 
-A slightly fancier way to visualize models is implemented in the function `explore()`. This function accepts a compiled model as its only parameter and spawns an [R shiny](https://shiny.rstudio.com)-based browser app which makes it possible to click through the time snapshots interactively and visualize the spatial maps in each time point.
+A slightly fancier way to visualize models is implemented in the function `explore_model()`. This function accepts a compiled model as its only parameter and spawns an [R shiny](https://shiny.rstudio.com)-based browser app which makes it possible to click through the time snapshots interactively and visualize the spatial maps in each time point.
 
 ```{r eval = FALSE}
-explore(model)
+explore_model(model)
 ```
 
 ![Graph of demographic history (sometimes called "admixture graph")](images/shiny_graph.jpg){width="80%"}
@@ -444,7 +444,7 @@ explore(model)
 
 ## Running the simulation
 
-The way we feed the entire serialized model into SLiM is through the `slim()` function, which understands the format of the model directory created by the `compile()` function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling `system.file("inst/scripts/script.slim", package = "slendr")`, in case you'd like to peek into its internals).
+The way we feed the entire serialized model into SLiM is through the `slim()` function, which understands the format of the model directory created by the `compile_model()` function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling `system.file("inst/scripts/script.slim", package = "slendr")`, in case you'd like to peek into its internals).
 
 Note that when you run this model in SLiMgui (which should automatically open by calling the command below), you will see populations pop up in individual panes within the window. This is how SLiMgui tracks spatial ranges of different populations. *Everyone is still simulated in the same world*, it's just that the simulation visualizes individual population ranges separately to reduce clutter.
 
@@ -465,10 +465,10 @@ By default, simulation output files are put in the same directory where the mode
 In case the `save_locations` parameter was provided, you can generate an animation of the model dynamics across time by calling:
 
 ```{r, eval = FALSE}
-animate(model = model, steps = 70, width = 500, height = 300)
+animate_model(model = model, steps = 70, width = 500, height = 300)
 ```
 
-If an argument `gif = ...` is provided, `animate()` will save the animation to the specified location as a GIF file. In this case, the command would produce the animation you can see on the *slendr* package [landing page](https://www.slendr.net).
+If an argument `gif = ...` is provided, `animate_model()` will save the animation to the specified location as a GIF file. In this case, the command would produce the animation you can see on the *slendr* package [landing page](https://www.slendr.net).
 
 However, note that unless your simulation is very short and/or involves only a small population, saving the location of every individual who ever lived will slow down your simulations significantly and that rendering of the animation can take also several minutes.
 

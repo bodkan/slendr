@@ -10,7 +10,7 @@ test_that("forward and backward time model objects are equivalent", {
 
   geneflows <- geneflow(p1, p2, start = 2, end = 3, rate = 0.5, overlap = FALSE)
 
-  forward <- compile(
+  forward <- compile_model(
     path = file.path(tempdir(), "tmp-forward"),
     populations = list(p1, p2, p3, p4, p5), geneflow = geneflows,
     generation_time = 1, resolution = 1,
@@ -28,7 +28,7 @@ test_that("forward and backward time model objects are equivalent", {
 
   geneflows <- geneflow(p1, p2, start = 4, end = 3, rate = 0.5, overlap = FALSE)
 
-  backward <- compile(
+  backward <- compile_model(
     path = file.path(tempdir(), "tmp-backward"),
     populations = list(p1, p2, p3, p4, p5), geneflow = geneflows,
     generation_time = 1, resolution = 1,
@@ -67,7 +67,7 @@ test_that("forward and backward models yield the same simulation result", {
     geneflow(from = p5, to = p3, rate = 0.3, start = 340, end = 480, overlap = F)
   )
 
-  forward <- compile(
+  forward <- compile_model(
     path = file.path(tempdir(), "tmp-forward"),
     populations = list(p1, p2, p3, p4, p5),
     geneflow = geneflow,
@@ -92,7 +92,7 @@ test_that("forward and backward models yield the same simulation result", {
     geneflow(from = p5, to = p3, rate = 0.3, start = 141, end = 1, overlap = F)
   )
 
-  backward <- compile(
+  backward <- compile_model(
     path = file.path(tempdir(), "tmp-backward"),
     populations = list(p1, p2, p3, p4, p5),
     geneflow = geneflow,
@@ -143,7 +143,7 @@ test_that("forward and backward models yield the same simulation result (nonspat
     geneflow(from = p5, to = p3, rate = 0.3, start = 340, end = 480, overlap = F)
   )
 
-  forward <- compile(
+  forward <- compile_model(
     path = file.path(tempdir(), "tmp-forward"),
     populations = list(p1, p2, p3, p4, p5),
     geneflow = geneflow,
@@ -164,7 +164,7 @@ test_that("forward and backward models yield the same simulation result (nonspat
     geneflow(from = p5, to = p3, rate = 0.3, start = 141, end = 1, overlap = F)
   )
 
-  backward <- compile(
+  backward <- compile_model(
     path = file.path(tempdir(), "tmp-backward"),
     populations = list(p1, p2, p3, p4, p5),
     geneflow = geneflow,
@@ -213,9 +213,9 @@ test_that("overlaps in time result in an error (forward time)", {
   # overlapping time window of the second move
   expect_error(move(p2, trajectory = c(100, 100), start = 5, end = 30, snapshots = 5), msg)
   # overlapping time window of the following range expansion
-  expect_error(expand(p2, by = 20, start = 5, end = 30, snapshots = 5), msg)
+  expect_error(expand_range(p2, by = 20, start = 5, end = 30, snapshots = 5), msg)
   # overlapping time window of the following range change
-  expect_error(boundary(p2, time = 8, center = c(50, 10), radius = 8), msg)
+  expect_error(set_range(p2, time = 8, center = c(50, 10), radius = 8), msg)
 })
 
 test_that("overlaps in time result in an error (backward time)", {
@@ -229,9 +229,9 @@ test_that("overlaps in time result in an error (backward time)", {
   # overlapping time window of the second move
   expect_error(move(p2, trajectory = c(100, 100), start = 25, end = 5, snapshots = 5), msg)
   # overlapping time window of the following range expansion
-  expect_error(expand(p2, by = 20, start = 25, end = 5, snapshots = 5), msg)
+  expect_error(expand_range(p2, by = 20, start = 25, end = 5, snapshots = 5), msg)
   # overlapping time window of the following range change
-  expect_error(boundary(p2, time = 15, center = c(50, 10), radius = 8), msg)
+  expect_error(set_range(p2, time = 15, center = c(50, 10), radius = 8), msg)
 })
 
 test_that("resizing of populations is consistent with established population dynamics (forward time)", {
@@ -260,20 +260,20 @@ p1 <- population(name = "p1", map = map, time = 100, N = 1, center = c(20, 50), 
 # ancestral populations
 
 test_that("Overlapping time-windows for ancestral populations are caught", {
-  expect_error(expand(p1, by = 20, start = 120, end = 20, snapshots = 5),
+  expect_error(expand_range(p1, by = 20, start = 120, end = 20, snapshots = 5),
                "The new event (.*) falls both before and after")
 })
 
 test_that("Older forward event can't follow ancestral population with a higher 'split time'", {
   msg <- "The new event (.*) implies a forward time direction but"
   expect_error(move(p1, trajectory = c(10, 10), start = 80, end = 90, snapshots = 5), msg)
-  expect_error(expand(p1, by = 1000, start = 80, end = 90, snapshots = 5), msg)
+  expect_error(expand_range(p1, by = 1000, start = 80, end = 90, snapshots = 5), msg)
 })
 
 test_that("Older backward event can't follow ancestral population with a lower 'split time'", {
   msg <- "The new event (.*) implies a backward time direction but"
   expect_error(move(p1, trajectory = c(10, 10), start = 120, end = 110, snapshots = 5), msg)
-  expect_error(expand(p1, by = 1000, start = 120, end = 110, snapshots = 5), msg)
+  expect_error(expand_range(p1, by = 1000, start = 120, end = 110, snapshots = 5), msg)
 })
 
 
@@ -292,13 +292,13 @@ p2 <- population(name = "p2", parent = p1, time = 98, N = 1, center = c(20, 50),
 test_that("Forward time events not allowed for backward models", {
   msg <- "The new forward event (.*) is inconsistent with the backward time"
   expect_error(move(p2, trajectory = c(10, 10), start = 50, end = 80, snapshots = 5), msg)
-  expect_error(expand(p2, by = 1000, start = 50, end = 80, snapshots = 5), msg)
+  expect_error(expand_range(p2, by = 1000, start = 50, end = 80, snapshots = 5), msg)
 })
 
 test_that("Backward time events can't predate previous active event for backward models", {
   msg <- "The new event (.*) pre-dates"
   expect_error(move(p2, trajectory = c(10, 10), start = 150, end = 140, snapshots = 5), msg)
-  expect_error(expand(p2, by = 1000, start = 150, end = 140, snapshots = 5), msg)
+  expect_error(expand_range(p2, by = 1000, start = 150, end = 140, snapshots = 5), msg)
 })
 
 # forward model
@@ -314,13 +314,13 @@ p2 <- population(name = "p2", parent = p1, time = 120, N = 1, center = c(20, 50)
 test_that("Backward time events not allowed for forward models", {
   msg <- "The new backward event (.*) is inconsistent with the forward time"
   expect_error(move(p2, trajectory = c(10, 10), start = 80, end = 50, snapshots = 5), msg)
-  expect_error(expand(p2, by = 1000, start = 80, end = 50, snapshots = 5), msg)
+  expect_error(expand_range(p2, by = 1000, start = 80, end = 50, snapshots = 5), msg)
 })
 
 test_that("Forward time events can't predate previous active event for forward models", {
   msg <- "The new event (.*) pre-dates"
   expect_error(move(p2, trajectory = c(10, 10), start = 40, end = 50, snapshots = 5), msg)
-  expect_error(expand(p2, by = 1000, start = 40, end = 50, snapshots = 5), msg)
+  expect_error(expand_range(p2, by = 1000, start = 40, end = 50, snapshots = 5), msg)
 })
 
 # Test consistency with scheduled removal times
@@ -331,15 +331,15 @@ test_that("Events can't be scheduled after population removal", {
   forward <- population(name = "forward", map = map, time = 1, N = 1, center = c(20, 50), radius = 20, remove = 50)
   expect_error(move(forward, trajectory = c(5, 5), start = 5, end = 80, snapshots = 3), paste0(msg, "given the assumed forward time"))
   expect_error(move(forward, trajectory = c(5, 5), start = 60, end = 80, snapshots = 3), paste0(msg, "given the assumed forward time"))
-  expect_error(expand(forward, by = 100, start = 5, end = 80, snapshots = 3), paste0(msg, "given the assumed forward time"))
-  expect_error(expand(forward, by = 100, start = 60, end = 80, snapshots = 3), paste0(msg, "given the assumed forward time"))
+  expect_error(expand_range(forward, by = 100, start = 5, end = 80, snapshots = 3), paste0(msg, "given the assumed forward time"))
+  expect_error(expand_range(forward, by = 100, start = 60, end = 80, snapshots = 3), paste0(msg, "given the assumed forward time"))
   expect_silent(move(forward, trajectory = c(5, 5), start = 5, end = 40, snapshots = 3))
 
   backward <- population(name = "backward", map = map, time = 100, N = 1, center = c(20, 50), radius = 20, remove = 10)
   expect_error(move(backward, trajectory = c(5, 5), start = 80, end = 5, snapshots = 3), paste0(msg, "given the assumed backward time"))
   expect_error(move(backward, trajectory = c(5, 5), start = 8, end = 5, snapshots = 3),paste0(msg, "given the assumed backward time"))
-  expect_error(expand(backward, by = 10, start = 80, end = 5, snapshots = 3), paste0(msg, "given the assumed backward time"))
-  expect_error(expand(backward, by = 10, start = 8, end = 5, snapshots = 3),paste0(msg, "given the assumed backward time"))
+  expect_error(expand_range(backward, by = 10, start = 80, end = 5, snapshots = 3), paste0(msg, "given the assumed backward time"))
+  expect_error(expand_range(backward, by = 10, start = 8, end = 5, snapshots = 3),paste0(msg, "given the assumed backward time"))
   expect_silent(move(backward, trajectory = c(5, 5), start = 80, end = 50, snapshots = 3))
 })
 
@@ -352,7 +352,7 @@ test_that("Explicitly given direction must agree with the implied direction", {
     resize(N = 1000, time = 900, how = "step")
 
   model_dir <- file.path(tempdir(), "direction_conflict")
-  expect_error(compile(populations = list(pop), generation_time = 1,
+  expect_error(compile_model(populations = list(pop), generation_time = 1,
                        resolution = 10e3, competition_dist = 130e3, mate_dist = 100e3, dispersal_dist = 70e3, # how far will offspring end up from their parents
                        path = model_dir, direction = "backward", overwrite = TRUE), msg)
 
@@ -360,7 +360,7 @@ test_that("Explicitly given direction must agree with the implied direction", {
     resize(N = 1000, time = 300, how = "step")
 
   model_dir <- file.path(tempdir(), "direction_conflict")
-  expect_error(compile(populations = list(pop), generation_time = 1,
+  expect_error(compile_model(populations = list(pop), generation_time = 1,
                        resolution = 10e3, competition_dist = 130e3, mate_dist = 100e3, dispersal_dist = 70e3, # how far will offspring end up from their parents
                        path = model_dir, direction = "forward", overwrite = TRUE), msg)
 
