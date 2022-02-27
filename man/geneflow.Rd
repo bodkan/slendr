@@ -67,7 +67,7 @@ pop1 <- population("pop1", N = 1000, time = 1,
        trajectory = list(c(400, 800), c(600, 700), c(800, 400), c(800, 150)))
 
 # a population boundary at a given time can be "manually" created by calling
-# the function boundary() -- here we extend the pipeline from the previous
+# the function set_range() -- here we extend the pipeline from the previous
 # command to set the final spatial map of pop1 to another polygon
 pop1 <-
   population(
@@ -78,7 +78,7 @@ pop1 <-
     start = 100, end = 200, snapshots = 10,
     trajectory = list(c(400, 800), c(600, 700), c(800, 400), c(800, 150))
   ) \%>\%
-  boundary(time = 300, polygon = list(
+  set_range(time = 300, polygon = list(
     c(400, 0), c(1000, 0), c(1000, 600), c(900, 400), c(800, 250),
     c(600, 100), c(500, 50))
   )
@@ -87,7 +87,7 @@ pop1 <-
 plot(pop1)
 
 # population ranges can expand by a given distance in all directions
-pop2 <- expand(pop2, by = 200, start = 50, end = 150, snapshots = 10)
+pop2 <- expand_range(pop2, by = 200, start = 50, end = 150, snapshots = 10)
 
 # we can check the positions of all populations interactively by plotting their
 # ranges together on a single map
@@ -108,7 +108,7 @@ model_dir <- paste0(tempdir(), "_slendr_model")
 
 # compile model components in a serialized form to dist, returning a single
 # slendr model object (in practice, the resolution should be smaller)
-model <- compile(
+model <- compile_model(
   populations = list(pop1, pop2, pop3), generation_time = 1,
   path = model_dir, overwrite = TRUE,
   resolution = 10, sim_length = 500,
@@ -116,7 +116,7 @@ model <- compile(
 )
 
 # serialized models can be read from disk to their R representation again
-loaded_model <- read(model_dir)
+loaded_model <- read_model(model_dir)
 
 # clean up the model temporary directory
 unlink(model_dir, recursive = TRUE, force = TRUE)

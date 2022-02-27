@@ -350,7 +350,7 @@
 <div class="section level2">
 <h2 id="spatial-population-expansion">Spatial population expansion<a class="anchor" aria-label="anchor" href="#spatial-population-expansion"></a>
 </h2>
-<p>We can simulate the expanding range of a population using the function <code><a href="../reference/expand.html">expand()</a></code>, which accepts parameters specifying how many kilometers the boundary should expand by (the <code>by</code> argument), how long should the expansion should take (the <code>duration</code> argument) and how many intermediate spatial map snapshots should be exported representing the expansion (the <code>snapshots</code> argument).</p>
+<p>We can simulate the expanding range of a population using the function <code><a href="../reference/expand.html">expand_range()</a></code>, which accepts parameters specifying how many kilometers the boundary should expand by (the <code>by</code> argument), how long should the expansion should take (the <code>duration</code> argument) and how many intermediate spatial map snapshots should be exported representing the expansion (the <code>snapshots</code> argument).</p>
 <p>For instance, let’s represent the expansion of Anatolian farmers, who also split from the OOA population at 28000 years ago at the time of the split of the EHG population. Note that we use an optional parameter, <code>polygon</code>, which restricts the expansion only to Europe, instead of all around Anatolia:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ana</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Anatolian farmers</span>
@@ -362,7 +362,7 @@
     polygon <span class="op">=</span> <span class="fu"><a href="../reference/join.html">join</a></span><span class="op">(</span><span class="va">europe</span>, <span class="va">anatolia</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
 <p>Note that, in principle, you could specify the entire spatio-temporal history of a population in a single pipeline using the pipe operator <code>%&gt;%</code>.</p>
-<p>Again, we can inspect the object returned by the <code><a href="../reference/expand.html">expand()</a></code> function and see that it contains the spatial maps (“snapshots”) of the expansion process across time:</p>
+<p>Again, we can inspect the object returned by the <code><a href="../reference/expand.html">expand_range()</a></code> function and see that it contains the spatial maps (“snapshots”) of the expansion process across time:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ana</span></code></pre></div>
 <pre><code><span class="co">#&gt; slendr 'population' object </span>
@@ -502,7 +502,7 @@ between populations.</code></pre>
 <li>and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather large, so we’re not showing it here).</li>
 </ul>
 <p>The object returned by the <code><a href="../reference/compile.html">compile()</a></code> function (called <code>model</code> here) binds all of this information together. In fact, for easier debugging and sanity checking, it carries the locations of these tables (as well as other important information) inside itself, as elements of a list: <code>model$splits</code>, <code>model$geneflows</code>, etc.</p>
-<p>In case you’d want to separate model specification and running into different scripts, <em>slendr</em> includes a function <code><a href="../reference/read.html">read()</a></code> just for this purpose:</p>
+<p>In case you’d want to separate model specification and running into different scripts, <em>slendr</em> includes a function <code><a href="../reference/read.html">read_model()</a></code> just for this purpose:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">loaded_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read.html">read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"tutorial-model"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
@@ -510,16 +510,16 @@ between populations.</code></pre>
 <h2 id="visualize-the-entire-history-of-splits-and-gene-flow">Visualize the entire history of splits and gene flow<a class="anchor" aria-label="anchor" href="#visualize-the-entire-history-of-splits-and-gene-flow"></a>
 </h2>
 <p>With the code snippets above, we have defined a simple history of European populations over the last 50000 years. This history includes population splits and gene flow events, as well as other demographic changes. While <em>slendr</em> tries to make the formal specification of spatio-temporal population dynamics as concise as possible, it is hard to really visualize everything that will happen on the SLiM side after the simulation starts just from the code alone.</p>
-<p>For this purpose, the package includes a function named <code><a href="../reference/plot_graph.html">plot_graph()</a></code> which takes in all the information about the relationships between populations (i.e., the population and gene flow objects we defined above) and plots it all in the form of a so-called <em>admixture graph</em> (see <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193" class="external-link">here</a> for a discussion of the admixture graph concept).</p>
+<p>For this purpose, the package includes a function named <code><a href="../reference/plot_model.html">plot_model()</a></code> which takes in all the information about the relationships between populations (i.e., the population and gene flow objects we defined above) and plots it all in the form of a so-called <em>admixture graph</em> (see <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193" class="external-link">here</a> for a discussion of the admixture graph concept).</p>
 <p>One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full <em>slendr</em> graph a single population can participate in many gene flow events over the course of its history. This is visualized by assigning a color to each population, and different nodes of the same color represent snapshots in time when a demographic event affecting that population happens.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_graph.html">plot_graph</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_graph-1.png" width="640"></p>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_model-1.png" width="640"></p>
 </div>
 <div class="section level2">
 <h2 id="interactive-exploration-of-spatio-temporal-models">Interactive exploration of spatio-temporal models<a class="anchor" aria-label="anchor" href="#interactive-exploration-of-spatio-temporal-models"></a>
 </h2>
-<p>A slightly fancier way to visualize models is implemented in the function <code><a href="../reference/explore.html">explore()</a></code>. This function accepts a compiled model as its only parameter and spawns an <a href="https://shiny.rstudio.com" class="external-link">R shiny</a>-based browser app which makes it possible to click through the time snapshots interactively and visualize the spatial maps in each time point.</p>
+<p>A slightly fancier way to visualize models is implemented in the function <code><a href="../reference/explore.html">explore_model()</a></code>. This function accepts a compiled model as its only parameter and spawns an <a href="https://shiny.rstudio.com" class="external-link">R shiny</a>-based browser app which makes it possible to click through the time snapshots interactively and visualize the spatial maps in each time point.</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/explore.html">explore</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <div class="figure">
@@ -547,7 +547,7 @@ between populations.</code></pre>
 <p>In case the <code>save_locations</code> parameter was provided, you can generate an animation of the model dynamics across time by calling:</p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/animate.html">animate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, steps <span class="op">=</span> <span class="fl">70</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
-<p>If an argument <code>gif = ...</code> is provided, <code><a href="../reference/animate.html">animate()</a></code> will save the animation to the specified location as a GIF file. In this case, the command would produce the animation you can see on the <em>slendr</em> package <a href="https://www.slendr.net">landing page</a>.</p>
+<p>If an argument <code>gif = ...</code> is provided, <code><a href="../reference/animate.html">animate_model()</a></code> will save the animation to the specified location as a GIF file. In this case, the command would produce the animation you can see on the <em>slendr</em> package <a href="https://www.slendr.net">landing page</a>.</p>
 <p>However, note that unless your simulation is very short and/or involves only a small population, saving the location of every individual who ever lived will slow down your simulations significantly and that rendering of the animation can take also several minutes.</p>
 <p>For troubleshooting your models, executing them with <code>slim(..., method = "gui")</code> is a more efficient option as you will be able to inspect model dynamics in real-time in SLiMgui. We suggest that you only use the animation feature for creating animations for publications and presentation, not for your daily <em>slendr</em> work.</p>
 </div>

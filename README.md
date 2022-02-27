@@ -157,7 +157,7 @@ ana <- population( # Anatolian farmers
   name = "ANA", time = 28000, N = 3000, parent = ooa, remove = 4000,
   center = c(34, 38), radius = 500e3, polygon = anatolia
 ) %>%
-  expand( # expand the range by 2.500 km
+  expand_range( # expand the range by 2.500 km
     by = 2500e3, start = 10000, end = 7000,
     polygon = join(europe, anatolia), snapshots = 20
   )
@@ -211,11 +211,11 @@ Compiled model is kept as an R object which can be passed to different functions
 
 #### 6. Visualize the model
 
-The package provides an [R shiny](https://shiny.rstudio.com)-based browser app `explore()` for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:
+The package provides an [R shiny](https://shiny.rstudio.com)-based browser app `explore_model()` for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:
 
 
 ```r
-explore(model)
+explore_model(model)
 ```
 
 The function has two modes:
@@ -253,7 +253,7 @@ We can use the saved locations of every individual that lived throughout the cou
 
 
 ```r
-animate(model = model, steps = 50, width = 500, height = 300)
+animate_model(model = model, steps = 50, width = 500, height = 300)
 ```
 
 ![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
