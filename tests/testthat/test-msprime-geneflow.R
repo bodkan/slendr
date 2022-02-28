@@ -34,7 +34,7 @@ slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampl
 msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
 
 # model with gene flow
-gf <- geneflow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
+gf <- gene_flow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, overwrite = TRUE, sim_length = 2200)
 

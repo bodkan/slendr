@@ -62,3 +62,9 @@ boundary <- function(pop, time, center = NULL, radius = NULL, polygon = NULL, lo
   .Deprecated("set_boundary")
   set_boundary(pop, time, center, radius, polygon, lock)
 }
+
+#' @export
+geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
+  .Deprecated("gene_flow")
+  gene_flow(from, to, rate, start, end, overlap)
+}

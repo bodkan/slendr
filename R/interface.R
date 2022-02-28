@@ -526,7 +526,7 @@ set_dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, disp
 #' @export
 #'
 #' @example man/examples/model_definition.R
-geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
+gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
   if ((has_map(from) && !has_map(to)) || (!has_map(from) && has_map(to)))
     stop("Both or neither populations must be spatial", call. = FALSE)
 

@@ -31,8 +31,8 @@ test_that("read_model() restores a complex model object", {
     expand_range(by = 2000000, start = 7000, end = 2000, snapshots = 10)
 
   geneflow <- list(
-    geneflow(from = p5, to = p4, rate = 0.2, start = 2000, end = 0),
-    geneflow(from = p5, to = p3, rate = 0.3, start = 2000, end = 0)
+    gene_flow(from = p5, to = p4, rate = 0.2, start = 2000, end = 0),
+    gene_flow(from = p5, to = p3, rate = 0.3, start = 2000, end = 0)
   )
 
   model_dir <- file.path(tempdir(), "tmp-complex-map-model-serialization")
@@ -96,8 +96,8 @@ test_that("read_model() restores a complex model object (nonspatial)", {
   p5 <- population(name = "pop5", parent = p1, time = 10000, N = 300)
 
   geneflow <- list(
-    geneflow(from = p5, to = p4, rate = 0.2, start = 2000, end = 0),
-    geneflow(from = p5, to = p3, rate = 0.3, start = 2000, end = 0)
+    gene_flow(from = p5, to = p4, rate = 0.2, start = 2000, end = 0),
+    gene_flow(from = p5, to = p3, rate = 0.3, start = 2000, end = 0)
   )
 
   model_dir <- file.path(tempdir(), "tmp-complex-map-model-serialization-nonspatial")
