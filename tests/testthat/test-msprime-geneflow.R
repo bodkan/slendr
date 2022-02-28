@@ -18,7 +18,7 @@ mut_rate <- 1e-8 # mutation rate
 #
 # (Of course, this is all done for demonstration purposes only and to speed up
 # the SLiM simulations by making the Ne of the other populations smaller.)
-o <- population("o", time = 10, N = 1)
+o <- population("o", time = 1, N = 1)
 b <- population("b", parent = o, time = 500, N = 10)
 c <- population("c", parent = b, time = 1000, N = 10)
 x1 <- population("x1", parent = c, time = 2000, N = 10000)
