@@ -3,8 +3,8 @@
 # create a blank abstract world 1000x1000 distance units in size
 map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
 
-# all slendr objects can be visualised with a generic function plot()
-plot(map)
+# all spatial slendr objects can be visualised with a function plot_map()
+plot_map(map)
 
 # create a circular population with the center of a population boundary at
 # [200, 800] and a radius of 100 distance units, 1000 individuals at time 1
@@ -71,8 +71,8 @@ plot(pop1, pop2, pop3)
 
 # individual gene flow events can be saved to a list
 gf <- list(
-  geneflow(from = pop1, to = pop3, start = 150, end = 200, rate = 0.15),
-  geneflow(from = pop1, to = pop2, start = 300, end = 330, rate = 0.25)
+  gene_flow(from = pop1, to = pop3, start = 150, end = 200, rate = 0.15),
+  gene_flow(from = pop1, to = pop2, start = 300, end = 330, rate = 0.25)
 )
 
 # compilation -------------------------------------------------------------

@@ -120,8 +120,8 @@ plot(pop1, pop2, pop3)
 
 # individual gene flow events can be saved to a list
 gf <- list(
-  geneflow(from = pop1, to = pop3, start = 150, end = 200, rate = 0.15),
-  geneflow(from = pop1, to = pop2, start = 300, end = 330, rate = 0.25)
+  gene_flow(from = pop1, to = pop3, start = 150, end = 200, rate = 0.15),
+  gene_flow(from = pop1, to = pop2, start = 300, end = 330, rate = 0.25)
 )
 
 # compilation -------------------------------------------------------------

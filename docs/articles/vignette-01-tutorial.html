@@ -413,7 +413,7 @@
 <div class="section level2">
 <h2 id="defining-gene-flow-events">Defining gene flow events<a class="anchor" aria-label="anchor" href="#defining-gene-flow-events"></a>
 </h2>
-<p>The way <em>slendr</em> implements gene flow events is by calling the <code><a href="../reference/geneflow.html">geneflow()</a></code> function. This function has a very straightforward interface, shown below.</p>
+<p>The way <em>slendr</em> implements gene flow events is by calling the <code><a href="../reference/geneflow.html">gene_flow()</a></code> function. This function has a very straightforward interface, shown below.</p>
 <p>One thing to note is that by default, the <code>from</code> and <code>to</code> populations for gene flow events must have overlapping spatial ranges in order to simulate gene flow. This is probably rather obvious, as populations can’t mix in space-time if they don’t overlap at a given point in space-time.</p>
 <p>For example, if you look at the spatial boundaries plotted above, you’ll see that the European and African populations don’t have any overlap in population ranges. If we try to instruct <em>slendr</em> to simulate geneflow between them, we will get an error:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
@@ -435,7 +435,7 @@ between populations.</code></pre>
   <span class="fu"><a href="../reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,
   <span class="fu"><a href="../reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.75</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
-<p>The <code><a href="../reference/geneflow.html">geneflow()</a></code> function simply returns a data frame collecting all the geneflow parameters for the <code><a href="../reference/compile.html">compile()</a></code> step below:</p>
+<p>The <code><a href="../reference/geneflow.html">gene_flow()</a></code> function simply returns a data frame collecting all the geneflow parameters for the <code><a href="../reference/compile.html">compile()</a></code> step below:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gf</span></code></pre></div>
 <pre><code><span class="co">#&gt; [[1]]</span>
