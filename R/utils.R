@@ -339,7 +339,9 @@ has_map <- function(x) {
 }
 
 
-# Process the sampling schedue
+# Process the sampling schedule which was provided by the user or -- if no
+# sampling schedule was specified -- generate one automatically for populations
+# which survive to the end of the simulation.
 process_sampling <- function(samples, model, verbose = FALSE) {
   # if no explicit sampling schedule was given, try to generate it at least
   # for the populations which survive to the present
@@ -347,29 +349,52 @@ process_sampling <- function(samples, model, verbose = FALSE) {
     if (verbose)
       message("Tree-sequence recording is on but no sampling schedule was given. ",
               "Generating one for all individuals surviving to the end of the simulation.")
+
+    # get a list of populations surviving to the end of the simulation
     surviving_pops <- purrr::keep(model$populations, ~ attr(.x, "remove") == -1)
 
-    # generate sampling schedule, remembering all individuals from all populations
-    # surviving to the end of the simulation (which will happen at `end_time`)
-    start_times <- purrr::map_int(model$populations, ~ attr(.x, "history")[[1]]$time)
+    # find out at which time is the simulation supposed to end ...
+    start_times <- purrr::map_int(model$populations,
+                                  ~ attr(.x, "history")[[1]]$time)
     if (model$direction == "backward") {
-      start <- max(start_times)
-      end_time <- start - model$orig_length
+      start_time <- max(start_times)
+      # modulo for length isn't divisible by generation time
+      sampling_time <- start_time - model$orig_length +
+        model$orig_length %% model$generation_time
     } else {
-      end_time <- model$orig_length + 1
+      start_time <- min(start_times)
+      # TODO: check this when total sim length is not divisible by generation
+      # time (so the same situation as for backward models right above)
+      sampling_time <- start_time + model$orig_length
     }
+
+    # ... and then call
+    #    schedule_sampling(model, end_time, <all surviving populations>)
+    # which is what would be called normally by the user, manually
     samples <- do.call(
       schedule_sampling,
-      c(list(model = model, times = end_time),
+      c(list(model = model, times = sampling_time),
         purrr::map(surviving_pops, ~ list(.x, Inf)))
     )
+
+    # take care of the edge in which no populations are expected to survive
+    # until the end of the simulation, leaving no samples to be remembered
+    # TODO: is this actually allowed to happen in SLiM?
     if (is.null(samples)) {
       warning("No populations survive to the end of the simulations which means ",
               "that no individuals will be remembered.", call. = FALSE)
       return(NULL)
-    } else
+    } else {
+      # default sampling schedules are not spatial
       samples$x <- samples$y <- samples$x_orig <- samples$y_orig <- NA
+    }
   }
+
+  # sum up all individual `n` counts for each pop/time/location in case of
+  # multiples
+  df <- dplyr::group_by(samples, time, pop, x, y, x_orig, y_orig) %>%
+    dplyr::summarise(n = sum(n), .groups = "drop") %>%
+    dplyr::arrange(time)
 
   # in case a backwards time model is not to be simulated all the way to the
   # present (i.e. time 0), the conversion of sampling times from absolute model
@@ -377,14 +402,18 @@ process_sampling <- function(samples, model, verbose = FALSE) {
   # to the actual start of the population (the oldest split in the model), not
   # to the `orig_length` which would be the duration time of the simulation
   # (if not, `convert_to_forward` would translate into negative SLiM generations)
-  if (model$direction == "backward" && model$orig_length != get_oldest_time(model$populations))
-    end_time <- get_oldest_time(model$populations)
-  else
+  oldest_time <- get_oldest_time(model$populations, model$direction)
+  if (model$direction == "backward" && oldest_time != model$orig_length) {
+    end_time <- oldest_time
+  } else if (model$direction == "forward" && oldest_time > 1) {
+    # same for forward models starting not in generation 1
+    time_orig <- df$time
+    df$time <- df$time - oldest_time
+    end_time <- model$orig_length
+  } else
     end_time <- model$orig_length
 
-  df <- dplyr::group_by(samples, time, pop, x, y, x_orig, y_orig) %>%
-    dplyr::summarise(n = sum(n), .groups = "drop") %>%
-    dplyr::arrange(time) %>%
+  processed_schedule <- df %>%
     convert_to_forward(
       direction = model$direction,
       columns = "time",
@@ -394,12 +423,14 @@ process_sampling <- function(samples, model, verbose = FALSE) {
     dplyr::arrange(time_gen) %>%
     dplyr::select(pop, n, time_gen, x, y, time_orig, x_orig, y_orig)
 
+  # if the original times should be replaced, do it
+  if (model$direction == "forward" && oldest_time > 1)
+    processed_schedule$time_orig <- time_orig
+
   # if locations are missing, replace NA with -1 values for SLiM to understand
-  df <- replace(df, is.na(df), -1)
+  processed_schedule <- replace(processed_schedule, is.na(processed_schedule), -1)
 
-  df <- df %>% dplyr::mutate(n = ifelse(is.infinite(n), "INF", n))
-
-  df
+  processed_schedule %>% dplyr::mutate(n = ifelse(is.infinite(n), "INF", n))
 }
 
 # Make sure all given locations fall within world bounding box
@@ -450,8 +481,12 @@ convert_msprime_time <- function(time, model) {
   }
 }
 
-get_oldest_time <- function(populations) {
-  max(sapply(populations, function(pop) attr(pop, "history")[[1]]$time))
+get_oldest_time <- function(populations, direction) {
+  times <- sapply(populations, function(pop) attr(pop, "history")[[1]]$time)
+  if (direction == "forward")
+    min(times)
+  else
+    max(times)
 }
 
 kernel_fun <- function(fun = c("normal", "uniform", "cauchy", "exponential")) {

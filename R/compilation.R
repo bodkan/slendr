@@ -126,10 +126,9 @@ setting `direction = 'backward'.`", call. = FALSE)
   # (those stop at time 0 by default) so we find the oldest time present
   # in the model and take it as the total amount of time for the simulation
   if (time_dir == "backward" || is.null(sim_length)) {
-    end_time <- get_oldest_time(populations)
+    end_time <- get_oldest_time(populations, time_dir)
   } else
     end_time <- sim_length
-  length <- if (is.null(sim_length)) end_time else sim_length
 
   split_table <- compile_splits(populations, generation_time, time_dir, end_time)
   admix_table <- compile_geneflows(geneflow, split_table, generation_time, time_dir, end_time)
@@ -150,9 +149,11 @@ setting `direction = 'backward'.`", call. = FALSE)
     map_table <- return_maps <- dispersal_table <- NULL
   }
 
+  sim_length <- if (is.null(sim_length)) end_time else sim_length
+
   checksums <- write_model(
     path, populations, admix_table, map_table, split_table, resize_table,
-    dispersal_table, generation_time, resolution, length, time_dir, slim_script,
+    dispersal_table, generation_time, resolution, sim_length, time_dir, slim_script,
     description, map
   )
 
@@ -169,8 +170,8 @@ setting `direction = 'backward'.`", call. = FALSE)
     dispersals = dispersal_table,
     generation_time = generation_time,
     resolution = resolution,
-    length = round(length / generation_time),
-    orig_length = length,
+    length = round(sim_length / generation_time),
+    orig_length = sim_length,
     direction = time_dir,
     checksums = checksums
   )
@@ -658,6 +659,9 @@ compile_splits <- function(populations, generation_time, direction, end_time) {
     }
   ) %>% unlist()
 
+  # if a population is ancestral (without a parent), it should appear in the
+  # simulation in generation 1 regardless of which "time of appearance" was
+  # specified (to include it in the burnin)
   split_table %>%
     dplyr::mutate(tsplit_gen = ifelse(parent == "ancestor", 1, tsplit_gen))
 }
