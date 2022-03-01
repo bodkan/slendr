@@ -33,7 +33,9 @@
 #' @param dispersal_dist Standard deviation of the normal distribution of the
 #'   distance that offspring disperses from its parent
 #' @param dispersal_fun Distribution function governing the dispersal of
-#'   offspring. One of "normal", "uniform", "cauchy", or "exponential".
+#'   offspring. One of "normal", "uniform", "cauchy", "exponential", or
+#'   "brownian" (in which vertical and horizontal displacements are drawn from a
+#'   normal distribution independently).
 #' @param aquatic Is the species aquatic (\code{FALSE} by default, i.e.
 #'   terrestrial species)?
 #'
@@ -470,7 +472,9 @@ resize <- function(pop, N, how, time, end = NULL) {
 #' @param dispersal_dist Standard deviation of the normal distribution of the
 #'   distance that offspring disperses from its parent
 #' @param dispersal_fun Distribution function governing the dispersal of
-#'   offspring. One of "normal", "uniform", "cauchy", or "exponential".
+#'   offspring. One of "normal", "uniform", "cauchy", "exponential", or
+#'   "brownian" (in which vertical and horizontal displacements are drawn from a
+#'   normal distribution independently).
 #'
 #' @export
 #'

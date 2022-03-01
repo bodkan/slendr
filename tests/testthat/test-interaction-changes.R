@@ -83,8 +83,9 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   uniform <- slim_sim("uniform", 10, seed)
   cauchy <- slim_sim("cauchy", 10, seed)
   exp <- slim_sim("exponential", 10, seed)
+  brownian <- slim_sim("brownian", 10, seed)
 
-  slim_distances <- rbind(normal, uniform, cauchy, exp) %>%
+  slim_distances <- rbind(normal, uniform, cauchy, exp, brownian) %>%
     dplyr::select(distance, fun) %>%
     dplyr::mutate(source = "SLiM")
 
@@ -97,12 +98,20 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
       distance <- rcauchy(1, location = 0, scale = param)
     else if (fun == "rexp")
       distance <- rexp(1, rate = 1 / param)
-    else
+    else if (fun == "brownian") {
+      y <- rnorm(1, mean = 0, sd = param)
+      x <- rnorm(1, mean = 0, sd = param)
+      distance <- sqrt(x ^ 2 + y ^ 2)
+    } else
       stop("Unknown distribution function", fun, call. = FALSE)
-    angle <- runif(1, min = 0, max = 2 * pi);
-    x <- distance * cos(angle);
-    y <- distance * sin(angle);
-    c(x, y);
+
+    angle <- ifelse(fun == "brownian",
+                    tan(y / x),
+                    runif(1, min = 0, max = 2 * pi))
+    x <- distance * cos(angle)
+    y <- distance * sin(angle)
+
+    c(x, y)
   }
 
   n <- 10000
@@ -111,23 +120,25 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
       sqrt(colSums(replicate(n, r_sim(10, "rnorm"))^2)),
       sqrt(colSums(replicate(n, r_sim(10, "runif"))^2)),
       sqrt(colSums(replicate(n, r_sim(10, "rcauchy"))^2)),
-      sqrt(colSums(replicate(n, r_sim(10, "rexp"))^2))
+      sqrt(colSums(replicate(n, r_sim(10, "rexp"))^2)),
+      sqrt(colSums(replicate(n, r_sim(10, "brownian"))^2))
     ),
-    fun = c(rep("normal", n), rep("uniform", n), rep("cauchy", n), rep("exponential", n)),
+    fun = c(rep("normal", n), rep("uniform", n), rep("cauchy", n),
+            rep("exponential", n), rep("brownian", n)),
     source = "R"
   ) %>%
     dplyr::filter(distance <= 50)
 
   distances <- rbind(slim_distances, r_distances)
 
-  # p <- ggplot2::ggplot(distances, aes(distance, color = source)) +
-  #   geom_density() +
-  #   coord_cartesian(xlim = c(0, 50)) +
-  #   facet_wrap(~ fun, scales = "free") +
-  #   guides(color = guide_legend("simulation"))
-  #
-  # original_png <- "distances.png"
-  # ggsave(original_png, p, width = 8, height = 5)
+  p <- ggplot2::ggplot(distances, aes(distance, color = source)) +
+    geom_density() +
+    coord_cartesian(xlim = c(0, 50)) +
+    facet_wrap(~ fun, scales = "free") +
+    guides(color = guide_legend("simulation"))
+
+  original_png <- "distances.png"
+  ggsave(original_png, p, width = 8, height = 5)
 
   # compare the SLiM dispersal distributions to the distributions randomly
   # sampled in R using the Kolmogorov-Smirnov test
@@ -146,6 +157,10 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   expect_true(ks.test(
     slim_distances[slim_distances$fun == "exponential", ]$distance,
     r_distances[r_distances$fun == "exponential", ]$distance
+  )$p.value > 0.05)
+  expect_true(ks.test(
+    slim_distances[slim_distances$fun == "brownian", ]$distance,
+    r_distances[r_distances$fun == "brownian", ]$distance
   )$p.value > 0.05)
 
   # decrease the gigantic table to make the package smaller overall

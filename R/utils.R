@@ -489,7 +489,8 @@ get_oldest_time <- function(populations, direction) {
     max(times)
 }
 
-kernel_fun <- function(fun = c("normal", "uniform", "cauchy", "exponential")) {
+kernel_fun <- function(fun = c("normal", "uniform", "cauchy", "exponential",
+                               "brownian")) {
   match.arg(fun)
 }
 

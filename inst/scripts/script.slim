@@ -591,11 +591,18 @@ function (f) dispersal_fun(s$ fun, f$ param) {
         distance = rcauchy(1, location = 0, scale = param);
     else if (fun == "exponential")
         distance = rexp(1, mu = param);
-    else
+    else if (fun == "brownian") {
+        y = rnorm(1, mean = 0, sd = param);
+	    x = rnorm(1, mean = 0, sd = param);
+	    distance = sqrt(x ^ 2 + y ^ 2);
+    } else
         stop("Invalid dispersal function '" + fun + "' specified");
 
     // draw an angle from a uniform distribution of angles around a circle
-    angle = runif(1, min = 0, max = 2 * PI);
+    if (fun == "brownian")
+        angle = tan(y/x);
+    else
+        angle = runif(1, min = 0, max = 2 * PI);
 
     // convert the polar coordinate <angle, distance> into cartesian system
     x = distance * cos(angle);
@@ -759,7 +766,7 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
     // vectors of all possible column names in tables defined by slendr `compile()`
     string = c("pop", "parent", "how", "path", "from", "to", "how", "dispersal_fun");
     integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N",
-                "time_orig", "time_gen", 
+                "time_orig", "time_gen",
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
                 "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
                 "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
