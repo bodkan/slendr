@@ -57,7 +57,7 @@ reference:
 
   - title: Non-spatial population dynamics
     contents:
-    - geneflow
+    - gene_flow
     - resize
 
   - title: Compiling and running population genetic models
@@ -82,16 +82,14 @@ reference:
     contents:
     - plot_map
     - plot_model
+    - plot_ancestors
     - animate_model
     - explore_model
-    - plot_ancestors
     - print.slendr_map
     - print.slendr_region
     - print.slendr_pop
     - print.slendr_model
     - print.slendr_tsdata
-    - time_direction
-    - split_time
 
   - title: Tree sequence loading and processing
     contents:
@@ -105,7 +103,6 @@ reference:
 
   - title: Tree sequence format conversion
     contents:
-    - ts_phylo
     - ts_genotypes
     - ts_eigenstrat
     - ts_vcf
@@ -113,6 +110,8 @@ reference:
   - title: Accessing tree sequence components
     contents:
     - ts_data
+    - ts_phylo
+    - ts_branches
     - ts_nodes
     - ts_edges
     - ts_individuals

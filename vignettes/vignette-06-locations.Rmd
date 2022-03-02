@@ -116,7 +116,7 @@ yam <- population(
 
 # geneflow events
 gf <- list(
-  gene_flow(from = ana, to = yam, rate = 0.5, start = 6000, end = 4000, overlap = FALSE),
+  gene_flow(from = ana, to = yam, rate = 0.5, start = 6000, end = 5000, overlap = FALSE),
   gene_flow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
   gene_flow(from = yam, to = eur, rate = 0.75, start = 4000, end = 3000)
 )
@@ -131,12 +131,16 @@ model <- compile_model(
 )
 ```
 
-(As a sanity check that we defined the demography correctly, you can plot a graph summarizing population divergences and geneflow events by calling `plot_model(model)`).
+As a sanity check that we defined the demography correctly, you can plot a graph summarizing population divergences and geneflow events by calling `plot_model(model)`:
+
+```{r}
+plot_model(model)
+```
 
 And for completeness, here is a (slightly busy) overview of the spatial population ranges that we defined above:
 
 ```{r, spatial_maps}
-plot(afr, ooa, ehg, eur, ana, yam)
+plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
 
 ## Scheduling sampling events and simulation
@@ -262,7 +266,7 @@ Because we record the time and the location of every individual that happens to 
 The simplest use case is determining the locations and times of every single node in the genealogical history of an individual along the tree sequence (it is possible to recover ancestral relationships for multiple samples at once too):
 
 ```{r}
-ind <- "EUR_25"
+ind <- "EUR_51"
 
 lineages <- ts_ancestors(ts, ind, verbose = TRUE)
 ```
@@ -304,16 +308,16 @@ In the figure above we can see the red focal node and its immediate parents in t
 A more convenient way to do this analysis is a companion function to `ts_ancestors()` called `plot_ancestors()`. This function accepts an `sf` object with the spatial branching data created by `ts_ancestors()` and plots the paths between nodes on a map leading from a focal node up to the root(s) of the tree sequence (instead of just paths to immediate parents shown in the previous figure). In this case, because we are working with a single diploid individual, we get two sets of paths for each of its nodes (chromosomes) and plot them in two facets:
 
 
-```{r, eval = FALSE, echo = FALSE}
-# pdf("~/Desktop/x.pdf")
-# for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) {
-# 
-# lineages <- ts_ancestors(ts, i, verbose = TRUE)
-# { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-# 
-# }
-# dev.off()
-```
+<!-- ```{r, eval = FALSE, echo = FALSE} -->
+<!-- pdf("~/Desktop/x.pdf") -->
+<!-- for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) { -->
+
+<!-- lineages <- ts_ancestors(ts, i, verbose = TRUE) -->
+<!-- { plot_ancestors(lineages, i) + ggtitle(i) } %>% print -->
+
+<!-- } -->
+<!-- dev.off() -->
+<!-- ``` -->
 
 
 ```{r plot_ancestors_time}
@@ -386,13 +390,13 @@ ts_samples(ts) %>% filter(pop == "ANA")
 
 
 ```{r, include = FALSE}
-ana_ind <- ts_samples(ts) %>% filter(name == "ANA_22")
+ana_ind <- ts_samples(ts) %>% filter(name == "ANA_21")
 ```
 
 Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
 
 ```{r, plot_ancestors_levels_ana}
-ts_ancestors(ts, "ANA_22") %>% plot_ancestors(color = "level")
+ts_ancestors(ts, "ANA_21") %>% plot_ancestors(color = "level")
 ```
 
 As we might expect given the late age of the sample, its position in the map above (red crossed circle) is not in Anatolia but in Europe because it represents one of the descendants of migrants who moved from Anatolia into Europe. This can be clearly seen in the position of its parental nodes in the tree sequence: these nodes represent real individuals who lived at some point in the past, and we can see that they did, indeed, lived in Anatolia.

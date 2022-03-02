@@ -36,31 +36,34 @@ set.seed(314159)
 
 # create the ancestor of everyone and a chimpanzee outgroup
 # (we set both N = 1 to reduce the computational time for this model)
-anc <- population("ANC", time = 6.5e6, N = 1)
-chimp <- population("CH", parent = anc, time = 6e6, N = 1)
+chimp <- population("CH", time = 6.5e6, N = 1000)
 
 # two populations of anatomically modern humans: Africans and Europeans
-afr <- population("AFR", parent = anc, time = 600e3, N = 10000)
+afr <- population("AFR", parent = chimp, time = 6e6, N = 10000)
 eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
 # (becomes extinct by 40 ky ago)
-nea <- population("NEA", parent = anc, time = 600e3, N = 1000, remove = 40e3)
+nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 40e3)
 
 # 3% Neanderthal introgression into Europeans between 55-50 ky ago
-gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 55000, end = 50000)
+gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 55000, end = 45000)
 
 model <- compile_model(
-  populations = list(anc, chimp, nea, afr, eur), geneflow = gf,
+  populations = list(chimp, nea, afr, eur), geneflow = gf,
   generation_time = 30,
   path = file.path(tempdir(), "introgression"), overwrite = TRUE
 )
 ```
 
-Here's our toy model visualized as a graph. Not particularly illuminating in this simple example, but it's always worth keeping in mind that such graph is embedded within every *slendr* model and can be always invoked to make sure the model you're setting up is correct:
+Here's our toy model visualized as a "demographic graph" of sorts (i.e., a tree-like structure specifying population splits with additional edges representing gene flow events). Not particularly illuminating in this simple example, but it's always worth keeping in mind that such graph is embedded within every *slendr* model and can be always invoked to make sure the model you're setting up is correct:
 
-```{r, introgression_graph, fig.width = 6, fig.height = 4}
-plot_model(model)
+```{r, introgression_graph, fig.width = 8, fig.height = 4}
+cowplot::plot_grid(
+  plot_model(model, sizes = FALSE),
+  plot_model(model, sizes = FALSE, log = TRUE),
+  nrow = 1
+)
 ```
 
 ## Scheduling of sampling events
@@ -102,22 +105,24 @@ schedule_sampling(model, times = 10000, list(nea, 1), strict = TRUE)
 
     Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.
 
-Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. We do this by calling the `slim()` function as usual and specifying the sampling events with the `sampling =` argument. Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such):
+Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. Although we could use the `slim()` function shown in previous vignettes, in this case we will run the simulation with the `msprime()` coalescent back end. After all, our model is non-spatial and using a coalescent simulator will be much more efficient than the forward simulation. Switching between the msprime and SLiM back ends of slendr is demonstrated in much more detail in a [dedicated vignette](vignette-07-backends.html).
 
 ```{r}
-slim(
-  model, sequence_length = 10e6, recombination_rate = 1e-8,
+msprime(
+  model, sequence_length = 100e6, recombination_rate = 1e-8,
   sampling = rbind(nea_samples, present_samples, emh_samples),
-  method = "batch", verbose = FALSE, random_seed = 314159
+  random_seed = 314159
 )
 ```
 
+Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such).
+
 ## R interface for *tskit* and *pyslim*
 
-When we execute the model, *slendr* will instruct SLiM to save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
+When we execute the model, *slendr* will instruct the simulation back end script to save the output of the simulation as a tree sequence file. By default, the file is stored in the model directory:
 
 ```{r}
-ts_file <- file.path(model$path, "output_slim.trees")
+ts_file <- file.path(model$path, "output_msprime.trees")
 file.exists(ts_file)
 ```
 
@@ -155,35 +160,37 @@ Now we're good to go and ready to analyse tree sequence outputs in R!
 
 ## Loading and processing tree-sequence output files
 
-With the technicalities out of the way, we can now load the tree-sequence file saved by SLiM using the *slendr* function `ts_load()`. Optionally, we can also instruct this function to simplify the tree-sequence to only the individuals that we explicitly sampled (recall the sampling schedule we set up with the `schedule_sampling()` function above). What *slendr* does here is provide an R-friendly interface to *tskit* and *pyslim*, essentially reproducing steps in [this tutorial](https://tskit.dev/pyslim/docs/latest/tutorial.html) in a single R command. Note that we have to provide the `model` object generated by `compile_model()` above in order to have all model annotation information for the simulated tree-sequence data (we have to do this only once, and only during loading):
+With the technicalities out of the way, we can now load the tree-sequence file saved by the simulation using the *slendr* function `ts_load()`. If we're dealing with a tree sequence produced by the SLiM back end (which is not the case here), we can also instruct this function to simplify the tree-sequence to only the individuals that we explicitly sampled (recall the sampling schedule we set up with the `schedule_sampling()` function above). Note that we have to provide the `model` object generated by `compile_model()` above in order to have all model annotation information for the simulated tree-sequence data (we have to do this only once, and only during loading):
 
 ```{r}
 ts <- ts_load(model)
 ts
 ```
 
-We can see that the tree-sequence data is very large and contains many more individuals than we need (much more than we explicitly specified for sampling)&mdash; a lot more than what we scheduled for sampling! To avoid this issue, `ts_load()` accepts an optional argument `simplify` which triggers the [simplification process](https://tskit.dev/pyslim/docs/latest/tutorial.html#simplification) to narrow down the set of recorded individuals just to those that we explicitly remembered:
+If we try to simplify an *msprime*-generated tree sequence, we get a warning. This is because such tree sequence is already in a simplified form, by definition coming from a coalescent simulator.
 
 ```{r}
 ts <- ts_load(model, simplify = TRUE)
 ts
 ```
 
-By default, simplification in `ts_load()` simplified the tree-sequence down to only remembered individuals (i.e. those we explicitly scheduled for sampling). We can also narrow down the simplification to a defined set of individuals using the `simplify_to = ` argument. Internally, simplification is implemented in a dedicated function `ts_simplify()` which we can always call explicitly, like this:
+By default, simplification in `ts_load()` simplified the tree-sequence down to only remembered individuals (i.e. those we explicitly scheduled for sampling), which is true for every *msprime* tree sequence.
+
+Alternatively, we can also narrow down the simplification to a defined set of individuals using the `simplify_to = ` argument. Internally, simplification is implemented in a dedicated function `ts_simplify()` which we can always call explicitly, like this:
 
 ```{r}
 ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1", "AFR_2", "EUR_20", "EUR_50"))
 ts_small
 ```
 
-Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapitation]https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation). Again, we can do this in one go, by specifying `recapitate = TRUE` in the call to `ts_load()` after specifying a couple of additional arguments required for recapitation (see the pyslim documentation in the [recapitation](https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation) section for more detail):
+Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapitation]https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation). Again, this is not needed for an *msprime* tree sequence, which is fully coalesced (and recapitated) by definition. Still, if we were dealing with a SLiM tree sequence, which is the case for some of our other vignetted, we could do this in one go, by specifying `recapitate = TRUE` in the call to `ts_load()` after specifying a couple of additional arguments required for recapitation (see the pyslim documentation in the [recapitation](https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation) section for more detail). If we do this on our current tree sequence object, we simply get a warning informing us that we're attempting to do something that has no effect:
 
 ```{r, eval = FALSE}
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
               recombination_rate = 1e-8, Ne = 10000)
 ```
 
-If we were to run this code chunk, we would get a message informing that the recapitation was not necessary because all genealogies in the tree-sequence are already coalesced (i.e. have each only one root node). We can do this check ourselves by calling another *slendr* function `ts_coalesced()` which verifies that all trees in the sequence are fully coalesced:
+We can make sure that our tree sequence is fully coalesced by calling another *slendr* function `ts_coalesced()`. This is useful when dealing with `slim()`-produced tree sequences:
 
 ```{r}
 ts_coalesced(ts)
@@ -199,8 +206,9 @@ ts
 Even this step can be performed in one go throught the `ts_load` function like this:
 
 ```{r, eval = FALSE}
-ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 314159,
-              recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+              recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8,
+              random_seed = 314159)
 ```
 
 Having done that, we can calculate some basic statistics on our simulated data.
@@ -209,30 +217,28 @@ However, before we do that, we would first like to note that everything that we 
 
 ## Visualisation of trees and tree-sequences
 
------
-
-**Note:** The visualisation of trees and tree-sequences in *slendr* is currently still work-in-progress. For a much more comprehensive overview of SVG plotting in *tskit* see the [official tutorial](https://tskit.dev/tutorials/viz.html) on the subject.
-
------
-
-We have spend a lot of time talking about how powerful the *tskit* library is. Another great example is tree(-sequence) visualisation. *tskit* [implements](https://tskit.dev/tutorials/viz.html) visualisation of data in an [SVG format](https://en.wikipedia.org/wiki/Scalable_Vector_Graphics) which we can use for quick interactive plotting directly from the R console. First, we introduce a function `ts_tree()` which allows us to extract one tree from the tree-sequence (either an *i*-th tree in the sequence, or a tree overlapping an *i*-th position of the simulated genome, depending on the value of its `mode` argument):
+Now we introduce a function `ts_phylo()` which can be used to extract one tree from the tree-sequence (either an *i*-th tree in the sequence, or a tree overlapping an *i*-th position of the simulated genome, depending on the value of its `mode` argument) and convert it to a `phylo` class, which is a standard format for phylogenetic trees in the R world. For more on the `phylo` format, see packages [ape](https://cran.r-project.org/package=ape), [phangorn](https://cran.r-project.org/package=phangorn), and [phytools](https://cran.r-project.org/package=phytools).
 
 ```{r}
-# take the 1st tree in the sequence (mode = "index" by default)
-tree <- ts_tree(ts_small, i = 1)
+# extract the 42nd tree in the tree sequence
+tree <- ts_phylo(ts_small, 42)
+```
+
+When we type the tree object to an R console, we can verify that we got an ordinary `phylo` object:
+
+```{r}
 tree
 ```
 
-We can then visualize the tree by calling:
+This means that we have the whole R phylogenetic ecosystem at our disposal to analyze such trees. For instance we can use the powerful package *ggtree* to plot the tree we have just extracted:
 
-```{r, tree}
-ts_draw(tree, width = 1000, height = 600)
-```
+```{r}
+library(ggtree)
 
-If we specify `labels = TRUE` and provide the tree-sequence object itself (because that carries all the required model metadata such as individual names), we get a slightly more readable figure. We can also provide keyword arguments specific to *tskit* `draw_svg()` function, such as `time_scale` here:
-
-```{r, tree_labels}
-ts_draw(tree, width = 1000, height = 600, labels = TRUE, time_scale = "rank")
+ggtree(tree) +
+  geom_point2(aes(subset = !isTip)) + # points for internal nodes
+  geom_tiplab() + # sample labels for tips
+  hexpand(0.1) # make more space for the tip labels
 ```
 
 

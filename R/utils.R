@@ -109,13 +109,11 @@ get_lineage_splits <- function(x) {
 }
 
 
-#' Get direction of time implied by the history of the population
-#'
-#' @param x Object of the class \code{slendr_pop} or \code{slendr_model}
-#'
-#' @return Either "forward", "backward", or "unknown"
-#'
-#' @export
+# Get direction of time implied by the history of the population
+#
+# @param x Object of the class \code{slendr_pop} or \code{slendr_model}
+#
+# @return Either "forward", "backward", or "unknown"
 time_direction <- function(x) {
   if (inherits(x, "slendr_model")) return(x$direction)
 

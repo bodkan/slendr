@@ -319,8 +319,8 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
   }
 
   if (is.null(simplify_to) && backend == "msprime") {
-    warning("If you want to simplify an msprime tree sequence, you must specify ",
-            "the names of individuals to simplify to via the `simplify_to = ` ",
+    warning("If you want to simplify an msprime tree sequence, you must specify\n",
+            "the names of individuals to simplify to via the `simplify_to = `\n",
             "function argument.", call. = FALSE)
     return(ts)
   }
@@ -676,15 +676,15 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   tree <- ts_tree(ts, i, mode)
 
-  if (tree$num_roots > 1)
-    stop("A tree sequence tree which is not fully coalesced or recapitated\n",
-         "cannot be converted to an R phylo tree representation (see the help\n",
-         "page of ?ts_recapitate for more details)", call. = FALSE)
-
   if (!attr(ts, "simplified") && attr(ts, "source") != "msprime")
     stop("Please simplify your tree sequence down to sampled individuals\nfirst ",
          "before converting a tree to an R phylo tree object format (see the\n",
          "help page of ?ts_simplify for more details)", call. = FALSE)
+
+  if (tree$num_roots > 1)
+    stop("A tree sequence tree which is not fully coalesced or recapitated\n",
+         "cannot be converted to an R phylo tree representation (see the help\n",
+         "page of ?ts_recapitate for more details)", call. = FALSE)
 
   tree_array <- tree$parent_array
 
@@ -746,7 +746,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 
   columns <- c()
 
-  if (!is.null(model$world))
+  if (!is.null(attr(ts, "model")$world))
     columns <- c(columns, "location")
   if (attr(ts, "source") == "SLiM")
     columns <- c(columns, c("remembered", "retained", "alive", "pedigree_id"))
@@ -763,7 +763,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     tip.label = tip_labels,
     Nnode = n_internal
   )
-  class(tree) <- c("phylo", "slendr_phylo")
+  class(tree) <- c("slendr_phylo", "phylo")
 
   check_log <- utils::capture.output(ape::checkValidPhylo(tree))
 
@@ -1738,6 +1738,9 @@ get_sf_branches <- function(tree) {
 #'   \code{Error in UseMethod("as.phylo") :
 #'     no applicable method for 'as.phylo' applied to an object of class
 #'     "c('phylo', 'slendr_phylo')"}
+#'
+#' @importFrom ape as.phylo
+#' @export as.phylo.slendr_phylo
 #' @export
 as.phylo.slendr_phylo <- function(x) { class(x) <- "phylo"; x }
 

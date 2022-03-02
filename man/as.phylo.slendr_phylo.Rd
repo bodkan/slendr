@@ -4,7 +4,7 @@
 \alias{as.phylo.slendr_phylo}
 \title{Convert an annotated \code{slendr_phylo} object to a \code{phylo} object}
 \usage{
-as.phylo.slendr_phylo(x)
+\method{as.phylo}{slendr_phylo}(x)
 }
 \description{
 This function servers as a workaround around a ggtree error:

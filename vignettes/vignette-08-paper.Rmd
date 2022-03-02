@@ -46,24 +46,24 @@ check_env()
 ## Example 1
 
 ```{r}
-o <- population("o", time = 10, N = 100)
-b <- population("b", time = 500, N = 100, parent = o)
-c <- population("c", time = 1000, N = 100, parent = b)
-x1 <- population("x1", time = 2000, N = 10000, parent = c)
-x2 <- population("x2", time = 2000, N = 10000, parent = c)
-a <- population("a", time = 1500, N = 100, parent = b)
+o <- population("o", time = 1, N = 100)
+c <- population("c", time = 2500, N = 100, parent = o)
+a <- population("a", time = 3000, N = 100, parent = c)
+b <- population("b", time = 3500, N = 100, parent = a)
+x1 <- population("x1", time = 3800, N = 10000, parent = c)
+x2 <- population("x2", time = 4000, N = 10000, parent = x1)
 
-gf <- gene_flow(from = b, to = x1, start = 2100, end = 2150, 0.1)
+gf <- gene_flow(from = b, to = x1, start = 4100, end = 4150, 0.1)
 
 model <- compile_model(
-  populations = list(a, b, x1, x2, c, o), geneflow = gf,
-  generation_time = 1, sim_length = 2200
+  populations = list(o, a, b, c, x1, x2), geneflow = gf,
+  generation_time = 1, sim_length = 4500
 )
 
-msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, random_seed = SEED)
-```
+plot_model(model, sizes = FALSE, proportions = TRUE)
 
-```{r}
+msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, random_seed = SEED)
+
 ts <- ts_load(model) %>% ts_mutate(mutation_rate = 1e-8)
 
 samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
@@ -108,46 +108,56 @@ divergence_both <- bind_rows(
 f4ratio_both <- bind_rows(
   f4ratio %>% mutate(backend = "msprime"),
   f4ratio_slim %>% mutate(backend = "SLiM")
-) %>% mutate(population = gsub("^(.*)_.*$", "population \\1", X), alpha = alpha * 100)
+) %>% mutate(population = gsub("^(.*)_.*$", "\\1", X), alpha = alpha * 100)
 
 p_ex3_divergence <- divergence_both %>%
   ggplot(aes(fct_reorder(pair, divergence), color = backend, shape = backend, divergence)) +
-  geom_point() +
+  geom_point(size = 3) +
   xlab("population pair") + ylab("pairwise divergence") +
   theme_minimal() +
   scale_alpha_manual(values = c(1, 0.25)) +
-  theme(legend.position = "none",
-        axis.text.x = element_text(hjust = 1, angle = 45, size = 11),
-        axis.title.x = element_blank()); p_ex3_divergence
+  scale_color_manual(values = c("black", "darkgray")) +
+  guides(shape = guide_legend("slendr simulation engine used:"),
+         color = guide_legend("slendr simulation engine used:",
+                              override.aes = list(size = 3))) +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 11),
+        axis.text.x = element_text(hjust = 1, angle = 45, size = 10),
+        axis.title.x = element_blank())#; p_ex3_divergence
 
 p_ex3_f4ratio <- f4ratio_both %>%
   ggplot(aes(population, alpha)) + 
   geom_hline(yintercept = 0, linetype = 2) +
-  geom_boxplot(aes(group = interaction(population, backend)),
-                   color = alpha("black", 0.5), alpha = 0.75, outlier.shape = NA) +
-  geom_jitter(aes(color = backend, shape = backend), alpha = 0.75,
+  geom_jitter(aes(color = backend, shape = backend), alpha = 0.75, size = 2,
               position = position_jitterdodge(jitter.width = 0.25)) +
-  guides(color = guide_legend("slendr simulation engine used:", override.aes = list(size = 3)),
-         shape = guide_legend("slendr simulation engine used:")) +
-  ylab("f4-ratio ancestry proportion [%]") +
+  geom_boxplot(aes(group = interaction(population, backend), fill = population),
+                   alpha = 0.75, size = 0.25, outlier.shape = NA) +
+  # ylab(base::expression("ancestry from"~italic("b")~"[%]")) +
+  ylab(base::expression(italic("f")[4]~"-ratio ancestry proportion [%]")) +
+  scale_color_manual(values = c("black", "darkgray")) +
+  scale_fill_manual(values = scales::hue_pal()(6)[c(5, 6)]) +
   theme_minimal() +
-  theme(legend.position = "bottom",
-        legend.text = element_text(size = 11),
+  theme(legend.position = "none",
         axis.text.x = element_text(size = 11),
         axis.title.x = element_blank(),
-        panel.grid.major.x = element_blank()); p_ex3_f4ratio
+        panel.grid.major.x = element_blank())#; p_ex3_f4ratio
 
 # let's avoid ggpubr as another dependency:
 # https://github.com/kassambara/ggpubr/blob/master/R/as_ggplot.R#L27
-p_ex3_legend <- ggdraw() + draw_grob(grid::grobTree(get_legend(p_ex3_f4ratio)))
+p_ex3_legend <- ggdraw() + draw_grob(grid::grobTree(get_legend(p_ex3_divergence)))
+
+p_ex3_model <- plot_model(model, sizes = FALSE, proportions = TRUE)
 
 plot_grid(
+  p_ex3_model,
   plot_grid(
-    p_ex3_divergence,
-    p_ex3_f4ratio + theme(legend.position = "none"),
-    ncol = 2, rel_widths = c(1, 0.8)
+    p_ex3_divergence + theme(legend.position = "none"),
+    p_ex3_f4ratio,
+    ncol = 2, rel_widths = c(1, 0.8), labels = c("C", "D")
   ),
-  p_ex3_legend, nrow = 2, rel_heights = c(1, 0.1))
+  p_ex3_legend, nrow = 3, rel_heights = c(1, 1, 0.1),
+  labels = "B"
+)
 ```
 
 ## Example 2
@@ -298,8 +308,8 @@ samples <- schedule_sampling(
   model, times = c(runif(20, max = 50000, min = 2000), 0),
   list(ooa, 1), list(ehg, 1), list(ana, 1), list(yam, 1), list(eur, 20)
 )
-plot(model)
 
+plot_map(model)
 plot_model(model)
 
 slim(

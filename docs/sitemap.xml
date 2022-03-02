@@ -40,13 +40,13 @@
     <loc>https://www.slendr.net/index.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/animate.html</loc>
+    <loc>https://www.slendr.net/reference/animate_model.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/area.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/boundary.html</loc>
+    <loc>https://www.slendr.net/reference/as.phylo.slendr_phylo.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/check_env.html</loc>
@@ -55,22 +55,19 @@
     <loc>https://www.slendr.net/reference/clear_env.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/compile.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/reference/dispersal.html</loc>
+    <loc>https://www.slendr.net/reference/compile_model.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/distance.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/expand.html</loc>
+    <loc>https://www.slendr.net/reference/expand_range.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/explore.html</loc>
+    <loc>https://www.slendr.net/reference/explore_model.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/geneflow.html</loc>
+    <loc>https://www.slendr.net/reference/gene_flow.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/index.html</loc>
@@ -91,10 +88,10 @@
     <loc>https://www.slendr.net/reference/pipe.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/plot.slendr.html</loc>
+    <loc>https://www.slendr.net/reference/plot_ancestors.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/plot_ancestors.html</loc>
+    <loc>https://www.slendr.net/reference/plot_map.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/plot_model.html</loc>
@@ -106,7 +103,7 @@
     <loc>https://www.slendr.net/reference/print.slendr_pop.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/read.html</loc>
+    <loc>https://www.slendr.net/reference/read_model.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/region.html</loc>
@@ -118,13 +115,19 @@
     <loc>https://www.slendr.net/reference/resize.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/sampling.html</loc>
+    <loc>https://www.slendr.net/reference/schedule_sampling.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/set_dispersal.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/set_range.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/setup_env.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/shrink.html</loc>
+    <loc>https://www.slendr.net/reference/shrink_range.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/slendr.html</loc>
@@ -146,6 +149,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_ancestors.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/ts_branches.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_coalesced.html</loc>

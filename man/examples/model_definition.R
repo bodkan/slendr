@@ -57,15 +57,15 @@ pop1 <-
     c(600, 100), c(500, 50))
   )
 
-# spatial boundaries can be plotted with a function plot()
-plot(pop1)
+# spatial boundaries can be plotted with a function plot_map()
+plot_map(pop1)
 
 # population ranges can expand by a given distance in all directions
 pop2 <- expand_range(pop2, by = 200, start = 50, end = 150, snapshots = 10)
 
 # we can check the positions of all populations interactively by plotting their
 # ranges together on a single map
-plot(pop1, pop2, pop3)
+plot_map(pop1, pop2, pop3)
 
 # gene flow events --------------------------------------------------------
 

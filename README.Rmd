@@ -82,10 +82,10 @@ map <- world(
 )
 ```
 
-We can visualize the defined world map using the generic function `plot` provided by the package.
+We can visualize the defined world map using the function `plot_map` provided by the package.
 
 ```{r plot_world}
-plot(map)
+plot_map(map)
 ```
 
 Although in this example we use a real Earth landscape, the `map` can be completely abstract (either blank or with user-defined landscape features such as continents, islands, corridors and barriers).
@@ -116,10 +116,10 @@ anatolia <- region(
 )
 ```
 
-Again, we can use the generic `plot` function to visualize the objects:
+Again, we can use the generic `plot_map` function to visualize the objects:
 
 ```{r plot_regions}
-plot(africa, europe, anatolia)
+plot_map(africa, europe, anatolia)
 ```
 
 #### 3. Define demographic history and population boundaries
@@ -174,10 +174,10 @@ yam <- population( # Yamnaya steppe population
   move(trajectory = list(c(15, 50)), start = 5000, end = 3000, snapshots = 10)
 ```
 
-We can use the function `plot` again, but we get a warning informing us that plotting complex model dynamics over time on a single map is not a good idea. Below, we show a better way to do this using a built-in interactive R shiny app.
+We can use the function `plot_map` again, but we get a warning informing us that plotting complex model dynamics over time on a single map is not a good idea. Below, we show a better way to do this using a built-in interactive R shiny app.
 
 ```{r, plot_popmaps}
-plot(afr, ooa, ehg, eur, ana, yam)
+plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
 
 #### 4. Define geneflow events

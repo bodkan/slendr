@@ -338,11 +338,18 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   } else
     geneflows <- NULL
 
+  if (model$direction == "forward")
+    ylabel <- "time since the start"
+  else
+    ylabel <- "time before present"
+
+  if (log) ylabel <- paste(ylabel, "(log scale)")
+
   # setup a figure outline
   p <- ggplot()  +
     scale_color_discrete(drop = FALSE) +
     scale_fill_discrete(drop = FALSE) +
-    labs(y = "time since the start of the simulation") +
+    labs(y = ylabel) +
     theme_classic() +
     theme(
       legend.position = "none",

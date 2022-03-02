@@ -4,12 +4,18 @@
 \alias{plot_model}
 \title{Plot demographic history encoded in a slendr model}
 \usage{
-plot_model(model, sizes = TRUE)
+plot_model(model, sizes = TRUE, proportions = FALSE, log = FALSE)
 }
 \arguments{
 \item{model}{Compiled \code{slendr_model} model object}
 
 \item{sizes}{Should population size changes be visualized?}
+
+\item{proportions}{Should gene flow proportions be visualized (\code{FALSE}
+by default to prevent cluttering and overplotting)}
+
+\item{log}{Should the y-axis be plottted on a log scale? Useful for models
+over very long time-scales.}
 }
 \value{
 Plot object of the class \code{ggplot}

@@ -1225,18 +1225,6 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
   result
 }
 
-#' Get split time of the given population
-#'
-#' @param pop Object of the class \code{slendr_pop}
-#'
-#' @return Split time of the population
-#' @export
-#'
-#' @examples
-#' pop <- population("pop1", N = 1000, time = 42)
-#' split_time(pop)
-split_time <- function(pop) attr(pop, "history")[[1]]$time
-
 #' Setup a dedicated Python virtual environment for slendr
 #'
 #' @param env Either a name of a conda environment, or a path to a standard

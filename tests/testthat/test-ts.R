@@ -51,7 +51,7 @@ test_that("unnecessary recapitation is prevented (msprime)", {
 test_that("needless simplification of msprime output gives a warning", {
   expect_warning(
     ts_load(model, file = msprime_ts, simplify = TRUE),
-    "If you want to simplify an msprime tree sequence, you must specify the names"
+    "If you want to simplify an msprime tree sequence, you must specify"
   )
 })
 

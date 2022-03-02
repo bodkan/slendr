@@ -57,7 +57,7 @@ p4 <- population("pop4", time = 1, N = N, map = map, center = c(2250, y), radius
 p5 <- population("pop5", time = 1, N = N, map = map, center = c(2750, y), radius = r)
 p6 <- population("pop6", time = 1, N = N, map = map, center = c(3250, y), radius = r)
 
-plot(p0, p1, p2, p3, p4, p5, p6)
+plot_map(p0, p1, p2, p3, p4, p5, p6)
 ```
 
 Next, we will program a series of changes in the parameter governing the maximum competition distance of these populations; this parameter influences how "clumpy" the population spread is. If there is lots of competition, individuals will tend to minimize this competition by separating from each other as much as possible. We will change one population at a time, so that we can see each population respond in turn to the change in its spatial dynamics. This is not a realistic model for any evolutionary scenario, of course, but when animated, it will allow us to see the influence of the parameter choice on the spatial dynamics that emerge from the simulation.

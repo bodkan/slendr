@@ -78,7 +78,7 @@ populations <-
 Let's plot the whole spatial population configuration, to make sure we set up things correctly:
 
 ```{r demes_grid}
-do.call(plot, populations) + ggplot2::theme(legend.position = "none")
+do.call(plot_map, populations) + ggplot2::theme(legend.position = "none")
 ```
 
 So far, the way the model is specified, each population would be stuck on its own circular "island". We can change that by programming gene flow events using the *slendr* function `gene_flow()`. Again, let's first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index *i*).
@@ -116,7 +116,7 @@ set_geneflow <- function(i, n_side, rate, start, end, populations) {
 Let's test this function. What would be the gene flow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above.
 
 ```{r}
-set_gene_flow(1, n, rate = 0.1, start = 2, end = 1000, populations)
+set_geneflow(1, n, rate = 0.1, start = 2, end = 1000, populations)
 ```
 
 Looks right! Let's generate the entire set of continuous gene flow events:
@@ -209,7 +209,7 @@ filtered <- lapply(populations, check_area, map, continent) %>%
 Let's plot the layout of the population grid on the real geographic background:
 
 ```{r, demes_africa}
-do.call(plot, filtered) + ggplot2::theme(legend.position = "none")
+do.call(plot_map, filtered) + ggplot2::theme(legend.position = "none")
 ```
 
 Next, we would probably set up some scenario of gene flow between subpopulations; perhaps we would be interested in studying how a selected allele spreads through the continent based on some factors of interest. Then, to simulate data from this spatial model, we would first have to `compile_model()` it and then run it in SLiM via the `slim()` function. Given that this is the same process we described in the example above, we won't be repeating it here.

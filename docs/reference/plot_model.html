@@ -101,7 +101,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_model</span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_model</span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">TRUE</span>, proportions <span class="op">=</span> <span class="cn">FALSE</span>, log <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -110,6 +110,12 @@
 <dd><p>Compiled <code>slendr_model</code> model object</p></dd>
 <dt>sizes</dt>
 <dd><p>Should population size changes be visualized?</p></dd>
+<dt>proportions</dt>
+<dd><p>Should gene flow proportions be visualized (<code>FALSE</code>
+by default to prevent cluttering and overplotting)</p></dd>
+<dt>log</dt>
+<dd><p>Should the y-axis be plottted on a log scale? Useful for models
+over very long time-scales.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

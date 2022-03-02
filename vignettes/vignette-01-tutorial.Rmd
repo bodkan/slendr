@@ -121,9 +121,9 @@ map
 
 ## Plotting geographic features and population ranges
 
-The *slendr* package implements its own plotting function called `plot()`.
+The *slendr* package implements its own plotting function called `plot_map()`.
 
-We do this in order to make it easier and more convenient to iteratively build more complex models. The function can intelligently decide (based on given input arguments) the right way to present the data to the user, which helps to define models more quickly without relying on the lower-level mechanisms of the `sf` package. You will see some examples of `plot()` in action below.
+We do this in order to make it easier and more convenient to iteratively build more complex models. The function can intelligently decide (based on given input arguments) the right way to present the data to the user, which helps to define models more quickly without relying on the lower-level mechanisms of the `sf` package. You will see some examples of `plot_map()` in action below.
 
 ## Defining smaller geographic regions
 
@@ -165,13 +165,13 @@ class(anatolia)
 
 Furthermore, note that in all `region()` calls we specified the `map` object that we defined at the very beginning. This object is added as a hidden attribute to each `slendr` object and represents the context for all geospatial transformations, expansions, and plots.
 
-We can use the generic `plot()` function to plot these geographic regions in the context of the defined section of the world map:
+We can use the generic `plot_map()` function to plot these geographic regions in the context of the defined section of the world map:
 
 ```{r plot_europe_anatolia}
-plot(africa, europe, anatolia, title = "Geographic regions")
+plot_map(africa, europe, anatolia, title = "Geographic regions")
 ```
 
-Note that the `map` object is no longer explicitly specified. It is not needed, because each other class of objects provided to the `plot()` function must carry it as a "map" attribute. In fact, each such object must carry the same map context --- *slendr* complains whenever this is not the case.
+Note that the `map` object is no longer explicitly specified. It is not needed, because each other class of objects provided to the `plot_map()` function must carry it as a "map" attribute. In fact, each such object must carry the same map context --- *slendr* complains whenever this is not the case.
 
 We can check that the component is really there, although hidden, using the built-in `attr` function and verify that it is the same as the map object we created at the beginning:
 
@@ -196,7 +196,7 @@ afr <- population(
   map = map, polygon = africa
 )
 
-plot(afr)
+plot_map(afr)
 ```
 
 ### Circular population ranges
@@ -212,12 +212,12 @@ ooa <- population(
 )
 ```
 
-If we call the `plot()` function on the returned object, we have the option to either plot the population range in its "raw" form or in its "intersected" form, in which case the raw boundary is intersected with the "background" landscape (removing large bodies of water, etc.).
+If we call the `plot_map()` function on the returned object, we have the option to either plot the population range in its "raw" form or in its "intersected" form, in which case the raw boundary is intersected with the "background" landscape (removing large bodies of water, etc.).
 
-The intersected form is what is ultimately exported in a serialized format (see below) to be loaded as a spatial map into SLiM. This is why the `plot()` function renders intersected population ranges by default.
+The intersected form is what is ultimately exported in a serialized format (see below) to be loaded as a spatial map into SLiM. This is why the `plot_map()` function renders intersected population ranges by default.
 
 ```{r plot_ooa}
-plot(ooa, intersect = TRUE, title = "'Intersected' population range")
+plot_map(ooa, intersect = TRUE, title = "'Intersected' population range")
 ```
 
 ## Population movement across a landscape
@@ -240,7 +240,7 @@ ooa
 Checking the result visually again, we see:
 
 ```{r plot_ooa_migration}
-plot(ooa, title = "Intermediate migration maps")
+plot_map(ooa, title = "Intermediate migration maps")
 ```
 
 Let's create a population of Eastern Hunter Gatherers (EHG), which split from the first non-Africans 28000 years ago:
@@ -291,13 +291,13 @@ ana
 We can (and should) check the results visually:
 
 ```{r plot_ana}
-plot(ana, title = "Anatolian expansion into Europe")
+plot_map(ana, title = "Anatolian expansion into Europe")
 ```
 
 To visually see what is really going on behind the scenes, you can also plot the raw, non-intersected form of the expansion with:
 
 ```{r plot_ana_raw, eval = FALSE}
-plot(ana, title = "Anatolian expansion into Europe (not intersected)", intersect = FALSE)
+plot_map(ana, title = "Anatolian expansion into Europe (not intersected)", intersect = FALSE)
 ```
 
 We can see that the population of Anatolian farmers at some point invades the spatial boundary of the EUR population. On its own, this doesn't imply gene flow. In the section on gene flow below, we will see how *slendr* implements gene flow between overlapping (or non-overlapping) populations.
@@ -317,15 +317,15 @@ yam <- population( # Yamnaya steppe population
     start = 5000, end = 3000, snapshots = 8
   )
 
-plot(yam)
+plot_map(yam)
 ```
 
 ## Plotting multiple *slendr* objects
 
-In addition to plotting individual population ranges, the generic function `plot()` can handle a combination of population ranges, and can also partition them into individual facets. This is useful for visual inspection of the specified model, and for looking for potential issues before the export of individual spatio-temporal maps. Obviously, this is a lot of multi-dimensional information:
+In addition to plotting individual population ranges, the generic function `plot_map()` can handle a combination of population ranges, and can also partition them into individual facets. This is useful for visual inspection of the specified model, and for looking for potential issues before the export of individual spatio-temporal maps. Obviously, this is a lot of multi-dimensional information:
 
 ```{r plot_maps}
-plot(afr, ooa, ehg, eur, ana, yam)
+plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
 
 Below you will see a better way to explore a *slendr* model interactively.
@@ -347,12 +347,12 @@ geneflows <- gene_flow(from = eur, to = afr, rate = 0.1, start = 20000, end = 15
     0.000000.
 
     Please check the spatial maps of both populations by running
-    `plot(eur, afr)` and adjust them accordingly. Alternatively, in case
+    `plot_map(eur, afr)` and adjust them accordingly. Alternatively, in case
     this makes sense for your model, you can add `overlap = F` which
     will instruct slendr to simulate geneflow without spatial overlap
     between populations.
 
-The error message instructs us to visually verify that this is the case, which can be done by *slendr*'s `plot()` function and the optional parameter `pop_facets = F` (which is set to `TRUE` by default).
+The error message instructs us to visually verify that this is the case, which can be done by *slendr*'s `plot_map()` function and the optional parameter `pop_facets = F` (which is set to `TRUE` by default).
 
 Many models will include multiple gene flow events, which we can collect in a simple R list:
 

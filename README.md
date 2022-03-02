@@ -62,6 +62,7 @@ First, we define the spatial context of the simulation. This will be the entire 
 
 ```r
 library(slendr)
+#> The interface to all required Python modules has been activated.
 
 map <- world(
   xrange = c(-15, 60), # min-max longitude
@@ -70,11 +71,11 @@ map <- world(
 )
 ```
 
-We can visualize the defined world map using the generic function `plot` provided by the package.
+We can visualize the defined world map using the function `plot_map` provided by the package.
 
 
 ```r
-plot(map)
+plot_map(map)
 ```
 
 ![plot of chunk plot_world](man/figures/README-plot_world-1.png)
@@ -108,11 +109,11 @@ anatolia <- region(
 )
 ```
 
-Again, we can use the generic `plot` function to visualize the objects:
+Again, we can use the generic `plot_map` function to visualize the objects:
 
 
 ```r
-plot(africa, europe, anatolia)
+plot_map(africa, europe, anatolia)
 ```
 
 ![plot of chunk plot_regions](man/figures/README-plot_regions-1.png)
@@ -170,11 +171,11 @@ yam <- population( # Yamnaya steppe population
   move(trajectory = list(c(15, 50)), start = 5000, end = 3000, snapshots = 10)
 ```
 
-We can use the function `plot` again, but we get a warning informing us that plotting complex model dynamics over time on a single map is not a good idea. Below, we show a better way to do this using a built-in interactive R shiny app.
+We can use the function `plot_map` again, but we get a warning informing us that plotting complex model dynamics over time on a single map is not a good idea. Below, we show a better way to do this using a built-in interactive R shiny app.
 
 
 ```r
-plot(afr, ooa, ehg, eur, ana, yam)
+plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
 
 ![plot of chunk plot_popmaps](man/figures/README-plot_popmaps-1.png)
@@ -205,6 +206,9 @@ model <- compile(
   dispersal_dist = 70e3, # how far will offspring end up from their parents
   path = file.path(tempdir(), "readme-model"), overwrite = TRUE
 )
+#> Warning: 'compile' is deprecated.
+#> Use 'compile_model' instead.
+#> See help("Deprecated")
 ```
 
 Compiled model is kept as an R object which can be passed to different functions, most importantly the `slim()` function shown below.

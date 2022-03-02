@@ -25,7 +25,9 @@ choice distance}
 distance that offspring disperses from its parent}
 
 \item{dispersal_fun}{Distribution function governing the dispersal of
-offspring. One of "normal", "uniform", "cauchy", or "exponential".}
+offspring. One of "normal", "uniform", "cauchy", "exponential", or
+"brownian" (in which vertical and horizontal displacements are drawn from a
+normal distribution independently).}
 }
 \description{
 Changes either the competition interactive distance, mating choice distance,
@@ -37,8 +39,8 @@ or the dispersal of offspring from its parent
 # create a blank abstract world 1000x1000 distance units in size
 map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
 
-# all slendr objects can be visualised with a generic function plot()
-plot(map)
+# all spatial slendr objects can be visualised with a function plot_map()
+plot_map(map)
 
 # create a circular population with the center of a population boundary at
 # [200, 800] and a radius of 100 distance units, 1000 individuals at time 1
@@ -91,15 +93,15 @@ pop1 <-
     c(600, 100), c(500, 50))
   )
 
-# spatial boundaries can be plotted with a function plot()
-plot(pop1)
+# spatial boundaries can be plotted with a function plot_map()
+plot_map(pop1)
 
 # population ranges can expand by a given distance in all directions
 pop2 <- expand_range(pop2, by = 200, start = 50, end = 150, snapshots = 10)
 
 # we can check the positions of all populations interactively by plotting their
 # ranges together on a single map
-plot(pop1, pop2, pop3)
+plot_map(pop1, pop2, pop3)
 
 # gene flow events --------------------------------------------------------
 

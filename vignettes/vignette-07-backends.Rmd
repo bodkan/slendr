@@ -68,12 +68,12 @@ seq_len <- 100e6 # amount of sequence to simulate
 rec_rate <- 1e-8 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
 
-o <- population("outgroup", time = 1, N = 10)
-b <- population("b", parent = o, time = 500, N = 10)
-c <- population("c", parent = b, time = 1000, N = 10)
-x1 <- population("x1", parent = c, time = 2000, N = 10000)
-x2 <- population("x2", parent = c, time = 2000, N = 10000)
-a <- population("a", parent = b, time = 1500, N = 10)
+o <- population("outgroup", time = 1, N = 100)
+c <- population("c", time = 2500, N = 100, parent = o)
+a <- population("a", time = 3000, N = 100, parent = c)
+b <- population("b", time = 3500, N = 100, parent = a)
+x1 <- population("x1", time = 3800, N = 10000, parent = c)
+x2 <- population("x2", time = 4000, N = 10000, parent = x1)
 ```
 
 Note that the Ne of the populations `x1` and `x2` is set to be much higher than the rest. We set the $N_e$ of the other populations to lower values to speed up the forward SLiM simulations (they won't affect the results we're interested in anyway). Higher values of the $N_e$ of `x1` and `x2` populations will ensure that the effect of the drift acting on those two populations will be much smaller. Because we will simulate and later measure the proportion of ancestry from the population `b` to `x1`, this will ensure that the ancestry proportion will not drift too far away from the expectation and it will make the interesting patterns stand out more clearly.
@@ -86,18 +86,25 @@ We will now use those populations to compile two models: the first model will be
 
 ```{r}
 # no gene flow model
-model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, sim_length = 2200)
+model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, sim_length = 4500)
 
-samples <- schedule_sampling(model_nogf, times = 2200,
+samples <- schedule_sampling(model_nogf, times = 4500,
                     list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 # model with gene flow
-gf <- gene_flow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
+gf <- gene_flow(from = b, to = x1, start = 4100, end = 4150, 0.1)
 
-model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, sim_length = 2200) 
+model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, sim_length = 4500) 
 
-samples <- schedule_sampling(model_gf, times = 2200,
+samples <- schedule_sampling(model_gf, times = 4500,
                     list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+```
+
+Before running the simulations, let's first make sure both models are set up correctly:
+
+```{r}
+plot_model(model_nogf, sizes = FALSE)
+plot_model(model_gf, sizes = FALSE, proportions = TRUE)
 ```
 
 Now we will run both models (with and without gene flow) in the two *slendr* backends, SLiM and msprime:
@@ -334,7 +341,7 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
   sim_length <- 5000 
 
   # define sampling times given the direction of time
-  if (split_time(pop) == 1) {
+  if (attr(pop, "history")[[1]]$time == 1) {
     sampling_time <- sim_length
     direction <- "forward"
   } else {

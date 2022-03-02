@@ -145,14 +145,15 @@
 <p>First, let’s load the <em>slendr</em> R package and create a two-dimensional abstract world map:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<pre><code><span class="co">#&gt; The interface to all required Python modules has been activated.</span></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>
   xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,
   yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,
   landscape <span class="op">=</span> <span class="st">"blank"</span>
 <span class="op">)</span></code></pre></div>
 <p>Next, we define a helper function which will a) create a single <em>slendr</em> population object, b) place that population at an appropriate coordinate on the lattice on the world map based on the numeric identifier of the population <em>i</em> (where <em>i</em> runs from 1 to <span class="math inline">\(n \times n\)</span> , <em>n</em> being the total number of demes along one side of the regular grid):</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">create_pop</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span>, <span class="va">n_side</span>, <span class="va">map</span>, <span class="va">N</span>, <span class="va">radius</span><span class="op">)</span> <span class="op">{</span>
   <span class="co"># get dimensions of the world map</span>
   <span class="va">dim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"xrange"</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"yrange"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
@@ -172,18 +173,18 @@
   
 <span class="op">}</span></code></pre></div>
 <p>Having defined the population construction function, let’s build our model. Let’s say that we want to create a regular grid of <em>n</em> × <em>n</em> populations, with <em>N</em> individuals in each population:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 
 <span class="va">populations</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
 <p>Let’s plot the whole spatial population configuration, to make sure we set up things correctly:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" width="480"></p>
-<p>So far, the way the model is specified, each population would be stuck on its own circular “island”. We can change that by programming gene flow events using the <em>slendr</em> function <code><a href="../reference/geneflow.html">gene_flow()</a></code>. Again, let’s first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index <em>i</em>).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
+<p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" width="480"></p>
+<p>So far, the way the model is specified, each population would be stuck on its own circular “island”. We can change that by programming gene flow events using the <em>slendr</em> function <code><a href="../reference/gene_flow.html">gene_flow()</a></code>. Again, let’s first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index <em>i</em>).</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">set_geneflow</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span>, <span class="va">n_side</span>, <span class="va">rate</span>, <span class="va">start</span>, <span class="va">end</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">populations</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>
 
@@ -203,8 +204,8 @@
     <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">neighbor</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
 
     <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>
-      <span class="fu"><a href="../reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop</span>, to <span class="op">=</span> <span class="va">neighbor</span>, rate <span class="op">=</span> <span class="va">rate</span>, start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
-      <span class="fu"><a href="../reference/geneflow.html">geneflow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">neighbor</span>, to <span class="op">=</span> <span class="va">pop</span>, rate <span class="op">=</span> <span class="va">rate</span>, start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+      <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop</span>, to <span class="op">=</span> <span class="va">neighbor</span>, rate <span class="op">=</span> <span class="va">rate</span>, start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
+      <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">neighbor</span>, to <span class="op">=</span> <span class="va">pop</span>, rate <span class="op">=</span> <span class="va">rate</span>, start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
     <span class="op">)</span>
   <span class="op">}</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span>
@@ -212,7 +213,7 @@
   <span class="va">geneflows</span>
 <span class="op">}</span></code></pre></div>
 <p>Let’s test this function. What would be the gene flow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">set_geneflow</span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.1</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt;   from_name to_name tstart tend rate overlap</span>
 <span class="co">#&gt; 1      pop1    pop2      2 1000  0.1   FALSE</span>
@@ -220,30 +221,26 @@
 <span class="co">#&gt; 3      pop1    pop6      2 1000  0.1   FALSE</span>
 <span class="co">#&gt; 4      pop6    pop1      2 1000  0.1   FALSE</span></code></pre>
 <p>Looks right! Let’s generate the entire set of continuous gene flow events:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">geneflows</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">set_geneflow</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.05</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="va">unique</span> <span class="co"># filter out duplicate events due to symmetries</span></code></pre></div>
 <p>The total number of individual gene flow events is:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">geneflows</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; [1] 80</span></code></pre>
 <p>Finally, we can compile the whole model:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile.html">compile</a></span><span class="op">(</span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>
   path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"grid-model"</span><span class="op">)</span>, 
   populations <span class="op">=</span> <span class="va">populations</span>, geneflow <span class="op">=</span> <span class="va">geneflows</span>,
   generation_time <span class="op">=</span> <span class="fl">1</span>, resolution <span class="op">=</span> <span class="fl">10</span>,
   competition_dist <span class="op">=</span> <span class="fl">10</span>, mate_dist <span class="op">=</span> <span class="fl">10</span>, dispersal_dist <span class="op">=</span> <span class="fl">10</span>,
   sim_length <span class="op">=</span> <span class="fl">1000</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<p>We can use the function <code><a href="../reference/plot_model.html">plot_model()</a></code> to plot the layout of the population history graph in order to verify that the geneflow events have been specified correctly. The layout of the graph is a little bit wonky and crowded (that’s due to the complexity of spatiotemporal models; the <code><a href="../reference/plot_model.html">plot_model()</a></code> function plots not just populations as nodes but also times of geneflow events and other demographic processes). Still, we can see that the gene flow events between populations have been specified correctly, since all arrows are bidirectional and point only between neighboring demes:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/demes_geneflow-1.png" width="640"></p>
-<p>Again, those familiar with the SLiM manual will recognize a similar figure in section 5.3.3.</p>
+<p>Tthose familiar with the SLiM manual will recognize a model described in section 5.3.3.</p>
 <p>Finally, we can run our simulation using the <code><a href="../reference/slim.html">slim()</a></code> function.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, method <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></code></pre></div>
@@ -295,9 +292,9 @@
   <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Negate</a></span><span class="op">(</span><span class="va">is.null</span><span class="op">)</span>, <span class="va">.</span><span class="op">)</span></code></pre></div>
 <p>Let’s plot the layout of the population grid on the real geographic background:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/demes_africa-1.png" width="480"></p>
-<p>Next, we would probably set up some scenario of gene flow between subpopulations; perhaps we would be interested in studying how a selected allele spreads through the continent based on some factors of interest. Then, to simulate data from this spatial model, we would first have to <code><a href="../reference/compile.html">compile()</a></code> it and then run it in SLiM via the <code><a href="../reference/slim.html">slim()</a></code> function. Given that this is the same process we described in the example above, we won’t be repeating it here.</p>
+<p>Next, we would probably set up some scenario of gene flow between subpopulations; perhaps we would be interested in studying how a selected allele spreads through the continent based on some factors of interest. Then, to simulate data from this spatial model, we would first have to <code><a href="../reference/compile_model.html">compile_model()</a></code> it and then run it in SLiM via the <code><a href="../reference/slim.html">slim()</a></code> function. Given that this is the same process we described in the example above, we won’t be repeating it here.</p>
 </div>
   </div>
 
