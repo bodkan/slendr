@@ -60,6 +60,7 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
     map <- attr(parent, "map")
   }
   time <- as.integer(time)
+  if (time < 1) stop("Split time must be a non-negative integer number", call. = FALSE)
   N <- as.integer(N)
 
   if (inherits(map, "slendr_map")) {
