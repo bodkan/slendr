@@ -577,7 +577,7 @@ time (geneflow %s -> %s in the time window %s-%s)",
       stop(sprintf("No overlap between population ranges of %s and %s at time %d.
 
   Please check the spatial maps of both populations by running
-  `plot(%s, %s)` and adjust them accordingly. Alternatively, in case
+  `plot_map(%s, %s)` and adjust them accordingly. Alternatively, in case
   this makes sense for your model, you can add `overlap = F` which
   will instruct slendr to simulate geneflow without spatial overlap
   between populations.",
@@ -1317,7 +1317,7 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
            " environment is recommended.")
     } else if (!quiet)
-      message("The interface to the required Python modules is now activated.")
+      message("The interface to all required Python modules has been activated.")
   } else {
     if (agree)
       answer <- 2
