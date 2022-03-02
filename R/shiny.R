@@ -290,7 +290,7 @@ the demographic history encapsulated in your model.",
 
     output$slendr_maps <- renderPlot({
 
-      plot(
+      plot_map(
         model,
         time = input$time_slider,
         graticules = input$coord_system,

@@ -186,10 +186,14 @@ objects are specified", call. = FALSE)
 #'
 #' @param model Compiled \code{slendr_model} model object
 #' @param sizes Should population size changes be visualized?
+#' @param proportions Should gene flow proportions be visualized (\code{FALSE}
+#'   by default to prevent cluttering and overplotting)
+#' @param log Should the y-axis be plottted on a log scale? Useful for models
+#'   over very long time-scales.
 #'
 #' @return Plot object of the class \code{ggplot}
 #' @export
-plot_model <- function(model, sizes = TRUE) {
+plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations
 
   # extract population split times and order population names in the order of
@@ -291,7 +295,11 @@ plot_model <- function(model, sizes = TRUE) {
       else
         stop("Invalid 'next event'. This is a slendr bug! (4)", call. = FALSE)
 
-      dplyr::tibble(pop = factor(name, levels = pop_names), x = xs, y = ys)
+      dplyr::tibble(
+        pop = factor(name, levels = pop_names),
+        x = xs,
+        y = ifelse(ys == 0, 0.001, ys)
+      )
     })
   })
 
@@ -348,6 +356,8 @@ plot_model <- function(model, sizes = TRUE) {
       ))
     )
 
+  if (log) p <- p + scale_y_log10()
+
   if (model$direction == "forward") p <- p + scale_y_reverse()
 
   # add horizontal split lines
@@ -371,9 +381,11 @@ plot_model <- function(model, sizes = TRUE) {
                           aes(x = x, xend = xend, y = y, yend = yend),
                           arrow = arrow(length = unit(0.2, "cm")))
     p <- p + geom_point(data = geneflows, aes(x = x, y = y))
-    p <- p + geom_label(data = geneflows, aes(label = sprintf("%s%%", 100 * rate),
-                                              x = xend - (xend - x) / 2,
-                                              y = yend - (yend - y) / 2))
+    if (proportions)
+      p <- p + geom_label(data = geneflows,
+                          aes(label = sprintf("%s%%", 100 * rate),
+                              x = xend - (xend - x) / 2,
+                              y = yend - (yend - y) / 2), size = 3)
   }
 
   # labels with population names
@@ -427,7 +439,7 @@ animate_model <- function(model, file = file.path(model$path, "output_ind_locati
     add = TRUE
   )
 
-  p <- plot(model$world) +
+  p <- plot_map(model$world) +
     geom_point(data = locs, aes(newx, newy, color = pop), alpha = 0.5, size = 0.5) +
     theme(axis.title.x = element_blank(),
           axis.title.y = element_blank(),
@@ -452,7 +464,7 @@ animate_model <- function(model, file = file.path(model$path, "output_ind_locati
 
   gganim <- p + transition + ggtitle("time: {abs(as.integer(closest_state))}")
 
-  anim <- gganimate::animate_model(
+  anim <- gganimate::animate(
     gganim,
     nframes = length(unique(locs$time)),
     width = width,
