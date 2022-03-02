@@ -15,7 +15,7 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 }
 
 #' @export
-plot_model <- function(model) .Deprecated("plot_model")
+plot_graph <- function(model) .Deprecated("plot_model")
 
 #' @export
 explore <- function(model) {
@@ -67,4 +67,12 @@ boundary <- function(pop, time, center = NULL, radius = NULL, polygon = NULL, lo
 geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   .Deprecated("gene_flow")
   gene_flow(from, to, rate, start, end, overlap)
+}
+
+#' @export
+plot.slendr <- function(..., time = NULL, geneflows = FALSE,
+                        graticules = "original",
+                        intersect = TRUE, show_map = TRUE,
+                        title = NULL, interpolated_maps = NULL) {
+  .Deprecated("plot_map")
 }
