@@ -62,7 +62,7 @@ model <- compile_model(
 
 plot_model(model, sizes = FALSE, proportions = TRUE)
 
-msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, random_seed = SEED)
+msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
 
 ts <- ts_load(model) %>% ts_mutate(mutation_rate = 1e-8)
 
@@ -191,7 +191,9 @@ model <- compile_model(geneflow = gf,
   populations = list(p1, p2, p3, p4, p5, p6, p7, p8),
   generation_time = 1, sim_length = 5000, resolution = 0.1,
   mate_dist = 0.1, dispersal_dist = 0.05
-); plot_model(model)
+)
+
+plot_model(model, proportions = TRUE)
 
 slim(model, sequence_length = 100e6, recombination_rate = 1e-8)
 
