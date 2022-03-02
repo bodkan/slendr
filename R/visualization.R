@@ -397,7 +397,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 
   # labels with population names
   p <- p + geom_label(data = centers, aes(label = pop, x = center, y = time,
-                                          fill = pop))
+                                          fill = pop, fontface = "bold"))
 
   p
 }
