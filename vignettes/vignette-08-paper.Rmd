@@ -168,34 +168,22 @@ In the second model, we demonstrate the possibility to finely tune within-popula
 map <- world(xrange = c(0, 10), yrange = c(0, 10),
              landscape = region(center = c(5, 5), radius = 5))
 
-p1 <- population("pop1", time = 1, N = 2000, map = map, competition_dist = 0.01)
-p2 <- population("pop2", time = 600, N = 2000, parent = p1, map = map, competition_dist = 9)
-p3 <- population("pop3", time = 3850, N = 2000, parent = p2, map = map, competition_dist = 6)
-p4 <- population("pop4", time = 4200, N = 2000, parent = p3, map = map, competition_dist = 5)
-p5 <- population("pop5", time = 1300, N = 2000, parent = p2, map = map, competition_dist = 4)
-p6 <- population("pop6", time = 2000, N = 2000, parent = p1, map = map, competition_dist = 3)
-p7 <- population("pop7", time = 2500, N = 2000, parent = p5, map = map, competition_dist = 2)
-p8 <- population("pop8", time = 3000, N = 2000, parent = p2, map = map, competition_dist = 1)
+p1 <- population("pop1", time = 1, N = 2000, map = map, competition_dist = 0)
+p2 <- population("pop2", time = 1, N = 2000, map = map, competition_dist = 9)
+p3 <- population("pop3", time = 1, N = 2000, map = map, competition_dist = 6)
+p4 <- population("pop4", time = 1, N = 2000, map = map, competition_dist = 5)
+p5 <- population("pop5", time = 1, N = 2000, map = map, competition_dist = 4)
+p6 <- population("pop6", time = 1, N = 2000, map = map, competition_dist = 3)
+p7 <- population("pop7", time = 1, N = 2000, map = map, competition_dist = 2)
+p8 <- population("pop8", time = 1, N = 2000, map = map, competition_dist = 1)
 
-gf <- list(
-  gene_flow(from = p1, to = p5, start = 1500, end = 2000, rate = 0.1),
-  gene_flow(from = p6, to = p2, start = 2000, end = 3100, rate = 0.5),
-  gene_flow(from = p7, to = p1, start = 3000, end = 3800, rate = 0.25),
-  gene_flow(from = p7, to = p8, start = 3400, end = 3510, rate = 0.35),
-  gene_flow(from = p8, to = p7, start = 3750, end = 3950, rate = 0.1),
-  gene_flow(from = p4, to = p2, start = 4750, end = 4890, rate = 0.2),
-  gene_flow(from = p3, to = p6, start = 4450, end = 4590, rate = 0.13)
-)
-
-model <- compile_model(geneflow = gf,
+model <- compile_model(
   populations = list(p1, p2, p3, p4, p5, p6, p7, p8),
   generation_time = 1, sim_length = 5000, resolution = 0.1,
   mate_dist = 0.1, dispersal_dist = 0.05
 )
 
-plot_model(model, proportions = TRUE)
-
-slim(model, sequence_length = 100e6, recombination_rate = 1e-8)
+slim(model, sequence_length = 10e6, recombination_rate = 1e-8, method = "batch")
 
 ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
 
@@ -221,7 +209,7 @@ p_ex2_clustering <- ggplot() +
     axis.text = element_blank(),
     panel.background = element_blank()
   ) +
-  guides(color = "none"); p_ex2_clustering
+  guides(color = "none")#; p_ex2_clustering
 
 p_ex2_diversity <- ggplot(diversity, aes(pop, pi, color = pop)) +
   geom_violin(color = "black") +
@@ -231,14 +219,15 @@ p_ex2_diversity <- ggplot(diversity, aes(pop, pi, color = pop)) +
   theme_minimal() +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_blank(), panel.grid.major.x = element_blank(),
-        plot.margin = margin(t = 0.2, r = 0.2, b = -0.1, l = 0.2, "cm")); p_ex2_diversity
+        plot.margin = margin(t = 0.2, r = 0.2, b = -0.1, l = 0.2, "cm"))#; p_ex2_diversity
 
 plot_grid(
   p_ex2_diversity,
   p_ex2_clustering +
     theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 1.9, "cm")),
   nrow = 2,
-  rel_heights = c(1, 0.5)
+  rel_heights = c(1, 0.5),
+  labels = c("B", "C")
 )
 ```
 
@@ -270,33 +259,46 @@ R5 <- region(
   polygon = list(c(26, 50), c(38, 49), c(48, 50),
                  c(48, 56), c(38, 59), c(26, 56))
 )
-plot_map(R1, R2, R3, R4, R5)
+
+ooa_trajectory <- list(c(40, 30), c(50, 30), c(60, 40), c(45, 55))
 ```
 
 ```{r}
-m <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = 3035)
+map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = 3035)
  
-ooa <- population("OOA", time = 50000, N = 5000, map = m,
-                  center = c(33, 30), radius = 400e3, remove = 25000) %>%
-  move(trajectory = list(c(40, 30), c(50, 30), c(60, 40), c(45, 55)),
-       start = 50000, end = 40000, snapshots = 20)
+ooa <- population(
+  "OOA", time = 50000, N = 2000, remove = 23000,
+   map = map, center = c(33, 30), radius = 400e3
+) %>%
+  move(trajectory = ooa_trajectory, start = 50000, end = 40000)
 
-ehg <- population("EHG", time = 28000, N = 3000, parent = ooa, map = m, polygon = R1, remove = 6000) %>%
-  resize(N = 20000, time = 20000, end = 10000, how = "exponential")
+ehg <- population(
+  "EHG", time = 28000, N = 3000, parent = ooa, remove = 6000,
+  map = map, polygon = R1
+)
 
-eur <- population("EUR", time = 30000, N = 3000, parent = ooa, map = m, polygon = R2) %>%
-  resize(time = 5000, N = 10000, how = "step")
+eur <- population(
+  "EUR", time = 30000, N = 3000, parent = ooa,
+  map = map, polygon = R2
+) %>%
+  resize(N = 10000, time = 5000, end = 0, how = "exponential")
 
-ana <- population("ANA", time = 26000, N = 5000, parent = ooa, map = m, polygon = R3, remove = 5000) %>%
-  expand_range(by = 3e6, start = 10000, end = 7000, polygon = R4, snapshots = 8, lock = TRUE)
+ana <- population(
+  "ANA", time = 22000, N = 3000, parent = ehg, remove = 3000,
+  map = map, polygon = R3
+) %>%
+  expand_range(by = 3e6, start = 10000, end = 7000, polygon = R4)
 
-yam <- population("YAM", time = 7000, N = 3000, parent = ehg, map = m, remove = 2500, polygon = R5) %>%
-  move(trajectory = list(c(15, 50)), start = 5000, end = 3000, snapshots = 10)
+yam <- population(
+  "YAM", time = 7000, N = 3000, parent = ehg, remove = 2500,
+  map = m, polygon = R5
+) %>%
+  move(trajectory = list(c(15, 50)), start = 5000, end = 3000)
 
 gf <- list(
-  gene_flow(ana, to = yam, rate = 0.5, start = 6500, end = 6400),
+  gene_flow(ana, to = yam, rate = 0.5, start = 6500, end = 5000),
   gene_flow(ana, to = eur, rate = 0.5, start = 8000, end = 6000),
-  gene_flow(yam, to = eur, rate = 0.5, start = 4000, end = 3000)
+  gene_flow(yam, to = eur, rate = 0.5, start = 3500, end = 3000)
 )
 
 model <- compile_model(
@@ -308,7 +310,7 @@ model <- compile_model(
 
 samples <- schedule_sampling(
   model, times = c(runif(20, max = 50000, min = 2000), 0),
-  list(ooa, 1), list(ehg, 1), list(ana, 1), list(yam, 1), list(eur, 20)
+  list(ehg, 1), list(ana, 1), list(yam, 1), list(eur, 20)
 )
 
 plot_map(model)
@@ -316,10 +318,17 @@ plot_model(model)
 
 slim(
   model, burnin = 1000000, sampling = samples,
-  sequence_length = 100000, recombination_rate = 1e-8, verbose = TRUE
+  sequence_length = 100000, recombination_rate = 1e-8
 )
 ```
 
+```{r, figure_ex3, fig.height=7, fig.width=3}
+plot_grid(
+  plot_map(model) + guides(alpha = "none"),
+  plot_model(model),
+  labels = c("B", "C"), nrow = 2
+)
+```
 
 ## Example 4
 
