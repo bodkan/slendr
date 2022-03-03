@@ -102,7 +102,18 @@ objects are specified", call. = FALSE)
     p <- p + geom_sf(data = map, aes(frame = NULL), fill = "lightgray", color = NA)
 
   if (length(pops)) {
-    pop_names <- unique(unlist(sapply(pops, `[[`, "pop")))
+    # extract population split times and order population names in the order of
+    # their appearance in the simulation
+    direction <- setdiff(unique(sapply(pops, time_direction)), "unknown")
+    split_times <- purrr::map_int(pops, function(pop) {
+      attr(pop, "history")[[1]]$time
+    })
+    if (direction == "backward") {
+      split_times <- sort(split_times, decreasing = TRUE)
+    } else {
+      split_times <- sort(split_times)
+    }
+    pop_names <- names(split_times)
 
     # if the user specified a time point, "interpolate" all maps at that
     # time and return just those that match that time point (unless this
@@ -372,7 +383,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
     p <- p + geom_segment(
       data = splits,
       aes(x = x, xend = xend, y = y, yend = yend, color = from),
-      size = 3
+      size = 2
     )
   }
 
