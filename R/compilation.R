@@ -21,8 +21,8 @@
 #' @param path Output directory for the model configuration files which will be
 #'   loaded by the backend SLiM script. If \code{NULL}, model configuration
 #'   files will be saved to a temporary directory.
-#' @param overwrite Overwrite the contents of the output directory in case it
-#'   already exists?
+#' @param delete Completely delete the specified directory, in case it already
+#'   exists, and create a new one?
 #' @param sim_length Total length of the simulation (required for forward time
 #'   models, optional for models specified in backward time units which by
 #'   default run to "the present time")
@@ -33,6 +33,7 @@
 #' @param description Optional short description of the model
 #' @param dir Deprecated. Use \code{path} instead.
 #' @param geneflow Deprecated. Use \code{gene_flow} instead.
+#' @param overwrite Deprecated. Use \code{delete} instead.
 #'
 #' @return Compiled \code{slendr_model} model object
 #'
@@ -41,26 +42,32 @@
 #' @example man/examples/model_definition.R
 compile_model <- function(populations, generation_time, path = NULL, resolution = NULL,
                           competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
-                          gene_flow = list(), overwrite = FALSE,
+                          gene_flow = list(), delete = FALSE,
                           sim_length = NULL, direction = NULL,
                           slim_script = system.file("scripts", "script.slim", package = "slendr"),
-                          description = "", dir = NULL, geneflow = NULL) {
+                          description = "", dir = NULL, geneflow = NULL, overwrite = NULL) {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   if (!is.null(dir) && is.null(path)) {
-    warning("The `dir =` argument of the `compile()` function is now deprecated\n",
-            "as part of cleaning up and unifying the function interfaces across the\n",
+    warning("The `dir =` argument of `compile_model()` is now deprecated",
+            " as part\nof cleaning up and unifying the function interfaces across the\n",
             "entire package. Please consider moving to `path = ` at some point.",
             call. = FALSE)
     path <- dir
   }
 
   if (!is.null(geneflow) && is.null(gene_flow)) {
-    warning("The `geneflow =` argument of the `compile()` function is now deprecated\n",
-            "as part of cleaning up and unifying the function interfaces across the\n",
+    warning("The `geneflow =` argument of `compile_model()` is now deprecated",
+            " as part\nof cleaning up and unifying the function interfaces across the\n",
             "entire package. Please consider moving to `gene_flow = ` at some point.",
             call. = FALSE)
     gene_flow <- geneflow
+  }
+
+  if (!is.null(overwrite) && overwrite && !delete) {
+    warning("The `overwrite =` argument of `compile_model()` is now deprecated.",
+            "\nIn the future, please use `delete = ` instead.", call. = FALSE)
+    delete <- overwrite
   }
 
   if (is.null(path)) path <- tempfile()
@@ -86,11 +93,20 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
 
   # prepare the model output directory
   if (dir.exists(path)) {
-    if (!overwrite)
-      stop("Output directory already exists - either delete it or set 'overwrite = TRUE'",
-           call. = FALSE)
-    else
-      unlink(path, recursive = TRUE, force = TRUE)
+    if (!delete)
+      stop("Directory '", path, "' already exists. Either delete it\nmanually ",
+           "or set 'delete = TRUE' to delete it from R.", call. = FALSE)
+    else {
+      answer <- utils::menu(
+        c("Yes", "No"),
+        title = paste0("Are you ABSOLUTELY SURE you want to delete '", path,
+                       "'?\nThere is no going back.")
+      )
+      if (answer == 1)
+        unlink(path, recursive = TRUE)
+      else
+        stop("Compilation aborted", call. = FALSE)
+    }
 
   }
   dir.create(path)
