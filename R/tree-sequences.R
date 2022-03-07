@@ -378,8 +378,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     # (sort by individual ID and time)
     nodes_new <- get_ts_nodes(ts_new) %>%
       dplyr::arrange(ind_id, time) %>%
-      dplyr::select(node_id, ind_id) %>%
-      .$node_id
+      dplyr::select(node_id, ind_id)
 
     location_col <- if (spatial) "location" else NULL
 
@@ -391,7 +390,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
       dplyr::arrange(ind_id, time) %>%
       dplyr::select(ind_id, pedigree_id, time, alive, remembered, retained) %>%
       dplyr::inner_join(keep_data, by = "pedigree_id") %>%
-      dplyr::mutate(node_id = nodes_new) %>%
+      dplyr::inner_join(nodes_new, by = "ind_id") %>%
       dplyr::as_tibble()
 
     if (spatial)
@@ -1603,7 +1602,7 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # split individuals into remembered (those explicitly sampled, to which we
   # will add readable names from the sampling schedule table) and not remembered
   # anonymous individuals
-  remembered <- dplyr::filter(individuals, remembered) %>%
+  remembered <- dplyr::filter(individuals, remembered, time %in% samples$time) %>%
     dplyr::select(-time, -pop) %>%
     dplyr::bind_cols(samples)
 
