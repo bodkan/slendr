@@ -15,7 +15,7 @@ model <- compile_model(
   populations = list(p1, p2),
   generation_time = 1, resolution = res, sim_length = 300,
   competition_dist = 10, mate_dist = 10, dispersal_dist = 5,
-  path = model_dir, overwrite = TRUE,
+  path = model_dir, overwrite = TRUE, force = TRUE,
   description = desc
 )
 
@@ -28,7 +28,7 @@ slim_ts <- file.path(model_dir, "output_slim.trees")
 msprime_ts <- file.path(model_dir, "msprime_output.trees")
 
 slim(model, sequence_length = 100000, recombination_rate = 0,
-     save_locations = TRUE, burnin = 10,
+     save_locations = TRUE, burnin = 0,
      method = "batch", random_seed = 314159,
      sampling = samples, verbose = FALSE)
 
@@ -107,7 +107,8 @@ test_that("locations and times in the tree sequence match values saved by SLiM",
   joined <- dplyr::inner_join(individuals, true_locations,
                               by = c("pedigree_id" = "ind")) %>%
     dplyr::mutate(location_x = as.vector(sf::st_coordinates(location)[, 1]),
-                  location_y = as.vector(sf::st_coordinates(location)[, 2]))
+                  location_y = as.vector(sf::st_coordinates(location)[, 2])) %>%
+    as.data.frame()
   # for some reason the values differ in terms of decimal digits saved?
   # but they *are* equal
   expect_true(all.equal(joined$x, joined$location_x, tolerance = 1e-5))
@@ -627,6 +628,7 @@ test_that("locations and times in the tree sequence match values saved by SLiM (
     dplyr::mutate(time = convert_slim_time(gen, model))
   joined <- dplyr::inner_join(individuals, true_locations,
                               by = c("pedigree_id" = "ind")) %>%
+    as.data.frame() %>%
     dplyr::mutate(location_x = as.vector(sf::st_coordinates(location)[, 1]),
                   location_y = as.vector(sf::st_coordinates(location)[, 2]))
   # for some reason the values differ in terms of decimal digits saved?

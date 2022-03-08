@@ -36,13 +36,13 @@ mut_rate <- 1e-8
 forward_const_dir <- file.path(tempdir(), "forward_const")
 forward_const_pop <- population("forward_const_pop", time = 1, N = N, map = FALSE)
 forward_const_model <- compile_model(forward_const_pop, forward_const_dir, generation_time = 1,
-                               overwrite = TRUE, direction = "forward", sim_length = 5000)
+                               overwrite = TRUE, force = TRUE, direction = "forward", sim_length = 5000)
 forward_const_samples <- schedule_sampling(forward_const_model, times = 5001, list(forward_const_pop, n_samples))
 
 backward_const_dir <- file.path(tempdir(), "backward_const")
 backward_const_pop <- population("backward_const_pop", time = 5000, N = N, map = FALSE)
 backward_const_model <- compile_model(backward_const_pop, backward_const_dir , generation_time = 1,
-                                overwrite = TRUE, direction = "backward")
+                                overwrite = TRUE, force = TRUE, direction = "backward")
 backward_const_samples <- schedule_sampling(backward_const_model, times = 0, list(backward_const_pop, n_samples))
 
 run_slim_msprime(
@@ -57,14 +57,14 @@ forward_contr_dir <- file.path(tempdir(), "forward_contr")
 forward_contr_pop <- population("forward_contr_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, N = N / N_factor, how = "step")
 forward_contr_model <- compile_model(forward_contr_pop, forward_contr_dir, generation_time = 1,
-                               overwrite = TRUE, direction = "forward", sim_length = 5000)
+                               overwrite = TRUE, force = TRUE, direction = "forward", sim_length = 5000)
 forward_contr_samples <- schedule_sampling(forward_contr_model, times = 5001, list(forward_contr_pop, n_samples))
 
 backward_contr_dir <- file.path(tempdir(), "backward_contr")
 backward_contr_pop <- population("backward_contr_pop", time = 5000, N = N, map = FALSE) %>%
   resize(time = 3000, N = N / N_factor, how = "step")
 backward_contr_model <- compile_model(backward_contr_pop, backward_contr_dir, generation_time = 1,
-                                overwrite = TRUE, direction = "backward")
+                                overwrite = TRUE, force = TRUE, direction = "backward")
 backward_contr_samples <- schedule_sampling(backward_contr_model, times = 0, list(backward_contr_pop, n_samples))
 
 run_slim_msprime(
@@ -79,14 +79,14 @@ forward_expansion_dir <- file.path(tempdir(), "forward_expansion")
 forward_expansion_pop <- population("forward_expansion_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, N = N * N_factor, how = "step")
 forward_expansion_model <- compile_model(forward_expansion_pop, forward_expansion_dir, generation_time = 1,
-                                   overwrite = TRUE, direction = "forward", sim_length = 5000)
+                                   overwrite = TRUE, force = TRUE, direction = "forward", sim_length = 5000)
 forward_expansion_samples <- schedule_sampling(forward_expansion_model, times = 5001, list(forward_expansion_pop, n_samples))
 
 backward_expansion_dir <- file.path(tempdir(), "backward_expansion")
 backward_expansion_pop <- population("backward_expansion_pop", time = 5000, N = N, map = FALSE) %>%
   resize(time = 3000, N = N * N_factor, how = "step")
 backward_expansion_model <- compile_model(backward_expansion_pop, backward_expansion_dir, generation_time = 1,
-                                    overwrite = TRUE, direction = "backward")
+                                    overwrite = TRUE, force = TRUE, direction = "backward")
 backward_expansion_samples <- schedule_sampling(backward_expansion_model, times = 0, list(backward_expansion_pop, n_samples))
 
 run_slim_msprime(
@@ -101,14 +101,14 @@ forward_exp_inc_dir <- file.path(tempdir(), "forward_exp_inc")
 forward_exp_inc_pop <- population("forward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N, how = "exponential")
 forward_exp_inc_model <- compile_model(forward_exp_inc_pop, forward_exp_inc_dir, generation_time = 1,
-                                   overwrite = TRUE, direction = "forward", sim_length = 5000)
+                                   overwrite = TRUE, force = TRUE, direction = "forward", sim_length = 5000)
 forward_exp_inc_samples <- schedule_sampling(forward_exp_inc_model, times = 5001, list(forward_exp_inc_pop, n_samples))
 
 backward_exp_inc_dir <- file.path(tempdir(), "backward_exp_inc")
 backward_exp_inc_pop <- population("backward_exp_inc_pop", time = 1, N = N / N_factor, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N, how = "exponential")
 backward_exp_inc_model <- compile_model(backward_exp_inc_pop, backward_exp_inc_dir, generation_time = 1,
-                                   overwrite = TRUE, direction = "forward", sim_length = 5000)
+                                   overwrite = TRUE, force = TRUE, direction = "forward", sim_length = 5000)
 backward_exp_inc_samples <- schedule_sampling(backward_exp_inc_model, times = 5001, list(backward_exp_inc_pop, n_samples))
 
 run_slim_msprime(
@@ -123,14 +123,14 @@ forward_exp_decr_dir <- file.path(tempdir(), "forward_exp_decr")
 forward_exp_decr_pop <- population("forward_exp_decr_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N / N_factor, how = "exponential")
 forward_exp_decr_model <- compile_model(forward_exp_decr_pop, forward_exp_decr_dir, generation_time = 1,
-                                 overwrite = TRUE, direction = "forward", sim_length = 5000)
+                                 overwrite = TRUE, force = TRUE, direction = "forward", sim_length = 5000)
 forward_exp_decr_samples <- schedule_sampling(forward_exp_decr_model, times = 5001, list(forward_exp_decr_pop, n_samples))
 
 backward_exp_decr_dir <- file.path(tempdir(), "backward_exp_decr")
 backward_exp_decr_pop <- population("backward_exp_decr_pop", time = 1, N = N, map = FALSE) %>%
   resize(time = 2001, end = 3001, N = N / N_factor, how = "exponential")
 backward_exp_decr_model <- compile_model(backward_exp_decr_pop, backward_exp_decr_dir, generation_time = 1,
-                                  overwrite = TRUE, direction = "forward", sim_length = 5000)
+                                  overwrite = TRUE, force = TRUE, direction = "forward", sim_length = 5000)
 backward_exp_decr_samples <- schedule_sampling(backward_exp_decr_model, times = 5001, list(backward_exp_decr_pop, n_samples))
 
 run_slim_msprime(

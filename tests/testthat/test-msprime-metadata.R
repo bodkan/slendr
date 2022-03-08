@@ -17,7 +17,7 @@ a <- population("a", parent = b, time = 1500, N = 10)
 forward_model_dir <- paste0(tempfile(), "_forward")
 
 forward_model <- compile_model(populations = list(a, b, x1, x2, c, o), path = forward_model_dir,
-                 generation_time = 1, overwrite = TRUE, sim_length = 2200,
+                 generation_time = 1, overwrite = TRUE, force = TRUE, sim_length = 2200,
                  description = "The most incredible popgen model ever")
 
 forward_samples <- rbind(
@@ -67,7 +67,7 @@ a <- population("a", parent = b, time = 1000, N = 10)
 backward_model_dir <- paste0(tempfile(), "_backward")
 
 backward_model <- compile_model(populations = list(a, b, x1, x2, c, o), path = backward_model_dir,
-                 generation_time = 1, overwrite = TRUE,
+                 generation_time = 1, overwrite = TRUE, force = TRUE,
                  description = "The most incredible backward model ever")
 
 # lets not fuss about the exact sampling -- this doesn't match exactly the

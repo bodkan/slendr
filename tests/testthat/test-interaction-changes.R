@@ -63,7 +63,7 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
     model <- compile_model(
       pop, file.path(tempdir(), paste0("model_", dispersal_fun)),
       generation_time = 1, competition_dist = 0, mate_dist = 1,
-      sim_length = 2, resolution = 0.1, overwrite = TRUE
+      sim_length = 2, resolution = 0.1, overwrite = TRUE, force = TRUE
     )
 
     slim(model, sequence_length = 1, recombination_rate = 0, method = "batch",

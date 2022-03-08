@@ -361,9 +361,7 @@ process_sampling <- function(samples, model, verbose = FALSE) {
         model$orig_length %% model$generation_time
     } else {
       start_time <- min(start_times)
-      # TODO: check this when total sim length is not divisible by generation
-      # time (so the same situation as for backward models right above)
-      sampling_time <- start_time + model$orig_length
+      sampling_time <- start_time + model$generation_time * round(model$orig_length / model$generation_time)
     }
 
     # ... and then call
@@ -406,7 +404,7 @@ process_sampling <- function(samples, model, verbose = FALSE) {
   } else if (model$direction == "forward" && oldest_time > 1) {
     # same for forward models starting not in generation 1
     time_orig <- df$time
-    df$time <- df$time - oldest_time
+    df$time <- df$time - oldest_time + model$generation_time
     end_time <- model$orig_length
   } else
     end_time <- model$orig_length
@@ -454,11 +452,18 @@ convert_slim_time <- function(times, model) {
   ancestors <- dplyr::filter(model$splits, parent == "ancestor")
 
   if (model$direction == "backward") {
-    result <- times * model$generation_time
+    result <- times * model$generation_time +
+      (max(ancestors[, ]$tsplit_orig) - model$orig_length)
+
     # does the backward simulation model terminate sooner than "present-day"?
     # if so, shift the times to start at the original time specified by user
-    if (max(ancestors[, ]$tsplit_orig) != model$orig_length)
-      result <- result + (ancestors[, ]$tsplit_orig - model$orig_length)
+    shortened <- max(ancestors[, ]$tsplit_orig) != model$orig_length
+    indivisible <- model$orig_length %% model$generation_time != 0
+    if (shortened && !indivisible) {
+      result <- result + model$orig_length %% model$generation_time
+    } else if (indivisible) {
+      result <- result + model$orig_length - round(model$orig_length / model$generation_time) * model$generation_time
+    }
   } else {
     result <- (model$length - times + 1) * model$generation_time
     # did the simulation start at a later time than "generation 1"?

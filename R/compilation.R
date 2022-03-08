@@ -30,6 +30,9 @@
 #'   parameter is inferred from the model and does not need to be set manually.
 #' @param slim_script Path to a SLiM script to be used for executing the model
 #'   (by default, a bundled backend script will be used)
+#' @param force Force a deletion of the model directory if it is already
+#'   present? Useful for non-interactive uses. In an interactive mode, the user
+#'   is asked to confirm the deletion manually.
 #' @param description Optional short description of the model
 #' @param dir Deprecated. Use \code{path} instead.
 #' @param geneflow Deprecated. Use \code{gene_flow} instead.
@@ -42,10 +45,10 @@
 #' @example man/examples/model_definition.R
 compile_model <- function(populations, generation_time, path = NULL, resolution = NULL,
                           competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
-                          gene_flow = list(), delete = FALSE,
+                          gene_flow = list(), overwrite = FALSE, force = FALSE,
                           sim_length = NULL, direction = NULL,
                           slim_script = system.file("scripts", "script.slim", package = "slendr"),
-                          description = "", dir = NULL, geneflow = NULL, overwrite = NULL) {
+                          description = "", dir = NULL, geneflow = NULL) {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   if (!is.null(dir) && is.null(path)) {
@@ -62,12 +65,6 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
             "entire package. Please consider moving to `gene_flow = ` at some point.",
             call. = FALSE)
     gene_flow <- geneflow
-  }
-
-  if (!is.null(overwrite) && overwrite && !delete) {
-    warning("The `overwrite =` argument of `compile_model()` is now deprecated.",
-            "\nIn the future, please use `delete = ` instead.", call. = FALSE)
-    delete <- overwrite
   }
 
   if (is.null(path)) path <- tempfile()
@@ -93,19 +90,24 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
 
   # prepare the model output directory
   if (dir.exists(path)) {
-    if (!delete)
+    if (!overwrite)
       stop("Directory '", path, "' already exists. Either delete it\nmanually ",
-           "or set 'delete = TRUE' to delete it from R.", call. = FALSE)
+           "or set 'overwrite = TRUE' to delete it from R.", call. = FALSE)
     else {
-      answer <- utils::menu(
-        c("Yes", "No"),
-        title = paste0("Are you ABSOLUTELY SURE you want to delete '", path,
-                       "'?\nThere is no going back.")
-      )
-      if (answer == 1)
+      if (interactive() && !force) {
+        answer <- utils::menu(c("Yes", "No"),
+          title = paste0("Are you ABSOLUTELY SURE you want to delete '", path,
+                         "'?\nThere is no going back.")
+        )
+        force <- answer == 1
+      }
+      if (force)
         unlink(path, recursive = TRUE)
       else
-        stop("Compilation aborted", call. = FALSE)
+        stop("Compilation aborted because the specified model path directory\ncould ",
+             "not have been created. If you're running this in a non-interactive\n",
+             "mode in a script and want to overwrite an already existing model\n",
+             "directory, you must set `force = TRUE`.", call. = FALSE)
     }
 
   }
