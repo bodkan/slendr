@@ -361,6 +361,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
     scale_color_discrete(drop = FALSE) +
     scale_fill_discrete(drop = FALSE) +
     labs(y = ylabel) +
+    expand_limits(x = 0) +
     theme_classic() +
     theme(
       legend.position = "none",
@@ -393,6 +394,10 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       p <- p + geom_polygon(data = event, aes(x, y, fill = pop))
   }
 
+  # labels with population names
+  p <- p + geom_label(data = centers, aes(label = pop, x = center, y = time,
+                                          fill = pop, fontface = "bold"))
+
   # add gene flow arrows and proportion labels
   if (!is.null(geneflows)) {
     p <- p + geom_segment(data = geneflows,
@@ -405,10 +410,6 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
                               x = xend - (xend - x) / 2,
                               y = yend - (yend - y) / 2), size = 3)
   }
-
-  # labels with population names
-  p <- p + geom_label(data = centers, aes(label = pop, x = center, y = time,
-                                          fill = pop, fontface = "bold"))
 
   p
 }
