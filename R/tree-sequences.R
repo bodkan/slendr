@@ -378,7 +378,8 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     # (sort by individual ID and time)
     nodes_new <- get_ts_nodes(ts_new) %>%
       dplyr::arrange(ind_id, time) %>%
-      dplyr::select(node_id, ind_id)
+      dplyr::select(node_id, ind_id) %>%
+      .$node_id
 
     location_col <- if (spatial) "location" else NULL
 
@@ -390,7 +391,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
       dplyr::arrange(ind_id, time) %>%
       dplyr::select(ind_id, pedigree_id, time, alive, remembered, retained) %>%
       dplyr::inner_join(keep_data, by = "pedigree_id") %>%
-      dplyr::inner_join(nodes_new, by = "ind_id") %>%
+      dplyr::mutate(node_id = nodes_new) %>%
       dplyr::as_tibble()
 
     if (spatial)
@@ -685,37 +686,53 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
          "cannot be converted to an R phylo tree representation (see the help\n",
          "page of ?ts_recapitate for more details)", call. = FALSE)
 
-  tree_array <- tree$parent_array
-
-  children_array <- which(tree_array != -1) - 1
-  parents_array <- tree_array[tree_array != -1]
-
-  # convert the edge table to a proper ape phylo object
-  # see http://ape-package.ird.fr/misc/FormatTreeR.pdf for more details
-  n_tips <- tree$num_samples(tree$root)
-  n_internal <- length(unique(parents_array))
-  n_all <- n_internal + n_tips
-
   data <- ts_data(ts)
-
-  tip_labels <- dplyr::filter(data, !is.na(name))$name
 
   # get tree sequence nodes which are present in the tskit tree object
   present_nodes <- data %>%
-    dplyr::filter(node_id %in% c(children_array, parents_array)) %>%
-    dplyr::arrange(node_id)
+    dplyr::as_tibble() %>%
+    dplyr::filter(node_id %in% tree$preorder())
 
-  present_ids <- present_nodes$node_id
-  lookup_nodes <- seq_len(n_all)
+  if (attr(ts, "model")$direction == "backward") {
+    present_nodes <- dplyr::arrange(present_nodes, is.na(name), time)
+  } else {
+    present_nodes <- dplyr::arrange(present_nodes, is.na(name), -time)
+  }
 
-  children <- sapply(children_array, function(i) lookup_nodes[present_ids == i])
-  parents <- sapply(parents_array, function(i) lookup_nodes[present_ids == i])
+  tip_labels <- present_nodes[1:tree$num_samples(), ]$name; length(tip_labels)
+
+  present_ids <- present_nodes$node_id; length(present_ids)
+
+  # first N are samples
+  all(sapply(present_ids[1:tree$num_samples()], function(i) tree$is_sample(i)))
+  # last M are not samples
+  all(!sapply(present_ids[(tree$num_samples() + 1):length(present_ids)], function(i) tree$is_sample(i)))
+
+  lookup_ids <- seq_along(present_ids); length(lookup_ids)
+
+  # convert the edge table to a proper ape phylo object
+  # see http://ape-package.ird.fr/misc/FormatTreeR.pdf for more details
+  n_tips <- tree$num_samples()
+  n_internal <- length(present_ids) - n_tips
+  n_all <- n_internal + n_tips
+
+  # first N are samples
+  all(sapply(present_ids[1:n_tips], function(i) tree$is_sample(i)))
+  all(sapply(present_ids[1:n_tips], function(i) length(tree$children(i)) == 0))
+  # last M are not samples
+  all(!sapply(present_ids[(n_tips + 1):n_all], function(i) tree$is_sample(i)))
+
+  children_ids <- present_ids[-1]; length(children_ids)
+  parent_ids <- sapply(children_ids, function(i) tree$parent(i)); length(parent_ids)
+
+  children <- sapply(children_ids, function(n) lookup_ids[present_ids == n])
+  parents <- sapply(parent_ids, function(n) lookup_ids[present_ids == n])
 
   # in ape phylo, leaves must be numbered `1...n`, root must be the node `n +
   # 1`, and all internal nodes must be larger than `n` -- we need to flip around
   # some indices in the edge matrix
   root_orig <- setdiff(parents, children) # root ID in a phylo tree before renumbering
-  root_new <- n_tips + 1 # root ID in the final phylo tree object
+  root_new <- length(tip_labels) + 1 # root ID in the final phylo tree object
 
   # replace the node ID of an internal node with the lowest integer ID in
   # the tree the new root ID and vice-versa, in the two vectors which will
@@ -729,15 +746,15 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 
   # switch the root IDs also in the original tskit node IDs table
   lookup_ts <- present_ids
-  lookup_ts[lookup_nodes == root_orig] <- present_ids[root_new]
-  lookup_ts[lookup_nodes == root_new] <- tree$root
+  lookup_ts[lookup_ids == root_orig] <- present_ids[root_new]
+  lookup_ts[lookup_ids == root_new] <- tree$root
 
   # bind the two columns back into an edge matrix
   edge <- cbind(as.integer(parents_ape), as.integer(children_ape))
 
   nodes <- ts_nodes(ts)
-  children_times <- sapply(children_array, function(i) nodes[nodes$node_id == i, ]$time)
-  parent_times <- sapply(parents_array, function(i) nodes[nodes$node_id == i, ]$time)
+  children_times <- sapply(child_ids, function(n) nodes[nodes$node_id == n, ]$time)
+  parent_times <- sapply(parent_ids, function(n) nodes[nodes$node_id == n, ]$time)
   edge_lengths <- abs(parent_times - children_times)
 
   node_table <- present_nodes %>%
@@ -760,7 +777,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     node.label = purrr::map_chr(unique(sort(parents_ape)),
                                 ~ node_table[node_table$phylo_id == .x, ]$pop),
     tip.label = tip_labels,
-    Nnode = n_internal
+    Nnode = length(present_ids) - tree$num_samples()
   )
   class(tree) <- c("slendr_phylo", "phylo")
 
