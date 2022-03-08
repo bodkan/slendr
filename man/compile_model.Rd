@@ -14,6 +14,7 @@ compile_model(
   dispersal_dist = NULL,
   gene_flow = list(),
   overwrite = FALSE,
+  force = FALSE,
   sim_length = NULL,
   direction = NULL,
   slim_script = system.file("scripts", "script.slim", package = "slendr"),
@@ -44,8 +45,11 @@ parent-offspring distance}
 (either a list of data.frame objects in the format defined by the
 \code{geneflow} function, or a single data.frame)}
 
-\item{overwrite}{Overwrite the contents of the output directory in case it
-already exists?}
+\item{overwrite}{Deprecated. Use \code{delete} instead.}
+
+\item{force}{Force a deletion of the model directory if it is already
+present? Useful for non-interactive uses. In an interactive mode, the user
+is asked to confirm the deletion manually.}
 
 \item{sim_length}{Total length of the simulation (required for forward time
 models, optional for models specified in backward time units which by
@@ -62,6 +66,9 @@ parameter is inferred from the model and does not need to be set manually.}
 \item{dir}{Deprecated. Use \code{path} instead.}
 
 \item{geneflow}{Deprecated. Use \code{gene_flow} instead.}
+
+\item{delete}{Completely delete the specified directory, in case it already
+exists, and create a new one?}
 }
 \value{
 Compiled \code{slendr_model} model object
