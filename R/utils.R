@@ -457,8 +457,10 @@ convert_slim_time <- function(times, model) {
     result <- times * model$generation_time +
       (max(ancestors[, ]$tsplit_orig) - model$orig_length)
 
-    # does the backward simulation model terminate sooner than "present-day"?
-    # if so, shift the times to start at the original time specified by user
+    # does the backward simulation model terminate sooner than "present-day"? if
+    # so, shift the times to start at the original time specified by user (also
+    # check for the situation where the simulation wouldn't end at 0 because the
+    # length of the simulation is not divisible by generation time)
     shortened <- oldest_time != model$orig_length
     indivisible <- model$orig_length %% model$generation_time != 0
     if (shortened && !indivisible) {
