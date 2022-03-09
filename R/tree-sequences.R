@@ -1616,14 +1616,15 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   if (!is.null(simplify_to))
     samples <- samples %>% dplyr::filter(name %in% simplify_to)
 
-  # split individuals into remembered (those explicitly sampled, to which we
-  # will add readable names from the sampling schedule table) and not remembered
-  # anonymous individuals
-  remembered <- dplyr::filter(individuals, remembered, time %in% samples$time) %>%
+  # split individuals into sampled (those explicitly sampled, to which we
+  # will add readable names from the sampling schedule table) and not sampled
+  # (either "anonymous" individuals or also remembered individuals which should
+  # not be regarded for simplification)
+  sampled <- dplyr::filter(individuals, remembered, time %in% samples$time) %>%
     dplyr::select(-time, -pop) %>%
     dplyr::bind_cols(samples)
 
-  not_remembered <- dplyr::filter(individuals, !remembered)
+  not_sampled <- dplyr::filter(individuals, !remembered | !time %in% samples$time)
 
   # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
@@ -1632,7 +1633,7 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
 
   # add numeric node IDs to each individual
   combined <-
-    dplyr::bind_rows(remembered, not_remembered) %>%
+    dplyr::bind_rows(sampled, not_sampled) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
     dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x))
 
