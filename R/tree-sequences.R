@@ -1620,7 +1620,7 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # will add readable names from the sampling schedule table) and not sampled
   # (either "anonymous" individuals or also remembered individuals which should
   # not be regarded for simplification)
-  sampled <- dplyr::filter(individuals, remembered, time %in% samples$time) %>%
+  sampled <- dplyr::filter(individuals, remembered, time %in% unique(samples$time)) %>%
     dplyr::select(-time, -pop) %>%
     dplyr::bind_cols(samples)
 
