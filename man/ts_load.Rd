@@ -28,7 +28,7 @@ ts_load(
 \item{recapitate}{Should the tree sequence be recapitated?}
 
 \item{simplify}{Should the tree sequence be simplified down to only
-remembered (i.e. "sampled", in \emph{slendr} parlance) individuals?}
+explicitly sampled individuals?}
 
 \item{mutate}{Should the tree sequence be mutated?}
 
