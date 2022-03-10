@@ -45,10 +45,10 @@
 #' @example man/examples/model_definition.R
 compile_model <- function(populations, generation_time, path = NULL, resolution = NULL,
                           competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
-                          gene_flow = list(), overwrite = FALSE, force = FALSE,
+                          gene_flow = NULL, overwrite = FALSE, force = FALSE,
                           sim_length = NULL, direction = NULL,
                           slim_script = system.file("scripts", "script.slim", package = "slendr"),
-                          description = "", dir = NULL, geneflow = NULL) {
+                          description = "", dir = NULL, geneflow = list()) {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   if (!is.null(dir) && is.null(path)) {
