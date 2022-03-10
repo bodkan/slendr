@@ -39,7 +39,7 @@ test_that("read_model() restores a complex model object", {
   model1 <- compile_model(
     path = model_dir,
     populations = list(p1, p2, p3, p4, p5),
-    geneflow = geneflow,
+    gene_flow = geneflow,
     generation_time = 30,
     resolution = 10000,
     overwrite = TRUE, force = TRUE,
@@ -104,7 +104,7 @@ test_that("read_model() restores a complex model object (nonspatial)", {
   model1 <- compile_model(
     path = model_dir,
     populations = list(p1, p2, p3, p4, p5),
-    geneflow = geneflow,
+    gene_flow = geneflow,
     generation_time = 30,
     overwrite = TRUE, force = TRUE
   )

@@ -12,7 +12,7 @@ test_that("forward and backward time model objects are equivalent", {
 
   forward <- compile_model(
     path = file.path(tempdir(), "tmp-forward"),
-    populations = list(p1, p2, p3, p4, p5), geneflow = geneflows,
+    populations = list(p1, p2, p3, p4, p5), gene_flow = geneflows,
     generation_time = 1, resolution = 1,
     overwrite = TRUE, force = TRUE,
     competition_dist = 1, mate_dist = 1, dispersal_dist = 1,
@@ -30,7 +30,7 @@ test_that("forward and backward time model objects are equivalent", {
 
   backward <- compile_model(
     path = file.path(tempdir(), "tmp-backward"),
-    populations = list(p1, p2, p3, p4, p5), geneflow = geneflows,
+    populations = list(p1, p2, p3, p4, p5), gene_flow = geneflows,
     generation_time = 1, resolution = 1,
     overwrite = TRUE, force = TRUE,
     competition_dist = 1, mate_dist = 1, dispersal_dist = 1
@@ -70,7 +70,7 @@ test_that("forward and backward models yield the same simulation result", {
   forward <- compile_model(
     path = file.path(tempdir(), "tmp-forward"),
     populations = list(p1, p2, p3, p4, p5),
-    geneflow = geneflow,
+    gene_flow = geneflow,
     generation_time = 1,
     resolution = 10000,
     overwrite = TRUE, force = TRUE,
@@ -95,7 +95,7 @@ test_that("forward and backward models yield the same simulation result", {
   backward <- compile_model(
     path = file.path(tempdir(), "tmp-backward"),
     populations = list(p1, p2, p3, p4, p5),
-    geneflow = geneflow,
+    gene_flow = geneflow,
     generation_time = 1,
     resolution = 10000,
     overwrite = TRUE, force = TRUE,
@@ -146,7 +146,7 @@ test_that("forward and backward models yield the same simulation result (nonspat
   forward <- compile_model(
     path = file.path(tempdir(), "tmp-forward"),
     populations = list(p1, p2, p3, p4, p5),
-    geneflow = geneflow,
+    gene_flow = geneflow,
     generation_time = 1,
     overwrite = TRUE, force = TRUE,
     sim_length = 480
@@ -167,7 +167,7 @@ test_that("forward and backward models yield the same simulation result (nonspat
   backward <- compile_model(
     path = file.path(tempdir(), "tmp-backward"),
     populations = list(p1, p2, p3, p4, p5),
-    geneflow = geneflow,
+    gene_flow = geneflow,
     generation_time = 1,
     overwrite = TRUE, force = TRUE,
   )
