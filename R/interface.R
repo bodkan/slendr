@@ -1037,11 +1037,11 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
     stop("Sample counts must be integer numbers", call. = FALSE)
 
   # make sure that all sampling times fall in the time window of the simulation itself
-  split_times <- purrr::map_int(model$populations, ~ attr(., "history")[[1]]$time)
-  if ((model$direction == "forward" && (any(times > min(split_times) + model$orig_length)
-                                        || any(times < min(split_times)))) ||
-      (model$direction == "backward" && (any(times < max(split_times) - model$orig_length)
-                                         || any(times > max(split_times))))) {
+  oldest_time <- get_oldest_time(model$populations, model$direction)
+  if ((model$direction == "forward" && (any(times > oldest_time + model$orig_length)
+                                        || any(times < oldest_time))) ||
+      (model$direction == "backward" && (any(times < oldest_time - model$orig_length)
+                                         || any(times > oldest_time)))) {
 
     if (strict)
       stop("A sampling event was scheduled outside of the simulation time window", call. = FALSE)
