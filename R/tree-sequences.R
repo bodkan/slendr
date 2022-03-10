@@ -1052,7 +1052,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
     ts <- attr(x, "tree_sequence")
     df_labels <- ts_data(ts) %>%
       dplyr::select(node_id, name, sampled) %>%
-      dplyr::mutate(node_label = ifelse(!is.na(name), sprintf("%s (%s)", name, node_id)), node_id)
+      dplyr::mutate(node_label = ifelse(!is.na(name), sprintf("%s (%s)", name, node_id), node_id))
     if (sampled_only)
       df_labels$node_label <- ifelse(!df_labels$sampled, df_labels$node_id, df_labels$node_label)
 
