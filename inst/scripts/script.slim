@@ -356,7 +356,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         n = event.getValue("n");
         all_inds = get_pop(pop).individuals;
 
-        // only individuals not yet sampled are eligible for remembering
+        // only individuals not yet sampled are eligible for sampling
         all_inds = all_inds[all_inds.tag != 1];
 
         x = event.getValue("x"); y = event.getValue("y");
@@ -382,7 +382,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         } else
             n_str = asString(asInteger(n));
 
-        log_output("remembering " + n_str + " individuals of " +
+        log_output("sampling " + n_str + " individuals of " +
                              pop + "(p" + get_pop(pop).id + ")" + where);
 
         // give a warning in case more individuals are scheduled for sampling
@@ -390,7 +390,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
         if (n > length(all_inds)) {
             catn("\nWARNING: Population " + pop + "(p" + get_pop(pop).id + ") has " +
                  length(all_inds) + " individuals " +
-                 "but remembering of " + n +
+                 "but sampling of " + n +
                  " was requested. Only " + length(all_inds) +
                  " individuals will be recorded in time " +
                  event.getValue("time_orig") + ".\n");
