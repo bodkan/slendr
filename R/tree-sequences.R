@@ -1620,11 +1620,13 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # will add readable names from the sampling schedule table) and not sampled
   # (either "anonymous" individuals or also remembered individuals which should
   # not be regarded for simplification)
-  sampled <- dplyr::filter(individuals, remembered, time %in% unique(samples$time)) %>%
+  # sampled <- dplyr::filter(individuals, remembered, time %in% unique(samples$time)) %>%
+  sampled <- dplyr::filter(individuals, remembered) %>%
     dplyr::select(-time, -pop) %>%
     dplyr::bind_cols(samples)
 
-  not_sampled <- dplyr::filter(individuals, !remembered | !time %in% samples$time)
+  # not_sampled <- dplyr::filter(individuals, !remembered | !time %in% samples$time)
+  not_sampled <- dplyr::filter(individuals, !remembered)
 
   # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
