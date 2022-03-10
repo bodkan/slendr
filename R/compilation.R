@@ -45,7 +45,7 @@
 #' @example man/examples/model_definition.R
 compile_model <- function(populations, generation_time, path = NULL, resolution = NULL,
                           competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
-                          gene_flow = NULL, overwrite = FALSE, force = FALSE,
+                          gene_flow = list(), overwrite = FALSE, force = FALSE,
                           sim_length = NULL, direction = NULL,
                           slim_script = system.file("scripts", "script.slim", package = "slendr"),
                           description = "", dir = NULL, geneflow = list()) {
@@ -59,7 +59,7 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
     path <- dir
   }
 
-  if (!is.null(geneflow) && is.null(gene_flow)) {
+  if (length(geneflow) > 0) {
     warning("The `geneflow =` argument of `compile_model()` is now deprecated",
             " as part\nof cleaning up and unifying the function interfaces across the\n",
             "entire package. Please consider moving to `gene_flow = ` at some point.",
