@@ -108,12 +108,12 @@ print.slendr_tsdata <- function(x, ...) {
 
   if (backend == "SLiM") {
     remembered <- individuals %>%
-      dplyr::filter(remembered) %>%
+      dplyr::filter(sampled) %>%
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
     retained <- individuals %>%
-      dplyr::filter(!remembered, retained) %>%
+      dplyr::filter(!sampled, !remembered, retained) %>%
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
