@@ -4,7 +4,14 @@
 \alias{ts_draw}
 \title{Plot a graphical representation of a single tree}
 \usage{
-ts_draw(x, width = 1500, height = 500, labels = FALSE, ...)
+ts_draw(
+  x,
+  width = 1500,
+  height = 500,
+  labels = FALSE,
+  sampled_only = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A single tree extracted by \code{\link{ts_tree}}}
@@ -12,6 +19,9 @@ ts_draw(x, width = 1500, height = 500, labels = FALSE, ...)
 \item{width, height}{Pixel dimensions of the rendered bitmap}
 
 \item{labels}{Label each node with the individual name?}
+
+\item{sampled_only}{Should only individuals explicitly sampled through
+simplification be labeled?}
 
 \item{...}{Keyword arguments to the tskit \code{draw_svg} function.}
 }

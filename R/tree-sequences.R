@@ -1040,16 +1040,22 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @param x A single tree extracted by \code{\link{ts_tree}}
 #' @param width,height Pixel dimensions of the rendered bitmap
 #' @param labels Label each node with the individual name?
+#' @param sampled_only Should only individuals explicitly sampled through
+#'   simplification be labeled? This is relevant in situations in which sampled
+#'   individuals can themselves be among the ancestral nodes.
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
 #'
 #' @export
-ts_draw <- function(x, width = 1500, height = 500, labels = FALSE, ...) {
+ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
+                    sampled_only = TRUE, ...) {
   if (labels) {
     ts <- attr(x, "tree_sequence")
     df_labels <- ts_data(ts) %>%
-      dplyr::select(node_id, name) %>%
-      dplyr::mutate(node_label = sprintf("%s (%s)", name, node_id),
-                    node_label = ifelse(is.na(name), node_id, node_label))
+      dplyr::select(node_id, name, sampled) %>%
+      dplyr::mutate(node_label = ifelse(!is.na(name), sprintf("%s (%s)", name, node_id)), node_id)
+    if (sampled_only)
+      df_labels$node_label <- ifelse(!df_labels$sampled, df_labels$node_id, df_labels$node_label)
+
     py_labels <- reticulate::py_dict(keys = df_labels$node_id,
                                      values = df_labels$node_label)
   } else
