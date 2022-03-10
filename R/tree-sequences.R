@@ -724,28 +724,28 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
   # - first look for those nodes in the tree sequence node IDs
   internal_ts_samples <- intersect(parent_ids, data[data$sampled, ]$node_id)
   # - then convert them to the phylo numbering
-  internal_phylo_samples <- sapply(internal_samples, function(n) lookup_ids[present_ids == n])
+  internal_phylo_samples <- sapply(internal_ts_samples, function(n) lookup_ids[present_ids == n])
 
   # and then link them to dummy internal nodes, effectively turning them into
   # proper leaves
-  dummies <- c()
-  for (x in seq_len(n_dummy)) {
-    ts_node <- as.integer(internal_ts_samples[x])
-    phylo_node <- as.integer(internal_phylo_samples[x])
-    dummy <- n_all + x
+  dummies <- vector(mode = "integer", length(internal_ts_samples))
+  for (d in seq_along(dummies)) {
+    ts_node <- as.integer(internal_ts_samples[d])
+    phylo_node <- as.integer(internal_phylo_samples[d])
+    dummy <- n_all + d
     node_parent <- lookup_ids[present_ids == tree$parent(ts_node)]
     node_children <- sapply(unlist(tree$children(ts_node)), function(n) lookup_ids[present_ids == n])
 
     # replace the sampled node with a dummy node, linking to its parent and
     # children (all done in the phylo index space)
-    parents[children == node_children] <- dummy
+    parents[children %in% node_children] <- dummy
     children[children == phylo_node] <- dummy
 
     # add a new link from the dummy node to the real sample
     children <- c(children, phylo_node)
     parents <- c(parents, dummy)
 
-    dummies <- c(dummies, dummy)
+    dummies[d] <- dummy
   }
 
   # bind the two columns back into an edge matrix
@@ -765,12 +765,20 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
   data <- dplyr::select(
     data, name, pop, node_id, phylo_id, time, !!columns, ind_id
-  ) %>%
-    dplyr::bind_rows(data.frame(
-      name = NA, pop = NA, node_id = NA, phylo_id = dummies,
-      time = sapply(internal_ts_samples,
-                    function(n) data[data$node_id == n, ]$time)
-    ))
+  )
+  # add fake dummy information to the processed tree sequence table so that
+  # the user knows what is real and what is not straight from the ts_phylo()
+  # output
+  if (length(dummies)) {
+    data <- dplyr::bind_rows(
+      data,
+      data.frame(
+        name = NA, pop = NA, node_id = NA, phylo_id = dummies,
+        time = sapply(internal_ts_samples,
+                      function(n) data[data$node_id == n, ]$time)
+      )
+    )
+  }
 
   tree <- list(
     edge = edge,
@@ -778,7 +786,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     node.label = purrr::map_chr(unique(sort(parents)),
                                 ~ data[data$phylo_id == .x, ]$pop),
     tip.label = tip_labels,
-    Nnode = n_internal + n_dummy
+    Nnode = n_internal + length(dummies)
   )
   class(tree) <- c("slendr_phylo", "phylo")
 
@@ -792,7 +800,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
 
   # subset ts_data result to only those nodes that are present in the phylo
   # object, adding another column with the rearranged node IDs
-  attr(tree, "data") <- node_table
+  attr(tree, "data") <- data
   attr(tree, "branches") <- get_sf_branches(tree)
   attr(tree, "model") <- attr(ts, "model")
   attr(tree, "source") <- attr(ts, "source")
