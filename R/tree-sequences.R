@@ -684,98 +684,101 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
          "cannot be converted to an R phylo tree representation (see the help\n",
          "page of ?ts_recapitate for more details)", call. = FALSE)
 
-  data <- ts_data(ts)
-
   # get tree sequence nodes which are present in the tskit tree object
-  present_nodes <- data %>%
+  data <- ts_data(ts) %>%
     dplyr::as_tibble() %>%
     dplyr::filter(node_id %in% tree$preorder())
 
-  if (attr(ts, "model")$direction == "backward") {
-    present_nodes <- dplyr::arrange(present_nodes, is.na(name), time)
-  } else {
-    present_nodes <- dplyr::arrange(present_nodes, is.na(name), -time)
-  }
-
-  tip_labels <- present_nodes[1:tree$num_samples(), ]$name; length(tip_labels)
-
-  present_ids <- present_nodes$node_id; length(present_ids)
-
-  # first N are samples
-  all(sapply(present_ids[1:tree$num_samples()], function(i) tree$is_sample(i)))
-  # last M are not samples
-  all(!sapply(present_ids[(tree$num_samples() + 1):length(present_ids)], function(i) tree$is_sample(i)))
-
-  lookup_ids <- seq_along(present_ids); length(lookup_ids)
+  if (attr(ts, "model")$direction == "forward")
+    data <- dplyr::arrange(data, sampled, time)
+  else
+    data <- dplyr::arrange(data, sampled, -time)
 
   # convert the edge table to a proper ape phylo object
   # see http://ape-package.ird.fr/misc/FormatTreeR.pdf for more details
-  n_tips <- tree$num_samples()
-  n_internal <- length(present_ids) - n_tips
-  n_all <- n_internal + n_tips
+  n_tips <- sum(data$sampled)
+  n_internal <- nrow(data) - n_tips
+  n_all <- n_internal + n_tips; stopifnot(n_all == nrow(data))
 
-  # first N are samples
-  all(sapply(present_ids[1:n_tips], function(i) tree$is_sample(i)))
-  all(sapply(present_ids[1:n_tips], function(i) length(tree$children(i)) == 0))
-  # last M are not samples
-  all(!sapply(present_ids[(n_tips + 1):n_all], function(i) tree$is_sample(i)))
+  present_ids <- data$node_id
+  # design a lookup table of consecutive integer numbers (reversing it because
+  # in the ordered tree sequence table of nodes `data`, the sampled nodes which
+  # will become the tips of the tree are at the end)
+  lookup_ids <- rev(seq_along(present_ids))
 
-  children_ids <- present_ids[-1]; length(children_ids)
-  parent_ids <- sapply(children_ids, function(i) tree$parent(i)); length(parent_ids)
+  tip_labels <- dplyr::filter(data, sampled) %>%
+    { sprintf("%s (%s)", .$name, .$node_id) } %>%
+    rev()
 
-  children <- sapply(children_ids, function(n) lookup_ids[present_ids == n])
+  # flip the index of the root in the lookup table
+  lookup_ids[length(lookup_ids) - n_tips] <- lookup_ids[1]
+  lookup_ids[1] <- n_tips + 1
+
+  child_ids <- present_ids[-1]
+  parent_ids <- sapply(child_ids, function(i) tree$parent(i))
+
+  children <- sapply(child_ids, function(n) lookup_ids[present_ids == n])
   parents <- sapply(parent_ids, function(n) lookup_ids[present_ids == n])
 
-  # in ape phylo, leaves must be numbered `1...n`, root must be the node `n +
-  # 1`, and all internal nodes must be larger than `n` -- we need to flip around
-  # some indices in the edge matrix
-  root_orig <- setdiff(parents, children) # root ID in a phylo tree before renumbering
-  root_new <- length(tip_labels) + 1 # root ID in the final phylo tree object
+  # find which sampled nodes are not leaves:
+  # - first look for those nodes in the tree sequence node IDs
+  internal_ts_samples <- intersect(parent_ids, data[data$sampled, ]$node_id)
+  # - then convert them to the phylo numbering
+  internal_phylo_samples <- sapply(internal_samples, function(n) lookup_ids[present_ids == n])
 
-  # replace the node ID of an internal node with the lowest integer ID in
-  # the tree the new root ID and vice-versa, in the two vectors which will
-  # form the phylo edge matrix
-  children_ape <- children
-  parents_ape <- parents
+  # and then link them to dummy internal nodes, effectively turning them into
+  # proper leaves
+  dummies <- c()
+  for (x in seq_len(n_dummy)) {
+    ts_node <- as.integer(internal_ts_samples[x])
+    phylo_node <- as.integer(internal_phylo_samples[x])
+    dummy <- n_all + x
+    node_parent <- lookup_ids[present_ids == tree$parent(ts_node)]
+    node_children <- sapply(unlist(tree$children(ts_node)), function(n) lookup_ids[present_ids == n])
 
-  parents_ape[parents == root_orig] <- root_new
-  parents_ape[parents == root_new] <- root_orig
-  children_ape[children == root_new] <- root_orig
+    # replace the sampled node with a dummy node, linking to its parent and
+    # children (all done in the phylo index space)
+    parents[children == node_children] <- dummy
+    children[children == phylo_node] <- dummy
 
-  # switch the root IDs also in the original tskit node IDs table
-  lookup_ts <- present_ids
-  lookup_ts[lookup_ids == root_orig] <- present_ids[root_new]
-  lookup_ts[lookup_ids == root_new] <- tree$root
+    # add a new link from the dummy node to the real sample
+    children <- c(children, phylo_node)
+    parents <- c(parents, dummy)
+
+    dummies <- c(dummies, dummy)
+  }
 
   # bind the two columns back into an edge matrix
-  edge <- cbind(as.integer(parents_ape), as.integer(children_ape))
+  edge <- cbind(as.integer(parents), as.integer(children))
 
-  nodes <- ts_nodes(ts)
-  children_times <- sapply(child_ids, function(n) nodes[nodes$node_id == n, ]$time)
-  parent_times <- sapply(parent_ids, function(n) nodes[nodes$node_id == n, ]$time)
-  edge_lengths <- abs(parent_times - children_times)
+  # create vector of edge lengths (adding zero-length branches linking the dummy
+  # nodes)
+  children_times <- sapply(child_ids, function(n) data[data$node_id == n, ]$time)
+  parent_times <- sapply(parent_ids, function(n) data[data$node_id == n, ]$time)
+  edge_lengths <- c(abs(parent_times - children_times), rep(0, length(dummies)))
 
-  node_table <- present_nodes %>%
-    dplyr::mutate(phylo_id = match(node_id, lookup_ts))
-
+  data$phylo_id <- sapply(data$node_id, function(n) lookup_ids[present_ids == n])
   columns <- c()
-
   if (!is.null(attr(ts, "model")$world))
     columns <- c(columns, "location")
   if (attr(ts, "source") == "SLiM")
-    columns <- c(columns, c("remembered", "retained", "alive", "pedigree_id"))
-
-  node_table <- dplyr::select(
-    node_table, name, pop, node_id, phylo_id, time, !!columns, ind_id
-  )
+    columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
+  data <- dplyr::select(
+    data, name, pop, node_id, phylo_id, time, !!columns, ind_id
+  ) %>%
+    dplyr::bind_rows(data.frame(
+      name = NA, pop = NA, node_id = NA, phylo_id = dummies,
+      time = sapply(internal_ts_samples,
+                    function(n) data[data$node_id == n, ]$time)
+    ))
 
   tree <- list(
     edge = edge,
     edge.length = edge_lengths,
-    node.label = purrr::map_chr(unique(sort(parents_ape)),
-                                ~ node_table[node_table$phylo_id == .x, ]$pop),
+    node.label = purrr::map_chr(unique(sort(parents)),
+                                ~ data[data$phylo_id == .x, ]$pop),
     tip.label = tip_labels,
-    Nnode = length(present_ids) - tree$num_samples()
+    Nnode = n_internal + n_dummy
   )
   class(tree) <- c("slendr_phylo", "phylo")
 
