@@ -108,6 +108,7 @@ objects are specified", call. = FALSE)
     split_times <- purrr::map_int(pops, function(pop) {
       attr(pop, "history")[[1]]$time
     })
+    names(split_times) <- purrr::map_chr(pops, ~ .x$pop[1])
     if (direction == "backward") {
       split_times <- sort(split_times, decreasing = TRUE)
     } else {
@@ -158,7 +159,8 @@ objects are specified", call. = FALSE)
         geom_sf(data = pop_maps, aes(fill = pop), color = NA, alpha = 0.4) +
         geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
     }
-    p <- p + scale_fill_discrete(drop = FALSE, name = "") + guides(alpha = guide_legend("time"))
+    p <- p + scale_fill_discrete(drop = FALSE, name = "") +
+      guides(alpha = guide_legend("time"))
 
     # add geneflow arrows, if requested
     if (geneflows) {
