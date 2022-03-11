@@ -36,33 +36,43 @@ SEED <- 42
 set.seed(SEED)
 ```
 
-Automatically setup the Python environment with all dependencies for tree sequence processing and analysis:
+<!-- Automatically setup the Python environment with all dependencies for tree sequence processing and analysis: -->
+
+<!-- ```{r} -->
+<!-- setup_env() -->
+<!-- check_env() -->
+<!-- ``` -->
 
 ```{r}
-setup_env()
-check_env()
+p_code <- ggplot() +
+  geom_text(aes(x = 1, y = 1), label = "code will be here") +
+  theme_void()
 ```
 
 ## Example 1
 
-```{r}
+```{r, eval = !file.exists(file.path(model$path, "output_msprime.trees"))}
+SEED <- 42
+set.seed(SEED)
+
 o <- population("o", time = 1, N = 100)
 c <- population("c", time = 2500, N = 100, parent = o)
-a <- population("a", time = 3000, N = 100, parent = c)
-b <- population("b", time = 3500, N = 100, parent = a)
-x1 <- population("x1", time = 3800, N = 10000, parent = c)
-x2 <- population("x2", time = 4000, N = 10000, parent = x1)
+a <- population("a", time = 2800, N = 100, parent = c)
+b <- population("b", time = 3700, N = 100, parent = a)
+x1 <- population("x1", time = 4000, N = 15000, parent = c)
+x2 <- population("x2", time = 4300, N = 15000, parent = x1)
 
-gf <- gene_flow(from = b, to = x1, start = 4100, end = 4150, 0.1)
+gf <- gene_flow(from = b, to = x1, start = 5400, end = 5800, 0.1)
 
 model <- compile_model(
-  populations = list(o, a, b, c, x1, x2), geneflow = gf,
-  generation_time = 1, sim_length = 4500
+  populations = list(o, a, b, c, x1, x2), gene_flow = gf,
+  generation_time = 1, sim_length = 6000, path = "~/Desktop/slendr/ex1", overwrite = TRUE, force = TRUE
 )
 
 plot_model(model, sizes = FALSE, proportions = TRUE)
 
-msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
+msprime(model, sequence_length = 100e6, recombination_rate = 1e-8,
+        random_seed = SEED)
 
 ts <- ts_load(model) %>% ts_mutate(mutation_rate = 1e-8)
 
@@ -74,11 +84,9 @@ f4ratio <- ts_f4ratio(
   ts, X = filter(samples, pop %in% c("x1", "x2"))$name,
   A = "a_1", B = "b_1", C = "c_1", O = "o_1"
 )
-```
 
-<!-- ```{r} -->
-<!-- f4ratio %>% inner_join(samples, by = c("X" = "name")) %>% ggplot(aes(pop, alpha, color = pop)) + geom_boxplot() + geom_jitter() + geom_hline(yintercept = 0) -->
-<!-- ``` -->
+# f4ratio %>% inner_join(samples, by = c("X" = "name")) %>% ggplot(aes(pop, alpha, color = pop)) + geom_boxplot() + geom_jitter() + geom_hline(yintercept = 0) + coord_cartesian(ylim = c(0, 0.2))
+```
 
 
 ```{r class.source = "fold-hide"}
@@ -92,11 +100,10 @@ f4ratio_slim <- ts_f4ratio(
   ts_slim, X = filter(samples, pop %in% c("x1", "x2"))$name,
   A = "a_1", B = "b_1", C = "c_1", O = "o_1"
 )
+
+# f4ratio_slim %>% inner_join(samples, by = c("X" = "name")) %>% ggplot(aes(pop, alpha, color = pop)) + geom_boxplot() + geom_jitter() + geom_hline(yintercept = 0) + coord_cartesian(ylim = c(0, 0.2))
 ```
 
-<!-- ```{r} -->
-<!-- f4ratio_slim %>% inner_join(samples, by = c("X" = "name")) %>% ggplot(aes(pop, alpha, color = pop)) + geom_boxplot() + geom_jitter() + geom_hline(yintercept = 0) -->
-<!-- ``` -->
 
 ```{r class.source = "fold-hide"}
 divergence_both <- bind_rows(
@@ -130,13 +137,14 @@ p_ex3_f4ratio <- f4ratio_both %>%
   geom_hline(yintercept = 0, linetype = 2) +
   geom_jitter(aes(color = backend, shape = backend), alpha = 0.75, size = 2,
               position = position_jitterdodge(jitter.width = 0.25)) +
-  geom_boxplot(aes(group = interaction(population, backend), fill = population),
-                   alpha = 0.75, size = 0.25, outlier.shape = NA) +
+  geom_boxplot(aes(group = interaction(population, backend)),
+                   alpha = 0.5, size = 0.25, outlier.shape = NA) +
   # ylab(base::expression("ancestry from"~italic("b")~"[%]")) +
   ylab(base::expression(italic("f")[4]~"-ratio ancestry proportion [%]")) +
   scale_color_manual(values = c("black", "darkgray")) +
-  scale_fill_manual(values = scales::hue_pal()(6)[c(5, 6)]) +
+  #scale_fill_manual(values = scales::hue_pal()(6)[c(5, 6)]) +
   theme_minimal() +
+  coord_cartesian(ylim = c(0, 20)) +
   theme(legend.position = "none",
         axis.text.x = element_text(size = 11),
         axis.title.x = element_blank(),
@@ -149,14 +157,18 @@ p_ex3_legend <- ggdraw() + draw_grob(grid::grobTree(get_legend(p_ex3_divergence)
 p_ex3_model <- plot_model(model, sizes = FALSE, proportions = TRUE)
 
 plot_grid(
-  p_ex3_model,
+  p_code,
   plot_grid(
-    p_ex3_divergence + theme(legend.position = "none"),
-    p_ex3_f4ratio,
-    ncol = 2, rel_widths = c(1, 0.8), labels = c("C", "D")
+    p_ex3_model,
+    plot_grid(
+      p_ex3_divergence + theme(legend.position = "none"),
+      p_ex3_f4ratio,
+      ncol = 2, rel_widths = c(1, 0.8), labels = c("C", "D")
+    ),
+    p_ex3_legend, nrow = 3, rel_heights = c(1, 1, 0.1),
+    labels = "B"
   ),
-  p_ex3_legend, nrow = 3, rel_heights = c(1, 1, 0.1),
-  labels = "B"
+  nrow = 1, labels = c("A", "")
 )
 ```
 
@@ -180,10 +192,11 @@ p8 <- population("pop8", time = 1, N = 2000, map = map, competition_dist = 1)
 model <- compile_model(
   populations = list(p1, p2, p3, p4, p5, p6, p7, p8),
   generation_time = 1, sim_length = 5000, resolution = 0.1,
-  mate_dist = 0.1, dispersal_dist = 0.05
+  mate_dist = 0.1, dispersal_dist = 0.05,
+  path = "~/Desktop/slendr/ex2"
 )
 
-slim(model, sequence_length = 10e6, recombination_rate = 1e-8, method = "batch")
+slim(model, sequence_length = 10e6, recombination_rate = 1e-8)
 
 ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
 
