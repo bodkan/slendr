@@ -544,6 +544,10 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
+  if (start == end)
+    stop(sprintf("No time allowed for the %s -> %s gene flow at time %s to happen",
+                 from_name, to_name, start), call. = FALSE)
+
   if (from$time[1] <= start & from$time[1] <= end &
       to$time[1] <= start & to$time[1] <= end)
     comp <- `<=`
@@ -552,7 +556,7 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
     comp <- `>=`
   else
     stop(sprintf("Specified times are not consistent with the assumed direction of
-time (geneflow %s -> %s in the time window %s-%s)",
+time (gene flow %s -> %s in the time window %s-%s)",
                  from_name, to_name, start, end), call. = FALSE)
 
   if (has_map(from) && has_map(to)) {
@@ -579,7 +583,7 @@ time (geneflow %s -> %s in the time window %s-%s)",
   Please check the spatial maps of both populations by running
   `plot_map(%s, %s)` and adjust them accordingly. Alternatively, in case
   this makes sense for your model, you can add `overlap = F` which
-  will instruct slendr to simulate geneflow without spatial overlap
+  will instruct slendr to simulate gene flow without spatial overlap
   between populations.",
   from_name, to_name, start, deparse(substitute(from)),
   deparse(substitute(to))), call. = FALSE)
