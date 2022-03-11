@@ -258,7 +258,8 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
     dplyr::mutate(xmax = cumsum(N + median(N)),
                   xmin = xmax - N,
                   center = xmin + N / 2) %>%
-    dplyr::select(pop, center, time)
+    dplyr::select(pop, center, time) %>%
+    dplyr::mutate(center = center - center[1])
 
   # iterate over each population's demographic history and compose the
   # coordinates of polygons in each epoch
