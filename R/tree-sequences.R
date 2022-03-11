@@ -675,7 +675,7 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #'
 #' @export
 ts_phylo <- function(ts, i, mode = c("index", "position"),
-                     labels = c("pop", "tskit"), quiet = FALSE) {
+                     labels = c("tskit", "pop"), quiet = FALSE) {
   labels <- match.arg(labels)
 
   tree <- ts_tree(ts, i, mode)
@@ -713,7 +713,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   lookup_ids <- rev(seq_along(present_ids))
 
   tip_labels <- dplyr::filter(data, sampled) %>%
-    { sprintf("%s (%s)", .$name, .$node_id) } %>%
+    { sprintf("%s (%s)", .$node_id, .$name) } %>%
     rev()
 
   # flip the index of the root in the lookup table
@@ -780,8 +780,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       data,
       data.frame(
         name = NA,
-        pop = sapply(internal_ts_samples,
-                     function(n) data[data$node_id == n, ]$pop),
+        pop = NA,
+        # pop = sapply(internal_ts_samples,
+        #              function(n) data[data$node_id == n, ]$pop),
         node_id = NA, phylo_id = dummies,
         time = sapply(internal_ts_samples,
                       function(n) data[data$node_id == n, ]$time)
