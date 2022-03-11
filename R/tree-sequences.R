@@ -668,10 +668,16 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' Convert a tree in the tree sequence to an object of the class \code{phylo}
 #'
 #' @inheritParams ts_tree
+#' @param labels What should be stored as node labels in the final \code{phylo}
+#'   object? Options are either a population name or a tskit integer node ID
+#'   (which is a different thing from a \code{phylo} class node integer index).
 #' @param quiet Should ape's internal phylo validity test be printed out?
 #'
 #' @export
-ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
+ts_phylo <- function(ts, i, mode = c("index", "position"),
+                     labels = c("pop", "tskit"), quiet = FALSE) {
+  labels <- match.arg(labels)
+
   tree <- ts_tree(ts, i, mode)
 
   if (!attr(ts, "simplified") && attr(ts, "source") != "msprime")
@@ -773,18 +779,25 @@ ts_phylo <- function(ts, i, mode = c("index", "position"), quiet = FALSE) {
     data <- dplyr::bind_rows(
       data,
       data.frame(
-        name = NA, pop = NA, node_id = NA, phylo_id = dummies,
+        name = NA,
+        pop = sapply(internal_ts_samples,
+                     function(n) data[data$node_id == n, ]$pop),
+        node_id = NA, phylo_id = dummies,
         time = sapply(internal_ts_samples,
                       function(n) data[data$node_id == n, ]$time)
       )
     )
   }
 
+  # generate appropriate internal node labels based on the user's choice
+  elem <- if (labels == "pop") "pop" else "node_id"
+  node_labels <- purrr::map_chr(unique(sort(parents)),
+                                ~ data[data$phylo_id == .x, ][[elem]])
+
   tree <- list(
     edge = edge,
     edge.length = edge_lengths,
-    node.label = purrr::map_chr(unique(sort(parents)),
-                                ~ data[data$phylo_id == .x, ]$pop),
+    node.label = node_labels,
     tip.label = tip_labels,
     Nnode = n_internal + length(dummies)
   )
