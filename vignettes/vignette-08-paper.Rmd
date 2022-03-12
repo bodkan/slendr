@@ -51,7 +51,7 @@ p_code <- ggplot() +
 
 ## Example 1
 
-```{r, eval = !file.exists(file.path(model$path, "output_msprime.trees"))}
+```{r, eval = !file.exists("~/Desktop/slendr/ex1/output_msprime.trees")}
 SEED <- 42
 set.seed(SEED)
 
@@ -177,23 +177,26 @@ plot_grid(
 In the second model, we demonstrate the possibility to finely tune within-population spatial dynamics using parameters which determine how clustered or uniformly distributed individuals are over the population boundary, and affect their dispersal and mating behavior. We define nine isolated populations which occupy a circular "island", each with an increasing value of the so-called "competition distance" parameter which controls to what distance does a given individual compete. Based on the value of this parameter, the number of individuals in the population and the size of the occupiable space, different spatial dynamic behavior emerges from the population.
 
 ```{r}
+SEED <- 42
+set.seed(SEED)
+
 map <- world(xrange = c(0, 10), yrange = c(0, 10),
              landscape = region(center = c(5, 5), radius = 5))
 
-p1 <- population("pop1", time = 1, N = 2000, map = map, competition_dist = 0)
-p2 <- population("pop2", time = 1, N = 2000, map = map, competition_dist = 9)
-p3 <- population("pop3", time = 1, N = 2000, map = map, competition_dist = 6)
-p4 <- population("pop4", time = 1, N = 2000, map = map, competition_dist = 5)
-p5 <- population("pop5", time = 1, N = 2000, map = map, competition_dist = 4)
-p6 <- population("pop6", time = 1, N = 2000, map = map, competition_dist = 3)
-p7 <- population("pop7", time = 1, N = 2000, map = map, competition_dist = 2)
-p8 <- population("pop8", time = 1, N = 2000, map = map, competition_dist = 1)
+p1 <- population("pop1", time = 1, N = 2000, map = map, competition = 0)
+p2 <- population("pop2", time = 1, N = 2000, map = map, competition = 9)
+p3 <- population("pop3", time = 1, N = 2000, map = map, competition = 6)
+p4 <- population("pop4", time = 1, N = 2000, map = map, competition = 5)
+p5 <- population("pop5", time = 1, N = 2000, map = map, competition = 4)
+p6 <- population("pop6", time = 1, N = 2000, map = map, competition = 3)
+p7 <- population("pop7", time = 1, N = 2000, map = map, competition = 2)
+p8 <- population("pop8", time = 1, N = 2000, map = map, competition = 1)
 
 model <- compile_model(
   populations = list(p1, p2, p3, p4, p5, p6, p7, p8),
   generation_time = 1, sim_length = 5000, resolution = 0.1,
-  mate_dist = 0.1, dispersal_dist = 0.05,
-  path = "~/Desktop/slendr/ex2"
+  mating = 0.1, dispersal = 0.05,
+  path = "~/Desktop/slendr/ex2", overwrite = T, force = T
 )
 
 slim(model, sequence_length = 10e6, recombination_rate = 1e-8)
@@ -207,13 +210,13 @@ diversity <- ts_samples(ts) %>%
 ```
 
 ```{r class.source = "fold-hide"}
-locations <- ts_data(ts) %>% filter(time == 5001)
+locations <- ts_data(ts) %>% filter(time == max(time)) 
 
 p_ex2_clustering <- ggplot() +
   geom_sf(data = map) +
   geom_sf(data = locations, aes(color = pop), size = 0.05, alpha = 0.25) +
   facet_grid(. ~ pop, switch = "x") +
-  xlab("spatial distributions emerged from the simulation") +
+  xlab("spatial distributions emerged in the simulation") +
   theme(
     strip.background = element_blank(),
     strip.text = element_text(size = 11),
@@ -222,7 +225,7 @@ p_ex2_clustering <- ggplot() +
     axis.text = element_blank(),
     panel.background = element_blank()
   ) +
-  guides(color = "none")#; p_ex2_clustering
+  guides(color = "none"); p_ex2_clustering
 
 p_ex2_diversity <- ggplot(diversity, aes(pop, pi, color = pop)) +
   geom_violin(color = "black") +
@@ -232,15 +235,19 @@ p_ex2_diversity <- ggplot(diversity, aes(pop, pi, color = pop)) +
   theme_minimal() +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_blank(), panel.grid.major.x = element_blank(),
-        plot.margin = margin(t = 0.2, r = 0.2, b = -0.1, l = 0.2, "cm"))#; p_ex2_diversity
+        plot.margin = margin(t = 0.2, r = 0.2, b = -0.1, l = 0.2, "cm")); p_ex2_diversity
 
 plot_grid(
-  p_ex2_diversity,
-  p_ex2_clustering +
-    theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 1.9, "cm")),
-  nrow = 2,
-  rel_heights = c(1, 0.5),
-  labels = c("B", "C")
+  p_code,
+  plot_grid(
+    p_ex2_diversity,
+    p_ex2_clustering +
+      theme(plot.margin = margin(t = 0, r = 0.5, b = 0, l = 1.9, "cm")),
+    nrow = 2,
+    rel_heights = c(1, 0.5),
+    labels = c("B", "C")
+  ),
+  nrow = 2, labels = c("A", ""), rel_heights = c(1.5, 1)
 )
 ```
 
@@ -280,7 +287,7 @@ ooa_trajectory <- list(c(40, 30), c(50, 30), c(60, 40), c(45, 55))
 map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = 3035)
  
 ooa <- population(
-  "OOA", time = 60000, N = 500, remove = 23000,
+  "OOA", time = 50000, N = 500, remove = 23000,
    map = map, center = c(33, 30), radius = 400e3
 ) %>%
   move(trajectory = ooa_trajectory, start = 50000, end = 40000, snapshots = 30)
@@ -310,16 +317,16 @@ yam <- population(
 
 gf <- list(
   gene_flow(ana, to = yam, rate = 0.5, start = 6500, end = 5000),
-  gene_flow(ana, to = eur, rate = 0.5, start = 8000, end = 6000),
-  gene_flow(yam, to = eur, rate = 0.5, start = 3500, end = 3000)
+  gene_flow(ana, to = eur, rate = 0.6, start = 8000, end = 6000),
+  gene_flow(yam, to = eur, rate = 0.7, start = 3500, end = 3000)
 )
 
 model <- compile_model(
-  path = "~/Desktop/model", overwrite = TRUE, force = TRUE,
+  path = "~/Desktop/slendr/ex3", overwrite = TRUE, force = TRUE,
   populations = list(ooa, ehg, eur, ana, yam), gene_flow = gf,
   generation_time = 30, resolution = 10e3,
-  competition_dist = 130e3, mate_dist = 100e3,
-  dispersal_dist = 70e3,
+  competition = 130e3, mating = 100e3,
+  dispersal = 70e3,
 )
 
 samples <- schedule_sampling(
@@ -327,20 +334,28 @@ samples <- schedule_sampling(
   list(ehg, 20), list(ana, 20), list(yam, 20), list(eur, 20)
 )
 
-# plot_map(model)
+plot_map(model)
 plot_model(model)
 
 slim(
-  model, burnin = 200000, sampling = samples,
+  model, burnin = 200000, sampling = samples, random_seed = SEED,
   sequence_length = 200000, recombination_rate = 1e-8, verbose = TRUE
 )
 ```
 
 ```{r, figure_ex3, fig.height=7, fig.width=3}
+p_map <- plot_map(model) +
+  theme(legend.position = "bottom") +
+  guides(alpha = "none")
+
 plot_grid(
-  plot_model(model),
-  plot_map(model) + theme(legend.position = "bottom") + guides(alpha = "none"),
-  labels = c("B", "C"), nrow = 2, rel_heights = c(1, 1)
+  p_code,
+  plot_grid(
+    plot_model(model),
+    p_map,
+    labels = c("B", "C"), nrow = 2, rel_heights = c(1, 1)
+  ),
+  ncol = 2, labels = c("A", "")
 )
 ```
 
@@ -355,48 +370,91 @@ In the fourth and final example, we return to the abstract toy model of West Eur
 To highlight the richness of the spatio-temporal information encoded by tree sequence data structure and showcase the novel, we demonstrate 
 
 
+<!-- ```{r} -->
+<!-- ts <- ts_load(model, simplify = TRUE) -->
+
+<!-- pdf("~/Desktop/x.pdf") -->
+<!-- for (i in ts_samples(ts) %>% dplyr::filter(pop == "EUR") %>% dplyr::pull(name)) { -->
+<!--   lineages <- ts_ancestors(ts, i, verbose = TRUE) -->
+<!--   if (length(unique(lineages$parent_pop)) == 5) { -->
+<!--     { plot_ancestors(lineages, i) + ggtitle(i) } %>% print -->
+<!--   } -->
+<!-- } -->
+<!-- dev.off() -->
+<!-- ``` -->
+
 ```{r}
-pdf("~/Desktop/x.pdf")
-for (i in ts_samples(ts) %>% dplyr::filter(pop == "EUR") %>% dplyr::pull(name)) {
-  lineages <- ts_ancestors(ts, i, verbose = TRUE)
-  { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-}
-dev.off()
+model <- read_model("~/Desktop/slendr/ex3")
+map = model$world
 ```
 
 
 ```{r}
-# `model` below as created in Example 3
-model <- read_model("~/Desktop/model")
-map = model$world
-
 ts <- ts_load(model)
-ts <- ts_load(model, simplify = TRUE)
 
-names <- ts_samples(ts)$name %>% sample(4)
-ts <- ts_load(model) %>% ts_simplify(names)
+ancestors <- ts_ancestors(ts, "EUR_599")
 
-ts_tree(ts, 1) %>% ts_draw(labels = TRUE, time_scale = "rank")
+ts_small <- ts %>% ts_simplify(
+  c("EUR_599", "ANA_322", "EHG_7", 
+  "EUR_578", "EUR_501", "YAM_30")
+)
 
-tree <- ts_phylo(ts, i = 1, labels = "tskit")
+tree <- ts_phylo(ts_small, i = 10)
 
 nodes <- ts_data(tree)
 branches <- ts_branches(tree)
+```
 
-ancestors <- ts_ancestors(ts, "ANA_9")
-plot_ancestors(ancestors)
+<!-- ```{r} -->
+<!-- found <- FALSE -->
+<!-- while (TRUE) { -->
+<!--   names <- c("EUR_599", ts_samples(ts) %>% group_by(pop) %>% sample_n(3) %>% .$name) -->
+<!--   ts_small <- ts_simplify(ts, names) -->
+<!--   for (i in 1:ts_small$num_trees) { -->
+<!--     tree <- ts_phylo(ts_small, i = i, quiet = TRUE) -->
+<!--     nodes <- ts_data(tree) %>% filter(!sampled) -->
+<!--     if (length(unique(nodes$pop)) == 5) { -->
+<!--       found <- TRUE -->
+<!--       break -->
+<!--     } -->
+<!--     if (found) break -->
+<!--   } -->
+<!--   if (found) break -->
+<!-- } -->
+<!-- ``` -->
+
+```{r}
+chrom_names <- setNames(
+  c("EUR_599 (chromosome 1)", "EUR_599 (chromosome 2)"),
+  unique(ancestors$node_id)
+)
+
+ggplot() +
+  geom_sf(data = map) +
+  geom_sf(data = ancestors, size = 0.5, aes(alpha = parent_time)) +
+  geom_sf(data = sf::st_set_geometry(ancestors, "parent_location"),
+          aes(shape = parent_pop, color = parent_pop)) +
+  geom_sf(data = filter(ts_data(ts), name == "EUR_599"), size = 3) +
+  coord_sf(expand = 0) +
+  labs(x = "longitude", y = "latitude") +
+  theme_bw() +
+  facet_grid(. ~ node_id, labeller = labeller(node_id = chrom_names)) +
+  theme(legend.position = "none")
 ```
 
 ```{r}
-df <- as_tibble(tree) %>% select(node, label) %>% mutate(pop = gsub("^(.*)_.*", "\\1", label))
+df <- as_tibble(nodes) %>% select(node = phylo_id, pop)
 
-p_tree <- ggtree(tree) %<+% df +
-  geom_tiplab(hjust = -0.) +
-  geom_label2(aes(label = label, fill = pop, subset = !isTip)) +
+p_tree <- ggtree(tree, aes(color = pop, fill = pop)) %<+% df +
+  geom_tiplab(align = TRUE, linetype = "dotted", hjust = -0.1) +
+  geom_label2(aes(label = label, subset = !isTip), color = "black") +
   guides(fill = guide_legend("ancestral node origin",
-                             override.aes = aes(label = ""))) +
-  hexpand(0.15) +
-  theme(legend.position = "bottom"); p_tree
+                             override.aes = aes(label = "")),
+         color = "none") +
+  theme_tree2() +
+  xlab("time before present [years ago]") +
+  theme(legend.position = "bottom") +
+  scale_x_continuous(limits = c(-55000, 10000), labels = abs); revts(p_tree)
 
 # plot.margin = margin(t = 1, r = 1, b = 1, l = 1, "cm")
 p_map <- ggplot() +
