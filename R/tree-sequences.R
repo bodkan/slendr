@@ -780,9 +780,8 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       data,
       data.frame(
         name = NA,
-        pop = NA,
-        # pop = sapply(internal_ts_samples,
-        #              function(n) data[data$node_id == n, ]$pop),
+        pop = sapply(internal_ts_samples,
+                     function(n) data[data$node_id == n, ]$pop),
         node_id = NA, phylo_id = dummies,
         time = sapply(internal_ts_samples,
                       function(n) data[data$node_id == n, ]$time)
@@ -1665,7 +1664,8 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   combined <-
     dplyr::bind_rows(sampled, not_sampled) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
-    dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x))
+    dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x),
+                  sampled = ifelse(is.na(ind_id), FALSE, sampled))
 
   if (spatial) {
     combined <- convert_to_sf(combined, model)
