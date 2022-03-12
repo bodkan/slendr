@@ -51,8 +51,8 @@ initialize() {
 
         // generate interaction types (two for each population - competition and mating)
         for (i in POPULATIONS.getValue("pop_id")) {
-            competition = filter(INTERACTIONS, "pop_id", i).getValue("competition_dist")[0];
-            mating = filter(INTERACTIONS, "pop_id", i).getValue("mate_dist")[0];
+            competition = filter(INTERACTIONS, "pop_id", i).getValue("competition")[0];
+            mating = filter(INTERACTIONS, "pop_id", i).getValue("mating")[0];
 
             initializeInteractionType(2 * i, "xy", reciprocal = T, maxDistance = competition);
             initializeInteractionType(2 * i + 1, "xy", reciprocal = T, maxDistance = mating);
@@ -288,9 +288,9 @@ s7 late() /* Changing interaction distances and dispersals */ {
 
         pop = event.getValue("pop"); pop_id = event.getValue("pop_id");
 
-        competition_dist = event.getValue("competition_dist");
-        mate_dist = event.getValue("mate_dist");
-        dispersal_dist = event.getValue("dispersal_dist");
+        competition_dist = event.getValue("competition");
+        mating_dist = event.getValue("mating");
+        dispersal_dist = event.getValue("dispersal");
         dispersal_fun = event.getValue("dispersal_fun");
 
         // interaction parameters are accessed in the same way they were created
@@ -298,7 +298,7 @@ s7 late() /* Changing interaction distances and dispersals */ {
         // 'competition' maxDistance at 2*i and mate choice maxDistance at 2*i + 1
         competition = sim.interactionTypes[2 * pop_id];
         mating = sim.interactionTypes[2 * pop_id + 1];
-        dispersal = get_pop(pop).getValue("dispersal_dist");
+        dispersal = get_pop(pop).getValue("dispersal");
         fun = get_pop(pop).getValue("dispersal_fun");
 
         // only change parameters that are scheduled for change in this event
@@ -308,17 +308,17 @@ s7 late() /* Changing interaction distances and dispersals */ {
             competition.unevaluate();
             competition.maxDistance = competition_dist;
         }
-        if (mate_dist != mating.maxDistance) {
+        if (mating_dist != mating.maxDistance) {
             log_output("setting mate choice distance for " + pop + "(p" +
-                                 pop_id + ") to " + mate_dist);
+                                 pop_id + ") to " + mating_dist);
             mating.unevaluate();
-            mating.maxDistance = mate_dist;
+            mating.maxDistance = mating_dist;
         }
         if (dispersal_dist != dispersal) {
             if (dispersal != -1)
                 log_output("setting offspring dispersal distance for " + pop +
                            "(p" + pop_id + ") to " + dispersal_dist);
-            get_pop(pop).setValue("dispersal_dist", dispersal_dist);
+            get_pop(pop).setValue("dispersal", dispersal_dist);
         }
         if (dispersal_fun != fun) {
             if (fun != "")
@@ -500,7 +500,7 @@ modifyChild() /* Place offspring within its population's boundary */ {
     do {
         attempts = attempts + 1;
 
-        dispersal_param = get_pop(subpop.id).getValue("dispersal_dist");
+        dispersal_param = get_pop(subpop.id).getValue("dispersal");
         dispersal_fun = get_pop(subpop.id).getValue("dispersal_fun");
 
         movement = dispersal_fun(dispersal_fun, dispersal_param);
@@ -546,7 +546,7 @@ function (void) create_pop(object<Dictionary> pop) {
     }
 
     // dispersal distance is set in a script block (here we just create the variable)
-    get_pop(pop_id).setValue("dispersal_dist", -1);
+    get_pop(pop_id).setValue("dispersal", -1);
     get_pop(pop_id).setValue("dispersal_fun", "");
 }
 
@@ -770,7 +770,7 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
                 "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
                 "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
-    float = c("rate", "competition_dist", "mate_dist", "dispersal_dist", "n",
+    float = c("rate", "competition", "mating", "dispersal", "n",
               "x", "y", "x_orig", "y_orig");
     logical = c("overlap");
 

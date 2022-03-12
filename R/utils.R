@@ -279,42 +279,42 @@ compute_overlaps <- function(x) {
 
 # Take care of missing interactions and offspring distances
 set_distances <- function(dispersal_table, resolution,
-                          competition_dist, mate_dist, dispersal_dist) {
-  if (is.null(competition_dist)) {
-    if (all(is.na(dispersal_table$competition_dist))) {
-      pop_names <- paste(unique(dispersal_table[is.na(dispersal_table$competition_dist), ]$pop), collapse = ", ")
-      stop("Parameter 'competition_dist' missing for ", pop_names, " and a general
+                          competition, mating, dispersal) {
+  if (is.null(competition)) {
+    if (all(is.na(dispersal_table$competition))) {
+      pop_names <- paste(unique(dispersal_table[is.na(dispersal_table$competition), ]$pop), collapse = ", ")
+      stop("Parameter 'competition' missing for ", pop_names, " and a general
   value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
-      competition_dist <- utils::tail(dispersal_table$competition_dist[which(!is.na(dispersal_table$competition_dist))], 1)
+      competition <- utils::tail(dispersal_table$competition[which(!is.na(dispersal_table$competition))], 1)
   }
   # replace all NA values with the last specified competition distance
-  dispersal_table$competition_dist[is.na(dispersal_table$competition_dist)] <- competition_dist
+  dispersal_table$competition[is.na(dispersal_table$competition)] <- competition
 
-  if (is.null(mate_dist)) {
-    if (all(is.na(dispersal_table$mate_dist))) {
-      pop_names <- paste(unique(dispersal_table[is.na(dispersal_table$mate_dist), ]$pop), collapse = ", ")
-      stop("Parameter 'mate_dist' missing for ", pop_names, " and a general
+  if (is.null(mating)) {
+    if (all(is.na(dispersal_table$mating))) {
+      pop_names <- paste(unique(dispersal_table[is.na(dispersal_table$mating), ]$pop), collapse = ", ")
+      stop("Parameter 'mating' missing for ", pop_names, " and a general
     value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
-      mate_dist <- utils::tail(dispersal_table$mate_dist[which(!is.na(dispersal_table$mate_dist))], 1)
+      mating <- utils::tail(dispersal_table$mating[which(!is.na(dispersal_table$mating))], 1)
   }
   # replace all NA values with the last specified mate choice distance
-  dispersal_table$mate_dist[is.na(dispersal_table$mate_dist)] <- mate_dist
+  dispersal_table$mating[is.na(dispersal_table$mating)] <- mating
 
-  if (is.null(dispersal_dist)) {
-    if (all(is.na(dispersal_table$dispersal_dist))) {
-      pop_names <- paste(unique(dispersal_table[is.na(dispersal_table$dispersal_dist), ]$pop), collapse = ", ")
-      stop("Parameter 'dispersal_dist' missing for ", pop_names, " and a general
+  if (is.null(dispersal)) {
+    if (all(is.na(dispersal_table$dispersal))) {
+      pop_names <- paste(unique(dispersal_table[is.na(dispersal_table$dispersal), ]$pop), collapse = ", ")
+      stop("Parameter 'dispersal' missing for ", pop_names, " and a general
     value of this parameter was not provided to the compile() function", call. = FALSE)
     } else
-      dispersal_dist <- utils::tail(dispersal_table$dispersal_dist[which(!is.na(dispersal_table$dispersal_dist))], 1)
+      dispersal <- utils::tail(dispersal_table$dispersal[which(!is.na(dispersal_table$dispersal))], 1)
   }
   # replace all NA values with the last specified dispersalchoice distance
-  dispersal_table$dispersal_dist[is.na(dispersal_table$dispersal_dist)] <- dispersal_dist
+  dispersal_table$dispersal[is.na(dispersal_table$dispersal)] <- dispersal
 
-  dispersal_table[, c("competition_dist", "mate_dist", "dispersal_dist")] <-
-    dispersal_table[, c("competition_dist", "mate_dist", "dispersal_dist")] / resolution
+  dispersal_table[, c("competition", "mating", "dispersal")] <-
+    dispersal_table[, c("competition", "mating", "dispersal")] / resolution
 
   dispersal_table
 }

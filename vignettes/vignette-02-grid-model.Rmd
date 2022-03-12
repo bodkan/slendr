@@ -142,7 +142,7 @@ model <- compile_model(
   path = file.path(tempdir(), "grid-model"), 
   populations = populations, geneflow = geneflows,
   generation_time = 1, resolution = 10,
-  competition_dist = 10, mate_dist = 10, dispersal_dist = 10,
+  competition = 10, mating = 10, dispersal = 10,
   sim_length = 1000, overwrite = TRUE
 )
 ```

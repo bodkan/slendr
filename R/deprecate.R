@@ -25,15 +25,15 @@ explore <- function(model) {
 
 #' @export
 compile <- function(populations, generation_time, path = NULL, resolution = NULL,
-                    competition_dist = NULL, mate_dist = NULL, dispersal_dist = NULL,
+                    competition = NULL, mating = NULL, dispersal = NULL,
                     geneflow = list(), overwrite = FALSE,
                     sim_length = NULL, direction = NULL,
                     slim_script = system.file("scripts", "script.slim", package = "slendr"),
                     description = "", dir = NULL) {
   .Deprecated("compile_model")
   compile_model(
-    populations, generation_time, path, resolution, competition_dist,
-    mate_dist, dispersal_dist, geneflow, overwrite, sim_length, direction,
+    populations, generation_time, path, resolution, competition,
+    mating, dispersal, geneflow, overwrite, sim_length, direction,
     slim_script, description, dir
   )
 }
@@ -51,10 +51,10 @@ read <- function(path) {
 }
 
 #' @export
-dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
+dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = NA,
                       dispersal_fun = NULL) {
   .Deprecated("set_dispersal")
-  set_dispersal(pop, time, competition_dist, mate_dist, dispersal_dist, dispersal_fun)
+  set_dispersal(pop, time, competition, mating, dispersal, dispersal_fun)
 }
 
 #' @export

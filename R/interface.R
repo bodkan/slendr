@@ -28,9 +28,9 @@
 #' @param remove Time at which the population should be removed
 #' @param intersect Intersect the population's boundaries with landscape
 #'   features?
-#' @param competition_dist,mate_dist Maximum spatial competition and mating
+#' @param competition,mating Maximum spatial competition and mating
 #'   choice distance
-#' @param dispersal_dist Standard deviation of the normal distribution of the
+#' @param dispersal Standard deviation of the normal distribution of the
 #'   distance that offspring disperses from its parent
 #' @param dispersal_fun Distribution function governing the dispersal of
 #'   offspring. One of "normal", "uniform", "cauchy", "exponential", or
@@ -47,7 +47,7 @@
 population <- function(name, time, N, parent = "ancestor", map = FALSE,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
-                       competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
+                       competition = NA, mating = NA, dispersal = NA,
                        dispersal_fun = NULL, aquatic = FALSE) {
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
@@ -106,9 +106,9 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
     event = "split",
     time = time,
     N = N,
-    competition_dist = competition_dist,
-    mate_dist = mate_dist,
-    dispersal_dist = dispersal_dist,
+    competition = competition,
+    mating = mating,
+    dispersal = dispersal,
     dispersal_fun = dispersal_fun
   ))
 
@@ -468,9 +468,9 @@ resize <- function(pop, N, how, time, end = NULL) {
 #'
 #' @param pop Object of the class \code{slendr_pop}
 #' @param time Time of the population size change
-#' @param competition_dist,mate_dist Maximum spatial competition and mating
+#' @param competition,mating Maximum spatial competition and mating
 #'   choice distance
-#' @param dispersal_dist Standard deviation of the normal distribution of the
+#' @param dispersal Standard deviation of the normal distribution of the
 #'   distance that offspring disperses from its parent
 #' @param dispersal_fun Distribution function governing the dispersal of
 #'   offspring. One of "normal", "uniform", "cauchy", "exponential", or
@@ -480,23 +480,23 @@ resize <- function(pop, N, how, time, end = NULL) {
 #' @export
 #'
 #' @example man/examples/model_definition.R
-set_dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, dispersal_dist = NA,
+set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = NA,
                           dispersal_fun = NULL) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
 
-  if (is.na(competition_dist) && is.na(mate_dist) && is.na(dispersal_dist) &&
+  if (is.na(competition) && is.na(mating) && is.na(dispersal) &&
       is.null(dispersal_fun))
     stop("At least one spatial interaction parameter must be specified", call. = FALSE)
 
-  if (any(c(competition_dist, mate_dist, dispersal_dist) < 0, na.rm = TRUE))
+  if (any(c(competition, mating, dispersal) < 0, na.rm = TRUE))
     stop("Spatial interaction parameters can only have positive, non-zero values", call. = FALSE)
 
   dispersal_fun <- kernel_fun(dispersal_fun)
 
   map <- attr(pop, "map")
-  if (!is.na(competition_dist)) check_resolution(map, competition_dist)
-  if (!is.na(mate_dist)) check_resolution(map, mate_dist)
-  if (!is.na(dispersal_dist)) check_resolution(map, dispersal_dist)
+  if (!is.na(competition)) check_resolution(map, competition)
+  if (!is.na(mating)) check_resolution(map, mating)
+  if (!is.na(dispersal)) check_resolution(map, dispersal)
 
   check_event_time(time, pop)
   check_removal_time(time, pop)
@@ -505,9 +505,9 @@ set_dispersal <- function(pop, time, competition_dist = NA, mate_dist = NA, disp
     pop =  unique(pop$pop),
     event = "dispersal",
     time = time,
-    competition_dist = competition_dist,
-    mate_dist = mate_dist,
-    dispersal_dist = dispersal_dist,
+    competition = competition,
+    mating = mating,
+    dispersal = dispersal,
     dispersal_fun = dispersal_fun
   )
 

@@ -202,8 +202,8 @@ model <- compile(
   geneflow = gf, # geneflow events defined above
   generation_time = 30,
   resolution = 10e3, # resolution in meters per pixel
-  competition_dist = 130e3, mate_dist = 100e3, # spatial interaction in SLiM
-  dispersal_dist = 70e3, # how far will offspring end up from their parents
+  competition = 130e3, mating = 100e3, # spatial interaction in SLiM
+  dispersal = 70e3, # how far will offspring end up from their parents
   path = file.path(tempdir(), "readme-model"), overwrite = TRUE
 )
 #> Warning: 'compile' is deprecated.
