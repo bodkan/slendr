@@ -82,7 +82,6 @@ reference:
     contents:
     - plot_map
     - plot_model
-    - plot_ancestors
     - animate_model
     - explore_model
     - print.slendr_map

@@ -259,7 +259,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
                   xmin = xmax - N,
                   center = xmin + N / 2) %>%
     dplyr::select(pop, center, time) %>%
-    dplyr::mutate(center = center - center[1])
+    dplyr::mutate(center = center - center[1] / 2)
 
   # iterate over each population's demographic history and compose the
   # coordinates of polygons in each epoch
@@ -497,95 +497,6 @@ animate_model <- function(model, file = file.path(model$path, "output_ind_locati
     return(anim)
   else
     gganimate::anim_save(gif, anim)
-}
-
-#' Plot locations of ancestors of given individual or node on a map
-#'
-#' @param data \code{pyslim.SlimTreeSequence} object
-#' @param x Either a string representing an individual name, or an integer
-#'   number specifying a node in a tree sequence. If \code{NULL} (default), the
-#'   spatial ancestry of all focal nodes will be plotted.
-#' @param full_scale Plot time gradient on the full scale (spanning the oldest
-#'   sampled individual to the present)
-#' @param younger_than Time boundaries for the samples
-#' @param color How to color connecting lines? Allowed values are either
-#'   \code{"time"} (continuous variable specifying the age of the parental node)
-#'   or \code{"level"} (factor variable indicating the number of coalescent
-#'   events separating the 'focal node' and the given ancestral node).
-#'
-#' @export
-plot_ancestors <- function(data, x = NULL, full_scale = TRUE,
-                           younger_than = NULL, color = c("time", "level")) {
-  model <- attr(data, "model")
-  color <- match.arg(color)
-
-  # if specified, narrow down samples to a given time window
-  comp_op <- ifelse(model$direction == "backward", `>`, `<`)
-  if (!is.null(younger_than)) data <- dplyr::filter(data, !comp_op(parent_time, younger_than))
-
-  # the name of a sampled individual was specified
-  if (is.null(x))
-    ids <- unique(data$node_id)
-  else if (is.character(x)) {
-    if (!all(x %in% data$name))
-      stop("Unknown individual ", x[!x %in% data$name], " in the time range of the given data",
-           call. = FALSE)
-    ids <- dplyr::filter(data, name %in% x)$node_id %>% unique
-  } else if (is.numeric(x)) {
-    if (!all(x %in% data$node_id))
-      stop("Unknown node ", x[!x %in% data$node_id], "in the time range of the given data",
-           call. = FALSE)
-    ids <- dplyr::filter(data, node_id %in% x)$node_id
-  } else
-    stop("Unknown object given as an individual or a node", call. = FALSE)
-
-  # add labels for facets (also labeled with individual names if individuals are
-  # being plotted)
-  data <- dplyr::filter(data, node_id %in% ids) %>%
-    dplyr::mutate(label = paste("focal node", node_id))
-  if (is.character(x)) {
-    ind_labels <- dplyr::as_tibble(data) %>%
-      dplyr::filter(!is.na(name)) %>%
-      dplyr::distinct(name, node_id)
-    data <- dplyr::mutate(data, label = unlist(purrr::map2(
-      node_id, label,
-      ~ sprintf("%s (%s)", .y, ind_labels[ind_labels$node_id == .x, ]$name)
-    )))
-  }
-
-  # extract the focal individual or node
-  focal_node <- dplyr::filter(data, node_id %in% ids, level == 1) %>%
-    dplyr::distinct(node_id, .keep_all = TRUE) %>%
-    sf::st_as_sf() %>%
-    sf::st_set_geometry("child_location")
-
-  link_aes <- if (color == "time") aes(color = parent_time) else aes(color = level)
-  if (color == "level")
-    color_scale <- scale_color_discrete(breaks = round(seq(1, max(as.integer(data$level)), length.out = 5)))
-  else
-    color_scale <- scale_color_continuous(type = "viridis", trans = "reverse")
-
-  ggplot() +
-    # world map
-    geom_sf(data = model$world, fill = "lightgray", color = NA) +
-
-    # links between nodes ("spatial branches")
-    geom_sf(data = data, link_aes, size = 0.5, alpha = 0.75) +
-
-    # focal individual (or)
-    geom_sf(data = focal_node, shape = 13, size = 3, color = "red") +
-
-    # all ancestral nodes
-    geom_sf(data = sf::st_set_geometry(data, "parent_location"),
-            aes(shape = parent_pop), alpha = 0.5) +
-
-    coord_sf(expand = 0) +
-    theme_bw() +
-    theme(legend.position = "right") +
-    guides(shape = guide_legend("population")) +
-    facet_wrap(~ label) +
-    ggtitle("Spatio-temporal placement of nodes ancestral to a given focal node") +
-    color_scale
 }
 
 # helper functions --------------------------------------------------------
