@@ -126,7 +126,7 @@ model <- compile_model(
   populations = list(pop1, pop2, pop3), generation_time = 1,
   path = model_dir, overwrite = TRUE,
   resolution = 10, sim_length = 500,
-  competition_dist = 5, mate_dist = 5, dispersal_dist = 1
+  competition = 5, mating = 5, dispersal = 1
 )
 
 # serialized models can be read from disk to their R representation again

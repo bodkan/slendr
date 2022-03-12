@@ -7,9 +7,9 @@
 set_dispersal(
   pop,
   time,
-  competition_dist = NA,
-  mate_dist = NA,
-  dispersal_dist = NA,
+  competition = NA,
+  mating = NA,
+  dispersal = NA,
   dispersal_fun = NULL
 )
 }
@@ -18,10 +18,10 @@ set_dispersal(
 
 \item{time}{Time of the population size change}
 
-\item{competition_dist, mate_dist}{Maximum spatial competition and mating
+\item{competition, mating}{Maximum spatial competition and mating
 choice distance}
 
-\item{dispersal_dist}{Standard deviation of the normal distribution of the
+\item{dispersal}{Standard deviation of the normal distribution of the
 distance that offspring disperses from its parent}
 
 \item{dispersal_fun}{Distribution function governing the dispersal of
@@ -122,7 +122,7 @@ model <- compile_model(
   populations = list(pop1, pop2, pop3), generation_time = 1,
   path = model_dir, overwrite = TRUE,
   resolution = 10, sim_length = 500,
-  competition_dist = 5, mate_dist = 5, dispersal_dist = 1
+  competition = 5, mating = 5, dispersal = 1
 )
 
 # serialized models can be read from disk to their R representation again

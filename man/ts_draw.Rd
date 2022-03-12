@@ -21,7 +21,8 @@ ts_draw(
 \item{labels}{Label each node with the individual name?}
 
 \item{sampled_only}{Should only individuals explicitly sampled through
-simplification be labeled?}
+simplification be labeled? This is relevant in situations in which sampled
+individuals can themselves be among the ancestral nodes.}
 
 \item{...}{Keyword arguments to the tskit \code{draw_svg} function.}
 }

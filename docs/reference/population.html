@@ -112,9 +112,9 @@
   polygon <span class="op">=</span> <span class="cn">NULL</span>,
   remove <span class="op">=</span> <span class="cn">NULL</span>,
   intersect <span class="op">=</span> <span class="cn">TRUE</span>,
-  competition_dist <span class="op">=</span> <span class="cn">NA</span>,
-  mate_dist <span class="op">=</span> <span class="cn">NA</span>,
-  dispersal_dist <span class="op">=</span> <span class="cn">NA</span>,
+  competition <span class="op">=</span> <span class="cn">NA</span>,
+  mating <span class="op">=</span> <span class="cn">NA</span>,
+  dispersal <span class="op">=</span> <span class="cn">NA</span>,
   dispersal_fun <span class="op">=</span> <span class="cn">NULL</span>,
   aquatic <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
@@ -150,10 +150,10 @@ polygon coordinates will be extracted (see the <code>region() function</code>)</
 <dt>intersect</dt>
 <dd><p>Intersect the population's boundaries with landscape
 features?</p></dd>
-<dt>competition_dist, mate_dist</dt>
+<dt>competition, mating</dt>
 <dd><p>Maximum spatial competition and mating
 choice distance</p></dd>
-<dt>dispersal_dist</dt>
+<dt>dispersal</dt>
 <dd><p>Standard deviation of the normal distribution of the
 distance that offspring disperses from its parent</p></dd>
 <dt>dispersal_fun</dt>
@@ -270,7 +270,7 @@ landscape.</p>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pop1</span>, <span class="va">pop2</span>, <span class="va">pop3</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>,
   path <span class="op">=</span> <span class="va">model_dir</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
   resolution <span class="op">=</span> <span class="fl">10</span>, sim_length <span class="op">=</span> <span class="fl">500</span>,
-  competition_dist <span class="op">=</span> <span class="fl">5</span>, mate_dist <span class="op">=</span> <span class="fl">5</span>, dispersal_dist <span class="op">=</span> <span class="fl">1</span>
+  competition <span class="op">=</span> <span class="fl">5</span>, mating <span class="op">=</span> <span class="fl">5</span>, dispersal <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span>
 
 <span class="co"># serialized models can be read from disk to their R representation again</span>

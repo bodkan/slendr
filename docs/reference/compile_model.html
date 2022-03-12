@@ -116,9 +116,9 @@ the timing of simulation events.</p>
   <span class="va">generation_time</span>,
   path <span class="op">=</span> <span class="cn">NULL</span>,
   resolution <span class="op">=</span> <span class="cn">NULL</span>,
-  competition_dist <span class="op">=</span> <span class="cn">NULL</span>,
-  mate_dist <span class="op">=</span> <span class="cn">NULL</span>,
-  dispersal_dist <span class="op">=</span> <span class="cn">NULL</span>,
+  competition <span class="op">=</span> <span class="cn">NULL</span>,
+  mating <span class="op">=</span> <span class="cn">NULL</span>,
+  dispersal <span class="op">=</span> <span class="cn">NULL</span>,
   gene_flow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
   overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
   sim_length <span class="op">=</span> <span class="cn">NULL</span>,
@@ -143,10 +143,10 @@ loaded by the backend SLiM script. If <code>NULL</code>, model configuration
 files will be saved to a temporary directory.</p></dd>
 <dt>resolution</dt>
 <dd><p>How many distance units per pixel?</p></dd>
-<dt>competition_dist, mate_dist</dt>
+<dt>competition, mating</dt>
 <dd><p>Maximum spatial competition and mating
 choice distance</p></dd>
-<dt>dispersal_dist</dt>
+<dt>dispersal</dt>
 <dd><p>Standard deviation of the normal distribution of the
 parent-offspring distance</p></dd>
 <dt>gene_flow</dt>
@@ -268,7 +268,7 @@ parameter is inferred from the model and does not need to be set manually.</p></
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pop1</span>, <span class="va">pop2</span>, <span class="va">pop3</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>,
   path <span class="op">=</span> <span class="va">model_dir</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
   resolution <span class="op">=</span> <span class="fl">10</span>, sim_length <span class="op">=</span> <span class="fl">500</span>,
-  competition_dist <span class="op">=</span> <span class="fl">5</span>, mate_dist <span class="op">=</span> <span class="fl">5</span>, dispersal_dist <span class="op">=</span> <span class="fl">1</span>
+  competition <span class="op">=</span> <span class="fl">5</span>, mating <span class="op">=</span> <span class="fl">5</span>, dispersal <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span>
 
 <span class="co"># serialized models can be read from disk to their R representation again</span>

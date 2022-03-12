@@ -4,7 +4,13 @@
 \alias{ts_phylo}
 \title{Convert a tree in the tree sequence to an object of the class \code{phylo}}
 \usage{
-ts_phylo(ts, i, mode = c("index", "position"), quiet = FALSE)
+ts_phylo(
+  ts,
+  i,
+  mode = c("index", "position"),
+  labels = c("tskit", "pop"),
+  quiet = FALSE
+)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -17,6 +23,10 @@ returned.}
 \item{mode}{How should the \code{i} argument be interpreted? Either "index"
 as an i-th tree in the sequence of genealogies, or "position" along the
 simulated genome.}
+
+\item{labels}{What should be stored as node labels in the final \code{phylo}
+object? Options are either a population name or a tskit integer node ID
+(which is a different thing from a \code{phylo} class node integer index).}
 
 \item{quiet}{Should ape's internal phylo validity test be printed out?}
 }
