@@ -15,7 +15,7 @@ test_that("forward and backward time model objects are equivalent", {
     populations = list(p1, p2, p3, p4, p5), gene_flow = geneflows,
     generation_time = 1, resolution = 1,
     overwrite = TRUE, force = TRUE,
-    competition_dist = 1, mate_dist = 1, dispersal_dist = 1,
+    competition = 1, mating = 1, dispersal = 1,
     sim_length = 5
   )
 
@@ -33,7 +33,7 @@ test_that("forward and backward time model objects are equivalent", {
     populations = list(p1, p2, p3, p4, p5), gene_flow = geneflows,
     generation_time = 1, resolution = 1,
     overwrite = TRUE, force = TRUE,
-    competition_dist = 1, mate_dist = 1, dispersal_dist = 1
+    competition = 1, mating = 1, dispersal = 1
   )
 
   expect_true(all.equal(forward$splits[, grep("_orig", colnames(forward$splits), value = TRUE, invert = TRUE)],
@@ -74,7 +74,7 @@ test_that("forward and backward models yield the same simulation result", {
     generation_time = 1,
     resolution = 10000,
     overwrite = TRUE, force = TRUE,
-    competition_dist = 100e3, mate_dist = 100e3, dispersal_dist = 100e3,
+    competition = 100e3, mating = 100e3, dispersal = 100e3,
     sim_length = 480
   )
 
@@ -99,7 +99,7 @@ test_that("forward and backward models yield the same simulation result", {
     generation_time = 1,
     resolution = 10000,
     overwrite = TRUE, force = TRUE,
-    competition_dist = 100e3, mate_dist = 100e3, dispersal_dist = 100e3
+    competition = 100e3, mating = 100e3, dispersal = 100e3
   )
 
   expect_true(all.equal(forward$splits[, grep("_orig", colnames(forward$splits), value = TRUE, invert = TRUE)],
@@ -353,7 +353,7 @@ test_that("Explicitly given direction must agree with the implied direction", {
 
   model_dir <- file.path(tempdir(), "direction_conflict")
   expect_error(compile_model(populations = list(pop), generation_time = 1,
-                       resolution = 10e3, competition_dist = 130e3, mate_dist = 100e3, dispersal_dist = 70e3, # how far will offspring end up from their parents
+                       resolution = 10e3, competition = 130e3, mating = 100e3, dispersal = 70e3, # how far will offspring end up from their parents
                        path = model_dir, direction = "backward", overwrite = TRUE, force = TRUE), msg)
 
   pop <- population("pop", time = 500, N = 100, map = map, center = c(20, 50), radius = 500e3) %>%
@@ -361,7 +361,7 @@ test_that("Explicitly given direction must agree with the implied direction", {
 
   model_dir <- file.path(tempdir(), "direction_conflict")
   expect_error(compile_model(populations = list(pop), generation_time = 1,
-                       resolution = 10e3, competition_dist = 130e3, mate_dist = 100e3, dispersal_dist = 70e3, # how far will offspring end up from their parents
+                       resolution = 10e3, competition = 130e3, mating = 100e3, dispersal = 70e3, # how far will offspring end up from their parents
                        path = model_dir, direction = "forward", overwrite = TRUE, force = TRUE), msg)
 
 })

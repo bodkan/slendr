@@ -8,7 +8,7 @@ simulation_run <- function(direction, start, burnin, gen_time, sim_length = NULL
   p <- population("pop", N = 5, time = start, map = map, center = c(5, 5), radius = 1)
   model <- compile_model(p, direction = direction, sim_length = sim_length, path = tempdir(),
                          generation_time = gen_time, resolution = 1,
-                         competition_dist = 10, mate_dist = 10, dispersal_dist = 10,
+                         competition = 10, mating = 10, dispersal = 10,
                          overwrite = TRUE, force = TRUE)
   slim(model, burnin = burnin, sequence_length = 1, recombination_rate = 0,
        save_locations = TRUE, verbose = verbose, method = method)

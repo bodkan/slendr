@@ -9,7 +9,7 @@
 #   generation_time = 1,
 #   sim_length = 100,
 #   resolution = 1,
-#   competition_dist = 10, mate_dist = 2, dispersal_dist = 1,
+#   competition = 10, mating = 2, dispersal = 1,
 #   overwrite = TRUE, force = TRUE
 # )
 #
@@ -124,7 +124,7 @@
 #   pop2 <- population("POP", time = 1, N = 10, center = c(50, 50), radius = 50, map = map)
 #
 #   model2 <- compile_model(populations = pop2, generation_time = 1, sim_length = 1000,
-#     resolution = 1, competition_dist = 10, mate_dist = 50, dispersal_dist = 1)
+#     resolution = 1, competition = 10, mating = 50, dispersal = 1)
 #
 #   slim(model2, sequence_length = 1, recombination_rate = 0, method = "batch", random_seed = 42 )
 #

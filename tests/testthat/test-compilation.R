@@ -1,30 +1,30 @@
-test_that("'competition_dist' must be specified in compile_model() if missing", {
+test_that("'competition' must be specified in compile_model() if missing", {
   map <- readRDS("map.rds")
-  p <- population(mate_dist = 10, dispersal_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
+  p <- population(mating = 10, dispersal = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   expect_error(compile_model(populations = list(p), generation_time = 30, resolution = 11e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"),
-               "Parameter 'competition_dist' missing", fixed = TRUE)
-  expect_silent(compile_model(competition_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
+               "Parameter 'competition' missing", fixed = TRUE)
+  expect_silent(compile_model(competition = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
 })
 
-test_that("'mate_dist' must be specified in compile_model() if missing", {
+test_that("'mating' must be specified in compile_model() if missing", {
   map <- readRDS("map.rds")
-  p <- population(competition_dist = 10, dispersal_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
+  p <- population(competition = 10, dispersal = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   expect_error(compile_model(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"),
-               "Parameter 'mate_dist' missing", fixed = TRUE)
-  expect_silent(compile_model(mate_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
+               "Parameter 'mating' missing", fixed = TRUE)
+  expect_silent(compile_model(mating = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
 })
 
-test_that("'dispersal_dist' must be specified in compile_model() if missing", {
+test_that("'dispersal' must be specified in compile_model() if missing", {
   map <- readRDS("map.rds")
-  p <- population(competition_dist = 10, mate_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
+  p <- population(competition = 10, mating = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   expect_error(compile_model(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"),
-               "Parameter 'dispersal_dist' missing", fixed = TRUE)
-  expect_silent(compile_model(dispersal_dist = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
+               "Parameter 'dispersal' missing", fixed = TRUE)
+  expect_silent(compile_model(dispersal = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
 })
 
-test_that("'competition_dist', 'mate_dist', and 'dispersal_dist' do not have to be specified in compile_model() if already present", {
+test_that("'competition', 'mating', and 'dispersal' do not have to be specified in compile_model() if already present", {
   map <- readRDS("map.rds")
-  p <- population(competition_dist = 10, mate_dist = 10, dispersal_dist = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
+  p <- population(competition = 10, mating = 10, dispersal = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   expect_silent(compile_model(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
 })
 
@@ -39,8 +39,8 @@ test_that("invalid blank maps are prevented", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", time = 1, N = 100, map = map, center = c(50, 50), radius = 0.5)
 
-  expect_error(compile_model(pop, generation_time = 1, competition_dist = 1,
-                       mate_dist = 50, dispersal_dist = 1, sim_length = 300,
+  expect_error(compile_model(pop, generation_time = 1, competition = 1,
+                       mating = 50, dispersal = 1, sim_length = 300,
                        resolution = 1),
                "No occupiable pixel on a rasterized map")
 })

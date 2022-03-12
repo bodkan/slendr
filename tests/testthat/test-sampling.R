@@ -4,7 +4,7 @@ test_that("sampling from a population which is not present is prevented (forward
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   p1 <- population(name = "p1", time = 10, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 20, N = 1, center = c(1, 1), radius = 10, remove = 100)
-  model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, force = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
+  model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, force = TRUE, competition = 1, mating = 1, dispersal = 1)
   expect_error(schedule_sampling(model, time = 15, list(p2, 3), strict = TRUE), msg) # pre-split
   expect_error(schedule_sampling(model, time = 1000, list(p2, 3), strict = TRUE), msg) # post-removal
 })
@@ -13,7 +13,7 @@ test_that("sampling from a population which is not present is prevented (backwar
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   p1 <- population(name = "p1", time = 1000, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 900, N = 1, center = c(1, 1), radius = 10, remove = 100)
-  model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, force = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
+  model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, force = TRUE, competition = 1, mating = 1, dispersal = 1)
   expect_error(schedule_sampling(model, time = 950, list(p2, 3), strict = TRUE), msg) # pre-split
   expect_error(schedule_sampling(model, time = 5, list(p2, 3), strict = TRUE), msg) # post-removal
 })
@@ -22,7 +22,7 @@ test_that("invalid sampling results in a warning", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   p1 <- population(name = "p1", time = 10, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
   p2 <- population(name = "p2", parent = p1, time = 20, N = 1, center = c(1, 1), radius = 10, remove = 100)
-  model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, force = TRUE, competition_dist = 1, mate_dist = 1, dispersal_dist = 1)
+  model <- compile_model(populations = list(p1, p2), path = tempdir(), generation_time = 1, resolution = 1, sim_length = 1000, overwrite = TRUE, force = TRUE, competition = 1, mating = 1, dispersal = 1)
   expect_warning(schedule_sampling(model, times = 10000, list(p1, 1), list(p2, 1)), "No valid sampling events were retained")
   suppressWarnings({res <- schedule_sampling(model, times = 10000, list(p1, 1), list(p2, 1))})
   expect_null(res)
@@ -77,7 +77,7 @@ test_that("sampling is as close to the a single specified position as possible",
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
   model <- compile_model(pop, path = tempdir(), generation_time = 1,
-                   competition_dist = 10, mate_dist = 10, dispersal_dist = 10,
+                   competition = 10, mating = 10, dispersal = 10,
                    sim_length = sim_length, resolution = 1, overwrite = TRUE, force = TRUE)
 
   samples <- schedule_sampling(model, times = times, locations = locations, list(pop, n_samples))
@@ -134,7 +134,7 @@ test_that("sampling is as close to the multiple specified positions as possible"
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
   model <- compile_model(pop, path = tempdir(), generation_time = 1,
-                   competition_dist = 10, mate_dist = 10, dispersal_dist = 10,
+                   competition = 10, mating = 10, dispersal = 10,
                    sim_length = sim_length, resolution = 1, overwrite = TRUE, force = TRUE)
 
   samples <- rbind(
