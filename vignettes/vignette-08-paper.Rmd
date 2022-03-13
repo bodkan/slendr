@@ -91,38 +91,9 @@ f4ratio_slim <- ts_f4ratio(
   ts_slim, X = filter(samples, pop %in% c("x1", "x2"))$name,
   A = "a_1", B = "b_1", C = "c_1", O = "o_1"
 )
-
-# f4ratio_slim %>% inner_join(samples, by = c("X" = "name")) %>% ggplot(aes(pop, alpha, color = pop)) + geom_boxplot() + geom_jitter() + geom_hline(yintercept = 0) + coord_cartesian(ylim = c(0, 0.2))
 ```
 
-```{r, include = FALSE, eval = file.exists("~/Desktop/slendr/ex1/output_msprime.trees")}
-SEED <- 42
-set.seed(SEED)
-
-model <- read_model("~/Desktop/slendr/ex1")
-
-ts <- ts_load(model, file = file.path(model$path, "output_msprime.trees")) %>% ts_mutate(mutation_rate = 1e-8)
-
-samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
-
-divergence <- ts_divergence(ts, split(samples$name, samples$pop))
-
-f4ratio <- ts_f4ratio(
-  ts, X = filter(samples, pop %in% c("x1", "x2"))$name,
-  A = "a_1", B = "b_1", C = "c_1", O = "o_1"
-)
-
-ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>% ts_mutate(mutation_rate = 1e-8)
-
-divergence_slim <- ts_divergence(ts_slim, split(samples$name, samples$pop))
-
-f4ratio_slim <- ts_f4ratio(
-  ts_slim, X = filter(samples, pop %in% c("x1", "x2"))$name,
-  A = "a_1", B = "b_1", C = "c_1", O = "o_1"
-)
-```
-
-```{r, figure_ex1, fig.height=3, fig.width=6, class.source = "fold-hide"}
+```{r, figure_ex1, fig.height=6, fig.width=9, class.source = "fold-hide"}
 divergence_both <- bind_rows(
   divergence %>% mutate(backend = "msprime"),
   divergence_slim %>% mutate(backend = "SLiM")
@@ -134,7 +105,7 @@ f4ratio_both <- bind_rows(
   f4ratio_slim %>% mutate(backend = "SLiM")
 ) %>% mutate(population = gsub("^(.*)_.*$", "\\1", X), alpha = alpha * 100)
 
-p_ex3_divergence <- divergence_both %>%
+p_ex1_divergence <- divergence_both %>%
   ggplot(aes(fct_reorder(pair, divergence), color = backend, shape = backend, divergence)) +
   geom_point(size = 3) +
   xlab("population pair") + ylab("pairwise divergence") +
@@ -147,19 +118,15 @@ p_ex3_divergence <- divergence_both %>%
   theme(legend.position = "bottom",
         legend.text = element_text(size = 11),
         axis.text.x = element_text(hjust = 1, angle = 45, size = 10),
-        axis.title.x = element_blank())#; p_ex3_divergence
+        axis.title.x = element_blank())
 
-p_ex3_f4ratio <- f4ratio_both %>%
+p_ex1_f4ratio <- f4ratio_both %>%
   ggplot(aes(population, alpha)) + 
   geom_hline(yintercept = 0, linetype = 2) +
   geom_jitter(aes(color = backend, shape = backend), alpha = 0.75,
               position = position_jitterdodge(jitter.width = 0.25)) +
-  # geom_boxplot(aes(group = interaction(population, backend)),
-  #                  alpha = 0.5, size = 0.25, outlier.shape = NA) +
-  # ylab(base::expression("ancestry from"~italic("b")~"[%]")) +
   ylab(base::expression(italic("f")[4]~"-ratio ancestry proportion [%]")) +
   scale_color_manual(values = c("black", "darkgray")) +
-  #scale_fill_manual(values = scales::hue_pal()(6)[c(5, 6)]) +
   theme_minimal() +
   coord_cartesian(ylim = c(0, 20)) +
   theme(legend.position = "none",
@@ -169,24 +136,26 @@ p_ex3_f4ratio <- f4ratio_both %>%
 
 # let's avoid ggpubr as another dependency:
 # https://github.com/kassambara/ggpubr/blob/master/R/as_ggplot.R#L27
-p_ex3_legend <- ggdraw() + draw_grob(grid::grobTree(get_legend(p_ex3_divergence)))
+p_ex1_legend <- ggdraw() + draw_grob(grid::grobTree(get_legend(p_ex1_divergence)))
 
-p_ex3_model <- plot_model(model, sizes = FALSE, proportions = TRUE)
+p_ex1_model <- plot_model(model, sizes = FALSE, proportions = TRUE)
 
-plot_grid(
+p_ex1 <- plot_grid(
   p_code,
   plot_grid(
-    p_ex3_model,
+    p_ex1_model,
     plot_grid(
-      p_ex3_divergence + theme(legend.position = "none"),
-      p_ex3_f4ratio,
+      p_ex1_divergence + theme(legend.position = "none"),
+      p_ex1_f4ratio,
       ncol = 2, rel_widths = c(1, 0.8), labels = c("C", "D")
     ),
-    p_ex3_legend, nrow = 3, rel_heights = c(1, 1, 0.1),
+    p_ex1_legend, nrow = 3, rel_heights = c(1, 1, 0.1),
     labels = "B"
   ),
   nrow = 1, labels = c("A", "")
 )
+
+ggsave("~/Documents/postdoc/slendr_paper/ex1.pdf", p_ex1, width = 9, height = 6, units = "in")
 ```
 
 ## Example 2
@@ -254,7 +223,7 @@ p_ex2_clustering <- ggplot() +
     axis.text = element_blank(),
     panel.background = element_blank()
   ) +
-  guides(color = "none")#; p_ex2_clustering
+  guides(color = "none")
 
 p_ex2_diversity <- ggplot(diversity, aes(pop, pi, color = pop)) +
   geom_violin(color = "black") +
@@ -264,9 +233,9 @@ p_ex2_diversity <- ggplot(diversity, aes(pop, pi, color = pop)) +
   theme_minimal() +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_blank(), panel.grid.major.x = element_blank(),
-        plot.margin = margin(t = 0.2, r = 0.2, b = -0.1, l = 0.2, "cm")); #p_ex2_diversity
+        plot.margin = margin(t = 0.2, r = 0.2, b = -0.1, l = 0.2, "cm"))
 
-plot_grid(
+p_ex2 <- plot_grid(
   p_code,
   plot_grid(
     p_ex2_diversity,
@@ -278,6 +247,8 @@ plot_grid(
   ),
   nrow = 2, labels = c("A", ""), rel_heights = c(1.5, 1)
 )
+
+ggsave("~/Documents/postdoc/slendr_paper/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
 ```
 
 ## Example 3
@@ -382,15 +353,17 @@ p_map <- plot_map(model) +
   theme(legend.position = "bottom") +
   guides(alpha = "none")
 
-plot_grid(
+p_ex3 <- plot_grid(
   p_code,
   plot_grid(
-    plot_model(model, sizes = FALSE),
+    plot_model(model),
     p_map,
     labels = c("B", "C"), nrow = 2, rel_heights = c(1, 1)
   ),
   ncol = 2, labels = c("A", "")
 )
+
+ggsave("~/Documents/postdoc/slendr_paper/ex3.pdf", p_ex3, width = 9, height = 6, units = "in")
 ```
 
 ## Example 4
@@ -504,7 +477,7 @@ p_map <- ggplot() +
 
 p_legend <- ggdraw() + draw_grob(grid::grobTree(get_legend(p_map)))
 
-plot_grid(
+p_ex4 <- plot_grid(
   p_code,
   plot_grid(p_tree + theme(legend.position = "none"),
             p_map + theme(legend.position = "none"),
@@ -514,4 +487,6 @@ plot_grid(
   labels = c("A", "", "D", ""),
   nrow = 4, rel_heights = c(0.5, 1, 1, 0.1)
 )
+
+ggsave("~/Documents/postdoc/slendr_paper/ex4.pdf", p_ex4, width = 7, height = 9, units = "in")
 ```
