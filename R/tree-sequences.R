@@ -788,6 +788,8 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       )
     )
   }
+  data <- sf::st_as_sf(data)
+  class(data) <- set_class(data, "tsdata")
 
   # generate appropriate internal node labels based on the user's choice
   elem <- if (labels == "pop") "pop" else "node_id"
