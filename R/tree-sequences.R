@@ -721,7 +721,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   lookup_ids[length(lookup_ids) - n_tips] <- lookup_ids[1]
   lookup_ids[1] <- n_tips + 1
 
-  child_ids <- present_ids[-1]
+  child_ids <- present_ids[present_ids != tree$root]
   parent_ids <- sapply(child_ids, function(i) tree$parent(i))
 
   children <- sapply(child_ids, function(n) lookup_ids[present_ids == n])
