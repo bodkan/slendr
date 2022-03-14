@@ -107,7 +107,14 @@ provided and will be automatically passed to the method behind the scenes.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_draw</span><span class="op">(</span><span class="va">x</span>, width <span class="op">=</span> <span class="fl">1500</span>, height <span class="op">=</span> <span class="fl">500</span>, labels <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_draw</span><span class="op">(</span>
+  <span class="va">x</span>,
+  width <span class="op">=</span> <span class="fl">1500</span>,
+  height <span class="op">=</span> <span class="fl">500</span>,
+  labels <span class="op">=</span> <span class="cn">FALSE</span>,
+  sampled_only <span class="op">=</span> <span class="cn">TRUE</span>,
+  <span class="va">...</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -118,6 +125,10 @@ provided and will be automatically passed to the method behind the scenes.</p>
 <dd><p>Pixel dimensions of the rendered bitmap</p></dd>
 <dt>labels</dt>
 <dd><p>Label each node with the individual name?</p></dd>
+<dt>sampled_only</dt>
+<dd><p>Should only individuals explicitly sampled through
+simplification be labeled? This is relevant in situations in which sampled
+individuals can themselves be among the ancestral nodes.</p></dd>
 <dt>...</dt>
 <dd><p>Keyword arguments to the tskit <code>draw_svg</code> function.</p></dd>
 </dl></div>

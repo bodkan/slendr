@@ -101,7 +101,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_phylo</span><span class="op">(</span><span class="va">ts</span>, <span class="va">i</span>, mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"index"</span>, <span class="st">"position"</span><span class="op">)</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_phylo</span><span class="op">(</span>
+  <span class="va">ts</span>,
+  <span class="va">i</span>,
+  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"index"</span>, <span class="st">"position"</span><span class="op">)</span>,
+  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tskit"</span>, <span class="st">"pop"</span><span class="op">)</span>,
+  quiet <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -117,6 +123,10 @@ returned.</p></dd>
 <dd><p>How should the <code>i</code> argument be interpreted? Either "index"
 as an i-th tree in the sequence of genealogies, or "position" along the
 simulated genome.</p></dd>
+<dt>labels</dt>
+<dd><p>What should be stored as node labels in the final <code>phylo</code>
+object? Options are either a population name or a tskit integer node ID
+(which is a different thing from a <code>phylo</code> class node integer index).</p></dd>
 <dt>quiet</dt>
 <dd><p>Should ape's internal phylo validity test be printed out?</p></dd>
 </dl></div>

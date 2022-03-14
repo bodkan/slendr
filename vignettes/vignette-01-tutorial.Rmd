@@ -375,6 +375,8 @@ gf
 The most crucial function of *slendr* is `compile_model()`. It takes all population ranges defined across space and time, together with a list of gene flow events (optional, since some models won't include gene flow), and then proceeds by converting all vectorized spatial ranges into raster bitmaps. Furthermore, it compiles all information about split times, $N_e$ values, gene flow directions, times, and rates into a series of tables. All of that will be saved automatically in a dedicated directory in a format that is understood by the back end SLiM script provided by *slendr* (more on that below).
 
 ```{r}
+model_dir <- paste0(tempfile(), "_tutorial-model")
+
 model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam), # populations defined above
   geneflow = gf, # geneflow events defined above
@@ -382,7 +384,7 @@ model <- compile_model(
   resolution = 10e3, # resolution in meters per pixel
   competition = 130e3, mating = 100e3, # spatial interaction in SLiM
   dispersal = 70e3, # how far will offspring end up from their parents
-  path = paste0(tempfile(), "_tutorial-model")
+  path = model_dir
 )
 ```
 
@@ -391,7 +393,7 @@ What do the files in the model directory look like? Ideally, you as a user shoul
 First of all, we can inspect the contents of the directory and see that it does, indeed, contain all defined spatial maps (now PNG files, which is what SLiM requires).
 
 ```{r}
-list.files(file.path(tempdir(), "tutorial-model"), pattern = "*.jpg")
+list.files(model_dir, pattern = "*.jpg")
 ```
 
 It also contains a series of tab-delimited configuration tables. These tables contain summaries of the model parameters that we defined graphically above, namely:
@@ -399,13 +401,13 @@ It also contains a series of tab-delimited configuration tables. These tables co
 -   the table of population splits:
 
 ```{r}
-read.table(file.path(tempdir(), "tutorial-model", "populations.tsv"), header = TRUE)
+read.table(file.path(model_dir, "populations.tsv"), header = TRUE)
 ```
 
 -   the table of geneflow events:
 
 ```{r}
-read.table(file.path(tempdir(), "tutorial-model", "geneflow.tsv"), header = TRUE)
+read.table(file.path(model_dir, "geneflow.tsv"), header = TRUE)
 ```
 
 -   and finally, the table of populations whose spatial maps will be updated throughout the simulation, as well as the times of those updates (this table is rather large, so we're not showing it here).
@@ -415,7 +417,7 @@ The object returned by the `compile_model()` function (called `model` here) bind
 In case you'd want to separate model specification and running into different scripts, *slendr* includes a function `read_model()` just for this purpose:
 
 ```{r}
-loaded_model <- read_model(file.path(tempdir(), "tutorial-model"))
+loaded_model <- read_model(model_dir)
 ```
 
 ## Visualize the entire history of splits and gene flow

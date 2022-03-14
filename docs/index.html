@@ -317,7 +317,8 @@
 <span class="op">)</span>
 <span class="co">#&gt; Warning: 'compile' is deprecated.</span>
 <span class="co">#&gt; Use 'compile_model' instead.</span>
-<span class="co">#&gt; See help("Deprecated")</span></code></pre></div>
+<span class="co">#&gt; See help("Deprecated")</span>
+<span class="co">#&gt; Error: The direction that was explicitly specified contradicts the direction implied by the model</span></code></pre></div>
 <p>Compiled model is kept as an R object which can be passed to different functions, most importantly the <code><a href="reference/slim.html">slim()</a></code> function shown below.</p>
 </div>
 <div class="section level4">
@@ -344,7 +345,8 @@
   save_locations <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># save the location of everyone who ever lived</span>
   method <span class="op">=</span> <span class="st">"batch"</span>, <span class="co"># change to "gui" to execute the model in SLiMgui</span>
   random_seed <span class="op">=</span> <span class="fl">314159</span>
-<span class="op">)</span></code></pre></div>
+<span class="op">)</span>
+<span class="co">#&gt; Error in slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, : object 'model' not found</span></code></pre></div>
 <p>As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.</p>
 </div>
 <div class="section level4">
@@ -352,10 +354,8 @@
 </h4>
 <p>We can use the saved locations of every individual that lived throughout the course of the simulation to generate a simple GIF animation (please note that the animation has been significantly sped up to decrease the GIF file size):</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/animate_model.html">animate_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, steps <span class="op">=</span> <span class="fl">50</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="reference/figures/README-plot_gif-1.gif" alt=""><p class="caption">plot of chunk plot_gif</p>
-</div>
+<code class="sourceCode R"><span class="fu"><a href="reference/animate_model.html">animate_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, steps <span class="op">=</span> <span class="fl">50</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
+<span class="co">#&gt; Error in animate_model(model = model, steps = 50, width = 500, height = 300): object 'model' not found</span></code></pre></div>
 <p>Note that it is possible to simulate population splits and geneflows both by “physically” moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous “jumps”) in situations where this is more appropriate or where simulating accurate movement is not necessary.</p>
 <p>In this case, the only population movement we explicitly encoded was the split and migration of the OOA population from Africans and the expansion of Anatolians. All the other populations simply popped up on a map, without explicitly migrating there. Similarly, the geneflow from Anatolians into the Yamnaya specified in step 4. did not require a spatial overlap between the two populations, but the other two geneflow events did.</p>
 </div>

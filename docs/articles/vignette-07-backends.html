@@ -149,22 +149,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org" class="external-link">purrr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span>
 
-<span class="co"># activate slendr's Python interface, installing all dependencies if necessary</span>
-<span class="fu"><a href="../reference/setup_env.html">setup_env</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="co"># check that we have the correct environment</span>
-<span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">#&gt; Summary of the currently active Python environment:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Python binary: /Users/martin_petr/Library/r-miniconda/envs/automatic_slendr_python_env/bin/python </span>
-<span class="co">#&gt; Python version: 3.8.12 | packaged by conda-forge | (default, Jan 30 2022, 23:36:06)  [Clang 11.1.0 ] </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; slendr requirements:</span>
-<span class="co">#&gt;  - tskit: version 0.4.1 ✓ </span>
-<span class="co">#&gt;  - msprime: version 1.1.0 ✓ </span>
-<span class="co">#&gt;  - pyslim: version 0.700 ✓</span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seed</span> <span class="op">&lt;-</span> <span class="fl">42</span>
+<span class="va">seed</span> <span class="op">&lt;-</span> <span class="fl">42</span>
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span></code></pre></div>
 <div class="section level2">
 <h2 id="detecting-gene-flow-from-msprime-and-slim-tree-sequences">Detecting gene flow from msprime and SLiM tree sequences<a class="anchor" aria-label="anchor" href="#detecting-gene-flow-from-msprime-and-slim-tree-sequences"></a>
@@ -175,7 +160,7 @@
 <p>We now define up a simple <em>non-spatial</em> model of gene flow between populations (also known as population admixture or introgression). This will involve essentially the same procedure which we have shown in another vignette introducing <a href="vignette-04-nonspatial-models.html">non-spatial <em>slendr</em> models</a>. Note that this is no different from how we would normally specify a spatial model, except that we left out the <code>map</code> argument in making the <code><a href="../reference/population.html">population()</a></code> calls.</p>
 <p>To demonstrate additional features of the <em>slendr</em> interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html" class="external-link"><em>tskit</em></a> Python library, we will perform gene flow detection test using the so-called <span class="math inline">\(f_4\)</span> and <span class="math inline">\(f_4\)</span>-ratio statistics (very briefly introduces in <a href="vignette-05-tree-sequences.html">this vignette</a>). To make things a little more interesting, we will define two population models: one model without any gene flow, and another which includes gene flow. In defining this model and expressing the <span class="math inline">\(f\)</span>-statistics we will use the same nomenclature used in the first study by <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193" class="external-link">Patterson <em>et al.</em></a> that described <span class="math inline">\(f_4-ratio\)</span> statistic in the first place. if you’re not familiar with these statistical tests of gene flow, we recommend that you take a look at the relevant sections of the linked paper. shiny_graph <img src="images/f4_tree.jpg" style="width:90.0%"></p>
 <p>Let’s start by first defining the populations and their splits as established in the figure above:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seq_len</span> <span class="op">&lt;-</span> <span class="fl">100e6</span> <span class="co"># amount of sequence to simulate</span>
 <span class="va">rec_rate</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span> <span class="co"># uniform recombination rate</span>
 <span class="va">mut_rate</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span> <span class="co"># mutation rate</span>
@@ -194,7 +179,7 @@
 <h2 id="compiling-the-model-and-simulating-data">Compiling the model and simulating data<a class="anchor" aria-label="anchor" href="#compiling-the-model-and-simulating-data"></a>
 </h2>
 <p>We will now use those populations to compile two models: the first model will be without any geneflow (left panel in the figure wo above), the second model will include 10% gene flow from <code>b</code> to <code>x1</code> (right panel in the figure above). We will also schedule sampling of a couple of individuals at the very end of the simulation: 50 individuals each from populations <code>x1</code> and <code>x2</code> to capture a bit more of the natural variation of <code>b</code> ancestry in <code>x1</code>, and only one individual from the rest.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># no gene flow model</span>
 <span class="va">model_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, sim_length <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span>
 
@@ -204,9 +189,12 @@
 <span class="co"># model with gene flow</span>
 <span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">b</span>, to <span class="op">=</span> <span class="va">x1</span>, start <span class="op">=</span> <span class="fl">4100</span>, end <span class="op">=</span> <span class="fl">4150</span>, <span class="fl">0.1</span><span class="op">)</span>
 
-<span class="va">model_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, geneflow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, sim_length <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span> 
-
-<span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model_gf</span>, times <span class="op">=</span> <span class="fl">4500</span>,
+<span class="va">model_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, geneflow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, sim_length <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span> </code></pre></div>
+<pre><code><span class="co">#&gt; Warning: The `geneflow =` argument of `compile_model()` is now deprecated as part</span>
+<span class="co">#&gt; of cleaning up and unifying the function interfaces across the</span>
+<span class="co">#&gt; entire package. Please consider moving to `gene_flow = ` at some point.</span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model_gf</span>, times <span class="op">=</span> <span class="fl">4500</span>,
                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">b</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x1</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x2</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">c</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">o</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Before running the simulations, let’s first make sure both models are set up correctly:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -290,7 +278,7 @@
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
 <span class="co">#&gt; ║Populations│     6│ 2.7 KiB│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
-<span class="co">#&gt; ║Provenances│     4│36.4 KiB│          No║</span>
+<span class="co">#&gt; ║Provenances│     4│36.5 KiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
 <span class="co">#&gt; ║Sites      │ 89013│ 2.1 MiB│          No║</span>
 <span class="co">#&gt; ╚═══════════╧══════╧════════╧════════════╝</span></code></pre>

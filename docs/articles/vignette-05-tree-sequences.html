@@ -174,9 +174,9 @@
 <span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">nea</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.03</span>, start <span class="op">=</span> <span class="fl">55000</span>, end <span class="op">=</span> <span class="fl">45000</span><span class="op">)</span>
 
 <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>
-  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="va">nea</span>, <span class="va">afr</span>, <span class="va">eur</span><span class="op">)</span>, geneflow <span class="op">=</span> <span class="va">gf</span>,
+  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="va">nea</span>, <span class="va">afr</span>, <span class="va">eur</span><span class="op">)</span>, gene_flow <span class="op">=</span> <span class="va">gf</span>,
   generation_time <span class="op">=</span> <span class="fl">30</span>,
-  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"introgression"</span><span class="op">)</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>
+  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"_introgression"</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>Here’s our toy model visualized as a “demographic graph” of sorts (i.e., a tree-like structure specifying population splits with additional edges representing gene flow events). Not particularly illuminating in this simple example, but it’s always worth keeping in mind that such graph is embedded within every <em>slendr</em> model and can be always invoked to make sure the model you’re setting up is correct:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -471,9 +471,9 @@
 <span class="co">#&gt; Phylogenetic tree with 14 tips and 13 internal nodes.</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Tip labels:</span>
-<span class="co">#&gt;   NEA_1, NEA_1, NEA_2, NEA_2, EUR_20, EUR_20, ...</span>
+<span class="co">#&gt;   13 (EUR_50), 12 (EUR_50), 11 (CH_1), 10 (CH_1), 9 (AFR_2), 8 (AFR_2), ...</span>
 <span class="co">#&gt; Node labels:</span>
-<span class="co">#&gt;   CH, EUR, EUR, NEA, NEA, AFR, ...</span>
+<span class="co">#&gt;   76943, 70, 1667, 3512, 7999, 11522, ...</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Rooted; includes branch lengths.</span></code></pre>
 <p>This means that we have the whole R phylogenetic ecosystem at our disposal to analyze such trees. For instance we can use the powerful package <em>ggtree</em> to plot the tree we have just extracted:</p>
