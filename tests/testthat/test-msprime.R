@@ -245,7 +245,6 @@ afs <- dplyr::bind_rows(
                              sprintf("exponential increase %d to %d", N / N_factor, N),
                              sprintf("exponential decrease %d to %d", N, N / N_factor))))
 
-
 test_that("msprime forward/backward sims are exactly the same", {
   expect_true({
     df <- afs[afs$sim == "msprime" & grepl("constant", afs$model), ]
