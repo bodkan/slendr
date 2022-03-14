@@ -680,17 +680,18 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   tree <- ts_tree(ts, i, mode)
 
-  if (!attr(ts, "simplified") && attr(ts, "source") != "msprime")
-    stop("Please simplify your tree sequence down to sampled individuals\nfirst ",
-         "before converting a tree to an R phylo tree object format (see the\n",
-         "help page of ?ts_simplify for more details)", call. = FALSE)
-
   if (tree$num_roots > 1)
     stop("A tree sequence tree which is not fully coalesced or recapitated\n",
          "cannot be converted to an R phylo tree representation (see the help\n",
          "page of ?ts_recapitate for more details)", call. = FALSE)
 
+  if (!attr(ts, "simplified") && attr(ts, "source") != "msprime")
+    stop("Please simplify your tree sequence down to sampled individuals\nfirst ",
+         "before converting a tree to an R phylo tree object format (see the\n",
+         "help page of ?ts_simplify for more details)", call. = FALSE)
+
   # get tree sequence nodes which are present in the tskit tree object
+  # (tree$preorder() just get the numerical node IDs, nothing else)
   data <- ts_data(ts) %>%
     dplyr::as_tibble() %>%
     dplyr::filter(node_id %in% tree$preorder())
@@ -702,7 +703,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   # convert the edge table to a proper ape phylo object
   # see http://ape-package.ird.fr/misc/FormatTreeR.pdf for more details
-  n_tips <- sum(data$sampled)
+  n_tips <- sum(data$sampled, na.rm = TRUE)
   n_internal <- nrow(data) - n_tips
   n_all <- n_internal + n_tips; stopifnot(n_all == nrow(data))
 
@@ -765,7 +766,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   data$phylo_id <- sapply(data$node_id, function(n) lookup_ids[present_ids == n])
   columns <- c()
-  if (!is.null(attr(ts, "model")$world))
+  if (attr(ts, "source") == "SLiM" && !is.null(attr(ts, "model")$world))
     columns <- c(columns, "location")
   if (attr(ts, "source") == "SLiM")
     columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
@@ -788,7 +789,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       )
     )
   }
-  data <- sf::st_as_sf(data)
+  if (attr(ts, "source") == "SLiM" && !is.null(attr(ts, "model")$world))
+    data <- sf::st_as_sf(data)
+
   class(data) <- set_class(data, "tsdata")
 
   # generate appropriate internal node labels based on the user's choice
@@ -1709,7 +1712,8 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
   combined <- dplyr::select(individuals, -time, -pop_id) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
     dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
-    dplyr::select(name, pop, ind_id, node_id, time, sampled)
+    dplyr::select(name, pop, ind_id, node_id, time, sampled) %>%
+    dplyr::mutate(sampled = !is.na(sampled))
 
   combined
 }
