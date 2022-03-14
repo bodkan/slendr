@@ -50,9 +50,9 @@ nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 40e3)
 gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 55000, end = 45000)
 
 model <- compile_model(
-  populations = list(chimp, nea, afr, eur), geneflow = gf,
+  populations = list(chimp, nea, afr, eur), gene_flow = gf,
   generation_time = 30,
-  path = file.path(tempdir(), "introgression"), overwrite = TRUE
+  path = paste0(tempfile(), "_introgression")
 )
 ```
 

@@ -38,15 +38,15 @@ seed <- 314159
 set.seed(seed)
 ```
 
-Let's also set up the Python _slendr_ environment which we will use to analyse tree sequence data:
+<!-- Let's also set up the Python _slendr_ environment which we will use to analyse tree sequence data: -->
 
-```{r}
-# activate slendr's Python interface, installing all dependencies if necessary
-setup_env()
+<!-- ```{r} -->
+<!-- # activate slendr's Python interface, installing all dependencies if necessary -->
+<!-- setup_env() -->
 
-# check that we have the correct environment
-check_env()
-```
+<!-- # check that we have the correct environment -->
+<!-- check_env() -->
+<!-- ``` -->
 
 We begin by specifying our spatial model. We will use the same demographic model of modern human history in West Eurasia, which we extensively discussed in the [introductory tutorial](vignette-01-tutorial.html) and on the main [landing page](../index.html). Here is a complete model definition script, without further comments:
 
@@ -124,16 +124,16 @@ gf <- list(
 # compile the spatial model
 model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
-  geneflow = gf,
+  gene_flow = gf,
   generation_time = 30, resolution = 10e3,
   competition = 130e3, mating = 100e3, dispersal = 70e3,
-  path = file.path(tempdir(), "spatial-ts"), overwrite = TRUE
+  path = paste0(tempfile(), "_spatial-ts")
 )
 ```
 
 As a sanity check that we defined the demography correctly, you can plot a graph summarizing population divergences and geneflow events by calling `plot_model(model)`:
 
-```{r}
+```{r, demographic_model}
 plot_model(model)
 ```
 
@@ -321,7 +321,16 @@ A more convenient way to do this analysis is a companion function to `ts_ancesto
 
 
 ```{r plot_ancestors_time}
-plot_ancestors(lineages, ind)
+ggplot() +
+  geom_sf(data = map) +
+  geom_sf(data = lineages, size = 0.5, aes(alpha = parent_time)) +
+  geom_sf(data = sf::st_set_geometry(lineages, "parent_location"),
+          aes(shape = parent_pop, color = parent_pop)) +
+  geom_sf(data = filter(ts_data(ts), name == ind), size = 3) +
+  guides(alpha = "none") +
+  coord_sf(expand = 0) +
+  labs(x = "longitude", y = "latitude") +
+  facet_grid(. ~ node_id)
 ```
 
 You can compare this result to the animation which recapitulates the simulation, presented in [the first vignette](vignette-01-tutorial.html).
@@ -337,12 +346,6 @@ nodes <- unique(lineages[!is.na(lineages$name), ]$node_id)
 2.  The first chromosome traces its ancestry to the Yamnaya population indicated by a star. This is expected because we programmed Yamnaya to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population). We can see a cluster of EHG nodes in one location because we did not specify any spatial dynamic for this population in our model
 
 3.  We also see that the other chromosome traces of its ancestry to the Anatolia (triangles). This makes sense, because we have simulated European ancestry as being part Anatolian.
-
-By default, branches are colored by the time of coalescence. We can also plot the number of coalescent events separating a focal node (red crossed circle) and one of its ancestors by specifying `color = "level"` (where level 1 represents branches leading to all of the focal node's parents):
-
-```{r plot_ancestors_levels}
-plot_ancestors(lineages, ind, color = "level")
-```
 
 Let's look at the spatial ancestry of another sample. For instance, we know that the simulated history of the Anatolian population in our model is much simpler. According to the demographic graph above, Anatolians split from the ancestral population of Eurasians in Anatolia and then expanded in a wave to Europe. We have sampled the following individuals:
 
@@ -396,7 +399,18 @@ ana_ind <- ts_samples(ts) %>% filter(name == "ANA_21")
 Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
 
 ```{r, plot_ancestors_levels_ana}
-ts_ancestors(ts, "ANA_21") %>% plot_ancestors(color = "level")
+lineages <- ts_ancestors(ts, "ANA_21")
+
+ggplot() +
+  geom_sf(data = map) +
+  geom_sf(data = lineages, size = 0.5, aes(alpha = parent_time)) +
+  geom_sf(data = sf::st_set_geometry(lineages, "parent_location"),
+          aes(shape = parent_pop, color = parent_pop)) +
+  geom_sf(data = filter(ts_data(ts), name == "ANA_21"), size = 3) +
+  guides(alpha = "none") +
+  coord_sf(expand = 0) +
+  labs(x = "longitude", y = "latitude") +
+  facet_grid(. ~ node_id)
 ```
 
 As we might expect given the late age of the sample, its position in the map above (red crossed circle) is not in Anatolia but in Europe because it represents one of the descendants of migrants who moved from Anatolia into Europe. This can be clearly seen in the position of its parental nodes in the tree sequence: these nodes represent real individuals who lived at some point in the past, and we can see that they did, indeed, lived in Anatolia.

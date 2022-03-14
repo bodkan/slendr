@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   dpi = 80,
-  eval = Sys.which("slim") != "" && env_present
+  eval = FALSE # Sys.which("slim") != "" && env_present
 )
 ```
 
@@ -81,6 +81,33 @@ f4ratio <- ts_f4ratio(
 ```
 
 ```{r, include = FALSE, eval = !file.exists("~/Desktop/slendr/ex1/output_msprime.trees"), class.source = "fold-hide"}
+slim(model, sequence_length = 100e6, recombination_rate = 1e-8, random_seed = SEED)
+
+ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>% ts_mutate(mutation_rate = 1e-8)
+
+divergence_slim <- ts_divergence(ts_slim, split(samples$name, samples$pop))
+
+f4ratio_slim <- ts_f4ratio(
+  ts_slim, X = filter(samples, pop %in% c("x1", "x2"))$name,
+  A = "a_1", B = "b_1", C = "c_1", O = "o_1"
+)
+```
+
+```{r, include = FALSE, eval = file.exists("~/Desktop/slendr/ex1/output_msprime.trees"), class.source = "fold-hide"}
+model <- read_model("~/Desktop/slendr/ex1/")
+ts <- ts_load(model, file = file.path(model$path, "output_msprime.trees")) %>% ts_mutate(mutation_rate = 1e-8)
+
+samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
+
+# output of ts_divergence is visualized in panel C
+divergence <- ts_divergence(ts, split(samples$name, samples$pop))
+
+# output of ts_f4ratio is visualized in panel D
+f4ratio <- ts_f4ratio(
+  ts, X = filter(samples, pop %in% c("x1", "x2"))$name,
+  A = "a_1", B = "b_1", C = "c_1", O = "o_1"
+)
+
 slim(model, sequence_length = 100e6, recombination_rate = 1e-8, random_seed = SEED)
 
 ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>% ts_mutate(mutation_rate = 1e-8)

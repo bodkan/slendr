@@ -209,6 +209,7 @@ model <- compile(
 #> Warning: 'compile' is deprecated.
 #> Use 'compile_model' instead.
 #> See help("Deprecated")
+#> Error: The direction that was explicitly specified contradicts the direction implied by the model
 ```
 
 Compiled model is kept as an R object which can be passed to different functions, most importantly the `slim()` function shown below.
@@ -247,6 +248,7 @@ slim(
   method = "batch", # change to "gui" to execute the model in SLiMgui
   random_seed = 314159
 )
+#> Error in slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, : object 'model' not found
 ```
 
 As specified, the SLiM run will save ancestry proportions in each population over time as well as the location of every individual who ever lived.
@@ -258,9 +260,8 @@ We can use the saved locations of every individual that lived throughout the cou
 
 ```r
 animate_model(model = model, steps = 50, width = 500, height = 300)
+#> Error in animate_model(model = model, steps = 50, width = 500, height = 300): object 'model' not found
 ```
-
-![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
 
 Note that it is possible to simulate population splits and geneflows both by "physically" moving individuals of a population from one destination to the next across space but it is also possible to do this more abstractly (in instantaneous "jumps") in situations where this is more appropriate or where simulating accurate movement is not necessary.
 

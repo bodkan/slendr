@@ -382,7 +382,7 @@ model <- compile_model(
   resolution = 10e3, # resolution in meters per pixel
   competition = 130e3, mating = 100e3, # spatial interaction in SLiM
   dispersal = 70e3, # how far will offspring end up from their parents
-  path = file.path(tempdir(), "tutorial-model"),  overwrite = TRUE
+  path = paste0(tempfile(), "_tutorial-model")
 )
 ```
 
