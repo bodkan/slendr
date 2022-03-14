@@ -109,9 +109,9 @@ objects are specified", call. = FALSE)
       attr(pop, "history")[[1]]$time
     })
     names(split_times) <- purrr::map_chr(pops, ~ .x$pop[1])
-    if (direction == "backward") {
+    if (length(direction) && direction == "backward") {
       split_times <- sort(split_times, decreasing = TRUE)
-    } else {
+    } else if (length(direction) && direction == "forward") {
       split_times <- sort(split_times)
     }
     pop_names <- names(split_times)
