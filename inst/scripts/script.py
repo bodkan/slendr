@@ -143,7 +143,7 @@ for event in resizes.itertuples(index=False):
             population=event.pop
         )
     elif event.how == "exponential":
-        tstart = length - event.tend_gen
+        tstart = length - event.tend_gen + 1
         tend = length - event.tresize_gen
         r = math.log(event.prev_N / event.N) / (tstart - tend)
         logging.info(f"Exponential resize of population {pop.pop} from {event.N} to {event.prev_N}, growth rate {r}, from {tstart} to {tend} generations")
