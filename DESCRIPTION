@@ -32,6 +32,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The 'msprime' Python coalescent framework and the 'tskit' module can by installed by following the instructions at <https://tskit.dev/msprime/docs>.
+biocViews:
 Imports: 
     sf,
     stars,
@@ -59,7 +60,8 @@ Suggests:
     rgdal,
     magick,
     methods,
-    cowplot
+    cowplot,
+    ggtree
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues

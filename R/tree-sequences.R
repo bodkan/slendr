@@ -263,8 +263,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' For more information on how simplification works in pyslim and tskit, see the
 #' official documentation at
 #' <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify>
-#' and
-#' <https://tskit.dev/pyslim/docs/latest/tutorial.html#simplification>.
+#' and <https://tskit.dev/pyslim/docs/latest/tutorial.html#simplification>.
 #'
 #' A very clear description of the difference between remembering and retaining
 #' and how to use these techniques to implement historical individuals (i.e.
@@ -274,8 +273,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param simplify_to A character vector of individual names. If NULL, all
 #'   explicitly remembered individuals (i.e. those specified via the
-#'   \code{\link{sampling}} function will be left in the tree sequence after the
-#'   simplification.
+#'   \code{\link{schedule_sampling}} function will be left in the tree sequence
+#'   after the simplification.
 #' @param spatial Should spatial information encoded in the tree sequence data
 #'   be converted to spatial R datastructures? If FALSE, pixel-based
 #'   raster-dimensions will not be converted to the coordinate reference system
@@ -283,7 +282,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #'   be performed. If the model was non-spatial, the value of this parameter is
 #'   disregarded.
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
-#' samplbee retained in the tree sequence? Default is \code{FALSE}.
+#'   samples be retained in the tree sequence? Default is \code{FALSE}.
 #'
 #' @return Tree sequence object of the class \code{slendr_ts}
 #'
@@ -1791,6 +1790,8 @@ get_sf_branches <- function(tree) {
 #'   \code{Error in UseMethod("as.phylo") :
 #'     no applicable method for 'as.phylo' applied to an object of class
 #'     "c('phylo', 'slendr_phylo')"}
+#'
+#' @param x Tree object of the class \code{slendr_phylo}
 #'
 #' @importFrom ape as.phylo
 #' @export as.phylo.slendr_phylo

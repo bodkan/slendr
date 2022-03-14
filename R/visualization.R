@@ -255,7 +255,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
     N = final_sizes,
     time = split_times,
   ) %>%
-    dplyr::mutate(xmax = cumsum(N + median(N)),
+    dplyr::mutate(xmax = cumsum(N + stats::median(N)),
                   xmin = xmax - N,
                   center = xmin + N / 2) %>%
     dplyr::select(pop, center, time) %>%

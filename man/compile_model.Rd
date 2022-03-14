@@ -35,8 +35,8 @@ files will be saved to a temporary directory.}
 
 \item{resolution}{How many distance units per pixel?}
 
-\item{competition, mating}{Maximum spatial competition and mating
-choice distance}
+\item{competition, mating}{Maximum spatial competition and mating choice
+distance}
 
 \item{dispersal}{Standard deviation of the normal distribution of the
 parent-offspring distance}
@@ -45,7 +45,8 @@ parent-offspring distance}
 (either a list of data.frame objects in the format defined by the
 \code{gene_flow} function, or a single data.frame)}
 
-\item{overwrite}{Deprecated. Use \code{delete} instead.}
+\item{overwrite}{Completely delete the specified directory, in case it
+already exists, and create a new one?}
 
 \item{force}{Force a deletion of the model directory if it is already
 present? Useful for non-interactive uses. In an interactive mode, the user
@@ -66,9 +67,6 @@ parameter is inferred from the model and does not need to be set manually.}
 \item{dir}{Deprecated. Use \code{path} instead.}
 
 \item{geneflow}{Deprecated. Use \code{gene_flow} instead.}
-
-\item{delete}{Completely delete the specified directory, in case it already
-exists, and create a new one?}
 }
 \value{
 Compiled \code{slendr_model} model object

@@ -6,6 +6,9 @@
 \usage{
 \method{as.phylo}{slendr_phylo}(x)
 }
+\arguments{
+\item{x}{Tree object of the class \code{slendr_phylo}}
+}
 \description{
 This function servers as a workaround around a ggtree error:
 \code{Error in UseMethod("as.phylo") :

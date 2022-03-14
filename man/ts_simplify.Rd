@@ -11,8 +11,8 @@ ts_simplify(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE)
 
 \item{simplify_to}{A character vector of individual names. If NULL, all
 explicitly remembered individuals (i.e. those specified via the
-\code{\link{sampling}} function will be left in the tree sequence after the
-simplification.}
+\code{\link{schedule_sampling}} function will be left in the tree sequence
+after the simplification.}
 
 \item{spatial}{Should spatial information encoded in the tree sequence data
 be converted to spatial R datastructures? If FALSE, pixel-based
@@ -22,7 +22,7 @@ be performed. If the model was non-spatial, the value of this parameter is
 disregarded.}
 
 \item{keep_input_roots}{Should the history ancestral to the MRCA of all
-samplbee retained in the tree sequence? Default is \code{FALSE}.}
+samples be retained in the tree sequence? Default is \code{FALSE}.}
 }
 \value{
 Tree sequence object of the class \code{slendr_ts}
@@ -40,8 +40,7 @@ genealogical history of a set of samples.
 For more information on how simplification works in pyslim and tskit, see the
 official documentation at
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify}
-and
-\url{https://tskit.dev/pyslim/docs/latest/tutorial.html#simplification}.
+and \url{https://tskit.dev/pyslim/docs/latest/tutorial.html#simplification}.
 
 A very clear description of the difference between remembering and retaining
 and how to use these techniques to implement historical individuals (i.e.
