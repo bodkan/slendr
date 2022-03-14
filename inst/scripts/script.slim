@@ -20,6 +20,7 @@ initialize() {
     optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
     optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
     optional_arg("SAVE_LOCATIONS", F); // record locations of all individuals?
+    optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
@@ -66,7 +67,7 @@ initialize() {
     defineConstant("SIMULATION_START", BURNIN_LENGTH + min(POPULATIONS.getValue("tsplit_gen")));
     defineConstant("SIMULATION_END", SIMULATION_START + SIMULATION_LENGTH);
 
-    initializeTreeSeq(retainCoalescentOnly = T);
+    initializeTreeSeq(retainCoalescentOnly = COALESCENT_ONLY);
 
     initializeMutationType("m0", 0.5, "f", 0.0);
     initializeGenomicElementType("g1", m0, 1.0);
