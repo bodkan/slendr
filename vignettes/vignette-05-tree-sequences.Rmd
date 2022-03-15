@@ -232,13 +232,19 @@ tree
 
 This means that we have the whole R phylogenetic ecosystem at our disposal to analyze such trees. For instance we can use the powerful package *ggtree* to plot the tree we have just extracted:
 
-```{r}
-library(ggtree)
-
-ggtree(tree) +
-  geom_point2(aes(subset = !isTip)) + # points for internal nodes
-  geom_tiplab() + # sample labels for tips
-  hexpand(0.1) # make more space for the tip labels
+```{r, plot_tree}
+if (requireNamespace("ggtree", quietly = TRUE)) {
+  library(ggtree)
+  
+  ggtree(tree) +
+    geom_point2(aes(subset = !isTip)) + # points for internal nodes
+    geom_tiplab() + # sample labels for tips
+    hexpand(0.1)    # make more space for the tip labels
+} else {
+  library(ape)
+  plot(tree)
+  nodelabels()
+}
 ```
 
 

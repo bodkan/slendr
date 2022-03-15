@@ -60,8 +60,7 @@ Suggests:
     rgdal,
     magick,
     methods,
-    cowplot,
-    ggtree
+    cowplot
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues
