@@ -6,6 +6,9 @@
 \usage{
 read(path)
 }
+\arguments{
+\item{path}{Directory with all required configuration files}
+}
 \description{
 Deprecated function
 }

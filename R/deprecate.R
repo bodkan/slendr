@@ -1,4 +1,5 @@
 #' Deprecated function
+#' @inheritParams expand_range
 #' @export
 expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                    polygon = NULL, lock = FALSE, verbose = TRUE) {
@@ -8,6 +9,7 @@ expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 }
 
 #' Deprecated function
+#' @inheritParams shrink_range
 #' @export
 shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                    polygon = NULL, lock = FALSE, verbose = TRUE) {
@@ -17,6 +19,7 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 }
 
 #' Deprecated function
+#' @inheritParams plot_model
 #' @export
 plot_graph <- function(model) .Deprecated("plot_model")
 
@@ -28,6 +31,7 @@ explore <- function(model) {
 }
 
 #' Deprecated function
+#' @inheritParams compile_model
 #' @export
 compile <- function(populations, generation_time, path = NULL, resolution = NULL,
                     competition = NULL, mating = NULL, dispersal = NULL,
@@ -44,6 +48,7 @@ compile <- function(populations, generation_time, path = NULL, resolution = NULL
 }
 
 #' Deprecated function
+#' @inheritParams schedule_sampling
 #' @export
 sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   .Deprecated("schedule_sampling")
@@ -51,6 +56,7 @@ sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
 }
 
 #' Deprecated function
+#' @inheritParams read_model
 #' @export
 read <- function(path) {
   .Deprecated("read_model")
@@ -58,6 +64,7 @@ read <- function(path) {
 }
 
 #' Deprecated function
+#' @inheritParams set_dispersal
 #' @export
 dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = NA,
                       dispersal_fun = NULL) {
@@ -66,6 +73,7 @@ dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = NA,
 }
 
 #' Deprecated function
+#' @inheritParams set_range
 #' @export
 boundary <- function(pop, time, center = NULL, radius = NULL, polygon = NULL, lock = FALSE) {
   .Deprecated("set_range")
@@ -73,6 +81,7 @@ boundary <- function(pop, time, center = NULL, radius = NULL, polygon = NULL, lo
 }
 
 #' Deprecated function
+#' @inheritParams gene_flow
 #' @export
 geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
   .Deprecated("gene_flow")
@@ -80,6 +89,7 @@ geneflow <- function(from, to, rate, start, end, overlap = TRUE) {
 }
 
 #' Deprecated function
+#' @inheritParams plot_map
 #' @export
 plot.slendr <- function(..., time = NULL, geneflows = FALSE,
                         graticules = "original",

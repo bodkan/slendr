@@ -6,6 +6,9 @@
 \usage{
 plot_graph(model)
 }
+\arguments{
+\item{model}{Compiled \code{slendr_model} model object}
+}
 \description{
 Deprecated function
 }

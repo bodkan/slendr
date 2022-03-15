@@ -6,6 +6,21 @@
 \usage{
 geneflow(from, to, rate, start, end, overlap = TRUE)
 }
+\arguments{
+\item{from}{Objects of the class \code{slendr_pop}}
+
+\item{to}{Objects of the class \code{slendr_pop}}
+
+\item{rate}{Scalar value in the range (0, 1] specifying the
+proportion of migration over given time period}
+
+\item{start}{Start and end of the geneflow event}
+
+\item{end}{Start and end of the geneflow event}
+
+\item{overlap}{Require spatial overlap between admixing
+populations?  (default \code{TRUE})}
+}
 \description{
 Deprecated function
 }

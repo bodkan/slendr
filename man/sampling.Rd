@@ -6,6 +6,25 @@
 \usage{
 sampling(model, times, ..., locations = NULL, strict = FALSE)
 }
+\arguments{
+\item{model}{Object of the class \code{slendr_model}}
+
+\item{times}{Integer vector of times (in model time units) at which to
+schedule remembering of individuals in the tree-sequence}
+
+\item{...}{Lists of two elements (\code{slendr_pop} population object-<number
+of individuals to sample), representing from which populations should how
+many individuals be remembered at times given by \code{times}}
+
+\item{locations}{List of vector pairs, defining two-dimensional coordinates
+of locations at which the closest number of individuals from given
+populations should be sampled. If \code{NULL} (the default), individuals
+will be sampled randomly throughout their spatial boundary.}
+
+\item{strict}{Should any occurence of a population not being present at a
+given time result in an error? Default is \code{FALSE}, meaning that
+invalid sampling times for any populations will be quietly ignored.}
+}
 \description{
 Deprecated function
 }

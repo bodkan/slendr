@@ -13,6 +13,25 @@ dispersal(
   dispersal_fun = NULL
 )
 }
+\arguments{
+\item{pop}{Object of the class \code{slendr_pop}}
+
+\item{time}{Time of the population size change}
+
+\item{competition}{Maximum spatial competition and mating
+choice distance}
+
+\item{mating}{Maximum spatial competition and mating
+choice distance}
+
+\item{dispersal}{Standard deviation of the normal distribution of the
+distance that offspring disperses from its parent}
+
+\item{dispersal_fun}{Distribution function governing the dispersal of
+offspring. One of "normal", "uniform", "cauchy", "exponential", or
+"brownian" (in which vertical and horizontal displacements are drawn from a
+normal distribution independently).}
+}
 \description{
 Deprecated function
 }

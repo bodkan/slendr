@@ -16,6 +16,31 @@ expand(
   verbose = TRUE
 )
 }
+\arguments{
+\item{pop}{Object of the class \code{slendr_pop}}
+
+\item{by}{How many units of distance to expand by?}
+
+\item{end}{When does the expansion start/end?}
+
+\item{start}{When does the expansion start/end?}
+
+\item{overlap}{Minimum overlap between subsequent spatial boundaries}
+
+\item{snapshots}{The number of intermediate snapshots (overrides the
+\code{overlap} parameter)}
+
+\item{polygon}{Geographic region to restrict the expansion to}
+
+\item{lock}{Maintain the same density of individuals. If
+\code{FALSE} (the default), the number of individuals in the
+population will not change. If \code{TRUE}, the number of
+individuals simulated will be changed (increased or decreased)
+appropriately, to match the new population range area.}
+
+\item{verbose}{Report on the progress of generating intermediate spatial
+boundaries?}
+}
 \description{
 Deprecated function
 }
