@@ -12,7 +12,7 @@ expand <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @inheritParams shrink_range
 #' @export
 shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
-                   polygon = NULL, lock = FALSE, verbose = TRUE) {
+                   lock = FALSE, verbose = TRUE) {
   .Deprecated("shrink_range")
   expand_range(pop, by, end, start, overlap, snapshots = NULL,
                polygon = NULL, lock, verbose)
@@ -24,6 +24,7 @@ shrink <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 plot_graph <- function(model) .Deprecated("plot_model")
 
 #' Deprecated function
+#' @inheritParams explore_model
 #' @export
 explore <- function(model) {
   .Deprecated("explore_model")

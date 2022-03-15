@@ -11,7 +11,6 @@ shrink(
   start,
   overlap = 0.8,
   snapshots = NULL,
-  polygon = NULL,
   lock = FALSE,
   verbose = TRUE
 )
