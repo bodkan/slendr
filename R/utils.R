@@ -516,6 +516,18 @@ check_env_present <- function() {
   )
 }
 
+order_pops <- function(populations, direction) {
+  pop_names <- purrr::map_chr(populations, ~ .x$pop[1])
+  split_times <- purrr::map_int(populations, ~ attr(.x, "history")[[1]]$time)
+  names(split_times) <- pop_names
+  if (direction == "backward") {
+    split_times <- sort(split_times, decreasing = TRUE)
+  } else if (direction == "forward") {
+    split_times <- sort(split_times)
+  }
+  names(split_times)
+}
+
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.

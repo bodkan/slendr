@@ -817,9 +817,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   # subset ts_data result to only those nodes that are present in the phylo
   # object, adding another column with the rearranged node IDs
+  attr(tree, "model") <- attr(ts, "model")
   attr(tree, "data") <- data
   attr(tree, "branches") <- get_sf_branches(tree)
-  attr(tree, "model") <- attr(ts, "model")
   attr(tree, "source") <- attr(ts, "source")
 
   tree
@@ -1001,6 +1001,9 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
       sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
     dplyr::bind_rows()
 
+  # order population names by their split time
+  pop_names <- order_pops(model$populations, model$direction)
+
   final <- dplyr::bind_cols(combined, connections) %>%
     sf::st_set_geometry("connection") %>%
     dplyr::select(name, pop, node_id, level,
@@ -1009,9 +1012,9 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
                   child_location, parent_location, connection,
                   left_pos = left, right_pos = right) %>%
     dplyr::mutate(level = as.factor(level),
-                  pop = factor(pop, levels = model$splits$pop),
-                  child_pop = factor(child_pop, levels = model$splits$pop),
-                  parent_pop = factor(parent_pop, levels = model$splits$pop))
+                  pop = factor(pop, levels = pop_names),
+                  child_pop = factor(child_pop, levels = pop_names),
+                  parent_pop = factor(parent_pop, levels = pop_names))
 
   attr(final, "model") <- model
 
@@ -1677,6 +1680,8 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   } else
     location_cols <- NULL
 
+  combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
+
   combined <- dplyr::select(
     combined, name, pop, ind_id, node_id, time, !!location_cols,
     sampled, remembered, retained, alive, pedigree_id
@@ -1713,6 +1718,8 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
     dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
     dplyr::select(name, pop, ind_id, node_id, time, sampled) %>%
     dplyr::mutate(sampled = !is.na(sampled))
+
+  combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
 
   combined
 }
@@ -1780,6 +1787,12 @@ get_sf_branches <- function(tree) {
                   parent_node_id, child_node_id,
                   parent_location, child_location) %>%
     sf::st_set_crs(sf::st_crs(data))
+
+  model <- attr(tree, "model")
+  pop_names <- order_pops(model$populations, model$direction)
+
+  branches$child_pop <- factor(branches$child_pop, levels = pop_names)
+  branches$parent_pop <- factor(branches$parent_pop, levels = pop_names)
 
   branches
 }

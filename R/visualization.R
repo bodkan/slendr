@@ -102,19 +102,8 @@ objects are specified", call. = FALSE)
     p <- p + geom_sf(data = map, aes(frame = NULL), fill = "lightgray", color = NA)
 
   if (length(pops)) {
-    # extract population split times and order population names in the order of
-    # their appearance in the simulation
     direction <- setdiff(unique(sapply(pops, time_direction)), "unknown")
-    split_times <- purrr::map_int(pops, function(pop) {
-      attr(pop, "history")[[1]]$time
-    })
-    names(split_times) <- purrr::map_chr(pops, ~ .x$pop[1])
-    if (length(direction) && direction == "backward") {
-      split_times <- sort(split_times, decreasing = TRUE)
-    } else if (length(direction) && direction == "forward") {
-      split_times <- sort(split_times)
-    }
-    pop_names <- names(split_times)
+    pop_names <- order_pops(pops, direction)
 
     # if the user specified a time point, "interpolate" all maps at that
     # time and return just those that match that time point (unless this
