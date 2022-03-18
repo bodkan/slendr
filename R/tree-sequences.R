@@ -927,6 +927,8 @@ ts_mutations <- function(ts) {
 #'
 #' @return Data frame of the \code{sf} type containing the times of nodes and
 #'   start-end coordinates of branches across space
+#'
+#' @export
 ts_branches <- function(tree) {
   if (!inherits(tree, "slendr_phylo"))
     stop("Not a tree object created by the function `ts_phylo()`", call. = FALSE)
