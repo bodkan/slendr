@@ -8,8 +8,6 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-save_pdf <- FALSE
-
 env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 
 knitr::opts_chunk$set(
@@ -21,6 +19,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
+save_pdf <- FALSE # only save PDFs on a local machine
+sequence_scaling <- 10 # modify to get around GitHub actions "Killed"
+
 suppressPackageStartupMessages({
   library(slendr)
 
@@ -65,7 +66,7 @@ model <- compile_model(
 
 plot_model(model, sizes = FALSE, proportions = TRUE)
 
-msprime(model, sequence_length = 100e6, recombination_rate = 1e-8,
+msprime(model, sequence_length = 100e6 / sequence_scaling, recombination_rate = 1e-8,
         random_seed = SEED)
 
 ts <- ts_load(model) %>% ts_mutate(mutation_rate = 1e-8)
@@ -83,7 +84,7 @@ f4ratio <- ts_f4ratio(
 ### Complementary SLiM run from the same model
 
 ```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
-slim(model, sequence_length = 100e6, recombination_rate = 1e-8, random_seed = SEED)
+slim(model, sequence_length = 100e6 / sequence_scaling, recombination_rate = 1e-8, random_seed = SEED)
 
 ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>% ts_mutate(mutation_rate = 1e-8)
 
@@ -214,7 +215,7 @@ model <- compile_model(
   mating = 0.1, dispersal = 0.05
 )
 
-slim(model, sequence_length = 10e6, recombination_rate = 1e-8)
+slim(model, sequence_length = 10e6 / sequence_scaling, recombination_rate = 1e-8)
 
 ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
 
