@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-save_pdf <- TRUE
+save_pdf <- FALSE
 
 env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 
