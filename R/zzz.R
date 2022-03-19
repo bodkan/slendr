@@ -10,7 +10,7 @@
       "\nIf you want to run SLiM simulations, make sure to modify the $PATH\n",
       "variable so that it points to the directory containing the slim\n",
       "command-line program. One easy way to do this is to add this:\n\n",
-      "PATH=\"path/to/the/location/of/slim\"\n\n",
+      "PATH=\"path/to/the/directory/with/slim/program\"\n\n",
       "to your ~/.Renviron file.\n--------------------")
   } else {
     required_version <- "3.7.1"
