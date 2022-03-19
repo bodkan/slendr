@@ -9,12 +9,13 @@ vignette: >
 
 ```{r, include = FALSE}
 env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
+eval_chunk <- Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
 
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   dpi = 80,
-  eval = Sys.which("slim") != "" && env_present
+  eval = eval_chunk
 )
 ```
 
@@ -49,7 +50,7 @@ p_code <- ggplot() +
 
 ### Script from panel A
 
-```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_msprime.trees")}
+```{r, eval = eval_chunk && !file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_msprime.trees")}
 o <- population("o", time = 1, N = 100)
 c <- population("c", time = 2500, N = 100, parent = o)
 a <- population("a", time = 2800, N = 100, parent = c)
@@ -83,7 +84,7 @@ f4ratio <- ts_f4ratio(
 
 ### Complementary SLiM run from the same model
 
-```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
+```{r, eval = eval_chunk && !file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
 slim(model, sequence_length = 100e6 / sequence_scaling, recombination_rate = 1e-8, random_seed = SEED)
 
 ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>% ts_mutate(mutation_rate = 1e-8)
@@ -96,7 +97,7 @@ f4ratio_slim <- ts_f4ratio(
 )
 ```
 
-```{r, include = FALSE, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_msprime.trees") && file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
+```{r, include = FALSE, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_msprime.trees") && file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex1/")
 ts <- ts_load(model, file = file.path(model$path, "output_msprime.trees")) %>% ts_mutate(mutation_rate = 1e-8)
 
@@ -188,7 +189,7 @@ p_ex1 <- plot_grid(
 p_ex1
 ```
 
-```{r, include = FALSE, eval = save_pdf}
+```{r, include = FALSE, eval = eval_chunk && save_pdf}
 ggsave("~/Documents/postdoc/slendr/ex1.pdf", p_ex1, width = 9, height = 6, units = "in")
 ```
 
@@ -196,7 +197,7 @@ ggsave("~/Documents/postdoc/slendr/ex1.pdf", p_ex1, width = 9, height = 6, units
 
 ### Script from panel A
 
-```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex2/output_slim.trees")}
+```{r, eval = eval_chunk && !file.exists("~/Documents/postdoc/slendr/slendr_models/ex2/output_slim.trees")}
 map <- world(xrange = c(0, 10), yrange = c(0, 10),
              landscape = region(center = c(5, 5), radius = 5))
 
@@ -227,7 +228,7 @@ heterozygosity <- ts_samples(ts) %>%
   mutate(pi = ts_diversity(ts, name)$diversity)
 ```
 
-```{r, include = FALSE, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex2/output_slim.trees")}
+```{r, include = FALSE, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex2/output_slim.trees")}
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex2")
 map <- model$world
 
@@ -285,7 +286,7 @@ p_ex2 <- plot_grid(
 p_ex2
 ```
 
-```{r, include = FALSE, eval = save_pdf}
+```{r, include = FALSE, eval = eval_chunk && save_pdf}
 ggsave("~/Documents/postdoc/slendr/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
 ```
 
@@ -323,7 +324,7 @@ R5 <- region(
 ooa_trajectory <- list(c(40, 30), c(50, 30), c(60, 40), c(45, 55))
 ```
 
-```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
+```{r, eval = eval_chunk && !file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
 map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = 3035)
  
 ooa <- population(
@@ -383,14 +384,14 @@ slim(
 )
 ```
 
-```{r, include = FALSE, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
+```{r, include = FALSE, eval = eval_chunk &&  file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex3")
 map <- model$world
 ```
 
 ### Plotting code
 
-```{r, figure_ex3, fig.height=5, fig.width=7, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees"), class.source = "fold-hide"}
+```{r, figure_ex3, fig.height=5, fig.width=7, eval = eval_chunk &&  file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees"), class.source = "fold-hide"}
 p_map <- plot_map(model) +
   theme(legend.position = "bottom") +
   guides(alpha = "none")
@@ -408,7 +409,7 @@ p_ex3 <- plot_grid(
 p_ex3
 ```
 
-```{r, include = FALSE, eval = save_pdf}
+```{r, include = FALSE, eval = eval_chunk && save_pdf}
 ggsave("~/Documents/postdoc/slendr/ex3.pdf", p_ex3, width = 9, height = 6, units = "in")
 ```
 
@@ -427,14 +428,14 @@ ggsave("~/Documents/postdoc/slendr/ex3.pdf", p_ex3, width = 9, height = 6, units
 <!-- dev.off() -->
 <!-- ``` -->
 
-```{r, include = FALSE, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
+```{r, include = FALSE, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex3")
 map <- model$world
 ```
 
 ### Script from panel A
 
-```{r, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
+```{r, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
 ts <- ts_load(model)
 
 ts_small <- ts_simplify(ts, c("EUR_599", "ANA_322", "EHG_7", 
@@ -467,7 +468,7 @@ ancestors <- ts_ancestors(ts, "EUR_599")
 
 ### Plotting code
 
-```{r, figure_ex4, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees") && requireNamespace("ggtree"), fig.height=9, fig.width=7, class.source = "fold-hide"}
+```{r, figure_ex4, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees") && requireNamespace("ggtree"), fig.height=9, fig.width=7, class.source = "fold-hide"}
 chrom_names <- setNames(
   c("EUR_599 (chromosome 1)", "EUR_599 (chromosome 2)"),
   unique(ancestors$node_id)
@@ -536,6 +537,6 @@ p_ex4 <- plot_grid(
 p_ex4
 ```
 
-```{r, include = FALSE, eval = save_pdf}
+```{r, include = FALSE, eval = eval_chunk && save_pdf}
 ggsave("~/Documents/postdoc/slendr/ex4.pdf", p_ex4, width = 7, height = 9, units = "in")
 ```
