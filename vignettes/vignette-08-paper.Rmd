@@ -363,7 +363,6 @@ gf <- list(
 )
 
 model <- compile_model(
-  path = "~/Documents/postdoc/slendr/slendr_models/ex3", overwrite = TRUE, force = TRUE,
   populations = list(ooa, ehg, eur, ana, yam), gene_flow = gf,
   generation_time = 30, resolution = 10e3,
   competition = 130e3, mating = 100e3,
