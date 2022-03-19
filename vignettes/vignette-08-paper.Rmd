@@ -8,26 +8,30 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+save_pdf <- TRUE
+
 env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
 
 knitr::opts_chunk$set(
-  collapse = FALSE,
+  collapse = TRUE,
   comment = "#>",
   dpi = 80,
-  eval = TRUE # Sys.which("slim") != "" && env_present
+  eval = Sys.which("slim") != "" && env_present
 )
 ```
 
 ```{r}
-library(slendr)
+suppressPackageStartupMessages({
+  library(slendr)
 
-library(dplyr)
-library(ggplot2)
-library(purrr)
-library(tidyr)
-library(cowplot)
-library(forcats)
-library(ggtree)
+  library(dplyr)
+  library(ggplot2)
+  library(purrr)
+  library(tidyr)
+  library(cowplot)
+  library(forcats)
+  library(ggtree)
+})
 
 SEED <- 42
 set.seed(SEED)
@@ -40,12 +44,11 @@ p_code <- ggplot() +
   theme_void()
 ```
 
-## Example 1
+## Example 1 (Figure 2)
 
-```{r, eval = !file.exists("~/Desktop/slendr/ex1/output_msprime.trees")}
-SEED <- 42
-set.seed(SEED)
+### Script from panel A
 
+```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_msprime.trees")}
 o <- population("o", time = 1, N = 100)
 c <- population("c", time = 2500, N = 100, parent = o)
 a <- population("a", time = 2800, N = 100, parent = c)
@@ -60,7 +63,6 @@ model <- compile_model(
   generation_time = 1, sim_length = 6000
 )
 
-# result is visualized in panel B
 plot_model(model, sizes = FALSE, proportions = TRUE)
 
 msprime(model, sequence_length = 100e6, recombination_rate = 1e-8,
@@ -70,17 +72,17 @@ ts <- ts_load(model) %>% ts_mutate(mutation_rate = 1e-8)
 
 samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
 
-# output of ts_divergence is visualized in panel C
 divergence <- ts_divergence(ts, split(samples$name, samples$pop))
 
-# output of ts_f4ratio is visualized in panel D
 f4ratio <- ts_f4ratio(
   ts, X = filter(samples, pop %in% c("x1", "x2"))$name,
   A = "a_1", B = "b_1", C = "c_1", O = "o_1"
 )
 ```
 
-```{r, include = FALSE, eval = !file.exists("~/Desktop/slendr/ex1/output_slim.trees"), class.source = "fold-hide"}
+### Complementary SLiM run from the same model
+
+```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
 slim(model, sequence_length = 100e6, recombination_rate = 1e-8, random_seed = SEED)
 
 ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>% ts_mutate(mutation_rate = 1e-8)
@@ -93,8 +95,8 @@ f4ratio_slim <- ts_f4ratio(
 )
 ```
 
-```{r, include = FALSE, eval = file.exists("~/Desktop/slendr/ex1/output_msprime.trees") && file.exists("~/Desktop/slendr/ex1/output_slim.trees"), class.source = "fold-hide"}
-model <- read_model("~/Desktop/slendr/ex1/")
+```{r, include = FALSE, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_msprime.trees") && file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
+model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex1/")
 ts <- ts_load(model, file = file.path(model$path, "output_msprime.trees")) %>% ts_mutate(mutation_rate = 1e-8)
 
 samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
@@ -118,7 +120,9 @@ f4ratio_slim <- ts_f4ratio(
 )
 ```
 
-```{r, figure_ex1, fig.height=6, fig.width=9, class.source = "fold-hide"}
+### Plotting code
+
+```{r, figure_ex1, fig.height=6, fig.width=9}
 divergence_both <- bind_rows(
   divergence %>% mutate(backend = "msprime"),
   divergence_slim %>% mutate(backend = "SLiM")
@@ -180,17 +184,18 @@ p_ex1 <- plot_grid(
   nrow = 1, labels = c("A", "")
 )
 
+p_ex1
+```
+
+```{r, include = FALSE, eval = save_pdf}
 ggsave("~/Documents/postdoc/slendr/ex1.pdf", p_ex1, width = 9, height = 6, units = "in")
 ```
 
-## Example 2
+## Example 2 (Figure 3)
 
-In the second model, we demonstrate the possibility to finely tune within-population spatial dynamics using parameters which determine how clustered or uniformly distributed individuals are over the population boundary, and affect their dispersal and mating behavior. We define nine isolated populations which occupy a circular "island", each with an increasing value of the so-called "competition distance" parameter which controls to what distance does a given individual compete. Based on the value of this parameter, the number of individuals in the population and the size of the occupiable space, different spatial dynamic behavior emerges from the population.
+### Script from panel A
 
-```{r, eval = !file.exists("~/Desktop/slendr/ex2/output_slim.trees")}
-SEED <- 42
-set.seed(SEED)
-
+```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex2/output_slim.trees")}
 map <- world(xrange = c(0, 10), yrange = c(0, 10),
              landscape = region(center = c(5, 5), radius = 5))
 
@@ -206,8 +211,7 @@ p8 <- population("pop8", time = 1, N = 2000, map = map, competition = 1)
 model <- compile_model(
   populations = list(p1, p2, p3, p4, p5, p6, p7, p8),
   generation_time = 1, sim_length = 5000, resolution = 0.1,
-  mating = 0.1, dispersal = 0.05,
-  path = "~/Desktop/slendr/ex2", overwrite = T, force = T
+  mating = 0.1, dispersal = 0.05
 )
 
 slim(model, sequence_length = 10e6, recombination_rate = 1e-8)
@@ -222,8 +226,8 @@ heterozygosity <- ts_samples(ts) %>%
   mutate(pi = ts_diversity(ts, name)$diversity)
 ```
 
-```{r, include = FALSE, eval = file.exists("~/Desktop/slendr/ex2/output_slim.trees")}
-model <- read_model("~/Desktop/slendr/ex2")
+```{r, include = FALSE, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex2/output_slim.trees")}
+model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex2")
 map <- model$world
 
 ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
@@ -234,7 +238,9 @@ heterozygosity <- ts_samples(ts) %>%
   mutate(pi = ts_diversity(ts, name)$diversity)
 ```
 
-```{r, figure_ex2, fig.height=9, fig.width=6, class.source = "fold-hide"}
+### Plotting code
+
+```{r, figure_ex2, fig.height=9, fig.width=6}
 locations <- ts_data(ts) %>% filter(time == max(time)) 
 
 p_ex2_clustering <- ggplot() +
@@ -275,12 +281,18 @@ p_ex2 <- plot_grid(
   nrow = 2, labels = c("A", ""), rel_heights = c(1.5, 1)
 )
 
+p_ex2
+```
+
+```{r, include = FALSE, eval = save_pdf}
 ggsave("~/Documents/postdoc/slendr/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
 ```
 
-## Example 3
+## Example 3 (Figure 4)
 
-```{r class.source = 'fold-hide', results='hide'}
+### Script from panel A
+
+```{r, results='hide'}
 map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = 3035)
 
 R1 <- region(
@@ -310,7 +322,7 @@ R5 <- region(
 ooa_trajectory <- list(c(40, 30), c(50, 30), c(60, 40), c(45, 55))
 ```
 
-```{r, eval = !file.exists("~/Desktop/slendr/ex3/output_slim.trees")}
+```{r, eval = !file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
 map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = 3035)
  
 ooa <- population(
@@ -349,7 +361,7 @@ gf <- list(
 )
 
 model <- compile_model(
-  path = "~/Desktop/slendr/ex3", overwrite = TRUE, force = TRUE,
+  path = "~/Documents/postdoc/slendr/slendr_models/ex3", overwrite = TRUE, force = TRUE,
   populations = list(ooa, ehg, eur, ana, yam), gene_flow = gf,
   generation_time = 30, resolution = 10e3,
   competition = 130e3, mating = 100e3,
@@ -370,12 +382,14 @@ slim(
 )
 ```
 
-```{r, include = FALSE, eval = file.exists("~/Desktop/slendr/ex3/output_slim.trees")}
-model <- read_model("~/Desktop/slendr/ex3")
+```{r, include = FALSE, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
+model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex3")
 map <- model$world
 ```
 
-```{r, figure_ex3, fig.height=5, fig.width=7, eval = file.exists("~/Desktop/slendr/ex3/output_slim.trees"), class.source = "fold-hide"}
+### Plotting code
+
+```{r, figure_ex3, fig.height=5, fig.width=7, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees"), class.source = "fold-hide"}
 p_map <- plot_map(model) +
   theme(legend.position = "bottom") +
   guides(alpha = "none")
@@ -390,15 +404,14 @@ p_ex3 <- plot_grid(
   ncol = 2, labels = c("A", ""), rel_widths = c(1, 1.2)
 )
 
+p_ex3
+```
+
+```{r, include = FALSE, eval = save_pdf}
 ggsave("~/Documents/postdoc/slendr/ex3.pdf", p_ex3, width = 9, height = 6, units = "in")
 ```
 
-## Example 4
-
-In the fourth and final example, we return to the abstract toy model of West Eurasian prehistory. The main output of a _slendr_ simulation is a tree sequence which, in case of _non-spatial_ population genetic models, records the complete information about _when_ did the ancestors of a set of sampled individuals lived throughout the entire history of that sample. However, in case of _spatial_ _slendr_ models simulated by SLiM, the output tree sequences also contain the exact _spatial location_ of each individual ancestral node.
-
-To highlight the richness of the spatio-temporal information encoded by tree sequence data structure and showcase the novel, we demonstrate 
-
+## Example 4 (Figure 5)
 
 <!-- ```{r} -->
 <!-- ts <- ts_load(model, simplify = TRUE) -->
@@ -413,12 +426,14 @@ To highlight the richness of the spatio-temporal information encoded by tree seq
 <!-- dev.off() -->
 <!-- ``` -->
 
-```{r, include = FALSE, eval = file.exists("~/Desktop/slendr/ex3/output_slim.trees")}
-model <- read_model("~/Desktop/slendr/ex3")
+```{r, include = FALSE, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
+model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex3")
 map <- model$world
 ```
 
-```{r, eval = file.exists("~/Desktop/slendr/ex3/output_slim.trees")}
+### Script from panel A
+
+```{r, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
 ts <- ts_load(model)
 
 ts_small <- ts_simplify(ts, c("EUR_599", "ANA_322", "EHG_7", 
@@ -449,7 +464,9 @@ ancestors <- ts_ancestors(ts, "EUR_599")
 <!-- } -->
 <!-- ``` -->
 
-```{r, figure_ex4, eval = file.exists("~/Desktop/slendr/ex3/output_slim.trees") && requireNamespace("ggtree"), fig.height=9, fig.width=7, class.source = "fold-hide"}
+### Plotting code
+
+```{r, figure_ex4, eval = file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees") && requireNamespace("ggtree"), fig.height=9, fig.width=7, class.source = "fold-hide"}
 chrom_names <- setNames(
   c("EUR_599 (chromosome 1)", "EUR_599 (chromosome 2)"),
   unique(ancestors$node_id)
@@ -515,5 +532,9 @@ p_ex4 <- plot_grid(
   nrow = 4, rel_heights = c(0.5, 1, 1, 0.1)
 )
 
+p_ex4
+```
+
+```{r, include = FALSE, eval = save_pdf}
 ggsave("~/Documents/postdoc/slendr/ex4.pdf", p_ex4, width = 7, height = 9, units = "in")
 ```
