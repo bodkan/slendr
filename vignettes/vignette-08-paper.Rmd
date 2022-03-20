@@ -469,31 +469,16 @@ ancestors <- ts_ancestors(ts, "EUR_599")
 ```{r, figure_ex4, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees"), fig.height=9, fig.width=7, class.source = "fold-hide"}
 library(ggtree)
 
-chrom_names <- setNames(
-  c("EUR_599 (chromosome 1)", "EUR_599 (chromosome 2)"),
-  unique(ancestors$node_id)
-)
-
-p_ancestors <- ggplot() +
-  geom_sf(data = map) +
-  geom_sf(data = ancestors, size = 0.5, aes(alpha = parent_time)) +
-  geom_sf(data = sf::st_set_geometry(ancestors, "parent_location"),
-          aes(shape = parent_pop, color = parent_pop)) +
-  geom_sf(data = filter(ts_data(ts), name == "EUR_599"), size = 3) +
-  coord_sf(expand = 0) +
-  labs(x = "longitude", y = "latitude") +
-  theme_bw() +
-  facet_grid(. ~ node_id, labeller = labeller(node_id = chrom_names)) +
-  theme(legend.position = "none")
-
 # prepare annotation table for ggtree linking R phylo node ID (not tskit integer
 # ID!) of each node with its population name
 df <- as_tibble(nodes) %>% select(node = phylo_id, pop)
 
+highlight_nodes <- as_tibble(nodes) %>% dplyr::filter(name == "EUR_599") %>% .$phylo_id
 p_tree <- ggtree(tree, aes(color = pop, fill = pop)) %<+% df +
-  geom_tiplab(align = TRUE, geom = "label",
+  geom_tiplab(align = TRUE, geom = "label", offset = 2000,
               color = "white", fontface = "bold", size = 3) +
   geom_tiplab(align = TRUE, geom = NULL, linetype = "dotted", size = 0) +
+  geom_point2(aes(subset = (node %in% highlight_nodes)), color = "black", size = 3) +
   geom_label2(aes(label = label, subset = !isTip),
               color = "black", size = 3) +
   theme_tree2() +
@@ -520,6 +505,23 @@ p_map <- ggplot() +
   guides(color = "none", shape = "none") +
   theme_bw() +
   theme(legend.position = "bottom")
+
+chrom_names <- setNames(
+  c("EUR_599 (chromosome 1, node 10)", "EUR_599 (chromosome 2, node 11)"),
+  unique(ancestors$node_id)
+)
+
+p_ancestors <- ggplot() +
+  geom_sf(data = map) +
+  geom_sf(data = ancestors, size = 0.5, aes(alpha = parent_time)) +
+  geom_sf(data = sf::st_set_geometry(ancestors, "parent_location"),
+          aes(shape = parent_pop, color = parent_pop)) +
+  geom_sf(data = filter(ts_data(ts), name == "EUR_599"), size = 3) +
+  coord_sf(expand = 0) +
+  labs(x = "longitude", y = "latitude") +
+  theme_bw() +
+  facet_grid(. ~ node_id, labeller = labeller(node_id = chrom_names)) +
+  theme(legend.position = "none")
 
 p_legend <- ggdraw() + draw_grob(grid::grobTree(get_legend(p_map)))
 
