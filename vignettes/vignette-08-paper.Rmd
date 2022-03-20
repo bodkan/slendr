@@ -32,7 +32,6 @@ suppressPackageStartupMessages({
   library(tidyr)
   library(cowplot)
   library(forcats)
-  library(ggtree)
 })
 
 SEED <- 42
@@ -468,6 +467,8 @@ ancestors <- ts_ancestors(ts, "EUR_599")
 ### Plotting code
 
 ```{r, figure_ex4, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees") && requireNamespace("ggtree"), fig.height=9, fig.width=7, class.source = "fold-hide"}
+library(ggtree)
+
 chrom_names <- setNames(
   c("EUR_599 (chromosome 1)", "EUR_599 (chromosome 2)"),
   unique(ancestors$node_id)
