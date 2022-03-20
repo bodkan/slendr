@@ -466,7 +466,7 @@ ancestors <- ts_ancestors(ts, "EUR_599")
 
 ### Plotting code
 
-```{r, figure_ex4, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees") && requireNamespace("ggtree"), fig.height=9, fig.width=7, class.source = "fold-hide"}
+```{r, figure_ex4, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees"), fig.height=9, fig.width=7, class.source = "fold-hide"}
 library(ggtree)
 
 chrom_names <- setNames(
