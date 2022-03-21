@@ -1369,7 +1369,7 @@ clear_env <- function(force = FALSE) {
       c("No", "Yes"),
       title = paste0(
         "Are you sure you want to delete the automatically created slendr ",
-        "Python\nenvironment? It is located in:\n", path, "\n",
+        "Python\nenvironment? It is located in:\n\n", path, "\n\n",
         "If you remove it, you can create it again by running",
         "`setup_env()`\nwithout any arguments in a new R session."
       )
