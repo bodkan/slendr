@@ -1325,7 +1325,7 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
           "separate location into an isolated environment in an R library directory.\n",
           "This won't affect your other Python installations at all, whatever those\n",
           "might be (standard Python installations or conda setups), and you can always\n",
-          "wipe out the environment simply by running `clear_env()`.\n\n",
+          "wipe out the automatically created environment by running `clear_env()`.\n\n",
           # "If your answer is \"no\", you can set up your own virtual environment\n",
           # "with Python >= 3.8, msprime >= 1.1.0, tskit >= 0.4.1, pyslim >= 0.700,\n",
           # "and pandas and provide it to the setup_env() function using its\n",
