@@ -1081,6 +1081,10 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @export
 ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
                     sampled_only = TRUE, ...) {
+  if (!"rsvg" %in% utils::installed.packages()[, 1])
+    stop("For plotting trees using the native SVG tskit capabilities, please\n",
+         "install the R package rsvg by calling `install.packages(\"rsvg\")")
+
   if (labels) {
     ts <- attr(x, "tree_sequence")
     df_labels <- ts_data(ts) %>%

@@ -44,7 +44,6 @@ Imports:
     tidyr,
     rnaturalearth,
     gganimate,
-    rsvg,
     png,
     ijtiff,
     shinyWidgets,
