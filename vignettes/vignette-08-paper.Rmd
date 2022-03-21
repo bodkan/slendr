@@ -98,7 +98,7 @@ f4ratio_slim <- ts_f4ratio(
 
 ```{r, include = FALSE, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_msprime.trees") && file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex1/")
-ts <- ts_load(model, file = file.path(model$path, "output_msprime.trees")) %>% ts_mutate(mutation_rate = 1e-8)
+ts <- ts_load(model, file = file.path(model$path, "output_msprime.trees")) %>% ts_mutate(mutation_rate = 1e-8, random_seed = SEED)
 
 samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
 
@@ -111,7 +111,7 @@ f4ratio <- ts_f4ratio(
   A = "a_1", B = "b_1", C = "c_1", O = "o_1"
 )
 
-ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>% ts_mutate(mutation_rate = 1e-8)
+ts_slim <- ts_load(model, file = file.path(model$path, "output_slim.trees")) %>% ts_mutate(mutation_rate = 1e-8, random_seed = SEED)
 
 divergence_slim <- ts_divergence(ts_slim, split(samples$name, samples$pop))
 
@@ -124,9 +124,6 @@ f4ratio_slim <- ts_f4ratio(
 ### Plotting code
 
 ```{r, figure_ex1, fig.height=6, fig.width=9}
-SEED <- 42
-set.seed(SEED)
-
 divergence_both <- bind_rows(
   divergence %>% mutate(backend = "msprime"),
   divergence_slim %>% mutate(backend = "SLiM")
@@ -234,7 +231,7 @@ heterozygosity <- ts_samples(ts) %>%
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex2")
 map <- model$world
 
-ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
+ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7, random_seed = SEED)
 
 heterozygosity <- ts_samples(ts) %>%
   group_by(pop) %>%
@@ -245,9 +242,6 @@ heterozygosity <- ts_samples(ts) %>%
 ### Plotting code
 
 ```{r, figure_ex2, fig.height=9, fig.width=6}
-SEED <- 42
-set.seed(SEED)
-
 locations <- ts_data(ts) %>% filter(time == max(time)) 
 
 p_ex2_clustering <- ggplot() +
