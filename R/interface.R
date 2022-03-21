@@ -1360,20 +1360,25 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
 #'
 #' @export
 clear_env <- function(force = FALSE) {
-  if ("automatic_slendr_python_env" %in% reticulate::conda_list()$name) {
+  if (check_env_present()) {
+    path <- reticulate::conda_list() %>%
+      dplyr::filter(grepl("automatic_slendr", name)) %>%
+      { gsub("bin\\/python", "", .$python) }
+
     answer <- utils::menu(
       c("No", "Yes"),
       title = paste0(
         "Are you sure you want to delete the automatically created slendr ",
-        "Python\nenvironment? If you do, you can create it again by running",
+        "Python\nenvironment? It is located in:\n", path, "\n",
+        "If you remove it, you can create it again by running",
         "`setup_env()`\nwithout any arguments in a new R session."
       )
     )
     if (answer == 2) reticulate::conda_remove("automatic_slendr_python_env")
     message("The slendr Python environment has been sucessfully removed.")
   } else
-    stop("No conda environment named 'automatic_slendr_python_env' has been found",
-         call. = FALSE)
+    warning("No automatic slendr Python environment has been found so there\n",
+            "is nothing to delete.", call. = FALSE)
 }
 
 #' Check that the active Python environment is correctly setup for slendr
