@@ -19,7 +19,7 @@
     if (utils::compareVersion(slim_version, required_version) < 0)
       packageStartupMessage(
         "You are running SLiM version ", slim_version,
-        " but at least a version ", required_version,
+        " but at least version ", required_version,
         "\nis required. Please upgrade SLiM to the latest version.\n--------------------"
       )
   }
