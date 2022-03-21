@@ -33,6 +33,8 @@ navbar:
           href: articles/vignette-06-locations.html
         - text: Simulating data with SLiM and msprime backends
           href: articles/vignette-07-backends.html
+        - text: Examples from the slendr paper
+          href: articles/vignette-08-paper.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/dr_bodkan
