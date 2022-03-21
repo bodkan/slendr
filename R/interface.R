@@ -1345,9 +1345,7 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
 
       if (!quiet)
         message("Python environment for slendr has been successfuly created, and ",
-                "the R\ninterface to msprime, tskit, and pyslim modules has been activated. ",
-                "In\nthe future, you may simply call setup_env() again and slendr ",
-                "will activate\nthis environment automatically on its own.")
+                "the R\ninterface to msprime, tskit, and pyslim modules has been activated.")
     } else
       warning("Your Python environment is not set up correctly which means that the tree\n",
               "sequence functionality of slendr will not work.", call. = FALSE)
