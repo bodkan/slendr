@@ -124,6 +124,9 @@ f4ratio_slim <- ts_f4ratio(
 ### Plotting code
 
 ```{r, figure_ex1, fig.height=6, fig.width=9}
+SEED <- 42
+set.seed(SEED)
+
 divergence_both <- bind_rows(
   divergence %>% mutate(backend = "msprime"),
   divergence_slim %>% mutate(backend = "SLiM")
@@ -242,6 +245,9 @@ heterozygosity <- ts_samples(ts) %>%
 ### Plotting code
 
 ```{r, figure_ex2, fig.height=9, fig.width=6}
+SEED <- 42
+set.seed(SEED)
+
 locations <- ts_data(ts) %>% filter(time == max(time)) 
 
 p_ex2_clustering <- ggplot() +

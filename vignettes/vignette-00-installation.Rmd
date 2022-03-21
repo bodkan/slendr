@@ -1,0 +1,26 @@
+---
+title: "Installation instructions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installation instructions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Quick installation
+
+*slendr* is currently on its way to CRAN so it's not yet possible to install it with simple `install.packages("slendr")`. In the meantime, the easiest way to install its development version directly from GitHub executing `devtools::install_github("bodkan/slendr")`.
+
+## 
+
+The complete functionality of *slendr* (i.e., programming of spatial SLiM simulations, coalescent simulations with *msprime*, and processing and analysis of tree-sequence files with the R-*tskit* interface) relies on three main software dependencies:
+
+1.  geospatial data analysis R package [*sf*](https://r-spatial.github.io/sf/),
+2.  forward population genetic simulator [SLiM](https://messerlab.org/slim/),
+3.  Python modules [*tskit*, *msprime*, and *pyslim*](https://tskit.dev/)*.*
+
+All three are extremely popular and widely used pieces of software which are easily available on all major operating systems. In this vignette, I will briefly explain how to get all of *slendr*'s software dependencies installed, noting that under normal circumstances, with the exception of SLiM, no manual installation of individual dependencies is required.
+
+Please note that at the moment only macOS and Linux are fully supported and tested. However, because all of *slendr*'s dependencies are available also on Windows, I hope to make the R package fully portable as soon as I get access to a Windows machine to do testing on. In the meantime, if you're a Windows user, I suggest you consider using the official [Windows Subsystem for Linux](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) which should get you a proper Linux environment on your machine.
+
+## *sf*
