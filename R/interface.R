@@ -1318,18 +1318,19 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
         c("No", "Yes"),
         title = paste0(
           "No pre-configured Python environment for slendr has been found.\n\n",
-          "Do you wish to install a Miniconda Python distribution and create\n",
-          "an isolated environment with all required Python modules automatically?\n",
-          "\n(No need to worry, everything will be installed into a completely\n",
+          "Do you wish to install a completely isolated Miniconda Python distribution\n",
+          "just for slendr and create an isolated environment with all required Python\n",
+          "modules automatically?\n",
+          "\nNo need to worry, everything will be installed into a completely\n",
           "separate location into an isolated environment in an R library directory.\n",
           "This won't affect your other Python installations at all, whatever those\n",
-          "might be, and you can always wipe it out simply by running `clear_env()`.)\n\n",
-          "If your answer is \"no\", you can set up your own virtual environment\n",
-          "with Python >= 3.8, msprime >= 1.1.0, tskit >= 0.4.1, pyslim >= 0.700,\n",
-          "and pandas and provide it to the setup_env() function using its\n",
-          "`env` argument (see `?setup_env` for more detail).\n\n",
-          "Do you wish to setup a Python virtual environment just for slendr and\n",
-          "populate it with the required Python modules?")
+          "might be (standard Python installations or conda setups), and you can always\n",
+          "wipe out the environment simply by running `clear_env()`.\n\n",
+          # "If your answer is \"no\", you can set up your own virtual environment\n",
+          # "with Python >= 3.8, msprime >= 1.1.0, tskit >= 0.4.1, pyslim >= 0.700,\n",
+          # "and pandas and provide it to the setup_env() function using its\n",
+          # "`env` argument (see `?setup_env` for more detail).\n\n",
+          "Do you wish to proceed with the automated Python environment setup?")
         )
     if (answer == 2) {
       if (!dir.exists(reticulate::miniconda_path()))
