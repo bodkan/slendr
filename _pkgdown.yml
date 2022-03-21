@@ -17,6 +17,8 @@ navbar:
       icon: fa-book
       text: Articles
       menu:
+        - text: Installation instructions
+          href: articles/vignette-00-installation.html
         - text: Introduction and basic tutorial
           href: articles/vignette-01-tutorial.html
         - text: Demes on a regular spatial grid
