@@ -24,14 +24,12 @@
       )
   }
   if (!check_env_present()) {
-    packageStartupMessage(
-      "In order to setup a pre-configured Python environment with all\ndependencies",
-      " for tree sequence analyses (Python modules tskit,\npyslim, and msprime)",
-      " you can run the function setup_env().\n\nThis will install and configure a ",
-      "completely isolated Python\nenvironment automatically for you, without affecting ",
-      "your system\nat all (regardless of which Python or conda installations you\n",
-      "might already have, don't worry)."
-    )
+    if (!getOption("slendr.custom_env"))
+      packageStartupMessage(
+        "You can setup a pre-configured environment with all of slendr's Python\n",
+        "tree-sequence dependencies (Python modules tskit, pyslim, and msprime)",
+        "\nby running the function setup_env()."
+      )
   } else
     setup_env()
 }
@@ -52,4 +50,11 @@ msp <- NULL
   #   path = system.file("python", package = "slendr"),
   #   delay_load = TRUE
   # )
+
+  # setup slendr options (https://r-pkgs.org/r.html#when-you-do-need-side-effects)
+  op <- options()
+  op.slendr <- list(slendr.custom_env = FALSE)
+  toset <- !(names(op.slendr) %in% names(op))
+  if (any(toset)) options(op.slendr[toset])
+  invisible()
 }

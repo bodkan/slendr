@@ -4,23 +4,16 @@
 \alias{setup_env}
 \title{Setup a dedicated Python virtual environment for slendr}
 \usage{
-setup_env(env = NULL, quiet = FALSE, agree = FALSE)
+setup_env(quiet = FALSE, agree = FALSE)
 }
 \arguments{
-\item{env}{Either a name of a conda environment, or a path to a standard
-Python virtual environment (such as one created by \code{python3 -m venv
-  <path to an environment>}) with necessary Python dependencies (msprime,
-tskit, pyslim, and pandas). If \code{NULL} (the default), the user will be
-offered to install and configure an entirely isolated Miniconda Python
-environment just for slendr. If this environment is already present,
-calling \code{setup_env()} without the \code{env} argument will simply
-activate this environment.}
-
 \item{quiet}{Should informative messages be printed to the console? Default
 is \code{FALSE}.}
 
 \item{agree}{Automatically agree to all questions?}
 }
 \description{
-Setup a dedicated Python virtual environment for slendr
+This function will automatically download a Python miniconda distribution
+dedicated to an R-Python interface. It will also create a slendr-specific
+Python environment with all the required Python dependencies.
 }
