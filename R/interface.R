@@ -1231,74 +1231,17 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 
 #' Setup a dedicated Python virtual environment for slendr
 #'
-#' @param env Either a name of a conda environment, or a path to a standard
-#'   Python virtual environment (such as one created by \code{python3 -m venv
-#'   <path to an environment>}) with necessary Python dependencies (msprime,
-#'   tskit, pyslim, and pandas). If \code{NULL} (the default), the user will be
-#'   offered to install and configure an entirely isolated Miniconda Python
-#'   environment just for slendr. If this environment is already present,
-#'   calling \code{setup_env()} without the \code{env} argument will simply
-#'   activate this environment.
+#' This function will automatically download a Python miniconda distribution
+#' dedicated to an R-Python interface. It will also create a slendr-specific
+#' Python environment with all the required Python dependencies.
+#'
 #' @param quiet Should informative messages be printed to the console? Default
 #'   is \code{FALSE}.
 #' @param agree Automatically agree to all questions?
 #'
 #' @export
-setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
-  if (!is.null(env)) {
-    # check for the presence of a regular virtual environment (if the user
-    # provided their own environment)
-    env_type <- tryCatch(
-      {
-        reticulate::use_virtualenv(env, required = TRUE)
-        "virtualenv"
-      },
-      error = function(cond) FALSE
-    )
-
-    # if a regular venv is missing, check for the conda environment
-    if (env_type != "virtualenv") {
-      env_type <- tryCatch(
-        {
-          reticulate::use_condaenv(env, required = TRUE)
-          "conda"
-        },
-        error = function(cond) FALSE
-      )
-    }
-
-    if (env_type %in% c("virtualenv", "conda")) {
-      if (!quiet)
-        message("Successfully connected to the specified ",
-                ifelse(env_type == "virtualenv", "Python", "conda"),
-                " virtual environment '", env, "'")
-      # check if all Python dependencies are present in the activated environment
-      if (!reticulate::py_module_available("msprime") && ask_install("msprime"))
-        reticulate::py_install("msprime=1.1.0", envname = env)
-      if (!reticulate::py_module_available("tskit") && ask_install("tskit"))
-        reticulate::py_install("tskit=0.4.1", envname = env)
-      if (!reticulate::py_module_available("pyslim") && ask_install("pyslim"))
-        reticulate::py_install("pyslim=0.700", envname = env)
-      if (!reticulate::py_module_available("pandas") &&
-          ask_install("pandas (needed for the msprime back end script)"))
-        reticulate::py_install("pandas=1.3.5", envname = env)
-
-      has_tskit <- reticulate::py_module_available("tskit")
-      has_msprime <- reticulate::py_module_available("msprime")
-      has_pyslim <- reticulate::py_module_available("pyslim")
-
-      if (!all(c(has_tskit, has_pyslim, has_msprime)))
-        stop("Python modules tskit, msprime, and pyslim are required for tree sequence\n",
-             "analysis with slendr. If you're having trouble setting up the Python ",
-             "environment,\nyou can run `setup_env()` without any arguments and ",
-             "slendr with configure\neverything for you automatically.", call. = FALSE)
-    } else
-      stop("The specified Python environment '", env, "' not found among\n",
-           "regular Python virtual environments or conda environments.\n\n",
-           "Note: If you run setup_env() without any arguments, slendr will set up",
-           "\nyour Python environment for you and configure it automatically.",
-           call. = FALSE)
-  } else if (check_env_present()) {
+setup_env <- function(quiet = FALSE, agree = FALSE) {
+  if (check_env_present()) {
     reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
     if (!reticulate::py_module_available("msprime") ||
         !reticulate::py_module_available("tskit") ||
@@ -1327,7 +1270,7 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
           "might be (standard Python installations or conda setups), and you can always\n",
           "wipe out the automatically created environment by running `clear_env()`.\n\n",
           # "If your answer is \"no\", you can set up your own virtual environment\n",
-          # "with Python >= 3.8, msprime >= 1.1.0, tskit >= 0.4.1, pyslim >= 0.700,\n",
+          # "with Python >= 3.8, msprime >= 1.1.1, tskit >= 0.4.1, pyslim >= 0.700,\n",
           # "and pandas and provide it to the setup_env() function using its\n",
           # "`env` argument (see `?setup_env` for more detail).\n\n",
           "Do you wish to proceed with the automated Python environment setup?")
@@ -1337,7 +1280,7 @@ setup_env <- function(env = NULL, quiet = FALSE, agree = FALSE) {
         reticulate::install_miniconda()
 
       reticulate::conda_create(
-        packages = c("msprime=1.1.0", "tskit=0.4.1", "pyslim=0.700", "pandas=1.3.5"),
+        packages = c("msprime=1.1.1", "tskit=0.4.1", "pyslim=0.700", "pandas"),
         envname = "automatic_slendr_python_env"
       )
 
