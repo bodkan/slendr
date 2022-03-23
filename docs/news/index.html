@@ -106,7 +106,9 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
-</div>
+<ul><li><p>The code of <code><a href="../reference/setup_env.html">setup_env()</a></code> was simplified to bare essentials. Now it <em>only</em> serves as a way to auto-setup a dedicated, isolated Python installation and <em>slendr</em> environment. The interface to install Python modules into custom-defined Python environment created outside R has been removed because this functionality is not necessary – these custom environments can be easily activated by calling <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_virtualenv</a></code> or <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_condaenv</a></code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
+<li><p>If some Python users want to use custom Python environments with <em>msprime</em>, <em>tskit</em>, and <em>pyslim</em>, they can silence the suggestion to use <code><a href="../reference/setup_env.html">setup_env()</a></code> printed by the <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> call by setting <code>options(slendr.custom_env = TRUE)</code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="slendr-010">slendr 0.1.0<a class="anchor" aria-label="anchor" href="#slendr-010"></a></h2>
 <ul><li>First numbered version of <em>slendr</em> to celebrate its <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">bioRxiv preprint</a>. 🥳 🎉</li>
