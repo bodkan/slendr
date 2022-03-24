@@ -511,7 +511,7 @@ ask_install <- function(module) {
 
 check_env_present <- function() {
   tryCatch({
-      "automatic_slendr_python_env" %in% reticulate::conda_list()$name
+    PYTHON_ENV %in% reticulate::conda_list()$name
   }, error = function(cond) FALSE
   )
 }

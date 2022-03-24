@@ -1,7 +1,3 @@
-env_present <- function(env) {
-  "automatic_slendr_python_env" %in% reticulate::conda_list()$name
-}
-
 # Function used in unit tests verifying the correct number of individuals after
 # various demographic changes
 run_sim <- function(pop, direction, sim_length = NULL, method = "batch", verbose = FALSE) {

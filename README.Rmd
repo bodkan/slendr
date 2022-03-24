@@ -1,7 +1,7 @@
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
 ```{r, include = FALSE}
-env_present <- "automatic_slendr_python_env" %in% reticulate::conda_list()$name
+env_present <- slendr:::check_env_present()
 
 knitr::opts_chunk$set(
   collapse = TRUE,
