@@ -1238,15 +1238,21 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 #' @param quiet Should informative messages be printed to the console? Default
 #'   is \code{FALSE}.
 #' @param agree Automatically agree to all questions?
+#' @param pip Should pip be used instead of conda for installing slendr's Python
+#'   dependencies? Note that this will still use the conda distribution to
+#'   install Python itself, but will change the repository from which slendr
+#'   will install its Python dependencies. This option is set to \code{TRUE} by
+#'   default, because in testing across different platforms, in all situations
+#'   in which conda failed to satisfy a dependency, pip had worked every time.
 #'
 #' @export
-setup_env <- function(quiet = FALSE, agree = FALSE) {
+setup_env <- function(quiet = FALSE, agree = FALSE, pip = TRUE) {
   if (check_env_present()) {
-    reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
+    reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
     if (!reticulate::py_module_available("msprime") ||
         !reticulate::py_module_available("tskit") ||
         !reticulate::py_module_available("pyslim")) {
-      stop("Python environment 'automatic_slendr_python_env' has been found but it",
+      stop("Python environment ", PYTHON_ENV, " has been found but it",
            " does not appear to have msprime, tskit and pyslim modules all",
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
@@ -1267,24 +1273,22 @@ setup_env <- function(quiet = FALSE, agree = FALSE) {
           "\nNo need to worry, everything will be installed into a completely\n",
           "separate location into an isolated environment in an R library directory.\n",
           "This won't affect your other Python installations at all, whatever those\n",
-          "might be (standard Python installations or conda setups), and you can always\n",
+          "might be (standard Python installations or conda setups). You can always\n",
           "wipe out the automatically created environment by running `clear_env()`.\n\n",
-          # "If your answer is \"no\", you can set up your own virtual environment\n",
-          # "with Python >= 3.8, msprime >= 1.1.1, tskit >= 0.4.1, pyslim >= 0.700,\n",
-          # "and pandas and provide it to the setup_env() function using its\n",
-          # "`env` argument (see `?setup_env` for more detail).\n\n",
           "Do you wish to proceed with the automated Python environment setup?")
         )
     if (answer == 2) {
       if (!dir.exists(reticulate::miniconda_path()))
         reticulate::install_miniconda()
 
-      reticulate::conda_create(
-        packages = c("msprime=1.1.1", "tskit=0.4.1", "pyslim=0.700", "pandas"),
-        envname = "automatic_slendr_python_env"
-      )
+      reticulate::conda_create(envname = PYTHON_ENV)
+      reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
 
-      reticulate::use_condaenv("automatic_slendr_python_env", required = TRUE)
+      # parse the Python env name back to the list of dependencies
+      # (the environment is defined in .onAttach(), and this makes sure the
+      # dependencies are defined all in one place)
+      deps <- gsub("slendr_", "", PYTHON_ENV) %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
+      reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
 
       if (!quiet)
         message("Python environment for slendr has been successfuly created, and ",
@@ -1303,7 +1307,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE) {
 clear_env <- function(force = FALSE) {
   if (check_env_present()) {
     path <- reticulate::conda_list() %>%
-      dplyr::filter(grepl("automatic_slendr", name)) %>%
+      dplyr::filter(grepl(PYTHON_ENV, name)) %>%
       { gsub("bin\\/python", "", .$python) }
 
     answer <- utils::menu(
@@ -1315,11 +1319,11 @@ clear_env <- function(force = FALSE) {
         "`setup_env()`\nwithout any arguments in a new R session."
       )
     )
-    if (answer == 2) reticulate::conda_remove("automatic_slendr_python_env")
+    if (answer == 2) reticulate::conda_remove(PYTHON_ENV)
     message("The slendr Python environment has been sucessfully removed.")
   } else
-    warning("No automatic slendr Python environment has been found so there\n",
-            "is nothing to delete.", call. = FALSE)
+    warning("No automatic slendr Python environment has been found so there is\n",
+            "nothing to delete.", call. = FALSE)
 }
 
 #' Check that the active Python environment is correctly setup for slendr

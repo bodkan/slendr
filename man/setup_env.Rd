@@ -4,13 +4,20 @@
 \alias{setup_env}
 \title{Setup a dedicated Python virtual environment for slendr}
 \usage{
-setup_env(quiet = FALSE, agree = FALSE)
+setup_env(quiet = FALSE, agree = FALSE, pip = TRUE)
 }
 \arguments{
 \item{quiet}{Should informative messages be printed to the console? Default
 is \code{FALSE}.}
 
 \item{agree}{Automatically agree to all questions?}
+
+\item{pip}{Should pip be used instead of conda for installing slendr's Python
+dependencies? Note that this will still use the conda distribution to
+install Python itself, but will change the repository from which slendr
+will install its Python dependencies. This option is set to \code{TRUE} by
+default, because in testing across different platforms, in all situations
+in which conda failed to satisfy a dependency, pip had worked every time.}
 }
 \description{
 This function will automatically download a Python miniconda distribution

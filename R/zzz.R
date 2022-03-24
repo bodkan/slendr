@@ -1,3 +1,15 @@
+# global references to required Python packages - inspired by:
+# https://cran.r-project.org/web/packages/reticulate/vignettes/package.html
+tskit <- NULL
+pyslim <- NULL
+msp <- NULL
+# pylib <- NULL
+
+# define slendr's required Python dependencies and compose an environment name
+# that will be used specifically for them
+deps <- c("msprime==1.1.1", "tskit==0.4.1", "pyslim==0.700", "pandas")
+PYTHON_ENV <- paste0("slendr_", paste(gsub("==", "-", deps), collapse = "_"))
+
 .onAttach <- function(libname, pkgname) {
   # check for presence of the slim binary in user's PATH and display
   # a warning if it's not present
@@ -23,6 +35,7 @@
         "\nis required. Please upgrade SLiM to the latest version.\n--------------------"
       )
   }
+
   if (!check_env_present()) {
     if (!getOption("slendr.custom_env"))
       packageStartupMessage(
@@ -33,13 +46,6 @@
   } else
     setup_env()
 }
-
-# global references to required Python packages - inspired by:
-# https://cran.r-project.org/web/packages/reticulate/vignettes/package.html
-tskit <- NULL
-pyslim <- NULL
-msp <- NULL
-# pylib <- NULL
 
 .onLoad <- function(libname, pkgname) {
   tskit <<- reticulate::import("tskit", delay_load = TRUE)

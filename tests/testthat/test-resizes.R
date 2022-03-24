@@ -1,4 +1,4 @@
-skip_if(!env_present("automatic_slendr_python_env"))
+skip_if(!slendr:::check_env_present())
 
 map <- readRDS("map.rds")
 
