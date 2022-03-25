@@ -114,7 +114,7 @@ Python environment with all the required Python dependencies.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">setup_env</span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span>, agree <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">setup_env</span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span>, agree <span class="op">=</span> <span class="cn">FALSE</span>, pip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -124,6 +124,13 @@ Python environment with all the required Python dependencies.</p>
 is <code>FALSE</code>.</p></dd>
 <dt>agree</dt>
 <dd><p>Automatically agree to all questions?</p></dd>
+<dt>pip</dt>
+<dd><p>Should pip be used instead of conda for installing slendr's Python
+dependencies? Note that this will still use the conda distribution to
+install Python itself, but will change the repository from which slendr
+will install its Python dependencies. This option is set to <code>TRUE</code> by
+default, because in testing across different platforms, in all situations
+in which conda failed to satisfy a dependency, pip had worked every time.</p></dd>
 </dl></div>
 
   </div>
