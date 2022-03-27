@@ -672,7 +672,11 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
     sf::st_agr(map_raw) <- "constant"
 
     ## transform the map (default geographic CRS) into the target CRS
-    map_transf <- sf::st_transform(map_raw, crs) %>% sf::st_make_valid()
+    map_transf <- tryCatch({
+      sf::st_transform(map_raw, crs) %>% sf::st_make_valid()
+    }, error = function(cond) {
+      sf::st_transform(map_raw, crs)
+    })
 
     ## define boundary coordinates in the target CRS
     zoom_bounds <- define_zoom(xrange, yrange, "EPSG:4326")
