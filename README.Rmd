@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 set.seed(314159)
 ```
 
-# slendr: Population Genetics Simulations in R
+# slendr: Population Genetic Simulations in R
 
 <!-- badges: start -->
 
