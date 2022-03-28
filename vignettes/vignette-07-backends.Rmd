@@ -66,8 +66,8 @@ o <- population("outgroup", time = 1, N = 100)
 c <- population("c", time = 2500, N = 100, parent = o)
 a <- population("a", time = 3000, N = 100, parent = c)
 b <- population("b", time = 3500, N = 100, parent = a)
-x1 <- population("x1", time = 3800, N = 10000, parent = c)
-x2 <- population("x2", time = 4000, N = 10000, parent = x1)
+x1 <- population("x1", time = 3800, N = 5000, parent = c)
+x2 <- population("x2", time = 4000, N = 5000, parent = x1)
 ```
 
 Note that the Ne of the populations `x1` and `x2` is set to be much higher than the rest. We set the $N_e$ of the other populations to lower values to speed up the forward SLiM simulations (they won't affect the results we're interested in anyway). Higher values of the $N_e$ of `x1` and `x2` populations will ensure that the effect of the drift acting on those two populations will be much smaller. Because we will simulate and later measure the proportion of ancestry from the population `b` to `x1`, this will ensure that the ancestry proportion will not drift too far away from the expectation and it will make the interesting patterns stand out more clearly.
@@ -86,7 +86,7 @@ samples <- schedule_sampling(model_nogf, times = 4500,
                     list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
 # model with gene flow
-gf <- gene_flow(from = b, to = x1, start = 4100, end = 4150, 0.1)
+gf <- gene_flow(from = b, to = x1, start = 4100, end = 4400, rate = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, sim_length = 4500) 
 
@@ -275,7 +275,7 @@ Specifically, we will define all five demographic models from the figure above t
 N <- 1000
 N_factor <- 5 # by what factor should Ne change
 
-seq_len <- 100e6
+seq_len <- 50e6
 rec_rate <- 1e-8
 mut_rate <- 1e-8
 ```
