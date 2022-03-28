@@ -9,3 +9,8 @@ test_that("all three variants of the Natural Earth data can be downloaded", {
   expect_s3_class(medium, "slendr_map")
   expect_s3_class(large, "slendr_map")
 })
+
+test_that("world dimensions are correctly specified", {
+  expect_error(world(1:100, 1:100, landscape = "blank"))
+  expect_s3_class(world(c(1, 100), c(1, 100), landscape = "blank"), "slendr_map")
+})
