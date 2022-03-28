@@ -178,8 +178,8 @@
 <span class="va">c</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"c"</span>, time <span class="op">=</span> <span class="fl">2500</span>, N <span class="op">=</span> <span class="fl">100</span>, parent <span class="op">=</span> <span class="va">o</span><span class="op">)</span>
 <span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"a"</span>, time <span class="op">=</span> <span class="fl">3000</span>, N <span class="op">=</span> <span class="fl">100</span>, parent <span class="op">=</span> <span class="va">c</span><span class="op">)</span>
 <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"b"</span>, time <span class="op">=</span> <span class="fl">3500</span>, N <span class="op">=</span> <span class="fl">100</span>, parent <span class="op">=</span> <span class="va">a</span><span class="op">)</span>
-<span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"x1"</span>, time <span class="op">=</span> <span class="fl">3800</span>, N <span class="op">=</span> <span class="fl">10000</span>, parent <span class="op">=</span> <span class="va">c</span><span class="op">)</span>
-<span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"x2"</span>, time <span class="op">=</span> <span class="fl">4000</span>, N <span class="op">=</span> <span class="fl">10000</span>, parent <span class="op">=</span> <span class="va">x1</span><span class="op">)</span></code></pre></div>
+<span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"x1"</span>, time <span class="op">=</span> <span class="fl">3800</span>, N <span class="op">=</span> <span class="fl">5000</span>, parent <span class="op">=</span> <span class="va">c</span><span class="op">)</span>
+<span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"x2"</span>, time <span class="op">=</span> <span class="fl">4000</span>, N <span class="op">=</span> <span class="fl">5000</span>, parent <span class="op">=</span> <span class="va">x1</span><span class="op">)</span></code></pre></div>
 <p>Note that the Ne of the populations <code>x1</code> and <code>x2</code> is set to be much higher than the rest. We set the <span class="math inline">\(N_e\)</span> of the other populations to lower values to speed up the forward SLiM simulations (they won’t affect the results we’re interested in anyway). Higher values of the <span class="math inline">\(N_e\)</span> of <code>x1</code> and <code>x2</code> populations will ensure that the effect of the drift acting on those two populations will be much smaller. Because we will simulate and later measure the proportion of ancestry from the population <code>b</code> to <code>x1</code>, this will ensure that the ancestry proportion will not drift too far away from the expectation and it will make the interesting patterns stand out more clearly.</p>
 <p>(Of course, this is all done for demonstration purposes only and to speed up the SLiM simulations by making the <span class="math inline">\(N_e\)</span> of the other populations smaller. In practice, we would be running these kinds of simulations only using the <em>msprime</em> back end.)</p>
 </div>
@@ -196,7 +196,7 @@
                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">b</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x1</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x2</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">c</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">o</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># model with gene flow</span>
-<span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">b</span>, to <span class="op">=</span> <span class="va">x1</span>, start <span class="op">=</span> <span class="fl">4100</span>, end <span class="op">=</span> <span class="fl">4150</span>, <span class="fl">0.1</span><span class="op">)</span>
+<span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">b</span>, to <span class="op">=</span> <span class="va">x1</span>, start <span class="op">=</span> <span class="fl">4100</span>, end <span class="op">=</span> <span class="fl">4400</span>, rate <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
 
 <span class="va">model_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, geneflow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, sim_length <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span> </code></pre></div>
 <pre><code><span class="co">#&gt; Warning: The `geneflow =` argument of `compile_model()` is now deprecated as part</span>
@@ -262,7 +262,7 @@
 <pre><code><span class="co">#&gt; ╔═══════════════════════════╗</span>
 <span class="co">#&gt; ║TreeSequence               ║</span>
 <span class="co">#&gt; ╠═══════════════╤═══════════╣</span>
-<span class="co">#&gt; ║Trees          │      82813║</span>
+<span class="co">#&gt; ║Trees          │      62179║</span>
 <span class="co">#&gt; ╟───────────────┼───────────╢</span>
 <span class="co">#&gt; ║Sequence Length│  100000000║</span>
 <span class="co">#&gt; ╟───────────────┼───────────╢</span>
@@ -270,33 +270,33 @@
 <span class="co">#&gt; ╟───────────────┼───────────╢</span>
 <span class="co">#&gt; ║Sample Nodes   │        208║</span>
 <span class="co">#&gt; ╟───────────────┼───────────╢</span>
-<span class="co">#&gt; ║Total Size     │   22.4 MiB║</span>
+<span class="co">#&gt; ║Total Size     │   17.3 MiB║</span>
 <span class="co">#&gt; ╚═══════════════╧═══════════╝</span>
 <span class="co">#&gt; ╔═══════════╤══════╤════════╤════════════╗</span>
 <span class="co">#&gt; ║Table      │Rows  │Size    │Has Metadata║</span>
 <span class="co">#&gt; ╠═══════════╪══════╪════════╪════════════╣</span>
-<span class="co">#&gt; ║Edges      │319299│ 9.7 MiB│          No║</span>
+<span class="co">#&gt; ║Edges      │242352│ 7.4 MiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
-<span class="co">#&gt; ║Individuals│ 37057│ 3.5 MiB│         Yes║</span>
+<span class="co">#&gt; ║Individuals│ 30211│ 2.9 MiB│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
 <span class="co">#&gt; ║Migrations │     0│ 8 Bytes│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
-<span class="co">#&gt; ║Mutations  │ 89051│ 3.1 MiB│          No║</span>
+<span class="co">#&gt; ║Mutations  │ 68310│ 2.4 MiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
-<span class="co">#&gt; ║Nodes      │ 37616│ 1.4 MiB│         Yes║</span>
+<span class="co">#&gt; ║Nodes      │ 30781│ 1.1 MiB│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
 <span class="co">#&gt; ║Populations│     6│ 2.7 KiB│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
 <span class="co">#&gt; ║Provenances│     4│36.5 KiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span>
-<span class="co">#&gt; ║Sites      │ 89013│ 2.1 MiB│          No║</span>
+<span class="co">#&gt; ║Sites      │ 68280│ 1.6 MiB│          No║</span>
 <span class="co">#&gt; ╚═══════════╧══════╧════════╧════════════╝</span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">msprime_nogf</span></code></pre></div>
 <pre><code><span class="co">#&gt; ╔═══════════════════════════╗</span>
 <span class="co">#&gt; ║TreeSequence               ║</span>
 <span class="co">#&gt; ╠═══════════════╤═══════════╣</span>
-<span class="co">#&gt; ║Trees          │      83429║</span>
+<span class="co">#&gt; ║Trees          │      62562║</span>
 <span class="co">#&gt; ╟───────────────┼───────────╢</span>
 <span class="co">#&gt; ║Sequence Length│  100000000║</span>
 <span class="co">#&gt; ╟───────────────┼───────────╢</span>
@@ -304,26 +304,26 @@
 <span class="co">#&gt; ╟───────────────┼───────────╢</span>
 <span class="co">#&gt; ║Sample Nodes   │        208║</span>
 <span class="co">#&gt; ╟───────────────┼───────────╢</span>
-<span class="co">#&gt; ║Total Size     │   19.0 MiB║</span>
+<span class="co">#&gt; ║Total Size     │   14.4 MiB║</span>
 <span class="co">#&gt; ╚═══════════════╧═══════════╝</span>
 <span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span>
 <span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span>
 <span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span>
-<span class="co">#&gt; ║Edges      │330305│ 10.1 MiB│          No║</span>
+<span class="co">#&gt; ║Edges      │246660│  7.5 MiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Individuals│   104│  2.9 KiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Migrations │     0│  8 Bytes│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="co">#&gt; ║Mutations  │ 89415│  3.2 MiB│          No║</span>
+<span class="co">#&gt; ║Mutations  │ 69284│  2.4 MiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="co">#&gt; ║Nodes      │ 40210│  1.1 MiB│          No║</span>
+<span class="co">#&gt; ║Nodes      │ 32645│892.6 KiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Populations│     6│414 Bytes│         Yes║</span>
 <span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Provenances│     2│  3.8 KiB│          No║</span>
 <span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="co">#&gt; ║Sites      │ 89377│  2.1 MiB│          No║</span>
+<span class="co">#&gt; ║Sites      │ 69263│  1.7 MiB│          No║</span>
 <span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></code></pre>
 </div>
 <div class="section level3">
@@ -441,7 +441,7 @@
 <code class="sourceCode R"><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
 <span class="va">N_factor</span> <span class="op">&lt;-</span> <span class="fl">5</span> <span class="co"># by what factor should Ne change</span>
 
-<span class="va">seq_len</span> <span class="op">&lt;-</span> <span class="fl">100e6</span>
+<span class="va">seq_len</span> <span class="op">&lt;-</span> <span class="fl">50e6</span>
 <span class="va">rec_rate</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span>
 <span class="va">mut_rate</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span></code></pre></div>
 <p>First, let’s define the five population histories in a forward time direction:</p>
