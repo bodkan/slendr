@@ -637,6 +637,12 @@ time (gene flow %s -> %s in the time window %s-%s)",
 #' @example man/examples/spatial_functions.R
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
                   scale = c("small", "medium", "large")) {
+  if (length(xrange) != 2 || length(yrange) != 2)
+    stop("Horizontal (i.e. longitude) and vertical (i.e. latitude) must be\n",
+         "specified as two-dimensional vectors such as:\n",
+         "    `xrange = c(x1, x2), yrange = c(y1, y2)`",
+         call. = FALSE)
+
   if (inherits(landscape, "sf")) { # a landscape defined by the user
     cropped_landscape <- sf::st_crop(
       landscape,
