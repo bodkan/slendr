@@ -2,7 +2,7 @@
 
 
 
-# slendr: Population Genetics Simulations in R
+# slendr: Population Genetic Simulations in R
 
 <!-- badges: start -->
 
