@@ -123,6 +123,7 @@ reference:
     - ts_draw
     - ts_metadata
     - ts_ancestors
+    - ts_descendants
 
   - title: Tree sequence statistics
     contents:

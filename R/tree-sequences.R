@@ -1023,6 +1023,75 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
   final
 }
 
+#' Extract all descendants of a given tree-sequence node
+#'
+#' @param ts Tree sequence object of the class \code{slendr_ts}
+#' @param x An integer node ID of the ancestral node
+#' @param verbose Report on the progress of ancestry path generation?
+#'
+#' @export
+ts_descendants <- function(ts, x, verbose = FALSE) {
+  check_ts_class(ts)
+
+  model <- attr(ts, "model")
+
+  if (is.null(model$world))
+    stop("Cannot process locations of ancestral nodes for non-spatial tree sequence data",
+         call. = FALSE)
+
+  edges <- ts_edges(ts)
+
+  if (!nrow(edges[edges$parent == x, ]))
+    stop("The 'ancestral' node specified does not have any children", call. = FALSE)
+
+  data <- ts_data(ts) %>% dplyr::filter(!is.na(ind_id))
+
+  # collect child-parent branches starting from the "focal nodes"
+  branches <- collect_descendants(x, edges) %>%
+   dplyr::mutate(pop = dplyr::filter(data, node_id == x)$pop[1],
+                 node_id = x)
+
+  child_data  <- dplyr::select(data, child_pop  = pop, child_id  = node_id, child_time  = time, child_location = location)
+  parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location)
+  #  ind_data <- dplyr::as_tibble(data) %>% dplyr::select(focal_name = name, focal_pop = pop, focal_ind_id = ind_id)%>% dplyr::distinct()
+
+  combined <- branches %>%
+    dplyr::inner_join(child_data, by = "child_id") %>%
+    dplyr::inner_join(parent_data, by = "parent_id") %>%
+    #    dplyr::inner_join(ind_data, by = c("ind_id" = "focal_ind_id")) %>%
+    dplyr::mutate(name = sapply(child_id, function(i) data[data$node_id == i, ]$name[1])) %>%
+    sf::st_as_sf()
+
+  if (verbose) message("\nGenerating data about spatial relationships of nodes...")
+
+  connections <- purrr::map2(
+    combined$child_location, combined$parent_location, ~
+      sf::st_union(.x, .y) %>%
+      sf::st_cast("LINESTRING") %>%
+      sf::st_sfc() %>%
+      sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
+    dplyr::bind_rows()
+
+  # order population names by their split time
+  pop_names <- order_pops(model$populations, model$direction)
+
+  final <- dplyr::bind_cols(combined, connections) %>%
+    sf::st_set_geometry("connection") %>%
+    dplyr::select(name, pop, node_id, #level,
+                  child_id, child_time, parent_id, parent_time,
+                  child_pop, parent_pop,
+                  child_location, parent_location, connection,
+                  left_pos = left, right_pos = right) %>%
+    dplyr::mutate(#level = as.factor(level),
+      pop = factor(pop, levels = pop_names),
+      child_pop = factor(child_pop, levels = pop_names),
+      parent_pop = factor(parent_pop, levels = pop_names))
+
+  attr(final, "model") <- model
+
+  final
+}
+
 # tree operations ---------------------------------------------------------
 
 #' Get a tree from a given tree sequence
@@ -1859,6 +1928,60 @@ collect_ancestors <- function(x, edges) {
       # processed, skip it and don't add it to the queue
       if (nrow(edge) == 0) next
       if (processed_nodes[unique(edge$child) + 1]) next
+
+      # mark the node as processed...
+      processed_nodes[unique(edge$child) + 1] <- TRUE
+      # ... and add it to the queue
+      edge$level <- item$level[1] + 1
+      queue[[length(queue) + 1]] <- edge
+    }
+
+    if (length(queue) == 0) break
+  }
+
+  result <- dplyr::bind_rows(result) %>%
+    dplyr::select(child_id = child, parent_id = parent, left, right, level)
+
+  result
+}
+
+# Collect all descendants of a given node down to the leaves of he tree by
+# traversing the tree edges "top-down" using a queue
+collect_descendants <- function(x, edges) {
+  # list for collecting paths (i.e. sets of edges) leading from the focal node
+  # to the root
+  result <- list()
+
+  # initialize the counter of nodes already processed by the queue
+  n_nodes <- length(unique(c(edges$child, edges$parent)))
+  processed_nodes <- vector(length = n_nodes + 1)
+
+  # initialize the queue with all edges leading from the focal ancestor
+  edge <- edges[edges$parent == x, ] %>% dplyr::mutate(level = 1)
+  queue <- split(edge, edge$child)
+
+  # repeat until the queue is empty (this homebrew queue implementation is
+  # probably horribly inefficient but it will do for now)
+  i <- 0
+  while (TRUE) {
+    cat("queue ", (i <- i + 1), "\n")
+    # pop out the first element
+    item <- queue[[1]]; queue[[1]] <- NULL
+
+    # add it to the final list
+    result[[length(result) + 1]] <- item
+
+    for (child in split(item, item$child)) {
+      # browser()
+      #cat("queue ", i, " parent ", (p <- i + 1), "\n")
+      # get edges leading from the current child to its own children
+      edge <- edges[edges$parent == child$child, ]
+
+      # if the child has no children itself or its node has already been
+      # processed, skip it and don't add it to the queue
+      already_processed <- processed_nodes[unique(edge$child) + 1]
+      edge <- edge[!already_processed, ]
+      if (nrow(edge) == 0) next
 
       # mark the node as processed...
       processed_nodes[unique(edge$child) + 1] <- TRUE

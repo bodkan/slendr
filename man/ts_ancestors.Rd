@@ -2,7 +2,7 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_ancestors}
 \alias{ts_ancestors}
-\title{Infer spatio-temporal ancestral history for given nodes/individuals}
+\title{Extract spatio-temporal ancestral history for given nodes/individuals}
 \usage{
 ts_ancestors(ts, x = NULL, verbose = FALSE)
 }
@@ -15,5 +15,5 @@ vector of node IDs}
 \item{verbose}{Report on the progress of ancestry path generation?}
 }
 \description{
-Infer spatio-temporal ancestral history for given nodes/individuals
+Extract spatio-temporal ancestral history for given nodes/individuals
 }
