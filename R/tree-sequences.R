@@ -944,7 +944,7 @@ ts_samples <- function(ts) {
     dplyr::filter(name %in% data$name)
 }
 
-#' Infer spatio-temporal ancestral history for given nodes/individuals
+#' Extract spatio-temporal ancestral history for given nodes/individuals
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param x Either a character vector with individual names, or an integer
@@ -977,10 +977,16 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
     if (verbose) message(sprintf("Collecting ancestors of %s [%d/%d]...",
                                  .x, which(.x == x), length(x)))
     ids <- get_node_ids(ts, .x)
-    purrr::map_dfr(ids, function(.y) collect_ancestors(.y, edges) %>%
+
+    purrr::map_dfr(ids, function(.y) {
+      if (!nrow(edges[edges$child == .y, ]))
+        stop("The node specified does not have any ancestors of its own", call. = FALSE)
+
+      collect_ancestors(.y, edges) %>%
       dplyr::mutate(name = ifelse(is.character(.x), .x, NA),
                     pop = dplyr::filter(data, node_id == .y)$pop[1],
-                    node_id = .y))
+                    node_id = .y)
+    })
   })
 
   child_data  <- dplyr::select(data, child_pop  = pop, child_id  = node_id, child_time  = time, child_location = location)
