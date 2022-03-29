@@ -131,14 +131,14 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
 
   distances <- rbind(slim_distances, r_distances)
 
-  p <- ggplot2::ggplot(distances, aes(distance, color = source)) +
-    geom_density() +
-    coord_cartesian(xlim = c(0, 50)) +
-    facet_wrap(~ fun, scales = "free") +
-    guides(color = guide_legend("simulation"))
-
-  original_png <- "distances.png"
-  ggsave(original_png, p, width = 8, height = 5)
+  # p <- ggplot2::ggplot(distances, aes(distance, color = source)) +
+  #   geom_density() +
+  #   coord_cartesian(xlim = c(0, 50)) +
+  #   facet_wrap(~ fun, scales = "free") +
+  #   guides(color = guide_legend("simulation"))
+  #
+  # original_png <- "distances.png"
+  # ggsave(original_png, p, width = 8, height = 5)
 
   # compare the SLiM dispersal distributions to the distributions randomly
   # sampled in R using the Kolmogorov-Smirnov test
