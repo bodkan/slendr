@@ -643,6 +643,14 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
          "    `xrange = c(x1, x2), yrange = c(y1, y2)`",
          call. = FALSE)
 
+  if (is.character(landscape) && landscape == "naturalearth" && is.null(crs)) {
+    warning("No explicit coordinate reference system (CRS) was specified.\n",
+            "A default geographic CRS (EPSG:4326) will be used but please make\n",
+            "sure this is appropriate for your geographic region of interest.",
+            call. = FALSE)
+    crs <- 4326
+  }
+
   if (inherits(landscape, "sf")) { # a landscape defined by the user
     cropped_landscape <- sf::st_crop(
       landscape,
