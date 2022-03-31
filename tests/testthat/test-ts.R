@@ -25,7 +25,7 @@ samples <- rbind(
 )
 
 slim_ts <- file.path(model_dir, "output_slim.trees")
-msprime_ts <- file.path(model_dir, "msprime_output.trees")
+msprime_ts <- file.path(model_dir, "output_msprime.trees")
 
 slim(model, sequence_length = 100000, recombination_rate = 0,
      save_locations = TRUE, burnin = 0,
