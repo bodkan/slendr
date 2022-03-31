@@ -1703,7 +1703,6 @@ get_ts_individuals <- function(ts) {
       ind_table,
       # pedigree_id = pylib$get_pedigree_ids(ts),
       pedigree_id = reticulate::py$get_pedigree_ids(ts),
-      time = time,
       raster_x = ts$individual_locations[, 1],
       raster_y = ts$individual_locations[, 2],
       pop_id = ts$individual_populations,
@@ -1735,7 +1734,7 @@ get_ts_individuals <- function(ts) {
       ind_table <- dplyr::inner_join(ind_table, nodes_table, by = "ind_id")
   }
 
-  ind_table
+  ind_table %>% dplyr::select(ind_id, time, dplyr::everything())
 }
 
 # Extract information from the edges table
