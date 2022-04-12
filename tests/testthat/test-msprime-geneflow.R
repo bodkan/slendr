@@ -1,4 +1,4 @@
-skip_if(!slendr:::check_env_present() || Sys.getenv("local_build") != TRUE)
+skip_if(!slendr:::check_env_present())
 setup_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
