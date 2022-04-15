@@ -36,7 +36,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
     Articles
@@ -106,15 +106,62 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
-<ul><li><p><code>xrange</code> and <code>yrange</code> parameters of <code><a href="../reference/world.html">world()</a></code> are now enforced to be two-dimensional numeric vectors, avoiding unnecessary issues with misspecified longitude/latitude (<a href="https://github.com/bodkan/slendr/commit/df95369" class="external-link">#df95369</a>)</p></li>
-<li><p>The automated <code><a href="../reference/setup_env.html">setup_env()</a></code> function for creating dedicated mini Python environments for <em>slendr</em> now installs packages using <em>pip</em> by default. Reason: The rate of conda failures and dependency conflicts (even in the trivial case of installing nothing more than <em>msprime</em> + <em>tskit</em> + <em>pyslim</em> + <em>pandas</em>) is too high to rely on it. The option to use conda for package installations with <code><a href="../reference/setup_env.html">setup_env()</a></code> is still there, but the users must explicitly call <code>setup_env(pip = FALSE)</code> to get this behavior. Note that conda is still used as a means to install Python itself! This change only affects the way how Python modules are installed into a dedicated <em>slendr</em> Python environment, not the installation of Python itself. (<a href="https://github.com/bodkan/slendr/commit/81be1a7" class="external-link">#81be1a7</a>)</p></li>
-<li><p>The name of the automatically created <em>slendr</em>-specific Python environment is now composed from the names <em>and versions</em> of Python modules installed. This makes it possible to naturally upgrade both <em>slendr</em> and its Python dependencies in case the <em>tskit</em> / <em>msprime</em> / <em>pyslim</em> folks ugprade some of those packages. In that case, if a <em>slendr</em> user upgrades the <em>slendr</em> package (and that new version requires newer versions of Python modules), <em>slendr</em> will simply recommend to create a new Python environment without additional effort on our part. (<a href="https://github.com/bodkan/slendr/commit/81be1a7" class="external-link">#81be1a7</a>)</p></li>
-<li><p>The code of <code><a href="../reference/setup_env.html">setup_env()</a></code> was simplified to bare essentials. Now it <em>only</em> serves as a way to auto-setup a dedicated, isolated Python installation and <em>slendr</em> environment. The interface to install Python modules into custom-defined Python environment created outside R has been removed because this functionality is not necessary – these custom environments can be easily activated by calling <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_virtualenv</a></code> or <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_condaenv</a></code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
-<li><p>If some Python users want to use custom Python environments with <em>msprime</em>, <em>tskit</em>, and <em>pyslim</em>, they can silence the suggestion to use <code><a href="../reference/setup_env.html">setup_env()</a></code> printed by the <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> call by setting <code>options(slendr.custom_env = TRUE)</code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
+<ul><li><p>The format of the default <em>slendr</em> Python environment is
+now
+<code>msprime-&lt;version&gt;_tskit-&lt;version&gt;_pyslim-&lt;version&gt;_pandas</code>,
+dropping the <code>slendr_</code> prefix. This paves the way towards a
+future non-<em>slendr</em> tskit R package, which will share the same
+Python environment with <em>slendr</em> (because both R packages will go
+hand in hand). This isn’t really a user-facing change, except that
+calling <code><a href="../reference/setup_env.html">setup_env()</a></code> will suggests creating a new Python
+environment and <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> will appear as if a
+<em>slendr</em> environment is not yet present. Calling
+<code><a href="../reference/setup_env.html">setup_env()</a></code> and creating a new Python environment from
+scratch will solve the problem. (<a href="https://github.com/bodkan/slendr/commit/eb05180" class="external-link">#eb05180</a>)</p></li>
+<li><p><code>xrange</code> and <code>yrange</code> parameters of
+<code><a href="../reference/world.html">world()</a></code> are now enforced to be two-dimensional numeric
+vectors, avoiding unnecessary issues with misspecified
+longitude/latitude (<a href="https://github.com/bodkan/slendr/commit/df95369" class="external-link">#df95369</a>)</p></li>
+<li><p>The automated <code><a href="../reference/setup_env.html">setup_env()</a></code> function for creating
+dedicated mini Python environments for <em>slendr</em> now installs
+packages using <em>pip</em> by default. Reason: The rate of conda
+failures and dependency conflicts (even in the trivial case of
+installing nothing more than <em>msprime</em> + <em>tskit</em> +
+<em>pyslim</em> + <em>pandas</em>) is too high to rely on it. The option
+to use conda for package installations with <code><a href="../reference/setup_env.html">setup_env()</a></code> is
+still there, but the users must explicitly call
+<code>setup_env(pip = FALSE)</code> to get this behavior. Note that
+conda is still used as a means to install Python itself! This change
+only affects the way how Python modules are installed into a dedicated
+<em>slendr</em> Python environment, not the installation of Python
+itself. (<a href="https://github.com/bodkan/slendr/commit/81be1a7" class="external-link">#81be1a7</a>)</p></li>
+<li><p>The name of the automatically created <em>slendr</em>-specific
+Python environment is now composed from the names <em>and versions</em>
+of Python modules installed. This makes it possible to naturally upgrade
+both <em>slendr</em> and its Python dependencies in case the
+<em>tskit</em> / <em>msprime</em> / <em>pyslim</em> folks ugprade some
+of those packages. In that case, if a <em>slendr</em> user upgrades the
+<em>slendr</em> package (and that new version requires newer versions of
+Python modules), <em>slendr</em> will simply recommend to create a new
+Python environment without additional effort on our part. (<a href="https://github.com/bodkan/slendr/commit/81be1a7" class="external-link">#81be1a7</a>)</p></li>
+<li><p>The code of <code><a href="../reference/setup_env.html">setup_env()</a></code> was simplified to bare
+essentials. Now it <em>only</em> serves as a way to auto-setup a
+dedicated, isolated Python installation and <em>slendr</em> environment.
+The interface to install Python modules into custom-defined Python
+environment created outside R has been removed because this
+functionality is not necessary – these custom environments can be easily
+activated by calling <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_virtualenv</a></code> or
+<code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_condaenv</a></code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
+<li><p>If some Python users want to use custom Python environments with
+<em>msprime</em>, <em>tskit</em>, and <em>pyslim</em>, they can silence
+the suggestion to use <code><a href="../reference/setup_env.html">setup_env()</a></code> printed by the
+<code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> call by setting
+<code>options(slendr.custom_env = TRUE)</code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="slendr-010">slendr 0.1.0<a class="anchor" aria-label="anchor" href="#slendr-010"></a></h2>
-<ul><li>First numbered version of <em>slendr</em> to celebrate its <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">bioRxiv preprint</a>. 🥳 🎉</li>
+<ul><li>First numbered version of <em>slendr</em> to celebrate its <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">bioRxiv
+preprint</a>. 🥳 🎉</li>
 </ul></div>
   </div>
 
@@ -130,7 +177,8 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer></div>

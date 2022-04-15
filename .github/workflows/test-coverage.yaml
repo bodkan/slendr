@@ -85,7 +85,7 @@ jobs:
           echo "R_LIBS_USER=~/R_LIBS" >> ~/.Renviron
           R -e 'install.packages(c("BiocManager", "reticulate"), repos = "http://cran.rstudio.com")'
           R -e 'BiocManager::install("ggtree")'
-          R -e 'deps <- c("msprime==1.1.1", "tskit==0.4.1", "pyslim==0.700", "pandas"); PYTHON_ENV <- paste0("slendr_", paste(gsub("==", "-", deps), collapse = "_")); reticulate::conda_create(envname = PYTHON_ENV); reticulate::use_condaenv(PYTHON_ENV, required = TRUE); reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = TRUE)'
+          R -e 'deps <- c("msprime==1.1.1", "tskit==0.4.1", "pyslim==0.700", "pandas"); PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_"); reticulate::conda_create(envname = PYTHON_ENV); reticulate::use_condaenv(PYTHON_ENV, required = TRUE); reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = TRUE)'
 
       - uses: r-lib/actions/setup-r@v1
         with:
