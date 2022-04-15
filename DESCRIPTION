@@ -57,7 +57,6 @@ Suggests:
     units,
     rgdal,
     magick,
-    methods,
     cowplot,
     forcats,
     rsvg

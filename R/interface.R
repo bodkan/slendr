@@ -1305,7 +1305,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = TRUE) {
       # parse the Python env name back to the list of dependencies
       # (the environment is defined in .onAttach(), and this makes sure the
       # dependencies are defined all in one place)
-      deps <- gsub("slendr_", "", PYTHON_ENV) %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
+      deps <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
       reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
 
       if (!quiet)
