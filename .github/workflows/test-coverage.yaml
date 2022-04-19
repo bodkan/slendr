@@ -17,6 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install rgdal dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install gdal
+
       - name: Install ADMIXTOOLS dependencies
         run: sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
 
