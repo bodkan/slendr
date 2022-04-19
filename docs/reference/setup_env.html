@@ -38,7 +38,7 @@ Python environment with all the required Python dependencies."><meta property="o
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
     Articles
@@ -114,7 +114,7 @@ Python environment with all the required Python dependencies.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">setup_env</span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span>, agree <span class="op">=</span> <span class="cn">FALSE</span>, pip <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">setup_env</span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span>, agree <span class="op">=</span> <span class="cn">FALSE</span>, pip <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -128,9 +128,10 @@ is <code>FALSE</code>.</p></dd>
 <dd><p>Should pip be used instead of conda for installing slendr's Python
 dependencies? Note that this will still use the conda distribution to
 install Python itself, but will change the repository from which slendr
-will install its Python dependencies. This option is set to <code>TRUE</code> by
-default, because in testing across different platforms, in all situations
-in which conda failed to satisfy a dependency, pip had worked every time.</p></dd>
+will install its Python dependencies. Unless explicitly set to <code>TRUE</code>,
+Python dependencies will be installed from conda repositories by default,
+expect for the case of osx-arm64 Mac architecture, for which conda
+dependencies are broken.</p></dd>
 </dl></div>
 
   </div>
@@ -145,7 +146,8 @@ in which conda failed to satisfy a dependency, pip had worked every time.</p></d
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer></div>
