@@ -7,7 +7,7 @@ msp <- NULL
 
 # define slendr's required Python dependencies and compose an environment name
 # that will be used specifically for them
-deps <- c("msprime==1.1.1", "tskit==0.4.1", "pyslim==0.700", "pandas")
+deps <- c("msprime==1.1.1", "tskit==0.4.1", "pyslim==0.700")
 PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
 
 .onAttach <- function(libname, pkgname) {
