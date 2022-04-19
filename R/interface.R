@@ -1307,7 +1307,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
       # (the environment is defined in .onAttach(), and this makes sure the
       # dependencies are defined all in one place)
       version_deps <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
-      other_deps <- c("pandas", "radian")
+      other_deps <- "pandas"
       deps <- c(version_deps, other_deps)
 
       # msprime/tskit conda dependency is broken on M1 Mac architecture, fallback
