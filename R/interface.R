@@ -1259,12 +1259,13 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 #' @param pip Should pip be used instead of conda for installing slendr's Python
 #'   dependencies? Note that this will still use the conda distribution to
 #'   install Python itself, but will change the repository from which slendr
-#'   will install its Python dependencies. This option is set to \code{TRUE} by
-#'   default, because in testing across different platforms, in all situations
-#'   in which conda failed to satisfy a dependency, pip had worked every time.
+#'   will install its Python dependencies. Unless explicitly set to \code{TRUE},
+#'   Python dependencies will be installed from conda repositories by default,
+#'   expect for the case of osx-arm64 Mac architecture, for which conda
+#'   dependencies are broken.
 #'
 #' @export
-setup_env <- function(quiet = FALSE, agree = FALSE, pip = TRUE) {
+setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
   if (check_env_present()) {
     reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
     if (!reticulate::py_module_available("msprime") ||
@@ -1305,7 +1306,16 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = TRUE) {
       # parse the Python env name back to the list of dependencies
       # (the environment is defined in .onAttach(), and this makes sure the
       # dependencies are defined all in one place)
-      deps <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
+      version_deps <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
+      other_deps <- c("pandas", "radian")
+      deps <- c(version_deps, other_deps)
+
+      # msprime/tskit conda dependency is broken on M1 Mac architecture, fallback
+      # to pip in cases like this (otherwise use conda to avoid any potential
+      # compilation issues such as missing libgsl)
+      if (is.null(pip))
+        pip <- all(Sys.info()[c("sysname", "machine")] == c("Darwin", "arm64"))
+
       reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
 
       if (!quiet)
