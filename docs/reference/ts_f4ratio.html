@@ -36,7 +36,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
     Articles
@@ -176,37 +176,43 @@ nomenclature of Patterson et al. 2021)</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># calculate f2 for two individuals in a previously loaded tree sequence</span>
-<span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"pop1_1"</span>, B <span class="op">=</span> <span class="st">"pop2_1"</span><span class="op">)</span>
-
-<span class="co"># calculate f2 for two sets of individuals</span>
-<span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop1_1"</span>, <span class="st">"pop1_2"</span>, <span class="st">"pop1_3"</span><span class="op">)</span>,
-          B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop2_1"</span>, <span class="st">"pop2_2"</span><span class="op">)</span><span class="op">)</span>
-
-
-<span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># calculate f2 for two individuals in a previously loaded tree sequence</span>
-<span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"pop1_1"</span>, B <span class="op">=</span> <span class="st">"pop2_1"</span>, C <span class="op">=</span> <span class="st">"outgroup_1"</span><span class="op">)</span>
-
-<span class="co"># calculate f2 for two sets of individuals</span>
-<span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop1_1"</span>, <span class="st">"pop1_2"</span>, <span class="st">"pop1_3"</span><span class="op">)</span>,
-          B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop2_1"</span>, <span class="st">"pop2_2"</span><span class="op">)</span>,
-          C <span class="op">=</span> <span class="st">"outgroup_1"</span><span class="op">)</span>
-
-
-<span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># calculate f4 for single individuals</span>
-<span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="st">"pop1_1"</span>, X <span class="op">=</span> <span class="st">"pop2_1"</span>, Y <span class="op">=</span> <span class="st">"pop3_1"</span>, Z <span class="op">=</span> <span class="st">"pop4_1"</span><span class="op">)</span>
-
-<span class="co"># calculate f4 for sets of individuals</span>
-<span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop1_1"</span>, <span class="st">"pop1_2"</span>, <span class="st">"pop1_3"</span><span class="op">)</span>,
-          X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop2_1"</span>, <span class="st">"pop2_2"</span><span class="op">)</span>,
-          Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop3_1"</span>, <span class="st">"pop3_2"</span><span class="op">)</span>,
-          Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop4_1"</span>, <span class="st">"pop4_2"</span><span class="op">)</span><span class="op">)</span>
-
-
-<span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># calculate f2 for two samples in a previously loaded tree sequence</span>
-<span class="fu">ts_f4ratio</span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="st">"test_1"</span>, A <span class="op">=</span> <span class="st">"p1_1"</span>, B <span class="op">=</span> <span class="st">"p2_1"</span>, B <span class="op">=</span> <span class="st">"p3_1"</span>, C <span class="op">=</span> <span class="st">"p4_1"</span>, O <span class="op">=</span> <span class="st">"outgroup_1"</span><span class="op">)</span>
-
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># calculate f2 for two individuals in a previously loaded tree sequence</span></span>
+<span class="r-in"><span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"pop1_1"</span>, B <span class="op">=</span> <span class="st">"pop2_1"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># calculate f2 for two sets of individuals</span></span>
+<span class="r-in"><span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop1_1"</span>, <span class="st">"pop1_2"</span>, <span class="st">"pop1_3"</span><span class="op">)</span>,</span>
+<span class="r-in">          B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop2_1"</span>, <span class="st">"pop2_2"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Annotation data table can be only extracted for a slendr tree sequence</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> object or a phylo object created by the ts_phylo function</span>
+<span class="r-in"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># calculate f2 for two individuals in a previously loaded tree sequence</span></span>
+<span class="r-in"><span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"pop1_1"</span>, B <span class="op">=</span> <span class="st">"pop2_1"</span>, C <span class="op">=</span> <span class="st">"outgroup_1"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># calculate f2 for two sets of individuals</span></span>
+<span class="r-in"><span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop1_1"</span>, <span class="st">"pop1_2"</span>, <span class="st">"pop1_3"</span><span class="op">)</span>,</span>
+<span class="r-in">          B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop2_1"</span>, <span class="st">"pop2_2"</span><span class="op">)</span>,</span>
+<span class="r-in">          C <span class="op">=</span> <span class="st">"outgroup_1"</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Annotation data table can be only extracted for a slendr tree sequence</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> object or a phylo object created by the ts_phylo function</span>
+<span class="r-in"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># calculate f4 for single individuals</span></span>
+<span class="r-in"><span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="st">"pop1_1"</span>, X <span class="op">=</span> <span class="st">"pop2_1"</span>, Y <span class="op">=</span> <span class="st">"pop3_1"</span>, Z <span class="op">=</span> <span class="st">"pop4_1"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># calculate f4 for sets of individuals</span></span>
+<span class="r-in"><span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop1_1"</span>, <span class="st">"pop1_2"</span>, <span class="st">"pop1_3"</span><span class="op">)</span>,</span>
+<span class="r-in">          X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop2_1"</span>, <span class="st">"pop2_2"</span><span class="op">)</span>,</span>
+<span class="r-in">          Y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop3_1"</span>, <span class="st">"pop3_2"</span><span class="op">)</span>,</span>
+<span class="r-in">          Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pop4_1"</span>, <span class="st">"pop4_2"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Annotation data table can be only extracted for a slendr tree sequence</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> object or a phylo object created by the ts_phylo function</span>
+<span class="r-in"></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># calculate f2 for two samples in a previously loaded tree sequence</span></span>
+<span class="r-in"><span class="fu">ts_f4ratio</span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="st">"test_1"</span>, A <span class="op">=</span> <span class="st">"p1_1"</span>, B <span class="op">=</span> <span class="st">"p2_1"</span>, B <span class="op">=</span> <span class="st">"p3_1"</span>, C <span class="op">=</span> <span class="st">"p4_1"</span>, O <span class="op">=</span> <span class="st">"outgroup_1"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
@@ -221,7 +227,8 @@ nomenclature of Patterson et al. 2021)</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer></div>
