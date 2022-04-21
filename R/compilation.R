@@ -34,8 +34,6 @@
 #'   present? Useful for non-interactive uses. In an interactive mode, the user
 #'   is asked to confirm the deletion manually.
 #' @param description Optional short description of the model
-#' @param dir Deprecated. Use \code{path} instead.
-#' @param geneflow Deprecated. Use \code{gene_flow} instead.
 #'
 #' @return Compiled \code{slendr_model} model object
 #'
@@ -47,24 +45,8 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
                           gene_flow = list(), overwrite = FALSE, force = FALSE,
                           sim_length = NULL, direction = NULL,
                           slim_script = system.file("scripts", "script.slim", package = "slendr"),
-                          description = "", dir = NULL, geneflow = list()) {
+                          description = "") {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
-
-  if (!is.null(dir) && is.null(path)) {
-    warning("The `dir =` argument of `compile_model()` is now deprecated",
-            " as part\nof cleaning up and unifying the function interfaces across the\n",
-            "entire package. Please consider moving to `path = ` at some point.",
-            call. = FALSE)
-    path <- dir
-  }
-
-  if (length(geneflow) > 0) {
-    warning("The `geneflow =` argument of `compile_model()` is now deprecated",
-            " as part\nof cleaning up and unifying the function interfaces across the\n",
-            "entire package. Please consider moving to `gene_flow = ` at some point.",
-            call. = FALSE)
-    gene_flow <- geneflow
-  }
 
   if (is.null(path)) path <- tempfile()
 
