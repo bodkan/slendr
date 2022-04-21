@@ -106,7 +106,21 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
-<ul><li><p>When setting up an isolated Python environment using
+<ul><li><p>Removed functions and some function arguments originally
+deprecated during the renaming phase of the pre-preprint refactoring.
+This affects <code>compile</code>, <code>boundary</code>,
+<code>dispersal</code>, <code>expand</code>, <code>geneflow</code>,
+<code>plot.slendr</code>, <code>plot_graph</code>, <code>read</code>,
+<code>sampling</code>, and <code>shrink</code>. Similarly, deprecated
+<code>dir</code> argument of the <code>compile_model</code> is now
+<code>path</code>, <code>geneflow</code> argument of
+<code>compile_model</code> is now <code>gene_flow</code>, and the
+<code>_dist</code> suffix was removed from
+<code>competition_dist</code>, <code>mate_dist</code>, and
+<code>dispersal_dist</code>. If you get an error about a missing
+function or a function argument in code which used to work in an ancient
+version of <em>slendr</em>, this is why. (<a href="https://github.com/bodkan/slendr/commit/985b451" class="external-link">#985b451</a>)</p></li>
+<li><p>When setting up an isolated Python environment using
 <code><a href="../reference/setup_env.html">setup_env()</a></code>, <em>slendr</em> now makes a decision whether
 to install Python dependencies using pip (critical on osx-arm64 for
 which the conda msprime/tskit are unfortunately currently broken) or
