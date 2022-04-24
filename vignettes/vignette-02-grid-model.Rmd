@@ -140,7 +140,7 @@ Finally, we can compile the whole model:
 ```{r}
 model <- compile_model(
   path = file.path(tempdir(), "grid-model"), 
-  populations = populations, geneflow = geneflows,
+  populations = populations, gene_flow = geneflows,
   generation_time = 1, resolution = 10,
   competition = 10, mating = 10, dispersal = 10,
   sim_length = 1000, overwrite = TRUE

@@ -209,7 +209,7 @@ We can use the function `plot_map` again to get a "compressed" overview of all s
 plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
 
-#### 4. Define geneflow events
+#### 4. Define gene-flow events
 
 By default, populations in *slendr* do not mix even if they are overlapping. In order to schedule an gene-flow event between two populations, we can use the function `gene_flow`. If we want to specify multiple such events at once, we can collect these evetns in a simple R list:
 

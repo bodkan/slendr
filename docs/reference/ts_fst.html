@@ -158,21 +158,20 @@ vector of divergence values (one for each window)</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># compute F_st between two sets of individuals in a given tree sequence ts</span></span>
-<span class="r-in"><span class="fu">ts_fst</span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>,</span>
-<span class="r-in">                              eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co">#' # collect sampled individuals from all populations in a list</span></span>
-<span class="r-in"><span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="va">pop</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># compute the divergence between individuals from each sample set (list of</span></span>
-<span class="r-in"><span class="co"># individual names generated in the previous step)</span></span>
-<span class="r-in"><span class="fu">ts_divergence</span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">divergence</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ts_divergence(ts, sample_sets):</span> object 'sample_sets' not found</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># compute F_st between two sets of individuals in a given tree sequence ts</span>
+<span class="fu">ts_fst</span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>,
+                              eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+
+<span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co">#' # collect sampled individuals from all populations in a list</span>
+<span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="va">pop</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>
+
+<span class="co"># compute the divergence between individuals from each sample set (list of</span>
+<span class="co"># individual names generated in the previous step)</span>
+<span class="fu">ts_divergence</span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">divergence</span><span class="op">)</span>
+
+
 </code></pre></div>
     </div>
   </div>

@@ -76,22 +76,26 @@ Note that the Ne of the populations `x1` and `x2` is set to be much higher than 
 
 ## Compiling the model and simulating data
 
-We will now use those populations to compile two models: the first model will be without any geneflow (left panel in the figure wo above), the second model will include 10% gene flow from `b` to `x1` (right panel in the figure above). We will also schedule sampling of a couple of individuals at the very end of the simulation: 50 individuals each from populations `x1` and `x2` to capture a bit more of the natural variation of `b` ancestry in `x1`, and only one individual from the rest.
+We will now use those populations to compile two models: the first model will be without any gene flow (left panel in the figure wo above), the second model will include 10% gene flow from `b` to `x1` (right panel in the figure above). We will also schedule sampling of a couple of individuals at the very end of the simulation: 50 individuals each from populations `x1` and `x2` to capture a bit more of the natural variation of `b` ancestry in `x1`, and only one individual from the rest.
 
 ```{r}
 # no gene flow model
 model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, sim_length = 4500)
 
-samples <- schedule_sampling(model_nogf, times = 4500,
-                    list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+samples <- schedule_sampling(
+  model_nogf, times = 4500,
+  list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1)
+)
 
 # model with gene flow
 gf <- gene_flow(from = b, to = x1, start = 4100, end = 4400, rate = 0.1)
 
-model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), geneflow = gf, generation_time = 1, sim_length = 4500) 
+model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, sim_length = 4500)
 
-samples <- schedule_sampling(model_gf, times = 4500,
-                    list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
+samples <- schedule_sampling(
+  model_gf, times = 4500,
+  list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1)
+)
 ```
 
 Before running the simulations, let's first make sure both models are set up correctly:
