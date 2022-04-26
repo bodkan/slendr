@@ -533,7 +533,7 @@ set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = 
 #' @example man/examples/model_definition.R
 gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
   if (!inherits(from, "slendr_pop") || !inherits(to, "slendr_pop"))
-    stop("Both 'from' and 'to' argumentsmust be slendr population objects",
+    stop("Both 'from' and 'to' arguments must be slendr population objects",
          call. = FALSE)
 
   if ((has_map(from) && !has_map(to)) || (!has_map(from) && has_map(to)))
