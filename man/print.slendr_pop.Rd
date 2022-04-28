@@ -5,7 +5,7 @@
 \alias{print.slendr_region}
 \alias{print.slendr_map}
 \alias{print.slendr_model}
-\alias{print.slendr_tsdata}
+\alias{print.slendr_table}
 \title{Print a short summary of a \code{slendr} object}
 \usage{
 \method{print}{slendr_pop}(x, ...)
@@ -16,11 +16,11 @@
 
 \method{print}{slendr_model}(x, ...)
 
-\method{print}{slendr_tsdata}(x, ...)
+\method{print}{slendr_table}(x, ...)
 }
 \arguments{
 \item{x}{Object of a class \code{slendr} (either \code{slendr_pop},
-\code{slendr_map}, \code{slendr_region}, or \code{slendr_tsdata})}
+\code{slendr_map}, \code{slendr_region}, or \code{slendr_table})}
 
 \item{...}{Additional arguments passed to \code{print}}
 }

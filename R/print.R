@@ -10,7 +10,7 @@
 #' representation can be always printed by calling \code{x[]}.
 #'
 #' @param x Object of a class \code{slendr} (either \code{slendr_pop},
-#'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_tsdata})
+#'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_table})
 #' @param ... Additional arguments passed to \code{print}
 #'
 #' @export
@@ -92,7 +92,7 @@ print.slendr_model <- function(x, ...) {
 
 #' @rdname print.slendr_pop
 #' @export
-print.slendr_tsdata <- function(x, ...) {
+print.slendr_table <- function(x, ...) {
   model <- attr(x, "model")
   backend <- attr(x, "source")
 
@@ -140,7 +140,8 @@ print.slendr_tsdata <- function(x, ...) {
   } else {
     # dummy column for later printing of sampled individuals' times
     individuals$remembered <- TRUE
-    for (pop in model$splits$pop) {
+    populations <- if (is.null(model)) unique(individuals$pop) else model$splits$pop
+    for (pop in populations) {
       n_sampled <- length(individuals[individuals$pop == pop, ]$ind_id)
       n_unsampled <- sum(is.na(individuals$ind_id))
       cat(" ", pop, "-", n_sampled, "'sampled',",
@@ -152,10 +153,14 @@ print.slendr_tsdata <- function(x, ...) {
 
   cat(sep)
 
-  direction <- ifelse(model$direction == "forward",
-                      "(counting from the start)", "'before present'")
-  funs <- if (model$direction == "forward") c(min, max) else c(max, min)
-  individuals %>% dplyr::filter(remembered) %>% {
+  if (!is.null(model))
+    ts_direction <- model$direction
+  else
+    ts_direction <- "backward"
+
+  direction <- ifelse(ts_direction == "forward", "(counting from the start)", "'before present'")
+  funs <- if (ts_direction == "forward") c(min, max) else c(max, min)
+  individuals %>% dplyr::filter(sampled) %>% {
     cat("oldest sampled individual:", funs[[1]](.$time), "time units", direction, "\n")
     cat("youngest sampled individual:", funs[[2]](.$time), "time units", direction, "\n")
   }
@@ -165,7 +170,7 @@ print.slendr_tsdata <- function(x, ...) {
 
   cat(sep)
 
-  if (!is.null(model$world) && backend == "SLiM")
+  if (inherits(ts_data(ts), "sf"))
     cat("overview of the underlying sf object:\n\n")
   else
     cat("overview of the underlying table object:\n\n")
