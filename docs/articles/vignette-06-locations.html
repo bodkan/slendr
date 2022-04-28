@@ -62,7 +62,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fa fa-book"></span>
      
     Articles
@@ -148,7 +148,16 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The main selling point of the <em>slendr</em> R package is programming complex <em>spatially explicit</em> population genetic models. Because we use SLiM as the simulation engine, we can store simulated data efficiently in a tree sequence format which allows us to run large population-scale simulations. In the previous vignettes, we described how you can specify spatial population dynamics and how you can access tree sequence data and calculate population genetic statistics on it (focusing on <a href="vignette-05-tree-sequences.html">non-spatial models</a> for simplicity). Now it’s time to show you how to work with simulated tree sequence in a spatial context.</p>
+<p>The main selling point of the <em>slendr</em> R package is
+programming complex <em>spatially explicit</em> population genetic
+models. Because we use SLiM as the simulation engine, we can store
+simulated data efficiently in a tree sequence format which allows us to
+run large population-scale simulations. In the previous vignettes, we
+described how you can specify spatial population dynamics and how you
+can access tree sequence data and calculate population genetic
+statistics on it (focusing on <a href="vignette-05-tree-sequences.html">non-spatial models</a> for
+simplicity). Now it’s time to show you how to work with simulated tree
+sequence in a spatial context.</p>
 </div>
 <div class="section level2">
 <h2 id="model-specification">Model specification<a class="anchor" aria-label="anchor" href="#model-specification"></a>
@@ -169,7 +178,11 @@
 <!-- # check that we have the correct environment -->
 <!-- check_env() -->
 <!-- ``` -->
-<p>We begin by specifying our spatial model. We will use the same demographic model of modern human history in West Eurasia, which we extensively discussed in the <a href="vignette-01-tutorial.html">introductory tutorial</a> and on the main <a href="../index.html">landing page</a>. Here is a complete model definition script, without further comments:</p>
+<p>We begin by specifying our spatial model. We will use the same
+demographic model of modern human history in West Eurasia, which we
+extensively discussed in the <a href="vignette-01-tutorial.html">introductory tutorial</a> and on the
+main <a href="../index.html">landing page</a>. Here is a complete model
+definition script, without further comments:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># simulated world map</span>
 <span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>
@@ -249,11 +262,14 @@
   competition <span class="op">=</span> <span class="fl">130e3</span>, mating <span class="op">=</span> <span class="fl">100e3</span>, dispersal <span class="op">=</span> <span class="fl">70e3</span>,
   path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"_spatial-ts"</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
-<p>As a sanity check that we defined the demography correctly, you can plot a graph summarizing population divergences and geneflow events by calling <code>plot_model(model)</code>:</p>
+<p>As a sanity check that we defined the demography correctly, you can
+plot a graph summarizing population divergences and geneflow events by
+calling <code>plot_model(model)</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-06-locations_files/figure-html/demographic_model-1.png" width="480"></p>
-<p>And for completeness, here is a (slightly busy) overview of the spatial population ranges that we defined above:</p>
+<p>And for completeness, here is a (slightly busy) overview of the
+spatial population ranges that we defined above:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-06-locations_files/figure-html/spatial_maps-1.png" width="480"></p>
@@ -261,7 +277,10 @@
 <div class="section level2">
 <h2 id="scheduling-sampling-events-and-simulation">Scheduling sampling events and simulation<a class="anchor" aria-label="anchor" href="#scheduling-sampling-events-and-simulation"></a>
 </h2>
-<p>Now we will schedule the sampling of a single individual from each population every two thousand years, starting from 40 thousand years ago all the way to the present (this is a feature discussed in the basic <a href="vignette-05-tree-sequences.html#scheduling-of-sampling-events-1">tree sequence overview</a>):</p>
+<p>Now we will schedule the sampling of a single individual from each
+population every two thousand years, starting from 40 thousand years ago
+all the way to the present (this is a feature discussed in the basic <a href="vignette-05-tree-sequences.html#scheduling-of-sampling-events-1">tree
+sequence overview</a>):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># one ancient individual every two thousand years</span>
 <span class="va">ancient</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>,
@@ -278,23 +297,50 @@
   <span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100e3</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, burnin <span class="op">=</span> <span class="fl">200e3</span>,
   sampling <span class="op">=</span> <span class="va">samples</span>, method <span class="op">=</span> <span class="st">"batch"</span>, random_seed <span class="op">=</span> <span class="fl">314159</span>, max_attempts <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<p>After the simulation is done, we can load the data in the same way we did in our <a href="vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1">first exploration</a> of tree sequence features in <em>slendr</em>. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:</p>
+<p>After the simulation is done, we can load the data in the same way we
+did in our <a href="vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1">first
+exploration</a> of tree sequence features in <em>slendr</em>. We will
+also immediately simplify the tree sequence data structure to only those
+genealogies which involve individuals that we explicitly scheduled for
+sampling, and perform recapitation to ensure the coalescence of all
+genealogies along the genome:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="extracting-spatial-tree-sequence-infrmation">Extracting spatial tree sequence infrmation<a class="anchor" aria-label="anchor" href="#extracting-spatial-tree-sequence-infrmation"></a>
 </h2>
-<p>As we showed in the <a href="vignette-05-tree-sequences.html">basic tutorial</a>, the most important function for data exploration is <code><a href="../reference/ts_data.html">ts_data()</a></code>. This function extracts all information about individuals and nodes recorded in a tree sequence object loaded and annotated by <em>slendr</em> :</p>
+<p>As we showed in the <a href="vignette-05-tree-sequences.html">basic
+tutorial</a>, the most important function for data exploration is
+<code><a href="../reference/ts_data.html">ts_data()</a></code>. This function extracts all information about
+individuals and nodes recorded in a tree sequence object loaded and
+annotated by <em>slendr</em> :</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_data.html">ts_data</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></code></pre></div>
-<p>For completeness, we have also functions such as <code><a href="../reference/ts_individuals.html">ts_individuals()</a></code>, <code><a href="../reference/ts_individuals.html">ts_nodes()</a></code> and <code><a href="../reference/ts_individuals.html">ts_edges()</a></code> which extract <a href="https://tskit.dev/tskit/docs/stable/data-model.html#table-definitions" class="external-link">tree sequence tables</a> in their “raw” unprocessed form, but <code><a href="../reference/ts_data.html">ts_data()</a></code> is much more convenient for data exploration and analyses. First, it combined information in the low-level tables of individuals and nodes into a single table but more importantly, if the model which generated this data was a spatial model, <code><a href="../reference/ts_data.html">ts_data()</a></code> automatically annotates the node/individual tables with the position of each node in space (in real projected coordinates) and time. This means that we can do spatial data analysis directly on the table returned by <code><a href="../reference/ts_data.html">ts_data()</a></code>.</p>
-<p>Even better, although we can see below that the returned object belongs to <em>slendr</em>’s own class <code>slendr_ts_data</code>, it is internally stored as a spatial <code>sf</code> object. This means that we can use all the functionality of the powerful <a href="https://r-spatial.github.io/sf/" class="external-link">R package <em>sf</em></a> as well as many other packages for geospatial analyses <em>directly on the data</em>:</p>
+<p>For completeness, we have also functions such as
+<code><a href="../reference/ts_individuals.html">ts_individuals()</a></code>, <code><a href="../reference/ts_individuals.html">ts_nodes()</a></code> and
+<code><a href="../reference/ts_individuals.html">ts_edges()</a></code> which extract <a href="https://tskit.dev/tskit/docs/stable/data-model.html#table-definitions" class="external-link">tree
+sequence tables</a> in their “raw” unprocessed form, but
+<code><a href="../reference/ts_data.html">ts_data()</a></code> is much more convenient for data exploration and
+analyses. First, it combined information in the low-level tables of
+individuals and nodes into a single table but more importantly, if the
+model which generated this data was a spatial model,
+<code><a href="../reference/ts_data.html">ts_data()</a></code> automatically annotates the node/individual
+tables with the position of each node in space (in real projected
+coordinates) and time. This means that we can do spatial data analysis
+directly on the table returned by <code><a href="../reference/ts_data.html">ts_data()</a></code>.</p>
+<p>Even better, although we can see below that the returned object
+belongs to <em>slendr</em>’s own class <code>slendr_ts_data</code>, it
+is internally stored as a spatial <code>sf</code> object. This means
+that we can use all the functionality of the powerful <a href="https://r-spatial.github.io/sf/" class="external-link">R package <em>sf</em></a> as well
+as many other packages for geospatial analyses <em>directly on the
+data</em>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; [1] "slendr"        "slendr_tsdata" "sf"            "tbl_df"       </span>
 <span class="co">#&gt; [5] "tbl"           "data.frame"</span></code></pre>
-<p>Typing the object into the R console presents a user-friendly summary of the spatio-temporal data extracted from the tree sequence:</p>
+<p>Typing the object into the R console presents a user-friendly summary
+of the spatio-temporal data extracted from the tree sequence:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span></code></pre></div>
 <pre><code><span class="co">#&gt; slendr 'tsdata' object </span>
@@ -337,8 +383,19 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AFR_5 AFR        4     189     0  (3311509 1357603) TRUE    TRUE      </span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 567 more rows, and 3 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   pedigree_id &lt;dbl&gt;</span></span></code></pre>
-<p>In the first part of the summary, we see how many individuals (sampled or retained) and nodes are present in the tree sequence together with additional useful information, including a section of the internally stored <code>sf</code> object. And this is a crucial point—**we can always use the internal <code>sf</code> object with the <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1" class="external-link">spatial data</a> directly*.</p>
-<p>Because the data returned by <code><a href="../reference/ts_data.html">ts_data()</a></code> is internally transformed to the projected CRS used by the model, we can use the returned object as any other data of the class <code>sf</code>. For instance, at the beginning of this vignette, we specified the world map of the model to be represented in projected CRS (EPSG 3035) which we can verify by typing:</p>
+<p>In the first part of the summary, we see how many individuals
+(sampled or retained) and nodes are present in the tree sequence
+together with additional useful information, including a section of the
+internally stored <code>sf</code> object. And this is a crucial
+point—**we can always use the internal <code>sf</code> object with the
+<a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1" class="external-link">spatial
+data</a> directly*.</p>
+<p>Because the data returned by <code><a href="../reference/ts_data.html">ts_data()</a></code> is internally
+transformed to the projected CRS used by the model, we can use the
+returned object as any other data of the class <code>sf</code>. For
+instance, at the beginning of this vignette, we specified the world map
+of the model to be represented in projected CRS (EPSG 3035) which we can
+verify by typing:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">map</span></code></pre></div>
 <pre><code><span class="co">#&gt; slendr 'map' object </span>
@@ -347,20 +404,42 @@
 <span class="co">#&gt; spatial limits (in degrees longitude and latitude):</span>
 <span class="co">#&gt;   - vertical -15 ... 60</span>
 <span class="co">#&gt;   - horizontal 20 ... 65</span></code></pre>
-<p>The fact that the <code><a href="../reference/ts_data.html">ts_data()</a></code> result is just another <code>sf</code> object makes it easy to visualize overlay contents on this map, as we will see below.</p>
+<p>The fact that the <code><a href="../reference/ts_data.html">ts_data()</a></code> result is just another
+<code>sf</code> object makes it easy to visualize overlay contents on
+this map, as we will see below.</p>
 </div>
 <div class="section level2">
 <h2 id="using-the-simple-features-interface">Using the <em>simple features</em> interface<a class="anchor" aria-label="anchor" href="#using-the-simple-features-interface"></a>
 </h2>
-<p>It’s hard to overstate how powerful the <a href="https://r-spatial.github.io/sf/" class="external-link">R ecosystem around the <em>sf</em> package</a> is. However, getting familiar with this package and geospatial analysis in general can be a bit of a hurdle, especially for novice users because it takes time to get familiar with many new concepts.</p>
-<p>Although many <em>slendr</em> features for encoding and programming spatial models and handling simulated tree sequence data discussed so far are designed to abstract away most of the complexities of the underlying low-level details to let you focus on the problem at hand, spatial data analysis is unfortunately whole another matter. Luckily, because the data generated by <em>slendr</em> is no different from any other source of spatial data out there and you have great <a href="https://keen-swartz-3146c4.netlify.app/intro.html" class="external-link">free resources</a> at your disposal.</p>
-<p>The bottom line is: the spatio-temporal data extracted from tree sequences by <em>slendr</em> is no different than an any other normal <a href="https://r-spatial.github.io/sf/" class="external-link"><code>sf</code></a> object. Any resource that you find for manipulating, plotting, and analysing <code>sf</code> data can be applied to <em>slendr</em> results as well.</p>
-<p>In the remainder of this vignette we will look at a couple of examples.</p>
+<p>It’s hard to overstate how powerful the <a href="https://r-spatial.github.io/sf/" class="external-link">R ecosystem around the
+<em>sf</em> package</a> is. However, getting familiar with this package
+and geospatial analysis in general can be a bit of a hurdle, especially
+for novice users because it takes time to get familiar with many new
+concepts.</p>
+<p>Although many <em>slendr</em> features for encoding and programming
+spatial models and handling simulated tree sequence data discussed so
+far are designed to abstract away most of the complexities of the
+underlying low-level details to let you focus on the problem at hand,
+spatial data analysis is unfortunately whole another matter. Luckily,
+because the data generated by <em>slendr</em> is no different from any
+other source of spatial data out there and you have great <a href="https://keen-swartz-3146c4.netlify.app/intro.html" class="external-link">free
+resources</a> at your disposal.</p>
+<p>The bottom line is: the spatio-temporal data extracted from tree
+sequences by <em>slendr</em> is no different than an any other normal <a href="https://r-spatial.github.io/sf/" class="external-link"><code>sf</code></a> object. Any
+resource that you find for manipulating, plotting, and analysing
+<code>sf</code> data can be applied to <em>slendr</em> results as
+well.</p>
+<p>In the remainder of this vignette we will look at a couple of
+examples.</p>
 </div>
 <div class="section level2">
 <h2 id="plotting-locations-of-simulated-sampled-individuals">Plotting locations of simulated sampled individuals<a class="anchor" aria-label="anchor" href="#plotting-locations-of-simulated-sampled-individuals"></a>
 </h2>
-<p>Every spatial object in <em>slendr</em> is internally of the class <code>sf</code>. The flexibility of of <a href="https://ggplot2.tidyverse.org" class="external-link"><em>ggplot2</em></a> and <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</em></a> packages means that we can overlay the locations of sampled individuals (saved in a <code>sf</code> format by <code><a href="../reference/ts_data.html">ts_data()</a></code>) on top of our world map (also an <code>sf</code> object):</p>
+<p>Every spatial object in <em>slendr</em> is internally of the class
+<code>sf</code>. The flexibility of of <a href="https://ggplot2.tidyverse.org" class="external-link"><em>ggplot2</em></a> and <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</em></a> packages means
+that we can overlay the locations of sampled individuals (saved in a
+<code>sf</code> format by <code><a href="../reference/ts_data.html">ts_data()</a></code>) on top of our world
+map (also an <code>sf</code> object):</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sampled_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_data.html">ts_data</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sampled</span><span class="op">)</span>
 
@@ -371,16 +450,29 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_color_continuous</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"viridis"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-06-locations_files/figure-html/slendr_map_ts-1.png" width="480"></p>
-<p>Because <code>sf</code> <em>simple features</em> objects (and, by extension, even <code>slendr_spatial</code> objects) are internally stored as <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized" class="external-link">normal data frames</a> with couple more bells and whistles on top of them, we have all the <a href="https://www.tidyverse.org" class="external-link">powerful tools</a> for manipulating tabular data at our disposal.</p>
-<p>As an example, let’s say we wanted to split the sampled individuals in the tree sequence into epochs and plot those individually using standard <em>ggplot2</em> features. We could simply first do this, adding a new column specifying to which epoch does each simulated individual belong:</p>
+<p>Because <code>sf</code> <em>simple features</em> objects (and, by
+extension, even <code>slendr_spatial</code> objects) are internally
+stored as <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized" class="external-link">normal
+data frames</a> with couple more bells and whistles on top of them, we
+have all the <a href="https://www.tidyverse.org" class="external-link">powerful tools</a> for
+manipulating tabular data at our disposal.</p>
+<p>As an example, let’s say we wanted to split the sampled individuals
+in the tree sequence into epochs and plot those individually using
+standard <em>ggplot2</em> features. We could simply first do this,
+adding a new column specifying to which epoch does each simulated
+individual belong:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">epochs</span> <span class="op">&lt;-</span> <span class="va">sampled_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>epoch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">time</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40000</span>, <span class="fl">30000</span>, <span class="fl">10000</span>, <span class="fl">4000</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,
          epoch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">epoch</span><span class="op">)</span>, <span class="fl">0</span>, <span class="va">epoch</span><span class="op">)</span>,
          epoch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">epoch</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"present"</span>, <span class="st">"(present, 4 ky]"</span>, <span class="st">"(4 ky, 10 ky]"</span>,
                                           <span class="st">"(10 ky, 30 y]"</span>, <span class="st">"(30 ky, 40 ky]"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>This chunk of code simply adds a new column <code>epoch</code> to the <code>sf</code> spatial data frame object called <code>epochs</code> here.</p>
-<p>Then we can use the <em>ggplot2</em> function <code>geom_sf</code> to plot the locations of sampled individuals on the map, with each facet corresponding to one epoch (the warning can be safely ignored):</p>
+<p>This chunk of code simply adds a new column <code>epoch</code> to the
+<code>sf</code> spatial data frame object called <code>epochs</code>
+here.</p>
+<p>Then we can use the <em>ggplot2</em> function <code>geom_sf</code> to
+plot the locations of sampled individuals on the map, with each facet
+corresponding to one epoch (the warning can be safely ignored):</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span>, fill <span class="op">=</span> <span class="st">"lightgray"</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
@@ -389,14 +481,30 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Locations of simulated sampled individuals in different epochs"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-06-locations_files/figure-html/map_epochs-1.png" width="480"></p>
-<p>We hope this little excursion to handling <em>slendr</em> spatial objects (and, by extension, <code>sf</code> objects) with standard data frame manipulation functions and <em>ggplot2</em> visualisation convinced you that you have a great flexibility in analysing spatial <em>slendr</em> data. For best introduction into so-called “tidy” data analysis, we encourage you to read the freely-available book <a href="https://r4ds.had.co.nz" class="external-link">R for Data Science</a>.</p>
+<p>We hope this little excursion to handling <em>slendr</em> spatial
+objects (and, by extension, <code>sf</code> objects) with standard data
+frame manipulation functions and <em>ggplot2</em> visualisation
+convinced you that you have a great flexibility in analysing spatial
+<em>slendr</em> data. For best introduction into so-called “tidy” data
+analysis, we encourage you to read the freely-available book <a href="https://r4ds.had.co.nz" class="external-link">R for Data Science</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="extracting-spatio-temporal-ancestral-relationships">Extracting spatio-temporal ancestral relationships<a class="anchor" aria-label="anchor" href="#extracting-spatio-temporal-ancestral-relationships"></a>
 </h2>
-<p>Perhaps even more useful than plotting the locations of simulated individuals is accessing the locations (and times) of <em>all ancestors</em> of a particular tree sequence node (a “focal node”). Starting from the focal node or individual, we can trace the geographical location of nodes in its lineage going back all the way to the root with the function <code><a href="../reference/ts_ancestors.html">ts_ancestors()</a></code>.</p>
-<p>Because we record the time and the location of every individual that happens to be the ancestor of at least one sampled individual, this means that we know the true location of every node of the tree sequence.</p>
-<p>The simplest use case is determining the locations and times of every single node in the genealogical history of an individual along the tree sequence (it is possible to recover ancestral relationships for multiple samples at once too):</p>
+<p>Perhaps even more useful than plotting the locations of simulated
+individuals is accessing the locations (and times) of <em>all
+ancestors</em> of a particular tree sequence node (a “focal node”).
+Starting from the focal node or individual, we can trace the
+geographical location of nodes in its lineage going back all the way to
+the root with the function <code><a href="../reference/ts_ancestors.html">ts_ancestors()</a></code>.</p>
+<p>Because we record the time and the location of every individual that
+happens to be the ancestor of at least one sampled individual, this
+means that we know the true location of every node of the tree
+sequence.</p>
+<p>The simplest use case is determining the locations and times of every
+single node in the genealogical history of an individual along the tree
+sequence (it is possible to recover ancestral relationships for multiple
+samples at once too):</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ind</span> <span class="op">&lt;-</span> <span class="st">"EUR_51"</span>
 
@@ -404,7 +512,15 @@
 <pre><code><span class="co">#&gt; Collecting ancestors of EUR_51 [1/1]...</span></code></pre>
 <pre><code><span class="co">#&gt; </span>
 <span class="co">#&gt; Generating data about spatial relationships of nodes...</span></code></pre>
-<p>The function starts at a given node (or, if a name of a sampled diploid individual is provided, two nodes), extracts information about all the parent nodes of that node in the entire tree sequence, records their locations and times, then proceeds one level “higher” in the genealogical history to gather information about the parents of those parent nodes, etc., until it reaches a root node. The result of this process is another <code>sf</code> object in which each row of the table encodes information about single branch in the genealogy of the “focal” node or individual (in our example, <code>"EUR_25"</code>):</p>
+<p>The function starts at a given node (or, if a name of a sampled
+diploid individual is provided, two nodes), extracts information about
+all the parent nodes of that node in the entire tree sequence, records
+their locations and times, then proceeds one level “higher” in the
+genealogical history to gather information about the parents of those
+parent nodes, etc., until it reaches a root node. The result of this
+process is another <code>sf</code> object in which each row of the table
+encodes information about single branch in the genealogy of the “focal”
+node or individual (in our example, <code>"EUR_25"</code>):</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lineages</span></code></pre></div>
 <pre><code><span class="co">#&gt; Simple feature collection with 124 features and 12 fields</span>
@@ -429,8 +545,25 @@
 <span class="co">#&gt; <span style="color: #949494;"># … with 114 more rows, and 6 more variables: parent_pop &lt;fct&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   child_location &lt;POINT [m]&gt;, parent_location &lt;POINT [m]&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;, right_pos &lt;dbl&gt;</span></span></code></pre>
-<p>In each row of the table, two columns <code>location</code> and <code>parent_location</code> carry the spatial location of a node (<code>node_id</code>) and its parent node (<code>parent_id</code>), respectively, same with the columns <code>time</code> and <code>parent_time</code> (times of nodes) and <code>pop</code> and <code>parent_pop</code> (populations to which the nodes belong). The column <code>connection</code> contains an <code>sf</code> geometry object of the line connecting the two nodes in the coordinate reference system of the “model world”. The column <code>focal_id</code> tells us to which focal node’s genealogy the rows of the table belong to, and the <code>level</code> column shows how deep in the genealogical past does each branch (i.e. row of the table) belong to.</p>
-<p>This table contains a complete information about spatio-temporal relationships between the nodes in the genealogy of the given focal sample. In the spirit of demonstrating of <em>slendr</em> tree sequence tables interact with the <em>sf</em> and <em>ggplot2</em> environments, let’s look at the most immediate parent nodes of the two nodes in the sampled individual (i.e. nodes at the level 1) using the <code>filter</code> function from the R package <a href="https://r4ds.had.co.nz/transform.html#filter-rows-with-filter" class="external-link">dplyr</a>:</p>
+<p>In each row of the table, two columns <code>location</code> and
+<code>parent_location</code> carry the spatial location of a node
+(<code>node_id</code>) and its parent node (<code>parent_id</code>),
+respectively, same with the columns <code>time</code> and
+<code>parent_time</code> (times of nodes) and <code>pop</code> and
+<code>parent_pop</code> (populations to which the nodes belong). The
+column <code>connection</code> contains an <code>sf</code> geometry
+object of the line connecting the two nodes in the coordinate reference
+system of the “model world”. The column <code>focal_id</code> tells us
+to which focal node’s genealogy the rows of the table belong to, and the
+<code>level</code> column shows how deep in the genealogical past does
+each branch (i.e. row of the table) belong to.</p>
+<p>This table contains a complete information about spatio-temporal
+relationships between the nodes in the genealogy of the given focal
+sample. In the spirit of demonstrating of <em>slendr</em> tree sequence
+tables interact with the <em>sf</em> and <em>ggplot2</em> environments,
+let’s look at the most immediate parent nodes of the two nodes in the
+sampled individual (i.e. nodes at the level 1) using the
+<code>filter</code> function from the R package <a href="https://r4ds.had.co.nz/transform.html#filter-rows-with-filter" class="external-link">dplyr</a>:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">lineages</span>, <span class="va">level</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; Simple feature collection with 2 features and 12 fields</span>
@@ -447,7 +580,14 @@
 <span class="co">#&gt; <span style="color: #949494;"># … with 6 more variables: parent_pop &lt;fct&gt;, child_location &lt;POINT [m]&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   parent_location &lt;POINT [m]&gt;, connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   right_pos &lt;dbl&gt;</span></span></code></pre>
-<p>As we mentioned above, there are three columns encoding spatial information: <code>location</code> and <code>parent_location</code> carry information about the location of the child and parent node (<code>POINT</code> class), and the <code>connection</code> object (<code>LINESTRING</code> class) contains the line connecting the two nodes (both a branch in the tree sequence and also the spatial connection). We can plot all three spatial features (two points and a line) individually on a map:</p>
+<p>As we mentioned above, there are three columns encoding spatial
+information: <code>location</code> and <code>parent_location</code>
+carry information about the location of the child and parent node
+(<code>POINT</code> class), and the <code>connection</code> object
+(<code>LINESTRING</code> class) contains the line connecting the two
+nodes (both a branch in the tree sequence and also the spatial
+connection). We can plot all three spatial features (two points and a
+line) individually on a map:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">level1_branches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"EUR_10"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">level</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>
 
@@ -459,8 +599,18 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Parent nodes (blue) of a focal individual (red)"</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-06-locations_files/figure-html/level1_branches-1.png" width="480"></p>
-<p>In the figure above we can see the red focal node and its immediate parents in the tree sequence genealogy (in the coalescent sense, not immediate parents of that individual!).</p>
-<p>A more convenient way to do this analysis is a companion function to <code><a href="../reference/ts_ancestors.html">ts_ancestors()</a></code> called <code>plot_ancestors()</code>. This function accepts an <code>sf</code> object with the spatial branching data created by <code><a href="../reference/ts_ancestors.html">ts_ancestors()</a></code> and plots the paths between nodes on a map leading from a focal node up to the root(s) of the tree sequence (instead of just paths to immediate parents shown in the previous figure). In this case, because we are working with a single diploid individual, we get two sets of paths for each of its nodes (chromosomes) and plot them in two facets:</p>
+<p>In the figure above we can see the red focal node and its immediate
+parents in the tree sequence genealogy (in the coalescent sense, not
+immediate parents of that individual!).</p>
+<p>A more convenient way to do this analysis is a companion function to
+<code><a href="../reference/ts_ancestors.html">ts_ancestors()</a></code> called <code>plot_ancestors()</code>. This
+function accepts an <code>sf</code> object with the spatial branching
+data created by <code><a href="../reference/ts_ancestors.html">ts_ancestors()</a></code> and plots the paths between
+nodes on a map leading from a focal node up to the root(s) of the tree
+sequence (instead of just paths to immediate parents shown in the
+previous figure). In this case, because we are working with a single
+diploid individual, we get two sets of paths for each of its nodes
+(chromosomes) and plot them in two facets:</p>
 <!-- ```{r, eval = FALSE, echo = FALSE} -->
 <!-- pdf("~/Desktop/x.pdf") -->
 <!-- for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) { -->
@@ -481,14 +631,35 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"longitude"</span>, y <span class="op">=</span> <span class="st">"latitude"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">node_id</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-06-locations_files/figure-html/plot_ancestors_time-1.png" width="480"></p>
-<p>You can compare this result to the animation which recapitulates the simulation, presented in <a href="vignette-01-tutorial.html">the first vignette</a>.</p>
-<p>After comparing our spatial tree sequence figure with the animation, we can immediately notice several things:</p>
+<p>You can compare this result to the animation which recapitulates the
+simulation, presented in <a href="vignette-01-tutorial.html">the first
+vignette</a>.</p>
+<p>After comparing our spatial tree sequence figure with the animation,
+we can immediately notice several things:</p>
 <ol style="list-style-type: decimal">
-<li><p>All spatial tree sequence paths trace the ancestry of our single European individual back to Africa. In fact, we also see a cluster of past ancestral nodes (i.e. concentrated coalescent events) in the place where the Out of Africa (OOA) migrant population settled around 40,000 thousand years ago (yellow population in the the animation).</p></li>
-<li><p>The first chromosome traces its ancestry to the Yamnaya population indicated by a star. This is expected because we programmed Yamnaya to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population). We can see a cluster of EHG nodes in one location because we did not specify any spatial dynamic for this population in our model</p></li>
-<li><p>We also see that the other chromosome traces of its ancestry to the Anatolia (triangles). This makes sense, because we have simulated European ancestry as being part Anatolian.</p></li>
+<li><p>All spatial tree sequence paths trace the ancestry of our single
+European individual back to Africa. In fact, we also see a cluster of
+past ancestral nodes (i.e. concentrated coalescent events) in the place
+where the Out of Africa (OOA) migrant population settled around 40,000
+thousand years ago (yellow population in the the animation).</p></li>
+<li><p>The first chromosome traces its ancestry to the Yamnaya
+population indicated by a star. This is expected because we programmed
+Yamnaya to contribute significant part of ancestry to present-day
+Europeans (compare to the demographic graph on top of this vignette). In
+turn, the Yamnaya node traces its ancestry to EHG (which is its parental
+population). We can see a cluster of EHG nodes in one location because
+we did not specify any spatial dynamic for this population in our
+model</p></li>
+<li><p>We also see that the other chromosome traces of its ancestry to
+the Anatolia (triangles). This makes sense, because we have simulated
+European ancestry as being part Anatolian.</p></li>
 </ol>
-<p>Let’s look at the spatial ancestry of another sample. For instance, we know that the simulated history of the Anatolian population in our model is much simpler. According to the demographic graph above, Anatolians split from the ancestral population of Eurasians in Anatolia and then expanded in a wave to Europe. We have sampled the following individuals:</p>
+<p>Let’s look at the spatial ancestry of another sample. For instance,
+we know that the simulated history of the Anatolian population in our
+model is much simpler. According to the demographic graph above,
+Anatolians split from the ancestral population of Eurasians in Anatolia
+and then expanded in a wave to Europe. We have sampled the following
+individuals:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"ANA"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; <span style="color: #949494;"># A tibble: 24 × 3</span></span>
@@ -505,7 +676,11 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ANA_9  <span style="text-decoration: underline;">19</span>000 ANA  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANA_10 <span style="text-decoration: underline;">18</span>000 ANA  </span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 14 more rows</span></span></code></pre>
-<p>Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let’s pick the last individual and immediately plot its spatial ancestry tidyverse-style using the pipe operator <code>%&gt;%</code>:</p>
+<p>Can we see a hint of the spatial dynamics of Anatolians in the
+spatio-temporal distribution of ancestral node locations of one of the
+sampled individuals? Let’s pick the last individual and immediately plot
+its spatial ancestry tidyverse-style using the pipe operator
+<code>%&gt;%</code>:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lineages</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"ANA_21"</span><span class="op">)</span>
 
@@ -520,13 +695,23 @@
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"longitude"</span>, y <span class="op">=</span> <span class="st">"latitude"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">node_id</span><span class="op">)</span></code></pre></div>
 <p><img src="vignette-06-locations_files/figure-html/plot_ancestors_levels_ana-1.png" width="480"></p>
-<p>As we might expect given the late age of the sample, its position in the map above (red crossed circle) is not in Anatolia but in Europe because it represents one of the descendants of migrants who moved from Anatolia into Europe. This can be clearly seen in the position of its parental nodes in the tree sequence: these nodes represent real individuals who lived at some point in the past, and we can see that they did, indeed, lived in Anatolia.</p>
+<p>As we might expect given the late age of the sample, its position in
+the map above (red crossed circle) is not in Anatolia but in Europe
+because it represents one of the descendants of migrants who moved from
+Anatolia into Europe. This can be clearly seen in the position of its
+parental nodes in the tree sequence: these nodes represent real
+individuals who lived at some point in the past, and we can see that
+they did, indeed, lived in Anatolia.</p>
 </div>
 <div class="section level2">
-<h2 id="calculating-distances-and-other-statistics-using-the-sf-package">Calculating distances and other statistics using the <em>sf</em> package<a class="anchor" aria-label="anchor" href="#calculating-distances-and-other-statistics-using-the-sf-package"></a>
+<h2 id="calculating-distances-and-other-statistics-using-the-sf-package">Calculating distances and other statistics using the <em>sf</em>
+package<a class="anchor" aria-label="anchor" href="#calculating-distances-and-other-statistics-using-the-sf-package"></a>
 </h2>
-<p>How can we summarise the spatial ancestral dynamics in the figures using some statistics?</p>
-<p>Lets take one more look at the <code>sf</code> object with the locations and times of ancestral nodes of sampled individuals, focusing on the following subset of columns:</p>
+<p>How can we summarise the spatial ancestral dynamics in the figures
+using some statistics?</p>
+<p>Lets take one more look at the <code>sf</code> object with the
+locations and times of ancestral nodes of sampled individuals, focusing
+on the following subset of columns:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lineages</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
@@ -553,7 +738,12 @@
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> (3459546 578367.8, 3844983 368874.9)     <span style="text-decoration: underline;">103</span>420      <span style="text-decoration: underline;">104</span>440</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   (8559748 3193326, 7305165 1650688)      <span style="text-decoration: underline;">40</span>000       <span style="text-decoration: underline;">46</span>990</span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 6,853 more rows</span></span></code></pre>
-<p>We can use standard <em>dplyr</em> table manipulation functions to compute the distances between connected notes and the times that separate them (i.e. branch lengths in the traditional phylogenetic sense). We can then use those two quantities to compute how fast (if any at all) was the movement between ancestral individuals in different time periods of the history of a sample:</p>
+<p>We can use standard <em>dplyr</em> table manipulation functions to
+compute the distances between connected notes and the times that
+separate them (i.e. branch lengths in the traditional phylogenetic
+sense). We can then use those two quantities to compute how fast (if any
+at all) was the movement between ancestral individuals in different time
+periods of the history of a sample:</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distances</span> <span class="op">&lt;-</span> <span class="va">lineages</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>branch_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">parent_time</span> <span class="op">-</span> <span class="va">child_time</span><span class="op">)</span> <span class="op">/</span> <span class="va">model</span><span class="op">$</span><span class="va">generation_time</span>,
@@ -562,7 +752,9 @@
          epoch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">parent_time</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">Inf</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">60000</span>, <span class="fl">0</span>, by <span class="op">=</span> <span class="op">-</span><span class="fl">3000</span><span class="op">)</span><span class="op">)</span>, dig.lab <span class="op">=</span> <span class="fl">10</span>, include.lowest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># strip away the spatial annotation</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">pop</span>, <span class="va">node_id</span>, <span class="va">branch_length</span>, <span class="va">distance</span>, <span class="va">speed</span>, <span class="va">parent_pop</span>, <span class="va">parent_time</span>, <span class="va">child_pop</span>, <span class="va">child_time</span>, <span class="va">epoch</span><span class="op">)</span></code></pre></div>
-<p>Let’s also convert the data (absolute distances or distance per generation – i.e., the “speed”) into a long format for easier plotting side by side:</p>
+<p>Let’s also convert the data (absolute distances or distance per
+generation – i.e., the “speed”) into a long format for easier plotting
+side by side:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distances_long</span> <span class="op">&lt;-</span> <span class="va">distances</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">child_time</span> <span class="op">&lt;</span> <span class="fl">60000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
@@ -573,7 +765,9 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>facet <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span>
     <span class="va">stat</span> <span class="op">==</span> <span class="st">"distance"</span> <span class="op">~</span> <span class="st">"absolute distance of a node from parent"</span>,
     <span class="va">stat</span> <span class="op">==</span> <span class="st">"speed"</span> <span class="op">~</span> <span class="st">"distance traveled by a node per generation"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Let’s try to summarise the information about distances “traveled” by nodes in different time period by fitting a spline (rather than plotting the raw data with individual nodes):</p>
+<p>Let’s try to summarise the information about distances “traveled” by
+nodes in different time period by fitting a spline (rather than plotting
+the raw data with individual nodes):</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">distances_long</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">child_time</span>, <span class="va">value</span>, color <span class="op">=</span> <span class="va">child_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -639,7 +833,8 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer>
