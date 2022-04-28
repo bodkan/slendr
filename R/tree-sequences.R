@@ -84,6 +84,7 @@ ts_load <- function(source = NULL, file = NULL,
   if (is.character(source) && is.null(file)) {
     file <- source
     model <- NULL
+    spatial <- FALSE
   } else if (inherits(source, "slendr_model")) {
     model <- source
 
@@ -153,14 +154,14 @@ ts_load <- function(source = NULL, file = NULL,
   attr(ts, "edges") <- get_ts_edges(ts)
   attr(ts, "individuals") <- get_ts_individuals(ts)
 
-  if (!is.null(model)) {
-    if (backend == "SLiM") {
-      attr(ts, "individuals")$sampled <- attr(ts, "individuals")$remembered
-      attr(ts, "data") <- get_slim_table_data(ts, model, spatial)
-    } else {
-      attr(ts, "individuals")$sampled <- TRUE
-      attr(ts, "data") <- get_msprime_table_data(ts, model)
-    }
+  if (backend == "SLiM") {
+    remembered <- attr(ts, "individuals")$remembered
+    if (!any(remembered)) remembered <- attr(ts, "individuals")$alive
+    attr(ts, "individuals")$sampled <- remembered
+    attr(ts, "data") <- get_slim_table_data(ts, model, spatial)
+  } else {
+    attr(ts, "individuals")$sampled <- TRUE
+    attr(ts, "data") <- get_msprime_table_data(ts, model)
   }
 
   if (recapitate)
@@ -345,26 +346,31 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     return(ts)
   }
 
-  if (is.null(simplify_to) && backend == "SLiM")
-    samples <- dplyr::filter(data, sampled)$node_id
-  else if (is.character(simplify_to)) {
-    if (!all(simplify_to %in% data$name))
-      stop("The following individuals are not present in the tree sequence: ",
-           paste0(simplify_to[!simplify_to %in% data$name], collapse = ", "),
-           call. = FALSE)
-    else
-      samples <- dplyr::filter(data, name %in% simplify_to)$node_id
-  } else if (is.numeric(simplify_to)) {
-    if (!all(simplify_to %in% data$node_id))
-      stop("The following nodes are not present in the tree sequence: ",
-           paste0(simplify_to[!simplify_to %in% data$node_id], collapse = ", "),
-           call. = FALSE)
-    else if (!all(simplify_to %in% data[data$sampled, ]$node_id))
-      stop("The following nodes are not among the remembered nodes: ",
-           paste0(simplify_to[!simplify_to %in% data[data$sampled, ]$node_id], collapse = ", "),
-           call. = FALSE)
-    else
-      samples <- simplify_to
+  if (is.null(model)) { # non-slendr tree sequence
+    if (is.null(simplify_to))
+      samples <- dplyr::filter(data, sampled)$node_id
+  } else { # slendr model tree sequence
+    if (is.null(simplify_to) && backend == "SLiM")
+      samples <- dplyr::filter(data, sampled)$node_id
+    else if (is.character(simplify_to)) {
+      if (!all(simplify_to %in% data$name))
+        stop("The following individuals are not present in the tree sequence: ",
+            paste0(simplify_to[!simplify_to %in% data$name], collapse = ", "),
+            call. = FALSE)
+      else
+        samples <- dplyr::filter(data, name %in% simplify_to)$node_id
+    } else if (is.numeric(simplify_to)) {
+      if (!all(simplify_to %in% data$node_id))
+        stop("The following nodes are not present in the tree sequence: ",
+            paste0(simplify_to[!simplify_to %in% data$node_id], collapse = ", "),
+            call. = FALSE)
+      else if (!all(simplify_to %in% data[data$sampled, ]$node_id))
+        stop("The following nodes are not among the remembered nodes: ",
+            paste0(simplify_to[!simplify_to %in% data[data$sampled, ]$node_id], collapse = ", "),
+            call. = FALSE)
+      else
+        samples <- simplify_to
+    }
   }
 
   ts_new <- ts$simplify(as.integer(samples),
@@ -391,7 +397,8 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     attr(ts_new, "individuals")$sampled <- attr(ts_new, "individuals")$pedigree_id %in% sampled_ids
 
     # get the name and location from the original table with the pedigree_id key
-    cols <- c("pedigree_id", "pop", "name")
+    cols <- c("pedigree_id", "pop")
+    if (!is.null(model)) cols <- c(cols, "name")
     if (spatial) cols <- c(cols, "location")
     # we need to deduplicate the rows because the table is stored in a long format
     # (but we removed the node_id column which each diploid individual has two
@@ -421,7 +428,8 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     if (spatial)
       data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
 
-    attr(ts_new, "data") <- data_new[, c("name", "pop", "ind_id", "node_id",
+    name_col <- if (is.null(model)) NULL else "name"
+    attr(ts_new, "data") <- data_new[, c(name_col, "pop", "ind_id", "node_id",
                                          "time", location_col, "sampled", "remembered",
                                          "retained", "alive", "pedigree_id")]
   } else
@@ -717,7 +725,15 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
     dplyr::as_tibble() %>%
     dplyr::filter(node_id %in% tree$preorder())
 
-  if (attr(ts, "model")$direction == "forward")
+  model <- attr(ts, "model")
+  source <- attr(ts, "source")
+
+  if (!is.null(model))
+    direction <- model$direction
+  else
+    direction <- "backward"
+
+  if (direction == "forward")
     data <- dplyr::arrange(data, sampled, time)
   else
     data <- dplyr::arrange(data, sampled, -time)
@@ -735,7 +751,8 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   lookup_ids <- rev(seq_along(present_ids))
 
   tip_labels <- dplyr::filter(data, sampled) %>%
-    { sprintf("%s (%s)", .$node_id, .$name) } %>%
+    { if (is.null(model)) .$node_id else sprintf("%s (%s)", .$node_id, .$name) } %>%
+    as.character() %>%
     rev()
 
   # flip the index of the root in the lookup table
@@ -787,12 +804,13 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   data$phylo_id <- sapply(data$node_id, function(n) lookup_ids[present_ids == n])
   columns <- c()
-  if (attr(ts, "source") == "SLiM" && !is.null(attr(ts, "model")$world))
+  if (source == "SLiM" && !is.null(model$world))
     columns <- c(columns, "location")
-  if (attr(ts, "source") == "SLiM")
+  if (source == "SLiM")
     columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
+  name_col <- if (is.null(model)) NULL else "name"
   data <- dplyr::select(
-    data, name, pop, node_id, phylo_id, time, !!columns, ind_id
+    data, !!name_col, pop, node_id, phylo_id, time, !!columns, ind_id
   )
   # add fake dummy information to the processed tree sequence table so that
   # the user knows what is real and what is not straight from the ts_phylo()
@@ -810,10 +828,10 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       )
     )
   }
-  if (attr(ts, "source") == "SLiM" && !is.null(attr(ts, "model")$world))
+  if (source == "SLiM" && !is.null(model$world))
     data <- sf::st_as_sf(data)
 
-  class(data) <- set_class(data, "tsdata")
+  class(data) <- set_class(data, "table")
 
   # generate appropriate internal node labels based on the user's choice
   elem <- if (labels == "pop") "pop" else "node_id"
@@ -884,15 +902,12 @@ ts_data <- function(x) {
     stop("Annotation data table can be only extracted for a slendr tree sequence\n",
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 
-  if (is.null(attr(x, "model")))
-    stop("Combined table can only be extracted for slendr-generated tree sequence", call. = FALSE)
-
   data <- attr(x, "data")
 
   attr(data, "model") <- attr(x, "model")
   attr(data, "source") <- attr(x, "source")
 
-  class(data) <- set_class(data, "tsdata")
+  class(data) <- set_class(data, "table")
 
   data
 }
@@ -964,6 +979,11 @@ ts_branches <- function(tree) {
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @export
 ts_samples <- function(ts) {
+  if (is.null(attr(ts, "model")))
+    stop("Sampling schedule can only be extracted for tree sequences\ngenerated ",
+         "from a slendr model. To access information about times and\nlocations ",
+         "of nodes and individuals from non-slendr tree sequences,\nuse the ",
+         "function ts_data().\n", call. = FALSE)
   data <- ts_data(ts) %>% dplyr::filter(!is.na(name))
   attr(ts, "metadata")$sampling %>%
     dplyr::filter(name %in% data$name)
@@ -1728,7 +1748,7 @@ get_ts_individuals <- function(ts) {
         nodes_table$time_tskit <- ts$tables$nodes$time
       } else
         nodes_table$time <- ts$tables$nodes$time
-      
+
       nodes_table <- dplyr::distinct(nodes_table)
 
       ind_table <- dplyr::inner_join(ind_table, nodes_table, by = "ind_id")
@@ -1753,11 +1773,15 @@ get_ts_edges <- function(ts) {
 get_ts_mutations <- function(ts) {
   model <- attr(ts, "model")
   table <- ts$tables$mutations
+  if (is.null(model))
+    time <- table[["time"]]
+  else
+    time <- time_fun(ts)(as.vector(table[["time"]]), model)
   dplyr::tibble(
     id = seq_len(table$num_rows) - 1,
     site = as.vector(table[["site"]]),
     node = as.vector(table[["node"]]),
-    time = time_fun(ts)(as.vector(table[["time"]]), model)
+    time = time
   )
 }
 
@@ -1770,15 +1794,23 @@ time_fun <- function(ts) {
 
 get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # get data from the original individual table
-  individuals <- attr(ts, "individuals") %>%
-    dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
-    dplyr::arrange(-time, pop)
+  individuals <- attr(ts, "individuals")
+
+  if (!is.null(model))
+    individuals$pop <- model$splits$pop[individuals$pop_id + 1]
+  else
+    individuals$pop <- individuals$pop_id
+
+  individuals <- dplyr::arrange(individuals, -time, pop)
 
   # load information about samples at times and from populations of remembered
   # individuals
-  samples <- attr(ts, "metadata")$sampling %>% dplyr::arrange(-time, pop)
-  if (!is.null(simplify_to))
-    samples <- samples %>% dplyr::filter(name %in% simplify_to)
+  if (!is.null(model)) {
+    samples <- attr(ts, "metadata")$sampling %>% dplyr::arrange(-time, pop)
+    if (!is.null(simplify_to))
+      samples <- samples %>% dplyr::filter(name %in% simplify_to)
+  } else
+    samples <- dplyr::filter(individuals, sampled) %>% dplyr::select(time, pop)
 
   # split individuals into sampled (those explicitly sampled, to which we
   # will add readable names from the sampling schedule table) and not sampled
@@ -1808,10 +1840,14 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   } else
     location_cols <- NULL
 
-  combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
+  if (!is.null(model)) {
+    combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
+    slendr_cols <- c("name", "pop")
+  } else
+    slendr_cols <- "pop"
 
   combined <- dplyr::select(
-    combined, name, pop, ind_id, node_id, time, !!location_cols,
+    combined, !!slendr_cols, ind_id, node_id, time, !!location_cols,
     sampled, remembered, retained, alive, pedigree_id
   )
 
@@ -1825,15 +1861,21 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
   # load information about samples at times and from populations of remembered
   # individuals
   samples <- attr(ts, "metadata")$sampling
-  if (!is.null(simplify_to))
-    samples <- dplyr::filter(samples, name %in% simplify_to)
-  samples <- dplyr::arrange(samples, -time, pop)
+  if (!is.null(samples)) {
+    if (!is.null(simplify_to))
+      samples <- dplyr::filter(samples, name %in% simplify_to)
+    samples <- dplyr::arrange(samples, -time, pop)
+  }
 
   # get data from the original individual table
-  individuals <- get_ts_individuals(ts) %>%
-    dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
-    dplyr::arrange(-time, pop) %>%
-    dplyr::mutate(name = samples$name, sampled = TRUE)
+  individuals <- attr(ts, "individuals")
+
+  if (!is.null(model)) {
+    individuals <- individuals %>%
+      dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
+      dplyr::arrange(-time, pop) %>%
+      dplyr::mutate(name = samples$name, sampled = TRUE)
+  }
 
   # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
@@ -1842,14 +1884,20 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
 
   # add numeric node IDs to each individual
   combined <- dplyr::select(individuals, -time, -pop_id) %>%
-    dplyr::right_join(nodes, by = "ind_id") %>%
-    dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
-    dplyr::select(name, pop, ind_id, node_id, time, sampled) %>%
+    dplyr::right_join(nodes, by = "ind_id")
+
+  if (is.null(model)) {
+    combined <- dplyr::rename(combined, pop = pop_id)
+    name_col <- NULL
+  } else {
+    combined <- combined %>%
+      dplyr::mutate(pop = model$splits$pop[pop_id + 1])
+    combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
+    name_col <- "name"
+  }
+  combined %>%
+    dplyr::select(!!name_col, pop, ind_id, node_id, time, sampled) %>%
     dplyr::mutate(sampled = !is.na(sampled))
-
-  combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
-
-  combined
 }
 
 get_sf_branches <- function(tree) {
