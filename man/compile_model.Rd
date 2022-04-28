@@ -18,9 +18,7 @@ compile_model(
   sim_length = NULL,
   direction = NULL,
   slim_script = system.file("scripts", "script.slim", package = "slendr"),
-  description = "",
-  dir = NULL,
-  geneflow = list()
+  description = ""
 )
 }
 \arguments{
@@ -63,10 +61,6 @@ parameter is inferred from the model and does not need to be set manually.}
 (by default, a bundled backend script will be used)}
 
 \item{description}{Optional short description of the model}
-
-\item{dir}{Deprecated. Use \code{path} instead.}
-
-\item{geneflow}{Deprecated. Use \code{gene_flow} instead.}
 }
 \value{
 Compiled \code{slendr_model} model object
