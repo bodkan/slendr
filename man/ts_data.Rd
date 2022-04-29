@@ -4,7 +4,7 @@
 \alias{ts_data}
 \title{Extract combined annotated table of individuals and nodes}
 \usage{
-ts_data(x)
+ts_data(x, sf = TRUE)
 }
 \arguments{
 \item{x}{Tree sequence object of the class \code{slendr_ts} or a \code{phylo}
