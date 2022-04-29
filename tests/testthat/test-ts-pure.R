@@ -1,3 +1,7 @@
+skip_if(!slendr:::check_env_present())
+
+set.seed(42)
+
 simulate_slim_ts <- function(N) {
   script_file <- tempfile()
   ts_file <- tempfile()
@@ -64,7 +68,7 @@ compare_ts_phylo <- function(ts, N) {
   tskit_root <- tskit_tree$root
   expect_true(which(tree_data$node_id == tskit_root) == which(tree_data$phylo_id == phylo_root))
 
-  expect_true(length(tree$tip.label) == 2 * N)
+  expect_true(length(tree$tip.label) == nrow(tree_data[tree_data$sampled, ]))
 }
 
 test_that("non-slendr SLiM ts_data corresponds to the expected outcome", {
@@ -74,12 +78,28 @@ test_that("non-slendr SLiM ts_data corresponds to the expected outcome", {
   compare_ts_data(ts, N)
 })
 
+test_that("non-slendr SLiM simplified ts_data corresponds to the expected outcome", {
+  N <- 5
+  ts_file <- simulate_slim_ts(N)
+  ts <- ts_load(ts_file)
+  simplify_to <- ts_data(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  ts2 <- ts_simplify(ts, simplify_to = simplify_to)
+
+  # make sure that the simplified nodes match the pedigree_id values in the
+  # original tree-sequence data
+  orig_ids <- ts_data(ts) %>% dplyr::filter(node_id %in% simplify_to) %>% dplyr::pull(pedigree_id)
+  simplified_ids <- ts_data(ts2) %>% dplyr::filter(sampled) %>% dplyr::pull(pedigree_id)
+  expect_true(all(orig_ids == simplified_ids))
+})
+
 test_that("non-slendr SLiM ts_phylo corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_slim_ts(N)
   ts <- ts_load(ts_file)
   compare_ts_phylo(ts, N)
 })
+
+# msprime tree sequences --------------------------------------------------
 
 test_that("non-slendr msprime ts_data corresponds to the expected outcome", {
   N <- 5
@@ -88,9 +108,30 @@ test_that("non-slendr msprime ts_data corresponds to the expected outcome", {
   expect_warning(compare_ts_data(ts, N), "If you want to simplify")
 })
 
-test_that("non-slendr msprime ts_data corresponds to the expected outcome", {
+test_that("non-slendr SLiM simplified ts_data corresponds to the expected outcome", {
+  N <- 5
+  ts_file <- simulate_msprime_ts(N)
+  ts <- ts_load(ts_file)
+  simplify_to <- ts_data(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  ts2 <- ts_simplify(ts, simplify_to = simplify_to)
+
+  # there are no fixed pedigree_id values, so let's check that the number of
+  # "sampled" nodes corresponds to the number of nodes used for simplification
+  expect_true(sum(ts_data(ts2)$sampled) == 3)
+})
+
+test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
   ts <- ts_load(ts_file)
   expect_warning(compare_ts_phylo(ts, N), "If you want to simplify")
+})
+
+test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
+  N <- 5
+  ts_file <- simulate_msprime_ts(N)
+  ts <- ts_load(ts_file)
+  simplify_to <- ts_data(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  ts2 <- ts_simplify(ts, simplify_to = simplify_to)
+  expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
 })
