@@ -337,14 +337,14 @@ as many other packages for geospatial analyses <em>directly on the
 data</em>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">#&gt; [1] "slendr"        "slendr_tsdata" "sf"            "tbl_df"       </span>
-<span class="co">#&gt; [5] "tbl"           "data.frame"</span></code></pre>
+<pre><code><span class="co">#&gt; [1] "slendr"       "slendr_table" "sf"           "tbl_df"       "tbl"         </span>
+<span class="co">#&gt; [6] "data.frame"</span></code></pre>
 <p>Typing the object into the R console presents a user-friendly summary
 of the spatio-temporal data extracted from the tree sequence:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span></code></pre></div>
-<pre><code><span class="co">#&gt; slendr 'tsdata' object </span>
-<span class="co">#&gt; ---------------------- </span>
+<pre><code><span class="co">#&gt; slendr 'table' object </span>
+<span class="co">#&gt; --------------------- </span>
 <span class="co">#&gt; data was extracted from a SLiM backward time model</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; summary of the table data contents:</span>
@@ -359,13 +359,13 @@ of the spatio-temporal data extracted from the tree sequence:</p>
 <span class="co">#&gt;   - 125 'sampled' individuals</span>
 <span class="co">#&gt;   - 300 'retained' individuals</span>
 <span class="co">#&gt;   - 27 nodes from 'recapitated' individuals</span>
-<span class="co">#&gt; ---------------------- </span>
+<span class="co">#&gt; --------------------- </span>
 <span class="co">#&gt; oldest sampled individual: 40000 time units 'before present' </span>
 <span class="co">#&gt; youngest sampled individual: 0 time units 'before present' </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; oldest node: 2702925 time units 'before present' </span>
 <span class="co">#&gt; youngest node: 0 time units 'before present' </span>
-<span class="co">#&gt; ---------------------- </span>
+<span class="co">#&gt; --------------------- </span>
 <span class="co">#&gt; overview of the underlying sf object:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 577 × 11</span></span>
