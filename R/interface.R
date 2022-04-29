@@ -788,7 +788,7 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
   if ((from == "raster" | to == "raster") & is.null(model))
     stop("Model object needs to be specified for conversion of raster coordinates", call. = FALSE)
 
-  if (add & is.null(coords))
+  if (add && is.null(coords))
     stop("Converted coordinates can only be added to a provided data.frame", call. = FALSE)
 
   inx <- paste0(input_prefix, "x"); iny <- paste0(input_prefix, "y")

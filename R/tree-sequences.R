@@ -84,7 +84,6 @@ ts_load <- function(source = NULL, file = NULL,
   if (is.character(source) && is.null(file)) {
     file <- source
     model <- NULL
-    spatial <- FALSE
   } else if (inherits(source, "slendr_model")) {
     model <- source
 
@@ -2156,16 +2155,20 @@ get_biallelic_indices <- function(ts) {
 # Convert a data frame of information extracted from a tree sequence
 # table to an sf spatial object
 convert_to_sf <- function(df, model) {
-  crs <- sf::st_crs(model$world)
+  crs <- if (is.null(model)) NA else sf::st_crs(model$world)
 
   with_locations <- df[stats::complete.cases(df[, c("raster_x", "raster_y")]), ]
   without_locations <- df[!stats::complete.cases(df[, c("raster_x", "raster_y")]), ]
 
-  # reproject coordinates to the original crs
-  with_locations <- reproject(
-    from = "raster", to = crs, coords = with_locations, model = model,
-    input_prefix = "raster_", output_prefix = "", add = TRUE
-  )
+  if (is.null(model)) {
+    with_locations <- dplyr::rename(with_locations, x = raster_x, y = raster_y)
+  } else {
+    # reproject coordinates to the original crs
+    with_locations <- reproject(
+      from = "raster", to = crs, coords = with_locations, model = model,
+      input_prefix = "raster_", output_prefix = "", add = TRUE
+    )
+  }
 
   result <- sf::st_as_sf(with_locations,
                          coords = c("x", "y"),
