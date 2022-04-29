@@ -4,10 +4,11 @@ set.seed(42)
 
 script_file <- tempfile()
 ts_file <- tempfile()
+loc_file <- tempfile()
 
 writeLines(sprintf('
 initialize() {
-  initializeSLiMOptions(dimensionality="xy");
+  initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
   initializeTreeSeq();
   initializeMutationRate(0);
   initializeMutationType("m1", 0.5, "f", 0.0);
@@ -16,12 +17,11 @@ initialize() {
   initializeRecombinationRate(1e-8);
 }
 1 late() {
-  sim.addSubpop("p1", 500);
+  sim.addSubpop("p1", 100);
   p1.individuals.x = runif(p1.individualCount);
   p1.individuals.y = runif(p1.individualCount);
 }
 modifyChild() {
-  // draw a child position near the first parent, within bounds
   do child.x = parent1.x + rnorm(1, 0, 0.02);
   while ((child.x < 0.0) | (child.x > 1.0));
 
@@ -30,9 +30,31 @@ modifyChild() {
 
   return T;
 }
-2000 late() { sim.treeSeqOutput("%s"); }
-', ts_file), script_file)
+5000 late() {
+  sim.treeSeqOutput("%s");
+  for (ind in sim.subpopulations.individuals) {
+    writeFile("%s", paste(ind.spatialPosition, ind.pedigreeID, sep = "\t"), append = T);
+  }
+}
+', ts_file, loc_file), script_file)
 
 system2("slim", script_file, stdout = FALSE)
 
-ts <- ts_load(ts_file)
+ts <- ts_load(ts_file, simplify = TRUE)
+
+test_that("non-slendr SLiM tree sequence locations are correctly loaded", {
+  data <- ts_data(ts, sf = FALSE) %>%
+    dplyr::arrange(pedigree_id) %>%
+    dplyr::select(x, y, pedigree_id) %>%
+    dplyr::distinct() %>%
+    dplyr::filter(!is.na(pedigree_id)) %>%
+    as.data.frame()
+  locations <- readr::read_tsv(
+    loc_file, col_types = "ddi",
+    col_names = c("x", "y", "pedigree_id")
+  ) %>% dplyr::arrange(pedigree_id)
+
+  expect_true(all.equal(data$x, locations$x, tolerance = 0.000001))
+  expect_true(all.equal(data$y, locations$y, tolerance = 0.000001))
+  expect_true(all(data$pedigree_id == locations$pedigree_id))
+})
