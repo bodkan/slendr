@@ -347,24 +347,23 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 
   if (is.null(simplify_to)) {
     samples <- dplyr::filter(data, sampled)$node_id
-  } else {
-    if (is.character(simplify_to)) {
-      if (!is.null(model))
-        stop("Symbolic character names can only be provided for slendr-generated\n",
-             "tree sequences", call. = FALSE)
-      if (!all(simplify_to %in% data$name))
-        stop("The following individuals are not present in the tree sequence: ",
-            paste0(simplify_to[!simplify_to %in% data$name], collapse = ", "),
-            call. = FALSE)
-      samples <- dplyr::filter(data, name %in% simplify_to)$node_id
-    } else if (is.numeric(simplify_to)) {
-      if (!all(simplify_to %in% data[data$sampled, ]$node_id))
-        stop("The following nodes are not among sampled nodes: ",
-            paste0(simplify_to[!simplify_to %in% data[data$sampled, ]$node_id], collapse = ", "),
-            call. = FALSE)
-      samples <- simplify_to
-    }
-  }
+  } else if (is.character(simplify_to)) {
+    if (is.null(model))
+      stop("Symbolic character names can only be provided for slendr-generated\n",
+           "tree sequences", call. = FALSE)
+    if (!all(simplify_to %in% data$name))
+      stop("The following individuals are not present in the tree sequence: ",
+          paste0(simplify_to[!simplify_to %in% data$name], collapse = ", "),
+          call. = FALSE)
+    samples <- dplyr::filter(data, name %in% simplify_to)$node_id
+  } else if (is.numeric(simplify_to)) {
+    if (!all(simplify_to %in% data[data$sampled, ]$node_id))
+      stop("The following nodes are not among sampled nodes: ",
+          paste0(simplify_to[!simplify_to %in% data[data$sampled, ]$node_id], collapse = ", "),
+          call. = FALSE)
+    samples <- simplify_to
+  } else
+    stop("Unknown type of simplification nodes", call. = FALSE)
 
   ts_new <- ts$simplify(as.integer(samples),
                         filter_populations = FALSE,
