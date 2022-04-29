@@ -338,6 +338,9 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
   model <- attr(ts, "model")
   data <- attr(ts, "data")
 
+  spatial <- spatial && backend == "SLiM" &&
+    (!is.null(model$world) || ts$metadata$SLiM$spatial_dimensionality != "")
+
   if (is.null(simplify_to) && backend == "msprime") {
     warning("If you want to simplify an msprime tree sequence, you must specify\n",
             "the names of individuals to simplify to via the `simplify_to = `\n",
