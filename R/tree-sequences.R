@@ -807,10 +807,10 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   if (source == "SLiM" && !is.null(model$world))
     columns <- c(columns, "location")
   if (source == "SLiM")
-    columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
+    columns <- c(columns, c("remembered", "retained", "alive", "pedigree_id"))
   name_col <- if (is.null(model)) NULL else "name"
   data <- dplyr::select(
-    data, !!name_col, pop, node_id, phylo_id, time, !!columns, ind_id
+    data, !!name_col, pop, node_id, phylo_id, time, sampled, !!columns, ind_id
   )
   # add fake dummy information to the processed tree sequence table so that
   # the user knows what is real and what is not straight from the ts_phylo()
