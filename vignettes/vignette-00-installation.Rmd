@@ -67,11 +67,11 @@ In order to make sure that the R package has the most appropriate version of Pyt
 
 Not only that, after this dedicated Python environment is created, **calling `library(slendr)` at any later point will activate this environment automatically**. Therefore, despite using Python for internal handling of tree-sequence data and coalescent simulation, no interaction with Python is necessary for working with *slendr* in R.
 
+**You only have to call `setup_env()` once!** After that, everything will be taken care of by `library(slendr)` automatically.
+
 #### Information for Python experts
 
-In case you are wondering how does *slendr* accomplish the above: *slendr*'s Python interface is not a hack that would simply call Python from the command-line in the background, but is implemented using the R package [*reticulate*](https://rstudio.github.io/reticulate/)*.* This embeds a Python session within an R session, enabling high-performance interoperability between both languages.
-
-The R package *reticulate* provides [several alternative ways](https://rstudio.github.io/reticulate/reference/use_python.html) to link R to a custom-created standard Python virtual environment or a custom conda environment. However, I strongly recommend using the R-specific isolated environment created by `setup_env()` to avoid any issues with custom venv/virtualenv/pyenv/pyvenv/pipenv/poetry/conda setups that you might normally prefer for your Python work.
+In case you are wondering how does *slendr* accomplish the above: *slendr*'s Python interface is not a hack that would simply call Python from the command-line in the background, but is implemented using the R package [*reticulate*](https://rstudio.github.io/reticulate/)*.* This embeds a Python session within an R session, enabling high-performance interoperability between both languages without any need for user intervention.
 
 ## Docker
 
