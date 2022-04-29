@@ -12,13 +12,13 @@ simulate_slim_ts <- function(N) {
   	initializeMutationRate(0);
   	initializeMutationType("m1", 0.5, "f", 0.0);
   	initializeGenomicElementType("g1", m1, 1.0);
-  	initializeGenomicElement(g1, 0, 1e8-1);
+  	initializeGenomicElement(g1, 0, 1e5);
   	initializeRecombinationRate(1e-8);
   }
   1 {
   	sim.addSubpop("p1", %d);
   }
-  4010 late() {
+  100 late() {
   	sim.treeSeqOutput("%s");
   }
   ', N, ts_file), script_file)
@@ -71,6 +71,8 @@ compare_ts_phylo <- function(ts, N) {
   expect_true(length(tree$tip.label) == nrow(tree_data[tree_data$sampled, ]))
 }
 
+# SLiM --------------------------------------------------------------------
+
 test_that("non-slendr SLiM ts_data corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_slim_ts(N)
@@ -79,11 +81,14 @@ test_that("non-slendr SLiM ts_data corresponds to the expected outcome", {
 })
 
 test_that("non-slendr SLiM simplified ts_data corresponds to the expected outcome", {
-  N <- 5
+  N <- 500
   ts_file <- simulate_slim_ts(N)
   ts <- ts_load(ts_file)
   simplify_to <- ts_data(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
-  ts2 <- ts_simplify(ts, simplify_to = simplify_to)
+  expect_warning(ts2 <- ts_simplify(ts, simplify_to = simplify_to),
+                 "Simplifying a non-recapitated tree sequence")
+  expect_silent(ts2 <- ts_recapitate(ts, Ne = 100, recombination_rate = 1e-8) %>%
+                  ts_simplify(simplify_to = simplify_to))
 
   # make sure that the simplified nodes match the pedigree_id values in the
   # original tree-sequence data
@@ -93,10 +98,17 @@ test_that("non-slendr SLiM simplified ts_data corresponds to the expected outcom
 })
 
 test_that("non-slendr SLiM ts_phylo corresponds to the expected outcome", {
-  N <- 5
+  N <- 500
   ts_file <- simulate_slim_ts(N)
-  ts <- ts_load(ts_file)
+  ts <- ts_load(ts_file, recapitate = TRUE, recombination_rate = 1e-8, Ne = 100)
   compare_ts_phylo(ts, N)
+})
+
+test_that("non-slendr SLiM ts_data can be recapitated", {
+  N <- 10000
+  ts_file <- simulate_slim_ts(N)
+  ts <- ts_load(ts_file) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8)
+  expect_silent(compare_ts_data(ts, N))
 })
 
 # msprime tree sequences --------------------------------------------------
