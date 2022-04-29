@@ -346,30 +346,24 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     return(ts)
   }
 
-  if (is.null(model)) { # non-slendr tree sequence
-    if (is.null(simplify_to))
-      samples <- dplyr::filter(data, sampled)$node_id
-  } else { # slendr model tree sequence
-    if (is.null(simplify_to) && backend == "SLiM")
-      samples <- dplyr::filter(data, sampled)$node_id
-    else if (is.character(simplify_to)) {
+  if (is.null(simplify_to)) {
+    samples <- dplyr::filter(data, sampled)$node_id
+  } else {
+    if (is.character(simplify_to)) {
+      if (!is.null(model))
+        stop("Symbolic character names can only be provided for slendr-generated\n",
+             "tree sequences", call. = FALSE)
       if (!all(simplify_to %in% data$name))
         stop("The following individuals are not present in the tree sequence: ",
             paste0(simplify_to[!simplify_to %in% data$name], collapse = ", "),
             call. = FALSE)
-      else
-        samples <- dplyr::filter(data, name %in% simplify_to)$node_id
+      samples <- dplyr::filter(data, name %in% simplify_to)$node_id
     } else if (is.numeric(simplify_to)) {
-      if (!all(simplify_to %in% data$node_id))
-        stop("The following nodes are not present in the tree sequence: ",
-            paste0(simplify_to[!simplify_to %in% data$node_id], collapse = ", "),
-            call. = FALSE)
-      else if (!all(simplify_to %in% data[data$sampled, ]$node_id))
-        stop("The following nodes are not among the remembered nodes: ",
+      if (!all(simplify_to %in% data[data$sampled, ]$node_id))
+        stop("The following nodes are not among sampled nodes: ",
             paste0(simplify_to[!simplify_to %in% data[data$sampled, ]$node_id], collapse = ", "),
             call. = FALSE)
-      else
-        samples <- simplify_to
+      samples <- simplify_to
     }
   }
 
@@ -432,8 +426,10 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     attr(ts_new, "data") <- data_new[, c(name_col, "pop", "ind_id", "node_id",
                                          "time", location_col, "sampled", "remembered",
                                          "retained", "alive", "pedigree_id")]
-  } else
+  } else {
+    attr(ts_new, "individuals")$sampled <- TRUE
     attr(ts_new, "data") <- get_msprime_table_data(ts_new, model, simplify_to)
+  }
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
