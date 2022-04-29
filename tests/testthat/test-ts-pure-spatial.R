@@ -54,7 +54,7 @@ test_that("non-slendr SLiM tree sequence locations are correctly loaded", {
     col_names = c("x", "y", "pedigree_id")
   ) %>% dplyr::arrange(pedigree_id)
 
-  expect_true(all.equal(data$x, locations$x, tolerance = 0.000001))
-  expect_true(all.equal(data$y, locations$y, tolerance = 0.000001))
+  expect_true(all.equal(data$x, locations$x, tolerance = 0.00001))
+  expect_true(all.equal(data$y, locations$y, tolerance = 0.00001))
   expect_true(all(data$pedigree_id == locations$pedigree_id))
 })
