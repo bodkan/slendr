@@ -894,12 +894,28 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #'   as a spatial object of the class \code{sf}.
 #'
 #' @export
-ts_data <- function(x) {
+ts_data <- function(x, sf = TRUE) {
   if (!inherits(x, "slendr_ts") && !(inherits(x, "slendr_phylo")))
     stop("Annotation data table can be only extracted for a slendr tree sequence\n",
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 
   data <- attr(x, "data")
+
+  if (!sf && inherits(data, "sf")) {
+    # unwrap the geometry column into separate x and y coordinates
+    locations <- unlist(data$location)
+    data$x <- locations[c(TRUE, FALSE)]
+    data$y <- locations[c(FALSE, TRUE)]
+
+    columns <- NULL
+    if (!is.null(attr(x, "model"))) columns <- "name"
+    columns <- c(columns, "pop")
+
+    data <- sf::st_drop_geometry(data) %>% dplyr::select(
+      !!columns, ind_id, node_id, time, x, y,
+      sampled, remembered, retained, alive, pedigree_id
+    )
+  }
 
   attr(data, "model") <- attr(x, "model")
   attr(data, "source") <- attr(x, "source")
