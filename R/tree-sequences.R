@@ -336,8 +336,6 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
             call. = FALSE)
 
   model <- attr(ts, "model")
-  if (is.null(model$world)) spatial <- FALSE
-
   data <- attr(ts, "data")
 
   if (is.null(simplify_to) && backend == "msprime") {
