@@ -21,13 +21,13 @@
 # and msprime Python library), but they should be *nearly* the same.
 
 skip_if(!slendr:::check_env_present())
-setup_env(quiet = TRUE)
 
 seed <- 42
 N <- 1000
 N_factor <- 5
 n_samples <- 50
-seq_len <- 200e6
+# unfortunately had to reduce this significantly because of GitHub Actions crashes
+seq_len <- 50e6
 rec_rate <- 1e-8
 mut_rate <- 1e-8
 
