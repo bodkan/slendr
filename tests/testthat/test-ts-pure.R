@@ -147,3 +147,52 @@ test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
   expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
 })
+
+# SLiM tskit statistics interface -----------------------------------------
+
+test_that("tskit statistics interface works on non-slendr SLiM outputs", {
+  script_file <- tempfile()
+  ts_file <- tempfile()
+
+  writeLines(sprintf('initialize() {
+    setSeed(123);
+  	initializeTreeSeq();
+  	initializeMutationRate(0);
+  	initializeMutationType("m1", 0.5, "f", 0.0);
+  	initializeGenomicElementType("g1", m1, 1.0);
+  	initializeGenomicElement(g1, 0, 1e6);
+  	initializeRecombinationRate(1e-8);
+  }
+  1 {
+  	sim.addSubpop("p1", 10);
+  }
+  1000 {
+  	sim.addSubpopSplit("p2", 500, p1);
+  }
+  3000 {
+  	sim.addSubpopSplit("p3", 2500, p1);
+  }
+  5000 {
+  	sim.addSubpopSplit("p4", 10000, p1);
+  }
+  20000 late() {
+  	sim.treeSeqOutput("%s");
+  }
+  ', ts_file), script_file)
+
+  system2("slim", script_file, stdout = FALSE)
+
+  ts <- ts_load(ts_file, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-7)
+
+  data <- ts_data(ts) %>% dplyr::filter(sampled)
+
+  groups <- split(data$node_id, data$pop)
+
+  # diversity must increase p1 -> p2 -> p3 -> p4
+  diversity <- ts_diversity(ts, sample_sets = groups)
+  expect_true(all(diff(diversity$diversity) > 0))
+
+  # divergence from p1 must decrease p2 -> p3 -> p4
+  divergence <- ts_divergence(ts, sample_sets = groups)
+  expect_true(all((divergence %>% dplyr::filter(x == 1) %>% .$divergence %>% diff) < 0))
+})
