@@ -59,8 +59,7 @@ Suggests:
     magick,
     cowplot,
     forcats,
-    rsvg,
-    methods
+    rsvg
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr
 BugReports: https://github.com/bodkan/slendr/issues
