@@ -16,7 +16,7 @@ simulate_slim_ts <- function(N) {
   	initializeRecombinationRate(1e-8);
   }
   1 {
-  	sim.addSubpop("p1", %d);
+  	sim.addSubpop("p0", %d);
   }
   100 late() {
   	sim.treeSeqOutput("%s");
