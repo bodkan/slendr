@@ -215,6 +215,7 @@ ts_save <- function(ts, file) {
 #' ts_rec <- ts_recapitate(ts, recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 #' }
 #'
+#' @importFrom methods hasArg
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
                           migration_matrix = NULL, random_seed = NULL) {
@@ -888,6 +889,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #'
 #' @param x Tree sequence object of the class \code{slendr_ts} or a \code{phylo}
 #'   object extracted by \code{ts_phylo}
+#' @param sf Should spatial data be returned in an sf format? If \code{FALSE},
+#'   spatial geometries will be returned simply as x and y columns, instead of
+#'   the standard POINT data type.
 #'
 #' @return Data frame with processed information from the tree sequence object.
 #'   If the model which generated this data was spatial, result will be returned
