@@ -170,7 +170,7 @@ print.slendr_table <- function(x, ...) {
 
   cat(sep)
 
-  if (inherits(ts_data(ts), "sf"))
+  if (inherits(x, "sf"))
     cat("overview of the underlying sf object:\n\n")
   else
     cat("overview of the underlying table object:\n\n")

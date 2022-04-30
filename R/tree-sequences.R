@@ -219,7 +219,7 @@ ts_save <- function(ts, file) {
 ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
                           migration_matrix = NULL, random_seed = NULL) {
   check_ts_class(ts)
-  if (!hasArg(recombination_rate) | !hasArg(Ne))
+  if (!methods::hasArg(recombination_rate) | !methods::hasArg(Ne))
     stop("Recombination rate and Ne must be specified", call. = FALSE)
 
   model <- attr(ts, "model")
