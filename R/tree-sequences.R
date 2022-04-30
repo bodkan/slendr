@@ -215,13 +215,10 @@ ts_save <- function(ts, file) {
 #' ts_rec <- ts_recapitate(ts, recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 #' }
 #'
-#' @importFrom methods hasArg
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
                           migration_matrix = NULL, random_seed = NULL) {
   check_ts_class(ts)
-  if (!methods::hasArg(recombination_rate) | !methods::hasArg(Ne))
-    stop("Recombination rate and Ne must be specified", call. = FALSE)
 
   model <- attr(ts, "model")
   backend <- attr(ts, "source")
