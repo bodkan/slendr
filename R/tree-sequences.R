@@ -1809,10 +1809,10 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # get data from the original individual table
   individuals <- attr(ts, "individuals")
 
-  if (!is.null(model))
-    individuals$pop <- model$splits$pop[individuals$pop_id + 1]
-  else
-    individuals$pop <- individuals$pop_id
+  # assing symbolic names to to the population column
+  pop_table <- ts$tables$populations
+  pop_names <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
+  individuals$pop <- pop_names[individuals$pop_id - min(individuals$pop_id) + 1]
 
   individuals <- dplyr::arrange(individuals, -time, pop)
 
@@ -1839,13 +1839,15 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
   nodes <- get_ts_nodes(ts)
+  nodes$pop <- pop_names[nodes$pop_id - min(nodes$pop_id) + 1]
 
   # add numeric node IDs to each individual
   combined <-
     dplyr::bind_rows(sampled, not_sampled) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
     dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x),
-                  sampled = ifelse(is.na(ind_id), FALSE, sampled))
+                  sampled = ifelse(is.na(ind_id), FALSE, sampled)) %>%
+    dplyr::rename(pop = pop.y, pop_id = pop_id.y)
 
   if (spatial) {
     combined <- convert_to_sf(combined, model)
@@ -1861,7 +1863,7 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
 
   combined <- dplyr::select(
     combined, !!slendr_cols, ind_id, node_id, time, !!location_cols,
-    sampled, remembered, retained, alive, pedigree_id
+    sampled, remembered, retained, alive, pedigree_id, pop_id
   )
 
   if (spatial)
@@ -1871,6 +1873,16 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
 }
 
 get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
+  # get data from the original individual table
+  individuals <- attr(ts, "individuals")
+
+  # assing symbolic names to to the population column
+  pop_table <- ts$tables$populations
+  pop_names <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
+  individuals$pop <- pop_names[individuals$pop_id + 1]
+
+  individuals <- dplyr::arrange(individuals, -time, pop)
+
   # load information about samples at times and from populations of remembered
   # individuals
   samples <- attr(ts, "metadata")$sampling
@@ -1878,38 +1890,28 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
     samples <- dplyr::arrange(samples, -time, pop)
-  }
-
-  # get data from the original individual table
-  individuals <- attr(ts, "individuals")
-
-  if (!is.null(model)) {
-    individuals <- individuals %>%
-      dplyr::mutate(pop = model$splits$pop[pop_id + 1]) %>%
-      dplyr::arrange(-time, pop) %>%
-      dplyr::mutate(name = samples$name, sampled = TRUE)
+    individuals <- dplyr::mutate(individuals, name = samples$name, sampled = TRUE)
   }
 
   # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
   nodes <- get_ts_nodes(ts)
+  nodes$pop <- pop_names[nodes$pop_id + 1]
 
   # add numeric node IDs to each individual
   combined <- dplyr::select(individuals, -time, -pop_id) %>%
-    dplyr::right_join(nodes, by = "ind_id")
+    dplyr::right_join(nodes, by = "ind_id") %>%
+    dplyr::mutate(pop = pop.y)
 
-  if (is.null(model)) {
-    combined <- dplyr::rename(combined, pop = pop_id)
+  if (is.null(model))
     name_col <- NULL
-  } else {
-    combined <- combined %>%
-      dplyr::mutate(pop = model$splits$pop[pop_id + 1])
+  else {
     combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
     name_col <- "name"
   }
   combined %>%
-    dplyr::select(!!name_col, pop, ind_id, node_id, time, sampled) %>%
+    dplyr::select(!!name_col, pop, ind_id, node_id, time, sampled, pop_id) %>%
     dplyr::mutate(sampled = !is.na(sampled))
 }
 
