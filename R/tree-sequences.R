@@ -1809,10 +1809,23 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # get data from the original individual table
   individuals <- attr(ts, "individuals")
 
-  # assing symbolic names to to the population column
-  pop_table <- ts$tables$populations
-  pop_names <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
-  individuals$pop <- pop_names[individuals$pop_id - min(individuals$pop_id) + 1]
+  # get data from the original nodes table to get node assignments for each
+  # individual but also nodes which are not associated with any individuals
+  # (i.e. those added through recapitation by msprime)
+  nodes <- get_ts_nodes(ts)
+
+  # assign symbolic names to to the population column
+  if (is.null(model)) {
+    pop_table <- ts$tables$populations
+    pop_present <- unlist(sapply(seq_along(pop_table), function(i) !is.null(pop_table[i - 1]$metadata)))
+    pop_names <- rep("", length(pop_table))
+    pop_names[pop_present] <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
+    individuals$pop <- pop_names[individuals$pop_id + 1]
+    nodes$pop <- pop_names[nodes$pop_id + 1]
+  } else {
+    individuals$pop <- model$splits$pop[individuals$pop_id + 1]
+    nodes$pop <- model$splits$pop[nodes$pop_id + 1]
+  }
 
   individuals <- dplyr::arrange(individuals, -time, pop)
 
@@ -1834,12 +1847,6 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
     dplyr::bind_cols(samples)
 
   not_sampled <- dplyr::filter(individuals, !sampled)
-
-  # get data from the original nodes table to get node assignments for each
-  # individual but also nodes which are not associated with any individuals
-  # (i.e. those added through recapitation by msprime)
-  nodes <- get_ts_nodes(ts)
-  nodes$pop <- pop_names[nodes$pop_id - min(nodes$pop_id) + 1]
 
   # add numeric node IDs to each individual
   combined <-
@@ -1876,10 +1883,21 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
   # get data from the original individual table
   individuals <- attr(ts, "individuals")
 
-  # assing symbolic names to to the population column
-  pop_table <- ts$tables$populations
-  pop_names <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
-  individuals$pop <- pop_names[individuals$pop_id + 1]
+  # get data from the original nodes table to get node assignments for each
+  # individual but also nodes which are not associated with any individuals
+  # (i.e. those added through recapitation by msprime)
+  nodes <- get_ts_nodes(ts)
+
+  # assign symbolic names to to the population column
+  if (is.null(model)) {
+    pop_table <- ts$tables$populations
+    pop_names <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
+    individuals$pop <- pop_names[individuals$pop_id + 1]
+    nodes$pop <- pop_names[nodes$pop_id + 1]
+  } else {
+    individuals$pop <- model$splits$pop[individuals$pop_id + 1]
+    nodes$pop <- model$splits$pop[nodes$pop_id + 1]
+  }
 
   individuals <- dplyr::arrange(individuals, -time, pop)
 
@@ -1892,12 +1910,6 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
     samples <- dplyr::arrange(samples, -time, pop)
     individuals <- dplyr::mutate(individuals, name = samples$name, sampled = TRUE)
   }
-
-  # get data from the original nodes table to get node assignments for each
-  # individual but also nodes which are not associated with any individuals
-  # (i.e. those added through recapitation by msprime)
-  nodes <- get_ts_nodes(ts)
-  nodes$pop <- pop_names[nodes$pop_id + 1]
 
   # add numeric node IDs to each individual
   combined <- dplyr::select(individuals, -time, -pop_id) %>%

@@ -111,6 +111,12 @@ test_that("non-slendr SLiM ts_data can be recapitated", {
   expect_silent(compare_ts_data(ts, N))
 })
 
+test_that("non-slendr SLiM ts_data carries correct population names", {
+  ts_file <- simulate_slim_ts(50)
+  ts <- ts_load(ts_file)
+  expect_true(unique(ts_data(ts)$pop) == "p0")
+})
+
 # msprime tree sequences --------------------------------------------------
 
 test_that("non-slendr msprime ts_data corresponds to the expected outcome", {
@@ -146,6 +152,12 @@ test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
   simplify_to <- ts_data(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
   expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
+})
+
+test_that("non-slendr msprime ts_data carries correct population names", {
+  ts_file <- simulate_msprime_ts(50)
+  ts <- ts_load(ts_file)
+  expect_true(unique(ts_data(ts)$pop) == "pop_0")
 })
 
 # SLiM tskit statistics interface -----------------------------------------
@@ -195,4 +207,6 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
   # divergence from p1 must decrease p2 -> p3 -> p4
   divergence <- ts_divergence(ts, sample_sets = groups)
   expect_true(all((divergence %>% dplyr::filter(x == 1) %>% .$divergence %>% diff) < 0))
+
+  expect_true(all(sort(unique(ts_data(ts)$pop) == c("p1", "p2", "p3", "p4"))))
 })
