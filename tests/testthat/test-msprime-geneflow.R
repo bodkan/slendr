@@ -1,4 +1,5 @@
 skip_if(!slendr:::check_env_present())
+setup_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
@@ -140,7 +141,7 @@ orig_df_f4 <- readr::read_tsv(original_f4_tsv, show_col_types = FALSE, progress 
 # ggsave("f4.png", p_f4, width = 8, height = 5)
 
 test_that("f4 distributions from SLiM and msprime simulations match", {
-  expect_equal(df_f4, orig_df_f4, tolerance = 1e-15)
+  expect_equal(df_f4, orig_df_f4, tolerance = 1e-8)
 })
 
 df_f4ratio <- rbind(df_slim_f4ratio, df_msprime_f4ratio) %>%
@@ -168,7 +169,7 @@ orig_df_f4ratio <- readr::read_tsv(original_f4r_tsv, show_col_types = FALSE, pro
 # ggsave("f4ratio.png", p_f4ratio, width = 8, height = 5)
 
 test_that("f4-ratio distributions from SLiM and msprime simulations match", {
-  expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-15)
+  expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-8)
 })
 
 # Great! We got almost the same results, as expected! We can also inspect the
