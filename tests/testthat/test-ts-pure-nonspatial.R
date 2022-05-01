@@ -119,7 +119,7 @@ test_that("non-slendr SLiM ts_data carries correct population names", {
 
 # msprime tree sequences --------------------------------------------------
 
-test_that("non-slendr msprime ts_data corresponds to the expected outcome", {
+test_that("non-slendr msprime simplification on its own gives warning", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
   ts <- ts_load(ts_file)
@@ -145,7 +145,7 @@ test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
   expect_warning(compare_ts_phylo(ts, N), "If you want to simplify")
 })
 
-test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
+test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
   ts <- ts_load(ts_file)
