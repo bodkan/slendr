@@ -138,7 +138,7 @@ ts_load <- function(source = NULL, file = NULL,
   reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
   attr(ts, "source") <- backend
-  attr(ts, "spatial") <- !is.null(ts$metadata$SLiM$spatial_dimensionality)
+  attr(ts, "spatial") <- backend == "SLiM" && !is.null(ts$metadata$SLiM$spatial_dimensionality)
 
   attr(ts, "model") <- model
   if (!is.null(model))
