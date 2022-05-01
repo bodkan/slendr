@@ -1007,7 +1007,7 @@ ts_samples <- function(ts) {
     dplyr::filter(name %in% data$name)
 }
 
-#' Extract spatio-temporal ancestral history for given nodes/individuals
+#' Extract (spatio-)temporal ancestral history for given nodes/individuals
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param x Either a character vector with individual names, or an integer
@@ -1026,7 +1026,7 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 
   edges <- ts_edges(ts)
 
-  data <- ts_data(ts) %>% dplyr::filter(!is.na(ind_id))
+  data <- ts_data(ts)# %>% dplyr::filter(!is.na(ind_id))
 
   if (is.null(x))
     x <- unique(ts_data(ts)$name)
@@ -1065,35 +1065,35 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 
   if (verbose) message("\nGenerating data about spatial relationships of nodes...")
 
-  connections <- purrr::map2(
-    combined$child_location, combined$parent_location, ~
-      sf::st_union(.x, .y) %>%
-      sf::st_cast("LINESTRING") %>%
-      sf::st_sfc() %>%
-      sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
-    dplyr::bind_rows()
-
-  # order population names by their split time
+  # perform further data processing (adding names of individuals, processing sf
+  # spatial columns) if the model in question is spatial
   if (!is.null(model)) {
     name_col <- "name"
+    location_col <- c("child_location", "parent_location", "connection")
+
     pop_names <- order_pops(model$populations, model$direction)
+
+    connections <- purrr::map2(
+      combined$child_location, combined$parent_location, ~
+        sf::st_union(.x, .y) %>%
+        sf::st_cast("LINESTRING") %>%
+        sf::st_sfc() %>%
+        sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
+      dplyr::bind_rows() %>%
+      dplyr::bind_cols(connections) %>%
+      dplyr::mutate(pop = factor(pop, levels = pop_names),
+                    child_pop = factor(child_pop, levels = pop_names),
+                    parent_pop = factor(parent_pop, levels = pop_names)) %>%
+        sf::st_set_geometry("connection")
   } else
-    name_col <- NULL
+    name_col <- location_col <- NULL
 
-  final <- dplyr::bind_cols(combined, connections) %>%
-    sf::st_set_geometry("connection") %>%
-    dplyr::select(!!name_col, pop, node_id, level,
-                  child_id, child_time, parent_id, parent_time,
-                  child_pop, parent_pop,
-                  child_location, parent_location, connection,
-                  left_pos = left, right_pos = right) %>%
+  final <- dplyr::select(combined,
+                         !!name_col, pop, node_id, level,
+                         child_id, parent_id, child_time, parent_time,
+                         child_pop, parent_pop, !!location_col,
+                         left_pos = left, right_pos = right) %>%
     dplyr::mutate(level = as.factor(level))
-
-  if (!is.null(model))
-    final <- dplyr::mutate(final,
-                           pop = factor(pop, levels = pop_names),
-                           child_pop = factor(child_pop, levels = pop_names),
-                           parent_pop = factor(parent_pop, levels = pop_names))
 
   attr(final, "model") <- model
 
