@@ -98,7 +98,12 @@ print.slendr_table <- function(x, ...) {
 
   sep <- print_header_info(x)
 
-  cat("data was extracted from a", backend, model$direction, "time model\n\n")
+  if (is.null(model)) {
+    direction <- if (backend == "msprime") "backward" else "forward"
+  } else
+    direction <- model$direction
+
+  cat("data was extracted from a", backend, direction, "time model\n\n")
 
   cat("summary of the table data contents:\n")
 
