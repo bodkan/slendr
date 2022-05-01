@@ -21,6 +21,7 @@
 # and msprime Python library), but they should be *nearly* the same.
 
 skip_if(!slendr:::check_env_present())
+setup_env(quiet = TRUE)
 
 seed <- 42
 N <- 1000
@@ -320,5 +321,5 @@ test_that("AFS distributions from SLiM and msprime simulations match", {
   # readr::write_tsv(afs, original_tsv, progress = FALSE)
   orig_afs <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
 
-  expect_equal(afs, orig_afs, tolerance = 1e-15)
+  expect_equal(afs, orig_afs, tolerance = 1e-8)
 })
