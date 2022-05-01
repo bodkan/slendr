@@ -1026,7 +1026,7 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 
   edges <- ts_edges(ts)
 
-  data <- ts_data(ts)# %>% dplyr::filter(!is.na(ind_id))
+  data <- ts_data(ts) %>% dplyr::filter(!is.na(ind_id))
 
   if (is.null(x))
     x <- unique(ts_data(ts)$name)
