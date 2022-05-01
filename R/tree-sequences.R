@@ -138,6 +138,7 @@ ts_load <- function(source = NULL, file = NULL,
   reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
   attr(ts, "source") <- backend
+  attr(ts, "spatial") <- !is.null(ts$metadata$SLiM$spatial_dimensionality)
 
   attr(ts, "model") <- model
   if (!is.null(model))
@@ -241,6 +242,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")
   attr(ts_new, "source") <- backend
+  attr(ts_new, "spatial") <- attr(ts, "spatial")
 
   attr(ts_new, "recapitated") <- TRUE
   attr(ts_new, "simplified") <- attr(ts, "simplified")
@@ -373,6 +375,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
   attr(ts_new, "model") <- model
   attr(ts_new, "metadata") <- attr(ts, "metadata")
   attr(ts_new, "source") <- attr(ts, "source")
+  attr(ts_new, "spatial") <- attr(ts, "spatial")
 
   attr(ts_new, "recapitated") <- attr(ts, "recapitated")
   attr(ts_new, "simplified") <- TRUE
@@ -480,6 +483,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   attr(ts_new, "model") <- attr(ts, "model")
   attr(ts_new, "metadata") <- attr(ts, "metadata")
   attr(ts_new, "source") <- attr(ts, "source")
+  attr(ts_new, "spatial") <- attr(ts, "spatial")
 
   attr(ts_new, "recapitated") <- attr(ts, "recapitated")
   attr(ts_new, "simplified") <- attr(ts, "simplified")
@@ -1016,7 +1020,7 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 
   model <- attr(ts, "model")
 
-  if (is.null(model$world))
+  if (!attr(ts, "spatial"))
     stop("Cannot process locations of ancestral nodes for non-spatial tree sequence data",
          call. = FALSE)
 
@@ -1041,15 +1045,16 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
       if (!nrow(edges[edges$child == .y, ]))
         stop("The node specified does not have any ancestors of its own", call. = FALSE)
 
-      collect_ancestors(.y, edges) %>%
-      dplyr::mutate(name = ifelse(is.character(.x), .x, NA),
-                    pop = dplyr::filter(data, node_id == .y)$pop[1],
-                    node_id = .y)
+      result <- collect_ancestors(.y, edges) %>%
+        dplyr::mutate(pop = dplyr::filter(data, node_id == .y)$pop[1],
+                                          node_id = .y)
+      if (!is.null(model)) result$name <- ifelse(is.character(.x), .x, NA)
+      result
     })
   })
 
-  child_data  <- dplyr::select(data, child_pop  = pop, child_id  = node_id, child_time  = time, child_location = location)
-  parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location)
+  child_data  <- dplyr::select(data, child_pop  = pop, child_id  = node_id, child_time  = time, child_location = location) %>% as.data.frame()
+  parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location) %>% as.data.frame()
 #  ind_data <- dplyr::as_tibble(data) %>% dplyr::select(focal_name = name, focal_pop = pop, focal_ind_id = ind_id)%>% dplyr::distinct()
 
   combined <- branches %>%
@@ -1069,19 +1074,26 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
     dplyr::bind_rows()
 
   # order population names by their split time
-  pop_names <- order_pops(model$populations, model$direction)
+  if (!is.null(model)) {
+    name_col <- "name"
+    pop_names <- order_pops(model$populations, model$direction)
+  } else
+    name_col <- NULL
 
   final <- dplyr::bind_cols(combined, connections) %>%
     sf::st_set_geometry("connection") %>%
-    dplyr::select(name, pop, node_id, level,
+    dplyr::select(!!name_col, pop, node_id, level,
                   child_id, child_time, parent_id, parent_time,
                   child_pop, parent_pop,
                   child_location, parent_location, connection,
                   left_pos = left, right_pos = right) %>%
-    dplyr::mutate(level = as.factor(level),
-                  pop = factor(pop, levels = pop_names),
-                  child_pop = factor(child_pop, levels = pop_names),
-                  parent_pop = factor(parent_pop, levels = pop_names))
+    dplyr::mutate(level = as.factor(level))
+
+  if (!is.null(model))
+    final <- dplyr::mutate(final,
+                           pop = factor(pop, levels = pop_names),
+                           child_pop = factor(child_pop, levels = pop_names),
+                           parent_pop = factor(parent_pop, levels = pop_names))
 
   attr(final, "model") <- model
 
