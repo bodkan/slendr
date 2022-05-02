@@ -231,4 +231,3 @@ test_that("ts_nodes and ts_edges give the same result in single-tree tree sequen
 
   expect_true(all(nodes_ts == nodes_tree, na.rm = TRUE))
 })
-
