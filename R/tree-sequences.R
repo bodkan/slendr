@@ -1005,16 +1005,23 @@ ts_samples <- function(ts) {
 #' @param x Either a character vector with individual names, or an integer
 #'   vector of node IDs
 #' @param verbose Report on the progress of ancestry path generation?
+#' @param full_spatial Does every individual in the tree sequence need to have
+#'   spatial annotation? If \code{FALSE}, only individuals/nodes with spatial
+#'   information will be included in the analysis. For instance, nodes added
+#'   during the coalescent recapitation phase will not be included because they
+#'   don't have spatial information associated with them.
 #'
 #' @export
-ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
+ts_ancestors <- function(ts, x = NULL, verbose = FALSE, full_spatial = FALSE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
 
   edges <- ts_table(ts, "edges")
-  data <- ts_nodes(ts) #%>% dplyr::filter(!is.na(ind_id))
+  data <- ts_nodes(ts)
+
+  if (!full_spatial) data <- dplyr::filter(data, !is.na(ind_id))
 
   if (spatial && any(sf::st_is_empty(data$location))) {
     warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
@@ -2063,8 +2070,9 @@ get_annotated_edges <- function(x) {
                   child_location, parent_location)
 
   if (spatial) {
+    crs <- if (is.null(model)) NA else sf::st_crs(model$world)
     edges <- sf::st_set_geometry(edges, "connection") %>%
-      sf::st_set_crs(sf::st_crs(data))
+      sf::st_set_crs(crs)
   } else
     edges[, c("connection", "parent_location", "child_location")] <- NULL
 
