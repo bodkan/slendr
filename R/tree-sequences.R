@@ -858,6 +858,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   # subset ts_nodes result to only those nodes that are present in the phylo
   # object, adding another column with the rearranged node IDs
   attr(tree, "model") <- attr(ts, "model")
+  attr(tree, "ts") <- ts
   attr(tree, "spatial") <- attr(ts, "spatial")
   attr(tree, "nodes") <- data
   attr(tree, "edges") <- get_annotated_edges(tree)
@@ -1933,9 +1934,12 @@ get_annotated_edges <- function(x) {
   source <- if (inherits(x, "slendr_phylo")) "tree" else "tskit"
   spatial <- attr(x, "spatial")
 
-  if (spatial && any(sf::st_is_empty(data$location)))
+  if (spatial && any(sf::st_is_empty(data$location))) {
     warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
-            "non-spatial coalescent recapitation after a spatial SLiM simulation?", call. = FALSE)
+            "non-spatial coalescent recapitation after a spatial SLiM simulation?\n",
+            "The returned edge table will not contain spatial information.", call. = FALSE)
+    spatial <- FALSE
+  }
 
   # get the table of edges to be used as a scaffold for the full annotation table
   # (these can be either just edges of the tree phylo object, or the full tree sequence)
@@ -2028,7 +2032,8 @@ get_annotated_edges <- function(x) {
   } else
     edges[, c("connection", "parent_location", "child_location")] <- NULL
 
-  if (!is.null(attr(x, "model"))) {
+  model <- attr(x, "model")
+  if (!is.null(model)) {
     pop_names <- order_pops(model$populations, model$direction)
     edges$child_pop <- factor(edges$child_pop, levels = pop_names)
     edges$parent_pop <- factor(edges$parent_pop, levels = pop_names)
