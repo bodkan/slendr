@@ -10,11 +10,11 @@ ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
               Ne = 100, recombination_rate = 0,
               simplify_to = paste0("POP_", seq(1, 10)))
 
-library(ggtree)
-tree <- ts_phylo(ts, 1)
-labels <- ts_nodes(tree) %>% dplyr::select(node = phylo_id, tskit_id = node_id)
-ggtree(tree, branch.length="none") %<+% labels +
-  geom_label(aes(label = tskit_id))
+# library(ggtree)
+# tree <- ts_phylo(ts, 1)
+# labels <- ts_nodes(tree) %>% dplyr::select(node = phylo_id, tskit_id = node_id)
+# ggtree(tree, branch.length="none") %<+% labels +
+#   geom_label(aes(label = tskit_id))
 
 test_that("any node ID or individual given to ts_ancestors must be present", {
   expect_error(ts_ancestors(ts, "qweasdzxc"), "The given individual")
