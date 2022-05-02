@@ -148,13 +148,7 @@
     <loc>https://www.slendr.net/reference/ts_ancestors.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/ts_branches.html</loc>
-  </url>
-  <url>
     <loc>https://www.slendr.net/reference/ts_coalesced.html</loc>
-  </url>
-  <url>
-    <loc>https://www.slendr.net/reference/ts_data.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_descendants.html</loc>
@@ -164,6 +158,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_draw.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/ts_edges.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_eigenstrat.html</loc>
@@ -178,9 +175,6 @@
     <loc>https://www.slendr.net/reference/ts_genotypes.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/ts_individuals.html</loc>
-  </url>
-  <url>
     <loc>https://www.slendr.net/reference/ts_load.html</loc>
   </url>
   <url>
@@ -188,6 +182,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_mutate.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/ts_nodes.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_phylo.html</loc>
@@ -206,6 +203,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_simplify.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/ts_table.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_tajima.html</loc>

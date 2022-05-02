@@ -4,7 +4,7 @@
 \alias{ts_ancestors}
 \title{Extract (spatio-)temporal ancestral history for given nodes/individuals}
 \usage{
-ts_ancestors(ts, x = NULL, verbose = FALSE)
+ts_ancestors(ts, x = NULL, verbose = FALSE, full_spatial = FALSE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -13,6 +13,12 @@ ts_ancestors(ts, x = NULL, verbose = FALSE)
 vector of node IDs}
 
 \item{verbose}{Report on the progress of ancestry path generation?}
+
+\item{full_spatial}{Does every individual in the tree sequence need to have
+spatial annotation? If \code{FALSE}, only individuals/nodes with spatial
+information will be included in the analysis. For instance, nodes added
+during the coalescent recapitation phase will not be included because they
+don't have spatial information associated with them.}
 }
 \description{
 Extract (spatio-)temporal ancestral history for given nodes/individuals
