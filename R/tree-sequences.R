@@ -425,9 +425,9 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
       data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
 
     name_col <- if (is.null(model)) NULL else "name"
-    attr(ts_new, "nodes") <- data_new[, c(name_col, "pop", "ind_id", "node_id",
+    attr(ts_new, "nodes") <- data_new[, c(name_col, "pop", "node_id",
                                          "time", location_col, "sampled", "remembered",
-                                         "retained", "alive", "pedigree_id")]
+                                         "retained", "alive", "pedigree_id", "ind_id")]
   } else {
     attr(ts_new, "raw_individuals")$sampled <- TRUE
     attr(ts_new, "nodes") <- get_msprime_table_data(ts_new, model, simplify_to)
@@ -804,13 +804,14 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   data$phylo_id <- sapply(data$node_id, function(n) lookup_ids[present_ids == n])
   columns <- c()
-  if (source == "SLiM" && spatial)
-    columns <- c(columns, "location")
-  if (source == "SLiM")
-    columns <- c(columns, c("remembered", "retained", "alive", "pedigree_id"))
+  if (source == "SLiM") {
+    if (spatial) columns <- c(columns, "location")
+    columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
+  } else
+    columns <- "sampled"
   name_col <- if (is.null(model)) NULL else "name"
   data <- dplyr::select(
-    data, !!name_col, pop, node_id, phylo_id, time, sampled, !!columns, ind_id
+    data, !!name_col, pop, node_id, phylo_id, time, !!columns, ind_id
   )
   # add fake dummy information to the processed tree sequence table so that
   # the user knows what is real and what is not straight from the ts_phylo()
@@ -920,8 +921,8 @@ ts_nodes <- function(x, sf = TRUE) {
     columns <- c(columns, "pop")
 
     data <- sf::st_drop_geometry(data) %>% dplyr::select(
-      !!columns, ind_id, node_id, time, x, y,
-      sampled, remembered, retained, alive, pedigree_id
+      !!columns, node_id, time, x, y,
+      sampled, remembered, retained, alive, pedigree_id, ind_id
     )
   }
 
@@ -1871,8 +1872,8 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
     slendr_cols <- "pop"
 
   combined <- dplyr::select(
-    combined, !!slendr_cols, ind_id, node_id, time, !!location_cols,
-    sampled, remembered, retained, alive, pedigree_id, pop_id
+    combined, !!slendr_cols, node_id, time, !!location_cols,
+    sampled, remembered, retained, alive, pedigree_id, pop_id, ind_id
   )
 
   if (spatial)
@@ -1937,7 +1938,8 @@ get_annotated_edges <- function(x) {
   if (spatial && any(sf::st_is_empty(data$location))) {
     warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
             "non-spatial coalescent recapitation after a spatial SLiM simulation?\n",
-            "The returned edge table will not contain spatial information.", call. = FALSE)
+            "This is not a problem, but please note that the edge table encoded\n",
+            "by this tree will not contain spatial information.", call. = FALSE)
     spatial <- FALSE
   }
 
