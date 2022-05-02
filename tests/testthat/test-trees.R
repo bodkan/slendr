@@ -213,3 +213,21 @@ test_that("ts_phylo gives a warning when a tree sequence is not fully spatial", 
   expect_s3_class(ts_nodes(ts_phylo(ts, 1, quiet = TRUE)), "sf")
   expect_s3_class(attr(ts_phylo(ts, 1, quiet = TRUE), "edges"), "sf")
 })
+
+test_that("ts_nodes and ts_edges give the same result in single-tree tree sequences", {
+  slim(
+    model, sampling = samples,
+    sequence_length = 100000, recombination_rate = 0,
+    method = "batch",
+    random_seed = 42
+  )
+  ts <- ts_load(model, file = file.path(model$path, "output_slim.trees"),
+                recapitate = TRUE, simplify = TRUE,
+                Ne = 100, recombination_rate = 0)
+  tree <- ts_phylo(ts, 1)
+
+  nodes_tree <- ts_nodes(tree) %>% dplyr::arrange(time) %>% dplyr::select(-phylo_id)
+  nodes_ts <- ts_nodes(ts) %>% dplyr::arrange(time)
+
+  expect_true(all(nodes_ts == nodes_tree, na.rm = TRUE))
+})
