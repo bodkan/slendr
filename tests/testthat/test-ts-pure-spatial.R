@@ -43,7 +43,7 @@ system2("slim", script_file, stdout = FALSE)
 ts <- ts_load(ts_file, simplify = TRUE)
 
 test_that("non-slendr SLiM tree sequence locations are correctly loaded", {
-  data <- ts_data(ts, sf = FALSE) %>%
+  data <- ts_nodes(ts, sf = FALSE) %>%
     dplyr::arrange(pedigree_id) %>%
     dplyr::select(x, y, pedigree_id) %>%
     dplyr::distinct() %>%
@@ -58,3 +58,4 @@ test_that("non-slendr SLiM tree sequence locations are correctly loaded", {
   expect_true(all.equal(data$y, locations$y, tolerance = 0.00001))
   expect_true(all(data$pedigree_id == locations$pedigree_id))
 })
+

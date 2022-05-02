@@ -45,7 +45,7 @@
 #'
 #' @return Tree sequence object of the class \code{slendr_ts}
 #'
-#' @seealso \code{\link{ts_data}} for extracting useful information about
+#' @seealso \code{\link{ts_nodes}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
@@ -138,7 +138,7 @@ ts_load <- function(source = NULL, file = NULL,
   reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
   attr(ts, "source") <- backend
-  attr(ts, "spatial") <- backend == "SLiM" && !is.null(ts$metadata$SLiM$spatial_dimensionality)
+  attr(ts, "spatial") <- backend == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != ""
 
   attr(ts, "model") <- model
   if (!is.null(model))
@@ -150,18 +150,18 @@ ts_load <- function(source = NULL, file = NULL,
 
   class(ts) <- c("slendr_ts", class(ts))
 
-  attr(ts, "nodes") <- get_ts_nodes(ts)
-  attr(ts, "edges") <- get_ts_edges(ts)
-  attr(ts, "individuals") <- get_ts_individuals(ts)
+  attr(ts, "raw_nodes") <- get_ts_raw_nodes(ts)
+  attr(ts, "raw_edges") <- get_ts_raw_edges(ts)
+  attr(ts, "raw_individuals") <- get_ts_raw_individuals(ts)
 
   if (backend == "SLiM") {
-    remembered <- attr(ts, "individuals")$remembered
-    if (!any(remembered)) remembered <- attr(ts, "individuals")$alive
-    attr(ts, "individuals")$sampled <- remembered
-    attr(ts, "data") <- get_slim_table_data(ts, model, spatial)
+    remembered <- attr(ts, "raw_individuals")$remembered
+    if (!any(remembered)) remembered <- attr(ts, "raw_individuals")$alive
+    attr(ts, "raw_individuals")$sampled <- remembered
+    attr(ts, "nodes") <- get_slim_table_data(ts, model, spatial)
   } else {
-    attr(ts, "individuals")$sampled <- TRUE
-    attr(ts, "data") <- get_msprime_table_data(ts, model)
+    attr(ts, "raw_individuals")$sampled <- TRUE
+    attr(ts, "nodes") <- get_msprime_table_data(ts, model)
   }
 
   if (recapitate)
@@ -207,7 +207,7 @@ ts_save <- function(ts, file) {
 #'
 #' @return Tree sequence object of the class \code{slendr_ts}
 #'
-#' @seealso \code{\link{ts_data}} for extracting useful information about
+#' @seealso \code{\link{ts_nodes}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
@@ -248,26 +248,26 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
   attr(ts_new, "simplified") <- attr(ts, "simplified")
   attr(ts_new, "mutated") <- attr(ts, "mutated")
 
-  attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
-  attr(ts_new, "edges") <- get_ts_edges(ts_new)
+  attr(ts_new, "raw_nodes") <- get_ts_raw_nodes(ts_new)
+  attr(ts_new, "raw_edges") <- get_ts_raw_edges(ts_new)
 
-  attr(ts_new, "individuals") <- get_ts_individuals(ts_new)
+  attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
   if (backend == "SLiM") {
     # inherit the information about which individuals should be marked as
     # explicitly "sampled" from the previous tree sequence object (if that
     # was specified) -- this is only necessary for a SLiM sequence
-    old_individuals <- attr(ts, "individuals")
+    old_individuals <- attr(ts, "raw_individuals")
     sampled_ids <- old_individuals[old_individuals$sampled, ]$pedigree_id
-    attr(ts_new, "individuals") <- attr(ts_new, "individuals") %>%
+    attr(ts_new, "raw_individuals") <- attr(ts_new, "raw_individuals") %>%
       dplyr::mutate(sampled = pedigree_id %in% sampled_ids)
   }
 
-  attr(ts_new, "mutations") <- get_ts_mutations(ts_new)
+  attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
 
   if (attr(ts_new, "source") == "SLiM")
-    attr(ts_new, "data") <- get_slim_table_data(ts_new, model, spatial)
+    attr(ts_new, "nodes") <- get_slim_table_data(ts_new, model, spatial)
   else
-    attr(ts_new, "data") <- get_msprime_table_data(ts_new, model)
+    attr(ts_new, "nodes") <- get_msprime_table_data(ts_new, model)
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -310,7 +310,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #'
 #' @return Tree sequence object of the class \code{slendr_ts}
 #'
-#' @seealso \code{\link{ts_data}} for extracting useful information about
+#' @seealso \code{\link{ts_nodes}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
@@ -336,7 +336,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
             call. = FALSE)
 
   model <- attr(ts, "model")
-  data <- attr(ts, "data")
+  data <- attr(ts, "nodes")
 
   spatial <- spatial && backend == "SLiM" &&
     (!is.null(model$world) || ts$metadata$SLiM$spatial_dimensionality != "")
@@ -381,16 +381,16 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
   attr(ts_new, "simplified") <- TRUE
   attr(ts_new, "mutated") <- attr(ts, "mutated")
 
-  attr(ts_new, "nodes") <- get_ts_nodes(ts_new)
-  attr(ts_new, "edges") <- get_ts_edges(ts_new)
-  attr(ts_new, "individuals") <- get_ts_individuals(ts_new)
-  attr(ts_new, "mutations") <- get_ts_mutations(ts_new)
+  attr(ts_new, "raw_nodes") <- get_ts_raw_nodes(ts_new)
+  attr(ts_new, "raw_edges") <- get_ts_raw_edges(ts_new)
+  attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
+  attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
 
   # use pedigree IDs to cross-check the original data with simplified table
   if (backend == "SLiM") {
     # mark only explicitly simplified individuals as "sampled"
     sampled_ids <- data[data$node_id %in% samples, ]$pedigree_id
-    attr(ts_new, "individuals")$sampled <- attr(ts_new, "individuals")$pedigree_id %in% sampled_ids
+    attr(ts_new, "raw_individuals")$sampled <- attr(ts_new, "raw_individuals")$pedigree_id %in% sampled_ids
 
     # get the name and location from the original table with the pedigree_id key
     cols <- c("pedigree_id", "pop")
@@ -403,7 +403,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 
     # get node IDs of individuals present in the simplified tree sequence
     # (sort by individual ID and time)
-    nodes_new <- get_ts_nodes(ts_new) %>%
+    nodes_new <- get_ts_raw_nodes(ts_new) %>%
       dplyr::arrange(ind_id, time) %>%
       dplyr::select(node_id, ind_id) %>%
       .$node_id
@@ -425,12 +425,12 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
       data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
 
     name_col <- if (is.null(model)) NULL else "name"
-    attr(ts_new, "data") <- data_new[, c(name_col, "pop", "ind_id", "node_id",
+    attr(ts_new, "nodes") <- data_new[, c(name_col, "pop", "ind_id", "node_id",
                                          "time", location_col, "sampled", "remembered",
                                          "retained", "alive", "pedigree_id")]
   } else {
-    attr(ts_new, "individuals")$sampled <- TRUE
-    attr(ts_new, "data") <- get_msprime_table_data(ts_new, model, simplify_to)
+    attr(ts_new, "raw_individuals")$sampled <- TRUE
+    attr(ts_new, "nodes") <- get_msprime_table_data(ts_new, model, simplify_to)
   }
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
@@ -451,7 +451,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 #'
 #' @return Tree sequence object of the class \code{slendr_ts}
 #'
-#' @seealso \code{\link{ts_data}} for extracting useful information about
+#' @seealso \code{\link{ts_nodes}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
 #'   map
 #'
@@ -489,12 +489,12 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   attr(ts_new, "simplified") <- attr(ts, "simplified")
   attr(ts_new, "mutated") <- TRUE
 
-  attr(ts_new, "nodes") <- attr(ts, "nodes")
-  attr(ts_new, "edges") <- attr(ts, "edges")
-  attr(ts_new, "individuals") <- attr(ts, "individuals")
-  attr(ts_new, "mutations") <- get_ts_mutations(ts_new)
+  attr(ts_new, "raw_nodes") <- attr(ts, "raw_nodes")
+  attr(ts_new, "raw_edges") <- attr(ts, "raw_edges")
+  attr(ts_new, "raw_individuals") <- attr(ts, "raw_individuals")
+  attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
 
-  attr(ts_new, "data") <- attr(ts, "data")
+  attr(ts_new, "nodes") <- attr(ts, "nodes")
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -529,7 +529,7 @@ ts_genotypes <- function(ts) {
 
   backend <- attr(ts, "source")
 
-  data <- ts_data(ts)
+  data <- ts_nodes(ts)
 
   gts <- ts$genotype_matrix()
   positions <- ts$tables$sites$position
@@ -545,7 +545,7 @@ ts_genotypes <- function(ts) {
     positions <- positions[biallelic_pos]
   }
 
-  chromosomes <- ts_data(ts) %>%
+  chromosomes <- ts_nodes(ts) %>%
     dplyr::filter(!is.na(name)) %>%
     dplyr::as_tibble() %>%
     dplyr::mutate(chr_name = sprintf("%s_chr%i", name, 1:2)) %>%
@@ -672,7 +672,7 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
     stop("Attempting to extract genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
 
-  data <- ts_data(ts) %>%
+  data <- ts_nodes(ts) %>%
     dplyr::filter(!is.na(name)) %>%
     dplyr::as_tibble() %>%
     dplyr::distinct(name, ind_id)
@@ -720,12 +720,13 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   # get tree sequence nodes which are present in the tskit tree object
   # (tree$preorder() just get the numerical node IDs, nothing else)
-  data <- ts_data(ts) %>%
+  data <- ts_nodes(ts) %>%
     dplyr::as_tibble() %>%
     dplyr::filter(node_id %in% tree$preorder())
 
   model <- attr(ts, "model")
   source <- attr(ts, "source")
+  spatial <- attr(ts, "spatial")
 
   if (!is.null(model))
     direction <- model$direction
@@ -803,7 +804,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   data$phylo_id <- sapply(data$node_id, function(n) lookup_ids[present_ids == n])
   columns <- c()
-  if (source == "SLiM" && !is.null(model$world))
+  if (source == "SLiM" && spatial)
     columns <- c(columns, "location")
   if (source == "SLiM")
     columns <- c(columns, c("remembered", "retained", "alive", "pedigree_id"))
@@ -827,10 +828,10 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       )
     )
   }
-  if (source == "SLiM" && !is.null(model$world))
+  if (source == "SLiM" && spatial)
     data <- sf::st_as_sf(data)
 
-  class(data) <- set_class(data, "table")
+  class(data) <- set_class(data, "nodes")
 
   # generate appropriate internal node labels based on the user's choice
   elem <- if (labels == "pop") "pop" else "node_id"
@@ -854,11 +855,12 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   if (!quiet) cat(check_log, sep = "\n")
 
-  # subset ts_data result to only those nodes that are present in the phylo
+  # subset ts_nodes result to only those nodes that are present in the phylo
   # object, adding another column with the rearranged node IDs
   attr(tree, "model") <- attr(ts, "model")
-  attr(tree, "data") <- data
-  attr(tree, "branches") <- get_sf_branches(tree)
+  attr(tree, "spatial") <- attr(ts, "spatial")
+  attr(tree, "nodes") <- data
+  attr(tree, "edges") <- get_annotated_edges(tree)
   attr(tree, "source") <- attr(ts, "source")
 
   tree
@@ -899,12 +901,12 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #'   as a spatial object of the class \code{sf}.
 #'
 #' @export
-ts_data <- function(x, sf = TRUE) {
+ts_nodes <- function(x, sf = TRUE) {
   if (!inherits(x, "slendr_ts") && !(inherits(x, "slendr_phylo")))
     stop("Annotation data table can be only extracted for a slendr tree sequence\n",
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 
-  data <- attr(x, "data")
+  data <- attr(x, "nodes")
 
   if (!sf && inherits(data, "sf")) {
     # unwrap the geometry column into separate x and y coordinates
@@ -925,7 +927,7 @@ ts_data <- function(x, sf = TRUE) {
   attr(data, "model") <- attr(x, "model")
   attr(data, "source") <- attr(x, "source")
 
-  class(data) <- set_class(data, "table")
+  class(data) <- set_class(data, "nodes")
 
   data
 }
@@ -937,60 +939,48 @@ ts_data <- function(x, sf = TRUE) {
 #' time direction.
 #'
 #' For further processing and analyses, the output of the function
-#' \code{\link{ts_data}} might be more useful, as it merges the information in
+#' \code{\link{ts_nodes}} might be more useful, as it merges the information in
 #' node and individual tables into one table and further annotates it with
 #' useful information from the model configuration data.
 #'
-#' @seealso \code{\link{ts_data}} for accessing processed and annotated treee
-#'   sequence table data
+#' @seealso \code{\link{ts_nodes}} and \code{\link{ts_edges}} for accessing an
+#'   annotated, more user-friendly and analysis-friendly treee sequence table
+#'   data
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #'
 #' @return Data frame with the information from the give tree sequence table
 #'
 #' @export
-ts_individuals <- function(ts) {
+ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")) {
+  table <- match.arg(table)
   check_ts_class(ts)
-  attr(ts, "individuals")
-}
-
-#' @rdname ts_individuals
-#' @export
-ts_edges <- function(ts) {
-  check_ts_class(ts)
-  attr(ts, "edges")
-}
-
-#' @rdname ts_individuals
-#' @export
-ts_nodes <- function(ts) {
-  check_ts_class(ts)
-  attr(ts, "nodes")
-}
-
-#' @rdname ts_individuals
-#' @export
-ts_mutations <- function(ts) {
-  check_ts_class(ts)
-  table <- attr(ts, "mutations")
-  if (is.null(table))
-    return(dplyr::tibble())
+  df <- attr(ts, paste0("raw_", table))
+  if (is.null(df))
+    dplyr::tibble()
   else
-    return(table)
+    df
 }
 
-#' Extract table of spatio-temporal node annotation from a given tree
+#' Extract spatio-temporal edge annotation table from a given tree or tree
+#' sequence
 #'
-#' @param tree Tree object generated by \code{ts_phylo}
+#' @param x Tree object generated by \code{ts_phylo} or a slendr tree sequence
+#'   object produced by \code{ts_load}, \code{ts_recapitate},
+#'   \code{ts_simplify}, or \code{ts_mutate}
 #'
 #' @return Data frame of the \code{sf} type containing the times of nodes and
-#'   start-end coordinates of branches across space
+#'   start-end coordinates of edges across space
 #'
 #' @export
-ts_branches <- function(tree) {
-  if (!inherits(tree, "slendr_phylo"))
-    stop("Not a tree object created by the function `ts_phylo()`", call. = FALSE)
-  attr(tree, "branches")
+ts_edges <- function(x) {
+  if (inherits(x, "slendr_phylo"))
+    attr(x, "edges")
+  else if (inherits(x, "slendr_ts"))
+    get_annotated_edges(x)
+  else
+    stop("Annotation data table can be only extracted for a slendr tree sequence\n",
+         "object or a phylo object created by the ts_phylo function", call. = FALSE)
 }
 
 #' Extract names and times of individuals scheduled for sampling
@@ -1001,8 +991,8 @@ ts_samples <- function(ts) {
     stop("Sampling schedule can only be extracted for tree sequences\ngenerated ",
          "from a slendr model. To access information about times and\nlocations ",
          "of nodes and individuals from non-slendr tree sequences,\nuse the ",
-         "function ts_data().\n", call. = FALSE)
-  data <- ts_data(ts) %>% dplyr::filter(!is.na(name))
+         "function ts_nodes().\n", call. = FALSE)
+  data <- ts_nodes(ts) %>% dplyr::filter(!is.na(name))
   attr(ts, "metadata")$sampling %>%
     dplyr::filter(name %in% data$name)
 }
@@ -1020,16 +1010,11 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 
   model <- attr(ts, "model")
 
-  if (!attr(ts, "spatial"))
-    stop("Cannot process locations of ancestral nodes for non-spatial tree sequence data",
-         call. = FALSE)
-
-  edges <- ts_edges(ts)
-
-  data <- ts_data(ts) %>% dplyr::filter(!is.na(ind_id))
+  edges <- ts_table(ts, "edges")
+  data <- ts_nodes(ts) %>% dplyr::filter(!is.na(ind_id))
 
   if (is.null(x))
-    x <- unique(ts_data(ts)$name)
+    x <- unique(ts_nodes(ts)$name)
   else if (is.character(x) && !all(x %in% data$name))
     stop("The following individuals are not present in the tree sequence: ",
          paste0(x[!x %in% data$name], collapse = ", "),
@@ -1067,12 +1052,8 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 
   # perform further data processing (adding names of individuals, processing sf
   # spatial columns) if the model in question is spatial
-  if (!is.null(model)) {
-    name_col <- "name"
+  if (attr(ts, "spatial")) {
     location_col <- c("child_location", "parent_location", "connection")
-
-    pop_names <- order_pops(model$populations, model$direction)
-
     combined <- purrr::map2(
       combined$child_location, combined$parent_location, ~
         sf::st_union(.x, .y) %>%
@@ -1081,23 +1062,30 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
         sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
       dplyr::bind_rows() %>%
       dplyr::bind_cols(combined, .) %>%
+        sf::st_set_geometry("connection")
+  }
+
+  if (is.null(model))
+    name_col <- location_col <- NULL
+  else {
+    name_col <- "name"
+    pop_names <- order_pops(model$populations, model$direction)
+    combined <- combined %>%
       dplyr::mutate(pop = factor(pop, levels = pop_names),
                     child_pop = factor(child_pop, levels = pop_names),
-                    parent_pop = factor(parent_pop, levels = pop_names)) %>%
-        sf::st_set_geometry("connection")
-  } else
-    name_col <- location_col <- NULL
+                    parent_pop = factor(parent_pop, levels = pop_names))
+  }
 
-  final <- dplyr::select(combined,
-                         !!name_col, pop, node_id, level,
-                         child_id, parent_id, child_time, parent_time,
-                         child_pop, parent_pop, !!location_col,
-                         left_pos = left, right_pos = right) %>%
+  combined <- dplyr::select(combined,
+                            !!name_col, pop, node_id, level,
+                            child_id, parent_id, child_time, parent_time,
+                            child_pop, parent_pop, !!location_col,
+                            left_pos = left, right_pos = right) %>%
     dplyr::mutate(level = as.factor(level))
 
-  attr(final, "model") <- model
+  attr(combined, "model") <- model
 
-  final
+  combined
 }
 
 #' Extract all descendants of a given tree-sequence node
@@ -1116,12 +1104,12 @@ ts_descendants <- function(ts, x, verbose = FALSE) {
     stop("Cannot process locations of ancestral nodes for non-spatial tree sequence data",
          call. = FALSE)
 
-  edges <- ts_edges(ts)
+  edges <- ts_table(ts, "edges")
 
   if (!nrow(edges[edges$parent == x, ]))
     stop("The 'ancestral' node specified does not have any children", call. = FALSE)
 
-  data <- ts_data(ts) %>% dplyr::filter(!is.na(ind_id))
+  data <- ts_nodes(ts) %>% dplyr::filter(!is.na(ind_id))
 
   # collect child-parent branches starting from the "focal nodes"
   branches <- collect_descendants(x, edges) %>%
@@ -1233,7 +1221,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 
   if (labels) {
     ts <- attr(x, "tree_sequence")
-    df_labels <- ts_data(ts) %>%
+    df_labels <- ts_nodes(ts) %>%
       dplyr::select(node_id, name, sampled) %>%
       dplyr::mutate(node_label = ifelse(!is.na(name), sprintf("%s (%s)", name, node_id), node_id))
     if (sampled_only)
@@ -1696,14 +1684,14 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 # Function for extracting numerical node IDs for various statistics
 get_node_ids <- function(ts, x) {
   if (is.null(x)) {
-    ts_data(ts) %>%
+    ts_nodes(ts) %>%
       dplyr::filter(!is.na(name)) %>%
       .$node_id %>%
       return()
   } else if (is.numeric(x)) {
     return(as.integer(x))
   } else if (is.character(x)) {
-    ts_data(ts) %>%
+    ts_nodes(ts) %>%
       dplyr::filter(name %in% x) %>%
       .$node_id %>%
       return()
@@ -1712,7 +1700,7 @@ get_node_ids <- function(ts, x) {
 }
 
 # Extract information from the nodes table
-get_ts_nodes <- function(ts) {
+get_ts_raw_nodes <- function(ts) {
   table <- ts$tables$nodes
 
   node_table <- dplyr::tibble(
@@ -1733,7 +1721,7 @@ get_ts_nodes <- function(ts) {
 }
 
 # Extract information from the table of individual table
-get_ts_individuals <- function(ts) {
+get_ts_raw_individuals <- function(ts) {
   model <- attr(ts, "model")
 
   table <- ts$tables$individuals
@@ -1784,7 +1772,7 @@ get_ts_individuals <- function(ts) {
 }
 
 # Extract information from the edges table
-get_ts_edges <- function(ts) {
+get_ts_raw_edges <- function(ts) {
   table <- ts$tables$edges
   dplyr::tibble(
     id = seq_len(table$num_rows) - 1,
@@ -1796,7 +1784,7 @@ get_ts_edges <- function(ts) {
 }
 
 # Extract information from the muations table
-get_ts_mutations <- function(ts) {
+get_ts_raw_mutations <- function(ts) {
   model <- attr(ts, "model")
   table <- ts$tables$mutations
   if (is.null(model))
@@ -1820,12 +1808,12 @@ time_fun <- function(ts) {
 
 get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
   # get data from the original individual table
-  individuals <- attr(ts, "individuals")
+  individuals <- attr(ts, "raw_individuals")
 
   # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
-  nodes <- get_ts_nodes(ts)
+  nodes <- get_ts_raw_nodes(ts)
 
   # assign symbolic names to to the population column
   if (is.null(model)) {
@@ -1894,12 +1882,12 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
 
 get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
   # get data from the original individual table
-  individuals <- attr(ts, "individuals")
+  individuals <- attr(ts, "raw_individuals")
 
   # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
-  nodes <- get_ts_nodes(ts)
+  nodes <- get_ts_raw_nodes(ts)
 
   # assign symbolic names to to the population column
   if (is.null(model)) {
@@ -1940,77 +1928,113 @@ get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
     dplyr::mutate(sampled = !is.na(sampled))
 }
 
-get_sf_branches <- function(tree) {
-  data <- attr(tree, "data")
+get_annotated_edges <- function(x) {
+  data <- ts_nodes(x) %>% dplyr::as_tibble()
+  source <- if (inherits(x, "slendr_phylo")) "tree" else "tskit"
+  spatial <- attr(x, "spatial")
 
-  # only generate the sf branches object if the tree is spatial
-  if (!inherits(data, "sf")) return(NULL)
-
-  if (any(sf::st_is_empty(data$location))) {
+  if (spatial && any(sf::st_is_empty(data$location)))
     warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
-            "non-spatial coalescent recapitation after a spatial SLiM simulation?\n",
-            "The returned phylogenetic tree will not have spatial information\n",
-            "associated with it. If this is a problem, run a longer spatial\n",
-            "simulation, perhaps by adding a burnin phase.", call. = FALSE)
-    return(NULL)
+            "non-spatial coalescent recapitation after a spatial SLiM simulation?", call. = FALSE)
+
+  # get the table of edges to be used as a scaffold for the full annotation table
+  # (these can be either just edges of the tree phylo object, or the full tree sequence)
+  if (source == "tree") {
+    edges <- dplyr::tibble(parent = x$edge[, 1], child = x$edge[, 2])
+    id <- "phylo_id"
+    join1 <- "parent_phylo_id"
+    join2 <- "child_phylo_id"
+  } else {
+    edges <- attr(ts, "raw_edges") %>% dplyr::select(-id)
+    id <- "node_id"
+    join1 <- "parent_node_id"
+    join2 <- "child_node_id"
   }
 
-  # prepare a table of spatial branch start-end locations and times which will
-  # be saved in the ts_phylo result metadata (below)
-  edges <- dplyr::tibble(parent = tree$edge[, 1], child = tree$edge[, 2])
+  if (!spatial) data$location <- NA
 
   # create a new table of node times/locations by running a join operation
   # against the `edges` table above
-  parent_nodes <- data %>%
-    dplyr::as_tibble() %>%
-    dplyr::filter(phylo_id %in% edges$parent) %>%
-    dplyr::select(parent_pop = pop,
-                  parent_phylo_id = phylo_id, parent_node_id = node_id,
-                  parent_time = time, parent_location = location) %>%
-    dplyr::left_join(edges, by = c("parent_phylo_id" = "parent")) %>%
-    dplyr::arrange(parent_phylo_id)
+  parent_nodes <- data[data[[id]] %in% edges$parent, ]
+  if (source == "tree")
+    parent_nodes <- parent_nodes %>%
+      dplyr::select(parent_pop = pop,
+                    parent_phylo_id = phylo_id, parent_node_id = node_id,
+                    parent_time = time, parent_location = location)
+  else
+    parent_nodes <- parent_nodes %>%
+      dplyr::select(parent_pop = pop,
+                    parent_node_id = node_id,
+                    parent_time = time, parent_location = location)
+  parent_nodes <- dplyr::left_join(parent_nodes, edges, by = setNames("parent", join1)) %>%
+    dplyr::arrange(!!join1)
 
   # take the `parent_nodes` able above and do another join operation, this time
   # with the table of child nodes' times/locations
-  branch_nodes <- data %>%
-    dplyr::as_tibble() %>%
-    dplyr::filter(phylo_id %in% edges$child) %>%
-    dplyr::select(child_pop  = pop,
-                  child_phylo_id = phylo_id, child_node_id = node_id,
-                  child_time = time, child_location = location) %>%
-    dplyr::inner_join(parent_nodes, by = c("child_phylo_id" = "child")) %>%
-    dplyr::arrange(child_phylo_id)
+  edge_nodes <- data[data[[id]] %in% edges$child, ]
+  if (source == "tree")
+    edge_nodes <- edge_nodes %>%
+      dplyr::select(child_pop = pop,
+                    child_phylo_id = phylo_id, child_node_id = node_id,
+                    child_time = time, child_location = location)
+  else
+    edge_nodes <- edge_nodes %>%
+      dplyr::select(child_pop = pop,
+                    child_node_id = node_id,
+                    child_time = time, child_location = location)
+  edge_nodes <- dplyr::inner_join(edge_nodes, parent_nodes, by = setNames("child", join2)) %>%
+    dplyr::arrange(!!join2)
+
+  # data %>%
+  #   dplyr::filter(phylo_id %in% edges$child) %>%
+  #   dplyr::select(child_pop  = pop,
+  #                 child_phylo_id = phylo_id, child_node_id = node_id,
+  #                 child_time = time, child_location = location) %>%
+  #   dplyr::inner_join(parent_nodes, by = c("child_phylo_id" = "child")) %>%
+  #   dplyr::arrange(child_phylo_id)
 
   # transforming individual child/parent location columns (type POINT) into a
   # line (type LINESTRING)
-  connections <- purrr::map2(
-    branch_nodes$child_location, branch_nodes$parent_location, ~
-      sf::st_union(.x, .y) %>%
-      sf::st_cast("LINESTRING") %>%
-      sf::st_sfc() %>%
-      sf::st_sf(connection = ., crs = sf::st_crs(branch_nodes))) %>%
-    dplyr::bind_rows()
+  if (spatial) {
+    connections <- purrr::map2(
+      edge_nodes$child_location, edge_nodes$parent_location, ~
+        sf::st_union(.x, .y) %>%
+        sf::st_cast("LINESTRING") %>%
+        sf::st_sfc() %>%
+        sf::st_sf(connection = ., crs = sf::st_crs(edge_nodes))) %>%
+      dplyr::bind_rows()
+  } else
+    connections <- data.frame(connection = NA)
 
   # create an sf table with all the locations in columns (child_location,
   # parent_location, connect)
-  branches <-
-    dplyr::bind_cols(branch_nodes, connections) %>%
-    sf::st_set_geometry("connection") %>%
-    dplyr::select(parent_phylo_id, child_phylo_id,
+  if (source == "tree")
+    phylo_cols <- c("parent_phylo_id", "child_phylo_id")
+  else
+    phylo_cols <- NULL
+
+  edges <-
+    dplyr::bind_cols(edge_nodes, connections) %>%
+    dplyr::select(!!phylo_cols,
+                  child_node_id, parent_node_id,
                   connection,
-                  parent_time, child_time,
-                  parent_pop, child_pop,
-                  parent_node_id, child_node_id,
-                  parent_location, child_location) %>%
-    sf::st_set_crs(sf::st_crs(data))
+                  child_time, parent_time,
+                  child_pop, parent_pop,
+                  child_location, parent_location)
 
-  model <- attr(tree, "model")
-  pop_names <- order_pops(model$populations, model$direction)
+  if (spatial) {
+    edges <- sf::st_set_geometry(edges, "connection") %>%
+      sf::st_set_crs(sf::st_crs(data))
+  } else
+    edges[, c("connection", "parent_location", "child_location")] <- NULL
 
-  branches$child_pop <- factor(branches$child_pop, levels = pop_names)
-  branches$parent_pop <- factor(branches$parent_pop, levels = pop_names)
+  if (!is.null(attr(x, "model"))) {
+    pop_names <- order_pops(model$populations, model$direction)
+    edges$child_pop <- factor(edges$child_pop, levels = pop_names)
+    edges$parent_pop <- factor(edges$parent_pop, levels = pop_names)
+  }
 
-  branches
+  edges
 }
 
 #' Convert an annotated \code{slendr_phylo} object to a \code{phylo} object

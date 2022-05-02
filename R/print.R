@@ -92,7 +92,7 @@ print.slendr_model <- function(x, ...) {
 
 #' @rdname print.slendr_pop
 #' @export
-print.slendr_table <- function(x, ...) {
+print.slendr_nodes <- function(x, ...) {
   model <- attr(x, "model")
   backend <- attr(x, "source")
 

@@ -61,7 +61,7 @@ ts_small <- ts_simplify(
 
 }
 \seealso{
-\code{\link{ts_data}} for extracting useful information about
+\code{\link{ts_nodes}} for extracting useful information about
 individuals, nodes, coalescent times and geospatial locations of nodes on a
 map
 }
