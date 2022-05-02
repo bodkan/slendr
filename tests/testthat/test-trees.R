@@ -211,5 +211,5 @@ test_that("ts_phylo gives a warning when a tree sequence is not fully spatial", 
 
   ts <- ts_load(model2, simplify = TRUE)
   expect_s3_class(ts_nodes(ts_phylo(ts, 1, quiet = TRUE)), "sf")
-  expect_s3_class(attr(ts_phylo(ts, 1, quiet = TRUE), "branches"), "sf")
+  expect_s3_class(attr(ts_phylo(ts, 1, quiet = TRUE), "edges"), "sf")
 })
