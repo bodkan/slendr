@@ -441,7 +441,7 @@ ts_small <- ts_simplify(ts, c("EUR_599", "ANA_322", "EHG_7",
 
 tree <- ts_phylo(ts_small, i = 10)
 nodes <- ts_nodes(tree)
-branches <- ts_branches(tree)
+edges <- ts_edges(tree)
 
 ancestors <- ts_ancestors(ts, "EUR_599")
 ```
@@ -490,7 +490,7 @@ p_tree <- revts(p_tree)
 
 p_map <- ggplot() +
   geom_sf(data = map) +
-  geom_sf(data = branches, aes(color = parent_pop), size = 0.5) +
+  geom_sf(data = edges, aes(color = parent_pop), size = 0.5) +
   geom_sf(data = filter(nodes, is.na(name)),
           aes(color = pop, shape = pop), size = 5) +
   geom_sf_label(data = nodes[!nodes$sampled, ],
