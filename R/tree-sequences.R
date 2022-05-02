@@ -1012,7 +1012,7 @@ ts_samples <- function(ts) {
 #'   associated with them.
 #'
 #' @export
-ts_ancestors <- function(ts, x, verbose = FALSE, complete = FALSE) {
+ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -1126,7 +1126,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = FALSE) {
 #'   associated with them.
 #'
 #' @export
-ts_descendants <- function(ts, x, verbose = FALSE, complete = FALSE) {
+ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
