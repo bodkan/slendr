@@ -1002,17 +1002,17 @@ ts_samples <- function(ts) {
 #' Extract (spatio-)temporal ancestral history for given nodes/individuals
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
-#' @param x Either a character vector with individual names, or an integer
-#'   vector of node IDs
+#' @param x Either an individual name or an integer node ID
 #' @param verbose Report on the progress of ancestry path generation?
-#' @param full_spatial Does every individual in the tree sequence need to have
-#'   spatial annotation? If \code{FALSE}, only individuals/nodes with spatial
-#'   information will be included in the analysis. For instance, nodes added
-#'   during the coalescent recapitation phase will not be included because they
-#'   don't have spatial information associated with them.
+#' @param complete Does every individual in the tree sequence need to have
+#'   complete metadata recorded? If \code{TRUE}, only individuals/nodes with
+#'   complete metadata will be included in the reconstruction of ancestral
+#'   relationships. For instance, nodes added during the coalescent recapitation
+#'   phase will not be included because they don't have spatial information
+#'   associated with them.
 #'
 #' @export
-ts_ancestors <- function(ts, x = NULL, verbose = FALSE, full_spatial = FALSE) {
+ts_ancestors <- function(ts, x, verbose = FALSE, complete = FALSE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -1021,7 +1021,14 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE, full_spatial = FALSE) {
   edges <- ts_table(ts, "edges")
   data <- ts_nodes(ts)
 
-  if (!full_spatial) data <- dplyr::filter(data, !is.na(ind_id))
+  if (complete) data <- dplyr::filter(data, !is.na(ind_id))
+
+  if (is.character(x) && !x %in% data$name)
+    stop("The given individual is ether not present in the tree sequence or it\n",
+         "does not carry complete metadata information (see ?ts_ancestors)", call. = FALSE)
+  if (is.numeric(x) && !x %in% data$node_id)
+    stop("The given node is ether not present in the tree sequence or it\n",
+         "does not carry complete metadata information (see ?ts_ancestors)", call. = FALSE)
 
   if (spatial && any(sf::st_is_empty(data$location))) {
     warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
@@ -1032,13 +1039,6 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE, full_spatial = FALSE) {
   }
 
   if (!spatial) data$location <- NA
-
-  if (is.null(x))
-    x <- unique(ts_nodes(ts)$name)
-  else if (is.character(x) && !all(x %in% data$name))
-    stop("The following individuals are not present in the tree sequence: ",
-         paste0(x[!x %in% data$name], collapse = ", "),
-         call. = FALSE)
 
   # collect child-parent branches starting from the "focal nodes"
   branches <- purrr::map_dfr(x, function(.x) {
@@ -1118,16 +1118,31 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE, full_spatial = FALSE) {
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param x An integer node ID of the ancestral node
 #' @param verbose Report on the progress of ancestry path generation?
+#' @param complete Does every individual in the tree sequence need to have
+#'   complete metadata recorded? If \code{TRUE}, only individuals/nodes with
+#'   complete metadata will be included in the reconstruction of ancestral
+#'   relationships. For instance, nodes added during the coalescent recapitation
+#'   phase will not be included because they don't have spatial information
+#'   associated with them.
 #'
 #' @export
-ts_descendants <- function(ts, x, verbose = FALSE) {
+ts_descendants <- function(ts, x, verbose = FALSE, complete = FALSE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
 
   edges <- ts_table(ts, "edges")
-  data <- ts_nodes(ts) #%>% dplyr::filter(!is.na(ind_id))
+  data <- ts_nodes(ts)
+
+  if (complete) data <- dplyr::filter(data, !is.na(ind_id))
+
+  if (is.character(x) && !x %in% data$name)
+    stop("The given individual is ether not present in the tree sequence or it\n",
+         "does not carry complete metadata information (see ?ts_ancestors)", call. = FALSE)
+  if (is.numeric(x) && !x %in% data$node_id)
+    stop("The given node is ether not present in the tree sequence or it\n",
+         "does not carry complete metadata information (see ?ts_ancestors)", call. = FALSE)
 
   if (spatial && any(sf::st_is_empty(data$location))) {
     warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
