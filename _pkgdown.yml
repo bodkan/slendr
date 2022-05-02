@@ -112,13 +112,11 @@ reference:
 
   - title: Accessing tree sequence components
     contents:
-    - ts_data
-    - ts_phylo
-    - ts_branches
     - ts_nodes
     - ts_edges
-    - ts_individuals
-    - ts_mutations
+    - ts_table
+    - ts_phylo
+    - ts_branches
     - ts_tree
     - ts_draw
     - ts_metadata

@@ -35,16 +35,16 @@ simulate_msprime_ts <- function(N) {
 }
 
 # Make sure the unsimplified tree sequence has the same set of nodes as
-# what we extracted with ts_data (sampled and all)
-compare_ts_data <- function(ts, N) {
-  data <- ts_data(ts)
+# what we extracted with ts_nodes (sampled and all)
+compare_ts_nodes <- function(ts, N) {
+  data <- ts_nodes(ts)
 
   expect_true(nrow(data) == ts$num_nodes)
   expect_true(nrow(data[data$sampled, ]) == ts$num_samples)
   expect_true(nrow(data[data$sampled, ]) == 2 * N)
 
   ts2 <- ts_simplify(ts)
-  data2 <- ts_data(ts2)
+  data2 <- ts_nodes(ts2)
 
   # make sure the same holds also for a simplified tree sequence
   expect_true(nrow(data2) == ts2$num_nodes)
@@ -59,7 +59,7 @@ compare_ts_phylo <- function(ts, N) {
 
   tskit_tree <- ts2$at(0)
   tree <- ts_phylo(ts2, i = 1, quiet = TRUE)
-  tree_data <- ts_data(tree)
+  tree_data <- ts_nodes(tree)
   # make sure that the converted phylo tree has the same number of edges and
   # nodes as the original tskit Tree object
   expect_true(nrow(tree$edge) == tskit_tree$num_edges)
@@ -74,18 +74,18 @@ compare_ts_phylo <- function(ts, N) {
 
 # SLiM --------------------------------------------------------------------
 
-test_that("non-slendr SLiM ts_data corresponds to the expected outcome", {
+test_that("non-slendr SLiM ts_nodes corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_slim_ts(N)
   ts <- ts_load(ts_file)
-  compare_ts_data(ts, N)
+  compare_ts_nodes(ts, N)
 })
 
-test_that("non-slendr SLiM simplified ts_data corresponds to the expected outcome", {
+test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome", {
   N <- 500
   ts_file <- simulate_slim_ts(N)
   ts <- ts_load(ts_file)
-  simplify_to <- ts_data(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   expect_warning(ts2 <- ts_simplify(ts, simplify_to = simplify_to),
                  "Simplifying a non-recapitated tree sequence")
   expect_silent(ts2 <- ts_recapitate(ts, Ne = 100, recombination_rate = 1e-8) %>%
@@ -93,8 +93,8 @@ test_that("non-slendr SLiM simplified ts_data corresponds to the expected outcom
 
   # make sure that the simplified nodes match the pedigree_id values in the
   # original tree-sequence data
-  orig_ids <- ts_data(ts) %>% dplyr::filter(node_id %in% simplify_to) %>% dplyr::pull(pedigree_id)
-  simplified_ids <- ts_data(ts2) %>% dplyr::filter(sampled) %>% dplyr::pull(pedigree_id)
+  orig_ids <- ts_nodes(ts) %>% dplyr::filter(node_id %in% simplify_to) %>% dplyr::pull(pedigree_id)
+  simplified_ids <- ts_nodes(ts2) %>% dplyr::filter(sampled) %>% dplyr::pull(pedigree_id)
   expect_true(all(orig_ids == simplified_ids))
 })
 
@@ -105,17 +105,17 @@ test_that("non-slendr SLiM ts_phylo corresponds to the expected outcome", {
   compare_ts_phylo(ts, N)
 })
 
-test_that("non-slendr SLiM ts_data can be recapitated", {
+test_that("non-slendr SLiM ts_nodes can be recapitated", {
   N <- 10000
   ts_file <- simulate_slim_ts(N)
   ts <- ts_load(ts_file) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8)
-  expect_silent(compare_ts_data(ts, N))
+  expect_silent(compare_ts_nodes(ts, N))
 })
 
-test_that("non-slendr SLiM ts_data carries correct population names", {
+test_that("non-slendr SLiM ts_nodes carries correct population names", {
   ts_file <- simulate_slim_ts(50)
   ts <- ts_load(ts_file)
-  expect_true(unique(ts_data(ts)$pop) == "p0")
+  expect_true(unique(ts_nodes(ts)$pop) == "p0")
 })
 
 # msprime tree sequences --------------------------------------------------
@@ -124,19 +124,19 @@ test_that("non-slendr msprime simplification on its own gives warning", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
   ts <- ts_load(ts_file)
-  expect_warning(compare_ts_data(ts, N), "If you want to simplify")
+  expect_warning(compare_ts_nodes(ts, N), "If you want to simplify")
 })
 
-test_that("non-slendr SLiM simplified ts_data corresponds to the expected outcome", {
+test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
   ts <- ts_load(ts_file)
-  simplify_to <- ts_data(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
 
   # there are no fixed pedigree_id values, so let's check that the number of
   # "sampled" nodes corresponds to the number of nodes used for simplification
-  expect_true(sum(ts_data(ts2)$sampled) == 3)
+  expect_true(sum(ts_nodes(ts2)$sampled) == 3)
 })
 
 test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
@@ -150,15 +150,15 @@ test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected 
   N <- 5
   ts_file <- simulate_msprime_ts(N)
   ts <- ts_load(ts_file)
-  simplify_to <- ts_data(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
   expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
 })
 
-test_that("non-slendr msprime ts_data carries correct population names", {
+test_that("non-slendr msprime ts_nodes carries correct population names", {
   ts_file <- simulate_msprime_ts(50)
   ts <- ts_load(ts_file)
-  expect_true(unique(ts_data(ts)$pop) == "pop_0")
+  expect_true(unique(ts_nodes(ts)$pop) == "pop_0")
 })
 
 # SLiM tskit statistics interface -----------------------------------------
@@ -197,7 +197,7 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
 
   ts <- ts_load(ts_file, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-7)
 
-  data <- ts_data(ts) %>% dplyr::filter(sampled)
+  data <- ts_nodes(ts) %>% dplyr::filter(sampled)
 
   groups <- split(data$node_id, data$pop)
 
@@ -209,5 +209,5 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
   divergence <- ts_divergence(ts, sample_sets = groups)
   expect_true(all((divergence %>% dplyr::filter(x == 1) %>% .$divergence %>% diff) < 0))
 
-  expect_true(all(sort(unique(ts_data(ts)$pop) == c("p1", "p2", "p3", "p4"))))
+  expect_true(all(sort(unique(ts_nodes(ts)$pop) == c("p1", "p2", "p3", "p4"))))
 })
