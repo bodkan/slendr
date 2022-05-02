@@ -92,7 +92,7 @@ reference:
     - print.slendr_region
     - print.slendr_pop
     - print.slendr_model
-    - print.slendr_table
+    - print.slendr_nodes
 
   - title: Tree sequence loading and processing
     contents:
@@ -116,7 +116,6 @@ reference:
     - ts_edges
     - ts_table
     - ts_phylo
-    - ts_branches
     - ts_tree
     - ts_draw
     - ts_metadata
