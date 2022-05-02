@@ -1073,14 +1073,14 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 
     pop_names <- order_pops(model$populations, model$direction)
 
-    connections <- purrr::map2(
+    combined <- purrr::map2(
       combined$child_location, combined$parent_location, ~
         sf::st_union(.x, .y) %>%
         sf::st_cast("LINESTRING") %>%
         sf::st_sfc() %>%
         sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
       dplyr::bind_rows() %>%
-      dplyr::bind_cols(connections) %>%
+      dplyr::bind_cols(combined, .) %>%
       dplyr::mutate(pop = factor(pop, levels = pop_names),
                     child_pop = factor(child_pop, levels = pop_names),
                     parent_pop = factor(parent_pop, levels = pop_names)) %>%
