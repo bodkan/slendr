@@ -8,6 +8,8 @@ ts_table(ts, table = c("individuals", "edges", "nodes", "mutations"))
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
+
+\item{table}{Which tree sequence table to return}
 }
 \value{
 Data frame with the information from the give tree sequence table

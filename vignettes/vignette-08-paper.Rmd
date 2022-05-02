@@ -506,7 +506,7 @@ p_map <- ggplot() +
   theme_bw() +
   theme(legend.position = "bottom")
 
-chrom_names <- setNames(
+chrom_names <- stats::setNames(
   c("EUR_599 (chromosome 1, node 10)", "EUR_599 (chromosome 2, node 11)"),
   unique(ancestors$node_id)
 )

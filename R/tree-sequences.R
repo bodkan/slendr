@@ -885,12 +885,11 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #' package and the ways in which spatial data can be processed, analysed, and
 #' visualised.
 #'
-#' @seealso \code{\link{ts_individuals}} \code{\link{ts_nodes}}
-#'   \code{\link{ts_edges}} for accessing raw tree sequence tables without added
-#'   metadata annotation. See also \code{\link{ts_ancestors}} to learn how to
-#'   extract information about relationship beteween nodes in the tree sequence,
-#'   and how to analysed data about distances between nodes in the spatial
-#'   context.
+#' @seealso \code{\link{ts_table}} for accessing raw tree sequence tables
+#'   without added metadata annotation. See also \code{\link{ts_ancestors}} to
+#'   learn how to extract information about relationship beteween nodes in the
+#'   tree sequence, and how to analysed data about distances between nodes in
+#'   the spatial context.
 #'
 #' @param x Tree sequence object of the class \code{slendr_ts} or a \code{phylo}
 #'   object extracted by \code{ts_phylo}
@@ -950,6 +949,7 @@ ts_nodes <- function(x, sf = TRUE) {
 #'   data
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
+#' @param table Which tree sequence table to return
 #'
 #' @return Data frame with the information from the give tree sequence table
 #'
@@ -1992,7 +1992,7 @@ get_annotated_edges <- function(x) {
     join1 <- "parent_phylo_id"
     join2 <- "child_phylo_id"
   } else {
-    edges <- attr(ts, "raw_edges") %>% dplyr::select(-id)
+    edges <- attr(x, "raw_edges") %>% dplyr::select(-id)
     id <- "node_id"
     join1 <- "parent_node_id"
     join2 <- "child_node_id"
@@ -2013,7 +2013,7 @@ get_annotated_edges <- function(x) {
       dplyr::select(parent_pop = pop,
                     parent_node_id = node_id,
                     parent_time = time, parent_location = location)
-  parent_nodes <- dplyr::left_join(parent_nodes, edges, by = setNames("parent", join1)) %>%
+  parent_nodes <- dplyr::left_join(parent_nodes, edges, by = stats::setNames("parent", join1)) %>%
     dplyr::arrange(!!join1)
 
   # take the `parent_nodes` able above and do another join operation, this time
@@ -2029,7 +2029,7 @@ get_annotated_edges <- function(x) {
       dplyr::select(child_pop = pop,
                     child_node_id = node_id,
                     child_time = time, child_location = location)
-  edge_nodes <- dplyr::inner_join(edge_nodes, parent_nodes, by = setNames("child", join2)) %>%
+  edge_nodes <- dplyr::inner_join(edge_nodes, parent_nodes, by = stats::setNames("child", join2)) %>%
     dplyr::arrange(!!join2)
 
   # data %>%
