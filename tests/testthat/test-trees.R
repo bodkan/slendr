@@ -224,10 +224,11 @@ test_that("ts_nodes and ts_edges give the same result in single-tree tree sequen
   ts <- ts_load(model, file = file.path(model$path, "output_slim.trees"),
                 recapitate = TRUE, simplify = TRUE,
                 Ne = 100, recombination_rate = 0)
-  tree <- ts_phylo(ts, 1)
+  suppressWarnings(tree <- ts_phylo(ts, 1, quiet = TRUE))
 
   nodes_tree <- ts_nodes(tree) %>% dplyr::arrange(time) %>% dplyr::select(-phylo_id)
   nodes_ts <- ts_nodes(ts) %>% dplyr::arrange(time)
 
   expect_true(all(nodes_ts == nodes_tree, na.rm = TRUE))
 })
+
