@@ -903,7 +903,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #'
 #' @export
 ts_nodes <- function(x, sf = TRUE) {
-  if (!inherits(x, "slendr_ts") && !(inherits(x, "slendr_phylo")))
+  if (!inherits(x, "slendr_ts") && !inherits(x, "slendr_phylo"))
     stop("Annotation data table can be only extracted for a slendr tree sequence\n",
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 
@@ -2069,6 +2069,8 @@ get_annotated_edges <- function(x) {
                   child_pop, parent_pop,
                   child_location, parent_location)
 
+  model <- attr(x, "model")
+
   if (spatial) {
     crs <- if (is.null(model)) NA else sf::st_crs(model$world)
     edges <- sf::st_set_geometry(edges, "connection") %>%
@@ -2076,7 +2078,6 @@ get_annotated_edges <- function(x) {
   } else
     edges[, c("connection", "parent_location", "child_location")] <- NULL
 
-  model <- attr(x, "model")
   if (!is.null(model)) {
     pop_names <- order_pops(model$populations, model$direction)
     edges$child_pop <- factor(edges$child_pop, levels = pop_names)
