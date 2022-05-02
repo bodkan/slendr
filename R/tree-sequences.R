@@ -1011,9 +1011,20 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
+  spatial <- attr(ts, "spatial")
 
   edges <- ts_table(ts, "edges")
-  data <- ts_nodes(ts) %>% dplyr::filter(!is.na(ind_id))
+  data <- ts_nodes(ts) #%>% dplyr::filter(!is.na(ind_id))
+
+  if (spatial && any(sf::st_is_empty(data$location))) {
+    warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
+            "non-spatial coalescent recapitation after a spatial SLiM simulation?\n",
+            "This is not a problem, but please note that the edge table encoded\n",
+            "by this tree will not contain spatial information.", call. = FALSE)
+    spatial <- FALSE
+  }
+
+  if (!spatial) data$location <- NA
 
   if (is.null(x))
     x <- unique(ts_nodes(ts)$name)
@@ -1035,7 +1046,10 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
       result <- collect_ancestors(.y, edges) %>%
         dplyr::mutate(pop = dplyr::filter(data, node_id == .y)$pop[1],
                                           node_id = .y)
-      if (!is.null(model)) result$name <- ifelse(is.character(.x), .x, NA)
+
+      if (!is.null(model))
+        result$name <- data[data$node_id == .y, ]$name
+
       result
     })
   })
@@ -1046,15 +1060,16 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
 
   combined <- branches %>%
     dplyr::inner_join(child_data, by = "child_id") %>%
-    dplyr::inner_join(parent_data, by = "parent_id") %>%
+    dplyr::inner_join(parent_data, by = "parent_id") #%>%
 #    dplyr::inner_join(ind_data, by = c("ind_id" = "focal_ind_id")) %>%
-    sf::st_as_sf()
+
+  if (spatial) combined <- sf::st_as_sf(combined)
 
   if (verbose) message("\nGenerating data about spatial relationships of nodes...")
 
   # perform further data processing (adding names of individuals, processing sf
   # spatial columns) if the model in question is spatial
-  if (attr(ts, "spatial")) {
+  if (spatial) {
     location_col <- c("child_location", "parent_location", "connection")
     combined <- purrr::map2(
       combined$child_location, combined$parent_location, ~
@@ -1065,10 +1080,11 @@ ts_ancestors <- function(ts, x = NULL, verbose = FALSE) {
       dplyr::bind_rows() %>%
       dplyr::bind_cols(combined, .) %>%
         sf::st_set_geometry("connection")
-  }
+  } else
+    location_col <- NULL
 
   if (is.null(model))
-    name_col <- location_col <- NULL
+    name_col <- NULL
   else {
     name_col <- "name"
     pop_names <- order_pops(model$populations, model$direction)
@@ -1101,17 +1117,23 @@ ts_descendants <- function(ts, x, verbose = FALSE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
-
-  if (is.null(model$world))
-    stop("Cannot process locations of ancestral nodes for non-spatial tree sequence data",
-         call. = FALSE)
+  spatial <- attr(ts, "spatial")
 
   edges <- ts_table(ts, "edges")
+  data <- ts_nodes(ts) #%>% dplyr::filter(!is.na(ind_id))
+
+  if (spatial && any(sf::st_is_empty(data$location))) {
+    warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
+            "non-spatial coalescent recapitation after a spatial SLiM simulation?\n",
+            "This is not a problem, but please note that the edge table encoded\n",
+            "by this tree will not contain spatial information.", call. = FALSE)
+    spatial <- FALSE
+  }
+
+  if (!spatial) data$location <- NA
 
   if (!nrow(edges[edges$parent == x, ]))
     stop("The 'ancestral' node specified does not have any children", call. = FALSE)
-
-  data <- ts_nodes(ts) %>% dplyr::filter(!is.na(ind_id))
 
   # collect child-parent branches starting from the "focal nodes"
   branches <- collect_descendants(x, edges) %>%
@@ -1124,39 +1146,51 @@ ts_descendants <- function(ts, x, verbose = FALSE) {
 
   combined <- branches %>%
     dplyr::inner_join(child_data, by = "child_id") %>%
-    dplyr::inner_join(parent_data, by = "parent_id") %>%
-    #    dplyr::inner_join(ind_data, by = c("ind_id" = "focal_ind_id")) %>%
-    dplyr::mutate(name = sapply(child_id, function(i) data[data$node_id == i, ]$name[1])) %>%
-    sf::st_as_sf()
+    dplyr::inner_join(parent_data, by = "parent_id")
+    #    dplyr::inner_join(ind_data, by = c("ind_id" = "focal_ind_id"))
+
+  if (spatial) combined <- sf::st_as_sf(combined)
 
   if (verbose) message("\nGenerating data about spatial relationships of nodes...")
 
-  connections <- purrr::map2(
-    combined$child_location, combined$parent_location, ~
-      sf::st_union(.x, .y) %>%
-      sf::st_cast("LINESTRING") %>%
-      sf::st_sfc() %>%
-      sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
-    dplyr::bind_rows()
+  # perform further data processing (adding names of individuals, processing sf
+  # spatial columns) if the model in question is spatial
+  if (spatial) {
+    location_col <- c("child_location", "parent_location", "connection")
+    combined <- purrr::map2(
+      combined$child_location, combined$parent_location, ~
+        sf::st_union(.x, .y) %>%
+        sf::st_cast("LINESTRING") %>%
+        sf::st_sfc() %>%
+        sf::st_sf(connection = ., crs = sf::st_crs(combined))) %>%
+      dplyr::bind_rows() %>%
+      dplyr::bind_cols(combined, .) %>%
+      sf::st_set_geometry("connection")
+  } else
+    location_col <- NULL
 
-  # order population names by their split time
-  pop_names <- order_pops(model$populations, model$direction)
+  if (is.null(model))
+    name_col <- NULL
+  else {
+    name_col <- "name"
+    pop_names <- order_pops(model$populations, model$direction)
+    combined <- combined %>%
+      dplyr::mutate(pop = factor(pop, levels = pop_names),
+                    child_pop = factor(child_pop, levels = pop_names),
+                    parent_pop = factor(parent_pop, levels = pop_names),
+                    name = sapply(child_id, function(i) data[data$node_id == i, ]$name[1]))
+  }
 
-  final <- dplyr::bind_cols(combined, connections) %>%
-    sf::st_set_geometry("connection") %>%
-    dplyr::select(name, pop, node_id, #level,
-                  child_id, child_time, parent_id, parent_time,
-                  child_pop, parent_pop,
-                  child_location, parent_location, connection,
-                  left_pos = left, right_pos = right) %>%
-    dplyr::mutate(#level = as.factor(level),
-      pop = factor(pop, levels = pop_names),
-      child_pop = factor(child_pop, levels = pop_names),
-      parent_pop = factor(parent_pop, levels = pop_names))
+  combined <- dplyr::select(combined,
+                            !!name_col, pop, node_id, level,
+                            child_id, parent_id, child_time, parent_time,
+                            child_pop, parent_pop, !!location_col,
+                            left_pos = left, right_pos = right) %>%
+    dplyr::mutate(level = as.factor(level))
 
-  attr(final, "model") <- model
+  attr(combined, "model") <- model
 
-  final
+  combined
 }
 
 # tree operations ---------------------------------------------------------
@@ -2136,7 +2170,7 @@ collect_descendants <- function(x, edges) {
   # probably horribly inefficient but it will do for now)
   i <- 0
   while (TRUE) {
-    cat("queue ", (i <- i + 1), "\n")
+    # cat("queue ", (i <- i + 1), "\n")
     # pop out the first element
     item <- queue[[1]]; queue[[1]] <- NULL
 
