@@ -4,7 +4,7 @@
 \alias{ts_ancestors}
 \title{Extract (spatio-)temporal ancestral history for given nodes/individuals}
 \usage{
-ts_ancestors(ts, x, verbose = FALSE, complete = FALSE)
+ts_ancestors(ts, x, verbose = FALSE, complete = TRUE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}

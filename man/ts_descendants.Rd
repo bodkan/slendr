@@ -4,7 +4,7 @@
 \alias{ts_descendants}
 \title{Extract all descendants of a given tree-sequence node}
 \usage{
-ts_descendants(ts, x, verbose = FALSE, complete = FALSE)
+ts_descendants(ts, x, verbose = FALSE, complete = TRUE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
