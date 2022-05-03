@@ -7,7 +7,7 @@ model <- compile_model(populations = pop, generation_time = 1, sim_length = 100)
 slim(model, sequence_length = 1000000, recombination_rate = 0, random_seed = 42)
 
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
-              Ne = 100, recombination_rate = 0,
+              Ne = 100, recombination_rate = 0, random_seed = 42,
               simplify_to = paste0("POP_", seq(1, 10)))
 
 # library(ggtree)
