@@ -110,7 +110,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_ancestors</span><span class="op">(</span><span class="va">ts</span>, x <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, full_spatial <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_ancestors</span><span class="op">(</span><span class="va">ts</span>, <span class="va">x</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -118,16 +118,16 @@
     <dl><dt>ts</dt>
 <dd><p>Tree sequence object of the class <code>slendr_ts</code></p></dd>
 <dt>x</dt>
-<dd><p>Either a character vector with individual names, or an integer
-vector of node IDs</p></dd>
+<dd><p>Either an individual name or an integer node ID</p></dd>
 <dt>verbose</dt>
 <dd><p>Report on the progress of ancestry path generation?</p></dd>
-<dt>full_spatial</dt>
+<dt>complete</dt>
 <dd><p>Does every individual in the tree sequence need to have
-spatial annotation? If <code>FALSE</code>, only individuals/nodes with spatial
-information will be included in the analysis. For instance, nodes added
-during the coalescent recapitation phase will not be included because they
-don't have spatial information associated with them.</p></dd>
+complete metadata recorded? If <code>TRUE</code>, only individuals/nodes with
+complete metadata will be included in the reconstruction of ancestral
+relationships. For instance, nodes added during the coalescent recapitation
+phase will not be included because they don't have spatial information
+associated with them.</p></dd>
 </dl></div>
 
   </div>
