@@ -321,5 +321,5 @@ test_that("AFS distributions from SLiM and msprime simulations match", {
   # readr::write_tsv(afs, original_tsv, progress = FALSE)
   orig_afs <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
 
-  expect_equal(afs, orig_afs, tolerance = 1e-8)
+  expect_true(mean(afs$f != orig_afs$f) < 0.01)
 })
