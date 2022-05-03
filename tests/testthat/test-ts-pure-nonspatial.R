@@ -30,7 +30,7 @@ simulate_slim_ts <- function(N) {
 
 simulate_msprime_ts <- function(N) {
   msprime_file <- tempfile()
-  slendr::msp$sim_ancestry(N)$dump(msprime_file)
+  slendr:::msp$sim_ancestry(N)$dump(msprime_file)
   msprime_file
 }
 
