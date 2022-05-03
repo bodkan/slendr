@@ -28,10 +28,10 @@ test_that("reconstructed ancestral relationships match what is seen in a tree", 
   expect_true(all(ts_ancestors(ts, 37, complete = FALSE)$parent_id == 38))
   expect_true(ts_ancestors(ts, 34, complete = TRUE)$parent_id == 35)
 
-  expect_true(all(ts_ancestors(ts, 0, complete = FALSE)$parent_id == c(26, 33, 34, 35, 38)))
-  expect_true(all(ts_ancestors(ts, 15, complete = FALSE)$parent_id == c(23, 24, 29, 31, 34, 35, 38)))
+  expect_true(all(ts_ancestors(ts, 0, complete = FALSE)$parent_id == c(26, 33, 34, 35, 37, 38)))
+  expect_true(all(ts_ancestors(ts, 15, complete = FALSE)$parent_id == c(23, 24, 29, 31, 34, 35, 37, 38)))
   expect_true(all(ts_ancestors(ts, 37, complete = FALSE)$parent_id == 38))
-  expect_true(all(ts_ancestors(ts, 34, complete = FALSE)$parent_id == c(35, 38)))
+  expect_true(all(ts_ancestors(ts, 34, complete = FALSE)$parent_id == c(35, 37, 38)))
 })
 
 test_that("any node ID or individual given to ts_descendants must be present", {
