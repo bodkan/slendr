@@ -1023,10 +1023,10 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 
   if (complete) data <- dplyr::filter(data, !is.na(ind_id))
 
-  if (is.character(x) && !x %in% data$name)
+  if (is.character(x) && !any(x %in% data$name))
     stop("The given individual is ether not present in the tree sequence or it\n",
          "does not carry complete metadata information (see ?ts_ancestors)", call. = FALSE)
-  if (is.numeric(x) && !x %in% data$node_id)
+  if (is.numeric(x) && !any(x %in% data$node_id))
     stop("The given node is ether not present in the tree sequence or it\n",
          "does not carry complete metadata information (see ?ts_ancestors)", call. = FALSE)
 
