@@ -3,7 +3,7 @@ setup_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
-seq_len <- 100e6 # amount of sequence to simulate
+seq_len <- 200e6 # amount of sequence to simulate
 rec_rate <- 1e-8 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
 
@@ -169,6 +169,7 @@ orig_df_f4ratio <- readr::read_tsv(original_f4r_tsv, show_col_types = FALSE, pro
 # ggsave("f4ratio.png", p_f4ratio, width = 8, height = 5)
 
 test_that("f4-ratio distributions from SLiM and msprime simulations match", {
+  # if (Sys.getenv("R_DEVEL_LOCAL") == TRUE) expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-8)
   expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-8)
 })
 
