@@ -293,18 +293,19 @@ test_that("SLiM forward/backward sims are exactly the same", {
 
 # SLiM and msprime simulations from the same model give the same result
 # (tested by comparing the distribution plots)
-# p <- ggplot(afs, aes(n, f, color = direction, linetype = sim)) +
-#   geom_line(stat = "identity", alpha = 0.5) +
-#   facet_wrap(~ model) +
-#   labs(x = "number of derived alleles", y = "count",
-#        title = "Site frequency spectra obtained from five demographic models",
-#        subtitle = "Each model was specified in forward or backward direction of time and executed by
-# two different backend scripts in slendr (implemented in SLiM and msprime)") +
-#   guides(color = guide_legend("direction of\ntime in slendr"),
-#          linetype = guide_legend("slendr backend\nengine used")) +
-#   scale_x_continuous(breaks = c(1, seq(20, 2 * n_samples, 20)),
-#                      limits = c(1, 2 * n_samples))
-# ggsave("afs.png", p, width = 8, height = 5)
+p <- ggplot(afs, aes(n, f, color = direction, linetype = sim)) +
+  geom_line(stat = "identity", alpha = 0.5) +
+  facet_wrap(~ model) +
+  labs(x = "number of derived alleles", y = "count",
+       title = "Site frequency spectra obtained from five demographic models",
+       subtitle = "Each model was specified in forward or backward direction of time and executed by
+two different backend scripts in slendr (implemented in SLiM and msprime)") +
+  guides(color = guide_legend("direction of\ntime in slendr"),
+         linetype = guide_legend("slendr backend\nengine used")) +
+  scale_x_continuous(breaks = c(1, seq(20, 2 * n_samples, 20)),
+                     limits = c(1, 2 * n_samples))
+png_file <- sprintf("afs_%s.png", Sys.info()["sysname"])
+ggsave(png_file, p, width = 8, height = 5)
 
 # make sure that the distributions as they were originally inspected and
 # verified visually match the new distributions plot -- this is obviously not
@@ -316,10 +317,9 @@ test_that("AFS distributions from SLiM and msprime simulations match", {
   afs <- afs %>% dplyr::mutate(sim = as.character(sim), model = as.character(model))
   readr::write_tsv(afs, current_tsv, progress = FALSE)
 
-  original_tsv <- "afs.tsv.gz"
-  # readr::write_tsv(afs, original_tsv, progress = FALSE)
+  original_tsv <- sprintf("afs_%s.tsv.gz", Sys.info()["sysname"])
+  readr::write_tsv(afs, original_tsv, progress = FALSE)
   orig_afs <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
 
-  skip_if_not(Sys.getenv("R_DEVEL_LOCAL") == TRUE)
   expect_equal(afs, orig_afs)
 })
