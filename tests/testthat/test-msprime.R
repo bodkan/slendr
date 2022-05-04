@@ -28,7 +28,7 @@ N <- 1000
 N_factor <- 5
 n_samples <- 50
 # unfortunately had to reduce this significantly because of GitHub Actions crashes
-seq_len <- 50e6
+seq_len <- 200e6
 rec_rate <- 1e-8
 mut_rate <- 1e-8
 
@@ -321,5 +321,7 @@ test_that("AFS distributions from SLiM and msprime simulations match", {
   # readr::write_tsv(afs, original_tsv, progress = FALSE)
   orig_afs <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
 
-  expect_true(mean(afs$f != orig_afs$f) < 0.01)
+  # if (Sys.getenv("R_DEVEL_LOCAL") == TRUE) expect_equal(afs, orig_afs)
+  expect_equal(afs, orig_afs)
+  # expect_true(mean(afs$f != orig_afs$f) < 0.01)
 })
