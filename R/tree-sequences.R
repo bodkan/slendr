@@ -348,9 +348,9 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     return(ts)
   }
 
-  if (is.null(simplify_to)) {
+  if (is.null(simplify_to)) { # no individuals/nodes were given to guide the simplification
     samples <- dplyr::filter(data, sampled)$node_id
-  } else if (is.character(simplify_to)) {
+  } else if (is.character(simplify_to)) { # a vector of slendr individual names was given
     if (is.null(model))
       stop("Symbolic character names can only be provided for slendr-generated\n",
            "tree sequences", call. = FALSE)
@@ -1742,19 +1742,17 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 # Function for extracting numerical node IDs for various statistics
 get_node_ids <- function(ts, x) {
   if (is.null(x)) {
-    ts_nodes(ts) %>%
-      dplyr::filter(!is.na(name)) %>%
-      .$node_id %>%
-      return()
-  } else if (is.numeric(x)) {
-    return(as.integer(x))
+    ids <- ts_nodes(ts) %>% .[.$sampled, ]$node_id
   } else if (is.character(x)) {
-    ts_nodes(ts) %>%
-      dplyr::filter(name %in% x) %>%
-      .$node_id %>%
-      return()
+    ids <- ts_nodes(ts) %>% dplyr::filter(name %in% x) %>% .$node_id
+  } else if (is.numeric(x)) {
+    ids <- as.integer(x)
   } else
     stop("Unknown data given as individual names or node IDs", call. = FALSE)
+  if (length(ids) == 1)
+    list(ids)
+  else
+    ids
 }
 
 # Extract information from the nodes table
