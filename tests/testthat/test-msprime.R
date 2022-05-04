@@ -321,7 +321,6 @@ test_that("AFS distributions from SLiM and msprime simulations match", {
   # readr::write_tsv(afs, original_tsv, progress = FALSE)
   orig_afs <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
 
-  # if (Sys.getenv("R_DEVEL_LOCAL") == TRUE) expect_equal(afs, orig_afs)
+  skip_if_not(Sys.getenv("R_DEVEL_LOCAL") == TRUE)
   expect_equal(afs, orig_afs)
-  # expect_true(mean(afs$f != orig_afs$f) < 0.01)
 })

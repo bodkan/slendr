@@ -141,6 +141,7 @@ orig_df_f4 <- readr::read_tsv(original_f4_tsv, show_col_types = FALSE, progress 
 # ggsave("f4.png", p_f4, width = 8, height = 5)
 
 test_that("f4 distributions from SLiM and msprime simulations match", {
+  skip_if_not(Sys.getenv("R_DEVEL_LOCAL") == TRUE)
   expect_equal(df_f4, orig_df_f4, tolerance = 1e-8)
 })
 
@@ -169,7 +170,7 @@ orig_df_f4ratio <- readr::read_tsv(original_f4r_tsv, show_col_types = FALSE, pro
 # ggsave("f4ratio.png", p_f4ratio, width = 8, height = 5)
 
 test_that("f4-ratio distributions from SLiM and msprime simulations match", {
-  # if (Sys.getenv("R_DEVEL_LOCAL") == TRUE) expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-8)
+  skip_if_not(Sys.getenv("R_DEVEL_LOCAL") == TRUE)
   expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-8)
 })
 
