@@ -94,7 +94,7 @@ print.slendr_model <- function(x, ...) {
 #' @export
 print.slendr_nodes <- function(x, ...) {
   model <- attr(x, "model")
-  backend <- attr(x, "source")
+  backend <- attr(x, "backend")
 
   sep <- print_header_info(x)
 
