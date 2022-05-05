@@ -40,7 +40,7 @@ modifyChild() {
 
 system2("slim", script_file, stdout = FALSE)
 
-ts <- ts_load(ts_file, simplify = TRUE)
+suppressWarnings(ts <- ts_load(ts_file, simplify = TRUE))
 
 test_that("non-slendr SLiM tree sequence locations are correctly loaded", {
   data <- ts_nodes(ts, sf = FALSE) %>%

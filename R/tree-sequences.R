@@ -82,8 +82,12 @@ ts_load <- function(source = NULL, file = NULL,
   # if a model object is missing, this is interpreted as the case in which
   # a tree sequence is loaded without being annotated by slendr model data
   if (is.character(source) && is.null(file)) {
-    file <- source
+    warning("A non-slendr tree sequence is being loaded. Please note that this\n",
+            "functionality is experimental and that things might behave a little\n",
+            "differently from the tskit standard. If something appears to be broken\n",
+            "please don't hesitate to open a GitHub issue.", call. = FALSE)
     model <- NULL
+    file <- source
   } else if (inherits(source, "slendr_model")) {
     model <- source
 

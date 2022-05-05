@@ -77,14 +77,14 @@ compare_ts_phylo <- function(ts, N) {
 test_that("non-slendr SLiM ts_nodes corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_slim_ts(N)
-  ts <- ts_load(ts_file)
+  suppressWarnings(ts <- ts_load(ts_file))
   compare_ts_nodes(ts, N)
 })
 
 test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome", {
   N <- 500
   ts_file <- simulate_slim_ts(N)
-  ts <- ts_load(ts_file)
+  suppressWarnings(ts <- ts_load(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   expect_warning(ts2 <- ts_simplify(ts, simplify_to = simplify_to),
                  "Simplifying a non-recapitated tree sequence")
@@ -101,20 +101,20 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
 test_that("non-slendr SLiM ts_phylo corresponds to the expected outcome", {
   N <- 500
   ts_file <- simulate_slim_ts(N)
-  ts <- ts_load(ts_file, recapitate = TRUE, recombination_rate = 1e-8, Ne = 100)
+  suppressWarnings(ts <- ts_load(ts_file, recapitate = TRUE, recombination_rate = 1e-8, Ne = 100))
   compare_ts_phylo(ts, N)
 })
 
 test_that("non-slendr SLiM ts_nodes can be recapitated", {
   N <- 10000
   ts_file <- simulate_slim_ts(N)
-  ts <- ts_load(ts_file) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8)
+  suppressWarnings(ts <- ts_load(ts_file) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8))
   expect_silent(compare_ts_nodes(ts, N))
 })
 
 test_that("non-slendr SLiM ts_nodes carries correct population names", {
   ts_file <- simulate_slim_ts(50)
-  ts <- ts_load(ts_file)
+  suppressWarnings(ts <- ts_load(ts_file))
   expect_true(unique(ts_nodes(ts)$pop) == "p0")
 })
 
@@ -123,14 +123,14 @@ test_that("non-slendr SLiM ts_nodes carries correct population names", {
 test_that("non-slendr msprime simplification on its own gives warning", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
-  ts <- ts_load(ts_file)
+  suppressWarnings(ts <- ts_load(ts_file))
   expect_warning(compare_ts_nodes(ts, N), "If you want to simplify")
 })
 
 test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
-  ts <- ts_load(ts_file)
+  suppressWarnings(ts <- ts_load(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
 
@@ -142,14 +142,14 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
 test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
-  ts <- ts_load(ts_file)
+  suppressWarnings(ts <- ts_load(ts_file))
   expect_warning(compare_ts_phylo(ts, N), "If you want to simplify")
 })
 
 test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_msprime_ts(N)
-  ts <- ts_load(ts_file)
+  suppressWarnings(ts <- ts_load(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
   expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
@@ -157,7 +157,7 @@ test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected 
 
 test_that("non-slendr msprime ts_nodes carries correct population names", {
   ts_file <- simulate_msprime_ts(50)
-  ts <- ts_load(ts_file)
+  suppressWarnings(ts <- ts_load(ts_file))
   expect_true(unique(ts_nodes(ts)$pop) == "pop_0")
 })
 
@@ -195,7 +195,7 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
 
   system2("slim", script_file, stdout = FALSE)
 
-  ts <- ts_load(ts_file, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-7)
+  suppressWarnings(ts <- ts_load(ts_file, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-7))
 
   data <- ts_nodes(ts) %>% dplyr::filter(sampled)
 
