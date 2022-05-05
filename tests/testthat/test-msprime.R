@@ -27,7 +27,7 @@ seed <- 42
 N <- 1000
 N_factor <- 5
 n_samples <- 50
-seq_len <- 200e6
+seq_len <- 100e6
 rec_rate <- 1e-8
 mut_rate <- 1e-8
 

@@ -3,7 +3,7 @@ setup_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
-seq_len <- 200e6 # amount of sequence to simulate
+seq_len <- 100e6 # amount of sequence to simulate
 rec_rate <- 1e-8 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
 
@@ -34,7 +34,7 @@ slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampl
 msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
 
 # model with gene flow
-gf <- gene_flow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
+gf <- gene_flow(from = b, to = x1, start = 2010, end = 2200, rate = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, overwrite = TRUE, force = TRUE, sim_length = 2200)
 
