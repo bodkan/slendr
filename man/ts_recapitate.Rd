@@ -8,7 +8,6 @@ ts_recapitate(
   ts,
   recombination_rate,
   Ne,
-  spatial = TRUE,
   migration_matrix = NULL,
   random_seed = NULL
 )
@@ -19,13 +18,6 @@ ts_recapitate(
 \item{recombination_rate}{A constant value of the recombination rate}
 
 \item{Ne}{Effective population size during the recapitation process}
-
-\item{spatial}{Should spatial information encoded in the tree sequence data
-be converted to spatial R data structures? If FALSE, pixel-based
-raster-dimensions will not be converted to the coordinate reference system
-implied by the model. If TRUE (default), reprojection of coordinates will
-be performed. If the model was non-spatial, the value of this parameter is
-disregarded.}
 
 \item{migration_matrix}{Migration matrix used for coalescence of ancient lineages
 (passed to \code{ts_recapitate})}

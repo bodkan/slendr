@@ -26,12 +26,6 @@
 #' @param simplify Should the tree sequence be simplified down to only
 #'   explicitly sampled individuals?
 #' @param mutate Should the tree sequence be mutated?
-#' @param spatial Should spatial information encoded in the tree sequence data
-#'   be converted to spatial R data structures? If \code{FALSE}, pixel-based
-#'   raster-dimensions will not be converted to the coordinate reference system
-#'   implied by the model. If \code{TRUE} (default), reprojection of coordinates
-#'   will be performed. If the model was non-spatial, the value of this
-#'   parameter is disregarded.
 #' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
 #' @param mutation_rate Mutation rate passed to \code{ts_mutate}
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
@@ -76,7 +70,7 @@
 #' @export
 ts_load <- function(source = NULL, file = NULL,
                     recapitate = FALSE, simplify = FALSE, mutate = FALSE,
-                    spatial = TRUE, recombination_rate = NULL, mutation_rate = NULL,
+                    recombination_rate = NULL, mutation_rate = NULL,
                     Ne = NULL, random_seed = NULL, simplify_to = NULL, keep_input_roots = FALSE,
                     migration_matrix = NULL) {
   # if a model object is missing, this is interpreted as the case in which
@@ -90,9 +84,6 @@ ts_load <- function(source = NULL, file = NULL,
     file <- source
   } else if (inherits(source, "slendr_model")) {
     model <- source
-
-    if (is.null(model$world)) spatial <- FALSE
-
     if (is.null(file)) {
       ts_files <- list.files(model$path, pattern = "_(msprime|slim)\\.trees$", full.names = TRUE)
       if (length(ts_files) == 1)
@@ -141,7 +132,7 @@ ts_load <- function(source = NULL, file = NULL,
   #                                                              for ind in ts.individuals()]")
   reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
-  attr(ts, "source") <- backend
+  attr(ts, "backend") <- backend
   attr(ts, "spatial") <- backend == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != ""
 
   attr(ts, "model") <- model
@@ -154,27 +145,31 @@ ts_load <- function(source = NULL, file = NULL,
 
   class(ts) <- c("slendr_ts", class(ts))
 
+  # Extract "raw" tree sequence tables -- these can be later accessed via
+  # ts_table(ts, "<nodes|edges|individuals|mutations>") but note that these are
+  # not necessary for standard slendr data analysis. For that purpose, the
+  # annotated tables provided by ts_nodes() and ts_edges() are more useful.
   attr(ts, "raw_nodes") <- get_ts_raw_nodes(ts)
   attr(ts, "raw_edges") <- get_ts_raw_edges(ts)
   attr(ts, "raw_individuals") <- get_ts_raw_individuals(ts)
+  attr(ts, "raw_mutations") <- get_ts_raw_mutations(ts)
 
   if (backend == "SLiM") {
-    remembered <- attr(ts, "raw_individuals")$remembered
-    if (!any(remembered)) remembered <- attr(ts, "raw_individuals")$alive
-    attr(ts, "raw_individuals")$sampled <- remembered
-    attr(ts, "nodes") <- get_slim_table_data(ts, model, spatial)
+    sampled <- attr(ts, "raw_individuals")$remembered
+    if (!any(sampled)) sampled <- attr(ts, "raw_individuals")$alive
+    attr(ts, "raw_individuals")$sampled <- sampled
+    attr(ts, "nodes") <- get_slim_table_data(ts)
   } else {
     attr(ts, "raw_individuals")$sampled <- TRUE
-    attr(ts, "nodes") <- get_msprime_table_data(ts, model)
+    attr(ts, "nodes") <- get_msprime_table_data(ts)
   }
 
   if (recapitate)
     ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                        random_seed = random_seed, spatial = spatial,
-                        migration_matrix = migration_matrix)
+                        random_seed = random_seed, migration_matrix = migration_matrix)
 
   if (simplify)
-    ts <- ts_simplify(ts, simplify_to, spatial = spatial, keep_input_roots = keep_input_roots)
+    ts <- ts_simplify(ts, simplify_to, keep_input_roots = keep_input_roots)
 
   if (mutate)
     ts <- ts_mutate(ts, mutation_rate = mutation_rate, random_seed = random_seed)
@@ -199,12 +194,6 @@ ts_save <- function(ts, file) {
 #' @param ts Tree sequence object loaded by \code{ts_load}
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
-#' @param spatial Should spatial information encoded in the tree sequence data
-#'   be converted to spatial R data structures? If FALSE, pixel-based
-#'   raster-dimensions will not be converted to the coordinate reference system
-#'   implied by the model. If TRUE (default), reprojection of coordinates will
-#'   be performed. If the model was non-spatial, the value of this parameter is
-#'   disregarded.
 #' @param migration_matrix Migration matrix used for coalescence of ancient lineages
 #'   (passed to \code{ts_recapitate})
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
@@ -221,14 +210,12 @@ ts_save <- function(ts, file) {
 #' }
 #'
 #' @export
-ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
-                          migration_matrix = NULL, random_seed = NULL) {
+ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, random_seed = NULL) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
-  backend <- attr(ts, "source")
-
-  if (is.null(model$world)) spatial <- FALSE
+  backend <- attr(ts, "backend")
+  spatial <- attr(ts, "spatial")
 
   if (backend == "SLiM") {
     # suppress pyslim warning until we figure out how to switch to the new
@@ -243,10 +230,12 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
             call. = FALSE)
   }
 
+  # copy attributes over to the new tree-sequence object or generate updates
+  # ones where necessary
   attr(ts_new, "model") <- model
+  attr(ts_new, "backend") <- backend
+  attr(ts_new, "spatial") <- spatial
   attr(ts_new, "metadata") <- attr(ts, "metadata")
-  attr(ts_new, "source") <- backend
-  attr(ts_new, "spatial") <- attr(ts, "spatial")
 
   attr(ts_new, "recapitated") <- TRUE
   attr(ts_new, "simplified") <- attr(ts, "simplified")
@@ -268,10 +257,10 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 
   attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
 
-  if (attr(ts_new, "source") == "SLiM")
-    attr(ts_new, "nodes") <- get_slim_table_data(ts_new, model, spatial)
+  if (attr(ts_new, "backend") == "SLiM")
+    attr(ts_new, "nodes") <- get_slim_table_data(ts_new)
   else
-    attr(ts_new, "nodes") <- get_msprime_table_data(ts_new, model)
+    attr(ts_new, "nodes") <- get_msprime_table_data(ts_new)
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -303,12 +292,6 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #'   explicitly remembered individuals (i.e. those specified via the
 #'   \code{\link{schedule_sampling}} function will be left in the tree sequence
 #'   after the simplification.
-#' @param spatial Should spatial information encoded in the tree sequence data
-#'   be converted to spatial R datastructures? If FALSE, pixel-based
-#'   raster-dimensions will not be converted to the coordinate reference system
-#'   implied by the model. If TRUE (default), reprojection of coordinates will
-#'   be performed. If the model was non-spatial, the value of this parameter is
-#'   disregarded.
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
 #'   samples be retained in the tree sequence? Default is \code{FALSE}.
 #'
@@ -331,19 +314,18 @@ ts_recapitate <- function(ts, recombination_rate, Ne, spatial = TRUE,
 #' }
 #'
 #' @export
-ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE) {
+ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   check_ts_class(ts)
-  backend <- attr(ts, "source")
+
+  model <- attr(ts, "model")
+  backend <- attr(ts, "backend")
+  spatial <- attr(ts, "spatial")
 
   if (!attr(ts, "recapitated") && !keep_input_roots && !ts_coalesced(ts))
     warning("Simplifying a non-recapitated tree sequence. Make sure this is what you really want",
             call. = FALSE)
 
-  model <- attr(ts, "model")
   data <- attr(ts, "nodes")
-
-  spatial <- spatial && backend == "SLiM" &&
-    (!is.null(model$world) || ts$metadata$SLiM$spatial_dimensionality != "")
 
   if (is.null(simplify_to) && backend == "msprime") {
     warning("If you want to simplify an msprime tree sequence, you must specify\n",
@@ -353,7 +335,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
   }
 
   if (is.null(simplify_to)) { # no individuals/nodes were given to guide the simplification
-    samples <- dplyr::filter(data, sampled)$node_id
+    samples <- dplyr::filter(data, sampled)$node_id # simplify to all sampled nodes
   } else if (is.character(simplify_to)) { # a vector of slendr individual names was given
     if (is.null(model))
       stop("Symbolic character names can only be provided for slendr-generated\n",
@@ -376,10 +358,13 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
                         filter_populations = FALSE,
                         keep_input_roots = keep_input_roots)
 
+  # copy attributes over to the new tree-sequence object or generate updates
+  # ones where necessary
   attr(ts_new, "model") <- model
+  attr(ts_new, "backend") <- backend
+  attr(ts_new, "spatial") <- spatial
+
   attr(ts_new, "metadata") <- attr(ts, "metadata")
-  attr(ts_new, "source") <- attr(ts, "source")
-  attr(ts_new, "spatial") <- attr(ts, "spatial")
 
   attr(ts_new, "recapitated") <- attr(ts, "recapitated")
   attr(ts_new, "simplified") <- TRUE
@@ -417,7 +402,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
     # get other data about individuals in the simplified tree sequence, sort them
     # also by their IDs and times, and add their node IDs extracted above
     # (this works because we sorted both in the same way)
-    data_new <- get_slim_table_data(ts_new, model, spatial, simplify_to) %>%
+    data_new <- get_slim_table_data(ts_new, simplify_to) %>%
       as.data.frame() %>%
       dplyr::arrange(ind_id, time) %>%
       dplyr::select(ind_id, pedigree_id, time, sampled, remembered, retained, alive) %>%
@@ -434,7 +419,7 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
                                          "retained", "alive", "pedigree_id", "ind_id")]
   } else {
     attr(ts_new, "raw_individuals")$sampled <- TRUE
-    attr(ts_new, "nodes") <- get_msprime_table_data(ts_new, model, simplify_to)
+    attr(ts_new, "nodes") <- get_msprime_table_data(ts_new, simplify_to)
   }
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
@@ -468,9 +453,10 @@ ts_simplify <- function(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
                       keep_existing = TRUE, mut_type = NULL) {
   check_ts_class(ts)
+
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
 
-  if (is.numeric(mut_type) && attr(ts, "source") == "SLiM")
+  if (is.numeric(mut_type) && attr(ts, "backend") == "SLiM")
     mut_type <- msp$SLiMMutationModel(type = as.integer(mut_type))
 
   ts_new <-
@@ -482,12 +468,15 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
       random_seed = random_seed
     )
 
-  if (attr(ts, "source") == "SLiM") ts_new <- pyslim$SlimTreeSequence(ts_new)
+  if (attr(ts, "backend") == "SLiM") ts_new <- pyslim$SlimTreeSequence(ts_new)
 
+  # copy attributes over to the new tree-sequence object or generate updates
+  # ones where necessary
   attr(ts_new, "model") <- attr(ts, "model")
-  attr(ts_new, "metadata") <- attr(ts, "metadata")
-  attr(ts_new, "source") <- attr(ts, "source")
+  attr(ts_new, "backend") <- attr(ts, "backend")
   attr(ts_new, "spatial") <- attr(ts, "spatial")
+
+  attr(ts_new, "metadata") <- attr(ts, "metadata")
 
   attr(ts_new, "recapitated") <- attr(ts, "recapitated")
   attr(ts_new, "simplified") <- attr(ts, "simplified")
@@ -531,7 +520,7 @@ ts_genotypes <- function(ts) {
     stop("Extracting genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
 
-  backend <- attr(ts, "source")
+  backend <- attr(ts, "backend")
 
   data <- ts_nodes(ts)
 
@@ -717,7 +706,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
          "cannot be converted to an R phylo tree representation (see the help\n",
          "page of ?ts_recapitate for more details)", call. = FALSE)
 
-  if (!attr(ts, "simplified") && attr(ts, "source") != "msprime")
+  if (!attr(ts, "simplified") && attr(ts, "backend") != "msprime")
     stop("Please simplify your tree sequence down to sampled individuals\nfirst ",
          "before converting a tree to an R phylo tree object format (see the\n",
          "help page of ?ts_simplify for more details)", call. = FALSE)
@@ -729,7 +718,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
     dplyr::filter(node_id %in% tree$preorder())
 
   model <- attr(ts, "model")
-  source <- attr(ts, "source")
+  backend <- attr(ts, "backend")
   spatial <- attr(ts, "spatial")
 
   if (!is.null(model))
@@ -808,7 +797,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   data$phylo_id <- sapply(data$node_id, function(n) lookup_ids[present_ids == n])
   columns <- c()
-  if (source == "SLiM") {
+  if (backend == "SLiM") {
     if (spatial) columns <- c(columns, "location")
     columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
   } else
@@ -833,7 +822,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       )
     )
   }
-  if (source == "SLiM" && spatial)
+  if (backend == "SLiM" && spatial)
     data <- sf::st_as_sf(data)
 
   class(data) <- set_class(data, "nodes")
@@ -867,7 +856,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   attr(tree, "spatial") <- attr(ts, "spatial")
   attr(tree, "nodes") <- data
   attr(tree, "edges") <- get_annotated_edges(tree)
-  attr(tree, "source") <- attr(ts, "source")
+  attr(tree, "backend") <- attr(ts, "backend")
 
   tree
 }
@@ -930,7 +919,7 @@ ts_nodes <- function(x, sf = TRUE) {
   }
 
   attr(data, "model") <- attr(x, "model")
-  attr(data, "source") <- attr(x, "source")
+  attr(data, "backend") <- attr(x, "backend")
 
   class(data) <- set_class(data, "nodes")
 
@@ -1790,7 +1779,7 @@ get_ts_raw_individuals <- function(ts) {
     ind_id = seq_len(ts$num_individuals) - 1
   )
 
-  if (attr(ts, "source") == "SLiM") {
+  if (attr(ts, "backend") == "SLiM") {
     # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id'] for ind in ts.individuals()]")
 
     ind_table <- dplyr::tibble(
@@ -1860,13 +1849,16 @@ get_ts_raw_mutations <- function(ts) {
 }
 
 time_fun <- function(ts) {
-  if (attr(ts, "source") == "SLiM")
+  if (attr(ts, "backend") == "SLiM")
     convert_slim_time
   else
     convert_msprime_time
 }
 
-get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
+get_slim_table_data <- function(ts, simplify_to = NULL) {
+  model <- attr(ts, "model")
+  spatial <- attr(ts, "spatial")
+
   # get data from the original individual table
   individuals <- attr(ts, "raw_individuals")
 
@@ -1940,7 +1932,9 @@ get_slim_table_data <- function(ts, model, spatial, simplify_to = NULL) {
     dplyr::as_tibble(combined)
 }
 
-get_msprime_table_data <- function(ts, model, simplify_to = NULL) {
+get_msprime_table_data <- function(ts, simplify_to = NULL) {
+  model <- attr(ts, "model")
+
   # get data from the original individual table
   individuals <- attr(ts, "raw_individuals")
 
@@ -2263,7 +2257,7 @@ get_sampling <- function(metadata) {
 get_slendr_metadata <- function(ts) {
   # SLiM forces metadata into a certain structure, so the slendr metadata
   # must be extracted differently for the two backends
-  if (attr(ts, "source") == "SLiM") {
+  if (attr(ts, "backend") == "SLiM") {
     metadata <- ts$metadata$SLiM$user_metadata$slendr[[1]]
     arguments <- metadata$arguments[[1]]
   } else {
