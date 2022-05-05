@@ -10,7 +10,6 @@ ts_load(
   recapitate = FALSE,
   simplify = FALSE,
   mutate = FALSE,
-  spatial = TRUE,
   recombination_rate = NULL,
   mutation_rate = NULL,
   Ne = NULL,
@@ -36,13 +35,6 @@ made to search for a tree-sequence file in the model directory.}
 explicitly sampled individuals?}
 
 \item{mutate}{Should the tree sequence be mutated?}
-
-\item{spatial}{Should spatial information encoded in the tree sequence data
-be converted to spatial R data structures? If \code{FALSE}, pixel-based
-raster-dimensions will not be converted to the coordinate reference system
-implied by the model. If \code{TRUE} (default), reprojection of coordinates
-will be performed. If the model was non-spatial, the value of this
-parameter is disregarded.}
 
 \item{recombination_rate, Ne}{Arguments passed to \code{ts_recapitate}}
 

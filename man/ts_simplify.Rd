@@ -4,7 +4,7 @@
 \alias{ts_simplify}
 \title{Simplify the tree sequence down to a given set of individuals}
 \usage{
-ts_simplify(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE)
+ts_simplify(ts, simplify_to = NULL, keep_input_roots = FALSE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -13,13 +13,6 @@ ts_simplify(ts, simplify_to = NULL, spatial = TRUE, keep_input_roots = FALSE)
 explicitly remembered individuals (i.e. those specified via the
 \code{\link{schedule_sampling}} function will be left in the tree sequence
 after the simplification.}
-
-\item{spatial}{Should spatial information encoded in the tree sequence data
-be converted to spatial R datastructures? If FALSE, pixel-based
-raster-dimensions will not be converted to the coordinate reference system
-implied by the model. If TRUE (default), reprojection of coordinates will
-be performed. If the model was non-spatial, the value of this parameter is
-disregarded.}
 
 \item{keep_input_roots}{Should the history ancestral to the MRCA of all
 samples be retained in the tree sequence? Default is \code{FALSE}.}

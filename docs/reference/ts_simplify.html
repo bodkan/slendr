@@ -114,7 +114,7 @@ SLiM using the <span class="pkg">slendr</span> R package.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_simplify</span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="cn">NULL</span>, spatial <span class="op">=</span> <span class="cn">TRUE</span>, keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_simplify</span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="cn">NULL</span>, keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -126,13 +126,6 @@ SLiM using the <span class="pkg">slendr</span> R package.</p>
 explicitly remembered individuals (i.e. those specified via the
 <code><a href="schedule_sampling.html">schedule_sampling</a></code> function will be left in the tree sequence
 after the simplification.</p></dd>
-<dt>spatial</dt>
-<dd><p>Should spatial information encoded in the tree sequence data
-be converted to spatial R datastructures? If FALSE, pixel-based
-raster-dimensions will not be converted to the coordinate reference system
-implied by the model. If TRUE (default), reprojection of coordinates will
-be performed. If the model was non-spatial, the value of this parameter is
-disregarded.</p></dd>
 <dt>keep_input_roots</dt>
 <dd><p>Should the history ancestral to the MRCA of all
 samples be retained in the tree sequence? Default is <code>FALSE</code>.</p></dd>

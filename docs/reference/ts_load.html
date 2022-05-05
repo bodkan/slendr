@@ -118,7 +118,6 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
   recapitate <span class="op">=</span> <span class="cn">FALSE</span>,
   simplify <span class="op">=</span> <span class="cn">FALSE</span>,
   mutate <span class="op">=</span> <span class="cn">FALSE</span>,
-  spatial <span class="op">=</span> <span class="cn">TRUE</span>,
   recombination_rate <span class="op">=</span> <span class="cn">NULL</span>,
   mutation_rate <span class="op">=</span> <span class="cn">NULL</span>,
   Ne <span class="op">=</span> <span class="cn">NULL</span>,
@@ -147,13 +146,6 @@ made to search for a tree-sequence file in the model directory.</p></dd>
 explicitly sampled individuals?</p></dd>
 <dt>mutate</dt>
 <dd><p>Should the tree sequence be mutated?</p></dd>
-<dt>spatial</dt>
-<dd><p>Should spatial information encoded in the tree sequence data
-be converted to spatial R data structures? If <code>FALSE</code>, pixel-based
-raster-dimensions will not be converted to the coordinate reference system
-implied by the model. If <code>TRUE</code> (default), reprojection of coordinates
-will be performed. If the model was non-spatial, the value of this
-parameter is disregarded.</p></dd>
 <dt>recombination_rate, Ne</dt>
 <dd><p>Arguments passed to <code>ts_recapitate</code></p></dd>
 <dt>mutation_rate</dt>
