@@ -326,6 +326,7 @@ test_that("ts_samples() names match ts_nodes() information (msprime)", {
 })
 
 test_that("ts_eigenstrat requires recapitated and mutated data (SLiM)", {
+  skip_if(Sys.which("qpDstat") == "")
   ts1 <- ts_load(model, file = slim_ts)
   ts2 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
   ts3 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
@@ -353,6 +354,7 @@ test_that("ts_eigenstrat requires recapitated and mutated data (SLiM)", {
 })
 
 test_that("ts_eigenstrat requires recapitated and mutated data (msprime)", {
+  skip_if(Sys.which("qpDstat") == "")
   ts1 <- ts_load(model, file = msprime_ts)
   ts3 <- ts_load(model, file = msprime_ts, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2", "pop2_7"))
   suppressWarnings(ts4 <- ts_load(model, file = msprime_ts, simplify = TRUE))
@@ -403,6 +405,7 @@ test_that("mutation rate must be present in order to mutate a tree sequence", {
 })
 
 test_that("ts_eigenstrat and tsv_cf create correct data (SLiM)", {
+  skip_if(Sys.which("qpDstat") == "")
   ts <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE,
                 recombination_rate = 0, Ne = 10000) %>%
     ts_mutate(mutation_rate = 1e-7)
@@ -427,6 +430,7 @@ test_that("ts_eigenstrat and tsv_cf create correct data (SLiM)", {
 })
 
 test_that("ts_eigenstrat and tsv_cf create correct data (msprime)", {
+  skip_if(Sys.which("qpDstat") == "")
   ts <- ts_load(model, file = msprime_ts) %>% ts_mutate(mutation_rate = 1e-7)
 
   ts_names <- sort(unique(ts_nodes(ts) %>% .$name))
@@ -449,6 +453,7 @@ test_that("ts_eigenstrat and tsv_cf create correct data (msprime)", {
 })
 
 test_that("ts_eigenstrat correctly adds an outgroup when instructed (SLiM)", {
+  skip_if(Sys.which("qpDstat") == "")
   ts <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000) %>%
     ts_mutate(mutation_rate = 1e-7)
 
@@ -462,6 +467,7 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed (SLiM)", {
 })
 
 test_that("ts_eigenstrat correctly adds an outgroup when instructed (msprime)", {
+  skip_if(Sys.which("qpDstat") == "")
   ts <- ts_load(model, file = msprime_ts) %>% ts_mutate(mutation_rate = 1e-7)
 
   ts_names <- sort(unique(ts_nodes(ts) %>% .$name))

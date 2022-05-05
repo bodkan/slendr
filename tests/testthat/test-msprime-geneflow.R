@@ -142,7 +142,6 @@ png_file <- sprintf("f4_%s.png", Sys.info()["sysname"])
 ggsave(png_file, p_f4, width = 8, height = 5)
 
 test_that("f4 distributions from SLiM and msprime simulations match", {
-  skip_if_not(Sys.getenv("R_DEVEL_LOCAL") == TRUE)
   expect_equal(df_f4, orig_df_f4, tolerance = 1e-8)
 })
 
