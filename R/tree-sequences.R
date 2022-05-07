@@ -76,10 +76,9 @@ ts_load <- function(source = NULL, file = NULL,
   # if a model object is missing, this is interpreted as the case in which
   # a tree sequence is loaded without being annotated by slendr model data
   if (is.character(source) && is.null(file)) {
-    warning("A non-slendr tree sequence is being loaded. Please note that this\n",
-            "functionality is experimental and that things might behave a little\n",
-            "differently from the tskit standard. If something appears to be broken\n",
-            "please don't hesitate to open a GitHub issue.", call. = FALSE)
+    message("This support for non-slendr tree sequences is still experimental.\n",
+            "If something appears to be broken please don't hesitate to open\n",
+            "a GitHub issue at <https://github.com/bodkan/slendr>.", call. = FALSE)
     model <- NULL
     file <- source
   } else if (inherits(source, "slendr_model")) {
@@ -107,19 +106,14 @@ ts_load <- function(source = NULL, file = NULL,
          call. = FALSE)
 
   # load the tree sequence, converting it to a SLiM tree sequence if necessary
-  ts <- tskit$load(path.expand(file))
+  ts <- slendr:::tskit$load(path.expand(file))
 
-  # this is hacky but it doesn't seem worth it parsing the raw provenance
-  # string that tskit seems to provide, so just regexing against the software
-  # is good enough for now
-  provenance <- ts$provenance(0L)$record
-  if (grepl("SLiM", provenance)) {
-    ts <- pyslim$SlimTreeSequence(ts)
-    backend <- "SLiM"
-  } else if (grepl("msprime", provenance))
-    backend <- "msprime"
-  else
-    stop("Only tree sequences produced by SLiM or msprime are supported", call. = FALSE)
+  if (length(ts$metadata) == 0 || is.null(ts$metadata$SLiM))
+    type <- "generic"
+  else {
+    ts <- slendr:::pyslim$SlimTreeSequence(ts)
+    type <- "SLiM"
+  }
 
   # this is an awful workaround around the reticulate/Python bug which prevents
   # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
@@ -132,12 +126,11 @@ ts_load <- function(source = NULL, file = NULL,
   #                                                              for ind in ts.individuals()]")
   reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
-  attr(ts, "backend") <- backend
-  attr(ts, "spatial") <- backend == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != ""
-
+  attr(ts, "type") <- type
   attr(ts, "model") <- model
-  if (!is.null(model))
-    attr(ts, "metadata") <- get_slendr_metadata(ts)
+  attr(ts, "spatial") <- type == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != ""
+
+  attr(ts, "metadata") <- get_slendr_metadata(ts)
 
   attr(ts, "recapitated") <- FALSE
   attr(ts, "simplified") <- FALSE
@@ -154,14 +147,14 @@ ts_load <- function(source = NULL, file = NULL,
   attr(ts, "raw_individuals") <- get_ts_raw_individuals(ts)
   attr(ts, "raw_mutations") <- get_ts_raw_mutations(ts)
 
-  if (backend == "SLiM") {
+  if (type == "SLiM") {
     sampled <- attr(ts, "raw_individuals")$remembered
     if (!any(sampled)) sampled <- attr(ts, "raw_individuals")$alive
     attr(ts, "raw_individuals")$sampled <- sampled
-    attr(ts, "nodes") <- get_slim_table_data(ts)
+    attr(ts, "nodes") <- get_pyslim_table_data(ts)
   } else {
     attr(ts, "raw_individuals")$sampled <- TRUE
-    attr(ts, "nodes") <- get_msprime_table_data(ts)
+    attr(ts, "nodes") <- get_tskit_table_data(ts)
   }
 
   if (recapitate)
@@ -214,10 +207,10 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
   check_ts_class(ts)
 
   model <- attr(ts, "model")
-  backend <- attr(ts, "backend")
+  type <- attr(ts, "type")
   spatial <- attr(ts, "spatial")
 
-  if (backend == "SLiM") {
+  if (type == "SLiM") {
     # suppress pyslim warning until we figure out how to switch to the new
     # pyslim.recapitate(ts, ...) method
     reticulate::py_capture_output(
@@ -233,7 +226,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
   # copy attributes over to the new tree-sequence object or generate updates
   # ones where necessary
   attr(ts_new, "model") <- model
-  attr(ts_new, "backend") <- backend
+  attr(ts_new, "type") <- type
   attr(ts_new, "spatial") <- spatial
   attr(ts_new, "metadata") <- attr(ts, "metadata")
 
@@ -245,7 +238,9 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
   attr(ts_new, "raw_edges") <- get_ts_raw_edges(ts_new)
 
   attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
-  if (backend == "SLiM") {
+  attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
+
+  if (type == "SLiM") {
     # inherit the information about which individuals should be marked as
     # explicitly "sampled" from the previous tree sequence object (if that
     # was specified) -- this is only necessary for a SLiM sequence
@@ -253,14 +248,9 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
     sampled_ids <- old_individuals[old_individuals$sampled, ]$pedigree_id
     attr(ts_new, "raw_individuals") <- attr(ts_new, "raw_individuals") %>%
       dplyr::mutate(sampled = pedigree_id %in% sampled_ids)
-  }
-
-  attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
-
-  if (attr(ts_new, "backend") == "SLiM")
-    attr(ts_new, "nodes") <- get_slim_table_data(ts_new)
-  else
-    attr(ts_new, "nodes") <- get_msprime_table_data(ts_new)
+    attr(ts_new, "nodes") <- get_pyslim_table_data(ts_new)
+  } else
+    attr(ts_new, "nodes") <- get_tskit_table_data(ts_new)
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -318,8 +308,10 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
-  backend <- attr(ts, "backend")
+  type <- attr(ts, "type")
   spatial <- attr(ts, "spatial")
+
+  from_slendr <- !is.null(model)
 
   if (!attr(ts, "recapitated") && !keep_input_roots && !ts_coalesced(ts))
     warning("Simplifying a non-recapitated tree sequence. Make sure this is what you really want",
@@ -327,7 +319,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 
   data <- attr(ts, "nodes")
 
-  if (is.null(simplify_to) && backend == "msprime") {
+  if (is.null(simplify_to) && type == "generic") {
     warning("If you want to simplify an msprime tree sequence, you must specify\n",
             "the names of individuals to simplify to via the `simplify_to = `\n",
             "function argument.", call. = FALSE)
@@ -337,7 +329,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   if (is.null(simplify_to)) { # no individuals/nodes were given to guide the simplification
     samples <- dplyr::filter(data, sampled)$node_id # simplify to all sampled nodes
   } else if (is.character(simplify_to)) { # a vector of slendr individual names was given
-    if (is.null(model))
+    if (!from_slendr)
       stop("Symbolic character names can only be provided for slendr-generated\n",
            "tree sequences", call. = FALSE)
     if (!all(simplify_to %in% data$name))
@@ -361,7 +353,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   # copy attributes over to the new tree-sequence object or generate updates
   # ones where necessary
   attr(ts_new, "model") <- model
-  attr(ts_new, "backend") <- backend
+  attr(ts_new, "type") <- type
   attr(ts_new, "spatial") <- spatial
 
   attr(ts_new, "metadata") <- attr(ts, "metadata")
@@ -375,15 +367,16 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
   attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
 
-  # use pedigree IDs to cross-check the original data with simplified table
-  if (backend == "SLiM") {
+  # use pedigree IDs to cross-check the typeal data with simplified table
+  if (type == "SLiM") {
     # mark only explicitly simplified individuals as "sampled"
     sampled_ids <- data[data$node_id %in% samples, ]$pedigree_id
-    attr(ts_new, "raw_individuals")$sampled <- attr(ts_new, "raw_individuals")$pedigree_id %in% sampled_ids
+    attr(ts_new, "raw_individuals")$sampled <-
+      attr(ts_new, "raw_individuals")$pedigree_id %in% sampled_ids
 
-    # get the name and location from the original table with the pedigree_id key
+    # get the name and location from the typeal table with the pedigree_id key
     cols <- c("pedigree_id", "pop")
-    if (!is.null(model)) cols <- c(cols, "name")
+    if (from_slendr) cols <- c(cols, "name")
     if (spatial) cols <- c(cols, "location")
     # we need to deduplicate the rows because the table is stored in a long format
     # (but we removed the node_id column which each diploid individual has two
@@ -402,7 +395,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
     # get other data about individuals in the simplified tree sequence, sort them
     # also by their IDs and times, and add their node IDs extracted above
     # (this works because we sorted both in the same way)
-    data_new <- get_slim_table_data(ts_new, simplify_to) %>%
+    data_new <- get_pyslim_table_data(ts_new, simplify_to) %>%
       as.data.frame() %>%
       dplyr::arrange(ind_id, time) %>%
       dplyr::select(ind_id, pedigree_id, time, sampled, remembered, retained, alive) %>%
@@ -413,13 +406,13 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
     if (spatial)
       data_new <- sf::st_as_sf(data_new, crs = sf::st_crs(data))
 
-    name_col <- if (is.null(model)) NULL else "name"
+    name_col <- if (from_slendr) "name" else NULL
     attr(ts_new, "nodes") <- data_new[, c(name_col, "pop", "node_id",
                                          "time", location_col, "sampled", "remembered",
                                          "retained", "alive", "pedigree_id", "ind_id")]
   } else {
     attr(ts_new, "raw_individuals")$sampled <- TRUE
-    attr(ts_new, "nodes") <- get_msprime_table_data(ts_new, simplify_to)
+    attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
   }
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
@@ -456,11 +449,11 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
 
-  if (is.numeric(mut_type) && attr(ts, "backend") == "SLiM")
-    mut_type <- msp$SLiMMutationModel(type = as.integer(mut_type))
+  if (is.numeric(mut_type) && attr(ts, "type") == "SLiM")
+    mut_type <- slendr:::msp$SLiMMutationModel(type = as.integer(mut_type))
 
   ts_new <-
-    msp$sim_mutations(
+    slendr:::msp$sim_mutations(
       ts,
       rate = mutation_rate,
       model = mut_type,
@@ -468,12 +461,12 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
       random_seed = random_seed
     )
 
-  if (attr(ts, "backend") == "SLiM") ts_new <- pyslim$SlimTreeSequence(ts_new)
+  if (attr(ts, "type") == "SLiM") ts_new <- pyslim$SlimTreeSequence(ts_new)
 
   # copy attributes over to the new tree-sequence object or generate updates
   # ones where necessary
   attr(ts_new, "model") <- attr(ts, "model")
-  attr(ts_new, "backend") <- attr(ts, "backend")
+  attr(ts_new, "type") <- attr(ts, "type")
   attr(ts_new, "spatial") <- attr(ts, "spatial")
 
   attr(ts_new, "metadata") <- attr(ts, "metadata")
@@ -520,7 +513,7 @@ ts_genotypes <- function(ts) {
     stop("Extracting genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
 
-  backend <- attr(ts, "backend")
+  type <- attr(ts, "type")
 
   data <- ts_nodes(ts)
 
@@ -699,6 +692,8 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
                      labels = c("tskit", "pop"), quiet = FALSE) {
   labels <- match.arg(labels)
 
+  from_slendr <- !is.null(attr(ts, "model"))
+
   tree <- ts_tree(ts, i, mode)
 
   if (tree$num_roots > 1)
@@ -706,7 +701,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
          "cannot be converted to an R phylo tree representation (see the help\n",
          "page of ?ts_recapitate for more details)", call. = FALSE)
 
-  if (!attr(ts, "simplified") && attr(ts, "backend") != "msprime")
+  if (!attr(ts, "simplified") && attr(ts, "type") != "generic")
     stop("Please simplify your tree sequence down to sampled individuals\nfirst ",
          "before converting a tree to an R phylo tree object format (see the\n",
          "help page of ?ts_simplify for more details)", call. = FALSE)
@@ -718,10 +713,10 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
     dplyr::filter(node_id %in% tree$preorder())
 
   model <- attr(ts, "model")
-  backend <- attr(ts, "backend")
+  type <- attr(ts, "type")
   spatial <- attr(ts, "spatial")
 
-  if (!is.null(model))
+  if (from_slendr)
     direction <- model$direction
   else
     direction <- "backward"
@@ -744,7 +739,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   lookup_ids <- rev(seq_along(present_ids))
 
   tip_labels <- dplyr::filter(data, sampled) %>%
-    { if (is.null(model)) .$node_id else sprintf("%s (%s)", .$node_id, .$name) } %>%
+    { if (from_slendr) sprintf("%s (%s)", .$node_id, .$name) else .$node_id } %>%
     as.character() %>%
     rev()
 
@@ -797,12 +792,12 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 
   data$phylo_id <- sapply(data$node_id, function(n) lookup_ids[present_ids == n])
   columns <- c()
-  if (backend == "SLiM") {
+  if (type == "SLiM") {
     if (spatial) columns <- c(columns, "location")
     columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
   } else
     columns <- "sampled"
-  name_col <- if (is.null(model)) NULL else "name"
+  name_col <- if (from_slendr) "name" else NULL
   data <- dplyr::select(
     data, !!name_col, pop, node_id, phylo_id, time, !!columns, ind_id
   )
@@ -822,7 +817,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       )
     )
   }
-  if (backend == "SLiM" && spatial)
+  if (type == "SLiM" && spatial)
     data <- sf::st_as_sf(data)
 
   class(data) <- set_class(data, "nodes")
@@ -856,7 +851,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   attr(tree, "spatial") <- attr(ts, "spatial")
   attr(tree, "nodes") <- data
   attr(tree, "edges") <- get_annotated_edges(tree)
-  attr(tree, "backend") <- attr(ts, "backend")
+  attr(tree, "type") <- attr(ts, "type")
 
   tree
 }
@@ -919,7 +914,7 @@ ts_nodes <- function(x, sf = TRUE) {
   }
 
   attr(data, "model") <- attr(x, "model")
-  attr(data, "backend") <- attr(x, "backend")
+  attr(data, "type") <- attr(x, "type")
 
   class(data) <- set_class(data, "nodes")
 
@@ -1010,6 +1005,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
+  from_slendr <- !is.null(model)
 
   edges <- ts_table(ts, "edges")
   data <- ts_nodes(ts)
@@ -1047,8 +1043,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
         dplyr::mutate(pop = dplyr::filter(data, node_id == .y)$pop[1],
                                           node_id = .y)
 
-      if (!is.null(model))
-        result$name <- data[data$node_id == .y, ]$name
+      if (from_slendr) result$name <- data[data$node_id == .y, ]$name
 
       result
     })
@@ -1083,7 +1078,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
   } else
     location_col <- NULL
 
-  if (is.null(model))
+  if (from_slendr)
     name_col <- NULL
   else {
     name_col <- "name"
@@ -1124,6 +1119,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
+  from_slendr <- !is.null(model)
 
   edges <- ts_table(ts, "edges")
   data <- ts_nodes(ts)
@@ -1184,7 +1180,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
   } else
     location_col <- NULL
 
-  if (is.null(model))
+  if (from_slendr)
     name_col <- NULL
   else {
     name_col <- "name"
@@ -1290,7 +1286,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
   tmp_file <- paste0(tempfile(), ".png")
   rsvg::rsvg_png(svg = raw, file = tmp_file, width = width, height = height)
 
-  # set margins to zero, save original settings
+  # set margins to zero, save typeal settings
   orig_par <- graphics::par(mar = c(0, 0, 0, 0))
 
   # plot the PNG image, filling the entire plotting window
@@ -1299,7 +1295,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
   graphics::plot.window(0:1, 0:1)
   graphics::rasterImage(img, 0, 0, 1, 1)
 
-  # restor original settings
+  # restor typeal settings
   graphics::par(orig_par)
 }
 
@@ -1760,11 +1756,12 @@ get_ts_raw_nodes <- function(ts) {
 
   # in case of slendr tree sequences, convert times to the model time units
   model <- attr(ts, "model")
-  if (!is.null(model)) {
+  if (is.null(model))
+    node_table$time <- table$time
+  else {
     node_table$time <- time_fun(ts)(table$time, model)
     node_table$time_tskit <- table$time
-  } else
-    node_table$time <- table$time
+  }
 
   node_table
 }
@@ -1772,6 +1769,7 @@ get_ts_raw_nodes <- function(ts) {
 # Extract information from the table of individual table
 get_ts_raw_individuals <- function(ts) {
   model <- attr(ts, "model")
+  from_slendr <- !is.null(model)
 
   table <- ts$tables$individuals
 
@@ -1779,7 +1777,7 @@ get_ts_raw_individuals <- function(ts) {
     ind_id = seq_len(ts$num_individuals) - 1
   )
 
-  if (attr(ts, "backend") == "SLiM") {
+  if (attr(ts, "type") == "SLiM") {
     # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id'] for ind in ts.individuals()]")
 
     ind_table <- dplyr::tibble(
@@ -1794,27 +1792,26 @@ get_ts_raw_individuals <- function(ts) {
       retained = bitwAnd(table[["flags"]], pyslim$INDIVIDUAL_RETAINED) != 0
     )
 
-  if (!is.null(model)) {
-    ind_table$time <- time_fun(ts)(ts$individual_times, model)
-    ind_table$time_tskit <- ts$individual_times
-  } else
-    ind_table$time <- ts$individual_times
+    if (from_slendr) {
+      ind_table$time <- time_fun(ts)(ts$individual_times, model)
+      ind_table$time_tskit <- ts$individual_times
+    } else
+      ind_table$time <- ts$individual_times
+  } else { # msprime tree-sequence table
+    nodes_table <- dplyr::tibble(
+      ind_id = ts$tables$nodes$individual,
+      pop_id = ts$tables$nodes$population
+    )
 
-  } else {
-      nodes_table <- dplyr::tibble(
-        ind_id = ts$tables$nodes$individual,
-        pop_id = ts$tables$nodes$population
-      )
+    if (from_slendr) {
+      nodes_table$time <- time_fun(ts)(ts$tables$nodes$time, model)
+      nodes_table$time_tskit <- ts$tables$nodes$time
+    } else
+      nodes_table$time <- ts$tables$nodes$time
 
-      if (!is.null(model)) {
-        nodes_table$time <- time_fun(ts)(ts$tables$nodes$time, model)
-        nodes_table$time_tskit <- ts$tables$nodes$time
-      } else
-        nodes_table$time <- ts$tables$nodes$time
+    nodes_table <- dplyr::distinct(nodes_table)
 
-      nodes_table <- dplyr::distinct(nodes_table)
-
-      ind_table <- dplyr::inner_join(ind_table, nodes_table, by = "ind_id")
+    ind_table <- dplyr::inner_join(ind_table, nodes_table, by = "ind_id")
   }
 
   ind_table %>% dplyr::select(ind_id, time, dplyr::everything())
@@ -1849,42 +1846,42 @@ get_ts_raw_mutations <- function(ts) {
 }
 
 time_fun <- function(ts) {
-  if (attr(ts, "backend") == "SLiM")
+  if (attr(ts, "type") == "SLiM")
     convert_slim_time
   else
     convert_msprime_time
 }
 
-get_slim_table_data <- function(ts, simplify_to = NULL) {
+get_pyslim_table_data <- function(ts, simplify_to = NULL) {
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
+  from_slendr <- !is.null(model)
 
-  # get data from the original individual table
+  # get data from the typeal individual table
   individuals <- attr(ts, "raw_individuals")
 
-  # get data from the original nodes table to get node assignments for each
+  # get data from the typeal nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
   nodes <- get_ts_raw_nodes(ts)
 
   # assign symbolic names to to the population column
-  if (is.null(model)) {
+  if (from_slendr) {
+    individuals$pop <- model$splits$pop[individuals$pop_id + 1]
+    nodes$pop <- model$splits$pop[nodes$pop_id + 1]
+  } else {
     pop_table <- ts$tables$populations
     pop_present <- unlist(sapply(seq_along(pop_table), function(i) !is.null(pop_table[i - 1]$metadata)))
     pop_names <- rep("", length(pop_table))
     pop_names[pop_present] <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
     individuals$pop <- pop_names[individuals$pop_id + 1]
     nodes$pop <- pop_names[nodes$pop_id + 1]
-  } else {
-    individuals$pop <- model$splits$pop[individuals$pop_id + 1]
-    nodes$pop <- model$splits$pop[nodes$pop_id + 1]
   }
 
   individuals <- dplyr::arrange(individuals, -time, pop)
 
-  # load information about samples at times and from populations of remembered
-  # individuals
-  if (!is.null(model)) {
+  # load information about samples at times and from populations of remembered individuals
+  if (from_slendr) {
     samples <- attr(ts, "metadata")$sampling %>% dplyr::arrange(-time, pop)
     if (!is.null(simplify_to))
       samples <- samples %>% dplyr::filter(name %in% simplify_to)
@@ -1915,7 +1912,7 @@ get_slim_table_data <- function(ts, simplify_to = NULL) {
   } else
     location_cols <- NULL
 
-  if (!is.null(model)) {
+  if (from_slendr) {
     combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
     slendr_cols <- c("name", "pop")
   } else
@@ -1932,34 +1929,35 @@ get_slim_table_data <- function(ts, simplify_to = NULL) {
     dplyr::as_tibble(combined)
 }
 
-get_msprime_table_data <- function(ts, simplify_to = NULL) {
+get_tskit_table_data <- function(ts, simplify_to = NULL) {
   model <- attr(ts, "model")
+  from_slendr <- !is.null(model)
 
-  # get data from the original individual table
+  # get data from the typeal individual table
   individuals <- attr(ts, "raw_individuals")
 
-  # get data from the original nodes table to get node assignments for each
+  # get data from the typeal nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
   nodes <- get_ts_raw_nodes(ts)
 
-  # assign symbolic names to to the population column
-  if (is.null(model)) {
+  # assign symbolic names to the population column
+  if (from_slendr) {
+    individuals$pop <- model$splits$pop[individuals$pop_id + 1]
+    nodes$pop <- model$splits$pop[nodes$pop_id + 1]
+  } else {
     pop_table <- ts$tables$populations
     pop_names <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
     individuals$pop <- pop_names[individuals$pop_id + 1]
     nodes$pop <- pop_names[nodes$pop_id + 1]
-  } else {
-    individuals$pop <- model$splits$pop[individuals$pop_id + 1]
-    nodes$pop <- model$splits$pop[nodes$pop_id + 1]
   }
 
   individuals <- dplyr::arrange(individuals, -time, pop)
 
   # load information about samples at times and from populations of remembered
   # individuals
-  samples <- attr(ts, "metadata")$sampling
-  if (!is.null(samples)) {
+  if (from_slendr) {
+    samples <- attr(ts, "metadata")$sampling
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
     samples <- dplyr::arrange(samples, -time, pop)
@@ -1971,12 +1969,12 @@ get_msprime_table_data <- function(ts, simplify_to = NULL) {
     dplyr::right_join(nodes, by = "ind_id") %>%
     dplyr::mutate(pop = pop.y)
 
-  if (is.null(model))
-    name_col <- NULL
-  else {
+  if (from_slendr) {
     combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
     name_col <- "name"
-  }
+  } else
+    name_col <- NULL
+
   combined %>%
     dplyr::select(!!name_col, pop, ind_id, node_id, time, sampled, pop_id) %>%
     dplyr::mutate(sampled = !is.na(sampled))
@@ -1986,6 +1984,7 @@ get_annotated_edges <- function(x) {
   data <- ts_nodes(x) %>% dplyr::as_tibble()
   source <- if (inherits(x, "slendr_phylo")) "tree" else "tskit"
   spatial <- attr(x, "spatial")
+  from_slendr <- !is.null(attr(x, "model"))
 
   if (spatial && any(sf::st_is_empty(data$location))) {
     warning("Not all nodes have a known spatial location. Maybe you ran a neutral\n",
@@ -2083,13 +2082,13 @@ get_annotated_edges <- function(x) {
   model <- attr(x, "model")
 
   if (spatial) {
-    crs <- if (is.null(model)) NA else sf::st_crs(model$world)
+    crs <- if (from_slendr) sf::st_crs(model$world) else NA
     edges <- sf::st_set_geometry(edges, "connection") %>%
       sf::st_set_crs(crs)
   } else
     edges[, c("connection", "parent_location", "child_location")] <- NULL
 
-  if (!is.null(model)) {
+  if (from_slendr) {
     pop_names <- order_pops(model$populations, model$direction)
     edges$child_pop <- factor(edges$child_pop, levels = pop_names)
     edges$parent_pop <- factor(edges$parent_pop, levels = pop_names)
@@ -2253,11 +2252,15 @@ get_sampling <- function(metadata) {
     dplyr::select(name, time, pop)
 }
 
-# Extract list with slendr metadata (created as Eidos Dictionaries by SLiM)
+# Extract list with slendr metadata (created as Eidos Dictionaries by SLiM and Python
+# dictionaries by the msprime simulation script)
 get_slendr_metadata <- function(ts) {
+  # custom slendr metadata is only present in tree sequences coming from slendr models
+  if (is.null(attr(ts, "model"))) return(NULL)
+
   # SLiM forces metadata into a certain structure, so the slendr metadata
-  # must be extracted differently for the two backends
-  if (attr(ts, "backend") == "SLiM") {
+  # must be extracted differently for the two types
+  if (attr(ts, "type") == "SLiM") {
     metadata <- ts$metadata$SLiM$user_metadata$slendr[[1]]
     arguments <- metadata$arguments[[1]]
   } else {
@@ -2283,20 +2286,21 @@ get_biallelic_indices <- function(ts) {
 # Convert a data frame of information extracted from a tree sequence
 # table to an sf spatial object
 convert_to_sf <- function(df, model) {
-  crs <- if (is.null(model)) NA else sf::st_crs(model$world)
+  from_slendr <- !is.null(model)
+
+  crs <- if (from_slendr) sf::st_crs(model$world) else NA
 
   with_locations <- df[stats::complete.cases(df[, c("raster_x", "raster_y")]), ]
   without_locations <- df[!stats::complete.cases(df[, c("raster_x", "raster_y")]), ]
 
-  if (is.null(model)) {
-    with_locations <- dplyr::rename(with_locations, x = raster_x, y = raster_y)
-  } else {
-    # reproject coordinates to the original crs
+  if (from_slendr) {
+    # reproject coordinates to the typeal crs
     with_locations <- reproject(
       from = "raster", to = crs, coords = with_locations, model = model,
       input_prefix = "raster_", output_prefix = "", add = TRUE
     )
-  }
+  } else
+    with_locations <- dplyr::rename(with_locations, x = raster_x, y = raster_y)
 
   result <- sf::st_as_sf(with_locations,
                          coords = c("x", "y"),
