@@ -94,16 +94,18 @@ print.slendr_model <- function(x, ...) {
 #' @export
 print.slendr_nodes <- function(x, ...) {
   model <- attr(x, "model")
-  backend <- attr(x, "backend")
+  type <- attr(x, "type")
+
+  from_slendr <- !is.null(model)
 
   sep <- print_header_info(x)
 
-  if (is.null(model)) {
-    direction <- if (backend == "msprime") "backward" else "forward"
-  } else
+  if (from_slendr)
     direction <- model$direction
+  else
+    direction <- if (type == "SLiM") "forward" else "backward"
 
-  cat("data was extracted from a", backend, direction, "time model\n\n")
+  cat("times are expressed in ", direction, "time direction\n\n")
 
   cat("summary of the table data contents:\n")
 
@@ -111,7 +113,7 @@ print.slendr_nodes <- function(x, ...) {
     dplyr::filter(!is.na(ind_id)) %>%
     dplyr::distinct(ind_id, .keep_all = TRUE)
 
-  if (backend == "SLiM") {
+  if (type == "SLiM") {
     remembered <- individuals %>%
       dplyr::filter(sampled) %>%
       dplyr::group_by(pop) %>%
@@ -158,7 +160,7 @@ print.slendr_nodes <- function(x, ...) {
 
   cat(sep)
 
-  if (!is.null(model))
+  if (from_slendr)
     ts_direction <- model$direction
   else
     ts_direction <- "backward"
