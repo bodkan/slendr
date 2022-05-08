@@ -293,7 +293,7 @@ analyse tree-sequence outputs and compute population genetic statistics
 from them (this important feature is demonstrated in <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">this
 tutorial</a>).</p>
 <div class="section level4">
-<h4 id="1-setup-the-spatial-context">1. Setup the spatial context<a class="anchor" aria-label="anchor" href="#1-setup-the-spatial-context"></a>
+<h4 id="id_1-setup-the-spatial-context">1. Setup the spatial context<a class="anchor" aria-label="anchor" href="#id_1-setup-the-spatial-context"></a>
 </h4>
 <p>Imagine that we wanted to simulate spatio-temporal genomic data from
 a toy model of the history of modern humans in West Eurasia after the
@@ -323,7 +323,7 @@ user-defined landscape features such as continents, islands, corridors
 and barriers).</p>
 </div>
 <div class="section level4">
-<h4 id="2-define-broader-geographic-regions">2. Define broader geographic regions<a class="anchor" aria-label="anchor" href="#2-define-broader-geographic-regions"></a>
+<h4 id="id_2-define-broader-geographic-regions">2. Define broader geographic regions<a class="anchor" aria-label="anchor" href="#id_2-define-broader-geographic-regions"></a>
 </h4>
 <p>In order to make the definitions of population ranges (below) easier,
 we can define smaller regions on the map using the function
@@ -366,7 +366,7 @@ visualize these objects, making sure we specified them correctly:</p>
 </div>
 </div>
 <div class="section level4">
-<h4 id="3-define-demographic-history-and-population-boundaries">3. Define demographic history and population boundaries<a class="anchor" aria-label="anchor" href="#3-define-demographic-history-and-population-boundaries"></a>
+<h4 id="id_3-define-demographic-history-and-population-boundaries">3. Define demographic history and population boundaries<a class="anchor" aria-label="anchor" href="#id_3-define-demographic-history-and-population-boundaries"></a>
 </h4>
 <p>The most important function in the <em>slendr</em> package is
 <code><a href="reference/population.html">population()</a></code>, which is used to define names, split times,
@@ -433,7 +433,7 @@ the model so far (prior to the simulation itself).</p>
 </div>
 </div>
 <div class="section level4">
-<h4 id="4-define-gene-flow-events">4. Define gene-flow events<a class="anchor" aria-label="anchor" href="#4-define-gene-flow-events"></a>
+<h4 id="id_4-define-gene-flow-events">4. Define gene-flow events<a class="anchor" aria-label="anchor" href="#id_4-define-gene-flow-events"></a>
 </h4>
 <p>By default, populations in <em>slendr</em> do not mix even if they
 are overlapping. In order to schedule an gene-flow event between two
@@ -448,7 +448,7 @@ a simple R list:</p>
 <span class="op">)</span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="5-compile-the-model-to-a-set-of-configuration-files">5. Compile the model to a set of configuration files<a class="anchor" aria-label="anchor" href="#5-compile-the-model-to-a-set-of-configuration-files"></a>
+<h4 id="id_5-compile-the-model-to-a-set-of-configuration-files">5. Compile the model to a set of configuration files<a class="anchor" aria-label="anchor" href="#id_5-compile-the-model-to-a-set-of-configuration-files"></a>
 </h4>
 <p>Before we run the simulation, we compile all individual model
 components (population objects and gene-flow events) to a single R
@@ -471,7 +471,7 @@ different functions. In this example, we will simulate data with the
 the coalescent engine via the <code><a href="reference/msprime.html">msprime()</a></code> function).</p>
 </div>
 <div class="section level4">
-<h4 id="6-visualize-the-model">6. Visualize the model<a class="anchor" aria-label="anchor" href="#6-visualize-the-model"></a>
+<h4 id="id_6-visualize-the-model">6. Visualize the model<a class="anchor" aria-label="anchor" href="#id_6-visualize-the-model"></a>
 </h4>
 <p>The package provides an <a href="https://shiny.rstudio.com" class="external-link">R
 shiny</a>-based browser app <code><a href="reference/explore_model.html">explore_model()</a></code> for checking
@@ -488,7 +488,7 @@ events) embedded in the specified model:</p>
 <p><img src="reference/figures/shiny_graph.jpg"></p>
 </div>
 <div class="section level4">
-<h4 id="7-run-the-model-in-slim">7. Run the model in SLiM<a class="anchor" aria-label="anchor" href="#7-run-the-model-in-slim"></a>
+<h4 id="id_7-run-the-model-in-slim">7. Run the model in SLiM<a class="anchor" aria-label="anchor" href="#id_7-run-the-model-in-slim"></a>
 </h4>
 <p>Finally, we can execute the compiled model in SLiM. Here we run the
 simulation in a batch mode, but we could also run it in SLiMgui by
