@@ -1078,16 +1078,15 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
   } else
     location_col <- NULL
 
-  if (from_slendr)
-    name_col <- NULL
-  else {
+  if (from_slendr) {
     name_col <- "name"
     pop_names <- order_pops(model$populations, model$direction)
     combined <- combined %>%
       dplyr::mutate(pop = factor(pop, levels = pop_names),
                     child_pop = factor(child_pop, levels = pop_names),
                     parent_pop = factor(parent_pop, levels = pop_names))
-  }
+  } else
+    name_col <- NULL
 
   combined <- dplyr::select(combined,
                             !!name_col, pop, node_id, level,
@@ -1180,9 +1179,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
   } else
     location_col <- NULL
 
-  if (from_slendr)
-    name_col <- NULL
-  else {
+  if (from_slendr) {
     name_col <- "name"
     pop_names <- order_pops(model$populations, model$direction)
     combined <- combined %>%
@@ -1190,7 +1187,8 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
                     child_pop = factor(child_pop, levels = pop_names),
                     parent_pop = factor(parent_pop, levels = pop_names),
                     name = sapply(child_id, function(i) data[data$node_id == i, ]$name[1]))
-  }
+  } else
+    name_col <- NULL
 
   combined <- dplyr::select(combined,
                             !!name_col, pop, node_id, level,
