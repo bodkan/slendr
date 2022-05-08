@@ -2,7 +2,8 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_samples}
 \alias{ts_samples}
-\title{Extract names and times of individuals scheduled for sampling}
+\title{Extract names and times of individuals of interest in the current tree sequence
+(either all sampled individuals or those that the user simplified to)}
 \usage{
 ts_samples(ts)
 }
@@ -10,5 +11,6 @@ ts_samples(ts)
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 }
 \description{
-Extract names and times of individuals scheduled for sampling
+Extract names and times of individuals of interest in the current tree sequence
+(either all sampled individuals or those that the user simplified to)
 }
