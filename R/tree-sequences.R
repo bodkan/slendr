@@ -23,8 +23,8 @@
 #'   specified by the argument \code{source}. If missing, an attempt will be
 #'   made to search for a tree-sequence file in the model directory.
 #' @param recapitate Should the tree sequence be recapitated?
-#' @param simplify Should the tree sequence be simplified down to only
-#'   explicitly sampled individuals?
+#' @param simplify Should the tree sequence be simplified down to a set of focal
+#'   individuals (those explicitly recorded)?
 #' @param mutate Should the tree sequence be mutated?
 #' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
 #' @param mutation_rate Mutation rate passed to \code{ts_mutate}
@@ -148,12 +148,12 @@ ts_load <- function(source = NULL, file = NULL,
   attr(ts, "raw_mutations") <- get_ts_raw_mutations(ts)
 
   if (type == "SLiM") {
-    sampled <- attr(ts, "raw_individuals")$remembered
-    if (!any(sampled)) sampled <- attr(ts, "raw_individuals")$alive
-    attr(ts, "raw_individuals")$sampled <- sampled
+    focal <- attr(ts, "raw_individuals")$remembered
+    if (!any(focal)) focal <- attr(ts, "raw_individuals")$alive
+    attr(ts, "raw_individuals")$focal <- focal
     attr(ts, "nodes") <- get_pyslim_table_data(ts)
   } else {
-    attr(ts, "raw_individuals")$sampled <- TRUE
+    attr(ts, "raw_individuals")$focal <- TRUE
     attr(ts, "nodes") <- get_tskit_table_data(ts)
   }
 
@@ -242,12 +242,12 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 
   if (type == "SLiM") {
     # inherit the information about which individuals should be marked as
-    # explicitly "sampled" from the previous tree sequence object (if that
+    # explicitly "focal" from the previous tree sequence object (if that
     # was specified) -- this is only necessary for a SLiM sequence
     old_individuals <- attr(ts, "raw_individuals")
-    sampled_ids <- old_individuals[old_individuals$sampled, ]$pedigree_id
+    focal_ids <- old_individuals[old_individuals$focal, ]$pedigree_id
     attr(ts_new, "raw_individuals") <- attr(ts_new, "raw_individuals") %>%
-      dplyr::mutate(sampled = pedigree_id %in% sampled_ids)
+      dplyr::mutate(focal = pedigree_id %in% focal_ids)
     attr(ts_new, "nodes") <- get_pyslim_table_data(ts_new)
   } else
     attr(ts_new, "nodes") <- get_tskit_table_data(ts_new)
@@ -292,10 +292,10 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #'   map
 #'
 #' @examples
-#' \dontrun{ # simplify tree sequence to sampled individuals
+#' \dontrun{ # simplify tree sequence to focal individuals
 #' ts_simplified <- ts_simplify(ts)
 #'
-#' # simplify to a subset of sampled individuals
+#' # simplify to a subset of focal individuals
 #' ts_small <- ts_simplify(
 #'   ts,
 #'   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
@@ -327,7 +327,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   }
 
   if (is.null(simplify_to)) { # no individuals/nodes were given to guide the simplification
-    samples <- dplyr::filter(data, sampled)$node_id # simplify to all sampled nodes
+    samples <- dplyr::filter(data, focal)$node_id # simplify to all focal nodes
   } else if (is.character(simplify_to)) { # a vector of slendr individual names was given
     if (!from_slendr)
       stop("Symbolic character names can only be provided for slendr-generated\n",
@@ -338,9 +338,9 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
           call. = FALSE)
     samples <- dplyr::filter(data, name %in% simplify_to)$node_id
   } else if (is.numeric(simplify_to)) {
-    if (!all(simplify_to %in% data[data$sampled, ]$node_id))
-      stop("The following nodes are not among sampled nodes: ",
-          paste0(simplify_to[!simplify_to %in% data[data$sampled, ]$node_id], collapse = ", "),
+    if (!all(simplify_to %in% data[data$focal, ]$node_id))
+      stop("The following nodes are not among focal nodes: ",
+          paste0(simplify_to[!simplify_to %in% data[data$focal, ]$node_id], collapse = ", "),
           call. = FALSE)
     samples <- simplify_to
   } else
@@ -369,10 +369,10 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 
   # use pedigree IDs to cross-check the typeal data with simplified table
   if (type == "SLiM") {
-    # mark only explicitly simplified individuals as "sampled"
-    sampled_ids <- data[data$node_id %in% samples, ]$pedigree_id
-    attr(ts_new, "raw_individuals")$sampled <-
-      attr(ts_new, "raw_individuals")$pedigree_id %in% sampled_ids
+    # mark only explicitly simplified individuals as "focal"
+    focal_ids <- data[data$node_id %in% samples, ]$pedigree_id
+    attr(ts_new, "raw_individuals")$focal <-
+      attr(ts_new, "raw_individuals")$pedigree_id %in% focal_ids
 
     # get the name and location from the typeal table with the pedigree_id key
     cols <- c("pedigree_id", "pop")
@@ -398,7 +398,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
     data_new <- get_pyslim_table_data(ts_new, simplify_to) %>%
       as.data.frame() %>%
       dplyr::arrange(ind_id, time) %>%
-      dplyr::select(ind_id, pedigree_id, time, sampled, remembered, retained, alive) %>%
+      dplyr::select(ind_id, pedigree_id, time, focal, remembered, retained, alive) %>%
       dplyr::inner_join(keep_data, by = "pedigree_id") %>%
       dplyr::mutate(node_id = nodes_new) %>%
       dplyr::as_tibble()
@@ -408,10 +408,10 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 
     name_col <- if (from_slendr) "name" else NULL
     attr(ts_new, "nodes") <- data_new[, c(name_col, "pop", "node_id",
-                                         "time", location_col, "sampled", "remembered",
+                                         "time", location_col, "focal", "remembered",
                                          "retained", "alive", "pedigree_id", "ind_id")]
   } else {
-    attr(ts_new, "raw_individuals")$sampled <- TRUE
+    attr(ts_new, "raw_individuals")$focal <- TRUE
     attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
   }
 
@@ -702,7 +702,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
          "page of ?ts_recapitate for more details)", call. = FALSE)
 
   if (!attr(ts, "simplified") && attr(ts, "type") != "generic")
-    stop("Please simplify your tree sequence down to sampled individuals\nfirst ",
+    stop("Please simplify your tree sequence down to focal individuals\nfirst ",
          "before converting a tree to an R phylo tree object format (see the\n",
          "help page of ?ts_simplify for more details)", call. = FALSE)
 
@@ -722,23 +722,23 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
     direction <- "backward"
 
   if (direction == "forward")
-    data <- dplyr::arrange(data, sampled, time)
+    data <- dplyr::arrange(data, focal, time)
   else
-    data <- dplyr::arrange(data, sampled, -time)
+    data <- dplyr::arrange(data, focal, -time)
 
   # convert the edge table to a proper ape phylo object
   # see http://ape-package.ird.fr/misc/FormatTreeR.pdf for more details
-  n_tips <- sum(data$sampled, na.rm = TRUE)
+  n_tips <- sum(data$focal, na.rm = TRUE)
   n_internal <- nrow(data) - n_tips
   n_all <- n_internal + n_tips; stopifnot(n_all == nrow(data))
 
   present_ids <- data$node_id
   # design a lookup table of consecutive integer numbers (reversing it because
-  # in the ordered tree sequence table of nodes `data`, the sampled nodes which
+  # in the ordered tree sequence table of nodes `data`, the focal nodes which
   # will become the tips of the tree are at the end)
   lookup_ids <- rev(seq_along(present_ids))
 
-  tip_labels <- dplyr::filter(data, sampled) %>%
+  tip_labels <- dplyr::filter(data, focal) %>%
     { if (from_slendr) sprintf("%s (%s)", .$node_id, .$name) else .$node_id } %>%
     as.character() %>%
     rev()
@@ -753,9 +753,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   children <- sapply(child_ids, function(n) lookup_ids[present_ids == n])
   parents <- sapply(parent_ids, function(n) lookup_ids[present_ids == n])
 
-  # find which sampled nodes are not leaves:
+  # find which focal nodes are not leaves:
   # - first look for those nodes in the tree sequence node IDs
-  internal_ts_samples <- intersect(parent_ids, data[data$sampled, ]$node_id)
+  internal_ts_samples <- intersect(parent_ids, data[data$focal, ]$node_id)
   # - then convert them to the phylo numbering
   internal_phylo_samples <- sapply(internal_ts_samples, function(n) lookup_ids[present_ids == n])
 
@@ -763,11 +763,11 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   # proper leaves
   dummies <- vector(mode = "integer", length(internal_ts_samples))
   if (length(dummies) > 0)
-    warning("Some sampled nodes in the tree are internal nodes (i.e. represent ancestors\n",
-            "of some sampled nodes forming the tips of the tree). This is not permitted\n",
+    warning("Some focal nodes in the tree are internal nodes (i.e. represent ancestors\n",
+            "of some focal nodes forming the tips of the tree). This is not permitted\n",
             "by standard phylogenetic tree framework such as that implemented by the ape\n",
             "R package, which assumes that samples are present at the tips of a tree.\n",
-            "To circumvent this problem, these sampled internal nodes have been\n",
+            "To circumvent this problem, these focal internal nodes have been\n",
             "attached to the tree via zero-length branches linking them to 'dummy' nodes.\n",
             "In total ", length(dummies), " of such nodes have been created and they are ",
             "indicated by `phylo_id`\nvalues larger than ", n_all, ".", call. = FALSE)
@@ -778,7 +778,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
     node_parent <- lookup_ids[present_ids == tree$parent(ts_node)]
     node_children <- sapply(unlist(tree$children(ts_node)), function(n) lookup_ids[present_ids == n])
 
-    # replace the sampled node with a dummy node, linking to its parent and
+    # replace the focal node with a dummy node, linking to its parent and
     # children (all done in the phylo index space)
     parents[children %in% node_children] <- dummy
     children[children == phylo_node] <- dummy
@@ -803,9 +803,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   columns <- c()
   if (type == "SLiM") {
     if (spatial) columns <- c(columns, "location")
-    columns <- c(columns, c("sampled", "remembered", "retained", "alive", "pedigree_id"))
+    columns <- c(columns, c("focal", "remembered", "retained", "alive", "pedigree_id"))
   } else
-    columns <- "sampled"
+    columns <- "focal"
   name_col <- if (from_slendr) "name" else NULL
   data <- dplyr::select(
     data, !!name_col, pop, node_id, phylo_id, time, !!columns, ind_id
@@ -918,7 +918,7 @@ ts_nodes <- function(x, sf = TRUE) {
 
     data <- sf::st_drop_geometry(data) %>% dplyr::select(
       !!columns, node_id, time, x, y,
-      sampled, remembered, retained, alive, pedigree_id, ind_id
+      focal, remembered, retained, alive, pedigree_id, ind_id
     )
   }
 
@@ -983,7 +983,7 @@ ts_edges <- function(x) {
 }
 
 #' Extract names and times of individuals of interest in the current tree sequence
-#' (either all sampled individuals or those that the user simplified to)
+#' (either all focal individuals or those that the user simplified to)
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @export
 ts_samples <- function(ts) {
@@ -992,7 +992,7 @@ ts_samples <- function(ts) {
          "from a slendr model. To access information about times and\nlocations ",
          "of nodes and individuals from non-slendr tree sequences,\nuse the ",
          "function ts_nodes().\n", call. = FALSE)
-  data <- ts_nodes(ts) %>% dplyr::filter(sampled, !is.na(name))
+  data <- ts_nodes(ts) %>% dplyr::filter(focal, !is.na(name))
   attr(ts, "metadata")$sampling %>%
     dplyr::filter(name %in% data$name)
 }
@@ -1262,14 +1262,14 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @param x A single tree extracted by \code{\link{ts_tree}}
 #' @param width,height Pixel dimensions of the rendered bitmap
 #' @param labels Label each node with the individual name?
-#' @param sampled_only Should only individuals explicitly sampled through
-#'   simplification be labeled? This is relevant in situations in which sampled
+#' @param focal_only Should only individuals explicitly focal through
+#'   simplification be labeled? This is relevant in situations in which focal
 #'   individuals can themselves be among the ancestral nodes.
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
 #'
 #' @export
 ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
-                    sampled_only = TRUE, ...) {
+                    focal_only = TRUE, ...) {
   if (!"rsvg" %in% utils::installed.packages()[, 1])
     stop("For plotting trees using the native SVG tskit capabilities, please\n",
          "install the R package rsvg by calling `install.packages(\"rsvg\")")
@@ -1277,10 +1277,10 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
   if (labels) {
     ts <- attr(x, "tree_sequence")
     df_labels <- ts_nodes(ts) %>%
-      dplyr::select(node_id, name, sampled) %>%
+      dplyr::select(node_id, name, focal) %>%
       dplyr::mutate(node_label = ifelse(!is.na(name), sprintf("%s (%s)", name, node_id), node_id))
-    if (sampled_only)
-      df_labels$node_label <- ifelse(!df_labels$sampled, df_labels$node_id, df_labels$node_label)
+    if (focal_only)
+      df_labels$node_label <- ifelse(!df_labels$focal, df_labels$node_id, df_labels$node_label)
 
     py_labels <- reticulate::py_dict(keys = df_labels$node_id,
                                      values = df_labels$node_label)
@@ -1535,7 +1535,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of divergence values (one for each window)
 #'
 #' @examples
-#' \dontrun{ #' # collect sampled individuals from all populations in a list
+#' \dontrun{ #' # collect focal individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
 #'   split(., .$pop) %>%
 #'   lapply(function(pop) pop$name)
@@ -1623,7 +1623,7 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of diversity values (one for each window)
 #'
 #' @examples
-#' \dontrun{ #' # collect sampled individuals from all populations in a list
+#' \dontrun{ #' # collect focal individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
 #'   split(., .$pop) %>%
 #'   lapply(function(pop) pop$name)
@@ -1739,7 +1739,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 # Function for extracting numerical node IDs for various statistics
 get_node_ids <- function(ts, x) {
   if (is.null(x)) {
-    ids <- ts_nodes(ts) %>% .[.$sampled, ]$node_id
+    ids <- ts_nodes(ts) %>% .[.$focal, ]$node_id
   } else if (is.character(x)) {
     ids <- ts_nodes(ts) %>% dplyr::filter(name %in% x) %>% .$node_id
   } else if (is.numeric(x)) {
@@ -1894,24 +1894,24 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
     if (!is.null(simplify_to))
       samples <- samples %>% dplyr::filter(name %in% simplify_to)
   } else
-    samples <- dplyr::filter(individuals, sampled) %>% dplyr::select(time, pop)
+    samples <- dplyr::filter(individuals, focal) %>% dplyr::select(time, pop)
 
-  # split individuals into sampled (those explicitly sampled, to which we
-  # will add readable names from the sampling schedule table) and not sampled
+  # split individuals into focal (those explicitly sampled, to which we
+  # will add readable names from the sampling schedule table) and not focal
   # (either "anonymous" individuals or also remembered individuals which should
   # not be regarded for simplification)
-  sampled <- dplyr::filter(individuals, sampled) %>%
+  focal <- dplyr::filter(individuals, focal) %>%
     dplyr::select(-time, -pop) %>%
     dplyr::bind_cols(samples)
 
-  not_sampled <- dplyr::filter(individuals, !sampled)
+  not_focal <- dplyr::filter(individuals, !focal)
 
   # add numeric node IDs to each individual
   combined <-
-    dplyr::bind_rows(sampled, not_sampled) %>%
+    dplyr::bind_rows(focal, not_focal) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
     dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x),
-                  sampled = ifelse(is.na(ind_id), FALSE, sampled)) %>%
+                  focal = ifelse(is.na(ind_id), FALSE, focal)) %>%
     dplyr::rename(pop = pop.y, pop_id = pop_id.y)
 
   if (spatial) {
@@ -1928,7 +1928,7 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
 
   combined <- dplyr::select(
     combined, !!slendr_cols, node_id, time, !!location_cols,
-    sampled, remembered, retained, alive, pedigree_id, pop_id, ind_id
+    focal, remembered, retained, alive, pedigree_id, pop_id, ind_id
   )
 
   if (spatial)
@@ -1969,7 +1969,7 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
     samples <- dplyr::arrange(samples, -time, pop)
-    individuals <- dplyr::mutate(individuals, name = samples$name, sampled = TRUE)
+    individuals <- dplyr::mutate(individuals, name = samples$name, focal = TRUE)
   }
 
   # add numeric node IDs to each individual
@@ -1984,8 +1984,8 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     name_col <- NULL
 
   combined %>%
-    dplyr::select(!!name_col, pop, ind_id, node_id, time, sampled, pop_id) %>%
-    dplyr::mutate(sampled = !is.na(sampled))
+    dplyr::select(!!name_col, pop, ind_id, node_id, time, focal, pop_id) %>%
+    dplyr::mutate(focal = !is.na(focal))
 }
 
 get_annotated_edges <- function(x) {
@@ -2205,7 +2205,6 @@ collect_descendants <- function(x, edges) {
     result[[length(result) + 1]] <- item
 
     for (child in split(item, item$child)) {
-      # browser()
       #cat("queue ", i, " parent ", (p <- i + 1), "\n")
       # get edges leading from the current child to its own children
       edge <- edges[edges$parent == child$child, ]

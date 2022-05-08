@@ -20,6 +20,7 @@ simulate_slim_ts <- function(N) {
   	sim.addSubpop("p0", %d);
   }
   100 late() {
+    sim.treeSeqRememberIndividuals(sim.subpopulations.individuals);
   	sim.treeSeqOutput("%s");
   }
   ', N, ts_file), script_file)
@@ -35,21 +36,21 @@ simulate_msprime_ts <- function(N) {
 }
 
 # Make sure the unsimplified tree sequence has the same set of nodes as
-# what we extracted with ts_nodes (sampled and all)
+# what we extracted with ts_nodes (sfocal and all)
 compare_ts_nodes <- function(ts, N) {
   data <- ts_nodes(ts)
 
   expect_true(nrow(data) == ts$num_nodes)
-  expect_true(nrow(data[data$sampled, ]) == ts$num_samples)
-  expect_true(nrow(data[data$sampled, ]) == 2 * N)
+  expect_true(nrow(data[data$focal, ]) == ts$num_samples)
+  expect_true(nrow(data[data$focal, ]) == 2 * N)
 
   ts2 <- ts_simplify(ts)
   data2 <- ts_nodes(ts2)
 
   # make sure the same holds also for a simplified tree sequence
   expect_true(nrow(data2) == ts2$num_nodes)
-  expect_true(sum(data2$sampled) == ts2$num_samples)
-  expect_true(sum(data2$sampled) == 2 * N)
+  expect_true(sum(data2$focal) == ts2$num_samples)
+  expect_true(sum(data2$focal) == 2 * N)
 }
 
 # Make sure the extracted phylo tree structure is the same as what is encoded
@@ -69,7 +70,7 @@ compare_ts_phylo <- function(ts, N) {
   tskit_root <- tskit_tree$root
   expect_true(which(tree_data$node_id == tskit_root) == which(tree_data$phylo_id == phylo_root))
 
-  expect_true(length(tree$tip.label) == nrow(tree_data[tree_data$sampled, ]))
+  expect_true(length(tree$tip.label) == nrow(tree_data[tree_data$focal, ]))
 }
 
 # SLiM --------------------------------------------------------------------
@@ -85,7 +86,7 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
   N <- 500
   ts_file <- simulate_slim_ts(N)
   suppressMessages(ts <- ts_load(ts_file))
-  simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  simplify_to <- ts_nodes(ts) %>% dplyr::filter(focal) %>% dplyr::pull(node_id) %>% sample(3)
   expect_warning(ts2 <- ts_simplify(ts, simplify_to = simplify_to),
                  "Simplifying a non-recapitated tree sequence")
   expect_silent(ts2 <- ts_recapitate(ts, Ne = 100, recombination_rate = 1e-8) %>%
@@ -94,7 +95,7 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
   # make sure that the simplified nodes match the pedigree_id values in the
   # original tree-sequence data
   orig_ids <- ts_nodes(ts) %>% dplyr::filter(node_id %in% simplify_to) %>% dplyr::pull(pedigree_id)
-  simplified_ids <- ts_nodes(ts2) %>% dplyr::filter(sampled) %>% dplyr::pull(pedigree_id)
+  simplified_ids <- ts_nodes(ts2) %>% dplyr::filter(focal) %>% dplyr::pull(pedigree_id)
   expect_true(all(orig_ids == simplified_ids))
 })
 
@@ -131,12 +132,12 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
   N <- 5
   ts_file <- simulate_msprime_ts(N)
   suppressMessages(ts <- ts_load(ts_file))
-  simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  simplify_to <- ts_nodes(ts) %>% dplyr::filter(focal) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
 
   # there are no fixed pedigree_id values, so let's check that the number of
-  # "sampled" nodes corresponds to the number of nodes used for simplification
-  expect_true(sum(ts_nodes(ts2)$sampled) == 3)
+  # "focal" nodes corresponds to the number of nodes used for simplification
+  expect_true(sum(ts_nodes(ts2)$focal) == 3)
 })
 
 test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
@@ -150,7 +151,7 @@ test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected 
   N <- 5
   ts_file <- simulate_msprime_ts(N)
   suppressMessages(ts <- ts_load(ts_file))
-  simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  simplify_to <- ts_nodes(ts) %>% dplyr::filter(focal) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
   expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
 })
@@ -197,7 +198,7 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
 
   suppressMessages(ts <- ts_load(ts_file, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-7))
 
-  data <- ts_nodes(ts) %>% dplyr::filter(sampled)
+  data <- ts_nodes(ts) %>% dplyr::filter(focal)
 
   groups <- split(data$node_id, data$pop)
 

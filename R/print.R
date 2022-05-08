@@ -114,23 +114,30 @@ print.slendr_nodes <- function(x, ...) {
     dplyr::distinct(ind_id, .keep_all = TRUE)
 
   if (type == "SLiM") {
+    focal <- individuals %>%
+      dplyr::filter(focal) %>%
+      dplyr::group_by(pop) %>%
+      dplyr::summarise(n = dplyr::n())
+
     remembered <- individuals %>%
-      dplyr::filter(sampled) %>%
+      dplyr::filter(remembered) %>%
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
     retained <- individuals %>%
-      dplyr::filter(!sampled, !remembered, retained) %>%
+      dplyr::filter(!focal, !remembered, retained) %>%
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
     n_other <- sum(is.na(x$ind_id))
 
     for (pop in model$splits$pop) {
+      n_focal <- focal[focal$pop == pop, ]$n
       n_remembered <- remembered[remembered$pop == pop, ]$n
       n_retained <- retained[retained$pop == pop, ]$n
       cat(" ", pop, "-",
-          ifelse(!length(n_remembered), 0, n_remembered), "'sampled',",
+          ifelse(!length(n_focal), 0, n_focal), "'focal',",
+          ifelse(!length(n_remembered), 0, n_remembered), "'remembered',",
           ifelse(!length(n_retained), 0, n_retained), "'retained' individuals\n")
     }
 
@@ -141,9 +148,11 @@ print.slendr_nodes <- function(x, ...) {
     else
       node_str <- "nodes"
 
-    cat("\ntotal:\n  -", sum(remembered$n), "'sampled' individuals\n  -",
+    cat("\ntotal:\n  - ")
+    if (from_slendr) cat(sum(focal$n), "'focal' individuals\n  -")
+    cat(sum(remembered$n), "'remembered' individuals\n  -",
         sum(retained$n), "'retained' individuals\n  -",
-        n_other, node_str, "from 'recapitated' individuals\n")
+        n_other, node_str, "from other individuals\n")
   } else {
     # dummy column for later printing of sampled individuals' times
     individuals$remembered <- TRUE
@@ -154,8 +163,8 @@ print.slendr_nodes <- function(x, ...) {
       cat(" ", pop, "-", n_sampled, "'sampled',",
           n_unsampled, "'unsampled' individuals\n")
     }
-    cat("\ntotal:", length(individuals[!is.na(individuals$ind_id), ]),
-        "'sampled' individuals")
+    cat("\ntotal:", length(unique(individuals$ind_id)),
+        "'sampled' individuals\n")
   }
 
   cat(sep)
@@ -167,9 +176,9 @@ print.slendr_nodes <- function(x, ...) {
 
   direction <- ifelse(ts_direction == "forward", "(counting from the start)", "'before present'")
   funs <- if (ts_direction == "forward") c(min, max) else c(max, min)
-  individuals %>% dplyr::filter(sampled) %>% {
-    cat("oldest sampled individual:", funs[[1]](.$time), "time units", direction, "\n")
-    cat("youngest sampled individual:", funs[[2]](.$time), "time units", direction, "\n")
+  individuals %>% dplyr::filter(remembered) %>% {
+    cat("oldest remembered individual:", funs[[1]](.$time), "time units", direction, "\n")
+    cat("youngest remembered individual:", funs[[2]](.$time), "time units", direction, "\n")
   }
 
   cat("\noldest node:", funs[[1]](x$time), "time units", direction, "\n")

@@ -37,7 +37,7 @@ vector of diversity values (one for each window)
 Calculate diversity in given sets of individuals
 }
 \examples{
-\dontrun{ #' # collect sampled individuals from all populations in a list
+\dontrun{ #' # collect focal individuals from all populations in a list
 sample_sets <- ts_samples(ts) \%>\%
   split(., .$pop) \%>\%
   lapply(function(pop) pop$name)

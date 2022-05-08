@@ -348,20 +348,21 @@ of the spatio-temporal data extracted from the tree sequence:</p>
 <span class="co">#&gt; times are expressed in  backward time direction</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; summary of the table data contents:</span>
-<span class="co">#&gt;   AFR - 5 'sampled', 21 'retained' individuals</span>
-<span class="co">#&gt;   OOA - 16 'sampled', 90 'retained' individuals</span>
-<span class="co">#&gt;   EHG - 22 'sampled', 58 'retained' individuals</span>
-<span class="co">#&gt;   ANA - 24 'sampled', 35 'retained' individuals</span>
-<span class="co">#&gt;   EUR - 54 'sampled', 88 'retained' individuals</span>
-<span class="co">#&gt;   YAM - 4 'sampled', 8 'retained' individuals</span>
+<span class="co">#&gt;   AFR - 5 'focal', 5 'remembered', 21 'retained' individuals</span>
+<span class="co">#&gt;   OOA - 16 'focal', 16 'remembered', 90 'retained' individuals</span>
+<span class="co">#&gt;   EHG - 22 'focal', 22 'remembered', 58 'retained' individuals</span>
+<span class="co">#&gt;   ANA - 24 'focal', 24 'remembered', 35 'retained' individuals</span>
+<span class="co">#&gt;   EUR - 54 'focal', 54 'remembered', 88 'retained' individuals</span>
+<span class="co">#&gt;   YAM - 4 'focal', 4 'remembered', 8 'retained' individuals</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; total:</span>
-<span class="co">#&gt;   - 125 'sampled' individuals</span>
+<span class="co">#&gt;   - 125 'focal' individuals</span>
+<span class="co">#&gt;   -125 'remembered' individuals</span>
 <span class="co">#&gt;   - 300 'retained' individuals</span>
-<span class="co">#&gt;   - 27 nodes from 'recapitated' individuals</span>
+<span class="co">#&gt;   - 27 nodes from other individuals</span>
 <span class="co">#&gt; --------------------- </span>
-<span class="co">#&gt; oldest sampled individual: 40000 time units 'before present' </span>
-<span class="co">#&gt; youngest sampled individual: 0 time units 'before present' </span>
+<span class="co">#&gt; oldest remembered individual: 40000 time units 'before present' </span>
+<span class="co">#&gt; youngest remembered individual: 0 time units 'before present' </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; oldest node: 2702925 time units 'before present' </span>
 <span class="co">#&gt; youngest node: 0 time units 'before present' </span>
@@ -369,20 +370,20 @@ of the spatio-temporal data extracted from the tree sequence:</p>
 <span class="co">#&gt; overview of the underlying sf object:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 577 × 11</span></span>
-<span class="co">#&gt;    name  pop   node_id  time           location sampled remembered</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AFR_1 AFR       180     0 (2998019 580072.3) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AFR_1 AFR       181     0 (2998019 580072.3) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AFR_2 AFR       182     0  (3214580 1133048) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AFR_2 AFR       183     0  (3214580 1133048) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AFR_3 AFR       184     0 (3458466 600740.2) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AFR_3 AFR       185     0 (3458466 600740.2) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AFR_4 AFR       186     0  (3240591 1109739) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AFR_4 AFR       187     0  (3240591 1109739) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AFR_5 AFR       188     0  (3311509 1357603) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AFR_5 AFR       189     0  (3311509 1357603) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 567 more rows, and 4 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   pedigree_id &lt;dbl&gt;, ind_id &lt;dbl&gt;</span></span></code></pre>
+<span class="co">#&gt;    name  pop   node_id  time           location focal remembered retained</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AFR_1 AFR       180     0 (2998019 580072.3) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AFR_1 AFR       181     0 (2998019 580072.3) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AFR_2 AFR       182     0  (3214580 1133048) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AFR_2 AFR       183     0  (3214580 1133048) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AFR_3 AFR       184     0 (3458466 600740.2) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AFR_3 AFR       185     0 (3458466 600740.2) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AFR_4 AFR       186     0  (3240591 1109739) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AFR_4 AFR       187     0  (3240591 1109739) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AFR_5 AFR       188     0  (3311509 1357603) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AFR_5 AFR       189     0  (3311509 1357603) TRUE  TRUE       TRUE    </span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 567 more rows, and 3 more variables: alive &lt;lgl&gt;, pedigree_id &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   ind_id &lt;dbl&gt;</span></span></code></pre>
 <p>In the first part of the summary, we see how many individuals
 (sampled or retained) and nodes are present in the tree sequence
 together with additional useful information, including a section of the
@@ -441,7 +442,7 @@ that we can overlay the locations of sampled individuals (saved in a
 <code>sf</code> format by <code><a href="../reference/ts_nodes.html">ts_nodes()</a></code>) on top of our world
 map (also an <code>sf</code> object):</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sampled_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sampled</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">sampled_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">focal</span><span class="op">)</span>
 
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span>, fill <span class="op">=</span> <span class="st">"lightgray"</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
