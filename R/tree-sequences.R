@@ -762,6 +762,15 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   # and then link them to dummy internal nodes, effectively turning them into
   # proper leaves
   dummies <- vector(mode = "integer", length(internal_ts_samples))
+  if (length(dummies) > 0)
+    warning("Some sampled nodes in the tree are internal nodes (i.e. represent ancestors\n",
+            "of some sampled nodes forming the tips of the tree). This is not permitted\n",
+            "by standard phylogenetic tree framework such as that implemented by the ape\n",
+            "R package, which assumes that samples are present at the tips of a tree.\n",
+            "To circumvent this problem, these sampled internal nodes have been\n",
+            "attached to the tree via zero-length branches linking them to 'dummy' nodes.\n",
+            "In total ", length(dummies), " of such nodes have been created and they are ",
+            "indicated by `phylo_id`\nvalues larger than ", n_all, ".", call. = FALSE)
   for (d in seq_along(dummies)) {
     ts_node <- as.integer(internal_ts_samples[d])
     phylo_node <- as.integer(internal_phylo_samples[d])
@@ -973,7 +982,8 @@ ts_edges <- function(x) {
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 }
 
-#' Extract names and times of individuals scheduled for sampling
+#' Extract names and times of individuals of interest in the current tree sequence
+#' (either all sampled individuals or those that the user simplified to)
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @export
 ts_samples <- function(ts) {
@@ -982,7 +992,7 @@ ts_samples <- function(ts) {
          "from a slendr model. To access information about times and\nlocations ",
          "of nodes and individuals from non-slendr tree sequences,\nuse the ",
          "function ts_nodes().\n", call. = FALSE)
-  data <- ts_nodes(ts) %>% dplyr::filter(!is.na(name))
+  data <- ts_nodes(ts) %>% dplyr::filter(sampled, !is.na(name))
   attr(ts, "metadata")$sampling %>%
     dplyr::filter(name %in% data$name)
 }
