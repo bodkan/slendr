@@ -3,7 +3,7 @@
 \name{ts_samples}
 \alias{ts_samples}
 \title{Extract names and times of individuals of interest in the current tree sequence
-(either all sampled individuals or those that the user simplified to)}
+(either all focal individuals or those that the user simplified to)}
 \usage{
 ts_samples(ts)
 }
@@ -12,5 +12,5 @@ ts_samples(ts)
 }
 \description{
 Extract names and times of individuals of interest in the current tree sequence
-(either all sampled individuals or those that the user simplified to)
+(either all focal individuals or those that the user simplified to)
 }

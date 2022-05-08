@@ -105,7 +105,7 @@ test_that("sampling is as close to the a single specified position as possible",
   # load locations of individuals remembered in the tree sequence
   ts <- ts_load(model)
   individuals <- ts_nodes(ts) %>%
-    dplyr::filter(sampled) %>%
+    dplyr::filter(focal) %>%
     dplyr::select(-node_id) %>%
     dplyr::distinct() %>%
     dplyr::mutate(
@@ -182,7 +182,7 @@ test_that("sampling is as close to the multiple specified positions as possible"
   # load locations of individuals remembered in the tree sequence
   ts <- ts_load(model)
   all_individuals <- ts_nodes(ts) %>%
-    dplyr::filter(sampled) %>%
+    dplyr::filter(focal) %>%
     dplyr::select(-node_id) %>%
     dplyr::distinct() %>%
     dplyr::mutate(

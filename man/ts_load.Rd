@@ -31,8 +31,8 @@ made to search for a tree-sequence file in the model directory.}
 
 \item{recapitate}{Should the tree sequence be recapitated?}
 
-\item{simplify}{Should the tree sequence be simplified down to only
-explicitly sampled individuals?}
+\item{simplify}{Should the tree sequence be simplified down to a set of focal
+individuals (those explicitly recorded)?}
 
 \item{mutate}{Should the tree sequence be mutated?}
 
