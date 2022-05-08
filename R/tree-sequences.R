@@ -702,9 +702,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
          "page of ?ts_recapitate for more details)", call. = FALSE)
 
   if (!attr(ts, "simplified") && attr(ts, "type") != "generic")
-    stop("Please simplify your tree sequence down to focal individuals\nfirst ",
-         "before converting a tree to an R phylo tree object format (see the\n",
-         "help page of ?ts_simplify for more details)", call. = FALSE)
+    stop("Please simplify your tree sequence first before converting a tree to\n",
+         "an R phylo tree object format (see the help page of ?ts_simplify for\n",
+         "more details)", call. = FALSE)
 
   # get tree sequence nodes which are present in the tskit tree object
   # (tree$preorder() just get the numerical node IDs, nothing else)
@@ -1061,12 +1061,10 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 
   child_data  <- dplyr::select(data, child_pop  = pop, child_id  = node_id, child_time  = time, child_location = location) %>% as.data.frame()
   parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location) %>% as.data.frame()
-#  ind_data <- dplyr::as_tibble(data) %>% dplyr::select(focal_name = name, focal_pop = pop, focal_ind_id = ind_id)%>% dplyr::distinct()
 
   combined <- branches %>%
     dplyr::inner_join(child_data, by = "child_id") %>%
-    dplyr::inner_join(parent_data, by = "parent_id") #%>%
-#    dplyr::inner_join(ind_data, by = c("ind_id" = "focal_ind_id")) %>%
+    dplyr::inner_join(parent_data, by = "parent_id")
 
   if (spatial) combined <- sf::st_as_sf(combined)
 
@@ -1162,12 +1160,10 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 
   child_data  <- dplyr::select(data, child_pop  = pop, child_id  = node_id, child_time  = time, child_location = location)
   parent_data <- dplyr::select(data, parent_pop = pop, parent_id = node_id, parent_time = time, parent_location = location)
-  #  ind_data <- dplyr::as_tibble(data) %>% dplyr::select(focal_name = name, focal_pop = pop, focal_ind_id = ind_id)%>% dplyr::distinct()
 
   combined <- branches %>%
     dplyr::inner_join(child_data, by = "child_id") %>%
     dplyr::inner_join(parent_data, by = "parent_id")
-    #    dplyr::inner_join(ind_data, by = c("ind_id" = "focal_ind_id"))
 
   if (spatial) combined <- sf::st_as_sf(combined)
 

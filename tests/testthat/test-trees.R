@@ -46,7 +46,7 @@ test_that("ape phylo conversion only works on simplified, coalesced trees (SLiM)
   )
   expect_error(
     ts_phylo(ts3, 1, mode = "index", quiet = TRUE),
-    "Please simplify your tree sequence down"
+    "Please simplify your tree sequence first"
   )
 })
 
