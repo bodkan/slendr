@@ -78,7 +78,7 @@ ts_load <- function(source = NULL, file = NULL,
   if (is.character(source) && is.null(file)) {
     message("This support for non-slendr tree sequences is still experimental.\n",
             "If something appears to be broken please don't hesitate to open\n",
-            "a GitHub issue at <https://github.com/bodkan/slendr>.", call. = FALSE)
+            "a GitHub issue at <https://github.com/bodkan/slendr>.")
     model <- NULL
     file <- source
   } else if (inherits(source, "slendr_model")) {
