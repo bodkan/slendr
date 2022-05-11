@@ -453,7 +453,7 @@ ancestors <- ts_ancestors(ts, "EUR_599")
 <!--   ts_small <- ts_simplify(ts, names) -->
 <!--   for (i in 1:ts_small$num_trees) { -->
 <!--     tree <- ts_phylo(ts_small, i = i, quiet = TRUE) -->
-<!--     nodes <- ts_nodes(tree) %>% filter(!focal) -->
+<!--     nodes <- ts_nodes(tree) %>% filter(!sampled) -->
 <!--     if (length(unique(nodes$pop)) == 5) { -->
 <!--       found <- TRUE -->
 <!--       break -->
@@ -493,9 +493,9 @@ p_map <- ggplot() +
   geom_sf(data = edges, aes(color = parent_pop), size = 0.5) +
   geom_sf(data = filter(nodes, is.na(name)),
           aes(color = pop, shape = pop), size = 5) +
-  geom_sf_label(data = nodes[!nodes$focal, ],
+  geom_sf_label(data = nodes[!nodes$sampled, ],
                 aes(label = node_id, fill = pop), size = 3) +
-  geom_sf_label(data = nodes[nodes$focal, ],
+  geom_sf_label(data = nodes[nodes$sampled, ],
                 aes(label = node_id, fill = pop), size = 3,
                 fontface = "bold", color = "white") +
   coord_sf(xlim = c(4047066.1, 8688656.9),

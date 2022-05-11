@@ -114,8 +114,8 @@ print.slendr_nodes <- function(x, ...) {
     dplyr::distinct(ind_id, .keep_all = TRUE)
 
   if (type == "SLiM") {
-    focal <- individuals %>%
-      dplyr::filter(focal) %>%
+    sampled <- individuals %>%
+      dplyr::filter(sampled) %>%
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
@@ -125,18 +125,18 @@ print.slendr_nodes <- function(x, ...) {
       dplyr::summarise(n = dplyr::n())
 
     retained <- individuals %>%
-      dplyr::filter(!focal, !remembered, retained) %>%
+      dplyr::filter(!sampled, !remembered, retained) %>%
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
     n_other <- sum(is.na(x$ind_id))
 
     for (pop in model$splits$pop) {
-      n_focal <- focal[focal$pop == pop, ]$n
+      n_sampled <- sampled[sampled$pop == pop, ]$n
       n_remembered <- remembered[remembered$pop == pop, ]$n
       n_retained <- retained[retained$pop == pop, ]$n
       cat(" ", pop, "-",
-          ifelse(!length(n_focal), 0, n_focal), "'focal',",
+          ifelse(!length(n_sampled), 0, n_sampled), "'sampled',",
           ifelse(!length(n_remembered), 0, n_remembered), "'remembered',",
           ifelse(!length(n_retained), 0, n_retained), "'retained' individuals\n")
     }
@@ -149,7 +149,7 @@ print.slendr_nodes <- function(x, ...) {
       node_str <- "nodes"
 
     cat("\ntotal:\n  - ")
-    if (from_slendr) cat(sum(focal$n), "'focal' individuals\n  -")
+    if (from_slendr) cat(sum(sampled$n), "'sampled' individuals\n  -")
     cat(sum(remembered$n), "'remembered' individuals\n  -",
         sum(retained$n), "'retained' individuals\n  -",
         n_other, node_str, "from other individuals\n")
