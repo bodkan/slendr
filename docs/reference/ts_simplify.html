@@ -157,10 +157,10 @@ map</p></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># simplify tree sequence to focal individuals</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># simplify tree sequence to sampled individuals</span>
 <span class="va">ts_simplified</span> <span class="op">&lt;-</span> <span class="fu">ts_simplify</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span>
 
-<span class="co"># simplify to a subset of focal individuals</span>
+<span class="co"># simplify to a subset of sampled individuals</span>
 <span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu">ts_simplify</span><span class="op">(</span>
   <span class="va">ts</span>,
   simplify_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span>, <span class="st">"AFR_1"</span>,

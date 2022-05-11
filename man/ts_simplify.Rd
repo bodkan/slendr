@@ -41,10 +41,10 @@ ancient DNA samples) is in the pyslim documentation at
 \url{https://tskit.dev/pyslim/docs/latest/tutorial.html#historical-individuals}.
 }
 \examples{
-\dontrun{ # simplify tree sequence to focal individuals
+\dontrun{ # simplify tree sequence to sampled individuals
 ts_simplified <- ts_simplify(ts)
 
-# simplify to a subset of focal individuals
+# simplify to a subset of sampled individuals
 ts_small <- ts_simplify(
   ts,
   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",

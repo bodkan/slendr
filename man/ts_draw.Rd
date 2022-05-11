@@ -4,7 +4,14 @@
 \alias{ts_draw}
 \title{Plot a graphical representation of a single tree}
 \usage{
-ts_draw(x, width = 1500, height = 500, labels = FALSE, focal_only = TRUE, ...)
+ts_draw(
+  x,
+  width = 1500,
+  height = 500,
+  labels = FALSE,
+  sampled_only = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A single tree extracted by \code{\link{ts_tree}}}
@@ -13,8 +20,8 @@ ts_draw(x, width = 1500, height = 500, labels = FALSE, focal_only = TRUE, ...)
 
 \item{labels}{Label each node with the individual name?}
 
-\item{focal_only}{Should only individuals explicitly focal through
-simplification be labeled? This is relevant in situations in which focal
+\item{sampled_only}{Should only individuals explicitly sampled through
+simplification be labeled? This is relevant in situations in which sampled
 individuals can themselves be among the ancestral nodes.}
 
 \item{...}{Keyword arguments to the tskit \code{draw_svg} function.}

@@ -146,7 +146,7 @@ vector of diversity values (one for each window)</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co">#' # collect focal individuals from all populations in a list</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="co">#' # collect sampled individuals from all populations in a list</span>
 <span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">pop</span><span class="op">)</span> <span class="va">pop</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>
