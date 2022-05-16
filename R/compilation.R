@@ -327,6 +327,8 @@ slim <- function(model, sequence_length, recombination_rate,
                  save_locations = FALSE, coalescent_only = TRUE,
                  method = c("batch", "gui"), verbose = FALSE, burnin = 0,
                  random_seed = NULL, slim_path = NULL, save_sampling = TRUE) {
+  if (sequence_length <= 0) stop("Sequence length must be a non-negative integer number", call. = FALSE)
+
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
