@@ -795,7 +795,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
     columns <- "sampled"
   name_col <- if (from_slendr) "name" else NULL
   data <- dplyr::select(
-    data, !!name_col, pop, node_id, phylo_id, time, !!columns, ind_id
+    data, !!name_col, pop, node_id, phylo_id, time, time_tskit, !!columns, ind_id
   )
   # add fake dummy information to the processed tree sequence table so that
   # the user knows what is real and what is not straight from the ts_phylo()
@@ -809,7 +809,9 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
                      function(n) data[data$node_id == n, ]$pop),
         node_id = NA, phylo_id = dummies,
         time = sapply(internal_ts_samples,
-                      function(n) data[data$node_id == n, ]$time)
+                      function(n) data[data$node_id == n, ]$time),
+        time_tskit = sapply(internal_ts_samples,
+                            function(n) data[data$node_id == n, ]$time_tskit)
       )
     )
   }
