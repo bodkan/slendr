@@ -76,9 +76,6 @@ ts_load <- function(source = NULL, file = NULL,
   # if a model object is missing, this is interpreted as the case in which
   # a tree sequence is loaded without being annotated by slendr model data
   if (is.character(source) && is.null(file)) {
-    message("This support for non-slendr tree sequences is still experimental.\n",
-            "If something appears to be broken please don't hesitate to open\n",
-            "a GitHub issue at <https://github.com/bodkan/slendr>.")
     model <- NULL
     file <- source
   } else if (inherits(source, "slendr_model")) {
@@ -1795,8 +1792,8 @@ get_ts_raw_individuals <- function(ts) {
     } else {
       ind_table$time <- ts$individual_times
       # for pure SLiM tree sequences, simply use the sampling information encoded in the data
-      ind_table$sampled <- ind_table$ind_id %in% nodes[(seq(ts$num_nodes) - 1) %in% as.integer(ts$samples())]$individual
-      ind_table$sampled <- ifelse(is.na(ind_table$sampled), FALSE, TRUE)
+      ind_table$sampled <- ind_table$ind_id %in% unique(nodes[(seq(ts$num_nodes) - 1) %in% as.integer(ts$samples())]$individual)
+      # ind_table$sampled <- ifelse(is.na(ind_table$sampled), FALSE, TRUE)
     }
   } else { # msprime tree-sequence table
     nodes_table <- dplyr::tibble(
