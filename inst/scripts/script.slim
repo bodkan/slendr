@@ -13,7 +13,7 @@ initialize() {
     }
 
     optional_arg("SEED", getSeed());
-    setSeed(SEED); catn("SEED: " + SEED);
+    setSeed(SEED); catn("SEED: " + getSeed());
 
     optional_arg("MODEL", "."); // directory containing model configuration files
     optional_arg("OUTPUT", config_path("output")); // shared path of output files
