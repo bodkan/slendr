@@ -1971,7 +1971,8 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
   # add numeric node IDs to each individual
   combined <- dplyr::select(individuals, -time, -pop_id) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
-    dplyr::mutate(pop = pop.y, sampled = ifelse(is.na(ind_id), FALSE, sampled))
+    dplyr::mutate(sampled = ifelse(is.na(ind_id), FALSE, sampled)) %>%
+    dplyr::rename(pop = pop.y, time_tskit = time_tskit.x)
 
   if (from_slendr) {
     combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
