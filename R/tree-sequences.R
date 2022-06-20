@@ -387,7 +387,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
     data_new <- get_pyslim_table_data(ts_new, simplify_to) %>%
       as.data.frame() %>%
       dplyr::arrange(ind_id, time) %>%
-      dplyr::select(ind_id, pedigree_id, time, sampled, remembered, retained, alive) %>%
+      dplyr::select(ind_id, pedigree_id, time, time_tskit, sampled, remembered, retained, alive) %>%
       dplyr::inner_join(keep_data, by = "pedigree_id") %>%
       dplyr::mutate(node_id = nodes_new) %>%
       dplyr::as_tibble()
@@ -397,7 +397,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 
     name_col <- if (from_slendr) "name" else NULL
     attr(ts_new, "nodes") <- data_new[, c(name_col, "pop", "node_id",
-                                         "time", location_col, "sampled", "remembered",
+                                         "time", "time_tskit", location_col, "sampled", "remembered",
                                          "retained", "alive", "pedigree_id", "ind_id")]
   } else
     attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
