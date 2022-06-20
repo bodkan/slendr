@@ -2,16 +2,15 @@
 # result (i.e. tree sequence tables) after loading than a pure SLiM script
 
 # total length of the test simulation run
-T <- 100
+T <- 1000
 # number of individuals in a populations
-N <- 10
+N <- 20
 
 # run a slendr simulation -------------------------------------------------
 
 pop <- population("pop", time = 1, N = N)
 model <- compile_model(pop, generation_time = 1, direction = "forward", sim_length = T)
-samples <- schedule_sampling(model, times = T + 1, list(pop, N))
-slim(model, sequence_length = 1, recombination_rate = 0, sampling = samples, random_seed = 42)
+slim(model, sequence_length = 1, recombination_rate = 0, random_seed = 42)
 
 # run a pure SLiM version of the same model -------------------------------
 
@@ -48,24 +47,26 @@ simulate_slim_ts <- function(N, T, output, script_file) {
   ts_load(output)
 }
 
-# t1 <- pyslim$load(path.expand(file.path(model$path, "output_slim.trees")))
-# t2 <- pyslim$load("/Users/mp/Desktop/test.trees")
-#
-# x1 <- as.data.frame(get_ts_raw_nodes(t1))
-# x2 <- as.data.frame(get_ts_raw_nodes(t2))
-#
-# print(x1)
-# print(x2)
+# load tree sequences, extract tables -------------------------------------
 
-# all(x2$time == x3$time)
-# all(x2$node_id == x3$node_id)
-# all(x2$ind_id == x3$ind_id, na.rm = T)
-#
 ts1 <- ts_load(model)
 ts2 <- simulate_slim_ts(N, T)
 
-n1 <- ts_nodes(ts1) %>% dplyr::arrange(ind_id) %>% dplyr::select(-name, -pop) %>% as.data.frame()
-n2 <- ts_nodes(ts2) %>% dplyr::arrange(ind_id) %>% dplyr::select(-pop) %>% as.data.frame()
+shared_cols <- c("node_id", "time_tskit", "sampled", "remembered", "retained", "alive", "pedigree_id", "pop_id", "ind_id")
 
-n1
-n2
+table1 <- ts_nodes(ts1) %>% dplyr::arrange(time_tskit) %>% .[, shared_cols] %>% as.data.frame()
+table2 <- ts_nodes(ts2) %>% dplyr::arrange(time_tskit) %>% .[, shared_cols] %>% as.data.frame()
+
+test_that("pure SLiM and slendr versions of the same model give the same node/ind table", {
+  expect_true(all(table1 == table2))
+})
+
+test_that("pure SLiM and slendr versions of the same model give the same phylo object", {
+  t1 <- ts_simplify(ts1) %>% ts_phylo(1, quiet = TRUE)
+  t2 <- ts_simplify(ts2) %>% ts_phylo(1, quiet = TRUE)
+
+  expect_equal(t1$edge, t2$edge)
+  expect_equal(t1$edge.length, t2$edge.length)
+  expect_equal(t1$node.label, t2$node.label)
+  expect_equal(t1$Nnode, t2$Nnode)
+})
