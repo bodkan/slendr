@@ -904,7 +904,7 @@ ts_nodes <- function(x, sf = TRUE) {
     columns <- c(columns, "pop")
 
     data <- sf::st_drop_geometry(data) %>% dplyr::select(
-      !!columns, node_id, time, x, y,
+      !!columns, node_id, time, time_tskit, x, y,
       sampled, remembered, retained, alive, pedigree_id, ind_id
     )
   }
@@ -1737,6 +1737,9 @@ get_node_ids <- function(ts, x) {
 
 # Extract information from the nodes table
 get_ts_raw_nodes <- function(ts) {
+  model <- attr(ts, "model")
+  from_slendr <- !is.null(model)
+
   table <- ts$tables$nodes
 
   node_table <- dplyr::tibble(
@@ -1746,13 +1749,12 @@ get_ts_raw_nodes <- function(ts) {
   )
 
   # in case of slendr tree sequences, convert times to the model time units
-  model <- attr(ts, "model")
-  if (is.null(model))
-    node_table$time <- table$time
-  else {
+  if (from_slendr)
     node_table$time <- time_fun(ts)(table$time, model)
-    node_table$time_tskit <- table$time
-  }
+  else
+    node_table$time <- table$time
+
+  node_table$time_tskit <- table$time
 
   node_table
 }
@@ -1786,7 +1788,6 @@ get_ts_raw_individuals <- function(ts) {
 
     if (from_slendr) {
       ind_table$time <- time_fun(ts)(ts$individual_times, model)
-      ind_table$time_tskit <- ts$individual_times
       # for slendr SLiM models, "sampled" nodes are those were explictly scheduled for sampling
       ind_table$sampled <- ind_table$remembered
     } else {
@@ -1795,18 +1796,19 @@ get_ts_raw_individuals <- function(ts) {
       ind_table$sampled <- ind_table$ind_id %in% unique(nodes[(seq(ts$num_nodes) - 1) %in% as.integer(ts$samples())]$individual)
       # ind_table$sampled <- ifelse(is.na(ind_table$sampled), FALSE, TRUE)
     }
+    ind_table$time_tskit <- ts$individual_times
   } else { # msprime tree-sequence table
     nodes_table <- dplyr::tibble(
       ind_id = nodes$individual,
       pop_id = nodes$population
     )
 
-    if (from_slendr) {
+    if (from_slendr)
       nodes_table$time <- time_fun(ts)(nodes$time, model)
-      nodes_table$time_tskit <- nodes$time
-    } else
+    else
       nodes_table$time <- nodes$time
 
+    nodes_table$time_tskit <- nodes$time
     nodes_table <- dplyr::distinct(nodes_table)
 
     ind_table <- dplyr::inner_join(ind_table, nodes_table, by = "ind_id")
@@ -1842,7 +1844,8 @@ get_ts_raw_mutations <- function(ts) {
     id = seq_len(table$num_rows) - 1,
     site = as.vector(table[["site"]]),
     node = as.vector(table[["node"]]),
-    time = time
+    time = time,
+    time_tskit = table[["time"]]
   )
 }
 
@@ -1905,7 +1908,7 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
     dplyr::right_join(nodes, by = "ind_id") %>%
     dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x),
                   sampled = ifelse(is.na(ind_id), FALSE, sampled)) %>%
-    dplyr::rename(pop = pop.y, pop_id = pop_id.y)
+    dplyr::rename(pop = pop.y, pop_id = pop_id.y, time_tskit = time_tskit.x)
 
   if (spatial) {
     combined <- convert_to_sf(combined, model)
@@ -1920,7 +1923,7 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
     slendr_cols <- "pop"
 
   combined <- dplyr::select(
-    combined, !!slendr_cols, node_id, time, !!location_cols,
+    combined, !!slendr_cols, node_id, time, time_tskit, !!location_cols,
     sampled, remembered, retained, alive, pedigree_id, pop_id, ind_id
   )
 
@@ -1977,7 +1980,7 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     name_col <- NULL
 
   combined %>%
-    dplyr::select(!!name_col, pop, ind_id, node_id, time, sampled, pop_id)
+    dplyr::select(!!name_col, pop, ind_id, node_id, time, time_tskit, sampled, pop_id)
 }
 
 get_annotated_edges <- function(x) {
