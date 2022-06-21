@@ -34,7 +34,6 @@ library(slendr)
 library(dplyr)
 library(magrittr)
 library(ggplot2)
-library(ggtree)
 
 SEED <- 42
 set.seed(SEED)
@@ -124,11 +123,20 @@ tree
 
 Once we have that R tree object, we can use packages like [ggtree](https://yulab-smu.top/treedata-book/) to visualize the tree (any other phylogenetic package would work too). Note that because nodes of 'ape phylo' trees must conform to a strict format (they must be labelled `1...N`), we will extract the information about the node IDs in the tskit tree-sequence data to be able to plot them in the tree.
 
-```{r, nonslendr_tree}
+```{r, nonslendr_tree, eval = Sys.getenv("R_DEVEL_LOCAL") == TRUE }
+library(ggtree)
+
 labels <- ts_nodes(tree) %>% select(node = phylo_id, tskit_id = node_id)
 
 ggtree(tree, branch.length = "none") %<+% labels +
   geom_label(aes(label = tskit_id))
+```
+
+```{r, eval = Sys.getenv("R_DEVEL_LOCAL") != TRUE}
+library(ape)
+plot(tree, show.tip.label = FALSE)
+nodelabels()
+tiplabels()
 ```
 
 #### msprime (non-slendr) tree sequences
