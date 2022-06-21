@@ -1,6 +1,9 @@
 # This unit test script makes sure that a trivially simple slendr model gives exactly the same
 # result (i.e. tree sequence tables) after loading than a pure SLiM script
 
+skip_if(!slendr:::check_env_present())
+setup_env(quiet = TRUE)
+
 # total length of the test simulation run
 T <- 1000
 # number of individuals in a populations
