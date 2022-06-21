@@ -141,7 +141,29 @@ tiplabels()
 
 #### msprime (non-slendr) tree sequences
 
-The same as above applies also to msprime tree sequences (which is really not that surprising, given that it's all tskit under the hood).
+The same as above applies also to msprime tree sequences (which is really not that surprising, given that it's all tskit under the hood):
+
+```{bash, include = FALSE}
+cat <<EOF > /tmp/msprime.py
+import msprime
+ts = msprime.simulate(100)
+ts.dump("/tmp/msprime.trees")
+EOF
+```
+
+```{bash, echo = FALSE, comment = ""}
+less /tmp/msprime.py
+```
+
+```{r, include = FALSE}
+reticulate::py_run_file("/tmp/msprime.py")
+```
+
+```{r}
+ts <- ts_load("/tmp/msprime.trees")
+
+ts_nodes(ts)
+```
 
 #### Spatial SLiM (non-slendr) tree sequences
 
