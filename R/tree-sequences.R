@@ -1790,7 +1790,7 @@ get_ts_raw_individuals <- function(ts) {
 
     if (from_slendr) {
       ind_table$time <- time_fun(ts)(ts$individual_times, model)
-      # for slendr SLiM models, "sampled" nodes are those were explictly scheduled for sampling
+      # for slendr SLiM models, "sampled" nodes are those were explicitly scheduled for sampling
       ind_table$sampled <- ind_table$remembered
     } else {
       ind_table$time <- ts$individual_times
@@ -1953,7 +1953,14 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     nodes$pop <- model$splits$pop[nodes$pop_id + 1]
   } else {
     pop_table <- ts$tables$populations
-    pop_names <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
+    # pop_names <- unlist(sapply(seq_along(pop_table), function(i) pop_table[i - 1]$metadata$name))
+    pop_names <- unlist(sapply(seq_along(pop_table), function(i) {
+      pop_metadata <- pop_table[i - 1]$metadata
+      if (all(as.character(pop_metadata) == "") || !any("name" %in% names(pop_metadata)))
+        as.character(i - 1)
+      else
+        pop_metadata$name
+    }))
     individuals$pop <- pop_names[individuals$pop_id + 1]
     nodes$pop <- pop_names[nodes$pop_id + 1]
   }
@@ -1970,11 +1977,30 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     individuals <- dplyr::mutate(individuals, name = samples$name)
   }
 
+  # some tree sequence don't have any information about individuals -- for those cases,
+  # modify the temporary individuals/nodes tables accordingly so that the join operation
+  # below goes through
+  if (!nrow(individuals)) {
+    # delete columns of the empty individuals table
+    individuals$sampled <- NULL
+    individuals$time_tskit <- NULL
+
+    # add those columns to the nodes table instead (that table will also hold information
+    # on which nodes are actually sampled)
+    nodes$sampled <- FALSE
+    nodes$sampled[ts$samples() + 1] <- TRUE
+    nodes$time_tskit.x <- nodes$time_tskit; nodes$time_tskit <- NULL
+  }
+
   # add numeric node IDs to each individual
   combined <- dplyr::select(individuals, -time, -pop_id) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
-    dplyr::mutate(sampled = ifelse(is.na(ind_id), FALSE, sampled)) %>%
     dplyr::rename(pop = pop.y, time_tskit = time_tskit.x)
+
+  # for tree sequences which have some individuals/nodes marked as 'sampled', mark the
+  # nodes which do not have individuals assigned to them as FALSE
+  if (any(!is.na(combined$ind_id)))
+    combined <- dplyr::mutate(combined, sampled = ifelse(is.na(ind_id), FALSE, sampled))
 
   if (from_slendr) {
     combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
