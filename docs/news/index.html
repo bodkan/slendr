@@ -68,7 +68,10 @@
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
     <li>
-      <a href="../articles/vignette-08-paper.html">Examples from the slendr paper</a>
+      <a href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
+    </li>
+    <li>
+      <a href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
     </li>
   </ul></li>
 <li>
@@ -176,8 +179,8 @@ dedicated, isolated Python installation and <em>slendr</em> environment.
 The interface to install Python modules into custom-defined Python
 environment created outside R has been removed because this
 functionality is not necessary – these custom environments can be easily
-activated by calling <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_virtualenv</a></code> or
-<code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_condaenv</a></code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
+activated by calling <code><a href="https://rdrr.io/pkg/reticulate/man/use_python.html" class="external-link">reticulate::use_virtualenv</a></code> or
+<code><a href="https://rdrr.io/pkg/reticulate/man/use_python.html" class="external-link">reticulate::use_condaenv</a></code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
 <li><p>If some Python users want to use custom Python environments with
 <em>msprime</em>, <em>tskit</em>, and <em>pyslim</em>, they can silence
 the suggestion to use <code><a href="../reference/setup_env.html">setup_env()</a></code> printed by the
