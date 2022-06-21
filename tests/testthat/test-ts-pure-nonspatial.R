@@ -29,9 +29,15 @@ simulate_slim_ts <- function(N) {
   ts_file
 }
 
-simulate_msprime_ts <- function(N) {
+msprime_ts_sim_ancestry <- function(N) {
   msprime_file <- tempfile()
   slendr:::msp$sim_ancestry(N)$dump(msprime_file)
+  msprime_file
+}
+
+msprime_ts_simulate <- function(N) {
+  msprime_file <- tempfile()
+  slendr:::msp$simulate(as.integer(N))$dump(msprime_file)
   msprime_file
 }
 
@@ -42,7 +48,7 @@ compare_ts_nodes <- function(ts, N) {
 
   expect_true(nrow(data) == ts$num_nodes)
   expect_true(nrow(data[data$sampled, ]) == ts$num_samples)
-  expect_true(nrow(data[data$sampled, ]) == 2 * N)
+  if (any(!is.na(data$ind_id))) expect_true(nrow(data[data$sampled, ]) == 2 * N)
 
   ts2 <- ts_simplify(ts)
   data2 <- ts_nodes(ts2)
@@ -50,7 +56,7 @@ compare_ts_nodes <- function(ts, N) {
   # make sure the same holds also for a simplified tree sequence
   expect_true(nrow(data2) == ts2$num_nodes)
   expect_true(sum(data2$sampled) == ts2$num_samples)
-  expect_true(sum(data2$sampled) == 2 * N)
+  if (any(!is.na(data$ind_id))) expect_true(sum(data2$sampled) == 2 * N)
 }
 
 # Make sure the extracted phylo tree structure is the same as what is encoded
@@ -119,18 +125,18 @@ test_that("non-slendr SLiM ts_nodes carries correct population names", {
   expect_true(unique(ts_nodes(ts)$pop) == "p0")
 })
 
-# msprime tree sequences --------------------------------------------------
+# msprime tree sequences (sim_ancestry) -------------------------------------
 
 test_that("non-slendr msprime simplification on its own gives warning", {
   N <- 5
-  ts_file <- simulate_msprime_ts(N)
+  ts_file <- msprime_ts_sim_ancestry(N)
   suppressMessages(ts <- ts_load(ts_file))
   expect_warning(compare_ts_nodes(ts, N), "If you want to simplify")
 })
 
 test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome", {
   N <- 5
-  ts_file <- simulate_msprime_ts(N)
+  ts_file <- msprime_ts_sim_ancestry(N)
   suppressMessages(ts <- ts_load(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
@@ -142,14 +148,14 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
 
 test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
   N <- 5
-  ts_file <- simulate_msprime_ts(N)
+  ts_file <- msprime_ts_sim_ancestry(N)
   suppressMessages(ts <- ts_load(ts_file))
   expect_warning(compare_ts_phylo(ts, N), "If you want to simplify")
 })
 
 test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected outcome", {
   N <- 5
-  ts_file <- simulate_msprime_ts(N)
+  ts_file <- msprime_ts_sim_ancestry(N)
   suppressMessages(ts <- ts_load(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
@@ -157,9 +163,52 @@ test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected 
 })
 
 test_that("non-slendr msprime ts_nodes carries correct population names", {
-  ts_file <- simulate_msprime_ts(50)
+  ts_file <- msprime_ts_sim_ancestry(50)
   suppressMessages(ts <- ts_load(ts_file))
   expect_true(unique(ts_nodes(ts)$pop) == "pop_0")
+})
+
+# msprime tree sequences (simulate) -------------------------------------
+
+test_that("non-slendr msprime simplification on its own gives warning (simulate)", {
+  N <- 5
+  ts_file <- msprime_ts_simulate(N)
+  suppressMessages(ts <- ts_load(ts_file))
+  expect_warning(compare_ts_nodes(ts, N), "If you want to simplify")
+})
+
+test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome (simulate)", {
+  N <- 5
+  ts_file <- msprime_ts_simulate(N)
+  suppressMessages(ts <- ts_load(ts_file))
+  simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  ts2 <- ts_simplify(ts, simplify_to = simplify_to)
+
+  # there are no fixed pedigree_id values, so let's check that the number of
+  # "sampled" nodes corresponds to the number of nodes used for simplification
+  expect_true(sum(ts_nodes(ts2)$sampled) == 3)
+})
+
+test_that("non-slendr msprime ts_phylo corresponds to the expected outcome (simulate)", {
+  N <- 5
+  ts_file <- msprime_ts_simulate(N)
+  suppressMessages(ts <- ts_load(ts_file))
+  expect_warning(compare_ts_phylo(ts, N), "If you want to simplify")
+})
+
+test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected outcome (simulate)", {
+  N <- 5
+  ts_file <- msprime_ts_simulate(N)
+  suppressMessages(ts <- ts_load(ts_file))
+  simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
+  ts2 <- ts_simplify(ts, simplify_to = simplify_to)
+  expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
+})
+
+test_that("non-slendr msprime ts_nodes carries correct population names (simulate)", {
+  ts_file <- msprime_ts_simulate(50)
+  suppressMessages(ts <- ts_load(ts_file))
+  expect_true(unique(ts_nodes(ts)$pop) == "0")
 })
 
 # SLiM tskit statistics interface -----------------------------------------
