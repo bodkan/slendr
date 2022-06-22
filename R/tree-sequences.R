@@ -103,12 +103,12 @@ ts_load <- function(source = NULL, file = NULL,
          call. = FALSE)
 
   # load the tree sequence, converting it to a SLiM tree sequence if necessary
-  ts <- slendr:::tskit$load(path.expand(file))
+  ts <- tskit$load(path.expand(file))
 
   if (length(ts$metadata) == 0 || is.null(ts$metadata$SLiM))
     type <- "generic"
   else {
-    ts <- slendr:::pyslim$SlimTreeSequence(ts)
+    ts <- pyslim$SlimTreeSequence(ts)
     type <- "SLiM"
   }
 
@@ -437,10 +437,10 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
 
   if (is.numeric(mut_type) && attr(ts, "type") == "SLiM")
-    mut_type <- slendr:::msp$SLiMMutationModel(type = as.integer(mut_type))
+    mut_type <- msp$SLiMMutationModel(type = as.integer(mut_type))
 
   ts_new <-
-    slendr:::msp$sim_mutations(
+    msp$sim_mutations(
       ts,
       rate = mutation_rate,
       model = mut_type,
@@ -674,6 +674,13 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #'   (which is a different thing from a \code{phylo} class node integer index).
 #' @param quiet Should ape's internal phylo validity test be printed out?
 #'
+#' @examples
+#' \dontrun{ # extract a 42nd tree from a given tree sequence, return ape object
+#' tree <- ts_phylo(ts, i = 42, mode = "index")
+#'
+#' # extract a tree at a 42th basepair in the given tree sequence
+#' tree <- ts_phylo(ts, i = 42, mode = "position")
+#' }
 #' @export
 ts_phylo <- function(ts, i, mode = c("index", "position"),
                      labels = c("tskit", "pop"), quiet = FALSE) {
@@ -938,6 +945,14 @@ ts_nodes <- function(x, sf = TRUE) {
 #' @param table Which tree sequence table to return
 #'
 #' @return Data frame with the information from the give tree sequence table
+#'
+#' @examples
+#' \dontrun{ # extract a data frame object with the individual table
+#' individuals <- ts_table(ts, table = "individuals")
+#'
+#' # extract a table of nodes
+#' nodes <- ts_table(ts, table = "nodes")
+#' }
 #'
 #' @export
 ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")) {
@@ -1301,6 +1316,13 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #' @return TRUE or FALSE value if \code{return_failed = FALSE}, otherwise a vector of
 #'   (tskit Python 0-based) indices of trees which failed the coalescence test
 #'
+#' @examples
+#' \dontrun{
+#' ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)
+#'
+#' # returns a vector of tree sequence segments which are not coalesced
+#' not_coalesced <- ts_coalesced(ts, return_failed = TRUE)
+#' }
 #' @export
 ts_coalesced <- function(ts, return_failed = FALSE) {
   # reticulate::py_run_string("def mult_roots(ts): return [not tree.has_multiple_roots for tree in ts.trees()]")
@@ -1502,6 +1524,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #' ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
 #'                               eur = c("EUR_1", "EUR_2")))
 #' }
+#'
 #' @export
 ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = TRUE) {
