@@ -141,23 +141,21 @@ tiplabels()
 
 #### msprime (non-slendr) tree sequences
 
-The same as above applies also to msprime tree sequences (which is really not that surprising, given that it's all tskit under the hood):
+The same as above applies also to msprime tree sequences (which is really not that surprising, given that it's all tskit under the hood).
 
-```{bash, include = FALSE}
-cat <<EOF > /tmp/msprime.py
+We can start with Python:
+
+```{python, eval = FALSE}
 import msprime
-ts = msprime.simulate(100)
+ts = msprime.sim_ancestry(100)
 ts.dump("/tmp/msprime.trees")
-EOF
-```
-
-```{bash, echo = FALSE, comment = ""}
-less /tmp/msprime.py
 ```
 
 ```{r, include = FALSE}
-reticulate::py_run_file("/tmp/msprime.py")
+reticulate::py_run_string("import msprime; msprime.simulate(100).dump('/tmp/msprime.trees')")
 ```
+
+And then we can proceed with loading the msprime tree sequence into R and analyze it with the slendr functionality:
 
 ```{r}
 ts <- ts_load("/tmp/msprime.trees")
@@ -255,3 +253,8 @@ ggplot() +
 In this vignette we gave a brief overview of using *slendr*'s [R-tskit interface](../reference/index.html#tree-sequence-loading-and-processing) for loading, processing, and analyzing "pure" non-*slendr* tree sequences produced by msprime and SLiM scripts.
 
 Although we have only touched upon the most basic features of its R-tskit interface for standard tree sequences, it is important to note that as far as *slendr* is concerned, it does not matter how a tree sequence was produced, as long as it conforms to the tskit specification. This means that regardless of the source of your tree sequence data, you should be able to use *slendr*'s tskit functionality to run your analyses.
+
+```{bash, include = FALSE}
+rm /tmp/{spatial,nonspatial}-slim.trees /tmp/{spatial,nonspatial}.slim /tmp/msprime.trees
+```
+
