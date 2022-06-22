@@ -10,7 +10,7 @@
 #' representation can be always printed by calling \code{x[]}.
 #'
 #' @param x Object of a class \code{slendr} (either \code{slendr_pop},
-#'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_tsdata})
+#'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_table})
 #' @param ... Additional arguments passed to \code{print}
 #'
 #' @export
@@ -92,23 +92,35 @@ print.slendr_model <- function(x, ...) {
 
 #' @rdname print.slendr_pop
 #' @export
-print.slendr_tsdata <- function(x, ...) {
+print.slendr_nodes <- function(x, ...) {
   model <- attr(x, "model")
-  backend <- attr(x, "source")
+  type <- attr(x, "type")
+
+  from_slendr <- !is.null(model)
 
   sep <- print_header_info(x)
 
-  cat("data was extracted from a", backend, model$direction, "time model\n\n")
+  if (from_slendr)
+    direction <- model$direction
+  else
+    direction <- if (type == "SLiM") "forward" else "backward"
 
-  cat("summary of the table data contents:\n")
+  cat("times are expressed in a", direction, "time direction\n")
 
   individuals <- as.data.frame(x) %>%
     dplyr::filter(!is.na(ind_id)) %>%
     dplyr::distinct(ind_id, .keep_all = TRUE)
 
-  if (backend == "SLiM") {
-    remembered <- individuals %>%
+  if (type == "SLiM") {
+    cat("\nsummary of the table data contents:\n")
+
+    sampled <- individuals %>%
       dplyr::filter(sampled) %>%
+      dplyr::group_by(pop) %>%
+      dplyr::summarise(n = dplyr::n())
+
+    remembered <- individuals %>%
+      dplyr::filter(remembered) %>%
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
@@ -117,55 +129,66 @@ print.slendr_tsdata <- function(x, ...) {
       dplyr::group_by(pop) %>%
       dplyr::summarise(n = dplyr::n())
 
-    n_other <- sum(is.na(x$ind_id))
+    alive <- individuals %>%
+      dplyr::filter(alive) %>%
+      dplyr::group_by(pop) %>%
+      dplyr::summarise(n = dplyr::n())
 
-    for (pop in model$splits$pop) {
+    for (pop in unique(individuals$pop)) {
+      n_sampled <- sampled[sampled$pop == pop, ]$n
       n_remembered <- remembered[remembered$pop == pop, ]$n
       n_retained <- retained[retained$pop == pop, ]$n
+      n_alive <- alive[alive$pop == pop, ]$n
       cat(" ", pop, "-",
-          ifelse(!length(n_remembered), 0, n_remembered), "'sampled',",
-          ifelse(!length(n_retained), 0, n_retained), "'retained' individuals\n")
+          ifelse(!length(n_sampled), 0, n_sampled), "'sampled',",
+          ifelse(!length(n_remembered), 0, n_remembered), "'remembered',",
+          ifelse(!length(n_retained), 0, n_alive), "'retained',",
+          ifelse(!length(n_alive), 0, n_alive), "'alive' individuals\n")
     }
 
-    if (n_other == 0)
-      node_str <- "no nodes"
-    else if (n_other == 1)
-      node_str <- "node"
-    else
-      node_str <- "nodes"
-
-    cat("\ntotal:\n  -", sum(remembered$n), "'sampled' individuals\n  -",
+    cat("\ntotal:\n  - ")
+    cat(sum(sampled$n), "'sampled' individuals\n  -",
+        sum(remembered$n), "'remembered' individuals\n  -",
         sum(retained$n), "'retained' individuals\n  -",
-        n_other, node_str, "from 'recapitated' individuals\n")
-  } else {
+        sum(alive$n), "'alive' individuals\n")
+  } else if (nrow(individuals) > 0) {
+    cat("\nsummary of the table data contents:\n")
+
     # dummy column for later printing of sampled individuals' times
     individuals$remembered <- TRUE
-    for (pop in model$splits$pop) {
+    populations <- if (is.null(model)) unique(individuals$pop) else model$splits$pop
+    for (pop in populations) {
       n_sampled <- length(individuals[individuals$pop == pop, ]$ind_id)
       n_unsampled <- sum(is.na(individuals$ind_id))
       cat(" ", pop, "-", n_sampled, "'sampled',",
           n_unsampled, "'unsampled' individuals\n")
     }
-    cat("\ntotal:", length(individuals[!is.na(individuals$ind_id), ]),
-        "'sampled' individuals")
+    cat("\ntotal:", length(unique(individuals$ind_id)),
+        "'sampled' individuals\n")
   }
 
   cat(sep)
 
-  direction <- ifelse(model$direction == "forward",
-                      "(counting from the start)", "'before present'")
-  funs <- if (model$direction == "forward") c(min, max) else c(max, min)
-  individuals %>% dplyr::filter(remembered) %>% {
-    cat("oldest sampled individual:", funs[[1]](.$time), "time units", direction, "\n")
-    cat("youngest sampled individual:", funs[[2]](.$time), "time units", direction, "\n")
+  if (from_slendr)
+    ts_direction <- model$direction
+  else
+    ts_direction <- "backward"
+
+  if (nrow(individuals) > 0) {
+    direction <- ifelse(ts_direction == "forward", "(counting from the start)", "'before present'")
+    funs <- if (ts_direction == "forward") c(min, max) else c(max, min)
+    individuals %>% dplyr::filter(sampled) %>% {
+      cat("oldest sampled individual:", funs[[1]](.$time), "time units", direction, "\n")
+      cat("youngest sampled individual:", funs[[2]](.$time), "time units", direction, "\n")
+    }
+
+    cat("\noldest node:", funs[[1]](x$time), "time units", direction, "\n")
+    cat("youngest node:", funs[[2]](x$time), "time units", direction, "\n")
+
+    cat(sep)
   }
 
-  cat("\noldest node:", funs[[1]](x$time), "time units", direction, "\n")
-  cat("youngest node:", funs[[2]](x$time), "time units", direction, "\n")
-
-  cat(sep)
-
-  if (!is.null(model$world) && backend == "SLiM")
+  if (inherits(x, "sf"))
     cat("overview of the underlying sf object:\n\n")
   else
     cat("overview of the underlying table object:\n\n")

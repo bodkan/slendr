@@ -785,10 +785,12 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
   if ((is.null(x) | is.null(y)) & is.null(coords))
     stop("Coordinates for conversion are missing", call. = FALSE)
 
-  if ((from == "raster" | to == "raster") & is.null(model))
+  from_slendr <- !is.null(model)
+
+  if ((from == "raster" | to == "raster") & !from_slendr)
     stop("Model object needs to be specified for conversion of raster coordinates", call. = FALSE)
 
-  if (add & is.null(coords))
+  if (add && is.null(coords))
     stop("Converted coordinates can only be added to a provided data.frame", call. = FALSE)
 
   inx <- paste0(input_prefix, "x"); iny <- paste0(input_prefix, "y")
@@ -796,7 +798,7 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
   if (!is.null(coords) & !all(c(inx, iny) %in% colnames(coords)))
     stop("Columns '", inx, "' and '", iny, "' must be present in the input data.frame", call. = FALSE)
 
-  if (!is.null(model)) {
+  if (from_slendr) {
     # dimension of the map in the projected CRS units
     bbox <- sf::st_bbox(model$world)
     map_dim <- c(bbox["xmax"] - bbox["xmin"], bbox["ymax"] - bbox["ymin"])

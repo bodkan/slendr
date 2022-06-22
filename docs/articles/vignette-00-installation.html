@@ -95,7 +95,10 @@
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
     <li>
-      <a href="../articles/vignette-08-paper.html">Examples from the slendr paper</a>
+      <a href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
+    </li>
+    <li>
+      <a href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
     </li>
   </ul>
 </li>
@@ -289,6 +292,9 @@ activate this environment automatically</strong>. Therefore, despite
 using Python for internal handling of tree-sequence data and coalescent
 simulation, no interaction with Python is necessary for working with
 <em>slendr</em> in R.</p>
+<p><strong>You only have to call <code><a href="../reference/setup_env.html">setup_env()</a></code> once!</strong>
+After that, everything will be taken care of by
+<code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> automatically.</p>
 <div class="section level4">
 <h4 id="information-for-python-experts">Information for Python experts<a class="anchor" aria-label="anchor" href="#information-for-python-experts"></a>
 </h4>
@@ -297,14 +303,8 @@ above: <em>slendr</em>’s Python interface is not a hack that would
 simply call Python from the command-line in the background, but is
 implemented using the R package <a href="https://rstudio.github.io/reticulate/" class="external-link"><em>reticulate</em></a><em>.</em>
 This embeds a Python session within an R session, enabling
-high-performance interoperability between both languages.</p>
-<p>The R package <em>reticulate</em> provides <a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">several
-alternative ways</a> to link R to a custom-created standard Python
-virtual environment or a custom conda environment. However, I strongly
-recommend using the R-specific isolated environment created by
-<code><a href="../reference/setup_env.html">setup_env()</a></code> to avoid any issues with custom
-venv/virtualenv/pyenv/pyvenv/pipenv/poetry/conda setups that you might
-normally prefer for your Python work.</p>
+high-performance interoperability between both languages without any
+need for user intervention.</p>
 </div>
 </div>
 </div>

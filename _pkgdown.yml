@@ -33,8 +33,10 @@ navbar:
           href: articles/vignette-06-locations.html
         - text: Simulating data with SLiM and msprime backends
           href: articles/vignette-07-backends.html
+        - text: Analyzing non-slendr tree sequences
+          href: articles/vignette-08-nonslendr-tskit.html
         - text: Examples from the slendr paper
-          href: articles/vignette-08-paper.html
+          href: articles/vignette-09-paper.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/dr_bodkan
@@ -92,7 +94,7 @@ reference:
     - print.slendr_region
     - print.slendr_pop
     - print.slendr_model
-    - print.slendr_tsdata
+    - print.slendr_nodes
 
   - title: Tree sequence loading and processing
     contents:
@@ -112,13 +114,10 @@ reference:
 
   - title: Accessing tree sequence components
     contents:
-    - ts_data
-    - ts_phylo
-    - ts_branches
     - ts_nodes
     - ts_edges
-    - ts_individuals
-    - ts_mutations
+    - ts_table
+    - ts_phylo
     - ts_tree
     - ts_draw
     - ts_metadata

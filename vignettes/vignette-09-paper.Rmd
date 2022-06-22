@@ -219,7 +219,7 @@ slim(model, sequence_length = 10e6 / sequence_scaling, recombination_rate = 1e-8
 
 ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7)
 
-locations <- ts_data(ts) %>% filter(time == max(time)) 
+locations <- ts_nodes(ts) %>% filter(time == max(time)) 
 
 heterozygosity <- ts_samples(ts) %>%
   group_by(pop) %>%
@@ -242,7 +242,7 @@ heterozygosity <- ts_samples(ts) %>%
 ### Plotting code
 
 ```{r, figure_ex2, fig.height=9, fig.width=6}
-locations <- ts_data(ts) %>% filter(time == max(time)) 
+locations <- ts_nodes(ts) %>% filter(time == max(time)) 
 
 p_ex2_clustering <- ggplot() +
   geom_sf(data = map) +
@@ -440,8 +440,8 @@ ts_small <- ts_simplify(ts, c("EUR_599", "ANA_322", "EHG_7",
                               "EUR_578", "EUR_501", "YAM_30"))
 
 tree <- ts_phylo(ts_small, i = 10)
-nodes <- ts_data(tree)
-branches <- ts_branches(tree)
+nodes <- ts_nodes(tree)
+edges <- ts_edges(tree)
 
 ancestors <- ts_ancestors(ts, "EUR_599")
 ```
@@ -453,7 +453,7 @@ ancestors <- ts_ancestors(ts, "EUR_599")
 <!--   ts_small <- ts_simplify(ts, names) -->
 <!--   for (i in 1:ts_small$num_trees) { -->
 <!--     tree <- ts_phylo(ts_small, i = i, quiet = TRUE) -->
-<!--     nodes <- ts_data(tree) %>% filter(!sampled) -->
+<!--     nodes <- ts_nodes(tree) %>% filter(!sampled) -->
 <!--     if (length(unique(nodes$pop)) == 5) { -->
 <!--       found <- TRUE -->
 <!--       break -->
@@ -490,7 +490,7 @@ p_tree <- revts(p_tree)
 
 p_map <- ggplot() +
   geom_sf(data = map) +
-  geom_sf(data = branches, aes(color = parent_pop), size = 0.5) +
+  geom_sf(data = edges, aes(color = parent_pop), size = 0.5) +
   geom_sf(data = filter(nodes, is.na(name)),
           aes(color = pop, shape = pop), size = 5) +
   geom_sf_label(data = nodes[!nodes$sampled, ],
@@ -506,7 +506,7 @@ p_map <- ggplot() +
   theme_bw() +
   theme(legend.position = "bottom")
 
-chrom_names <- setNames(
+chrom_names <- stats::setNames(
   c("EUR_599 (chromosome 1, node 10)", "EUR_599 (chromosome 2, node 11)"),
   unique(ancestors$node_id)
 )
@@ -516,7 +516,7 @@ p_ancestors <- ggplot() +
   geom_sf(data = ancestors, size = 0.5, aes(alpha = parent_time)) +
   geom_sf(data = sf::st_set_geometry(ancestors, "parent_location"),
           aes(shape = parent_pop, color = parent_pop)) +
-  geom_sf(data = filter(ts_data(ts), name == "EUR_599"), size = 3) +
+  geom_sf(data = filter(ts_nodes(ts), name == "EUR_599"), size = 3) +
   coord_sf(expand = 0) +
   labs(x = "longitude", y = "latitude") +
   theme_bw() +

@@ -551,7 +551,8 @@ utils::globalVariables(
     "node1.name", "node2.name", "type", "label", "rate", "pop_id", "vcf_file",
     "gen", "newx", "newy", "child", "time", "node_label", "chr_name", "pos",
     "pyslim", "tskit", "msprime", "x", "y", "x_orig", "y_orig",
-    "orig_x", "orig_y", "phylo_id",
+    "orig_x", "orig_y", "phylo_id", "raster_x", "raster_y",
+    "pop.y", "pop_id.y", "time_tskit", "time_tskit.x",
     "N", "center", "child_node_id", "child_phylo_id", "geometry", "parent_node_id",
     "parent_phylo_id", "set_boundary", "xend", "xmax", "xmin", "yend"
   ), package = "slendr"

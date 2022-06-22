@@ -3,7 +3,7 @@ setup_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
-seq_len <- 250e6 # amount of sequence to simulate
+seq_len <- 100e6 # amount of sequence to simulate
 rec_rate <- 1e-8 # uniform recombination rate
 mut_rate <- 1e-8 # mutation rate
 
@@ -34,7 +34,7 @@ slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampl
 msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
 
 # model with gene flow
-gf <- gene_flow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
+gf <- gene_flow(from = b, to = x1, start = 2010, end = 2200, rate = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, overwrite = TRUE, force = TRUE, sim_length = 2200)
 
@@ -125,7 +125,7 @@ df_f4 <- rbind(df_slim_f4, df_msprime_f4) %>%
 
 current_f4_tsv <- paste0(tempfile(), ".tsv.gz")
 readr::write_tsv(df_f4, current_f4_tsv, progress = FALSE)
-original_f4_tsv <- "f4.tsv.gz"
+original_f4_tsv <- sprintf("f4_%s.tsv.gz", Sys.info()["sysname"])
 # readr::write_tsv(df_f4, original_f4_tsv, progress = FALSE)
 orig_df_f4 <- readr::read_tsv(original_f4_tsv, show_col_types = FALSE, progress = FALSE) %>%
   as.data.frame()
@@ -138,10 +138,11 @@ orig_df_f4 <- readr::read_tsv(original_f4_tsv, show_col_types = FALSE, progress 
 #        title = "f4 statistics calculated on simulated data",
 #        subtitle = "Note that for f4 values ~0, the hypothesis of no gene flow can't be rejected") +
 #   theme(legend.position = "bottom")
-# ggsave("f4.png", p_f4, width = 8, height = 5)
+# png_file <- sprintf("f4_%s.png", Sys.info()["sysname"])
+# ggsave(png_file, p_f4, width = 8, height = 5)
 
 test_that("f4 distributions from SLiM and msprime simulations match", {
-  expect_equal(df_f4, orig_df_f4, tolerance = 1e-15)
+  expect_equal(df_f4, orig_df_f4, tolerance = 1e-8)
 })
 
 df_f4ratio <- rbind(df_slim_f4ratio, df_msprime_f4ratio) %>%
@@ -152,7 +153,7 @@ df_f4ratio <- rbind(df_slim_f4ratio, df_msprime_f4ratio) %>%
 
 current_f4r_tsv <- paste0(tempfile(), ".tsv.gz")
 readr::write_tsv(df_f4ratio, current_f4r_tsv, progress = FALSE)
-original_f4r_tsv <- "f4ratio.tsv.gz"
+original_f4r_tsv <- sprintf("f4ratio_%s.tsv.gz", Sys.info()["sysname"])
 # readr::write_tsv(df_f4ratio, original_f4r_tsv, progress = FALSE)
 orig_df_f4ratio <- readr::read_tsv(original_f4r_tsv, show_col_types = FALSE, progress = FALSE) %>%
   as.data.frame()
@@ -166,10 +167,11 @@ orig_df_f4ratio <- readr::read_tsv(original_f4r_tsv, show_col_types = FALSE, pro
 #        subtitle = "Population 'x1' receives 10% gene flow (vertical dotted line)
 # from 'b' in gene flow models, 'x2' never does") +
 #   theme(legend.position = "bottom")
-# ggsave("f4ratio.png", p_f4ratio, width = 8, height = 5)
+# png_file <- sprintf("f4ratio_%s.png", Sys.info()["sysname"])
+# ggsave(png_file, p_f4ratio, width = 8, height = 5)
 
 test_that("f4-ratio distributions from SLiM and msprime simulations match", {
-  expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-15)
+  expect_equal(df_f4ratio, orig_df_f4ratio, tolerance = 1e-8)
 })
 
 # Great! We got almost the same results, as expected! We can also inspect the

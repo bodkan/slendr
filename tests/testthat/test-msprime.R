@@ -27,7 +27,7 @@ seed <- 42
 N <- 1000
 N_factor <- 5
 n_samples <- 50
-seq_len <- 200e6
+seq_len <- 100e6
 rec_rate <- 1e-8
 mut_rate <- 1e-8
 
@@ -304,7 +304,8 @@ test_that("SLiM forward/backward sims are exactly the same", {
 #          linetype = guide_legend("slendr backend\nengine used")) +
 #   scale_x_continuous(breaks = c(1, seq(20, 2 * n_samples, 20)),
 #                      limits = c(1, 2 * n_samples))
-# ggsave("afs.png", p, width = 8, height = 5)
+# png_file <- sprintf("afs_%s.png", Sys.info()["sysname"])
+# ggsave(png_file, p, width = 8, height = 5)
 
 # make sure that the distributions as they were originally inspected and
 # verified visually match the new distributions plot -- this is obviously not
@@ -316,9 +317,9 @@ test_that("AFS distributions from SLiM and msprime simulations match", {
   afs <- afs %>% dplyr::mutate(sim = as.character(sim), model = as.character(model))
   readr::write_tsv(afs, current_tsv, progress = FALSE)
 
-  original_tsv <- "afs.tsv.gz"
+  original_tsv <- sprintf("afs_%s.tsv.gz", Sys.info()["sysname"])
   # readr::write_tsv(afs, original_tsv, progress = FALSE)
   orig_afs <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
 
-  expect_equal(afs, orig_afs, tolerance = 1e-15)
+  expect_equal(afs, orig_afs)
 })

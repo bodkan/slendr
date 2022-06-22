@@ -95,7 +95,10 @@
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
     <li>
-      <a href="../articles/vignette-08-paper.html">Examples from the slendr paper</a>
+      <a href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
+    </li>
+    <li>
+      <a href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
     </li>
   </ul>
 </li>
@@ -312,77 +315,78 @@ genealogies along the genome:</p>
 </h2>
 <p>As we showed in the <a href="vignette-05-tree-sequences.html">basic
 tutorial</a>, the most important function for data exploration is
-<code><a href="../reference/ts_data.html">ts_data()</a></code>. This function extracts all information about
+<code><a href="../reference/ts_nodes.html">ts_nodes()</a></code>. This function extracts all information about
 individuals and nodes recorded in a tree sequence object loaded and
 annotated by <em>slendr</em> :</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_data.html">ts_data</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></code></pre></div>
 <p>For completeness, we have also functions such as
-<code><a href="../reference/ts_individuals.html">ts_individuals()</a></code>, <code><a href="../reference/ts_individuals.html">ts_nodes()</a></code> and
-<code><a href="../reference/ts_individuals.html">ts_edges()</a></code> which extract <a href="https://tskit.dev/tskit/docs/stable/data-model.html#table-definitions" class="external-link">tree
+<code>ts_individuals()</code>, <code><a href="../reference/ts_nodes.html">ts_nodes()</a></code> and
+<code><a href="../reference/ts_edges.html">ts_edges()</a></code> which extract <a href="https://tskit.dev/tskit/docs/stable/data-model.html#table-definitions" class="external-link">tree
 sequence tables</a> in their “raw” unprocessed form, but
-<code><a href="../reference/ts_data.html">ts_data()</a></code> is much more convenient for data exploration and
+<code><a href="../reference/ts_nodes.html">ts_nodes()</a></code> is much more convenient for data exploration and
 analyses. First, it combined information in the low-level tables of
 individuals and nodes into a single table but more importantly, if the
 model which generated this data was a spatial model,
-<code><a href="../reference/ts_data.html">ts_data()</a></code> automatically annotates the node/individual
+<code><a href="../reference/ts_nodes.html">ts_nodes()</a></code> automatically annotates the node/individual
 tables with the position of each node in space (in real projected
 coordinates) and time. This means that we can do spatial data analysis
-directly on the table returned by <code><a href="../reference/ts_data.html">ts_data()</a></code>.</p>
+directly on the table returned by <code><a href="../reference/ts_nodes.html">ts_nodes()</a></code>.</p>
 <p>Even better, although we can see below that the returned object
-belongs to <em>slendr</em>’s own class <code>slendr_ts_data</code>, it
+belongs to <em>slendr</em>’s own class <code>slendr_ts_nodes</code>, it
 is internally stored as a spatial <code>sf</code> object. This means
 that we can use all the functionality of the powerful <a href="https://r-spatial.github.io/sf/" class="external-link">R package <em>sf</em></a> as well
 as many other packages for geospatial analyses <em>directly on the
 data</em>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">#&gt; [1] "slendr"        "slendr_tsdata" "sf"            "tbl_df"       </span>
-<span class="co">#&gt; [5] "tbl"           "data.frame"</span></code></pre>
+<pre><code><span class="co">#&gt; [1] "slendr"       "slendr_nodes" "sf"           "tbl_df"       "tbl"         </span>
+<span class="co">#&gt; [6] "data.frame"</span></code></pre>
 <p>Typing the object into the R console presents a user-friendly summary
 of the spatio-temporal data extracted from the tree sequence:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span></code></pre></div>
-<pre><code><span class="co">#&gt; slendr 'tsdata' object </span>
-<span class="co">#&gt; ---------------------- </span>
-<span class="co">#&gt; data was extracted from a SLiM backward time model</span>
+<pre><code><span class="co">#&gt; slendr 'nodes' object </span>
+<span class="co">#&gt; --------------------- </span>
+<span class="co">#&gt; times are expressed in a backward time direction</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; summary of the table data contents:</span>
-<span class="co">#&gt;   AFR - 5 'sampled', 21 'retained' individuals</span>
-<span class="co">#&gt;   OOA - 16 'sampled', 90 'retained' individuals</span>
-<span class="co">#&gt;   EHG - 22 'sampled', 58 'retained' individuals</span>
-<span class="co">#&gt;   ANA - 24 'sampled', 35 'retained' individuals</span>
-<span class="co">#&gt;   EUR - 54 'sampled', 88 'retained' individuals</span>
-<span class="co">#&gt;   YAM - 4 'sampled', 8 'retained' individuals</span>
+<span class="co">#&gt;   AFR - 5 'sampled', 5 'remembered', 5 'retained', 5 'alive' individuals</span>
+<span class="co">#&gt;   EUR - 54 'sampled', 54 'remembered', 30 'retained', 30 'alive' individuals</span>
+<span class="co">#&gt;   OOA - 16 'sampled', 16 'remembered', NA 'retained', 0 'alive' individuals</span>
+<span class="co">#&gt;   ANA - 24 'sampled', 24 'remembered', NA 'retained', 0 'alive' individuals</span>
+<span class="co">#&gt;   EHG - 22 'sampled', 22 'remembered', NA 'retained', 0 'alive' individuals</span>
+<span class="co">#&gt;   YAM - 4 'sampled', 4 'remembered', NA 'retained', 0 'alive' individuals</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; total:</span>
 <span class="co">#&gt;   - 125 'sampled' individuals</span>
+<span class="co">#&gt;   - 125 'remembered' individuals</span>
 <span class="co">#&gt;   - 300 'retained' individuals</span>
-<span class="co">#&gt;   - 27 nodes from 'recapitated' individuals</span>
-<span class="co">#&gt; ---------------------- </span>
+<span class="co">#&gt;   - 35 'alive' individuals</span>
+<span class="co">#&gt; --------------------- </span>
 <span class="co">#&gt; oldest sampled individual: 40000 time units 'before present' </span>
 <span class="co">#&gt; youngest sampled individual: 0 time units 'before present' </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; oldest node: 2702925 time units 'before present' </span>
 <span class="co">#&gt; youngest node: 0 time units 'before present' </span>
-<span class="co">#&gt; ---------------------- </span>
+<span class="co">#&gt; --------------------- </span>
 <span class="co">#&gt; overview of the underlying sf object:</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 577 × 11</span></span>
-<span class="co">#&gt;    name  pop   ind_id node_id  time           location sampled remembered</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AFR_1 AFR        0     180     0 (2998019 580072.3) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AFR_1 AFR        0     181     0 (2998019 580072.3) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AFR_2 AFR        1     182     0  (3214580 1133048) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AFR_2 AFR        1     183     0  (3214580 1133048) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AFR_3 AFR        2     184     0 (3458466 600740.2) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AFR_3 AFR        2     185     0 (3458466 600740.2) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AFR_4 AFR        3     186     0  (3240591 1109739) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AFR_4 AFR        3     187     0  (3240591 1109739) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AFR_5 AFR        4     188     0  (3311509 1357603) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AFR_5 AFR        4     189     0  (3311509 1357603) TRUE    TRUE      </span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 567 more rows, and 3 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   pedigree_id &lt;dbl&gt;</span></span></code></pre>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 577 × 12</span></span>
+<span class="co">#&gt;    name  pop   node_id  time time_tskit           location sampled</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AFR_1 AFR       180     0          0 (2998019 580072.3) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AFR_1 AFR       181     0          0 (2998019 580072.3) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AFR_2 AFR       182     0          0  (3214580 1133048) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AFR_2 AFR       183     0          0  (3214580 1133048) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AFR_3 AFR       184     0          0 (3458466 600740.2) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AFR_3 AFR       185     0          0 (3458466 600740.2) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AFR_4 AFR       186     0          0  (3240591 1109739) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AFR_4 AFR       187     0          0  (3240591 1109739) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AFR_5 AFR       188     0          0  (3311509 1357603) TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AFR_5 AFR       189     0          0  (3311509 1357603) TRUE   </span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 567 more rows, and 5 more variables: remembered &lt;lgl&gt;, retained &lt;lgl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   alive &lt;lgl&gt;, pedigree_id &lt;dbl&gt;, ind_id &lt;dbl&gt;</span></span></code></pre>
 <p>In the first part of the summary, we see how many individuals
 (sampled or retained) and nodes are present in the tree sequence
 together with additional useful information, including a section of the
@@ -390,7 +394,7 @@ internally stored <code>sf</code> object. And this is a crucial
 point—**we can always use the internal <code>sf</code> object with the
 <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized-1" class="external-link">spatial
 data</a> directly*.</p>
-<p>Because the data returned by <code><a href="../reference/ts_data.html">ts_data()</a></code> is internally
+<p>Because the data returned by <code><a href="../reference/ts_nodes.html">ts_nodes()</a></code> is internally
 transformed to the projected CRS used by the model, we can use the
 returned object as any other data of the class <code>sf</code>. For
 instance, at the beginning of this vignette, we specified the world map
@@ -404,7 +408,7 @@ verify by typing:</p>
 <span class="co">#&gt; spatial limits (in degrees longitude and latitude):</span>
 <span class="co">#&gt;   - vertical -15 ... 60</span>
 <span class="co">#&gt;   - horizontal 20 ... 65</span></code></pre>
-<p>The fact that the <code><a href="../reference/ts_data.html">ts_data()</a></code> result is just another
+<p>The fact that the <code><a href="../reference/ts_nodes.html">ts_nodes()</a></code> result is just another
 <code>sf</code> object makes it easy to visualize overlay contents on
 this map, as we will see below.</p>
 </div>
@@ -438,10 +442,10 @@ examples.</p>
 <p>Every spatial object in <em>slendr</em> is internally of the class
 <code>sf</code>. The flexibility of of <a href="https://ggplot2.tidyverse.org" class="external-link"><em>ggplot2</em></a> and <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</em></a> packages means
 that we can overlay the locations of sampled individuals (saved in a
-<code>sf</code> format by <code><a href="../reference/ts_data.html">ts_data()</a></code>) on top of our world
+<code>sf</code> format by <code><a href="../reference/ts_nodes.html">ts_nodes()</a></code>) on top of our world
 map (also an <code>sf</code> object):</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sampled_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_data.html">ts_data</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sampled</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">sampled_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sampled</span><span class="op">)</span>
 
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span>, fill <span class="op">=</span> <span class="st">"lightgray"</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
@@ -530,18 +534,18 @@ node or individual (in our example, <code>"EUR_25"</code>):</p>
 <span class="co">#&gt; Bounding box:  xmin: 3343176 ymin: 368874.9 xmax: 8450665 ymax: 4574569</span>
 <span class="co">#&gt; Projected CRS: ETRS89-extended / LAEA Europe</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 124 × 15</span></span>
-<span class="co">#&gt;    name  pop   node_id level child_id child_time parent_id parent_time child_pop</span>
-<span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> EUR_… EUR       242 1          242          0       263         520 EUR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> EUR_… EUR       242 2          263        520       267         790 EUR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> EUR_… EUR       242 3          267        790       315        <span style="text-decoration: underline;">8</span>200 EUR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> EUR_… EUR       242 3          267        790       320        <span style="text-decoration: underline;">8</span>860 EUR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> EUR_… EUR       242 4          315       <span style="text-decoration: underline;">8</span>200       323        <span style="text-decoration: underline;">9</span>220 ANA      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> EUR_… EUR       242 4          320       <span style="text-decoration: underline;">8</span>860       341       <span style="text-decoration: underline;">13</span>780 ANA      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> EUR_… EUR       242 5          323       <span style="text-decoration: underline;">9</span>220       351       <span style="text-decoration: underline;">15</span>490 ANA      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_… EUR       242 5          341      <span style="text-decoration: underline;">13</span>780       349       <span style="text-decoration: underline;">15</span>250 ANA      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_… EUR       242 6          351      <span style="text-decoration: underline;">15</span>490       375       <span style="text-decoration: underline;">19</span>540 ANA      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_… EUR       242 6          351      <span style="text-decoration: underline;">15</span>490       413       <span style="text-decoration: underline;">23</span>920 ANA      </span>
+<span class="co">#&gt;    name  pop   node_id level child_id parent_id child_time parent_time child_pop</span>
+<span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> EUR_… EUR       242 1          242       263          0         520 EUR      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> EUR_… EUR       242 2          263       267        520         790 EUR      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> EUR_… EUR       242 3          267       315        790        <span style="text-decoration: underline;">8</span>200 EUR      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> EUR_… EUR       242 3          267       320        790        <span style="text-decoration: underline;">8</span>860 EUR      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> EUR_… EUR       242 4          315       323       <span style="text-decoration: underline;">8</span>200        <span style="text-decoration: underline;">9</span>220 ANA      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> EUR_… EUR       242 4          320       341       <span style="text-decoration: underline;">8</span>860       <span style="text-decoration: underline;">13</span>780 ANA      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> EUR_… EUR       242 5          323       351       <span style="text-decoration: underline;">9</span>220       <span style="text-decoration: underline;">15</span>490 ANA      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_… EUR       242 5          341       349      <span style="text-decoration: underline;">13</span>780       <span style="text-decoration: underline;">15</span>250 ANA      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_… EUR       242 6          351       375      <span style="text-decoration: underline;">15</span>490       <span style="text-decoration: underline;">19</span>540 ANA      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_… EUR       242 6          351       413      <span style="text-decoration: underline;">15</span>490       <span style="text-decoration: underline;">23</span>920 ANA      </span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 114 more rows, and 6 more variables: parent_pop &lt;fct&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   child_location &lt;POINT [m]&gt;, parent_location &lt;POINT [m]&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;, right_pos &lt;dbl&gt;</span></span></code></pre>
@@ -573,10 +577,10 @@ sampled individual (i.e. nodes at the level 1) using the
 <span class="co">#&gt; Bounding box:  xmin: 5071132 ymin: 2745273 xmax: 5563191 ymax: 3114111</span>
 <span class="co">#&gt; Projected CRS: ETRS89-extended / LAEA Europe</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 15</span></span>
-<span class="co">#&gt;   name   pop   node_id level child_id child_time parent_id parent_time child_pop</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_51 EUR       242 1          242          0       263         520 EUR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> EUR_51 EUR       243 1          243          0       274        <span style="text-decoration: underline;">1</span>420 EUR      </span>
+<span class="co">#&gt;   name   pop   node_id level child_id parent_id child_time parent_time child_pop</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_51 EUR       242 1          242       263          0         520 EUR      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> EUR_51 EUR       243 1          243       274          0        <span style="text-decoration: underline;">1</span>420 EUR      </span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 6 more variables: parent_pop &lt;fct&gt;, child_location &lt;POINT [m]&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   parent_location &lt;POINT [m]&gt;, connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   right_pos &lt;dbl&gt;</span></span></code></pre>
@@ -625,7 +629,7 @@ diploid individual, we get two sets of paths for each of its nodes
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lineages</span>, size <span class="op">=</span> <span class="fl">0.5</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="va">parent_time</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_set_geometry</a></span><span class="op">(</span><span class="va">lineages</span>, <span class="st">"parent_location"</span><span class="op">)</span>,
           <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">parent_pop</span>, color <span class="op">=</span> <span class="va">parent_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="../reference/ts_data.html">ts_data</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span>, <span class="va">name</span> <span class="op">==</span> <span class="va">ind</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span>, <span class="va">name</span> <span class="op">==</span> <span class="va">ind</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"longitude"</span>, y <span class="op">=</span> <span class="st">"latitude"</span><span class="op">)</span> <span class="op">+</span>
@@ -689,7 +693,7 @@ its spatial ancestry tidyverse-style using the pipe operator
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">lineages</span>, size <span class="op">=</span> <span class="fl">0.5</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="va">parent_time</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_set_geometry</a></span><span class="op">(</span><span class="va">lineages</span>, <span class="st">"parent_location"</span><span class="op">)</span>,
           <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">parent_pop</span>, color <span class="op">=</span> <span class="va">parent_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="../reference/ts_data.html">ts_data</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span>, <span class="va">name</span> <span class="op">==</span> <span class="st">"ANA_21"</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span>, <span class="va">name</span> <span class="op">==</span> <span class="st">"ANA_21"</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"longitude"</span>, y <span class="op">=</span> <span class="st">"latitude"</span><span class="op">)</span> <span class="op">+</span>

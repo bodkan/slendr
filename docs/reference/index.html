@@ -68,7 +68,10 @@
       <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     </li>
     <li>
-      <a href="../articles/vignette-08-paper.html">Examples from the slendr paper</a>
+      <a href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
+    </li>
+    <li>
+      <a href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
     </li>
   </ul></li>
 <li>
@@ -244,7 +247,7 @@
         </td>
         <td><p>Open an interactive browser of the spatial model</p></td>
       </tr><tr><td>
-          <p><code><a href="print.slendr_pop.html">print(<i>&lt;slendr_pop&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_region&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_map&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_model&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_tsdata&gt;</i>)</a></code> </p>
+          <p><code><a href="print.slendr_pop.html">print(<i>&lt;slendr_pop&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_region&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_map&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_model&gt;</i>)</a></code> <code><a href="print.slendr_pop.html">print(<i>&lt;slendr_nodes&gt;</i>)</a></code> </p>
         </td>
         <td><p>Print a short summary of a <code>slendr</code> object</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -278,7 +281,8 @@
       </tr><tr><td>
           <p><code><a href="ts_samples.html">ts_samples()</a></code> </p>
         </td>
-        <td><p>Extract names and times of individuals scheduled for sampling</p></td>
+        <td><p>Extract names and times of individuals of interest in the current tree sequence
+(either all sampled individuals or those that the user simplified to)</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="tree-sequence-format-conversion">Tree sequence format conversion <a href="#tree-sequence-format-conversion" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -300,21 +304,22 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="ts_data.html">ts_data()</a></code> </p>
+          <p><code><a href="ts_nodes.html">ts_nodes()</a></code> </p>
         </td>
         <td><p>Extract combined annotated table of individuals and nodes</p></td>
+      </tr><tr><td>
+          <p><code><a href="ts_edges.html">ts_edges()</a></code> </p>
+        </td>
+        <td><p>Extract spatio-temporal edge annotation table from a given tree or tree
+sequence</p></td>
+      </tr><tr><td>
+          <p><code><a href="ts_table.html">ts_table()</a></code> </p>
+        </td>
+        <td><p>Get the table of individuals/nodes/edges/mutations from the tree sequence</p></td>
       </tr><tr><td>
           <p><code><a href="ts_phylo.html">ts_phylo()</a></code> </p>
         </td>
         <td><p>Convert a tree in the tree sequence to an object of the class <code>phylo</code></p></td>
-      </tr><tr><td>
-          <p><code><a href="ts_branches.html">ts_branches()</a></code> </p>
-        </td>
-        <td><p>Extract table of spatio-temporal node annotation from a given tree</p></td>
-      </tr><tr><td>
-          <p><code><a href="ts_individuals.html">ts_individuals()</a></code> <code><a href="ts_individuals.html">ts_edges()</a></code> <code><a href="ts_individuals.html">ts_nodes()</a></code> <code><a href="ts_individuals.html">ts_mutations()</a></code> </p>
-        </td>
-        <td><p>Get the table of individuals/nodes/edges/mutations from the tree sequence</p></td>
       </tr><tr><td>
           <p><code><a href="ts_tree.html">ts_tree()</a></code> </p>
         </td>
@@ -330,7 +335,7 @@
       </tr><tr><td>
           <p><code><a href="ts_ancestors.html">ts_ancestors()</a></code> </p>
         </td>
-        <td><p>Extract spatio-temporal ancestral history for given nodes/individuals</p></td>
+        <td><p>Extract (spatio-)temporal ancestral history for given nodes/individuals</p></td>
       </tr><tr><td>
           <p><code><a href="ts_descendants.html">ts_descendants()</a></code> </p>
         </td>

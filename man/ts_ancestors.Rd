@@ -2,18 +2,24 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_ancestors}
 \alias{ts_ancestors}
-\title{Extract spatio-temporal ancestral history for given nodes/individuals}
+\title{Extract (spatio-)temporal ancestral history for given nodes/individuals}
 \usage{
-ts_ancestors(ts, x = NULL, verbose = FALSE)
+ts_ancestors(ts, x, verbose = FALSE, complete = TRUE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
-\item{x}{Either a character vector with individual names, or an integer
-vector of node IDs}
+\item{x}{Either an individual name or an integer node ID}
 
 \item{verbose}{Report on the progress of ancestry path generation?}
+
+\item{complete}{Does every individual in the tree sequence need to have
+complete metadata recorded? If \code{TRUE}, only individuals/nodes with
+complete metadata will be included in the reconstruction of ancestral
+relationships. For instance, nodes added during the coalescent recapitation
+phase will not be included because they don't have spatial information
+associated with them.}
 }
 \description{
-Extract spatio-temporal ancestral history for given nodes/individuals
+Extract (spatio-)temporal ancestral history for given nodes/individuals
 }

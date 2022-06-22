@@ -4,7 +4,7 @@
 \alias{ts_descendants}
 \title{Extract all descendants of a given tree-sequence node}
 \usage{
-ts_descendants(ts, x, verbose = FALSE)
+ts_descendants(ts, x, verbose = FALSE, complete = TRUE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -12,6 +12,13 @@ ts_descendants(ts, x, verbose = FALSE)
 \item{x}{An integer node ID of the ancestral node}
 
 \item{verbose}{Report on the progress of ancestry path generation?}
+
+\item{complete}{Does every individual in the tree sequence need to have
+complete metadata recorded? If \code{TRUE}, only individuals/nodes with
+complete metadata will be included in the reconstruction of ancestral
+relationships. For instance, nodes added during the coalescent recapitation
+phase will not be included because they don't have spatial information
+associated with them.}
 }
 \description{
 Extract all descendants of a given tree-sequence node
