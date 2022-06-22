@@ -109,7 +109,18 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
-<ul><li><p>Removed functions and some function arguments originally
+<ul><li><p><strong><em>slendr</em>’s tree-sequence R interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html" class="external-link">tskit</a>
+Python module has been generalized to load, process, and analyze tree
+sequences from non-<em>slendr</em> models!</strong> This means that
+users can use the <em>slendr</em> R package even for analyzing tree
+sequences coming from standard msprime and SLiM scripts, including all
+spatial capabilities that have been only available for <em>slendr</em>
+tree sequences so far. Please note that this generalization is still
+rather experimental and there might be corner cases where a tree
+sequence from your msprime or SLiM script does not load properly or
+leads to other errors. If this happens, please open a GitHub issue with
+the script in question attached. (PR <a href="https://github.com/bodkan/slendr/pull/91" class="external-link">#91</a>)</p></li>
+<li><p>Removed functions and some function arguments originally
 deprecated during the renaming phase of the pre-preprint refactoring.
 This affects <code>compile</code>, <code>boundary</code>,
 <code>dispersal</code>, <code>expand</code>, <code>geneflow</code>,
