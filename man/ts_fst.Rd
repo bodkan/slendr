@@ -53,6 +53,7 @@ options of the \code{mode} argument, please see the tskit documentation at
 ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
                               eur = c("EUR_1", "EUR_2")))
 }
+
 \dontrun{ #' # collect sampled individuals from all populations in a list
 sample_sets <- ts_samples(ts) \%>\%
   split(., .$pop) \%>\%

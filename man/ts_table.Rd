@@ -25,6 +25,15 @@ For further processing and analyses, the output of the function
 node and individual tables into one table and further annotates it with
 useful information from the model configuration data.
 }
+\examples{
+\dontrun{ # extract a data frame object with the individual table
+individuals <- ts_table(ts, table = "individuals")
+
+# extract a table of nodes
+nodes <- ts_table(ts, table = "nodes")
+}
+
+}
 \seealso{
 \code{\link{ts_nodes}} and \code{\link{ts_edges}} for accessing an
 annotated, more user-friendly and analysis-friendly treee sequence table

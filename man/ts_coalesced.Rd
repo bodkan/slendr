@@ -19,3 +19,11 @@ TRUE or FALSE value if \code{return_failed = FALSE}, otherwise a vector of
 \description{
 Check that all trees in the tree sequence are fully coalesced
 }
+\examples{
+\dontrun{
+ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)
+
+# returns a vector of tree sequence segments which are not coalesced
+not_coalesced <- ts_coalesced(ts, return_failed = TRUE)
+}
+}

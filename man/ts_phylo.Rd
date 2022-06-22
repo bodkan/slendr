@@ -33,3 +33,11 @@ object? Options are either a population name or a tskit integer node ID
 \description{
 Convert a tree in the tree sequence to an object of the class \code{phylo}
 }
+\examples{
+\dontrun{ # extract a 42nd tree from a given tree sequence, return ape object
+tree <- ts_phylo(ts, i = 42, mode = "index")
+
+# extract a tree at a 42th basepair in the given tree sequence
+tree <- ts_phylo(ts, i = 42, mode = "position")
+}
+}

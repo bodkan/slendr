@@ -130,6 +130,16 @@ check?</p></dd>
 (tskit Python 0-based) indices of trees which failed the coalescence test</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span>
+<span class="fu">ts_coalesced</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="co"># is the tree sequence fully coalesced? (TRUE or FALSE)</span>
+
+<span class="co"># returns a vector of tree sequence segments which are not coalesced</span>
+<span class="va">not_coalesced</span> <span class="op">&lt;-</span> <span class="fu">ts_coalesced</span><span class="op">(</span><span class="va">ts</span>, return_failed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="op">}</span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
