@@ -8,6 +8,7 @@
 ^logo.R
 ^logo.png
 ^.lintr
+^.vscode
 ^Makefile
 ^tests/testthat/_snaps
 ^tests/testthat/.*\.png
@@ -18,3 +19,4 @@
 ^\.binder$
 ^\.github$
 ^\.covrignore$
+^.*\.gif
