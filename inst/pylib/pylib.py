@@ -1,8 +1,6 @@
 # This module contains a couple of Python functions serving as a link between
 # the R interface of slendr and the underlying tskit tree sequence machinery.
 
-import numpy
-
 def mult_roots(ts):
   """Check how many trees in the tree sequence have multiple roots (i.e. how
   many are not fully coalesced.
