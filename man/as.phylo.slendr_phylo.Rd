@@ -4,7 +4,7 @@
 \alias{as.phylo.slendr_phylo}
 \title{Convert an annotated \code{slendr_phylo} object to a \code{phylo} object}
 \usage{
-\method{as.phylo}{slendr_phylo}(x)
+as.phylo.slendr_phylo(x)
 }
 \arguments{
 \item{x}{Tree object of the class \code{slendr_phylo}}
