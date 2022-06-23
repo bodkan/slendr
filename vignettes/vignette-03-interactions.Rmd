@@ -91,8 +91,14 @@ slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
 
 Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (the animation is significantly sped up to satisfy the vignette size limits put on by CRAN):
 
-```{r plot_gif_interactions, message = FALSE}
+```{r plot_gif_interactions, message = FALSE, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_DEVEL_LOCAL") == TRUE && Sys.getenv("NOT_CRAN") != "true"}
 animate_model(model, steps = 80, width = 500, height = 200)
+```
+
+Alternatively, we can use tree sequence processing features of slendr to just capture the last spatial snapshot of the simulated populations, which will be even faster:
+
+```{r plot_interactions, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_DEVEL_LOCAL") == TRUE && Sys.getenv("NOT_CRAN") == "true"}
+ggplot() + geom_sf(data = locations, aes(color = pop)) + theme_minimal()
 ```
 
 Fun animation, isn't it? If you compare the result to the model dynamics we programmed above, you can see that the spatial dynamics follow what we would expect based on the parameter values. As time progresses, the spatial competition for each successive population gets fiercer and fiercer (the distance at which individuals can "feel" the competition is getting larger and larger), forcing the individuals to form more and more distant clusters. Compare this to the starting state of the simulation, in which all populations form a single randomly shifting "blob" of individuals which is allowed by the model because individuals barely compete with each other.
