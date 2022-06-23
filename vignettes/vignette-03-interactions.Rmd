@@ -100,6 +100,7 @@ Alternatively, we can use tree sequence processing features of slendr to just ca
 ```{r plot_interactions, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_DEVEL_LOCAL") == TRUE && Sys.getenv("NOT_CRAN") == "true"}
 library(ggplot2)
 
+locations <- ts_load(model) %>% ts_nodes() %>% dplyr::filter()
 ggplot() + geom_sf(data = locations, aes(color = pop)) + theme_minimal()
 ```
 
