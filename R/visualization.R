@@ -6,7 +6,7 @@
 #' @param ... Objects of classes \code{slendr_map}, \code{slendr_region}, or
 #'   \code{slendr_pop}
 #' @param time Plot a concrete time point
-#' @param geneflows Indicate geneflow events with an arrow
+#' @param gene_flow Indicate geneflow events with an arrow
 #' @param graticules Plot graticules in the original Coordinate Reference System
 #'   (such as longitude-latitude), or in the internal CRS (such as meters)?
 #' @param intersect Intersect the population boundaries against landscape and
@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @import ggplot2
-plot_map <- function(..., time = NULL, geneflows = FALSE,
+plot_map <- function(..., time = NULL, gene_flow = FALSE,
                      graticules = "original",
                      intersect = TRUE, show_map = TRUE,
                      title = NULL, interpolated_maps = NULL) {
@@ -42,7 +42,7 @@ plot_map <- function(..., time = NULL, geneflows = FALSE,
   if (length(intersect(c("slendr_region", "slendr_pop"), classes)) > 1)
     stop("'slendr_region' and 'slendr_pops' object cannot be plotted at once", call. = FALSE)
 
-  if (geneflows & (is.null(time) | !inherits(args[[1]], "slendr_model")))
+  if (gene_flow & (is.null(time) | !inherits(args[[1]], "slendr_model")))
     stop("Migrations can be visualized only when a time point and a 'slendr_model'
 objects are specified", call. = FALSE)
 
@@ -52,6 +52,7 @@ objects are specified", call. = FALSE)
     pops <- model$populations
     map <- model$world
     regions <- list()
+    direction <- time_direction(model)
   } else if (all(classes == "slendr_map")) {
     map <- args[[1]]
     regions <- pops <- list()
@@ -72,6 +73,9 @@ objects are specified", call. = FALSE)
 
     if (!all(sapply(pops, has_map)))
       stop("Cannot plot spatial maps for non-spatial models", call. = FALSE)
+
+    direction <- setdiff(unique(sapply(pops, time_direction)), "unknown")
+    if (!length(direction)) direction <- "forward"
   }
 
   if (graticules == "original" & has_crs(map)) {
@@ -102,7 +106,6 @@ objects are specified", call. = FALSE)
     p <- p + geom_sf(data = map, aes(frame = NULL), fill = "lightgray", color = NA)
 
   if (length(pops)) {
-    direction <- setdiff(unique(sapply(pops, time_direction)), "unknown")
     pop_names <- order_pops(pops, direction)
 
     # if the user specified a time point, "interpolate" all maps at that
@@ -119,10 +122,16 @@ objects are specified", call. = FALSE)
       split_times <- sapply(pops, function(p) { attr(p, "history")[[1]]$time })
       removal_times <- sapply(pops, attr, "remove")
 
-      previous_time <- min(all_times[all_times >= time])
       # get only those populations already/still present at the
       # specified time...
-      present_pops <- interpolated_maps[split_times >= time & removal_times <= time]
+      if (direction == "forward") {
+        previous_time <- max(all_times[all_times <= time])
+        present_pops <- interpolated_maps[split_times <= time & (removal_times == -1 | removal_times >= time)]
+      } else {
+        previous_time <- min(all_times[all_times >= time])
+        present_pops <- interpolated_maps[split_times >= time & (removal_times == -1 | removal_times <= time)]
+      }
+
       # ... and extract their spatial maps
       pop_maps <- lapply(present_pops, function(pop) {
         snapshot <- pop[pop$time == previous_time, ]
@@ -152,13 +161,13 @@ objects are specified", call. = FALSE)
       guides(alpha = guide_legend("time"))
 
     # add geneflow arrows, if requested
-    if (geneflows) {
+    if (gene_flow) {
       migr_df <- get_geneflows(model, time)
       if (nrow(migr_df))
         p <- p +
           geom_point(data = migr_df, aes(x = from_x, y = from_y, color = from), size = 7) +
           geom_point(data = migr_df, aes(x = to_x, y = to_y, color = to), size = 7) +
-          geom_curve(
+          geom_segment(
             data = migr_df,
             aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
             arrow = arrow(length = unit(2, "mm"), type = "closed"),
@@ -333,13 +342,13 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   # generate a table of gene flow events to be used for plotting gene flow
   # arrows
   if (!is.null(model$geneflow)) {
-    geneflows <- model$geneflow %>%
+    gene_flow <- model$geneflow %>%
       dplyr::mutate(x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
              xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
              y = tstart_orig,
              yend = tend_orig)
   } else
-    geneflows <- NULL
+    gene_flow <- NULL
 
   if (model$direction == "forward")
     ylabel <- "time since the start"
@@ -391,13 +400,13 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
                                           fill = pop, fontface = "bold"))
 
   # add gene flow arrows and proportion labels
-  if (!is.null(geneflows)) {
-    p <- p + geom_segment(data = geneflows,
+  if (!is.null(gene_flow)) {
+    p <- p + geom_segment(data = gene_flow,
                           aes(x = x, xend = xend, y = y, yend = yend),
                           arrow = arrow(length = unit(0.2, "cm")))
-    p <- p + geom_point(data = geneflows, aes(x = x, y = y))
+    p <- p + geom_point(data = gene_flow, aes(x = x, y = y))
     if (proportions)
-      p <- p + geom_label(data = geneflows,
+      p <- p + geom_label(data = gene_flow,
                           aes(label = sprintf("%s%%", 100 * rate),
                               x = xend - (xend - x) / 2,
                               y = yend - (yend - y) / 2), size = 3)

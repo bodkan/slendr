@@ -7,7 +7,7 @@
 plot_map(
   ...,
   time = NULL,
-  geneflows = FALSE,
+  gene_flow = FALSE,
   graticules = "original",
   intersect = TRUE,
   show_map = TRUE,
@@ -21,7 +21,7 @@ plot_map(
 
 \item{time}{Plot a concrete time point}
 
-\item{geneflows}{Indicate geneflow events with an arrow}
+\item{gene_flow}{Indicate geneflow events with an arrow}
 
 \item{graticules}{Plot graticules in the original Coordinate Reference System
 (such as longitude-latitude), or in the internal CRS (such as meters)?}
