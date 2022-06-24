@@ -11,7 +11,7 @@ vignette: >
 
 *slendr* is currently in the process of the first CRAN submission which is why it can't be installed with simple `install.packages("slendr")` just yet.
 
-For the moment, **the easiest way to install it is to get its development version directly from GitHub by executing `devtools::install_github("bodkan/slendr")`** via the R package *devtools* ( `install.packages("devtools")`). In fact, if you decide to try *slendr*, please make sure to update it regularly and keep an eye on the [changelog](https://slendr.net/news/index.html) on a regular basis!
+For the moment, **the easiest way to install it is to get its development version directly from GitHub by executing `devtools::install_github("bodkan/slendr")`** via the R package *devtools* ( `install.packages("devtools")`). In fact, if you decide to try *slendr*, please make sure to update it regularly and keep an eye on the [changelog](https://www.slendr.net/news/index.html) on a regular basis!
 
 Once you install *slendr*, **calling `library(slendr)` will check that all software dependencies are available**. If they are not, the R package will provide a brief helpful guide on how to resolve potential issues. The rest of this vignette talks about the necessary software dependencies in a bit more detail.
 

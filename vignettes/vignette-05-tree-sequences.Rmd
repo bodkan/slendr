@@ -338,7 +338,7 @@ dplyr::filter(inds, pop == "EUR") %>%
   labs(x = "time [years ago]", y = "Neanderthal ancestry proportion")
 ```
 
-Again, this is a result consistent with empirical estimates of Neanderthal ancestry using [ancient DNA data](https://www.pnas.org/content/116/5/1639).
+Again, this is a result consistent with empirical estimates of Neanderthal ancestry using [ancient DNA data](https://www.pnas.org/doi/10.1073/pnas.1814338116).
 
 ## ADMIXTOOLS analyses
 
