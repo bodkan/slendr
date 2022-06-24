@@ -877,7 +877,8 @@ of character names in each function’s interface.</p>
 proportion of Neanderthal ancestry in Africans and Europeans in our
 simulated data. We can do this using the Patterson’s <span class="math inline">\(f_4\)</span>-ratio statistic implemented in the
 <code><a href="../reference/ts_f4ratio.html">ts_f4ratio()</a></code> function in <em>slendr</em> (you can find more
-information about this particular version of the statistic <a href="https://www.pnas.org/content/116/5/1639" class="external-link">in this paper</a>):</p>
+information about this particular version of the statistic <a href="https://www.pnas.org/doi/10.1073/pnas.1814338116" class="external-link">in this
+paper</a>):</p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># first get a table of simulated African and European individuals in the tree-sequence</span>
 <span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span><span class="op">)</span><span class="op">)</span>
