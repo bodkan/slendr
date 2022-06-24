@@ -18,6 +18,22 @@ knitr::opts_chunk$set(
   dpi = 80,
   eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
 )
+
+nonspatial_slim <- tempfile()
+nonspatial_trees_file <- tempfile()
+
+spatial_slim <- tempfile()
+spatial_trees_file <- tempfile()
+
+msprime_trees_file <- tempfile()
+
+Sys.setenv(NONSPATIAL_SLIM = nonspatial_slim)
+Sys.setenv(NONSPATIAL_TREES = nonspatial_trees_file)
+
+Sys.setenv(SPATIAL_SLIM = spatial_slim)
+Sys.setenv(SPATIAL_TREES = spatial_trees_file)
+
+Sys.setenv(MSPRIME_TREES = msprime_trees_file)
 ```
 
 In previous vignettes we have demonstrated the *slendr* R interface for defining and executing msprime and SLiM population genetic models. We have also provided an overview for its interface to the tree-sequence processing library [tskit](https://tskit.dev).
@@ -44,7 +60,7 @@ set.seed(SEED)
 Consider the following SLiM script, which creates a couple of populations (with different $N_e$) splitting from an ancestral population `p1` (lets save it to `/tmp/nonspatial.slim`):
 
 ```{bash, include = FALSE}
-cat <<EOF > /tmp/nonspatial.slim
+cat <<EOF > ${NONSPATIAL_SLIM}
 initialize() {
     setSeed(42);
     initializeTreeSeq();
@@ -72,23 +88,23 @@ initialize() {
 }
 
 6000 late() {
-    sim.treeSeqOutput("/tmp/nonspatial-slim.trees");
+    sim.treeSeqOutput("${NONSPATIAL_TREES}");
 }
 EOF
 ```
 
 ```{bash, echo = FALSE, comment = ""}
-less /tmp/nonspatial.slim
+less ${NONSPATIAL_SLIM}
 ```
 
 ```{bash, include = FALSE}
-slim /tmp/nonspatial.slim
+slim ${NONSPATIAL_SLIM}
 ```
 
 After we run this script in SLiM, we can use *slendr* to load the output tree sequence (saved to `/tmp/nonspatial-slim.trees`), simplify it, and overlay mutations on it using the [standard functionality](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files) originally developed for *slendr* tree sequences. Note that this is the same command we would use for loading *slendr* tree sequences, except we direct the `ts_load()` function straight to the tree-sequence output file rather than using the `ts_load(<model-object>)` format used when working with standard *slendr* simulations. This way, *slendr*
 
 ```{r}
-ts <- ts_load("/tmp/nonspatial-slim.trees") %>%
+ts <- ts_load(nonspatial_trees_file) %>%
   ts_simplify() %>%
   ts_mutate(mutation_rate = 1e-7, random_seed = SEED)
 ```
@@ -148,17 +164,17 @@ We can start with Python:
 ```{python, eval = FALSE}
 import msprime
 ts = msprime.sim_ancestry(100)
-ts.dump("/tmp/msprime.trees")
+ts.dump(<trees file>)
 ```
 
 ```{r, include = FALSE}
-reticulate::py_run_string("import msprime; msprime.simulate(100).dump('/tmp/msprime.trees')")
+reticulate::py_run_string(sprintf("import msprime; msprime.simulate(100).dump('%s')", msprime_trees_file))
 ```
 
 And then we can proceed with loading the msprime tree sequence into R and analyze it with the slendr functionality:
 
 ```{r}
-ts <- ts_load("/tmp/msprime.trees")
+ts <- ts_load(msprime_trees_file)
 
 ts_nodes(ts)
 ```
@@ -170,7 +186,7 @@ Furthermore, the generalized interface also supports *slendr*'s [spatial tree-se
 For instance, lets take the following spatial SLiM script (modified from the SLiM manual) and execute it with SLiM the usual way:
 
 ```{bash, include = FALSE}
-cat <<EOF > /tmp/spatial.slim
+cat <<EOF > ${SPATIAL_SLIM}
 initialize() {
     setSeed(42);
 	  initializeSLiMOptions(keepPedigrees=T, dimensionality="xy");
@@ -203,23 +219,23 @@ modifyChild() {
 }
 
 10000 late() {
-  	sim.treeSeqOutput("/tmp/spatial-slim.trees");
+  	sim.treeSeqOutput("${SPATIAL_TREES}");
 }
 EOF
 ```
 
 ```{bash, echo = FALSE, comment = ""}
-less /tmp/spatial.slim
+less ${SPATIAL_SLIM}
 ```
 
 ```{bash, include = FALSE}
-slim /tmp/spatial.slim
+slim ${SPATIAL_SLIM}
 ```
 
 We can then load and simplify the output tree sequence in just as we did above in this vignette (or anywhere in the *slendr* documentation):
 
 ```{r}
-ts <- ts_load("/tmp/spatial-slim.trees") %>% ts_simplify()
+ts <- ts_load(spatial_trees_file) %>% ts_simplify()
 ```
 
 Finally, we can access the spatio-temporal data embedded in the output tree sequence in the standard *slendr* way (note the spatial [*sf*](https://r-spatial.github.io/sf/) column `location` with the `POINT` data type):
@@ -253,8 +269,3 @@ ggplot() +
 In this vignette we gave a brief overview of using *slendr*'s [R-tskit interface](../reference/index.html#tree-sequence-loading-and-processing) for loading, processing, and analyzing "pure" non-*slendr* tree sequences produced by msprime and SLiM scripts.
 
 Although we have only touched upon the most basic features of its R-tskit interface for standard tree sequences, it is important to note that as far as *slendr* is concerned, it does not matter how a tree sequence was produced, as long as it conforms to the tskit specification. This means that regardless of the source of your tree sequence data, you should be able to use *slendr*'s tskit functionality to run your analyses.
-
-```{bash, include = FALSE}
-rm /tmp/{spatial,nonspatial}-slim.trees /tmp/{spatial,nonspatial}.slim /tmp/msprime.trees
-```
-
