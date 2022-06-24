@@ -22,19 +22,19 @@ website:
 build: $(pkg)
 
 check: $(pkg)
-	unset R_DEVEL_LOCAL; cd build; R CMD check --as-cran $(notdir $<)
+	cd build; R CMD check --as-cran $(notdir $<)
 
 winrel: README.md
-	unset R_DEVEL_LOCAL; R -e 'devtools::check_win_release()'
+	R -e 'devtools::check_win_release()'
 
 windev: README.md
-	unset R_DEVEL_LOCAL; R -e 'devtools::check_win_devel()'
+	R -e 'devtools::check_win_devel()'
 
 winold: README.md
-	unset R_DEVEL_LOCAL; R -e 'devtools::check_win_oldrelease()'
+	R -e 'devtools::check_win_oldrelease()'
 
 rhub: README.md
-	unset R_DEVEL_LOCAL; R -e 'rhub::check_for_cran()'
+	R -e 'rhub::check_for_cran()'
 
 $(pkg): README.md
 	R -e 'devtools::document()'
