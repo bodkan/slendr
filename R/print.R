@@ -70,8 +70,8 @@ print.slendr_model <- function(x, ...) {
 
   cat("populations:", paste0(x$splits$pop, collapse = ", "), "\n")
   cat("geneflow events: ")
-  if (!is.null(x$geneflows))
-    cat(nrow(x$geneflows), "\n")
+  if (!is.null(x$geneflow))
+    cat(nrow(x$geneflow), "\n")
   else
     cat("[no geneflow]\n")
   cat("generation time:", x$generation_time, "\n")
