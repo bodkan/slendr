@@ -296,7 +296,7 @@ the demographic history encapsulated in your model.",
         graticules = input$coord_system,
         intersect = input$intersect,
         show_map = input$show_map,
-        geneflows = if (is.null(model$geneflow)) FALSE else input$show_geneflows,
+        gene_flow = if (is.null(model$geneflow)) FALSE else input$show_geneflows,
         interpolated_maps = interpolated_maps
       )
 
