@@ -303,7 +303,7 @@ That said, if you would like to run some statistics on nodes rather than on indi
 
 ## Estimating Neanderthal ancestry proportions
 
-Let's try to put these new tools to practice and estimate the proportion of Neanderthal ancestry in Africans and Europeans in our simulated data. We can do this using the Patterson's $f_4$-ratio statistic implemented in the `ts_f4ratio()` function in *slendr* (you can find more information about this particular version of the statistic [in this paper](https://www.pnas.org/content/116/5/1639)):
+Let's try to put these new tools to practice and estimate the proportion of Neanderthal ancestry in Africans and Europeans in our simulated data. We can do this using the Patterson's $f_4$-ratio statistic implemented in the `ts_f4ratio()` function in *slendr* (you can find more information about this particular version of the statistic [in this paper](https://www.pnas.org/doi/10.1073/pnas.1814338116)):
 
 ```{r}
 # first get a table of simulated African and European individuals in the tree-sequence

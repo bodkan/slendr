@@ -126,7 +126,7 @@ sample_sets <- split(data$node_id, data$pop)
 ts_diversity(ts, sample_sets)
 ```
 
-Just as with *slendr* tree sequences (as demonstrated in our [paper](vignette-09-paper.html#example-4-figure-5)) we can get a individual trees too, extracted in the in the phylogenetic format provided by the [ape](https://cran.r-project.org/web/packages/ape/index.html) R package. Here we first simplify the tree sequence even further to just 10 nodes to make things manageable:
+Just as with *slendr* tree sequences (as demonstrated in our [paper](vignette-09-paper.html#example-4-figure-5)) we can get a individual trees too, extracted in the in the phylogenetic format provided by the [ape](https://CRAN.R-project.org/package=ape) R package. Here we first simplify the tree sequence even further to just 10 nodes to make things manageable:
 
 ```{r}
 samples <- sample(data$node_id, 10)
