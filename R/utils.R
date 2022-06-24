@@ -61,18 +61,27 @@ get_geneflows <- function(model, time) {
   if (is.null(model$geneflow)) return(NULL)
   pop_names <- unique(unlist(sapply(model$populations, `[[`, "pop")))
 
-  geneflows <- subset(model$geneflow, tstart_orig >= time & tend_orig <= time)
+  direction <- time_direction(model)
+  if (direction == "forward") {
+    before_op <- `<=`
+    after_op <- `>=`
+  } else {
+    before_op <- `>=`
+    after_op <- `<=`
+  }
+
+  geneflows <- subset(model$geneflow, before_op(tstart_orig, time) & after_op(tend_orig, time))
   geneflows$from <- factor(geneflows$from, levels = pop_names)
   geneflows$to <- factor(geneflows$to, levels = pop_names)
 
   migr_coords <- lapply(seq_len(nrow(geneflows)), function(row_i) {
 
     from <- model$populations[pop_names == geneflows[row_i, ]$from][[1]] %>%
-      .[.$time >= time, ] %>%
+      .[before_op(.$time, time), ] %>%
       .[nrow(.), ]
 
     to <- model$populations[pop_names == geneflows[row_i, ]$to][[1]] %>%
-      .[.$time >= time, ] %>%
+      .[before_op(.$time, time), ] %>%
       .[nrow(.), ]
 
     from_center <- sf::st_centroid(from) %>% sf::st_coordinates()
