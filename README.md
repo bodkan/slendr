@@ -30,7 +30,7 @@ Here is a brief summary of *slendr*'s most important features. The R package all
 
 -   **Encode complex models of population movements on a landscape** (see a brief example of such model [here](https://www.slendr.net/articles/vignette-06-locations.html#model-specification), and a more extended explanation in [this tutorial](https://www.slendr.net/articles/vignette-01-tutorial.html)). No knowledge of cartographic or geospatial analysis concepts is needed.
 
--   **Simulate these dynamic spatial demographic models using SLiM's continuous-space simulation capabilities directly in R** **(again, no SLiM programming required).** The outputs from such simulations are saved as tree sequences and can be analysed using [standard R geospatial data analysis libraries](https://www.slendr.net/articles/vignette-08-paper.html#example-4-figure-5). This is because *slendr* performs the conversion of tree sequence tables to the appropriate spatial R data type automatically.
+-   **Simulate these dynamic spatial demographic models using SLiM's continuous-space simulation capabilities directly in R** **(again, no SLiM programming required).** The outputs from such simulations are saved as tree sequences and can be analysed using [standard R geospatial data analysis libraries](https://www.slendr.net/articles/vignette-09-paper.html#example-4-figure-5). This is because *slendr* performs the conversion of tree sequence tables to the appropriate spatial R data type automatically.
 
 -   Specify within-population individual [dispersal dynamics](https://www.slendr.net/articles/vignette-03-interactions.html) from the R interface by leveraging SLiM's individual interaction parameters implemented in the SLiM back-end script.
 
@@ -305,4 +305,4 @@ The example above provides only a very brief and incomplete overview of the full
 
 -   For spatially explicit population models, the *slendr* package automatically converts the simulated output data to a format which makes it possible to analyse it with many available R packages for geospatial data analysis. A brief description of this functionality can be found in [this vignette](https://www.slendr.net/articles/vignette-06-locations.html).
 
--   You can find complete reproducible code behind the examples in our [preprint](https://www.biorxiv.org/lookup/content/short/2022.03.20.485041v1) in a dedicated R vignette [here](https://www.slendr.net/articles/vignette-08-paper.html).
+-   You can find complete reproducible code behind the examples in our [preprint](https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1) in a dedicated R vignette [here](https://www.slendr.net/articles/vignette-09-paper.html).
