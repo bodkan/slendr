@@ -282,11 +282,10 @@ events:</p>
 <p>Finally, we can compile the whole model:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>
-  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"grid-model"</span><span class="op">)</span>, 
   populations <span class="op">=</span> <span class="va">populations</span>, gene_flow <span class="op">=</span> <span class="va">geneflows</span>,
   generation_time <span class="op">=</span> <span class="fl">1</span>, resolution <span class="op">=</span> <span class="fl">10</span>,
   competition <span class="op">=</span> <span class="fl">10</span>, mating <span class="op">=</span> <span class="fl">10</span>, dispersal <span class="op">=</span> <span class="fl">10</span>,
-  sim_length <span class="op">=</span> <span class="fl">1000</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>
+  sim_length <span class="op">=</span> <span class="fl">1000</span>
 <span class="op">)</span></code></pre></div>
 <p>Tthose familiar with the SLiM manual will recognize a model described
 in section 5.3.3.</p>

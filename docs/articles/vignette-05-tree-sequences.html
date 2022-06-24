@@ -211,7 +211,7 @@ mind that such graph is embedded within every <em>slendr</em> model and
 can be always invoked to make sure the model you’re setting up is
 correct:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>
   <span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
   <span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   nrow <span class="op">=</span> <span class="fl">1</span>
@@ -232,8 +232,8 @@ they are removed from the simulation) present will be sampled from.</p>
 <p>In our example, we want to sample two Neanderthal individuals (the
 older one being the <a href="https://www.nature.com/articles/nature12886" class="external-link">Altai
 Neanderthal</a>, the younger one <a href="https://www.science.org/doi/10.1126/science.aao1887" class="external-link">Vindija
-Neanderthal</a>). These two genomes are what we <a href="https://www.pnas.org/content/116/5/1639" class="external-link">need</a> to estimate
-Neanderthal ancestry proportion using a so-called <span class="math inline">\(f_4\)</span>-ratio statistic (more on that
+Neanderthal</a>). These two genomes are what we <a href="https://www.pnas.org/doi/10.1073/pnas.1814338116" class="external-link">need</a> to
+estimate Neanderthal ancestry proportion using a so-called <span class="math inline">\(f_4\)</span>-ratio statistic (more on that
 below):</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nea_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70000</span>, <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
@@ -267,7 +267,7 @@ means that you can define sampling events using whatever input data you
 might already have available (such as radiocarbon-dated ancient DNA
 samples from an Excel sheet from some publication). For instance, there
 has been a <a href="https://www.nature.com/articles/nature17993" class="external-link">lot</a>
-of <a href="https://www.pnas.org/content/116/5/1639" class="external-link">interest</a> to
+of <a href="https://www.pnas.org/doi/10.1073/pnas.1814338116" class="external-link">interest</a> to
 estimate the trajectory of Neanderthal ancestry in Europe over time
 using ancient DNA data from anatomically modern human individuals (also
 called early modern humans, EMH) across the last couple of tens of
@@ -387,7 +387,7 @@ will be entirely isolated and used just for the purpose of
 too. Take a look at <a href="https://CRAN.R-project.org/package=reticulate/vignettes/versions.html" class="external-link">this
 guide</a>. You will be interested in the function
 <code>reticulate::user_virtualenv()</code> or
-<code><a href="https://rdrr.io/pkg/reticulate/man/use_python.html" class="external-link">reticulate::use_condaenv()</a></code> which is what our own
+<code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_condaenv()</a></code> which is what our own
 <code><a href="../reference/setup_env.html">setup_env()</a></code> uses under the hood. You will need and
 environment at least Python version 3.9 or higher, with <em>tskit</em>
 0.4.1, <em>msprime</em> 1.1.0, <em>pyslim</em> 0.700, and for running
