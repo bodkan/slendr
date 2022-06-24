@@ -211,7 +211,7 @@ mind that such graph is embedded within every <em>slendr</em> model and
 can be always invoked to make sure the model you’re setting up is
 correct:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span>
   <span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
   <span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
   nrow <span class="op">=</span> <span class="fl">1</span>
@@ -387,7 +387,7 @@ will be entirely isolated and used just for the purpose of
 too. Take a look at <a href="https://CRAN.R-project.org/package=reticulate/vignettes/versions.html" class="external-link">this
 guide</a>. You will be interested in the function
 <code>reticulate::user_virtualenv()</code> or
-<code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_condaenv()</a></code> which is what our own
+<code><a href="https://rdrr.io/pkg/reticulate/man/use_python.html" class="external-link">reticulate::use_condaenv()</a></code> which is what our own
 <code><a href="../reference/setup_env.html">setup_env()</a></code> uses under the hood. You will need and
 environment at least Python version 3.9 or higher, with <em>tskit</em>
 0.4.1, <em>msprime</em> 1.1.0, <em>pyslim</em> 0.700, and for running
@@ -917,7 +917,8 @@ present-day DNA samples:</p>
 <pre><code><span class="co">#&gt; `geom_smooth()` using formula 'y ~ x'</span></code></pre>
 <p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_trajectory-1.png" width="480"></p>
 <p>Again, this is a result consistent with empirical estimates of
-Neanderthal ancestry using <a href="https://www.pnas.org/content/116/5/1639" class="external-link">ancient DNA data</a>.</p>
+Neanderthal ancestry using <a href="https://www.pnas.org/doi/10.1073/pnas.1814338116" class="external-link">ancient DNA
+data</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="admixtools-analyses">ADMIXTOOLS analyses<a class="anchor" aria-label="anchor" href="#admixtools-analyses"></a>

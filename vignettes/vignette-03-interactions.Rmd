@@ -89,15 +89,15 @@ slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
      burnin = 100, method = "batch", verbose = FALSE, random_seed = 314159)
 ```
 
-Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (the animation is significantly sped up to satisfy the vignette size limits put on by CRAN):
+Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (we skip this animation in this vignette to make the package installation size smaller):
 
-```{r plot_gif_interactions, message = FALSE, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_DEVEL_LOCAL") == TRUE && Sys.getenv("NOT_CRAN") != "true"}
+```{r plot_gif_interactions, message = FALSE, eval = FALSE}
 animate_model(model, steps = 80, width = 500, height = 200)
 ```
 
 Alternatively, we can use tree sequence processing features of slendr to just capture the last spatial snapshot of the simulated populations, which will be even faster:
 
-```{r plot_interactions, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_DEVEL_LOCAL") == TRUE && Sys.getenv("NOT_CRAN") == "true"}
+```{r plot_interactions, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"}
 library(ggplot2)
 
 locations <- ts_load(model) %>% ts_nodes() %>% dplyr::filter()
