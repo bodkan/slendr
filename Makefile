@@ -38,7 +38,7 @@ rhub: README.md
 
 $(pkg): README.md
 	R -e 'devtools::document()'
-	unset R_DEVEL_LOCAL; mkdir -p build; cd build; R CMD build --log ../../slendr
+	mkdir -p build; cd build; R CMD build --log ../../slendr
 
 README.md: README.Rmd $(logo)
 	R -e 'devtools::install(upgrade = "never")'
