@@ -350,7 +350,7 @@ snps <- ts_eigenstrat(ts, prefix = file.path(tempdir(), "eigenstrat", "data"))
 
 Running an *admixr* analysis is then as easy as plugging the object into an *admixr* function. For instance, we can estimate the proportion of Neanderthal ancestry in a couple of individuals $X$ like this (*admixr* calls this proportion `alpha`):
 
-```{r}
+```{r, eval = Sys.which("qpDstat") != "" && env_present && Sys.getenv("R_DEVEL_LOCAL") == TRUE }
 library(admixr)
 
 f4ratio(data = snps, X = c("EUR_1", "EUR_2", "AFR_2"),
@@ -359,7 +359,7 @@ f4ratio(data = snps, X = c("EUR_1", "EUR_2", "AFR_2"),
 
 In fact, lets compare the values obtained by both *tskit* and *admixr*/ADMIXTOOLS for all individuals:
 
-```{r, ts_vs_admixr}
+```{r, ts_vs_admixr, eval = Sys.which("qpDstat") != "" && env_present && Sys.getenv("R_DEVEL_LOCAL") == TRUE }
 europeans <- inds[inds$pop == "EUR", ]$name
 
 # tskit result
