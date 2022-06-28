@@ -20,3 +20,4 @@
 ^\.github$
 ^\.covrignore$
 ^.*\.gif
+^cran-comments.md
