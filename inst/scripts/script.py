@@ -1,3 +1,7 @@
+# This Python script serves as an msprime back end of the slendr package.
+# As such it is distributed under the same conditions and license as the
+# rest of the slendr R package codebase.
+
 import argparse
 import os
 import sys

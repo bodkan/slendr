@@ -1,5 +1,7 @@
 # This module contains a couple of Python functions serving as a link between
 # the R interface of slendr and the underlying tskit tree sequence machinery.
+# It is distributed under the same conditions and license as the rest of the
+# slendr R package codebase.
 
 def mult_roots(ts):
   """Check how many trees in the tree sequence have multiple roots (i.e. how
