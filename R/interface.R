@@ -680,6 +680,7 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
     } else {
       size <- ifelse(scale == "large", 10, 50)
       file <- sprintf("ne_%sm_land.zip", size)
+      if (!dir.exists(ne_dir)) dir.create(ne_dir)
       path <- file.path(ne_dir, file)
       utils::download.file(
         url = sprintf("https://naturalearth.s3.amazonaws.com/%sm_physical/%s", size, file),
