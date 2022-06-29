@@ -22,7 +22,7 @@ website:
 build: $(pkg)
 
 check: $(pkg)
-	cd build; R CMD check --as-cran $(notdir $<)
+	unset R_HAS_GGTREE; cd build; R CMD check --as-cran $(notdir $<)
 
 winrel: README.md
 	R -e 'devtools::check_win_release()'
