@@ -114,6 +114,10 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
 
   class(pop) <- set_class(pop, "pop")
 
+  if (!is.logical(map) && intersect && (nrow(intersect_features(pop)) == 0))
+    stop("The specified population boundary has no overlap with liveable landscape surface",
+         call. = FALSE)
+
   pop
 }
 
