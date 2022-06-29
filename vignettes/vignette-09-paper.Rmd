@@ -466,7 +466,7 @@ ancestors <- ts_ancestors(ts, "EUR_599")
 
 ### Plotting code
 
-```{r, figure_ex4, eval = Sys.getenv("R_DEVEL_LOCAL") == TRUE && eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees"), fig.height=9, fig.width=7, class.source = "fold-hide"}
+```{r, figure_ex4, eval = Sys.getenv("R_HAS_GGTREE") == TRUE && eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees"), fig.height=9, fig.width=7, class.source = "fold-hide"}
 library(ggtree)
 
 # prepare annotation table for ggtree linking R phylo node ID (not tskit integer
