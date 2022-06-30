@@ -53,15 +53,18 @@ create_pop <- function(i, n_side, map, N, radius) {
   coords <- c((i - 1) %% n_side, (i - 1) %/% n_side)
   center <- coords / n_side * dim + dim / (2 * n_side)
 
-  pop <- population(
-    name = sprintf("pop%d", i),
-    N = N,
-    time = 1,
-    map = map,
-    center = center + c(attr(map, "xrange")[1], attr(map, "yrange")[1]),
-    radius = radius
-  )
-  
+  pop <- tryCatch({
+    population(
+      name = sprintf("pop%d", i),
+      N = N,
+      time = 1,
+      map = map,
+      center = center + c(attr(map, "xrange")[1], attr(map, "yrange")[1]),
+      radius = radius
+    )
+  }, error = function(e) NULL)
+
+  pop
 }
 ```
 
@@ -186,6 +189,8 @@ continent <- region(
 )
 
 check_area <- function(pop, map, continent) {
+  if (is.null(pop)) return(NULL)
+
   # total population area
   pop_area <- area(pop)$area
   # population area overlapping a map
