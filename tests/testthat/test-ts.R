@@ -13,7 +13,7 @@ model_dir <- file.path(tempdir(), "ts")
 
 model <- compile_model(
   populations = list(p1, p2),
-  generation_time = 1, resolution = res, sim_length = 300,
+  generation_time = 1, resolution = res, simulation_length = 300,
   competition = 10, mating = 10, dispersal = 5,
   path = model_dir, overwrite = TRUE, force = TRUE,
   description = desc

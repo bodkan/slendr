@@ -40,7 +40,7 @@ test_that("invalid blank maps are prevented", {
   pop <- population("pop", time = 1, N = 100, map = map, center = c(50, 50), radius = 0.5)
 
   expect_error(compile_model(pop, generation_time = 1, competition = 1,
-                       mating = 50, dispersal = 1, sim_length = 300,
+                       mating = 50, dispersal = 1, simulation_length = 300,
                        resolution = 1),
                "No occupiable pixel on a rasterized map")
 })

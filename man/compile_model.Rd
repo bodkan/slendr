@@ -15,10 +15,11 @@ compile_model(
   gene_flow = list(),
   overwrite = FALSE,
   force = FALSE,
-  sim_length = NULL,
+  simulation_length = NULL,
   direction = NULL,
   slim_script = system.file("scripts", "script.slim", package = "slendr"),
-  description = ""
+  description = "",
+  sim_length = NULL
 )
 }
 \arguments{
@@ -50,7 +51,7 @@ already exists, and create a new one?}
 present? Useful for non-interactive uses. In an interactive mode, the user
 is asked to confirm the deletion manually.}
 
-\item{sim_length}{Total length of the simulation (required for forward time
+\item{simulation_length}{Total length of the simulation (required for forward time
 models, optional for models specified in backward time units which by
 default run to "the present time")}
 
@@ -161,7 +162,7 @@ model_dir <- paste0(tempdir(), "_slendr_model")
 model <- compile_model(
   populations = list(pop1, pop2, pop3), generation_time = 1,
   path = model_dir, overwrite = TRUE,
-  resolution = 10, sim_length = 500,
+  resolution = 10, simulation_length = 500,
   competition = 5, mating = 5, dispersal = 1
 )
 

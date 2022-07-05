@@ -17,7 +17,7 @@ a <- population("a", parent = b, time = 1500, N = 10)
 forward_model_dir <- paste0(tempfile(), "_forward")
 
 forward_model <- compile_model(populations = list(a, b, x1, x2, c, o), path = forward_model_dir,
-                 generation_time = 1, overwrite = TRUE, force = TRUE, sim_length = 2200,
+                 generation_time = 1, overwrite = TRUE, force = TRUE, simulation_length = 2200,
                  description = "The most incredible popgen model ever")
 
 forward_samples <- rbind(

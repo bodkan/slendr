@@ -16,7 +16,7 @@ test_that("forward and backward time model objects are equivalent", {
     generation_time = 1, resolution = 1,
     overwrite = TRUE, force = TRUE,
     competition = 1, mating = 1, dispersal = 1,
-    sim_length = 5
+    simulation_length = 5
   )
 
   # backward direction
@@ -75,7 +75,7 @@ test_that("forward and backward models yield the same simulation result", {
     resolution = 10000,
     overwrite = TRUE, force = TRUE,
     competition = 100e3, mating = 100e3, dispersal = 100e3,
-    sim_length = 480
+    simulation_length = 480
   )
 
   # backward simulation -----------------------------------------------------
@@ -149,7 +149,7 @@ test_that("forward and backward models yield the same simulation result (nonspat
     gene_flow = geneflow,
     generation_time = 1,
     overwrite = TRUE, force = TRUE,
-    sim_length = 480
+    simulation_length = 480
   )
 
   # backward simulation -----------------------------------------------------

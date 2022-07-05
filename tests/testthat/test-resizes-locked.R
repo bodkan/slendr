@@ -11,7 +11,7 @@ test_that("population size is correctly decreased upon reducing circular boundar
                     radius = r1) %>%
     set_range(time = 50, center = c(500, 500), radius = r2, lock = TRUE)
 
-  ind_df <- run_sim(pop, "forward", sim_length = 55, verbose = FALSE)
+  ind_df <- run_sim(pop, "forward", simulation_length = 55, verbose = FALSE)
 
   # make sure that the new population size corresponds to the decrease in the
   # circular area of the population boundary
@@ -33,7 +33,7 @@ test_that("population size is correctly increased upon exanding circular baounda
                     radius = r1) %>%
     set_range(time = 50, center = c(500, 500), radius = r2, lock = TRUE)
 
-  ind_df <- run_sim(pop, "forward", sim_length = 55, verbose = FALSE)
+  ind_df <- run_sim(pop, "forward", simulation_length = 55, verbose = FALSE)
 
   # make sure that the new population size corresponds to the decrease in the
   # circular area of the population boundary
@@ -55,7 +55,7 @@ test_that("population size is correctly decreased upon reducing square boundary"
                     polygon = list(c(0, 0), c(a1, 0), c(a1, a1), c(0, a1))) %>%
     set_range(time = 50, lock = TRUE, polygon = list(c(0, 0), c(a2, 0), c(a2, a2), c(0, a2)))
 
-  ind_df <- run_sim(pop, "forward", sim_length = 55, verbose = FALSE)
+  ind_df <- run_sim(pop, "forward", simulation_length = 55, verbose = FALSE)
 
   # make sure that the new population size corresponds to the decrease in the
   # circular area of the population boundary
@@ -78,7 +78,7 @@ test_that("population size is correctly decreased upon expanding square boundary
                     polygon = list(c(0, 0), c(a1, 0), c(a1, a1), c(0, a1))) %>%
     set_range(time = 50, lock = TRUE, polygon = list(c(0, 0), c(a2, 0), c(a2, a2), c(0, a2)))
 
-  ind_df <- run_sim(pop, "forward", sim_length = 55, verbose = FALSE)
+  ind_df <- run_sim(pop, "forward", simulation_length = 55, verbose = FALSE)
 
   # make sure that the new population size corresponds to the decrease in the
   # circular area of the population boundary
@@ -101,7 +101,7 @@ test_that("population size is correctly increased during range expansion", {
                     radius = r_start) %>%
     expand_range(by = by, start = 50, end = 100, lock = TRUE, snapshots = snapshots)
 
-  ind_df <- run_sim(pop, "forward", sim_length = 150, verbose = FALSE)
+  ind_df <- run_sim(pop, "forward", simulation_length = 150, verbose = FALSE)
 
   area_start <- pi * r_start^2
   N_observed <- unique(ind_df$N)
@@ -123,7 +123,7 @@ test_that("population size is correctly increased during range contraction", {
                     radius = r_start) %>%
     shrink_range(by = by, start = 50, end = 100, lock = TRUE, snapshots = snapshots)
 
-  ind_df <- run_sim(pop, "forward", sim_length = 150, verbose = FALSE)
+  ind_df <- run_sim(pop, "forward", simulation_length = 150, verbose = FALSE)
 
   area_start <- pi * r_start^2
   N_observed <- unique(ind_df$N)

@@ -94,7 +94,7 @@ test_that("Multiple resize event types are allowed (forward model)", {
     resize(N = N2, time = t1, end = t2, how = "exponential") %>%
     resize(N = N3, time = t3, how = "step")
 
-  res <- run_sim(pop, "forward", sim_length = 1000)
+  res <- run_sim(pop, "forward", simulation_length = 1000)
   expected_N <- calculate_exp_sizes(N1, N2, t1, t2)
 
   expect_true(res[1, ]$N == N1) # initial size

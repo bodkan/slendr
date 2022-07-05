@@ -7,7 +7,7 @@ pop <- population("POP", time = 1, N = 100, center = c(50, 50), radius = 50, map
 model <- compile_model(
   populations = pop,
   generation_time = 1,
-  sim_length = 100,
+  simulation_length = 100,
   resolution = 1,
   competition = 10, mating = 2, dispersal = 1,
   overwrite = TRUE, force = TRUE
@@ -204,7 +204,7 @@ test_that("ts_phylo gives a warning when a tree sequence is not fully spatial", 
 
   pop2 <- population("POP", time = 1, N = 10, center = c(50, 50), radius = 50, map = map)
 
-  model2 <- compile_model(populations = pop2, generation_time = 1, sim_length = 1000,
+  model2 <- compile_model(populations = pop2, generation_time = 1, simulation_length = 1000,
     resolution = 1, competition = 10, mating = 50, dispersal = 1)
 
   slim(model2, sequence_length = 1, recombination_rate = 0, method = "batch", random_seed = 42 )

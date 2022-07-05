@@ -80,7 +80,7 @@ We will now use those populations to compile two models: the first model will be
 
 ```{r}
 # no gene flow model
-model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, sim_length = 4500)
+model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_time = 1, simulation_length = 4500)
 
 samples <- schedule_sampling(
   model_nogf, times = 4500,
@@ -90,7 +90,7 @@ samples <- schedule_sampling(
 # model with gene flow
 gf <- gene_flow(from = b, to = x1, start = 4100, end = 4400, rate = 0.1)
 
-model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, sim_length = 4500)
+model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, simulation_length = 4500)
 
 samples <- schedule_sampling(
   model_gf, times = 4500,
@@ -336,11 +336,11 @@ For convenience, we will write a helper function which will, for a given populat
 compile_run_afs <- function(model_name, pop, seed = 42) {
   # maximum length of the simulation (necessary for forward models which start
   # in generation 1)
-  sim_length <- 5000 
+  simulation_length <- 5000 
 
   # define sampling times given the direction of time
   if (attr(pop, "history")[[1]]$time == 1) {
-    sampling_time <- sim_length
+    sampling_time <- simulation_length
     direction <- "forward"
   } else {
     sampling_time <- 0
@@ -348,7 +348,7 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
   }
 
   # compile model
-  model <- compile_model(pop, generation_time = 15, direction = direction, sim_length = sim_length)
+  model <- compile_model(pop, generation_time = 15, direction = direction, simulation_length = simulation_length)
 
   samples <- schedule_sampling(model, times = sampling_time, list(pop, 50))
 

@@ -71,12 +71,12 @@ p5 <- set_dispersal(p5, time = 500, competition = 300)
 p6 <- set_dispersal(p6, time = 600, competition = 380)
 ```
 
-Having defined the spatial dynamics, we will compile this model and execute the simulation. Note that because this model starts at the present and runs into the future (unlike previous models that started in the past and ran up to the present), we need to specify the total length of the simulation with `sim_length = 1000` to know when to terminate it.
+Having defined the spatial dynamics, we will compile this model and execute the simulation. Note that because this model starts at the present and runs into the future (unlike previous models that started in the past and ran up to the present), we need to specify the total length of the simulation with `simulation_length = 1000` to know when to terminate it.
 
 ```{r}
 model <- compile_model(
   populations = list(p0, p1, p2, p3, p4, p5, p6),
-  generation_time = 1, resolution = 1, sim_length = 1000,
+  generation_time = 1, resolution = 1, simulation_length = 1000,
   competition = 10, mating = 10, dispersal = 5,
   path = paste0(tempfile(), "_spatial-interactions")
 )

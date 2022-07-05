@@ -61,7 +61,7 @@ gf <- gene_flow(from = b, to = x1, start = 5400, end = 5800, 0.1)
 
 model <- compile_model(
   populations = list(o, a, b, c, x1, x2), gene_flow = gf,
-  generation_time = 1, sim_length = 6000
+  generation_time = 1, simulation_length = 6000
 )
 
 plot_model(model, sizes = FALSE, proportions = TRUE)
@@ -211,7 +211,7 @@ p8 <- population("pop8", time = 1, N = 2000, map = map, competition = 1)
 
 model <- compile_model(
   populations = list(p1, p2, p3, p4, p5, p6, p7, p8),
-  generation_time = 1, sim_length = 5000, resolution = 0.1,
+  generation_time = 1, simulation_length = 5000, resolution = 0.1,
   mating = 0.1, dispersal = 0.05
 )
 

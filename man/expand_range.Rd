@@ -134,7 +134,7 @@ model_dir <- paste0(tempdir(), "_slendr_model")
 model <- compile_model(
   populations = list(pop1, pop2, pop3), generation_time = 1,
   path = model_dir, overwrite = TRUE,
-  resolution = 10, sim_length = 500,
+  resolution = 10, simulation_length = 500,
   competition = 5, mating = 5, dispersal = 1
 )
 

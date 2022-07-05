@@ -2,7 +2,7 @@ skip_if(!slendr:::check_env_present())
 
 pop <- population("POP", time = 1, N = 100)
 
-model <- compile_model(populations = pop, generation_time = 1, sim_length = 100)
+model <- compile_model(populations = pop, generation_time = 1, simulation_length = 100)
 
 slim(model, sequence_length = 1000000, recombination_rate = 0, random_seed = 42)
 

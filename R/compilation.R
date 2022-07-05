@@ -23,7 +23,7 @@
 #'   files will be saved to a temporary directory.
 #' @param overwrite Completely delete the specified directory, in case it
 #'   already exists, and create a new one?
-#' @param sim_length Total length of the simulation (required for forward time
+#' @param simulation_length Total length of the simulation (required for forward time
 #'   models, optional for models specified in backward time units which by
 #'   default run to "the present time")
 #' @param direction Intended direction of time. Under normal circumstances this
@@ -43,9 +43,14 @@
 compile_model <- function(populations, generation_time, path = NULL, resolution = NULL,
                           competition = NULL, mating = NULL, dispersal = NULL,
                           gene_flow = list(), overwrite = FALSE, force = FALSE,
-                          sim_length = NULL, direction = NULL,
+                          simulation_length = NULL, direction = NULL,
                           slim_script = system.file("scripts", "script.slim", package = "slendr"),
-                          description = "") {
+                          description = "", sim_length = NULL) {
+  if (is.null(simulation_length) && !is.null(sim_length)) {
+    message("Argument `sim_length` will soon be deprecated in favor of `simulation_length`.")
+    simulation_length <- sim_length
+  }
+
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   if (is.null(path)) path <- tempfile()
@@ -111,9 +116,9 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
   if (length(time_dir) == 0 || all(time_dir == "forward")) {
     if (!is.null(direction) && all(direction == "backward"))
       time_dir <- "backward"
-    else if (is.null(sim_length))
+    else if (is.null(simulation_length))
       stop("The specified model implies a forward direction of time. However,
-forward models require that the 'sim_length' parameter is explicitly
+forward models require that the 'simulation_length' parameter is explicitly
 specified in order to know when to terminate the simulation. If you
 intended to run a backward time model instead, you can state this by
 setting `direction = 'backward'.`", call. = FALSE)
@@ -124,10 +129,10 @@ setting `direction = 'backward'.`", call. = FALSE)
   # there's no need to specify simulation run length for backward models
   # (those stop at time 0 by default) so we find the oldest time present
   # in the model and take it as the total amount of time for the simulation
-  if (time_dir == "backward" || is.null(sim_length)) {
+  if (time_dir == "backward" || is.null(simulation_length)) {
     end_time <- get_oldest_time(populations, time_dir)
   } else
-    end_time <- sim_length
+    end_time <- simulation_length
 
   split_table <- compile_splits(populations, generation_time, time_dir, end_time)
   admix_table <- compile_geneflows(gene_flow, split_table, generation_time, time_dir, end_time)
@@ -148,11 +153,11 @@ setting `direction = 'backward'.`", call. = FALSE)
     map_table <- return_maps <- dispersal_table <- NULL
   }
 
-  sim_length <- if (is.null(sim_length)) end_time else sim_length
+  simulation_length <- if (is.null(simulation_length)) end_time else simulation_length
 
   checksums <- write_model(
     path, populations, admix_table, map_table, split_table, resize_table,
-    dispersal_table, generation_time, resolution, sim_length, time_dir, slim_script,
+    dispersal_table, generation_time, resolution, simulation_length, time_dir, slim_script,
     description, map
   )
 
@@ -169,8 +174,8 @@ setting `direction = 'backward'.`", call. = FALSE)
     dispersals = dispersal_table,
     generation_time = generation_time,
     resolution = resolution,
-    length = round(sim_length / generation_time),
-    orig_length = sim_length,
+    length = round(simulation_length / generation_time),
+    orig_length = simulation_length,
     direction = time_dir,
     checksums = checksums
   )

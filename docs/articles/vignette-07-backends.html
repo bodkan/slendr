@@ -256,7 +256,7 @@ to capture a bit more of the natural variation of <code>b</code>
 ancestry in <code>x1</code>, and only one individual from the rest.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># no gene flow model</span>
-<span class="va">model_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, sim_length <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span>
+<span class="va">model_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, simulation_length <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span>
 
 <span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span>
   <span class="va">model_nogf</span>, times <span class="op">=</span> <span class="fl">4500</span>,
@@ -266,7 +266,7 @@ ancestry in <code>x1</code>, and only one individual from the rest.</p>
 <span class="co"># model with gene flow</span>
 <span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">b</span>, to <span class="op">=</span> <span class="va">x1</span>, start <span class="op">=</span> <span class="fl">4100</span>, end <span class="op">=</span> <span class="fl">4400</span>, rate <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
 
-<span class="va">model_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, gene_flow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, sim_length <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span>
+<span class="va">model_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">x1</span>, <span class="va">x2</span>, <span class="va">c</span>, <span class="va">o</span><span class="op">)</span>, gene_flow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, simulation_length <span class="op">=</span> <span class="fl">4500</span><span class="op">)</span>
 
 <span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span>
   <span class="va">model_gf</span>, times <span class="op">=</span> <span class="fl">4500</span>,
@@ -650,11 +650,11 @@ to population genetics theory).</p>
 <code class="sourceCode R"><span class="va">compile_run_afs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">model_name</span>, <span class="va">pop</span>, <span class="va">seed</span> <span class="op">=</span> <span class="fl">42</span><span class="op">)</span> <span class="op">{</span>
   <span class="co"># maximum length of the simulation (necessary for forward models which start</span>
   <span class="co"># in generation 1)</span>
-  <span class="va">sim_length</span> <span class="op">&lt;-</span> <span class="fl">5000</span> 
+  <span class="va">simulation_length</span> <span class="op">&lt;-</span> <span class="fl">5000</span> 
 
   <span class="co"># define sampling times given the direction of time</span>
   <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pop</span>, <span class="st">"history"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">time</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">sampling_time</span> <span class="op">&lt;-</span> <span class="va">sim_length</span>
+    <span class="va">sampling_time</span> <span class="op">&lt;-</span> <span class="va">simulation_length</span>
     <span class="va">direction</span> <span class="op">&lt;-</span> <span class="st">"forward"</span>
   <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
     <span class="va">sampling_time</span> <span class="op">&lt;-</span> <span class="fl">0</span>
@@ -662,7 +662,7 @@ to population genetics theory).</p>
   <span class="op">}</span>
 
   <span class="co"># compile model</span>
-  <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span><span class="va">pop</span>, generation_time <span class="op">=</span> <span class="fl">15</span>, direction <span class="op">=</span> <span class="va">direction</span>, sim_length <span class="op">=</span> <span class="va">sim_length</span><span class="op">)</span>
+  <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span><span class="va">pop</span>, generation_time <span class="op">=</span> <span class="fl">15</span>, direction <span class="op">=</span> <span class="va">direction</span>, simulation_length <span class="op">=</span> <span class="va">simulation_length</span><span class="op">)</span>
 
   <span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="va">sampling_time</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pop</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>
 

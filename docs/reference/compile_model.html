@@ -134,10 +134,11 @@ the timing of simulation events.</p>
   gene_flow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
   overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
   force <span class="op">=</span> <span class="cn">FALSE</span>,
-  sim_length <span class="op">=</span> <span class="cn">NULL</span>,
+  simulation_length <span class="op">=</span> <span class="cn">NULL</span>,
   direction <span class="op">=</span> <span class="cn">NULL</span>,
   slim_script <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"scripts"</span>, <span class="st">"script.slim"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span>,
-  description <span class="op">=</span> <span class="st">""</span>
+  description <span class="op">=</span> <span class="st">""</span>,
+  sim_length <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -171,7 +172,7 @@ already exists, and create a new one?</p></dd>
 <dd><p>Force a deletion of the model directory if it is already
 present? Useful for non-interactive uses. In an interactive mode, the user
 is asked to confirm the deletion manually.</p></dd>
-<dt>sim_length</dt>
+<dt>simulation_length</dt>
 <dd><p>Total length of the simulation (required for forward time
 models, optional for models specified in backward time units which by
 default run to "the present time")</p></dd>
@@ -278,7 +279,7 @@ parameter is inferred from the model and does not need to be set manually.</p></
 <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">compile_model</span><span class="op">(</span>
   populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pop1</span>, <span class="va">pop2</span>, <span class="va">pop3</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>,
   path <span class="op">=</span> <span class="va">model_dir</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
-  resolution <span class="op">=</span> <span class="fl">10</span>, sim_length <span class="op">=</span> <span class="fl">500</span>,
+  resolution <span class="op">=</span> <span class="fl">10</span>, simulation_length <span class="op">=</span> <span class="fl">500</span>,
   competition <span class="op">=</span> <span class="fl">5</span>, mating <span class="op">=</span> <span class="fl">5</span>, dispersal <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span>
 
