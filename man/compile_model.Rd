@@ -62,6 +62,8 @@ parameter is inferred from the model and does not need to be set manually.}
 (by default, a bundled backend script will be used)}
 
 \item{description}{Optional short description of the model}
+
+\item{sim_length}{Deprecated. Use \code{simulation_length} instead.}
 }
 \value{
 Compiled \code{slendr_model} model object

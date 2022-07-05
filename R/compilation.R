@@ -34,6 +34,7 @@
 #'   present? Useful for non-interactive uses. In an interactive mode, the user
 #'   is asked to confirm the deletion manually.
 #' @param description Optional short description of the model
+#' @param sim_length Deprecated. Use \code{simulation_length} instead.
 #'
 #' @return Compiled \code{slendr_model} model object
 #'
