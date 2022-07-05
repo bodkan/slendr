@@ -25,13 +25,13 @@ check: $(pkg)
 	unset R_HAS_GGTREE; cd build; R CMD check --as-cran $(notdir $<)
 
 winrel: README.md
-	R -e 'devtools::check_win_release()'
+	unset R_HAS_GGTREE; R -e 'devtools::check_win_release()'
 
 windev: README.md
-	R -e 'devtools::check_win_devel()'
+	unset R_HAS_GGTREE; R -e 'devtools::check_win_devel()'
 
 winold: README.md
-	R -e 'devtools::check_win_oldrelease()'
+	unset R_HAS_GGTREE; R -e 'devtools::check_win_oldrelease()'
 
 rhub: README.md
 	R -e 'rhub::check_for_cran()'
