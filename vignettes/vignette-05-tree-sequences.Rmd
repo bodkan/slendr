@@ -203,7 +203,7 @@ ts <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 314159)
 ts
 ```
 
-Even this step can be performed in one go throught the `ts_load` function like this:
+Even this step can be performed in one go through the `ts_load` function like this:
 
 ```{r, eval = FALSE}
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
@@ -293,7 +293,7 @@ ts_f4(ts, "AFR_1", "EUR_1", "NEA_1", "CH_1", mode = "branch")
 
 These functions accept a `mode =` argument, specifying whether the statistics should be calculated using mutation site patterns (`mode = "site"`, the default), branch lengths (`mode = "branch"`), or for each node (`mode = "node"`), as well as the `windows` argument, similarly to other "multiway" statistics implemented by tskit. See the [relevant](https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode) [sections](https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-sample-sets-multi-way) of the official *tskit* documentation for more on this topic.
 
-Note that in the previous chunk we refered to individuals by their names (not numeric IDs of nodes as you would do it with *tskit* in Python). We allow this for readability and to make it easier to see which individuals are which based on the specified sampling schedule (the names are assigned to individuals based on the order of their sampling). We can get an overview of the individuals scheduled for sampling (i.e. permanently remembered) and their names with a helper function `ts_samples()`:
+Note that in the previous chunk we referred to individuals by their names (not numeric IDs of nodes as you would do it with *tskit* in Python). We allow this for readability and to make it easier to see which individuals are which based on the specified sampling schedule (the names are assigned to individuals based on the order of their sampling). We can get an overview of the individuals scheduled for sampling (i.e. permanently remembered) and their names with a helper function `ts_samples()`:
 
 ```{r}
 ts_samples(ts)
@@ -425,7 +425,7 @@ ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
                               nea = c("NEA_1", "NEA_2")))
 ```
 
-As with many other statistics implemented by [*tskit*](https://tskit.dev/tskit/docs/stable/python-api.html)*,* `ts_fst()` accepts a `windows` argument, specifying the breakpoints between windows. In this case, the `Fst` column in the resulting data frame is a so called "list-column", with each item in the column being a vector of $F_{st}$ values, one per each window. List-columns can be a little confusing for new R users, but we highly encourage you to get used to them as they allow extremely consise and elegant handling of structured data within normal data frames (you can start with [this](https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html) introduction).
+As with many other statistics implemented by [*tskit*](https://tskit.dev/tskit/docs/stable/python-api.html)*,* `ts_fst()` accepts a `windows` argument, specifying the breakpoints between windows. In this case, the `Fst` column in the resulting data frame is a so called "list-column", with each item in the column being a vector of $F_{st}$ values, one per each window. List-columns can be a little confusing for new R users, but we highly encourage you to get used to them as they allow extremely concise and elegant handling of structured data within normal data frames (you can start with [this](https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html) introduction).
 
 ```{r}
 # define breakpoints between 20 windows

@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{gene_flow}
 \alias{gene_flow}
-\title{Define a gene flow event between two populations}
+\title{Define a gene-flow event between two populations}
 \usage{
 gene_flow(from, to, rate, start, end, overlap = TRUE)
 }
@@ -12,7 +12,7 @@ gene_flow(from, to, rate, start, end, overlap = TRUE)
 \item{rate}{Scalar value in the range (0, 1] specifying the
 proportion of migration over given time period}
 
-\item{start, end}{Start and end of the geneflow event}
+\item{start, end}{Start and end of the gene-flow event}
 
 \item{overlap}{Require spatial overlap between admixing
 populations?  (default \code{TRUE})}
@@ -21,7 +21,7 @@ populations?  (default \code{TRUE})}
 Object of the class data.frame
 }
 \description{
-Define a gene flow event between two populations
+Define a gene-flow event between two populations
 }
 \examples{
 # spatial definitions -----------------------------------------------------

@@ -14,7 +14,7 @@ plot_model(model, sizes = TRUE, proportions = FALSE, log = FALSE)
 \item{proportions}{Should gene flow proportions be visualized (\code{FALSE}
 by default to prevent cluttering and overplotting)}
 
-\item{log}{Should the y-axis be plottted on a log scale? Useful for models
+\item{log}{Should the y-axis be plotted on a log scale? Useful for models
 over very long time-scales.}
 }
 \value{

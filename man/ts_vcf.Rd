@@ -2,7 +2,7 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_vcf}
 \alias{ts_vcf}
-\title{Save genotypes from the tree sequenceas a VCF file}
+\title{Save genotypes from the tree sequence as a VCF file}
 \usage{
 ts_vcf(ts, path, chrom = NULL, individuals = NULL)
 }
@@ -17,7 +17,7 @@ ts_vcf(ts, path, chrom = NULL, individuals = NULL)
 missing, all individuals present in the tree sequence will be saved.}
 }
 \description{
-Save genotypes from the tree sequenceas a VCF file
+Save genotypes from the tree sequence as a VCF file
 }
 \examples{
 \dontrun{ # save a VCF file from a given tree sequence object ts

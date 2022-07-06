@@ -36,6 +36,6 @@ nodes <- ts_table(ts, table = "nodes")
 }
 \seealso{
 \code{\link{ts_nodes}} and \code{\link{ts_edges}} for accessing an
-annotated, more user-friendly and analysis-friendly treee sequence table
+annotated, more user-friendly and analysis-friendly tree-sequence table
 data
 }

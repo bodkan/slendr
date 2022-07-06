@@ -3,7 +3,7 @@
 #' Defines the parameters of a population (non-spatial and spatial).
 #'
 #' There are four ways to specify a spatial boundary: i) circular range
-#' specified using a center coordinate and a radisu, ii) polygon specified as a
+#' specified using a center coordinate and a radius, ii) polygon specified as a
 #' list of two-dimensional vector coordinates, iii) polygon as in ii), but
 #' defined (and named) using the \code{region} function, iv) with just a world
 #' map specified (circular or polygon range parameters set to the default
@@ -521,12 +521,12 @@ set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = 
 }
 
 
-#' Define a gene flow event between two populations
+#' Define a gene-flow event between two populations
 #'
 #' @param from,to Objects of the class \code{slendr_pop}
 #' @param rate Scalar value in the range (0, 1] specifying the
 #'   proportion of migration over given time period
-#' @param start,end Start and end of the geneflow event
+#' @param start,end Start and end of the gene-flow event
 #' @param overlap Require spatial overlap between admixing
 #'   populations?  (default \code{TRUE})
 #'
@@ -1028,7 +1028,7 @@ area <- function(x) {
 #' the locations given except the restriction that the sampling points must fall
 #' within the bounding box around the simulated world map. Other than that,
 #' slendr will simply instruct its SLiM backend script to sample individuals as
-#' close to the sampling points given as possible, regardless of whethere those
+#' close to the sampling points given as possible, regardless of whether those
 #' points lie within a population spatial boundary at that particular moment of
 #' time.
 #'

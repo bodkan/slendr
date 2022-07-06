@@ -616,7 +616,7 @@ running:</p>
 <span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span>
 <span class="co">#&gt; ║Sites      │621652│ 14.8 MiB│          No║</span>
 <span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></code></pre>
-<p>Even this step can be performed in one go throught the
+<p>Even this step can be performed in one go through the
 <code>ts_load</code> function like this:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, mutate <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -842,7 +842,7 @@ argument, similarly to other “multiway” statistics implemented by tskit.
 See the <a href="https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode" class="external-link">relevant</a>
 <a href="https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-sample-sets-multi-way" class="external-link">sections</a>
 of the official <em>tskit</em> documentation for more on this topic.</p>
-<p>Note that in the previous chunk we refered to individuals by their
+<p>Note that in the previous chunk we referred to individuals by their
 names (not numeric IDs of nodes as you would do it with <em>tskit</em>
 in Python). We allow this for readability and to make it easier to see
 which individuals are which based on the specified sampling schedule
@@ -1059,7 +1059,7 @@ specifying the breakpoints between windows. In this case, the
 <code>Fst</code> column in the resulting data frame is a so called
 “list-column”, with each item in the column being a vector of <span class="math inline">\(F_{st}\)</span> values, one per each window.
 List-columns can be a little confusing for new R users, but we highly
-encourage you to get used to them as they allow extremely consise and
+encourage you to get used to them as they allow extremely concise and
 elegant handling of structured data within normal data frames (you can
 start with <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html" class="external-link">this</a>
 introduction).</p>

@@ -47,7 +47,7 @@ remembered individuals will be retained. Only used when \code{simplify =
   TRUE}.}
 
 \item{keep_input_roots}{Should the history ancestral to the MRCA of all
-samplbee retained in the tree sequence? Default is \code{FALSE}.}
+samples be retained in the tree sequence? Default is \code{FALSE}.}
 
 \item{migration_matrix}{Migration matrix used for coalescence of ancient
 lineages (passed to \code{ts_recapitate})}

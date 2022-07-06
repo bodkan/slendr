@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In addition to buidling models that capture movement or expansion using a set of [simple R functions](../reference/index.html#section-population-dynamics), *slendr* makes it possible to program more subtle parameters of spatial population dynamics.
+In addition to building models that capture movement or expansion using a set of [simple R functions](../reference/index.html#section-population-dynamics), *slendr* makes it possible to program more subtle parameters of spatial population dynamics.
 
 Among such parameters are those governing so-called spatial interactions, described in detail in chapter 15 of SLiM's [extensive manual](http://benhaller.com/slim/SLiM_Manual.pdf). Describing this functionality is beyond the scope of *slendr*'s tutorial vignettes such as this one, but broadly speaking, *slendr* implements three different kinds of parameters influencing spatial interactions and dispersal:
 

@@ -211,7 +211,7 @@ plot_map(afr, ooa, ehg, eur, ana, yam)
 
 #### 4. Define gene-flow events
 
-By default, populations in *slendr* do not mix even if they are overlapping. In order to schedule an gene-flow event between two populations, we can use the function `gene_flow`. If we want to specify multiple such events at once, we can collect these evetns in a simple R list:
+By default, populations in *slendr* do not mix even if they are overlapping. In order to schedule an gene-flow event between two populations, we can use the function `gene_flow`. If we want to specify multiple such events at once, we can collect these events in a simple R list:
 
 
 ```r
@@ -273,7 +273,7 @@ slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
 
 As specified here, *slendr*'s SLiM backend will simulate 10 Mb of sequence for each individual, and produce a tree sequence output from the simulation run which can be analysed by many [built-in population genetic functions](https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics). By default, all individuals living at the end of the simulation are recorded as samples in the tree sequence. If a specific set of samples (ancient and modern) is needed, this can be defined accordingly using a [dedicated function](https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events).
 
-Note that although we defined a spatial model, we could have just as easily simulated standard, non-spatial data by runnig the same model through *slendr*'s `msprime()` back end without the need to make any changes:
+Note that although we defined a spatial model, we could have just as easily simulated standard, non-spatial data by running the same model through *slendr*'s `msprime()` back end without the need to make any changes:
 
 
 ```r
@@ -297,7 +297,7 @@ The example above provides only a very brief and incomplete overview of the full
 
 -   You can tweak parameters influencing dispersal dynamics (how "clumpy" populations are, how far can offspring migrate from their parents, etc.) and define how these should change over time. For instance, you can see that in the animation above, the African population forms a single "blob" that really isn't spread out across its entire population range. Tweaking the dispersal parameters as show [this vignette](https://www.slendr.net/articles/vignette-03-interactions.html) helps avoid that.
 
--   You can use *slendr* to program non-spatial models, which means that any conceivable traditional, random-mating demographic model can be simulated with only a few lines of R code. You can learn more in [this vignette](https://www.slendr.net/articles/vignette-04-nonspatial-models.html) (and in more detail in [this vignette](https://www.slendr.net/articles/vignette-05-tree-sequences.html)). Because SLiM simulations can be often quite slow compared to their coalescent counterperts, we also provide functionality allowing to simulate *slendr* models (without any change!) using a built-in *msprime* back end script. See [this vignette](https://www.slendr.net/articles/vignette-07-backends.html) for a tutorial on how this works.
+-   You can use *slendr* to program non-spatial models, which means that any conceivable traditional, random-mating demographic model can be simulated with only a few lines of R code. You can learn more in [this vignette](https://www.slendr.net/articles/vignette-04-nonspatial-models.html) (and in more detail in [this vignette](https://www.slendr.net/articles/vignette-05-tree-sequences.html)). Because SLiM simulations can be often quite slow compared to their coalescent counterparts, we also provide functionality allowing to simulate *slendr* models (without any change!) using a built-in *msprime* back end script. See [this vignette](https://www.slendr.net/articles/vignette-07-backends.html) for a tutorial on how this works.
 
 -   You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown [this vignette](https://www.slendr.net/articles/vignette-02-grid-model.html).
 

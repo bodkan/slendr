@@ -76,7 +76,7 @@ Note that the Ne of the populations `x1` and `x2` is set to be much higher than 
 
 ## Compiling the model and simulating data
 
-We will now use those populations to compile two models: the first model will be without any gene flow (left panel in the figure wo above), the second model will include 10% gene flow from `b` to `x1` (right panel in the figure above). We will also schedule sampling of a couple of individuals at the very end of the simulation: 50 individuals each from populations `x1` and `x2` to capture a bit more of the natural variation of `b` ancestry in `x1`, and only one individual from the rest.
+We will now use those populations to compile two models: the first model will be without any gene flow (left panel in the figure above), the second model will include 10% gene flow from `b` to `x1` (right panel in the figure above). We will also schedule sampling of a couple of individuals at the very end of the simulation: 50 individuals each from populations `x1` and `x2` to capture a bit more of the natural variation of `b` ancestry in `x1`, and only one individual from the rest.
 
 ```{r}
 # no gene flow model

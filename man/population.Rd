@@ -73,7 +73,7 @@ Defines the parameters of a population (non-spatial and spatial).
 }
 \details{
 There are four ways to specify a spatial boundary: i) circular range
-specified using a center coordinate and a radisu, ii) polygon specified as a
+specified using a center coordinate and a radius, ii) polygon specified as a
 list of two-dimensional vector coordinates, iii) polygon as in ii), but
 defined (and named) using the \code{region} function, iv) with just a world
 map specified (circular or polygon range parameters set to the default

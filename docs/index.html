@@ -438,7 +438,7 @@ the model so far (prior to the simulation itself).</p>
 <p>By default, populations in <em>slendr</em> do not mix even if they
 are overlapping. In order to schedule an gene-flow event between two
 populations, we can use the function <code>gene_flow</code>. If we want
-to specify multiple such events at once, we can collect these evetns in
+to specify multiple such events at once, we can collect these events in
 a simple R list:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
@@ -510,7 +510,7 @@ If a specific set of samples (ancient and modern) is needed, this can be
 defined accordingly using a <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events">dedicated
 function</a>.</p>
 <p>Note that although we defined a spatial model, we could have just as
-easily simulated standard, non-spatial data by runnig the same model
+easily simulated standard, non-spatial data by running the same model
 through <em>slendr</em>’s <code><a href="reference/msprime.html">msprime()</a></code> back end without the
 need to make any changes:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -551,7 +551,7 @@ can be simulated with only a few lines of R code. You can learn more in
 <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">this
 vignette</a> (and in more detail in <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html">this
 vignette</a>). Because SLiM simulations can be often quite slow compared
-to their coalescent counterperts, we also provide functionality allowing
+to their coalescent counterparts, we also provide functionality allowing
 to simulate <em>slendr</em> models (without any change!) using a
 built-in <em>msprime</em> back end script. See <a href="https://www.slendr.net/articles/vignette-07-backends.html">this
 vignette</a> for a tutorial on how this works.</p></li>

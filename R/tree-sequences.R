@@ -33,7 +33,7 @@
 #'   remembered individuals will be retained. Only used when \code{simplify =
 #'   TRUE}.
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
-#'   samplbee retained in the tree sequence? Default is \code{FALSE}.
+#'   samples be retained in the tree sequence? Default is \code{FALSE}.
 #' @param migration_matrix Migration matrix used for coalescence of ancient
 #'   lineages (passed to \code{ts_recapitate})
 #'
@@ -619,7 +619,7 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
   admixr::eigenstrat(prefix = prefix)
 }
 
-#' Save genotypes from the tree sequenceas a VCF file
+#' Save genotypes from the tree sequence as a VCF file
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param path Path to a VCF file
@@ -938,7 +938,7 @@ ts_nodes <- function(x, sf = TRUE) {
 #' useful information from the model configuration data.
 #'
 #' @seealso \code{\link{ts_nodes}} and \code{\link{ts_edges}} for accessing an
-#'   annotated, more user-friendly and analysis-friendly treee sequence table
+#'   annotated, more user-friendly and analysis-friendly tree-sequence table
 #'   data
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}

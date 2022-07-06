@@ -149,7 +149,7 @@ model <- compile_model(
 )
 ```
 
-Tthose familiar with the SLiM manual will recognize a model described in section 5.3.3.
+Those familiar with the SLiM manual will recognize a model described in section 5.3.3.
 
 Finally, we can run our simulation using the `slim()` function.
 

@@ -173,7 +173,7 @@ After the simulation is done, we can load the data in the same way we did in our
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, recombination_rate = 1e-8, Ne = 10000, random_seed = seed)
 ```
 
-## Extracting spatial tree sequence infrmation
+## Extracting spatial tree sequence information
 
 As we showed in the [basic tutorial](vignette-05-tree-sequences.html), the most important function for data exploration is `ts_nodes()`. This function extracts all information about individuals and nodes recorded in a tree sequence object loaded and annotated by *slendr* :
 

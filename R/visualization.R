@@ -199,7 +199,7 @@ objects are specified", call. = FALSE)
 #' @param sizes Should population size changes be visualized?
 #' @param proportions Should gene flow proportions be visualized (\code{FALSE}
 #'   by default to prevent cluttering and overplotting)
-#' @param log Should the y-axis be plottted on a log scale? Useful for models
+#' @param log Should the y-axis be plotted on a log scale? Useful for models
 #'   over very long time-scales.
 #'
 #' @return Plot object of the class \code{ggplot}
