@@ -34,7 +34,7 @@ winold: README.md
 	unset R_HAS_GGTREE; R -e 'devtools::check_win_oldrelease()'
 
 rhub: README.md
-	R -e 'rhub::check_for_cran()'
+	unset R_HAS_GGTREE; R -e 'rhub::check_for_cran(platforms = c("macos-highsierra-release", "macos-highsierra-release-cran", "macos-m1-bigsur-release"))'
 
 $(pkg): README.md
 	R -e 'devtools::document()'
