@@ -230,11 +230,11 @@ schedule automatically and enforces that only populations which are
 already (i.e. after their appearance in the simulation) or still (before
 they are removed from the simulation) present will be sampled from.</p>
 <p>In our example, we want to sample two Neanderthal individuals (the
-older one being the <a href="https://www.nature.com/articles/nature12886" class="external-link">Altai
-Neanderthal</a>, the younger one <a href="https://www.science.org/doi/10.1126/science.aao1887" class="external-link">Vindija
-Neanderthal</a>). These two genomes are what we <a href="https://www.pnas.org/doi/10.1073/pnas.1814338116" class="external-link">need</a> to
-estimate Neanderthal ancestry proportion using a so-called <span class="math inline">\(f_4\)</span>-ratio statistic (more on that
-below):</p>
+older one being the Altai Neanderthal published by Pruefer <em>et
+al.</em> 2014, the younger one Vindija Neanderthal published by Pruefer
+<em>et al.</em>, 2017). These two genomes are what we need to estimate
+Neanderthal ancestry proportion using a so-called <span class="math inline">\(f_4\)</span>-ratio statistic (more on that below,
+but also see Petr <em>et al.</em>, PNAS 2019):</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">nea_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70000</span>, <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="va">nea_samples</span></code></pre></div>
@@ -267,12 +267,13 @@ means that you can define sampling events using whatever input data you
 might already have available (such as radiocarbon-dated ancient DNA
 samples from an Excel sheet from some publication). For instance, there
 has been a <a href="https://www.nature.com/articles/nature17993" class="external-link">lot</a>
-of <a href="https://www.pnas.org/doi/10.1073/pnas.1814338116" class="external-link">interest</a> to
-estimate the trajectory of Neanderthal ancestry in Europe over time
-using ancient DNA data from anatomically modern human individuals (also
-called early modern humans, EMH) across the last couple of tens of
-thousands of years. We can simulate something close to the available <a href="https://www.nature.com/articles/nature17993" class="external-link">EMH ancient DNA data
-set</a> over the last 50 thousand years by running doing this:</p>
+of interest to estimate the trajectory of Neanderthal ancestry in Europe
+over time using ancient DNA data from anatomically modern human
+individuals (also called early modern humans, EMH) across the last
+couple of tens of thousands of years. We can simulate something close to
+the available <a href="https://www.nature.com/articles/nature17993" class="external-link">EMH
+ancient DNA data set</a> over the last 50 thousand years by running
+doing this:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">emh_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">40</span>, min <span class="op">=</span> <span class="fl">10000</span>, max <span class="op">=</span> <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="va">emh_samples</span></code></pre></div>
@@ -877,8 +878,8 @@ of character names in each function’s interface.</p>
 proportion of Neanderthal ancestry in Africans and Europeans in our
 simulated data. We can do this using the Patterson’s <span class="math inline">\(f_4\)</span>-ratio statistic implemented in the
 <code><a href="../reference/ts_f4ratio.html">ts_f4ratio()</a></code> function in <em>slendr</em> (you can find more
-information about this particular version of the statistic <a href="https://www.pnas.org/doi/10.1073/pnas.1814338116" class="external-link">in this
-paper</a>):</p>
+information about this particular version of the statistic in Petr
+<em>et al.</em>, PNAS 2019):</p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># first get a table of simulated African and European individuals in the tree-sequence</span>
 <span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span><span class="op">)</span><span class="op">)</span>
@@ -917,8 +918,8 @@ present-day DNA samples:</p>
 <pre><code><span class="co">#&gt; `geom_smooth()` using formula 'y ~ x'</span></code></pre>
 <p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_trajectory-1.png" width="480"></p>
 <p>Again, this is a result consistent with empirical estimates of
-Neanderthal ancestry using <a href="https://www.pnas.org/doi/10.1073/pnas.1814338116" class="external-link">ancient DNA
-data</a>.</p>
+Neanderthal ancestry using ancient DNA data (see Petr <em>et al.</em>,
+PNAS 2019).</p>
 </div>
 <div class="section level2">
 <h2 id="admixtools-analyses">ADMIXTOOLS analyses<a class="anchor" aria-label="anchor" href="#admixtools-analyses"></a>

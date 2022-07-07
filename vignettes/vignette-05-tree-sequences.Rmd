@@ -70,7 +70,7 @@ cowplot::plot_grid(
 
 Now that we have defined a model, how do we sample data from it? Ideally, we would like to to schedule sampling events at a given time, sampling a defined number of individuals from a given population. This is why *slendr* provides a function `schedule_sampling()` which serves to define such sampling schedule automatically and enforces that only populations which are already (i.e. after their appearance in the simulation) or still (before they are removed from the simulation) present will be sampled from.
 
-In our example, we want to sample two Neanderthal individuals (the older one being the [Altai Neanderthal](https://www.nature.com/articles/nature12886), the younger one [Vindija Neanderthal](https://www.science.org/doi/10.1126/science.aao1887)). These two genomes are what we [need](https://www.pnas.org/doi/10.1073/pnas.1814338116) to estimate Neanderthal ancestry proportion using a so-called $f_4$-ratio statistic (more on that below):
+In our example, we want to sample two Neanderthal individuals (the older one being the Altai Neanderthal published by Pruefer _et al._ 2014, the younger one Vindija Neanderthal published by Pruefer _et al._, 2017). These two genomes are what we need to estimate Neanderthal ancestry proportion using a so-called $f_4$-ratio statistic (more on that below, but also see Petr _et al._, PNAS 2019):
 
 ```{r}
 nea_samples <- schedule_sampling(model, times = c(70000, 40000), list(nea, 1))
@@ -86,7 +86,7 @@ present_samples <- schedule_sampling(model, times = 0, list(chimp, 1), list(afr,
 present_samples
 ```
 
-As you can see above, the `schedule_sampling()` function returns a plain old data frame with a very simple structure with three columns: time, population name, and the number of individuals. This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated ancient DNA samples from an Excel sheet from some publication). For instance, there has been a [lot](https://www.nature.com/articles/nature17993) of [interest](https://www.pnas.org/doi/10.1073/pnas.1814338116) to estimate the trajectory of Neanderthal ancestry in Europe over time using ancient DNA data from anatomically modern human individuals (also called early modern humans, EMH) across the last couple of tens of thousands of years. We can simulate something close to the available [EMH ancient DNA data set](https://www.nature.com/articles/nature17993) over the last 50 thousand years by running doing this:
+As you can see above, the `schedule_sampling()` function returns a plain old data frame with a very simple structure with three columns: time, population name, and the number of individuals. This means that you can define sampling events using whatever input data you might already have available (such as radiocarbon-dated ancient DNA samples from an Excel sheet from some publication). For instance, there has been a [lot](https://www.nature.com/articles/nature17993) of interest to estimate the trajectory of Neanderthal ancestry in Europe over time using ancient DNA data from anatomically modern human individuals (also called early modern humans, EMH) across the last couple of tens of thousands of years. We can simulate something close to the available [EMH ancient DNA data set](https://www.nature.com/articles/nature17993) over the last 50 thousand years by running doing this:
 
 ```{r}
 emh_samples <- schedule_sampling(model, times = runif(n = 40, min = 10000, max = 40000), list(eur, 1))
@@ -303,7 +303,7 @@ That said, if you would like to run some statistics on nodes rather than on indi
 
 ## Estimating Neanderthal ancestry proportions
 
-Let's try to put these new tools to practice and estimate the proportion of Neanderthal ancestry in Africans and Europeans in our simulated data. We can do this using the Patterson's $f_4$-ratio statistic implemented in the `ts_f4ratio()` function in *slendr* (you can find more information about this particular version of the statistic [in this paper](https://www.pnas.org/doi/10.1073/pnas.1814338116)):
+Let's try to put these new tools to practice and estimate the proportion of Neanderthal ancestry in Africans and Europeans in our simulated data. We can do this using the Patterson's $f_4$-ratio statistic implemented in the `ts_f4ratio()` function in *slendr* (you can find more information about this particular version of the statistic in Petr _et al._, PNAS 2019):
 
 ```{r}
 # first get a table of simulated African and European individuals in the tree-sequence
@@ -338,7 +338,7 @@ dplyr::filter(inds, pop == "EUR") %>%
   labs(x = "time [years ago]", y = "Neanderthal ancestry proportion")
 ```
 
-Again, this is a result consistent with empirical estimates of Neanderthal ancestry using [ancient DNA data](https://www.pnas.org/doi/10.1073/pnas.1814338116).
+Again, this is a result consistent with empirical estimates of Neanderthal ancestry using ancient DNA data (see Petr _et al._, PNAS 2019).
 
 ## ADMIXTOOLS analyses
 
