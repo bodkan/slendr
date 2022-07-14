@@ -49,7 +49,12 @@ This function will execute a built-in msprime script and run a compiled
 slendr demographic model.
 }
 \examples{
-\donttest{ # run a simulation using the msprime back end from a compiled slendr model object
-msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
+# the example will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# run a simulation using the msprime back end from a compiled slendr model object
+msprime(model, sequence_length = 1e5, recombination_rate = 1e-8, verbose = TRUE)
+
 }
 }

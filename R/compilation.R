@@ -313,8 +313,12 @@ read_model <- function(path) {
 #' @export
 #'
 #' @examples
-#' \donttest{ # run a simulation using the SLiM back end from a compiled slendr model object
-#' slim(model, sequence_length = 100e6, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
+#' # the example will only run on a machine where the SLiM simulator is present
+#' if (all(Sys.which("slim") != "")) {
+#'
+#' # run a simulation using the SLiM back end from a compiled slendr model object
+#' slim(model, sequence_length = 1e4, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
+#'
 #' }
 slim <- function(model, sequence_length, recombination_rate,
                  output = file.path(model$path, "output"),
@@ -459,8 +463,13 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @export
 #'
 #' @examples
-#' \donttest{ # run a simulation using the msprime back end from a compiled slendr model object
-#' msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
+#' # the example will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # run a simulation using the msprime back end from a compiled slendr model object
+#' msprime(model, sequence_length = 1e5, recombination_rate = 1e-8, verbose = TRUE)
+#'
 #' }
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
