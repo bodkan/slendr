@@ -382,14 +382,14 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
   attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
 
-  # use pedigree IDs to cross-check the typeal data with simplified table
+  # use pedigree IDs to cross-check the original data with simplified table
   if (type == "SLiM") {
     # mark only explicitly simplified individuals as "focal"
     sample_ids <- data[data$node_id %in% samples, ]$pedigree_id
     attr(ts_new, "raw_individuals")$sampled <-
       attr(ts_new, "raw_individuals")$pedigree_id %in% sample_ids
 
-    # get the name and location from the typeal table with the pedigree_id key
+    # get the name and location from the original table with the pedigree_id key
     cols <- c("pedigree_id", "pop")
     if (from_slendr) cols <- c(cols, "name")
     if (spatial) cols <- c(cols, "location")
@@ -2027,10 +2027,10 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
   spatial <- attr(ts, "spatial")
   from_slendr <- !is.null(model)
 
-  # get data from the typeal individual table
+  # get data from the original individual table
   individuals <- attr(ts, "raw_individuals")
 
-  # get data from the typeal nodes table to get node assignments for each
+  # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
   nodes <- get_ts_raw_nodes(ts)
@@ -2103,10 +2103,10 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
   model <- attr(ts, "model")
   from_slendr <- !is.null(model)
 
-  # get data from the typeal individual table
+  # get data from the original individual table
   individuals <- attr(ts, "raw_individuals")
 
-  # get data from the typeal nodes table to get node assignments for each
+  # get data from the original nodes table to get node assignments for each
   # individual but also nodes which are not associated with any individuals
   # (i.e. those added through recapitation by msprime)
   nodes <- get_ts_raw_nodes(ts)
@@ -2475,7 +2475,7 @@ convert_to_sf <- function(df, model) {
   without_locations <- df[!stats::complete.cases(df[, c("raster_x", "raster_y")]), ]
 
   if (from_slendr) {
-    # reproject coordinates to the typeal crs
+    # reproject coordinates to the original crs
     with_locations <- reproject(
       from = "raster", to = crs, coords = with_locations, model = model,
       input_prefix = "raster_", output_prefix = "", add = TRUE
