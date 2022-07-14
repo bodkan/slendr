@@ -37,7 +37,9 @@
 #' @param migration_matrix Migration matrix used for coalescence of ancient
 #'   lineages (passed to \code{ts_recapitate})
 #'
-#' @return Tree sequence object of the class \code{slendr_ts}
+#' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
+#'   an interface point for the Python module tskit using slendr functions with
+#'   the \code{ts_} prefix.
 #'
 #' @seealso \code{\link{ts_nodes}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
@@ -164,6 +166,8 @@ ts_load <- function(source = NULL, file = NULL,
 #' @param ts Tree sequence object loaded by \code{ts_load}
 #' @param file File to which the tree sequence should be saved
 #'
+#' @return No return value, called for side effects
+#'
 #' @export
 ts_save <- function(ts, file) {
   check_ts_class(ts)
@@ -180,7 +184,9 @@ ts_save <- function(ts, file) {
 #'   (passed to \code{ts_recapitate})
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #'
-#' @return Tree sequence object of the class \code{slendr_ts}
+#' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
+#'   an interface point for the Python module tskit using slendr functions with
+#'   the \code{ts_} prefix.
 #'
 #' @seealso \code{\link{ts_nodes}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
@@ -274,7 +280,9 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
 #'   samples be retained in the tree sequence? Default is \code{FALSE}.
 #'
-#' @return Tree sequence object of the class \code{slendr_ts}
+#' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
+#'   an interface point for the Python module tskit using slendr functions with
+#'   the \code{ts_} prefix.
 #'
 #' @seealso \code{\link{ts_nodes}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
@@ -418,7 +426,9 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 #'   integer number is given, mutations of the SLiM mutation type with that
 #'   integer identifier will be created.
 #'
-#' @return Tree sequence object of the class \code{slendr_ts}
+#' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
+#'   an interface point for the Python module tskit using slendr functions with
+#'   the \code{ts_} prefix.
 #'
 #' @seealso \code{\link{ts_nodes}} for extracting useful information about
 #'   individuals, nodes, coalescent times and geospatial locations of nodes on a
@@ -478,7 +488,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #'
-#' @return List of metadata fields extracted from the tree sequence object
+#' @return List of metadata fields extracted from the tree-sequence object
 #'
 #' @export
 ts_metadata <- function(ts) {
@@ -492,7 +502,8 @@ ts_metadata <- function(ts) {
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #'
-#' @return Data frame object of the class \code{tibble}
+#' @return Data frame object of the class \code{tibble} containing genotypes
+#'   of simulated individuals in columns
 #'
 #' @export
 ts_genotypes <- function(ts) {
@@ -554,7 +565,7 @@ ts_genotypes <- function(ts) {
 #' @return Object of the class EIGENSTRAT created by the admixr package
 #'
 #' @examples
-#' \dontrun{ # save genotypes as a trio of files eigenprefix.snp, eigenprefix.ind, eigenprefix.geno
+#' \dontrun{ # save genotypes as eigenprefix.{ind,geno,snp}
 #' ts_eigenstrat(ts, prefix = "/path/to/eigenprefix")
 #' }
 #'
@@ -627,6 +638,8 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 #' @param individuals A character vector of individuals in the tree sequence. If
 #'   missing, all individuals present in the tree sequence will be saved.
 #'
+#' @return No return value, called for side effects
+#'
 #' @examples
 #' \dontrun{ # save a VCF file from a given tree sequence object ts
 #' ts_vcf(ts, path = "/path/to/target/output.vcf.gz")
@@ -681,6 +694,9 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' # extract a tree at a 42th basepair in the given tree sequence
 #' tree <- ts_phylo(ts, i = 42, mode = "position")
 #' }
+#'
+#' @return Standard phylogenetic tree object implemented by the R package ape
+#'
 #' @export
 ts_phylo <- function(ts, i, mode = c("index", "position"),
                      labels = c("tskit", "pop"), quiet = FALSE) {
@@ -944,7 +960,8 @@ ts_nodes <- function(x, sf = TRUE) {
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param table Which tree sequence table to return
 #'
-#' @return Data frame with the information from the give tree sequence table
+#' @return Data frame with the information from the give tree-sequence table
+#'   (can be either a table of individuals, edges, nodes, or mutations).
 #'
 #' @examples
 #' \dontrun{ # extract a data frame object with the individual table
@@ -988,7 +1005,11 @@ ts_edges <- function(x) {
 
 #' Extract names and times of individuals of interest in the current tree sequence
 #' (either all sampled individuals or those that the user simplified to)
+#'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
+#'
+#' @return Table of individuals scheduled for sampling across space and time
+#'
 #' @export
 ts_samples <- function(ts) {
   if (is.null(attr(ts, "model")))
@@ -1012,6 +1033,9 @@ ts_samples <- function(ts) {
 #'   relationships. For instance, nodes added during the coalescent recapitation
 #'   phase will not be included because they don't have spatial information
 #'   associated with them.
+#'
+#' @return A table of ancestral nodes of a given tree-sequence node all the
+#'   way up to the root of the tree sequence
 #'
 #' @export
 ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
@@ -1124,6 +1148,9 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #'   phase will not be included because they don't have spatial information
 #'   associated with them.
 #'
+#' @return A table of descendant nodes of a given tree-sequence node all the
+#'   way down to the leaves of the tree sequence
+#'
 #' @export
 ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
   check_ts_class(ts)
@@ -1230,7 +1257,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @param ... Additional keyword arguments accepted by
 #'   \code{tskit.TreeSequence.at and tskit.TreeSequence.at_index} methods
 #'
-#' @return Object of the type tskit.trees.Tree
+#' @return Python-reticulate-based object of the class tskit.trees.Tree
 #'
 #' @examples
 #' \dontrun{ # extract the first tree in the tree sequence
@@ -1266,6 +1293,8 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #'   simplification be labeled? This is relevant in situations in which sampled
 #'   individuals can themselves be among the ancestral nodes.
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
+#'
+#' @return No return value, called for side effects
 #'
 #' @export
 ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
@@ -1429,7 +1458,7 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #'   do not have to be specified as they are added automatically.
 #' @param mode The mode for the calculation ("sites" or "branch")
 #'
-#' @return Data frame with statistics calculated for given sets of individuals
+#' @return Data frame with statistics calculated for the given sets of individuals
 #'
 #' @examples
 #' \dontrun{ # calculate f2 for two samples in a previously loaded tree sequence
@@ -1709,8 +1738,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @param span_normalise Argument passed to tskit's \code{allele_frequency_spectrum}
 #'   method
 #'
-#' @return Either a single Fst value or a vector of Fst values (one for each
-#'   window)
+#' @return Allele frequency spectrum values for the given sample set
 #'
 #' @export
 ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
@@ -1741,6 +1769,21 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
   result
 }
 
+#' Convert an annotated \code{slendr_phylo} object to a \code{phylo} object
+#'
+#' This function servers as a workaround around a ggtree error:
+#'   \code{Error in UseMethod("as.phylo") :
+#'     no applicable method for 'as.phylo' applied to an object of class
+#'     "c('phylo', 'slendr_phylo')"}
+#'
+#' @param x Tree object of the class \code{slendr_phylo}
+#'
+#' @return Standard phylogenetic tree object implemented by the R package ape
+#'
+#' @importFrom ape as.phylo
+#' @export as.phylo.slendr_phylo
+#' @export
+as.phylo.slendr_phylo <- function(x) { class(x) <- "phylo"; x }
 
 # private tree sequence utility functions ---------------------------------
 
@@ -2151,20 +2194,6 @@ get_annotated_edges <- function(x) {
 
   edges
 }
-
-#' Convert an annotated \code{slendr_phylo} object to a \code{phylo} object
-#'
-#' This function servers as a workaround around a ggtree error:
-#'   \code{Error in UseMethod("as.phylo") :
-#'     no applicable method for 'as.phylo' applied to an object of class
-#'     "c('phylo', 'slendr_phylo')"}
-#'
-#' @param x Tree object of the class \code{slendr_phylo}
-#'
-#' @importFrom ape as.phylo
-#' @export as.phylo.slendr_phylo
-#' @export
-as.phylo.slendr_phylo <- function(x) { class(x) <- "phylo"; x }
 
 check_ts_class <- function(x) {
   if (!inherits(x, "slendr_ts"))

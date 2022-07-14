@@ -15,7 +15,9 @@ join(x, y, name = NULL)
 name will be constructed from the function arguments.}
 }
 \value{
-Object of the class \code{slendr_region}
+Object of the class \code{slendr_region} which encodes a standard
+spatial object of the class \code{sf} with several additional attributes
+(most importantly a corresponding \code{slendr_map} object, if applicable).
 }
 \description{
 Merge two spatial \code{slendr} objects into one

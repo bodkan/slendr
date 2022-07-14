@@ -30,6 +30,9 @@ object? Options are either a population name or a tskit integer node ID
 
 \item{quiet}{Should ape's internal phylo validity test be printed out?}
 }
+\value{
+Standard phylogenetic tree object implemented by the R package ape
+}
 \description{
 Convert a tree in the tree sequence to an object of the class \code{phylo}
 }
@@ -40,4 +43,5 @@ tree <- ts_phylo(ts, i = 42, mode = "index")
 # extract a tree at a 42th basepair in the given tree sequence
 tree <- ts_phylo(ts, i = 42, mode = "position")
 }
+
 }

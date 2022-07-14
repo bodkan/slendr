@@ -12,7 +12,8 @@ ts_table(ts, table = c("individuals", "edges", "nodes", "mutations"))
 \item{table}{Which tree sequence table to return}
 }
 \value{
-Data frame with the information from the give tree sequence table
+Data frame with the information from the give tree-sequence table
+(can be either a table of individuals, edges, nodes, or mutations).
 }
 \description{
 This function extracts data from a given tree sequence table. All times are

@@ -36,7 +36,11 @@
 #' @param description Optional short description of the model
 #' @param sim_length Deprecated. Use \code{simulation_length} instead.
 #'
-#' @return Compiled \code{slendr_model} model object
+#' @return Compiled \code{slendr_model} model object which encapsulates all
+#'   information about the specified model (which populations are involved,
+#'   when and how much gene flow should occur, what is the spatial resolution
+#'   of a map, and what spatial dispersal and mating parameters should be used
+#'   in a SLiM simulation, if applicable)
 #'
 #' @export
 #'
@@ -185,35 +189,18 @@ setting `direction = 'backward'.`", call. = FALSE)
   result
 }
 
-
-calculate_checksums <- function(files) {
-  if (!all(file.exists(files)))
-    stop("Not all compiled files are present", call. = FALSE)
-
-  data.frame(
-    file = basename(files),
-    hash = as.vector(tools::md5sum(files))
-  )
-}
-
-
-# Make sure the checksums of a given set of files matches the expectation
-verify_checksums <- function(files, hashes) {
-  for (i in seq_along(files)) {
-    if (tools::md5sum(files[i]) != hashes[i]) {
-      warning("Checksum of '", basename(files[i]), "' does not match its compiled state",
-              call. = FALSE)
-    }
-  }
-}
-
-
 #' Read a previously serialized model configuration
 #'
 #' Reads all configuration tables and other model data from a location
 #' where it was previously compiled to by the \code{compile} function.
 #'
 #' @param path Directory with all required configuration files
+#'
+#' @return Compiled \code{slendr_model} model object which encapsulates all
+#'   information about the specified model (which populations are involved,
+#'   when and how much gene flow should occur, what is the spatial resolution
+#'   of a map, and what spatial dispersal and mating parameters should be used
+#'   in a SLiM simulation, if applicable)
 #'
 #' @export
 #'
@@ -319,6 +306,9 @@ read_model <- function(path) {
 #' @param save_sampling Save the sampling schedule table together with other
 #'   output files? If \code{FALSE} (default), the sampling table will be saved
 #'   to a temporary directory.
+#'
+#' @return No return value. Simulation output is saved to disk in the form of
+#'   a tree-sequence file.
 #'
 #' @export
 #'
@@ -463,6 +453,9 @@ slim <- function(model, sequence_length, recombination_rate,
 #'   output files? If \code{FALSE} (default), the sampling table will be saved
 #'   to a temporary directory.
 #'
+#' @return No return value. Simulation output is saved to disk in the form of
+#'   a tree-sequence file.
+#'
 #' @export
 #'
 #' @examples
@@ -524,6 +517,27 @@ msprime <- function(model, sequence_length, recombination_rate,
 
   # if (system(msprime_command, ignore.stdout = !verbose) != 0)
   #   stop("msprime simulation resulted in an error -- see the output above", call. = FALSE)
+}
+
+calculate_checksums <- function(files) {
+  if (!all(file.exists(files)))
+    stop("Not all compiled files are present", call. = FALSE)
+
+  data.frame(
+    file = basename(files),
+    hash = as.vector(tools::md5sum(files))
+  )
+}
+
+
+# Make sure the checksums of a given set of files matches the expectation
+verify_checksums <- function(files, hashes) {
+  for (i in seq_along(files)) {
+    if (tools::md5sum(files[i]) != hashes[i]) {
+      warning("Checksum of '", basename(files[i]), "' does not match its compiled state",
+              call. = FALSE)
+    }
+  }
 }
 
 # Write a compiled slendr model to disk and return a table of checksums

@@ -66,7 +66,11 @@ parameter is inferred from the model and does not need to be set manually.}
 \item{sim_length}{Deprecated. Use \code{simulation_length} instead.}
 }
 \value{
-Compiled \code{slendr_model} model object
+Compiled \code{slendr_model} model object which encapsulates all
+information about the specified model (which populations are involved,
+when and how much gene flow should occur, what is the spatial resolution
+of a map, and what spatial dispersal and mating parameters should be used
+in a SLiM simulation, if applicable)
 }
 \description{
 First, compiles the vectorized population spatial maps into a series of

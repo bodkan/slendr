@@ -17,6 +17,8 @@
 #'   in all time points (this is only used for plotting using the \code{explore}
 #'   shiny app)
 #'
+#' @return A ggplot2 object with the visualized slendr map
+#'
 #' @export
 #'
 #' @import ggplot2
@@ -202,7 +204,8 @@ objects are specified", call. = FALSE)
 #' @param log Should the y-axis be plotted on a log scale? Useful for models
 #'   over very long time-scales.
 #'
-#' @return Plot object of the class \code{ggplot}
+#' @return A ggplot2 object with the visualized slendr model
+
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations

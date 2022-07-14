@@ -40,6 +40,10 @@ recorded in the tree-sequence output file.}
 output files? If \code{FALSE} (default), the sampling table will be saved
 to a temporary directory.}
 }
+\value{
+No return value. Simulation output is saved to disk in the form of
+a tree-sequence file.
+}
 \description{
 This function will execute a built-in msprime script and run a compiled
 slendr demographic model.

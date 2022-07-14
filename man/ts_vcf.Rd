@@ -16,6 +16,9 @@ ts_vcf(ts, path, chrom = NULL, individuals = NULL)
 \item{individuals}{A character vector of individuals in the tree sequence. If
 missing, all individuals present in the tree sequence will be saved.}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Save genotypes from the tree sequence as a VCF file
 }

@@ -6,6 +6,9 @@
 \usage{
 check_env()
 }
+\value{
+No return value, called for side effects
+}
 \description{
 This function inspects the Python environment which has been activated by the
 reticulate package and prints the versions of all slendr Python dependencies

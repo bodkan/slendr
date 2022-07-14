@@ -10,6 +10,9 @@ ts_samples(ts)
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 }
+\value{
+Table of individuals scheduled for sampling across space and time
+}
 \description{
 Extract names and times of individuals of interest in the current tree sequence
 (either all sampled individuals or those that the user simplified to)

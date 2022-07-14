@@ -39,7 +39,7 @@ object)?}
 frame columns with spatial coordinates}
 }
 \value{
-Data.frame with converted two-dimensional coordinates
+Data.frame with converted two-dimensional coordinates given as input
 }
 \description{
 Converts between coordinates on a compiled raster map (i.e. pixel

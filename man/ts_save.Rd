@@ -11,6 +11,9 @@ ts_save(ts, file)
 
 \item{file}{File to which the tree sequence should be saved}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Save a tree sequence to a file
 }

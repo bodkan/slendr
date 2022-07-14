@@ -22,7 +22,7 @@ simulated genome.}
 \code{tskit.TreeSequence.at and tskit.TreeSequence.at_index} methods}
 }
 \value{
-Object of the type tskit.trees.Tree
+Python-reticulate-based object of the class tskit.trees.Tree
 }
 \description{
 For more information about optional keyword arguments see tskit documentation:

@@ -1,84 +1,9 @@
-# Take a list of slendr_pop population boundary objects and
-# "interpolate" all of them at time points specified by others
-# (unless a given population is supposed to be removed at that time)
-fill_maps <- function(pops, time = NULL) {
-
-  removal_times <- sapply(pops, attr, "remove")
-
-  # get times of all spatial maps across all populations
-  all_times <- unique(sort(c(
-    0,
-    time,
-    removal_times,
-    unlist(sapply(pops, function(i) i$time))
-  ))) %>% .[. != Inf & . != -1]
-
-  all_maps <- lapply(seq_along(pops), function(i) {
-
-    # get times where the spatial map of the current population
-    # needs to be filled in
-    missing_times <- all_times[
-      all_times >= removal_times[i] &
-        !all_times %in% pops[[i]]$time
-    ]
-
-    # generate the missing maps
-    new_maps <- lapply(missing_times, function(t) {
-      # get all preceding maps
-      previous_map <- pops[[i]] %>% .[.$time > t, ]
-      if (!nrow(previous_map)) return(NULL)
-      latest_map <- previous_map[nrow(previous_map), ]
-      latest_map$time <- t
-      latest_map
-    }) %>%
-      do.call(rbind, .)
-
-    if (!is.null(new_maps)) {
-      combined_maps <-
-        rbind(pops[[i]], new_maps) %>%
-        .[order(-.$time), ] %>%
-        .[.$time != Inf, ]
-
-      attributes(combined_maps) <- attributes(pops[[i]])
-    } else {
-      combined_maps <- pops[[i]]
-    }
-
-    combined_maps
-
-  })
-
-  all_maps
-}
-
-
-# Pick the next/previous value from a vector
-get_time_point <- function(times, current_value, what) {
-  current_index <- which(current_value <= times & times <= current_value)
-
-  if (!length(current_index)) {
-    if (what == "previous")
-      return(times[current_value <= times][1])
-    else
-      return(utils::tail(times[current_value >= times], 1))
-  } else {
-    if (what == "previous")
-      new_index <- current_index + 1
-    else if (what == "next")
-      new_index <- current_index - 1
-    else
-      stop("Invalid direction for the time point selection")
-
-    # prevent jumping out of the allowed range
-    if (new_index > length(times) | new_index <= 0) new_index <- current_index
-
-    times[new_index]
-  }
-}
-
 #' Open an interactive browser of the spatial model
 #'
 #' @param model Compiled \code{slendr_model} model object
+#'
+#' @return No return value, called in order to start an interactive browser-based
+#'   interface to explore the dynamics of a slendr model
 #'
 #' @import shiny
 #' @export
@@ -322,4 +247,82 @@ the demographic history encapsulated in your model.",
   }
 
   shinyApp(ui, server)
+}
+
+# Take a list of slendr_pop population boundary objects and
+# "interpolate" all of them at time points specified by others
+# (unless a given population is supposed to be removed at that time)
+fill_maps <- function(pops, time = NULL) {
+
+  removal_times <- sapply(pops, attr, "remove")
+
+  # get times of all spatial maps across all populations
+  all_times <- unique(sort(c(
+    0,
+    time,
+    removal_times,
+    unlist(sapply(pops, function(i) i$time))
+  ))) %>% .[. != Inf & . != -1]
+
+  all_maps <- lapply(seq_along(pops), function(i) {
+
+    # get times where the spatial map of the current population
+    # needs to be filled in
+    missing_times <- all_times[
+      all_times >= removal_times[i] &
+        !all_times %in% pops[[i]]$time
+    ]
+
+    # generate the missing maps
+    new_maps <- lapply(missing_times, function(t) {
+      # get all preceding maps
+      previous_map <- pops[[i]] %>% .[.$time > t, ]
+      if (!nrow(previous_map)) return(NULL)
+      latest_map <- previous_map[nrow(previous_map), ]
+      latest_map$time <- t
+      latest_map
+    }) %>%
+      do.call(rbind, .)
+
+    if (!is.null(new_maps)) {
+      combined_maps <-
+        rbind(pops[[i]], new_maps) %>%
+        .[order(-.$time), ] %>%
+        .[.$time != Inf, ]
+
+      attributes(combined_maps) <- attributes(pops[[i]])
+    } else {
+      combined_maps <- pops[[i]]
+    }
+
+    combined_maps
+
+  })
+
+  all_maps
+}
+
+
+# Pick the next/previous value from a vector
+get_time_point <- function(times, current_value, what) {
+  current_index <- which(current_value <= times & times <= current_value)
+
+  if (!length(current_index)) {
+    if (what == "previous")
+      return(times[current_value <= times][1])
+    else
+      return(utils::tail(times[current_value >= times], 1))
+  } else {
+    if (what == "previous")
+      new_index <- current_index + 1
+    else if (what == "next")
+      new_index <- current_index - 1
+    else
+      stop("Invalid direction for the time point selection")
+
+    # prevent jumping out of the allowed range
+    if (new_index > length(times) | new_index <= 0) new_index <- current_index
+
+    times[new_index]
+  }
 }

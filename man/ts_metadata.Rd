@@ -10,7 +10,7 @@ ts_metadata(ts)
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 }
 \value{
-List of metadata fields extracted from the tree sequence object
+List of metadata fields extracted from the tree-sequence object
 }
 \description{
 Extract list with tree sequence metadata saved by SLiM

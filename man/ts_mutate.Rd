@@ -27,7 +27,9 @@ integer number is given, mutations of the SLiM mutation type with that
 integer identifier will be created.}
 }
 \value{
-Tree sequence object of the class \code{slendr_ts}
+Tree-sequence object of the class \code{slendr_ts}, which serves as
+an interface point for the Python module tskit using slendr functions with
+the \code{ts_} prefix.
 }
 \description{
 Add mutations to the given tree sequence

@@ -29,6 +29,12 @@ offspring. One of "normal", "uniform", "cauchy", "exponential", or
 "brownian" (in which vertical and horizontal displacements are drawn from a
 normal distribution independently).}
 }
+\value{
+Object of the class \code{slendr_pop}, which contains population
+parameters such as name, time of appearance in the simulation, parent
+population (if any), and its spatial parameters such as map and spatial
+boundary.
+}
 \description{
 Changes either the competition interactive distance, mating choice distance,
 or the dispersal of offspring from its parent

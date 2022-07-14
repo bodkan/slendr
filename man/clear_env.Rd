@@ -9,6 +9,9 @@ clear_env(force = FALSE)
 \arguments{
 \item{force}{Ask before deleting the environment?}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Remove the automatically created slendr Python environment
 }

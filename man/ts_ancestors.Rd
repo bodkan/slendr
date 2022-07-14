@@ -20,6 +20,10 @@ relationships. For instance, nodes added during the coalescent recapitation
 phase will not be included because they don't have spatial information
 associated with them.}
 }
+\value{
+A table of ancestral nodes of a given tree-sequence node all the
+way up to the root of the tree sequence
+}
 \description{
 Extract (spatio-)temporal ancestral history for given nodes/individuals
 }

@@ -39,7 +39,9 @@ respectively and will be downloaded from the internet. Default value is
 "small".}
 }
 \value{
-Object of the class \code{slendr_map}
+Object of the class \code{slendr_map}, which encodes a standard
+spatial object of the class \code{sf} with additional slendr-specific
+attributes such as requested x-range and y-range.
 }
 \description{
 Defines either an abstract geographic landscape (blank or containing

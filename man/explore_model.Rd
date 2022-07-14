@@ -9,6 +9,10 @@ explore_model(model)
 \arguments{
 \item{model}{Compiled \code{slendr_model} model object}
 }
+\value{
+No return value, called in order to start an interactive browser-based
+interface to explore the dynamics of a slendr model
+}
 \description{
 Open an interactive browser of the spatial model
 }

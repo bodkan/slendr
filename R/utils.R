@@ -1,3 +1,120 @@
+# Internal implementation of expand_range() and shrink_range() functions
+shrink_or_expand <- function(pop, by, end, start, overlap, snapshots, polygon,
+                             lock, verbose) {
+  check_event_time(c(start, end), pop)
+  check_removal_time(start, pop)
+  check_removal_time(end, pop)
+
+  map <- attr(pop, "map")
+
+  # get the last active population size
+  prev_N <- sapply(attr(pop, "history"), function(event) event$N) %>%
+    Filter(Negate(is.null), .) %>%
+    unlist %>%
+    utils::tail(1)
+
+  # get the last available population boundary
+  region_start <- pop[nrow(pop), ]
+  sf::st_agr(region_start) <- "constant"
+
+  if (is.null(snapshots)) {
+    n <- 1
+    message("Iterative search for the minimum sufficient number of intermediate
+spatial snapshots, starting at ", n, ". This should only take a couple of
+seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
+  } else
+    n <- snapshots
+
+  # iterate through the number of intermediate spatial boundaries to reach
+  # the required overlap between subsequent spatial maps
+  repeat {
+    times <- seq(start, end, length.out = n + 1)[-1]
+
+    # generate intermediate spatial maps, starting from the last one
+    inter_regions <- list()
+    inter_regions[[1]] <- region_start
+    for (i in seq_along(times)) {
+      exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / n))
+      exp_region$time <- times[i]
+      sf::st_agr(exp_region) <- "constant"
+
+      # restrict the next spatial boundary to the region of interest
+      if (!is.null(polygon)) {
+        if (!inherits(polygon, "slendr_region"))
+          polygon <- region(polygon = polygon, map = map)
+        exp_region <- sf::st_intersection(exp_region, polygon)
+        exp_region$region <- NULL
+        sf::st_agr(exp_region) <- "constant"
+      }
+
+      inter_regions[[i + 1]] <- exp_region
+    }
+
+    if (!is.null(snapshots)) break
+
+    # if the boundary is supposed to be shrinking, the order of spatial maps
+    # must be reversed in order to check the amount of overlap
+    direction <- ifelse(by < 0, rev, identity)
+    overlaps <- compute_overlaps(do.call(rbind, direction(inter_regions)))
+
+    if (all(overlaps >= overlap)) {
+      message("The required ", sprintf("%.1f%%", 100 * overlap),
+              " overlap between subsequent spatial maps has been met")
+      break
+    } else {
+      n <- n + 1
+      if (verbose)
+        message("- Increasing to ", n, " snapshots")
+    }
+  }
+
+  all_maps <- do.call(rbind, inter_regions[-1]) %>% rbind(pop, .)
+  sf::st_agr(all_maps) <- "constant"
+
+  result <- copy_attributes(
+    all_maps, pop,
+    c("map", "parent", "remove", "intersect", "aquatic", "history")
+  )
+
+  start_area <- sf::st_area(utils::head(inter_regions, 1)[[1]])
+  end_area <- sf::st_area(utils::tail(inter_regions, 1)[[1]])
+  action <- ifelse(start_area < end_area, "expand", "contract")
+
+  attr(result, "history") <- append(attr(result, "history"), list(data.frame(
+    pop =  unique(region_start$pop),
+    event = action,
+    tstart = start,
+    tend = end
+  )))
+
+
+  if (lock) {
+    areas <- as.numeric(sapply(inter_regions, sf::st_area))
+    area_changes <- areas[-1] / areas[-length(areas)]
+    new_N <- round(cumprod(area_changes) * prev_N)
+    prev_N <- c(prev_N, new_N[-length(new_N)])
+    times <- sapply(inter_regions[-1], `[[`, "time")
+    changes <- lapply(seq_len(length(new_N)), function(i) {
+      data.frame(
+        pop =  unique(pop$pop),
+        event = "resize",
+        how = "step",
+        N = new_N[i],
+        prev_N = prev_N[i],
+        tresize = times[i],
+        tend = NA
+      )
+    })
+    attr(result, "history") <- append(attr(result, "history"), changes)
+    # for (i in seq_along(inter_regions)[-1]) {
+    #   time <- inter_regions[[i]]$time
+    #   result <- resize(result, N = new_N[i - 1], time = time, how = "step")
+    # }
+  }
+
+  result
+}
+
 # Get path to an appropriate SLiM binary
 get_binary <- function(method) {
   if (method == "gui") {
@@ -540,6 +657,9 @@ order_pops <- function(populations, direction) {
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
+#'
+#' @return Returns the value of a function (\code{rhs}) applied to the pipe's
+#'   first argument (\code{lhs}) according to the pipe's magrittr implementation
 #'
 #' @name %>%
 #' @rdname pipe

@@ -22,7 +22,9 @@ polygon range or a geographic region of the class
 extracted (see the \code{region() function})}
 }
 \value{
-Object of the class \code{slendr_region}
+Object of the class \code{slendr_region} which encodes a standard
+spatial object of the class \code{sf} with several additional attributes
+(most importantly a corresponding \code{slendr_map} object, if applicable).
 }
 \description{
 Creates a geographic region (a polygon) on a given map and gives it

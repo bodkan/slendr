@@ -18,7 +18,8 @@ proportion of migration over given time period}
 populations?  (default \code{TRUE})}
 }
 \value{
-Object of the class data.frame
+Object of the class data.frame containing parameters of the specified
+gene-flow event.
 }
 \description{
 Define a gene-flow event between two populations

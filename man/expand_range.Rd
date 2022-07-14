@@ -40,7 +40,10 @@ appropriately, to match the new population range area.}
 boundaries?}
 }
 \value{
-Object of the class \code{slendr_pop}
+Object of the class \code{slendr_pop}, which contains population
+parameters such as name, time of appearance in the simulation, parent
+population (if any), and its spatial parameters such as map and spatial
+boundary.
 }
 \description{
 Expands the spatial population range by a specified distance in a given

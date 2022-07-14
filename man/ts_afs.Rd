@@ -34,8 +34,7 @@ be folded (i.e. the counts will not depend on knowing which allele is
 ancestral)}
 }
 \value{
-Either a single Fst value or a vector of Fst values (one for each
-window)
+Allele frequency spectrum values for the given sample set
 }
 \description{
 This function computes the AFS with respect to the given set of individuals

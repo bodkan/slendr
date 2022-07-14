@@ -37,6 +37,9 @@ other geographic boundaries (default TRUE)?}
 in all time points (this is only used for plotting using the \code{explore}
 shiny app)}
 }
+\value{
+A ggplot2 object with the visualized slendr map
+}
 \description{
 Plots objects of the three \code{slendr} spatial classes (\code{slendr_map},
 \code{slendr_region}, and \code{slendr_pop}).

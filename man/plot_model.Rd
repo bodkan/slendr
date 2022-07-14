@@ -18,7 +18,7 @@ by default to prevent cluttering and overplotting)}
 over very long time-scales.}
 }
 \value{
-Plot object of the class \code{ggplot}
+A ggplot2 object with the visualized slendr model
 }
 \description{
 Plot demographic history encoded in a slendr model

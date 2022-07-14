@@ -31,7 +31,10 @@ specifying the migration trajectory}
 sufficient snapshots?}
 }
 \value{
-Object of the class \code{slendr_pop}
+Object of the class \code{slendr_pop}, which contains population
+parameters such as name, time of appearance in the simulation, parent
+population (if any), and its spatial parameters such as map and spatial
+boundary.
 }
 \description{
 This function defines a displacement of a population along a given trajectory

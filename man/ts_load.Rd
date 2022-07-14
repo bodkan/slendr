@@ -53,7 +53,9 @@ samples be retained in the tree sequence? Default is \code{FALSE}.}
 lineages (passed to \code{ts_recapitate})}
 }
 \value{
-Tree sequence object of the class \code{slendr_ts}
+Tree-sequence object of the class \code{slendr_ts}, which serves as
+an interface point for the Python module tskit using slendr functions with
+the \code{ts_} prefix.
 }
 \description{
 This function loads a tree sequence file simulated from a given slendr model.

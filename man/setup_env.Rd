@@ -20,6 +20,9 @@ Python dependencies will be installed from conda repositories by default,
 expect for the case of osx-arm64 Mac architecture, for which conda
 dependencies are broken.}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 This function will automatically download a Python miniconda distribution
 dedicated to an R-Python interface. It will also create a slendr-specific

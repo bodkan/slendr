@@ -39,7 +39,10 @@
 #' @param aquatic Is the species aquatic (\code{FALSE} by default, i.e.
 #'   terrestrial species)?
 #'
-#' @return Object of the class \code{slendr_pop}
+#' @return Object of the class \code{slendr_pop}, which contains population
+#'   parameters such as name, time of appearance in the simulation, parent
+#'   population (if any), and its spatial parameters such as map and spatial
+#'   boundary.
 #'
 #' @export
 #'
@@ -137,7 +140,10 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
 #' @param verbose Show the progress of searching through the number of
 #'   sufficient snapshots?
 #'
-#' @return Object of the class \code{slendr_pop}
+#' @return Object of the class \code{slendr_pop}, which contains population
+#'   parameters such as name, time of appearance in the simulation, parent
+#'   population (if any), and its spatial parameters such as map and spatial
+#'   boundary.
 #'
 #' @export
 #'
@@ -282,7 +288,10 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 #' @param verbose Report on the progress of generating intermediate spatial
 #'   boundaries?
 #'
-#' @return Object of the class \code{slendr_pop}
+#' @return Object of the class \code{slendr_pop}, which contains population
+#'   parameters such as name, time of appearance in the simulation, parent
+#'   population (if any), and its spatial parameters such as map and spatial
+#'   boundary.
 #'
 #' @export
 #'
@@ -313,7 +322,10 @@ expand_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @param verbose Report on the progress of generating intermediate spatial
 #'   boundaries?
 #'
-#' @return Object of the class \code{slendr_pop}
+#' @return Object of the class \code{slendr_pop}, which contains population
+#'   parameters such as name, time of appearance in the simulation, parent
+#'   population (if any), and its spatial parameters such as map and spatial
+#'   boundary.
 #'
 #' @export
 #'
@@ -344,7 +356,10 @@ shrink_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #'   individuals simulated will be changed (increased or decreased)
 #'   appropriately, to match the new population range area.
 #'
-#' @return Object of the class \code{slendr_pop}
+#' @return Object of the class \code{slendr_pop}, which contains population
+#'   parameters such as name, time of appearance in the simulation, parent
+#'   population (if any), and its spatial parameters such as map and spatial
+#'   boundary.
 #'
 #' @export
 #'
@@ -421,6 +436,11 @@ set_range <- function(pop, time, center = NULL, radius = NULL,
 #' @param end End of the population size change period (used for exponential
 #'   change events)
 #'
+#' @return Object of the class \code{slendr_pop}, which contains population
+#'   parameters such as name, time of appearance in the simulation, parent
+#'   population (if any), and its spatial parameters such as map and spatial
+#'   boundary.
+#'
 #' @export
 #'
 #' @example man/examples/model_definition.R
@@ -481,6 +501,11 @@ resize <- function(pop, N, how, time, end = NULL) {
 #'   "brownian" (in which vertical and horizontal displacements are drawn from a
 #'   normal distribution independently).
 #'
+#' @return Object of the class \code{slendr_pop}, which contains population
+#'   parameters such as name, time of appearance in the simulation, parent
+#'   population (if any), and its spatial parameters such as map and spatial
+#'   boundary.
+#'
 #' @export
 #'
 #' @example man/examples/model_definition.R
@@ -530,7 +555,8 @@ set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = 
 #' @param overlap Require spatial overlap between admixing
 #'   populations?  (default \code{TRUE})
 #'
-#' @return Object of the class data.frame
+#' @return Object of the class data.frame containing parameters of the specified
+#'   gene-flow event.
 #'
 #' @export
 #'
@@ -638,7 +664,9 @@ time (gene flow %s -> %s in the time window %s-%s)",
 #'   respectively and will be downloaded from the internet. Default value is
 #'   "small".
 #'
-#' @return Object of the class \code{slendr_map}
+#' @return Object of the class \code{slendr_map}, which encodes a standard
+#'   spatial object of the class \code{sf} with additional slendr-specific
+#'   attributes such as requested x-range and y-range.
 #'
 #' @export
 #'
@@ -740,7 +768,9 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
 #'   \code{slendr_region} from which the polygon coordinates will be
 #'   extracted (see the \code{region() function})
 #'
-#' @return Object of the class \code{slendr_region}
+#' @return Object of the class \code{slendr_region} which encodes a standard
+#'   spatial object of the class \code{sf} with several additional attributes
+#'   (most importantly a corresponding \code{slendr_map} object, if applicable).
 #'
 #' @export
 #'
@@ -782,7 +812,7 @@ region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygo
 #' @param input_prefix,output_prefix Input and output prefixes of data
 #'   frame columns with spatial coordinates
 #'
-#' @return Data.frame with converted two-dimensional coordinates
+#' @return Data.frame with converted two-dimensional coordinates given as input
 #'
 #' @export
 reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
@@ -865,7 +895,9 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
 #' @param name Optional name of the resulting geographic region. If missing,
 #'   name will be constructed from the function arguments.
 #'
-#' @return Object of the class \code{slendr_region}
+#' @return Object of the class \code{slendr_region} which encodes a standard
+#'   spatial object of the class \code{sf} with several additional attributes
+#'   (most importantly a corresponding \code{slendr_map} object, if applicable).
 #'
 #' @export
 #'
@@ -891,7 +923,9 @@ join <- function(x, y, name = NULL) {
 #'
 #' @inheritParams join
 #'
-#' @return Object of the class \code{slendr_region}
+#' @return Object of the class \code{slendr_region} which encodes a standard
+#'   spatial object of the class \code{sf} with several additional attributes
+#'   (most importantly a corresponding \code{slendr_map} object, if applicable).
 #'
 #' @export
 overlap <- function(x, y, name = NULL) {
@@ -927,7 +961,9 @@ overlap <- function(x, y, name = NULL) {
 #'
 #' @inheritParams join
 #'
-#' @return Object of the class \code{slendr_region}
+#' @return Object of the class \code{slendr_region} which encodes a standard
+#'   spatial object of the class \code{sf} with several additional attributes
+#'   (most importantly a corresponding \code{slendr_map} object, if applicable).
 #'
 #' @export
 subtract <- function(x, y, name = NULL) {
@@ -968,7 +1004,7 @@ subtract <- function(x, y, name = NULL) {
 #'
 #' @return If the coordinate reference system was specified, a distance in
 #'   projected units (i.e. meters) is returned. Otherwise the function returns a
-#'   normal Euclidian distance.
+#'   normal Euclidean distance.
 #'
 #' @export
 distance <- function(x, y, measure, time = NULL) {
@@ -1140,124 +1176,6 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   schedule
 }
 
-
-# Internal implementation of expand_range() and shrink_range() functions
-shrink_or_expand <- function(pop, by, end, start, overlap, snapshots, polygon,
-                             lock, verbose) {
-  check_event_time(c(start, end), pop)
-  check_removal_time(start, pop)
-  check_removal_time(end, pop)
-
-  map <- attr(pop, "map")
-
-  # get the last active population size
-  prev_N <- sapply(attr(pop, "history"), function(event) event$N) %>%
-    Filter(Negate(is.null), .) %>%
-    unlist %>%
-    utils::tail(1)
-
-  # get the last available population boundary
-  region_start <- pop[nrow(pop), ]
-  sf::st_agr(region_start) <- "constant"
-
-  if (is.null(snapshots)) {
-    n <- 1
-    message("Iterative search for the minimum sufficient number of intermediate
-spatial snapshots, starting at ", n, ". This should only take a couple of
-seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
-  } else
-    n <- snapshots
-
-  # iterate through the number of intermediate spatial boundaries to reach
-  # the required overlap between subsequent spatial maps
-  repeat {
-    times <- seq(start, end, length.out = n + 1)[-1]
-
-    # generate intermediate spatial maps, starting from the last one
-    inter_regions <- list()
-    inter_regions[[1]] <- region_start
-    for (i in seq_along(times)) {
-      exp_region <- sf::st_buffer(inter_regions[[1]], dist = i * (by / n))
-      exp_region$time <- times[i]
-      sf::st_agr(exp_region) <- "constant"
-
-      # restrict the next spatial boundary to the region of interest
-      if (!is.null(polygon)) {
-        if (!inherits(polygon, "slendr_region"))
-          polygon <- region(polygon = polygon, map = map)
-        exp_region <- sf::st_intersection(exp_region, polygon)
-        exp_region$region <- NULL
-        sf::st_agr(exp_region) <- "constant"
-      }
-
-      inter_regions[[i + 1]] <- exp_region
-    }
-
-    if (!is.null(snapshots)) break
-
-    # if the boundary is supposed to be shrinking, the order of spatial maps
-    # must be reversed in order to check the amount of overlap
-    direction <- ifelse(by < 0, rev, identity)
-    overlaps <- compute_overlaps(do.call(rbind, direction(inter_regions)))
-
-    if (all(overlaps >= overlap)) {
-      message("The required ", sprintf("%.1f%%", 100 * overlap),
-              " overlap between subsequent spatial maps has been met")
-      break
-    } else {
-      n <- n + 1
-      if (verbose)
-        message("- Increasing to ", n, " snapshots")
-    }
-  }
-
-  all_maps <- do.call(rbind, inter_regions[-1]) %>% rbind(pop, .)
-  sf::st_agr(all_maps) <- "constant"
-
-  result <- copy_attributes(
-    all_maps, pop,
-    c("map", "parent", "remove", "intersect", "aquatic", "history")
-  )
-
-  start_area <- sf::st_area(utils::head(inter_regions, 1)[[1]])
-  end_area <- sf::st_area(utils::tail(inter_regions, 1)[[1]])
-  action <- ifelse(start_area < end_area, "expand", "contract")
-
-  attr(result, "history") <- append(attr(result, "history"), list(data.frame(
-    pop =  unique(region_start$pop),
-    event = action,
-    tstart = start,
-    tend = end
-  )))
-
-
-  if (lock) {
-    areas <- as.numeric(sapply(inter_regions, sf::st_area))
-    area_changes <- areas[-1] / areas[-length(areas)]
-    new_N <- round(cumprod(area_changes) * prev_N)
-    prev_N <- c(prev_N, new_N[-length(new_N)])
-    times <- sapply(inter_regions[-1], `[[`, "time")
-    changes <- lapply(seq_len(length(new_N)), function(i) {
-      data.frame(
-        pop =  unique(pop$pop),
-        event = "resize",
-        how = "step",
-        N = new_N[i],
-        prev_N = prev_N[i],
-        tresize = times[i],
-        tend = NA
-      )
-    })
-    attr(result, "history") <- append(attr(result, "history"), changes)
-    # for (i in seq_along(inter_regions)[-1]) {
-    #   time <- inter_regions[[i]]$time
-    #   result <- resize(result, N = new_N[i - 1], time = time, how = "step")
-    # }
-  }
-
-  result
-}
-
 #' Setup a dedicated Python virtual environment for slendr
 #'
 #' This function will automatically download a Python miniconda distribution
@@ -1274,6 +1192,8 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
 #'   Python dependencies will be installed from conda repositories by default,
 #'   expect for the case of osx-arm64 Mac architecture, for which conda
 #'   dependencies are broken.
+#'
+#' @return No return value, called for side effects
 #'
 #' @export
 setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
@@ -1342,6 +1262,8 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
 #'
 #' @param force Ask before deleting the environment?
 #'
+#' @return No return value, called for side effects
+#'
 #' @export
 clear_env <- function(force = FALSE) {
   if (check_env_present()) {
@@ -1370,6 +1292,8 @@ clear_env <- function(force = FALSE) {
 #' This function inspects the Python environment which has been activated by the
 #' reticulate package and prints the versions of all slendr Python dependencies
 #' to the console.
+#'
+#' @return No return value, called for side effects
 #'
 #' @export
 check_env <- function() {

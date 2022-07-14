@@ -25,7 +25,9 @@ ts_recapitate(
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 }
 \value{
-Tree sequence object of the class \code{slendr_ts}
+Tree-sequence object of the class \code{slendr_ts}, which serves as
+an interface point for the Python module tskit using slendr functions with
+the \code{ts_} prefix.
 }
 \description{
 Recapitate the tree sequence

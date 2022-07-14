@@ -35,7 +35,10 @@ individuals simulated will be changed (increased or decreased)
 appropriately, to match the new population range area.}
 }
 \value{
-Object of the class \code{slendr_pop}
+Object of the class \code{slendr_pop}, which contains population
+parameters such as name, time of appearance in the simulation, parent
+population (if any), and its spatial parameters such as map and spatial
+boundary.
 }
 \description{
 This function allows a more manual control of spatial map changes

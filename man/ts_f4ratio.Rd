@@ -64,7 +64,7 @@ do not have to be specified as they are added automatically.}
 nomenclature of Patterson et al. 2021)}
 }
 \value{
-Data frame with statistics calculated for given sets of individuals
+Data frame with statistics calculated for the given sets of individuals
 }
 \description{
 Calculate the f2, f3, f4, and f4-ratio statistics

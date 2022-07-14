@@ -10,7 +10,8 @@ ts_genotypes(ts)
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 }
 \value{
-Data frame object of the class \code{tibble}
+Data frame object of the class \code{tibble} containing genotypes
+of simulated individuals in columns
 }
 \description{
 Extract genotype table from the tree sequence

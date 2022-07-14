@@ -20,7 +20,7 @@ represent \code{slendr_pop} population boundaries (ignored for general
 \value{
 If the coordinate reference system was specified, a distance in
 projected units (i.e. meters) is returned. Otherwise the function returns a
-normal Euclidian distance.
+normal Euclidean distance.
 }
 \description{
 Calculate the distance between a pair of spatial boundaries

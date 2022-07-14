@@ -6,6 +6,10 @@
 \usage{
 lhs \%>\% rhs
 }
+\value{
+Returns the value of a function (\code{rhs}) applied to the pipe's
+first argument (\code{lhs}) according to the pipe's magrittr implementation
+}
 \description{
 See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
 }

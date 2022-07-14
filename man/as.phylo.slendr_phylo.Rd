@@ -9,6 +9,9 @@
 \arguments{
 \item{x}{Tree object of the class \code{slendr_phylo}}
 }
+\value{
+Standard phylogenetic tree object implemented by the R package ape
+}
 \description{
 This function servers as a workaround around a ggtree error:
 \code{Error in UseMethod("as.phylo") :

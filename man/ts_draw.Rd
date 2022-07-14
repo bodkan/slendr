@@ -26,6 +26,9 @@ individuals can themselves be among the ancestral nodes.}
 
 \item{...}{Keyword arguments to the tskit \code{draw_svg} function.}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 This function first obtains an SVG representation of the tree by calling the
 \code{draw_svg} method of tskit and renders it as a bitmap image in R. All of

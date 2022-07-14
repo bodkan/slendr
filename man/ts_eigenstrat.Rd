@@ -33,7 +33,7 @@ which will carry all ancestral alleles (i.e. value "2" in a geno file
 for each position in a snp file).
 }
 \examples{
-\dontrun{ # save genotypes as a trio of files eigenprefix.snp, eigenprefix.ind, eigenprefix.geno
+\dontrun{ # save genotypes as eigenprefix.{ind,geno,snp}
 ts_eigenstrat(ts, prefix = "/path/to/eigenprefix")
 }
 
