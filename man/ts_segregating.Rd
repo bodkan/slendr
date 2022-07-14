@@ -37,10 +37,13 @@ vector of diversity values (one for each window)
 Calculate the density of segregating sites for the given sets of individuals
 }
 \examples{
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
+
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # collect sampled individuals from all populations in a list

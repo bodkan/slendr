@@ -1340,9 +1340,12 @@ check_env <- function() {
   cat(" - pyslim:", pyslim_version, "\n")
   # cat(" - slendr module:", pylib_status, "\n")
 
-  if (!all(c(has_tskit, has_pyslim, has_msprime)))
-    cat("\nNote that due to the technical limitations of embedded Python,",
-        "if you\nwant to switch to another Python environment you will need",
-        "to restart\nyour R session first.\n")
+  if (!all(c(has_tskit, has_pyslim, has_msprime))) {
+    message("\nNote that due to the technical limitations of embedded Python,",
+            "if you\nwant to switch to another Python environment you will need",
+            "to restart\nyour R session first.\n")
+    return(invisible(FALSE))
     # reference: https://github.com/rstudio/reticulate/issues/27#issuecomment-512256949
+  } else
+    return(invisible(TRUE))
 }

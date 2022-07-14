@@ -28,19 +28,3 @@ Python-reticulate-based object of the class tskit.trees.Tree
 For more information about optional keyword arguments see tskit documentation:
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class}
 }
-\examples{
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
-model <- read_example("introgression")
-
-ts <- ts_load(model)
-
-# extract the first tree in the tree sequence
-tree <- ts_tree(ts, i = 1)
-
-# extract the tree at a position 100000bp in the tree sequence
-tree <- ts_tree(ts, i = 100000, mode = "position")
-}
-
-}

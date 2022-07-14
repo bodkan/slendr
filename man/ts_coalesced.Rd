@@ -20,10 +20,13 @@ TRUE or FALSE value if \code{return_failed = FALSE}, otherwise a vector of
 Check that all trees in the tree sequence are fully coalesced
 }
 \examples{
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
+
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)

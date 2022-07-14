@@ -70,10 +70,13 @@ Data frame with statistics calculated for the given sets of individuals
 Calculate the f2, f3, f4, and f4-ratio statistics
 }
 \examples{
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
+
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # calculate f2 for two individuals in a previously loaded tree sequence
@@ -83,10 +86,13 @@ ts_f2(ts, A = "AFR_1", B = "EUR_1")
 ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
 }
 
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
+
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # calculate f2 for two individuals in a previously loaded tree sequence
@@ -98,10 +104,13 @@ ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
           C = "CH_1")
 }
 
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
+
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # calculate f4 for single individuals
@@ -114,10 +123,13 @@ ts_f4(ts, W = c("EUR_1", "EUR_2"),
           Z = "CH_1")
 }
 
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
+
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # calculate f2 for two samples in a previously loaded tree sequence

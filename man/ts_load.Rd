@@ -73,9 +73,11 @@ using the functions \code{\link{ts_recapitate}} and
 \code{\link{ts_simplify}}.
 }
 \examples{
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
 # load tree sequence from its default location in a model directory
@@ -99,6 +101,7 @@ ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
 # load tree sequence, recapitate it, simplify it and overlay neutral mutations
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
               recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+
 }
 
 }

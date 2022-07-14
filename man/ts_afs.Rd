@@ -46,10 +46,13 @@ please see the tskit manual at
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum}
 }
 \examples{
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
+
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # calculate Tajima's D for given sets of individuals in a tree sequence ts

@@ -37,9 +37,11 @@ Standard phylogenetic tree object implemented by the R package ape
 Convert a tree in the tree sequence to an object of the class \code{phylo}
 }
 \examples{
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
 ts <- ts_load(model, simplify = TRUE)

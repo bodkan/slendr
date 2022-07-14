@@ -46,9 +46,11 @@
 #'   map
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
 #' # load tree sequence from its default location in a model directory
@@ -72,6 +74,7 @@
 #' # load tree sequence, recapitate it, simplify it and overlay neutral mutations
 #' ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
 #'               recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+#'
 #' }
 #'
 #' @export
@@ -198,14 +201,17 @@ ts_save <- function(ts, file) {
 #'   map
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
 #' ts <-
 #'   ts_load(model) %>%
 #'   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
+#'
 #' }
 #'
 #' @export
@@ -300,9 +306,11 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #'   map
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
 #' ts <- ts_load(model)
@@ -316,6 +324,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #'   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
 #'                   "AFR_2", "EUR_1", "EUR_2")
 #' )
+#'
 #' }
 #'
 #' @export
@@ -453,9 +462,11 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 #'   map
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
 #' ts <- ts_load(model)
@@ -701,9 +712,11 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' @param quiet Should ape's internal phylo validity test be printed out?
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
 #' ts <- ts_load(model, simplify = TRUE)
@@ -1273,8 +1286,11 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #'
 #' @examples
 #' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
 #' ts <- ts_load(model)
@@ -1364,10 +1380,13 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #'   (tskit Python 0-based) indices of trees which failed the coalescence test
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)
@@ -1411,10 +1430,13 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate f2 for two individuals in a previously loaded tree sequence
@@ -1435,10 +1457,13 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate f2 for two individuals in a previously loaded tree sequence
@@ -1461,10 +1486,13 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate f4 for single individuals
@@ -1501,10 +1529,13 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' @return Data frame with statistics calculated for the given sets of individuals
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate f2 for two samples in a previously loaded tree sequence
@@ -1596,10 +1627,13 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #'   of Fst values (one for each window)
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # compute F_st between two sets of individuals in a given tree sequence ts
@@ -1625,10 +1659,13 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of divergence values (one for each window)
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # collect sampled individuals from all populations in a list
@@ -1701,10 +1738,13 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #'   vector of diversity values (one for each window)
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # collect sampled individuals from all populations in a list
@@ -1734,10 +1774,13 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of diversity values (one for each window)
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # collect sampled individuals from all populations in a list
@@ -1779,10 +1822,13 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of Tajima's D values (one for each window)
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate Tajima's D for given sets of individuals in a tree sequence ts
@@ -1828,10 +1874,13 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @return Allele frequency spectrum values for the given sample set
 #'
 #' @examples
-#' \donttest{
-#' # prepare slendr's Python environment and load an example model configuration
-#' setup_env()
+#' # the examples will only run when a dedicated Python environment is present
+#' # (this can be created by calling `setup_env()`)
+#' if (check_env()) {
+#'
+#' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
+#'
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate Tajima's D for given sets of individuals in a tree sequence ts

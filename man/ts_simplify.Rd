@@ -43,9 +43,11 @@ ancient DNA samples) is in the pyslim documentation at
 \url{https://tskit.dev/pyslim/docs/latest/tutorial.html#historical-individuals}.
 }
 \examples{
-\donttest{
-# prepare slendr's Python environment and load an example model configuration
-setup_env()
+# the examples will only run when a dedicated Python environment is present
+# (this can be created by calling `setup_env()`)
+if (check_env()) {
+
+# load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
 ts <- ts_load(model)
@@ -59,6 +61,7 @@ ts_small <- ts_simplify(
   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
                   "AFR_2", "EUR_1", "EUR_2")
 )
+
 }
 
 }
