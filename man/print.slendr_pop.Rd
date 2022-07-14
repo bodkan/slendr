@@ -24,6 +24,9 @@
 
 \item{...}{Additional arguments passed to \code{print}}
 }
+\value{
+No return value, used only for printing
+}
 \description{
 All spatial objects in the slendr package are internally represented as
 Simple Features (\code{sf}) objects. This fact is hidden in most

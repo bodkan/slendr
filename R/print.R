@@ -13,7 +13,7 @@
 #'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_table})
 #' @param ... Additional arguments passed to \code{print}
 #'
-#' @return No return value, called for printing only
+#' @return No return value, used only for printing
 #'
 #' @export
 print.slendr_pop <- function(x, ...) {
