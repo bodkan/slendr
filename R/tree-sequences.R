@@ -46,19 +46,24 @@
 #'   map
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#'
 #' # load tree sequence from its default location in a model directory
 #' ts <- ts_load(model)
 #'
 #' # load tree sequence from another location
-#' ts <- ts_load(model, file = "output.trees")
+#' path <- file.path(model$path, "output_slim.trees")
+#' ts <- ts_load(model, file = path)
 #'
 #' # load tree sequence and immediately simplify it only to sampled individuals
 #' ts <- ts_load(model, simplify = TRUE)
 #'
 #' # load tree sequence and simplify it to a subset of sampled individuals
 #' ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2",
-#'                                             "AFR_1", "AFR_2", "EUR_20", "EUR_50"))
+#'                                             "AFR_1", "AFR_2", "EUR_1", "EUR_2"))
 #'
 #' # load tree sequence, recapitate it and simplify it
 #' ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
@@ -193,8 +198,14 @@ ts_save <- function(ts, file) {
 #'   map
 #'
 #' @examples
-#' \dontrun{
-#' ts_rec <- ts_recapitate(ts, recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#'
+#' ts <-
+#'   ts_load(model) %>%
+#'   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 #' }
 #'
 #' @export
@@ -289,14 +300,21 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #'   map
 #'
 #' @examples
-#' \dontrun{ # simplify tree sequence to sampled individuals
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#'
+#' ts <- ts_load(model)
+#'
+#' # simplify tree sequence to sampled individuals
 #' ts_simplified <- ts_simplify(ts)
 #'
 #' # simplify to a subset of sampled individuals
 #' ts_small <- ts_simplify(
 #'   ts,
 #'   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
-#'                   "AFR_2", "EUR_20", "EUR_50")
+#'                   "AFR_2", "EUR_1", "EUR_2")
 #' )
 #' }
 #'
@@ -435,7 +453,12 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 #'   map
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#'
+#' ts <- ts_load(model)
 #' ts_mutate <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 42)
 #' }
 #'
@@ -564,14 +587,9 @@ ts_genotypes <- function(ts) {
 #'
 #' @return Object of the class EIGENSTRAT created by the admixr package
 #'
-#' @examples
-#' \dontrun{ # save genotypes as eigenprefix.{ind,geno,snp}
-#' ts_eigenstrat(ts, prefix = "/path/to/eigenprefix")
-#' }
-#'
 #' @export
 ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
-  if (!"admixr" %in% utils::installed.packages()[, 1])
+  if (!requireNamespace("admixr", quietly = TRUE))
     message("For EIGENSTRAT conversion, please install the R package ",
             "admixr by calling `install.packages(\"admixr\")")
 
@@ -640,11 +658,6 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 #'
 #' @return No return value, called for side effects
 #'
-#' @examples
-#' \dontrun{ # save a VCF file from a given tree sequence object ts
-#' ts_vcf(ts, path = "/path/to/target/output.vcf.gz")
-#' }
-#'
 #' @export
 ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
   if (!attr(ts, "recapitated") && !ts_coalesced(ts))
@@ -688,11 +701,18 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' @param quiet Should ape's internal phylo validity test be printed out?
 #'
 #' @examples
-#' \dontrun{ # extract a 42nd tree from a given tree sequence, return ape object
-#' tree <- ts_phylo(ts, i = 42, mode = "index")
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#'
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # extract a 42nd tree from a given tree sequence, return ape object
+#' tree <- ts_phylo(ts, i = 42, mode = "index", quiet = TRUE)
 #'
 #' # extract a tree at a 42th basepair in the given tree sequence
-#' tree <- ts_phylo(ts, i = 42, mode = "position")
+#' tree <- ts_phylo(ts, i = 42, mode = "position", quiet = TRUE)
 #' }
 #'
 #' @return Standard phylogenetic tree object implemented by the R package ape
@@ -962,14 +982,6 @@ ts_nodes <- function(x, sf = TRUE) {
 #'
 #' @return Data frame with the information from the give tree-sequence table
 #'   (can be either a table of individuals, edges, nodes, or mutations).
-#'
-#' @examples
-#' \dontrun{ # extract a data frame object with the individual table
-#' individuals <- ts_table(ts, table = "individuals")
-#'
-#' # extract a table of nodes
-#' nodes <- ts_table(ts, table = "nodes")
-#' }
 #'
 #' @export
 ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")) {
@@ -1260,7 +1272,14 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @return Python-reticulate-based object of the class tskit.trees.Tree
 #'
 #' @examples
-#' \dontrun{ # extract the first tree in the tree sequence
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#'
+#' ts <- ts_load(model)
+#'
+#' # extract the first tree in the tree sequence
 #' tree <- ts_tree(ts, i = 1)
 #'
 #' # extract the tree at a position 100000bp in the tree sequence
@@ -1299,7 +1318,12 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @export
 ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
                     sampled_only = TRUE, ...) {
-  if (!"rsvg" %in% utils::installed.packages()[, 1])
+  # set margins to zero, save original settings
+  orig_par <- graphics::par(mar = c(0, 0, 0, 0))
+  # restore original settings
+  on.exit(graphics::par(orig_par))
+
+  if (!requireNamespace("rsvg", quietly = TRUE))
     stop("For plotting trees using the native SVG tskit capabilities, please\n",
          "install the R package rsvg by calling `install.packages(\"rsvg\")")
 
@@ -1323,17 +1347,11 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
   tmp_file <- paste0(tempfile(), ".png")
   rsvg::rsvg_png(svg = raw, file = tmp_file, width = width, height = height)
 
-  # set margins to zero, save typeal settings
-  orig_par <- graphics::par(mar = c(0, 0, 0, 0))
-
   # plot the PNG image, filling the entire plotting window
   img <- png::readPNG(tmp_file)
   graphics::plot.new()
   graphics::plot.window(0:1, 0:1)
   graphics::rasterImage(img, 0, 0, 1, 1)
-
-  # restor typeal settings
-  graphics::par(orig_par)
 }
 
 #' Check that all trees in the tree sequence are fully coalesced
@@ -1346,7 +1364,12 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #'   (tskit Python 0-based) indices of trees which failed the coalescence test
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
 #' ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)
 #'
 #' # returns a vector of tree sequence segments which are not coalesced
@@ -1388,12 +1411,17 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' \dontrun{ # calculate f2 for two individuals in a previously loaded tree sequence
-#' ts_f2(ts, A = "pop1_1", B = "pop2_1")
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # calculate f2 for two individuals in a previously loaded tree sequence
+#' ts_f2(ts, A = "AFR_1", B = "EUR_1")
 #'
 #' # calculate f2 for two sets of individuals
-#' ts_f2(ts, A = c("pop1_1", "pop1_2", "pop1_3"),
-#'           B = c("pop2_1", "pop2_2"))
+#' ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
 #' }
 #'
 #' @export
@@ -1407,13 +1435,19 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' \dontrun{ # calculate f2 for two individuals in a previously loaded tree sequence
-#' ts_f3(ts, A = "pop1_1", B = "pop2_1", C = "outgroup_1")
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # calculate f2 for two individuals in a previously loaded tree sequence
+#' ts_f3(ts, A = "EUR_1", B = "AFR_1", C = "NEA_1")
 #'
 #' # calculate f2 for two sets of individuals
-#' ts_f3(ts, A = c("pop1_1", "pop1_2", "pop1_3"),
-#'           B = c("pop2_1", "pop2_2"),
-#'           C = "outgroup_1")
+#' ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
+#'           B = c("NEA_1", "NEA_2"),
+#'           C = "CH_1")
 #' }
 #'
 #' @export
@@ -1427,14 +1461,20 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' \dontrun{ # calculate f4 for single individuals
-#' ts_f4(ts, W = "pop1_1", X = "pop2_1", Y = "pop3_1", Z = "pop4_1")
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # calculate f4 for single individuals
+#' ts_f4(ts, W = "EUR_1", X = "AFR_1", Y = "NEA_1", Z = "CH_1")
 #'
 #' # calculate f4 for sets of individuals
-#' ts_f4(ts, W = c("pop1_1", "pop1_2", "pop1_3"),
-#'           X = c("pop2_1", "pop2_2"),
-#'           Y = c("pop3_1", "pop3_2"),
-#'           Z = c("pop4_1", "pop4_2"))
+#' ts_f4(ts, W = c("EUR_1", "EUR_2"),
+#'           X = c("AFR_1", "AFR_2"),
+#'           Y = "NEA_1",
+#'           Z = "CH_1")
 #' }
 #'
 #' @export
@@ -1461,8 +1501,15 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' @return Data frame with statistics calculated for the given sets of individuals
 #'
 #' @examples
-#' \dontrun{ # calculate f2 for two samples in a previously loaded tree sequence
-#' ts_f4ratio(ts, X = "test_1", A = "p1_1", B = "p2_1", B = "p3_1", C = "p4_1", O = "outgroup_1")
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # calculate f2 for two samples in a previously loaded tree sequence
+#' ts_f4ratio(ts, X = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
+#'                A = "NEA_1", B = "NEA_2", C = "AFR_1", O = "CH_1")
 #' }
 #'
 #' @export
@@ -1549,7 +1596,13 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #'   of Fst values (one for each window)
 #'
 #' @examples
-#' \dontrun{ # compute F_st between two sets of individuals in a given tree sequence ts
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # compute F_st between two sets of individuals in a given tree sequence ts
 #' ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
 #'                               eur = c("EUR_1", "EUR_2")))
 #' }
@@ -1572,14 +1625,20 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of divergence values (one for each window)
 #'
 #' @examples
-#' \dontrun{ #' # collect sampled individuals from all populations in a list
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # collect sampled individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
 #'   split(., .$pop) %>%
 #'   lapply(function(pop) pop$name)
 #'
 #' # compute the divergence between individuals from each sample set (list of
 #' # individual names generated in the previous step)
-#' ts_divergence(ts, sample_sets) %>% dplyr::arrange(divergence)
+#' ts_divergence(ts, sample_sets) %>% .[order(.$divergence), ]
 #' }
 #'
 #' @export
@@ -1641,9 +1700,24 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #' @return For each set of individuals either a single diversity value or a
 #'   vector of diversity values (one for each window)
 #'
+#' @examples
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # collect sampled individuals from all populations in a list
+#' sample_sets <- ts_samples(ts) %>%
+#'   split(., .$pop) %>%
+#'   lapply(function(pop) pop$name)
+#'
+#' ts_segregating(ts, sample_sets)
+#' }
+#'
 #' @export
 ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
-                           windows = NULL, span_normalise = TRUE) {
+                           windows = NULL, span_normalise = FALSE) {
   mode <- match.arg(mode)
   if (!is.list(sample_sets)) sample_sets <- as.list(sample_sets)
   if (!is.null(windows)) windows <- define_windows(ts, windows)
@@ -1660,14 +1734,20 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of diversity values (one for each window)
 #'
 #' @examples
-#' \dontrun{ #' # collect sampled individuals from all populations in a list
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # collect sampled individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
 #'   split(., .$pop) %>%
 #'   lapply(function(pop) pop$name)
 #'
 #' # compute diversity in each population based on sample sets extracted
 #' # in the previous step
-#' ts_diversity(ts, sample_sets) %>% dplyr::arrange(diversity)
+#' ts_diversity(ts, sample_sets) %>% .[order(.$diversity), ]
 #' }
 #'
 #' @export
@@ -1699,9 +1779,16 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of Tajima's D values (one for each window)
 #'
 #' @examples
-#' \dontrun{ # calculate Tajima's D for given sets of individuals in a tree sequence ts
-#' ts_tajima(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3"),
-#'                    eur = c("EUR_1", "EUR_2")))
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # calculate Tajima's D for given sets of individuals in a tree sequence ts
+#' ts_tajima(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5"),
+#'                    eur = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
+#'                    nea = c("NEA_1", "NEA_2")))
 #' }
 #'
 #' @export
@@ -1739,6 +1826,17 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   method
 #'
 #' @return Allele frequency spectrum values for the given sample set
+#'
+#' @examples
+#' \donttest{
+#' # prepare slendr's Python environment and load an example model configuration
+#' setup_env()
+#' model <- read_example("introgression")
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#'
+#' # calculate Tajima's D for given sets of individuals in a tree sequence ts
+#' ts_afs(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5")))
+#' }
 #'
 #' @export
 ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),

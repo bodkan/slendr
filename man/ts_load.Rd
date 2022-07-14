@@ -73,19 +73,24 @@ using the functions \code{\link{ts_recapitate}} and
 \code{\link{ts_simplify}}.
 }
 \examples{
-\dontrun{
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+
 # load tree sequence from its default location in a model directory
 ts <- ts_load(model)
 
 # load tree sequence from another location
-ts <- ts_load(model, file = "output.trees")
+path <- file.path(model$path, "output_slim.trees")
+ts <- ts_load(model, file = path)
 
 # load tree sequence and immediately simplify it only to sampled individuals
 ts <- ts_load(model, simplify = TRUE)
 
 # load tree sequence and simplify it to a subset of sampled individuals
 ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2",
-                                            "AFR_1", "AFR_2", "EUR_20", "EUR_50"))
+                                            "AFR_1", "AFR_2", "EUR_1", "EUR_2"))
 
 # load tree sequence, recapitate it and simplify it
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,

@@ -1,3 +1,21 @@
+#' Read a provided slendr model
+#'
+#' @param name Name of the built-in slendr model example
+#'
+#' @return Compiled \code{slendr_model} model object which encapsulates all
+#'   information about the specified model (which populations are involved,
+#'   when and how much gene flow should occur, what is the spatial resolution
+#'   of a map, and what spatial dispersal and mating parameters should be used
+#'   in a SLiM simulation, if applicable)
+#'
+#' @export
+read_example <- function(name = c("introgression", "space")) {
+  name <- match.arg(name)
+  path <- file.path("extdata/models/", name)
+  model <- read_model(system.file(path, package = "slendr", mustWork = TRUE))
+  model
+}
+
 # Internal implementation of expand_range() and shrink_range() functions
 shrink_or_expand <- function(pop, by, end, start, overlap, snapshots, polygon,
                              lock, verbose) {

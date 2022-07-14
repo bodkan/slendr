@@ -434,7 +434,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 #' @export
 animate_model <- function(model, file = file.path(model$path, "output_ind_locations.tsv.gz"),
                           steps, gif = NULL, width = 800, height = 560) {
-  if (!"magick" %in% utils::installed.packages()[, 1])
+  if (!requireNamespace("magick", quietly = TRUE))
     message("For rendering animated GIFs, please install the R package ",
             "magick by calling `install.packages(\"magick\")")
 

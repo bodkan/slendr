@@ -37,14 +37,20 @@ vector of diversity values (one for each window)
 Calculate diversity in given sets of individuals
 }
 \examples{
-\dontrun{ #' # collect sampled individuals from all populations in a list
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+
+# collect sampled individuals from all populations in a list
 sample_sets <- ts_samples(ts) \%>\%
   split(., .$pop) \%>\%
   lapply(function(pop) pop$name)
 
 # compute diversity in each population based on sample sets extracted
 # in the previous step
-ts_diversity(ts, sample_sets) \%>\% dplyr::arrange(diversity)
+ts_diversity(ts, sample_sets) \%>\% .[order(.$diversity), ]
 }
 
 }

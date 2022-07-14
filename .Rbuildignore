@@ -21,3 +21,4 @@
 ^\.covrignore$
 ^.*\.gif
 ^cran-comments.md
+^generate_examples.R

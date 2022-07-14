@@ -70,35 +70,59 @@ Data frame with statistics calculated for the given sets of individuals
 Calculate the f2, f3, f4, and f4-ratio statistics
 }
 \examples{
-\dontrun{ # calculate f2 for two individuals in a previously loaded tree sequence
-ts_f2(ts, A = "pop1_1", B = "pop2_1")
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+
+# calculate f2 for two individuals in a previously loaded tree sequence
+ts_f2(ts, A = "AFR_1", B = "EUR_1")
 
 # calculate f2 for two sets of individuals
-ts_f2(ts, A = c("pop1_1", "pop1_2", "pop1_3"),
-          B = c("pop2_1", "pop2_2"))
+ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
 }
 
-\dontrun{ # calculate f2 for two individuals in a previously loaded tree sequence
-ts_f3(ts, A = "pop1_1", B = "pop2_1", C = "outgroup_1")
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+
+# calculate f2 for two individuals in a previously loaded tree sequence
+ts_f3(ts, A = "EUR_1", B = "AFR_1", C = "NEA_1")
 
 # calculate f2 for two sets of individuals
-ts_f3(ts, A = c("pop1_1", "pop1_2", "pop1_3"),
-          B = c("pop2_1", "pop2_2"),
-          C = "outgroup_1")
+ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
+          B = c("NEA_1", "NEA_2"),
+          C = "CH_1")
 }
 
-\dontrun{ # calculate f4 for single individuals
-ts_f4(ts, W = "pop1_1", X = "pop2_1", Y = "pop3_1", Z = "pop4_1")
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+
+# calculate f4 for single individuals
+ts_f4(ts, W = "EUR_1", X = "AFR_1", Y = "NEA_1", Z = "CH_1")
 
 # calculate f4 for sets of individuals
-ts_f4(ts, W = c("pop1_1", "pop1_2", "pop1_3"),
-          X = c("pop2_1", "pop2_2"),
-          Y = c("pop3_1", "pop3_2"),
-          Z = c("pop4_1", "pop4_2"))
+ts_f4(ts, W = c("EUR_1", "EUR_2"),
+          X = c("AFR_1", "AFR_2"),
+          Y = "NEA_1",
+          Z = "CH_1")
 }
 
-\dontrun{ # calculate f2 for two samples in a previously loaded tree sequence
-ts_f4ratio(ts, X = "test_1", A = "p1_1", B = "p2_1", B = "p3_1", C = "p4_1", O = "outgroup_1")
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+
+# calculate f2 for two samples in a previously loaded tree sequence
+ts_f4ratio(ts, X = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
+               A = "NEA_1", B = "NEA_2", C = "AFR_1", O = "CH_1")
 }
 
 }

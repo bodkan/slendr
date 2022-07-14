@@ -73,6 +73,7 @@ reference:
     - compile_model
     - read_model
     - schedule_sampling
+    - read_example
 
   - title: Manipulation of spatial objects
     contents:

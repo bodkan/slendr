@@ -49,7 +49,7 @@ This function will execute a built-in msprime script and run a compiled
 slendr demographic model.
 }
 \examples{
-\dontrun{ # run a simulation using the msprime back end from a compiled slendr model object
+\donttest{ # run a simulation using the msprime back end from a compiled slendr model object
 msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
 }
 }

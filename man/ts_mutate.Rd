@@ -35,7 +35,12 @@ the \code{ts_} prefix.
 Add mutations to the given tree sequence
 }
 \examples{
-\dontrun{
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+
+ts <- ts_load(model)
 ts_mutate <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 42)
 }
 

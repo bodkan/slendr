@@ -9,7 +9,7 @@ ts_segregating(
   sample_sets,
   mode = c("site", "branch", "node"),
   windows = NULL,
-  span_normalise = TRUE
+  span_normalise = FALSE
 )
 }
 \arguments{
@@ -35,4 +35,20 @@ vector of diversity values (one for each window)
 }
 \description{
 Calculate the density of segregating sites for the given sets of individuals
+}
+\examples{
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+
+# collect sampled individuals from all populations in a list
+sample_sets <- ts_samples(ts) \%>\%
+  split(., .$pop) \%>\%
+  lapply(function(pop) pop$name)
+
+ts_segregating(ts, sample_sets)
+}
+
 }

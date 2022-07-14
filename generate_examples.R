@@ -1,0 +1,36 @@
+library(slendr)
+
+set.seed(314159)
+
+# create the ancestor of everyone and a chimpanzee outgroup
+# (we set both N = 1 to reduce the computational time for this model)
+chimp <- population("CH", time = 6.5e6, N = 10)
+
+# two populations of anatomically modern humans: Africans and Europeans
+afr <- population("AFR", parent = chimp, time = 6e6, N = 10)
+eur <- population("EUR", parent = afr, time = 70e3, N = 50)
+
+# Neanderthal population splitting at 600 ky ago from modern humans
+# (becomes extinct by 40 ky ago)
+nea <- population("NEA", parent = afr, time = 600e3, N = 10, remove = 40e3)
+
+# 3% Neanderthal introgression into Europeans between 55-50 ky ago
+gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 55000, end = 45000)
+
+model <- compile_model(
+  populations = list(chimp, nea, afr, eur), gene_flow = gf,
+  generation_time = 30,
+  path = "inst/extdata/models/introgression"
+)
+
+nea_samples <- schedule_sampling(model, times = c(70000, 40000), list(nea, 1))
+present_samples <- schedule_sampling(model, times = 0, list(chimp, 1), list(afr, 5), list(eur, 5))
+
+slim(
+  model, sequence_length = 1e6, recombination_rate = 1e-8,
+  sampling = rbind(nea_samples, present_samples),
+  random_seed = 314159
+)
+
+ts <- ts_load(model, simplify = TRUE)
+ts_save(ts, file = "inst/extdata/models/introgression/output_slim.trees")

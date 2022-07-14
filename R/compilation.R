@@ -313,7 +313,7 @@ read_model <- function(path) {
 #' @export
 #'
 #' @examples
-#' \dontrun{ # run a simulation using the SLiM back end from a compiled slendr model object
+#' \donttest{ # run a simulation using the SLiM back end from a compiled slendr model object
 #' slim(model, sequence_length = 100e6, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
 #' }
 slim <- function(model, sequence_length, recombination_rate,
@@ -459,7 +459,7 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @export
 #'
 #' @examples
-#' \dontrun{ # run a simulation using the msprime back end from a compiled slendr model object
+#' \donttest{ # run a simulation using the msprime back end from a compiled slendr model object
 #' msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
 #' }
 msprime <- function(model, sequence_length, recombination_rate,

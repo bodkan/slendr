@@ -37,11 +37,18 @@ Standard phylogenetic tree object implemented by the R package ape
 Convert a tree in the tree sequence to an object of the class \code{phylo}
 }
 \examples{
-\dontrun{ # extract a 42nd tree from a given tree sequence, return ape object
-tree <- ts_phylo(ts, i = 42, mode = "index")
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+
+ts <- ts_load(model, simplify = TRUE)
+
+# extract a 42nd tree from a given tree sequence, return ape object
+tree <- ts_phylo(ts, i = 42, mode = "index", quiet = TRUE)
 
 # extract a tree at a 42th basepair in the given tree sequence
-tree <- ts_phylo(ts, i = 42, mode = "position")
+tree <- ts_phylo(ts, i = 42, mode = "position", quiet = TRUE)
 }
 
 }

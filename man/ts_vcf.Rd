@@ -22,9 +22,3 @@ No return value, called for side effects
 \description{
 Save genotypes from the tree sequence as a VCF file
 }
-\examples{
-\dontrun{ # save a VCF file from a given tree sequence object ts
-ts_vcf(ts, path = "/path/to/target/output.vcf.gz")
-}
-
-}

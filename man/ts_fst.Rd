@@ -49,19 +49,31 @@ options of the \code{mode} argument, please see the tskit documentation at
 \url{https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode}.
 }
 \examples{
-\dontrun{ # compute F_st between two sets of individuals in a given tree sequence ts
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+
+# compute F_st between two sets of individuals in a given tree sequence ts
 ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
                               eur = c("EUR_1", "EUR_2")))
 }
 
-\dontrun{ #' # collect sampled individuals from all populations in a list
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+
+# collect sampled individuals from all populations in a list
 sample_sets <- ts_samples(ts) \%>\%
   split(., .$pop) \%>\%
   lapply(function(pop) pop$name)
 
 # compute the divergence between individuals from each sample set (list of
 # individual names generated in the previous step)
-ts_divergence(ts, sample_sets) \%>\% dplyr::arrange(divergence)
+ts_divergence(ts, sample_sets) \%>\% .[order(.$divergence), ]
 }
 
 }

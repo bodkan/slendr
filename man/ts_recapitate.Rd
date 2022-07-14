@@ -33,8 +33,14 @@ the \code{ts_} prefix.
 Recapitate the tree sequence
 }
 \examples{
-\dontrun{
-ts_rec <- ts_recapitate(ts, recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
+\donttest{
+# prepare slendr's Python environment and load an example model configuration
+setup_env()
+model <- read_example("introgression")
+
+ts <-
+  ts_load(model) \%>\%
+  ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 }
 
 }
