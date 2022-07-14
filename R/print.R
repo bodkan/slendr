@@ -13,6 +13,8 @@
 #'   \code{slendr_map}, \code{slendr_region}, or \code{slendr_table})
 #' @param ... Additional arguments passed to \code{print}
 #'
+#' @return No return value, called for printing only
+#'
 #' @export
 print.slendr_pop <- function(x, ...) {
   print_header_info(x)

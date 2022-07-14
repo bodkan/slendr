@@ -676,8 +676,7 @@ order_pops <- function(populations, direction) {
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
 #'
-#' @return Returns the value of a function (\code{rhs}) applied to the pipe's
-#'   first argument (\code{lhs}) according to the pipe's magrittr implementation
+#' @noRd
 #'
 #' @name %>%
 #' @rdname pipe
