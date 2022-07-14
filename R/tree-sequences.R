@@ -1285,7 +1285,6 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @return Python-reticulate-based object of the class tskit.trees.Tree
 #'
 #' @examples
-#' \donttest{
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
 #' if (check_env()) {

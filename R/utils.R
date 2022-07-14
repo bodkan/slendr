@@ -11,9 +11,13 @@
 #' @export
 read_example <- function(name = c("introgression", "space")) {
   name <- match.arg(name)
-  path <- file.path("extdata/models/", name)
-  model <- read_model(system.file(path, package = "slendr", mustWork = TRUE))
-  model
+
+  bundled_path <- system.file(file.path("extdata/models/", name), package = "slendr", mustWork = TRUE)
+
+  new_path <- file.path(tempdir(), "introgression")
+  file.copy(bundled_path, new_path, recursive = TRUE)
+
+  read_model(new_path)
 }
 
 # Internal implementation of expand_range() and shrink_range() functions

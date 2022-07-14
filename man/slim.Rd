@@ -83,6 +83,9 @@ function during the compilation of a slendr demographic model.
 # the example will only run on a machine where the SLiM simulator is present
 if (all(Sys.which("slim") != "")) {
 
+# load an example model
+model <- read_example("introgression")
+
 # run a simulation using the SLiM back end from a compiled slendr model object
 slim(model, sequence_length = 1e4, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
 

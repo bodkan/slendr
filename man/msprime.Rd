@@ -53,6 +53,9 @@ slendr demographic model.
 # (this can be created by calling `setup_env()`)
 if (check_env()) {
 
+# load an example model
+model <- read_example("introgression")
+
 # run a simulation using the msprime back end from a compiled slendr model object
 msprime(model, sequence_length = 1e5, recombination_rate = 1e-8, verbose = TRUE)
 
