@@ -465,28 +465,43 @@ slim <- function(model, sequence_length, recombination_rate,
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
 #' @param random_seed Random seed (if missing, SLiM's own seed will be used)
-#' @param verbose Write the SLiM output log to the console (default
-#'   \code{FALSE})?
+#' @param verbose Write the output log to the console (default \code{FALSE})?
 #' @param save_sampling Save the sampling schedule table together with other
 #'   output files? If \code{FALSE} (default), the sampling table will be saved
 #'   to a temporary directory.
+#' @param debug Write msprime's debug log to the console (default \code{FALSE})?
 #'
 #' @return No return value. Simulation output is saved to disk in the form of
 #'   a tree-sequence file.
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' }
 #' # load an example model
 #' model <- read_example("introgression")
 #'
-#' # run a simulation using the msprime back end from a compiled slendr model object
-#' msprime(model, sequence_length = 1e5, recombination_rate = 0, verbose = FALSE)
+#' # afr and eur objects would normally be created before slendr model compilation,
+#' # but here we take them out of the model object already compiled for this
+#' # example (in a standard slendr simulation pipeline, this wouldn't be necessary)
+#' afr <- model$populations[["AFR"]]
+#' eur <- model$populations[["EUR"]]
+#' chimp <- model$populations[["CH"]]
 #'
+#' # schedule the sampling of a couple of ancient and present-day individuals
+#' # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
+#' modern_samples <- schedule_sampling(model, times = 0, list(afr, 10), list(eur, 100), list(chimp, 1))
+#' ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000), list(eur, 1))
+#'
+#' # sampling schedules are just data frames and can be merged easily
+#' samples <- rbind(modern_samples, ancient_samples)
+#'
+#' # run a simulation using the msprime back end from a compiled slendr model object
+#' msprime(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, verbose = TRUE)
 #' @export
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
                     sampling = NULL, verbose = FALSE, random_seed = NULL,
-                    save_sampling = TRUE) {
+                    save_sampling = TRUE, debug = FALSE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -524,7 +539,8 @@ msprime <- function(model, sequence_length, recombination_rate,
     sequence_length,
     recombination_rate,
     sampling,
-    ifelse(verbose, "--verbose", "")
+    ifelse(verbose, "--verbose", ""),
+    ifelse(debug, "--debug", "")
   )
 
   if (verbose) {
