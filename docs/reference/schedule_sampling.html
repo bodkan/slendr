@@ -157,6 +157,27 @@ points lie within a population spatial boundary at that particular moment of
 time.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span>, slim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># load an example model</span></span>
+<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># afr and eur objects would normally be created before slendr model compilation,</span></span>
+<span class="r-in"><span class="co"># but here we take them out of the model object already compiled for this</span></span>
+<span class="r-in"><span class="co"># example (in a standard slendr simulation pipeline, this wouldn't be necessary)</span></span>
+<span class="r-in"><span class="va">afr</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"AFR"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">eur</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"EUR"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># schedule the recording of 10 African and 100 European individuals from a</span></span>
+<span class="r-in"><span class="co"># given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)</span></span>
+<span class="r-in"><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu">schedule_sampling</span><span class="op">(</span></span>
+<span class="r-in">  <span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20000</span>, <span class="fl">10000</span>, <span class="fl">5000</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">100</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">)</span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

@@ -46,5 +46,7 @@ ts <- ts_load(model, simplify = TRUE)
 
 # extract the first tree in the tree sequence and draw it
 tree <- ts_tree(ts, i = 1)
-ts_draw(tree)
+
+# ts_draw accepts various optional arguments of tskit.Tree.draw_svg
+ts_draw(tree, time_scale = "rank")
 }

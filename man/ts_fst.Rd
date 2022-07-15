@@ -2,18 +2,9 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_fst}
 \alias{ts_fst}
-\alias{ts_divergence}
 \title{Calculate pairwise statistics between sets of individuals}
 \usage{
 ts_fst(
-  ts,
-  sample_sets,
-  mode = c("site", "branch", "node"),
-  windows = NULL,
-  span_normalise = TRUE
-)
-
-ts_divergence(
   ts,
   sample_sets,
   mode = c("site", "branch", "node"),
@@ -39,9 +30,6 @@ TRUE, see the tskit documentation for more detail.}
 \value{
 For each pairwise calculation, either a single Fst value or a vector
 of Fst values (one for each window)
-
-For each pairwise calculation, either a single divergence value or a
-vector of divergence values (one for each window)
 }
 \description{
 For a discussion on the difference between "site", "branch", and "node"
@@ -55,25 +43,9 @@ options of the \code{mode} argument, please see the tskit documentation at
 model <- read_example("introgression")
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 
 # compute F_st between two sets of individuals in a given tree sequence ts
 ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
                               eur = c("EUR_1", "EUR_2")))
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
-}
-# load an example model with an already simulated tree sequence
-model <- read_example("introgression")
-
-# load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
-
-# collect sampled individuals from all populations in a list
-sample_sets <- ts_samples(ts) \%>\%
-  split(., .$pop) \%>\%
-  lapply(function(pop) pop$name)
-
-# compute the divergence between individuals from each sample set (list of
-# individual names generated in the previous step)
-ts_divergence(ts, sample_sets) \%>\% .[order(.$divergence), ]
 }

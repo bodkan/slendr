@@ -33,7 +33,7 @@ useful information from the model configuration data.
 model <- read_example("introgression")
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, simplify = TRUE)
+ts <- ts_load(model, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 
 # get the 'raw' tskit table of individuals
 ts_table(ts, "individuals")

@@ -94,7 +94,7 @@ ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2",
 
 # load tree sequence, recapitate it and simplify it
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
-              recombination_rate = 1e-8, Ne = 10000)
+              recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 
 # load tree sequence, recapitate it, simplify it and overlay neutral mutations
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 42,

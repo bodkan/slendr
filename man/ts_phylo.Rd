@@ -45,9 +45,10 @@ model <- read_example("introgression")
 # load the tree-sequence object from disk
 ts <- ts_load(model, simplify = TRUE)
 
-# extract a 42nd tree from a given tree sequence, return ape object
-tree <- ts_phylo(ts, i = 42, mode = "index", quiet = TRUE)
+# extract the 1st tree from a given tree sequence, return ape object
+tree <- ts_phylo(ts, i = 1, mode = "index", quiet = TRUE)
+tree
 
-# extract a tree at a 42th basepair in the given tree sequence
+# extract the tree at a 42th basepair in the given tree sequence
 tree <- ts_phylo(ts, i = 42, mode = "position", quiet = TRUE)
 }

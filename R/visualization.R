@@ -212,7 +212,7 @@ objects are specified", call. = FALSE)
 #' # it as an "admixture graph"
 #' model <- read_example("introgression")
 #'
-#' plot_model(model, log = TRUE)
+#' plot_model(model, sizes = FALSE, log = TRUE)
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations

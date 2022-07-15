@@ -67,7 +67,7 @@
 #'
 #' # load tree sequence, recapitate it and simplify it
 #' ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
-#'               recombination_rate = 1e-8, Ne = 10000)
+#'               recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 #'
 #' # load tree sequence, recapitate it, simplify it and overlay neutral mutations
 #' ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
@@ -550,7 +550,7 @@ ts_metadata <- function(ts) {
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model)
+#' ts <- ts_load(model, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # extract the genotype matrix (this could take  a long time consume lots
 #' # of memory!)
@@ -593,7 +593,7 @@ ts_genotypes <- function(ts) {
     dplyr::select(pos, dplyr::everything())
 }
 
-#' Extract genotypes from the tree sequence in the EIGENSTRAT format
+#' Convert genotypes to the EIGENSTRAT file format
 #'
 #' EIGENSTRAT data produced by this function can be used by the admixr R package
 #' (<https://bodkan.net/admixr/>).
@@ -738,10 +738,11 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' # load the tree-sequence object from disk
 #' ts <- ts_load(model, simplify = TRUE)
 #'
-#' # extract a 42nd tree from a given tree sequence, return ape object
-#' tree <- ts_phylo(ts, i = 42, mode = "index", quiet = TRUE)
+#' # extract the 1st tree from a given tree sequence, return ape object
+#' tree <- ts_phylo(ts, i = 1, mode = "index", quiet = TRUE)
+#' tree
 #'
-#' # extract a tree at a 42th basepair in the given tree sequence
+#' # extract the tree at a 42th basepair in the given tree sequence
 #' tree <- ts_phylo(ts, i = 42, mode = "position", quiet = TRUE)
 #' @export
 ts_phylo <- function(ts, i, mode = c("index", "position"),
@@ -1027,7 +1028,7 @@ ts_nodes <- function(x, sf = TRUE) {
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model, simplify = TRUE)
+#' ts <- ts_load(model, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # get the 'raw' tskit table of individuals
 #' ts_table(ts, "individuals")
@@ -1263,7 +1264,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' ts <- ts_load(model, simplify = TRUE)
 #'
 #' # find the complete descendancy information for a given individual
-#' ts_descendants(ts, x = 1103, verbose = TRUE)
+#' #ts_descendants(ts, x = 1103, verbose = TRUE)
 #' @export
 ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
   check_ts_class(ts)
@@ -1426,7 +1427,9 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #'
 #' # extract the first tree in the tree sequence and draw it
 #' tree <- ts_tree(ts, i = 1)
-#' ts_draw(tree)
+#'
+#' # ts_draw accepts various optional arguments of tskit.Tree.draw_svg
+#' ts_draw(tree, time_scale = "rank")
 #' @export
 ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
                     sampled_only = TRUE, ...) {
@@ -1522,21 +1525,6 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 }
 
 #' @rdname ts_f4ratio
-#'
-#' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
-#' }
-#' # load an example model with an already simulated tree sequence
-#' model <- read_example("introgression")
-#'
-#' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
-#'
-#' # calculate f2 for two individuals in a previously loaded tree sequence
-#' ts_f2(ts, A = "AFR_1", B = "EUR_1")
-#'
-#' # calculate f2 for two sets of individuals
-#' ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
 #' @export
 ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -1546,23 +1534,6 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 }
 
 #' @rdname ts_f4ratio
-#'
-#' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
-#' }
-#' # load an example model with an already simulated tree sequence
-#' model <- read_example("introgression")
-#'
-#' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
-#'
-#' # calculate f2 for two individuals in a previously loaded tree sequence
-#' ts_f3(ts, A = "EUR_1", B = "AFR_1", C = "NEA_1")
-#'
-#' # calculate f2 for two sets of individuals
-#' ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
-#'           B = c("NEA_1", "NEA_2"),
-#'           C = "CH_1")
 #' @export
 ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -1572,24 +1543,6 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
 }
 
 #' @rdname ts_f4ratio
-#'
-#' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
-#' }
-#' # load an example model with an already simulated tree sequence
-#' model <- read_example("introgression")
-#'
-#' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
-#'
-#' # calculate f4 for single individuals
-#' ts_f4(ts, W = "EUR_1", X = "AFR_1", Y = "NEA_1", Z = "CH_1")
-#'
-#' # calculate f4 for sets of individuals
-#' ts_f4(ts, W = c("EUR_1", "EUR_2"),
-#'           X = c("AFR_1", "AFR_2"),
-#'           Y = "NEA_1",
-#'           Z = "CH_1")
 #' @export
 ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -1620,11 +1573,30 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 #'
-#' # calculate f2 for two samples in a previously loaded tree sequence
-#' ts_f4ratio(ts, X = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
-#'                A = "NEA_1", B = "NEA_2", C = "AFR_1", O = "CH_1")
+#' # calculate f2 for two individuals in a previously loaded tree sequence
+#' ts_f2(ts, A = "AFR_1", B = "EUR_1")
+#'
+#' # calculate f2 for two sets of individuals
+#' ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
+#'
+#' # calculate f3 for two individuals in a previously loaded tree sequence
+#' ts_f3(ts, A = "EUR_1", B = "AFR_1", C = "NEA_1")
+#'
+#' # calculate f3 for two sets of individuals
+#' ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
+#'           B = c("NEA_1", "NEA_2"),
+#'           C = "CH_1")
+#'
+#' # calculate f4 for single individuals
+#' ts_f4(ts, W = "EUR_1", X = "AFR_1", Y = "NEA_1", Z = "CH_1")
+#'
+#' # calculate f4 for sets of individuals
+#' ts_f4(ts, W = c("EUR_1", "EUR_2"),
+#'           X = c("AFR_1", "AFR_2"),
+#'           Y = "NEA_1",
+#'           Z = "CH_1")
 #' @export
 ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch"), span_normalise = TRUE) {
   mode <- match.arg(mode)
@@ -1715,7 +1687,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # compute F_st between two sets of individuals in a given tree sequence ts
 #' ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
@@ -1732,8 +1704,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 
 #' Calculate pairwise divergence between sets of individuals
 #'
-#' @rdname ts_fst
-#'
+#' @inheritParams ts_fst
 #' @return For each pairwise calculation, either a single divergence value or a
 #'   vector of divergence values (one for each window)
 #'
@@ -1744,7 +1715,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
@@ -1820,7 +1791,7 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
@@ -1853,7 +1824,7 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
@@ -1898,11 +1869,10 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # calculate Tajima's D for given sets of individuals in a tree sequence ts
-#' ts_tajima(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5"),
-#'                    eur = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
+#' ts_tajima(ts, list(eur = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
 #'                    nea = c("NEA_1", "NEA_2")))
 #' @export
 ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
@@ -1947,10 +1917,12 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' model <- read_example("introgression")
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-7, random_seed = 42)
 #'
-#' # calculate Tajima's D for given sets of individuals in a tree sequence ts
-#' ts_afs(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5")))
+#' samples <- ts_samples(ts) %>% .[.$pop %in% c("AFR", "EUR"), ]
+#'
+#' # compute AFS for the given set of individuals
+#' ts_afs(ts, sample_sets = list(samples$name))
 #' @export
 ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = FALSE,

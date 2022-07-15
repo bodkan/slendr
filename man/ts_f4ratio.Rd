@@ -76,35 +76,21 @@ Calculate the f2, f3, f4, and f4-ratio statistics
 model <- read_example("introgression")
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 
 # calculate f2 for two individuals in a previously loaded tree sequence
 ts_f2(ts, A = "AFR_1", B = "EUR_1")
 
 # calculate f2 for two sets of individuals
 ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
-}
-# load an example model with an already simulated tree sequence
-model <- read_example("introgression")
 
-# load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
-
-# calculate f2 for two individuals in a previously loaded tree sequence
+# calculate f3 for two individuals in a previously loaded tree sequence
 ts_f3(ts, A = "EUR_1", B = "AFR_1", C = "NEA_1")
 
-# calculate f2 for two sets of individuals
+# calculate f3 for two sets of individuals
 ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
           B = c("NEA_1", "NEA_2"),
           C = "CH_1")
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
-}
-# load an example model with an already simulated tree sequence
-model <- read_example("introgression")
-
-# load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # calculate f4 for single individuals
 ts_f4(ts, W = "EUR_1", X = "AFR_1", Y = "NEA_1", Z = "CH_1")
@@ -114,15 +100,4 @@ ts_f4(ts, W = c("EUR_1", "EUR_2"),
           X = c("AFR_1", "AFR_2"),
           Y = "NEA_1",
           Z = "CH_1")
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
-}
-# load an example model with an already simulated tree sequence
-model <- read_example("introgression")
-
-# load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
-
-# calculate f2 for two samples in a previously loaded tree sequence
-ts_f4ratio(ts, X = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
-               A = "NEA_1", B = "NEA_2", C = "AFR_1", O = "CH_1")
 }

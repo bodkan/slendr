@@ -29,5 +29,5 @@ Plot demographic history encoded in a slendr model
 # it as an "admixture graph"
 model <- read_example("introgression")
 
-plot_model(model, log = TRUE)
+plot_model(model, sizes = FALSE, log = TRUE)
 }

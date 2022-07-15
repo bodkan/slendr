@@ -140,16 +140,16 @@ way down to the leaves of the tree sequence</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present </span>
-<span class="co"># load an example model with an already simulated tree sequence</span>
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span>
-
-<span class="co"># load the tree-sequence object from disk</span>
-<span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># find the complete descendancy information for a given individual</span>
-<span class="fu">ts_descendants</span><span class="op">(</span><span class="va">ts</span>, x <span class="op">=</span> <span class="fl">1103</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># load an example model with an already simulated tree sequence</span></span>
+<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># load the tree-sequence object from disk</span></span>
+<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># find the complete descendancy information for a given individual</span></span>
+<span class="r-in"><span class="co">#ts_descendants(ts, x = 1103, verbose = TRUE)</span></span>
 </code></pre></div>
     </div>
   </div>

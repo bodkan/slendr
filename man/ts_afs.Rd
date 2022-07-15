@@ -52,8 +52,10 @@ please see the tskit manual at
 model <- read_example("introgression")
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-7, random_seed = 42)
 
-# calculate Tajima's D for given sets of individuals in a tree sequence ts
-ts_afs(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5")))
+samples <- ts_samples(ts) \%>\% .[.$pop \%in\% c("AFR", "EUR"), ]
+
+# compute AFS for the given set of individuals
+ts_afs(ts, sample_sets = list(samples$name))
 }

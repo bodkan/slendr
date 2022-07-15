@@ -37,5 +37,5 @@ model <- read_example("introgression")
 ts <- ts_load(model, simplify = TRUE)
 
 # find the complete descendancy information for a given individual
-ts_descendants(ts, x = 1103, verbose = TRUE)
+#ts_descendants(ts, x = 1103, verbose = TRUE)
 }

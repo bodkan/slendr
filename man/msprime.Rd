@@ -73,4 +73,6 @@ samples <- rbind(modern_samples, ancient_samples)
 
 # run a simulation using the msprime back end from a compiled slendr model object
 msprime(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, verbose = TRUE)
+
+\dontshow{unlink(file.path(model$path, "output_msprime.trees")) # delete temporary tree sequence}
 }

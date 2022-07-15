@@ -123,7 +123,8 @@ slendr demographic model.</p>
   sampling <span class="op">=</span> <span class="cn">NULL</span>,
   verbose <span class="op">=</span> <span class="cn">FALSE</span>,
   random_seed <span class="op">=</span> <span class="cn">NULL</span>,
-  save_sampling <span class="op">=</span> <span class="cn">TRUE</span>
+  save_sampling <span class="op">=</span> <span class="cn">TRUE</span>,
+  debug <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -145,14 +146,15 @@ function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
 <dt>verbose</dt>
-<dd><p>Write the SLiM output log to the console (default
-<code>FALSE</code>)?</p></dd>
+<dd><p>Write the output log to the console (default <code>FALSE</code>)?</p></dd>
 <dt>random_seed</dt>
 <dd><p>Random seed (if missing, SLiM's own seed will be used)</p></dd>
 <dt>save_sampling</dt>
 <dd><p>Save the sampling schedule table together with other
 output files? If <code>FALSE</code> (default), the sampling table will be saved
 to a temporary directory.</p></dd>
+<dt>debug</dt>
+<dd><p>Write msprime's debug log to the console (default <code>FALSE</code>)?</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -162,13 +164,45 @@ a tree-sequence file.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present </span>
-<span class="co"># load an example model</span>
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span>
-
-<span class="co"># run a simulation using the msprime back end from a compiled slendr model object</span>
-<span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># load an example model</span></span>
+<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># afr and eur objects would normally be created before slendr model compilation,</span></span>
+<span class="r-in"><span class="co"># but here we take them out of the model object already compiled for this</span></span>
+<span class="r-in"><span class="co"># example (in a standard slendr simulation pipeline, this wouldn't be necessary)</span></span>
+<span class="r-in"><span class="va">afr</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"AFR"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">eur</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"EUR"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">chimp</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"CH"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># schedule the sampling of a couple of ancient and present-day individuals</span></span>
+<span class="r-in"><span class="co"># given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)</span></span>
+<span class="r-in"><span class="va">modern_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">ancient_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40000</span>, <span class="fl">30000</span>, <span class="fl">20000</span>, <span class="fl">10000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># sampling schedules are just data frames and can be merged easily</span></span>
+<span class="r-in"><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">modern_samples</span>, <span class="va">ancient_samples</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># run a simulation using the msprime back end from a compiled slendr model object</span></span>
+<span class="r-in"><span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, sampling <span class="op">=</span> <span class="va">samples</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> msprime command to be executed:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> python3 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEa0xoU/introgression/script.py \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEa0xoU/introgression \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEa0xoU/introgression/output_msprime.trees \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --sequence-length 100000 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --recombination-rate 0 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEa0xoU/introgression/output_msprime_sampling.tsv \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --verbose \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">path</span>, <span class="st">"output_msprime.trees"</span><span class="op">)</span><span class="op">)</span> <span class="co"># delete temporary tree sequence</span></span>
 </code></pre></div>
     </div>
   </div>

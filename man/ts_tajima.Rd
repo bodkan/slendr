@@ -36,10 +36,9 @@ For a discussion on the difference between "site" and "branch" options of the
 model <- read_example("introgression")
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 
 # calculate Tajima's D for given sets of individuals in a tree sequence ts
-ts_tajima(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5"),
-                   eur = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
+ts_tajima(ts, list(eur = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
                    nea = c("NEA_1", "NEA_2")))
 }

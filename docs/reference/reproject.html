@@ -157,6 +157,24 @@ frame columns with spatial coordinates</p></dd>
     <p>Data.frame with converted two-dimensional coordinates given as input</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">lon_lat_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">0</span>, <span class="fl">15</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">40</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="fu">reproject</span><span class="op">(</span></span>
+<span class="r-in">  from <span class="op">=</span> <span class="st">"epsg:4326"</span>,</span>
+<span class="r-in">  to <span class="op">=</span> <span class="st">"epsg:3035"</span>,</span>
+<span class="r-in">  coords <span class="op">=</span> <span class="va">lon_lat_df</span>,</span>
+<span class="r-in">  add <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># add converted [lon,lat] coordinates as a new column</span></span>
+<span class="r-in"><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       x     y     newx      newy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    30    60 5<span style="text-decoration: underline;">422</span>493.  4<span style="text-decoration: underline;">256</span>803.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     0    40 3<span style="text-decoration: underline;">465</span>349.  1<span style="text-decoration: underline;">934</span>879.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    15    10 4<span style="text-decoration: underline;">907</span>297. -<span style="color: #BB0000;">1</span><span style="color: #BB0000; text-decoration: underline;">328</span><span style="color: #BB0000;">914.</span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

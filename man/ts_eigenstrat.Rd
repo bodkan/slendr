@@ -2,7 +2,7 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_eigenstrat}
 \alias{ts_eigenstrat}
-\title{Extract genotypes from the tree sequence in the EIGENSTRAT format}
+\title{Convert genotypes to the EIGENSTRAT file format}
 \usage{
 ts_eigenstrat(ts, prefix, chrom = "chr1", outgroup = NULL)
 }

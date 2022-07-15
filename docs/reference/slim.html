@@ -193,14 +193,78 @@ a tree-sequence file.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span>, slim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span>
-
-<span class="co"># load an example model</span>
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span>
-
-<span class="co"># run a simulation using the SLiM back end from a compiled slendr model object</span>
-<span class="fu">slim</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span>, slim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># load an example model</span></span>
+<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># afr and eur objects would normally be created before slendr model compilation,</span></span>
+<span class="r-in"><span class="co"># but here we take them out of the model object already compiled for this</span></span>
+<span class="r-in"><span class="co"># example (in a standard slendr simulation pipeline, this wouldn't be necessary)</span></span>
+<span class="r-in"><span class="va">afr</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"AFR"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">eur</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"EUR"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">chimp</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"CH"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># schedule the sampling of a couple of ancient and present-day individuals</span></span>
+<span class="r-in"><span class="co"># given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)</span></span>
+<span class="r-in"><span class="va">modern_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">chimp</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">ancient_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30000</span>, <span class="fl">20000</span>, <span class="fl">10000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># sampling schedules are just data frames and can be merged easily</span></span>
+<span class="r-in"><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">modern_samples</span>, <span class="va">ancient_samples</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># run a simulation using the SLiM back end from a compiled slendr model object</span></span>
+<span class="r-in"><span class="fu">slim</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, sampling <span class="op">=</span> <span class="va">samples</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SLiM command to be executed:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slim   \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d 'SAMPLES="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEa0xoU/introgression/output_slim_sampling.tsv"' \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d 'MODEL="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEa0xoU/introgression"' \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d 'OUTPUT="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEa0xoU/introgression/output"' \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d SPATIAL=F \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d SEQUENCE_LENGTH=1e+05 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d RECOMB_RATE=0 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d BURNIN_LENGTH=0 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d SIMULATION_LENGTH=216667 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d SAVE_LOCATIONS=F \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d COALESCENT_ONLY=T \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d MAX_ATTEMPTS=1 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEa0xoU/introgression/script.slim </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // Initial random seed:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2189503715839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // RunInitializeCallbacks():</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SEED: 2189503715839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> initializeSLiMOptions(keepPedigrees = T);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> initializeTreeSeq();</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> initializeMutationType(0, 0.5, "f", 0);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> initializeGenomicElementType(1, m0, 1);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> initializeGenomicElement(g1, 0, 99999);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> initializeMutationRate(0);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> initializeRecombinationRate(0);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // Starting run at generation &lt;start&gt;:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 1: starting the simulation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 1: creating CH(p0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 16668: split of AFR(p1) from CH(p0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 196668: split of NEA(p2) from AFR(p1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 214334: split of EUR(p3) from AFR(p1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 214834: geneflow NEA(p2) -&gt; EUR(p3) (8.98204e-05% over 334 generations)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 215168: geneflow NEA(p2) -&gt; EUR(p3) set to 0%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 215334: cleanup of NEA(p2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 215668: sampling 1 individuals of EUR(p3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216001: sampling 1 individuals of EUR(p3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216334: sampling 1 individuals of EUR(p3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: sampling 5 individuals of AFR(p1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: sampling 1 individuals of CH(p0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: sampling 5 individuals of EUR(p3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: saving the tree sequence output</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: simulation finished</span>
 </code></pre></div>
     </div>
   </div>

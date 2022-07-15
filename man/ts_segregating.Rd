@@ -43,7 +43,7 @@ Calculate the density of segregating sites for the given sets of individuals
 model <- read_example("introgression")
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 
 # collect sampled individuals from all populations in a list
 sample_sets <- ts_samples(ts) \%>\%

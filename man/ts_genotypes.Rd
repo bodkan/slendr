@@ -23,7 +23,7 @@ Extract genotype table from the tree sequence
 model <- read_example("introgression")
 
 # load the tree-sequence object from disk
-ts <- ts_load(model)
+ts <- ts_load(model, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 
 # extract the genotype matrix (this could take  a long time consume lots
 # of memory!)
