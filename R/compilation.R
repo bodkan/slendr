@@ -325,14 +325,14 @@ read_model <- function(path) {
 #'
 #' # schedule the sampling of a couple of ancient and present-day individuals
 #' # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-#' modern_samples <- schedule_sampling(model, times = 0, list(afr, 10), list(eur, 100), list(chimp, 1))
-#' ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000), list(eur, 1))
+#' modern_samples <- schedule_sampling(model, times = 0, list(afr, 5), list(eur, 5), list(chimp, 1))
+#' ancient_samples <- schedule_sampling(model, times = c(30000, 20000, 10000), list(eur, 1))
 #'
 #' # sampling schedules are just data frames and can be merged easily
 #' samples <- rbind(modern_samples, ancient_samples)
 #'
 #' # run a simulation using the SLiM back end from a compiled slendr model object
-#' slim(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, method = "batch", verbose = TRUE)
+#' slim(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, verbose = TRUE)
 #' @export
 slim <- function(model, sequence_length, recombination_rate,
                  output = file.path(model$path, "output"),
