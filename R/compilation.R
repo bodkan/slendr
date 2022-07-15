@@ -531,6 +531,7 @@ msprime <- function(model, sequence_length, recombination_rate,
     --sequence-length %d \\
     --recombination-rate %s \\
     %s \\
+    %s \\
     %s",
     script_path,
     ifelse(is.null(random_seed), "", paste("--seed", random_seed)),
