@@ -1296,7 +1296,7 @@ clear_env <- function(force = FALSE) {
 #' @return No return value, called for side effects
 #'
 #' @export
-check_env <- function() {
+check_env <- function(quiet = FALSE) {
   # if there is no Python available on user's system, don't immediately
   # jump to installing miniconda (let's deal with that in setup_env())
   orig_env <- Sys.getenv("RETICULATE_MINICONDA_ENABLED")
@@ -1330,22 +1330,27 @@ check_env <- function() {
   # else
   #   pylib_status <- "NOT LOADED \u274C"
 
-  cat("Summary of the currently active Python environment:\n\n")
-  cat("Python binary:", py$python, "\n")
-  cat("Python version:", py$version_string, "\n")
+  if (!quiet) {
+    cat("Summary of the currently active Python environment:\n\n")
+    cat("Python binary:", py$python, "\n")
+    cat("Python version:", py$version_string, "\n")
 
-  cat("\nslendr requirements:\n")
-  cat(" - tskit:", tskit_version, "\n")
-  cat(" - msprime:", msprime_version, "\n")
-  cat(" - pyslim:", pyslim_version, "\n")
-  # cat(" - slendr module:", pylib_status, "\n")
+    cat("\nslendr requirements:\n")
+    cat(" - tskit:", tskit_version, "\n")
+    cat(" - msprime:", msprime_version, "\n")
+    cat(" - pyslim:", pyslim_version, "\n")
+    # cat(" - slendr module:", pylib_status, "\n")
+  }
 
   if (!all(c(has_tskit, has_pyslim, has_msprime))) {
-    message("\nNote that due to the technical limitations of embedded Python,",
-            "if you\nwant to switch to another Python environment you will need",
-            "to restart\nyour R session first.\n")
-    return(invisible(FALSE))
+    return_value <- FALSE
+    if (!quiet)
+      cat("\nNote that due to the technical limitations of embedded Python,",
+          "if you\nwant to switch to another Python environment you will need",
+          "to restart\nyour R session first.\n")
     # reference: https://github.com/rstudio/reticulate/issues/27#issuecomment-512256949
   } else
-    return(invisible(TRUE))
+    return_value <- TRUE
+
+  return(invisible(return_value))
 }
