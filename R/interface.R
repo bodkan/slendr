@@ -1085,6 +1085,24 @@ area <- function(x) {
 #' @return Data frame with three columns: time of sampling, population to sample
 #'   from, how many individuals to sample
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE, slim = TRUE) # make sure dependencies are present
+#' }
+#' # load an example model
+#' model <- read_example("introgression")
+#'
+#' # afr and eur objects would normally be created before slendr model compilation,
+#' # but here we take them out of the model object already compiled for this
+#' # example (in a standard slendr simulation pipeline, this wouldn't be necessary)
+#' afr <- model$populations[["AFR"]]
+#' eur <- model$populations[["EUR"]]
+#'
+#' # schedule the recording of 10 African and 100 European individuals from a
+#' # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
+#' schedule <- schedule_sampling(
+#'   model, times = c(20000, 10000, 5000, 0),
+#'   list(afr, 10), list(eur, 100)
+#' )
 #' @export
 schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   if (!inherits(model, "slendr_model"))
@@ -1287,7 +1305,7 @@ clear_env <- function(force = FALSE) {
             "nothing to delete.", call. = FALSE)
 }
 
-#' Check that the active Python environment is correctly setup for slendr
+#' Check that the active Python environment is setup for slendr
 #'
 #' This function inspects the Python environment which has been activated by the
 #' reticulate package and prints the versions of all slendr Python dependencies
@@ -1295,6 +1313,10 @@ clear_env <- function(force = FALSE) {
 #'
 #' @return No return value, called for side effects
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' }
+#' check_env()
 #' @export
 check_env <- function(quiet = FALSE) {
   # if there is no Python available on user's system, don't immediately

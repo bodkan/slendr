@@ -310,19 +310,30 @@ read_model <- function(path) {
 #' @return No return value. Simulation output is saved to disk in the form of
 #'   a tree-sequence file.
 #'
-#' @export
-#'
 #' @examples
-#' # the example will only run on a machine where the SLiM simulator is present
-#' if (all(Sys.which("slim") != "")) {
-#'
+#' \dontshow{check_dependencies(python = TRUE, slim = TRUE) # make sure dependencies are present
+#' }
 #' # load an example model
 #' model <- read_example("introgression")
 #'
-#' # run a simulation using the SLiM back end from a compiled slendr model object
-#' slim(model, sequence_length = 1e4, recombination_rate = 1e-8, method = "batch", verbose = TRUE)
+#' # afr and eur objects would normally be created before slendr model compilation,
+#' # but here we take them out of the model object already compiled for this
+#' # example (in a standard slendr simulation pipeline, this wouldn't be necessary)
+#' afr <- model$populations[["AFR"]]
+#' eur <- model$populations[["EUR"]]
+#' chimp <- model$populations[["CH"]]
 #'
-#' }
+#' # schedule the sampling of a couple of ancient and present-day individuals
+#' # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
+#' modern_samples <- schedule_sampling(model, times = 0, list(afr, 10), list(eur, 100), list(chimp, 1))
+#' ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000), list(eur, 1))
+#'
+#' # sampling schedules are just data frames and can be merged easily
+#' samples <- rbind(modern_samples, ancient_samples)
+#'
+#' # run a simulation using the SLiM back end from a compiled slendr model object
+#' slim(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, method = "batch", verbose = TRUE)
+#' @export
 slim <- function(model, sequence_length, recombination_rate,
                  output = file.path(model$path, "output"),
                  spatial = !is.null(model$world),
@@ -463,20 +474,15 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @return No return value. Simulation output is saved to disk in the form of
 #'   a tree-sequence file.
 #'
-#' @export
-#'
 #' @examples
-#' # the example will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model
 #' model <- read_example("introgression")
 #'
 #' # run a simulation using the msprime back end from a compiled slendr model object
-#' msprime(model, sequence_length = 1e5, recombination_rate = 1e-8, verbose = TRUE)
+#' msprime(model, sequence_length = 1e5, recombination_rate = 0, verbose = FALSE)
 #'
-#' }
+#' @export
 msprime <- function(model, sequence_length, recombination_rate,
                     output = file.path(model$path, "output_msprime.trees"),
                     sampling = NULL, verbose = FALSE, random_seed = NULL,

@@ -34,6 +34,17 @@ the \code{sf} class unless \code{spatial = FALSE}. See
 package and the ways in which spatial data can be processed, analysed, and
 visualised.
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model, simplify = TRUE)
+
+# extract an annotated table with (spatio-)temporal node information
+ts_nodes(ts)
+}
 \seealso{
 \code{\link{ts_table}} for accessing raw tree sequence tables
 without added metadata annotation. See also \code{\link{ts_ancestors}} to

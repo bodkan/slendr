@@ -42,6 +42,15 @@ navbar:
       href: https://twitter.com/dr_bodkan
 
 reference:
+  - title: Compiling and running population genetic models
+    contents:
+    - slim
+    - msprime
+    - compile_model
+    - read_model
+    - schedule_sampling
+    - read_example
+
   - title: Installation and configuration of Python dependencies
     contents:
     - setup_env
@@ -65,15 +74,6 @@ reference:
     contents:
     - gene_flow
     - resize
-
-  - title: Compiling and running population genetic models
-    contents:
-    - slim
-    - msprime
-    - compile_model
-    - read_model
-    - schedule_sampling
-    - read_example
 
   - title: Manipulation of spatial objects
     contents:

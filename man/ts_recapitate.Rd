@@ -33,19 +33,13 @@ the \code{ts_} prefix.
 Recapitate the tree sequence
 }
 \examples{
-# the examples will only run when a dedicated Python environment is present
-# (this can be created by calling `setup_env()`)
-if (check_env(quiet = TRUE)) {
-
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
 ts <-
   ts_load(model) \%>\%
   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
-
-}
-
 }
 \seealso{
 \code{\link{ts_nodes}} for extracting useful information about

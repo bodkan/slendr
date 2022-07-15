@@ -16,3 +16,15 @@ of simulated individuals in columns
 \description{
 Extract genotype table from the tree sequence
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model)
+
+# extract the genotype matrix (this could take  a long time consume lots
+# of memory!)
+gts <- ts_genotypes(ts)
+}

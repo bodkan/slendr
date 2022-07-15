@@ -15,3 +15,14 @@ List of metadata fields extracted from the tree-sequence object
 \description{
 Extract list with tree sequence metadata saved by SLiM
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model)
+
+# extract the list of metadata information from the tree sequence
+ts_metadata(ts)
+}

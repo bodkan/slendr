@@ -27,3 +27,14 @@ way up to the root of the tree sequence
 \description{
 Extract (spatio-)temporal ancestral history for given nodes/individuals
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model, simplify = TRUE)
+
+# find the complete ancestry information for a given individual
+ts_ancestors(ts, "EUR_1", verbose = TRUE)
+}

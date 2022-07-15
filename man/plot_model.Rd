@@ -23,3 +23,11 @@ A ggplot2 object with the visualized slendr model
 \description{
 Plot demographic history encoded in a slendr model
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence and plot
+# it as an "admixture graph"
+model <- read_example("introgression")
+
+plot_model(model, log = TRUE)
+}

@@ -26,6 +26,26 @@ For further processing and analyses, the output of the function
 node and individual tables into one table and further annotates it with
 useful information from the model configuration data.
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model, simplify = TRUE)
+
+# get the 'raw' tskit table of individuals
+ts_table(ts, "individuals")
+
+# get the 'raw' tskit table of edges
+ts_table(ts, "edges")
+
+# get the 'raw' tskit table of nodes
+ts_table(ts, "nodes")
+
+# get the 'raw' tskit table of mutations
+ts_table(ts, "mutations")
+}
 \seealso{
 \code{\link{ts_nodes}} and \code{\link{ts_edges}} for accessing an
 annotated, more user-friendly and analysis-friendly tree-sequence table

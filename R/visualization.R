@@ -205,7 +205,14 @@ objects are specified", call. = FALSE)
 #'   over very long time-scales.
 #'
 #' @return A ggplot2 object with the visualized slendr model
-
+#'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence and plot
+#' # it as an "admixture graph"
+#' model <- read_example("introgression")
+#'
+#' plot_model(model, log = TRUE)
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations
@@ -620,4 +627,3 @@ get_graph_nodes <- function(edges) {
   ))
   nodes
 }
-

@@ -12,7 +12,8 @@ msprime(
   sampling = NULL,
   verbose = FALSE,
   random_seed = NULL,
-  save_sampling = TRUE
+  save_sampling = TRUE,
+  debug = FALSE
 )
 }
 \arguments{
@@ -31,14 +32,15 @@ function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
-\item{verbose}{Write the SLiM output log to the console (default
-\code{FALSE})?}
+\item{verbose}{Write the output log to the console (default \code{FALSE})?}
 
 \item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
 
 \item{save_sampling}{Save the sampling schedule table together with other
 output files? If \code{FALSE} (default), the sampling table will be saved
 to a temporary directory.}
+
+\item{debug}{Write msprime's debug log to the console (default \code{FALSE})?}
 }
 \value{
 No return value. Simulation output is saved to disk in the form of
@@ -49,15 +51,26 @@ This function will execute a built-in msprime script and run a compiled
 slendr demographic model.
 }
 \examples{
-# the example will only run when a dedicated Python environment is present
-# (this can be created by calling `setup_env()`)
-if (check_env(quiet = TRUE)) {
-
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model
 model <- read_example("introgression")
 
-# run a simulation using the msprime back end from a compiled slendr model object
-msprime(model, sequence_length = 1e5, recombination_rate = 1e-8, verbose = TRUE)
+# afr and eur objects would normally be created before slendr model compilation,
+# but here we take them out of the model object already compiled for this
+# example (in a standard slendr simulation pipeline, this wouldn't be necessary)
+afr <- model$populations[["AFR"]]
+eur <- model$populations[["EUR"]]
+chimp <- model$populations[["CH"]]
 
-}
+# schedule the sampling of a couple of ancient and present-day individuals
+# given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
+modern_samples <- schedule_sampling(model, times = 0, list(afr, 10), list(eur, 100), list(chimp, 1))
+ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000), list(eur, 1))
+
+# sampling schedules are just data frames and can be merged easily
+samples <- rbind(modern_samples, ancient_samples)
+
+# run a simulation using the msprime back end from a compiled slendr model object
+msprime(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, verbose = TRUE)
 }

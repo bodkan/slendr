@@ -20,18 +20,15 @@ TRUE or FALSE value if \code{return_failed = FALSE}, otherwise a vector of
 Check that all trees in the tree sequence are fully coalesced
 }
 \examples{
-# the examples will only run when a dedicated Python environment is present
-# (this can be created by calling `setup_env()`)
-if (check_env(quiet = TRUE)) {
-
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+# load the tree-sequence object from disk
+ts <- ts_load(model, simplify = TRUE)
 
 ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)
 
 # returns a vector of tree sequence segments which are not coalesced
 not_coalesced <- ts_coalesced(ts, return_failed = TRUE)
-}
 }

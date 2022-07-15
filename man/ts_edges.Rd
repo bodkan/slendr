@@ -20,3 +20,14 @@ start-end coordinates of edges across space
 Extract spatio-temporal edge annotation table from a given tree or tree
 sequence
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model, simplify = TRUE)
+
+# extract an annotated table with (spatio-)temporal edge information
+ts_edges(ts)
+}

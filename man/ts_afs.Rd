@@ -46,17 +46,13 @@ please see the tskit manual at
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum}
 }
 \examples{
-# the examples will only run when a dedicated Python environment is present
-# (this can be created by calling `setup_env()`)
-if (check_env(quiet = TRUE)) {
-
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
+# load the tree-sequence object from disk
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # calculate Tajima's D for given sets of individuals in a tree sequence ts
 ts_afs(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5")))
-}
-
 }

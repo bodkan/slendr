@@ -27,3 +27,14 @@ way down to the leaves of the tree sequence
 \description{
 Extract all descendants of a given tree-sequence node
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model, simplify = TRUE)
+
+# find the complete descendancy information for a given individual
+ts_descendants(ts, x = 1103, verbose = TRUE)
+}

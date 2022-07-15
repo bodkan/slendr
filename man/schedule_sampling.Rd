@@ -44,3 +44,22 @@ close to the sampling points given as possible, regardless of whether those
 points lie within a population spatial boundary at that particular moment of
 time.
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE, slim = TRUE) # make sure dependencies are present
+}
+# load an example model
+model <- read_example("introgression")
+
+# afr and eur objects would normally be created before slendr model compilation,
+# but here we take them out of the model object already compiled for this
+# example (in a standard slendr simulation pipeline, this wouldn't be necessary)
+afr <- model$populations[["AFR"]]
+eur <- model$populations[["EUR"]]
+
+# schedule the recording of 10 African and 100 European individuals from a
+# given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
+schedule <- schedule_sampling(
+  model, times = c(20000, 10000, 5000, 0),
+  list(afr, 10), list(eur, 100)
+)
+}

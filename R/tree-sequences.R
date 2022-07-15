@@ -46,10 +46,7 @@
 #'   map
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
@@ -74,9 +71,6 @@
 #' # load tree sequence, recapitate it, simplify it and overlay neutral mutations
 #' ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
 #'               recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
-#'
-#' }
-#'
 #' @export
 ts_load <- function(source = NULL, file = NULL,
                     recapitate = FALSE, simplify = FALSE, mutate = FALSE,
@@ -176,6 +170,17 @@ ts_load <- function(source = NULL, file = NULL,
 #'
 #' @return No return value, called for side effects
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree sequence
+#' ts <- ts_load(model)
+#'
+#' # save the tree-sequence object to a different location
+#' another_file <- paste(tempfile(), ".trees")
+#' ts_save(ts, another_file)
 #' @export
 ts_save <- function(ts, file) {
   check_ts_class(ts)
@@ -201,19 +206,13 @@ ts_save <- function(ts, file) {
 #'   map
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
 #' ts <-
 #'   ts_load(model) %>%
 #'   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
-#'
-#' }
-#'
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, random_seed = NULL) {
   check_ts_class(ts)
@@ -306,10 +305,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #'   map
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
@@ -324,9 +320,6 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #'   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
 #'                   "AFR_2", "EUR_1", "EUR_2")
 #' )
-#'
-#' }
-#'
 #' @export
 ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   check_ts_class(ts)
@@ -462,17 +455,12 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 #'   map
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
 #' ts <- ts_load(model)
 #' ts_mutate <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 42)
-#' }
-#'
 #' @export
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
                       keep_existing = TRUE, mut_type = NULL) {
@@ -524,6 +512,16 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 #'
 #' @return List of metadata fields extracted from the tree-sequence object
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model)
+#'
+#' # extract the list of metadata information from the tree sequence
+#' ts_metadata(ts)
 #' @export
 ts_metadata <- function(ts) {
   check_ts_class(ts)
@@ -539,6 +537,17 @@ ts_metadata <- function(ts) {
 #' @return Data frame object of the class \code{tibble} containing genotypes
 #'   of simulated individuals in columns
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model)
+#'
+#' # extract the genotype matrix (this could take  a long time consume lots
+#' # of memory!)
+#' gts <- ts_genotypes(ts)
 #' @export
 ts_genotypes <- function(ts) {
   if (!attr(ts, "mutated"))
@@ -711,14 +720,14 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #'   (which is a different thing from a \code{phylo} class node integer index).
 #' @param quiet Should ape's internal phylo validity test be printed out?
 #'
-#' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
+#' @return Standard phylogenetic tree object implemented by the R package ape
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, simplify = TRUE)
 #'
 #' # extract a 42nd tree from a given tree sequence, return ape object
@@ -726,10 +735,6 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #'
 #' # extract a tree at a 42th basepair in the given tree sequence
 #' tree <- ts_phylo(ts, i = 42, mode = "position", quiet = TRUE)
-#' }
-#'
-#' @return Standard phylogenetic tree object implemented by the R package ape
-#'
 #' @export
 ts_phylo <- function(ts, i, mode = c("index", "position"),
                      labels = c("tskit", "pop"), quiet = FALSE) {
@@ -943,6 +948,16 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #'   If the model which generated this data was spatial, result will be returned
 #'   as a spatial object of the class \code{sf}.
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # extract an annotated table with (spatio-)temporal node information
+#' ts_nodes(ts)
 #' @export
 ts_nodes <- function(x, sf = TRUE) {
   if (!inherits(x, "slendr_ts") && !inherits(x, "slendr_phylo"))
@@ -996,6 +1011,25 @@ ts_nodes <- function(x, sf = TRUE) {
 #' @return Data frame with the information from the give tree-sequence table
 #'   (can be either a table of individuals, edges, nodes, or mutations).
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # get the 'raw' tskit table of individuals
+#' ts_table(ts, "individuals")
+#'
+#' # get the 'raw' tskit table of edges
+#' ts_table(ts, "edges")
+#'
+#' # get the 'raw' tskit table of nodes
+#' ts_table(ts, "nodes")
+#'
+#' # get the 'raw' tskit table of mutations
+#' ts_table(ts, "mutations")
 #' @export
 ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")) {
   table <- match.arg(table)
@@ -1017,6 +1051,16 @@ ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")
 #' @return Data frame of the \code{sf} type containing the times of nodes and
 #'   start-end coordinates of edges across space
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # extract an annotated table with (spatio-)temporal edge information
+#' ts_edges(ts)
 #' @export
 ts_edges <- function(x) {
   if (inherits(x, "slendr_phylo"))
@@ -1035,6 +1079,16 @@ ts_edges <- function(x) {
 #'
 #' @return Table of individuals scheduled for sampling across space and time
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # extract the table of individuals scheduled for simulation and sampling
+#' ts_samples(ts)
 #' @export
 ts_samples <- function(ts) {
   if (is.null(attr(ts, "model")))
@@ -1062,6 +1116,16 @@ ts_samples <- function(ts) {
 #' @return A table of ancestral nodes of a given tree-sequence node all the
 #'   way up to the root of the tree sequence
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # find the complete ancestry information for a given individual
+#' ts_ancestors(ts, "EUR_1", verbose = TRUE)
 #' @export
 ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
   check_ts_class(ts)
@@ -1176,6 +1240,16 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @return A table of descendant nodes of a given tree-sequence node all the
 #'   way down to the leaves of the tree sequence
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # find the complete descendancy information for a given individual
+#' ts_descendants(ts, x = 1103, verbose = TRUE)
 #' @export
 ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
   check_ts_class(ts)
@@ -1285,22 +1359,18 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @return Python-reticulate-based object of the class tskit.trees.Tree
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
-#' ts <- ts_load(model)
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
 #'
 #' # extract the first tree in the tree sequence
 #' tree <- ts_tree(ts, i = 1)
 #'
 #' # extract the tree at a position 100000bp in the tree sequence
 #' tree <- ts_tree(ts, i = 100000, mode = "position")
-#' }
-#'
 #' @export
 ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
   check_ts_class(ts)
@@ -1330,6 +1400,17 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #'
 #' @return No return value, called for side effects
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
+#'
+#' # extract the first tree in the tree sequence and draw it
+#' tree <- ts_tree(ts, i = 1)
+#' ts_draw(tree)
 #' @export
 ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
                     sampled_only = TRUE, ...) {
@@ -1379,20 +1460,17 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #'   (tskit Python 0-based) indices of trees which failed the coalescence test
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
-#' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(model, simplify = TRUE)
 #'
 #' ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)
 #'
 #' # returns a vector of tree sequence segments which are not coalesced
 #' not_coalesced <- ts_coalesced(ts, return_failed = TRUE)
-#' }
 #' @export
 ts_coalesced <- function(ts, return_failed = FALSE) {
   # reticulate::py_run_string("def mult_roots(ts): return [not tree.has_multiple_roots for tree in ts.trees()]")
@@ -1429,13 +1507,11 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate f2 for two individuals in a previously loaded tree sequence
@@ -1443,8 +1519,6 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 #'
 #' # calculate f2 for two sets of individuals
 #' ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
-#' }
-#'
 #' @export
 ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -1456,13 +1530,11 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate f2 for two individuals in a previously loaded tree sequence
@@ -1472,8 +1544,6 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 #' ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
 #'           B = c("NEA_1", "NEA_2"),
 #'           C = "CH_1")
-#' }
-#'
 #' @export
 ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -1485,13 +1555,11 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
 #' @rdname ts_f4ratio
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate f4 for single individuals
@@ -1502,8 +1570,6 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
 #'           X = c("AFR_1", "AFR_2"),
 #'           Y = "NEA_1",
 #'           Z = "CH_1")
-#' }
-#'
 #' @export
 ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -1528,20 +1594,16 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' @return Data frame with statistics calculated for the given sets of individuals
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate f2 for two samples in a previously loaded tree sequence
 #' ts_f4ratio(ts, X = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
 #'                A = "NEA_1", B = "NEA_2", C = "AFR_1", O = "CH_1")
-#' }
-#'
 #' @export
 ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch"), span_normalise = TRUE) {
   mode <- match.arg(mode)
@@ -1626,20 +1688,16 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #'   of Fst values (one for each window)
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # compute F_st between two sets of individuals in a given tree sequence ts
 #' ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
 #'                               eur = c("EUR_1", "EUR_2")))
-#' }
-#'
 #' @export
 ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = TRUE) {
@@ -1658,13 +1716,11 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of divergence values (one for each window)
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # collect sampled individuals from all populations in a list
@@ -1675,8 +1731,6 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' # compute the divergence between individuals from each sample set (list of
 #' # individual names generated in the previous step)
 #' ts_divergence(ts, sample_sets) %>% .[order(.$divergence), ]
-#' }
-#'
 #' @export
 ts_divergence <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = TRUE) {
@@ -1737,13 +1791,11 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #'   vector of diversity values (one for each window)
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # collect sampled individuals from all populations in a list
@@ -1752,8 +1804,6 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #'   lapply(function(pop) pop$name)
 #'
 #' ts_segregating(ts, sample_sets)
-#' }
-#'
 #' @export
 ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                            windows = NULL, span_normalise = FALSE) {
@@ -1773,13 +1823,11 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of diversity values (one for each window)
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # collect sampled individuals from all populations in a list
@@ -1790,8 +1838,6 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' # compute diversity in each population based on sample sets extracted
 #' # in the previous step
 #' ts_diversity(ts, sample_sets) %>% .[order(.$diversity), ]
-#' }
-#'
 #' @export
 ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                          windows = NULL, span_normalise = TRUE) {
@@ -1821,21 +1867,17 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of Tajima's D values (one for each window)
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate Tajima's D for given sets of individuals in a tree sequence ts
 #' ts_tajima(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5"),
 #'                    eur = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
 #'                    nea = c("NEA_1", "NEA_2")))
-#' }
-#'
 #' @export
 ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
                       windows = NULL) {
@@ -1873,19 +1915,15 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @return Allele frequency spectrum values for the given sample set
 #'
 #' @examples
-#' # the examples will only run when a dedicated Python environment is present
-#' # (this can be created by calling `setup_env()`)
-#' if (check_env(quiet = TRUE)) {
-#'
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #'
+#' # load the tree-sequence object from disk
 #' ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 #'
 #' # calculate Tajima's D for given sets of individuals in a tree sequence ts
 #' ts_afs(ts, list(afr = c("AFR_1", "AFR_2", "AFR_3", "AFR_4", "AFR_5")))
-#' }
-#'
 #' @export
 ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = FALSE,
@@ -1926,6 +1964,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 #'
 #' @return Standard phylogenetic tree object implemented by the R package ape
 #'
+#' @noRd
 #' @importFrom ape as.phylo
 #' @export as.phylo.slendr_phylo
 #' @export

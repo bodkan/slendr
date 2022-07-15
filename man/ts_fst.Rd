@@ -49,27 +49,21 @@ options of the \code{mode} argument, please see the tskit documentation at
 \url{https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode}.
 }
 \examples{
-# the examples will only run when a dedicated Python environment is present
-# (this can be created by calling `setup_env()`)
-if (check_env(quiet = TRUE)) {
-
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
+# load the tree-sequence object from disk
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # compute F_st between two sets of individuals in a given tree sequence ts
 ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
                               eur = c("EUR_1", "EUR_2")))
-}
-
-# the examples will only run when a dedicated Python environment is present
-# (this can be created by calling `setup_env()`)
-if (check_env(quiet = TRUE)) {
-
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
+# load the tree-sequence object from disk
 ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 
 # collect sampled individuals from all populations in a list
@@ -80,6 +74,4 @@ sample_sets <- ts_samples(ts) \%>\%
 # compute the divergence between individuals from each sample set (list of
 # individual names generated in the previous step)
 ts_divergence(ts, sample_sets) \%>\% .[order(.$divergence), ]
-}
-
 }

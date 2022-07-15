@@ -8,6 +8,13 @@
 #'   of a map, and what spatial dispersal and mating parameters should be used
 #'   in a SLiM simulation, if applicable)
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' }
+#' # load an example model with an already simulated tree sequence
+#' model <- read_example("introgression")
+#' plot_model(model)
+#'
 #' @export
 read_example <- function(name = c("introgression", "space")) {
   name <- match.arg(name)
@@ -18,6 +25,32 @@ read_example <- function(name = c("introgression", "space")) {
   file.copy(bundled_path, new_path, recursive = TRUE)
 
   read_model(file.path(new_path, "introgression"))
+}
+
+#' Check that all dependencies are available for slendr examples
+#'
+#' @param python Is the slendr Python environment required?
+#' @param slim Is SLiM required?
+#'
+#' @return No return value. Called only to result in an error message if a
+#'   particular software dependency is missing for an example to run.
+#'
+#' @noRd
+#' @export
+check_dependencies <- function(python = FALSE, slim = FALSE) {
+  # check whether SLiM and Python are present (only if needed!)
+  missing_slim <- if (slim) !all(Sys.which("slim") != "") else FALSE
+  missing_python <- if (python) !check_env_present() else FALSE
+
+  if (missing_slim | missing_python) {
+    if (interactive()) {
+      error_slim <- if (missing_slim) "SLiM" else ""
+      error_python <- if (missing_python) "slendr Python environment" else ""
+      stop(sprintf("Missing requirements for this example: %s",
+                   paste(error_slim, error_python, sep = ", ")), call. = FALSE)
+    } else
+      q()
+  }
 }
 
 # Internal implementation of expand_range() and shrink_range() functions

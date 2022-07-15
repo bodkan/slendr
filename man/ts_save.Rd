@@ -17,3 +17,15 @@ No return value, called for side effects
 \description{
 Save a tree sequence to a file
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree sequence
+ts <- ts_load(model)
+
+# save the tree-sequence object to a different location
+another_file <- paste(tempfile(), ".trees")
+ts_save(ts, another_file)
+}

@@ -73,10 +73,7 @@ using the functions \code{\link{ts_recapitate}} and
 \code{\link{ts_simplify}}.
 }
 \examples{
-# the examples will only run when a dedicated Python environment is present
-# (this can be created by calling `setup_env()`)
-if (check_env(quiet = TRUE)) {
-
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
@@ -101,9 +98,6 @@ ts <- ts_load(model, recapitate = TRUE, simplify = TRUE,
 # load tree sequence, recapitate it, simplify it and overlay neutral mutations
 ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
               recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
-
-}
-
 }
 \seealso{
 \code{\link{ts_nodes}} for extracting useful information about

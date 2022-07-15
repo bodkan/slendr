@@ -35,3 +35,15 @@ This function first obtains an SVG representation of the tree by calling the
 the many optional keyword arguments of the \code{draw_svg} method can be
 provided and will be automatically passed to the method behind the scenes.
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model, simplify = TRUE)
+
+# extract the first tree in the tree sequence and draw it
+tree <- ts_tree(ts, i = 1)
+ts_draw(tree)
+}

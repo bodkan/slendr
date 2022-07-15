@@ -75,6 +75,3 @@ model <- compile_model(
   resolution = 100, simulation_length = 500,
   competition = 5, mating = 5, dispersal = 1
 )
-
-# clean up the model temporary directory
-unlink(model_dir, recursive = TRUE, force = TRUE)

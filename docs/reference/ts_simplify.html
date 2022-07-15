@@ -162,10 +162,7 @@ map</p></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># the examples will only run when a dedicated Python environment is present</span>
-<span class="co"># (this can be created by calling `setup_env()`)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present </span>
 <span class="co"># load an example model with an already simulated tree sequence</span>
 <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span>
 
@@ -180,8 +177,6 @@ map</p></div>
   simplify_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span>, <span class="st">"AFR_1"</span>,
                   <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>
 <span class="op">)</span>
-
-<span class="op">}</span>
 
 </code></pre></div>
     </div>

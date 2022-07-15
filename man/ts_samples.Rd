@@ -17,3 +17,14 @@ Table of individuals scheduled for sampling across space and time
 Extract names and times of individuals of interest in the current tree sequence
 (either all sampled individuals or those that the user simplified to)
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+
+# load the tree-sequence object from disk
+ts <- ts_load(model, simplify = TRUE)
+
+# extract the table of individuals scheduled for simulation and sampling
+ts_samples(ts)
+}

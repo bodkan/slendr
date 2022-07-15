@@ -19,3 +19,11 @@ in a SLiM simulation, if applicable)
 \description{
 Read a provided slendr model
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
+# load an example model with an already simulated tree sequence
+model <- read_example("introgression")
+plot_model(model)
+
+}
