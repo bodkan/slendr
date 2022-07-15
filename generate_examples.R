@@ -1,4 +1,4 @@
-library(slendr)
+devtools::load_all(".")
 
 set.seed(314159)
 
@@ -20,7 +20,7 @@ gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 55000, end = 45000)
 model <- compile_model(
   populations = list(chimp, nea, afr, eur), gene_flow = gf,
   generation_time = 30,
-  path = "inst/extdata/models/introgression"
+  path = "inst/extdata/models/introgression", overwrite = TRUE, force = TRUE
 )
 
 nea_samples <- schedule_sampling(model, times = c(70000, 40000), list(nea, 1))
