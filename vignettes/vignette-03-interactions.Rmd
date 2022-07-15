@@ -101,7 +101,7 @@ Alternatively, we can use tree sequence processing features of slendr to just ca
 library(ggplot2)
 
 locations <- ts_load(model) %>% ts_nodes() %>% dplyr::filter()
-ggplot() + geom_sf(data = locations, aes(color = pop)) + theme_minimal()
+ggplot() + geom_sf(data = locations, aes(color = pop), size = 0.75, alpha = 0.5) + theme_minimal()
 ```
 
 Fun animation, isn't it? If you compare the result to the model dynamics we programmed above, you can see that the spatial dynamics follow what we would expect based on the parameter values. As time progresses, the spatial competition for each successive population gets fiercer and fiercer (the distance at which individuals can "feel" the competition is getting larger and larger), forcing the individuals to form more and more distant clusters. Compare this to the starting state of the simulation, in which all populations form a single randomly shifting "blob" of individuals which is allowed by the model because individuals barely compete with each other.

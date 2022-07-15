@@ -58,9 +58,6 @@
     <loc>https://www.slendr.net/reference/area.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/as.phylo.slendr_phylo.html</loc>
-  </url>
-  <url>
     <loc>https://www.slendr.net/reference/check_env.html</loc>
   </url>
   <url>
@@ -97,9 +94,6 @@
     <loc>https://www.slendr.net/reference/overlap.html</loc>
   </url>
   <url>
-    <loc>https://www.slendr.net/reference/pipe.html</loc>
-  </url>
-  <url>
     <loc>https://www.slendr.net/reference/plot_map.html</loc>
   </url>
   <url>
@@ -110,6 +104,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/print.slendr_pop.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/read_example.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/read_model.html</loc>
@@ -158,6 +155,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_descendants.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/ts_divergence.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_diversity.html</loc>
