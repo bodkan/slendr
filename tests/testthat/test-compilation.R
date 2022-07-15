@@ -55,6 +55,9 @@ test_that("deletion in non-interactive modem must be forced", {
   expect_true(grepl("dir-forced$", model$path))
 })
 
+skip_if(!slendr:::check_env_present())
+setup_env(quiet = TRUE)
+
 test_that("sequence length can only be an integer number (SLiM)", {
   p <- population(name = "pop1", N = 700, time = 1)
   model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
