@@ -341,11 +341,15 @@ slim <- function(model, sequence_length, recombination_rate,
                  save_locations = FALSE, coalescent_only = TRUE,
                  method = c("batch", "gui"), verbose = FALSE, burnin = 0,
                  random_seed = NULL, slim_path = NULL, save_sampling = TRUE) {
-  if (sequence_length <= 0) stop("Sequence length must be a non-negative integer number", call. = FALSE)
-
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+
+  if (sequence_length %% 1 != 0 | sequence_length <= 0)
+    stop("Sequence length must be a non-negative integer number", call. = FALSE)
+
+  if (!is.numeric(recombination_rate) | recombination_rate < 0)
+    stop("Recombination rate must be a numeric value", call. = FALSE)
 
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
@@ -393,7 +397,7 @@ slim <- function(model, sequence_length, recombination_rate,
     -d 'MODEL=\"%s\"' \\
     -d 'OUTPUT=\"%s\"' \\
     -d SPATIAL=%s \\
-    -d SEQUENCE_LENGTH=%i \\
+    -d SEQUENCE_LENGTH=%s \\
     -d RECOMB_RATE=%s \\
     -d BURNIN_LENGTH=%s \\
     -d SIMULATION_LENGTH=%s \\
@@ -505,6 +509,12 @@ msprime <- function(model, sequence_length, recombination_rate,
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
+
+  if (sequence_length %% 1 != 0 | sequence_length <= 0)
+    stop("Sequence length must be a non-negative integer number", call. = FALSE)
+
+  if (!is.numeric(recombination_rate) | recombination_rate < 0)
+    stop("Recombination rate must be a numeric value", call. = FALSE)
 
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,

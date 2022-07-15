@@ -55,3 +55,38 @@ test_that("deletion in non-interactive modem must be forced", {
   expect_true(grepl("dir-forced$", model$path))
 })
 
+test_that("sequence length can only be an integer number (SLiM)", {
+  p <- population(name = "pop1", N = 700, time = 1)
+  model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
+  error_msg <- "Sequence length must be a non-negative integer number"
+  expect_error(slim(model, sequence_length = 0.1, recombination_rate = 0), error_msg)
+  expect_error(slim(model, sequence_length = 0.1, recombination_rate = 0), error_msg)
+  expect_silent(slim(model, sequence_length = 1e6, recombination_rate = 0))
+})
+
+test_that("sequence length can only be an integer number (msprime)", {
+  p <- population(name = "pop1", N = 700, time = 1)
+  model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
+  error_msg <- "Sequence length must be a non-negative integer number"
+  expect_error(msprime(model, sequence_length = 0.1, recombination_rate = 0), error_msg)
+  expect_error(msprime(model, sequence_length = 0.1, recombination_rate = 0), error_msg)
+  expect_silent(msprime(model, sequence_length = 1e6, recombination_rate = 0))
+})
+
+test_that("recombination rate can only be an integer number (SLiM)", {
+  p <- population(name = "pop1", N = 700, time = 1)
+  model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
+  error_msg <- "Recombination rate must be a numeric value"
+  expect_error(slim(model, sequence_length = 100, recombination_rate = "asdf"), error_msg)
+  expect_error(slim(model, sequence_length = 100, recombination_rate = -1), error_msg)
+  expect_silent(slim(model, sequence_length = 100, recombination_rate = 1e-8))
+})
+
+test_that("recombination rate can only be an integer number (msprime)", {
+  p <- population(name = "pop1", N = 700, time = 1)
+  model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
+  error_msg <- "Recombination rate must be a numeric value"
+  expect_error(msprime(model, sequence_length = 100, recombination_rate = "asdf"), error_msg)
+  expect_error(msprime(model, sequence_length = 100, recombination_rate = -1), error_msg)
+  expect_silent(msprime(model, sequence_length = 100, recombination_rate = 1e-8))
+})
