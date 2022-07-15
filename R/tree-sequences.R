@@ -1264,7 +1264,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' ts <- ts_load(model, simplify = TRUE)
 #'
 #' # find the complete descendancy information for a given individual
-#' #ts_descendants(ts, x = 1103, verbose = TRUE)
+#' ts_descendants(ts, x = 101, verbose = TRUE)
 #' @export
 ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
   check_ts_class(ts)
@@ -2455,7 +2455,7 @@ collect_descendants <- function(x, edges) {
 
   # repeat until the queue is empty (this homebrew queue implementation is
   # probably horribly inefficient but it will do for now)
-  i <- 0
+  # i <- 0
   while (TRUE) {
     # cat("queue ", (i <- i + 1), "\n")
     # pop out the first element
@@ -2465,9 +2465,10 @@ collect_descendants <- function(x, edges) {
     result[[length(result) + 1]] <- item
 
     for (child in split(item, item$child)) {
-      #cat("queue ", i, " parent ", (p <- i + 1), "\n")
+      # cat("queue ", i, " parent ", (p <- i + 1), "\n")
       # get edges leading from the current child to its own children
-      edge <- edges[edges$parent == child$child, ]
+      edge <- edges[edges$parent == unique(child$child), ] %>%
+        dplyr::distinct(child, parent, .keep_all = TRUE)
 
       # if the child has no children itself or its node has already been
       # processed, skip it and don't add it to the queue

@@ -55,9 +55,6 @@ time-window
 # create a blank abstract world 1000x1000 distance units in size
 map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
 
-# all spatial slendr objects can be visualised with a function plot_map()
-plot_map(map)
-
 # create a circular population with the center of a population boundary at
 # [200, 800] and a radius of 100 distance units, 1000 individuals at time 1
 # occupying a map just specified
@@ -95,9 +92,6 @@ pop1 <- population("pop1", N = 1000, time = 1,
     c(400, 0), c(1000, 0), c(1000, 600), c(900, 400), c(800, 250),
     c(600, 100), c(500, 50))
   )
-
-# spatial boundaries can be plotted with a function plot_map()
-plot_map(pop1)
 
 # population ranges can expand by a given distance in all directions
 pop2 <- expand_range(pop2, by = 200, start = 50, end = 150, snapshots = 3)
