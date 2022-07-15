@@ -34,7 +34,6 @@ read_example <- function(name = c("introgression", "space")) {
 #' @return No return value. Called only to result in an error message if a
 #'   particular software dependency is missing for an example to run.
 #'
-#' @noRd
 #' @export
 check_dependencies <- function(python = FALSE, slim = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
@@ -710,9 +709,7 @@ order_pops <- function(populations, direction) {
 
 #' Pipe operator
 #'
-#' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
-#'
-#' @noRd
+#' @return See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
 #'
 #' @name %>%
 #' @rdname pipe
