@@ -45,7 +45,11 @@ README.md: README.Rmd $(logo)
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 
 $(logo): logo.R
-	R -e 'source("logo.R")'
+	Rscript logo.R
+
+example_data:
+	rm -rf inst/extdata/models/; mkdir -p inst/extdata/models/
+	Rscript generate_examples.R
 
 clean:
 	rm -rf build
