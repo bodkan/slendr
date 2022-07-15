@@ -202,6 +202,14 @@ setting `direction = 'backward'.`", call. = FALSE)
 #'   of a map, and what spatial dispersal and mating parameters should be used
 #'   in a SLiM simulation, if applicable)
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' }
+#' # load an example model with an already simulated tree sequence
+#' path <- system.file("extdata/models/introgression", package = "slendr")
+#' model <- read_model(path)
+#'
+#' plot_model(model, sizes = FALSE, log = TRUE)
 #' @export
 read_model <- function(path) {
   # paths to files which are saved by the compile() function and are necessary

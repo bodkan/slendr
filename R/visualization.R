@@ -207,7 +207,8 @@ objects are specified", call. = FALSE)
 #' @return A ggplot2 object with the visualized slendr model
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' }
 #' # load an example model with an already simulated tree sequence and plot
 #' # it as an "admixture graph"
 #' model <- read_example("introgression")

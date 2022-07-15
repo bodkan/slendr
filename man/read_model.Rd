@@ -20,3 +20,12 @@ in a SLiM simulation, if applicable)
 Reads all configuration tables and other model data from a location
 where it was previously compiled to by the \code{compile} function.
 }
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
+# load an example model with an already simulated tree sequence
+path <- system.file("extdata/models/introgression", package = "slendr")
+model <- read_model(path)
+
+plot_model(model, sizes = FALSE, log = TRUE)
+}
