@@ -14,7 +14,6 @@
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
 #' plot_model(model)
-#'
 #' @export
 read_example <- function(name = c("introgression", "space")) {
   name <- match.arg(name)

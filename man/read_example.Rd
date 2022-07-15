@@ -25,5 +25,4 @@ Read a provided slendr model
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 plot_model(model)
-
 }
