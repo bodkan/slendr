@@ -72,7 +72,7 @@ Calculate the f2, f3, f4, and f4-ratio statistics
 \examples{
 # the examples will only run when a dedicated Python environment is present
 # (this can be created by calling `setup_env()`)
-if (check_env()) {
+if (check_env(quiet = TRUE)) {
 
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
@@ -88,7 +88,7 @@ ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
 
 # the examples will only run when a dedicated Python environment is present
 # (this can be created by calling `setup_env()`)
-if (check_env()) {
+if (check_env(quiet = TRUE)) {
 
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
@@ -106,7 +106,7 @@ ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
 
 # the examples will only run when a dedicated Python environment is present
 # (this can be created by calling `setup_env()`)
-if (check_env()) {
+if (check_env(quiet = TRUE)) {
 
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
@@ -125,7 +125,7 @@ ts_f4(ts, W = c("EUR_1", "EUR_2"),
 
 # the examples will only run when a dedicated Python environment is present
 # (this can be created by calling `setup_env()`)
-if (check_env()) {
+if (check_env(quiet = TRUE)) {
 
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")

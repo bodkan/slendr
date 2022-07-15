@@ -468,7 +468,7 @@ slim <- function(model, sequence_length, recombination_rate,
 #' @examples
 #' # the example will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model
 #' model <- read_example("introgression")

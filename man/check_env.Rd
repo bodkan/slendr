@@ -4,7 +4,7 @@
 \alias{check_env}
 \title{Check that the active Python environment is correctly setup for slendr}
 \usage{
-check_env()
+check_env(quiet = FALSE)
 }
 \value{
 No return value, called for side effects

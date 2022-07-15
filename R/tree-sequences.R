@@ -48,7 +48,7 @@
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -203,7 +203,7 @@ ts_save <- function(ts, file) {
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -308,7 +308,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -464,7 +464,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -714,7 +714,7 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1287,7 +1287,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1381,7 +1381,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1431,7 +1431,7 @@ fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1458,7 +1458,7 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1487,7 +1487,7 @@ ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1530,7 +1530,7 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1628,7 +1628,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1660,7 +1660,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1739,7 +1739,7 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1775,7 +1775,7 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1823,7 +1823,7 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")
@@ -1875,7 +1875,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @examples
 #' # the examples will only run when a dedicated Python environment is present
 #' # (this can be created by calling `setup_env()`)
-#' if (check_env()) {
+#' if (check_env(quiet = TRUE)) {
 #'
 #' # load an example model with an already simulated tree sequence
 #' model <- read_example("introgression")

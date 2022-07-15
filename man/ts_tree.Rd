@@ -31,7 +31,7 @@ For more information about optional keyword arguments see tskit documentation:
 \examples{
 # the examples will only run when a dedicated Python environment is present
 # (this can be created by calling `setup_env()`)
-if (check_env()) {
+if (check_env(quiet = TRUE)) {
 
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
