@@ -6,7 +6,7 @@ logo := man/figures/logo.png
 
 docs:
 	R -e 'devtools::document()'
-	R -e 'pkgdown::build_reference(examples = FALSE)'
+	R -e 'pkgdown::build_reference()'
 	R -e 'pkgdown::build_reference_index()'
 
 website:
