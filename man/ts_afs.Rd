@@ -46,7 +46,8 @@ please see the tskit manual at
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum}
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 

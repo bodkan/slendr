@@ -36,7 +36,8 @@ the many optional keyword arguments of the \code{draw_svg} method can be
 provided and will be automatically passed to the method behind the scenes.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 

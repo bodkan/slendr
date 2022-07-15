@@ -19,3 +19,14 @@ by this object's spatial boundary will be returned.
 \description{
 Calculate the area covered by the given slendr object
 }
+\examples{
+region_a <- region("A", center = c(20, 50), radius = 20)
+region_b <- region("B", polygon = list(c(50, 40), c(70, 40), c(70, 60), c(50, 60)))
+plot_map(region_a, region_b)
+
+# note that area won't be *exactly* equal to pi*r^2:
+#   https://stackoverflow.com/a/65280376
+area(region_a)
+
+area(region_b)
+}

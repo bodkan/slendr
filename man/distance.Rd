@@ -25,3 +25,15 @@ normal Euclidean distance.
 \description{
 Calculate the distance between a pair of spatial boundaries
 }
+\examples{
+# create two regions on a blank abstract landscape
+region_a <- region("A", center = c(20, 50), radius = 20)
+region_b <- region("B", center = c(80, 50), radius = 20)
+plot_map(region_a, region_b)
+
+# compute the distance between the centers of both population ranges
+distance(region_a, region_b, measure = "center")
+
+# compute the distance between the borders of both population ranges
+distance(region_a, region_b, measure = "border")
+}

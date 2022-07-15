@@ -20,7 +20,8 @@ TRUE or FALSE value if \code{return_failed = FALSE}, otherwise a vector of
 Check that all trees in the tree sequence are fully coalesced
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 

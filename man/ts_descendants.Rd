@@ -28,7 +28,8 @@ way down to the leaves of the tree sequence
 Extract all descendants of a given tree-sequence node
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 

@@ -45,3 +45,13 @@ Data.frame with converted two-dimensional coordinates given as input
 Converts between coordinates on a compiled raster map (i.e. pixel
 units) and different Geographic Coordinate Systems (CRS).
 }
+\examples{
+lon_lat_df <- data.frame(x = c(30, 0, 15), y = c(60, 40, 10))
+
+reproject(
+  from = "epsg:4326",
+  to = "epsg:3035",
+  coords = lon_lat_df,
+  add = TRUE # add converted [lon,lat] coordinates as a new column
+)
+}

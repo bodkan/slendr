@@ -49,7 +49,8 @@ options of the \code{mode} argument, please see the tskit documentation at
 \url{https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode}.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
@@ -59,7 +60,8 @@ ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8)
 # compute F_st between two sets of individuals in a given tree sequence ts
 ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
                               eur = c("EUR_1", "EUR_2")))
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 

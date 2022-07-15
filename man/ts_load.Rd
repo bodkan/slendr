@@ -73,7 +73,8 @@ using the functions \code{\link{ts_recapitate}} and
 \code{\link{ts_simplify}}.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 

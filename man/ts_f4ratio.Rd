@@ -70,7 +70,8 @@ Data frame with statistics calculated for the given sets of individuals
 Calculate the f2, f3, f4, and f4-ratio statistics
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
@@ -82,7 +83,8 @@ ts_f2(ts, A = "AFR_1", B = "EUR_1")
 
 # calculate f2 for two sets of individuals
 ts_f2(ts, A = c("AFR_1", "AFR_2"), B = c("EUR_1", "EUR_3"))
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
@@ -96,7 +98,8 @@ ts_f3(ts, A = "EUR_1", B = "AFR_1", C = "NEA_1")
 ts_f3(ts, A = c("AFR_1", "AFR_2", "EUR_1", "EUR_2"),
           B = c("NEA_1", "NEA_2"),
           C = "CH_1")
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 
@@ -111,7 +114,8 @@ ts_f4(ts, W = c("EUR_1", "EUR_2"),
           X = c("AFR_1", "AFR_2"),
           Y = "NEA_1",
           Z = "CH_1")
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 

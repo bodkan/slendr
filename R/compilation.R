@@ -203,8 +203,6 @@ setting `direction = 'backward'.`", call. = FALSE)
 #'   in a SLiM simulation, if applicable)
 #'
 #' @export
-#'
-#' @example man/examples/model_definition.R
 read_model <- function(path) {
   # paths to files which are saved by the compile() function and are necessary
   # for running the backend script using the run() function

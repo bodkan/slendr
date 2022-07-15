@@ -29,7 +29,8 @@ For more information about optional keyword arguments see tskit documentation:
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class}
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present }
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
 # load an example model with an already simulated tree sequence
 model <- read_example("introgression")
 

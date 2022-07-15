@@ -776,6 +776,7 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
 #'
 #' @example man/examples/spatial_functions.R
 region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
+  # for accurate circular areas see: https://stackoverflow.com/a/65280376
   if (is.null(name)) name <- "unnamed region"
   region <- sf::st_sf(
     region = name,
@@ -814,6 +815,15 @@ region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygo
 #'
 #' @return Data.frame with converted two-dimensional coordinates given as input
 #'
+#' @examples
+#' lon_lat_df <- data.frame(x = c(30, 0, 15), y = c(60, 40, 10))
+#'
+#' reproject(
+#'   from = "epsg:4326",
+#'   to = "epsg:3035",
+#'   coords = lon_lat_df,
+#'   add = TRUE # add converted [lon,lat] coordinates as a new column
+#' )
 #' @export
 reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
                       add = FALSE, input_prefix = "", output_prefix = "new") {
@@ -1006,6 +1016,17 @@ subtract <- function(x, y, name = NULL) {
 #'   projected units (i.e. meters) is returned. Otherwise the function returns a
 #'   normal Euclidean distance.
 #'
+#' @examples
+#' # create two regions on a blank abstract landscape
+#' region_a <- region("A", center = c(20, 50), radius = 20)
+#' region_b <- region("B", center = c(80, 50), radius = 20)
+#' plot_map(region_a, region_b)
+#'
+#' # compute the distance between the centers of both population ranges
+#' distance(region_a, region_b, measure = "center")
+#'
+#' # compute the distance between the borders of both population ranges
+#' distance(region_a, region_b, measure = "border")
 #' @export
 distance <- function(x, y, measure, time = NULL) {
   if (!measure %in% c("center", "border"))
@@ -1037,6 +1058,16 @@ distance between population boundaries", call. = FALSE)
 #'   \code{slendr_world} object was specified, the total area covered
 #'   by this object's spatial boundary will be returned.
 #'
+#' @examples
+#' region_a <- region("A", center = c(20, 50), radius = 20)
+#' region_b <- region("B", polygon = list(c(50, 40), c(70, 40), c(70, 60), c(50, 60)))
+#' plot_map(region_a, region_b)
+#'
+#' # note that area won't be *exactly* equal to pi*r^2:
+#' #   https://stackoverflow.com/a/65280376
+#' area(region_a)
+#'
+#' area(region_b)
 #' @export
 area <- function(x) {
   if (!inherits(x, "slendr") & !inherits(x, "sf"))
