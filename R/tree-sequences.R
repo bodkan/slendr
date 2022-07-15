@@ -1963,7 +1963,6 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 #'
 #' @return Standard phylogenetic tree object implemented by the R package ape
 #'
-#' @noRd
 #' @importFrom ape as.phylo
 #' @export as.phylo.slendr_phylo
 #' @export
