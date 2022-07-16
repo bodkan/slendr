@@ -49,8 +49,7 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
                           competition = NULL, mating = NULL, dispersal = NULL,
                           gene_flow = list(), overwrite = FALSE, force = FALSE,
                           simulation_length = NULL, direction = NULL,
-                          slim_script = system.file("scripts", "script.slim", package = "slendr"),
-                          description = "", sim_length = NULL) {
+                          slim_script = NULL, description = "", sim_length = NULL) {
   if (is.null(simulation_length) && !is.null(sim_length)) {
     message("Argument `sim_length` will soon be deprecated in favor of `simulation_length`.")
     simulation_length <- sim_length
@@ -59,6 +58,9 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   if (is.null(path)) path <- tempfile()
+
+  if (is.null(slim_script))
+    slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
   map <- get_map(populations[[1]])
   if (!is.null(map) && is.null(resolution))
