@@ -1345,8 +1345,8 @@ clear_env <- function(force = FALSE) {
 #' @param quiet Should a log message be printed? If \code{FALSE}, only a logical
 #'   value is returned (invisibly).
 #'
-#' @return Either \code{TRUE} (Python environment is present) or \code{FALSE}
-#'   (it is not present).
+#' @return Either \code{TRUE} (slendr Python environment is present) or \code{FALSE}
+#'   (slendr Python environment is not present).
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present

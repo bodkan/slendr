@@ -11,8 +11,8 @@ check_env(quiet = FALSE)
 value is returned (invisibly).}
 }
 \value{
-Either \code{TRUE} (Python environment is present) or \code{FALSE}
-(it is not present).
+Either \code{TRUE} (slendr Python environment is present) or \code{FALSE}
+(slendr Python environment is not present).
 }
 \description{
 This function inspects the Python environment which has been activated by the

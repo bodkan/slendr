@@ -120,14 +120,20 @@ to the console.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">check_env</span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
+    <div id="arguments">
+    <h2>Arguments</h2>
+    <dl><dt>quiet</dt>
+<dd><p>Should a log message be printed? If <code>FALSE</code>, only a logical
+value is returned (invisibly).</p></dd>
+</dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>No return value, called for side effects</p>
+    <p>Either <code>TRUE</code> (slendr Python environment is present) or <code>FALSE</code>(slendr Python environment is not present).</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">check_dependencies</span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">check_env</span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary of the currently active Python environment:</span>
