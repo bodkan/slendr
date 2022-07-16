@@ -144,14 +144,10 @@ gf <- list(
 
 # compilation -------------------------------------------------------------
 
-# location where to save slendr model configuration files
-model_dir <- paste0(tempdir(), "_slendr_model")
-
 # compile model components in a serialized form to dist, returning a single
 # slendr model object (in practice, the resolution should be smaller)
 model <- compile_model(
   populations = list(pop1, pop2, pop3), generation_time = 1,
-  path = model_dir, overwrite = TRUE, force = TRUE,
   resolution = 100, simulation_length = 500,
   competition = 5, mating = 5, dispersal = 1
 )
