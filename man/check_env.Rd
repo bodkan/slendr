@@ -6,8 +6,13 @@
 \usage{
 check_env(quiet = FALSE)
 }
+\arguments{
+\item{quiet}{Should a log message be printed? If \code{FALSE}, only a logical
+value is returned (invisibly).}
+}
 \value{
-No return value, called for side effects
+Either \code{TRUE} (Python environment is present) or \code{FALSE}
+(it is not present).
 }
 \description{
 This function inspects the Python environment which has been activated by the

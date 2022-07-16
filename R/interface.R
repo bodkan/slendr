@@ -1342,7 +1342,11 @@ clear_env <- function(force = FALSE) {
 #' reticulate package and prints the versions of all slendr Python dependencies
 #' to the console.
 #'
-#' @return No return value, called for side effects
+#' @param quiet Should a log message be printed? If \code{FALSE}, only a logical
+#'   value is returned (invisibly).
+#'
+#' @return Either \code{TRUE} (Python environment is present) or \code{FALSE}
+#'   (it is not present).
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
