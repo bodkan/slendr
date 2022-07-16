@@ -214,7 +214,7 @@ population:</p>
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 
 <span class="va">populations</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
 <p>Let’s plot the whole spatial population configuration, to make sure
 we set up things correctly:</p>
@@ -253,7 +253,7 @@ arithmetic on the population index <em>i</em>).</p>
       <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop</span>, to <span class="op">=</span> <span class="va">neighbor</span>, rate <span class="op">=</span> <span class="va">rate</span>, start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
       <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">neighbor</span>, to <span class="op">=</span> <span class="va">pop</span>, rate <span class="op">=</span> <span class="va">rate</span>, start <span class="op">=</span> <span class="va">start</span>, end <span class="op">=</span> <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
     <span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="op">}</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
     <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span>
 
   <span class="va">geneflows</span>
@@ -274,9 +274,9 @@ only be allowed to exchange migrants with its neighbor to the right
 events:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">geneflows</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">set_geneflow</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.05</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">set_geneflow</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.05</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="va">unique</span> <span class="co"># filter out duplicate events due to symmetries</span></code></pre></div>
 <p>The total number of individual gene flow events is:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -316,7 +316,7 @@ defined above (each population boundary being 300 km in diameter):</p>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 
 <span class="va">populations</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">150e3</span><span class="op">)</span></code></pre></div>
 <p>Of course, when we lay out a regular grid across a map of the world,
 some population boundaries would fall outside the African continent. To
@@ -350,7 +350,7 @@ helper function:</p>
     <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">populations</span>, <span class="va">check_area</span>, <span class="va">map</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<span class="va">filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">populations</span>, <span class="va">check_area</span>, <span class="va">map</span>, <span class="va">continent</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Negate</a></span><span class="op">(</span><span class="va">is.null</span><span class="op">)</span>, <span class="va">.</span><span class="op">)</span></code></pre></div>
 <p>Let’s plot the layout of the population grid on the real geographic
 background:</p>

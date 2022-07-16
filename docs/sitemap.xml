@@ -58,6 +58,12 @@
     <loc>https://www.slendr.net/reference/area.html</loc>
   </url>
   <url>
+    <loc>https://www.slendr.net/reference/as.phylo.slendr_phylo.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/check_dependencies.html</loc>
+  </url>
+  <url>
     <loc>https://www.slendr.net/reference/check_env.html</loc>
   </url>
   <url>
@@ -92,6 +98,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/overlap.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/pipe.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/plot_map.html</loc>
