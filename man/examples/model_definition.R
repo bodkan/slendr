@@ -69,3 +69,5 @@ model <- compile_model(
   resolution = 100, simulation_length = 500,
   competition = 5, mating = 5, dispersal = 1
 )
+
+unlink(paste0(tempdir(), "_slendr_model"))
