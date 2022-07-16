@@ -75,7 +75,7 @@ In case you are wondering how does *slendr* accomplish the above: *slendr*'s Pyt
 
 ## Docker
 
-There is currently no official Docker image for *slendr* but there will be once the R package finally lands on the official CRAN repository. The current plan is to use the geospatial image published by the [Rocker project](https://www.rocker-project.org/) (which already contains pre-compiled R, RStudio, and all necessary R package dependencies such as *sf* ) and extend it with *slendr* and SLiM.
+There is currently no official Docker image for *slendr* but there will be once the R package finally lands on the official CRAN repository. The current plan is to use the geospatial image published by the [Rocker project](https://rocker-project.org/) (which already contains pre-compiled R, RStudio, and all necessary R package dependencies such as *sf* ) and extend it with *slendr* and SLiM.
 
 Stay tuned!
 
