@@ -38,9 +38,10 @@ Add mutations to the given tree sequence
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
-ts <- ts_load(model)
+ts <- ts_load(slendr_ts, model)
 ts_mutate <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 42)
 }
 \seealso{

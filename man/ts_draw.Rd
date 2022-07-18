@@ -39,10 +39,11 @@ provided and will be automatically passed to the method behind the scenes.
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, simplify = TRUE)
+ts <- ts_load(slendr_ts, model, simplify = TRUE)
 
 # extract the first tree in the tree sequence and draw it
 tree <- ts_tree(ts, i = 1)

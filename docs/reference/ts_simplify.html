@@ -165,9 +165,10 @@ map</p></div>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># load an example model with an already simulated tree sequence</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># simplify tree sequence to sampled individuals</span></span>
 <span class="r-in"><span class="va">ts_simplified</span> <span class="op">&lt;-</span> <span class="fu">ts_simplify</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span>

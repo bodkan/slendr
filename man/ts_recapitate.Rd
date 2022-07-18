@@ -36,10 +36,11 @@ Recapitate the tree sequence
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 ts <-
-  ts_load(model) \%>\%
+  ts_load(slendr_ts, model) \%>\%
   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 }
 \seealso{

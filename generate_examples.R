@@ -8,7 +8,7 @@ chimp <- population("CH", time = 6.5e6, N = 10)
 
 # two populations of anatomically modern humans: Africans and Europeans
 afr <- population("AFR", parent = chimp, time = 6e6, N = 10)
-eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
+eur <- population("EUR", parent = afr, time = 70e3, N = 500)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
 # (becomes extinct by 40 ky ago)
@@ -26,11 +26,18 @@ model <- compile_model(
 nea_samples <- schedule_sampling(model, times = c(70000, 40000), list(nea, 1))
 present_samples <- schedule_sampling(model, times = 0, list(chimp, 1), list(afr, 5), list(eur, 5))
 
-slim(
+ts <- slim(
   model, sequence_length = 0.5e6, recombination_rate = 1e-8,
   samples = rbind(nea_samples, present_samples),
-  random_seed = 314159
+  random_seed = 314159, verbose = TRUE
 )
 
-ts <- ts_load(model, simplify = TRUE)
-ts_save(ts, file = "inst/extdata/models/introgression/output_slim.trees")
+ts %>%
+  ts_simplify() %>%
+  ts_save("inst/extdata/models/introgression.trees")
+
+
+# generate a non-slendr msprime tree sequence
+py_cmd <- sprintf("import msprime; msprime.sim_ancestry(%d, random_seed=42, population_size=%d).dump('%s')",
+                  1000, 1000, "inst/extdata/models/msprime.trees")
+reticulate::py_run_string(py_cmd)

@@ -8,11 +8,9 @@ msprime(
   model,
   sequence_length,
   recombination_rate,
-  output = file.path(model$path, "output_msprime.trees"),
   samples = NULL,
-  verbose = FALSE,
   random_seed = NULL,
-  save_sampling = TRUE,
+  verbose = FALSE,
   debug = FALSE
 )
 }
@@ -24,27 +22,21 @@ msprime(
 \item{recombination_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
 
-\item{output}{Path to the output tree sequence}
-
 \item{samples}{A data frame of times at which a given number of individuals
 should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
-\item{verbose}{Write the output log to the console (default \code{FALSE})?}
-
 \item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
 
-\item{save_sampling}{Save the sampling schedule table together with other
-output files? If \code{FALSE} (default), the sampling table will be saved
-to a temporary directory.}
+\item{verbose}{Write the output log to the console (default \code{FALSE})?}
 
 \item{debug}{Write msprime's debug log to the console (default \code{FALSE})?}
 }
 \value{
-No return value. Simulation output is saved to disk in the form of
-a tree-sequence file.
+A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
+(represented by the Python class \code{tskit.trees.TreeSequence})
 }
 \description{
 This function will execute a built-in msprime script and run a compiled

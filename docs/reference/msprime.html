@@ -119,11 +119,9 @@ slendr demographic model.</p>
   <span class="va">model</span>,
   <span class="va">sequence_length</span>,
   <span class="va">recombination_rate</span>,
-  output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">path</span>, <span class="st">"output_msprime.trees"</span><span class="op">)</span>,
   samples <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">FALSE</span>,
   random_seed <span class="op">=</span> <span class="cn">NULL</span>,
-  save_sampling <span class="op">=</span> <span class="cn">TRUE</span>,
+  verbose <span class="op">=</span> <span class="cn">FALSE</span>,
   debug <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -137,29 +135,22 @@ slendr demographic model.</p>
 <dt>recombination_rate</dt>
 <dd><p>Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)</p></dd>
-<dt>output</dt>
-<dd><p>Path to the output tree sequence</p></dd>
 <dt>samples</dt>
 <dd><p>A data frame of times at which a given number of individuals
 should be remembered in the tree-sequence (see <code>schedule_sampling</code> for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
-<dt>verbose</dt>
-<dd><p>Write the output log to the console (default <code>FALSE</code>)?</p></dd>
 <dt>random_seed</dt>
 <dd><p>Random seed (if missing, SLiM's own seed will be used)</p></dd>
-<dt>save_sampling</dt>
-<dd><p>Save the sampling schedule table together with other
-output files? If <code>FALSE</code> (default), the sampling table will be saved
-to a temporary directory.</p></dd>
+<dt>verbose</dt>
+<dd><p>Write the output log to the console (default <code>FALSE</code>)?</p></dd>
 <dt>debug</dt>
 <dd><p>Write msprime's debug log to the console (default <code>FALSE</code>)?</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>No return value. Simulation output is saved to disk in the form of
-a tree-sequence file.</p>
+    <p>A tree-sequence object loaded via Python-R reticulate interface function <code>ts_load</code>(represented by the Python class <code>tskit.trees.TreeSequence</code>)</p>
     </div>
 
     <div id="ref-examples">
@@ -190,16 +181,49 @@ a tree-sequence file.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> msprime command to be executed:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> python3 \</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp9hfW21/introgression/script.py \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmppHPg8E/introgression/script.py \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      \</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp9hfW21/introgression \</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp9hfW21/introgression/output_msprime.trees \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmppHPg8E/introgression \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmppHPg8E/file4fa413eb4dac.trees \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     --sequence-length 100000 \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     --recombination-rate 0 \</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp9hfW21/introgression/output_msprime_sampling.tsv \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmppHPg8E/file4fa43d38616b \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     --verbose \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════════════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence               ║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═══════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │          1║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│     100000║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │generations║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │        230║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │   37.4 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════════╝</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤═════════╤════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size     │Has Metadata║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪═════════╪════════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 458│ 14.3 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│ 115│  3.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│  8 Bytes│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│ 16 Bytes│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │ 459│ 12.6 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│338 Bytes│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│  2.9 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│ 16 Bytes│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧═════════╧════════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">path</span>, <span class="st">"output_msprime.trees"</span><span class="op">)</span><span class="op">)</span> <span class="co"># delete temporary tree sequence</span></span>

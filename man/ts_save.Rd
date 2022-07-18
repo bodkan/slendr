@@ -21,10 +21,11 @@ Save a tree sequence to a file
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree sequence
-ts <- ts_load(model)
+ts <- ts_load(slendr_ts, model)
 
 # save the tree-sequence object to a different location
 another_file <- paste(tempfile(), ".trees")
