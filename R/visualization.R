@@ -449,8 +449,6 @@ animate_model <- function(model, file = file.path(model$path, "output_ind_locati
   if (!inherits(model$world, "slendr_map"))
     stop("Cannot animate non-spatial models", call. = FALSE)
 
-  pop_names <- model$splits$pop
-
   locs <- readr::read_tsv(file, col_types = "iicidd", progress = FALSE) %>%
     dplyr::mutate(
       time = convert_slim_time(gen, model),
