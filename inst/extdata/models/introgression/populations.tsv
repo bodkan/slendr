@@ -1,5 +1,0 @@
-pop	parent	N	tsplit_gen	tsplit_orig	tremove_gen	tremove_orig	pop_id	parent_id
-CH	ancestor	10	1	6500000	-1	-1	0	-1
-AFR	CH	10	16668	6000000	-1	-1	1	0
-NEA	AFR	10	196668	600000	215334	40000	2	1
-EUR	AFR	5000	214334	70000	-1	-1	3	1

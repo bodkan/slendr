@@ -10,9 +10,9 @@ docs:
 	R -e 'pkgdown::build_reference()'
 	R -e 'pkgdown::build_reference_index()'
 	git restore docs/reference/join.html
-	git restore docs/reference/msprime.html
+	# git restore docs/reference/msprime.html
 	git restore docs/reference/region.html
-	git restore docs/reference/slim.html
+	# git restore docs/reference/slim.html
 	git restore docs/reference/world.html
 
 website:
