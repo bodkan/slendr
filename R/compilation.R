@@ -347,6 +347,8 @@ slim <- function(
   method = c("batch", "gui"), random_seed = NULL, verbose = FALSE,
   locations = NULL, slim_path = NULL
 ) {
+  method <- match.arg(method)
+
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
 
@@ -364,8 +366,6 @@ slim <- function(
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
                                col_types = "cc")
   verify_checksums(file.path(model_dir, checksums$file), checksums$hash)
-
-  method <- match.arg(method)
 
   if (is.character(slim_path) && !all(file.exists(slim_path)))
     stop("SLiM binary not found at ", slim_path, call. = FALSE)
