@@ -81,7 +81,7 @@ test_that("sampling is as close to the a single specified position as possible",
                    simulation_length = simulation_length, resolution = 1, overwrite = TRUE, force = TRUE)
 
   samples <- schedule_sampling(model, times = times, locations = locations, list(pop, n_samples))
-  slim(model, sequence_length = 1, recombination_rate = 0, sampling = samples,
+  slim(model, sequence_length = 1, recombination_rate = 0, samples = samples,
        method = "batch", save_locations = TRUE, verbose = FALSE)
 
   # load the locations of all individuals throughout the simulation, and filter
@@ -142,7 +142,7 @@ test_that("sampling is as close to the multiple specified positions as possible"
     schedule_sampling(model, times = times[2], locations = locations[2], list(pop, n_samples))
   )
 
-  slim(model, sequence_length = 1, recombination_rate = 0, sampling = samples,
+  slim(model, sequence_length = 1, recombination_rate = 0, samples = samples,
        method = "batch", save_locations = TRUE, verbose = FALSE)
 
   # load the locations of all individuals throughout the simulation, and filter

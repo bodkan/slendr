@@ -16,14 +16,14 @@ model <- compile_model(
 samples <- schedule_sampling(model, times = 100, list(pop, 10))
 
 slim(
-  model, sampling = samples,
+  model, samples = samples,
   sequence_length = 100000, recombination_rate = 1e-8,
   method = "batch",
   random_seed = 42
 )
 
 msprime(
-  model, sampling = samples,
+  model, samples = samples,
   sequence_length = 100000, recombination_rate = 1e-8,
   random_seed = 42
 )
@@ -216,7 +216,7 @@ test_that("ts_phylo gives a warning when a tree sequence is not fully spatial", 
 
 test_that("ts_nodes and ts_edges give the same result in single-tree tree sequences", {
   slim(
-    model, sampling = samples,
+    model, samples = samples,
     sequence_length = 100000, recombination_rate = 0,
     method = "batch",
     random_seed = 42

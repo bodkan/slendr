@@ -110,7 +110,7 @@ Now that we already have the `model` object ready, we can simulate data from it,
 ```{r}
 msprime(
   model, sequence_length = 100e6, recombination_rate = 1e-8,
-  sampling = rbind(nea_samples, present_samples, emh_samples),
+  samples = rbind(nea_samples, present_samples, emh_samples),
   random_seed = 314159
 )
 ```

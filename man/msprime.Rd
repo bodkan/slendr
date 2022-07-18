@@ -9,7 +9,7 @@ msprime(
   sequence_length,
   recombination_rate,
   output = file.path(model$path, "output_msprime.trees"),
-  sampling = NULL,
+  samples = NULL,
   verbose = FALSE,
   random_seed = NULL,
   save_sampling = TRUE,
@@ -26,8 +26,8 @@ recombinations per basepair per generation)}
 
 \item{output}{Path to the output tree sequence}
 
-\item{sampling}{A data frame of times at which a given number of individuals
-should be remembered in the tree-sequence (see \code{sampling} for a
+\item{samples}{A data frame of times at which a given number of individuals
+should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
@@ -72,7 +72,7 @@ ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000
 samples <- rbind(modern_samples, ancient_samples)
 
 # run a simulation using the msprime back end from a compiled slendr model object
-msprime(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, verbose = TRUE)
+msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
 
 \dontshow{unlink(file.path(model$path, "output_msprime.trees")) # delete temporary tree sequence}
 }

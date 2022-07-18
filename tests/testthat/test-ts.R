@@ -30,10 +30,10 @@ msprime_ts <- file.path(model_dir, "output_msprime.trees")
 slim(model, sequence_length = 100000, recombination_rate = 0,
      save_locations = TRUE, burnin = 0,
      method = "batch", random_seed = 314159,
-     sampling = samples, verbose = FALSE)
+     samples = samples, verbose = FALSE)
 
 msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprime_ts,
-        random_seed = 314159, sampling = samples, verbose = FALSE)
+        random_seed = 314159, samples = samples, verbose = FALSE)
 
 test_that("ts_load generates an object of the correct type (SLiM)", {
   ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
@@ -492,7 +492,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
        method = "batch", random_seed = seed, max_attempts = max_attempts,
-       sampling = samples, verbose = FALSE, output = output)
+       samples = samples, verbose = FALSE, output = output)
 
   ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
@@ -524,7 +524,7 @@ test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
   slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        save_locations = save_locations, burnin = burnin_length,
        method = "batch", random_seed = seed,
-       sampling = samples, verbose = FALSE, spatial = spatial, output = output)
+       samples = samples, verbose = FALSE, spatial = spatial, output = output)
 
   ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
@@ -551,7 +551,7 @@ test_that("slendr metadata is correctly loaded (non-spatial msprime model)", {
   spatial <- FALSE
 
   msprime(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
-       random_seed = seed, sampling = samples, verbose = FALSE, output = output)
+       random_seed = seed, samples = samples, verbose = FALSE, output = output)
 
   ts <- ts_load(model, file = output)
   metadata <- ts_metadata(ts)
@@ -657,10 +657,10 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
   slim(model, sequence_length = 100000, recombination_rate = 0,
        save_locations = TRUE, burnin = 10,
        method = "batch", random_seed = 314159,
-       sampling = samples, verbose = FALSE)
+       samples = samples, verbose = FALSE)
 
   msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprime_ts,
-          random_seed = 314159, sampling = samples, verbose = FALSE)
+          random_seed = 314159, samples = samples, verbose = FALSE)
 
   simplify_to <- c("pop1_1", "pop1_2", "pop1_17")
 

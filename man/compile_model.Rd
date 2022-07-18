@@ -59,7 +59,8 @@ default run to "the present time")}
 parameter is inferred from the model and does not need to be set manually.}
 
 \item{slim_script}{Path to a SLiM script to be used for executing the model
-(by default, a bundled backend script will be used)}
+(by default, a bundled backend script will be used). If \code{NULL}, the
+SLiM script bundled with slendr will be used.}
 
 \item{description}{Optional short description of the model}
 

@@ -28,7 +28,7 @@ present_samples <- schedule_sampling(model, times = 0, list(chimp, 1), list(afr,
 
 slim(
   model, sequence_length = 0.5e6, recombination_rate = 1e-8,
-  sampling = rbind(nea_samples, present_samples),
+  samples = rbind(nea_samples, present_samples),
   random_seed = 314159
 )
 

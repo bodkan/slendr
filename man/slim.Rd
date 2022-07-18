@@ -10,7 +10,7 @@ slim(
   recombination_rate,
   output = file.path(model$path, "output"),
   spatial = !is.null(model$world),
-  sampling = NULL,
+  samples = NULL,
   max_attempts = 1,
   save_locations = FALSE,
   coalescent_only = TRUE,
@@ -38,8 +38,8 @@ will be placed in the model directory)}
 world map was specified during model definition, simulation will proceed in
 a spatial mode.}
 
-\item{sampling}{A data frame of times at which a given number of individuals
-should be remembered in the tree-sequence (see \code{sampling} for a
+\item{samples}{A data frame of times at which a given number of individuals
+should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
@@ -101,5 +101,5 @@ ancient_samples <- schedule_sampling(model, times = c(30000, 20000, 10000), list
 samples <- rbind(modern_samples, ancient_samples)
 
 # run a simulation using the SLiM back end from a compiled slendr model object
-slim(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, verbose = TRUE)
+slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
 }

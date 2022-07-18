@@ -109,12 +109,12 @@ Now we will run both models (with and without gene flow) in the two *slendr* bac
 
 ```{r}
 # model without gene flow
-slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
-msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
+slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 
 # model with b -> x1 gene flow
-slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
-msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
+slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 ```
 
 Note that we are using exactly the same model configuration object in both simulation runs! In fact, even the function interface looks nearly exactly the same. It doesn't matter what the specific details of your demographic models are, *slendr* will interpret them correctly regardless of which back end simulation engine you choose to use.
@@ -354,11 +354,11 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
 
   # run the model in SLiM
   slim(model, sequence_length = seq_len, recombination_rate = rec_rate,
-       sampling = samples, random_seed = seed, verbose = FALSE)
+       samples = samples, random_seed = seed, verbose = FALSE)
 
   # run the same model in msprim
   msprime(model, sequence_length = seq_len, recombination_rate = rec_rate,
-          sampling = samples, random_seed = seed, verbose = FALSE)
+          samples = samples, random_seed = seed, verbose = FALSE)
 
   # load the SLiM tree sequence
   slim_ts <- ts_load(

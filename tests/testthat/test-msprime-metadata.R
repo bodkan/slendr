@@ -25,8 +25,8 @@ forward_samples <- rbind(
   schedule_sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
-slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_samples, random_seed = seed)
-msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_samples, random_seed = seed)
+slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = forward_samples, random_seed = seed)
+msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = forward_samples, random_seed = seed)
 
 forward_sts <- ts_load(forward_model, file = file.path(forward_model_dir, "output_slim.trees"))
 forward_mts <- ts_load(forward_model, file = file.path(forward_model_dir, "output_msprime.trees"))
@@ -50,7 +50,7 @@ test_that("msprime and SLiM sampling tables are exactly the same (forward model)
 test_that("sampling more individuals than is the current N triggers warning (forward model)", {
   forward_samples <- schedule_sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(x1, 1000), list(x2, 1000))
   expect_warning(
-    slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = forward_samples, random_seed = seed),
+    slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = forward_samples, random_seed = seed),
     "There were some warnings during the simulation run"
   )
 })
@@ -83,8 +83,8 @@ backward_samples <- rbind(
   schedule_sampling(backward_model, times = c(123, 250, 1000), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
-slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_samples, random_seed = seed)
-msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_samples, random_seed = seed)
+slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
+msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
 
 backward_sts <- ts_load(backward_model, file = file.path(backward_model_dir, "output_slim.trees"))
 backward_mts <- ts_load(backward_model, file = file.path(backward_model_dir, "output_msprime.trees"))
@@ -108,7 +108,7 @@ test_that("msprime and SLiM sampling tables are exactly the same (backward model
 test_that("sampling more individuals than is the current N triggers warning (backward model)", {
   backward_samples <- schedule_sampling(backward_model, times = c(123, 250, 1000), list(a, 1000), list(x1, 10), list(x2, 10), list(c, 1000))
   expect_warning(
-    slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, sampling = backward_samples, random_seed = seed),
+    slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed),
     "There were some warnings during the simulation run"
   )
 })

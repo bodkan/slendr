@@ -163,7 +163,7 @@ samples <- rbind(ancient, present)
 ```{r}
 slim(
   model, sequence_length = 100e3, recombination_rate = 1e-8, burnin = 200e3,
-  sampling = samples, method = "batch", random_seed = 314159, max_attempts = 1
+  samples = samples, method = "batch", random_seed = 314159, max_attempts = 1
 )
 ```
 
