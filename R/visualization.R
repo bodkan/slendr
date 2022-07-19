@@ -440,11 +440,13 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 #'
 #' @import ggplot2
 #' @export
-animate_model <- function(model, file = file.path(model$path, "output_ind_locations.tsv.gz"),
-                          steps, gif = NULL, width = 800, height = 560) {
+animate_model <- function(model, file, steps, gif = NULL, width = 800, height = 560) {
   if (!requireNamespace("magick", quietly = TRUE))
     message("For rendering animated GIFs, please install the R package ",
             "magick by calling `install.packages(\"magick\")")
+
+  if (!file.exists(file))
+    stop("Could not find file with locations at", file, call. = FALSE)
 
   if (!inherits(model$world, "slendr_map"))
     stop("Cannot animate non-spatial models", call. = FALSE)
