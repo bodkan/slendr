@@ -57,7 +57,7 @@ msprime(model_gf, output = ts_msprime_gf, sequence_length = seq_len, recombinati
 slim_nogf <- ts_load(model = model_nogf, file = ts_slim_nogf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
                      Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, random_seed = seed)
 
-slim_gf <- ts_load(model = model_gf, file = ts_slim_nogf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+slim_gf <- ts_load(model = model_gf, file = ts_slim_gf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
                    Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:
