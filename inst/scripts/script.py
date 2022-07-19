@@ -37,6 +37,8 @@ parser.add_argument("--sampling-schedule", metavar="FILE",
 parser.add_argument("--seed", type=int, help="Random seed value")
 parser.add_argument("--verbose", action="store_true", default=False,
                     help="Print detailed logging information?")
+parser.add_argument("--debug", action="store_true", default=False,
+                    help="Print detailed debugging information?")
 
 args = parser.parse_args()
 
@@ -188,7 +190,7 @@ for event in geneflows.itertuples():
 # (otherwise msprime complains)
 demography.sort_events()
 
-if args.verbose:
+if args.debug:
     print(demography.debug())
 
 logging.info("Running the simulation")
