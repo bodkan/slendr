@@ -96,7 +96,8 @@ f4ratio_slim <- ts_f4ratio(
 
 ```{r, include = FALSE, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_msprime.trees") && file.exists("~/Documents/postdoc/slendr/slendr_models/ex1/output_slim.trees")}
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex1/")
-ts <- ts_load(file.path(model$path, "output_msprime.trees"), model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = SEED)
+ts <- ts_load(file.path(model$path, "output_msprime.trees"), model = model) %>%
+  ts_mutate(mutation_rate = 1e-8, random_seed = SEED)
 
 samples <- ts_samples(ts) %>% group_by(pop) %>% sample_n(100)
 
@@ -109,7 +110,7 @@ f4ratio <- ts_f4ratio(
   A = "a_1", B = "b_1", C = "c_1", O = "o_1"
 )
 
-ts_slim <- ts_load(file.path(model$path, "output_slim.trees"), model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = SEED)
+ts_slim <- ts_load(file.path(model$path, "output_slim.trees"), model = model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = SEED)
 
 divergence_slim <- ts_divergence(ts_slim, split(samples$name, samples$pop))
 
@@ -229,7 +230,8 @@ heterozygosity <- ts_samples(ts) %>%
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex2")
 map <- model$world
 
-ts <- ts_load(model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7, random_seed = SEED)
+ts <- ts_load(file = "~/Documents/postdoc/slendr/slendr_models/ex2/output_slim.trees",
+              model = model) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7, random_seed = SEED)
 
 heterozygosity <- ts_samples(ts) %>%
   group_by(pop) %>%
@@ -376,7 +378,7 @@ plot_map(model)
 
 ts <- slim(
   model, burnin = 200000, samples = samples, random_seed = SEED,
-  sequence_length = 200000, recombination_rate = 1e-8, verbose = TRUE
+  sequence_length = 200000, recombination_rate = 1e-8
 )
 ```
 
@@ -427,6 +429,7 @@ ggsave("~/Documents/postdoc/slendr/ex3.pdf", p_ex3, width = 9, height = 6, units
 ```{r, include = FALSE, eval = eval_chunk && file.exists("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees")}
 model <- read_model("~/Documents/postdoc/slendr/slendr_models/ex3")
 map <- model$world
+ts <- ts_load("~/Documents/postdoc/slendr/slendr_models/ex3/output_slim.trees", model = model)
 ```
 
 ### Script from panel A
