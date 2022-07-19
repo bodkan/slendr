@@ -112,9 +112,12 @@ test_that("forward and backward models yield the same simulation result", {
   components <- c("generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 
+  locations_forward <- tempfile(fileext = ".gz")
+  locations_backward <- tempfile(fileext = ".gz")
+
   # simulation runs are the same
-  slim(forward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", random_seed = 123, verbose = FALSE)
-  slim(backward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", random_seed = 123, verbose = FALSE)
+  slim(forward, sequence_length = 1, recombination_rate = 0, locations = locations_forward, method = "batch", random_seed = 123, verbose = FALSE)
+  slim(backward, sequence_length = 1, recombination_rate = 0, locations = locations_backward, method = "batch", random_seed = 123, verbose = FALSE)
 
   # make sure the scripts are the same
   f_script <- file.path(forward$path, "script.slim") %>% readLines
@@ -122,8 +125,8 @@ test_that("forward and backward models yield the same simulation result", {
   expect_equal(f_script, b_script)
 
   # make sure that the simulated location data is the same
-  f_loc <- suppressMessages(readr::read_tsv(file.path(forward$path, "output_ind_locations.tsv.gz")))
-  b_loc <- suppressMessages(readr::read_tsv(file.path(backward$path, "output_ind_locations.tsv.gz")))
+  f_loc <- suppressMessages(readr::read_tsv(locations_forward))
+  b_loc <- suppressMessages(readr::read_tsv(locations_backward))
 
   expect_equal(f_loc, b_loc)
 })
@@ -183,8 +186,8 @@ test_that("forward and backward models yield the same simulation result (nonspat
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 
   # simulation runs are the same
-  slim(forward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", random_seed = 123, verbose = FALSE)
-  slim(backward, sequence_length = 1, recombination_rate = 0, save_locations = TRUE, method = "batch", random_seed = 123, verbose = FALSE)
+  slim(forward, sequence_length = 1, recombination_rate = 0, method = "batch", random_seed = 123, verbose = FALSE)
+  slim(backward, sequence_length = 1, recombination_rate = 0, method = "batch", random_seed = 123, verbose = FALSE)
 
   # make sure the scripts are the same
   f_script <- file.path(forward$path, "script.slim") %>% readLines
