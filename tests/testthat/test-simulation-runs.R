@@ -10,11 +10,11 @@ simulation_run <- function(direction, start, burnin, gen_time, simulation_length
                          generation_time = gen_time, resolution = 1,
                          competition = 10, mating = 10, dispersal = 10,
                          overwrite = TRUE, force = TRUE)
-  slim(model, burnin = burnin, sequence_length = 1, recombination_rate = 0,
-       save_locations = TRUE, verbose = verbose, method = method)
+  locations_file <- tempfile(fileext = ".gz")
+  ts <- slim(model, burnin = burnin, sequence_length = 1, recombination_rate = 0,
+       locations = locations_file, verbose = verbose, method = method)
 
-  df <- suppressMessages(readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
-                   progress = FALSE)) %>%
+  df <- suppressMessages(readr::read_tsv(locations_file, progress = FALSE)) %>%
     dplyr::mutate(time = convert_slim_time(gen, model)) %>%
     dplyr::filter(time >= 0)
 
@@ -23,7 +23,7 @@ simulation_run <- function(direction, start, burnin, gen_time, simulation_length
   else
     df <- dplyr::arrange(df, -time)
 
-  list(df, model)
+  list(df, model, ts)
 }
 
 # forward simulations - generation time = 1 -------------------------------
@@ -33,8 +33,9 @@ test_that("Forward simulation from generation 1 has the correct length without b
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
   model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start + simulation_length))
 
@@ -48,8 +49,9 @@ test_that("Forward simulation from generation 1 has the correct length with burn
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
   model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start + simulation_length))
 
@@ -63,8 +65,9 @@ test_that("Forward simulation from generation > 1 has the correct length without
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
   model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start + simulation_length))
 
@@ -77,9 +80,9 @@ test_that("Forward simulation from generation > 1 has the correct length with bu
   direction <- "forward"; start <- 8; simulation_length <- 5; burnin <- 100; gen_time <- 1
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start + simulation_length))
 
@@ -94,9 +97,9 @@ test_that("Backward simulation has the correct length without burnin", {
   direction <- "backward"; start <- 5; burnin <- 0; gen_time <- 1
   results <- simulation_run(direction, start, burnin, gen_time)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == 0))
 
@@ -109,9 +112,9 @@ test_that("Backward simulation has the correct length with burnin", {
   direction <- "backward"; start <- 5; burnin <- 20; gen_time <- 1
   results <- simulation_run(direction, start, burnin, gen_time)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == 0))
 
@@ -124,9 +127,9 @@ test_that("Backward simulation of limited length has the correct length without 
   direction <- "backward"; start <- 5; simulation_length = 3; burnin <- 0; gen_time <- 1
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start - simulation_length))
 
@@ -139,9 +142,9 @@ test_that("Backward simulation of limited length has the correct length with bur
   direction <- "backward"; start <- 5; simulation_length = 3; burnin <- 20; gen_time <- 1
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start - simulation_length))
 
@@ -156,9 +159,9 @@ test_that("Forward simulation from generation 1 has the correct length without b
   direction <- "forward"; start <- 20; simulation_length <- 50; burnin <- 0; gen_time <- 20
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start + simulation_length - simulation_length %% gen_time))
 
@@ -171,9 +174,9 @@ test_that("Forward simulation from generation 1 has the correct length with burn
   direction <- "forward"; start <- 20; simulation_length <- 50; burnin <- 100; gen_time <- 20
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start + simulation_length - simulation_length %% gen_time))
 
@@ -186,9 +189,9 @@ test_that("Forward simulation from generation > 1 has the correct length without
   direction <- "forward"; start <- 200; simulation_length <- 50; burnin <- 0; gen_time <- 20
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start + simulation_length - simulation_length %% gen_time))
 
@@ -201,9 +204,9 @@ test_that("Forward simulation from generation > 1 has the correct length with bu
   direction <- "forward"; start <- 200; simulation_length <- 50; burnin <- 100; gen_time <- 20
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start + simulation_length - simulation_length %% gen_time))
 
@@ -218,9 +221,9 @@ test_that("Backward simulation has the correct length without burnin", {
   direction <- "backward"; start <- 200; burnin <- 0; gen_time <- 20
   results <- simulation_run(direction, start, burnin, gen_time)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == 0))
 
@@ -233,9 +236,9 @@ test_that("Backward simulation has the correct length with burnin", {
   direction <- "backward"; start <- 200; burnin <- 300; gen_time <- 20
   results <- simulation_run(direction, start, burnin, gen_time)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == 0))
 
@@ -248,9 +251,9 @@ test_that("Backward simulation of limited length has the correct length without 
   direction <- "backward"; start <- 200; simulation_length = 50; burnin <- 0; gen_time <- 20
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start - simulation_length + simulation_length %% gen_time))
 
@@ -263,9 +266,9 @@ test_that("Backward simulation of limited length has the correct length with bur
   direction <- "backward"; start <- 5; simulation_length = 3; burnin <- 20; gen_time <- 1
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start - simulation_length + simulation_length %% gen_time))
 
@@ -280,9 +283,9 @@ test_that("Backward simulation has the correct length without burnin", {
   direction <- "backward"; start <- 200; burnin <- 0; gen_time <- 30
   results <- simulation_run(direction, start, burnin, gen_time)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start %% gen_time))
 
@@ -295,9 +298,9 @@ test_that("Backward simulation has the correct length with burnin", {
   direction <- "backward"; start <- 200; burnin <- 300; gen_time <- 30
   results <- simulation_run(direction, start, burnin, gen_time)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start %% gen_time))
 
@@ -310,9 +313,9 @@ test_that("Backward simulation of limited length has the correct length without 
   direction <- "backward"; start <- 200; simulation_length = 50; burnin <- 0; gen_time <- 30
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start - gen_time * (simulation_length %/% gen_time)))
 
@@ -325,9 +328,9 @@ test_that("Backward simulation of limited length has the correct length with bur
   direction <- "backward"; start <- 200; simulation_length = 50; burnin <- 70; gen_time <- 30
   results <- simulation_run(direction, start, burnin, gen_time, simulation_length)
   result <- results[[1]]
-  model <- results[[2]]
+  ts <- results[[3]]
 
-  samples <- ts_load(model) %>% ts_samples()
+  samples <- ts_samples(ts)
   expect_true(nrow(samples) == 5)
   expect_true(all(samples$time == start - gen_time * (simulation_length %/% gen_time)))
 
