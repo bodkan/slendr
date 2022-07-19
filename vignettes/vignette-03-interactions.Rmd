@@ -85,8 +85,11 @@ model <- compile_model(
 In order to let the populations reach an equilibrium spatial spread at the beginning of the simulation, we will let the simulation run through a burnin period of 100 generations. We will also save the spatial locations of all individuals in order to visualize the spatial population dynamics with an animation later.
 
 ```{r}
-slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
-     burnin = 100, method = "batch", verbose = FALSE, random_seed = 314159)
+ts <- slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
+           burnin = 100, method = "batch", verbose = FALSE, random_seed = 314159)
+
+# get a summary of the simulated tree-sequence object
+ts
 ```
 
 Once the simulation has finished running, we can recapitulate the spatial population dynamics simulated by the SLiM back end script as an animated GIF (we skip this animation in this vignette to make the package installation size smaller):
@@ -100,7 +103,7 @@ Alternatively, we can use tree sequence processing features of slendr to just ca
 ```{r plot_interactions, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"}
 library(ggplot2)
 
-locations <- ts_load(model) %>% ts_nodes() %>% dplyr::filter()
+locations <- ts_nodes(ts) %>% dplyr::filter()
 ggplot() + geom_sf(data = locations, aes(color = pop), size = 0.75, alpha = 0.5) + theme_minimal()
 ```
 
