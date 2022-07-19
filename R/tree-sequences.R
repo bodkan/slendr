@@ -1972,6 +1972,17 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 #' @export
 as.phylo.slendr_phylo <- function(x) { class(x) <- "phylo"; x }
 
+
+#' Print tskit's summary table of the Python tree-sequence object
+#'
+#' @param x Tree object of the class \code{slendr_phylo}
+#'
+#' @return No return value, simply prints the tskit summary table to the terminal
+#'
+#' @export print.slendr_ts
+#' @export
+print.slendr_ts <- function(x, ...) { summary(x, ...) }
+
 # private tree sequence utility functions ---------------------------------
 
 # Function for extracting numerical node IDs for various statistics
