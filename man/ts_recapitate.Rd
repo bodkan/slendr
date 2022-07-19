@@ -42,6 +42,8 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 ts <-
   ts_load(slendr_ts, model) \%>\%
   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
+
+ts
 }
 \seealso{
 \code{\link{ts_nodes}} for extracting useful information about

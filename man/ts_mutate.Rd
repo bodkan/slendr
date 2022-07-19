@@ -43,6 +43,8 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 
 ts <- ts_load(slendr_ts, model)
 ts_mutate <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 42)
+
+ts_mutate
 }
 \seealso{
 \code{\link{ts_nodes}} for extracting useful information about

@@ -73,6 +73,8 @@
 #' # load tree sequence, recapitate it, simplify it and overlay neutral mutations
 #' ts <- ts_load(slendr_ts, model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
 #'               recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+#'
+#' ts
 #' @export
 ts_load <- function(file, model = NULL,
                     recapitate = FALSE, simplify = FALSE, mutate = FALSE,
@@ -197,6 +199,8 @@ ts_save <- function(ts, file) {
 #' ts <-
 #'   ts_load(slendr_ts, model) %>%
 #'   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
+#'
+#' ts
 #' @export
 ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, random_seed = NULL) {
   check_ts_class(ts)
@@ -296,6 +300,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' ts <- ts_load(slendr_ts, model)
+#' ts
 #'
 #' # simplify tree sequence to sampled individuals
 #' ts_simplified <- ts_simplify(ts)
@@ -306,6 +311,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
 #'   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
 #'                   "AFR_2", "EUR_1", "EUR_2")
 #' )
+#'
+#' ts_small
 #' @export
 ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
   check_ts_class(ts)
@@ -449,6 +456,8 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 #'
 #' ts <- ts_load(slendr_ts, model)
 #' ts_mutate <- ts_mutate(ts, mutation_rate = 1e-8, random_seed = 42)
+#'
+#' ts_mutate
 #' @export
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
                       keep_existing = TRUE, mut_type = NULL) {

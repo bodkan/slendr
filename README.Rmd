@@ -270,7 +270,7 @@ ts_slim <- slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
 ```{r, echo = FALSE}
 locations_file <- paste0(tempfile(), ".gz")
 ts_slim <- slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
-                locations = locations_file, method = "batch", random_seed = 314159, verbose = T)
+                locations = locations_file, method = "batch", random_seed = 314159)
 ```
 
 As specified here, *slendr*'s SLiM backend will simulate 10 Mb of sequence for each individual, and produce a tree sequence output from the simulation run which can be analysed by many [built-in population genetic functions](https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics). By default, all individuals living at the end of the simulation are recorded as samples in the tree sequence. If a specific set of samples (ancient and modern) is needed, this can be defined accordingly using a [dedicated function](https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events).

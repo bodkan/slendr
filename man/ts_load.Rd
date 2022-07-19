@@ -100,6 +100,8 @@ ts <- ts_load(slendr_ts, model, recapitate = TRUE, simplify = TRUE,
 # load tree sequence, recapitate it, simplify it and overlay neutral mutations
 ts <- ts_load(slendr_ts, model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
               recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+
+ts
 }
 \seealso{
 \code{\link{ts_nodes}} for extracting useful information about

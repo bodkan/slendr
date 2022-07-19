@@ -1117,10 +1117,11 @@ area <- function(x) {
 #'   from, how many individuals to sample
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE, slim = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
-#' # load an example model
-#' model <- read_example("introgression")
+#' # load an example model with an already simulated tree sequence
+#' path <- system.file("extdata/models/introgression", package = "slendr")
+#' model <- read_model(path)
 #'
 #' # afr and eur objects would normally be created before slendr model compilation,
 #' # but here we take them out of the model object already compiled for this
@@ -1134,6 +1135,10 @@ area <- function(x) {
 #'   model, times = c(20000, 10000, 5000, 0),
 #'   list(afr, 10), list(eur, 100)
 #' )
+#' 
+#' # the result of `schedule_sampling` is a simple data frame (note that the locations
+#' # of sampling locations have `NA` values because the model is non-spatial)
+#' schedule
 #' @export
 schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   if (!inherits(model, "slendr_model"))

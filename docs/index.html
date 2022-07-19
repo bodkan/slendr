@@ -499,10 +499,150 @@ spatial simulation as it happens in real time.</p>
 <p>The <code>slim</code> function generates a complete SLiM script
 tailored to run the spatial model we defined above. This saves you, the
 user, a tremendous amount of time, because you don’t have to write new
-SLiM code every time you design a new demographic model.</p>
+SLiM code every time you design a new demographic model. The output of
+the simulation run from any <em>slendr</em> model is always a <a href="https://tskit.dev/learn.html#what" class="external-link">tree sequence</a>, here loaded
+into an object <code>ts_slim</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,
-     save_locations <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"batch"</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">ts_slim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,
+                method <span class="op">=</span> <span class="st">"batch"</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">#&gt; Tree-sequence recording is on but no sampling schedule was given. Generating one for all individuals surviving to the end of the simulation.</span>
+<span class="co">#&gt; --------------------------------------------------</span>
+<span class="co">#&gt; SLiM command to be executed:</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; slim  \</span>
+<span class="co">#&gt;     -d SEED=314159  \</span>
+<span class="co">#&gt;     -d 'SAMPLES="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c726e8450"' \</span>
+<span class="co">#&gt;     -d 'MODEL="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c30fc8ba8"' \</span>
+<span class="co">#&gt;     -d 'OUTPUT_TS="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c35b0dae1.trees"' \</span>
+<span class="co">#&gt;     -d SPATIAL=T \</span>
+<span class="co">#&gt;     -d SEQUENCE_LENGTH=1e+07 \</span>
+<span class="co">#&gt;     -d RECOMB_RATE=1e-08 \</span>
+<span class="co">#&gt;     -d BURNIN_LENGTH=0 \</span>
+<span class="co">#&gt;     -d SIMULATION_LENGTH=1733 \</span>
+<span class="co">#&gt;     -d 'OUTPUT_LOCATIONS="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c53369ea.gz"' \</span>
+<span class="co">#&gt;     -d COALESCENT_ONLY=T \</span>
+<span class="co">#&gt;     -d MAX_ATTEMPTS=1 \</span>
+<span class="co">#&gt;     /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c30fc8ba8/script.slim </span>
+<span class="co">#&gt; --------------------------------------------------</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; // Initial random seed:</span>
+<span class="co">#&gt; 2392199267212</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; // RunInitializeCallbacks():</span>
+<span class="co">#&gt; SEED: 314159</span>
+<span class="co">#&gt; initializeSLiMOptions(keepPedigrees = T, dimensionality = 'xy');</span>
+<span class="co">#&gt; initializeInteractionType(0, "xy", reciprocal=T, maxDistance=13);</span>
+<span class="co">#&gt; initializeInteractionType(1, "xy", reciprocal=T, maxDistance=10);</span>
+<span class="co">#&gt; initializeInteractionType(2, "xy", reciprocal=T, maxDistance=13);</span>
+<span class="co">#&gt; initializeInteractionType(3, "xy", reciprocal=T, maxDistance=10);</span>
+<span class="co">#&gt; initializeInteractionType(4, "xy", reciprocal=T, maxDistance=13);</span>
+<span class="co">#&gt; initializeInteractionType(5, "xy", reciprocal=T, maxDistance=10);</span>
+<span class="co">#&gt; initializeInteractionType(6, "xy", reciprocal=T, maxDistance=13);</span>
+<span class="co">#&gt; initializeInteractionType(7, "xy", reciprocal=T, maxDistance=10);</span>
+<span class="co">#&gt; initializeInteractionType(8, "xy", reciprocal=T, maxDistance=13);</span>
+<span class="co">#&gt; initializeInteractionType(9, "xy", reciprocal=T, maxDistance=10);</span>
+<span class="co">#&gt; initializeInteractionType(10, "xy", reciprocal=T, maxDistance=13);</span>
+<span class="co">#&gt; initializeInteractionType(11, "xy", reciprocal=T, maxDistance=10);</span>
+<span class="co">#&gt; initializeTreeSeq();</span>
+<span class="co">#&gt; initializeMutationType(0, 0.5, "f", 0);</span>
+<span class="co">#&gt; initializeGenomicElementType(1, m0, 1);</span>
+<span class="co">#&gt; initializeGenomicElement(g1, 0, 9999999);</span>
+<span class="co">#&gt; initializeMutationRate(0);</span>
+<span class="co">#&gt; initializeRecombinationRate(1e-08);</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; // Starting run at generation &lt;start&gt;:</span>
+<span class="co">#&gt; 1 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Generation 1: starting the simulation</span>
+<span class="co">#&gt; Generation 1: creating AFR(p0)</span>
+<span class="co">#&gt; Generation 1: updating map for AFR(p0)</span>
+<span class="co">#&gt; Generation 1: distributing individuals of AFR(p0)</span>
+<span class="co">#&gt; Generation 34: split of OOA(p1) from AFR(p0)</span>
+<span class="co">#&gt; Generation 34: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 34: distributing individuals of OOA(p1)</span>
+<span class="co">#&gt; Generation 68: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 83: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 98: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 113: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 128: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 143: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 159: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 174: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 189: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 204: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 219: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 234: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 249: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 265: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 280: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 295: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 310: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 325: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 340: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 356: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 371: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 386: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 401: updating map for OOA(p1)</span>
+<span class="co">#&gt; Generation 801: split of EHG(p2) from OOA(p1)</span>
+<span class="co">#&gt; Generation 801: split of ANA(p3) from OOA(p1)</span>
+<span class="co">#&gt; Generation 801: updating map for EHG(p2)</span>
+<span class="co">#&gt; Generation 801: distributing individuals of EHG(p2)</span>
+<span class="co">#&gt; Generation 801: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 801: distributing individuals of ANA(p3)</span>
+<span class="co">#&gt; Generation 901: cleanup of OOA(p1)</span>
+<span class="co">#&gt; Generation 901: split of EUR(p4) from EHG(p2)</span>
+<span class="co">#&gt; Generation 901: updating map for EUR(p4)</span>
+<span class="co">#&gt; Generation 901: distributing individuals of EUR(p4)</span>
+<span class="co">#&gt; Generation 1406: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1411: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1416: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1421: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1426: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1431: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1436: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1441: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1446: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1451: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1456: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1461: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1466: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1468: geneflow ANA(p3) -&gt; EUR(p4) (0.00757576% over 66 generations)</span>
+<span class="co">#&gt; Generation 1471: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1476: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1481: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1486: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1491: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1496: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1501: split of YAM(p5) from EHG(p2)</span>
+<span class="co">#&gt; Generation 1501: updating map for ANA(p3)</span>
+<span class="co">#&gt; Generation 1501: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1501: distributing individuals of YAM(p5)</span>
+<span class="co">#&gt; Generation 1518: geneflow ANA(p3) -&gt; YAM(p5) (0.166667% over 3 generations)</span>
+<span class="co">#&gt; Generation 1521: geneflow ANA(p3) -&gt; YAM(p5) set to 0%</span>
+<span class="co">#&gt; Generation 1534: geneflow ANA(p3) -&gt; EUR(p4) set to 0%</span>
+<span class="co">#&gt; Generation 1534: cleanup of EHG(p2)</span>
+<span class="co">#&gt; Generation 1568: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1574: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1581: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1588: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1594: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1601: geneflow YAM(p5) -&gt; EUR(p4) (0.0227273% over 33 generations)</span>
+<span class="co">#&gt; Generation 1601: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1601: cleanup of ANA(p3)</span>
+<span class="co">#&gt; Generation 1608: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1614: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1621: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1628: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1634: geneflow YAM(p5) -&gt; EUR(p4) set to 0%</span>
+<span class="co">#&gt; Generation 1634: updating map for YAM(p5)</span>
+<span class="co">#&gt; Generation 1651: cleanup of YAM(p5)</span>
+<span class="co">#&gt; Generation 1734: sampling all (3000) individuals of AFR(p0)</span>
+<span class="co">#&gt; Generation 1734: sampling all (2000) individuals of EUR(p4)</span>
+<span class="co">#&gt; Generation 1734: saving the tree sequence output to '/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c35b0dae1.trees'</span>
+<span class="co">#&gt; Generation 1734: simulation finished</span>
+<span class="co">#&gt; Tree sequence was saved to:</span>
+<span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c35b0dae1.trees </span>
+<span class="co">#&gt; Loading the tree-sequence file...</span></code></pre>
 <p>As specified here, <em>slendr</em>’s SLiM backend will simulate 10 Mb
 of sequence for each individual, and produce a tree sequence output from
 the simulation run which can be analysed by many <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">built-in
@@ -515,15 +655,58 @@ function</a>.</p>
 easily simulated standard, non-spatial data by running the same model
 through <em>slendr</em>’s <code><a href="reference/msprime.html">msprime()</a></code> back end without the
 need to make any changes:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></code></pre></div>
-<p>Finally, here is a very quick overview of the SLiM simulation run
-summarised as a GIF animation. Again, please note that the simulation is
-extremely simplified. We only simulated a very small number of
-individuals in each population, and we also didn’t specify any <a href="https://www.slendr.net/articles/vignette-03-interactions.html">dispersal
-dynamics</a> which is why the populations look so clumped.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/animate_model.html">animate_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, steps <span class="op">=</span> <span class="fl">50</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">ts_msprime</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></code></pre></div>
+<p>Here is a very quick overview of the SLiM simulation run summarised
+as a GIF animation. Again, please note that the simulation is extremely
+simplified. We only simulated a very small number of individuals in each
+population, and we also didn’t specify any <a href="https://www.slendr.net/articles/vignette-03-interactions.html">dispersal
+dynamics</a> which is why the populations look so clumped.</p>
+<pre><code><span class="co">#&gt; Rendering [&gt;-------------------------------------------] at 4.9 fps ~ eta: 10s</span>
+<span class="co">#&gt; Rendering [=&gt;--------------------------------------------] at 5 fps ~ eta: 10s</span>
+<span class="co">#&gt; Rendering [==&gt;-------------------------------------------] at 5 fps ~ eta: 9s</span>
+<span class="co">#&gt; Rendering [===&gt;------------------------------------------] at 5 fps ~ eta: 9s</span>
+<span class="co">#&gt; Rendering [===&gt;----------------------------------------] at 4.9 fps ~ eta: 9s</span>
+<span class="co">#&gt; Rendering [=====&gt;----------------------------------------] at 5 fps ~ eta: 9s</span>
+<span class="co">#&gt; Rendering [======&gt;---------------------------------------] at 5 fps ~ eta: 8s</span>
+<span class="co">#&gt; Rendering [=======&gt;--------------------------------------] at 5 fps ~ eta: 8s</span>
+<span class="co">#&gt; Rendering [========&gt;-------------------------------------] at 5 fps ~ eta: 8s</span>
+<span class="co">#&gt; Rendering [=========&gt;------------------------------------] at 5 fps ~ eta: 8s</span>
+<span class="co">#&gt; Rendering [==========&gt;-----------------------------------] at 5 fps ~ eta: 8s</span>
+<span class="co">#&gt; Rendering [===========&gt;----------------------------------] at 5 fps ~ eta: 7s</span>
+<span class="co">#&gt; Rendering [============&gt;---------------------------------] at 5 fps ~ eta: 7s</span>
+<span class="co">#&gt; Rendering [=============&gt;--------------------------------] at 5 fps ~ eta: 7s</span>
+<span class="co">#&gt; Rendering [==============&gt;-------------------------------] at 5 fps ~ eta: 7s</span>
+<span class="co">#&gt; Rendering [==============&gt;-----------------------------] at 4.9 fps ~ eta: 7s</span>
+<span class="co">#&gt; Rendering [===============&gt;----------------------------] at 4.9 fps ~ eta: 6s</span>
+<span class="co">#&gt; Rendering [================&gt;---------------------------] at 4.9 fps ~ eta: 6s</span>
+<span class="co">#&gt; Rendering [=================&gt;--------------------------] at 4.9 fps ~ eta: 6s</span>
+<span class="co">#&gt; Rendering [==================&gt;-------------------------] at 4.8 fps ~ eta: 6s</span>
+<span class="co">#&gt; Rendering [===================&gt;------------------------] at 4.8 fps ~ eta: 6s</span>
+<span class="co">#&gt; Rendering [====================&gt;-----------------------] at 4.8 fps ~ eta: 5s</span>
+<span class="co">#&gt; Rendering [=====================&gt;----------------------] at 4.8 fps ~ eta: 5s</span>
+<span class="co">#&gt; Rendering [======================&gt;---------------------] at 4.8 fps ~ eta: 5s</span>
+<span class="co">#&gt; Rendering [=======================&gt;--------------------] at 4.7 fps ~ eta: 5s</span>
+<span class="co">#&gt; Rendering [========================&gt;-------------------] at 4.7 fps ~ eta: 5s</span>
+<span class="co">#&gt; Rendering [=========================&gt;------------------] at 4.7 fps ~ eta: 4s</span>
+<span class="co">#&gt; Rendering [==========================&gt;-----------------] at 4.7 fps ~ eta: 4s</span>
+<span class="co">#&gt; Rendering [===========================&gt;----------------] at 4.7 fps ~ eta: 4s</span>
+<span class="co">#&gt; Rendering [============================&gt;---------------] at 4.7 fps ~ eta: 4s</span>
+<span class="co">#&gt; Rendering [=============================&gt;--------------] at 4.7 fps ~ eta: 3s</span>
+<span class="co">#&gt; Rendering [==============================&gt;-------------] at 4.7 fps ~ eta: 3s</span>
+<span class="co">#&gt; Rendering [===============================&gt;------------] at 4.7 fps ~ eta: 3s</span>
+<span class="co">#&gt; Rendering [================================&gt;-----------] at 4.7 fps ~ eta: 3s</span>
+<span class="co">#&gt; Rendering [=================================&gt;----------] at 4.7 fps ~ eta: 2s</span>
+<span class="co">#&gt; Rendering [==================================&gt;---------] at 4.7 fps ~ eta: 2s</span>
+<span class="co">#&gt; Rendering [===================================&gt;--------] at 4.7 fps ~ eta: 2s</span>
+<span class="co">#&gt; Rendering [====================================&gt;-------] at 4.7 fps ~ eta: 2s</span>
+<span class="co">#&gt; Rendering [=====================================&gt;------] at 4.7 fps ~ eta: 1s</span>
+<span class="co">#&gt; Rendering [======================================&gt;-----] at 4.7 fps ~ eta: 1s</span>
+<span class="co">#&gt; Rendering [=======================================&gt;----] at 4.7 fps ~ eta: 1s</span>
+<span class="co">#&gt; Rendering [========================================&gt;---] at 4.7 fps ~ eta: 1s</span>
+<span class="co">#&gt; Rendering [=========================================&gt;--] at 4.7 fps ~ eta: 0s</span>
+<span class="co">#&gt; Rendering [==========================================&gt;-] at 4.7 fps ~ eta: 0s</span>
+<span class="co">#&gt; Rendering [============================================] at 4.7 fps ~ eta: 0s</span></code></pre>
 <div class="figure">
 <img src="reference/figures/README-plot_gif-1.gif" alt=""><p class="caption">plot of chunk plot_gif</p>
 </div>
