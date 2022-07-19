@@ -24,11 +24,13 @@ samples <- rbind(
   schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
-slim_ts <- file.path(model_dir, "output_slim.trees")
-msprime_ts <- file.path(model_dir, "output_msprime.trees")
+slim_ts <- tempfile(fileext = ".trees")
+msprime_ts <- tempfile(fileext = ".trees")
 
-slim(model, sequence_length = 100000, recombination_rate = 0,
-     save_locations = TRUE, burnin = 0,
+locations_file <- tempfile(fileext = ".gz")
+
+slim(model, sequence_length = 100000, recombination_rate = 0, output = slim_ts,
+     locations = locations_file, burnin = 0,
      method = "batch", random_seed = 314159,
      samples = samples, verbose = FALSE)
 
@@ -101,8 +103,7 @@ test_that("tree sequence contains the right number of sampled individuals (SLiM)
 test_that("locations and times in the tree sequence match values saved by SLiM", {
   ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
   individuals <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
-  true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
-                                    col_types = "iicidd") %>%
+  true_locations <- readr::read_tsv(locations_file, col_types = "iicidd") %>%
     dplyr::mutate(time = convert_slim_time(gen, model))
   joined <- dplyr::inner_join(individuals, true_locations,
                               by = c("pedigree_id" = "ind")) %>%
@@ -485,16 +486,15 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   burnin_length <- 123
   max_attempts <- 3
   recomb_rate <- 0.001
-  save_locations <- FALSE
+  locations_file <- tempfile(fileext = ".gz")
   seed <- 987
   sequence_length <- 999
 
-  slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
-       save_locations = save_locations, burnin = burnin_length,
+  ts <- slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
+       locations = locations_file, burnin = burnin_length,
        method = "batch", random_seed = seed, max_attempts = max_attempts,
        samples = samples, verbose = FALSE, output = output)
 
-  ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
 
   expect_true(gsub("slendr_", "", metadata$version) == packageVersion("slendr"))
@@ -516,17 +516,16 @@ test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
 
   burnin_length <- 123
   recomb_rate <- 0.001
-  save_locations <- FALSE
+  locations_file <- tempfile(fileext = ".gz")
   seed <- 987
   sequence_length <- 999
   spatial <- FALSE
 
-  slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
-       save_locations = save_locations, burnin = burnin_length,
+  ts <- slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
+       locations = locations_file, burnin = burnin_length,
        method = "batch", random_seed = seed,
        samples = samples, verbose = FALSE, spatial = spatial, output = output)
 
-  ts <- ts_load(model, file = paste0(output, "_slim.trees"))
   metadata <- ts_metadata(ts)
 
   expect_true(gsub("slendr_", "", metadata$version) == packageVersion("slendr"))
@@ -545,15 +544,12 @@ test_that("slendr metadata is correctly loaded (non-spatial msprime model)", {
 
   burnin_length <- 123
   recomb_rate <- 0.001
-  save_locations <- FALSE
   seed <- 987
   sequence_length <- 999
   spatial <- FALSE
 
-  msprime(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
+  ts <- msprime(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
        random_seed = seed, samples = samples, verbose = FALSE, output = output)
-
-  ts <- ts_load(model, file = output)
   metadata <- ts_metadata(ts)
 
   expect_true(gsub("slendr_", "", metadata$version) == packageVersion("slendr"))
@@ -579,13 +575,13 @@ test_that("ts_mutate and mutation through ts_load give the same result (SLiM)", 
 test_that("ts_mutate and mutation through ts_load give the same result (msprime)", {
   ts <- ts_load(model, file = msprime_ts, random_seed = 123)
   ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
-  ts_mut2 <- ts_load(model, msprime_ts, mutate = TRUE, mutation_rate = 1e-7, random_seed = 123)
+  ts_mut2 <- ts_load(msprime_ts, model, mutate = TRUE, mutation_rate = 1e-7, random_seed = 123)
   expect_equal(suppressMessages(ts_genotypes(ts_mut1)),
                suppressMessages(ts_genotypes(ts_mut2)))
 })
 
 test_that("ts_mutate correctly specifies the SLiM mutation type", {
-  ts <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, random_seed = 123,
+  ts <- ts_load(slim_ts, model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
                 recombination_rate = 0, Ne = 100)
   ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
   ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123, mut_type = 123456789)
@@ -606,13 +602,11 @@ test_that("ts_mutate correctly specifies the SLiM mutation type", {
 })
 
 test_that("tree sequence contains the specified number of sampled individuals (default sampling)", {
-  slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-       method = "batch", random_seed = 314159, verbose = FALSE)
+  ts <- slim(model, sequence_length = 100000, recombination_rate = 0, locations = locations_file, burnin = 10,
+       method = "batch", random_seed = 314159, verbose = FALSE) %>%
+    ts_recapitate(Ne = 1, recombination_rate = 0) %>%
+    ts_simplify()
 
-  suppressMessages(
-    ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1,
-                  recombination_rate = 0, simplify = TRUE)
-  )
   counts <- ts_nodes(ts) %>%
     dplyr::filter(sampled) %>%
     dplyr::as_tibble() %>%
@@ -622,15 +616,13 @@ test_that("tree sequence contains the specified number of sampled individuals (d
 })
 
 test_that("locations and times in the tree sequence match values saved by SLiM (default sampling)", {
-  slim(model, sequence_length = 100000, recombination_rate = 0, save_locations = TRUE, burnin = 10,
-       method = "batch", random_seed = 314159, verbose = FALSE)
+  ts <- slim(model, sequence_length = 100000, recombination_rate = 0, locations = locations_file, burnin = 10,
+       method = "batch", random_seed = 314159, verbose = FALSE) %>%
+    ts_recapitate(Ne = 1, recombination_rate = 0) %>%
+    ts_simplify()
 
-  suppressMessages(
-    ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
-  )
   individuals <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
-  true_locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
-                                    col_types = "iicidd") %>%
+  true_locations <- readr::read_tsv(locations_file, col_types = "iicidd") %>%
     dplyr::mutate(time = convert_slim_time(gen, model))
   joined <- dplyr::inner_join(individuals, true_locations,
                               by = c("pedigree_id" = "ind")) %>%
@@ -655,30 +647,30 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
   msprime_ts <- file.path(model_dir, "msprime_output.trees")
 
   slim(model, sequence_length = 100000, recombination_rate = 0,
-       save_locations = TRUE, burnin = 10,
+       locations = locations_file, burnin = 10,
        method = "batch", random_seed = 314159,
-       samples = samples, verbose = FALSE)
+       samples = samples, verbose = FALSE, output = slim_ts)
 
   msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprime_ts,
           random_seed = 314159, samples = samples, verbose = FALSE)
 
   simplify_to <- c("pop1_1", "pop1_2", "pop1_17")
 
-  sts1 <- ts_load(model, file = slim_ts)
-  sts2 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
-  sts3 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
+  sts1 <- ts_load(model = model, file = slim_ts)
+  sts2 <- ts_load(model = model, file = slim_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
+  sts3 <- ts_load(model = model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
                  simplify_to = simplify_to)
-  sts4 <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000)
+  sts4 <- ts_load(model = model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000)
   sts5 <- ts_mutate(sts4, mutation_rate = 1e-7)
-  sts6 <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000,
+  sts6 <- ts_load(model = model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000,
                  mutate = TRUE, mutation_rate = 1e-7)
 
-  mts1 <- ts_load(model, file = msprime_ts)
-  mts2 <- ts_load(model, file = msprime_ts)
-  mts3 <- ts_load(model, file = msprime_ts, simplify = TRUE, simplify_to = simplify_to)
-  suppressWarnings(mts4 <- ts_load(model, file = msprime_ts, simplify = TRUE))
+  mts1 <- ts_load(model = model, file = msprime_ts)
+  mts2 <- ts_load(model = model, file = msprime_ts)
+  mts3 <- ts_load(model = model, file = msprime_ts, simplify = TRUE, simplify_to = simplify_to)
+  suppressWarnings(mts4 <- ts_load(model = model, file = msprime_ts, simplify = TRUE))
   mts5 <- ts_mutate(mts4, mutation_rate = 1e-7)
-  mts6 <- ts_load(model, file = msprime_ts, mutate = TRUE, mutation_rate = 1e-7)
+  mts6 <- ts_load(model = model, file = msprime_ts, mutate = TRUE, mutation_rate = 1e-7)
 
   expect_equal(ts_samples(sts1), ts_samples(mts1))
   expect_equal(ts_samples(sts2), ts_samples(mts2))
@@ -713,18 +705,4 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
   expect_equal(sdata4$time, mdata4$time)
   expect_equal(sdata5$time, mdata5$time)
   expect_equal(sdata6$time, mdata6$time)
-})
-
-test_that("ts_load gives error when no .trees file is present", {
-  new_dir <- tempfile()
-  dir.create(new_dir)
-  file.copy(model$path, new_dir, recursive = TRUE)
-  new_dir <- file.path(new_dir, "ts")
-  new_model <- read_model(new_dir)
-  ts_files <- list.files(new_model$path, "*.trees", full.names = TRUE)
-  unlink(ts_files)
-  expect_error(
-    ts_load(new_model),
-    "No SLiM or msprime tree sequence file found in the model directory"
-  )
 })
