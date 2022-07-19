@@ -4,14 +4,7 @@
 \alias{animate_model}
 \title{Animate the simulated population dynamics}
 \usage{
-animate_model(
-  model,
-  file = file.path(model$path, "output_ind_locations.tsv.gz"),
-  steps,
-  gif = NULL,
-  width = 800,
-  height = 560
-)
+animate_model(model, file, steps, gif = NULL, width = 800, height = 560)
 }
 \arguments{
 \item{model}{Compiled \code{slendr_model} model object}

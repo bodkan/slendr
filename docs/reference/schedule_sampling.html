@@ -162,13 +162,16 @@ time.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span>, slim <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># load an example model</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in read_example("introgression"):</span> could not find function "read_example"</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># afr and eur objects would normally be created before slendr model compilation,</span></span>
 <span class="r-in"><span class="co"># but here we take them out of the model object already compiled for this</span></span>
 <span class="r-in"><span class="co"># example (in a standard slendr simulation pipeline, this wouldn't be necessary)</span></span>
 <span class="r-in"><span class="va">afr</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"AFR"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'model' not found</span>
 <span class="r-in"><span class="va">eur</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"EUR"</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'model' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># schedule the recording of 10 African and 100 European individuals from a</span></span>
 <span class="r-in"><span class="co"># given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)</span></span>
@@ -176,6 +179,7 @@ time.</p>
 <span class="r-in">  <span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20000</span>, <span class="fl">10000</span>, <span class="fl">5000</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">100</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in schedule_sampling(model, times = c(20000, 10000, 5000, 0), list(afr,     10), list(eur, 100)):</span> object 'model' not found</span>
 </code></pre></div>
     </div>
   </div>

@@ -9,6 +9,7 @@ msprime(
   sequence_length,
   recombination_rate,
   samples = NULL,
+  output = tempfile(),
   random_seed = NULL,
   verbose = FALSE,
   debug = FALSE
@@ -36,7 +37,7 @@ recorded in the tree-sequence output file.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
-(represented by the Python class \code{tskit.trees.TreeSequence})
+(internally represented by the Python object \code{tskit.trees.TreeSequence})
 }
 \description{
 This function will execute a built-in msprime script and run a compiled
@@ -46,7 +47,7 @@ slendr demographic model.
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model
-model <- read_example("introgression")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # afr and eur objects would normally be created before slendr model compilation,
 # but here we take them out of the model object already compiled for this
@@ -64,7 +65,7 @@ ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000
 samples <- rbind(modern_samples, ancient_samples)
 
 # run a simulation using the msprime back end from a compiled slendr model object
-msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
+ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
 
-\dontshow{unlink(file.path(model$path, "output_msprime.trees")) # delete temporary tree sequence}
+summary(ts)
 }

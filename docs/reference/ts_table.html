@@ -158,19 +158,21 @@ data</p></div>
 <span class="r-in"><span class="co"># get the 'raw' tskit table of individuals</span></span>
 <span class="r-in"><span class="fu">ts_table</span><span class="op">(</span><span class="va">ts</span>, <span class="st">"individuals"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 50 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ind_id  time pedigree_id raster_x raster_y pop_id alive remembered retained</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>      0   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>341        0        0      0 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>      1   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>350        0        0      1 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>      2   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>353        0        0      1 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>      3   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>355        0        0      1 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>      4   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>357        0        0      1 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>      5   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>359        0        0      1 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>      6   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>480        0        0      3 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>      7   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>520        0        0      3 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>      8   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>711        0        0      3 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>      9   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>797        0        0      3 TRUE  TRUE       TRUE    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 40 more rows, and 2 more variables: sampled &lt;lgl&gt;, time_tskit &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ind_id  time pedigree_id raste…¹ raste…² pop_id alive remem…³ retai…⁴ sampled</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>      0   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>341       0       0      0 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>      1   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>350       0       0      1 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>      2   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>353       0       0      1 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>      3   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>355       0       0      1 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>      4   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>357       0       0      1 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>      5   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>359       0       0      1 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>      6   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>480       0       0      3 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>      7   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>520       0       0      3 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>      8   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>711       0       0      3 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>      9   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>797       0       0      3 TRUE  TRUE    TRUE    TRUE   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 40 more rows, 1 more variable: time_tskit &lt;dbl&gt;, and abbreviated</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   variable names ¹​raster_x, ²​raster_y, ³​remembered, ⁴​retained</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># get the 'raw' tskit table of edges</span></span>
 <span class="r-in"><span class="fu">ts_table</span><span class="op">(</span><span class="va">ts</span>, <span class="st">"edges"</span><span class="op">)</span></span>
@@ -188,6 +190,7 @@ data</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     8     7     30     0 <span style="text-decoration: underline;">500</span>000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     9     8     30     0 <span style="text-decoration: underline;">500</span>000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 95 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># get the 'raw' tskit table of nodes</span></span>
 <span class="r-in"><span class="fu">ts_table</span><span class="op">(</span><span class="va">ts</span>, <span class="st">"nodes"</span><span class="op">)</span></span>
@@ -205,6 +208,7 @@ data</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       8      3      1   -<span style="color: #BB0000;">10</span>          0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       9      3      1   -<span style="color: #BB0000;">10</span>          0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 53 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># get the 'raw' tskit table of mutations</span></span>
 <span class="r-in"><span class="fu">ts_table</span><span class="op">(</span><span class="va">ts</span>, <span class="st">"mutations"</span><span class="op">)</span></span>
@@ -222,6 +226,7 @@ data</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     8     8    26 1<span style="text-decoration: underline;">158</span>835.    <span style="text-decoration: underline;">38</span>628. </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     9     9    22    <span style="text-decoration: underline;">1</span>480.       49.7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 2,101 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span>
 </code></pre></div>
     </div>
   </div>

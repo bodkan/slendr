@@ -140,10 +140,11 @@ over very long time-scales.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># load an example model with an already simulated tree sequence and plot</span></span>
 <span class="r-in"><span class="co"># it as an "admixture graph"</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_example.html">read_example</a></span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"introgression"</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in read_example("introgression"):</span> could not find function "read_example"</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">plot_model</span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-plt img"><img src="plot_model-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot_model(model, sizes = FALSE, log = TRUE):</span> object 'model' not found</span>
 </code></pre></div>
     </div>
   </div>
