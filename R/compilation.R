@@ -469,6 +469,11 @@ slim <- function(
 
   if (!file.exists(output))
     stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
+  else if (verbose) {
+     cat("Tree sequence was saved to:\n", output, "\n")
+     cat("Loading the tree-sequence file...\n")
+
+  }
 
   ts <- ts_load(model, file = output)
   return(ts)
@@ -522,7 +527,7 @@ slim <- function(
 #' \dontshow{unlink(file.path(model$path, "output_msprime.trees")) # delete temporary tree sequence}
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
-                    random_seed = NULL, verbose = FALSE, debug = FALSE) {
+                    output = tempfile(), random_seed = NULL, verbose = FALSE, debug = FALSE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -539,8 +544,6 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   verify_checksums(file.path(model_dir, checksums$file), checksums$hash)
 
   script_path <- path.expand(file.path(model_dir, "script.py"))
-
-  output <- paste0(tempfile(), ".trees")
 
   if (!is.null(samples)) {
     sampling_path <- tempfile()
@@ -585,6 +588,11 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 
   if (!file.exists(output))
     stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
+  else if (verbose) {
+     cat("Tree sequence was saved to:\n", output, "\n")
+     cat("Loading the tree-sequence file...\n")
+
+  }
 
   ts <- ts_load(model, file = output)
   return(ts)
