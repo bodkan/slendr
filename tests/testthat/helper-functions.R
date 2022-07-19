@@ -9,11 +9,11 @@ run_sim <- function(pop, direction, simulation_length = NULL, method = "batch", 
     path = model_dir, direction = direction, simulation_length = simulation_length, overwrite = TRUE, force = TRUE
   )
 
-  slim(model, sequence_length = 1, recombination_rate = 0, save_locations = TRUE,
-       method = method, verbose = verbose)
+  locations_file <- tempfile(fileext = ".gz")
+  slim(model, sequence_length = 1, recombination_rate = 0,,
+       method = method, verbose = verbose, locations = locations_file)
 
-  df <- suppressMessages(readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
-                                         progress = FALSE)) %>%
+  df <- suppressMessages(readr::read_tsv(locations_file, progress = FALSE)) %>%
     dplyr::mutate(time = convert_slim_time(gen, model)) %>%
     dplyr::group_by(gen, time, pop) %>%
     dplyr::summarise(N = dplyr::n(), .groups = "keep")
