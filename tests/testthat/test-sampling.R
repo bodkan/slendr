@@ -73,6 +73,7 @@ test_that("sampling is as close to the a single specified position as possible",
   times <- c(10, 100)
   locations <- list(c(50, 50))
   simulation_length <- 100
+  locations_file <- tempfile(fileext = ".gz")
 
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
@@ -81,14 +82,14 @@ test_that("sampling is as close to the a single specified position as possible",
                    simulation_length = simulation_length, resolution = 1, overwrite = TRUE, force = TRUE)
 
   samples <- schedule_sampling(model, times = times, locations = locations, list(pop, n_samples))
-  slim(model, sequence_length = 1, recombination_rate = 0, samples = samples,
-       method = "batch", save_locations = TRUE, verbose = FALSE)
+  ts <- slim(model, sequence_length = 1, recombination_rate = 0, samples = samples,
+       method = "batch", locations = locations_file, verbose = FALSE)
 
   # load the locations of all individuals throughout the simulation, and filter
   # down to `n_sample` of the ones closest to the sampling location [50, 50] in
   # each time point (essentially replicating what we're doing on the SLiM
   # backend during the simulation run)
-  locations <- file.path(model$path, "output_ind_locations.tsv.gz") %>%
+  locations <- locations_file %>%
     readr::read_tsv(show_col_types = FALSE) %>%
     dplyr::mutate(time = simulation_length - gen + 1) %>%
     dplyr::filter(time %in% times) %>%
@@ -103,7 +104,6 @@ test_that("sampling is as close to the a single specified position as possible",
     as.data.frame()
 
   # load locations of individuals remembered in the tree sequence
-  ts <- ts_load(model)
   individuals <- ts_nodes(ts) %>%
     dplyr::filter(sampled) %>%
     dplyr::select(-node_id) %>%
@@ -130,6 +130,7 @@ test_that("sampling is as close to the multiple specified positions as possible"
   times <- c(10, 100)
   locations <- list(c(0, 0), c(100, 100))
   simulation_length <- 100
+  locations_file <- tempfile(fileext = ".gz")
 
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
@@ -142,14 +143,14 @@ test_that("sampling is as close to the multiple specified positions as possible"
     schedule_sampling(model, times = times[2], locations = locations[2], list(pop, n_samples))
   )
 
-  slim(model, sequence_length = 1, recombination_rate = 0, samples = samples,
-       method = "batch", save_locations = TRUE, verbose = FALSE)
+  ts <- slim(model, sequence_length = 1, recombination_rate = 0, samples = samples,
+       method = "batch", locations = locations_file, verbose = FALSE)
 
   # load the locations of all individuals throughout the simulation, and filter
   # down to `n_sample` of the ones closest to the sampling location [50, 50] in
   # each time point (essentially replicating what we're doing on the SLiM
   # backend during the simulation run)
-  all_locations <- file.path(model$path, "output_ind_locations.tsv.gz") %>%
+  all_locations <- locations_file %>%
     readr::read_tsv(show_col_types = FALSE) %>%
     dplyr::mutate(time = simulation_length - gen + 1)
 
@@ -180,7 +181,6 @@ test_that("sampling is as close to the multiple specified positions as possible"
   locs <- rbind(first_loc, second_loc)
 
   # load locations of individuals remembered in the tree sequence
-  ts <- ts_load(model)
   all_individuals <- ts_nodes(ts) %>%
     dplyr::filter(sampled) %>%
     dplyr::select(-node_id) %>%
