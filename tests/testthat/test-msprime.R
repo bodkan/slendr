@@ -45,7 +45,7 @@ backward_const_model <- compile_model(backward_const_pop, backward_const_dir , g
                                 overwrite = TRUE, force = TRUE, direction = "backward")
 backward_const_samples <- schedule_sampling(backward_const_model, times = 0, list(backward_const_pop, n_samples))
 
-run_slim_msprime(
+const_ts <- run_slim_msprime(
   forward_const_model, backward_const_model,
   forward_const_samples, backward_const_samples,
   seq_len, rec_rate, seed, verbose = FALSE
@@ -67,7 +67,7 @@ backward_contr_model <- compile_model(backward_contr_pop, backward_contr_dir, ge
                                 overwrite = TRUE, force = TRUE, direction = "backward")
 backward_contr_samples <- schedule_sampling(backward_contr_model, times = 0, list(backward_contr_pop, n_samples))
 
-run_slim_msprime(
+contr_ts <- run_slim_msprime(
   forward_contr_model, backward_contr_model,
   forward_contr_samples, backward_contr_samples,
   seq_len, rec_rate, seed, verbose = FALSE
@@ -89,7 +89,7 @@ backward_expansion_model <- compile_model(backward_expansion_pop, backward_expan
                                     overwrite = TRUE, force = TRUE, direction = "backward")
 backward_expansion_samples <- schedule_sampling(backward_expansion_model, times = 0, list(backward_expansion_pop, n_samples))
 
-run_slim_msprime(
+expansion_ts <- run_slim_msprime(
   forward_expansion_model, backward_expansion_model,
   forward_expansion_samples, backward_expansion_samples,
   seq_len, rec_rate, seed, verbose = FALSE
@@ -111,7 +111,7 @@ backward_exp_inc_model <- compile_model(backward_exp_inc_pop, backward_exp_inc_d
                                    overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
 backward_exp_inc_samples <- schedule_sampling(backward_exp_inc_model, times = 5001, list(backward_exp_inc_pop, n_samples))
 
-run_slim_msprime(
+exp_inc_ts <- run_slim_msprime(
   forward_exp_inc_model, backward_exp_inc_model,
   forward_exp_inc_samples, backward_exp_inc_samples,
   seq_len, rec_rate, seed, verbose = FALSE
@@ -133,43 +133,43 @@ backward_exp_decr_model <- compile_model(backward_exp_decr_pop, backward_exp_dec
                                   overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
 backward_exp_decr_samples <- schedule_sampling(backward_exp_decr_model, times = 5001, list(backward_exp_decr_pop, n_samples))
 
-run_slim_msprime(
+exp_decr_ts <- run_slim_msprime(
   forward_exp_decr_model, backward_exp_decr_model,
   forward_exp_decr_samples, backward_exp_decr_samples,
   seq_len, rec_rate, seed, verbose = FALSE
 )
 
 # load tree sequence files from msprime
-msprime_forward_const_ts <- load_tree_sequence("msprime", forward_const_model, N, rec_rate, mut_rate, seed)
-msprime_backward_const_ts <- load_tree_sequence("msprime", backward_const_model, N, rec_rate, mut_rate, seed)
+msprime_forward_const_ts <- load_tree_sequence("msprime", "forward", const_ts, forward_const_model, N, rec_rate, mut_rate, seed)
+msprime_backward_const_ts <- load_tree_sequence("msprime", "backward", const_ts, backward_const_model, N, rec_rate, mut_rate, seed)
 
-msprime_forward_contr_ts <- load_tree_sequence("msprime", forward_contr_model, N, rec_rate, mut_rate, seed)
-msprime_backward_contr_ts <- load_tree_sequence("msprime", backward_contr_model, N, rec_rate, mut_rate, seed)
+msprime_forward_contr_ts <- load_tree_sequence("msprime", "forward", contr_ts, forward_contr_model, N, rec_rate, mut_rate, seed)
+msprime_backward_contr_ts <- load_tree_sequence("msprime", "backward", contr_ts, backward_contr_model, N, rec_rate, mut_rate, seed)
 
-msprime_forward_expansion_ts <- load_tree_sequence("msprime", forward_expansion_model, N, rec_rate, mut_rate, seed)
-msprime_backward_expansion_ts <- load_tree_sequence("msprime", backward_expansion_model, N, rec_rate, mut_rate, seed)
+msprime_forward_expansion_ts <- load_tree_sequence("msprime", "forward", expansion_ts, forward_expansion_model, N, rec_rate, mut_rate, seed)
+msprime_backward_expansion_ts <- load_tree_sequence("msprime", "backward", expansion_ts, backward_expansion_model, N, rec_rate, mut_rate, seed)
 
-msprime_forward_exp_inc_ts <- load_tree_sequence("msprime", forward_exp_inc_model, N, rec_rate, mut_rate, seed)
-msprime_backward_exp_inc_ts <- load_tree_sequence("msprime", forward_exp_inc_model, N, rec_rate, mut_rate, seed)
+msprime_forward_exp_inc_ts <- load_tree_sequence("msprime", "forward", exp_inc_ts, forward_exp_inc_model, N, rec_rate, mut_rate, seed)
+msprime_backward_exp_inc_ts <- load_tree_sequence("msprime", "backward", exp_inc_ts, backward_exp_inc_model, N, rec_rate, mut_rate, seed)
 
-msprime_forward_exp_decr_ts <- load_tree_sequence("msprime", forward_exp_decr_model, N, rec_rate, mut_rate, seed)
-msprime_backward_exp_decr_ts <- load_tree_sequence("msprime", forward_exp_decr_model, N, rec_rate, mut_rate, seed)
+msprime_forward_exp_decr_ts <- load_tree_sequence("msprime", "forward", exp_decr_ts, forward_exp_decr_model, N, rec_rate, mut_rate, seed)
+msprime_backward_exp_decr_ts <- load_tree_sequence("msprime", "backward", exp_decr_ts, backward_exp_decr_model, N, rec_rate, mut_rate, seed)
 
 # load tree sequence files from SLiM
-slim_forward_const_ts <- load_tree_sequence("SLiM", forward_const_model, N, rec_rate, mut_rate, seed)
-slim_backward_const_ts <- load_tree_sequence("SLiM",backward_const_model, N, rec_rate, mut_rate, seed)
+slim_forward_const_ts <- load_tree_sequence("SLiM", "forward", const_ts, forward_const_model, N, rec_rate, mut_rate, seed)
+slim_backward_const_ts <- load_tree_sequence("SLiM", "backward", const_ts, backward_const_model, N, rec_rate, mut_rate, seed)
 
-slim_forward_contr_ts <- load_tree_sequence("SLiM",forward_contr_model, N, rec_rate, mut_rate, seed)
-slim_backward_contr_ts <- load_tree_sequence("SLiM",backward_contr_model, N, rec_rate, mut_rate, seed)
+slim_forward_contr_ts <- load_tree_sequence("SLiM", "forward", contr_ts, forward_contr_model, N, rec_rate, mut_rate, seed)
+slim_backward_contr_ts <- load_tree_sequence("SLiM", "backward", contr_ts, backward_contr_model, N, rec_rate, mut_rate, seed)
 
-slim_forward_expansion_ts <- load_tree_sequence("SLiM",forward_expansion_model, N, rec_rate, mut_rate, seed)
-slim_backward_expansion_ts <- load_tree_sequence("SLiM",backward_expansion_model, N, rec_rate, mut_rate, seed)
+slim_forward_expansion_ts <- load_tree_sequence("SLiM", "forward", expansion_ts, forward_expansion_model, N, rec_rate, mut_rate, seed)
+slim_backward_expansion_ts <- load_tree_sequence("SLiM", "backward", expansion_ts, backward_expansion_model, N, rec_rate, mut_rate, seed)
 
-slim_forward_exp_inc_ts <- load_tree_sequence("SLiM",forward_exp_inc_model, N, rec_rate, mut_rate, seed)
-slim_backward_exp_inc_ts <- load_tree_sequence("SLiM",forward_exp_inc_model, N, rec_rate, mut_rate, seed)
+slim_forward_exp_inc_ts <- load_tree_sequence("SLiM", "forward", exp_inc_ts, forward_exp_inc_model, N, rec_rate, mut_rate, seed)
+slim_backward_exp_inc_ts <- load_tree_sequence("SLiM", "backward", exp_inc_ts, forward_exp_inc_model, N, rec_rate, mut_rate, seed)
 
-slim_forward_exp_decr_ts <- load_tree_sequence("SLiM",forward_exp_decr_model, N, rec_rate, mut_rate, seed)
-slim_backward_exp_decr_ts <- load_tree_sequence("SLiM",forward_exp_decr_model, N, rec_rate, mut_rate, seed)
+slim_forward_exp_decr_ts <- load_tree_sequence("SLiM", "forward", exp_decr_ts, forward_exp_decr_model, N, rec_rate, mut_rate, seed)
+slim_backward_exp_decr_ts <- load_tree_sequence("SLiM", "backward", exp_decr_ts, forward_exp_decr_model, N, rec_rate, mut_rate, seed)
 
 # compute AFS from all tree sequence files - msprime
 msprime_forward_const_afs <- ts_afs(msprime_forward_const_ts, polarised = TRUE)

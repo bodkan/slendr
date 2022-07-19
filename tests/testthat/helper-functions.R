@@ -31,28 +31,42 @@ run_sim <- function(pop, direction, simulation_length = NULL, method = "batch", 
 run_slim_msprime <- function(forward_model, backward_model,
                              forward_samples, backward_samples,
                              seq_len, rec_rate, seed, verbose) {
-  slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+  ts_slim_forward <- tempfile()
+  ts_msprime_forward <- tempfile()
+
+  slim(forward_model, output = ts_slim_forward, sequence_length = seq_len, recombination_rate = rec_rate,
        samples = forward_samples, random_seed = seed, verbose = verbose)
   suppressWarnings({
-    msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+    msprime(forward_model, output = ts_msprime_forward, sequence_length = seq_len, recombination_rate = rec_rate,
           samples = forward_samples, random_seed = seed, verbose = verbose)
   })
 
-  slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+  ts_slim_backward <- tempfile()
+  ts_msprime_backward <- tempfile()
+
+  slim(backward_model, output = ts_slim_backward, sequence_length = seq_len, recombination_rate = rec_rate,
        samples = backward_samples, random_seed = seed, verbose = verbose)
   suppressWarnings({
-  msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+  msprime(backward_model, output = ts_msprime_backward, sequence_length = seq_len, recombination_rate = rec_rate,
           samples = backward_samples, random_seed = seed, verbose = verbose)
   })
+
+  list(
+    "slim_forward"     = ts_slim_forward,
+    "msprime_forward"  = ts_msprime_forward,
+    "slim_backward"    = ts_slim_backward,
+    "msprime_backward" = ts_msprime_backward
+  )
 }
 
-load_tree_sequence <- function(backend, model, N, rec_rate, mut_rate, seed) {
-  if (backend == "SLiM")
+load_tree_sequence <- function(backend, direction, ts_list, model, N, rec_rate, mut_rate, seed) {
+  ts_file <- ts_list[[paste(tolower(backend), direction, sep = "_")]]
+  if (backend == tolower("SLiM"))
     ts_load(
-      model, file = file.path(model$path, "output_slim.trees"), recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+      model = model, file = ts_file, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
       Ne = N, recombination_rate = rec_rate, mutation_rate = mut_rate,
       random_seed = seed
     )
   else
-    ts_load(model, file = file.path(model$path, "output_msprime.trees"), mutate = TRUE, mutation_rate = mut_rate, random_seed = seed)
+    ts_load(model = model, file = ts_file, mutate = TRUE, mutation_rate = mut_rate, random_seed = seed)
 }
