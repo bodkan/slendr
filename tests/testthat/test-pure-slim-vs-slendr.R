@@ -13,7 +13,7 @@ N <- 20
 
 pop <- population("pop", time = 1, N = N)
 model <- compile_model(pop, generation_time = 1, direction = "forward", simulation_length = T)
-slim(model, sequence_length = 1, recombination_rate = 0, random_seed = 42)
+ts1 <- slim(model, sequence_length = 1, recombination_rate = 0, random_seed = 42)
 
 # run a pure SLiM version of the same model -------------------------------
 
@@ -52,7 +52,6 @@ simulate_slim_ts <- function(N, T, output, script_file) {
 
 # load tree sequences, extract tables -------------------------------------
 
-ts1 <- ts_load(model)
 ts2 <- simulate_slim_ts(N, T)
 
 shared_cols <- c("node_id", "time_tskit", "sampled", "remembered", "retained", "alive", "pedigree_id", "pop_id", "ind_id")
