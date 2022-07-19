@@ -313,13 +313,13 @@ read_model <- function(path) {
 #'   if the \code{slim} binary is not on the \code{$PATH}).
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
-#'   (represented by the Python class \code{tskit.trees.TreeSequence})
+#'   (internally represented by the Python object \code{tskit.trees.TreeSequence})
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE, slim = TRUE) # make sure dependencies are present
 #' }
 #' # load an example model
-#' model <- read_example("introgression")
+#' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # afr and eur objects would normally be created before slendr model compilation,
 #' # but here we take them out of the model object already compiled for this
@@ -339,6 +339,7 @@ read_model <- function(path) {
 #' # run a simulation using the SLiM back end from a compiled slendr model object and return
 #' # a tree-sequence output
 #' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
+#'
 #' ts
 #' @export
 slim <- function(
@@ -469,7 +470,8 @@ slim <- function(
 
   if (!file.exists(output))
     stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
-  else if (verbose) {
+
+  if (verbose) {
      cat("Tree sequence was saved to:\n", output, "\n")
      cat("Loading the tree-sequence file...\n")
 
@@ -498,13 +500,13 @@ slim <- function(
 #' @param debug Write msprime's debug log to the console (default \code{FALSE})?
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
-#'   (represented by the Python class \code{tskit.trees.TreeSequence})
+#'   (internally represented by the Python object \code{tskit.trees.TreeSequence})
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
 #' # load an example model
-#' model <- read_example("introgression")
+#' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # afr and eur objects would normally be created before slendr model compilation,
 #' # but here we take them out of the model object already compiled for this
@@ -522,9 +524,9 @@ slim <- function(
 #' samples <- rbind(modern_samples, ancient_samples)
 #'
 #' # run a simulation using the msprime back end from a compiled slendr model object
-#' msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
+#' ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
 #'
-#' \dontshow{unlink(file.path(model$path, "output_msprime.trees")) # delete temporary tree sequence}
+#' summary(ts)
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
                     output = tempfile(), random_seed = NULL, verbose = FALSE, debug = FALSE) {
@@ -588,7 +590,8 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 
   if (!file.exists(output))
     stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
-  else if (verbose) {
+
+  if (verbose) {
      cat("Tree sequence was saved to:\n", output, "\n")
      cat("Loading the tree-sequence file...\n")
 
