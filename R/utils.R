@@ -1,31 +1,3 @@
-#' Read a provided slendr model
-#'
-#' @param name Name of the built-in slendr model example
-#'
-#' @return Compiled \code{slendr_model} model object which encapsulates all
-#'   information about the specified model (which populations are involved,
-#'   when and how much gene flow should occur, what is the spatial resolution
-#'   of a map, and what spatial dispersal and mating parameters should be used
-#'   in a SLiM simulation, if applicable)
-#'
-#' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
-#' }
-#' # load an example model with an already simulated tree sequence
-#' model <- read_example("introgression")
-#' plot_model(model, sizes = FALSE, log = TRUE)
-#' @export
-read_example <- function(name = c("introgression", "space")) {
-  name <- match.arg(name)
-
-  bundled_path <- system.file(file.path("extdata/models/", name), package = "slendr", mustWork = TRUE)
-
-  new_path <- tempdir()
-  file.copy(bundled_path, new_path, recursive = TRUE)
-
-  read_model(file.path(new_path, "introgression"))
-}
-
 #' Check that all dependencies are available for slendr examples
 #'
 #' @param python Is the slendr Python environment required?
