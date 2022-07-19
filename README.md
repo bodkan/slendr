@@ -105,7 +105,7 @@ We can visualize the defined world map using the function `plot_map` provided by
 plot_map(map)
 ```
 
-![plot of chunk plot_world](man/figures/README-plot_world-1.png)
+![](man/figures/README-plot_world-1.png)
 
 Although in this example we use a real Earth landscape, the `map` can be completely abstract (either blank or with user-defined landscape features such as continents, islands, corridors and barriers).
 
@@ -145,7 +145,7 @@ Again, we can use the generic `plot_map` function to visualize these objects, ma
 plot_map(africa, europe, anatolia)
 ```
 
-![plot of chunk plot_regions](man/figures/README-plot_regions-1.png)
+![](man/figures/README-plot_regions-1.png)
 
 #### 3. Define demographic history and population boundaries
 
@@ -207,7 +207,7 @@ We can use the function `plot_map` again to get a "compressed" overview of all s
 plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
 
-![plot of chunk plot_popmaps](man/figures/README-plot_popmaps-1.png)
+![](man/figures/README-plot_popmaps-1.png)
 
 #### 4. Define gene-flow events
 
@@ -272,146 +272,6 @@ ts_slim <- slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
 ```
 
 
-```
-#> Tree-sequence recording is on but no sampling schedule was given. Generating one for all individuals surviving to the end of the simulation.
-#> --------------------------------------------------
-#> SLiM command to be executed:
-#> 
-#> slim  \
-#>     -d SEED=314159  \
-#>     -d 'SAMPLES="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c726e8450"' \
-#>     -d 'MODEL="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c30fc8ba8"' \
-#>     -d 'OUTPUT_TS="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c35b0dae1.trees"' \
-#>     -d SPATIAL=T \
-#>     -d SEQUENCE_LENGTH=1e+07 \
-#>     -d RECOMB_RATE=1e-08 \
-#>     -d BURNIN_LENGTH=0 \
-#>     -d SIMULATION_LENGTH=1733 \
-#>     -d 'OUTPUT_LOCATIONS="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c53369ea.gz"' \
-#>     -d COALESCENT_ONLY=T \
-#>     -d MAX_ATTEMPTS=1 \
-#>     /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c30fc8ba8/script.slim 
-#> --------------------------------------------------
-#> 
-#> // Initial random seed:
-#> 2392199267212
-#> 
-#> // RunInitializeCallbacks():
-#> SEED: 314159
-#> initializeSLiMOptions(keepPedigrees = T, dimensionality = 'xy');
-#> initializeInteractionType(0, "xy", reciprocal=T, maxDistance=13);
-#> initializeInteractionType(1, "xy", reciprocal=T, maxDistance=10);
-#> initializeInteractionType(2, "xy", reciprocal=T, maxDistance=13);
-#> initializeInteractionType(3, "xy", reciprocal=T, maxDistance=10);
-#> initializeInteractionType(4, "xy", reciprocal=T, maxDistance=13);
-#> initializeInteractionType(5, "xy", reciprocal=T, maxDistance=10);
-#> initializeInteractionType(6, "xy", reciprocal=T, maxDistance=13);
-#> initializeInteractionType(7, "xy", reciprocal=T, maxDistance=10);
-#> initializeInteractionType(8, "xy", reciprocal=T, maxDistance=13);
-#> initializeInteractionType(9, "xy", reciprocal=T, maxDistance=10);
-#> initializeInteractionType(10, "xy", reciprocal=T, maxDistance=13);
-#> initializeInteractionType(11, "xy", reciprocal=T, maxDistance=10);
-#> initializeTreeSeq();
-#> initializeMutationType(0, 0.5, "f", 0);
-#> initializeGenomicElementType(1, m0, 1);
-#> initializeGenomicElement(g1, 0, 9999999);
-#> initializeMutationRate(0);
-#> initializeRecombinationRate(1e-08);
-#> 
-#> // Starting run at generation <start>:
-#> 1 
-#> 
-#> Generation 1: starting the simulation
-#> Generation 1: creating AFR(p0)
-#> Generation 1: updating map for AFR(p0)
-#> Generation 1: distributing individuals of AFR(p0)
-#> Generation 34: split of OOA(p1) from AFR(p0)
-#> Generation 34: updating map for OOA(p1)
-#> Generation 34: distributing individuals of OOA(p1)
-#> Generation 68: updating map for OOA(p1)
-#> Generation 83: updating map for OOA(p1)
-#> Generation 98: updating map for OOA(p1)
-#> Generation 113: updating map for OOA(p1)
-#> Generation 128: updating map for OOA(p1)
-#> Generation 143: updating map for OOA(p1)
-#> Generation 159: updating map for OOA(p1)
-#> Generation 174: updating map for OOA(p1)
-#> Generation 189: updating map for OOA(p1)
-#> Generation 204: updating map for OOA(p1)
-#> Generation 219: updating map for OOA(p1)
-#> Generation 234: updating map for OOA(p1)
-#> Generation 249: updating map for OOA(p1)
-#> Generation 265: updating map for OOA(p1)
-#> Generation 280: updating map for OOA(p1)
-#> Generation 295: updating map for OOA(p1)
-#> Generation 310: updating map for OOA(p1)
-#> Generation 325: updating map for OOA(p1)
-#> Generation 340: updating map for OOA(p1)
-#> Generation 356: updating map for OOA(p1)
-#> Generation 371: updating map for OOA(p1)
-#> Generation 386: updating map for OOA(p1)
-#> Generation 401: updating map for OOA(p1)
-#> Generation 801: split of EHG(p2) from OOA(p1)
-#> Generation 801: split of ANA(p3) from OOA(p1)
-#> Generation 801: updating map for EHG(p2)
-#> Generation 801: distributing individuals of EHG(p2)
-#> Generation 801: updating map for ANA(p3)
-#> Generation 801: distributing individuals of ANA(p3)
-#> Generation 901: cleanup of OOA(p1)
-#> Generation 901: split of EUR(p4) from EHG(p2)
-#> Generation 901: updating map for EUR(p4)
-#> Generation 901: distributing individuals of EUR(p4)
-#> Generation 1406: updating map for ANA(p3)
-#> Generation 1411: updating map for ANA(p3)
-#> Generation 1416: updating map for ANA(p3)
-#> Generation 1421: updating map for ANA(p3)
-#> Generation 1426: updating map for ANA(p3)
-#> Generation 1431: updating map for ANA(p3)
-#> Generation 1436: updating map for ANA(p3)
-#> Generation 1441: updating map for ANA(p3)
-#> Generation 1446: updating map for ANA(p3)
-#> Generation 1451: updating map for ANA(p3)
-#> Generation 1456: updating map for ANA(p3)
-#> Generation 1461: updating map for ANA(p3)
-#> Generation 1466: updating map for ANA(p3)
-#> Generation 1468: geneflow ANA(p3) -> EUR(p4) (0.00757576% over 66 generations)
-#> Generation 1471: updating map for ANA(p3)
-#> Generation 1476: updating map for ANA(p3)
-#> Generation 1481: updating map for ANA(p3)
-#> Generation 1486: updating map for ANA(p3)
-#> Generation 1491: updating map for ANA(p3)
-#> Generation 1496: updating map for ANA(p3)
-#> Generation 1501: split of YAM(p5) from EHG(p2)
-#> Generation 1501: updating map for ANA(p3)
-#> Generation 1501: updating map for YAM(p5)
-#> Generation 1501: distributing individuals of YAM(p5)
-#> Generation 1518: geneflow ANA(p3) -> YAM(p5) (0.166667% over 3 generations)
-#> Generation 1521: geneflow ANA(p3) -> YAM(p5) set to 0%
-#> Generation 1534: geneflow ANA(p3) -> EUR(p4) set to 0%
-#> Generation 1534: cleanup of EHG(p2)
-#> Generation 1568: updating map for YAM(p5)
-#> Generation 1574: updating map for YAM(p5)
-#> Generation 1581: updating map for YAM(p5)
-#> Generation 1588: updating map for YAM(p5)
-#> Generation 1594: updating map for YAM(p5)
-#> Generation 1601: geneflow YAM(p5) -> EUR(p4) (0.0227273% over 33 generations)
-#> Generation 1601: updating map for YAM(p5)
-#> Generation 1601: cleanup of ANA(p3)
-#> Generation 1608: updating map for YAM(p5)
-#> Generation 1614: updating map for YAM(p5)
-#> Generation 1621: updating map for YAM(p5)
-#> Generation 1628: updating map for YAM(p5)
-#> Generation 1634: geneflow YAM(p5) -> EUR(p4) set to 0%
-#> Generation 1634: updating map for YAM(p5)
-#> Generation 1651: cleanup of YAM(p5)
-#> Generation 1734: sampling all (3000) individuals of AFR(p0)
-#> Generation 1734: sampling all (2000) individuals of EUR(p4)
-#> Generation 1734: saving the tree sequence output to '/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c35b0dae1.trees'
-#> Generation 1734: simulation finished
-#> Tree sequence was saved to:
-#>  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp3eBNiU/file11d9c35b0dae1.trees 
-#> Loading the tree-sequence file...
-```
 
 As specified here, *slendr*'s SLiM backend will simulate 10 Mb of sequence for each individual, and produce a tree sequence output from the simulation run which can be analysed by many [built-in population genetic functions](https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics). By default, all individuals living at the end of the simulation are recorded as samples in the tree sequence. If a specific set of samples (ancient and modern) is needed, this can be defined accordingly using a [dedicated function](https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events).
 
@@ -425,55 +285,11 @@ ts_msprime <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
 Here is a very quick overview of the SLiM simulation run summarised as a GIF animation. Again, please note that the simulation is extremely simplified. We only simulated a very small number of individuals in each population, and we also didn't specify any [dispersal dynamics](https://www.slendr.net/articles/vignette-03-interactions.html) which is why the populations look so clumped.
 
 
-```
-#> Rendering [>-------------------------------------------] at 4.9 fps ~ eta: 10s
-#> Rendering [=>--------------------------------------------] at 5 fps ~ eta: 10s
-#> Rendering [==>-------------------------------------------] at 5 fps ~ eta: 9s
-#> Rendering [===>------------------------------------------] at 5 fps ~ eta: 9s
-#> Rendering [===>----------------------------------------] at 4.9 fps ~ eta: 9s
-#> Rendering [=====>----------------------------------------] at 5 fps ~ eta: 9s
-#> Rendering [======>---------------------------------------] at 5 fps ~ eta: 8s
-#> Rendering [=======>--------------------------------------] at 5 fps ~ eta: 8s
-#> Rendering [========>-------------------------------------] at 5 fps ~ eta: 8s
-#> Rendering [=========>------------------------------------] at 5 fps ~ eta: 8s
-#> Rendering [==========>-----------------------------------] at 5 fps ~ eta: 8s
-#> Rendering [===========>----------------------------------] at 5 fps ~ eta: 7s
-#> Rendering [============>---------------------------------] at 5 fps ~ eta: 7s
-#> Rendering [=============>--------------------------------] at 5 fps ~ eta: 7s
-#> Rendering [==============>-------------------------------] at 5 fps ~ eta: 7s
-#> Rendering [==============>-----------------------------] at 4.9 fps ~ eta: 7s
-#> Rendering [===============>----------------------------] at 4.9 fps ~ eta: 6s
-#> Rendering [================>---------------------------] at 4.9 fps ~ eta: 6s
-#> Rendering [=================>--------------------------] at 4.9 fps ~ eta: 6s
-#> Rendering [==================>-------------------------] at 4.8 fps ~ eta: 6s
-#> Rendering [===================>------------------------] at 4.8 fps ~ eta: 6s
-#> Rendering [====================>-----------------------] at 4.8 fps ~ eta: 5s
-#> Rendering [=====================>----------------------] at 4.8 fps ~ eta: 5s
-#> Rendering [======================>---------------------] at 4.8 fps ~ eta: 5s
-#> Rendering [=======================>--------------------] at 4.7 fps ~ eta: 5s
-#> Rendering [========================>-------------------] at 4.7 fps ~ eta: 5s
-#> Rendering [=========================>------------------] at 4.7 fps ~ eta: 4s
-#> Rendering [==========================>-----------------] at 4.7 fps ~ eta: 4s
-#> Rendering [===========================>----------------] at 4.7 fps ~ eta: 4s
-#> Rendering [============================>---------------] at 4.7 fps ~ eta: 4s
-#> Rendering [=============================>--------------] at 4.7 fps ~ eta: 3s
-#> Rendering [==============================>-------------] at 4.7 fps ~ eta: 3s
-#> Rendering [===============================>------------] at 4.7 fps ~ eta: 3s
-#> Rendering [================================>-----------] at 4.7 fps ~ eta: 3s
-#> Rendering [=================================>----------] at 4.7 fps ~ eta: 2s
-#> Rendering [==================================>---------] at 4.7 fps ~ eta: 2s
-#> Rendering [===================================>--------] at 4.7 fps ~ eta: 2s
-#> Rendering [====================================>-------] at 4.7 fps ~ eta: 2s
-#> Rendering [=====================================>------] at 4.7 fps ~ eta: 1s
-#> Rendering [======================================>-----] at 4.7 fps ~ eta: 1s
-#> Rendering [=======================================>----] at 4.7 fps ~ eta: 1s
-#> Rendering [========================================>---] at 4.7 fps ~ eta: 1s
-#> Rendering [=========================================>--] at 4.7 fps ~ eta: 0s
-#> Rendering [==========================================>-] at 4.7 fps ~ eta: 0s
-#> Rendering [============================================] at 4.7 fps ~ eta: 0s
+```r
+animate_model(model = model, file = locations_file, steps = 50, width = 500, height = 300)
 ```
 
-![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
+![](man/figures/README-plot_gif-1.gif)
 
 At this point, you could either compute some [population genetic statistics of interest](https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics) or perhaps analyse the [spatial features of the genealogies](https://www.slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships) simulated by your model.
 

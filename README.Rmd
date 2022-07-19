@@ -9,6 +9,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   fig.width = 6,
   fig.height = 4,
+  fig.cap = "",
   dpi = 80,
   eval = Sys.which("slim") != "" && env_present
 )
@@ -283,7 +284,7 @@ ts_msprime <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
 
 Here is a very quick overview of the SLiM simulation run summarised as a GIF animation. Again, please note that the simulation is extremely simplified. We only simulated a very small number of individuals in each population, and we also didn't specify any [dispersal dynamics](https://www.slendr.net/articles/vignette-03-interactions.html) which is why the populations look so clumped.
 
-```{r, plot_gif, echo = FALSE}
+```{r, plot_gif, message = FALSE}
 animate_model(model = model, file = locations_file, steps = 50, width = 500, height = 300)
 ```
 
