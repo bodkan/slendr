@@ -25,11 +25,14 @@ forward_samples <- rbind(
   schedule_sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
-slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = forward_samples, random_seed = seed)
-msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = forward_samples, random_seed = seed)
+ts_forward_slim <- tempfile(fileext = ".trees")
+ts_forward_msprime <- tempfile(fileext = ".trees")
 
-forward_sts <- ts_load(forward_model, file = file.path(forward_model_dir, "output_slim.trees"))
-forward_mts <- ts_load(forward_model, file = file.path(forward_model_dir, "output_msprime.trees"))
+slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, output = ts_forward_slim, samples = forward_samples, random_seed = seed)
+msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, output = ts_forward_msprime, samples = forward_samples, random_seed = seed)
+
+forward_sts <- ts_load(model = forward_model, file = ts_forward_slim)
+forward_mts <- ts_load(model = forward_model, file = ts_forward_msprime)
 
 test_that("msprime and SLiM metadata is exactly the same (forward model)", {
   fields <- c("version", "description", "sampling")
@@ -83,11 +86,14 @@ backward_samples <- rbind(
   schedule_sampling(backward_model, times = c(123, 250, 1000), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
-slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
-msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
+ts_backward_slim <- tempfile(fileext = ".trees")
+ts_backward_msprime <- tempfile(fileext = ".trees")
 
-backward_sts <- ts_load(backward_model, file = file.path(backward_model_dir, "output_slim.trees"))
-backward_mts <- ts_load(backward_model, file = file.path(backward_model_dir, "output_msprime.trees"))
+slim(backward_model, output = ts_backward_slim, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
+msprime(backward_model, output = ts_backward_msprime, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
+
+backward_sts <- ts_load(model = backward_model, file = ts_backward_slim)
+backward_mts <- ts_load(model = backward_model, file = ts_backward_msprime)
 
 test_that("msprime and SLiM metadata is exactly the same (backward model)", {
   fields <- c("version", "description", "sampling")
