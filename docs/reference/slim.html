@@ -120,6 +120,7 @@ function during the compilation of a slendr demographic model.</p>
   <span class="va">sequence_length</span>,
   <span class="va">recombination_rate</span>,
   samples <span class="op">=</span> <span class="cn">NULL</span>,
+  output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>,
   burnin <span class="op">=</span> <span class="fl">0</span>,
   max_attempts <span class="op">=</span> <span class="fl">1</span>,
   spatial <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">world</span><span class="op">)</span>,
@@ -147,6 +148,9 @@ should be remembered in the tree-sequence (see <code>schedule_sampling</code> fo
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
+<dt>output</dt>
+<dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
+tree sequence will be saved to a temporary file.</p></dd>
 <dt>burnin</dt>
 <dd><p>Length of the burnin (in model's time units, i.e. years)</p></dd>
 <dt>max_attempts</dt>
@@ -211,9 +215,9 @@ if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SLiM command to be executed:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> slim   \</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -d 'SAMPLES="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp33TF1Y/file3d8b4484423c"' \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d 'SAMPLES="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5tpqaP/file527470288ee1"' \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     -d 'MODEL="/Users/mp/Projects/slendr/inst/extdata/models/introgression"' \</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -d 'OUTPUT_TS="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp33TF1Y/file3d8bfbeffaf.trees"' \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -d 'OUTPUT_TS="/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5tpqaP/file527476bc8f4d.trees"' \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     -d SPATIAL=F \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     -d SEQUENCE_LENGTH=1e+05 \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     -d RECOMB_RATE=0 \</span>
@@ -226,10 +230,10 @@ if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> // Initial random seed:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1818303391470</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1871613987958</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> // RunInitializeCallbacks():</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SEED: 1818303391470</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SEED: 1871613987958</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> initializeSLiMOptions(keepPedigrees = T);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> initializeTreeSeq();</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> initializeMutationType(0, 0.5, "f", 0);</span>
@@ -255,10 +259,10 @@ if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: sampling 5 individuals of AFR(p1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: sampling 1 individuals of CH(p0)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: sampling 5 individuals of EUR(p3)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: saving the tree sequence output to '/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp33TF1Y/file3d8bfbeffaf.trees'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: saving the tree sequence output to '/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5tpqaP/file527476bc8f4d.trees'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Generation 216668: simulation finished</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree sequence was saved to:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp33TF1Y/file3d8bfbeffaf.trees </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5tpqaP/file527476bc8f4d.trees </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Loading the tree-sequence file...</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ts</span></span>
@@ -273,20 +277,20 @@ if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │       1046║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │  319.7 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │  318.9 KiB║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤═════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size     │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │1917│ 59.9 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │1919│ 60.0 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│1351│133.7 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│1341│132.8 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│  8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│  1.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │1918│ 71.9 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │1920│ 71.9 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│  2.6 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>

@@ -9,7 +9,7 @@ msprime(
   sequence_length,
   recombination_rate,
   samples = NULL,
-  output = tempfile(),
+  output = tempfile(fileext = ".trees"),
   random_seed = NULL,
   verbose = FALSE,
   debug = FALSE
@@ -28,6 +28,9 @@ should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
+
+\item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
+tree sequence will be saved to a temporary file.}
 
 \item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
 

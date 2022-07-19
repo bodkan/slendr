@@ -120,7 +120,7 @@ slendr demographic model.</p>
   <span class="va">sequence_length</span>,
   <span class="va">recombination_rate</span>,
   samples <span class="op">=</span> <span class="cn">NULL</span>,
-  output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>,
+  output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>,
   random_seed <span class="op">=</span> <span class="cn">NULL</span>,
   verbose <span class="op">=</span> <span class="cn">FALSE</span>,
   debug <span class="op">=</span> <span class="cn">FALSE</span>
@@ -142,6 +142,9 @@ should be remembered in the tree-sequence (see <code>schedule_sampling</code> fo
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
+<dt>output</dt>
+<dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
+tree sequence will be saved to a temporary file.</p></dd>
 <dt>random_seed</dt>
 <dd><p>Random seed (if missing, SLiM's own seed will be used)</p></dd>
 <dt>verbose</dt>
@@ -185,16 +188,16 @@ recorded in the tree-sequence output file.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     /Users/mp/Projects/slendr/inst/extdata/models/introgression/script.py \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     --model /Users/mp/Projects/slendr/inst/extdata/models/introgression \</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp33TF1Y/file3d8b2250b910 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5tpqaP/file52748cc2c50.trees \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     --sequence-length 100000 \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     --recombination-rate 0 \</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp33TF1Y/file3d8b5d0b90d1 \</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5tpqaP/file5274571c638e \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     --verbose \</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tree sequence was saved to:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp33TF1Y/file3d8b2250b910 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5tpqaP/file52748cc2c50.trees </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Loading the tree-sequence file...</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span>

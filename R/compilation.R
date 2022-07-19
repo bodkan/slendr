@@ -291,6 +291,8 @@ read_model <- function(path) {
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
+#' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
+#'   tree sequence will be saved to a temporary file.
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param max_attempts How many attempts should be made to place an offspring
 #'   near one of its parents? Serves to prevent infinite loops on the SLiM
@@ -343,7 +345,7 @@ read_model <- function(path) {
 #' ts
 #' @export
 slim <- function(
-  model, sequence_length, recombination_rate, samples = NULL,
+  model, sequence_length, recombination_rate, samples = NULL, output = tempfile(fileext = ".trees"),
   burnin = 0, max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
   method = c("batch", "gui"), random_seed = NULL, verbose = FALSE,
   locations = NULL, slim_path = NULL
@@ -373,7 +375,6 @@ slim <- function(
 
   script_path <- path.expand(file.path(model_dir, "script.slim"))
 
-  output <- paste0(tempfile(), ".trees")
   spatial <- if (spatial) "T" else "F"
   locations <- if (is.character(locations)) locations else ""
   coalescent_only <- if (coalescent_only) "T" else "F"
@@ -495,6 +496,8 @@ slim <- function(
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
+#' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
+#'   tree sequence will be saved to a temporary file.
 #' @param random_seed Random seed (if missing, SLiM's own seed will be used)
 #' @param verbose Write the output log to the console (default \code{FALSE})?
 #' @param debug Write msprime's debug log to the console (default \code{FALSE})?
@@ -529,7 +532,7 @@ slim <- function(
 #' summary(ts)
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
-                    output = tempfile(), random_seed = NULL, verbose = FALSE, debug = FALSE) {
+                    output = tempfile(fileext = ".trees"), random_seed = NULL, verbose = FALSE, debug = FALSE) {
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
