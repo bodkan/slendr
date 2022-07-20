@@ -300,9 +300,6 @@ read_model <- function(path) {
 #' @param spatial Should the model be executed in spatial mode? By default, if a
 #'   world map was specified during model definition, simulation will proceed in
 #'   a spatial mode.
-#' @param locations If \code{NULL}, locations are not saved. Otherwise, the
-#'   path to the file where locations of each individual throughout the simulation
-#'   will be saved (most likely for use with \code{animate_model}).
 #' @param coalescent_only Should \code{initializeTreeSeq(retainCoalescentOnly =
 #'   <...>)} be set to \code{TRUE} (the default) or \code{FALSE}? See
 #'   "retainCoalescentOnly" in the SLiM manual for more detail.
@@ -311,6 +308,12 @@ read_model <- function(path) {
 #' @param random_seed Random seed (if missing, SLiM's own seed will be used)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
+#' @param load Should the final tree sequence be immediately loaded and returned?
+#'   Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
+#'   file is written to a custom location to be loaded at a later point.
+#' @param locations If \code{NULL}, locations are not saved. Otherwise, the
+#'   path to the file where locations of each individual throughout the simulation
+#'   will be saved (most likely for use with \code{animate_model}).
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary (this is useful
 #'   if the \code{slim} binary is not on the \code{$PATH}).
 #'
@@ -340,17 +343,31 @@ read_model <- function(path) {
 #'
 #' # run a simulation using the SLiM back end from a compiled slendr model object and return
 #' # a tree-sequence output
-#' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
+#' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
+#'
+#' # automatic loading of a simulated output can be prevented by `load = FALSE`, which can be
+#' # useful when a custom path to a tree-sequence output is given for later downstream analyses
+#' output_file <- tempfile(fileext = ".trees")
+#' slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
+#'      output = output_file, load = FALSE)
+#' # ... at a later stage:
+#' ts <- ts_load(output_file, model)
 #'
 #' ts
 #' @export
 slim <- function(
-  model, sequence_length, recombination_rate, samples = NULL, output = tempfile(fileext = ".trees"),
+  model, sequence_length, recombination_rate, samples = NULL, output = NULL,
   burnin = 0, max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
-  method = c("batch", "gui"), random_seed = NULL, verbose = FALSE,
+  method = c("batch", "gui"), random_seed = NULL, verbose = FALSE, load = TRUE,
   locations = NULL, slim_path = NULL
 ) {
   method <- match.arg(method)
+
+  if (is.null(output) & !load)
+    warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
+            "a temporary file after the simulation has been prevented", call. = FALSE)
+
+  if (is.null(output)) output <- tempfile(fileext = ".trees")
 
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
@@ -472,14 +489,16 @@ slim <- function(
   if (!file.exists(output))
     stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
 
-  if (verbose) {
-     cat("Tree sequence was saved to:\n", output, "\n")
-     cat("Loading the tree-sequence file...\n")
+  if (load) {
+    if (verbose) {
+      cat("Tree sequence was saved to:\n", output, "\n")
+      cat("Loading the tree-sequence file...\n")
 
+    }
+
+    ts <- ts_load(model, file = output)
+    return(ts)
   }
-
-  ts <- ts_load(model, file = output)
-  return(ts)
 }
 
 #' Run a slendr model in msprime
@@ -499,6 +518,9 @@ slim <- function(
 #' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
 #'   tree sequence will be saved to a temporary file.
 #' @param random_seed Random seed (if missing, SLiM's own seed will be used)
+#' @param load Should the final tree sequence be immediately loaded and returned?
+#'   Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
+#'   file is written to a custom location to be loaded at a later point.
 #' @param verbose Write the output log to the console (default \code{FALSE})?
 #' @param debug Write msprime's debug log to the console (default \code{FALSE})?
 #'
@@ -527,12 +549,27 @@ slim <- function(
 #' samples <- rbind(modern_samples, ancient_samples)
 #'
 #' # run a simulation using the msprime back end from a compiled slendr model object
-#' ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
+#' ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
+#'
+#' # automatic loading of a simulated output can be prevented by `load = FALSE`, which can be
+#' # useful when a custom path to a tree-sequence output is given for later downstream analyses
+#' output_file <- tempfile(fileext = ".trees")
+#' msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
+#'         output = output_file, load = FALSE)
+#' # ... at a later stage:
+#' ts <- ts_load(output_file, model)
 #'
 #' summary(ts)
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
-                    output = tempfile(fileext = ".trees"), random_seed = NULL, verbose = FALSE, debug = FALSE) {
+                    output = NULL, random_seed = NULL,
+                    load = TRUE, verbose = FALSE, debug = FALSE) {
+  if (is.null(output) & !load)
+    warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
+            "a temporary file after the simulation has been prevented", call. = FALSE)
+
+  if (is.null(output)) output <- tempfile(fileext = ".trees")
+
   model_dir <- model$path
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
@@ -594,14 +631,16 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   if (!file.exists(output))
     stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
 
-  if (verbose) {
-     cat("Tree sequence was saved to:\n", output, "\n")
-     cat("Loading the tree-sequence file...\n")
+  if (load) {
+    if (verbose) {
+      cat("Tree sequence was saved to:\n", output, "\n")
+      cat("Loading the tree-sequence file...\n")
 
+    }
+
+    ts <- ts_load(model, file = output)
+    return(ts)
   }
-
-  ts <- ts_load(model, file = output)
-  return(ts)
 }
 
 calculate_checksums <- function(files) {

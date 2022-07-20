@@ -9,8 +9,9 @@ msprime(
   sequence_length,
   recombination_rate,
   samples = NULL,
-  output = tempfile(fileext = ".trees"),
+  output = NULL,
   random_seed = NULL,
+  load = TRUE,
   verbose = FALSE,
   debug = FALSE
 )
@@ -33,6 +34,10 @@ recorded in the tree-sequence output file.}
 tree sequence will be saved to a temporary file.}
 
 \item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
+
+\item{load}{Should the final tree sequence be immediately loaded and returned?
+Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
+file is written to a custom location to be loaded at a later point.}
 
 \item{verbose}{Write the output log to the console (default \code{FALSE})?}
 
@@ -68,7 +73,15 @@ ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000
 samples <- rbind(modern_samples, ancient_samples)
 
 # run a simulation using the msprime back end from a compiled slendr model object
-ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
+ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
+
+# automatic loading of a simulated output can be prevented by `load = FALSE`, which can be
+# useful when a custom path to a tree-sequence output is given for later downstream analyses
+output_file <- tempfile(fileext = ".trees")
+msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
+        output = output_file, load = FALSE)
+# ... at a later stage:
+ts <- ts_load(output_file, model)
 
 summary(ts)
 }

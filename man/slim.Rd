@@ -9,7 +9,7 @@ slim(
   sequence_length,
   recombination_rate,
   samples = NULL,
-  output = tempfile(fileext = ".trees"),
+  output = NULL,
   burnin = 0,
   max_attempts = 1,
   spatial = !is.null(model$world),
@@ -17,6 +17,7 @@ slim(
   method = c("batch", "gui"),
   random_seed = NULL,
   verbose = FALSE,
+  load = TRUE,
   locations = NULL,
   slim_path = NULL
 )
@@ -60,6 +61,10 @@ on the command-line)}
 \item{verbose}{Write the SLiM output log to the console (default
 \code{FALSE})?}
 
+\item{load}{Should the final tree sequence be immediately loaded and returned?
+Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
+file is written to a custom location to be loaded at a later point.}
+
 \item{locations}{If \code{NULL}, locations are not saved. Otherwise, the
 path to the file where locations of each individual throughout the simulation
 will be saved (most likely for use with \code{animate_model}).}
@@ -98,7 +103,15 @@ samples <- rbind(modern_samples, ancient_samples)
 
 # run a simulation using the SLiM back end from a compiled slendr model object and return
 # a tree-sequence output
-ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples, verbose = TRUE)
+ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
+
+# automatic loading of a simulated output can be prevented by `load = FALSE`, which can be
+# useful when a custom path to a tree-sequence output is given for later downstream analyses
+output_file <- tempfile(fileext = ".trees")
+slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
+     output = output_file, load = FALSE)
+# ... at a later stage:
+ts <- ts_load(output_file, model)
 
 ts
 }
