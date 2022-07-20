@@ -9,6 +9,7 @@ docs:
 	R -e 'devtools::document()'
 	R -e 'pkgdown::build_reference()'
 	R -e 'pkgdown::build_reference_index()'
+	R -e 'pkgdown::build_news()'
 	git restore docs/reference/join.html
 	# git restore docs/reference/msprime.html
 	git restore docs/reference/region.html
