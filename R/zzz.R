@@ -37,12 +37,18 @@ PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
   }
 
   if (!check_env_present()) {
-    if (!getOption("slendr.custom_env"))
+    if (!getOption("slendr.custom_env")) {
+      version <- gsub(".*==", "", deps)
       packageStartupMessage(
+        sprintf(paste0("A slendr Python environment with the necessary versions of msprime (%s),\n",
+        "tskit (%s), and pyslim (%s) has not been found. If this is not the\nfirst time you're ",
+        "running slendr, the most likely explanation for this\nmessage is that some of slendr's ",
+        "Python dependencies need an update.\n\n"),
+        version[1], version[2], version[3]),
         "You can setup a pre-configured environment with all of slendr's Python\n",
-        "tree-sequence dependencies (Python modules tskit, pyslim, and msprime)",
-        "\nby running the function setup_env()."
+        "dependencies by running the function setup_env()."
       )
+    }
   } else
     setup_env()
 }
