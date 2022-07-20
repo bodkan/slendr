@@ -79,7 +79,7 @@ ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = sa
 # useful when a custom path to a tree-sequence output is given for later downstream analyses
 output_file <- tempfile(fileext = ".trees")
 msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
-        output = output_file, load = FALSE)
+        output = output_file, load = FALSE, random_seed = 42)
 # ... at a later stage:
 ts <- ts_load(output_file, model)
 

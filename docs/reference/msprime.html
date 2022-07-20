@@ -191,7 +191,7 @@ file is written to a custom location to be loaded at a later point.</p></dd>
 <span class="r-in"><span class="co"># useful when a custom path to a tree-sequence output is given for later downstream analyses</span></span>
 <span class="r-in"><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span>,</span>
-<span class="r-in">        output <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in">        output <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span class="r-in"><span class="co"># ... at a later stage:</span></span>
 <span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="va">model</span><span class="op">)</span></span>
 <span class="r-in"></span>

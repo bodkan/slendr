@@ -52,4 +52,8 @@ tree
 
 # extract the tree at a 42th basepair in the given tree sequence
 tree <- ts_phylo(ts, i = 42, mode = "position", quiet = TRUE)
+
+# because the tree is a standard ape phylo object, we can plot it easily
+plot(tree, use.edge.length = FALSE)
+ape::nodelabels()
 }
