@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{Tree object of the class \code{slendr_phylo}}
+
+\item{...}{Additional arguments normally passed to \code{print} (not used in this case)}
 }
 \value{
 No return value, simply prints the tskit summary table to the terminal

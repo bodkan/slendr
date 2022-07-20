@@ -544,7 +544,8 @@ ts_metadata <- function(ts) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model, simplify = TRUE, mutate = TRUE,
+#'               mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # extract the genotype matrix (this could take  a long time consume lots
 #' # of memory!)
@@ -1027,7 +1028,8 @@ ts_nodes <- function(x, sf = TRUE) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model, simplify = TRUE, mutate = TRUE,
+#'               mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # get the 'raw' tskit table of individuals
 #' ts_table(ts, "individuals")
@@ -1908,7 +1910,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' For more information on the format of the result and dimensions, in
 #' particular the interpretation of the first and the last element of the AFS,
 #' please see the tskit manual at
-#' <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum>
+#' <https://tskit.dev/tskit/docs/stable/python-api.html>
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param sample_sets A list (optionally a named list) of character vectors with
@@ -1989,6 +1991,7 @@ as.phylo.slendr_phylo <- function(x) { class(x) <- "phylo"; x }
 #' Print tskit's summary table of the Python tree-sequence object
 #'
 #' @param x Tree object of the class \code{slendr_phylo}
+#' @param ... Additional arguments normally passed to \code{print} (not used in this case)
 #'
 #' @return No return value, simply prints the tskit summary table to the terminal
 #'

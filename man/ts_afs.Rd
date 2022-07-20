@@ -43,7 +43,7 @@ This function computes the AFS with respect to the given set of individuals
 For more information on the format of the result and dimensions, in
 particular the interpretation of the first and the last element of the AFS,
 please see the tskit manual at
-\url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum}
+\url{https://tskit.dev/tskit/docs/stable/python-api.html}
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
