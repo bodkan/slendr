@@ -2,7 +2,7 @@
 
 - All uses of `\dontrun{}` in examples have now been replaced by valid, fully runnable example code. A small simulated testing dataset has been included in the package to facilitate this.
 
-- A default writing path is now never used in an argument to any function writing something to a disk. All writing in the examples, vignettes, and tests is being done to a `tempdir()` or `tempfile()` by default.
+- A default writing path is now never used in an argument to any function writing something to a disk. All writing (including in the examples, vignettes, and tests) is being done to a `tempdir()` or `tempfile()` by default.
 
 - Every user-facing function's `.Rd` file now has a `\value` tag describing its output and the structure of such output. If a function is only run for side effects, this is now also formally stated.
 
