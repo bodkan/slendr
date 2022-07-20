@@ -46,6 +46,7 @@ test_that("invalid blank maps are prevented", {
 })
 
 test_that("deletion in non-interactive modem must be forced", {
+  skip_if(interactive())
   p <- population(name = "pop", N = 700, time = 100) %>% resize(N = 100, time = 50, how = "step")
   directory <- file.path(tempdir(), "dir-forced")
   dir.create(directory)
@@ -89,7 +90,7 @@ test_that("recombination rate can only be an integer number (msprime)", {
   p <- population(name = "pop1", N = 700, time = 1)
   model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
   error_msg <- "Recombination rate must be a numeric value"
-  expect_error(msprime(model, sequence_length = 100, recombination_rate = "asdf"), error_msg)
-  expect_error(msprime(model, sequence_length = 100, recombination_rate = -1), error_msg)
-  expect_silent(msprime(model, sequence_length = 100, recombination_rate = 1e-8))
+  expect_error(msprime(model, sequence_length = 100, recombination_rate = "asdf", random_seed = 42), error_msg)
+  expect_error(msprime(model, sequence_length = 100, recombination_rate = -1, random_seed = 42), error_msg)
+  expect_silent(msprime(model, sequence_length = 100, recombination_rate = 1e-8, random_seed = 42))
 })
