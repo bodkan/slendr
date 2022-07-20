@@ -8,7 +8,6 @@ import sys
 import pathlib
 import hashlib
 import logging
-import random
 
 import tskit
 import pyslim
@@ -45,9 +44,6 @@ args = parser.parse_args()
 if args.verbose:
     logging.basicConfig(level=logging.INFO)
 
-if not args.seed:
-  args.seed = random.randint(0, 2^32 - 1)
-  
 model_dir = os.path.expanduser(args.model)
 
 logging.info(f"Loading slendr model configuration files from {model_dir}")
