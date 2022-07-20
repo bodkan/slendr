@@ -52,7 +52,7 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
                           simulation_length = NULL, direction = NULL,
                           slim_script = NULL, description = "", sim_length = NULL) {
   if (is.null(simulation_length) && !is.null(sim_length)) {
-    message("Argument `sim_length` will soon be deprecated in favor of `simulation_length`.")
+    warning("Argument `sim_length` will soon be deprecated in favor of `simulation_length`.", call. = FALSE)
     simulation_length <- sim_length
   }
 
@@ -316,6 +316,7 @@ read_model <- function(path) {
 #'   will be saved (most likely for use with \code{animate_model}).
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary (this is useful
 #'   if the \code{slim} binary is not on the \code{$PATH}).
+#' @param sampling Deprecated in favor of \code{samples}.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence})
@@ -359,7 +360,7 @@ slim <- function(
   model, sequence_length, recombination_rate, samples = NULL, output = NULL,
   burnin = 0, max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
   method = c("batch", "gui"), random_seed = NULL, verbose = FALSE, load = TRUE,
-  locations = NULL, slim_path = NULL
+  locations = NULL, slim_path = NULL, sampling = NULL
 ) {
   method <- match.arg(method)
 
@@ -381,6 +382,11 @@ slim <- function(
 
   if (!is.numeric(recombination_rate) | recombination_rate < 0)
     stop("Recombination rate must be a numeric value", call. = FALSE)
+
+  if (!is.null(sampling) && is.null(samples)) {
+    warning("Argument `sampling` will soon be deprecated in favor of `samples`.", call. = FALSE)
+    samples <- sampling
+  }
 
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
@@ -523,6 +529,7 @@ slim <- function(
 #'   file is written to a custom location to be loaded at a later point.
 #' @param verbose Write the output log to the console (default \code{FALSE})?
 #' @param debug Write msprime's debug log to the console (default \code{FALSE})?
+#' @param sampling Deprecated in favor of \code{samples}.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence})
@@ -563,7 +570,7 @@ slim <- function(
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
                     output = NULL, random_seed = NULL,
-                    load = TRUE, verbose = FALSE, debug = FALSE) {
+                    load = TRUE, verbose = FALSE, debug = FALSE, sampling = NULL) {
   if (is.null(output) & !load)
     warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
             "a temporary file after the simulation has been prevented", call. = FALSE)
@@ -579,6 +586,11 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 
   if (!is.numeric(recombination_rate) | recombination_rate < 0)
     stop("Recombination rate must be a numeric value", call. = FALSE)
+
+  if (!is.null(sampling) && is.null(samples)) {
+    warning("Argument `sampling` will soon be deprecated in favor of `samples`.", call. = FALSE)
+    samples <- sampling
+  }
 
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,

@@ -13,7 +13,8 @@ msprime(
   random_seed = NULL,
   load = TRUE,
   verbose = FALSE,
-  debug = FALSE
+  debug = FALSE,
+  sampling = NULL
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ file is written to a custom location to be loaded at a later point.}
 \item{verbose}{Write the output log to the console (default \code{FALSE})?}
 
 \item{debug}{Write msprime's debug log to the console (default \code{FALSE})?}
+
+\item{sampling}{Deprecated in favor of \code{samples}.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
