@@ -14,7 +14,7 @@
 
 -   `xrange` and `yrange` parameters of `world()` are now enforced to be two-dimensional numeric vectors, avoiding unnecessary issues with misspecified longitude/latitude ([#df95369](https://github.com/bodkan/slendr/commit/df95369))
 
-- The argument `sampling = ` in `slim()` and `msprime()` is now renamed to `samples = ` ([#adf4e0d](ttps://github.com/bodkan/slendr/commit/adf4e0d)).
+- The argument `sampling = ` in `slim()` and `msprime()` is now renamed to `samples = ` ([#adf4e0d](https://github.com/bodkan/slendr/commit/adf4e0d)).
 
 -   The automated `setup_env()` function for creating dedicated mini Python environments for *slendr* now installs packages using *pip* by default. Reason: The rate of conda failures and dependency conflicts (even in the trivial case of installing nothing more than *msprime* + *tskit* + *pyslim* + *pandas*) is too high to rely on it. The option to use conda for package installations with `setup_env()` is still there, but the users must explicitly call `setup_env(pip = FALSE)` to get this behavior. Note that conda is still used as a means to install Python itself! This change only affects the way how Python modules are installed into a dedicated *slendr* Python environment, not the installation of Python itself. ([#81be1a7](https://github.com/bodkan/slendr/commit/81be1a7))
 
