@@ -105,7 +105,7 @@ We can visualize the defined world map using the function `plot_map` provided by
 plot_map(map)
 ```
 
-![plot of chunk plot_world](man/figures/README-plot_world-1.png)
+![](man/figures/README-plot_world-1.png)
 
 Although in this example we use a real Earth landscape, the `map` can be completely abstract (either blank or with user-defined landscape features such as continents, islands, corridors and barriers).
 
@@ -145,7 +145,7 @@ Again, we can use the generic `plot_map` function to visualize these objects, ma
 plot_map(africa, europe, anatolia)
 ```
 
-![plot of chunk plot_regions](man/figures/README-plot_regions-1.png)
+![](man/figures/README-plot_regions-1.png)
 
 #### 3. Define demographic history and population boundaries
 
@@ -207,7 +207,7 @@ We can use the function `plot_map` again to get a "compressed" overview of all s
 plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
 
-![plot of chunk plot_popmaps](man/figures/README-plot_popmaps-1.png)
+![](man/figures/README-plot_popmaps-1.png)
 
 #### 4. Define gene-flow events
 
@@ -263,13 +263,15 @@ b\) Displaying the demographic history graph (splits and gene-flow events) embed
 
 Finally, we can execute the compiled model in SLiM. Here we run the simulation in a batch mode, but we could also run it in SLiMgui by setting `method = "gui"`. This would allow us to inspect the spatial simulation as it happens in real time.
 
-The `slim` function generates a complete SLiM script tailored to run the spatial model we defined above. This saves you, the user, a tremendous amount of time, because you don't have to write new SLiM code every time you design a new demographic model.
+The `slim` function generates a complete SLiM script tailored to run the spatial model we defined above. This saves you, the user, a tremendous amount of time, because you don't have to write new SLiM code every time you design a new demographic model. The output of the simulation run from any *slendr* model is always a [tree sequence](https://tskit.dev/learn.html#what), here loaded into an object `ts_slim`.
 
 
 ```r
-slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
-     save_locations = TRUE, method = "batch", random_seed = 314159)
+ts_slim <- slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
+                method = "batch", random_seed = 314159)
 ```
+
+
 
 As specified here, *slendr*'s SLiM backend will simulate 10 Mb of sequence for each individual, and produce a tree sequence output from the simulation run which can be analysed by many [built-in population genetic functions](https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics). By default, all individuals living at the end of the simulation are recorded as samples in the tree sequence. If a specific set of samples (ancient and modern) is needed, this can be defined accordingly using a [dedicated function](https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events).
 
@@ -277,17 +279,17 @@ Note that although we defined a spatial model, we could have just as easily simu
 
 
 ```r
-msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
+ts_msprime <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
 ```
 
-Finally, here is a very quick overview of the SLiM simulation run summarised as a GIF animation. Again, please note that the simulation is extremely simplified. We only simulated a very small number of individuals in each population, and we also didn't specify any [dispersal dynamics](https://www.slendr.net/articles/vignette-03-interactions.html) which is why the populations look so clumped.
+Here is a very quick overview of the SLiM simulation run summarised as a GIF animation. Again, please note that the simulation is extremely simplified. We only simulated a very small number of individuals in each population, and we also didn't specify any [dispersal dynamics](https://www.slendr.net/articles/vignette-03-interactions.html) which is why the populations look so clumped.
 
 
 ```r
-animate_model(model = model, steps = 50, width = 500, height = 300)
+animate_model(model = model, file = locations_file, steps = 50, width = 500, height = 300)
 ```
 
-![plot of chunk plot_gif](man/figures/README-plot_gif-1.gif)
+![](man/figures/README-plot_gif-1.gif)
 
 At this point, you could either compute some [population genetic statistics of interest](https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics) or perhaps analyse the [spatial features of the genealogies](https://www.slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships) simulated by your model.
 

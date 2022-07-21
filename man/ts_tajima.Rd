@@ -33,10 +33,11 @@ For a discussion on the difference between "site" and "branch" options of the
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 
 # calculate Tajima's D for given sets of individuals in a tree sequence ts
 ts_tajima(ts, list(eur = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),

@@ -26,9 +26,9 @@ Plot demographic history encoded in a slendr model
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
-# load an example model with an already simulated tree sequence and plot
-# it as an "admixture graph"
-model <- read_example("introgression")
+# load an example model with an already simulated tree sequence
+path <- system.file("extdata/models/introgression", package = "slendr")
+model <- read_model(path)
 
 plot_model(model, sizes = FALSE, log = TRUE)
 }

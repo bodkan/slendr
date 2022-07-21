@@ -31,10 +31,11 @@ Extract (spatio-)temporal ancestral history for given nodes/individuals
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, simplify = TRUE)
+ts <- ts_load(slendr_ts, model, simplify = TRUE)
 
 # find the complete ancestry information for a given individual
 ts_ancestors(ts, "EUR_1", verbose = TRUE)

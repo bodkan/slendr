@@ -49,7 +49,6 @@ reference:
     - compile_model
     - read_model
     - schedule_sampling
-    - read_example
 
   - title: Installation and configuration of Python dependencies
     contents:
@@ -96,6 +95,7 @@ reference:
     - print.slendr_pop
     - print.slendr_model
     - print.slendr_nodes
+    - print.slendr_ts
 
   - title: Tree sequence loading and processing
     contents:

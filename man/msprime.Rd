@@ -8,12 +8,13 @@ msprime(
   model,
   sequence_length,
   recombination_rate,
-  output = file.path(model$path, "output_msprime.trees"),
-  sampling = NULL,
-  verbose = FALSE,
+  samples = NULL,
+  output = NULL,
   random_seed = NULL,
-  save_sampling = TRUE,
-  debug = FALSE
+  load = TRUE,
+  verbose = FALSE,
+  debug = FALSE,
+  sampling = NULL
 )
 }
 \arguments{
@@ -24,27 +25,30 @@ msprime(
 \item{recombination_rate}{Recombination rate of the simulated sequence (in
 recombinations per basepair per generation)}
 
-\item{output}{Path to the output tree sequence}
-
-\item{sampling}{A data frame of times at which a given number of individuals
-should be remembered in the tree-sequence (see \code{sampling} for a
+\item{samples}{A data frame of times at which a given number of individuals
+should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
-\item{verbose}{Write the output log to the console (default \code{FALSE})?}
+\item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
+tree sequence will be saved to a temporary file.}
 
 \item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
 
-\item{save_sampling}{Save the sampling schedule table together with other
-output files? If \code{FALSE} (default), the sampling table will be saved
-to a temporary directory.}
+\item{load}{Should the final tree sequence be immediately loaded and returned?
+Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
+file is written to a custom location to be loaded at a later point.}
+
+\item{verbose}{Write the output log to the console (default \code{FALSE})?}
 
 \item{debug}{Write msprime's debug log to the console (default \code{FALSE})?}
+
+\item{sampling}{Deprecated in favor of \code{samples}.}
 }
 \value{
-No return value. Simulation output is saved to disk in the form of
-a tree-sequence file.
+A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
+(internally represented by the Python object \code{tskit.trees.TreeSequence})
 }
 \description{
 This function will execute a built-in msprime script and run a compiled
@@ -54,7 +58,7 @@ slendr demographic model.
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model
-model <- read_example("introgression")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # afr and eur objects would normally be created before slendr model compilation,
 # but here we take them out of the model object already compiled for this
@@ -72,7 +76,15 @@ ancient_samples <- schedule_sampling(model, times = c(40000, 30000, 20000, 10000
 samples <- rbind(modern_samples, ancient_samples)
 
 # run a simulation using the msprime back end from a compiled slendr model object
-msprime(model, sequence_length = 1e5, recombination_rate = 0, sampling = samples, verbose = TRUE)
+ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
 
-\dontshow{unlink(file.path(model$path, "output_msprime.trees")) # delete temporary tree sequence}
+# automatic loading of a simulated output can be prevented by `load = FALSE`, which can be
+# useful when a custom path to a tree-sequence output is given for later downstream analyses
+output_file <- tempfile(fileext = ".trees")
+msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
+        output = output_file, load = FALSE, random_seed = 42)
+# ... at a later stage:
+ts <- ts_load(output_file, model)
+
+summary(ts)
 }

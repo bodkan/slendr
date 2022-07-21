@@ -154,7 +154,8 @@ Those familiar with the SLiM manual will recognize a model described in section 
 Finally, we can run our simulation using the `slim()` function.
 
 ```{r, eval = FALSE}
-slim(model, sequence_length = 1, recombination_rate = 0, method = "batch")
+ts <- slim(model, sequence_length = 10000, recombination_rate = 0) # simulate a single 10kb locus
+ts
 ```
 
 ## Population grid on a real geographic landscape

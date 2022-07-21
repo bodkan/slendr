@@ -1,3 +1,7 @@
+# Note that this script pre-dates automatic loading of tree-sequence outputs by slim() and msprime()
+# functions. This is why it loads simulated outputs via the original ts_load() method (which is still
+# valid, so it actually makes sense to test things this way).
+
 skip_if(!slendr:::check_env_present())
 setup_env(quiet = TRUE)
 
@@ -30,8 +34,11 @@ model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_t
 
 samples <- schedule_sampling(model_nogf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
-slim(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
-msprime(model_nogf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
+ts_slim_nogf <- tempfile()
+ts_msprime_nogf <- tempfile()
+
+slim(model_nogf, output = ts_slim_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+msprime(model_nogf, output = ts_msprime_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 
 # model with gene flow
 gf <- gene_flow(from = b, to = x1, start = 2010, end = 2200, rate = 0.1)
@@ -40,14 +47,17 @@ model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf
 
 samples <- schedule_sampling(model_gf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
-slim(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
-msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, sampling = samples, random_seed = seed)
+ts_slim_gf <- tempfile()
+ts_msprime_gf <- tempfile()
+
+slim(model_gf, output = ts_slim_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+msprime(model_gf, output = ts_msprime_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 
 # Load tree sequence files saved by the SLiM backend script from the two models:
-slim_nogf <- ts_load(model_nogf, file = file.path(model_nogf$path, "output_slim.trees"), recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+slim_nogf <- ts_load(model = model_nogf, file = ts_slim_nogf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
                      Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, random_seed = seed)
 
-slim_gf <- ts_load(model_gf, file = file.path(model_gf$path, "output_slim.trees"), recapitate = TRUE, simplify = TRUE, mutate = TRUE,
+slim_gf <- ts_load(model = model_gf, file = ts_slim_gf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
                    Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:
@@ -78,10 +88,10 @@ df_slim_f4ratio <- rbind(
 
 
 # Load tree sequence files saved by the SLiM backend script from the two models:
-msprime_nogf <- ts_load(model_nogf, file = file.path(model_nogf$path, "output_msprime.trees"), mutate = TRUE,
+msprime_nogf <- ts_load(model = model_nogf, file = ts_msprime_nogf, mutate = TRUE,
                         mutation_rate = mut_rate, random_seed = seed)
 
-msprime_gf <- ts_load(model_gf, file = file.path(model_gf$path, "output_msprime.trees"), mutate = TRUE,
+msprime_gf <- ts_load(model = model_gf, file = ts_msprime_gf, mutate = TRUE,
                       mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:

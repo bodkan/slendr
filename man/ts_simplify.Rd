@@ -46,9 +46,11 @@ ancient DNA samples) is in the pyslim documentation at
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
-ts <- ts_load(model)
+ts <- ts_load(slendr_ts, model)
+ts
 
 # simplify tree sequence to sampled individuals
 ts_simplified <- ts_simplify(ts)
@@ -59,6 +61,8 @@ ts_small <- ts_simplify(
   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
                   "AFR_2", "EUR_1", "EUR_2")
 )
+
+ts_small
 }
 \seealso{
 \code{\link{ts_nodes}} for extracting useful information about

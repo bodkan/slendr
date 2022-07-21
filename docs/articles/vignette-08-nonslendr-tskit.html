@@ -218,7 +218,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpDEdkHE/file56755ee7958a");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpwdneCv/file48f7b996d73");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -271,19 +271,21 @@ also include spatial information—see below):</p>
 <span class="co">#&gt; overview of the underlying table object:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 26,020 × 10</span></span>
-<span class="co">#&gt;    pop   node_id  time time_tskit sampled remembered retained alive pedigree_id</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p1          0     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>000</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p1          1     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>000</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p1          2     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>001</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> p1          3     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>001</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> p1          4     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>002</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> p1          5     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>002</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> p1          6     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>003</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> p1          7     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>003</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> p1          8     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>004</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p1          9     0          0 TRUE    FALSE      FALSE    TRUE     20<span style="text-decoration: underline;">073</span>004</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 26,010 more rows, and 1 more variable: ind_id &lt;dbl&gt;</span></span></code></pre></div>
+<span class="co">#&gt;    pop   node_id  time time_tskit sampled remembe…¹ retai…² alive pedig…³ ind_id</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p1          0     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      0</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p1          1     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      0</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p1          2     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      1</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> p1          3     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      1</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> p1          4     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      2</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> p1          5     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      2</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> p1          6     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      3</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> p1          7     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      3</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> p1          8     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      4</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p1          9     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      4</span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 26,010 more rows, and abbreviated variable names ¹​remembered,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   ²​retained, ³​pedigree_id</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Moving on to tskit statistics, we can use the data table above to
 extract a list of nodes belonging to each population (this is what
 various tskit tree-sequence statistics operate on, and <em>slendr</em>
@@ -400,7 +402,8 @@ and analyze it with the slendr functionality:</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 0         <span style="color: #BB0000;">NA</span>       7     0          0 TRUE         0</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 0         <span style="color: #BB0000;">NA</span>       8     0          0 TRUE         0</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 0         <span style="color: #BB0000;">NA</span>       9     0          0 TRUE         0</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 189 more rows</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #949494;"># … with 189 more rows</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="spatial-slim-non-slendr-tree-sequences">Spatial SLiM (non-slendr) tree sequences<a class="anchor" aria-label="anchor" href="#spatial-slim-non-slendr-tree-sequences"></a>
@@ -443,7 +446,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpDEdkHE/file56757dbcd47c");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpwdneCv/file48f75de4aecb");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
@@ -479,20 +482,21 @@ spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</
 <span class="co">#&gt; overview of the underlying sf object:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,955 × 11</span></span>
-<span class="co">#&gt;    pop   node_id  time time_tskit               location sampled remembered</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;POINT&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p1          0     0          0   (0.904485 0.0777489) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p1          1     0          0   (0.904485 0.0777489) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p1          2     0          0   (0.668828 0.5246381) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> p1          3     0          0   (0.668828 0.5246381) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> p1          4     0          0  (0.7707701 0.1518462) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> p1          5     0          0  (0.7707701 0.1518462) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> p1          6     0          0  (0.7617792 0.2616453) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> p1          7     0          0  (0.7617792 0.2616453) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> p1          8     0          0 (0.9807475 0.04223008) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p1          9     0          0 (0.9807475 0.04223008) TRUE    FALSE     </span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 1,945 more rows, and 4 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   pedigree_id &lt;dbl&gt;, ind_id &lt;dbl&gt;</span></span></code></pre></div>
+<span class="co">#&gt;    pop   node_id  time time_…¹               location sampled remembered retai…²</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;POINT&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p1          0     0       0   (0.904485 0.0777489) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p1          1     0       0   (0.904485 0.0777489) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p1          2     0       0   (0.668828 0.5246381) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> p1          3     0       0   (0.668828 0.5246381) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> p1          4     0       0  (0.7707701 0.1518462) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> p1          5     0       0  (0.7707701 0.1518462) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> p1          6     0       0  (0.7617792 0.2616453) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> p1          7     0       0  (0.7617792 0.2616453) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> p1          8     0       0 (0.9807475 0.04223008) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p1          9     0       0 (0.9807475 0.04223008) TRUE    FALSE      TRUE   </span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 1,945 more rows, 3 more variables: alive &lt;lgl&gt;, pedigree_id &lt;dbl&gt;,</span></span>
+<span class="co">#&gt; <span style="color: #949494;">#   ind_id &lt;dbl&gt;, and abbreviated variable names ¹​time_tskit, ²​retained</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></code></pre></div>
 <p>Because we get the tree sequence converted to the spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</em></a> data format, we
 can use standard geospatial packages to use any spatial data analysis
 methods that those packages provide.</p>

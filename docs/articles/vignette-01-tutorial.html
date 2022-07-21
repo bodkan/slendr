@@ -833,53 +833,49 @@ generates a SLiM script (using a back end skeleton script which is a
 part of this package and can be found by calling
 <code>system.file("scripts/script.slim", package = "slendr")</code>, in
 case you’d like to peek into its internals).</p>
-<p>Note that when you run this model in SLiMgui (which should
-automatically open by calling the command below), you will see
-populations pop up in individual panes within the window. This is how
-SLiMgui tracks spatial ranges of different populations. <em>Everyone is
-still simulated in the same world</em>, it’s just that the simulation
-visualizes individual population ranges separately to reduce
-clutter.</p>
-<p>Notice that the function accepts several parameters determining the
-length of the simulated genetic sequence, the recombination rate, the
-length of the burnin period (to generate genetic diversity prior to
-simulated population dynamics), the total time of the simulation run
-(excluding burnin), and the generation time for the simulated organism
-(which is used to convert all times defined during model specification
-above into SLiM’s internal units of generations).</p>
+<p>The output of a <em>slendr</em> simulation is a tree-sequence file
+(here produced by the SLiM simulation behind the scenes). This tree
+sequence is then automatically loaded into R and returned to the
+user:</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span>
-  <span class="va">model</span>,
-  sequence_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, <span class="co"># simulate only a single locus</span>
-  save_locations <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># save the location of everyone who ever lived</span>
-  method <span class="op">=</span> <span class="st">"batch"</span>, <span class="co"># change to "gui" to execute the model in SLiMgui</span>
-  random_seed <span class="op">=</span> <span class="fl">314159</span>
-<span class="op">)</span></code></pre></div>
-<p>By default, simulation output files are put in the same directory
-where the model configuration data is stored, and are given a common
-prefix <code>output_</code>. Both the directory and the output file
-prefix can be specified by setting the <code>output_dir</code> and
-<code>output_prefix</code> arguments of the function
-<code><a href="../reference/slim.html">slim()</a></code>.</p>
-<p>In case the <code>save_locations</code> parameter was provided, you
-can generate an animation of the model dynamics across time by
-calling:</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/animate_model.html">animate_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, steps <span class="op">=</span> <span class="fl">70</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
-<p>If an argument <code>gif = ...</code> is provided,
-<code><a href="../reference/animate_model.html">animate_model()</a></code> will save the animation to the specified
-location as a GIF file. In this case, the command would produce the
-animation you can see on the <em>slendr</em> package <a href="https://www.slendr.net">landing page</a>.</p>
-<p>However, note that unless your simulation is very short and/or
-involves only a small population, saving the location of every
-individual who ever lived will slow down your simulations significantly
-and that rendering of the animation can take also several minutes.</p>
-<p>For troubleshooting your models, executing them with
-<code>slim(..., method = "gui")</code> is a more efficient option as you
-will be able to inspect model dynamics in real-time in SLiMgui. We
-suggest that you only use the animation feature for creating animations
-for publications and presentation, not for your daily <em>slendr</em>
-work.</p>
+<code class="sourceCode R"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100000</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span>
+<span class="va">ts</span></code></pre></div>
+<pre><code><span class="co">#&gt; ╔═══════════════════════════╗</span>
+<span class="co">#&gt; ║TreeSequence               ║</span>
+<span class="co">#&gt; ╠═══════════════╤═══════════╣</span>
+<span class="co">#&gt; ║Trees          │        129║</span>
+<span class="co">#&gt; ╟───────────────┼───────────╢</span>
+<span class="co">#&gt; ║Sequence Length│     100000║</span>
+<span class="co">#&gt; ╟───────────────┼───────────╢</span>
+<span class="co">#&gt; ║Time Units     │generations║</span>
+<span class="co">#&gt; ╟───────────────┼───────────╢</span>
+<span class="co">#&gt; ║Sample Nodes   │      10000║</span>
+<span class="co">#&gt; ╟───────────────┼───────────╢</span>
+<span class="co">#&gt; ║Total Size     │    2.6 MiB║</span>
+<span class="co">#&gt; ╚═══════════════╧═══════════╝</span>
+<span class="co">#&gt; ╔═══════════╤═════╤═════════╤════════════╗</span>
+<span class="co">#&gt; ║Table      │Rows │Size     │Has Metadata║</span>
+<span class="co">#&gt; ╠═══════════╪═════╪═════════╪════════════╣</span>
+<span class="co">#&gt; ║Edges      │18712│584.8 KiB│          No║</span>
+<span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span>
+<span class="co">#&gt; ║Individuals│12807│  1.2 MiB│         Yes║</span>
+<span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span>
+<span class="co">#&gt; ║Migrations │    0│  8 Bytes│          No║</span>
+<span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span>
+<span class="co">#&gt; ║Mutations  │    0│  1.2 KiB│          No║</span>
+<span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span>
+<span class="co">#&gt; ║Nodes      │18360│682.0 KiB│         Yes║</span>
+<span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span>
+<span class="co">#&gt; ║Populations│    6│  3.1 KiB│         Yes║</span>
+<span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span>
+<span class="co">#&gt; ║Provenances│    1│ 33.3 KiB│          No║</span>
+<span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span>
+<span class="co">#&gt; ║Sites      │    0│ 16 Bytes│          No║</span>
+<span class="co">#&gt; ╚═══════════╧═════╧═════════╧════════════╝</span></code></pre>
+<p>There is lots more that <em>slendr</em> allows you to do, both in
+terms of the simulation itself, but also in terms of analyzing
+tree-sequence data. The list below provides a list of additional
+resources you might want to look at.</p>
 </div>
 <div class="section level2">
 <h2 id="more-information">More information<a class="anchor" aria-label="anchor" href="#more-information"></a>

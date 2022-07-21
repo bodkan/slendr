@@ -316,9 +316,7 @@ model.</p>
 <code>plot_map</code> provided by the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="reference/figures/README-plot_world-1.png" alt=""><p class="caption">plot of chunk plot_world</p>
-</div>
+<p><img src="reference/figures/README-plot_world-1.png"></p>
 <p>Although in this example we use a real Earth landscape, the
 <code>map</code> can be completely abstract (either blank or with
 user-defined landscape features such as continents, islands, corridors
@@ -363,9 +361,7 @@ Earth surface to a two-dimensional map.</p>
 visualize these objects, making sure we specified them correctly:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">africa</span>, <span class="va">europe</span>, <span class="va">anatolia</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="reference/figures/README-plot_regions-1.png" alt=""><p class="caption">plot of chunk plot_regions</p>
-</div>
+<p><img src="reference/figures/README-plot_regions-1.png"></p>
 </div>
 <div class="section level4">
 <h4 id="id_3-define-demographic-history-and-population-boundaries">3. Define demographic history and population boundaries<a class="anchor" aria-label="anchor" href="#id_3-define-demographic-history-and-population-boundaries"></a>
@@ -430,9 +426,7 @@ simulation at a later step.</p>
 the model so far (prior to the simulation itself).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="reference/figures/README-plot_popmaps-1.png" alt=""><p class="caption">plot of chunk plot_popmaps</p>
-</div>
+<p><img src="reference/figures/README-plot_popmaps-1.png"></p>
 </div>
 <div class="section level4">
 <h4 id="id_4-define-gene-flow-events">4. Define gene-flow events<a class="anchor" aria-label="anchor" href="#id_4-define-gene-flow-events"></a>
@@ -499,10 +493,12 @@ spatial simulation as it happens in real time.</p>
 <p>The <code>slim</code> function generates a complete SLiM script
 tailored to run the spatial model we defined above. This saves you, the
 user, a tremendous amount of time, because you don’t have to write new
-SLiM code every time you design a new demographic model.</p>
+SLiM code every time you design a new demographic model. The output of
+the simulation run from any <em>slendr</em> model is always a <a href="https://tskit.dev/learn.html#what" class="external-link">tree sequence</a>, here loaded
+into an object <code>ts_slim</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,
-     save_locations <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="st">"batch"</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">ts_slim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,
+                method <span class="op">=</span> <span class="st">"batch"</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
 <p>As specified here, <em>slendr</em>’s SLiM backend will simulate 10 Mb
 of sequence for each individual, and produce a tree sequence output from
 the simulation run which can be analysed by many <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">built-in
@@ -516,17 +512,15 @@ easily simulated standard, non-spatial data by running the same model
 through <em>slendr</em>’s <code><a href="reference/msprime.html">msprime()</a></code> back end without the
 need to make any changes:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></code></pre></div>
-<p>Finally, here is a very quick overview of the SLiM simulation run
-summarised as a GIF animation. Again, please note that the simulation is
-extremely simplified. We only simulated a very small number of
-individuals in each population, and we also didn’t specify any <a href="https://www.slendr.net/articles/vignette-03-interactions.html">dispersal
+<code class="sourceCode R"><span class="va">ts_msprime</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></code></pre></div>
+<p>Here is a very quick overview of the SLiM simulation run summarised
+as a GIF animation. Again, please note that the simulation is extremely
+simplified. We only simulated a very small number of individuals in each
+population, and we also didn’t specify any <a href="https://www.slendr.net/articles/vignette-03-interactions.html">dispersal
 dynamics</a> which is why the populations look so clumped.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/animate_model.html">animate_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, steps <span class="op">=</span> <span class="fl">50</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
-<div class="figure">
-<img src="reference/figures/README-plot_gif-1.gif" alt=""><p class="caption">plot of chunk plot_gif</p>
-</div>
+<code class="sourceCode R"><span class="fu"><a href="reference/animate_model.html">animate_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, file <span class="op">=</span> <span class="va">locations_file</span>, steps <span class="op">=</span> <span class="fl">50</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
+<p><img src="reference/figures/README-plot_gif-1.gif"></p>
 <p>At this point, you could either compute some <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">population
 genetic statistics of interest</a> or perhaps analyse the <a href="https://www.slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships">spatial
 features of the genealogies</a> simulated by your model.</p>

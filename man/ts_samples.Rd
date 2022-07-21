@@ -21,10 +21,11 @@ Extract names and times of individuals of interest in the current tree sequence
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, simplify = TRUE)
+ts <- ts_load(slendr_ts, model, simplify = TRUE)
 
 # extract the table of individuals scheduled for simulation and sampling
 ts_samples(ts)

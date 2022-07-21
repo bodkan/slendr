@@ -19,11 +19,11 @@ initialize() {
     optional_arg("SEED", getSeed());
     setSeed(SEED); catn("SEED: " + getSeed());
 
+    required_arg("OUTPUT_TS");
     optional_arg("MODEL", "."); // directory containing model configuration files
-    optional_arg("OUTPUT", config_path("output")); // shared path of output files
     optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
     optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
-    optional_arg("SAVE_LOCATIONS", F); // record locations of all individuals?
+    optional_arg("OUTPUT_LOCATIONS", ""); // where should locations of individuals be saved?
     optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
@@ -130,7 +130,7 @@ initialize() {
         sim.deregisterScriptBlock(s7);
 
     // output locations of individuals
-    if (SAVE_LOCATIONS & SPATIAL) {
+    if (OUTPUT_LOCATIONS != "" & SPATIAL) {
         sim.rescheduleScriptBlock(s8, start = SIMULATION_START, end = SIMULATION_END);
         write_locations_header();
     } else
@@ -337,7 +337,6 @@ s7 late() /* Changing interaction distances and dispersals */ {
 }
 
 s8 late() /* Save locations of all individuals */ {
-    filename = output_path("ind_locations.tsv.gz");
     for (ind in sim.subpopulations.individuals) {
         ind_str = paste(
             SIMULATION_END - sim.generation,
@@ -347,7 +346,7 @@ s8 late() /* Save locations of all individuals */ {
             ind.spatialPosition,
             sep = "\t"
         );
-        writeFile(filename, ind_str, append = T, compress = T);
+        writeFile(OUTPUT_LOCATIONS, ind_str, append = T, compress = T);
     }
 }
 
@@ -439,13 +438,13 @@ s11 late() /* Schedule removal of populations */ {
 }
 
 s12 late() /* End of simulation */ {
-    filename = output_path("slim.trees");
+    filename = OUTPUT_TS;
 
     // add slendr-specific metadata to its own Dictionary key
     metadata = collect_metadata();
 
-    sim.treeSeqOutput(filename, metadata = Dictionary("slendr", metadata));
-    log_output("saving the tree sequence output");
+    sim.treeSeqOutput(OUTPUT_TS, metadata = Dictionary("slendr", metadata));
+    log_output("saving the tree sequence output to '" + OUTPUT_TS + "'");
 
     log_output("simulation finished");
     sim.simulationFinished();
@@ -672,14 +671,9 @@ function (s) config_path(s file) {
     return MODEL + "/" + file;
 }
 
-// Compose a path to an output file
-function (s$) output_path(s$ file) {
-    return paste0(OUTPUT, "_", file);
-}
-
 // Write the locations table header
 function (void) write_locations_header(void) {
-    filename = output_path("ind_locations.tsv.gz");
+    filename = OUTPUT_LOCATIONS;
     header_str = "gen\tpop_id\tpop\tind\tx\ty";
     writeFile(filename, header_str, compress = T);
 }

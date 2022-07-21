@@ -40,10 +40,11 @@ Convert a tree in the tree sequence to an object of the class \code{phylo}
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, simplify = TRUE)
+ts <- ts_load(slendr_ts, model, simplify = TRUE)
 
 # extract the 1st tree from a given tree sequence, return ape object
 tree <- ts_phylo(ts, i = 1, mode = "index", quiet = TRUE)
@@ -51,4 +52,8 @@ tree
 
 # extract the tree at a 42th basepair in the given tree sequence
 tree <- ts_phylo(ts, i = 42, mode = "position", quiet = TRUE)
+
+# because the tree is a standard ape phylo object, we can plot it easily
+plot(tree, use.edge.length = FALSE)
+ape::nodelabels()
 }

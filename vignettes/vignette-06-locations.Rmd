@@ -126,8 +126,7 @@ model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf,
   generation_time = 30, resolution = 10e3,
-  competition = 130e3, mating = 100e3, dispersal = 70e3,
-  path = paste0(tempfile(), "_spatial-ts")
+  competition = 130e3, mating = 100e3, dispersal = 70e3
 )
 ```
 
@@ -160,17 +159,16 @@ present <- schedule_sampling(model, times = 0, list(afr, 5), list(eur, 30))
 samples <- rbind(ancient, present)
 ```
 
+Finally, we can simulate data from our model and process the output tree sequence (recapitate and simplify it):
 ```{r}
-slim(
+ts <- slim(
   model, sequence_length = 100e3, recombination_rate = 1e-8, burnin = 200e3,
-  sampling = samples, method = "batch", random_seed = 314159, max_attempts = 1
-)
-```
+  samples = samples, method = "batch", random_seed = 314159, max_attempts = 1
+) %>%
+  ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = seed) %>%
+  ts_simplify()
 
-After the simulation is done, we can load the data in the same way we did in our [first exploration](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files-1) of tree sequence features in *slendr*. We will also immediately simplify the tree sequence data structure to only those genealogies which involve individuals that we explicitly scheduled for sampling, and perform recapitation to ensure the coalescence of all genealogies along the genome:
-
-```{r}
-ts <- ts_load(model, recapitate = TRUE, simplify = TRUE, recombination_rate = 1e-8, Ne = 10000, random_seed = seed)
+ts
 ```
 
 ## Extracting spatial tree sequence information

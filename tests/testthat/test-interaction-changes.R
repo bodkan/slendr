@@ -66,11 +66,11 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
       simulation_length = 2, resolution = 0.1, overwrite = TRUE, force = TRUE
     )
 
+    locations_file <- tempfile(fileext = ".gz")
     slim(model, sequence_length = 1, recombination_rate = 0, method = "batch",
-         save_locations = TRUE, max_attempts = 1, verbose = FALSE, random_seed = seed)
+         locations = locations_file, max_attempts = 1, verbose = FALSE, random_seed = seed)
 
-    locations <- readr::read_tsv(file.path(model$path, "output_ind_locations.tsv.gz"),
-                                 show_col_types = FALSE, progress = FALSE) %>%
+    locations <- readr::read_tsv(locations_file, show_col_types = FALSE, progress = FALSE) %>%
       reproject(coords = ., from = "raster", to = "world", model = model, add = TRUE) %>%
       dplyr::filter(gen == 0) %>%
       dplyr::mutate(distance = sqrt((newx - 50)^2 + (newy - 50)^2)) %>%

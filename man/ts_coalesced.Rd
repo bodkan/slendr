@@ -23,10 +23,11 @@ Check that all trees in the tree sequence are fully coalesced
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, simplify = TRUE)
+ts <- ts_load(slendr_ts, model, simplify = TRUE)
 
 ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)
 

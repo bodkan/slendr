@@ -73,10 +73,11 @@ Calculate the f2, f3, f4, and f4-ratio statistics
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
 # load an example model with an already simulated tree sequence
-model <- read_example("introgression")
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
 
 # calculate f2 for two individuals in a previously loaded tree sequence
 ts_f2(ts, A = "AFR_1", B = "EUR_1")
@@ -100,4 +101,8 @@ ts_f4(ts, W = c("EUR_1", "EUR_2"),
           X = c("AFR_1", "AFR_2"),
           Y = "NEA_1",
           Z = "CH_1")
+
+# calculate f4-ratio for a given set of target individuals X
+ts_f4ratio(ts, X = c("EUR_1", "EUR_2", "EUR_4", "EUR_5"),
+               A = "NEA_1", B = "NEA_2", C = "AFR_1", O = "CH_1")
 }

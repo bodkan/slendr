@@ -448,33 +448,14 @@ explore_model(model)
 
 The way we feed the entire serialized model into SLiM is through the `slim()` function, which understands the format of the model directory created by the `compile_model()` function and generates a SLiM script (using a back end skeleton script which is a part of this package and can be found by calling `system.file("scripts/script.slim", package = "slendr")`, in case you'd like to peek into its internals).
 
-Note that when you run this model in SLiMgui (which should automatically open by calling the command below), you will see populations pop up in individual panes within the window. This is how SLiMgui tracks spatial ranges of different populations. *Everyone is still simulated in the same world*, it's just that the simulation visualizes individual population ranges separately to reduce clutter.
-
-Notice that the function accepts several parameters determining the length of the simulated genetic sequence, the recombination rate, the length of the burnin period (to generate genetic diversity prior to simulated population dynamics), the total time of the simulation run (excluding burnin), and the generation time for the simulated organism (which is used to convert all times defined during model specification above into SLiM's internal units of generations).
+The output of a *slendr* simulation is a tree-sequence file (here produced by the SLiM simulation behind the scenes). This tree sequence is then automatically loaded into R and returned to the user:
 
 ```{r}
-slim(
-  model,
-  sequence_length = 1, recombination_rate = 0, # simulate only a single locus
-  save_locations = TRUE, # save the location of everyone who ever lived
-  method = "batch", # change to "gui" to execute the model in SLiMgui
-  random_seed = 314159
-)
+ts <- slim(model, sequence_length = 100000, recombination_rate = 1e-8)
+ts
 ```
 
-By default, simulation output files are put in the same directory where the model configuration data is stored, and are given a common prefix `output_`. Both the directory and the output file prefix can be specified by setting the `output_dir` and `output_prefix` arguments of the function `slim()`.
-
-In case the `save_locations` parameter was provided, you can generate an animation of the model dynamics across time by calling:
-
-```{r, eval = FALSE}
-animate_model(model = model, steps = 70, width = 500, height = 300)
-```
-
-If an argument `gif = ...` is provided, `animate_model()` will save the animation to the specified location as a GIF file. In this case, the command would produce the animation you can see on the *slendr* package [landing page](https://www.slendr.net).
-
-However, note that unless your simulation is very short and/or involves only a small population, saving the location of every individual who ever lived will slow down your simulations significantly and that rendering of the animation can take also several minutes.
-
-For troubleshooting your models, executing them with `slim(..., method = "gui")` is a more efficient option as you will be able to inspect model dynamics in real-time in SLiMgui. We suggest that you only use the animation feature for creating animations for publications and presentation, not for your daily *slendr* work.
+There is lots more that *slendr* allows you to do, both in terms of the simulation itself, but also in terms of analyzing tree-sequence data. The list below provides a list of additional resources you might want to look at.
 
 ## More information
 

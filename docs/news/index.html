@@ -109,7 +109,11 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.0" id="slendr-020">slendr 0.2.0<a class="anchor" aria-label="anchor" href="#slendr-020"></a></h2>
-<ul><li><p><strong><em>slendr</em>’s tree-sequence R interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html" class="external-link">tskit</a>
+<ul><li><p>Big changes to the way tree-sequence outputs are handled by
+<em>slendr</em> by default. See <a href="https://github.com/bodkan/slendr/pull/100#issue-1310869866" class="external-link">this
+comment</a> for an extended description and examples of the change. (PR
+<a href="https://github.com/bodkan/slendr/pull/100" class="external-link">#100</a>).</p></li>
+<li><p><strong><em>slendr</em>’s tree-sequence R interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html" class="external-link">tskit</a>
 Python module has been generalized to load, process, and analyze tree
 sequences from non-<em>slendr</em> models!</strong> This means that
 users can use the <em>slendr</em> R package even for analyzing tree
@@ -162,6 +166,8 @@ scratch will solve the problem. (<a href="https://github.com/bodkan/slendr/commi
 <code><a href="../reference/world.html">world()</a></code> are now enforced to be two-dimensional numeric
 vectors, avoiding unnecessary issues with misspecified
 longitude/latitude (<a href="https://github.com/bodkan/slendr/commit/df95369" class="external-link">#df95369</a>)</p></li>
+<li><p>The argument <code>sampling =</code> in <code><a href="../reference/slim.html">slim()</a></code> and
+<code><a href="../reference/msprime.html">msprime()</a></code> is now renamed to <code>samples =</code> (<a href="ttps://github.com/bodkan/slendr/commit/adf4e0d">#adf4e0d</a>).</p></li>
 <li><p>The automated <code><a href="../reference/setup_env.html">setup_env()</a></code> function for creating
 dedicated mini Python environments for <em>slendr</em> now installs
 packages using <em>pip</em> by default. Reason: The rate of conda
@@ -206,7 +212,7 @@ built-in pre-compiled example model have been added to the
 documentation. (<a href="https://github.com/bodkan/slendr/commit/395df62c" class="external-link">#395df62c</a>)</p></li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.0" id="slendr-010">slendr 0.1.0<a class="anchor" aria-label="anchor" href="#slendr-010"></a></h2>
+<h2 class="page-header" data-toc-text="0.1.0" id="slendr-010-21-mar-2022">slendr 0.1.0 (21 Mar 2022)<a class="anchor" aria-label="anchor" href="#slendr-010-21-mar-2022"></a></h2>
 <ul><li>First numbered version of <em>slendr</em> to celebrate its <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">bioRxiv
 preprint</a>. 🥳 🎉</li>
 </ul></div>

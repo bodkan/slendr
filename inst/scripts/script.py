@@ -8,7 +8,6 @@ import sys
 import pathlib
 import hashlib
 import logging
-import random
 
 import tskit
 import pyslim
@@ -37,15 +36,14 @@ parser.add_argument("--sampling-schedule", metavar="FILE",
 parser.add_argument("--seed", type=int, help="Random seed value")
 parser.add_argument("--verbose", action="store_true", default=False,
                     help="Print detailed logging information?")
+parser.add_argument("--debug", action="store_true", default=False,
+                    help="Print detailed debugging information?")
 
 args = parser.parse_args()
 
 if args.verbose:
     logging.basicConfig(level=logging.INFO)
 
-if not args.seed:
-  args.seed = random.randint(0, 2^32 - 1)
-  
 model_dir = os.path.expanduser(args.model)
 
 logging.info(f"Loading slendr model configuration files from {model_dir}")
@@ -188,7 +186,7 @@ for event in geneflows.itertuples():
 # (otherwise msprime complains)
 demography.sort_events()
 
-if args.verbose:
+if args.debug:
     print(demography.debug())
 
 logging.info("Running the simulation")

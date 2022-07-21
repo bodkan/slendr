@@ -226,7 +226,7 @@ correctly:</p>
 <p>Even the final step—execution of the model in SLiM—is the same, using
 the built-in <code><a href="../reference/slim.html">slim()</a></code> function:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">ts_slim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
 <p>Even for non-spatial models, this function still uses the same SLiM
 back end script used for spatial models. The only difference is that all
 spatial features are switched off, making the model run as a simple
@@ -237,7 +237,7 @@ if it wouldn’t be more efficient to use a coalescent simulator. Indeed,
 just for this purpose. We could run the exact same simulation with
 <em>msprime</em> like this:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">ts_msprime</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
 <p>In fact, because both SLiM and <em>msprime</em> back ends save
 outputs in a tree sequence format, we can analyse them using the same
 tools. See <a href="vignette-05-tree-sequences.html">this vignette</a>

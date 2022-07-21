@@ -11,9 +11,7 @@ N <- 1000
 
 pop <- population("pop", time = 1, N = N)
 model <- compile_model(pop, generation_time = 1, direction = "forward", simulation_length = 1000)
-msprime(model, sequence_length = 1, recombination_rate = 0, random_seed = 42)
-
-ts1 <- ts_load(model)
+ts1 <- msprime(model, sequence_length = 1, recombination_rate = 0, random_seed = 42)
 
 # run a pure SLiM version of the same model -------------------------------
 
