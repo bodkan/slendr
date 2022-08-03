@@ -607,16 +607,9 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   } else
     sampling <- ""
 
-  msprime_command <- sprintf("python3 \\
-    %s \\
-    %s \\
-    --model %s \\
-    --output %s \\
-    --sequence-length %d \\
-    --recombination-rate %s \\
-    %s \\
-    %s \\
-    %s",
+  msprime_command <- sprintf(
+    "%s %s %s --model %s --output %s --sequence-length %d --recombination-rate %s %s %s %s",
+    reticulate::py_exe(),
     script_path,
     ifelse(is.null(random_seed), "", paste("--seed", random_seed)),
     path.expand(model_dir),
