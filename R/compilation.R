@@ -635,7 +635,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     cat("--------------------------------------------------\n\n")
   }
 
-  reticulate::py_run_string(sprintf("import os; os.system('%s')", msprime_command))
+  reticulate::py_run_string(sprintf("import os; os.system(r'%s')", msprime_command))
 
   # if (system(msprime_command, ignore.stdout = !verbose) != 0)
   #   stop("msprime simulation resulted in an error -- see the output above", call. = FALSE)
