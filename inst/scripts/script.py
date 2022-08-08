@@ -92,7 +92,7 @@ for pop in populations.itertuples():
     name = pop.pop
     if len(resizes) and name in set(resizes["pop"]):
         resize_events = resizes.query(f"pop == '{name}'")
-        initial_size = resize_events.tail(1).N[0]
+        initial_size = resize_events.tail(1).N.values[0]
     else:
         initial_size = pop.N
 

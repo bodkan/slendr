@@ -607,16 +607,9 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   } else
     sampling <- ""
 
-  msprime_command <- sprintf("python3 \\
-    %s \\
-    %s \\
-    --model %s \\
-    --output %s \\
-    --sequence-length %d \\
-    --recombination-rate %s \\
-    %s \\
-    %s \\
-    %s",
+  msprime_command <- sprintf(
+    "%s %s %s --model %s --output %s --sequence-length %d --recombination-rate %s %s %s %s",
+    reticulate::py_exe(),
     script_path,
     ifelse(is.null(random_seed), "", paste("--seed", random_seed)),
     path.expand(model_dir),
@@ -635,7 +628,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     cat("--------------------------------------------------\n\n")
   }
 
-  reticulate::py_run_string(sprintf("import os; os.system('%s')", msprime_command))
+  reticulate::py_run_string(sprintf("import os; os.system(r'%s')", msprime_command))
 
   # if (system(msprime_command, ignore.stdout = !verbose) != 0)
   #   stop("msprime simulation resulted in an error -- see the output above", call. = FALSE)
