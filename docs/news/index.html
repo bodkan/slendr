@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9000</span>
       </span>
     </div>
 
@@ -108,11 +108,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.0" id="slendr-020">slendr 0.2.0<a class="anchor" aria-label="anchor" href="#slendr-020"></a></h2>
-<ul><li><p>Big changes to the way tree-sequence outputs are handled by
+<h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li>Experimental support for running coalescent msprime simulations and
+analysing tree-sequence data using tskit on the Windows platform has now
+been implemented (PR <a href="https://github.com/bodkan/slendr/pull/102" class="external-link">#102</a>).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.2.0" id="slendr-020-21-jul-2022">slendr 0.2.0 (21 Jul 2022)<a class="anchor" aria-label="anchor" href="#slendr-020-21-jul-2022"></a></h2>
+<ul><li><p><em>slendr</em> is now on CRAN!</p></li>
+<li><p>Big changes to the way tree-sequence outputs are handled by
 <em>slendr</em> by default. See <a href="https://github.com/bodkan/slendr/pull/100#issue-1310869866" class="external-link">this
 comment</a> for an extended description and examples of the change. (PR
-<a href="https://github.com/bodkan/slendr/pull/100" class="external-link">#100</a>).</p></li>
+<a href="https://github.com/bodkan/slendr/pull/100" class="external-link">#100</a>). Briefly,
+simulation functions <code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> now
+return a tree-sequence object by default (can be switched off by setting
+<code>load = FALSE</code>), avoiding the need to always run
+<code>ts &lt;- ts_load(model)</code> as previously. At the same time, a
+parameter <code>output =</code> can be now used in <code><a href="../reference/slim.html">slim()</a></code>
+and <code><a href="../reference/msprime.html">msprime()</a></code> to specify the location where a tree-sequence
+file should be saved (temporary file by default).</p></li>
 <li><p><strong><em>slendr</em>’s tree-sequence R interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html" class="external-link">tskit</a>
 Python module has been generalized to load, process, and analyze tree
 sequences from non-<em>slendr</em> models!</strong> This means that
