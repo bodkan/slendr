@@ -4,7 +4,7 @@
 
 # slendr 0.2.0 (21 Jul 2022)
 
--   _slendr_ is now on CRAN!
+-   _slendr_ is now [on CRAN](https://cran.r-project.org/web/packages/slendr/)!
 
 -   Big changes to the way tree-sequence outputs are handled by *slendr* by default. See [this comment](https://github.com/bodkan/slendr/pull/100#issue-1310869866) for an extended description and examples of the change. (PR [#100](https://github.com/bodkan/slendr/pull/100)). Briefly, simulation functions `slim()` and `msprime()` now return a tree-sequence object by default (can be switched off by setting `load = FALSE`), avoiding the need to always run `ts <- ts_load(model)` as previously. At the same time, a parameter `output = ` can be now used in `slim()` and `msprime()` to specify the location where a tree-sequence file should be saved (temporary file by default).
 
