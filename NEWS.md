@@ -1,5 +1,9 @@
 # slendr (development version)
 
+-   SLiM 4.0 is now required for running simulations with the `slim()` engine. If you want to run simulations with SLiM (spatial or non-spatial), you will need to upgrade. SLiM 3.7.1 version is no longer supported as the upcoming new _slendr_ spatial features will depend on SLiM 4.x.
+
+-   At the same time with SLiM 4.0, Python modules msprime, tskit and pyslim have to be upgraded. Next time you load `library(slendr)`, you will be prompted to setup a new updated Python environment which you can do easily by running `setup_env()`.
+
 -   Experimental support for running coalescent msprime simulations and analysing tree-sequence data using tskit on the Windows platform has now been implemented (PR [#102](https://github.com/bodkan/slendr/pull/102)).
 
 # slendr 0.2.0 (21 Jul 2022)
