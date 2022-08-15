@@ -479,8 +479,6 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
       random_seed = random_seed
     )
 
-  if (attr(ts, "type") == "SLiM") ts_new <- pyslim$SlimTreeSequence(ts_new)
-
   # copy attributes over to the new tree-sequence object or generate updates
   # ones where necessary
   attr(ts_new, "model") <- attr(ts, "model")
