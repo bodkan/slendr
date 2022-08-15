@@ -25,9 +25,9 @@ PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
       "PATH=\"path/to/the/directory/with/slim/program\"\n\n",
       "to your ~/.Renviron file.\n--------------------")
   } else {
-    required_version <- "3.7.1"
+    required_version <- "4.0"
     slim_version <- system("slim -v", intern = TRUE) %>%
-      gsub("SLiM version (.*),.*$", "\\1", .)
+      gsub("SLiM version (.*),.*$", "\\1", .) %>% .[1]
     if (utils::compareVersion(slim_version, required_version) < 0)
       packageStartupMessage(
         "You are running SLiM version ", slim_version,
