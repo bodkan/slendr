@@ -93,10 +93,8 @@ ts_load <- function(file, model = NULL,
 
   if (length(ts$metadata) == 0 || is.null(ts$metadata$SLiM))
     type <- "generic"
-  else {
-    ts <- pyslim$SlimTreeSequence(ts)
+  else
     type <- "SLiM"
-  }
 
   # this is an awful workaround around the reticulate/Python bug which prevents
   # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
@@ -213,8 +211,12 @@ ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, r
     # suppress pyslim warning until we figure out how to switch to the new
     # pyslim.recapitate(ts, ...) method
     reticulate::py_capture_output(
-      ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
-                              random_seed = random_seed, migration_matrix = migration_matrix)
+      ts_new <- pyslim$recapitate(
+        ts,
+        recombination_rate = recombination_rate,
+        ancestral_Ne = Ne,
+        random_seed = random_seed
+      )
     )
   } else {
     warning("There is no need to recapitate an already coalesced msprime tree sequence",
