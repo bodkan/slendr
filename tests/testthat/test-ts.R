@@ -39,7 +39,6 @@ msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprim
 
 test_that("ts_load generates an object of the correct type (SLiM)", {
   ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
-  expect_true(inherits(ts, "pyslim.slim_tree_sequence.SlimTreeSequence"))
   expect_true(inherits(ts, "tskit.trees.TreeSequence"))
 })
 
@@ -59,7 +58,6 @@ test_that("needless simplification of msprime output gives a warning", {
 
 test_that("ts_load generates an object of the correct type (msprime)", {
   ts <- ts_load(model, file = msprime_ts)
-  expect_true(!inherits(ts, "pyslim.slim_tree_sequence.SlimTreeSequence"))
   expect_true(inherits(ts, "tskit.trees.TreeSequence"))
 })
 
