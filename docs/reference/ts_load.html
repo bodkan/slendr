@@ -18,7 +18,7 @@ Optionally, the tree sequence can be recapitated and simplified."><meta property
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9000</span>
       </span>
     </div>
 
@@ -127,7 +127,7 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
   random_seed <span class="op">=</span> <span class="cn">NULL</span>,
   simplify_to <span class="op">=</span> <span class="cn">NULL</span>,
   keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span>,
-  migration_matrix <span class="op">=</span> <span class="cn">NULL</span>
+  demography <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -160,9 +160,9 @@ remembered individuals will be retained. Only used when <code>simplify =
 <dt>keep_input_roots</dt>
 <dd><p>Should the history ancestral to the MRCA of all
 samples be retained in the tree sequence? Default is <code>FALSE</code>.</p></dd>
-<dt>migration_matrix</dt>
-<dd><p>Migration matrix used for coalescence of ancient
-lineages (passed to <code>ts_recapitate</code>)</p></dd>
+<dt>demography</dt>
+<dd><p>Ancestral demography to be passed internally to
+<code>msprime.sim_ancestry()</code> (see msprime's documentation for mode detail)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -215,10 +215,12 @@ map</p></div>
 <span class="r-in"><span class="co"># load tree sequence, recapitate it and simplify it</span></span>
 <span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span class="r-in">              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, dots$args, dots$keywords):</span> KeyError: 'tick'</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># load tree sequence, recapitate it, simplify it and overlay neutral mutations</span></span>
 <span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, random_seed <span class="op">=</span> <span class="fl">42</span>,</span>
 <span class="r-in">              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, dots$args, dots$keywords):</span> KeyError: 'tick'</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ts</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════════════════════╗</span>
@@ -232,7 +234,7 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │         26║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │   55.7 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │   54.0 KiB║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size    │Has Metadata║</span>
@@ -249,7 +251,7 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│ 2.6 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   4│35.9 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   3│34.3 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>

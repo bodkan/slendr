@@ -109,12 +109,26 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
-<ul><li>Experimental support for running coalescent msprime simulations and
-analysing tree-sequence data using tskit on the Windows platform has now
-been implemented (PR <a href="https://github.com/bodkan/slendr/pull/102" class="external-link">#102</a>).</li>
+<ul><li><p>SLiM 4.0 is now required for running simulations with the
+<code><a href="../reference/slim.html">slim()</a></code> engine. If you want to run <em>slendr</em>
+simulations with SLiM (spatial or non-spatial), you will need to upgrade
+you SLiM installation. SLiM 3.7.1 version is no longer supported as the
+upcoming new <em>slendr</em> spatial features will depend on SLiM 4.x
+and maintaining two functionally identical yet syntactically different
+back ends is not feasible (PR <a href="https://github.com/bodkan/slendr/pull/104" class="external-link">#104</a>).</p></li>
+<li><p>At the same time as the SLiM 4.0 release, new versions of Python
+modules msprime, tskit and pyslim have also been released. In fact, to
+be able to work with SLiM 4.0 tree sequences properly, those Python
+modules must be upgraded as well. Next time you load
+<code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code>, you will be prompted to setup a new
+updated Python environment which you can do easily by running
+<code><a href="../reference/setup_env.html">setup_env()</a></code>.</p></li>
+<li><p>Experimental support for running coalescent msprime simulations
+and analysing tree-sequence data using tskit on the Windows platform has
+now been implemented (PR <a href="https://github.com/bodkan/slendr/pull/102" class="external-link">#102</a>).</p></li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.0" id="slendr-020-21-jul-2022">slendr 0.2.0 (21 Jul 2022)<a class="anchor" aria-label="anchor" href="#slendr-020-21-jul-2022"></a></h2>
+<h2 class="page-header" data-toc-text="0.2.0" id="slendr-020-21-jul-2022">slendr 0.2.0 (21 Jul 2022)<small>2022-08-09</small><a class="anchor" aria-label="anchor" href="#slendr-020-21-jul-2022"></a></h2>
 <ul><li><p><em>slendr</em> is now <a href="https://cran.r-project.org/web/packages/slendr/" class="external-link">on
 CRAN</a>!</p></li>
 <li><p>Big changes to the way tree-sequence outputs are handled by

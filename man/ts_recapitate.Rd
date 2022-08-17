@@ -7,8 +7,8 @@
 ts_recapitate(
   ts,
   recombination_rate,
-  Ne,
-  migration_matrix = NULL,
+  Ne = NULL,
+  demography = NULL,
   random_seed = NULL
 )
 }
@@ -19,8 +19,8 @@ ts_recapitate(
 
 \item{Ne}{Effective population size during the recapitation process}
 
-\item{migration_matrix}{Migration matrix used for coalescence of ancient lineages
-(passed to \code{ts_recapitate})}
+\item{demography}{Ancestral demography to be passed internally to
+\code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)}
 
 \item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
 }

@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9000</span>
       </span>
     </div>
 
@@ -210,13 +210,13 @@ environment for us:</p>
 <code class="sourceCode R"><span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; Summary of the currently active Python environment:</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.1.1_tskit-0.4.1_pyslim-0.700/bin/python </span>
+<span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python </span>
 <span class="co">#&gt; Python version: 3.8.13 | packaged by conda-forge | (default, Mar 25 2022, 06:05:16)  [Clang 12.0.1 ] </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; slendr requirements:</span>
-<span class="co">#&gt;  - tskit: version 0.4.1 ✓ </span>
-<span class="co">#&gt;  - msprime: version 1.1.1 ✓ </span>
-<span class="co">#&gt;  - pyslim: version 0.700 ✓</span></code></pre>
+<span class="co">#&gt;  - tskit: version 0.5.2 ✓ </span>
+<span class="co">#&gt;  - msprime: version 1.2.0 ✓ </span>
+<span class="co">#&gt;  - pyslim: version 1.0 ✓</span></code></pre>
 <p>Now we’re good to go and ready to simulate and analyse tree sequence
 outputs in R!</p>
 <div class="section level3">
@@ -388,20 +388,11 @@ downstream analysis.</p>
 <pre><code><span class="co">#&gt; --------------------------------------------------</span>
 <span class="co">#&gt; msprime command to be executed:</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; python3 \</span>
-<span class="co">#&gt;     /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpT2B20C/file42947f474c_introgression/script.py \</span>
-<span class="co">#&gt;     --seed 314159 \</span>
-<span class="co">#&gt;     --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpT2B20C/file42947f474c_introgression \</span>
-<span class="co">#&gt;     --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpT2B20C/file429431724cfe.trees \</span>
-<span class="co">#&gt;     --sequence-length 100000000 \</span>
-<span class="co">#&gt;     --recombination-rate 1e-08 \</span>
-<span class="co">#&gt;     --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpT2B20C/file4294471cd10e \</span>
-<span class="co">#&gt;     --verbose \</span>
-<span class="co">#&gt;      </span>
+<span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpGUdWYC/file120d735f09c92_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpGUdWYC/file120d735f09c92_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpGUdWYC/file120d77740b61e.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpGUdWYC/file120d73974a8bc --verbose  </span>
 <span class="co">#&gt; --------------------------------------------------</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Tree sequence was saved to:</span>
-<span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpT2B20C/file429431724cfe.trees </span>
+<span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpGUdWYC/file120d77740b61e.trees </span>
 <span class="co">#&gt; Loading the tree-sequence file...</span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts</span></code></pre></div>
@@ -488,7 +479,7 @@ to the tree-sequence file ourselves.</p>
 <span class="op">)</span>
 
 <span class="va">output_file</span></code></pre></div>
-<pre><code><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpT2B20C/file4294248c993c"</span></code></pre>
+<pre><code><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpGUdWYC/file120d759c42f92"</span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
@@ -787,65 +778,81 @@ in R:</p>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt;   [1] "alignments"                      "allele_frequency_spectrum"      </span>
 <span class="co">#&gt;   [3] "as_fasta"                        "as_nexus"                       </span>
-<span class="co">#&gt;   [5] "aslist"                          "at"                             </span>
-<span class="co">#&gt;   [7] "at_index"                        "breakpoints"                    </span>
-<span class="co">#&gt;   [9] "coiterate"                       "count_topologies"               </span>
-<span class="co">#&gt;  [11] "delete_intervals"                "delete_sites"                   </span>
-<span class="co">#&gt;  [13] "diffs"                           "discrete_genome"                </span>
-<span class="co">#&gt;  [15] "discrete_time"                   "divergence"                     </span>
-<span class="co">#&gt;  [17] "diversity"                       "draw_svg"                       </span>
-<span class="co">#&gt;  [19] "draw_text"                       "dump"                           </span>
-<span class="co">#&gt;  [21] "dump_tables"                     "dump_text"                      </span>
-<span class="co">#&gt;  [23] "edge"                            "edge_diffs"                     </span>
-<span class="co">#&gt;  [25] "edges"                           "edgesets"                       </span>
-<span class="co">#&gt;  [27] "equals"                          "f2"                             </span>
-<span class="co">#&gt;  [29] "f3"                              "f4"                             </span>
-<span class="co">#&gt;  [31] "file_uuid"                       "first"                          </span>
-<span class="co">#&gt;  [33] "Fst"                             "genealogical_nearest_neighbours"</span>
-<span class="co">#&gt;  [35] "general_stat"                    "genetic_relatedness"            </span>
-<span class="co">#&gt;  [37] "genotype_matrix"                 "get_ll_tree_sequence"           </span>
-<span class="co">#&gt;  [39] "get_num_mutations"               "get_num_nodes"                  </span>
-<span class="co">#&gt;  [41] "get_num_records"                 "get_num_sites"                  </span>
-<span class="co">#&gt;  [43] "get_num_trees"                   "get_pairwise_diversity"         </span>
-<span class="co">#&gt;  [45] "get_population"                  "get_sample_size"                </span>
-<span class="co">#&gt;  [47] "get_samples"                     "get_sequence_length"            </span>
-<span class="co">#&gt;  [49] "get_time"                        "haplotypes"                     </span>
-<span class="co">#&gt;  [51] "has_reference_sequence"          "ibd_segments"                   </span>
-<span class="co">#&gt;  [53] "individual"                      "individuals"                    </span>
-<span class="co">#&gt;  [55] "kc_distance"                     "keep_intervals"                 </span>
-<span class="co">#&gt;  [57] "last"                            "ll_tree_sequence"               </span>
-<span class="co">#&gt;  [59] "load"                            "load_tables"                    </span>
-<span class="co">#&gt;  [61] "ltrim"                           "max_root_time"                  </span>
-<span class="co">#&gt;  [63] "mean_descendants"                "metadata"                       </span>
-<span class="co">#&gt;  [65] "metadata_schema"                 "migration"                      </span>
-<span class="co">#&gt;  [67] "migrations"                      "mutation"                       </span>
-<span class="co">#&gt;  [69] "mutations"                       "nbytes"                         </span>
-<span class="co">#&gt;  [71] "newick_trees"                    "node"                           </span>
-<span class="co">#&gt;  [73] "nodes"                           "num_edges"                      </span>
-<span class="co">#&gt;  [75] "num_individuals"                 "num_migrations"                 </span>
-<span class="co">#&gt;  [77] "num_mutations"                   "num_nodes"                      </span>
-<span class="co">#&gt;  [79] "num_populations"                 "num_provenances"                </span>
-<span class="co">#&gt;  [81] "num_samples"                     "num_sites"                      </span>
-<span class="co">#&gt;  [83] "num_trees"                       "pairwise_diversity"             </span>
-<span class="co">#&gt;  [85] "parse_windows"                   "population"                     </span>
-<span class="co">#&gt;  [87] "populations"                     "provenance"                     </span>
-<span class="co">#&gt;  [89] "provenances"                     "records"                        </span>
-<span class="co">#&gt;  [91] "reference_sequence"              "rtrim"                          </span>
-<span class="co">#&gt;  [93] "sample_count_stat"               "sample_size"                    </span>
-<span class="co">#&gt;  [95] "samples"                         "segregating_sites"              </span>
-<span class="co">#&gt;  [97] "sequence_length"                 "simplify"                       </span>
-<span class="co">#&gt;  [99] "site"                            "sites"                          </span>
-<span class="co">#&gt; [101] "subset"                          "table_metadata_schemas"         </span>
-<span class="co">#&gt; [103] "tables"                          "tables_dict"                    </span>
-<span class="co">#&gt; [105] "Tajimas_D"                       "time_units"                     </span>
-<span class="co">#&gt; [107] "to_macs"                         "to_nexus"                       </span>
-<span class="co">#&gt; [109] "trait_correlation"               "trait_covariance"               </span>
-<span class="co">#&gt; [111] "trait_linear_model"              "trait_regression"               </span>
-<span class="co">#&gt; [113] "trees"                           "trim"                           </span>
-<span class="co">#&gt; [115] "union"                           "variants"                       </span>
-<span class="co">#&gt; [117] "write_fasta"                     "write_nexus"                    </span>
-<span class="co">#&gt; [119] "write_vcf"                       "Y1"                             </span>
-<span class="co">#&gt; [121] "Y2"                              "Y3"</span></code></pre>
+<span class="co">#&gt;   [5] "as_vcf"                          "aslist"                         </span>
+<span class="co">#&gt;   [7] "at"                              "at_index"                       </span>
+<span class="co">#&gt;   [9] "breakpoints"                     "coiterate"                      </span>
+<span class="co">#&gt;  [11] "count_topologies"                "decapitate"                     </span>
+<span class="co">#&gt;  [13] "delete_intervals"                "delete_sites"                   </span>
+<span class="co">#&gt;  [15] "diffs"                           "discrete_genome"                </span>
+<span class="co">#&gt;  [17] "discrete_time"                   "divergence"                     </span>
+<span class="co">#&gt;  [19] "diversity"                       "draw_svg"                       </span>
+<span class="co">#&gt;  [21] "draw_text"                       "dump"                           </span>
+<span class="co">#&gt;  [23] "dump_tables"                     "dump_text"                      </span>
+<span class="co">#&gt;  [25] "edge"                            "edge_diffs"                     </span>
+<span class="co">#&gt;  [27] "edges"                           "edges_child"                    </span>
+<span class="co">#&gt;  [29] "edges_left"                      "edges_parent"                   </span>
+<span class="co">#&gt;  [31] "edges_right"                     "edgesets"                       </span>
+<span class="co">#&gt;  [33] "equals"                          "f2"                             </span>
+<span class="co">#&gt;  [35] "f3"                              "f4"                             </span>
+<span class="co">#&gt;  [37] "file_uuid"                       "first"                          </span>
+<span class="co">#&gt;  [39] "Fst"                             "genealogical_nearest_neighbours"</span>
+<span class="co">#&gt;  [41] "general_stat"                    "genetic_relatedness"            </span>
+<span class="co">#&gt;  [43] "genotype_matrix"                 "get_ll_tree_sequence"           </span>
+<span class="co">#&gt;  [45] "get_num_mutations"               "get_num_nodes"                  </span>
+<span class="co">#&gt;  [47] "get_num_records"                 "get_num_sites"                  </span>
+<span class="co">#&gt;  [49] "get_num_trees"                   "get_pairwise_diversity"         </span>
+<span class="co">#&gt;  [51] "get_population"                  "get_sample_size"                </span>
+<span class="co">#&gt;  [53] "get_samples"                     "get_sequence_length"            </span>
+<span class="co">#&gt;  [55] "get_time"                        "haplotypes"                     </span>
+<span class="co">#&gt;  [57] "has_reference_sequence"          "ibd_segments"                   </span>
+<span class="co">#&gt;  [59] "indexes_edge_insertion_order"    "indexes_edge_removal_order"     </span>
+<span class="co">#&gt;  [61] "individual"                      "individual_locations"           </span>
+<span class="co">#&gt;  [63] "individual_populations"          "individual_times"               </span>
+<span class="co">#&gt;  [65] "individuals"                     "individuals_flags"              </span>
+<span class="co">#&gt;  [67] "individuals_location"            "individuals_population"         </span>
+<span class="co">#&gt;  [69] "individuals_time"                "kc_distance"                    </span>
+<span class="co">#&gt;  [71] "keep_intervals"                  "last"                           </span>
+<span class="co">#&gt;  [73] "ll_tree_sequence"                "load"                           </span>
+<span class="co">#&gt;  [75] "load_tables"                     "ltrim"                          </span>
+<span class="co">#&gt;  [77] "max_root_time"                   "mean_descendants"               </span>
+<span class="co">#&gt;  [79] "metadata"                        "metadata_schema"                </span>
+<span class="co">#&gt;  [81] "migration"                       "migrations"                     </span>
+<span class="co">#&gt;  [83] "migrations_dest"                 "migrations_left"                </span>
+<span class="co">#&gt;  [85] "migrations_node"                 "migrations_right"               </span>
+<span class="co">#&gt;  [87] "migrations_source"               "migrations_time"                </span>
+<span class="co">#&gt;  [89] "mutation"                        "mutations"                      </span>
+<span class="co">#&gt;  [91] "mutations_node"                  "mutations_parent"               </span>
+<span class="co">#&gt;  [93] "mutations_site"                  "mutations_time"                 </span>
+<span class="co">#&gt;  [95] "nbytes"                          "newick_trees"                   </span>
+<span class="co">#&gt;  [97] "node"                            "nodes"                          </span>
+<span class="co">#&gt;  [99] "nodes_flags"                     "nodes_individual"               </span>
+<span class="co">#&gt; [101] "nodes_population"                "nodes_time"                     </span>
+<span class="co">#&gt; [103] "num_edges"                       "num_individuals"                </span>
+<span class="co">#&gt; [105] "num_migrations"                  "num_mutations"                  </span>
+<span class="co">#&gt; [107] "num_nodes"                       "num_populations"                </span>
+<span class="co">#&gt; [109] "num_provenances"                 "num_samples"                    </span>
+<span class="co">#&gt; [111] "num_sites"                       "num_trees"                      </span>
+<span class="co">#&gt; [113] "pairwise_diversity"              "parse_windows"                  </span>
+<span class="co">#&gt; [115] "population"                      "populations"                    </span>
+<span class="co">#&gt; [117] "provenance"                      "provenances"                    </span>
+<span class="co">#&gt; [119] "records"                         "reference_sequence"             </span>
+<span class="co">#&gt; [121] "rtrim"                           "sample_count_stat"              </span>
+<span class="co">#&gt; [123] "sample_size"                     "samples"                        </span>
+<span class="co">#&gt; [125] "segregating_sites"               "sequence_length"                </span>
+<span class="co">#&gt; [127] "simplify"                        "site"                           </span>
+<span class="co">#&gt; [129] "sites"                           "sites_position"                 </span>
+<span class="co">#&gt; [131] "split_edges"                     "subset"                         </span>
+<span class="co">#&gt; [133] "table_metadata_schemas"          "tables"                         </span>
+<span class="co">#&gt; [135] "tables_dict"                     "Tajimas_D"                      </span>
+<span class="co">#&gt; [137] "time_units"                      "to_macs"                        </span>
+<span class="co">#&gt; [139] "to_nexus"                        "trait_correlation"              </span>
+<span class="co">#&gt; [141] "trait_covariance"                "trait_linear_model"             </span>
+<span class="co">#&gt; [143] "trait_regression"                "trees"                          </span>
+<span class="co">#&gt; [145] "trim"                            "union"                          </span>
+<span class="co">#&gt; [147] "variants"                        "write_fasta"                    </span>
+<span class="co">#&gt; [149] "write_nexus"                     "write_vcf"                      </span>
+<span class="co">#&gt; [151] "Y1"                              "Y2"                             </span>
+<span class="co">#&gt; [153] "Y3"</span></code></pre>
 <p>In fact, you will recognize some of the elements in the output above
 from examples involving <code>ts_</code> functions in this vignette! In
 short, there is no blackbox—<em>slendr</em> only provides a slightly
@@ -1010,14 +1017,6 @@ proportion <code>alpha</code>):</p>
 
 <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">snps</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>,
         A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">3</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">12</span></span>
-<span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span>
-<span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> " "</span>
-<span class="co">#&gt; <span style="color: #BB0000;">chr</span> (8): X1, X2, X3, X4, X5, X6, X7, X8</span>
-<span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (4): X9, X10, X11, X12</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span>
-<span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></code></pre>
 <pre><code><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span>
 <span class="co">#&gt;   A     B     X     C     O       alpha  stderr Zscore</span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -1026,24 +1025,16 @@ proportion <code>alpha</code>):</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;">3</span> NEA_1 NEA_2 AFR_2 AFR_1 CH_1  0.006<span style="text-decoration: underline;">18</span> 0.002<span style="text-decoration: underline;">62</span>   2.36</span></code></pre>
 <p>In fact, lets compare the values obtained by both <em>tskit</em> and
 <em>admixr</em>/ADMIXTOOLS for all individuals:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">europeans</span> <span class="op">&lt;-</span> <span class="va">inds</span><span class="op">[</span><span class="va">inds</span><span class="op">$</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"EUR"</span>, <span class="op">]</span><span class="op">$</span><span class="va">name</span>
 
 <span class="co"># tskit result</span>
 <span class="va">result_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4ratio</a></span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_ts <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span>
 
 <span class="co"># result obtained by admixr/ADMIXTOOLS</span>
-<span class="va">result_admixr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span><span class="va">snps</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_admixr <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">50</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">12</span></span>
-<span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span>
-<span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> " "</span>
-<span class="co">#&gt; <span style="color: #BB0000;">chr</span> (8): X1, X2, X3, X4, X5, X6, X7, X8</span>
-<span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (4): X9, X10, X11, X12</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span>
-<span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></code></pre>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">result_admixr</span>, <span class="va">result_ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+<span class="va">result_admixr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span><span class="va">snps</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_admixr <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span>
+
+<span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">result_admixr</span>, <span class="va">result_ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">alpha_ts</span>, <span class="va">alpha_admixr</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"red"</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span>
@@ -1060,11 +1051,11 @@ due to an extremely small amount of sequence data simulated here.</p>
 <p>In case you need to process simulated data in some other software,
 you can use the function <code><a href="../reference/ts_vcf.html">ts_vcf()</a></code> to save the simulated
 genotypes in a VCF format:</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_vcf.html">ts_vcf</a></span><span class="op">(</span><span class="va">ts</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output.vcf.gz"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>You can also specify only a subset of individuals to be saved in the
 VCF:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_vcf.html">ts_vcf</a></span><span class="op">(</span><span class="va">ts</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output_subset.vcf.gz"</span><span class="op">)</span>,
        individuals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"EUR_1"</span>, <span class="st">"AFR_1"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
@@ -1088,7 +1079,7 @@ implemented by the function <code><a href="../reference/ts_fst.html">ts_fst()</a
 <p>If a single genome-wide <span class="math inline">\(F_{st}\)</span>
 is to be calculated (i.e. not a window-based calculation), the
 <code><a href="../reference/ts_fst.html">ts_fst()</a></code> returns a simple three-column data frame</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span>
 <span class="co">#&gt;   x     y        Fst</span>
@@ -1096,7 +1087,7 @@ is to be calculated (i.e. not a window-based calculation), the
 <span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   0.054<span style="text-decoration: underline;">8</span></span></code></pre>
 <p>In case a non-named list of sample sets was provided, set names are
 generated automatically:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span>
 <span class="co">#&gt;   x     y        Fst</span>
@@ -1106,7 +1097,7 @@ generated automatically:</p>
 the sample sets appropriately.</p>
 <p>In case more than two sample sets are specified, all pairwise
 statistics are computed:</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>,
                               eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,
                               nea <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -1126,7 +1117,7 @@ encourage you to get used to them as they allow extremely concise and
 elegant handling of structured data within normal data frames (you can
 start with <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html" class="external-link">this</a>
 introduction).</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># define breakpoints between 20 windows</span>
 <span class="va">breakpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ts</span><span class="op">$</span><span class="va">sequence_length</span>, length.out <span class="op">=</span> <span class="fl">21</span><span class="op">)</span>
 
@@ -1148,7 +1139,7 @@ introduction).</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;">3</span> eur   nea   <span style="color: #949494;">&lt;dbl [20]&gt;</span></span></code></pre>
 <p>For instance, here are window-based <span class="math inline">\(F_st\)</span> values for the
 <code>afr-vs-eur</code> calculation (first row of the table above):</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">win_fst</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">Fst</span></code></pre></div>
 <pre><code><span class="co">#&gt; $`1`</span>
 <span class="co">#&gt;  [1] 0.07196316 0.03738926 0.05256038 0.03671481 0.06204939 0.03626783</span>
@@ -1164,7 +1155,7 @@ as <code><a href="../reference/ts_fst.html">ts_fst()</a></code> shown above.</p>
 <p>If a non-window version is to be calculated, we get a single
 genome-wide values for each sample set (named or non-named list of
 character vectors with individual names):</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span>
 <span class="co">#&gt;   set            D</span>
@@ -1174,7 +1165,7 @@ character vectors with individual names):</p>
 <p>For window-based version, the function returns the <code>D</code>
 column as a list column of vectors with <span class="math inline">\(i\)</span>-th element being the Tajima’s D value
 for the <span class="math inline">\(i\)</span>-th window:</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span>, windows <span class="op">=</span> <span class="va">breakpoints</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span>
 <span class="co">#&gt;   set   D           </span>
@@ -1194,7 +1185,7 @@ Let’s find out.</p>
 <p>First we extract individuals from all populations, creating a list of
 character vectors for each group (which is what functions such as
 <code><a href="../reference/ts_diversity.html">ts_diversity()</a></code> expects as an input):</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get sampled individuals from all populations</span>
 <span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
@@ -1220,7 +1211,7 @@ character vectors for each group (which is what functions such as
 <span class="co">#&gt; [1] "NEA_1" "NEA_2"</span></code></pre>
 <p>Now we can calculate diversity in each population and sort the
 results in an increasing order of diversity:</p>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">diversity</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span>
 <span class="co">#&gt;   set   diversity</span>
@@ -1243,7 +1234,7 @@ would expect the lowest divergence between the two modern human groups
 two modern humans, and all three groups (<code>AFR</code>,
 <code>EUR</code> and <code>NEA</code>) should have equal, much deeper
 divergence from the outgroup chimpanzee <code>CH</code>.</p>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/ts_divergence.html">ts_divergence</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">divergence</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span>
 <span class="co">#&gt;   x     y     divergence</span>
