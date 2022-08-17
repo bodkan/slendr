@@ -37,9 +37,7 @@ simulate_slim_ts <- function(N, T, output, script_file , verbose = FALSE) {
   	sim.addSubpop("p0", %d);
   }
   %s late() {
-     // inds = sample(sim.subpopulations.individuals, %s);
-    inds = sim.subpopulations.individuals;
-    inds = sample(sim.subpopulations.individuals, 5);
+    inds = sample(sim.subpopulations.individuals, %s);
     sim.treeSeqRememberIndividuals(inds, permanent = T);
   }
   1: late() {
@@ -48,6 +46,10 @@ simulate_slim_ts <- function(N, T, output, script_file , verbose = FALSE) {
   %s late() {
   	sim.treeSeqOutput("%s");
     catn(community.tick + "finished");
+  }
+  2: fitnessEffect() /* Compute fitness of individuals */ {
+    return 1.0;
+    interaction = community.allInteractionTypes[2 * subpop.id]; // this must be here otherwise the test breaks
   }
   ', N, T + 1, N, T + 1, output), script_file)
 

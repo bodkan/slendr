@@ -350,19 +350,75 @@ s8 late() /* Save locations of all individuals */ {
     }
 }
 
-// HERE
 s10 late() /* Remember individuals for tree sequence recording */ {
+    events = filter(SAMPLING, "time_gen", community.tick - BURNIN_LENGTH);
 
-if (community.tick == SIMULATION_END) {
-        inds = sample(sim.subpopulations.individuals, 5);
+    for (i in seqLen(num_rows(events))) {
+        event = events.getRowValues(i);
+        // which population and how many individuals to sample from it?
+        pop = event.getValue("pop");
+        n = event.getValue("n");
+        all_inds = get_pop(pop).individuals;
 
-        replace_which = SAMPLING.getValue("n") == INF;
+        // only individuals not yet sampled are eligible for sampling
+        all_inds = all_inds[all_inds.tag != 1];
+
+        x = event.getValue("x"); y = event.getValue("y");
+        if (x != -1 & y != -1) {
+            distances = sqrt((x - all_inds.x) ^ 2 + (y - all_inds.y) ^ 2);
+            where = " around [" + x + ", " + y + "]";
+        } else
+            where = "";
+
+        if (isInfinite(n)) {
+            n = length(all_inds);
+            n_str = "all (" + n + ")";
+            // replace the original INF value with a real number of individuals
+            // for later serialization of metadata
+            // for later serialization of metadata
+            replace_which =
+                SAMPLING.getValue("n") == INF &
+                SAMPLING.getValue("pop") == pop &
+                SAMPLING.getValue("time_gen") == community.tick - BURNIN_LENGTH;
             n_values = SAMPLING.getValue("n");
-            n_values[replace_which] = 5;
+            n_values[replace_which] = n;
             SAMPLING.setValue("n", n_values);
+        } else
+            n_str = asString(asInteger(n));
+
+        log_output("sampling " + n_str + " individuals of " +
+                             pop + "(p" + get_pop(pop).id + ")" + where);
+
+        // give a warning in case more individuals are scheduled for sampling
+        // than are present in the population
+        if (n > length(all_inds)) {
+            catn("\nWARNING: Population " + pop + "(p" + get_pop(pop).id + ") has " +
+                 length(all_inds) + " individuals " +
+                 "but sampling of " + n +
+                 " was requested. Only " + length(all_inds) +
+                 " individuals will be recorded in time " +
+                 event.getValue("time_orig") + ".\n");
+
+            // replace the original n with the actual number of individuals
+            // for later serialization of metadata
+            replace_which =
+                SAMPLING.getValue("n") == n &
+                SAMPLING.getValue("pop") == pop &
+                SAMPLING.getValue("time_gen") == community.tick - BURNIN_LENGTH;
+            n = length(all_inds);
+            n_values = SAMPLING.getValue("n");
+            n_values[replace_which] = n;
+            SAMPLING.setValue("n", n_values);
+        }
+
+        if (exists("distances"))
+            inds = all_inds[order(distances)][0 : (n - 1)];
+        else
+            inds = sample(all_inds, asInteger(n));
+
         inds.tag = 1; // tag sampled individuals as remembered
         sim.treeSeqRememberIndividuals(inds, permanent = T);
-        }
+    }
 }
 
 1: late() /* Retain all individuals in each generation */ {
@@ -398,10 +454,77 @@ s12 late() /* End of simulation */ {
 /// Interaction and fitness callbacks
 ///
 
+1: late() /* Evaluate spatial interactions */ {
+    community.allInteractionTypes.evaluate(sim.subpopulations);
+}
+
+2: fitnessEffect() /* Compute fitness of individuals */ {
+    if (!SPATIAL) return 1.0;
+    interaction = community.allInteractionTypes[2 * subpop.id];
+    totalStrength = interaction.totalOfNeighborStrengths(individual);
+    return 1.1 - totalStrength / subpop.individualCount;
+}
+
+2: mateChoice() /* Compute mating interaction */ {
+    if (!SPATIAL) return NULL;
+    return community.allInteractionTypes[2 * subpop.id + 1].strength(individual);
+}
+
+modifyChild() /* Place offspring within its population's boundary */ {
+    // set flag marking availability for sampling
+    child.tag = 0;
+
+    if (!SPATIAL) return T;
+
+    // in case of spatially non-overlapping geneflow, assign locations uniformly
+    if (child.migrant) {
+        // get indices of the currently active geneflow events
+        active = (GENEFLOWS.getValue("tstart_gen") <= community.tick - BURNIN_LENGTH) &
+                 (community.tick - BURNIN_LENGTH <= GENEFLOWS.getValue("tend_gen"));
+
+        // get population of the offspring's parents
+        source = sourceSubpop.id == GENEFLOWS.getValue("from_id");
+
+        // get the offspring's new population
+        target = subpop.id == GENEFLOWS.getValue("to_id");
+
+        // if the current admixture event is non-overlapping, set the
+        // childs coordinates freely
+        overlap = GENEFLOWS.getValue("overlap")[active & target & source];
+
+        if (!overlap) {
+            set_coordinates(child, subpop.id, log = F);
+            return T;
+        }
+    }
+
+    // make sure that offspring is generated in allowed locations on the map
+    // (within it's population bounds and not in an inaccessible location)
+    attempts = 0; // how many attempts have been made to place the offspring?
+    do {
+        attempts = attempts + 1;
+
+        dispersal_param = get_pop(subpop.id).getValue("dispersal");
+        dispersal_fun = get_pop(subpop.id).getValue("dispersal_fun");
+
+        movement = dispersal_fun(dispersal_fun, dispersal_param);
+        pos = parent1.spatialPosition + movement;
+
+        found = subpop.pointInBounds(pos) & subpop.spatialMapValue("world", pos) == 0.0;
+    } while (!found & attempts < MAX_ATTEMPTS);
+
+    if (found) {
+        child.setSpatialPosition(pos);
+        return T;
+    }
+
+    return F;
+}
 
 ///
 /// Utility functions
 ///
+
 // Set a default value of a command-line argument.
 function (void) optional_arg(s arg, lifs default) {
     if (!exists(arg)) defineConstant(arg, default);
@@ -542,6 +665,7 @@ function (object<Dictionary>) collect_metadata(void) {
 ///
 /// Input/output functions
 ///
+
 // Compose a path to a configuration file
 function (s) config_path(s file) {
     return MODEL + "/" + file;
@@ -562,6 +686,7 @@ function (void) log_output(s$ str) {
 ///
 /// Data frame functions
 ///
+
 // Read a TSV file as a Dictionary of pairs of the form
 // "column name" : <vector of column values>
 function (object<Dictionary>) read_table(s$ path) {
