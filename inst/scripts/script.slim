@@ -175,33 +175,182 @@ s1 late() /* Population splits */ {
 }
 
 s2 late() /* Geneflow events */ {
-
+    events = filter(GENEFLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
+    for (i in seqLen(num_rows(events))) {
+        event = events.getRowValues(i);
+        set_geneflow(event, event.getValue("rate"));
+    }
 }
 
 s3 late() /* Stopping geneflow */ {
-
+    events = filter(GENEFLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
+    for (i in seqLen(num_rows(events))) {
+        event = events.getRowValues(i);
+        set_geneflow(event, 0.0);
+    }
 }
 
 s4 late() /* Update spatial population boundaries */ {
+    maps = filter(MAPS, "time_gen", c(1, community.tick - BURNIN_LENGTH));
 
+    for (i in seqLen(num_rows(maps))) {
+        map = maps.getRowValues(i);
+
+        // skip over ancestral populations, whose maps have been set in generation 1
+        if (community.tick > 1 & map.getValue("time_gen") == 1) next;
+
+        id = map.getValue("pop_id");
+
+        log_output("updating map for " + map.getValue("pop") + "(p" + id + ")");
+
+        img = map.getValue("image");
+        pop = get_pop(map.getValue("pop"));
+
+        // take care of an edge case in which the entire map is habitable
+        // (i.e. minimum observed pixel value is equal to the maximum value)
+        // -- in these cases, defineSpatialMap crashes complaining about invalid
+        //    valueRange
+        min_pixel = min(img.floatK);
+        max_pixel = max(img.floatK);
+        if (min_pixel == max_pixel) min_pixel = 0;
+
+        pop.defineSpatialMap(
+            "world", "xy", 1.0 - img.floatK,
+            valueRange=c(min_pixel, max_pixel),
+            colors=c("#000000", "#FFFFFF")
+        );
+        pop.setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
+
+        // uniformly distribute individuals if this is the very first boundary
+        // of the population
+        tsplit = filter(POPULATIONS, "pop_id", id).getValue("tsplit_gen");
+        if (tsplit == community.tick | tsplit == community.tick - BURNIN_LENGTH)
+            set_coordinates(get_pop(id).individuals, id);
+    }
 }
 
 s5 /* Step population size changes */ early() {
+    // get all step resize events active in this generation
+    all_events = filter(RESIZES, "tresize_gen", community.tick - BURNIN_LENGTH);
+    events = filter(all_events, "how", "step");
 
+    for (i in seqLen(num_rows(events))) {
+        event = events.getRowValues(i);
+        pop = event.getValue("pop"); pop_size = event.getValue("N");
+        get_pop(pop).setSubpopulationSize(pop_size);
+        log_output(pop + "(p" + event.getValue("pop_id") + ") resized to " +
+                             pop_size + " individuals");
+    }
 }
 
 s6 /* Exponential population size changes */ early() {
+    if (!num_rows(RESIZES)) return;
 
+    // get exponential resize events active in (i.e. overlapping) this generation
+    active = (RESIZES.getValue("tresize_gen") <= community.tick - BURNIN_LENGTH) &
+             (RESIZES.getValue("tend_gen") >= community.tick - BURNIN_LENGTH) &
+             RESIZES.getValue("how") == "exponential";
+    events = RESIZES.getRowValues(active);
+
+    for (i in seqLen(num_rows(events))) {
+        event = events.getRowValues(i);
+
+        pop = event.getValue("pop"); id = event.getValue("pop_id");
+        Nstart = event.getValue("prev_N"); Nend = event.getValue("N");
+        tstart = BURNIN_LENGTH + event.getValue("tresize_gen");
+        tend = BURNIN_LENGTH + event.getValue("tend_gen");
+
+        // calculate current population size based on the growth parameters
+        r = log(Nend / Nstart) / (tend - tstart);
+        tdelta = community.tick - tstart;
+        Nt = asInteger(round(Nstart * exp(r * tdelta)));
+
+        get_pop(id).setSubpopulationSize(Nt);
+
+        if (Nstart < Nend)
+            event_type = "growth";
+        else
+            event_type = "shrinking";
+
+        current_size = get_pop(id).individualCount;
+        if (community.tick == tstart)
+            log_output("start of exponential " + event_type + " of " + pop + "(p" + id +
+                       ") from size " + current_size);
+        if (community.tick == tend)
+            log_output("end of exponential " + event_type + " of " + pop + "(p" + id +
+                       ") at size " + current_size);
+    }
 }
 
 s7 late() /* Changing interaction distances and dispersals */ {
+    events = filter(INTERACTIONS, "tdispersal_gen", c(1, community.tick - BURNIN_LENGTH));
 
+    for (i in seqLen(num_rows(events))) {
+        event = events.getRowValues(i);
+
+        // skip over ancestral populations, whose dispersal has been set in generation 1
+        if (community.tick > 1 & event.getValue("tdispersal_gen") == 1) next;
+
+        pop = event.getValue("pop"); pop_id = event.getValue("pop_id");
+
+        competition_dist = event.getValue("competition");
+        mating_dist = event.getValue("mating");
+        dispersal_dist = event.getValue("dispersal");
+        dispersal_fun = event.getValue("dispersal_fun");
+
+        // interaction parameters are accessed in the same way they were created
+        // in the initialize() block -- for an i-th population, we have the
+        // 'competition' maxDistance at 2*i and mate choice maxDistance at 2*i + 1
+        competition = community.allInteractionTypes[2 * pop_id];
+        mating = community.allInteractionTypes[2 * pop_id + 1];
+        dispersal = get_pop(pop).getValue("dispersal");
+        fun = get_pop(pop).getValue("dispersal_fun");
+
+        // only change parameters that are scheduled for change in this event
+        if (competition_dist != competition.maxDistance) {
+            log_output("setting competition interaction distance for " + pop + "(p" +
+                       pop_id + ") to " + competition_dist);
+            competition.unevaluate();
+            competition.maxDistance = competition_dist;
+        }
+        if (mating_dist != mating.maxDistance) {
+            log_output("setting mate choice distance for " + pop + "(p" +
+                                 pop_id + ") to " + mating_dist);
+            mating.unevaluate();
+            mating.maxDistance = mating_dist;
+        }
+        if (dispersal_dist != dispersal) {
+            if (dispersal != -1)
+                log_output("setting offspring dispersal distance for " + pop +
+                           "(p" + pop_id + ") to " + dispersal_dist);
+            get_pop(pop).setValue("dispersal", dispersal_dist);
+        }
+        if (dispersal_fun != fun) {
+            if (fun != "")
+                log_output("changing dispersal kernel for " + pop +
+                           "(p" + pop_id + ") to " + dispersal_fun);
+            get_pop(pop).setValue("dispersal_fun", dispersal_fun);
+        }
+    }
+
+    community.allInteractionTypes.evaluate(sim.subpopulations);
 }
 
 s8 late() /* Save locations of all individuals */ {
-
+    for (ind in sim.subpopulations.individuals) {
+        ind_str = paste(
+            SIMULATION_END - community.tick,
+            ind.subpopulation.id,
+            filter(POPULATIONS, "pop_id", ind.subpopulation.id).getValue("pop"),
+            ind.pedigreeID,
+            ind.spatialPosition,
+            sep = "\t"
+        );
+        writeFile(OUTPUT_LOCATIONS, ind_str, append = T, compress = T);
+    }
 }
 
+// HERE
 s10 late() /* Remember individuals for tree sequence recording */ {
 
 if (community.tick == SIMULATION_END) {
@@ -217,35 +366,42 @@ if (community.tick == SIMULATION_END) {
 }
 
 1: late() /* Retain all individuals in each generation */ {
+    // note that permanent remembering takes priority in SLiM so this doesn't
+    // override permanent remembering performed above
     sim.treeSeqRememberIndividuals(sim.subpopulations.individuals, permanent = F);
 }
 
 s11 late() /* Schedule removal of populations */ {
-
+    pops = filter(POPULATIONS, "tremove_gen", community.tick - BURNIN_LENGTH);
+    for (i in seqLen(num_rows(pops))) {
+        pop = pops.getRowValues(i);
+        log_output("cleanup of " + pop.getValue("pop") +
+                             "(p" + pop.getValue("pop_id") + ")");
+        get_pop(pop.getValue("pop")).setSubpopulationSize(0);
+    }
 }
 
 s12 late() /* End of simulation */ {
-if (community.tick == SIMULATION_END) {
     filename = OUTPUT_TS;
 
     // add slendr-specific metadata to its own Dictionary key
     metadata = collect_metadata();
 
     sim.treeSeqOutput(OUTPUT_TS, metadata = Dictionary("slendr", metadata));
+    log_output("saving the tree sequence output to '" + OUTPUT_TS + "'");
 
+    log_output("simulation finished");
     sim.simulationFinished();
-    catn("fucking done simulation finished");
-    }
 }
 
 ///
 /// Interaction and fitness callbacks
 ///
 
+
 ///
 /// Utility functions
 ///
-
 // Set a default value of a command-line argument.
 function (void) optional_arg(s arg, lifs default) {
     if (!exists(arg)) defineConstant(arg, default);
@@ -273,6 +429,67 @@ function (void) create_pop(object<Dictionary> pop) {
     // dispersal distance is set in a script block (here we just create the variable)
     get_pop(pop_id).setValue("dispersal", -1);
     get_pop(pop_id).setValue("dispersal_fun", "");
+}
+
+// Start or stop geneflow
+function (void) set_geneflow(object<Dictionary> event, f$ rate) {
+    from = event.getValue("from"); to = event.getValue("to");
+    from_id = event.getValue("from_id"); to_id = event.getValue("to_id");
+
+    if (rate > 0) {
+        span = event.getValue("tend_gen") - event.getValue("tstart_gen");
+        rate = rate / span;
+        log_output("geneflow " + from + "(p" + from_id + ")" +
+                             " -> " + to + "(p" + to_id + ")" +
+                             " (" + rate + "% over " + span + " generations)");
+    } else
+        log_output("geneflow " + from + "(p" + from_id + ")" +
+                             " -> " + to + "(p" + to_id + ")" + " set to 0%");
+
+    get_pop(to_id).setMigrationRates(from_id, rate);
+}
+
+// Distribute individuals uniformly within the boundary of the given population
+function (void) set_coordinates(lifso<Individual> inds, i$ id, [l$ log = T]) {
+    if (log) log_output("distributing individuals of " +
+                        filter(POPULATIONS, "pop_id", id).getValue("pop") +
+                        "(p" + id + ")");
+    for (ind in inds) {
+        do pos = c(runif(1, 0, WIDTH), runif(1, 0, HEIGHT));
+        while (get_pop(id).spatialMapValue("world", pos) == 1.0);
+        ind.setSpatialPosition(pos);
+    }
+}
+
+// Compute the dispersal of an offspring from its parent
+function (f) dispersal_fun(s$ fun, f$ param) {
+    // first draw the distance from a given distribution
+    if (fun == "normal")
+        distance = rnorm(1, mean = 0, sd = param);
+    else if (fun == "uniform")
+        distance = runif(1, min = 0, max = param);
+    else if (fun == "cauchy")
+        distance = rcauchy(1, location = 0, scale = param);
+    else if (fun == "exponential")
+        distance = rexp(1, mu = param);
+    else if (fun == "brownian") {
+        y = rnorm(1, mean = 0, sd = param);
+	    x = rnorm(1, mean = 0, sd = param);
+	    distance = sqrt(x ^ 2 + y ^ 2);
+    } else
+        stop("Invalid dispersal function '" + fun + "' specified");
+
+    // draw an angle from a uniform distribution of angles around a circle
+    if (fun == "brownian")
+        angle = tan(y/x);
+    else
+        angle = runif(1, min = 0, max = 2 * PI);
+
+    // convert the polar coordinate <angle, distance> into cartesian system
+    x = distance * cos(angle);
+    y = distance * sin(angle);
+
+    return(c(x, y));
 }
 
 // Get subpopulation object based on a given identifier
@@ -325,7 +542,6 @@ function (object<Dictionary>) collect_metadata(void) {
 ///
 /// Input/output functions
 ///
-
 // Compose a path to a configuration file
 function (s) config_path(s file) {
     return MODEL + "/" + file;
@@ -346,7 +562,6 @@ function (void) log_output(s$ str) {
 ///
 /// Data frame functions
 ///
-
 // Read a TSV file as a Dictionary of pairs of the form
 // "column name" : <vector of column values>
 function (object<Dictionary>) read_table(s$ path) {
