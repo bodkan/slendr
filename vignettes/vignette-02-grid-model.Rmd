@@ -153,7 +153,7 @@ Those familiar with the SLiM manual will recognize a model described in section 
 
 Finally, we can run our simulation using the `slim()` function.
 
-```{r, eval = FALSE}
+```{r}
 ts <- slim(model, sequence_length = 10000, recombination_rate = 0) # simulate a single 10kb locus
 ts
 ```
