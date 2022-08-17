@@ -32,8 +32,8 @@
 #'   TRUE}.
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
 #'   samples be retained in the tree sequence? Default is \code{FALSE}.
-#' @param migration_matrix Migration matrix used for coalescence of ancient
-#'   lineages (passed to \code{ts_recapitate})
+#' @param demography Ancestral demography to be passed internally to
+#'   \code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
 #'   an interface point for the Python module tskit using slendr functions with
@@ -80,7 +80,7 @@ ts_load <- function(file, model = NULL,
                     recapitate = FALSE, simplify = FALSE, mutate = FALSE,
                     recombination_rate = NULL, mutation_rate = NULL,
                     Ne = NULL, random_seed = NULL, simplify_to = NULL, keep_input_roots = FALSE,
-                    migration_matrix = NULL) {
+                    demography = NULL) {
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
 
@@ -132,7 +132,7 @@ ts_load <- function(file, model = NULL,
 
   if (recapitate)
     ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                        random_seed = random_seed, migration_matrix = migration_matrix)
+                        random_seed = random_seed, demography = demography)
 
   if (simplify)
     ts <- ts_simplify(ts, simplify_to, keep_input_roots = keep_input_roots)
@@ -175,8 +175,8 @@ ts_save <- function(ts, file) {
 #' @param ts Tree sequence object loaded by \code{ts_load}
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
-#' @param migration_matrix Migration matrix used for coalescence of ancient lineages
-#'   (passed to \code{ts_recapitate})
+#' @param demography Ancestral demography to be passed internally to
+#'   \code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
@@ -200,24 +200,32 @@ ts_save <- function(ts, file) {
 #'
 #' ts
 #' @export
-ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, random_seed = NULL) {
+ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, random_seed = NULL) {
   check_ts_class(ts)
+
+  if ((is.null(Ne) & is.null(demography)) | !is.null(Ne) & !is.null(demography))
+    stop("Either ancestral Ne or demography (but not both) must be specified for\n",
+         "recapitation. See documentation of pyslim.recapitate for more detail.", call. = FALSE)
 
   model <- attr(ts, "model")
   type <- attr(ts, "type")
   spatial <- attr(ts, "spatial")
 
   if (type == "SLiM") {
-    # suppress pyslim warning until we figure out how to switch to the new
-    # pyslim.recapitate(ts, ...) method
-    reticulate::py_capture_output(
+    if (!is.null(Ne))
       ts_new <- pyslim$recapitate(
         ts,
         recombination_rate = recombination_rate,
         ancestral_Ne = Ne,
         random_seed = random_seed
       )
-    )
+    else
+      ts_new <- pyslim$recapitate(
+        ts,
+        recombination_rate = recombination_rate,
+        demography = demography,
+        random_seed = random_seed
+      )
   } else {
     warning("There is no need to recapitate an already coalesced msprime tree sequence",
             call. = FALSE)
