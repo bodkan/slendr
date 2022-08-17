@@ -27,12 +27,14 @@ PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
   } else {
     required_version <- "3.7.1"
     slim_version <- system("slim -v", intern = TRUE) %>%
-      gsub("SLiM version (.*),.*$", "\\1", .)
-    if (utils::compareVersion(slim_version, required_version) < 0)
+      gsub("SLiM version (.*),.*$", "\\1", .) %>% .[1]
+    if (utils::compareVersion(slim_version, required_version) < 0 |
+        utils::compareVersion(slim_version, required_version) > 0)
       packageStartupMessage(
         "You are running SLiM version ", slim_version,
-        " but at least version ", required_version,
-        "\nis required. Please upgrade SLiM to the latest version.\n--------------------"
+        " but at least version ", required_version, " and less\nthan the most recent",
+        " version 4.0 is required. Please update your SLiM\nversion accordingly.\n",
+        "(The process of upgrading slendr for SLiM 4.0 is under way.)\n--------------------"
       )
   }
 
