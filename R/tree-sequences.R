@@ -1465,7 +1465,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
   svg <- x$draw_svg(size = c(width, height), node_labels = py_labels, ...)
 
   # convert from a SVG representation to a PNG image
-  raw <- charToRaw(svg)
+  raw <- charToRaw(as.character(svg))
   tmp_file <- paste0(tempfile(), ".png")
   rsvg::rsvg_png(svg = raw, file = tmp_file, width = width, height = height)
 
