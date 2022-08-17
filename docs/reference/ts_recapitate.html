@@ -160,74 +160,41 @@ map</p></div>
 <span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span></span>
 <span class="r-in">  <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu">ts_recapitate</span><span class="op">(</span>recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, dots$args, dots$keywords):</span> KeyError: 'tick'</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ts</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (data = NA, start = 1, end = numeric(), frequency = 1, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     deltat = 1, ts.eps = getOption("ts.eps"), class = if (nseries &gt; </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1) c("mts", "ts", "matrix") else "ts", names = if (!is.null(dimnames(data))) colnames(data) else paste("Series", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         seq(nseries))) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.data.frame(data)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         data &lt;- data.matrix(data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.matrix(data)) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         nseries &lt;- ncol(data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ndata &lt;- nrow(data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         dimnames(data) &lt;- list(NULL, names)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         nseries &lt;- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ndata &lt;- length(data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (ndata == 0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'ts' object must have one or more observations")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (missing(frequency)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         frequency &lt;- 1/deltat</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     else if (missing(deltat)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         deltat &lt;- 1/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (frequency &gt; 1 &amp;&amp; 0 &lt; (d &lt;- abs(frequency - round(frequency))) &amp;&amp; </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d &lt; ts.eps) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         frequency &lt;- round(frequency)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!missing(start)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- as.numeric(start)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(start) &gt; 1L) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- start[1L] + (start[2L] - 1)/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!missing(end)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- as.numeric(end)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(end) &gt; 1L) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- end[1L] + (end[2L] - 1)/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (missing(end)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- start + (ndata - 1)/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     else if (missing(start)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- end - (ndata - 1)/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (start &gt; end) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'start' cannot be after 'end'")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     cycles &lt;- as.numeric((end - start) * frequency)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (abs(round(cycles) - cycles) &gt; ts.eps * max(cycles, 1)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'end' must be a whole number of cycles after 'start'")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     nobs &lt;- floor(cycles + 1.01)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (nobs != ndata) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         data &lt;- if (NCOL(data) == 1) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ndata &lt; nobs) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 rep_len(data, nobs)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             else if (ndata &gt; nobs) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[1L:nobs]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ndata &lt; nobs) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[rep_len(1L:ndata, nobs), ]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             else if (ndata &gt; nobs) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[1L:nobs, ]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     attr(data, "tsp") &lt;- c(start, end, frequency)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!is.null(class) &amp;&amp; class[[1]] != "none") </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         attr(data, "class") &lt;- class</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x17f1b8d88&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:stats&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔════════════════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence            ║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │      24║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│  500000║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │   ticks║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │      26║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │58.1 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧════════╝</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤════════╤════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size    │Has Metadata║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪════════╪════════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 133│ 4.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│  55│ 7.2 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│ 8 Bytes│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│ 1.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  68│ 3.2 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   5│ 2.6 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   3│36.1 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│16 Bytes│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </div>

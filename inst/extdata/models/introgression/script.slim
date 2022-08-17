@@ -83,32 +83,32 @@ initialize() {
 
 1 early() /* Schedule script block events */ {
     // start of the burnin and of the simulation itself
-    sim.rescheduleScriptBlock(s0, generations = SIMULATION_START);
+    community.rescheduleScriptBlock(s0, ticks = SIMULATION_START);
 
     // population splits
-    sim.rescheduleScriptBlock(s1, generations = unique(c(1, BURNIN_LENGTH + POPULATIONS.getValue("tsplit_gen"))));
+    community.rescheduleScriptBlock(s1, ticks = unique(c(1, BURNIN_LENGTH + POPULATIONS.getValue("tsplit_gen"))));
 
     // geneflow events
     if (num_rows(GENEFLOWS)) {
-        sim.rescheduleScriptBlock(s2, generations = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tstart_gen")));
-        sim.rescheduleScriptBlock(s3, generations = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tend_gen")));
+        community.rescheduleScriptBlock(s2, ticks = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tstart_gen")));
+        community.rescheduleScriptBlock(s3, ticks = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tend_gen")));
     } else {
-        sim.deregisterScriptBlock(s2);
-        sim.deregisterScriptBlock(s3);
+        community.deregisterScriptBlock(s2);
+        community.deregisterScriptBlock(s3);
     }
 
     // spatial map changes
     if (num_rows(MAPS))
-         sim.rescheduleScriptBlock(s4, generations = unique(c(1, BURNIN_LENGTH + MAPS.getValue("time_gen"))));
+         community.rescheduleScriptBlock(s4, ticks = unique(c(1, BURNIN_LENGTH + MAPS.getValue("time_gen"))));
     else
-         sim.deregisterScriptBlock(s4);
+         community.deregisterScriptBlock(s4);
 
     // step population size changes
     step_changes = filter(RESIZES, "how", "step");
     if (num_rows(step_changes))
-        sim.rescheduleScriptBlock(s5, generations = BURNIN_LENGTH + unique(step_changes.getValue("tresize_gen")));
+        community.rescheduleScriptBlock(s5, ticks = BURNIN_LENGTH + unique(step_changes.getValue("tresize_gen")));
     else
-        sim.deregisterScriptBlock(s5);
+        community.deregisterScriptBlock(s5);
 
     // exponential population size changes
     exp_changes = filter(RESIZES, "how", "exponential");
@@ -119,35 +119,35 @@ initialize() {
             event = exp_changes.getRowValues(i);
             times = c(times, event.getValue("tresize_gen") : event.getValue("tend_gen"));
         }
-        sim.rescheduleScriptBlock(s6, generations = BURNIN_LENGTH + unique(times));
+        community.rescheduleScriptBlock(s6, ticks = BURNIN_LENGTH + unique(times));
     } else
-        sim.deregisterScriptBlock(s6);
+        community.deregisterScriptBlock(s6);
 
     // set interaction distances and dispersals
     if (num_rows(INTERACTIONS))
-        sim.rescheduleScriptBlock(s7, generations = unique(c(1, BURNIN_LENGTH + INTERACTIONS.getValue("tdispersal_gen"))));
+        community.rescheduleScriptBlock(s7, ticks = unique(c(1, BURNIN_LENGTH + INTERACTIONS.getValue("tdispersal_gen"))));
     else
-        sim.deregisterScriptBlock(s7);
+        community.deregisterScriptBlock(s7);
 
     // output locations of individuals
     if (OUTPUT_LOCATIONS != "" & SPATIAL) {
-        sim.rescheduleScriptBlock(s8, start = SIMULATION_START, end = SIMULATION_END);
+        community.rescheduleScriptBlock(s8, start = SIMULATION_START, end = SIMULATION_END);
         write_locations_header();
     } else
-        sim.deregisterScriptBlock(s8);
+        community.deregisterScriptBlock(s8);
 
     // remember individuals for tree sequence recording
-    sim.rescheduleScriptBlock(s10, start = SIMULATION_START, end = SIMULATION_END);
+    community.rescheduleScriptBlock(s10, start = SIMULATION_START, end = SIMULATION_END);
 
     // remove populations from the simulation
     cleanups = filter(POPULATIONS, "tremove_gen", -1, negate = T);
     if (num_rows(cleanups))
-         sim.rescheduleScriptBlock(s11, generations = BURNIN_LENGTH + unique(cleanups.getValue("tremove_gen")));
+         community.rescheduleScriptBlock(s11, ticks = BURNIN_LENGTH + unique(cleanups.getValue("tremove_gen")));
     else
-         sim.deregisterScriptBlock(s11);
+         community.deregisterScriptBlock(s11);
 
     // save data and stop the simulation
-    sim.rescheduleScriptBlock(s12, generations = SIMULATION_END);
+    community.rescheduleScriptBlock(s12, ticks = SIMULATION_END);
 }
 
 ///
@@ -155,27 +155,27 @@ initialize() {
 ///
 
 s0 late() /* Log the start of the simulation */ {
-    if (sim.generation == 1 & BURNIN_LENGTH > 0)
+    if (community.tick == 1 & BURNIN_LENGTH > 0)
         log_output("start of burnin");
     else
         log_output("starting the simulation");
 }
 
 s1 late() /* Population splits */ {
-    pops = filter(POPULATIONS, "tsplit_gen", c(1, sim.generation - BURNIN_LENGTH));
+    pops = filter(POPULATIONS, "tsplit_gen", c(1, community.tick - BURNIN_LENGTH));
 
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
         // skip over ancestral populations, who have been created in generation 1
-        if (sim.generation > 1 & pop.getValue("tsplit_gen") == 1) next;
+        if (community.tick > 1 & pop.getValue("tsplit_gen") == 1) next;
         create_pop(pop);
     }
 
-    sim.interactionTypes.evaluate();
+    community.allInteractionTypes.evaluate(sim.subpopulations);
 }
 
 s2 late() /* Geneflow events */ {
-    events = filter(GENEFLOWS, "tstart_gen", sim.generation - BURNIN_LENGTH);
+    events = filter(GENEFLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, event.getValue("rate"));
@@ -183,7 +183,7 @@ s2 late() /* Geneflow events */ {
 }
 
 s3 late() /* Stopping geneflow */ {
-    events = filter(GENEFLOWS, "tend_gen", sim.generation - BURNIN_LENGTH);
+    events = filter(GENEFLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, 0.0);
@@ -191,13 +191,13 @@ s3 late() /* Stopping geneflow */ {
 }
 
 s4 late() /* Update spatial population boundaries */ {
-    maps = filter(MAPS, "time_gen", c(1, sim.generation - BURNIN_LENGTH));
+    maps = filter(MAPS, "time_gen", c(1, community.tick - BURNIN_LENGTH));
 
     for (i in seqLen(num_rows(maps))) {
         map = maps.getRowValues(i);
 
         // skip over ancestral populations, whose maps have been set in generation 1
-        if (sim.generation > 1 & map.getValue("time_gen") == 1) next;
+        if (community.tick > 1 & map.getValue("time_gen") == 1) next;
 
         id = map.getValue("pop_id");
 
@@ -224,14 +224,14 @@ s4 late() /* Update spatial population boundaries */ {
         // uniformly distribute individuals if this is the very first boundary
         // of the population
         tsplit = filter(POPULATIONS, "pop_id", id).getValue("tsplit_gen");
-        if (tsplit == sim.generation | tsplit == sim.generation - BURNIN_LENGTH)
+        if (tsplit == community.tick | tsplit == community.tick - BURNIN_LENGTH)
             set_coordinates(get_pop(id).individuals, id);
     }
 }
 
-s5 /* Step population size changes */ {
+s5 /* Step population size changes */ early() {
     // get all step resize events active in this generation
-    all_events = filter(RESIZES, "tresize_gen", sim.generation - BURNIN_LENGTH);
+    all_events = filter(RESIZES, "tresize_gen", community.tick - BURNIN_LENGTH);
     events = filter(all_events, "how", "step");
 
     for (i in seqLen(num_rows(events))) {
@@ -243,12 +243,12 @@ s5 /* Step population size changes */ {
     }
 }
 
-s6 /* Exponential population size changes */ {
+s6 /* Exponential population size changes */ early() {
     if (!num_rows(RESIZES)) return;
 
     // get exponential resize events active in (i.e. overlapping) this generation
-    active = (RESIZES.getValue("tresize_gen") <= sim.generation - BURNIN_LENGTH) &
-             (RESIZES.getValue("tend_gen") >= sim.generation - BURNIN_LENGTH) &
+    active = (RESIZES.getValue("tresize_gen") <= community.tick - BURNIN_LENGTH) &
+             (RESIZES.getValue("tend_gen") >= community.tick - BURNIN_LENGTH) &
              RESIZES.getValue("how") == "exponential";
     events = RESIZES.getRowValues(active);
 
@@ -262,7 +262,7 @@ s6 /* Exponential population size changes */ {
 
         // calculate current population size based on the growth parameters
         r = log(Nend / Nstart) / (tend - tstart);
-        tdelta = sim.generation - tstart;
+        tdelta = community.tick - tstart;
         Nt = asInteger(round(Nstart * exp(r * tdelta)));
 
         get_pop(id).setSubpopulationSize(Nt);
@@ -273,23 +273,23 @@ s6 /* Exponential population size changes */ {
             event_type = "shrinking";
 
         current_size = get_pop(id).individualCount;
-        if (sim.generation == tstart)
+        if (community.tick == tstart)
             log_output("start of exponential " + event_type + " of " + pop + "(p" + id +
                        ") from size " + current_size);
-        if (sim.generation == tend)
+        if (community.tick == tend)
             log_output("end of exponential " + event_type + " of " + pop + "(p" + id +
                        ") at size " + current_size);
     }
 }
 
 s7 late() /* Changing interaction distances and dispersals */ {
-    events = filter(INTERACTIONS, "tdispersal_gen", c(1, sim.generation - BURNIN_LENGTH));
+    events = filter(INTERACTIONS, "tdispersal_gen", c(1, community.tick - BURNIN_LENGTH));
 
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
 
         // skip over ancestral populations, whose dispersal has been set in generation 1
-        if (sim.generation > 1 & event.getValue("tdispersal_gen") == 1) next;
+        if (community.tick > 1 & event.getValue("tdispersal_gen") == 1) next;
 
         pop = event.getValue("pop"); pop_id = event.getValue("pop_id");
 
@@ -301,8 +301,8 @@ s7 late() /* Changing interaction distances and dispersals */ {
         // interaction parameters are accessed in the same way they were created
         // in the initialize() block -- for an i-th population, we have the
         // 'competition' maxDistance at 2*i and mate choice maxDistance at 2*i + 1
-        competition = sim.interactionTypes[2 * pop_id];
-        mating = sim.interactionTypes[2 * pop_id + 1];
+        competition = community.allInteractionTypes[2 * pop_id];
+        mating = community.allInteractionTypes[2 * pop_id + 1];
         dispersal = get_pop(pop).getValue("dispersal");
         fun = get_pop(pop).getValue("dispersal_fun");
 
@@ -333,13 +333,13 @@ s7 late() /* Changing interaction distances and dispersals */ {
         }
     }
 
-    sim.interactionTypes.evaluate();
+    community.allInteractionTypes.evaluate(sim.subpopulations);
 }
 
 s8 late() /* Save locations of all individuals */ {
     for (ind in sim.subpopulations.individuals) {
         ind_str = paste(
-            SIMULATION_END - sim.generation,
+            SIMULATION_END - community.tick,
             ind.subpopulation.id,
             filter(POPULATIONS, "pop_id", ind.subpopulation.id).getValue("pop"),
             ind.pedigreeID,
@@ -351,7 +351,7 @@ s8 late() /* Save locations of all individuals */ {
 }
 
 s10 late() /* Remember individuals for tree sequence recording */ {
-    events = filter(SAMPLING, "time_gen", sim.generation - BURNIN_LENGTH);
+    events = filter(SAMPLING, "time_gen", community.tick - BURNIN_LENGTH);
 
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
@@ -379,7 +379,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
             replace_which =
                 SAMPLING.getValue("n") == INF &
                 SAMPLING.getValue("pop") == pop &
-                SAMPLING.getValue("time_gen") == sim.generation - BURNIN_LENGTH;
+                SAMPLING.getValue("time_gen") == community.tick - BURNIN_LENGTH;
             n_values = SAMPLING.getValue("n");
             n_values[replace_which] = n;
             SAMPLING.setValue("n", n_values);
@@ -404,7 +404,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
             replace_which =
                 SAMPLING.getValue("n") == n &
                 SAMPLING.getValue("pop") == pop &
-                SAMPLING.getValue("time_gen") == sim.generation - BURNIN_LENGTH;
+                SAMPLING.getValue("time_gen") == community.tick - BURNIN_LENGTH;
             n = length(all_inds);
             n_values = SAMPLING.getValue("n");
             n_values[replace_which] = n;
@@ -428,7 +428,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
 }
 
 s11 late() /* Schedule removal of populations */ {
-    pops = filter(POPULATIONS, "tremove_gen", sim.generation - BURNIN_LENGTH);
+    pops = filter(POPULATIONS, "tremove_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
         log_output("cleanup of " + pop.getValue("pop") +
@@ -455,19 +455,19 @@ s12 late() /* End of simulation */ {
 ///
 
 1: late() /* Evaluate spatial interactions */ {
-    sim.interactionTypes.evaluate();
+    community.allInteractionTypes.evaluate(sim.subpopulations);
 }
 
-2: fitness(NULL) /* Compute fitness of individuals */ {
+2: fitnessEffect() /* Compute fitness of individuals */ {
     if (!SPATIAL) return 1.0;
-    interaction = sim.interactionTypes[2 * subpop.id];
+    interaction = community.allInteractionTypes[2 * subpop.id];
     totalStrength = interaction.totalOfNeighborStrengths(individual);
     return 1.1 - totalStrength / subpop.individualCount;
 }
 
 2: mateChoice() /* Compute mating interaction */ {
     if (!SPATIAL) return NULL;
-    return sim.interactionTypes[2 * subpop.id + 1].strength(individual);
+    return community.allInteractionTypes[2 * subpop.id + 1].strength(individual);
 }
 
 modifyChild() /* Place offspring within its population's boundary */ {
@@ -479,8 +479,8 @@ modifyChild() /* Place offspring within its population's boundary */ {
     // in case of spatially non-overlapping geneflow, assign locations uniformly
     if (child.migrant) {
         // get indices of the currently active geneflow events
-        active = (GENEFLOWS.getValue("tstart_gen") <= sim.generation - BURNIN_LENGTH) &
-                 (sim.generation - BURNIN_LENGTH <= GENEFLOWS.getValue("tend_gen"));
+        active = (GENEFLOWS.getValue("tstart_gen") <= community.tick - BURNIN_LENGTH) &
+                 (community.tick - BURNIN_LENGTH <= GENEFLOWS.getValue("tend_gen"));
 
         // get population of the offspring's parents
         source = sourceSubpop.id == GENEFLOWS.getValue("from_id");
@@ -621,7 +621,7 @@ function (lifso<Subpopulation>$) get_pop(si$ i) {
     if (isString(i)) i = filter(POPULATIONS, "pop", i).getValue("pop_id");
     if (!any(i == sim.subpopulations.id))
         stop("Population " + filter(POPULATIONS, "pop_id", i).getValue("pop") +
-                 " not present in the simulation in generation " + sim.generation);
+                 " not present in the simulation in generation " + community.tick);
     return sim.subpopulations[i == sim.subpopulations.id];
 }
 
@@ -629,7 +629,7 @@ function (object<Dictionary>) collect_metadata(void) {
     metadata = Dictionary();
 
     // slendr version and commit hash that generated this script
-    metadata.setValue("version", "slendr_0.2.0");
+    metadata.setValue("version", "slendr_0.2.0.9000");
     metadata.setValue("backend", "SLiM");
 
     metadata.setValue("description", DESCRIPTION);
@@ -680,7 +680,7 @@ function (void) write_locations_header(void) {
 
 // Write the given log output message with the time stamp
 function (void) log_output(s$ str) {
-    catn("Generation " + sim.generation + ": " + str);
+    catn("Generation " + community.tick + ": " + str);
 }
 
 ///
