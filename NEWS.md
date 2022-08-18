@@ -1,4 +1,4 @@
-# slendr 0.3.0 (in development)
+# slendr 0.3.0
 
 -   SLiM 4.0 is now required for running simulations with the `slim()` engine. If you want to run _slendr_ simulations with SLiM (spatial or non-spatial), you will need to upgrade you SLiM installation. SLiM 3.7.1 version is no longer supported as the upcoming new _slendr_ spatial features will depend on SLiM 4.x and maintaining two functionally identical yet syntactically different back ends is not feasible (PR [#104](https://github.com/bodkan/slendr/pull/104)).
 
@@ -6,7 +6,7 @@
 
 -   Experimental support for running coalescent msprime simulations and analysing tree-sequence data using tskit on the Windows platform has now been implemented (PR [#102](https://github.com/bodkan/slendr/pull/102)).
 
-# slendr 0.2.0 (21 Jul 2022)
+# slendr 0.2.0
 
 -   _slendr_ is now [on CRAN](https://cran.r-project.org/web/packages/slendr/)!
 
@@ -38,6 +38,6 @@
 
 -   Extensive set of runnable examples including figures and a built-in pre-compiled example model have been added to the documentation. ([#395df62c](https://github.com/bodkan/slendr/commit/395df62c))
 
-# slendr 0.1.0 (21 Mar 2022)
+# slendr 0.1.0
 
 -   First numbered version of *slendr* to celebrate its [bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1). 🥳 🎉
