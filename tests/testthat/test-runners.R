@@ -7,7 +7,7 @@ model <- compile_model(pop, generation_time = 1, direction = "forward", simulati
 test_that("slim() returns a tree-sequence object by default", {
   result <- slim(model, sequence_length = 1, recombination_rate = 0)
   expect_s3_class(result, "slendr_ts")
-  expect_s3_class(result, "pyslim.slim_tree_sequence.SlimTreeSequence")
+  expect_s3_class(result, "tskit.trees.TreeSequence")
 })
 
 test_that("msprime() returns a tree-sequence object by default", {

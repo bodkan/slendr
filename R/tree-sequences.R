@@ -32,8 +32,8 @@
 #'   TRUE}.
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
 #'   samples be retained in the tree sequence? Default is \code{FALSE}.
-#' @param migration_matrix Migration matrix used for coalescence of ancient
-#'   lineages (passed to \code{ts_recapitate})
+#' @param demography Ancestral demography to be passed internally to
+#'   \code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
 #'   an interface point for the Python module tskit using slendr functions with
@@ -80,7 +80,7 @@ ts_load <- function(file, model = NULL,
                     recapitate = FALSE, simplify = FALSE, mutate = FALSE,
                     recombination_rate = NULL, mutation_rate = NULL,
                     Ne = NULL, random_seed = NULL, simplify_to = NULL, keep_input_roots = FALSE,
-                    migration_matrix = NULL) {
+                    demography = NULL) {
   if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
     stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
 
@@ -93,10 +93,8 @@ ts_load <- function(file, model = NULL,
 
   if (length(ts$metadata) == 0 || is.null(ts$metadata$SLiM))
     type <- "generic"
-  else {
-    ts <- pyslim$SlimTreeSequence(ts)
+  else
     type <- "SLiM"
-  }
 
   # this is an awful workaround around the reticulate/Python bug which prevents
   # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
@@ -134,7 +132,7 @@ ts_load <- function(file, model = NULL,
 
   if (recapitate)
     ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                        random_seed = random_seed, migration_matrix = migration_matrix)
+                        random_seed = random_seed, demography = demography)
 
   if (simplify)
     ts <- ts_simplify(ts, simplify_to, keep_input_roots = keep_input_roots)
@@ -177,8 +175,8 @@ ts_save <- function(ts, file) {
 #' @param ts Tree sequence object loaded by \code{ts_load}
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
-#' @param migration_matrix Migration matrix used for coalescence of ancient lineages
-#'   (passed to \code{ts_recapitate})
+#' @param demography Ancestral demography to be passed internally to
+#'   \code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
@@ -202,20 +200,32 @@ ts_save <- function(ts, file) {
 #'
 #' ts
 #' @export
-ts_recapitate <- function(ts, recombination_rate, Ne, migration_matrix = NULL, random_seed = NULL) {
+ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, random_seed = NULL) {
   check_ts_class(ts)
+
+  if ((is.null(Ne) & is.null(demography)) | !is.null(Ne) & !is.null(demography))
+    stop("Either ancestral Ne or demography (but not both) must be specified for\n",
+         "recapitation. See documentation of pyslim.recapitate for more detail.", call. = FALSE)
 
   model <- attr(ts, "model")
   type <- attr(ts, "type")
   spatial <- attr(ts, "spatial")
 
   if (type == "SLiM") {
-    # suppress pyslim warning until we figure out how to switch to the new
-    # pyslim.recapitate(ts, ...) method
-    reticulate::py_capture_output(
-      ts_new <- ts$recapitate(recombination_rate = recombination_rate, Ne = Ne,
-                              random_seed = random_seed, migration_matrix = migration_matrix)
-    )
+    if (!is.null(Ne))
+      ts_new <- pyslim$recapitate(
+        ts,
+        recombination_rate = recombination_rate,
+        ancestral_Ne = Ne,
+        random_seed = random_seed
+      )
+    else
+      ts_new <- pyslim$recapitate(
+        ts,
+        recombination_rate = recombination_rate,
+        demography = demography,
+        random_seed = random_seed
+      )
   } else {
     warning("There is no need to recapitate an already coalesced msprime tree sequence",
             call. = FALSE)
@@ -408,7 +418,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
     data_new <- get_pyslim_table_data(ts_new, simplify_to) %>%
       as.data.frame() %>%
       dplyr::arrange(ind_id, time) %>%
-      dplyr::select(ind_id, pedigree_id, time, time_tskit, sampled, remembered, retained, alive) %>%
+      dplyr::select(pop_id, ind_id, pedigree_id, time, time_tskit, sampled, remembered, retained, alive) %>%
       dplyr::inner_join(keep_data, by = "pedigree_id") %>%
       dplyr::mutate(node_id = nodes_new) %>%
       dplyr::as_tibble()
@@ -419,7 +429,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
     name_col <- if (from_slendr) "name" else NULL
     attr(ts_new, "nodes") <- data_new[, c(name_col, "pop", "node_id",
                                          "time", "time_tskit", location_col, "sampled", "remembered",
-                                         "retained", "alive", "pedigree_id", "ind_id")]
+                                         "retained", "alive", "pedigree_id", "ind_id", "pop_id")]
   } else
     attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
 
@@ -476,8 +486,6 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
       keep = keep_existing,
       random_seed = random_seed
     )
-
-  if (attr(ts, "type") == "SLiM") ts_new <- pyslim$SlimTreeSequence(ts_new)
 
   # copy attributes over to the new tree-sequence object or generate updates
   # ones where necessary
@@ -865,7 +873,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
     columns <- "sampled"
   name_col <- if (from_slendr) "name" else NULL
   data <- dplyr::select(
-    data, !!name_col, pop, node_id, phylo_id, time, time_tskit, !!columns, ind_id
+    data, !!name_col, pop, node_id, phylo_id, time, time_tskit, !!columns, ind_id, pop_id
   )
   # add fake dummy information to the processed tree sequence table so that
   # the user knows what is real and what is not straight from the ts_phylo()
@@ -1465,7 +1473,7 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
   svg <- x$draw_svg(size = c(width, height), node_labels = py_labels, ...)
 
   # convert from a SVG representation to a PNG image
-  raw <- charToRaw(svg)
+  raw <- charToRaw(as.character(svg))
   tmp_file <- paste0(tempfile(), ".png")
   rsvg::rsvg_png(svg = raw, file = tmp_file, width = width, height = height)
 

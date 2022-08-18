@@ -7,7 +7,7 @@ msp <- NULL
 
 # define slendr's required Python dependencies and compose an environment name
 # that will be used specifically for them
-deps <- c("msprime==1.1.1", "tskit==0.4.1", "pyslim==0.700")
+deps <- c("msprime==1.2.0", "tskit==0.5.2", "pyslim==1.0")
 PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
 
 .onAttach <- function(libname, pkgname) {
@@ -25,16 +25,14 @@ PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
       "PATH=\"path/to/the/directory/with/slim/program\"\n\n",
       "to your ~/.Renviron file.\n--------------------")
   } else {
-    required_version <- "3.7.1"
+    required_version <- "4.0"
     slim_version <- system("slim -v", intern = TRUE) %>%
       gsub("SLiM version (.*),.*$", "\\1", .) %>% .[1]
-    if (utils::compareVersion(slim_version, required_version) < 0 |
-        utils::compareVersion(slim_version, required_version) > 0)
+    if (utils::compareVersion(slim_version, required_version) < 0)
       packageStartupMessage(
         "You are running SLiM version ", slim_version,
-        " but at least version ", required_version, " and less\nthan the most recent",
-        " version 4.0 is required. Please update your SLiM\nversion accordingly.\n",
-        "(The process of upgrading slendr for SLiM 4.0 is under way.)\n--------------------"
+        " but at least version ", required_version,
+        "\nis required. Please upgrade SLiM to the latest version.\n--------------------"
       )
   }
 

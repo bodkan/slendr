@@ -16,7 +16,7 @@ simulate_slim_ts <- function(N) {
   	initializeGenomicElement(g1, 0, 1e5);
   	initializeRecombinationRate(1e-8);
   }
-  1 {
+  1 early() {
   	sim.addSubpop("p0", %d);
   }
   100 late() {
@@ -226,16 +226,16 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
   	initializeGenomicElement(g1, 0, 1e6);
   	initializeRecombinationRate(1e-8);
   }
-  1 {
+  1 early() {
   	sim.addSubpop("p1", 10);
   }
-  1000 {
+  1000 early() {
   	sim.addSubpopSplit("p2", 500, p1);
   }
-  3000 {
+  3000 early() {
   	sim.addSubpopSplit("p3", 2500, p1);
   }
-  5000 {
+  5000 early() {
   	sim.addSubpopSplit("p4", 10000, p1);
   }
   20000 late() {

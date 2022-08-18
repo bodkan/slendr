@@ -18,7 +18,7 @@ function during the compilation of a slendr demographic model."><meta property="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -130,7 +130,8 @@ function during the compilation of a slendr demographic model.</p>
   verbose <span class="op">=</span> <span class="cn">FALSE</span>,
   load <span class="op">=</span> <span class="cn">TRUE</span>,
   locations <span class="op">=</span> <span class="cn">NULL</span>,
-  slim_path <span class="op">=</span> <span class="cn">NULL</span>
+  slim_path <span class="op">=</span> <span class="cn">NULL</span>,
+  sampling <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -185,6 +186,8 @@ will be saved (most likely for use with <code>animate_model</code>).</p></dd>
 <dt>slim_path</dt>
 <dd><p>Optional way to specify path to an appropriate SLiM binary (this is useful
 if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
+<dt>sampling</dt>
+<dd><p>Deprecated in favor of <code>samples</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -226,35 +229,35 @@ if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
 <span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="va">model</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ts</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════════════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence               ║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═══════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │          1║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│     100000║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │generations║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │       1046║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │  317.9 KiB║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════════╝</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═════════════════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence             ║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │        1║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│   100000║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │    ticks║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │     1046║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │320.5 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤═════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size     │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │1911│ 59.7 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │1913│ 59.8 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│1337│132.4 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│1355│134.1 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│  8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│  1.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │1912│ 71.6 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │1914│ 71.7 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│  2.6 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│  2.5 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│ 33.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│ 33.6 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│ 16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧═════════╧════════════╝</span>

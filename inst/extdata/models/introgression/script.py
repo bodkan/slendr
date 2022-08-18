@@ -16,7 +16,7 @@ import pandas
 import numpy
 import math
 
-VERSION = "slendr_0.2.0"
+VERSION = "slendr_0.2.0.9000"
 
 parser = argparse.ArgumentParser(
     "msprime script for executing non-spatial slendr models"
@@ -92,7 +92,7 @@ for pop in populations.itertuples():
     name = pop.pop
     if len(resizes) and name in set(resizes["pop"]):
         resize_events = resizes.query(f"pop == '{name}'")
-        initial_size = resize_events.tail(1).N[0]
+        initial_size = resize_events.tail(1).N.values[0]
     else:
         initial_size = pop.N
 
@@ -205,7 +205,7 @@ logging.info(f"Saving tree sequence output to {output_path}")
 
 slendr_metadata = {
     "slendr": {
-        "version": "slendr_0.2.0",
+        "version": "slendr_0.2.0.9000",
         "backend": "msprime",
         "description": description,
         "sampling": {

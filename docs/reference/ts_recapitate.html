@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -116,8 +116,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_recapitate</span><span class="op">(</span>
   <span class="va">ts</span>,
   <span class="va">recombination_rate</span>,
-  <span class="va">Ne</span>,
-  migration_matrix <span class="op">=</span> <span class="cn">NULL</span>,
+  Ne <span class="op">=</span> <span class="cn">NULL</span>,
+  demography <span class="op">=</span> <span class="cn">NULL</span>,
   random_seed <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -130,9 +130,9 @@
 <dd><p>A constant value of the recombination rate</p></dd>
 <dt>Ne</dt>
 <dd><p>Effective population size during the recapitation process</p></dd>
-<dt>migration_matrix</dt>
-<dd><p>Migration matrix used for coalescence of ancient lineages
-(passed to <code>ts_recapitate</code>)</p></dd>
+<dt>demography</dt>
+<dd><p>Ancestral demography to be passed internally to
+<code>msprime.sim_ancestry()</code> (see msprime's documentation for mode detail)</p></dd>
 <dt>random_seed</dt>
 <dd><p>Random seed passed to pyslim's <code>recapitate</code> method</p></dd>
 </dl></div>
@@ -162,35 +162,35 @@ map</p></div>
 <span class="r-in">  <span class="fu">ts_recapitate</span><span class="op">(</span>recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">ts</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════════════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence               ║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═══════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │         17║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│     500000║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │generations║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │         26║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │   55.2 KiB║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════════╝</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔════════════════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence            ║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │      24║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│  500000║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │   ticks║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │      26║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │58.1 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size    │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 105│ 3.3 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 133│ 4.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│  50│ 6.7 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│  55│ 7.2 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│ 8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│ 1.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  63│ 3.0 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  68│ 3.2 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│ 2.6 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   5│ 2.6 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   3│35.4 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   3│36.1 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>

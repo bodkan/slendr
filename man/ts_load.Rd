@@ -16,7 +16,7 @@ ts_load(
   random_seed = NULL,
   simplify_to = NULL,
   keep_input_roots = FALSE,
-  migration_matrix = NULL
+  demography = NULL
 )
 }
 \arguments{
@@ -47,8 +47,8 @@ remembered individuals will be retained. Only used when \code{simplify =
 \item{keep_input_roots}{Should the history ancestral to the MRCA of all
 samples be retained in the tree sequence? Default is \code{FALSE}.}
 
-\item{migration_matrix}{Migration matrix used for coalescence of ancient
-lineages (passed to \code{ts_recapitate})}
+\item{demography}{Ancestral demography to be passed internally to
+\code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)}
 }
 \value{
 Tree-sequence object of the class \code{slendr_ts}, which serves as
