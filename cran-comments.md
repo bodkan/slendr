@@ -1,25 +1,12 @@
-# Resubmission #1
+Two external dependencies of this R package (the SLiM simulation software and Python population genetic modules msprime/tskit/pyslim) have had new major releases soon after the first version of this package was accepted by CRAN.
 
-- All uses of `\dontrun{}` in examples have now been replaced by valid, fully runnable example code. A small simulated testing dataset has been included in the package to facilitate this.
+My apologies for another submission this soon after submitting the very first version. This update makes sure that the R package is compatible with the updated external dependencies (all of which have unfortunately introduced backwards incompatible changes which could cause problems for some users).
 
-- A default writing path is now never used in an argument to any function writing something to a disk. All writing (including in the examples, vignettes, and tests) is being done to a `tempdir()` or `tempfile()` by default.
-
-- Every user-facing function's `.Rd` file now has a `\value` tag describing its output and the structure of such output. If a function is only run for side effects, this is now also formally stated.
-
-- `on.exit()` is now used to restore `par()` options immediately on function exit.
-
-- Calls to `installed.packages()` have been replaced by equivalent `requireNamespace()` as requested.
-
-- The word 'Python' was put into single quotes in the DESCRIPTION.
-- 'SLiM' is not a typo, this is how the software's name is supposed to be capitalized.
-
-- Proper doi references have been added in DESCRIPTION to the software methods used in the package.
+Additionally, the formatting of the doi references in DESCRIPTION was changed according to the recommendation from a CRAN maintainer.
 
 # R CMD check results
 
-There were no ERRORs and no WARNINGs.
-
-There was only one NOTE ("New submission").
+There were no ERRORs, no WARNINGs and no NOTEs.
 
 # Checked environments
 
