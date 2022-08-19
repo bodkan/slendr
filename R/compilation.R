@@ -571,6 +571,13 @@ slim <- function(
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
                     output = NULL, random_seed = NULL,
                     load = TRUE, verbose = FALSE, debug = FALSE, sampling = NULL) {
+  if (sum(sapply(model$populations, attr, "parent") == "ancestor") > 1)
+    stop("Multiple ancestral populations without a common ancestor would lead to\n",
+         "an infinitely deep history without coalescence. Please make sure that all\n",
+         "populations trace their ancestry to a single ancestral population.\n",
+         "(This restriction only applies to coalescent simulations with msprime().)",
+         call. = FALSE)
+
   if (is.null(output) & !load)
     warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
             "a temporary file after the simulation has been prevented", call. = FALSE)
