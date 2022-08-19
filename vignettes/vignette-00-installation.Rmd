@@ -55,7 +55,7 @@ Note that this assumes that you have the [Homebrew](https://brew.sh/) package ma
 
 The forward population genetic software SLiM is available on all major software platforms. Its complete installation instructions can be found [here](https://messerlab.org/slim/). On a Mac, I recommend installing SLiM via the `pkg` installer available for direct download from its [website](https://messerlab.org/slim/). On Linux, you can either install SLiM via the appropriate package manager for your Linux distribution (see SLiM manual [here](https://messerlab.org/slim/) for more information), or you can easily compile your own.
 
-Note that *slendr* requires SLiM 3.7.1 and will not work with an earlier version. Again, running `library(slendr)` will inform you of any potential issues with your SLiM installation.
+Note that *slendr* requires SLiM 4.0 and will not work with an earlier version. Again, running `library(slendr)` will inform you of any potential issues with your SLiM installation.
 
 ### Python
 
