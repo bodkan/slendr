@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
       </span>
     </div>
 
@@ -108,7 +108,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.0" id="slendr-030">slendr 0.3.0<a class="anchor" aria-label="anchor" href="#slendr-030"></a></h2>
+<h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li>The <code><a href="../reference/msprime.html">msprime()</a></code> function now makes sure that a given
+<em>slendr</em> model can fully coalesce to a single common ancestor
+population. Previously, having multiple ancestral populations created
+with <code>parent = "ancestor"</code> would cause an infinite simulation
+when plugged into the <code><a href="../reference/msprime.html">msprime()</a></code> backend. (<a href="https://github.com/bodkan/slendr/commit/095b124" class="external-link">#095b124</a>)</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.0" id="slendr-030">slendr 0.3.0<small>2022-08-19</small><a class="anchor" aria-label="anchor" href="#slendr-030"></a></h2>
 <ul><li><p>SLiM 4.0 is now required for running simulations with the
 <code><a href="../reference/slim.html">slim()</a></code> engine. If you want to run <em>slendr</em>
 simulations with SLiM (spatial or non-spatial), you will need to upgrade
@@ -129,8 +137,7 @@ now been implemented (PR <a href="https://github.com/bodkan/slendr/pull/102" cla
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.0" id="slendr-020">slendr 0.2.0<small>2022-08-09</small><a class="anchor" aria-label="anchor" href="#slendr-020"></a></h2>
-<ul><li><p><em>slendr</em> is now <a href="https://cran.r-project.org/web/packages/slendr/" class="external-link">on
-CRAN</a>!</p></li>
+<ul><li><p><em>slendr</em> is now <a href="https://CRAN.R-project.org/package=slendr" class="external-link">on CRAN</a>!</p></li>
 <li><p>Big changes to the way tree-sequence outputs are handled by
 <em>slendr</em> by default. See <a href="https://github.com/bodkan/slendr/pull/100#issue-1310869866" class="external-link">this
 comment</a> for an extended description and examples of the change. (PR

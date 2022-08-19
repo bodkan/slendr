@@ -23,17 +23,17 @@
 <meta property="og:description" content="A framework for simulating spatially explicit genomic data which
     leverages real cartographic information for programmatic and visual encoding
     of spatiotemporal population dynamics on real geographic landscapes. Population
-    genetic models are then automatically executed by the SLiM software (Haller
-    et al. 2019) &lt;doi:10.1093/molbev/msy228&gt; behind the scenes, using a custom
+    genetic models are then automatically executed by the SLiM software by Haller
+    et al. (2019) &lt;doi:10.1093/molbev/msy228&gt; behind the scenes, using a custom
     built-in simulation SLiM script. Additionally, fully abstract spatial models
     not tied to a specific geographic location are supported, and users can also
     simulate data from standard, non-spatial, random-mating models. These can be
     simulated either with the SLiM built-in back-end script, or using an efficient
-    coalescent population genetics simulator msprime (Baumdicker et al. 2022)
+    coalescent population genetics simulator msprime by Baumdicker et al. (2022)
     &lt;doi:10.1093/genetics/iyab229&gt; with a custom-built Python script bundled with the
     R package. Simulated genomic data is saved in a tree-sequence format and can be
     loaded, manipulated, and summarised using tree-sequence functionality via an R
-    interface to the Python module tskit (Kelleher et al. 2019)
+    interface to the Python module tskit by Kelleher et al. (2019)
     &lt;doi:10.1038/s41588-019-0483-y&gt;. Complete model configuration, simulation and
     analysis pipelines can be therefore constructed without a need to leave the R
     environment, eliminating friction between disparate tools for population genetic
@@ -59,7 +59,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
       </span>
     </div>
 
@@ -612,6 +612,8 @@ in a dedicated R vignette <a href="https://www.slendr.net/articles/vignette-09-p
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=slendr" class="external-link"><img src="https://www.r-pkg.org/badges/version/slendr" alt="CRAN-version"></a></li>
+<li><a href="https://cran.r-project.org/package=slendr" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/slendr" alt="CRAN-downloads"></a></li>
 <li><a href="https://github.com/bodkan/slendr/actions" class="external-link"><img src="https://github.com/bodkan/slendr/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://codecov.io/github/bodkan/slendr?branch=main" class="external-link"><img src="https://codecov.io/gh/bodkan/slendr/branch/main/graph/badge.svg" alt="Coverage status"></a></li>
 <li><a href="http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio" class="external-link"><img src="http://mybinder.org/badge.svg" alt="Binder"></a></li>
