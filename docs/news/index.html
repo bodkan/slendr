@@ -117,6 +117,23 @@ when plugged into the <code><a href="../reference/msprime.html">msprime()</a></c
 <li><p>The initial size of a population which emerges from a split from
 another population is now printed in a population history summary in the
 R console. (<a href="https://github.com/bodkan/slendr/commit/6525bf3" class="external-link">#6525bf3</a>)</p></li>
+<li><p>A couple of fixes to support loading, processing, and plotting of
+“manually” created tree sequences have been implemented (see <a href="https://tskit.dev/tutorials/tables_and_editing.html#constructing-a-tree-sequence" class="external-link">this</a>).
+Not sure how practically useful, but it’s important to be able to load
+even “pure” tree sequences which are not from simulators such as SLiM
+and msprime. A set of <a href="https://github.com/bodkan/slendr/blob/9611437554bbb171f3df6374651acc3d73c63426/tests/testthat/test-manual-ts.R" class="external-link">unit
+tests</a> has been added, making sure that a minimalist nodes &amp;
+edges table can be loaded, as well as nodes &amp; edges &amp;
+individuals, plus tables of populations and sites &amp; mutations. PRs
+with more extensive unit tests and bug reports of tree sequences which
+are failing to load would be appreciated! The code for handling cases of
+“manually-created” tree sequences which have missing individual table,
+missing populations table, etc. seems especially brittle at the moment
+(<a href="https://github.com/bodkan/slendr/commit/2f5fc32" class="external-link">#2f5fc32</a>).</p></li>
+<li><p>The <code>-1</code> value as a missing value indicator used in
+tskit is now replaced with the more R-like <code>NA</code> in various
+tree-sequence tables (annotated by <em>slendr</em> or original through
+tskit itself) (<a href="https://github.com/bodkan/slendr/commit/2f5fc32" class="external-link">#2f5fc32</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.0" id="slendr-030">slendr 0.3.0<small>2022-08-19</small><a class="anchor" aria-label="anchor" href="#slendr-030"></a></h2>

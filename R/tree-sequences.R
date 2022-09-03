@@ -2046,6 +2046,10 @@ get_ts_raw_nodes <- function(ts) {
 
   node_table$time_tskit <- table$time
 
+  # -1 as a missing value in tskit is not very R like, so let's replace it with
+  # a proper NA
+  node_table$pop_id[node_table$pop_id == -1] <- NA
+
   node_table
 }
 
@@ -2197,8 +2201,9 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
     dplyr::bind_rows(sampled, not_sampled) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
     dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x),
+                  time_tskit = time_tskit.y,
                   sampled = ifelse(is.na(ind_id), FALSE, sampled)) %>%
-    dplyr::rename(pop = pop.y, pop_id = pop_id.y, time_tskit = time_tskit.x)
+    dplyr::rename(pop = pop.y, pop_id = pop_id.y)
 
   if (spatial) {
     combined <- convert_to_sf(combined, model)
@@ -2251,9 +2256,17 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     }))
     individuals$pop <- pop_names[individuals$pop_id + 1]
     nodes$pop <- pop_names[nodes$pop_id + 1]
+    if (is.null(nodes[["pop"]])) nodes$pop <- NA
   }
 
-  individuals <- dplyr::arrange(individuals, -time, pop)
+  if (nrow(individuals)) {
+    if (length(ts$tables$populations)) {
+      individuals <- dplyr::arrange(individuals, -time, pop)
+    } else {
+      individuals <- dplyr::arrange(individuals, -time)
+      individuals$pop <- NA
+    }
+  }
 
   # load information about samples at times and from populations of remembered
   # individuals
@@ -2277,13 +2290,20 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     # on which nodes are actually sampled)
     nodes$sampled <- FALSE
     nodes$sampled[ts$samples() + 1] <- TRUE
-    nodes$time_tskit.x <- nodes$time_tskit; nodes$time_tskit <- NULL
+
+    nodes$time_tskit.y <- nodes$time_tskit
+    nodes$time_tskit <- NULL
+
+    nodes$pop.y <- nodes$pop
+    nodes$pop <- individuals$pop <- NULL
+
+    nodes$sampled <- nodes$node_id %in% as.vector(ts$samples())
   }
 
   # add numeric node IDs to each individual
   combined <- dplyr::select(individuals, -time, -pop_id) %>%
     dplyr::right_join(nodes, by = "ind_id") %>%
-    dplyr::rename(pop = pop.y, time_tskit = time_tskit.x)
+    dplyr::rename(pop = pop.y, time_tskit = time_tskit.y)
 
   # for tree sequences which have some individuals/nodes marked as 'sampled', mark the
   # nodes which do not have individuals assigned to them as FALSE

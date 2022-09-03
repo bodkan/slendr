@@ -4,6 +4,10 @@
 
 - The initial size of a population which emerges from a split from another population is now printed in a population history summary in the R console. ([#6525bf3](https://github.com/bodkan/slendr/commit/6525bf3))
 
+- A couple of fixes to support loading, processing, and plotting of "manually" created tree sequences have been implemented (see [this](https://tskit.dev/tutorials/tables_and_editing.html#constructing-a-tree-sequence)). Not sure how practically useful, but it's important to be able to load even "pure" tree sequences which are not from simulators such as SLiM and msprime. A set of [unit tests](https://github.com/bodkan/slendr/blob/9611437554bbb171f3df6374651acc3d73c63426/tests/testthat/test-manual-ts.R) has been added, making sure that a minimalist nodes & edges table can be loaded, as well as nodes & edges & individuals, plus tables of populations and sites & mutations. PRs with more extensive unit tests and bug reports of tree sequences which are failing to load would be appreciated! The code for handling cases of "manually-created" tree sequences which have missing individual table, missing populations table, etc. seems especially brittle at the moment ([#2f5fc32](https://github.com/bodkan/slendr/commit/2f5fc32)).
+
+- The `-1` value as a missing value indicator used in tskit is now replaced with the more R-like `NA` in various tree-sequence tables (annotated by _slendr_ or original through tskit itself) ([#2f5fc32](https://github.com/bodkan/slendr/commit/2f5fc32)).
+
 # slendr 0.3.0
 
 -   SLiM 4.0 is now required for running simulations with the `slim()` engine. If you want to run _slendr_ simulations with SLiM (spatial or non-spatial), you will need to upgrade you SLiM installation. SLiM 3.7.1 version is no longer supported as the upcoming new _slendr_ spatial features will depend on SLiM 4.x and maintaining two functionally identical yet syntactically different back ends is not feasible (PR [#104](https://github.com/bodkan/slendr/pull/104)).

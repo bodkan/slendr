@@ -95,6 +95,10 @@ test_that("ape phylo and tskit.Tree objects are equivalent (SLiM)", {
   t2_nodes <- unique(as.vector(t2$edge))
 
   expect_true(length(t1_nodes) == length(t2_nodes))
+
+  # even the recapitated nodes should have numerical time_tskit values
+  # (after the fix of the join operation which caused NA to be introduced)
+  expect_true(all(!is.na(ts_nodes(t2)$time_tskit)))
 })
 
 

@@ -231,7 +231,7 @@ test_that("simplification retains only specified samples (SLiM)", {
   expect_true(all(df_data$time == df_samples$time))
   expect_true(all(df_data$pop == df_samples$pop))
 
-  suppressWarnings(ts2 <- ts_load(model, file = msprime_ts, recapitate = TRUE, recombination_rate = 0, Ne = 1))
+  suppressWarnings(ts2 <- ts_load(model, file = slim_ts, recapitate = TRUE, recombination_rate = 0, Ne = 1))
   simplify_to <- sample(ts_samples(ts2)$name, 10)
 
   ts2 <- ts_simplify(ts2, simplify_to = simplify_to)
