@@ -166,7 +166,7 @@ ts_load <- function(file, model = NULL,
 #' @export
 ts_save <- function(ts, file) {
   check_ts_class(ts)
-  ts$dump(file)
+  ts$dump(path.expand(file))
 }
 
 

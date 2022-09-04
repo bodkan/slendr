@@ -8,6 +8,8 @@
 
 - The `-1` value as a missing value indicator used in tskit is now replaced with the more R-like `NA` in various tree-sequence tables (annotated by _slendr_ or original through tskit itself) ([#2f5fc32](https://github.com/bodkan/slendr/commit/2f5fc32)).
 
+- Relative paths are now expanded in `ts_save()` ([#9521dfb](https://github.com/bodkan/slendr/commit/9521dfb)).
+
 # slendr 0.3.0
 
 -   SLiM 4.0 is now required for running simulations with the `slim()` engine. If you want to run _slendr_ simulations with SLiM (spatial or non-spatial), you will need to upgrade you SLiM installation. SLiM 3.7.1 version is no longer supported as the upcoming new _slendr_ spatial features will depend on SLiM 4.x and maintaining two functionally identical yet syntactically different back ends is not feasible (PR [#104](https://github.com/bodkan/slendr/pull/104)).
