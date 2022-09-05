@@ -258,7 +258,10 @@ read_model <- function(path) {
   description <- scan(path_description, what = character(), quiet = TRUE)
 
   split_table <- utils::read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
-  resize_table <- utils::read.table(path_resizes, header = TRUE, stringsAsFactors = FALSE)
+  resize_table <- NULL
+  if (file.exists(path_resizes)) {
+    resize_table <- utils::read.table(path_resizes, header = TRUE, stringsAsFactors = FALSE)
+  }
 
   admix_table <- NULL
   if (file.exists(path_geneflow)) {
