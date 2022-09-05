@@ -90,8 +90,8 @@ f4ratio <- ts_f4ratio(
 ### Complementary SLiM run from the same model
 
 ```{r, echo = FALSE, eval = eval_chunk}
-system(sprintf("cp -r %s %s", model$path, "~/Documents/postdoc/slendr-paper/slendr_models/ex1"))
-ts_save(ts, "~/Documents/postdoc/slendr-paper/slendr_models/ex1.trees")
+system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex1"))
+ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex1.trees")
 ```
 
 ### Plotting code
@@ -103,12 +103,12 @@ f4ratio <- f4ratio %>% mutate(population = gsub("^(.*)_.*$", "\\1", X), alpha = 
 
 p_ex1_divergence <- divergence %>%
   ggplot(aes(fct_reorder(pair, divergence), divergence)) +
-  geom_point(size = 3) +
+  geom_point(size = 2.5) +
   xlab("population pair") + ylab("pairwise divergence") +
   theme_minimal() +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 10),
-        axis.text.x = element_text(hjust = 1, angle = 45, size = 9),
+        axis.text.x = element_text(hjust = 1, angle = 45, size = 8),
         axis.title.x = element_blank())
 
 p_ex1_f4ratio <- f4ratio %>%
@@ -149,7 +149,7 @@ p_ex1
 ```
 
 ```{r, include = FALSE, eval = eval_chunk && save_pdf}
-ggsave("~/Documents/postdoc/slendr-paper/ex1.pdf", p_ex1, width = 9, height = 6, units = "in")
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/ex1.pdf", p_ex1, width = 9, height = 6, units = "in")
 ```
 
 ## Example 2 (Figure 3)
@@ -176,9 +176,9 @@ model <- compile_model(
 )
 
 ts <-
-  slim(model, sequence_length = 10e6 / scaling, recombination_rate = 1e-8) %>%
+  slim(model, sequence_length = 10e6 / scaling, recombination_rate = 1e-8, random_seed = SEED) %>%
   ts_simplify() %>%
-  ts_mutate(mutation_rate = 1e-7)
+  ts_mutate(mutation_rate = 1e-7, random_seed = SEED)
 
 locations <- ts_nodes(ts) %>% filter(time == max(time))
 
@@ -190,8 +190,8 @@ heterozygosity <- ts_samples(ts) %>%
 
 
 ```{r, echo = FALSE, eval = eval_chunk}
-system(sprintf("cp -r %s %s", model$path, "~/Documents/postdoc/slendr-paper/slendr_models/ex2"))
-ts_save(ts, "~/Documents/postdoc/slendr-paper/slendr_models/ex2.trees")
+system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex2"))
+ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex2.trees")
 ```
 
 ### Plotting code
@@ -239,14 +239,14 @@ p_ex2
 ```
 
 ```{r, include = FALSE, eval = eval_chunk && save_pdf}
-ggsave("~/Documents/postdoc/slendr-paper/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
 ```
 
 ## Example 3 (Figure 4)
 
 ### Script from panel A
 
-```{r, results='hide'}
+```{r, fig.keep='none'}
 map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = 3035)
 
 R1 <- region(
@@ -336,8 +336,8 @@ ts <- slim(
 ```
 
 ```{r, echo = FALSE, eval = eval_chunk}
-system(sprintf("cp -r %s %s", model$path, "~/Documents/postdoc/slendr-paper/slendr_models/ex3"))
-ts_save(ts, "~/Documents/postdoc/slendr-paper/slendr_models/ex3.trees")
+system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex3"))
+ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex3.trees")
 ```
 
 ### Plotting code
@@ -361,7 +361,7 @@ p_ex3
 ```
 
 ```{r, include = FALSE, eval = eval_chunk && save_pdf}
-ggsave("~/Documents/postdoc/slendr-paper/ex3.pdf", p_ex3, width = 9, height = 6, units = "in")
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/ex3.pdf", p_ex3, width = 9, height = 6, units = "in")
 ```
 
 <!-- ```{r} -->
@@ -370,7 +370,7 @@ ggsave("~/Documents/postdoc/slendr-paper/ex3.pdf", p_ex3, width = 9, height = 6,
 <!-- eurs <- c("EUR_581") -->
 
 <!-- # finding a EUR individual with illustratively rich spatial ancestry -->
-<!-- pdf("~/Documents/postdoc/slendr-paper/anc.pdf") -->
+<!-- pdf("/Users/mp/Documents/postdoc/slendr-paper/anc.pdf") -->
 <!-- for (e in eurs) { -->
 <!-- ancestors <- ts_ancestors(ts, e) -->
 <!-- chrom_names <- stats::setNames( -->
@@ -424,7 +424,7 @@ ancestors <- ts_ancestors(ts, "EUR_581")
 ```
 
 ```{r, echo = FALSE, eval = eval_chunk}
-ts_save(ts, "~/Documents/postdoc/slendr-paper/slendr_models/ex3_small.trees")
+ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex3_small.trees")
 ```
 
 ### Plotting code
@@ -456,6 +456,8 @@ p_tree <- ggtree(tree, aes(color = pop, fill = pop)) %<+% df +
                      breaks = -c(120, 100, 80, 60, 40, 20, 0) * 1000)
 p_tree <- revts(p_tree)
 
+nodes$label <- ifelse(is.na(nodes$name), nodes$node_id, nodes$name)
+
 p_map <- ggplot() +
   geom_sf(data = map) +
   geom_sf(data = edges, aes(color = parent_pop), size = 0.5) +
@@ -463,9 +465,11 @@ p_map <- ggplot() +
           aes(color = pop, shape = pop), size = 5) +
   geom_sf_label(data = nodes[!nodes$sampled, ],
                 aes(label = node_id, fill = pop), size = 3) +
-  geom_sf_label(data = nodes[nodes$sampled, ],
-                aes(label = node_id, fill = pop), size = 3,
-                fontface = "bold", color = "white") +
+  geom_sf_label(data = nodes[nodes$sampled & nodes$name != "EUR_581", ],
+                aes(label = label, fill = pop), size = 3, color = "white") +
+  geom_sf_label(data = nodes[nodes$sampled & nodes$name == "EUR_581", ],
+                aes(label = label, fill = pop), size = 3,
+                fontface = "bold", color = "black") +
   coord_sf(xlim = c(3047066.1, 8688656.9),
            ylim = c(757021.7, 5202983.3), expand = 0) +
   labs(x = "longitude", y = "latitude") +
@@ -508,5 +512,5 @@ p_ex4
 ```
 
 ```{r, include = FALSE, eval = eval_chunk && save_pdf}
-ggsave("~/Documents/postdoc/slendr-paper/ex4.pdf", p_ex4, width = 7, height = 9, units = "in")
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/ex4.pdf", p_ex4, width = 7, height = 9, units = "in")
 ```
