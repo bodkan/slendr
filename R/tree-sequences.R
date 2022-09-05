@@ -89,7 +89,7 @@ ts_load <- function(file, model = NULL,
          call. = FALSE)
 
   # load the tree sequence, converting it to a SLiM tree sequence if necessary
-  if (is.character(file)) ts <- tskit$load(path.expand(file))
+  ts <- if (is.character(file)) tskit$load(path.expand(file)) else file
 
   if (length(ts$metadata) == 0 || is.null(ts$metadata$SLiM))
     type <- "generic"
