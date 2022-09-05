@@ -16,7 +16,7 @@
 #' \code{\link{ts_simplify}}.
 #'
 #' @param file A path to the tree-sequence file (either originating from a
-#'   slendr model or a standard non-slendr tree sequence)
+#'   slendr model or a standard non-slendr tree sequence).
 #' @param model Optional \code{slendr_model} object which produced the
 #'   tree-sequence \code{file}. Used for adding various annotation data and
 #'   metadata to the standard tskit tree-sequence object.
@@ -89,7 +89,7 @@ ts_load <- function(file, model = NULL,
          call. = FALSE)
 
   # load the tree sequence, converting it to a SLiM tree sequence if necessary
-  ts <- tskit$load(path.expand(file))
+  if (is.character(file)) ts <- tskit$load(path.expand(file))
 
   if (length(ts$metadata) == 0 || is.null(ts$metadata$SLiM))
     type <- "generic"

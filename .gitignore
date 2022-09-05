@@ -5,3 +5,4 @@ inst/doc
 .vscode/
 build/
 inst/pylib/__pycache__/
+inst/scripts/__pycache__/
