@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
       </span>
     </div>
 
@@ -415,8 +415,7 @@ of the spatio-temporal data extracted from the tree sequence:</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AFR_5 AFR       189     0         0 (4441213 579462.3) TRUE    TRUE      </span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 556 more rows, 5 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   pedigree_id &lt;dbl&gt;, ind_id &lt;dbl&gt;, pop_id &lt;int&gt;, and abbreviated variable</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   name ¹​time_tskit</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></code></pre>
+<span class="co">#&gt; <span style="color: #949494;">#   name ¹​time_tskit</span></span></code></pre>
 <p>In the first part of the summary, we see how many individuals
 (sampled or retained) and nodes are present in the tree sequence
 together with additional useful information, including a section of the
@@ -579,8 +578,7 @@ node or individual (in our example, <code>"EUR_25"</code>):</p>
 <span class="co">#&gt; <span style="color: #949494;"># … with 190 more rows, 5 more variables: child_location &lt;POINT [m]&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   parent_location &lt;POINT [m]&gt;, connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   right_pos &lt;dbl&gt;, and abbreviated variable names ¹​child_time, ²​parent_time,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   ³​child_pop, ⁴​parent_pop</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></code></pre>
+<span class="co">#&gt; <span style="color: #949494;">#   ³​child_pop, ⁴​parent_pop</span></span></code></pre>
 <p>In each row of the table, two columns <code>location</code> and
 <code>parent_location</code> carry the spatial location of a node
 (<code>node_id</code>) and its parent node (<code>parent_id</code>),
@@ -616,8 +614,7 @@ sampled individual (i.e. nodes at the level 1) using the
 <span class="co">#&gt; <span style="color: #949494;"># … with 5 more variables: child_location &lt;POINT [m]&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   parent_location &lt;POINT [m]&gt;, connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   right_pos &lt;dbl&gt;, and abbreviated variable names ¹​child_time, ²​parent_time,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   ³​child_pop, ⁴​parent_pop</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span></code></pre>
+<span class="co">#&gt; <span style="color: #949494;">#   ³​child_pop, ⁴​parent_pop</span></span></code></pre>
 <p>As we mentioned above, there are three columns encoding spatial
 information: <code>location</code> and <code>parent_location</code>
 carry information about the location of the child and parent node
@@ -713,8 +710,7 @@ individuals:</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ANA_8  <span style="text-decoration: underline;">20</span>000 ANA  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ANA_9  <span style="text-decoration: underline;">19</span>000 ANA  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANA_10 <span style="text-decoration: underline;">18</span>000 ANA  </span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 14 more rows</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre>
+<span class="co">#&gt; <span style="color: #949494;"># … with 14 more rows</span></span></code></pre>
 <p>Can we see a hint of the spatial dynamics of Anatolians in the
 spatio-temporal distribution of ancestral node locations of one of the
 sampled individuals? Let’s pick the last individual and immediately plot
@@ -776,8 +772,7 @@ on the following subset of columns:</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>  (7140201 1312578, 6795742 1274583)      <span style="text-decoration: underline;">48</span>340       <span style="text-decoration: underline;">49</span>600</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> (7140201 1312578, 2119570 772520.6)      <span style="text-decoration: underline;">48</span>340       <span style="text-decoration: underline;">71</span>350</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  (6905379 1333523, 6795742 1274583)      <span style="text-decoration: underline;">49</span>180       <span style="text-decoration: underline;">49</span>600</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 16,452 more rows</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre>
+<span class="co">#&gt; <span style="color: #949494;"># … with 16,452 more rows</span></span></code></pre>
 <p>We can use standard <em>dplyr</em> table manipulation functions to
 compute the distances between connected notes and the times that
 separate them (i.e. branch lengths in the traditional phylogenetic

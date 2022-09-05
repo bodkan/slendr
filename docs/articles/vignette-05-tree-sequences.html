@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
       </span>
     </div>
 
@@ -350,8 +350,7 @@ doing this:</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">13</span>744 EUR       1 <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">14</span>774 EUR       1 <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">16</span>361 EUR       1 <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 30 more rows</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre>
+<span class="co">#&gt; <span style="color: #949494;"># … with 30 more rows</span></span></code></pre>
 <p>This samples a single ancient European individuals at randomly chosen
 times between 40 and 10 ky ago.</p>
 <p>One nice feature of the <code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> function is
@@ -388,11 +387,11 @@ downstream analysis.</p>
 <pre><code><span class="co">#&gt; --------------------------------------------------</span>
 <span class="co">#&gt; msprime command to be executed:</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpUji4lH/file16f314aed44bf_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpUji4lH/file16f314aed44bf_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpUji4lH/file16f3129955343.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpUji4lH/file16f31a8d6909 --verbose  </span>
+<span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp78g61X/file57e558d6b84b_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp78g61X/file57e558d6b84b_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp78g61X/file57e56f0a0572.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp78g61X/file57e57aebb851 --verbose  </span>
 <span class="co">#&gt; --------------------------------------------------</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Tree sequence was saved to:</span>
-<span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpUji4lH/file16f3129955343.trees </span>
+<span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp78g61X/file57e56f0a0572.trees </span>
 <span class="co">#&gt; Loading the tree-sequence file...</span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ts</span></code></pre></div>
@@ -479,7 +478,7 @@ to the tree-sequence file ourselves.</p>
 <span class="op">)</span>
 
 <span class="va">output_file</span></code></pre></div>
-<pre><code><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpUji4lH/file16f3157d541e1"</span></code></pre>
+<pre><code><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp78g61X/file57e5538c0ffd"</span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
@@ -934,8 +933,7 @@ function <code><a href="../reference/ts_samples.html">ts_samples()</a></code>:</
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_6 <span style="text-decoration: underline;">35</span>944 EUR  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_7 <span style="text-decoration: underline;">33</span>900 EUR  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_8 <span style="text-decoration: underline;">33</span>853 EUR  </span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 48 more rows</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre>
+<span class="co">#&gt; <span style="color: #949494;"># … with 48 more rows</span></span></code></pre>
 <p>That said, if you would like to run some statistics on nodes rather
 than on individuals, you can do it simply by using integer IDs instead
 of character names in each function’s interface.</p>

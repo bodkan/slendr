@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
       </span>
     </div>
 
@@ -218,7 +218,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpjytqCg/file1784523557bb4");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpx1Wvve/file5ce412c33418");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -284,8 +284,7 @@ also include spatial information—see below):</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> p1          8     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      4</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p1          9     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      4</span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 26,010 more rows, 1 more variable: pop_id &lt;int&gt;, and abbreviated</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   variable names ¹​remembered, ²​retained, ³​pedigree_id</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #949494;">#   variable names ¹​remembered, ²​retained, ³​pedigree_id</span></span></code></pre></div>
 <p>Moving on to tskit statistics, we can use the data table above to
 extract a list of nodes belonging to each population (this is what
 various tskit tree-sequence statistics operate on, and <em>slendr</em>
@@ -402,8 +401,7 @@ and analyze it with the slendr functionality:</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 0         <span style="color: #BB0000;">NA</span>       7     0          0 TRUE         0</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 0         <span style="color: #BB0000;">NA</span>       8     0          0 TRUE         0</span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 0         <span style="color: #BB0000;">NA</span>       9     0          0 TRUE         0</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 189 more rows</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #949494;"># … with 189 more rows</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="spatial-slim-non-slendr-tree-sequences">Spatial SLiM (non-slendr) tree sequences<a class="anchor" aria-label="anchor" href="#spatial-slim-non-slendr-tree-sequences"></a>
@@ -446,7 +444,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpjytqCg/file178454e9e0f1a");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpx1Wvve/file5ce472194819");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
@@ -496,8 +494,7 @@ spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</
 <span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p1          9     0       0 (0.9807475 0.04223008) TRUE    FALSE      TRUE   </span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 1,945 more rows, 4 more variables: alive &lt;lgl&gt;, pedigree_id &lt;dbl&gt;,</span></span>
 <span class="co">#&gt; <span style="color: #949494;">#   ind_id &lt;dbl&gt;, pop_id &lt;int&gt;, and abbreviated variable names ¹​time_tskit,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   ²​retained</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></code></pre></div>
+<span class="co">#&gt; <span style="color: #949494;">#   ²​retained</span></span></code></pre></div>
 <p>Because we get the tree sequence converted to the spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</em></a> data format, we
 can use standard geospatial packages to use any spatial data analysis
 methods that those packages provide.</p>

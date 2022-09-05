@@ -171,10 +171,11 @@ genetic models and simulating genomic data entirely from R. It has been
 originally conceived as a framework for simulating spatially-explicit
 genomic data on real geographic landscapes but it has grown to be much
 more than that.</p>
-<p>A detailed description of the <em>slendr</em> architecture and an
-extensive set of practical code examples can be found in our <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">preprint</a>
-on bioRxiv—if you’re curious about the software, please check out the
-paper!</p>
+<p>This page briefly summarizes <em>slendr’</em>s most important
+features. A a much detailed description of the <em>slendr</em>
+architecture and an extensive set of practical code examples can be
+found in our <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">preprint</a>
+on bioRxiv and on our <a href="https://www.slendr.net">website</a>.</p>
 <hr>
 </div>
 <div class="section level3">
@@ -253,28 +254,18 @@ session.</p>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p><em>slendr</em> is currently on its way to CRAN which means that you
-can’t (yet!) install it by simply calling
-<code>install.packages("slendr")</code>.</p>
-<p>If you would like to test the software, you will have to get its
-development version from GitHub via the <em>devtools</em> R package
-(<code>install.packages("devtools")</code>) by calling
-<code>devtools::install_github("bodkan/slendr")</code>.</p>
-<p>The main dependency of <em>slendr</em> is the R package <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</em></a><em>.</em> Under
-normal circumstances, installing <em>slendr</em> with <em>devtools</em>
-will fetch all the necessary dependencies (including <em>sf</em>) from
-the CRAN R package repository. However, should you run into any issues,
-take a look at <a href="https://www.slendr.net/articles/vignette-00-installation.html">our
-“Installation instructions” vignette</a> which describes the
-installation procedure in a bit more detail.</p>
+<p><em>slendr</em> is now available CRAN which means that you can
+install it simply by entering <code>install.packages("slendr")</code>
+into your R console.</p>
+<p>If you would like to test the latest features of the software
+(perhaps because you need some bug fixes), you can install it with
+<code>devtools::install_github("bodkan/slendr")</code> (note that this
+requires the R package <em>devtools</em>).</p>
 <hr>
-<p><strong>This software is still under development!</strong></p>
-<p>… but we have been making steady progress towards the first stable
-release which will happen as soon as we publish <em>slendr</em> on
-CRAN.</p>
-<p>If you would like to stay updated with the developments:</p>
+<p><strong>This software is under active development!</strong></p>
+<p>If you would like to stay updated:</p>
 <ol style="list-style-type: decimal">
-<li><p>Click on the “Watch” button on the project’s <a href="https://github.com/bodkan/slendr/" class="external-link">Github website</a>.</p></li>
+<li><p>Click on the “Watch” button on the project’s <a href="https://github.com/bodkan/slendr/" class="external-link">GitHub website</a>.</p></li>
 <li><p>Follow me on <a href="https://twitter.com/dr_bodkan" class="external-link">Twitter</a>
 where I will be posting progress updates.</p></li>
 <li><p>From time to time, take a look at the <a href="https://www.slendr.net/news/index.html">changelog</a> where I will
@@ -477,10 +468,14 @@ in step 2 above:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/explore_model.html">explore_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <p>The function has two modes:</p>
-<p>a) Plotting (and “playing”) spatial map dynamics:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Plotting (and “playing”) spatial map dynamics:</li>
+</ol>
 <p><img src="reference/figures/shiny_maps.jpg"></p>
-<p>b) Displaying the demographic history graph (splits and gene-flow
-events) embedded in the specified model:</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Displaying the demographic history graph (splits and gene-flow
+events) embedded in the specified model:</li>
+</ol>
 <p><img src="reference/figures/shiny_graph.jpg"></p>
 </div>
 <div class="section level4">
