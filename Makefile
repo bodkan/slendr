@@ -10,11 +10,12 @@ docs:
 	R -e 'pkgdown::build_reference()'
 	R -e 'pkgdown::build_reference_index()'
 	R -e 'pkgdown::build_news()'
-	git restore docs/reference/join.html
-	git restore docs/reference/msprime.html
-	git restore docs/reference/region.html
-	git restore docs/reference/slim.html
-	git restore docs/reference/world.html
+	#git restore docs/reference/join.html
+	#git restore docs/reference/msprime.html
+	#git restore docs/reference/region.html
+	#git restore docs/reference/slim.html
+	#git restore docs/reference/world.html
+	git restore docs/reference/expand_range-1.png
 
 website:
 	rm -rf docs/
@@ -26,12 +27,13 @@ website:
 	R -e 'pkgdown::build_site()'
 	git restore docs/CNAME
 	# discard useless updates of temporary paths, random seed values, etc.
-	git restore docs/pkgdown.yml
-	git restore docs/reference/join.html
-	git restore docs/reference/msprime.html
-	git restore docs/reference/region.html
-	git restore docs/reference/slim.html
-	git restore docs/reference/world.html
+	#git restore docs/pkgdown.yml
+	#git restore docs/reference/join.html
+	#git restore docs/reference/msprime.html
+	#git restore docs/reference/region.html
+	#git restore docs/reference/slim.html
+	#git restore docs/reference/world.html
+	git restore docs/reference/expand_range-1.png
 
 build: $(pkg)
 

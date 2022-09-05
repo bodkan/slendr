@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
   eval = eval_chunk
 )
 
-save_pdf <- FALSE # only save PDFs on a local machine
+record_snapshot <- TRUE # only save PDFs on a local machine
 ```
 
 ```{r}
@@ -89,7 +89,7 @@ f4ratio <- ts_f4ratio(
 
 ### Complementary SLiM run from the same model
 
-```{r, echo = FALSE, eval = eval_chunk}
+```{r, echo = FALSE, eval = eval_chunk && record_snapshot}
 system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex1"))
 ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex1.trees")
 ```
@@ -148,8 +148,8 @@ p_ex1 <- plot_grid(
 p_ex1
 ```
 
-```{r, include = FALSE, eval = eval_chunk && save_pdf}
-ggsave("/Users/mp/Documents/postdoc/slendr-paper/ex1.pdf", p_ex1, width = 9, height = 6, units = "in")
+```{r, include = FALSE, eval = eval_chunk && record_snapshot}
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex1.pdf", p_ex1, width = 9, height = 6, units = "in")
 ```
 
 ## Example 2 (Figure 3)
@@ -189,7 +189,7 @@ heterozygosity <- ts_samples(ts) %>%
 ```
 
 
-```{r, echo = FALSE, eval = eval_chunk}
+```{r, echo = FALSE, eval = eval_chunk && record_snapshot}
 system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex2"))
 ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex2.trees")
 ```
@@ -238,8 +238,8 @@ p_ex2 <- plot_grid(
 p_ex2
 ```
 
-```{r, include = FALSE, eval = eval_chunk && save_pdf}
-ggsave("/Users/mp/Documents/postdoc/slendr-paper/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
+```{r, include = FALSE, eval = eval_chunk && record_snapshot}
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
 ```
 
 ## Example 3 (Figure 4)
@@ -335,7 +335,7 @@ ts <- slim(
 )
 ```
 
-```{r, echo = FALSE, eval = eval_chunk}
+```{r, echo = FALSE, eval = eval_chunk && record_snapshot}
 system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex3"))
 ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex3.trees")
 ```
@@ -360,8 +360,8 @@ p_ex3 <- plot_grid(
 p_ex3
 ```
 
-```{r, include = FALSE, eval = eval_chunk && save_pdf}
-ggsave("/Users/mp/Documents/postdoc/slendr-paper/ex3.pdf", p_ex3, width = 9, height = 6, units = "in")
+```{r, include = FALSE, eval = eval_chunk && record_snapshot}
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex3.pdf", p_ex3, width = 9, height = 6, units = "in")
 ```
 
 <!-- ```{r} -->
@@ -423,7 +423,7 @@ edges <- ts_edges(tree)
 ancestors <- ts_ancestors(ts, "EUR_581")
 ```
 
-```{r, echo = FALSE, eval = eval_chunk}
+```{r, echo = FALSE, eval = eval_chunk && record_snapshot}
 ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex3_small.trees")
 ```
 
@@ -456,7 +456,15 @@ p_tree <- ggtree(tree, aes(color = pop, fill = pop)) %<+% df +
                      breaks = -c(120, 100, 80, 60, 40, 20, 0) * 1000)
 p_tree <- revts(p_tree)
 
-nodes$label <- ifelse(is.na(nodes$name), nodes$node_id, nodes$name)
+# nodes$label <- ifelse(is.na(nodes$name), nodes$node_id, nodes$name)
+nodes$label <- sapply(1:nrow(nodes), function(i) {
+  if (is.na(nodes[i, ]$name))
+    nodes[i, ]$node_id
+  else {
+    ind <- nodes[i, ]$name
+    paste(nodes[!is.na(nodes$name) & nodes$name == ind, ]$node_id, collapse = "&")
+  }
+})
 
 p_map <- ggplot() +
   geom_sf(data = map) +
@@ -465,18 +473,17 @@ p_map <- ggplot() +
           aes(color = pop, shape = pop), size = 5) +
   geom_sf_label(data = nodes[!nodes$sampled, ],
                 aes(label = node_id, fill = pop), size = 3) +
-  geom_sf_label(data = nodes[nodes$sampled & nodes$name != "EUR_581", ],
-                aes(label = label, fill = pop), size = 3, color = "white") +
-  geom_sf_label(data = nodes[nodes$sampled & nodes$name == "EUR_581", ],
+  geom_sf_label(data = nodes[nodes$sampled, ],
                 aes(label = label, fill = pop), size = 3,
-                fontface = "bold", color = "black") +
-  coord_sf(xlim = c(3047066.1, 8688656.9),
+                fontface = "bold", color = "white") +
+  coord_sf(xlim = c(3177066.1, 7188656.9),
            ylim = c(757021.7, 5202983.3), expand = 0) +
-  labs(x = "longitude", y = "latitude") +
   guides(fill = guide_legend("", override.aes = aes(label = ""))) +
   guides(color = "none", shape = "none") +
   theme_bw() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank())
 
 chrom_names <- stats::setNames(
   c("EUR_581 (node 10)", "EUR_581 (node 11)"),
@@ -511,6 +518,6 @@ p_ex4 <- plot_grid(
 p_ex4
 ```
 
-```{r, include = FALSE, eval = eval_chunk && save_pdf}
-ggsave("/Users/mp/Documents/postdoc/slendr-paper/ex4.pdf", p_ex4, width = 7, height = 9, units = "in")
+```{r, include = FALSE, eval = eval_chunk && record_snapshot}
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex4.pdf", p_ex4, width = 7, height = 9, units = "in")
 ```
