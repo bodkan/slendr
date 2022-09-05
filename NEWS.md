@@ -10,9 +10,9 @@
 
 - Relative paths are now expanded in `ts_save()` ([#9521dfb](https://github.com/bodkan/slendr/commit/9521dfb)).
 
-- _slendr_ models can now be optionally compiled without serialization to disk. This only works with the `msprime()` coalescent back end but will be much faster in cases where a huge number of simulations needs to be run because for non-serialized models, `msprime()` now calls the back end engine directly through the R-Python interface (rather than on the command line) and output tree sequences are not saved to disk, rather than passed through the Python-R interface directly in memory ([#6bfda57](https://github.com/bodkan/slendr/commit/6bfda57)).
+- _slendr_ models can now be optionally compiled without serialization to disk. This only works with the `msprime()` coalescent back end but will be much faster in cases where a huge number of simulations needs to be run because for non-serialized models, `msprime()` now calls the back end engine directly through the R-Python interface (rather than on the command line) and output tree sequences are not saved to disk, rather than passed through the Python-R interface directly in memory  (PR [#112](https://github.com/bodkan/slendr/pull/112)).
 
-- Deprecated argument `sampling = ` of the functions `slim()` and `msprime()` has now been permanently removed ([#6bfda57](https://github.com/bodkan/slendr/commit/6bfda57)).
+- Deprecated argument `sampling = ` of the functions `slim()` and `msprime()` has now been permanently removed in favour of the `samples =` argument ([#6bfda57](https://github.com/bodkan/slendr/commit/6bfda57)).
 
 # slendr 0.3.0
 
