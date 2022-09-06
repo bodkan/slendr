@@ -19,8 +19,7 @@ slim(
   verbose = FALSE,
   load = TRUE,
   locations = NULL,
-  slim_path = NULL,
-  sampling = NULL
+  slim_path = NULL
 )
 }
 \arguments{
