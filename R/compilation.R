@@ -340,7 +340,6 @@ read_model <- function(path) {
 #'   will be saved (most likely for use with \code{animate_model}).
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary (this is useful
 #'   if the \code{slim} binary is not on the \code{$PATH}).
-#' @param sampling Deprecated in favor of \code{samples}.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence})
