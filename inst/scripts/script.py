@@ -2,7 +2,7 @@
 # As such it is distributed under the same conditions and license as the
 # rest of the slendr R package codebase.
 #
-# The code can be used in two modes:
+# The code can be used by the R function `msprime()` in two modes:
 #  1. as a standard command-line script, using serialized slendr model data
 #  2. as a library called directly from R without serializing models first
 
@@ -135,7 +135,7 @@ def simulate(
   if debug:
       print(demography.debug())
   
-  logging.info("Running the simulation")
+  logging.info("Running the simulation and generating a tree sequence")
   
   ts = msprime.sim_ancestry(
       samples=sample_set,
@@ -145,6 +145,7 @@ def simulate(
       random_seed=seed
   )
   
+  # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
       "slendr": {
           "version": "__VERSION__",
@@ -236,23 +237,27 @@ if __name__ == "__main__":
   if os.path.exists(geneflows_path):
       geneflows = pandas.read_table(geneflows_path)
   
+  # read the total simulation length
   length = int(float(open(length_path, "r").readline().rstrip()))
   
+  # read the direction of the model ("forward" or "backward")
   direction = open(direction_path, "r").readline().rstrip()
   logging.info(f"Loaded model is specified in the {direction} direction")
   
+  # read the description of the model
   description = open(description_path, "r").readline().rstrip()
   logging.info(f"Model description: {description}")
-  
-  output_path = os.path.expanduser(args.output)
 
   if args.sampling_schedule:
       sampling_path = os.path.expanduser(args.sampling_schedule)
       samples = pandas.read_table(sampling_path)
-  
-  logging.info(f"Saving tree sequence output to {output_path}")
 
   ts = simulate(args.sequence_length, args.recombination_rate, args.seed,
                 populations, resizes, geneflows, length, direction, description,
                 samples, args.debug)
+  
+  output_path = os.path.expanduser(args.output)
+
+  logging.info(f"Saving tree sequence output to {output_path}")
+
   ts.dump(output_path)
