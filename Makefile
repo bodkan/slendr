@@ -19,7 +19,7 @@ docs:
 
 website:
 	rm -rf docs/
-	#R -e 'devtools::install(upgrade = "never")'
+	R -e 'devtools::install(upgrade = "never")'
 	R -e 'install.packages("slendr")'
 	R -e 'source("logo.R")'
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'

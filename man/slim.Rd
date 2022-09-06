@@ -19,8 +19,7 @@ slim(
   verbose = FALSE,
   load = TRUE,
   locations = NULL,
-  slim_path = NULL,
-  sampling = NULL
+  slim_path = NULL
 )
 }
 \arguments{
@@ -72,8 +71,6 @@ will be saved (most likely for use with \code{animate_model}).}
 
 \item{slim_path}{Optional way to specify path to an appropriate SLiM binary (this is useful
 if the \code{slim} binary is not on the \code{$PATH}).}
-
-\item{sampling}{Deprecated in favor of \code{samples}.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}

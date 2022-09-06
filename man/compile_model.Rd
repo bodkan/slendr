@@ -17,6 +17,7 @@ compile_model(
   force = FALSE,
   simulation_length = NULL,
   direction = NULL,
+  serialize = TRUE,
   slim_script = NULL,
   description = "",
   sim_length = NULL
@@ -57,6 +58,10 @@ default run to "the present time")}
 
 \item{direction}{Intended direction of time. Under normal circumstances this
 parameter is inferred from the model and does not need to be set manually.}
+
+\item{serialize}{Should model files be serialized to disk? If not, only an
+R model object will be returned but no files will be created. This speeds
+up simulation with msprime but prevents using the SLiM back end.}
 
 \item{slim_script}{Path to a SLiM script to be used for executing the model
 (by default, a bundled backend script will be used). If \code{NULL}, the

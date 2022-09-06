@@ -28,6 +28,9 @@
 #'   default run to "the present time")
 #' @param direction Intended direction of time. Under normal circumstances this
 #'   parameter is inferred from the model and does not need to be set manually.
+#' @param serialize Should model files be serialized to disk? If not, only an
+#'   R model object will be returned but no files will be created. This speeds
+#'   up simulation with msprime but prevents using the SLiM back end.
 #' @param slim_script Path to a SLiM script to be used for executing the model
 #'   (by default, a bundled backend script will be used). If \code{NULL}, the
 #'   SLiM script bundled with slendr will be used.
@@ -50,6 +53,7 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
                           competition = NULL, mating = NULL, dispersal = NULL,
                           gene_flow = list(), overwrite = FALSE, force = FALSE,
                           simulation_length = NULL, direction = NULL,
+                          serialize = TRUE,
                           slim_script = NULL, description = "", sim_length = NULL) {
   if (is.null(simulation_length) && !is.null(sim_length)) {
     warning("Argument `sim_length` will soon be deprecated in favor of `simulation_length`.", call. = FALSE)
@@ -58,14 +62,19 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
 
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
-  if (is.null(path)) path <- tempfile()
-
   if (is.null(slim_script))
     slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
   map <- get_map(populations[[1]])
   if (!is.null(map) && is.null(resolution))
     stop("A map resolution must be specified for spatial models", call. = FALSE)
+
+  if (!serialize && is.null(path) && inherits(map, "slendr_map")) {
+    stop("Spatial models must be serialized to disk for SLiM to simulate data from",
+         call. = FALSE)
+  }
+  if (serialize && is.null(path))
+    path <- tempfile()
 
   # make sure that all parents are present
   pop_names <- purrr::map_chr(populations, ~ .x$pop[1])
@@ -83,29 +92,31 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
     stop("All populations must have unique names", call. = FALSE)
 
   # prepare the model output directory
-  if (dir.exists(path)) {
-    if (!overwrite)
-      stop("Directory '", path, "' already exists. Either delete it\nmanually ",
-           "or set 'overwrite = TRUE' to delete it from R.", call. = FALSE)
-    else {
-      if (interactive() && !force) {
-        answer <- utils::menu(c("Yes", "No"),
-          title = paste0("Are you ABSOLUTELY SURE you want to delete '", path,
-                         "'?\nThere is no going back.")
-        )
-        force <- answer == 1
+  if (serialize) {
+    if (dir.exists(path)) {
+      if (!overwrite)
+        stop("Directory '", path, "' already exists. Either delete it\nmanually ",
+             "or set 'overwrite = TRUE' to delete it from R.", call. = FALSE)
+      else {
+        if (interactive() && !force) {
+          answer <- utils::menu(c("Yes", "No"),
+            title = paste0("Are you ABSOLUTELY SURE you want to delete '", path,
+                           "'?\nThere is no going back.")
+          )
+          force <- answer == 1
+        }
+        if (force)
+          unlink(path, recursive = TRUE)
+        else
+          stop("Compilation aborted because the specified model path directory\ncould ",
+               "not have been created. If you're running this in a non-interactive\n",
+               "mode in a script and want to overwrite an already existing model\n",
+               "directory, you must set `force = TRUE`.", call. = FALSE)
       }
-      if (force)
-        unlink(path, recursive = TRUE)
-      else
-        stop("Compilation aborted because the specified model path directory\ncould ",
-             "not have been created. If you're running this in a non-interactive\n",
-             "mode in a script and want to overwrite an already existing model\n",
-             "directory, you must set `force = TRUE`.", call. = FALSE)
-    }
 
+    }
+    dir.create(path)
   }
-  dir.create(path)
 
   if (is.data.frame(gene_flow)) gene_flow <- list(gene_flow)
 
@@ -163,11 +174,14 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   simulation_length <- if (is.null(simulation_length)) end_time else simulation_length
 
-  checksums <- write_model(
-    path, populations, admix_table, map_table, split_table, resize_table,
-    dispersal_table, generation_time, resolution, simulation_length, time_dir, slim_script,
-    description, map
-  )
+  if (serialize)
+    checksums <- write_model(
+      path, populations, admix_table, map_table, split_table, resize_table,
+      dispersal_table, generation_time, resolution, simulation_length, time_dir, slim_script,
+      description, map
+    )
+  else
+    checksums <- NULL
 
   names(populations) <- pop_names
 
@@ -177,6 +191,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     world = map,
     populations = populations,
     splits = split_table,
+    resizes = resize_table,
     geneflow = admix_table,
     maps = return_maps,
     dispersals = dispersal_table,
@@ -185,6 +200,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     length = round(simulation_length / generation_time),
     orig_length = simulation_length,
     direction = time_dir,
+    description = description,
     checksums = checksums
   )
   class(result) <- set_class(result, "model")
@@ -219,6 +235,7 @@ read_model <- function(path) {
   # for running the backend script using the run() function
   path_populations <- file.path(path, "ranges.rds")
   path_splits <- file.path(path, "populations.tsv")
+  path_resizes <- file.path(path, "resizes.tsv")
   path_geneflow <- file.path(path, "geneflow.tsv")
   path_maps <- file.path(path, "maps.tsv")
   path_generation_time <- file.path(path, "generation_time.txt")
@@ -226,6 +243,7 @@ read_model <- function(path) {
   path_length <- file.path(path, "length.txt")
   path_orig_length <- file.path(path, "orig_length.txt")
   path_direction <- file.path(path, "direction.txt")
+  path_description <- file.path(path, "description.txt")
 
   if (!dir.exists(path))
     stop(sprintf("Model directory '%s' does not exist", path), call. = FALSE)
@@ -237,8 +255,13 @@ read_model <- function(path) {
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
   length <- as.integer(scan(path_length, what = numeric(), quiet = TRUE))
   orig_length <- as.integer(scan(path_orig_length, what = numeric(), quiet = TRUE))
+  description <- scan(path_description, what = character(), quiet = TRUE)
 
   split_table <- utils::read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
+  resize_table <- NULL
+  if (file.exists(path_resizes)) {
+    resize_table <- utils::read.table(path_resizes, header = TRUE, stringsAsFactors = FALSE)
+  }
 
   admix_table <- NULL
   if (file.exists(path_geneflow)) {
@@ -263,6 +286,7 @@ read_model <- function(path) {
     world = world,
     populations = populations,
     splits = split_table,
+    resizes = resize_table,
     geneflow = admix_table,
     maps = maps,
     generation_time = generation_time,
@@ -316,7 +340,6 @@ read_model <- function(path) {
 #'   will be saved (most likely for use with \code{animate_model}).
 #' @param slim_path Optional way to specify path to an appropriate SLiM binary (this is useful
 #'   if the \code{slim} binary is not on the \code{$PATH}).
-#' @param sampling Deprecated in favor of \code{samples}.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence})
@@ -360,9 +383,12 @@ slim <- function(
   model, sequence_length, recombination_rate, samples = NULL, output = NULL,
   burnin = 0, max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
   method = c("batch", "gui"), random_seed = NULL, verbose = FALSE, load = TRUE,
-  locations = NULL, slim_path = NULL, sampling = NULL
+  locations = NULL, slim_path = NULL
 ) {
   method <- match.arg(method)
+
+  if (is.null(model$path))
+    stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
 
   if (is.null(output) & !load)
     warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
@@ -382,11 +408,6 @@ slim <- function(
 
   if (!is.numeric(recombination_rate) | recombination_rate < 0)
     stop("Recombination rate must be a numeric value", call. = FALSE)
-
-  if (!is.null(sampling) && is.null(samples)) {
-    warning("Argument `sampling` will soon be deprecated in favor of `samples`.", call. = FALSE)
-    samples <- sampling
-  }
 
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
@@ -529,7 +550,6 @@ slim <- function(
 #'   file is written to a custom location to be loaded at a later point.
 #' @param verbose Write the output log to the console (default \code{FALSE})?
 #' @param debug Write msprime's debug log to the console (default \code{FALSE})?
-#' @param sampling Deprecated in favor of \code{samples}.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence})
@@ -570,13 +590,45 @@ slim <- function(
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
                     output = NULL, random_seed = NULL,
-                    load = TRUE, verbose = FALSE, debug = FALSE, sampling = NULL) {
+                    load = TRUE, verbose = FALSE, debug = FALSE) {
   if (sum(sapply(model$populations, attr, "parent") == "ancestor") > 1)
     stop("Multiple ancestral populations without a common ancestor would lead to\n",
          "an infinitely deep history without coalescence. Please make sure that all\n",
          "populations trace their ancestry to a single ancestral population.\n",
          "(This restriction only applies to coalescent simulations with msprime().)",
          call. = FALSE)
+
+  if (!is.null(samples)) {
+    samples <- process_sampling(samples, model, verbose)
+    if (!is.null(model$path)) {
+      sampling_path <- tempfile()
+      readr::write_tsv(samples, sampling_path)
+    }
+    sampling <- paste("--sampling-schedule", sampling_path)
+  } else {
+    samples <- NULL
+    sampling <- ""
+  }
+
+  # call msprime back-end code directly for non-serialized models
+  if (is.null(model$path)) {
+    script <- reticulate::import_from_path("script", path = system.file("scripts", package = "slendr"))
+    ts_msprime <- script$simulate(
+      sequence_length = sequence_length,
+      recombination_rate = recombination_rate,
+      seed = random_seed,
+      populations = reticulate::r_to_py(model$splits),
+      resizes = reticulate::r_to_py(model$resizes),
+      geneflows = reticulate::r_to_py(model$geneflow),
+      length = as.integer(model$length),
+      direction = model$direction,
+      description = model$description,
+      samples = reticulate::r_to_py(samples),
+      debug = debug
+    )
+    ts <- ts_load(ts_msprime, model = model)
+    return(ts)
+  }
 
   if (is.null(output) & !load)
     warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
@@ -594,25 +646,12 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   if (!is.numeric(recombination_rate) | recombination_rate < 0)
     stop("Recombination rate must be a numeric value", call. = FALSE)
 
-  if (!is.null(sampling) && is.null(samples)) {
-    warning("Argument `sampling` will soon be deprecated in favor of `samples`.", call. = FALSE)
-    samples <- sampling
-  }
-
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
                                col_types = "cc")
   verify_checksums(file.path(model_dir, checksums$file), checksums$hash)
 
   script_path <- path.expand(file.path(model_dir, "script.py"))
-
-  if (!is.null(samples)) {
-    sampling_path <- tempfile()
-    sampling_df <- process_sampling(samples, model, verbose)
-    readr::write_tsv(sampling_df, sampling_path)
-    sampling <- paste("--sampling-schedule", sampling_path)
-  } else
-    sampling <- ""
 
   msprime_command <- sprintf(
     "%s %s %s --model %s --output %s --sequence-length %d --recombination-rate %s %s %s %s",

@@ -88,7 +88,10 @@ print.slendr_model <- function(x, ...) {
   } else
     cat("non-spatial\n\n")
 
-  cat("configuration files in:", normalizePath(x$path), "\n")
+  if (is.null(x$path))
+    cat("non-serialized slendr model\n")
+  else
+    cat("configuration files in:", normalizePath(x$path), "\n")
 }
 
 

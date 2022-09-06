@@ -135,6 +135,17 @@ tskit is now replaced with the more R-like <code>NA</code> in various
 tree-sequence tables (annotated by <em>slendr</em> or original through
 tskit itself) (<a href="https://github.com/bodkan/slendr/commit/2f5fc32" class="external-link">#2f5fc32</a>).</p></li>
 <li><p>Relative paths are now expanded in <code><a href="../reference/ts_save.html">ts_save()</a></code> (<a href="https://github.com/bodkan/slendr/commit/9521dfb" class="external-link">#9521dfb</a>).</p></li>
+<li><p><em>slendr</em> models can now be optionally compiled without
+serialization to disk. This only works with the <code><a href="../reference/msprime.html">msprime()</a></code>
+coalescent back end but will be much faster in cases where a huge number
+of simulations needs to be run because for non-serialized models,
+<code><a href="../reference/msprime.html">msprime()</a></code> now calls the back end engine directly through
+the R-Python interface (rather than on the command line) and output tree
+sequences are not saved to disk, rather than passed through the Python-R
+interface directly in memory (PR <a href="https://github.com/bodkan/slendr/pull/112" class="external-link">#112</a>).</p></li>
+<li><p>Deprecated argument <code>sampling =</code> of the functions
+<code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> has now been permanently
+removed in favour of the <code>samples =</code> argument (<a href="https://github.com/bodkan/slendr/commit/6bfda57" class="external-link">#6bfda57</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.0" id="slendr-030">slendr 0.3.0<small>2022-08-19</small><a class="anchor" aria-label="anchor" href="#slendr-030"></a></h2>

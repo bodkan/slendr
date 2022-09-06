@@ -12,7 +12,7 @@ test_that("read_model() restores a single-map model object", {
 
   # make sure that all components of the model list object before and after
   # serialization are equal
-  components <- c("checksums", "splits", "geneflow", "maps", "direction", "length", "generation_time", "resolution", "world")
+  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "direction", "length", "generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
   expect_equal(names(model1$populations), names(model1$populations))
@@ -47,7 +47,7 @@ test_that("read_model() restores a complex model object", {
   )
   model2 <- read_model(model1$path)
 
-  components <- c("checksums", "splits", "geneflow", "maps", "length", "orig_length", "direction", "generation_time", "resolution", "world")
+  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "length", "orig_length", "direction", "generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
   expect_equal(names(model1$populations), names(model1$populations))
@@ -83,7 +83,7 @@ test_that("read_model() restores a single-map model object (nonspatial)", {
 
   # make sure that all components of the model list object before and after
   # serialization are equal
-  components <- c("checksums", "splits", "geneflow", "maps", "direction", "length", "generation_time", "resolution", "world")
+  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "direction", "length", "generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(unlist(model1$populations[[i]]) == unlist(model2$populations[[i]])))))
 })
@@ -110,7 +110,7 @@ test_that("read_model() restores a complex model object (nonspatial)", {
   )
   model2 <- read_model(model1$path)
 
-  components <- c("checksums", "splits", "geneflow", "maps", "length", "orig_length", "direction", "generation_time", "resolution", "world")
+  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "length", "orig_length", "direction", "generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(unlist(model1$populations[[i]]) == unlist(model2$populations[[i]])))))
   expect_equal(names(model1$populations), names(model1$populations))

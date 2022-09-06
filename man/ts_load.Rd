@@ -21,7 +21,7 @@ ts_load(
 }
 \arguments{
 \item{file}{A path to the tree-sequence file (either originating from a
-slendr model or a standard non-slendr tree sequence)}
+slendr model or a standard non-slendr tree sequence).}
 
 \item{model}{Optional \code{slendr_model} object which produced the
 tree-sequence \code{file}. Used for adding various annotation data and
