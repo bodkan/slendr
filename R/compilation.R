@@ -591,7 +591,13 @@ slim <- function(
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
                     output = NULL, random_seed = NULL,
                     load = TRUE, verbose = FALSE, debug = FALSE) {
-  if (sum(sapply(model$populations, attr, "parent") == "ancestor") > 1)
+  if (sequence_length %% 1 != 0 | sequence_length <= 0)
+    stop("Sequence length must be a non-negative integer number", call. = FALSE)
+
+  if (!is.numeric(recombination_rate) | recombination_rate < 0)
+    stop("Recombination rate must be a numeric value", call. = FALSE)
+
+  if (sum(model$splits$parent == "ancestor") > 1)
     stop("Multiple ancestral populations without a common ancestor would lead to\n",
          "an infinitely deep history without coalescence. Please make sure that all\n",
          "populations trace their ancestry to a single ancestral population.\n",
@@ -640,11 +646,6 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
 
-  if (sequence_length %% 1 != 0 | sequence_length <= 0)
-    stop("Sequence length must be a non-negative integer number", call. = FALSE)
-
-  if (!is.numeric(recombination_rate) | recombination_rate < 0)
-    stop("Recombination rate must be a numeric value", call. = FALSE)
 
   # verify checksums of serialized model configuration files
   checksums <- readr::read_tsv(file.path(model_dir, "checksums.tsv"), progress = FALSE,
