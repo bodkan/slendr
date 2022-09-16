@@ -1677,7 +1677,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
     as.data.frame(t(matrix(set)), stringsAsFactors = FALSE)
   }) %>%
     dplyr::as_tibble() %>%
-    dplyr::mutate(stat = values)
+    dplyr::mutate(stat = as.numeric(values))
 
   result
 }
@@ -1794,7 +1794,7 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
     set_names <- names(sample_sets)
 
   result <- dplyr::tibble(set = set_names)
-  result[[stat]] <- values
+  result[[stat]] <- as.numeric(values)
   result
 }
 
