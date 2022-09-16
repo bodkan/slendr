@@ -609,8 +609,8 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     if (!is.null(model$path)) {
       sampling_path <- tempfile()
       readr::write_tsv(samples, sampling_path)
+      sampling <- paste("--sampling-schedule", sampling_path)
     }
-    sampling <- paste("--sampling-schedule", sampling_path)
   } else
     sampling <- ""
 
@@ -618,22 +618,17 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   if (is.null(model$path)) {
     script <- reticulate::import_from_path("script", path = system.file("scripts", package = "slendr"))
 
-    splits <- model$splits
-    samples <- if (is.null(samples)) data.frame() else samples
-    resizes <- if (is.null(model$resizes)) data.frame() else model$resizes
-    geneflows <- if (is.null(model$geneflows)) data.frame() else model$geneflows
-
     ts_msprime <- script$simulate(
       sequence_length = sequence_length,
       recombination_rate = recombination_rate,
       seed = random_seed,
-      populations = splits,
-      resizes = resizes,
-      geneflows = geneflows,
+      populations = reticulate::r_to_py(model$splits),
+      resizes = reticulate::r_to_py(model$resizes),
+      geneflows = reticulate::r_to_py(model$geneflow),
       length = as.integer(model$length),
       direction = model$direction,
       description = model$description,
-      samples = samples,
+      samples = reticulate::r_to_py(samples),
       debug = debug
     )
     ts <- ts_load(ts_msprime, model = model)
