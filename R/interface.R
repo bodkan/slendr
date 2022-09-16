@@ -1135,7 +1135,7 @@ area <- function(x) {
 #'   model, times = c(20000, 10000, 5000, 0),
 #'   list(afr, 10), list(eur, 100)
 #' )
-#' 
+#'
 #' # the result of `schedule_sampling` is a simple data frame (note that the locations
 #' # of sampling locations have `NA` values because the model is non-spatial)
 #' schedule
@@ -1282,6 +1282,13 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
           "Do you wish to proceed with the automated Python environment setup?")
         )
     if (answer == 2) {
+      message("============================================================")
+      message("Installing slendr's Python environment. Please wait until")
+      message("the installation procedure finishes. Do NOT interrupt the")
+      message("process while the installation is still running.")
+      message("============================================================\n")
+      Sys.sleep(10)
+
       if (!dir.exists(reticulate::miniconda_path()))
         reticulate::install_miniconda()
 
