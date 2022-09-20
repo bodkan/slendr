@@ -618,13 +618,17 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   if (is.null(model$path)) {
     script <- reticulate::import_from_path("script", path = system.file("scripts", package = "slendr"))
 
+    resizes <- if (is.null(model$resizes)) data.frame() else model$resizes
+    geneflows <- if (is.null(model$geneflow)) data.frame() else model$geneflow
+    if (is.null(samples)) samples <- data.frame()
+
     ts_msprime <- script$simulate(
       sequence_length = sequence_length,
       recombination_rate = recombination_rate,
       seed = random_seed,
       populations = reticulate::r_to_py(model$splits),
-      resizes = reticulate::r_to_py(model$resizes),
-      geneflows = reticulate::r_to_py(model$geneflow),
+      resizes = reticulate::r_to_py(resizes),
+      geneflows = reticulate::r_to_py(geneflows),
       length = as.integer(model$length),
       direction = model$direction,
       description = model$description,
