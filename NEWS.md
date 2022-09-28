@@ -16,7 +16,7 @@
 
 - Avoid the unnecessary `array` type of _tskit_ results returned via reticulate. Numeric vectors (columns of data frames with numerical results) obtained in this way are simple R numeric vector ([#c690334](https://github.com/bodkan/slendr/commit/c690334)).
 
-- One-way and multi-way statistics results are now returned as simple numerical vectors. Previously, results were returned as a type `array` despite "looking" as vectors (this is how values are returned to R from the reticulate-Python layer), which caused unnecessary annoyances and type-conversions on the R side of things and was not even intended ([#e1d178e](https://github.com/bodkan/slendr/commit/e1d178e)).
+- One-way and multi-way statistics results are now returned as simple numerical vectors. Previously, results were returned as a type `array` despite "looking" as vectors (this is how values are returned to R from the reticulate-Python layer), which caused unnecessary annoyances and type-conversions on the R side of things and was not even intended ([#403df3b](https://github.com/bodkan/slendr/commit/403df3b)).
 
 # slendr 0.3.0
 
