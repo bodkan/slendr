@@ -16,6 +16,8 @@
 
 - Avoid the unnecessary `array` type of _tskit_ results returned via reticulate. Numeric vectors (columns of data frames with numerical results) obtained in this way are simple R numeric vector ([#c690334](https://github.com/bodkan/slendr/commit/c690334)).
 
+- One-way and multi-way statistics results are now returned as simple numerical vectors. Previously, results were returned as a type `array` despite "looking" as vectors (this is how values are returned to R from the reticulate-Python layer), which caused unnecessary annoyances and type-conversions on the R side of things and was not even intended ([#e1d178e](https://github.com/bodkan/slendr/commit/e1d178e)).
+
 # slendr 0.3.0
 
 -   SLiM 4.0 is now required for running simulations with the `slim()` engine. If you want to run _slendr_ simulations with SLiM (spatial or non-spatial), you will need to upgrade you SLiM installation. SLiM 3.7.1 version is no longer supported as the upcoming new _slendr_ spatial features will depend on SLiM 4.x and maintaining two functionally identical yet syntactically different back ends is not feasible (PR [#104](https://github.com/bodkan/slendr/pull/104)).

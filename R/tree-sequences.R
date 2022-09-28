@@ -1667,6 +1667,8 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
   if (is.matrix(values))
     values <- split(values, col(values))
 
+  if (!is.list(values)) values <- as.numeric(values) # convert 1D arrays to simple vectors
+
   if (is.null(names(sample_sets)))
     set_names <- paste0("set_", seq_len(n_sets))
   else
@@ -1677,7 +1679,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
     as.data.frame(t(matrix(set)), stringsAsFactors = FALSE)
   }) %>%
     dplyr::as_tibble() %>%
-    dplyr::mutate(stat = as.numeric(values))
+    dplyr::mutate(stat = values)
 
   result
 }
@@ -1786,6 +1788,8 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
   if (is.matrix(values))
     values <- split(values, col(values))
 
+  if (!is.list(values)) values <- as.numeric(values) # convert 1D arrays to simple vectors
+
   if (all(sapply(sample_sets, length) == 1))
     set_names <- unlist(sample_sets)
   else if (is.null(names(sample_sets)))
@@ -1794,7 +1798,7 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
     set_names <- names(sample_sets)
 
   result <- dplyr::tibble(set = set_names)
-  result[[stat]] <- as.numeric(values)
+  result[[stat]] <- values
   result
 }
 
