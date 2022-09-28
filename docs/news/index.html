@@ -146,6 +146,16 @@ interface directly in memory (PR <a href="https://github.com/bodkan/slendr/pull/
 <li><p>Deprecated argument <code>sampling =</code> of the functions
 <code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> has now been permanently
 removed in favour of the <code>samples =</code> argument (<a href="https://github.com/bodkan/slendr/commit/6bfda57" class="external-link">#6bfda57</a>).</p></li>
+<li><p>Avoid the unnecessary <code>array</code> type of <em>tskit</em>
+results returned via reticulate. Numeric vectors (columns of data frames
+with numerical results) obtained in this way are simple R numeric vector
+(<a href="https://github.com/bodkan/slendr/commit/c690334" class="external-link">#c690334</a>).</p></li>
+<li><p>One-way and multi-way statistics results are now returned as
+simple numerical vectors. Previously, results were returned as a type
+<code>array</code> despite “looking” as vectors (this is how values are
+returned to R from the reticulate-Python layer), which caused
+unnecessary annoyances and type-conversions on the R side of things and
+was not even intended (<a href="https://github.com/bodkan/slendr/commit/e1d178e" class="external-link">#e1d178e</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.0" id="slendr-030">slendr 0.3.0<small>2022-08-19</small><a class="anchor" aria-label="anchor" href="#slendr-030"></a></h2>
