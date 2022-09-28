@@ -1,5 +1,7 @@
 # slendr (development version)
 
+# slendr 0.4.0
+
 - The `msprime()` function now makes sure that a given _slendr_ model can fully coalesce to a single common ancestor population. Previously, having multiple ancestral populations created with `parent = "ancestor"` would cause an infinite simulation when plugged into the `msprime()` backend. ([#095b124](https://github.com/bodkan/slendr/commit/095b124))
 
 - The initial size of a population which emerges from a split from another population is now printed in a population history summary in the R console. ([#6525bf3](https://github.com/bodkan/slendr/commit/6525bf3))
