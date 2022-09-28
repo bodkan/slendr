@@ -2018,6 +2018,8 @@ get_node_ids <- function(ts, x) {
   if (is.null(x)) {
     ids <- ts_nodes(ts) %>% .[.$sampled, ]$node_id
   } else if (is.character(x)) {
+    if (length(intersect(x, ts_samples(ts)$name)) != length(x))
+      stop("Not all individual names are among those recorded in the tree sequence", call. = FALSE)
     ids <- ts_nodes(ts) %>% dplyr::filter(name %in% x) %>% .$node_id
   } else if (is.numeric(x)) {
     ids <- as.integer(x)

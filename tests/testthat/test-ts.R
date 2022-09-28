@@ -704,3 +704,9 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
   expect_equal(sdata5$time, mdata5$time)
   expect_equal(sdata6$time, mdata6$time)
 })
+
+test_that("all names of individuals must be present in the tree sequence", {
+  ts <- ts_load(file = msprime_ts, model = model)
+  expect_error(ts_diversity(ts, c("p1_1", "p2_2")), "Not all individual names")
+  expect_s3_class(ts_diversity(ts, c("pop1_1", "pop2_2")), "data.frame")
+})
