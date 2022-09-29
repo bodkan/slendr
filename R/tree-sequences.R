@@ -1997,6 +1997,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 #' @importFrom ape as.phylo
 #' @export as.phylo.slendr_phylo
 #' @export
+#' @keywords internal
 as.phylo.slendr_phylo <- function(x) { class(x) <- "phylo"; x }
 
 

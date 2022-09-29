@@ -18,3 +18,4 @@ This function servers as a workaround around a ggtree error:
     no applicable method for 'as.phylo' applied to an object of class
     "c('phylo', 'slendr_phylo')"}
 }
+\keyword{internal}

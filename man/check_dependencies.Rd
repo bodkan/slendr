@@ -18,3 +18,4 @@ particular software dependency is missing for an example to run.
 \description{
 Check that all dependencies are available for slendr examples
 }
+\keyword{internal}

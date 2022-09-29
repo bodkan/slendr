@@ -7,6 +7,7 @@
 #'   particular software dependency is missing for an example to run.
 #'
 #' @export
+#' @keywords internal
 check_dependencies <- function(python = FALSE, slim = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
   missing_slim <- if (slim) !all(Sys.which("slim") != "") else FALSE
