@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -113,46 +113,53 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">join</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, name <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">join</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, name <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>Object of the class <code>slendr</code></p></dd>
+
+
 <dt>y</dt>
 <dd><p>Object of the class <code>slendr</code></p></dd>
+
+
 <dt>name</dt>
 <dd><p>Optional name of the resulting geographic region. If missing,
 name will be constructed from the function arguments.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Object of the class <code>slendr_region</code> which encodes a standard
+    
+
+<p>Object of the class <code>slendr_region</code> which encodes a standard
 spatial object of the class <code>sf</code> with several additional attributes
 (most importantly a corresponding <code>slendr_map</code> object, if applicable).</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># create a blank abstract world 1000x1000 distance units in size</span></span>
-<span class="r-in"><span class="va">blank_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># it is possible to construct custom landscapes (islands, corridors, etc.)</span></span>
-<span class="r-in"><span class="va">island1</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"island1"</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">40</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">island2</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"island2"</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">island3</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"island3"</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">80</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">archipelago</span> <span class="op">&lt;-</span> <span class="va">island1</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">join</span><span class="op">(</span><span class="va">island2</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">join</span><span class="op">(</span><span class="va">island3</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">custom_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="va">archipelago</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># real Earth landscapes can be defined using freely-available Natural Earth</span></span>
-<span class="r-in"><span class="co"># project data and with the possibility to specify an appropriate Coordinate</span></span>
-<span class="r-in"><span class="co"># Reference System, such as this example of a map of Europe</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">real_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">40</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">60</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"EPSG:3035"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># create a blank abstract world 1000x1000 distance units in size</span></span></span>
+<span class="r-in"><span><span class="va">blank_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># it is possible to construct custom landscapes (islands, corridors, etc.)</span></span></span>
+<span class="r-in"><span><span class="va">island1</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"island1"</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">40</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">island2</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"island2"</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">80</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">island3</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"island3"</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">80</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">archipelago</span> <span class="op">&lt;-</span> <span class="va">island1</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">join</span><span class="op">(</span><span class="va">island2</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">join</span><span class="op">(</span><span class="va">island3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">custom_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="va">archipelago</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># real Earth landscapes can be defined using freely-available Natural Earth</span></span></span>
+<span class="r-in"><span><span class="co"># project data and with the possibility to specify an appropriate Coordinate</span></span></span>
+<span class="r-in"><span><span class="co"># Reference System, such as this example of a map of Europe</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">real_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">40</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">60</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"EPSG:3035"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> OGR data source with driver: ESRI Shapefile </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Source: "/private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/Rtmp27FGtF/naturalearth", layer: "ne_110m_land"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Source: "/private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/Rtmp83E5fX/naturalearth", layer: "ne_110m_land"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> with 127 features</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> It has 3 fields</span>
 </code></pre></div>
@@ -169,8 +176,7 @@ spatial object of the class <code>sf</code> with several additional attributes
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -18,7 +18,7 @@ locations on a landscape"><meta property="og:image" content="https://www.slendr.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -115,33 +115,44 @@ locations on a landscape</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">schedule_sampling</span><span class="op">(</span><span class="va">model</span>, <span class="va">times</span>, <span class="va">...</span>, locations <span class="op">=</span> <span class="cn">NULL</span>, strict <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">schedule_sampling</span><span class="op">(</span><span class="va">model</span>, <span class="va">times</span>, <span class="va">...</span>, locations <span class="op">=</span> <span class="cn">NULL</span>, strict <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>model</dt>
 <dd><p>Object of the class <code>slendr_model</code></p></dd>
+
+
 <dt>times</dt>
 <dd><p>Integer vector of times (in model time units) at which to
 schedule remembering of individuals in the tree-sequence</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Lists of two elements (<code>slendr_pop</code> population object-&lt;number
 of individuals to sample), representing from which populations should how
 many individuals be remembered at times given by <code>times</code></p></dd>
+
+
 <dt>locations</dt>
 <dd><p>List of vector pairs, defining two-dimensional coordinates
 of locations at which the closest number of individuals from given
 populations should be sampled. If <code>NULL</code> (the default), individuals
 will be sampled randomly throughout their spatial boundary.</p></dd>
+
+
 <dt>strict</dt>
 <dd><p>Should any occurence of a population not being present at a
 given time result in an error? Default is <code>FALSE</code>, meaning that
 invalid sampling times for any populations will be quietly ignored.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Data frame with three columns: time of sampling, population to sample
+    
+
+<p>Data frame with three columns: time of sampling, population to sample
 from, how many individuals to sample</p>
     </div>
     <div id="details">
@@ -159,28 +170,28 @@ time.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load an example model with an already simulated tree sequence</span></span>
-<span class="r-in"><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># afr and eur objects would normally be created before slendr model compilation,</span></span>
-<span class="r-in"><span class="co"># but here we take them out of the model object already compiled for this</span></span>
-<span class="r-in"><span class="co"># example (in a standard slendr simulation pipeline, this wouldn't be necessary)</span></span>
-<span class="r-in"><span class="va">afr</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"AFR"</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">eur</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"EUR"</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># schedule the recording of 10 African and 100 European individuals from a</span></span>
-<span class="r-in"><span class="co"># given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)</span></span>
-<span class="r-in"><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu">schedule_sampling</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20000</span>, <span class="fl">10000</span>, <span class="fl">5000</span>, <span class="fl">0</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># the result of `schedule_sampling` is a simple data frame (note that the locations</span></span>
-<span class="r-in"><span class="co"># of sampling locations have `NA` values because the model is non-spatial)</span></span>
-<span class="r-in"><span class="va">schedule</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
+<span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># afr and eur objects would normally be created before slendr model compilation,</span></span></span>
+<span class="r-in"><span><span class="co"># but here we take them out of the model object already compiled for this</span></span></span>
+<span class="r-in"><span><span class="co"># example (in a standard slendr simulation pipeline, this wouldn't be necessary)</span></span></span>
+<span class="r-in"><span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"AFR"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">eur</span> <span class="op">&lt;-</span> <span class="va">model</span><span class="op">$</span><span class="va">populations</span><span class="op">[[</span><span class="st">"EUR"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># schedule the recording of 10 African and 100 European individuals from a</span></span></span>
+<span class="r-in"><span><span class="co"># given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)</span></span></span>
+<span class="r-in"><span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu">schedule_sampling</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20000</span>, <span class="fl">10000</span>, <span class="fl">5000</span>, <span class="fl">0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">10</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the result of `schedule_sampling` is a simple data frame (note that the locations</span></span></span>
+<span class="r-in"><span><span class="co"># of sampling locations have `NA` values because the model is non-spatial)</span></span></span>
+<span class="r-in"><span><span class="va">schedule</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 7</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    time pop       n y_orig x_orig y     x    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
@@ -206,8 +217,7 @@ time.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

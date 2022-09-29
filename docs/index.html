@@ -59,7 +59,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -162,410 +162,231 @@
 <!-- badges: end -->
 <div class="section level3">
 <h3 id="overview-">
-<em>Overview</em>
-<a href="https://www.slendr.net"><img src="reference/figures/logo.png" align="right" height="139"></a>
+<em>Overview</em> <a href="https://www.slendr.net"><img src="reference/figures/logo.png" align="right" height="139"></a>
 <a class="anchor" aria-label="anchor" href="#overview-"></a>
 </h3>
-<p><em>slendr</em> is an R package toolbox for defining population
-genetic models and simulating genomic data entirely from R. It has been
-originally conceived as a framework for simulating spatially-explicit
-genomic data on real geographic landscapes but it has grown to be much
-more than that.</p>
-<p>This page briefly summarizes <em>slendr’</em>s most important
-features. A a much detailed description of the <em>slendr</em>
-architecture and an extensive set of practical code examples can be
-found in our <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">preprint</a>
-on bioRxiv and on our <a href="https://www.slendr.net">website</a>.</p>
+<p><em>slendr</em> is an R package toolbox for defining population genetic models and simulating genomic data entirely from R. It has been originally conceived as a framework for simulating spatially-explicit genomic data on real geographic landscapes but it has grown to be much more than that.</p>
+<p>This page briefly summarizes <em>slendr’</em>s most important features. A a much detailed description of the <em>slendr</em> architecture and an extensive set of practical code examples can be found in our <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">preprint</a> on bioRxiv and on our <a href="https://www.slendr.net">website</a>.</p>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="main-features">Main features<a class="anchor" aria-label="anchor" href="#main-features"></a>
 </h3>
-<p>Here is a brief summary of <em>slendr</em>’s most important features.
-The R package allows you to:</p>
+<p>Here is a brief summary of <em>slendr</em>’s most important features. The R package allows you to:</p>
 <ul>
-<li><p><strong>Program demographic models</strong>, including population
-splits, population size changes, and gene-flow events <strong>using an
-extremely simple declarative language entirely in R</strong> (<a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">see
-this vignette</a> for an example of the model-definition interface).
-Even complex models can be written with only a very little code and
-require only a bare minimum of R programming knowledge (the only thing
-the user needs to know is how to call an R function and what does an R
-data frame look like).</p></li>
-<li><p>Execute <em>slendr</em> models using <strong>efficient,
-tailor-made SLiM or <em>msprime</em> simulation scripts</strong>
-<strong>which are bundled with the R package</strong>. Both of these
-simulation engines save outputs in the form of an efficient
-tree-sequence data structure. <strong>No SLiM or <em>msprime</em>
-programming is needed!</strong></p></li>
-<li><p><strong>Load, process, and analyse tree-sequence outputs</strong>
-via <em>slendr</em>’s built-in R interface to the tree-sequence library
-<a href="https://tskit.dev/tskit/docs/" class="external-link"><em>tskit</em></a><em>.</em> You
-can compute many <a href="https://www.slendr.net/reference/index.html#tree-sequence-statistics">population
-genetic statistics</a> in R immediately after the simulation finishes <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">directly
-on the output tree sequences</a>, without having to convert files to
-other formats (VCF, EIGENSTRAT) for analysis in different
-software.</p></li>
-<li><p><strong>Encode complex models of population movements on a
-landscape</strong> (see a brief example of such model <a href="https://www.slendr.net/articles/vignette-06-locations.html#model-specification">here</a>,
-and a more extended explanation in <a href="https://www.slendr.net/articles/vignette-01-tutorial.html">this
-tutorial</a>). No knowledge of cartographic or geospatial analysis
-concepts is needed.</p></li>
-<li><p><strong>Simulate these dynamic spatial demographic models using
-SLiM’s continuous-space simulation capabilities directly in R</strong>
-<strong>(again, no SLiM programming required).</strong> The outputs from
-such simulations are saved as tree sequences and can be analysed using
-<a href="https://www.slendr.net/articles/vignette-09-paper.html#example-4-figure-5">standard
-R geospatial data analysis libraries</a>. This is because
-<em>slendr</em> performs the conversion of tree sequence tables to the
-appropriate spatial R data type automatically.</p></li>
-<li><p>Specify within-population individual <a href="https://www.slendr.net/articles/vignette-03-interactions.html">dispersal
-dynamics</a> from the R interface by leveraging SLiM’s individual
-interaction parameters implemented in the SLiM back-end script.</p></li>
-<li><p><a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events"><strong>Schedule
-sampling events</strong></a> which specify how many individuals’
-genomes, from which populations, and at which times (optionally, at
-which locations) should be recorded by the simulation engine (SLiM or
-<em>msprime</em>) in the output tree-sequence files.</p></li>
+<li><p><strong>Program demographic models</strong>, including population splits, population size changes, and gene-flow events <strong>using an extremely simple declarative language entirely in R</strong> (<a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">see this vignette</a> for an example of the model-definition interface). Even complex models can be written with only a very little code and require only a bare minimum of R programming knowledge (the only thing the user needs to know is how to call an R function and what does an R data frame look like).</p></li>
+<li><p>Execute <em>slendr</em> models using <strong>efficient, tailor-made SLiM or <em>msprime</em> simulation scripts</strong> <strong>which are bundled with the R package</strong>. Both of these simulation engines save outputs in the form of an efficient tree-sequence data structure. <strong>No SLiM or <em>msprime</em> programming is needed!</strong></p></li>
+<li><p><strong>Load, process, and analyse tree-sequence outputs</strong> via <em>slendr</em>’s built-in R interface to the tree-sequence library <a href="https://tskit.dev/tskit/docs/" class="external-link"><em>tskit</em></a><em>.</em> You can compute many <a href="https://www.slendr.net/reference/index.html#tree-sequence-statistics">population genetic statistics</a> in R immediately after the simulation finishes <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">directly on the output tree sequences</a>, without having to convert files to other formats (VCF, EIGENSTRAT) for analysis in different software.</p></li>
+<li><p><strong>Encode complex models of population movements on a landscape</strong> (see a brief example of such model <a href="https://www.slendr.net/articles/vignette-06-locations.html#model-specification">here</a>, and a more extended explanation in <a href="https://www.slendr.net/articles/vignette-01-tutorial.html">this tutorial</a>). No knowledge of cartographic or geospatial analysis concepts is needed.</p></li>
+<li><p><strong>Simulate these dynamic spatial demographic models using SLiM’s continuous-space simulation capabilities directly in R</strong> <strong>(again, no SLiM programming required).</strong> The outputs from such simulations are saved as tree sequences and can be analysed using <a href="https://www.slendr.net/articles/vignette-09-paper.html#example-4-figure-5">standard R geospatial data analysis libraries</a>. This is because <em>slendr</em> performs the conversion of tree sequence tables to the appropriate spatial R data type automatically.</p></li>
+<li><p>Specify within-population individual <a href="https://www.slendr.net/articles/vignette-03-interactions.html">dispersal dynamics</a> from the R interface by leveraging SLiM’s individual interaction parameters implemented in the SLiM back-end script.</p></li>
+<li><p><a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events"><strong>Schedule sampling events</strong></a> which specify how many individuals’ genomes, from which populations, and at which times (optionally, at which locations) should be recorded by the simulation engine (SLiM or <em>msprime</em>) in the output tree-sequence files.</p></li>
 </ul>
-<p><strong>Utilizing the flexibility of R with its wealth of libraries
-for statistics, geospatial analysis and graphics, and combining it with
-the power of population genetic simulation frameworks SLiM and
-<em>msprime</em>, the <em>slendr</em> R package makes it possible to
-write entire simulation and analytic pipelines without the need to leave
-the R environment.</strong></p>
+<p><strong>Utilizing the flexibility of R with its wealth of libraries for statistics, geospatial analysis and graphics, and combining it with the power of population genetic simulation frameworks SLiM and <em>msprime</em>, the <em>slendr</em> R package makes it possible to write entire simulation and analytic pipelines without the need to leave the R environment.</strong></p>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="testing-the-r-package-in-an-online-rstudio-session">Testing the R package in an online RStudio session<a class="anchor" aria-label="anchor" href="#testing-the-r-package-in-an-online-rstudio-session"></a>
 </h3>
-<p>You can open an RStudio session and test examples from the <a href="https://www.slendr.net/articles/">vignettes</a> directly in your
-web browser by clicking this button (no installation is needed!):</p>
+<p>You can open an RStudio session and test examples from the <a href="https://www.slendr.net/articles/">vignettes</a> directly in your web browser by clicking this button (no installation is needed!):</p>
 <p><a href="http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio" class="external-link"><img src="http://mybinder.org/badge.svg" alt="Binder"></a></p>
-<p><strong>In case the RStudio instance appears to be starting very
-slowly, please be patient (Binder is a freely available service with
-limited computational resources provided by the community).</strong> If
-Binder crashes, try reloading the web page, which will restart the cloud
-session.</p>
-<p>Once you get a browser-based RStudio session, you can navigate to the
-<code>vignettes/</code> directory and test the examples on your own!</p>
+<p><strong>In case the RStudio instance appears to be starting very slowly, please be patient (Binder is a freely available service with limited computational resources provided by the community).</strong> If Binder crashes, try reloading the web page, which will restart the cloud session.</p>
+<p>Once you get a browser-based RStudio session, you can navigate to the <code>vignettes/</code> directory and test the examples on your own!</p>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p><em>slendr</em> is now available CRAN which means that you can
-install it simply by entering <code>install.packages("slendr")</code>
-into your R console.</p>
-<p>If you would like to test the latest features of the software
-(perhaps because you need some bug fixes), you can install it with
-<code>devtools::install_github("bodkan/slendr")</code> (note that this
-requires the R package <em>devtools</em>).</p>
+<p><em>slendr</em> is now available CRAN which means that you can install it simply by entering <code>install.packages("slendr")</code> into your R console.</p>
+<p>If you would like to test the latest features of the software (perhaps because you need some bug fixes), you can install it with <code>devtools::install_github("bodkan/slendr")</code> (note that this requires the R package <em>devtools</em>).</p>
 <hr>
 <p><strong>This software is under active development!</strong></p>
 <p>If you would like to stay updated:</p>
 <ol style="list-style-type: decimal">
 <li><p>Click on the “Watch” button on the project’s <a href="https://github.com/bodkan/slendr/" class="external-link">GitHub website</a>.</p></li>
-<li><p>Follow me on <a href="https://twitter.com/dr_bodkan" class="external-link">Twitter</a>
-where I will be posting progress updates.</p></li>
-<li><p>From time to time, take a look at the <a href="https://www.slendr.net/news/index.html">changelog</a> where I will
-post updates on new features, breaking changes, etc.</p></li>
+<li><p>Follow me on <a href="https://twitter.com/dr_bodkan" class="external-link">Twitter</a> where I will be posting progress updates.</p></li>
+<li><p>From time to time, take a look at the <a href="https://www.slendr.net/news/index.html">changelog</a> where I will post updates on new features, breaking changes, etc.</p></li>
 </ol>
 <hr>
 </div>
 <div class="section level3">
 <h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h3>
-<p>Here is a very brief demonstration of the kind of spatial model which
-<em>slendr</em> has been originally designed to simulate data from.
-Please note that although this is a spatially-explicit population
-genetic model, <em>slendr</em> has an extensive support for <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">traditional,
-non-spatial simulations as well</a>. Furthermore, this example only
-shows how to specify and simulate a model in R. It doesn’t show how to
-analyse tree-sequence outputs and compute population genetic statistics
-from them (this important feature is demonstrated in <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">this
-tutorial</a>).</p>
+<p>Here is a very brief demonstration of the kind of spatial model which <em>slendr</em> has been originally designed to simulate data from. Please note that although this is a spatially-explicit population genetic model, <em>slendr</em> has an extensive support for <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">traditional, non-spatial simulations as well</a>. Furthermore, this example only shows how to specify and simulate a model in R. It doesn’t show how to analyse tree-sequence outputs and compute population genetic statistics from them (this important feature is demonstrated in <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">this tutorial</a>).</p>
 <div class="section level4">
 <h4 id="id_1-setup-the-spatial-context">1. Setup the spatial context<a class="anchor" aria-label="anchor" href="#id_1-setup-the-spatial-context"></a>
 </h4>
-<p>Imagine that we wanted to simulate spatio-temporal genomic data from
-a toy model of the history of modern humans in West Eurasia after the
-Out of Africa migration.</p>
-<p>First, we define the spatial context of the simulation. This will
-represent the “world” which will be occupied by populations in our
-model.</p>
+<p>Imagine that we wanted to simulate spatio-temporal genomic data from a toy model of the history of modern humans in West Eurasia after the Out of Africa migration.</p>
+<p>First, we define the spatial context of the simulation. This will represent the “world” which will be occupied by populations in our model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span>
-<span class="co">#&gt; The interface to all required Python modules has been activated.</span>
-
-<span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/world.html">world</a></span><span class="op">(</span>
-  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>, <span class="co"># min-max longitude</span>
-  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,  <span class="co"># min-max latitude</span>
-  crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># coordinate reference system (CRS) for West Eurasia</span>
-<span class="op">)</span></code></pre></div>
-<p>We can visualize the defined world map using the function
-<code>plot_map</code> provided by the package.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span>
+<span></span>
+<span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/world.html">world</a></span><span class="op">(</span></span>
+<span>  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">60</span><span class="op">)</span>, <span class="co"># min-max longitude</span></span>
+<span>  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">65</span><span class="op">)</span>,  <span class="co"># min-max latitude</span></span>
+<span>  crs <span class="op">=</span> <span class="st">"EPSG:3035"</span>    <span class="co"># coordinate reference system (CRS) for West Eurasia</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>We can visualize the defined world map using the function <code>plot_map</code> provided by the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_world-1.png"></p>
-<p>Although in this example we use a real Earth landscape, the
-<code>map</code> can be completely abstract (either blank or with
-user-defined landscape features such as continents, islands, corridors
-and barriers).</p>
+<p>Although in this example we use a real Earth landscape, the <code>map</code> can be completely abstract (either blank or with user-defined landscape features such as continents, islands, corridors and barriers).</p>
 </div>
 <div class="section level4">
 <h4 id="id_2-define-broader-geographic-regions">2. Define broader geographic regions<a class="anchor" aria-label="anchor" href="#id_2-define-broader-geographic-regions"></a>
 </h4>
-<p>In order to make the definitions of population ranges (below) easier,
-we can define smaller regions on the map using the function
-<code>region</code>.</p>
-<p>Note that all coordinates in <em>slendr</em> are specified in the
-geographic coordinate system (i.e., degrees longitude and latitude), but
-are internally represented in a projected CRS (in our case, EPSG 3035 as
-specified above).</p>
-<p>This makes it easier for us to define spatial features simply by
-reading the coordinates from a regular map but the internal projected
-CRS makes simulations more accurate (distances and shapes are not
-distorted because we can use a CRS tailored to the region of the world
-we are working with). The projected CRS takes care of the projection of
-the part of the world we’re interested in from the three-dimensional
-Earth surface to a two-dimensional map.</p>
+<p>In order to make the definitions of population ranges (below) easier, we can define smaller regions on the map using the function <code>region</code>.</p>
+<p>Note that all coordinates in <em>slendr</em> are specified in the geographic coordinate system (i.e., degrees longitude and latitude), but are internally represented in a projected CRS (in our case, EPSG 3035 as specified above).</p>
+<p>This makes it easier for us to define spatial features simply by reading the coordinates from a regular map but the internal projected CRS makes simulations more accurate (distances and shapes are not distorted because we can use a CRS tailored to the region of the world we are working with). The projected CRS takes care of the projection of the part of the world we’re interested in from the three-dimensional Earth surface to a two-dimensional map.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">africa</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/region.html">region</a></span><span class="op">(</span>
-  <span class="st">"Africa"</span>, <span class="va">map</span>,
-  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">18</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">33</span><span class="op">)</span>,
-                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">32</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">8</span>, <span class="fl">35</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="va">europe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/region.html">region</a></span><span class="op">(</span>
-  <span class="st">"Europe"</span>, <span class="va">map</span>,
-  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">8</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">36</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">38</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">35</span><span class="op">)</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">45</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">58</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span>
-  <span class="op">)</span>
-<span class="op">)</span>
-<span class="va">anatolia</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/region.html">region</a></span><span class="op">(</span>
-  <span class="st">"Anatolia"</span>, <span class="va">map</span>,
-  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">28</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">42</span>, <span class="fl">40</span><span class="op">)</span>,
-                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">43</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">27</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">38</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
-<p>Again, we can use the generic <code>plot_map</code> function to
-visualize these objects, making sure we specified them correctly:</p>
+<code class="sourceCode R"><span><span class="va">africa</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/region.html">region</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Africa"</span>, <span class="va">map</span>,</span>
+<span>  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">18</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">33</span><span class="op">)</span>,</span>
+<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">32</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">8</span>, <span class="fl">35</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">europe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/region.html">region</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Europe"</span>, <span class="va">map</span>,</span>
+<span>  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">8</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">36</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">38</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">35</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">45</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">58</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">anatolia</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/region.html">region</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Anatolia"</span>, <span class="va">map</span>,</span>
+<span>  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">28</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">35</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">42</span>, <span class="fl">40</span><span class="op">)</span>,</span>
+<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">43</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">27</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">38</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Again, we can use the generic <code>plot_map</code> function to visualize these objects, making sure we specified them correctly:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">africa</span>, <span class="va">europe</span>, <span class="va">anatolia</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">africa</span>, <span class="va">europe</span>, <span class="va">anatolia</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_regions-1.png"></p>
 </div>
 <div class="section level4">
 <h4 id="id_3-define-demographic-history-and-population-boundaries">3. Define demographic history and population boundaries<a class="anchor" aria-label="anchor" href="#id_3-define-demographic-history-and-population-boundaries"></a>
 </h4>
-<p>The most important function in the <em>slendr</em> package is
-<code><a href="reference/population.html">population()</a></code>, which is used to define names, split times,
-sizes and spatial ranges of populations. Here, we specify times in years
-before the present, distances in kilometers. If this makes more sense
-for your models, times can also be given in a forward direction.</p>
-<p>You will also note functions such as <code><a href="reference/move.html">move()</a></code> or
-<code><a href="reference/expand_range.html">expand_range()</a></code> which are designed to take a <em>slendr</em>
-population object and schedule its spatial dynamics at appropriate times
-during the model simulation (which will happen at a later step).</p>
-<p>Note that in order to make this example executable in a reasonable
-time on my extremely old laptop, I decreased the sizes of all
-populations to unrealistic levels. This will speed up the SLiM
-simulation at a later step.</p>
+<p>The most important function in the <em>slendr</em> package is <code><a href="reference/population.html">population()</a></code>, which is used to define names, split times, sizes and spatial ranges of populations. Here, we specify times in years before the present, distances in kilometers. If this makes more sense for your models, times can also be given in a forward direction.</p>
+<p>You will also note functions such as <code><a href="reference/move.html">move()</a></code> or <code><a href="reference/expand_range.html">expand_range()</a></code> which are designed to take a <em>slendr</em> population object and schedule its spatial dynamics at appropriate times during the model simulation (which will happen at a later step).</p>
+<p>Note that in order to make this example executable in a reasonable time on my extremely old laptop, I decreased the sizes of all populations to unrealistic levels. This will speed up the SLiM simulation at a later step.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># African ancestral population</span>
-  <span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span>,
-  map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">africa</span>
-<span class="op">)</span>
-
-<span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># population of the first migrants out of Africa</span>
-  <span class="st">"OOA"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">51000</span>, N <span class="op">=</span> <span class="fl">500</span>, remove <span class="op">=</span> <span class="fl">25000</span>,
-  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">30</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">400e3</span>
-<span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span>
-    trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">40</span><span class="op">)</span><span class="op">)</span>,
-    start <span class="op">=</span> <span class="fl">50000</span>, end <span class="op">=</span> <span class="fl">40000</span>, snapshots <span class="op">=</span> <span class="fl">20</span>
-  <span class="op">)</span>
-
-<span class="va">ehg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Eastern hunter-gatherers</span>
-  <span class="st">"EHG"</span>, parent <span class="op">=</span> <span class="va">ooa</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">1000</span>, remove <span class="op">=</span> <span class="fl">6000</span>,
-  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">55</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">53</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">53</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">53</span><span class="op">)</span>,
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">63</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">63</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">60</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="va">eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># European population</span>
-  name <span class="op">=</span> <span class="st">"EUR"</span>, parent <span class="op">=</span> <span class="va">ehg</span>, time <span class="op">=</span> <span class="fl">25000</span>, N <span class="op">=</span> <span class="fl">2000</span>,
-  polygon <span class="op">=</span> <span class="va">europe</span>
-<span class="op">)</span>
-
-<span class="va">ana</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Anatolian farmers</span>
-  name <span class="op">=</span> <span class="st">"ANA"</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">3000</span>, parent <span class="op">=</span> <span class="va">ooa</span>, remove <span class="op">=</span> <span class="fl">4000</span>,
-  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">34</span>, <span class="fl">38</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">500e3</span>, polygon <span class="op">=</span> <span class="va">anatolia</span>
-<span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/expand_range.html">expand_range</a></span><span class="op">(</span> <span class="co"># expand the range by 2.500 km</span>
-    by <span class="op">=</span> <span class="fl">2500e3</span>, start <span class="op">=</span> <span class="fl">10000</span>, end <span class="op">=</span> <span class="fl">7000</span>,
-    polygon <span class="op">=</span> <span class="fu"><a href="reference/join.html">join</a></span><span class="op">(</span><span class="va">europe</span>, <span class="va">anatolia</span><span class="op">)</span>, snapshots <span class="op">=</span> <span class="fl">20</span>
-  <span class="op">)</span>
-
-<span class="va">yam</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Yamnaya steppe population</span>
-  name <span class="op">=</span> <span class="st">"YAM"</span>, time <span class="op">=</span> <span class="fl">7000</span>, N <span class="op">=</span> <span class="fl">500</span>, parent <span class="op">=</span> <span class="va">ehg</span>, remove <span class="op">=</span> <span class="fl">2500</span>,
-  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">49</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">50</span><span class="op">)</span>,
-                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">56</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">59</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">56</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
-  <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span>trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">5000</span>, end <span class="op">=</span> <span class="fl">3000</span>, snapshots <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<p>We can use the function <code>plot_map</code> again to get a
-“compressed” overview of all spatio-temporal range dynamics encoded by
-the model so far (prior to the simulation itself).</p>
+<code class="sourceCode R"><span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># African ancestral population</span></span>
+<span>  <span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span>,</span>
+<span>  map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">africa</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># population of the first migrants out of Africa</span></span>
+<span>  <span class="st">"OOA"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">51000</span>, N <span class="op">=</span> <span class="fl">500</span>, remove <span class="op">=</span> <span class="fl">25000</span>,</span>
+<span>  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">30</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">400e3</span></span>
+<span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span></span>
+<span>    trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">40</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    start <span class="op">=</span> <span class="fl">50000</span>, end <span class="op">=</span> <span class="fl">40000</span>, snapshots <span class="op">=</span> <span class="fl">20</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">ehg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Eastern hunter-gatherers</span></span>
+<span>  <span class="st">"EHG"</span>, parent <span class="op">=</span> <span class="va">ooa</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">1000</span>, remove <span class="op">=</span> <span class="fl">6000</span>,</span>
+<span>  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">55</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">53</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">53</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">53</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">60</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">63</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">63</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">60</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># European population</span></span>
+<span>  name <span class="op">=</span> <span class="st">"EUR"</span>, parent <span class="op">=</span> <span class="va">ehg</span>, time <span class="op">=</span> <span class="fl">25000</span>, N <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  polygon <span class="op">=</span> <span class="va">europe</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ana</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Anatolian farmers</span></span>
+<span>  name <span class="op">=</span> <span class="st">"ANA"</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">3000</span>, parent <span class="op">=</span> <span class="va">ooa</span>, remove <span class="op">=</span> <span class="fl">4000</span>,</span>
+<span>  center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">34</span>, <span class="fl">38</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">500e3</span>, polygon <span class="op">=</span> <span class="va">anatolia</span></span>
+<span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/expand_range.html">expand_range</a></span><span class="op">(</span> <span class="co"># expand the range by 2.500 km</span></span>
+<span>    by <span class="op">=</span> <span class="fl">2500e3</span>, start <span class="op">=</span> <span class="fl">10000</span>, end <span class="op">=</span> <span class="fl">7000</span>,</span>
+<span>    polygon <span class="op">=</span> <span class="fu"><a href="reference/join.html">join</a></span><span class="op">(</span><span class="va">europe</span>, <span class="va">anatolia</span><span class="op">)</span>, snapshots <span class="op">=</span> <span class="fl">20</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">yam</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># Yamnaya steppe population</span></span>
+<span>  name <span class="op">=</span> <span class="st">"YAM"</span>, time <span class="op">=</span> <span class="fl">7000</span>, N <span class="op">=</span> <span class="fl">500</span>, parent <span class="op">=</span> <span class="va">ehg</span>, remove <span class="op">=</span> <span class="fl">2500</span>,</span>
+<span>  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">49</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">50</span><span class="op">)</span>,</span>
+<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">48</span>, <span class="fl">56</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">59</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">26</span>, <span class="fl">56</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="reference/move.html">move</a></span><span class="op">(</span>trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">5000</span>, end <span class="op">=</span> <span class="fl">3000</span>, snapshots <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<p>We can use the function <code>plot_map</code> again to get a “compressed” overview of all spatio-temporal range dynamics encoded by the model so far (prior to the simulation itself).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_popmaps-1.png"></p>
 </div>
 <div class="section level4">
 <h4 id="id_4-define-gene-flow-events">4. Define gene-flow events<a class="anchor" aria-label="anchor" href="#id_4-define-gene-flow-events"></a>
 </h4>
-<p>By default, populations in <em>slendr</em> do not mix even if they
-are overlapping. In order to schedule an gene-flow event between two
-populations, we can use the function <code>gene_flow</code>. If we want
-to specify multiple such events at once, we can collect these events in
-a simple R list:</p>
+<p>By default, populations in <em>slendr</em> do not mix even if they are overlapping. In order to schedule an gene-flow event between two populations, we can use the function <code>gene_flow</code>. If we want to specify multiple such events at once, we can collect these events in a simple R list:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-  <span class="fu"><a href="reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">yam</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">6500</span>, end <span class="op">=</span> <span class="fl">6400</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
-  <span class="fu"><a href="reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,
-  <span class="fu"><a href="reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.75</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">yam</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">6500</span>, end <span class="op">=</span> <span class="fl">6400</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.75</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="id_5-compile-the-model-to-a-set-of-configuration-files">5. Compile the model to a set of configuration files<a class="anchor" aria-label="anchor" href="#id_5-compile-the-model-to-a-set-of-configuration-files"></a>
 </h4>
-<p>Before we run the simulation, we compile all individual model
-components (population objects and gene-flow events) to a single R
-object, specifying some additional model parameters. Additionally, this
-performs internal consistency checks, making sure the model parameters
-(split times, gene flow times, etc.) make sense before the (potentially
-quite computationally costly) simulation is even run.</p>
+<p>Before we run the simulation, we compile all individual model components (population objects and gene-flow events) to a single R object, specifying some additional model parameters. Additionally, this performs internal consistency checks, making sure the model parameters (split times, gene flow times, etc.) make sense before the (potentially quite computationally costly) simulation is even run.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/compile_model.html">compile_model</a></span><span class="op">(</span>
-  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>, <span class="co"># populations defined above</span>
-  gene_flow <span class="op">=</span> <span class="va">gf</span>,
-  generation_time <span class="op">=</span> <span class="fl">30</span>,
-  resolution <span class="op">=</span> <span class="fl">10e3</span>, <span class="co"># resolution in meters per pixel</span>
-  competition <span class="op">=</span> <span class="fl">130e3</span>, mating <span class="op">=</span> <span class="fl">100e3</span>, <span class="co"># spatial interaction parameters</span>
-  dispersal <span class="op">=</span> <span class="fl">70e3</span>, <span class="co"># how far can offspring end up from their parents</span>
-<span class="op">)</span></code></pre></div>
-<p>Compiled model is kept as an R object which can be passed to
-different functions. In this example, we will simulate data with the
-<code><a href="reference/slim.html">slim()</a></code> engine (but we could also run the simulation through
-the coalescent engine via the <code><a href="reference/msprime.html">msprime()</a></code> function).</p>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
+<span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>, <span class="co"># populations defined above</span></span>
+<span>  gene_flow <span class="op">=</span> <span class="va">gf</span>,</span>
+<span>  generation_time <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  resolution <span class="op">=</span> <span class="fl">10e3</span>, <span class="co"># resolution in meters per pixel</span></span>
+<span>  competition <span class="op">=</span> <span class="fl">130e3</span>, mating <span class="op">=</span> <span class="fl">100e3</span>, <span class="co"># spatial interaction parameters</span></span>
+<span>  dispersal <span class="op">=</span> <span class="fl">70e3</span>, <span class="co"># how far can offspring end up from their parents</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Compiled model is kept as an R object which can be passed to different functions. In this example, we will simulate data with the <code><a href="reference/slim.html">slim()</a></code> engine (but we could also run the simulation through the coalescent engine via the <code><a href="reference/msprime.html">msprime()</a></code> function).</p>
 </div>
 <div class="section level4">
 <h4 id="id_6-visualize-the-model">6. Visualize the model<a class="anchor" aria-label="anchor" href="#id_6-visualize-the-model"></a>
 </h4>
-<p>The package provides an <a href="https://shiny.rstudio.com" class="external-link">R
-shiny</a>-based browser app <code><a href="reference/explore_model.html">explore_model()</a></code> for checking
-the model dynamics interactively and visually. For more complex models,
-this is much better than static spatial plots such as the one we showed
-in step 2 above:</p>
+<p>The package provides an <a href="https://shiny.rstudio.com" class="external-link">R shiny</a>-based browser app <code><a href="reference/explore_model.html">explore_model()</a></code> for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/explore_model.html">explore_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/explore_model.html">explore_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <p>The function has two modes:</p>
 <ol style="list-style-type: lower-alpha">
 <li>Plotting (and “playing”) spatial map dynamics:</li>
 </ol>
 <p><img src="reference/figures/shiny_maps.jpg"></p>
 <ol start="2" style="list-style-type: lower-alpha">
-<li>Displaying the demographic history graph (splits and gene-flow
-events) embedded in the specified model:</li>
+<li>Displaying the demographic history graph (splits and gene-flow events) embedded in the specified model:</li>
 </ol>
 <p><img src="reference/figures/shiny_graph.jpg"></p>
 </div>
 <div class="section level4">
 <h4 id="id_7-run-the-model-in-slim">7. Run the model in SLiM<a class="anchor" aria-label="anchor" href="#id_7-run-the-model-in-slim"></a>
 </h4>
-<p>Finally, we can execute the compiled model in SLiM. Here we run the
-simulation in a batch mode, but we could also run it in SLiMgui by
-setting <code>method = "gui"</code>. This would allow us to inspect the
-spatial simulation as it happens in real time.</p>
-<p>The <code>slim</code> function generates a complete SLiM script
-tailored to run the spatial model we defined above. This saves you, the
-user, a tremendous amount of time, because you don’t have to write new
-SLiM code every time you design a new demographic model. The output of
-the simulation run from any <em>slendr</em> model is always a <a href="https://tskit.dev/learn.html#what" class="external-link">tree sequence</a>, here loaded
-into an object <code>ts_slim</code>.</p>
+<p>Finally, we can execute the compiled model in SLiM. Here we run the simulation in a batch mode, but we could also run it in SLiMgui by setting <code>method = "gui"</code>. This would allow us to inspect the spatial simulation as it happens in real time.</p>
+<p>The <code>slim</code> function generates a complete SLiM script tailored to run the spatial model we defined above. This saves you, the user, a tremendous amount of time, because you don’t have to write new SLiM code every time you design a new demographic model. The output of the simulation run from any <em>slendr</em> model is always a <a href="https://tskit.dev/learn.html#what" class="external-link">tree sequence</a>, here loaded into an object <code>ts_slim</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ts_slim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,
-                method <span class="op">=</span> <span class="st">"batch"</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></code></pre></div>
-<p>As specified here, <em>slendr</em>’s SLiM backend will simulate 10 Mb
-of sequence for each individual, and produce a tree sequence output from
-the simulation run which can be analysed by many <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">built-in
-population genetic functions</a>. By default, all individuals living at
-the end of the simulation are recorded as samples in the tree sequence.
-If a specific set of samples (ancient and modern) is needed, this can be
-defined accordingly using a <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events">dedicated
-function</a>.</p>
-<p>Note that although we defined a spatial model, we could have just as
-easily simulated standard, non-spatial data by running the same model
-through <em>slendr</em>’s <code><a href="reference/msprime.html">msprime()</a></code> back end without the
-need to make any changes:</p>
+<code class="sourceCode R"><span><span class="va">ts_slim</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>,</span>
+<span>                method <span class="op">=</span> <span class="st">"batch"</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></span></code></pre></div>
+<p>As specified here, <em>slendr</em>’s SLiM backend will simulate 10 Mb of sequence for each individual, and produce a tree sequence output from the simulation run which can be analysed by many <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">built-in population genetic functions</a>. By default, all individuals living at the end of the simulation are recorded as samples in the tree sequence. If a specific set of samples (ancient and modern) is needed, this can be defined accordingly using a <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events">dedicated function</a>.</p>
+<p>Note that although we defined a spatial model, we could have just as easily simulated standard, non-spatial data by running the same model through <em>slendr</em>’s <code><a href="reference/msprime.html">msprime()</a></code> back end without the need to make any changes:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ts_msprime</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></code></pre></div>
-<p>Here is a very quick overview of the SLiM simulation run summarised
-as a GIF animation. Again, please note that the simulation is extremely
-simplified. We only simulated a very small number of individuals in each
-population, and we also didn’t specify any <a href="https://www.slendr.net/articles/vignette-03-interactions.html">dispersal
-dynamics</a> which is why the populations look so clumped.</p>
+<code class="sourceCode R"><span><span class="va">ts_msprime</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span></code></pre></div>
+<p>Here is a very quick overview of the SLiM simulation run summarised as a GIF animation. Again, please note that the simulation is extremely simplified. We only simulated a very small number of individuals in each population, and we also didn’t specify any <a href="https://www.slendr.net/articles/vignette-03-interactions.html">dispersal dynamics</a> which is why the populations look so clumped.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/animate_model.html">animate_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, file <span class="op">=</span> <span class="va">locations_file</span>, steps <span class="op">=</span> <span class="fl">50</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/animate_model.html">animate_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">model</span>, file <span class="op">=</span> <span class="va">locations_file</span>, steps <span class="op">=</span> <span class="fl">50</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_gif-1.gif"></p>
-<p>At this point, you could either compute some <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">population
-genetic statistics of interest</a> or perhaps analyse the <a href="https://www.slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships">spatial
-features of the genealogies</a> simulated by your model.</p>
+<p>At this point, you could either compute some <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics">population genetic statistics of interest</a> or perhaps analyse the <a href="https://www.slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships">spatial features of the genealogies</a> simulated by your model.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="further-information">Further information<a class="anchor" aria-label="anchor" href="#further-information"></a>
 </h2>
-<p>The example above provides only a very brief and incomplete overview
-of the full functionality of the <em>slendr</em> package. There is much
-more to <em>slendr</em> than what we demonstrated here. For
-instance:</p>
+<p>The example above provides only a very brief and incomplete overview of the full functionality of the <em>slendr</em> package. There is much more to <em>slendr</em> than what we demonstrated here. For instance:</p>
 <ul>
-<li><p>You can tweak parameters influencing dispersal dynamics (how
-“clumpy” populations are, how far can offspring migrate from their
-parents, etc.) and define how these should change over time. For
-instance, you can see that in the animation above, the African
-population forms a single “blob” that really isn’t spread out across its
-entire population range. Tweaking the dispersal parameters as show <a href="https://www.slendr.net/articles/vignette-03-interactions.html">this
-vignette</a> helps avoid that.</p></li>
-<li><p>You can use <em>slendr</em> to program non-spatial models, which
-means that any conceivable traditional, random-mating demographic model
-can be simulated with only a few lines of R code. You can learn more in
-<a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">this
-vignette</a> (and in more detail in <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html">this
-vignette</a>). Because SLiM simulations can be often quite slow compared
-to their coalescent counterparts, we also provide functionality allowing
-to simulate <em>slendr</em> models (without any change!) using a
-built-in <em>msprime</em> back end script. See <a href="https://www.slendr.net/articles/vignette-07-backends.html">this
-vignette</a> for a tutorial on how this works.</p></li>
-<li><p>You can build complex spatial models which are still abstract
-(not assuming any real geographic location), including traditional
-simulations of demes in a lattice structure. A complete example is shown
-<a href="https://www.slendr.net/articles/vignette-02-grid-model.html">this
-vignette</a>.</p></li>
-<li><p>Because <em>slendr</em> &amp; SLiM save data in a tree-sequence
-file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>
-for interfacing with Python code, we have the full power of <a href="https://tskit.dev/tskit/docs/stable/" class="external-link"><em>tskit</em></a> and <a href="https://tskit.dev/pyslim" class="external-link"><em>pyslim</em></a> for manipulating
-tree-sequence data right at our fingertips, all within the convenient
-environment of R. An extended example can be found in <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html">this
-vignette</a>.</p></li>
-<li><p>For spatially explicit population models, the <em>slendr</em>
-package automatically converts the simulated output data to a format
-which makes it possible to analyse it with many available R packages for
-geospatial data analysis. A brief description of this functionality can
-be found in <a href="https://www.slendr.net/articles/vignette-06-locations.html">this
-vignette</a>.</p></li>
-<li><p>You can find complete reproducible code behind the examples in
-our <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">preprint</a>
-in a dedicated R vignette <a href="https://www.slendr.net/articles/vignette-09-paper.html">here</a>.</p></li>
+<li><p>You can tweak parameters influencing dispersal dynamics (how “clumpy” populations are, how far can offspring migrate from their parents, etc.) and define how these should change over time. For instance, you can see that in the animation above, the African population forms a single “blob” that really isn’t spread out across its entire population range. Tweaking the dispersal parameters as show <a href="https://www.slendr.net/articles/vignette-03-interactions.html">this vignette</a> helps avoid that.</p></li>
+<li><p>You can use <em>slendr</em> to program non-spatial models, which means that any conceivable traditional, random-mating demographic model can be simulated with only a few lines of R code. You can learn more in <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">this vignette</a> (and in more detail in <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html">this vignette</a>). Because SLiM simulations can be often quite slow compared to their coalescent counterparts, we also provide functionality allowing to simulate <em>slendr</em> models (without any change!) using a built-in <em>msprime</em> back end script. See <a href="https://www.slendr.net/articles/vignette-07-backends.html">this vignette</a> for a tutorial on how this works.</p></li>
+<li><p>You can build complex spatial models which are still abstract (not assuming any real geographic location), including traditional simulations of demes in a lattice structure. A complete example is shown <a href="https://www.slendr.net/articles/vignette-02-grid-model.html">this vignette</a>.</p></li>
+<li><p>Because <em>slendr</em> &amp; SLiM save data in a tree-sequence file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a> for interfacing with Python code, we have the full power of <a href="https://tskit.dev/tskit/docs/stable/" class="external-link"><em>tskit</em></a> and <a href="https://tskit.dev/pyslim" class="external-link"><em>pyslim</em></a> for manipulating tree-sequence data right at our fingertips, all within the convenient environment of R. An extended example can be found in <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html">this vignette</a>.</p></li>
+<li><p>For spatially explicit population models, the <em>slendr</em> package automatically converts the simulated output data to a format which makes it possible to analyse it with many available R packages for geospatial data analysis. A brief description of this functionality can be found in <a href="https://www.slendr.net/articles/vignette-06-locations.html">this vignette</a>.</p></li>
+<li><p>You can find complete reproducible code behind the examples in our <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">preprint</a> in a dedicated R vignette <a href="https://www.slendr.net/articles/vignette-09-paper.html">here</a>.</p></li>
 </ul>
 </div>
 </div>
@@ -626,8 +447,7 @@ in a dedicated R vignette <a href="https://www.slendr.net/articles/vignette-09-p
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

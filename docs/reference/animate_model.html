@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -113,26 +113,37 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">animate_model</span><span class="op">(</span><span class="va">model</span>, <span class="va">file</span>, <span class="va">steps</span>, gif <span class="op">=</span> <span class="cn">NULL</span>, width <span class="op">=</span> <span class="fl">800</span>, height <span class="op">=</span> <span class="fl">560</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">animate_model</span><span class="op">(</span><span class="va">model</span>, <span class="va">file</span>, <span class="va">steps</span>, gif <span class="op">=</span> <span class="cn">NULL</span>, width <span class="op">=</span> <span class="fl">800</span>, height <span class="op">=</span> <span class="fl">560</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>model</dt>
 <dd><p>Compiled <code>slendr_model</code> model object</p></dd>
+
+
 <dt>file</dt>
 <dd><p>Path to the table of saved individual locations</p></dd>
+
+
 <dt>steps</dt>
 <dd><p>How many frames should the animation have?</p></dd>
+
+
 <dt>gif</dt>
 <dd><p>Path to an output GIF file (animation object returned
 by default)</p></dd>
+
+
 <dt>width, height</dt>
 <dd><p>Dimensions of the animation in pixels</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>gif = NULL</code>, return gganimate animation object. Otherwise a GIF
+    
+
+<p>If <code>gif = NULL</code>, return gganimate animation object. Otherwise a GIF
 file is saved and no value is returned.</p>
     </div>
 
@@ -148,8 +159,7 @@ file is saved and no value is returned.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

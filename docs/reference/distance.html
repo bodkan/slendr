@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -113,43 +113,50 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">measure</span>, time <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">distance</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">measure</span>, time <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x, y</dt>
 <dd><p>Objects of the class <code>slendr</code></p></dd>
+
+
 <dt>measure</dt>
 <dd><p>How to measure distance? This can be either <code>'border'</code>
 (distance between the borders of <code>x</code> and <code>y</code>) or <code>'center'</code>
 (distance between their centroids).</p></dd>
+
+
 <dt>time</dt>
 <dd><p>Time closest to the spatial maps of <code>x</code> and <code>y</code> if they
 represent <code>slendr_pop</code> population boundaries (ignored for general
 <code>slendr_region</code> objects)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If the coordinate reference system was specified, a distance in
+    
+
+<p>If the coordinate reference system was specified, a distance in
 projected units (i.e. meters) is returned. Otherwise the function returns a
 normal Euclidean distance.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># create two regions on a blank abstract landscape</span></span>
-<span class="r-in"><span class="va">region_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"A"</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">50</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">region_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"B"</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">50</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">region_a</span>, <span class="va">region_b</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># create two regions on a blank abstract landscape</span></span></span>
+<span class="r-in"><span><span class="va">region_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"A"</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">50</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">region_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="region.html">region</a></span><span class="op">(</span><span class="st">"B"</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">50</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">region_a</span>, <span class="va">region_b</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="distance-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># compute the distance between the centers of both population ranges</span></span>
-<span class="r-in"><span class="fu">distance</span><span class="op">(</span><span class="va">region_a</span>, <span class="va">region_b</span>, measure <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># compute the distance between the centers of both population ranges</span></span></span>
+<span class="r-in"><span><span class="fu">distance</span><span class="op">(</span><span class="va">region_a</span>, <span class="va">region_b</span>, measure <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 60</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># compute the distance between the borders of both population ranges</span></span>
-<span class="r-in"><span class="fu">distance</span><span class="op">(</span><span class="va">region_a</span>, <span class="va">region_b</span>, measure <span class="op">=</span> <span class="st">"border"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># compute the distance between the borders of both population ranges</span></span></span>
+<span class="r-in"><span><span class="fu">distance</span><span class="op">(</span><span class="va">region_a</span>, <span class="va">region_b</span>, measure <span class="op">=</span> <span class="st">"border"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
 </code></pre></div>
     </div>
@@ -165,8 +172,7 @@ normal Euclidean distance.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

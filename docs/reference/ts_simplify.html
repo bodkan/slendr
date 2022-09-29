@@ -19,7 +19,7 @@ SLiM using the slendr R package."><meta property="og:image" content="https://www
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -117,25 +117,32 @@ SLiM using the <span class="pkg">slendr</span> R package.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_simplify</span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="cn">NULL</span>, keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_simplify</span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="cn">NULL</span>, keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ts</dt>
 <dd><p>Tree sequence object of the class <code>slendr_ts</code></p></dd>
+
+
 <dt>simplify_to</dt>
 <dd><p>A character vector of individual names. If NULL, all
 explicitly remembered individuals (i.e. those specified via the
 <code><a href="schedule_sampling.html">schedule_sampling</a></code> function will be left in the tree sequence
 after the simplification.</p></dd>
+
+
 <dt>keep_input_roots</dt>
 <dd><p>Should the history ancestral to the MRCA of all
 samples be retained in the tree sequence? Default is <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Tree-sequence object of the class <code>slendr_ts</code>, which serves as
+    
+
+<p>Tree-sequence object of the class <code>slendr_ts</code>, which serves as
 an interface point for the Python module tskit using slendr functions with
 the <code>ts_</code> prefix.</p>
     </div>
@@ -162,14 +169,14 @@ map</p></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load an example model with an already simulated tree sequence</span></span>
-<span class="r-in"><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ts</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔════════════════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence            ║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤════════╣</span>
@@ -203,18 +210,18 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># simplify tree sequence to sampled individuals</span></span>
-<span class="r-in"><span class="va">ts_simplified</span> <span class="op">&lt;-</span> <span class="fu">ts_simplify</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># simplify to a subset of sampled individuals</span></span>
-<span class="r-in"><span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu">ts_simplify</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">ts</span>,</span>
-<span class="r-in">  simplify_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span>, <span class="st">"AFR_1"</span>,</span>
-<span class="r-in">                  <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">ts_small</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># simplify tree sequence to sampled individuals</span></span></span>
+<span class="r-in"><span><span class="va">ts_simplified</span> <span class="op">&lt;-</span> <span class="fu">ts_simplify</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># simplify to a subset of sampled individuals</span></span></span>
+<span class="r-in"><span><span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu">ts_simplify</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">ts</span>,</span></span>
+<span class="r-in"><span>  simplify_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span>, <span class="st">"AFR_1"</span>,</span></span>
+<span class="r-in"><span>                  <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ts_small</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔════════════════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence            ║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤════════╣</span>
@@ -262,8 +269,7 @@ map</p></div>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

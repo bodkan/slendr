@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -113,43 +113,52 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">gene_flow</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span>, <span class="va">rate</span>, <span class="va">start</span>, <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gene_flow</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span>, <span class="va">rate</span>, <span class="va">start</span>, <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>from, to</dt>
 <dd><p>Objects of the class <code>slendr_pop</code></p></dd>
+
+
 <dt>rate</dt>
 <dd><p>Scalar value in the range (0, 1] specifying the
 proportion of migration over given time period</p></dd>
+
+
 <dt>start, end</dt>
 <dd><p>Start and end of the gene-flow event</p></dd>
+
+
 <dt>overlap</dt>
 <dd><p>Require spatial overlap between admixing
 populations?  (default <code>TRUE</code>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Object of the class data.frame containing parameters of the specified
+    
+
+<p>Object of the class data.frame containing parameters of the specified
 gene-flow event.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># spatial definitions -----------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create a blank abstract world 1000x1000 distance units in size</span></span>
-<span class="r-in"><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create a circular population with the center of a population boundary at</span></span>
-<span class="r-in"><span class="co"># [200, 800] and a radius of 100 distance units, 1000 individuals at time 1</span></span>
-<span class="r-in"><span class="co"># occupying a map just specified</span></span>
-<span class="r-in"><span class="va">pop1</span> <span class="op">&lt;-</span> <span class="fu"><a href="population.html">population</a></span><span class="op">(</span><span class="st">"pop1"</span>, N <span class="op">=</span> <span class="fl">1000</span>, time <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">                   map <span class="op">=</span> <span class="va">map</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">800</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># printing a population object to a console shows a brief summary</span></span>
-<span class="r-in"><span class="va">pop1</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># spatial definitions -----------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create a blank abstract world 1000x1000 distance units in size</span></span></span>
+<span class="r-in"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create a circular population with the center of a population boundary at</span></span></span>
+<span class="r-in"><span><span class="co"># [200, 800] and a radius of 100 distance units, 1000 individuals at time 1</span></span></span>
+<span class="r-in"><span><span class="co"># occupying a map just specified</span></span></span>
+<span class="r-in"><span><span class="va">pop1</span> <span class="op">&lt;-</span> <span class="fu"><a href="population.html">population</a></span><span class="op">(</span><span class="st">"pop1"</span>, N <span class="op">=</span> <span class="fl">1000</span>, time <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                   map <span class="op">=</span> <span class="va">map</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">800</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># printing a population object to a console shows a brief summary</span></span></span>
+<span class="r-in"><span><span class="va">pop1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> slendr 'population' object </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> name: pop1 </span>
@@ -161,24 +170,24 @@ gene-flow event.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> population history overview:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   - time 1: created as an ancestral population (N = 1000)</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create another population occupying a polygon range, splitting from pop1</span></span>
-<span class="r-in"><span class="co"># at a given time point (note that specifying a map is not necessary because</span></span>
-<span class="r-in"><span class="co"># it is "inherited" from the parent)</span></span>
-<span class="r-in"><span class="va">pop2</span> <span class="op">&lt;-</span> <span class="fu"><a href="population.html">population</a></span><span class="op">(</span><span class="st">"pop2"</span>, N <span class="op">=</span> <span class="fl">100</span>, time <span class="op">=</span> <span class="fl">50</span>, parent <span class="op">=</span> <span class="va">pop1</span>,</span>
-<span class="r-in">                        polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">320</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">200</span><span class="op">)</span>,</span>
-<span class="r-in">                                  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">450</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">400</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">pop3</span> <span class="op">&lt;-</span> <span class="fu"><a href="population.html">population</a></span><span class="op">(</span><span class="st">"pop3"</span>, N <span class="op">=</span> <span class="fl">200</span>, time <span class="op">=</span> <span class="fl">80</span>, parent <span class="op">=</span> <span class="va">pop2</span>,</span>
-<span class="r-in">                   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">800</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># move "pop1" to another location along a specified trajectory and saved the</span></span>
-<span class="r-in"><span class="co"># resulting object to the same variable (the number of intermediate spatial</span></span>
-<span class="r-in"><span class="co"># snapshots can be also determined automatically by leaving out the</span></span>
-<span class="r-in"><span class="co"># `snapshots = ` argument)</span></span>
-<span class="r-in"><span class="va">pop1_moved</span> <span class="op">&lt;-</span> <span class="fu"><a href="move.html">move</a></span><span class="op">(</span><span class="va">pop1</span>, start <span class="op">=</span> <span class="fl">100</span>, end <span class="op">=</span> <span class="fl">200</span>, snapshots <span class="op">=</span> <span class="fl">6</span>,</span>
-<span class="r-in">                   trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">820</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pop1_moved</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create another population occupying a polygon range, splitting from pop1</span></span></span>
+<span class="r-in"><span><span class="co"># at a given time point (note that specifying a map is not necessary because</span></span></span>
+<span class="r-in"><span><span class="co"># it is "inherited" from the parent)</span></span></span>
+<span class="r-in"><span><span class="va">pop2</span> <span class="op">&lt;-</span> <span class="fu"><a href="population.html">population</a></span><span class="op">(</span><span class="st">"pop2"</span>, N <span class="op">=</span> <span class="fl">100</span>, time <span class="op">=</span> <span class="fl">50</span>, parent <span class="op">=</span> <span class="va">pop1</span>,</span></span>
+<span class="r-in"><span>                        polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">320</span>, <span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">200</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">450</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">400</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">pop3</span> <span class="op">&lt;-</span> <span class="fu"><a href="population.html">population</a></span><span class="op">(</span><span class="st">"pop3"</span>, N <span class="op">=</span> <span class="fl">200</span>, time <span class="op">=</span> <span class="fl">80</span>, parent <span class="op">=</span> <span class="va">pop2</span>,</span></span>
+<span class="r-in"><span>                   center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">800</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># move "pop1" to another location along a specified trajectory and saved the</span></span></span>
+<span class="r-in"><span><span class="co"># resulting object to the same variable (the number of intermediate spatial</span></span></span>
+<span class="r-in"><span><span class="co"># snapshots can be also determined automatically by leaving out the</span></span></span>
+<span class="r-in"><span><span class="co"># `snapshots = ` argument)</span></span></span>
+<span class="r-in"><span><span class="va">pop1_moved</span> <span class="op">&lt;-</span> <span class="fu"><a href="move.html">move</a></span><span class="op">(</span><span class="va">pop1</span>, start <span class="op">=</span> <span class="fl">100</span>, end <span class="op">=</span> <span class="fl">200</span>, snapshots <span class="op">=</span> <span class="fl">6</span>,</span></span>
+<span class="r-in"><span>                   trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">820</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pop1_moved</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> slendr 'population' object </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> name: pop1 </span>
@@ -191,43 +200,43 @@ gene-flow event.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> population history overview:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   - time 1: created as an ancestral population (N = 1000)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   - time 100-200: movement across a landscape</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># many slendr functions are pipe-friendly, making it possible to construct</span></span>
-<span class="r-in"><span class="co"># pipelines which construct entire history of a population</span></span>
-<span class="r-in"><span class="va">pop1</span> <span class="op">&lt;-</span> <span class="fu"><a href="population.html">population</a></span><span class="op">(</span><span class="st">"pop1"</span>, N <span class="op">=</span> <span class="fl">1000</span>, time <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">                   map <span class="op">=</span> <span class="va">map</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">800</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="move.html">move</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fl">100</span>, end <span class="op">=</span> <span class="fl">200</span>, snapshots <span class="op">=</span> <span class="fl">6</span>,</span>
-<span class="r-in">       trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fl">800</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">700</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="set_range.html">set_range</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">300</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">600</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">900</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">250</span><span class="op">)</span>,</span>
-<span class="r-in">    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># population ranges can expand by a given distance in all directions</span></span>
-<span class="r-in"><span class="va">pop2</span> <span class="op">&lt;-</span> <span class="fu"><a href="expand_range.html">expand_range</a></span><span class="op">(</span><span class="va">pop2</span>, by <span class="op">=</span> <span class="fl">200</span>, start <span class="op">=</span> <span class="fl">50</span>, end <span class="op">=</span> <span class="fl">150</span>, snapshots <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># we can check the positions of all populations interactively by plotting their</span></span>
-<span class="r-in"><span class="co"># ranges together on a single map</span></span>
-<span class="r-in"><span class="fu"><a href="plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">pop1</span>, <span class="va">pop2</span>, <span class="va">pop3</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># many slendr functions are pipe-friendly, making it possible to construct</span></span></span>
+<span class="r-in"><span><span class="co"># pipelines which construct entire history of a population</span></span></span>
+<span class="r-in"><span><span class="va">pop1</span> <span class="op">&lt;-</span> <span class="fu"><a href="population.html">population</a></span><span class="op">(</span><span class="st">"pop1"</span>, N <span class="op">=</span> <span class="fl">1000</span>, time <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                   map <span class="op">=</span> <span class="va">map</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">800</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="move.html">move</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fl">100</span>, end <span class="op">=</span> <span class="fl">200</span>, snapshots <span class="op">=</span> <span class="fl">6</span>,</span></span>
+<span class="r-in"><span>       trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fl">800</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">700</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">150</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="set_range.html">set_range</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">300</span>, polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1000</span>, <span class="fl">600</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">900</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">250</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># population ranges can expand by a given distance in all directions</span></span></span>
+<span class="r-in"><span><span class="va">pop2</span> <span class="op">&lt;-</span> <span class="fu"><a href="expand_range.html">expand_range</a></span><span class="op">(</span><span class="va">pop2</span>, by <span class="op">=</span> <span class="fl">200</span>, start <span class="op">=</span> <span class="fl">50</span>, end <span class="op">=</span> <span class="fl">150</span>, snapshots <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># we can check the positions of all populations interactively by plotting their</span></span></span>
+<span class="r-in"><span><span class="co"># ranges together on a single map</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">pop1</span>, <span class="va">pop2</span>, <span class="va">pop3</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gene_flow-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># gene flow events --------------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># individual gene flow events can be saved to a list</span></span>
-<span class="r-in"><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu">gene_flow</span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop1</span>, to <span class="op">=</span> <span class="va">pop3</span>, start <span class="op">=</span> <span class="fl">150</span>, end <span class="op">=</span> <span class="fl">200</span>, rate <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="fu">gene_flow</span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop1</span>, to <span class="op">=</span> <span class="va">pop2</span>, start <span class="op">=</span> <span class="fl">300</span>, end <span class="op">=</span> <span class="fl">330</span>, rate <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># compilation -------------------------------------------------------------</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># compile model components in a serialized form to dist, returning a single</span></span>
-<span class="r-in"><span class="co"># slendr model object (in practice, the resolution should be smaller)</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="compile_model.html">compile_model</a></span><span class="op">(</span></span>
-<span class="r-in">  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pop1</span>, <span class="va">pop2</span>, <span class="va">pop3</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">  resolution <span class="op">=</span> <span class="fl">100</span>, simulation_length <span class="op">=</span> <span class="fl">500</span>,</span>
-<span class="r-in">  competition <span class="op">=</span> <span class="fl">5</span>, mating <span class="op">=</span> <span class="fl">5</span>, dispersal <span class="op">=</span> <span class="fl">1</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># gene flow events --------------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># individual gene flow events can be saved to a list</span></span></span>
+<span class="r-in"><span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">gene_flow</span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop1</span>, to <span class="op">=</span> <span class="va">pop3</span>, start <span class="op">=</span> <span class="fl">150</span>, end <span class="op">=</span> <span class="fl">200</span>, rate <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu">gene_flow</span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop1</span>, to <span class="op">=</span> <span class="va">pop2</span>, start <span class="op">=</span> <span class="fl">300</span>, end <span class="op">=</span> <span class="fl">330</span>, rate <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># compilation -------------------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># compile model components in a serialized form to dist, returning a single</span></span></span>
+<span class="r-in"><span><span class="co"># slendr model object (in practice, the resolution should be smaller)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="compile_model.html">compile_model</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pop1</span>, <span class="va">pop2</span>, <span class="va">pop3</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">100</span>, simulation_length <span class="op">=</span> <span class="fl">500</span>,</span></span>
+<span class="r-in"><span>  competition <span class="op">=</span> <span class="fl">5</span>, mating <span class="op">=</span> <span class="fl">5</span>, dispersal <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -242,8 +251,7 @@ gene-flow event.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

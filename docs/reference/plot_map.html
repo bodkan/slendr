@@ -18,7 +18,7 @@ slendr_region, and slendr_pop)."><meta property="og:image" content="https://www.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -115,16 +115,16 @@ slendr_region, and slendr_pop)."><meta property="og:image" content="https://www.
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plot_map</span><span class="op">(</span>
-  <span class="va">...</span>,
-  time <span class="op">=</span> <span class="cn">NULL</span>,
-  gene_flow <span class="op">=</span> <span class="cn">FALSE</span>,
-  graticules <span class="op">=</span> <span class="st">"original"</span>,
-  intersect <span class="op">=</span> <span class="cn">TRUE</span>,
-  show_map <span class="op">=</span> <span class="cn">TRUE</span>,
-  title <span class="op">=</span> <span class="cn">NULL</span>,
-  interpolated_maps <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_map</span><span class="op">(</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gene_flow <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  graticules <span class="op">=</span> <span class="st">"original"</span>,</span>
+<span>  intersect <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_map <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  interpolated_maps <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -132,28 +132,45 @@ slendr_region, and slendr_pop)."><meta property="og:image" content="https://www.
     <dl><dt>...</dt>
 <dd><p>Objects of classes <code>slendr_map</code>, <code>slendr_region</code>, or
 <code>slendr_pop</code></p></dd>
+
+
 <dt>time</dt>
 <dd><p>Plot a concrete time point</p></dd>
+
+
 <dt>gene_flow</dt>
 <dd><p>Indicate geneflow events with an arrow</p></dd>
+
+
 <dt>graticules</dt>
 <dd><p>Plot graticules in the original Coordinate Reference System
 (such as longitude-latitude), or in the internal CRS (such as meters)?</p></dd>
+
+
 <dt>intersect</dt>
 <dd><p>Intersect the population boundaries against landscape and
 other geographic boundaries (default TRUE)?</p></dd>
+
+
 <dt>show_map</dt>
 <dd><p>Show the underlying world map</p></dd>
+
+
 <dt>title</dt>
 <dd><p>Title of the plot</p></dd>
+
+
 <dt>interpolated_maps</dt>
 <dd><p>Interpolated spatial boundaries for all populations
 in all time points (this is only used for plotting using the <code>explore</code>
 shiny app)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot2 object with the visualized slendr map</p>
+    
+
+<p>A ggplot2 object with the visualized slendr map</p>
     </div>
 
   </div>
@@ -168,8 +185,7 @@ shiny app)</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

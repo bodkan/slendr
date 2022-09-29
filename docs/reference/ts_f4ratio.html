@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -113,131 +113,142 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_f2</span><span class="op">(</span>
-  <span class="va">ts</span>,
-  <span class="va">A</span>,
-  <span class="va">B</span>,
-  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"branch"</span>, <span class="st">"node"</span><span class="op">)</span>,
-  span_normalise <span class="op">=</span> <span class="cn">TRUE</span>,
-  windows <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="fu">ts_f3</span><span class="op">(</span>
-  <span class="va">ts</span>,
-  <span class="va">A</span>,
-  <span class="va">B</span>,
-  <span class="va">C</span>,
-  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"branch"</span>, <span class="st">"node"</span><span class="op">)</span>,
-  span_normalise <span class="op">=</span> <span class="cn">TRUE</span>,
-  windows <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="fu">ts_f4</span><span class="op">(</span>
-  <span class="va">ts</span>,
-  <span class="va">W</span>,
-  <span class="va">X</span>,
-  <span class="va">Y</span>,
-  <span class="va">Z</span>,
-  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"branch"</span>, <span class="st">"node"</span><span class="op">)</span>,
-  span_normalise <span class="op">=</span> <span class="cn">TRUE</span>,
-  windows <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span>
-
-<span class="fu">ts_f4ratio</span><span class="op">(</span>
-  <span class="va">ts</span>,
-  <span class="va">X</span>,
-  <span class="va">A</span>,
-  <span class="va">B</span>,
-  <span class="va">C</span>,
-  <span class="va">O</span>,
-  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"branch"</span><span class="op">)</span>,
-  span_normalise <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_f2</span><span class="op">(</span></span>
+<span>  <span class="va">ts</span>,</span>
+<span>  <span class="va">A</span>,</span>
+<span>  <span class="va">B</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"branch"</span>, <span class="st">"node"</span><span class="op">)</span>,</span>
+<span>  span_normalise <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  windows <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ts_f3</span><span class="op">(</span></span>
+<span>  <span class="va">ts</span>,</span>
+<span>  <span class="va">A</span>,</span>
+<span>  <span class="va">B</span>,</span>
+<span>  <span class="va">C</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"branch"</span>, <span class="st">"node"</span><span class="op">)</span>,</span>
+<span>  span_normalise <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  windows <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ts_f4</span><span class="op">(</span></span>
+<span>  <span class="va">ts</span>,</span>
+<span>  <span class="va">W</span>,</span>
+<span>  <span class="va">X</span>,</span>
+<span>  <span class="va">Y</span>,</span>
+<span>  <span class="va">Z</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"branch"</span>, <span class="st">"node"</span><span class="op">)</span>,</span>
+<span>  span_normalise <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  windows <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">ts_f4ratio</span><span class="op">(</span></span>
+<span>  <span class="va">ts</span>,</span>
+<span>  <span class="va">X</span>,</span>
+<span>  <span class="va">A</span>,</span>
+<span>  <span class="va">B</span>,</span>
+<span>  <span class="va">C</span>,</span>
+<span>  <span class="va">O</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"site"</span>, <span class="st">"branch"</span><span class="op">)</span>,</span>
+<span>  span_normalise <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ts</dt>
 <dd><p>Tree sequence object of the class <code>slendr_ts</code></p></dd>
+
+
 <dt>mode</dt>
 <dd><p>The mode for the calculation ("sites" or "branch")</p></dd>
+
+
 <dt>span_normalise</dt>
 <dd><p>Divide the result by the span of the window? Default
 TRUE, see the tskit documentation for more detail.</p></dd>
+
+
 <dt>windows</dt>
 <dd><p>Coordinates of breakpoints between windows. The first
 coordinate (0) and the last coordinate (equal to <code>ts$sequence_length</code>)
 do not have to be specified as they are added automatically.</p></dd>
+
+
 <dt>W, X, Y, Z, A, B, C, O</dt>
 <dd><p>Character vectors of individual names (following the
 nomenclature of Patterson et al. 2021)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Data frame with statistics calculated for the given sets of individuals</p>
+    
+
+<p>Data frame with statistics calculated for the given sets of individuals</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load an example model with an already simulated tree sequence</span></span>
-<span class="r-in"><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load the tree-sequence object from disk</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, mutate <span class="op">=</span> <span class="cn">TRUE</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># calculate f2 for two individuals in a previously loaded tree sequence</span></span>
-<span class="r-in"><span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"AFR_1"</span>, B <span class="op">=</span> <span class="st">"EUR_1"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load the tree-sequence object from disk</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, mutate <span class="op">=</span> <span class="cn">TRUE</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># calculate f2 for two individuals in a previously loaded tree sequence</span></span></span>
+<span class="r-in"><span><span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"AFR_1"</span>, B <span class="op">=</span> <span class="st">"EUR_1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   A     B           f2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 0.000<span style="text-decoration: underline;">042</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># calculate f2 for two sets of individuals</span></span>
-<span class="r-in"><span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>, B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_3"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># calculate f2 for two sets of individuals</span></span></span>
+<span class="r-in"><span><span class="fu">ts_f2</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>, B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_3"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   A           B                  f2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1+AFR_2 EUR_1+EUR_3 0.000<span style="text-decoration: underline;">042</span>7</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># calculate f3 for two individuals in a previously loaded tree sequence</span></span>
-<span class="r-in"><span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span>, C <span class="op">=</span> <span class="st">"NEA_1"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># calculate f3 for two individuals in a previously loaded tree sequence</span></span></span>
+<span class="r-in"><span><span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span>, C <span class="op">=</span> <span class="st">"NEA_1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   A     B     C           f3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 NEA_1 0.000<span style="text-decoration: underline;">022</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># calculate f3 for two sets of individuals</span></span>
-<span class="r-in"><span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span>
-<span class="r-in">          B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span><span class="op">)</span>,</span>
-<span class="r-in">          C <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># calculate f3 for two sets of individuals</span></span></span>
+<span class="r-in"><span><span class="fu">ts_f3</span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>          B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>          C <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   A                       B           C           f3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> AFR_1+AFR_2+EUR_1+EUR_2 NEA_1+NEA_2 CH_1  0.000<span style="text-decoration: underline;">199</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># calculate f4 for single individuals</span></span>
-<span class="r-in"><span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="st">"EUR_1"</span>, X <span class="op">=</span> <span class="st">"AFR_1"</span>, Y <span class="op">=</span> <span class="st">"NEA_1"</span>, Z <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># calculate f4 for single individuals</span></span></span>
+<span class="r-in"><span><span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="st">"EUR_1"</span>, X <span class="op">=</span> <span class="st">"AFR_1"</span>, Y <span class="op">=</span> <span class="st">"NEA_1"</span>, Z <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   W     X     Y     Z        f4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 NEA_1 CH_1      0</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># calculate f4 for sets of individuals</span></span>
-<span class="r-in"><span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span>
-<span class="r-in">          X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>,</span>
-<span class="r-in">          Y <span class="op">=</span> <span class="st">"NEA_1"</span>,</span>
-<span class="r-in">          Z <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># calculate f4 for sets of individuals</span></span></span>
+<span class="r-in"><span><span class="fu">ts_f4</span><span class="op">(</span><span class="va">ts</span>, W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>          X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>          Y <span class="op">=</span> <span class="st">"NEA_1"</span>,</span></span>
+<span class="r-in"><span>          Z <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   W           X           Y     Z        f4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_1+EUR_2 AFR_1+AFR_2 NEA_1 CH_1      0</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># calculate f4-ratio for a given set of target individuals X</span></span>
-<span class="r-in"><span class="fu">ts_f4ratio</span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span>, <span class="st">"EUR_4"</span>, <span class="st">"EUR_5"</span><span class="op">)</span>,</span>
-<span class="r-in">               A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># calculate f4-ratio for a given set of target individuals X</span></span></span>
+<span class="r-in"><span><span class="fu">ts_f4ratio</span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span>, <span class="st">"EUR_4"</span>, <span class="st">"EUR_5"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   X     A     B     C     O     alpha</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -259,8 +270,7 @@ nomenclature of Patterson et al. 2021)</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

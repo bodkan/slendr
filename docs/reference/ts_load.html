@@ -18,7 +18,7 @@ Optionally, the tree sequence can be recapitated and simplified."><meta property
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -115,20 +115,20 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ts_load</span><span class="op">(</span>
-  <span class="va">file</span>,
-  model <span class="op">=</span> <span class="cn">NULL</span>,
-  recapitate <span class="op">=</span> <span class="cn">FALSE</span>,
-  simplify <span class="op">=</span> <span class="cn">FALSE</span>,
-  mutate <span class="op">=</span> <span class="cn">FALSE</span>,
-  recombination_rate <span class="op">=</span> <span class="cn">NULL</span>,
-  mutation_rate <span class="op">=</span> <span class="cn">NULL</span>,
-  Ne <span class="op">=</span> <span class="cn">NULL</span>,
-  random_seed <span class="op">=</span> <span class="cn">NULL</span>,
-  simplify_to <span class="op">=</span> <span class="cn">NULL</span>,
-  keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span>,
-  demography <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_load</span><span class="op">(</span></span>
+<span>  <span class="va">file</span>,</span>
+<span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recapitate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  simplify <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  mutate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  recombination_rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mutation_rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Ne <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  simplify_to <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  demography <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -136,37 +136,60 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
     <dl><dt>file</dt>
 <dd><p>A path to the tree-sequence file (either originating from a
 slendr model or a standard non-slendr tree sequence).</p></dd>
+
+
 <dt>model</dt>
 <dd><p>Optional <code>slendr_model</code> object which produced the
 tree-sequence <code>file</code>. Used for adding various annotation data and
 metadata to the standard tskit tree-sequence object.</p></dd>
+
+
 <dt>recapitate</dt>
 <dd><p>Should the tree sequence be recapitated?</p></dd>
+
+
 <dt>simplify</dt>
 <dd><p>Should the tree sequence be simplified down to a set of sampled
 individuals (those explicitly recorded)?</p></dd>
+
+
 <dt>mutate</dt>
 <dd><p>Should the tree sequence be mutated?</p></dd>
+
+
 <dt>recombination_rate, Ne</dt>
 <dd><p>Arguments passed to <code>ts_recapitate</code></p></dd>
+
+
 <dt>mutation_rate</dt>
 <dd><p>Mutation rate passed to <code>ts_mutate</code></p></dd>
+
+
 <dt>random_seed</dt>
 <dd><p>Random seed passed to pyslim's <code>recapitate</code> method</p></dd>
+
+
 <dt>simplify_to</dt>
 <dd><p>A character vector of individual names. If NULL, all
 remembered individuals will be retained. Only used when <code>simplify =
   TRUE</code>.</p></dd>
+
+
 <dt>keep_input_roots</dt>
 <dd><p>Should the history ancestral to the MRCA of all
 samples be retained in the tree sequence? Default is <code>FALSE</code>.</p></dd>
+
+
 <dt>demography</dt>
 <dd><p>Ancestral demography to be passed internally to
 <code>msprime.sim_ancestry()</code> (see msprime's documentation for mode detail)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Tree-sequence object of the class <code>slendr_ts</code>, which serves as
+    
+
+<p>Tree-sequence object of the class <code>slendr_ts</code>, which serves as
 an interface point for the Python module tskit using slendr functions with
 the <code>ts_</code> prefix.</p>
     </div>
@@ -190,37 +213,37 @@ map</p></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load an example model with an already simulated tree sequence</span></span>
-<span class="r-in"><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load tree sequence generated by a given model</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># even tree sequences generated by non-slendr models can be</span></span>
-<span class="r-in"><span class="va">msprime_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/msprime.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">msprime_ts</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load tree sequence and immediately simplify it only to sampled individuals</span></span>
-<span class="r-in"><span class="co"># (note that the example tree sequence is already simplified so this operation</span></span>
-<span class="r-in"><span class="co"># does not do anything in this case)</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, model <span class="op">=</span> <span class="va">model</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load tree sequence and simplify it to a subset of sampled individuals</span></span>
-<span class="r-in"><span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span>,</span>
-<span class="r-in">                                            <span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load tree sequence, recapitate it and simplify it</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># load tree sequence, recapitate it, simplify it and overlay neutral mutations</span></span>
-<span class="r-in"><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, random_seed <span class="op">=</span> <span class="fl">42</span>,</span>
-<span class="r-in">              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">ts</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load tree sequence generated by a given model</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># even tree sequences generated by non-slendr models can be</span></span></span>
+<span class="r-in"><span><span class="va">msprime_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/msprime.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">msprime_ts</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load tree sequence and immediately simplify it only to sampled individuals</span></span></span>
+<span class="r-in"><span><span class="co"># (note that the example tree sequence is already simplified so this operation</span></span></span>
+<span class="r-in"><span><span class="co"># does not do anything in this case)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, model <span class="op">=</span> <span class="va">model</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load tree sequence and simplify it to a subset of sampled individuals</span></span></span>
+<span class="r-in"><span><span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span>,</span></span>
+<span class="r-in"><span>                                            <span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load tree sequence, recapitate it and simplify it</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load tree sequence, recapitate it, simplify it and overlay neutral mutations</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, random_seed <span class="op">=</span> <span class="fl">42</span>,</span></span>
+<span class="r-in"><span>              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ts</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔════════════════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence            ║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤════════╣</span>
@@ -268,8 +291,7 @@ map</p></div>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

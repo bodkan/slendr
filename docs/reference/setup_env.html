@@ -19,7 +19,7 @@ Python environment with all the required Python dependencies."><meta property="o
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -117,7 +117,7 @@ Python environment with all the required Python dependencies.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">setup_env</span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span>, agree <span class="op">=</span> <span class="cn">FALSE</span>, pip <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">setup_env</span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">FALSE</span>, agree <span class="op">=</span> <span class="cn">FALSE</span>, pip <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -125,8 +125,12 @@ Python environment with all the required Python dependencies.</p>
     <dl><dt>quiet</dt>
 <dd><p>Should informative messages be printed to the console? Default
 is <code>FALSE</code>.</p></dd>
+
+
 <dt>agree</dt>
 <dd><p>Automatically agree to all questions?</p></dd>
+
+
 <dt>pip</dt>
 <dd><p>Should pip be used instead of conda for installing slendr's Python
 dependencies? Note that this will still use the conda distribution to
@@ -135,10 +139,13 @@ will install its Python dependencies. Unless explicitly set to <code>TRUE</code>
 Python dependencies will be installed from conda repositories by default,
 expect for the case of osx-arm64 Mac architecture, for which conda
 dependencies are broken.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>No return value, called for side effects</p>
+    
+
+<p>No return value, called for side effects</p>
     </div>
 
   </div>
@@ -153,8 +160,7 @@ dependencies are broken.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

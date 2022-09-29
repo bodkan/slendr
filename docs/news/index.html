@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -109,193 +109,47 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
-<ul><li><p>The <code><a href="../reference/msprime.html">msprime()</a></code> function now makes sure that a given
-<em>slendr</em> model can fully coalesce to a single common ancestor
-population. Previously, having multiple ancestral populations created
-with <code>parent = "ancestor"</code> would cause an infinite simulation
-when plugged into the <code><a href="../reference/msprime.html">msprime()</a></code> backend. (<a href="https://github.com/bodkan/slendr/commit/095b124" class="external-link">#095b124</a>)</p></li>
-<li><p>The initial size of a population which emerges from a split from
-another population is now printed in a population history summary in the
-R console. (<a href="https://github.com/bodkan/slendr/commit/6525bf3" class="external-link">#6525bf3</a>)</p></li>
-<li><p>A couple of fixes to support loading, processing, and plotting of
-“manually” created tree sequences have been implemented (see <a href="https://tskit.dev/tutorials/tables_and_editing.html#constructing-a-tree-sequence" class="external-link">this</a>).
-Not sure how practically useful, but it’s important to be able to load
-even “pure” tree sequences which are not from simulators such as SLiM
-and msprime. A set of <a href="https://github.com/bodkan/slendr/blob/9611437554bbb171f3df6374651acc3d73c63426/tests/testthat/test-manual-ts.R" class="external-link">unit
-tests</a> has been added, making sure that a minimalist nodes &amp;
-edges table can be loaded, as well as nodes &amp; edges &amp;
-individuals, plus tables of populations and sites &amp; mutations. PRs
-with more extensive unit tests and bug reports of tree sequences which
-are failing to load would be appreciated! The code for handling cases of
-“manually-created” tree sequences which have missing individual table,
-missing populations table, etc. seems especially brittle at the moment
-(<a href="https://github.com/bodkan/slendr/commit/2f5fc32" class="external-link">#2f5fc32</a>).</p></li>
-<li><p>The <code>-1</code> value as a missing value indicator used in
-tskit is now replaced with the more R-like <code>NA</code> in various
-tree-sequence tables (annotated by <em>slendr</em> or original through
-tskit itself) (<a href="https://github.com/bodkan/slendr/commit/2f5fc32" class="external-link">#2f5fc32</a>).</p></li>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.4.0" id="slendr-040">slendr 0.4.0<a class="anchor" aria-label="anchor" href="#slendr-040"></a></h2>
+<ul><li><p>The <code><a href="../reference/msprime.html">msprime()</a></code> function now makes sure that a given <em>slendr</em> model can fully coalesce to a single common ancestor population. Previously, having multiple ancestral populations created with <code>parent = "ancestor"</code> would cause an infinite simulation when plugged into the <code><a href="../reference/msprime.html">msprime()</a></code> backend. (<a href="https://github.com/bodkan/slendr/commit/095b124" class="external-link">#095b124</a>)</p></li>
+<li><p>The initial size of a population which emerges from a split from another population is now printed in a population history summary in the R console. (<a href="https://github.com/bodkan/slendr/commit/6525bf3" class="external-link">#6525bf3</a>)</p></li>
+<li><p>A couple of fixes to support loading, processing, and plotting of “manually” created tree sequences have been implemented (see <a href="https://tskit.dev/tutorials/tables_and_editing.html#constructing-a-tree-sequence" class="external-link">this</a>). Not sure how practically useful, but it’s important to be able to load even “pure” tree sequences which are not from simulators such as SLiM and msprime. A set of <a href="https://github.com/bodkan/slendr/blob/9611437554bbb171f3df6374651acc3d73c63426/tests/testthat/test-manual-ts.R" class="external-link">unit tests</a> has been added, making sure that a minimalist nodes &amp; edges table can be loaded, as well as nodes &amp; edges &amp; individuals, plus tables of populations and sites &amp; mutations. PRs with more extensive unit tests and bug reports of tree sequences which are failing to load would be appreciated! The code for handling cases of “manually-created” tree sequences which have missing individual table, missing populations table, etc. seems especially brittle at the moment (<a href="https://github.com/bodkan/slendr/commit/2f5fc32" class="external-link">#2f5fc32</a>).</p></li>
+<li><p>The <code>-1</code> value as a missing value indicator used in tskit is now replaced with the more R-like <code>NA</code> in various tree-sequence tables (annotated by <em>slendr</em> or original through tskit itself) (<a href="https://github.com/bodkan/slendr/commit/2f5fc32" class="external-link">#2f5fc32</a>).</p></li>
 <li><p>Relative paths are now expanded in <code><a href="../reference/ts_save.html">ts_save()</a></code> (<a href="https://github.com/bodkan/slendr/commit/9521dfb" class="external-link">#9521dfb</a>).</p></li>
-<li><p><em>slendr</em> models can now be optionally compiled without
-serialization to disk. This only works with the <code><a href="../reference/msprime.html">msprime()</a></code>
-coalescent back end but will be much faster in cases where a huge number
-of simulations needs to be run because for non-serialized models,
-<code><a href="../reference/msprime.html">msprime()</a></code> now calls the back end engine directly through
-the R-Python interface (rather than on the command line) and output tree
-sequences are not saved to disk, rather than passed through the Python-R
-interface directly in memory (PR <a href="https://github.com/bodkan/slendr/pull/112" class="external-link">#112</a>).</p></li>
-<li><p>Deprecated argument <code>sampling =</code> of the functions
-<code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> has now been permanently
-removed in favour of the <code>samples =</code> argument (<a href="https://github.com/bodkan/slendr/commit/6bfda57" class="external-link">#6bfda57</a>).</p></li>
-<li><p>Avoid the unnecessary <code>array</code> type of <em>tskit</em>
-results returned via reticulate. Numeric vectors (columns of data frames
-with numerical results) obtained in this way are simple R numeric vector
-(<a href="https://github.com/bodkan/slendr/commit/c690334" class="external-link">#c690334</a>).</p></li>
-<li><p>One-way and multi-way statistics results are now returned as
-simple numerical vectors. Previously, results were returned as a type
-<code>array</code> despite “looking” as vectors (this is how values are
-returned to R from the reticulate-Python layer), which caused
-unnecessary annoyances and type-conversions on the R side of things and
-was not even intended (<a href="https://github.com/bodkan/slendr/commit/403df3b" class="external-link">#403df3b</a>).</p></li>
-<li><p>Computing population genetic statistics on named samples that are
-not present in a tree sequence (most likely typos) is now correctly
-caught and reported as an error (<a href="https://github.com/bodkan/slendr/commit/da7e0bb" class="external-link">#da7e0bb</a>).</p></li>
+<li><p><em>slendr</em> models can now be optionally compiled without serialization to disk. This only works with the <code><a href="../reference/msprime.html">msprime()</a></code> coalescent back end but will be much faster in cases where a huge number of simulations needs to be run because for non-serialized models, <code><a href="../reference/msprime.html">msprime()</a></code> now calls the back end engine directly through the R-Python interface (rather than on the command line) and output tree sequences are not saved to disk, rather than passed through the Python-R interface directly in memory (PR <a href="https://github.com/bodkan/slendr/pull/112" class="external-link">#112</a>).</p></li>
+<li><p>Deprecated argument <code>sampling =</code> of the functions <code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> has now been permanently removed in favour of the <code>samples =</code> argument (<a href="https://github.com/bodkan/slendr/commit/6bfda57" class="external-link">#6bfda57</a>).</p></li>
+<li><p>Avoid the unnecessary <code>array</code> type of <em>tskit</em> results returned via reticulate. Numeric vectors (columns of data frames with numerical results) obtained in this way are simple R numeric vector (<a href="https://github.com/bodkan/slendr/commit/c690334" class="external-link">#c690334</a>).</p></li>
+<li><p>One-way and multi-way statistics results are now returned as simple numerical vectors. Previously, results were returned as a type <code>array</code> despite “looking” as vectors (this is how values are returned to R from the reticulate-Python layer), which caused unnecessary annoyances and type-conversions on the R side of things and was not even intended (<a href="https://github.com/bodkan/slendr/commit/403df3b" class="external-link">#403df3b</a>).</p></li>
+<li><p>Computing population genetic statistics on named samples that are not present in a tree sequence (most likely typos) is now correctly caught and reported as an error (<a href="https://github.com/bodkan/slendr/commit/da7e0bb" class="external-link">#da7e0bb</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.0" id="slendr-030">slendr 0.3.0<small>2022-08-19</small><a class="anchor" aria-label="anchor" href="#slendr-030"></a></h2>
-<ul><li><p>SLiM 4.0 is now required for running simulations with the
-<code><a href="../reference/slim.html">slim()</a></code> engine. If you want to run <em>slendr</em>
-simulations with SLiM (spatial or non-spatial), you will need to upgrade
-you SLiM installation. SLiM 3.7.1 version is no longer supported as the
-upcoming new <em>slendr</em> spatial features will depend on SLiM 4.x
-and maintaining two functionally identical yet syntactically different
-back ends is not feasible (PR <a href="https://github.com/bodkan/slendr/pull/104" class="external-link">#104</a>).</p></li>
-<li><p>At the same time as the SLiM 4.0 release, new versions of Python
-modules msprime, tskit and pyslim have also been released. In fact, to
-be able to work with SLiM 4.0 tree sequences properly, those Python
-modules must be upgraded as well. Next time you load
-<code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code>, you will be prompted to setup a new
-updated Python environment which you can do easily by running
-<code><a href="../reference/setup_env.html">setup_env()</a></code>.</p></li>
-<li><p>Experimental support for running coalescent msprime simulations
-and analysing tree-sequence data using tskit on the Windows platform has
-now been implemented (PR <a href="https://github.com/bodkan/slendr/pull/102" class="external-link">#102</a>).</p></li>
+<ul><li><p>SLiM 4.0 is now required for running simulations with the <code><a href="../reference/slim.html">slim()</a></code> engine. If you want to run <em>slendr</em> simulations with SLiM (spatial or non-spatial), you will need to upgrade you SLiM installation. SLiM 3.7.1 version is no longer supported as the upcoming new <em>slendr</em> spatial features will depend on SLiM 4.x and maintaining two functionally identical yet syntactically different back ends is not feasible (PR <a href="https://github.com/bodkan/slendr/pull/104" class="external-link">#104</a>).</p></li>
+<li><p>At the same time as the SLiM 4.0 release, new versions of Python modules msprime, tskit and pyslim have also been released. In fact, to be able to work with SLiM 4.0 tree sequences properly, those Python modules must be upgraded as well. Next time you load <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code>, you will be prompted to setup a new updated Python environment which you can do easily by running <code><a href="../reference/setup_env.html">setup_env()</a></code>.</p></li>
+<li><p>Experimental support for running coalescent msprime simulations and analysing tree-sequence data using tskit on the Windows platform has now been implemented (PR <a href="https://github.com/bodkan/slendr/pull/102" class="external-link">#102</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.0" id="slendr-020">slendr 0.2.0<small>2022-08-09</small><a class="anchor" aria-label="anchor" href="#slendr-020"></a></h2>
 <ul><li><p><em>slendr</em> is now <a href="https://CRAN.R-project.org/package=slendr" class="external-link">on CRAN</a>!</p></li>
-<li><p>Big changes to the way tree-sequence outputs are handled by
-<em>slendr</em> by default. See <a href="https://github.com/bodkan/slendr/pull/100#issue-1310869866" class="external-link">this
-comment</a> for an extended description and examples of the change. (PR
-<a href="https://github.com/bodkan/slendr/pull/100" class="external-link">#100</a>). Briefly,
-simulation functions <code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> now
-return a tree-sequence object by default (can be switched off by setting
-<code>load = FALSE</code>), avoiding the need to always run
-<code>ts &lt;- ts_load(model)</code> as previously. At the same time, a
-parameter <code>output =</code> can be now used in <code><a href="../reference/slim.html">slim()</a></code>
-and <code><a href="../reference/msprime.html">msprime()</a></code> to specify the location where a tree-sequence
-file should be saved (temporary file by default).</p></li>
-<li><p><strong><em>slendr</em>’s tree-sequence R interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html" class="external-link">tskit</a>
-Python module has been generalized to load, process, and analyze tree
-sequences from non-<em>slendr</em> models!</strong> This means that
-users can use the <em>slendr</em> R package even for analyzing tree
-sequences coming from standard msprime and SLiM scripts, including all
-spatial capabilities that have been only available for <em>slendr</em>
-tree sequences so far. Please note that this generalization is still
-rather experimental and there might be corner cases where a tree
-sequence from your msprime or SLiM script does not load properly or
-leads to other errors. If this happens, please open a GitHub issue with
-the script in question attached. (PR <a href="https://github.com/bodkan/slendr/pull/91" class="external-link">#91</a>)</p></li>
-<li><p>Removed functions and some function arguments originally
-deprecated during the renaming phase of the pre-preprint refactoring.
-This affects <code>compile</code>, <code>boundary</code>,
-<code>dispersal</code>, <code>expand</code>, <code>geneflow</code>,
-<code>plot.slendr</code>, <code>plot_graph</code>, <code>read</code>,
-<code>sampling</code>, and <code>shrink</code>. Similarly, deprecated
-<code>dir</code> argument of the <code>compile_model</code> is now
-<code>path</code>, <code>geneflow</code> argument of
-<code>compile_model</code> is now <code>gene_flow</code>, and the
-<code>_dist</code> suffix was removed from
-<code>competition_dist</code>, <code>mate_dist</code>, and
-<code>dispersal_dist</code>. If you get an error about a missing
-function or a function argument in code which used to work in an ancient
-version of <em>slendr</em>, this is why. (<a href="https://github.com/bodkan/slendr/commit/985b451" class="external-link">#985b451</a>)</p></li>
-<li><p>When setting up an isolated Python environment using
-<code><a href="../reference/setup_env.html">setup_env()</a></code>, <em>slendr</em> now makes a decision whether
-to install Python dependencies using pip (critical on osx-arm64 for
-which the conda msprime/tskit are unfortunately currently broken) or
-with conda (every other platform). This can be still influenced by the
-user using the <code>pip = &lt;TRUE|FALSE&gt;</code> argument, but we
-now change the default behavior on ARM64 Mac. (<a href="https://github.com/bodkan/slendr/commit/54a413d" class="external-link">#54a413d</a>)</p></li>
-<li><p>The name of the default <em>slendr</em> Python environment is now
-shortened even more, and the redundant <code>_pandas</code> prefix is
-now dropped. <strong>Users will be notified upon calling
-<code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> that a new environment should be created.
-This is OK, it’s not a bug.</strong> (<a href="https://github.com/bodkan/slendr/commit/54a413d" class="external-link">#54a413d</a>)</p></li>
-<li><p>The format of the default <em>slendr</em> Python environment is
-now
-<code>msprime-&lt;version&gt;_tskit-&lt;version&gt;_pyslim-&lt;version&gt;_pandas</code>,
-dropping the <code>slendr_</code> prefix. This paves the way towards a
-future non-<em>slendr</em> tskit R package, which will share the same
-Python environment with <em>slendr</em> (because both R packages will go
-hand in hand). This isn’t really a user-facing change, except that
-calling <code><a href="../reference/setup_env.html">setup_env()</a></code> will suggests creating a new Python
-environment and <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> will appear as if a
-<em>slendr</em> environment is not yet present. Calling
-<code><a href="../reference/setup_env.html">setup_env()</a></code> and creating a new Python environment from
-scratch will solve the problem. (<a href="https://github.com/bodkan/slendr/commit/eb05180" class="external-link">#eb05180</a>)</p></li>
-<li><p><code>xrange</code> and <code>yrange</code> parameters of
-<code><a href="../reference/world.html">world()</a></code> are now enforced to be two-dimensional numeric
-vectors, avoiding unnecessary issues with misspecified
-longitude/latitude (<a href="https://github.com/bodkan/slendr/commit/df95369" class="external-link">#df95369</a>)</p></li>
-<li><p>The argument <code>sampling =</code> in <code><a href="../reference/slim.html">slim()</a></code> and
-<code><a href="../reference/msprime.html">msprime()</a></code> is now renamed to <code>samples =</code> (<a href="https://github.com/bodkan/slendr/commit/adf4e0d" class="external-link">#adf4e0d</a>).</p></li>
-<li><p>The automated <code><a href="../reference/setup_env.html">setup_env()</a></code> function for creating
-dedicated mini Python environments for <em>slendr</em> now installs
-packages using <em>pip</em> by default. Reason: The rate of conda
-failures and dependency conflicts (even in the trivial case of
-installing nothing more than <em>msprime</em> + <em>tskit</em> +
-<em>pyslim</em> + <em>pandas</em>) is too high to rely on it. The option
-to use conda for package installations with <code><a href="../reference/setup_env.html">setup_env()</a></code> is
-still there, but the users must explicitly call
-<code>setup_env(pip = FALSE)</code> to get this behavior. Note that
-conda is still used as a means to install Python itself! This change
-only affects the way how Python modules are installed into a dedicated
-<em>slendr</em> Python environment, not the installation of Python
-itself. (<a href="https://github.com/bodkan/slendr/commit/81be1a7" class="external-link">#81be1a7</a>)</p></li>
-<li><p>The name of the automatically created <em>slendr</em>-specific
-Python environment is now composed from the names <em>and versions</em>
-of Python modules installed. This makes it possible to naturally upgrade
-both <em>slendr</em> and its Python dependencies in case the
-<em>tskit</em> / <em>msprime</em> / <em>pyslim</em> folks upgrade some
-of those packages. In that case, if a <em>slendr</em> user upgrades the
-<em>slendr</em> package (and that new version requires newer versions of
-Python modules), <em>slendr</em> will simply recommend to create a new
-Python environment without additional effort on our part. (<a href="https://github.com/bodkan/slendr/commit/81be1a7" class="external-link">#81be1a7</a>)</p></li>
-<li><p>The code of <code><a href="../reference/setup_env.html">setup_env()</a></code> was simplified to bare
-essentials. Now it <em>only</em> serves as a way to auto-setup a
-dedicated, isolated Python installation and <em>slendr</em> environment.
-The interface to install Python modules into custom-defined Python
-environment created outside R has been removed because this
-functionality is not necessary – these custom environments can be easily
-activated by calling <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_virtualenv</a></code> or
-<code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_condaenv</a></code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
-<li><p>If some Python users want to use custom Python environments with
-<em>msprime</em>, <em>tskit</em>, and <em>pyslim</em>, they can silence
-the suggestion to use <code><a href="../reference/setup_env.html">setup_env()</a></code> printed by the
-<code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> call by setting
-<code>options(slendr.custom_env = TRUE)</code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
-<li><p>The argument <code>sim_length =</code> is now renamed to
-<code>simulation_length =</code>. Both are accepted for the moment and
-using the old name will simply inform the user of the future
-deprecation. (<a href="https://github.com/bodkan/slendr/commit/56491fb" class="external-link">#56491fb</a>)</p></li>
-<li><p>Extensive set of runnable examples including figures and a
-built-in pre-compiled example model have been added to the
-documentation. (<a href="https://github.com/bodkan/slendr/commit/395df62c" class="external-link">#395df62c</a>)</p></li>
+<li><p>Big changes to the way tree-sequence outputs are handled by <em>slendr</em> by default. See <a href="https://github.com/bodkan/slendr/pull/100#issue-1310869866" class="external-link">this comment</a> for an extended description and examples of the change. (PR <a href="https://github.com/bodkan/slendr/pull/100" class="external-link">#100</a>). Briefly, simulation functions <code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> now return a tree-sequence object by default (can be switched off by setting <code>load = FALSE</code>), avoiding the need to always run <code>ts &lt;- ts_load(model)</code> as previously. At the same time, a parameter <code>output =</code> can be now used in <code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> to specify the location where a tree-sequence file should be saved (temporary file by default).</p></li>
+<li><p><strong><em>slendr</em>’s tree-sequence R interface to the <a href="https://tskit.dev/tskit/docs/stable/introduction.html" class="external-link">tskit</a> Python module has been generalized to load, process, and analyze tree sequences from non-<em>slendr</em> models!</strong> This means that users can use the <em>slendr</em> R package even for analyzing tree sequences coming from standard msprime and SLiM scripts, including all spatial capabilities that have been only available for <em>slendr</em> tree sequences so far. Please note that this generalization is still rather experimental and there might be corner cases where a tree sequence from your msprime or SLiM script does not load properly or leads to other errors. If this happens, please open a GitHub issue with the script in question attached. (PR <a href="https://github.com/bodkan/slendr/pull/91" class="external-link">#91</a>)</p></li>
+<li><p>Removed functions and some function arguments originally deprecated during the renaming phase of the pre-preprint refactoring. This affects <code>compile</code>, <code>boundary</code>, <code>dispersal</code>, <code>expand</code>, <code>geneflow</code>, <code>plot.slendr</code>, <code>plot_graph</code>, <code>read</code>, <code>sampling</code>, and <code>shrink</code>. Similarly, deprecated <code>dir</code> argument of the <code>compile_model</code> is now <code>path</code>, <code>geneflow</code> argument of <code>compile_model</code> is now <code>gene_flow</code>, and the <code>_dist</code> suffix was removed from <code>competition_dist</code>, <code>mate_dist</code>, and <code>dispersal_dist</code>. If you get an error about a missing function or a function argument in code which used to work in an ancient version of <em>slendr</em>, this is why. (<a href="https://github.com/bodkan/slendr/commit/985b451" class="external-link">#985b451</a>)</p></li>
+<li><p>When setting up an isolated Python environment using <code><a href="../reference/setup_env.html">setup_env()</a></code>, <em>slendr</em> now makes a decision whether to install Python dependencies using pip (critical on osx-arm64 for which the conda msprime/tskit are unfortunately currently broken) or with conda (every other platform). This can be still influenced by the user using the <code>pip = &lt;TRUE|FALSE&gt;</code> argument, but we now change the default behavior on ARM64 Mac. (<a href="https://github.com/bodkan/slendr/commit/54a413d" class="external-link">#54a413d</a>)</p></li>
+<li><p>The name of the default <em>slendr</em> Python environment is now shortened even more, and the redundant <code>_pandas</code> prefix is now dropped. <strong>Users will be notified upon calling <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> that a new environment should be created. This is OK, it’s not a bug.</strong> (<a href="https://github.com/bodkan/slendr/commit/54a413d" class="external-link">#54a413d</a>)</p></li>
+<li><p>The format of the default <em>slendr</em> Python environment is now <code>msprime-&lt;version&gt;_tskit-&lt;version&gt;_pyslim-&lt;version&gt;_pandas</code>, dropping the <code>slendr_</code> prefix. This paves the way towards a future non-<em>slendr</em> tskit R package, which will share the same Python environment with <em>slendr</em> (because both R packages will go hand in hand). This isn’t really a user-facing change, except that calling <code><a href="../reference/setup_env.html">setup_env()</a></code> will suggests creating a new Python environment and <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> will appear as if a <em>slendr</em> environment is not yet present. Calling <code><a href="../reference/setup_env.html">setup_env()</a></code> and creating a new Python environment from scratch will solve the problem. (<a href="https://github.com/bodkan/slendr/commit/eb05180" class="external-link">#eb05180</a>)</p></li>
+<li><p><code>xrange</code> and <code>yrange</code> parameters of <code><a href="../reference/world.html">world()</a></code> are now enforced to be two-dimensional numeric vectors, avoiding unnecessary issues with misspecified longitude/latitude (<a href="https://github.com/bodkan/slendr/commit/df95369" class="external-link">#df95369</a>)</p></li>
+<li><p>The argument <code>sampling =</code> in <code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code> is now renamed to <code>samples =</code> (<a href="https://github.com/bodkan/slendr/commit/adf4e0d" class="external-link">#adf4e0d</a>).</p></li>
+<li><p>The automated <code><a href="../reference/setup_env.html">setup_env()</a></code> function for creating dedicated mini Python environments for <em>slendr</em> now installs packages using <em>pip</em> by default. Reason: The rate of conda failures and dependency conflicts (even in the trivial case of installing nothing more than <em>msprime</em> + <em>tskit</em> + <em>pyslim</em> + <em>pandas</em>) is too high to rely on it. The option to use conda for package installations with <code><a href="../reference/setup_env.html">setup_env()</a></code> is still there, but the users must explicitly call <code>setup_env(pip = FALSE)</code> to get this behavior. Note that conda is still used as a means to install Python itself! This change only affects the way how Python modules are installed into a dedicated <em>slendr</em> Python environment, not the installation of Python itself. (<a href="https://github.com/bodkan/slendr/commit/81be1a7" class="external-link">#81be1a7</a>)</p></li>
+<li><p>The name of the automatically created <em>slendr</em>-specific Python environment is now composed from the names <em>and versions</em> of Python modules installed. This makes it possible to naturally upgrade both <em>slendr</em> and its Python dependencies in case the <em>tskit</em> / <em>msprime</em> / <em>pyslim</em> folks upgrade some of those packages. In that case, if a <em>slendr</em> user upgrades the <em>slendr</em> package (and that new version requires newer versions of Python modules), <em>slendr</em> will simply recommend to create a new Python environment without additional effort on our part. (<a href="https://github.com/bodkan/slendr/commit/81be1a7" class="external-link">#81be1a7</a>)</p></li>
+<li><p>The code of <code><a href="../reference/setup_env.html">setup_env()</a></code> was simplified to bare essentials. Now it <em>only</em> serves as a way to auto-setup a dedicated, isolated Python installation and <em>slendr</em> environment. The interface to install Python modules into custom-defined Python environment created outside R has been removed because this functionality is not necessary – these custom environments can be easily activated by calling <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_virtualenv</a></code> or <code><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">reticulate::use_condaenv</a></code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
+<li><p>If some Python users want to use custom Python environments with <em>msprime</em>, <em>tskit</em>, and <em>pyslim</em>, they can silence the suggestion to use <code><a href="../reference/setup_env.html">setup_env()</a></code> printed by the <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> call by setting <code>options(slendr.custom_env = TRUE)</code>. (<a href="https://github.com/bodkan/slendr/commit/30f24b9" class="external-link">#30f24b9</a>)</p></li>
+<li><p>The argument <code>sim_length =</code> is now renamed to <code>simulation_length =</code>. Both are accepted for the moment and using the old name will simply inform the user of the future deprecation. (<a href="https://github.com/bodkan/slendr/commit/56491fb" class="external-link">#56491fb</a>)</p></li>
+<li><p>Extensive set of runnable examples including figures and a built-in pre-compiled example model have been added to the documentation. (<a href="https://github.com/bodkan/slendr/commit/395df62c" class="external-link">#395df62c</a>)</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="slendr-010">slendr 0.1.0<a class="anchor" aria-label="anchor" href="#slendr-010"></a></h2>
-<ul><li>First numbered version of <em>slendr</em> to celebrate its <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">bioRxiv
-preprint</a>. 🥳 🎉</li>
+<ul><li>First numbered version of <em>slendr</em> to celebrate its <a href="https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1" class="external-link">bioRxiv preprint</a>. 🥳 🎉</li>
 </ul></div>
   </div>
 
@@ -311,8 +165,7 @@ preprint</a>. 🥳 🎉</li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

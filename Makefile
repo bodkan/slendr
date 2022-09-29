@@ -15,13 +15,11 @@ docs:
 	#git restore docs/reference/region.html
 	#git restore docs/reference/slim.html
 	#git restore docs/reference/world.html
-	git restore docs/reference/expand_range-1.png
+	#git restore docs/reference/expand_range-1.png
 
-website:
+website: $(logo)
 	rm -rf docs/
 	R -e 'devtools::install(upgrade = "never")'
-	R -e 'install.packages("slendr")'
-	R -e 'source("logo.R")'
 	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 	R -e 'devtools::document()'
 	R -e 'pkgdown::build_site()'
@@ -33,7 +31,7 @@ website:
 	#git restore docs/reference/region.html
 	#git restore docs/reference/slim.html
 	#git restore docs/reference/world.html
-	git restore docs/reference/expand_range-1.png
+	#git restore docs/reference/expand_range-1.png
 
 build: $(pkg)
 

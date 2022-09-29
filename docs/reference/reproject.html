@@ -18,7 +18,7 @@ units) and different Geographic Coordinate Systems (CRS)."><meta property="og:im
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -115,17 +115,17 @@ units) and different Geographic Coordinate Systems (CRS).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">reproject</span><span class="op">(</span>
-  <span class="va">from</span>,
-  <span class="va">to</span>,
-  x <span class="op">=</span> <span class="cn">NULL</span>,
-  y <span class="op">=</span> <span class="cn">NULL</span>,
-  coords <span class="op">=</span> <span class="cn">NULL</span>,
-  model <span class="op">=</span> <span class="cn">NULL</span>,
-  add <span class="op">=</span> <span class="cn">FALSE</span>,
-  input_prefix <span class="op">=</span> <span class="st">""</span>,
-  output_prefix <span class="op">=</span> <span class="st">"new"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">reproject</span><span class="op">(</span></span>
+<span>  <span class="va">from</span>,</span>
+<span>  <span class="va">to</span>,</span>
+<span>  x <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  coords <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  input_prefix <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  output_prefix <span class="op">=</span> <span class="st">"new"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -135,38 +135,51 @@ units) and different Geographic Coordinate Systems (CRS).</p>
 EPSG value, an object of class <code>crs</code>, the value "raster"
 (converting from/to pixel coordinates), or "world" (converting
 from/to whatever CRS is set for the underlying map)</p></dd>
+
+
 <dt>x, y</dt>
 <dd><p>Coordinates in two dimensions (if missing, coordinates
 are expected to be in the <code>data.frame</code> specified in the
 <code>coords</code> parameter as columns "x" and "y")</p></dd>
+
+
 <dt>coords</dt>
 <dd><p>data.frame-like object with coordinates in columns
 "x" and "y"</p></dd>
+
+
 <dt>model</dt>
 <dd><p>Object of the class <code>slendr_model</code></p></dd>
+
+
 <dt>add</dt>
 <dd><p>Add column coordinates to the input data.frame
 <code>coords</code> (coordinates otherwise returned as a separate
 object)?</p></dd>
+
+
 <dt>input_prefix, output_prefix</dt>
 <dd><p>Input and output prefixes of data
 frame columns with spatial coordinates</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Data.frame with converted two-dimensional coordinates given as input</p>
+    
+
+<p>Data.frame with converted two-dimensional coordinates given as input</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">lon_lat_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">0</span>, <span class="fl">15</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">40</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">reproject</span><span class="op">(</span></span>
-<span class="r-in">  from <span class="op">=</span> <span class="st">"epsg:4326"</span>,</span>
-<span class="r-in">  to <span class="op">=</span> <span class="st">"epsg:3035"</span>,</span>
-<span class="r-in">  coords <span class="op">=</span> <span class="va">lon_lat_df</span>,</span>
-<span class="r-in">  add <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># add converted [lon,lat] coordinates as a new column</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">lon_lat_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">0</span>, <span class="fl">15</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">40</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">reproject</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  from <span class="op">=</span> <span class="st">"epsg:4326"</span>,</span></span>
+<span class="r-in"><span>  to <span class="op">=</span> <span class="st">"epsg:3035"</span>,</span></span>
+<span class="r-in"><span>  coords <span class="op">=</span> <span class="va">lon_lat_df</span>,</span></span>
+<span class="r-in"><span>  add <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># add converted [lon,lat] coordinates as a new column</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       x     y     newx      newy</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -187,8 +200,7 @@ frame columns with spatial coordinates</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
