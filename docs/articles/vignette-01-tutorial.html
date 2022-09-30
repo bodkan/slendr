@@ -277,9 +277,8 @@ used in this tutorial. Of course, different CRS projections could be
 used based on which part of the world we want to simulate. Describing
 the intricacies of coordinate reference systems is beyond the scope of
 this tutorial, but if you’re interested in learning more I encourage you
-to read a couple of paragraphs in <a href="https://keen-swartz-3146c4.netlify.app/intro.html#coordinate-reference-systems" class="external-link">this
-section</a> of a freely available textbook dedicated to this topic
-(written by the author of the <em>sf</em> package himself!).</p>
+to read <a href="https://geocompr.robinlovelace.net" class="external-link">this</a> freely
+available textbook dedicated to this topic.</p>
 <p>This is the approach of <em>slendr</em>: let the user specify
 everything in an easy-to-understand longitude/latitude geographical CRS
 (which can be read from any map, making it very easy to define spatial
@@ -807,7 +806,7 @@ user:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence           ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │    128║</span></span>
+<span><span class="co">#&gt; ║Trees          │    134║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│ 100000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
@@ -820,15 +819,15 @@ user:</p>
 <span><span class="co">#&gt; ╔═══════════╤═════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪═════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │18698│584.3 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │18682│583.8 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│12816│  1.2 MiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│12827│  1.2 MiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │    0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │    0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │18359│682.0 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │18324│680.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│    6│  2.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
@@ -866,7 +865,7 @@ simulations of demes in a lattice structure. A complete example is shown
 <a href="vignette-02-grid-model.html">in this vignette</a>.</p></li>
 <li><p>Because SLiM saves data in the <code>.trees</code> tree-sequence
 file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>
-for interfacing with Python code you have the incredible power of <a href="https://tskit.dev/tskit/docs/stable/" class="external-link"><em>tskit</em></a> and <a href="https://tskit.dev/pyslim/docs/latest/introduction.html" class="external-link"><em>pyslim</em></a>
+for interfacing with Python code you have the incredible power of <a href="https://tskit.dev/" class="external-link"><em>tskit</em></a> and <a href="https://tskit.dev/pyslim/docs/latest/introduction.html" class="external-link"><em>pyslim</em></a>
 to process simulated data at a massive scale right at your fingertips,
 all within the convenient environment of R. See a much more detailed
 example in a vignette about <a href="vignette-07-backends.html">this

@@ -387,11 +387,11 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; msprime command to be executed:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpyh5LWS/file537d7b8962a5_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpyh5LWS/file537d7b8962a5_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpyh5LWS/file537d663e086c.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpyh5LWS/file537d41ab8f12 --verbose  </span></span>
+<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpxSpuQs/filed36c1491d11d_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpxSpuQs/filed36c1491d11d_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpxSpuQs/filed36c63ef46c0.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpxSpuQs/filed36c18f40ec --verbose  </span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Tree sequence was saved to:</span></span>
-<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpyh5LWS/file537d663e086c.trees </span></span>
+<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpxSpuQs/filed36c63ef46c0.trees </span></span>
 <span><span class="co">#&gt; Loading the tree-sequence file...</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span></span></code></pre></div>
@@ -478,7 +478,7 @@ to the tree-sequence file ourselves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpyh5LWS/file537d26094584"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpxSpuQs/filed36c7bee45a6"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
@@ -1003,10 +1003,10 @@ software (see the linked paper which formally introduced these
 statistics in the first place), you can convert the tree-sequence data
 to a file format called EIGENSTRAT using the
 <code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code> function. The file conversion is internally
-handled by the R package <a href="https://bodkan.net/admixr/" class="external-link"><em>admixr</em></a> and returns an
+handled by the R package <a href="https://www.bodkan.net/admixr/" class="external-link"><em>admixr</em></a> and returns an
 <code>EIGENSTRAT</code> object which ties all individual
-<code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/tutorial.html" class="external-link">tutorial</a> to
-<em>admixr</em> for an extensive overview). <em>admixr</em> is an R
+<code>EIGENSTRAT</code> file components together (see the <a href="https://www.bodkan.net/admixr/articles/tutorial.html" class="external-link">tutorial</a>
+to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R
 package for running automated ADMIXTOOLS analyses entirely from R and
 makes these types of analyses very convenient.</p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">

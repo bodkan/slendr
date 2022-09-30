@@ -15,7 +15,7 @@ If you want (or need) to get its development version, you can install it directl
 
 Once you install *slendr*, **calling `library(slendr)` will check that all software dependencies are available**. If they are not, the R package will provide a brief helpful guide on how to resolve potential issues. The rest of this vignette talks about the necessary software dependencies in a bit more detail.
 
-**Please note that *slendr* is only supported on macOS and Linux at the moment.** However, because *slendr*'s software dependencies are already available on Windows, I hope to make the R package fully portable as soon as I get access to a Windows machine to do proper testing on. If you are a Windows user and would like to help, [please get in touch](https://bodkan.net/)!
+**Please note that *slendr* is only supported on macOS and Linux at the moment.** However, because *slendr*'s software dependencies are already available on Windows, I hope to make the R package fully portable as soon as I get access to a Windows machine to do proper testing on. If you are a Windows user and would like to help, [please get in touch](https://www.bodkan.net/)!
 
 ## Software dependencies
 
