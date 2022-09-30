@@ -1,4 +1,4 @@
-This update implements minor bugfixes and improvements to the package API.
+This update implements minor bugfixes and improvements.
 
 # R CMD check results
 
