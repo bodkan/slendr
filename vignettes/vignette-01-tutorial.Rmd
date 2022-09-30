@@ -55,41 +55,15 @@ This R package is designed to provide a collection of primitives (a ["mini-langu
 
 ## Installation and setup
 
-First, let's install the latest version of the package and load it. *slendr* is not yet on CRAN (but will be soon!), so you will need to install the development version from GitHub using `devtools`.
+The _slendr_ R package is available on CRAN and can be installed simply by running `install.packages("slendr")`. If you need to run the latest development version (for instance, if you need the latest bugfixes), you can get it via R package _devtools_ by executing `devtools::install_github("bodkan/slendr")` in your R terminal. You can find more detailed installation instructions in [this vignette](vignette-00-installation.html).
 
-Here are the installation steps:
-
-1.  Install non-R software dependencies
-
-Some of the R libraries that *slendr* uses internally rely on non-R software that needs to be installed before doing anything else. At the very least, you should make sure to install `udunits` and `gdal` on your system (if you're on a Mac, I recommend [homebrew](https://brew.sh/)).
-
-There is one simple test to make sure that you will be able to install and use *slendr*. A lot of the geospatial heavy lifting is being done by the [*sf*](http://r-spatial.github.io/sf/) package. This is an R package we use to manipulate geometric objects in space and time (all of which is considered internal low-level implementation detail, so you are never exposed to it). **My suggestion is to first make sure that you can successfully install *sf* by running `install.packages("sf").`** After that, installing *slendr* is trivial.
-
-2.  Install the *devtools* package:
-
-```{r, eval = FALSE}
-install.packages("devtools")
-```
-
-On some systems, *devtools* installation fails because of a missing `libgit` dependency. If that happens, please install `libgit2` first (on a Mac, you can use [homebrew](https://brew.sh/) again).
-
-3.  Install *slendr*:
-
-```{r, eval = FALSE}
-devtools::install_github("bodkan/slendr")
-```
-
-This is necessary because *slendr* is not on [CRAN](https://cran.r-project.org) yet. Once it is there, it will be possible to install it by simply running `install.packages("slendr")` in your R console.
-
-4.  That's it! You can now load the package with the usual:
+Once you get _slendr_ installed, you just need to load it:
 
 ```{r}
 library(slendr)
-
-set.seed(314159)
 ```
 
-Finally: because the package is actively being worked on, improvements and bug fixes are being added every couple of hours. **Make sure to install the latest development version (step 3. above) each time you're about to test something (such as the examples in this vignette).**
+If some of its dependencies (such as SLiM or necessary Python modules) are missing, you will get an informative message on how to proceed.
 
 ## Defining the overall world map
 
