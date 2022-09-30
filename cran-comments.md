@@ -1,4 +1,4 @@
-This update implements minor bugfixes and improvements.
+This update implements minor bugfixes, improvements, and additional unit tests.
 
 # R CMD check results
 
