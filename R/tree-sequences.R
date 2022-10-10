@@ -2016,6 +2016,9 @@ print.slendr_ts <- function(x, ...) { summary(x, ...) }
 
 # Function for extracting numerical node IDs for various statistics
 get_node_ids <- function(ts, x) {
+  # slendr allows named lists to be used for easier group labelling in result tables
+  if (is.list(x)) x <- x[[1]]
+
   if (is.null(x)) {
     ids <- ts_nodes(ts) %>% .[.$sampled, ]$node_id
   } else if (is.character(x)) {
@@ -2655,5 +2658,8 @@ define_windows <- function(ts, breakpoints) {
 }
 
 concat <- function(x) {
-  paste(x, collapse = "+")
+  if (is.list(x) && !is.null(names(x)))
+    return(names(x))
+  else
+    return(paste(x, collapse = "+"))
 }
