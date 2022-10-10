@@ -13,7 +13,7 @@
 1 p1_1+p1_2+p1_3+p1_4+p1_5 p2_1+p2_2+p2_3 p3_1+p3_2+p3_3+p3_4 0.000130 
 ```
 
-This gets unwieldy rather quickly, especially when dozens of hundreds of samples are grouped together as populations. The new syntax allows the following shortcut via customised group names:
+This gets unwieldy rather quickly, especially when dozens or hundreds of samples are grouped together as populations. The new syntax allows the following shortcut via customised group names leveraging the standard named `list` functionality in R:
 
 ```
 > ts_f3(ts, A = list(group_one = c("p1_1", "p1_2", "p1_3", "p1_4", "p1_5")), 
