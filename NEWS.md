@@ -1,5 +1,32 @@
 # slendr (development version)
 
+- It is now possible to label groups of samples in _slendr_'s _tskit_ interface functions which should make data frames with statistics results more readable. As an example, running `ts_f3(ts, A = c("p1_1", "p1_2", "p1_3"), B = c("p2_1", "p2_3"), C = c("p3_1", "p3_2", "p3_"))` resulted in a following data-frame output:
+
+```
+> ts_f3(ts, A = c("p1_1", "p1_2", "p1_3", "p1_4", "p1_5"),
+            B = c("p2_1", "p2_2", "p2_3"),
+            C = c("p3_1", "p3_2", "p3_3", "p3_4"))
+
+# A tibble: 1 × 4
+  A                        B              C                         f3
+  <chr>                    <chr>          <chr>                  <dbl>
+1 p1_1+p1_2+p1_3+p1_4+p1_5 p2_1+p2_2+p2_3 p3_1+p3_2+p3_3+p3_4 0.000130 
+```
+
+This gets unwieldy rather quickly, especially when dozens of hundreds of samples are grouped together as populations. The new syntax allows the following shortcut via customised group names:
+
+```
+> ts_f3(ts, A = list(group_one = c("p1_1", "p1_2", "p1_3", "p1_4", "p1_5")), 
+            B = list(group_two = c("p2_1", "p2_2", "p2_3")),
+            C = list(group_three = c("p3_1", "p3_2", "p3_3", "p3_4")))
+# A tibble: 1 × 4
+  A         B         C                 f3
+  <chr>     <chr>     <chr>          <dbl>
+1 group_one group_two group_three 0.000130
+```
+
+This is more readable and in line with some other _tskit_-interface functions of _slendr_ which used this functionality via their `sample_sets = ` argument (`ts_divergence()`, `ts_diversity()`, etc.).  ([#ac5e484](https://github.com/bodkan/slendr/commit/ac5e484))
+
 # slendr 0.4.0
 
 - The `msprime()` function now makes sure that a given _slendr_ model can fully coalesce to a single common ancestor population. Previously, having multiple ancestral populations created with `parent = "ancestor"` would cause an infinite simulation when plugged into the `msprime()` backend. ([#095b124](https://github.com/bodkan/slendr/commit/095b124))
