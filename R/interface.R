@@ -52,6 +52,9 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
                        remove = NULL, intersect = TRUE,
                        competition = NA, mating = NA, dispersal = NA,
                        dispersal_fun = NULL, aquatic = FALSE) {
+  if (!is.character(name) || length(name) != 1)
+    stop("A population name must be a character scalar value", call. = FALSE)
+
   # is this the first population defined in the model?
   if (is.character(parent) && parent == "ancestor") {
     if (!is.logical(map) && !inherits(map, "slendr_map"))

@@ -1,3 +1,9 @@
+test_that("name of a population can only be a scalar character value", {
+  error_msg <- "A population name must be a character scalar value"
+  expect_error(population(name = c("asd", "xyz"), time = 1, N = 100), error_msg)
+  expect_s3_class(population(name = "asd", time = 1, N = 100), "slendr_pop")
+})
+
 test_that("'competition' must be specified in compile_model() if missing", {
   map <- readRDS("map.rds")
   p <- population(mating = 10, dispersal = 10, name = "pop1", parent = "ancestor", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
