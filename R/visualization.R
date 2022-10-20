@@ -391,6 +391,12 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 
   if (model$direction == "forward") p <- p + scale_y_reverse()
 
+  # add each each epoch resize segment
+  for (lineage in size_changes) {
+    for (event in lineage)
+      p <- p + geom_polygon(data = event, aes(x, y, fill = pop))
+  }
+
   # add horizontal split lines
   if (!is.null(splits)) {
     p <- p + geom_segment(
@@ -398,12 +404,6 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       aes(x = x, xend = xend, y = y, yend = yend, color = from),
       size = 2
     )
-  }
-
-  # add each each epoch resize segment
-  for (lineage in size_changes) {
-    for (event in lineage)
-      p <- p + geom_polygon(data = event, aes(x, y, fill = pop))
   }
 
   # labels with population names
