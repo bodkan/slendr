@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9000</span>
       </span>
     </div>
 
@@ -109,9 +109,32 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li>
+<code><a href="../reference/ts_samples.html">ts_samples()</a></code> has a new parameter <code>split = &lt;TRUE|FALSE&gt;</code> which, if set to <code>TRUE</code>, returns a list of names of individuals grouped by populations instead of a full data frame. This essentially accomplishes what previously required something like:</li>
+</ul><pre><code><span><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">`[[`</span>, <span class="st">"name"</span><span class="op">)</span></span></code></pre>
+<p>Which assumes a knowledge of R operators that beginner R users are certainly not familiar with, or a knowledge of the <em>dplyr</em> function <code>pull()</code> which is also rather uncommon:</p>
+<pre><code><span><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">pull</span>, <span class="va">name</span><span class="op">)</span></span></code></pre>
+<ul><li>It is now possible to label groups of samples in <em>slendr</em>’s <em>tskit</em> interface functions which should make data frames with statistics results more readable. As an example, running <code>ts_f3(ts, A = c("p1_1", "p1_2", "p1_3"), B = c("p2_1", "p2_3"), C = c("p3_1", "p3_2", "p3_"))</code> resulted in a following data-frame output:</li>
+</ul><pre><code>&gt; ts_f3(ts, A = c("p1_1", "p1_2", "p1_3", "p1_4", "p1_5"),
+            B = c("p2_1", "p2_2", "p2_3"),
+            C = c("p3_1", "p3_2", "p3_3", "p3_4"))
+
+# A tibble: 1 × 4
+  A                        B              C                         f3
+  &lt;chr&gt;                    &lt;chr&gt;          &lt;chr&gt;                  &lt;dbl&gt;
+1 p1_1+p1_2+p1_3+p1_4+p1_5 p2_1+p2_2+p2_3 p3_1+p3_2+p3_3+p3_4 0.000130 </code></pre>
+<p>This gets unwieldy rather quickly, especially when dozens or hundreds of samples are grouped together as populations. The new syntax allows the following shortcut via customised group names leveraging the standard named <code>list</code> functionality in R:</p>
+<pre><code>&gt; ts_f3(ts, A = list(group_one = c("p1_1", "p1_2", "p1_3", "p1_4", "p1_5")), 
+            B = list(group_two = c("p2_1", "p2_2", "p2_3")),
+            C = list(group_three = c("p3_1", "p3_2", "p3_3", "p3_4")))
+# A tibble: 1 × 4
+  A         B         C                 f3
+  &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt;
+1 group_one group_two group_three 0.000130</code></pre>
+<p>This is more readable and in line with some other <em>tskit</em>-interface functions of <em>slendr</em> which used this functionality via their <code>sample_sets =</code> argument (<code><a href="../reference/ts_divergence.html">ts_divergence()</a></code>, <code><a href="../reference/ts_diversity.html">ts_diversity()</a></code>, etc.). (<a href="https://github.com/bodkan/slendr/commit/ac5e484" class="external-link">#ac5e484</a>)</p>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.4.0" id="slendr-040">slendr 0.4.0<a class="anchor" aria-label="anchor" href="#slendr-040"></a></h2>
+<h2 class="page-header" data-toc-text="0.4.0" id="slendr-040">slendr 0.4.0<small>2022-09-30</small><a class="anchor" aria-label="anchor" href="#slendr-040"></a></h2>
 <ul><li><p>The <code><a href="../reference/msprime.html">msprime()</a></code> function now makes sure that a given <em>slendr</em> model can fully coalesce to a single common ancestor population. Previously, having multiple ancestral populations created with <code>parent = "ancestor"</code> would cause an infinite simulation when plugged into the <code><a href="../reference/msprime.html">msprime()</a></code> backend. (<a href="https://github.com/bodkan/slendr/commit/095b124" class="external-link">#095b124</a>)</p></li>
 <li><p>The initial size of a population which emerges from a split from another population is now printed in a population history summary in the R console. (<a href="https://github.com/bodkan/slendr/commit/6525bf3" class="external-link">#6525bf3</a>)</p></li>
 <li><p>A couple of fixes to support loading, processing, and plotting of “manually” created tree sequences have been implemented (see <a href="https://tskit.dev/tutorials/tables_and_editing.html#constructing-a-tree-sequence" class="external-link">this</a>). Not sure how practically useful, but it’s important to be able to load even “pure” tree sequences which are not from simulators such as SLiM and msprime. A set of <a href="https://github.com/bodkan/slendr/blob/main/tests/testthat/test-manual-ts.R" class="external-link">unit tests</a> has been added, making sure that a minimalist nodes &amp; edges table can be loaded, as well as nodes &amp; edges &amp; individuals, plus tables of populations and sites &amp; mutations. PRs with more extensive unit tests and bug reports of tree sequences which are failing to load would be appreciated! The code for handling cases of “manually-created” tree sequences which have missing individual table, missing populations table, etc. seems especially brittle at the moment (<a href="https://github.com/bodkan/slendr/commit/79adf14" class="external-link">#79adf14</a>).</p></li>

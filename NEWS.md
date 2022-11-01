@@ -1,5 +1,17 @@
 # slendr (development version)
 
+- `ts_samples()` has a new parameter `split = <TRUE|FALSE>` which, if set to `TRUE`, returns a list of names of individuals grouped by populations instead of a full data frame. This essentially accomplishes what previously required something like:
+
+```
+ts_samples(ts) %>% split(., .$pop) %>% lapply(`[[`, "name")
+```
+
+Which assumes a knowledge of R operators that beginner R users are certainly not familiar with, or a knowledge of the _dplyr_ function `pull()` which is also rather uncommon:
+
+```
+ts_samples(ts) %>% split(., .$pop) %>% lapply(pull, name)
+```
+
 - It is now possible to label groups of samples in _slendr_'s _tskit_ interface functions which should make data frames with statistics results more readable. As an example, running `ts_f3(ts, A = c("p1_1", "p1_2", "p1_3"), B = c("p2_1", "p2_3"), C = c("p3_1", "p3_2", "p3_"))` resulted in a following data-frame output:
 
 ```
