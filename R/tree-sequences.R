@@ -1797,11 +1797,12 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 
   if (!is.list(values)) values <- as.numeric(values) # convert 1D arrays to simple vectors
 
-  if (all(sapply(sample_sets, length) == 1))
-    set_names <- unlist(sample_sets)
-  else if (is.null(names(sample_sets)))
-    set_names <- paste0("set_", seq_len(n_sets))
-  else
+  if (is.null(names(sample_sets)) || any(names(sample_sets) == "")) {
+    if (all(sapply(sample_sets, length) == 1))
+      set_names <- unlist(sample_sets)
+    else
+      set_names <- paste0("set_", seq_len(n_sets))
+  } else
     set_names <- names(sample_sets)
 
   result <- dplyr::tibble(set = set_names)
