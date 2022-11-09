@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- When a named list is provided as a `sample_sets =` argument to a oneway statistic function, the names are used in a `set` column of the resulting data frame even if only single samples were used. ([#2a6781](https://github.com/bodkan/slendr/commit/2a6781))
+
 - `ts_samples()` has a new parameter `split = <TRUE|FALSE>` which, if set to `TRUE`, returns a list of names of individuals grouped by populations instead of a full data frame. This essentially accomplishes what previously required something like:
 
 ```
@@ -11,6 +13,9 @@ Which assumes a knowledge of R operators that beginner R users are certainly not
 ```
 ts_samples(ts) %>% split(., .$pop) %>% lapply(pull, name)
 ```
+
+([#f06205c7](https://github.com/bodkan/slendr/commit/f06205c7))
+
 
 - It is now possible to label groups of samples in _slendr_'s _tskit_ interface functions which should make data frames with statistics results more readable. As an example, running `ts_f3(ts, A = c("p1_1", "p1_2", "p1_3"), B = c("p2_1", "p2_3"), C = c("p3_1", "p3_2", "p3_"))` resulted in a following data-frame output:
 
