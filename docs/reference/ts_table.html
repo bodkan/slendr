@@ -19,7 +19,7 @@ time direction."><meta property="og:image" content="https://www.slendr.net/logo.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9000</span>
       </span>
     </div>
 
@@ -165,7 +165,7 @@ data</p></div>
 <span class="r-in"><span><span class="fu">ts_table</span><span class="op">(</span><span class="va">ts</span>, <span class="st">"individuals"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 55 × 11</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    ind_id  time pedigree_id raste…¹ raste…² pop_id alive remem…³ retai…⁴ sampled</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int[&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>      0   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>343       0       0      0 TRUE  TRUE    TRUE    TRUE   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>      1   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>350       0       0      1 TRUE  TRUE    TRUE    TRUE   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>      2   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>351       0       0      1 TRUE  TRUE    TRUE    TRUE   </span>
@@ -176,7 +176,7 @@ data</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>      7   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>601       0       0      3 TRUE  TRUE    TRUE    TRUE   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>      8   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>655       0       0      3 TRUE  TRUE    TRUE    TRUE   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>      9   -<span style="color: #BB0000;">10</span>     5<span style="text-decoration: underline;">520</span>773       0       0      3 TRUE  TRUE    TRUE    TRUE   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 45 more rows, 1 more variable: time_tskit &lt;dbl&gt;, and abbreviated</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 45 more rows, 1 more variable: time_tskit &lt;dbl[1d]&gt;, and abbreviated</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   variable names ¹​raster_x, ²​raster_y, ³​remembered, ⁴​retained</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># get the 'raw' tskit table of edges</span></span></span>
@@ -199,25 +199,25 @@ data</p></div>
 <span class="r-in"><span><span class="co"># get the 'raw' tskit table of nodes</span></span></span>
 <span class="r-in"><span><span class="fu">ts_table</span><span class="op">(</span><span class="va">ts</span>, <span class="st">"nodes"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 68 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    node_id ind_id pop_id  time time_tskit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       0     18      2 <span style="text-decoration: underline;">70</span>010       <span style="text-decoration: underline;">2</span>334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       1     18      2 <span style="text-decoration: underline;">70</span>010       <span style="text-decoration: underline;">2</span>334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       2     20      2 <span style="text-decoration: underline;">40</span>010       <span style="text-decoration: underline;">1</span>334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       3     20      2 <span style="text-decoration: underline;">40</span>010       <span style="text-decoration: underline;">1</span>334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       4      1      1   -<span style="color: #BB0000;">10</span>          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       5      1      1   -<span style="color: #BB0000;">10</span>          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       6      2      1   -<span style="color: #BB0000;">10</span>          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       7      2      1   -<span style="color: #BB0000;">10</span>          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       8      3      1   -<span style="color: #BB0000;">10</span>          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       9      3      1   -<span style="color: #BB0000;">10</span>          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    node_id    ind_id pop_id  time time_tskit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int[1d]&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>       0        18      2 <span style="text-decoration: underline;">70</span>010       <span style="text-decoration: underline;">2</span>334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>       1        18      2 <span style="text-decoration: underline;">70</span>010       <span style="text-decoration: underline;">2</span>334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>       2        20      2 <span style="text-decoration: underline;">40</span>010       <span style="text-decoration: underline;">1</span>334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>       3        20      2 <span style="text-decoration: underline;">40</span>010       <span style="text-decoration: underline;">1</span>334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>       4         1      1   -<span style="color: #BB0000;">10</span>          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>       5         1      1   -<span style="color: #BB0000;">10</span>          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>       6         2      1   -<span style="color: #BB0000;">10</span>          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>       7         2      1   -<span style="color: #BB0000;">10</span>          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       8         3      1   -<span style="color: #BB0000;">10</span>          0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       9         3      1   -<span style="color: #BB0000;">10</span>          0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 58 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># get the 'raw' tskit table of mutations</span></span></span>
 <span class="r-in"><span><span class="fu">ts_table</span><span class="op">(</span><span class="va">ts</span>, <span class="st">"mutations"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,187 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       id  site  node     time time_tskit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     0     0    66  <span style="text-decoration: underline;">757</span>010.     <span style="text-decoration: underline;">25</span>234.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1     1    64  <span style="text-decoration: underline;">575</span>160.     <span style="text-decoration: underline;">19</span>172.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     2     2    26 3<span style="text-decoration: underline;">622</span>440.    <span style="text-decoration: underline;">120</span>748.</span>

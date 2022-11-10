@@ -2,7 +2,7 @@
 % Please edit documentation in R/compilation.R
 \name{compile_model}
 \alias{compile_model}
-\title{Compile the spatial demographic model}
+\title{Compile a slendr demographic model}
 \usage{
 compile_model(
   populations,

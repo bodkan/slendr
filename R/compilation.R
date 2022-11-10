@@ -1,4 +1,4 @@
-#' Compile the spatial demographic model
+#' Compile a slendr demographic model
 #'
 #' First, compiles the vectorized population spatial maps into a series of
 #' binary raster PNG files, which is the format that SLiM understands and uses
