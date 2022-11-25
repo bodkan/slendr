@@ -1077,7 +1077,7 @@ area <- function(x) {
     stop("Input must be of the type 'slendr' or 'sf'", call. = FALSE)
 
   if (inherits(x, "slendr_pop")) {
-    areas <- purrr::map_dbl(seq_len(nrow(x)), ~ as.numeric(sum(sf::st_area(x[.x, ]))))
+    areas <- purrr::map_dbl(seq_len(nrow(x)), ~ as.numeric(sum(sf::st_area(sf::st_make_valid(x[.x, ])))))
     times <- x$time
     return(dplyr::tibble(time = times, area = areas))
   } else if (inherits(x, "slendr_map") || inherits(x, "slendr_region"))
