@@ -1098,7 +1098,6 @@ ts_edges <- function(x) {
 #' (either all sampled individuals or those that the user simplified to)
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
-#' @param split Should sampes be returned as named lists of individual names?
 #'
 #' @return Table of individuals scheduled for sampling across space and time
 #'
@@ -1115,7 +1114,7 @@ ts_edges <- function(x) {
 #' # extract the table of individuals scheduled for simulation and sampling
 #' ts_samples(ts)
 #' @export
-ts_samples <- function(ts, split = FALSE) {
+ts_samples <- function(ts) {
   if (is.null(attr(ts, "model")))
     stop("Sampling schedule can only be extracted for tree sequences\ngenerated ",
          "from a slendr model. To access information about times and\nlocations ",
@@ -1124,12 +1123,8 @@ ts_samples <- function(ts, split = FALSE) {
   data <- ts_nodes(ts) %>% dplyr::filter(sampled, !is.na(name))
   samples <- attr(ts, "metadata")$sampling %>%
     dplyr::filter(name %in% data$name)
-  
-  if (split) {
-    split(samples, samples$pop) %>% lapply(`[[`, "name") %>% return()
-  } else {
-    return(samples)
-  }
+
+  samples
 }
 
 #' Extract (spatio-)temporal ancestral history for given nodes/individuals

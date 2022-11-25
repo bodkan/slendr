@@ -710,14 +710,3 @@ test_that("all names of individuals must be present in the tree sequence", {
   expect_error(ts_diversity(ts, c("p1_1", "p2_2")), "Not all individual names")
   expect_s3_class(ts_diversity(ts, c("pop1_1", "pop2_2")), "data.frame")
 })
-
-test_that("ts_samples returns data in a correct format", {
-  ts_msprime <- ts_load(model, file = msprime_ts)
-  ts_slim <- ts_load(model, file = slim_ts)
-
-  expect_s3_class(ts_samples(ts_msprime), "data.frame")
-  expect_s3_class(ts_samples(ts_slim), "data.frame")
-
-  expect_type(ts_samples(ts_msprime, split = TRUE)[[1]], "character")
-  expect_type(ts_samples(ts_slim, split = TRUE)[[1]], "character")
-})

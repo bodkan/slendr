@@ -2,21 +2,6 @@
 
 - When a named list is provided as a `sample_sets =` argument to a oneway statistic function, the names are used in a `set` column of the resulting data frame even if only single samples were used. ([#2a6781](https://github.com/bodkan/slendr/commit/2a6781))
 
-- `ts_samples()` has a new parameter `split = <TRUE|FALSE>` which, if set to `TRUE`, returns a list of names of individuals grouped by populations instead of a full data frame. This essentially accomplishes what previously required something like:
-
-```
-ts_samples(ts) %>% split(., .$pop) %>% lapply(`[[`, "name")
-```
-
-Which assumes a knowledge of R operators that beginner R users are certainly not familiar with, or a knowledge of the _dplyr_ function `pull()` which is also rather uncommon:
-
-```
-ts_samples(ts) %>% split(., .$pop) %>% lapply(pull, name)
-```
-
-([#f06205c7](https://github.com/bodkan/slendr/commit/f06205c7))
-
-
 - It is now possible to label groups of samples in _slendr_'s _tskit_ interface functions which should make data frames with statistics results more readable. As an example, running `ts_f3(ts, A = c("p1_1", "p1_2", "p1_3"), B = c("p2_1", "p2_3"), C = c("p3_1", "p3_2", "p3_"))` resulted in a following data-frame output:
 
 ```
@@ -27,13 +12,13 @@ ts_samples(ts) %>% split(., .$pop) %>% lapply(pull, name)
 # A tibble: 1 × 4
   A                        B              C                         f3
   <chr>                    <chr>          <chr>                  <dbl>
-1 p1_1+p1_2+p1_3+p1_4+p1_5 p2_1+p2_2+p2_3 p3_1+p3_2+p3_3+p3_4 0.000130 
+1 p1_1+p1_2+p1_3+p1_4+p1_5 p2_1+p2_2+p2_3 p3_1+p3_2+p3_3+p3_4 0.000130
 ```
 
 This gets unwieldy rather quickly, especially when dozens or hundreds of samples are grouped together as populations. The new syntax allows the following shortcut via customised group names leveraging the standard named `list` functionality in R:
 
 ```
-> ts_f3(ts, A = list(group_one = c("p1_1", "p1_2", "p1_3", "p1_4", "p1_5")), 
+> ts_f3(ts, A = list(group_one = c("p1_1", "p1_2", "p1_3", "p1_4", "p1_5")),
             B = list(group_two = c("p2_1", "p2_2", "p2_3")),
             C = list(group_three = c("p3_1", "p3_2", "p3_3", "p3_4")))
 # A tibble: 1 × 4

@@ -5,12 +5,10 @@
 \title{Extract names and times of individuals of interest in the current tree sequence
 (either all sampled individuals or those that the user simplified to)}
 \usage{
-ts_samples(ts, split = FALSE)
+ts_samples(ts)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
-
-\item{split}{Should sampes be returned as named lists of individual names?}
 }
 \value{
 Table of individuals scheduled for sampling across space and time
