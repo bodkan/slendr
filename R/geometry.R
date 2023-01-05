@@ -50,12 +50,20 @@ a polygon need to be specified, but not both", call. = FALSE)
 
   # circular population range or polygon range?
   if (!is.null(center)) {
-    # point in the WGS-84 geographic CRS
     point <- sf::st_sfc(sf::st_point(center))
+
+    # # if the map is in WGS-84, interpret the radius as in units of degrees
+    # if (has_crs(map) && sf::st_crs(map)$input == "EPSG:4326") {
+    #   sf::st_crs(point) <- "EPSG:4326"
+    #   radius <- units::set_units(radius, arc_degree)
+    # }
 
     if (has_crs(map)) {
       sf::st_crs(point) <- "EPSG:4326"
       point <- sf::st_transform(point, sf::st_crs(map))
+      if (sf::st_crs(map)$input == "EPSG:4326")
+        warning("Absolute distances are only approximate geodesic WGS-84 system (which uses degrees lon/lat)",
+                call. = FALSE)
     }
 
     range <- sf::st_buffer(point, radius)
