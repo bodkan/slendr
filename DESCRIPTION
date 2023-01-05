@@ -1,7 +1,7 @@
 Package: slendr
 Title: A Simulation Framework for Spatiotemporal Population Genetics
 Version: 0.4.0.9000
-Authors@R: 
+Authors@R:
     person(given = "Martin",
            family = "Petr",
            role = c("aut", "cre"),
@@ -31,7 +31,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The 'Python' coalescent framework 'msprime' and the 'tskit' module can by installed by following the instructions at <https://tskit.dev/>.
-Imports: 
+Imports:
     sf,
     stars,
     ggplot2,
@@ -47,14 +47,14 @@ Imports:
     ijtiff,
     shinyWidgets,
     shiny,
+    rgdal,
     ape
-Suggests: 
+Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
     admixr,
     units,
-    rgdal,
     magick,
     cowplot,
     forcats,

@@ -717,9 +717,16 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
       )
       utils::unzip(path, exdir = ne_dir)
     }
-    map_raw <- rnaturalearth::ne_load(
-      scale = scale, type = "land", category = "physical",
-      returnclass = "sf", destdir = ne_dir
+
+    # TODO: this function uses internally rgdal, which is to be retired by 2023
+    # silence the deprecation warning for now, as it would only confuse the user
+    # and figure out a way to deal with this (either by providing a PR to the devs
+    # or hacking our own alternative)
+    suppressWarnings(
+      map_raw <- rnaturalearth::ne_load(
+        scale = scale, type = "land", category = "physical",
+        returnclass = "sf", destdir = ne_dir
+      )
     )
     sf::st_agr(map_raw) <- "constant"
 
