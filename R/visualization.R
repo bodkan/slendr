@@ -109,6 +109,8 @@ objects are specified", call. = FALSE)
 
   if (length(pops)) {
     pop_names <- order_pops(pops, direction)
+    if (any(duplicated(pop_names)))
+      stop("Duplicated population names within a single model are not allowed", call. = FALSE)
 
     # if the user specified a time point, "interpolate" all maps at that
     # time and return just those that match that time point (unless this
