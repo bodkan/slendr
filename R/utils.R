@@ -11,7 +11,7 @@
 check_dependencies <- function(python = FALSE, slim = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
   missing_slim <- if (slim) !all(Sys.which("slim") != "") else FALSE
-  missing_python <- if (python) !check_env_present() else FALSE
+  missing_python <- if (python) !check_env(verbose = FALSE) else FALSE
 
   if (missing_slim | missing_python) {
     if (interactive()) {
@@ -661,7 +661,7 @@ ask_install <- function(module) {
   answer == 2
 }
 
-check_env_present <- function() {
+is_slendr_env_present <- function() {
   tryCatch({
     PYTHON_ENV %in% reticulate::conda_list()$name
   }, error = function(cond) FALSE

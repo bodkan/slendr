@@ -1259,7 +1259,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
 #'
 #' @export
 setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
-  if (check_env_present()) {
+  if (is_slendr_env_present()) {
     reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
     if (!reticulate::py_module_available("msprime") ||
         !reticulate::py_module_available("tskit") ||
@@ -1335,7 +1335,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
 #'
 #' @export
 clear_env <- function(force = FALSE) {
-  if (check_env_present()) {
+  if (is_slendr_env_present()) {
     path <- reticulate::conda_list() %>%
       dplyr::filter(grepl(PYTHON_ENV, name)) %>%
       { gsub("bin\\/python", "", .$python) }
