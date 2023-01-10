@@ -53,19 +53,29 @@ We begin by specifying our spatial model. We will use the same demographic model
 ```{r, results = FALSE}
 # simulated world map
 map <- world(
-  xrange = c(-15, 60),
-  yrange = c(20, 65),
-  crs = "EPSG:3035"
+  xrange = c(-13, 70), # min-max longitude
+  yrange = c(18, 65),  # min-max latitude
+  crs = "EPSG:3035"    # coordinate reference system (CRS) for West Eurasia
 )
 
 # couple of broad geographic regions
-africa <- region("Africa", map, polygon = list(c(-18, 20), c(40, 20), c(30, 33),
-                                               c(20, 32), c(10, 35), c(-8, 35)))
-europe <- region("Europe", map, polygon = list(c(-8, 35), c(-5, 36), c(10, 38),
-                                               c(20, 35), c(25, 35), c(33, 45),
-                                               c(20, 58), c(-5, 60), c(-15, 50)))
-anatolia <- region("Anatolia", map, polygon = list(c(28, 35), c(40, 35), c(42, 40),
-                                                   c(30, 43), c(27, 40), c(25, 38)))
+africa <- region(
+  "Africa", map,
+  polygon = list(c(-18, 20), c(38, 20), c(30, 33),
+                 c(20, 33), c(10, 38), c(-6, 36))
+)
+europe <- region(
+  "Europe", map,
+  polygon = list(
+    c(-8, 35), c(-5, 36), c(10, 38), c(20, 35), c(25, 35),
+    c(33, 45), c(20, 58), c(-5, 60), c(-15, 50)
+  )
+)
+anatolia <- region(
+  "Anatolia", map,
+  polygon = list(c(28, 35), c(40, 35), c(42, 40),
+                 c(30, 43), c(27, 40), c(25, 38))
+)
 
 # define population histories
 
@@ -355,10 +365,10 @@ ts_samples(ts) %>% filter(pop == "ANA")
 ```{r, eval = FALSE, echo = FALSE}
 # pdf("~/Desktop/y.pdf")
 # for (i in ts_samples(ts) %>% filter(pop == "ANA") %>% .$name) {
-# 
+#
 # lineages <- ts_ancestors(ts, i, verbose = TRUE)
 # { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-# 
+#
 # }
 # dev.off()
 ```
@@ -368,10 +378,10 @@ ts_samples(ts) %>% filter(pop == "ANA")
 ```{r, eval = FALSE, echo = FALSE}
 # pdf("~/Desktop/z.pdf")
 # for (i in ts_samples(ts) %>% filter(pop == "OOA") %>% .$name) {
-# 
+#
 # lineages <- ts_ancestors(ts, i, verbose = TRUE)
 # { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-# 
+#
 # }
 # dev.off()
 ```
@@ -380,10 +390,10 @@ ts_samples(ts) %>% filter(pop == "ANA")
 ```{r, eval = FALSE, echo = FALSE}
 # pdf("~/Desktop/w.pdf")
 # for (i in ts_samples(ts) %>% filter(pop == "AFR") %>% .$name) {
-# 
+#
 # lineages <- ts_ancestors(ts, i, verbose = TRUE)
 # { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-# 
+#
 # }
 # dev.off()
 ```
@@ -424,7 +434,7 @@ lineages <-
   ts_samples(ts) %>%
   pull(name) %>%
   ts_ancestors(ts, x = .)
-  
+
 select(lineages, connection, child_time, parent_time)
 ```
 

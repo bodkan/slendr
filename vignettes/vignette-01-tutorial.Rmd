@@ -79,9 +79,9 @@ This is the approach of *slendr*: let the user specify everything in an easy-to-
 
 ```{r, world_zoom, results = FALSE}
 map <- world(
-  xrange = c(-15, 60), # min-max longitude
-  yrange = c(20, 65),  # min-max latitude
-  crs = "EPSG:3035"    # projected CRS used internally
+  xrange = c(-13, 70), # min-max longitude
+  yrange = c(18, 65),  # min-max latitude
+  crs = "EPSG:3035"    # coordinate reference system (CRS) for West Eurasia
 )
 ```
 
@@ -106,8 +106,8 @@ In addition to the overall spatial map context, we can also define smaller geogr
 ```{r}
 africa <- region(
   "Africa", map,
-  polygon = list(c(-18, 20), c(40, 20), c(30, 33),
-                 c(20, 32), c(10, 35), c(-8, 35))
+  polygon = list(c(-18, 20), c(38, 20), c(30, 33),
+                 c(20, 33), c(10, 38), c(-6, 36))
 )
 europe <- region(
   "Europe", map,
