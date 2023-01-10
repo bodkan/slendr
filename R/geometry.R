@@ -55,8 +55,9 @@ a polygon need to be specified, but not both", call. = FALSE)
     # if the map is in WGS-84, interpret the radius as in units of degrees
     # but see https://stackoverflow.com/a/70151787 for apparent visual artifacts
     # this can produce
-    if (has_crs(map) && sf::st_crs(map)$input == "EPSG:4326") {
-      sf::st_crs(point) <- "EPSG:4326"
+    if (has_crs(map)) sf::st_crs(point) <- "EPSG:4326"
+
+    if (sf::st_is_longlat(map)) {
       radius <- units::set_units(radius, arc_degree)
       warning(
         paste0("Your map is using a WGS-84 geographic coordinate system (CRS), meaning that\n",
@@ -70,11 +71,12 @@ a polygon need to be specified, but not both", call. = FALSE)
   } else {
     # generate geometry of a polygon from a given list of coordinates
     range <- sf::st_geometry(create_polygon(coords))
-    if (has_crs(map))
-      sf::st_crs(range) <- "EPSG:4326"
   }
 
-  if (has_crs(map)) range <- sf::st_transform(range, sf::st_crs(map))
+  if (has_crs(map)) {
+    sf::st_crs(range) <- "EPSG:4326"
+    range <- sf::st_transform(range, sf::st_crs(map))
+  }
 
   range
 }
