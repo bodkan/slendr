@@ -1,5 +1,5 @@
-skip_if(!check_env(verbose = FALSE))
-setup_env(quiet = TRUE)
+skip_if(!is_slendr_env_present())
+init_env(quiet = TRUE)
 
 pop <- population("pop", time = 1, N = 10)
 model <- compile_model(pop, generation_time = 1, direction = "forward", simulation_length = 10)

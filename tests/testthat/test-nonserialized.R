@@ -1,5 +1,5 @@
-skip_if(!check_env(verbose = FALSE))
-setup_env(quiet = TRUE)
+skip_if(!is_slendr_env_present())
+init_env(quiet = TRUE)
 
 ooa <- population("OOA", time = 30000, N = 50, remove = 25000)
 ehg <- population("EHG", parent = ooa, time = 28000, N = 100, remove = 6000)

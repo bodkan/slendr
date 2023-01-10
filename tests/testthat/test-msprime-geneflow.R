@@ -2,8 +2,8 @@
 # functions. This is why it loads simulated outputs via the original ts_load() method (which is still
 # valid, so it actually makes sense to test things this way).
 
-skip_if(!check_env(verbose = FALSE))
-setup_env(quiet = TRUE)
+skip_if(!is_slendr_env_present())
+init_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
