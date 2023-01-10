@@ -1,3 +1,5 @@
+skip_if(!check_env(verbose = FALSE))
+
 test_that("forward and backward time model objects are equivalent", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
 

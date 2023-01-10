@@ -1,4 +1,4 @@
-skip_if(!slendr:::check_env_present())
+skip_if(!check_env(verbose = FALSE))
 setup_env(quiet = TRUE)
 
 ooa <- population("OOA", time = 30000, N = 50, remove = 25000)

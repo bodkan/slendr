@@ -62,7 +62,7 @@ test_that("deletion in non-interactive modem must be forced", {
   expect_true(grepl("dir-forced$", model$path))
 })
 
-skip_if(!slendr:::check_env_present())
+skip_if(!check_env(verbose = FALSE))
 setup_env(quiet = TRUE)
 
 test_that("sequence length can only be an integer number (SLiM)", {

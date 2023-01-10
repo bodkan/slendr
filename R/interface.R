@@ -1362,7 +1362,7 @@ clear_env <- function(force = FALSE) {
 #' reticulate package and prints the versions of all slendr Python dependencies
 #' to the console.
 #'
-#' @param quiet Should a log message be printed? If \code{FALSE}, only a logical
+#' @param verbose Should a log message be printed? If \code{FALSE}, only a logical
 #'   value is returned (invisibly).
 #'
 #' @return Either \code{TRUE} (slendr Python environment is present) or \code{FALSE}
@@ -1373,7 +1373,7 @@ clear_env <- function(force = FALSE) {
 #' }
 #' check_env()
 #' @export
-check_env <- function(quiet = FALSE) {
+check_env <- function(verbose = TRUE) {
   # if there is no Python available on user's system, don't immediately
   # jump to installing miniconda (let's deal with that in setup_env())
   orig_env <- Sys.getenv("RETICULATE_MINICONDA_ENABLED")
@@ -1407,7 +1407,7 @@ check_env <- function(quiet = FALSE) {
   # else
   #   pylib_status <- "NOT LOADED \u274C"
 
-  if (!quiet) {
+  if (verbose) {
     cat("Summary of the currently active Python environment:\n\n")
     cat("Python binary:", py$python, "\n")
     cat("Python version:", py$version_string, "\n")
@@ -1421,7 +1421,7 @@ check_env <- function(quiet = FALSE) {
 
   if (!all(c(has_tskit, has_pyslim, has_msprime))) {
     return_value <- FALSE
-    if (!quiet)
+    if (verbose)
       cat("\nNote that due to the technical limitations of embedded Python,",
           "if you\nwant to switch to another Python environment you will need",
           "to restart\nyour R session first.\n")
@@ -1429,5 +1429,8 @@ check_env <- function(quiet = FALSE) {
   } else
     return_value <- TRUE
 
-  return(invisible(return_value))
+  if (verbose)
+    return(invisible(return_value))
+  else
+    return(return_value)
 }

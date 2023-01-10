@@ -1,4 +1,4 @@
-skip_if(!slendr:::check_env_present())
+skip_if(!check_env(verbose = FALSE))
 
 pop <- population("POP", time = 1, N = 100)
 

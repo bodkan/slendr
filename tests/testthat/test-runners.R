@@ -1,4 +1,4 @@
-skip_if(!check_env_present())
+skip_if(!check_env(verbose = FALSE))
 setup_env(quiet = TRUE)
 
 pop <- population("pop", time = 1, N = 10)

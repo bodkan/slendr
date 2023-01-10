@@ -2,7 +2,7 @@
 # functions. This is why it loads simulated outputs via the original ts_load() method (which is still
 # valid, so it actually makes sense to test things this way).
 
-skip_if(!slendr:::check_env_present())
+skip_if(!check_env(verbose = FALSE))
 setup_env(quiet = TRUE)
 
 # Let's start by defining a couple of parameters for our simulations
