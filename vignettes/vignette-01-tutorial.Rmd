@@ -61,6 +61,8 @@ Once you get _slendr_ installed, you just need to load it:
 
 ```{r}
 library(slendr)
+
+init_env()
 ```
 
 If some of its dependencies (such as SLiM or necessary Python modules) are missing, you will get an informative message on how to proceed.

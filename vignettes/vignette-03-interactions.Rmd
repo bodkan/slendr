@@ -35,6 +35,8 @@ Finally, as with other functions for programming model spatial dynamics, the *sl
 ```{r}
 library(slendr)
 
+init_env()
+
 set.seed(314159)
 ```
 

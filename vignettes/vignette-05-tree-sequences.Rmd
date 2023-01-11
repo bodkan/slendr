@@ -24,6 +24,8 @@ In this vignette, we will show how to specify sampling events to record individu
 
 ```{r}
 library(slendr)
+
+init_env()
 ```
 
 ## Setting up Python environment

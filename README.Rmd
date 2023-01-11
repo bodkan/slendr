@@ -101,6 +101,8 @@ First, we define the spatial context of the simulation. This will represent the 
 ```{r, results = FALSE}
 library(slendr)
 
+init_env()
+
 map <- world(
   xrange = c(-13, 70), # min-max longitude
   yrange = c(18, 65),  # min-max latitude

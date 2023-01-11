@@ -26,6 +26,8 @@ First, let's define population objects, splits, and other demographic events (no
 ```{r}
 library(slendr)
 
+init_env()
+
 # African ancestral population
 afr <- population("AFR", time = 52000, N = 3000)
 

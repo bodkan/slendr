@@ -34,6 +34,8 @@ First, let's load the *slendr* R package and create a two-dimensional abstract w
 
 ```{r}
 library(slendr)
+
+init_env()
 ```
 
 ```{r}
@@ -209,7 +211,7 @@ check_area <- function(pop, map, continent) {
     return(pop)
 }
 
-filtered <- lapply(populations, check_area, map, continent) %>% 
+filtered <- lapply(populations, check_area, map, continent) %>%
   Filter(Negate(is.null), .)
 ```
 

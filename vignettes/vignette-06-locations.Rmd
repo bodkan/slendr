@@ -34,6 +34,8 @@ library(slendr)
 library(dplyr)
 library(ggplot2)
 
+init_env()
+
 seed <- 314159
 set.seed(seed)
 ```

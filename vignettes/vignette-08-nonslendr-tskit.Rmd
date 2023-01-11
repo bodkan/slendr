@@ -51,6 +51,8 @@ library(dplyr)
 library(magrittr)
 library(ggplot2)
 
+init_env()
+
 SEED <- 42
 set.seed(SEED)
 ```
