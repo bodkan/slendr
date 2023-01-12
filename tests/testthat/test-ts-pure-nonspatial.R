@@ -1,5 +1,5 @@
-skip_if(!slendr:::check_env_present())
-setup_env(quiet = TRUE)
+skip_if(!is_slendr_env_present())
+init_env(quiet = TRUE)
 
 set.seed(42)
 

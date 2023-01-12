@@ -54,16 +54,17 @@ a polygon need to be specified, but not both", call. = FALSE)
 
     # if the map is in WGS-84, interpret the radius as in units of degrees
     # but see https://stackoverflow.com/a/70151787 for apparent visual artifacts
-    # this can produce
-    if (has_crs(map)) sf::st_crs(point) <- "EPSG:4326"
-
-    if (sf::st_is_longlat(map)) {
-      radius <- units::set_units(radius, arc_degree)
-      warning(
-        paste0("Your map is using a WGS-84 geographic coordinate system (CRS), meaning that\n",
-               "radius distances are interpreted in units of degrees. Consider using\n",
-               "a projected CRS in order to specify distances in meters."), call. = FALSE
-      )
+    # this can produce {
+    if (has_crs(map)) {
+      sf::st_crs(point) <- "EPSG:4326"
+      if (sf::st_is_longlat(map)) {
+        radius <- units::set_units(radius, arc_degree)
+        warning(
+          paste0("Your map is using a WGS-84 geographic coordinate system (CRS), meaning that\n",
+                "radius distances are interpreted in units of degrees. Consider using\n",
+                "a projected CRS in order to specify distances in meters."), call. = FALSE
+        )
+      }
     }
 
     # generate geometry of a circular range around the center point

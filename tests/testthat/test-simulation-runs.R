@@ -1,4 +1,4 @@
-skip_if(!slendr:::check_env_present())
+skip_if(!is_slendr_env_present())
 
 # Run a given forward/backward simulation with different combinations
 # of start-end and burnin parameters

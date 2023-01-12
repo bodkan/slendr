@@ -901,7 +901,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
   # generate appropriate internal node labels based on the user's choice
   elem <- if (labels == "pop") "pop" else "node_id"
   node_labels <- purrr::map_chr(unique(sort(parents)),
-                                ~ data[data$phylo_id == .x, ][[elem]])
+                                ~ as.character(data[data$phylo_id == .x, ][[elem]]))
 
   tree <- list(
     edge = edge,

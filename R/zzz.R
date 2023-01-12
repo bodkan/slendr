@@ -36,7 +36,7 @@ PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
       )
   }
 
-  if (!check_env_present()) {
+  if (!is_slendr_env_present()) {
     if (!getOption("slendr.custom_env")) {
       version <- gsub(".*==", "", deps)
       packageStartupMessage(
