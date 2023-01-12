@@ -1,6 +1,6 @@
 # slendr (development version)
 
-- **<u>Minor breaking change!</u> Python environments of _slendr_ are no longer automatically activated upon calling `library(slendr)`! Using the coalescent _msprime_ back end and _slendr_'s tree-sequence functions now requires making an explicit call to a new function `init_env()` after `library(slendr)` is executed.**
+- **<u>Minor breaking change!</u> Python environments of _slendr_ are no longer automatically activated upon calling `library(slendr)`! Using the coalescent _msprime_ back end and _slendr_'s tree-sequence functions now requires making an explicit call to a new function `init_env()` after `library(slendr)` is executed.** (PR [#102](https://github.com/bodkan/slendr/pull/118))
 
 Motivation for the change: A small proportion of users have been experiencing issues with broken conda environments and various other issues with Python virtual environments in general. It's hard to guess how frequent this has been, but experience from workshops and courses suggests perhaps 1 in 20 of users experiencing Python issues which hindered their ability to use _slendr_ .(Fun fact: the first user-submitted GitHub issue upon releasing the first version of the _slendr_ R package was... a Python virtual environment issue).
 
