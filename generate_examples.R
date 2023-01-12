@@ -1,5 +1,7 @@
 devtools::load_all(".")
 
+init_env()
+
 set.seed(314159)
 
 # create the ancestor of everyone and a chimpanzee outgroup

@@ -1,7 +1,7 @@
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
 ```{r, include = FALSE}
-env_present <- slendr:::check_env_present()
+env_present <- slendr:::is_slendr_env_present()()
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -100,6 +100,8 @@ First, we define the spatial context of the simulation. This will represent the 
 
 ```{r, results = FALSE}
 library(slendr)
+
+init_env()
 
 map <- world(
   xrange = c(-13, 70), # min-max longitude

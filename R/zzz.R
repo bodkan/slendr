@@ -1,5 +1,6 @@
-# global references to required Python packages - inspired by:
-# https://cran.r-project.org/web/packages/reticulate/vignettes/package.html
+# # global references to required Python packages - inspired by:
+# # https://cran.r-project.org/web/packages/reticulate/vignettes/package.html
+# # (Python environment initialization is now being done using init_env())
 tskit <- NULL
 pyslim <- NULL
 msp <- NULL
@@ -7,8 +8,10 @@ msp <- NULL
 
 # define slendr's required Python dependencies and compose an environment name
 # that will be used specifically for them
-deps <- c("msprime==1.2.0", "tskit==0.5.2", "pyslim==1.0")
-PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
+PYTHON_ENV <-
+  c("msprime==1.2.0", "tskit==0.5.2", "pyslim==1.0") %>%
+  gsub("==", "-", .) %>%
+  paste(collapse = "_")
 
 .onAttach <- function(libname, pkgname) {
   # check for presence of the slim binary in user's PATH and display
@@ -38,30 +41,36 @@ PYTHON_ENV <- paste(gsub("==", "-", deps), collapse = "_")
 
   if (!is_slendr_env_present()) {
     if (!getOption("slendr.custom_env")) {
-      version <- gsub(".*==", "", deps)
+      version <- strsplit(PYTHON_ENV, "_")[[1]] %>% gsub(".*-", "", .)
       packageStartupMessage(
         sprintf(paste0("A slendr Python environment with the necessary versions of msprime (%s),\n",
-        "tskit (%s), and pyslim (%s) has not been found. If this is not the\nfirst time you're ",
-        "running slendr, the most likely explanation for this\nmessage is that some of slendr's ",
-        "Python dependencies need an update.\n\n"),
-        version[1], version[2], version[3]),
-        "You can setup a pre-configured environment with all of slendr's Python\n",
-        "dependencies by running the function setup_env()."
+        "tskit (%s), and pyslim (%s) has not been found.\n"), version[1], version[2], version[3]),
+        "\nYou can setup a pre-configured environment with all of slendr's Python\n",
+        "dependencies automatically by running the function setup_env()."
       )
     }
-  } else
-    setup_env()
+  }
+
+  packageStartupMessage(
+    "=======================================================================\n",
+    "NOTE: Due to frequent issues with some user's Python setups, slendr no\n",
+    "longer activates its Python environment automatically upon calling\n",
+    "library(slendr).\n\n",
+    "In order to use slendr's msprime back end or its tree-sequence\n",
+    "functionality, users now must activate slendr's Python environments\n",
+    "manually by calling init_env().\n\n",
+    "This inconvenience is a compromise in order to help novice users avoid\n",
+    "having to debug very technical, low-level Python-specific issues. This\n",
+    "note will be removed in a future version of slendr.",
+    "\n======================================================================="
+  )
 }
 
 .onLoad <- function(libname, pkgname) {
+  # setup Python module imports (see also slendr's init_env() function)
   tskit <<- reticulate::import("tskit", delay_load = TRUE)
   pyslim <<- reticulate::import("pyslim", delay_load = TRUE)
   msp <<- reticulate::import("msprime", delay_load = TRUE)
-  # pylib <<- reticulate::import_from_path(
-  #   "pylib",
-  #   path = system.file("python", package = "slendr"),
-  #   delay_load = TRUE
-  # )
 
   # setup slendr options (https://r-pkgs.org/r.html#when-you-do-need-side-effects)
   op <- options()

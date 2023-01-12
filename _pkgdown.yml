@@ -53,8 +53,9 @@ reference:
   - title: Installation and configuration of Python dependencies
     contents:
     - setup_env
-    - clear_env
+    - init_env
     - check_env
+    - clear_env
 
   - title: Model components
     contents:

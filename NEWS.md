@@ -1,5 +1,17 @@
 # slendr (development version)
 
+- **<u>Minor breaking change!</u> Python environments of _slendr_ are no longer automatically activated upon calling `library(slendr)`! Using the coalescent _msprime_ back end and _slendr_'s tree-sequence functions now requires making an explicit call to a new function `init_env()` after `library(slendr)` is executed.**
+
+Motivation for the change: A small proportion of users have been experiencing issues with broken conda environments and various other issues with Python virtual environments in general. It's hard to guess how frequent this has been, but experience from workshops and courses suggests perhaps 1 in 20 of users experiencing Python issues which hindered their ability to use _slendr_ .(Fun fact: the first user-submitted GitHub issue upon releasing the first version of the _slendr_ R package was... a Python virtual environment issue).
+
+Explanation: Activating Python environments automatically upon calling `library(slendr)` has been a popular feature because it hid away most of the complexities of the R-Python interface that powers _slendr_'s tree-sequence functionality. This was particularly convenient for many _slendr_ users, particularly those who have no experience with Python at all.
+
+Unfortunately, in cases where a Python virtual environments with tskit/msprime/pyslim on a user's system ended up corrupted (or if anything else at the Python level got broken), the automatic Python environment activation performed by the `library(slendr)` call failed and _slendr_ was not even loaded. Sadly, this completely pulled the rug from under _slendr_ and there was nothing that could be done about it from its perspective (the issue happened at a low-level layer of embedded-Python before _slendr_ could've been loaded into R). Solving these issues was not difficult for experienced users, but many _slendr_ users have no experience with Python at all, they have never used conda, they don't understand the concept of "Python virtual environments" or how the R-Python interface works. And nor should they! After all, _slendr_ is an R package.
+
+Splitting the Python virtual environment activation step into its own `init_env()` function means that `library(slendr)` now always succeeds (regardless of potential underlying Python issues on a user's sytem), making it much easier to diagnose and fix Python problems from R once the package is loaded.
+
+So, to recap: `library(slendr)` no longer activates _slendr_'s isolated Python virtual environment. In order to simulate tree sequences and analyse them using its interface to _tskit_, it is necessary to call `init_env()`. This function performs the same Python-activation steps that `library(slendr)` used to call automagically in earlier _slendr_ versions. No other change to your scripts is necessary.
+
 - When a named list is provided as a `sample_sets =` argument to a oneway statistic function, the names are used in a `set` column of the resulting data frame even if only single samples were used. ([#2a6781](https://github.com/bodkan/slendr/commit/2a6781))
 
 - It is now possible to label groups of samples in _slendr_'s _tskit_ interface functions which should make data frames with statistics results more readable. As an example, running `ts_f3(ts, A = c("p1_1", "p1_2", "p1_3"), B = c("p2_1", "p2_3"), C = c("p3_1", "p3_2", "p3_"))` resulted in a following data-frame output:
