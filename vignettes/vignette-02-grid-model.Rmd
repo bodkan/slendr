@@ -18,8 +18,6 @@ knitr::opts_chunk$set(
   dpi = 80,
   eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
 )
-
-devtools::install(".", upgrade = FALSE)
 ```
 
 In this vignette, we will build a simple model of isolated populations laid out on a two-dimensional grid, each exchanging migrants with its immediate neighbors.
