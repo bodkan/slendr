@@ -11,7 +11,7 @@
 check_dependencies <- function(python = FALSE, slim = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
   missing_slim <- if (slim) !all(Sys.which("slim") != "") else FALSE
-  missing_python <- if (python) !check_env(verbose = FALSE) else FALSE
+  missing_python <- if (python) !is_slendr_env_present() else FALSE
 
   if (missing_slim | missing_python) {
     if (interactive()) {
