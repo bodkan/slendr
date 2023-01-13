@@ -39,7 +39,7 @@ navbar:
           href: articles/vignette-09-paper.html
     twitter:
       icon: fa-twitter
-      href: https://twitter.com/dr_bodkan
+      href: https://twitter.com/fleventy5
 
 reference:
   - title: Compiling and running population genetic models
