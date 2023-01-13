@@ -5,7 +5,6 @@ pkg := build/slendr_$(version).tar.gz
 logo := man/figures/logo.png
 
 docs:
-	rm -rf docs/reference
 	R -e 'devtools::install(upgrade = "never")'
 	R -e 'devtools::document()'
 	R -e 'pkgdown::build_reference()'
@@ -21,8 +20,10 @@ docs:
 website: $(logo) README.md
 	R -e 'devtools::install(upgrade = "never")'
 	R -e 'devtools::document()'
+	R -e 'pkgdown::build_reference()'
+	R -e 'pkgdown::build_reference_index()'
+	R -e 'pkgdown::build_news()'
 	R -e 'pkgdown::build_site()'
-	git restore docs/CNAME
 	# discard useless updates of temporary paths, random seed values, etc.
 	#git restore docs/pkgdown.yml
 	#git restore docs/reference/join.html

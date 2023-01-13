@@ -29,24 +29,24 @@ navbar:
       menu:
         - text: Installation instructions
           href: articles/vignette-00-installation.html
-        # - text: Introduction and basic tutorial
-        #   href: articles/vignette-01-tutorial.html
-        # - text: Demes on a regular spatial grid
-        #   href: articles/vignette-02-grid-model.html
-        # - text: Programming dispersion dynamics
-        #   href: articles/vignette-03-interactions.html
-        # - text: Traditional non-spatial models
-        #   href: articles/vignette-04-nonspatial-models.html
-        # - text: Tree sequence processing and statistics
-        #   href: articles/vignette-05-tree-sequences.html
-        # - text: Spatially annotated tree sequences
-        #   href: articles/vignette-06-locations.html
-        # - text: Simulating data with SLiM and msprime backends
-        #   href: articles/vignette-07-backends.html
-        # - text: Analyzing non-slendr tree sequences
-        #   href: articles/vignette-08-nonslendr-tskit.html
-        # - text: Examples from the slendr paper
-        #   href: articles/vignette-09-paper.html
+        - text: Introduction and basic tutorial
+          href: articles/vignette-01-tutorial.html
+        - text: Demes on a regular spatial grid
+          href: articles/vignette-02-grid-model.html
+        - text: Programming dispersion dynamics
+          href: articles/vignette-03-interactions.html
+        - text: Traditional non-spatial models
+          href: articles/vignette-04-nonspatial-models.html
+        - text: Tree sequence processing and statistics
+          href: articles/vignette-05-tree-sequences.html
+        - text: Spatially annotated tree sequences
+          href: articles/vignette-06-locations.html
+        - text: Simulating data with SLiM and msprime backends
+          href: articles/vignette-07-backends.html
+        - text: Analyzing non-slendr tree sequences
+          href: articles/vignette-08-nonslendr-tskit.html
+        - text: Examples from the slendr paper
+          href: articles/vignette-09-paper.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/fleventy5

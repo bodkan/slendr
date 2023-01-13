@@ -1,0 +1,19 @@
+pandoc: '2.18'
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  vignette-00-installation: vignette-00-installation.html
+  vignette-01-tutorial: vignette-01-tutorial.html
+  vignette-02-grid-model: vignette-02-grid-model.html
+  vignette-03-interactions: vignette-03-interactions.html
+  vignette-04-nonspatial-models: vignette-04-nonspatial-models.html
+  vignette-05-tree-sequences: vignette-05-tree-sequences.html
+  vignette-06-locations: vignette-06-locations.html
+  vignette-07-backends: vignette-07-backends.html
+  vignette-08-nonslendr-tskit: vignette-08-nonslendr-tskit.html
+  vignette-09-paper: vignette-09-paper.html
+last_built: 2023-01-16T10:54Z
+urls:
+  reference: https://www.slendr.net/reference
+  article: https://www.slendr.net/articles
+

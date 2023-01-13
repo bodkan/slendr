@@ -166,7 +166,7 @@ We can take things one step further. What if we wanted to do a similar thing (i.
 
 Let's zoom in on some interesting part of the world and then create a grid of demes using the same helper function `create_pop` we defined above (each population boundary being 300 km in diameter):
 
-```{r, results = FALSE}
+```{r, results = FALSE, warning = FALSE}
 map <- world(
   xrange = c(-25, 55),
   yrange = c(-32, 35),
@@ -177,7 +177,7 @@ n <- 20
 
 populations <-
   seq(1, n * n) %>%
-  lapply(create_pop, n_side = n, map = map, N = 100, radius = 150e3)
+  lapply(create_pop, n_side = n, map = map, N = 100, radius = 1.5)
 ```
 
 Of course, when we lay out a regular grid across a map of the world, some population boundaries would fall outside the African continent. To solve this issue, we will go through the list of all populations and filter to those with at least 50% of their area on land, using another helper function:
