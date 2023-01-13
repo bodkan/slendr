@@ -99,6 +99,8 @@ First, we define the spatial context of the simulation. This will represent the 
 ```{r, results = FALSE}
 library(slendr)
 
+# activate the internal Python environment needed for simulation and
+# tree-sequence processing
 init_env()
 
 map <- world(

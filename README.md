@@ -85,11 +85,28 @@ First, we define the spatial context of the simulation. This will represent the 
 
 ```r
 library(slendr)
+#> =======================================================================
+#> NOTE: Due to frequent issues with some user's Python setups, slendr no
+#> longer activates its Python environment automatically upon calling
+#> library(slendr).
+#> 
+#> In order to use slendr's msprime back end or its tree-sequence
+#> functionality, users now must activate slendr's Python environments
+#> manually by calling init_env().
+#> 
+#> This inconvenience is a compromise in order to help novice users avoid
+#> having to debug very technical, low-level Python-specific issues. This
+#> note will be removed in a future version of slendr.
+#> =======================================================================
+
+# activate the internal Python environment needed for simulation and
+# tree-sequence processing
+init_env()
 #> The interface to all required Python modules has been activated.
 
 map <- world(
-  xrange = c(-15, 60), # min-max longitude
-  yrange = c(20, 65),  # min-max latitude
+  xrange = c(-13, 70), # min-max longitude
+  yrange = c(18, 65),  # min-max latitude
   crs = "EPSG:3035"    # coordinate reference system (CRS) for West Eurasia
 )
 ```
@@ -117,8 +134,8 @@ This makes it easier for us to define spatial features simply by reading the coo
 ```r
 africa <- region(
   "Africa", map,
-  polygon = list(c(-18, 20), c(40, 20), c(30, 33),
-                 c(20, 32), c(10, 35), c(-8, 35))
+  polygon = list(c(-18, 20), c(38, 20), c(30, 33),
+                 c(20, 33), c(10, 38), c(-6, 36))
 )
 europe <- region(
   "Europe", map,
@@ -228,9 +245,9 @@ model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam), # populations defined above
   gene_flow = gf,
   generation_time = 30,
-  resolution = 10e3, # resolution in meters per pixel
+  resolution = 10e3,                   # resolution in meters per pixel
   competition = 130e3, mating = 100e3, # spatial interaction parameters
-  dispersal = 70e3, # how far can offspring end up from their parents
+  dispersal = 70e3,                    # how far can offspring end up from their parents
 )
 ```
 

@@ -1,4 +1,4 @@
-.PHONY: build vignettes docs
+.PHONY: build docs website
 
 version := $(shell less DESCRIPTION | grep 'Version' | sed 's/Version: \(.*\)$$/\1/')
 pkg := build/slendr_$(version).tar.gz
@@ -6,6 +6,7 @@ logo := man/figures/logo.png
 
 docs:
 	rm -rf docs/reference
+	R -e 'devtools::install(upgrade = "never")'
 	R -e 'devtools::document()'
 	R -e 'pkgdown::build_reference()'
 	R -e 'pkgdown::build_reference_index()'
@@ -17,10 +18,8 @@ docs:
 	#git restore docs/reference/world.html
 	#git restore docs/reference/expand_range-1.png
 
-website: $(logo)
-	rm -rf docs/
+website: $(logo) README.md
 	R -e 'devtools::install(upgrade = "never")'
-	R -e 'knitr::knit("README.Rmd", output = "README.md")'
 	R -e 'devtools::document()'
 	R -e 'pkgdown::build_site()'
 	git restore docs/CNAME
