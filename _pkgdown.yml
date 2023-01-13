@@ -1,6 +1,16 @@
 title: slendr
 url: https://www.slendr.net
 
+template:
+  bootstrap: 5
+  params:
+  docsearch:
+    api_key: a895c93f0e9eda05eb10b29a9921d586
+    index_name: slendr
+
+news:
+  one_page: true
+
 navbar:
   structure:
     left:  [home, reference, articles, news]
@@ -19,24 +29,24 @@ navbar:
       menu:
         - text: Installation instructions
           href: articles/vignette-00-installation.html
-        - text: Introduction and basic tutorial
-          href: articles/vignette-01-tutorial.html
-        - text: Demes on a regular spatial grid
-          href: articles/vignette-02-grid-model.html
-        - text: Programming dispersion dynamics
-          href: articles/vignette-03-interactions.html
-        - text: Traditional non-spatial models
-          href: articles/vignette-04-nonspatial-models.html
-        - text: Tree sequence processing and statistics
-          href: articles/vignette-05-tree-sequences.html
-        - text: Spatially annotated tree sequences
-          href: articles/vignette-06-locations.html
-        - text: Simulating data with SLiM and msprime backends
-          href: articles/vignette-07-backends.html
-        - text: Analyzing non-slendr tree sequences
-          href: articles/vignette-08-nonslendr-tskit.html
-        - text: Examples from the slendr paper
-          href: articles/vignette-09-paper.html
+        # - text: Introduction and basic tutorial
+        #   href: articles/vignette-01-tutorial.html
+        # - text: Demes on a regular spatial grid
+        #   href: articles/vignette-02-grid-model.html
+        # - text: Programming dispersion dynamics
+        #   href: articles/vignette-03-interactions.html
+        # - text: Traditional non-spatial models
+        #   href: articles/vignette-04-nonspatial-models.html
+        # - text: Tree sequence processing and statistics
+        #   href: articles/vignette-05-tree-sequences.html
+        # - text: Spatially annotated tree sequences
+        #   href: articles/vignette-06-locations.html
+        # - text: Simulating data with SLiM and msprime backends
+        #   href: articles/vignette-07-backends.html
+        # - text: Analyzing non-slendr tree sequences
+        #   href: articles/vignette-08-nonslendr-tskit.html
+        # - text: Examples from the slendr paper
+        #   href: articles/vignette-09-paper.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/fleventy5
@@ -138,12 +148,3 @@ reference:
     - ts_fst
     - ts_tajima
     - ts_segregating
-
-news:
-  one_page: true
-
-template:
-  params:
-    docsearch:
-      api_key: a895c93f0e9eda05eb10b29a9921d586
-      index_name: slendr

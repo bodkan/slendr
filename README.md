@@ -2,7 +2,7 @@
 
 
 
-# slendr: Population Genetic Simulations in R
+# _slendr_: Population Genetic Simulations in R
 
 <!-- badges: start -->
 
@@ -10,7 +10,7 @@
 
 <!-- badges: end -->
 
-### *Overview* <a href='https://www.slendr.net'><img src="man/figures/logo.png" align="right" height="139"/></a>
+### *Overview* <a href='https://www.slendr.net'></a>
 
 *slendr* is an R package toolbox for defining population genetic models and simulating genomic data entirely from R. It has been originally conceived as a framework for simulating spatially-explicit genomic data on real geographic landscapes but it has grown to be much more than that.
 
@@ -85,24 +85,10 @@ First, we define the spatial context of the simulation. This will represent the 
 
 ```r
 library(slendr)
-#> =======================================================================
-#> NOTE: Due to frequent issues with some user's Python setups, slendr no
-#> longer activates its Python environment automatically upon calling
-#> library(slendr).
-#> 
-#> In order to use slendr's msprime back end or its tree-sequence
-#> functionality, users now must activate slendr's Python environments
-#> manually by calling init_env().
-#> 
-#> This inconvenience is a compromise in order to help novice users avoid
-#> having to debug very technical, low-level Python-specific issues. This
-#> note will be removed in a future version of slendr.
-#> =======================================================================
 
 # activate the internal Python environment needed for simulation and
 # tree-sequence processing
 init_env()
-#> The interface to all required Python modules has been activated.
 
 map <- world(
   xrange = c(-13, 70), # min-max longitude

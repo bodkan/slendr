@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 set.seed(314159)
 ```
 
-# slendr: Population Genetic Simulations in R
+# _slendr_: Population Genetic Simulations in R
 
 <!-- badges: start -->
 
@@ -24,7 +24,7 @@ set.seed(314159)
 
 <!-- badges: end -->
 
-### *Overview* <a href='https://www.slendr.net'><img src="man/figures/logo.png" align="right" height="139"/></a>
+### *Overview* <a href='https://www.slendr.net'></a>
 
 *slendr* is an R package toolbox for defining population genetic models and simulating genomic data entirely from R. It has been originally conceived as a framework for simulating spatially-explicit genomic data on real geographic landscapes but it has grown to be much more than that.
 
@@ -96,7 +96,7 @@ Imagine that we wanted to simulate spatio-temporal genomic data from a toy model
 
 First, we define the spatial context of the simulation. This will represent the "world" which will be occupied by populations in our model.
 
-```{r, results = FALSE}
+```{r, results = FALSE, message = FALSE}
 library(slendr)
 
 # activate the internal Python environment needed for simulation and
