@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- slendr:::check_env_present()
+env_present <- slendr:::is_slendr_env_present()
 
 knitr::opts_chunk$set(
   collapse = FALSE,
@@ -34,6 +34,8 @@ Finally, as with other functions for programming model spatial dynamics, the *sl
 
 ```{r}
 library(slendr)
+
+init_env()
 
 set.seed(314159)
 ```

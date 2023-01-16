@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- slendr:::check_env_present()
+env_present <- slendr:::is_slendr_env_present()
 eval_chunk <- Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
 
 knitr::opts_chunk$set(
@@ -39,6 +39,8 @@ library(purrr)
 library(tidyr)
 library(cowplot)
 library(forcats)
+
+init_env()
 
 SEED <- 42
 set.seed(SEED)
@@ -112,7 +114,7 @@ p_ex1_divergence <- divergence %>%
         axis.title.x = element_blank())
 
 p_ex1_f4ratio <- f4ratio %>%
-  ggplot(aes(population, alpha)) + 
+  ggplot(aes(population, alpha)) +
   geom_hline(yintercept = 0, linetype = 2) +
   geom_jitter(alpha = 0.5) +
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
@@ -278,7 +280,7 @@ ooa_trajectory <- list(c(40, 30), c(50, 30), c(60, 40), c(45, 55))
 
 ```{r, eval = eval_chunk, fig.keep='none'}
 map <- world(xrange = c(-15, 60), yrange = c(20, 65), crs = 3035)
- 
+
 ooa <- population(
   "OOA", time = 50000, N = 500, remove = 23000,
    map = map, center = c(33, 30), radius = 400e3

@@ -47,7 +47,6 @@ Imports:
     ijtiff,
     shinyWidgets,
     shiny,
-    rgdal,
     ape
 Suggests:
     testthat (>= 3.0.0),
@@ -55,6 +54,7 @@ Suggests:
     rmarkdown,
     admixr,
     units,
+    rgdal,
     magick,
     cowplot,
     forcats,

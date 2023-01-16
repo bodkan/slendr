@@ -1,6 +1,16 @@
 title: slendr
 url: https://www.slendr.net
 
+template:
+  bootstrap: 5
+  params:
+  docsearch:
+    api_key: a895c93f0e9eda05eb10b29a9921d586
+    index_name: slendr
+
+news:
+  one_page: true
+
 navbar:
   structure:
     left:  [home, reference, articles, news]
@@ -39,7 +49,7 @@ navbar:
           href: articles/vignette-09-paper.html
     twitter:
       icon: fa-twitter
-      href: https://twitter.com/dr_bodkan
+      href: https://twitter.com/fleventy5
 
 reference:
   - title: Compiling and running population genetic models
@@ -53,8 +63,9 @@ reference:
   - title: Installation and configuration of Python dependencies
     contents:
     - setup_env
-    - clear_env
+    - init_env
     - check_env
+    - clear_env
 
   - title: Model components
     contents:
@@ -137,12 +148,3 @@ reference:
     - ts_fst
     - ts_tajima
     - ts_segregating
-
-news:
-  one_page: true
-
-template:
-  params:
-    docsearch:
-      api_key: a895c93f0e9eda05eb10b29a9921d586
-      index_name: slendr

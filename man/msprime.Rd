@@ -54,6 +54,8 @@ slendr demographic model.
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
+init_env()
+
 # load an example model
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 

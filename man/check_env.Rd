@@ -4,10 +4,10 @@
 \alias{check_env}
 \title{Check that the active Python environment is setup for slendr}
 \usage{
-check_env(quiet = FALSE)
+check_env(verbose = TRUE)
 }
 \arguments{
-\item{quiet}{Should a log message be printed? If \code{FALSE}, only a logical
+\item{verbose}{Should a log message be printed? If \code{FALSE}, only a logical
 value is returned (invisibly).}
 }
 \value{
@@ -22,5 +22,6 @@ to the console.
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
+init_env()
 check_env()
 }

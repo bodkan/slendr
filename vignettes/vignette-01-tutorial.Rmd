@@ -13,7 +13,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- slendr:::check_env_present()
+env_present <- slendr:::is_slendr_env_present()
 
 knitr::opts_chunk$set(
   collapse = FALSE,
@@ -61,6 +61,10 @@ Once you get _slendr_ installed, you just need to load it:
 
 ```{r}
 library(slendr)
+
+# activate the internal Python environment needed for simulation and
+# tree-sequence processing
+init_env()
 ```
 
 If some of its dependencies (such as SLiM or necessary Python modules) are missing, you will get an informative message on how to proceed.
