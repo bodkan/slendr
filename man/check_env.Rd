@@ -22,5 +22,6 @@ to the console.
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
+init_env()
 check_env()
 }

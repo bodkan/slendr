@@ -37,6 +37,8 @@ Calculate pairwise divergence between sets of individuals
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
+init_env()
+
 # load an example model with an already simulated tree sequence
 slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))

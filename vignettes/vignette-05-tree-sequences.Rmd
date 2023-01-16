@@ -24,26 +24,24 @@ In this vignette, we will show how to specify sampling events to record individu
 
 ```{r}
 library(slendr)
-
-init_env()
 ```
 
 ## Setting up Python environment
 
 First, in order to be able to interface with *tskit* and *pyslim* using the *reticulate* package (and run simulations using `msprime`, as we do below), we will need a working Python environment with the required Python modules `pyslim`, `tskit` and `msprime` already installed.
 
-Because setting up Python environments can be quite a [hassle](https://xkcd.com/1987/), _slendr_ provides a single function `setup_env()` to make things easier. If you call it without any arguments, _slendr_ will automatically download, install, and setup a **completely separate** Python environment (based on the "miniconda" distribution) just for _slendr_ and activate it in the background. Even if you're an advanced Python user, I recommend going through this route because it will make sure that all dependencies are at their right versions that have been tested in _slendr_.
+Because setting up Python environments can be quite a [hassle](https://xkcd.com/1987/), _slendr_ provides a single function `setup_env()` to make things easier. If you call it without any arguments, _slendr_ will automatically download, install, and setup a **completely separate** Python environment (based on the "miniconda" distribution) just for _slendr_ and activate it in the background.
 
-A couple of notes:
+It is important to stress that `setup_env()` will not interfere in any way with any of the Python installations you might already have on your computer. The Python installation and environment will be entirely isolated and used just for the purpose of _slendr_ workflows.
 
-- It is important to stress that `setup_env()` will not interfere in any way with any of the Python installations you might already have on your computer. The Python installation and environment will be entirely isolated and used just for the purpose of _slendr_ workflows.
+```{r, eval = FALSE}
+setup_env()
+```
 
-- If you insist on managing your own Python environment, that's OK too. Take a look at [this guide](https://CRAN.R-project.org/package=reticulate/vignettes/versions.html). You will be interested in the function `reticulate::user_virtualenv()` or `reticulate::use_condaenv()` which is what our own `setup_env()` uses under the hood. You will need and environment at least Python version 3.9 or higher, with _tskit_ 0.4.1, _msprime_ 1.1.0, _pyslim_ 0.700, and for running the _msprime_ back end script of _slendr_ also pandas 1.3.5. Higher versions might also work, but those exact versions is what _slendr_ is being developed and tested on.
-
-With all that introduction out of the way, let's now activate the _slendr_ Python environment (potentially installing it if it's not present yet):
+Once we have the Python environment set up, we can activate it by calling:
 
 ```{r}
-setup_env()
+init_env()
 ```
 
 We can use another built-in function `check_env()` to make sure that _slendr_ installed and configured the correct environment for us:
@@ -338,7 +336,7 @@ We can also plot the trajectory of Neanderthal ancestry in Europe during the tim
 dplyr::filter(inds, pop == "EUR") %>%
   ggplot(aes(time, ancestry)) +
   geom_point() +
-  geom_smooth(method = "lm", linetype = 2, color = "red", size = 0.5) +
+  geom_smooth(method = "lm", linetype = 2, color = "red", linewidth = 0.5) +
   xlim(40000, 0) + coord_cartesian(ylim = c(0, 0.1)) +
   labs(x = "time [years ago]", y = "Neanderthal ancestry proportion")
 ```
@@ -376,7 +374,7 @@ result_admixr <- f4ratio(snps, X = europeans, A = "NEA_1", B = "NEA_2", C = "AFR
 bind_cols(result_admixr, result_ts) %>%
   ggplot(aes(alpha_ts, alpha_admixr)) +
   geom_point() +
-  geom_abline(slope = 1, linetype = 2, color = "red", size = 0.5) +
+  geom_abline(slope = 1, linetype = 2, color = "red", linewidth = 0.5) +
   labs(x = "f4-ratio statistic calculated with admixr/ADMIXTOOLS",
        y = "f4-ratio statistic calculated with tskit")
 ```

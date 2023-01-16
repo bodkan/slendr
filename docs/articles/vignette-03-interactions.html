@@ -4,7 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="slendr">
 <title>Programming dispersion dynamics • slendr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -12,14 +13,11 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
-<link href="../docsearch.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Programming dispersion dynamics">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Programming dispersion dynamics">
 <meta property="og:description" content="slendr">
 <meta property="og:image" content="https://www.slendr.net/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -27,123 +25,93 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">slendr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    
+    <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="../index.html">
     <span class="fa fa-home"></span>
      
   </a>
 </li>
-<li>
-  <a href="../reference/index.html">
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">
     <span class="fa fa-question-circle"></span>
      
     Reference
   </a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown--articles">
     <span class="fa fa-book"></span>
      
     Articles
-     
-    <span class="caret"></span>
   </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/vignette-00-installation.html">Installation instructions</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-01-tutorial.html">Introduction and basic tutorial</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-02-grid-model.html">Demes on a regular spatial grid</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-03-interactions.html">Programming dispersion dynamics</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-05-tree-sequences.html">Tree sequence processing and statistics</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
-    </li>
-    <li>
-      <a href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
-    </li>
-  </ul>
+  <div class="dropdown-menu" aria-labelledby="dropdown--articles">
+    <a class="dropdown-item" href="../articles/vignette-00-installation.html">Installation instructions</a>
+    <a class="dropdown-item" href="../articles/vignette-01-tutorial.html">Introduction and basic tutorial</a>
+    <a class="dropdown-item" href="../articles/vignette-02-grid-model.html">Demes on a regular spatial grid</a>
+    <a class="dropdown-item" href="../articles/vignette-03-interactions.html">Programming dispersion dynamics</a>
+    <a class="dropdown-item" href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
+    <a class="dropdown-item" href="../articles/vignette-05-tree-sequences.html">Tree sequence processing and statistics</a>
+    <a class="dropdown-item" href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
+    <a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
+    <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
+    <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
+  </div>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/bodkan/slendr/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/bodkan/slendr/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
-<li>
-  <a href="https://twitter.com/dr_bodkan" class="external-link">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://twitter.com/fleventy5">
     <span class="fa fa-twitter"></span>
      
   </a>
 </li>
       </ul>
-<form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
-        <div class="form-group">
-          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
-      </form>
-      
-    </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
+</nav><div class="container template-article">
 
-      
 
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Programming dispersion dynamics</h1>
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Programming dispersion dynamics</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/vignettes/vignette-03-interactions.Rmd" class="external-link"><code>vignettes/vignette-03-interactions.Rmd</code></a></small>
-      <div class="hidden name"><code>vignette-03-interactions.Rmd</code></div>
-
+      <div class="d-none name"><code>vignette-03-interactions.Rmd</code></div>
     </div>
 
     
@@ -192,18 +160,33 @@ lines of extremely simple R code, resulting in a robust SLiM simulation
 script being generated under the hood.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; =======================================================================</span></span>
+<span><span class="co">#&gt; NOTE: Due to frequent issues with some user's Python setups, slendr no</span></span>
+<span><span class="co">#&gt; longer activates its Python environment automatically upon calling</span></span>
+<span><span class="co">#&gt; library(slendr).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; In order to use slendr's msprime back end or its tree-sequence</span></span>
+<span><span class="co">#&gt; functionality, users now must activate slendr's Python environments</span></span>
+<span><span class="co">#&gt; manually by calling init_env().</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; This inconvenience is a compromise in order to help novice users avoid</span></span>
+<span><span class="co">#&gt; having to debug very technical, low-level Python-specific issues. This</span></span>
+<span><span class="co">#&gt; note will be removed in a future version of slendr.</span></span>
+<span><span class="co">#&gt; =======================================================================</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">314159</span><span class="op">)</span></span></code></pre></div>
 <p>To demonstrate this feature, let’s look at a simple example. Let’s
 make a rectangular world map first:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3500</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">700</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span></span></code></pre></div>
 <p>We have constructed seven populations, each occupying a discrete
 circular range on a blank landscape 3500 distances units wide and 700
 distance units tall. All are programmed to appear in the simulation in
 generation one and have the same number of individuals.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">3000</span>; <span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">350</span>; <span class="va">r</span> <span class="op">=</span> <span class="fl">240</span></span>
 <span></span>
 <span><span class="va">p0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"pop0"</span>, time <span class="op">=</span> <span class="fl">1</span>, N <span class="op">=</span> <span class="va">N</span>, map <span class="op">=</span> <span class="va">map</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="va">y</span><span class="op">)</span>, radius <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span>
@@ -226,7 +209,7 @@ to the change in its spatial dynamics. This is not a realistic model for
 any evolutionary scenario, of course, but when animated, it will allow
 us to see the influence of the parameter choice on the spatial dynamics
 that emerge from the simulation.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_dispersal.html">set_dispersal</a></span><span class="op">(</span><span class="va">p1</span>, time <span class="op">=</span> <span class="fl">100</span>, competition <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_dispersal.html">set_dispersal</a></span><span class="op">(</span><span class="va">p2</span>, time <span class="op">=</span> <span class="fl">200</span>, competition <span class="op">=</span> <span class="fl">130</span><span class="op">)</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_dispersal.html">set_dispersal</a></span><span class="op">(</span><span class="va">p3</span>, time <span class="op">=</span> <span class="fl">300</span>, competition <span class="op">=</span> <span class="fl">170</span><span class="op">)</span></span>
@@ -239,7 +222,7 @@ present and runs into the future (unlike previous models that started in
 the past and ran up to the present), we need to specify the total length
 of the simulation with <code>simulation_length = 1000</code> to know
 when to terminate it.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p0</span>, <span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span>, <span class="va">p6</span><span class="op">)</span>,</span>
 <span>  generation_time <span class="op">=</span> <span class="fl">1</span>, resolution <span class="op">=</span> <span class="fl">1</span>, simulation_length <span class="op">=</span> <span class="fl">1000</span>,</span>
@@ -251,7 +234,7 @@ at the beginning of the simulation, we will let the simulation run
 through a burnin period of 100 generations. We will also save the
 spatial locations of all individuals in order to visualize the spatial
 population dynamics with an animation later.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">locations_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".gz"</span><span class="op">)</span></span>
 <span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, locations <span class="op">=</span> <span class="va">locations_file</span>,</span>
 <span>           burnin <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></span>
@@ -294,12 +277,12 @@ population dynamics with an animation later.</p>
 spatial population dynamics simulated by the SLiM back end script as an
 animated GIF (we skip this animation in this vignette to make the
 package installation size smaller):</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/animate_model.html">animate_model</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">locations_file</span>, steps <span class="op">=</span> <span class="fl">80</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, we can use tree sequence processing features of slendr
 to just capture the last spatial snapshot of the simulated populations,
 which will be even faster:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -332,44 +315,27 @@ focus on the difficult part of modeling (specifying spatiotemporal model
 dynamics), get immediate visual feedback during model building, and
 leverage the powerful SLiM simulation framework as a low-level
 computational engine.</p>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-      </div>
-
+  </main>
 </div>
 
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by Martin Petr.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
   
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
-  docsearch({
-    
-    
-    apiKey: 'a895c93f0e9eda05eb10b29a9921d586',
-    indexName: 'slendr',
-    inputSelector: 'input#search-input.form-control',
-    transformData: function(hits) {
-      return hits.map(function (hit) {
-        hit.url = updateHitURL(hit);
-        return hit;
-      });
-    }
-  });
-</script>
-</body>
+
+  
+
+  </body>
 </html>

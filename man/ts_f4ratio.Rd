@@ -72,6 +72,8 @@ Calculate the f2, f3, f4, and f4-ratio statistics
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 }
+init_env()
+
 # load an example model with an already simulated tree sequence
 slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))

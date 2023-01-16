@@ -276,7 +276,7 @@ Because we record the time and the location of every individual that happens to 
 The simplest use case is determining the locations and times of every single node in the genealogical history of an individual along the tree sequence (it is possible to recover ancestral relationships for multiple samples at once too):
 
 ```{r}
-ind <- "EUR_51"
+ind <- "EUR_42"
 
 lineages <- ts_ancestors(ts, ind, verbose = TRUE)
 ```
@@ -302,7 +302,7 @@ counts <- filter(lineages, name == ind, level == 1) %>% as.data.frame() %>% coun
 As we mentioned above, there are three columns encoding spatial information: `location` and `parent_location` carry information about the location of the child and parent node (`POINT` class), and the `connection` object (`LINESTRING` class) contains the line connecting the two nodes (both a branch in the tree sequence and also the spatial connection). We can plot all three spatial features (two points and a line) individually on a map:
 
 ```{r level1_branches}
-level1_branches <- ts_ancestors(ts, "EUR_10") %>% filter(level == 1)
+level1_branches <- ts_ancestors(ts, "EUR_3") %>% filter(level == 1)
 
 ggplot() +
   geom_sf(data = map, fill = "lightgray", color = NA) +
@@ -310,6 +310,7 @@ ggplot() +
   geom_sf(data = level1_branches[, ]$parent_location, shape = 20, color = level1_branches[, ]$node_id) +
   geom_sf(data = level1_branches[, ]$connection, linetype = 3) +
   theme_bw() +
+  scale_color_manual(values = c("darkblue", "lightblue")) +
   ggtitle("Parent nodes (blue) of a focal individual (red)")
 ```
 
@@ -317,18 +318,29 @@ In the figure above we can see the red focal node and its immediate parents in t
 
 A more convenient way to do this analysis is a companion function to `ts_ancestors()` called `plot_ancestors()`. This function accepts an `sf` object with the spatial branching data created by `ts_ancestors()` and plots the paths between nodes on a map leading from a focal node up to the root(s) of the tree sequence (instead of just paths to immediate parents shown in the previous figure). In this case, because we are working with a single diploid individual, we get two sets of paths for each of its nodes (chromosomes) and plot them in two facets:
 
+<!--
+```{r, eval = FALSE, echo = FALSE}
+# pdf("~/Desktop/x.pdf")
+# for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) {
 
-<!-- ```{r, eval = FALSE, echo = FALSE} -->
-<!-- pdf("~/Desktop/x.pdf") -->
-<!-- for (i in ts_samples(ts) %>% filter(pop == "EUR") %>% pull(name)) { -->
+# ancestors <- ts_ancestors(ts, i, verbose = TRUE)
+#   p_ancestors <- ggplot() +
+#   geom_sf(data = map) +
+#   geom_sf(data = ancestors, size = 0.5, aes(alpha = parent_time)) +
+#   geom_sf(data = sf::st_set_geometry(ancestors, "parent_location"),
+#           aes(shape = parent_pop, color = parent_pop)) +
+#   geom_sf(data = filter(ts_nodes(ts), name == i), size = 3) +
+#   coord_sf(expand = 0) +
+#   labs(x = "longitude", y = "latitude") +
+#   theme_bw() +
+#   facet_grid(. ~ node_id) +
+#   ggtitle(i) +
+#   theme(legend.position = "none"); print(p_ancestors)
 
-<!-- lineages <- ts_ancestors(ts, i, verbose = TRUE) -->
-<!-- { plot_ancestors(lineages, i) + ggtitle(i) } %>% print -->
-
-<!-- } -->
-<!-- dev.off() -->
-<!-- ``` -->
-
+# }
+# dev.off()
+```
+-->
 
 ```{r plot_ancestors_time}
 ggplot() +
@@ -353,9 +365,9 @@ nodes <- unique(lineages[!is.na(lineages$name), ]$node_id)
 
 1.  All spatial tree sequence paths trace the ancestry of our single European individual back to Africa. In fact, we also see a cluster of past ancestral nodes (i.e. concentrated coalescent events) in the place where the Out of Africa (OOA) migrant population settled around 40,000 thousand years ago (yellow population in the the animation).
 
-2.  The first chromosome traces its ancestry to the Yamnaya population indicated by a star. This is expected because we programmed Yamnaya to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette). In turn, the Yamnaya node traces its ancestry to EHG (which is its parental population). We can see a cluster of EHG nodes in one location because we did not specify any spatial dynamic for this population in our model
+2.  One chromosome traces its ancestry to an EHG population indicated by a green square This is expected because we programmed a Yamnaya migration (descending from EHG) from east to central Europe to contribute significant part of ancestry to present-day Europeans (compare to the demographic graph on top of this vignette).
 
-3.  We also see that the other chromosome traces of its ancestry to the Anatolia (triangles). This makes sense, because we have simulated European ancestry as being part Anatolian.
+3.  We also see that the other chromosome traces of its ancestry to the Anatolia (blue crosses). This makes sense, because we have simulated European ancestry as being part Anatolian.
 
 Let's look at the spatial ancestry of another sample. For instance, we know that the simulated history of the Anatolian population in our model is much simpler. According to the demographic graph above, Anatolians split from the ancestral population of Eurasians in Anatolia and then expanded in a wave to Europe. We have sampled the following individuals:
 
@@ -365,58 +377,42 @@ ts_samples(ts) %>% filter(pop == "ANA")
 
 
 ```{r, eval = FALSE, echo = FALSE}
-# pdf("~/Desktop/y.pdf")
-# for (i in ts_samples(ts) %>% filter(pop == "ANA") %>% .$name) {
-#
-# lineages <- ts_ancestors(ts, i, verbose = TRUE)
-# { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-#
-# }
-# dev.off()
-```
-
-
-
-```{r, eval = FALSE, echo = FALSE}
 # pdf("~/Desktop/z.pdf")
-# for (i in ts_samples(ts) %>% filter(pop == "OOA") %>% .$name) {
-#
-# lineages <- ts_ancestors(ts, i, verbose = TRUE)
-# { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-#
+# for (i in ts_samples(ts) %>% filter(pop == "ANA") %>% pull(name)) {
+
+# ancestors <- ts_ancestors(ts, i, verbose = TRUE)
+#   p_ancestors <- ggplot() +
+#   geom_sf(data = map) +
+#   geom_sf(data = ancestors, size = 0.5, aes(alpha = parent_time)) +
+#   geom_sf(data = sf::st_set_geometry(ancestors, "parent_location"),
+#           aes(shape = parent_pop, color = parent_pop)) +
+#   geom_sf(data = filter(ts_nodes(ts), name == i), size = 3) +
+#   coord_sf(expand = 0) +
+#   labs(x = "longitude", y = "latitude") +
+#   theme_bw() +
+#   facet_grid(. ~ node_id) +
+#   ggtitle(i) +
+#   theme(legend.position = "none"); print(p_ancestors)
+
 # }
 # dev.off()
 ```
-
-
-```{r, eval = FALSE, echo = FALSE}
-# pdf("~/Desktop/w.pdf")
-# for (i in ts_samples(ts) %>% filter(pop == "AFR") %>% .$name) {
-#
-# lineages <- ts_ancestors(ts, i, verbose = TRUE)
-# { plot_ancestors(lineages, i) + ggtitle(i) } %>% print
-#
-# }
-# dev.off()
-```
-
-
 
 ```{r, include = FALSE}
-ana_ind <- ts_samples(ts) %>% filter(name == "ANA_21")
+ana_ind <- ts_samples(ts) %>% filter(name == "ANA_24")
 ```
 
 Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
 
 ```{r, plot_ancestors_levels_ana}
-lineages <- ts_ancestors(ts, "ANA_21")
+lineages <- ts_ancestors(ts, "ANA_24")
 
 ggplot() +
   geom_sf(data = map) +
   geom_sf(data = lineages, size = 0.5, aes(alpha = parent_time)) +
   geom_sf(data = sf::st_set_geometry(lineages, "parent_location"),
           aes(shape = parent_pop, color = parent_pop)) +
-  geom_sf(data = filter(ts_nodes(ts), name == "ANA_21"), size = 3) +
+  geom_sf(data = filter(ts_nodes(ts), name == "ANA_24"), size = 3) +
   guides(alpha = "none") +
   coord_sf(expand = 0) +
   labs(x = "longitude", y = "latitude") +
@@ -470,9 +466,10 @@ Let's try to summarise the information about distances "traveled" by nodes in di
 
 ```{r, smooth_distance_fits}
 distances_long %>%
+  dplyr::filter(child_pop != "AFR") %>%
   ggplot(aes(child_time, value, color = child_pop)) +
   geom_smooth(method = "loess", aes(group = child_pop)) +
-  geom_hline(yintercept = 0, linetype = 2, size = 0.5) +
+  geom_hline(yintercept = 0, linetype = 2, linewidth = 0.5) +
   labs(y = "kilometers", x = "time [years ago]") +
   theme(axis.text.x = element_text(hjust = 1, angle = 45),
         legend.position = "bottom") +

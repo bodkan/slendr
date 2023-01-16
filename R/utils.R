@@ -11,7 +11,7 @@
 check_dependencies <- function(python = FALSE, slim = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
   missing_slim <- if (slim) !all(Sys.which("slim") != "") else FALSE
-  missing_python <- if (python) !check_env(verbose = FALSE) else FALSE
+  missing_python <- if (python) !is_slendr_env_present() else FALSE
 
   if (missing_slim | missing_python) {
     if (interactive()) {
@@ -706,6 +706,7 @@ utils::globalVariables(
     "orig_x", "orig_y", "phylo_id", "raster_x", "raster_y",
     "pop.y", "pop_id.y", "time_tskit", "time_tskit.x", "time_tskit.y",
     "N", "center", "child_node_id", "child_phylo_id", "geometry", "parent_node_id",
-    "parent_phylo_id", "set_boundary", "xend", "xmax", "xmin", "yend"
+    "parent_phylo_id", "set_boundary", "xend", "xmax", "xmin", "yend",
+    "arc_degree"
   ), package = "slendr"
 )

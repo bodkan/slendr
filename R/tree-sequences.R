@@ -46,6 +46,8 @@
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -153,6 +155,8 @@ ts_load <- function(file, model = NULL,
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -190,6 +194,8 @@ ts_save <- function(ts, file) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -305,6 +311,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -460,6 +468,8 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -520,6 +530,8 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -547,6 +559,8 @@ ts_metadata <- function(ts) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -735,6 +749,8 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -968,6 +984,8 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1074,6 +1092,8 @@ ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1104,6 +1124,8 @@ ts_edges <- function(x) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1145,6 +1167,8 @@ ts_samples <- function(ts) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1271,6 +1295,8 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1391,6 +1417,8 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1435,6 +1463,8 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1498,6 +1528,8 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1587,6 +1619,8 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1708,6 +1742,8 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1737,6 +1773,8 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1817,6 +1855,8 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1851,6 +1891,8 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1897,6 +1939,8 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
@@ -1946,6 +1990,8 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))

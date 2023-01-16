@@ -62,6 +62,8 @@ Once you get _slendr_ installed, you just need to load it:
 ```{r}
 library(slendr)
 
+# activate the internal Python environment needed for simulation and
+# tree-sequence processing
 init_env()
 ```
 

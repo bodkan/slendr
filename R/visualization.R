@@ -211,6 +211,8 @@ objects are specified", call. = FALSE)
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
 #' }
+#' init_env()
+#'
 #' # load an example model with an already simulated tree sequence
 #' path <- system.file("extdata/models/introgression", package = "slendr")
 #' model <- read_model(path)
