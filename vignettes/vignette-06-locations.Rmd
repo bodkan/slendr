@@ -138,7 +138,7 @@ model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf,
   generation_time = 30, resolution = 10e3,
-  competition = 130e3, mating = 100e3, dispersal = 70e3
+  competition = 150e3, mating = 120e3, dispersal = 90e3
 )
 ```
 
@@ -161,7 +161,7 @@ Now we will schedule the sampling of a single individual from each population ev
 ```{r}
 # one ancient individual every two thousand years
 ancient <- schedule_sampling(model,
-                    times = seq(40000, 1, by = -1000),
+                    times = seq(40000, 1, by = -500),
                     list(ooa, 1), list(ehg, 1), list(eur, 1),
                     list(ana, 1), list(yam, 1))
 
@@ -276,7 +276,7 @@ Because we record the time and the location of every individual that happens to 
 The simplest use case is determining the locations and times of every single node in the genealogical history of an individual along the tree sequence (it is possible to recover ancestral relationships for multiple samples at once too):
 
 ```{r}
-ind <- "EUR_42"
+ind <- "EUR_67"
 
 lineages <- ts_ancestors(ts, ind, verbose = TRUE)
 ```
@@ -302,15 +302,14 @@ counts <- filter(lineages, name == ind, level == 1) %>% as.data.frame() %>% coun
 As we mentioned above, there are three columns encoding spatial information: `location` and `parent_location` carry information about the location of the child and parent node (`POINT` class), and the `connection` object (`LINESTRING` class) contains the line connecting the two nodes (both a branch in the tree sequence and also the spatial connection). We can plot all three spatial features (two points and a line) individually on a map:
 
 ```{r level1_branches}
-level1_branches <- ts_ancestors(ts, "EUR_3") %>% filter(level == 1)
+level1_branches <- ts_ancestors(ts, "EUR_43") %>% filter(level == 1)
 
 ggplot() +
   geom_sf(data = map, fill = "lightgray", color = NA) +
   geom_sf(data = level1_branches[, ]$child_location, shape = 13, size = 3, color = "red") +
-  geom_sf(data = level1_branches[, ]$parent_location, shape = 20, color = level1_branches[, ]$node_id) +
   geom_sf(data = level1_branches[, ]$connection, linetype = 3) +
+  geom_sf(data = level1_branches[, ]$parent_location, shape = 20, color = "blue") +
   theme_bw() +
-  scale_color_manual(values = c("darkblue", "lightblue")) +
   ggtitle("Parent nodes (blue) of a focal individual (red)")
 ```
 
@@ -345,7 +344,7 @@ A more convenient way to do this analysis is a companion function to `ts_ancesto
 ```{r plot_ancestors_time}
 ggplot() +
   geom_sf(data = map) +
-  geom_sf(data = lineages, size = 0.5, aes(alpha = parent_time)) +
+  geom_sf(data = lineages, size = 0.5, alpha = 0.2) +
   geom_sf(data = sf::st_set_geometry(lineages, "parent_location"),
           aes(shape = parent_pop, color = parent_pop)) +
   geom_sf(data = filter(ts_nodes(ts), name == ind), size = 3) +
@@ -409,7 +408,7 @@ lineages <- ts_ancestors(ts, "ANA_24")
 
 ggplot() +
   geom_sf(data = map) +
-  geom_sf(data = lineages, size = 0.5, aes(alpha = parent_time)) +
+  geom_sf(data = lineages, size = 0.5, alpha = 0.2) +
   geom_sf(data = sf::st_set_geometry(lineages, "parent_location"),
           aes(shape = parent_pop, color = parent_pop)) +
   geom_sf(data = filter(ts_nodes(ts), name == "ANA_24"), size = 3) +
@@ -466,7 +465,6 @@ Let's try to summarise the information about distances "traveled" by nodes in di
 
 ```{r, smooth_distance_fits}
 distances_long %>%
-  dplyr::filter(child_pop != "AFR") %>%
   ggplot(aes(child_time, value, color = child_pop)) +
   geom_smooth(method = "loess", aes(group = child_pop)) +
   geom_hline(yintercept = 0, linetype = 2, linewidth = 0.5) +
