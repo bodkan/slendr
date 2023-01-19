@@ -319,7 +319,7 @@ meaning (i.e., Anatolia, West Eurasia, etc.).</p>
 <code class="sourceCode R"><span><span class="va">africa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/region.html">region</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Africa"</span>, <span class="va">map</span>,</span>
 <span>  polygon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">18</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">33</span><span class="op">)</span>,</span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">33</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">38</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">36</span><span class="op">)</span><span class="op">)</span></span>
+<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">33</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">38</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">35</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">europe</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/region.html">region</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Europe"</span>, <span class="va">map</span>,</span>
@@ -604,15 +604,13 @@ overlap in population ranges. If we try to instruct <em>slendr</em> to
 simulate geneflow between them, we will get an error:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">eur</span>, to <span class="op">=</span> <span class="va">afr</span>, rate <span class="op">=</span> <span class="fl">0.1</span>, start <span class="op">=</span> <span class="fl">20000</span>, end <span class="op">=</span> <span class="fl">15000</span><span class="op">)</span></span></code></pre></div>
-<pre><code>Not a sufficient overlap between population ranges of EUR and AFR
-at time 20000. The required overlap is 0.20 but the current overlap is
-0.000000.
+<pre><code>Error: No overlap between population ranges of EUR and AFR at time 20000.
 
-Please check the spatial maps of both populations by running
-`plot_map(eur, afr)` and adjust them accordingly. Alternatively, in case
-this makes sense for your model, you can add `overlap = F` which
-will instruct slendr to simulate geneflow without spatial overlap
-between populations.</code></pre>
+  Please check the spatial maps of both populations by running
+  `plot_map(eur, afr)` and adjust them accordingly. Alternatively, in case
+  this makes sense for your model, you can add `overlap = F` which
+  will instruct slendr to simulate gene flow without spatial overlap
+  between populations.</code></pre>
 <p>The error message instructs us to visually verify that this is the
 case, which can be done by <em>slendr</em>’s <code><a href="../reference/plot_map.html">plot_map()</a></code>
 function and the optional parameter <code>pop_facets = F</code> (which
@@ -791,7 +789,7 @@ user:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence           ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │    113║</span></span>
+<span><span class="co">#&gt; ║Trees          │    129║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│ 100000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
@@ -804,15 +802,15 @@ user:</p>
 <span><span class="co">#&gt; ╔═══════════╤═════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪═════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │18632│582.3 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │18692│584.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│12813│  1.2 MiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│12814│  1.2 MiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │    0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │    0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │18324│680.7 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │18348│681.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│    6│  2.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>

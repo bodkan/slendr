@@ -122,12 +122,7 @@ africa <- region(
   "Africa", map,
   polygon = list(c(-18, 20), c(38, 20), c(30, 33),
                  c(20, 33), c(10, 38), c(-6, 35))
-); plot_map(africa)
-```
-
-![](man/figures/README-unnamed-chunk-3-1.png)
-
-```r
+)
 europe <- region(
   "Europe", map,
   polygon = list(
