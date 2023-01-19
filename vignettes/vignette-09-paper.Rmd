@@ -584,5 +584,5 @@ p_ex4
 ```
 
 ```{r, include = FALSE, eval = eval_chunk && record_snapshot}
-ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex4.pdf", p_ex4, width = 7, height = 9, units = "in")
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex4.pdf", p_ex4, width = 8.5, height = 9, units = "in")
 ```
