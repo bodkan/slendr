@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
   eval = eval_chunk
 )
 
-record_snapshot <- TRUE # only save PDFs on a local machine
+record_snapshot <- FALSE # only save PDFs on a local machine
 ```
 
 ```{r}
