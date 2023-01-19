@@ -32,7 +32,6 @@ if (Sys.getenv("RUNNER_OS") != "") {
 }
 
 library(slendr)
-# devtools::load_all(".")
 
 library(dplyr)
 library(ggplot2)
@@ -242,7 +241,7 @@ p_ex2
 ```
 
 ```{r, include = FALSE, eval = eval_chunk && record_snapshot}
-ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.3/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
+ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex2.pdf", p_ex2, width = 6, height = 9, units = "in")
 ```
 
 ## Example 3 (Figure 4)
