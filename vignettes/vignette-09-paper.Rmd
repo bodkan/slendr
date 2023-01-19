@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
   eval = eval_chunk
 )
 
-record_snapshot <- FALSE # only save PDFs on a local machine
+record_snapshot <- TRUE # only save PDFs on a local machine
 ```
 
 ```{r}
@@ -534,8 +534,6 @@ nodes$label <- sapply(1:nrow(nodes), function(i) {
 p_map <- ggplot() +
   geom_sf(data = map) +
   geom_sf(data = edges, aes(color = parent_pop), size = 0.5) +
-  geom_sf(data = filter(nodes, is.na(name)),
-          aes(color = pop, shape = pop), size = 5) +
   geom_sf_label(data = nodes[!nodes$sampled, ],
                 aes(label = node_id, fill = pop), size = 3) +
   geom_sf_label(data = nodes[nodes$sampled, ],
@@ -544,7 +542,9 @@ p_map <- ggplot() +
   coord_sf(xlim = c(3177066.1, 7188656.9),
            ylim = c(757021.7, 5202983.3), expand = 0) +
   guides(fill = guide_legend("", override.aes = aes(label = ""))) +
-  guides(color = "none", shape = "none") +
+  guides(color = "none") +
+  scale_colour_discrete(drop = FALSE) +
+  scale_fill_discrete(drop = FALSE) +
   theme_bw() +
   theme(legend.position = "bottom",
         axis.title.x = element_blank(),
