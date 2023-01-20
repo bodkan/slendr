@@ -494,7 +494,7 @@ ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3_s
 
 ### Plotting code
 
-```{r, figure_ex4, eval = Sys.getenv("R_HAS_GGTREE") == TRUE && eval_chunk, fig.height=9, fig.width=7, class.source = "fold-hide"}
+```{r, figure_ex4, eval = Sys.getenv("R_HAS_GGTREE") == TRUE && eval_chunk, fig.height=9, fig.width=8.5, class.source = "fold-hide"}
 library(ggtree)
 
 # prepare annotation table for ggtree linking R phylo node ID (not tskit integer
