@@ -464,8 +464,8 @@ slim <- function(
     -d 'OUTPUT_LOCATIONS=\"%s\"' \\
     -d COALESCENT_ONLY=%s \\
     -d MAX_ATTEMPTS=%i \\
-    %s",
-      binary,
+    %s 2>&1",
+      binary, # path to the SLiM binary on the command line
       seed,
       samples,
       path.expand(model_dir),
@@ -490,7 +490,7 @@ slim <- function(
 
     # execute the command, capture all log output and decide whether to print
     # any of the log information to the console
-    log_output <- suppressWarnings(system(paste(slim_command, "2>&1"), intern = TRUE))
+    log_output <- suppressWarnings(system(slim_command, intern = TRUE))
     log_warnings <- grep("WARNING", log_output, value = TRUE)
     if (verbose)
       cat(log_output, sep = "\n")
