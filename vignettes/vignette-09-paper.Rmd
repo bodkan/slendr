@@ -343,31 +343,31 @@ ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.t
 
 
 ```{r, include=FALSE, eval=FALSE}
-# devtools::load_all()
-# init_env()
-# model <- read_model("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3")
-# ts <- ts_load("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.trees", model = model)
+devtools::load_all()
+init_env()
+model <- read_model("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3")
+ts <- ts_load("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.trees", model = model)
 
-# library(dplyr)
-# library(ggplot2)
-# library(purrr)
-# library(tidyr)
-# library(cowplot)
-# library(forcats)
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(tidyr)
+library(cowplot)
+library(forcats)
 
-# init_env()
+init_env()
 
-# SEED <- 42
-# set.seed(SEED)
+SEED <- 42
+set.seed(SEED)
 
-# # placeholder "figure" where a code chunk will be pasted
-# p_code <- ggplot() +
-#   geom_text(aes(x = 1, y = 1), label = "code will be here") +
-#   theme_void()
+# placeholder "figure" where a code chunk will be pasted
+p_code <- ggplot() +
+  geom_text(aes(x = 1, y = 1), label = "code will be here") +
+  theme_void()
 
-# map <- world(xrange = c(-13, 70), yrange = c(18, 65), crs = 3035)
+map <- world(xrange = c(-13, 70), yrange = c(18, 65), crs = 3035)
 
-# e <- "EUR_578"
+e <- "EUR_578"
 ```
 
 
@@ -483,7 +483,13 @@ ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.pdf", 
 
 ```{r, eval = eval_chunk}
 ts_small <- ts_simplify(ts, simplify_to = c("EUR_578", "YAM_75", "ANA_163", "EHG_208"))
+```
 
+```{r, eval = eval_chunk}
+warning(ts_small$num_trees)
+```
+
+```{r, eval = eval_chunk}
 tree <- ts_phylo(ts_small, i = 20)
 nodes <- ts_nodes(tree)
 edges <- ts_edges(tree)
