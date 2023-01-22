@@ -130,7 +130,7 @@ This makes it easier for us to define spatial features simply by reading the coo
 africa <- region(
   "Africa", map,
   polygon = list(c(-18, 20), c(38, 20), c(30, 33),
-                 c(20, 33), c(10, 38), c(-6, 36))
+                 c(20, 33), c(10, 38), c(-6, 35))
 )
 europe <- region(
   "Europe", map,

@@ -64,7 +64,7 @@ map <- world(
 africa <- region(
   "Africa", map,
   polygon = list(c(-18, 20), c(38, 20), c(30, 33),
-                 c(20, 33), c(10, 38), c(-6, 36))
+                 c(20, 33), c(10, 38), c(-6, 35))
 )
 europe <- region(
   "Europe", map,
@@ -138,7 +138,7 @@ model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf,
   generation_time = 30, resolution = 10e3,
-  competition = 130e3, mating = 100e3, dispersal = 70e3
+  competition = 150e3, mating = 120e3, dispersal = 90e3
 )
 ```
 
@@ -161,7 +161,7 @@ Now we will schedule the sampling of a single individual from each population ev
 ```{r}
 # one ancient individual every two thousand years
 ancient <- schedule_sampling(model,
-                    times = seq(40000, 1, by = -1000),
+                    times = seq(40000, 1, by = -500),
                     list(ooa, 1), list(ehg, 1), list(eur, 1),
                     list(ana, 1), list(yam, 1))
 
@@ -276,7 +276,7 @@ Because we record the time and the location of every individual that happens to 
 The simplest use case is determining the locations and times of every single node in the genealogical history of an individual along the tree sequence (it is possible to recover ancestral relationships for multiple samples at once too):
 
 ```{r}
-ind <- "EUR_42"
+ind <- "EUR_67"
 
 lineages <- ts_ancestors(ts, ind, verbose = TRUE)
 ```
@@ -302,19 +302,22 @@ counts <- filter(lineages, name == ind, level == 1) %>% as.data.frame() %>% coun
 As we mentioned above, there are three columns encoding spatial information: `location` and `parent_location` carry information about the location of the child and parent node (`POINT` class), and the `connection` object (`LINESTRING` class) contains the line connecting the two nodes (both a branch in the tree sequence and also the spatial connection). We can plot all three spatial features (two points and a line) individually on a map:
 
 ```{r level1_branches}
-level1_branches <- ts_ancestors(ts, "EUR_3") %>% filter(level == 1)
+level1_branches <- ts_ancestors(ts, "EUR_67") %>% filter(level == 1)
 
 ggplot() +
   geom_sf(data = map, fill = "lightgray", color = NA) +
   geom_sf(data = level1_branches[, ]$child_location, shape = 13, size = 3, color = "red") +
-  geom_sf(data = level1_branches[, ]$parent_location, shape = 20, color = level1_branches[, ]$node_id) +
   geom_sf(data = level1_branches[, ]$connection, linetype = 3) +
+  geom_sf(data = level1_branches[, ]$parent_location, shape = 20, color = "blue") +
   theme_bw() +
-  scale_color_manual(values = c("darkblue", "lightblue")) +
   ggtitle("Parent nodes (blue) of a focal individual (red)")
 ```
 
-In the figure above we can see the red focal node and its immediate parents in the tree sequence genealogy (in the coalescent sense, not immediate parents of that individual!).
+In the figure above we can see the red focal node and its immediate parents in the tree sequence genealogy (in the coalescent sense, not immediate parents of that individual!). In case you're surprised to see more than two parents, recall that recombination events make the history encoded by a sample more complicated as it can involve more ancestors as we "move up" a tree from a sample, not just two ancestors. Looking at our example in more detail, we can see that one node (chromosome) of the individual "EUR_67" has two ancestors, each covering a portion of that individuals chromosome, with the other chromosome being covered by a single ancestor (columns `left_pos` and `right_pos`):
+
+```{r}
+as_tibble(level1_branches)[, c("name", "node_id", "child_id", "parent_id", "left_pos", "right_pos")]
+```
 
 A more convenient way to do this analysis is a companion function to `ts_ancestors()` called `plot_ancestors()`. This function accepts an `sf` object with the spatial branching data created by `ts_ancestors()` and plots the paths between nodes on a map leading from a focal node up to the root(s) of the tree sequence (instead of just paths to immediate parents shown in the previous figure). In this case, because we are working with a single diploid individual, we get two sets of paths for each of its nodes (chromosomes) and plot them in two facets:
 
@@ -345,14 +348,15 @@ A more convenient way to do this analysis is a companion function to `ts_ancesto
 ```{r plot_ancestors_time}
 ggplot() +
   geom_sf(data = map) +
-  geom_sf(data = lineages, size = 0.5, aes(alpha = parent_time)) +
+  geom_sf(data = lineages, size = 0.5, alpha = 0.2) +
   geom_sf(data = sf::st_set_geometry(lineages, "parent_location"),
           aes(shape = parent_pop, color = parent_pop)) +
   geom_sf(data = filter(ts_nodes(ts), name == ind), size = 3) +
   guides(alpha = "none") +
   coord_sf(expand = 0) +
   labs(x = "longitude", y = "latitude") +
-  facet_grid(. ~ node_id)
+  facet_grid(. ~ node_id) +
+  ggtitle("Ancestry encoded by two nodes (chromosomes) of EUR_67")
 ```
 
 You can compare this result to the animation which recapitulates the simulation, presented in [the first vignette](vignette-01-tutorial.html).
@@ -399,24 +403,25 @@ ts_samples(ts) %>% filter(pop == "ANA")
 ```
 
 ```{r, include = FALSE}
-ana_ind <- ts_samples(ts) %>% filter(name == "ANA_24")
+ana_ind <- ts_samples(ts) %>% filter(name == "ANA_45")
 ```
 
 Can we see a hint of the spatial dynamics of Anatolians in the spatio-temporal distribution of ancestral node locations of one of the sampled individuals? Let's pick the last individual and immediately plot its spatial ancestry tidyverse-style using the pipe operator `%>%`:
 
 ```{r, plot_ancestors_levels_ana}
-lineages <- ts_ancestors(ts, "ANA_24")
+lineages <- ts_ancestors(ts, "ANA_45")
 
 ggplot() +
   geom_sf(data = map) +
-  geom_sf(data = lineages, size = 0.5, aes(alpha = parent_time)) +
+  geom_sf(data = lineages, size = 0.5, alpha = 0.2) +
   geom_sf(data = sf::st_set_geometry(lineages, "parent_location"),
           aes(shape = parent_pop, color = parent_pop)) +
-  geom_sf(data = filter(ts_nodes(ts), name == "ANA_24"), size = 3) +
+  geom_sf(data = filter(ts_nodes(ts), name == "ANA_45"), size = 3) +
   guides(alpha = "none") +
   coord_sf(expand = 0) +
   labs(x = "longitude", y = "latitude") +
-  facet_grid(. ~ node_id)
+  facet_grid(. ~ node_id) +
+  ggtitle("Ancestry encoded by two nodes (chromosomes) of ANA_45")
 ```
 
 As we might expect given the late age of the sample, its position in the map above (red crossed circle) is not in Anatolia but in Europe because it represents one of the descendants of migrants who moved from Anatolia into Europe. This can be clearly seen in the position of its parental nodes in the tree sequence: these nodes represent real individuals who lived at some point in the past, and we can see that they did, indeed, lived in Anatolia.
@@ -466,7 +471,6 @@ Let's try to summarise the information about distances "traveled" by nodes in di
 
 ```{r, smooth_distance_fits}
 distances_long %>%
-  dplyr::filter(child_pop != "AFR") %>%
   ggplot(aes(child_time, value, color = child_pop)) +
   geom_smooth(method = "loess", aes(group = child_pop)) +
   geom_hline(yintercept = 0, linetype = 2, linewidth = 0.5) +

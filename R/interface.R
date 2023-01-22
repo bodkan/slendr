@@ -730,19 +730,18 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
     )
     sf::st_agr(map_raw) <- "constant"
 
-    ## transform the map (default geographic CRS) into the target CRS
-    map_transf <- tryCatch({
-      sf::st_transform(map_raw, crs) %>% sf::st_make_valid()
+    # define boundary coordinates in the target CRS
+    crop_bounds <- define_zoom(xrange, yrange, "EPSG:4326")
+
+    # crop the map to the boundary coordinates
+    map_cropped <- tryCatch({
+      sf::st_crop(sf::st_make_valid(map_raw), crop_bounds)
     }, error = function(cond) {
-      sf::st_transform(map_raw, crs)
+      sf::st_crop(map_raw, crop_bounds)
     })
 
-    ## define boundary coordinates in the target CRS
-    zoom_bounds <- define_zoom(xrange, yrange, "EPSG:4326")
-    zoom_transf <- sf::st_transform(zoom_bounds, crs) %>% sf::st_make_valid()
-
-    ## crop the map to the boundary coordinates
-    map <- sf::st_crop(map_transf, zoom_transf)
+    # transform the map into the target CRS if needed
+    map <- sf::st_transform(map_cropped, crs)
   } else {
     stop("Landscape has to be either 'blank', 'naturalearth' or an object of the class 'sf'",
          call. = FALSE)

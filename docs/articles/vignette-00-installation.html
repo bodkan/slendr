@@ -124,24 +124,24 @@ such, you can install it simply by executing
 <code>install.packages("slendr")</code> in your R console.</p>
 <p>If you want (or need) to get its development version, you can install
 it directly from GitHub by executing
-<code>devtools::install_github("bodkan/slendr")</code>** via the R
-package <em>devtools</em> ( <code>install.packages("devtools")</code>).
-In fact, if you decide to try <em>slendr</em>, please make sure to
-update it regularly and keep an eye on the <a href="https://www.slendr.net/news/index.html">changelog</a> on a regular
-basis!</p>
+<code>devtools::install_github("bodkan/slendr")</code> via the R package
+<em>devtools</em> (you can gen <em>devtools</em> by running
+<code>install.packages("devtools")</code>). In fact, if you decide to
+try <em>slendr</em>, please make sure to update it regularly and keep an
+eye on the <a href="https://www.slendr.net/news/index.html">changelog</a> on a regular
+basis! This is where you can find information about latest bugfixes and
+potential breaking changes.</p>
 <p>Once you install <em>slendr</em>, <strong>calling
 <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> will check that all software dependencies
 are available</strong>. If they are not, the R package will provide a
 brief helpful guide on how to resolve potential issues. The rest of this
 vignette talks about the necessary software dependencies in a bit more
 detail.</p>
-<p><strong>Please note that <em>slendr</em> is only supported on macOS
-and Linux at the moment.</strong> However, because <em>slendr</em>’s
-software dependencies are already available on Windows, I hope to make
-the R package fully portable as soon as I get access to a Windows
-machine to do proper testing on. If you are a Windows user and would
-like to help, <a href="https://www.bodkan.net/" class="external-link">please get in
-touch</a>!</p>
+<p><strong>Please note that <em>slendr</em> is fully supported only on
+macOS and Linux at the moment.</strong> That said, there is an
+experimental support for running coalescent simulation via
+<em>slendr</em>’s Python backend <code><a href="../reference/msprime.html">msprime()</a></code> and for
+analyzing tree-sequence outputs using its <em>tskit</em> interface.</p>
 </div>
 <div class="section level2">
 <h2 id="software-dependencies">Software dependencies<a class="anchor" aria-label="anchor" href="#software-dependencies"></a>
@@ -163,7 +163,7 @@ information on how to troubleshoot potential problems).</p>
 <p><strong>Note that depending on your use case, not all three sets of
 dependencies will be necessarily needed.</strong> If you’re not going to
 be running forward spatial simulations, you don’t need SLiM. If you
-don’t want to analyze tree sequences in R, you won’t need
+don’t want to analyze tree sequences in R, you won’t necesarily need
 <em>slendr</em>’s Python dependencies.</p>
 <p>In this vignette, I will briefly explain how to get all
 <em>slendr’</em>s software dependencies installed. That said, note that
@@ -253,15 +253,12 @@ Python installation and virtual environment are <strong>entirely
 isolated from other Python configurations that are already present on
 the user’s system</strong>, avoiding potential conflicts with the
 versions of Python and Python modules required by <em>slendr</em>.</p>
-<p>Not only that, after this dedicated Python environment is created,
-<strong>calling <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> at any later point will
-activate this environment automatically</strong>. Therefore, despite
-using Python for internal handling of tree-sequence data and coalescent
-simulation, no interaction with Python is necessary for working with
-<em>slendr</em> in R.</p>
-<p><strong>You only have to call <code><a href="../reference/setup_env.html">setup_env()</a></code> once!</strong>
-After that, everything will be taken care of by
-<code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> automatically.</p>
+<p><strong>Next time you call <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code>, you will
+need to activate this environment automatically by calling
+<code><a href="../reference/init_env.html">init_env()</a></code></strong>. If you’re not comfortable with Python
+you don’t need to worry beyond calling <code><a href="../reference/setup_env.html">setup_env()</a></code> and
+<code><a href="../reference/init_env.html">init_env()</a></code>, no interaction with Python is necessary for
+working with <em>slendr</em> in R.</p>
 <div class="section level4">
 <h4 id="information-for-python-experts">Information for Python experts<a class="anchor" aria-label="anchor" href="#information-for-python-experts"></a>
 </h4>

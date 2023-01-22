@@ -11,11 +11,11 @@ vignette: >
 
 *slendr* is available on the CRAN R package repository. As such, you can install it simply by executing `install.packages("slendr")` in your R console.
 
-If you want (or need) to get its development version, you can install it directly from GitHub by executing `devtools::install_github("bodkan/slendr")`** via the R package *devtools* ( `install.packages("devtools")`). In fact, if you decide to try *slendr*, please make sure to update it regularly and keep an eye on the [changelog](https://www.slendr.net/news/index.html) on a regular basis!
+If you want (or need) to get its development version, you can install it directly from GitHub by executing `devtools::install_github("bodkan/slendr")` via the R package *devtools* (you can gen *devtools* by running `install.packages("devtools")`). In fact, if you decide to try *slendr*, please make sure to update it regularly and keep an eye on the [changelog](https://www.slendr.net/news/index.html) on a regular basis! This is where you can find information about latest bugfixes and potential breaking changes.
 
 Once you install *slendr*, **calling `library(slendr)` will check that all software dependencies are available**. If they are not, the R package will provide a brief helpful guide on how to resolve potential issues. The rest of this vignette talks about the necessary software dependencies in a bit more detail.
 
-**Please note that *slendr* is only supported on macOS and Linux at the moment.** However, because *slendr*'s software dependencies are already available on Windows, I hope to make the R package fully portable as soon as I get access to a Windows machine to do proper testing on. If you are a Windows user and would like to help, [please get in touch](https://www.bodkan.net/)!
+**Please note that *slendr* is fully supported only on macOS and Linux at the moment.** That said, there is an experimental support for running coalescent simulation via _slendr_'s Python backend `msprime()` and for analyzing tree-sequence outputs using its _tskit_ interface.
 
 ## Software dependencies
 
@@ -29,7 +29,7 @@ Once you install *slendr*, **calling `library(slendr)` will check that all softw
 
 All three are widely used in their respective fields and, as such, are easily obtainable on all major operating systems (see below for more information on how to troubleshoot potential problems).
 
-**Note that depending on your use case, not all three sets of dependencies will be necessarily needed.** If you're not going to be running forward spatial simulations, you don't need SLiM. If you don't want to analyze tree sequences in R, you won't need *slendr*'s Python dependencies.
+**Note that depending on your use case, not all three sets of dependencies will be necessarily needed.** If you're not going to be running forward spatial simulations, you don't need SLiM. If you don't want to analyze tree sequences in R, you won't necesarily need *slendr*'s Python dependencies.
 
 In this vignette, I will briefly explain how to get all *slendr'*s software dependencies installed. That said, note that under normal circumstances (with the exception of SLiM), no manual installation of individual dependencies is required.
 
@@ -65,9 +65,7 @@ Setting up an isolated Python environment with specific version of Python packag
 
 In order to make sure that the R package has the most appropriate version of Python available, with the correct versions of all of its Python module dependencies, *slendr* provides a dedicated function `setup_env()` which automatically **downloads a completely separate Python distribution and installs the required versions of *tskit*, *msprime*, and *pyslim* modules into a dedicated virtual environment**. Moreover, this Python installation and virtual environment are **entirely isolated from other Python configurations that are already present on the user's system**, avoiding potential conflicts with the versions of Python and Python modules required by *slendr*.
 
-Not only that, after this dedicated Python environment is created, **calling `library(slendr)` at any later point will activate this environment automatically**. Therefore, despite using Python for internal handling of tree-sequence data and coalescent simulation, no interaction with Python is necessary for working with *slendr* in R.
-
-**You only have to call `setup_env()` once!** After that, everything will be taken care of by `library(slendr)` automatically.
+**Next time you call `library(slendr)`, you will need to activate this environment automatically by calling `init_env()`**. If you're not comfortable with Python you don't need to worry&nbsp;beyond calling `setup_env()` and `init_env()`, no interaction with Python is necessary for working with *slendr* in R.
 
 #### Information for Python experts
 
