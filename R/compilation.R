@@ -66,12 +66,13 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
     slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
   map <- get_map(populations[[1]])
-  if (!is.null(map) && is.null(resolution))
+  if (!is.null(map) && is.null(resolution) && serialize)
     stop("A map resolution must be specified for spatial models", call. = FALSE)
 
   if (!serialize && is.null(path) && inherits(map, "slendr_map")) {
-    stop("Spatial models must be serialized to disk for SLiM to simulate data from",
-         call. = FALSE)
+    warning("Spatial models must be serialized to disk for SLiM to simulate data from.\n",
+            "Compiled like this, your model can only be simulated with msprime.",
+            call. = FALSE)
   }
   if (serialize && is.null(path))
     path <- tempfile()
@@ -157,7 +158,7 @@ setting `direction = 'backward'.`", call. = FALSE)
   admix_table <- compile_geneflows(gene_flow, split_table, generation_time, time_dir, end_time)
   resize_table <- compile_resizes(populations, generation_time, time_dir, end_time, split_table)
 
-  if (inherits(map, "slendr_map")) {
+  if (serialize && inherits(map, "slendr_map")) {
     if (!is.null(competition)) check_resolution(map, competition)
     if (!is.null(mating)) check_resolution(map, mating)
     if (!is.null(dispersal)) check_resolution(map, dispersal)
