@@ -570,7 +570,15 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
   if ((has_map(from) && !has_map(to)) || (!has_map(from) && has_map(to)))
     stop("Both or neither populations must be spatial", call. = FALSE)
 
+  # make sure both participating populations are present at the start of the
+  # gene flow event (`check_present_time()` is reused from the sampling functionality)
+  check_present_time(start, from, offset = 0)
+  check_present_time(end, from, offset = 0)
+  check_present_time(start, to, offset = 0)
+  check_present_time(end, to, offset = 0)
+
   # make sure the population is not removed during the the admixture period
+  # (note that this will only be relevant for SLiM simulations at this moment)
   check_removal_time(start, from)
   check_removal_time(end, from)
   check_removal_time(start, to)
