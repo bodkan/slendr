@@ -45,8 +45,8 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
     stop("'slendr_region' and 'slendr_pops' object cannot be plotted at once", call. = FALSE)
 
   if (gene_flow & (is.null(time) | !inherits(args[[1]], "slendr_model")))
-    stop("Migrations can be visualized only when a time point and a 'slendr_model'
-objects are specified", call. = FALSE)
+    warning("All gene-flow event will be visualized at once. If you wish to visualize\n",
+            "gene flows at a particular point in time, use the `time` argument.", call. = FALSE)
 
   # a single model object was provided
   if (length(args) == 1 & inherits(args[[1]], "slendr_model")) {
