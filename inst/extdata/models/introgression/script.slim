@@ -538,7 +538,7 @@ function (void) required_arg(s arg) {
 function (void) create_pop(object<Dictionary> pop) {
     pop_id = pop.getValue("pop_id");
 
-    if (pop.getValue("parent") ==  "ancestor") {
+    if (pop.getValue("parent") ==  "__pop_is_ancestor") {
         log_output("creating " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")");
         sim.addSubpop(pop_id, pop.getValue("N"));
     } else {

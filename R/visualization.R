@@ -516,7 +516,7 @@ animate_model <- function(model, file, steps, gif = NULL, width = 800, height = 
 
 # Create a table of population split edges for graph visualization
 get_split_edges <- function(split_table) {
-  split_edges <- split_table[split_table$parent != "ancestor",
+  split_edges <- split_table[split_table$parent != "__pop_is_ancestor",
                              c("parent", "pop", "tsplit")]
   names(split_edges) <- c("from", "to", "time")
 

@@ -8,7 +8,7 @@ population(
   name,
   time,
   N,
-  parent = "ancestor",
+  parent = NULL,
   map = FALSE,
   center = NULL,
   radius = NULL,
@@ -29,8 +29,8 @@ population(
 
 \item{N}{Number of individuals at the time of first appearance}
 
-\item{parent}{Parent population object or "ancestor" (indicating that the
-population does not have an ancestor, and that it is the first population
+\item{parent}{Parent population object or \code{NULL} (which indicates that
+the population does not have an ancestor, as it is the first population
 in its "lineage")}
 
 \item{map}{Object of the type \code{slendr_map} which defines the world

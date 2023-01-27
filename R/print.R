@@ -271,7 +271,7 @@ print_pop_history <- function(x) {
       cat("  - time ")
       cat(event$time, ": ", sep = "")
       parent <- attr(x, "parent")
-      if (is.character(parent) && parent == "ancestor")
+      if (is.character(parent) && parent == "__pop_is_ancestor")
         cat("created as an ancestral population", sprintf("(N = %d)", event$N))
       else {
         cat("split from", parent$pop[1], sprintf("(N = %d)", event$N))

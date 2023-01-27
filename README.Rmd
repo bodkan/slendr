@@ -162,8 +162,7 @@ Note that in order to make this example executable in a reasonable time on my ex
 
 ```{r, message = FALSE}
 afr <- population( # African ancestral population
-  "AFR", parent = "ancestor", time = 52000, N = 3000,
-  map = map, polygon = africa
+  "AFR", time = 52000, N = 3000, map = map, polygon = africa
 )
 
 ooa <- population( # population of the first migrants out of Africa

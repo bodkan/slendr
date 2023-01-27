@@ -13,8 +13,8 @@
 #' @param name Name of the population
 #' @param time Time of the population's first appearance
 #' @param N Number of individuals at the time of first appearance
-#' @param parent Parent population object or "ancestor" (indicating that the
-#'   population does not have an ancestor, and that it is the first population
+#' @param parent Parent population object or \code{NULL} (which indicates that
+#'   the population does not have an ancestor, as it is the first population
 #'   in its "lineage")
 #' @param map Object of the type \code{slendr_map} which defines the world
 #'   context (created using the \code{world} function). If the value
@@ -47,7 +47,7 @@
 #' @export
 #'
 #' @example man/examples/model_definition.R
-population <- function(name, time, N, parent = "ancestor", map = FALSE,
+population <- function(name, time, N, parent = NULL, map = FALSE,
                        center = NULL, radius = NULL, polygon = NULL,
                        remove = NULL, intersect = TRUE,
                        competition = NA, mating = NA, dispersal = NA,
@@ -56,7 +56,7 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
     stop("A population name must be a character scalar value", call. = FALSE)
 
   # is this the first population defined in the model?
-  if (is.character(parent) && parent == "ancestor") {
+  if (is.null(parent)) {
     if (!is.logical(map) && !inherits(map, "slendr_map"))
       stop("Ancestral population must specify its 'map'", call. = FALSE)
     else
@@ -95,8 +95,8 @@ population <- function(name, time, N, parent = "ancestor", map = FALSE,
   # keep a record of the parent population
   if (inherits(parent, "slendr_pop"))
     attr(pop, "parent") <- parent
-  else if (is.character(parent) & parent == "ancestor")
-    attr(pop, "parent") <- "ancestor"
+  else if (is.null(parent))
+    attr(pop, "parent") <- "__pop_is_ancestor"
   else
     stop("Suspicious parent population", call. = FALSE)
 
