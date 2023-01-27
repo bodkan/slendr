@@ -34,13 +34,11 @@ def simulate(
 
   # set up demographic history
   demography = msprime.Demography()
-  assert populations is not None, "Populations can't be None"
   for pop in populations.itertuples():
       # get the initial population size (in backwards direction) -- this is
       # either the last (in forward direction) resize event recorded for the
       # population, or its size after split
       name = pop.pop
-      assert resizes is not None, "Resizes can't be None (1)"
       if len(resizes) and name in set(resizes["pop"]):
           resize_events = resizes.query(f"pop == '{name}'")
           initial_size = resize_events.tail(1).N.values[0]
@@ -63,7 +61,6 @@ def simulate(
               ancestral=pop.parent
           )
 
-  assert samples is not None, "Samples can't be None (1)"
   if len(samples) == 0:
       logging.info("No sampling schedule given, generating one automatically")
       samples = pandas.DataFrame(
@@ -74,7 +71,6 @@ def simulate(
           columns=["n", "pop", "time_gen", "x", "y", "time_orig", "x_orig", "y_orig"]
       )
 
-  assert samples is not None, "Samples can't be None (2)"
   logging.info("Loading the sampling schedule")
   sample_set = [
       msprime.SampleSet(
@@ -84,7 +80,6 @@ def simulate(
 
   logging.info("Setting up population resize events")
 
-  assert resizes is not None, "Resizes can't be None (2)"
   # schedule population size changes
   for event in resizes.itertuples(index=False):
       if event.how == "step":
@@ -115,7 +110,6 @@ def simulate(
 
   logging.info("Setting up gene flow events")
 
-  assert geneflows is not None, "Gene flows can't be None"
   # schedule gene flow events
   for event in geneflows.itertuples():
       tstart = length - event.tend_gen + 1
