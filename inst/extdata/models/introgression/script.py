@@ -20,7 +20,7 @@ import pandas
 import numpy
 import math
 
-VERSION = "slendr_0.3.0.9000"
+VERSION = "slendr_0.4.0.9000"
 
 
 def simulate(
@@ -61,7 +61,7 @@ def simulate(
               ancestral=pop.parent
           )
 
-  if not isinstance(samples, pandas.DataFrame) or not len(samples):
+  if len(samples) == 0:
       logging.info("No sampling schedule given, generating one automatically")
       samples = pandas.DataFrame(
           [
@@ -148,7 +148,7 @@ def simulate(
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
       "slendr": {
-          "version": "slendr_0.3.0.9000",
+          "version": "slendr_0.4.0.9000",
           "backend": "msprime",
           "description": description,
           "sampling": {
