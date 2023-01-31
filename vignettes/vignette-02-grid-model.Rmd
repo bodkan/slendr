@@ -227,7 +227,7 @@ If we want to introduce spatiality into our model but need a more manual control
 
 Consider the followin map of South America:
 
-```{r}
+```{r, map_america}
 xrange <- c(-90, -20)
 yrange <- c(-58, 15)
 
@@ -305,13 +305,13 @@ model <- compile_model(
 
 We can make sure the demographic model is specified correctly by quickly visualizing it:
 
-```{r}
+```{r, model_america}
 plot_model(model)
 ```
 
 We can also plot the spatial organization of our demes on a map in all of its glory, including all gene flow events (one arrow per each unidirectional gene flow). Note that we get a warning message stating that the (non-spatial) ancestral population won't be visualized on a map:
 
-```{r}
+```{r, model_map_america}
 plot_map(model, gene_flow = TRUE)
 ```
 
