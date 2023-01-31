@@ -31,22 +31,20 @@ def simulate(
   """Run a slendr simulation and return a tree sequence."""
 
   logging.info("Setting up populations")
-  
+
   # set up demographic history
   demography = msprime.Demography()
-  assert populations is not None, "Populations can't be None"
   for pop in populations.itertuples():
       # get the initial population size (in backwards direction) -- this is
       # either the last (in forward direction) resize event recorded for the
       # population, or its size after split
       name = pop.pop
-      assert resizes is not None, "Resizes can't be None (1)"
       if len(resizes) and name in set(resizes["pop"]):
           resize_events = resizes.query(f"pop == '{name}'")
           initial_size = resize_events.tail(1).N.values[0]
       else:
           initial_size = pop.N
-  
+
       logging.info(f"Setting up population {pop.pop} with Ne {initial_size}")
       demography.add_population(
           name=pop.pop,
@@ -56,14 +54,13 @@ def simulate(
       # for non-ancestral populations, specify the correct split event and re-set
       # the effective population size (by default in msprime inherited from the
       # parent population)
-      if pop.parent != "ancestor":
+      if pop.parent != "__pop_is_ancestor":
           demography.add_population_split(
               time=length - pop.tsplit_gen,
               derived=[pop.pop],
               ancestral=pop.parent
           )
 
-  assert samples is not None, "Samples can't be None (1)"
   if len(samples) == 0:
       logging.info("No sampling schedule given, generating one automatically")
       samples = pandas.DataFrame(
@@ -74,17 +71,15 @@ def simulate(
           columns=["n", "pop", "time_gen", "x", "y", "time_orig", "x_orig", "y_orig"]
       )
 
-  assert samples is not None, "Samples can't be None (2)"
   logging.info("Loading the sampling schedule")
   sample_set = [
       msprime.SampleSet(
          row.n, population=row.pop, time=length - row.time_gen + 1, ploidy=2
       ) for row in samples.itertuples(index=False)
   ]
-  
+
   logging.info("Setting up population resize events")
 
-  assert resizes is not None, "Resizes can't be None (2)"
   # schedule population size changes
   for event in resizes.itertuples(index=False):
       if event.how == "step":
@@ -114,8 +109,7 @@ def simulate(
           sys.exit(f"Unknown event type '{event.how}'")
 
   logging.info("Setting up gene flow events")
-  
-  assert geneflows is not None, "Gene flows can't be None"
+
   # schedule gene flow events
   for event in geneflows.itertuples():
       tstart = length - event.tend_gen + 1
@@ -137,12 +131,12 @@ def simulate(
   # make sure all slendr events are sorted by time of occurence
   # (otherwise msprime complains)
   demography.sort_events()
-  
+
   if debug:
       print(demography.debug())
-  
+
   logging.info("Running the simulation and generating a tree sequence")
-  
+
   ts = msprime.sim_ancestry(
       samples=sample_set,
       demography=demography,
@@ -175,15 +169,15 @@ def simulate(
           }
       }
   }
-  
+
   tables = ts.dump_tables()
   tables.metadata_schema = tskit.MetadataSchema({"codec": "json"})
   tables.metadata = slendr_metadata
-  
+
   ts_metadata = tables.tree_sequence()
-  
+
   logging.info("DONE")
-  
+
   return ts_metadata
 
 
@@ -208,22 +202,22 @@ if __name__ == "__main__":
                       help="Print detailed logging information?")
   parser.add_argument("--debug", action="store_true", default=False,
                       help="Print detailed debugging information?")
-  
+
   args = parser.parse_args()
-  
+
   if args.verbose:
       logging.basicConfig(level=logging.INFO)
-  
+
   model_dir = os.path.expanduser(args.model)
-  
+
   logging.info(f"Loading slendr model configuration files from {model_dir}")
-  
+
   if not args.output:
       args.output = pathlib.Path(model_dir, "output_msprime_ts.trees")
-  
+
   if not os.path.exists(model_dir):
       sys.exit(f"Model directory {model_dir} does not exist")
-  
+
   # paths to mandatory slendr configuration files
   populations_path = pathlib.Path(model_dir, "populations.tsv")
   resizes_path = pathlib.Path(model_dir, "resizes.tsv")
@@ -231,25 +225,25 @@ if __name__ == "__main__":
   length_path = pathlib.Path(model_dir, "length.txt")
   direction_path = pathlib.Path(model_dir, "direction.txt")
   description_path = pathlib.Path(model_dir, "description.txt")
-  
+
   # read model configuration files
   populations = pandas.read_table(populations_path)
   resizes = pandas.DataFrame()
   geneflows = pandas.DataFrame()
   samples = pandas.DataFrame()
-  
+
   if os.path.exists(resizes_path):
       resizes = pandas.read_table(resizes_path)
   if os.path.exists(geneflows_path):
       geneflows = pandas.read_table(geneflows_path)
-  
+
   # read the total simulation length
   length = int(float(open(length_path, "r").readline().rstrip()))
-  
+
   # read the direction of the model ("forward" or "backward")
   direction = open(direction_path, "r").readline().rstrip()
   logging.info(f"Loaded model is specified in the {direction} direction")
-  
+
   # read the description of the model
   description = open(description_path, "r").readline().rstrip()
   logging.info(f"Model description: {description}")
@@ -261,7 +255,7 @@ if __name__ == "__main__":
   ts = simulate(args.sequence_length, args.recombination_rate, args.seed,
                 populations, resizes, geneflows, length, direction, description,
                 samples, args.debug)
-  
+
   output_path = os.path.expanduser(args.output)
 
   logging.info(f"Saving tree sequence output to {output_path}")

@@ -604,7 +604,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   if (!is.numeric(recombination_rate) | recombination_rate < 0)
     stop("Recombination rate must be a numeric value", call. = FALSE)
 
-  if (sum(model$splits$parent == "ancestor") > 1)
+  if (sum(model$splits$parent == "__pop_is_ancestor") > 1)
     stop("Multiple ancestral populations without a common ancestor would lead to\n",
          "an infinitely deep history without coalescence. Please make sure that all\n",
          "populations trace their ancestry to a single ancestral population.\n",
@@ -832,7 +832,7 @@ write_script <- function(script_target, script_source,
 compile_splits <- function(populations, generation_time, direction, end_time) {
   split_table <- lapply(populations, function(p) {
     parent <- attr(p, "parent")
-    if (is.character(parent) && parent == "ancestor") {
+    if (is.character(parent) && parent == "__pop_is_ancestor") {
       parent_name <- parent
     } else {
       parent_name <- unique(attr(p, "parent")$pop)
@@ -867,7 +867,7 @@ compile_splits <- function(populations, generation_time, direction, end_time) {
   split_table$parent_id <- lapply(
     split_table$parent,
     function(i) {
-      if (i == "ancestor") -1
+      if (i == "__pop_is_ancestor") -1
       else split_table[split_table$pop == i, ]$pop_id
     }
   ) %>% unlist()
@@ -876,7 +876,7 @@ compile_splits <- function(populations, generation_time, direction, end_time) {
   # simulation in generation 1 regardless of which "time of appearance" was
   # specified (to include it in the burnin)
   split_table %>%
-    dplyr::mutate(tsplit_gen = ifelse(parent == "ancestor", 1, tsplit_gen))
+    dplyr::mutate(tsplit_gen = ifelse(parent == "__pop_is_ancestor", 1, tsplit_gen))
 }
 
 # Process vectorized population boundaries into a table with
@@ -918,7 +918,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
 
   # maps of ancestral populations have to be set in the first generation,
   # regardless of the specified split time
-  ancestral_pops <- split_table[split_table$parent == "ancestor", ]$pop
+  ancestral_pops <- split_table[split_table$parent == "__pop_is_ancestor", ]$pop
   ancestral_maps <- purrr::map(ancestral_pops, ~ which(map_table$pop == .x)) %>%
     purrr::map_int(~ .x[1])
   map_table[ancestral_maps, ]$time_gen <- 1
@@ -1032,7 +1032,7 @@ compile_dispersals <- function(populations, generation_time, direction,
 
   # dispersals of ancestral populations have to be set in the first generation,
   # regardless of the specified split time
-  ancestral_pops <- split_table[split_table$parent == "ancestor", ]$pop
+  ancestral_pops <- split_table[split_table$parent == "__pop_is_ancestor", ]$pop
   indices <- purrr::map(ancestral_pops, ~ which(dispersal_table$pop == .x)) %>%
     purrr::map_int(~ .x[1])
   dispersal_table[indices, ]$tdispersal_gen <- 1

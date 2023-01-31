@@ -169,10 +169,7 @@ We can define detailed population boundaries using a polygon geometry object or 
 First, let's create the African ancestors of modern humans. We restrict the spatial boundary of the African population to the `africa` region defined above:
 
 ```{r plot_afr}
-afr <- population(
-  "AFR", parent = "ancestor", time = 52000, N = 3000,
-  map = map, polygon = africa
-)
+afr <- population("AFR", time = 52000, N = 3000, map = map, polygon = africa)
 
 plot_map(afr)
 ```

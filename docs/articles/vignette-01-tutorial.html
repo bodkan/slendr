@@ -403,10 +403,7 @@ coordinates are described in the context of the geographic CRS.</p>
 restrict the spatial boundary of the African population to the
 <code>africa</code> region defined above:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span></span>
-<span>  <span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="st">"ancestor"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span>,</span>
-<span>  map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">africa</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span>, map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">africa</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-01-tutorial_files/figure-html/plot_afr-1.png" width="480"></p>
@@ -684,20 +681,20 @@ graphically above, namely:</p>
 </ul>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">model_dir</span>, <span class="st">"populations.tsv"</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;   pop   parent    N tsplit_gen tsplit_orig tremove_gen tremove_orig pop_id</span></span>
-<span><span class="co">#&gt; 1 AFR ancestor 3000          1       52000          -1           -1      0</span></span>
-<span><span class="co">#&gt; 2 OOA      AFR  500         34       51000         901        25000      1</span></span>
-<span><span class="co">#&gt; 3 EHG      OOA 1000        801       28000        1534         6000      2</span></span>
-<span><span class="co">#&gt; 4 ANA      OOA 3000        801       28000        1601         4000      3</span></span>
-<span><span class="co">#&gt; 5 EUR      EHG 2000        901       25000          -1           -1      4</span></span>
-<span><span class="co">#&gt; 6 YAM      EHG  500       1501        7000        1651         2500      5</span></span>
-<span><span class="co">#&gt;   parent_id</span></span>
-<span><span class="co">#&gt; 1        -1</span></span>
-<span><span class="co">#&gt; 2         0</span></span>
-<span><span class="co">#&gt; 3         1</span></span>
-<span><span class="co">#&gt; 4         1</span></span>
-<span><span class="co">#&gt; 5         2</span></span>
-<span><span class="co">#&gt; 6         2</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;   pop            parent    N tsplit_gen tsplit_orig tremove_gen tremove_orig</span></span>
+<span><span class="co">#&gt; 1 AFR __pop_is_ancestor 3000          1       52000          -1           -1</span></span>
+<span><span class="co">#&gt; 2 OOA               AFR  500         34       51000         901        25000</span></span>
+<span><span class="co">#&gt; 3 EHG               OOA 1000        801       28000        1534         6000</span></span>
+<span><span class="co">#&gt; 4 ANA               OOA 3000        801       28000        1601         4000</span></span>
+<span><span class="co">#&gt; 5 EUR               EHG 2000        901       25000          -1           -1</span></span>
+<span><span class="co">#&gt; 6 YAM               EHG  500       1501        7000        1651         2500</span></span>
+<span><span class="co">#&gt;   pop_id parent_id</span></span>
+<span><span class="co">#&gt; 1      0        -1</span></span>
+<span><span class="co">#&gt; 2      1         0</span></span>
+<span><span class="co">#&gt; 3      2         1</span></span>
+<span><span class="co">#&gt; 4      3         1</span></span>
+<span><span class="co">#&gt; 5      4         2</span></span>
+<span><span class="co">#&gt; 6      5         2</span></span></code></pre>
 <ul>
 <li>the table of geneflow events:</li>
 </ul>
@@ -789,7 +786,7 @@ user:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence           ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │    129║</span></span>
+<span><span class="co">#&gt; ║Trees          │    126║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│ 100000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
@@ -802,15 +799,15 @@ user:</p>
 <span><span class="co">#&gt; ╔═══════════╤═════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪═════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │18692│584.1 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │18658│583.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│12814│  1.2 MiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│12804│  1.2 MiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │    0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │    0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │18348│681.6 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │18330│680.9 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│    6│  2.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>

@@ -157,7 +157,7 @@ Note that in order to make this example executable in a reasonable time on my ex
 
 ```r
 afr <- population( # African ancestral population
-  "AFR", parent = "ancestor", time = 52000, N = 3000,
+  "AFR", time = 52000, N = 3000,
   map = map, polygon = africa
 )
 

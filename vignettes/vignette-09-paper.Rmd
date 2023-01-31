@@ -19,6 +19,21 @@ knitr::opts_chunk$set(
 )
 
 record_snapshot <- FALSE # only save PDFs on a local machine
+
+# reporting knitr chunk run times based on:
+# https://bookdown.org/yihui/rmarkdown-cookbook/time-chunk.html#time-chunk
+all_times <- list()
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now)
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
 ```
 
 ```{r}
@@ -57,7 +72,7 @@ p_code <- ggplot() +
 
 ### Script from panel A
 
-```{r, eval = eval_chunk, fig.keep='none'}
+```{r, ex1, time_it = TRUE, eval = eval_chunk, fig.keep='none'}
 o <- population("o", time = 1, N = 100)
 c <- population("c", time = 2500, N = 100, parent = o)
 a <- population("a", time = 2800, N = 100, parent = c)
@@ -158,7 +173,7 @@ ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex1.pdf", 
 
 ### Script from panel A
 
-```{r, eval = eval_chunk}
+```{r, ex2, time_it = TRUE, eval = eval_chunk}
 map <- world(xrange = c(0, 10), yrange = c(0, 10),
              landscape = region(center = c(5, 5), radius = 5))
 
@@ -278,7 +293,7 @@ R5 <- region(
 ooa_trajectory <- list(c(40, 30), c(50, 30), c(60, 40), c(45, 55))
 ```
 
-```{r, eval = eval_chunk, fig.keep='none'}
+```{r, ex3, time_it = TRUE, eval = eval_chunk, fig.keep='none'}
 map <- world(xrange = c(-13, 70), yrange = c(18, 65), crs = 3035)
 
 ooa <- population(
@@ -481,7 +496,7 @@ ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.pdf", 
 
 ### Script from panel A
 
-```{r, eval = eval_chunk}
+```{r, ex4, time_it = TRUE, eval = eval_chunk, fig.keep='none'}
 ts_small <- ts_simplify(ts, simplify_to = c("EUR_578", "YAM_75", "ANA_163", "EHG_208"))
 
 tree <- ts_phylo(ts_small, i = 20 / scaling)
@@ -589,3 +604,18 @@ p_ex4
 ```{r, include = FALSE, eval = eval_chunk && record_snapshot}
 ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex4.pdf", p_ex4, width = 8.5, height = 9, units = "in")
 ```
+
+## Run time of each code example from the paper
+
+The following times were measured on a 16'' MacBook Pro with the Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version 13.1.
+
+```{r, echo=FALSE}
+data.frame(
+  example = as.vector(names(all_times)),
+  time = as.numeric(all_times),
+  units = sapply(all_times, units),
+  row.names = NULL
+) %>% knitr::kable()
+```
+
+In the table above, `ex1`, `ex2`, `ex3`, and `ex4` correspond to runtimes of code shown in one of the four example figures in the _slendr_ paper.

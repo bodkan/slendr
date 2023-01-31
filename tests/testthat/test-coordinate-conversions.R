@@ -1,5 +1,5 @@
 map <- readRDS("map.rds")
-pop <- population("pop1", parent = "ancestor", N = 100, time = 100,
+pop <- population("pop1", N = 100, time = 100,
                   center = c(0, 25), radius = 100000, map = map, intersect = FALSE)
 model <- compile_model(
   pop, path = tempfile(), generation_time = 1, resolution = 100000,

@@ -611,7 +611,7 @@ check_location_bounds <- function(locations, map) {
 # or ancestry proportions over time) back to user-specified time units
 # (either forward or backward)
 convert_slim_time <- function(times, model) {
-  ancestors <- dplyr::filter(model$splits, parent == "ancestor")
+  ancestors <- dplyr::filter(model$splits, parent == "__pop_is_ancestor")
 
   if (model$direction == "backward") {
     oldest_time <- max(ancestors[, ]$tsplit_orig)

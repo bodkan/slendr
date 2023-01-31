@@ -56,7 +56,7 @@ test_that("forward and backward models yield the same simulation result", {
   map <- readRDS("map.rds")
 
   # forward simulation ------------------------------------------------------
-  p1 <- population(name = "pop1", parent = "ancestor", N = 100, time = 1, radius = 600000, center = c(10, 25), map = map)
+  p1 <- population(name = "pop1", N = 100, time = 1, radius = 600000, center = c(10, 25), map = map)
   p2 <- population(name = "pop2", parent = p1, time = 10, N = 100, center = c(10, 25), radius = 300000) %>%
     move(trajectory = list(c(25, 25), c(40, 30), c(40, 40), c(50, 50)), start = 11, end = 200, snapshots = 30)
   p3 <- population(name = "pop3", parent = p2, time = 200, N = 100, polygon = list(c(-10, 50), c(10, 50), c(20, 53), c(40, 60), c(40, 70), c(-10, 65)))
@@ -81,7 +81,7 @@ test_that("forward and backward models yield the same simulation result", {
   )
 
   # backward simulation -----------------------------------------------------
-  p1 <- population(name = "pop1", parent = "ancestor", N = 100, time = 480, radius = 600000, center = c(10, 25), map = map)
+  p1 <- population(name = "pop1", N = 100, time = 480, radius = 600000, center = c(10, 25), map = map)
   p2 <- population(name = "pop2", parent = p1, time = 471, N = 100, center = c(10, 25), radius = 300000) %>%
     move(trajectory = list(c(25, 25), c(40, 30), c(40, 40), c(50, 50)), start = 470, end = 281, snapshots = 30)
   p3 <- population(name = "pop3", parent = p2, time = 281, N = 100, polygon = list(c(-10, 50), c(10, 50), c(20, 53), c(40, 60), c(40, 70), c(-10, 65)))

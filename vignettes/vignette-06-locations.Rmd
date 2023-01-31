@@ -83,7 +83,7 @@ anatolia <- region(
 
 # African ancestral population
 afr <- population(
-  "AFR", parent = "ancestor", time = 52000, N = 3000,
+  "AFR", time = 52000, N = 3000,
   map = map, polygon = africa
 )
 

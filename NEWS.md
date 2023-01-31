@@ -41,6 +41,8 @@ This gets unwieldy rather quickly, especially when dozens or hundreds of samples
 
 This is more readable and in line with some other _tskit_-interface functions of _slendr_ which used this functionality via their `sample_sets = ` argument (`ts_divergence()`, `ts_diversity()`, etc.).  ([#ac5e484](https://github.com/bodkan/slendr/commit/ac5e484))
 
+- The default state of the `parent = ` argument of `population()` is now `NULL` instead of `"ancestor"`. This prevents silly surprising clashes in situation where some population's name really _is_ "ancestor". The only change internally is that for populations which are ancestral, the `splits` data frame element of a _slendr_ model object which includes this population carries a formal "ancestral parent population" as `"__pop_is_ancestor"` instead of just `"ancestor"`. Note that this is an internal implementation detail and not something that particularly has to involve the user. Still, if you have been somehow using _slendr_'s internal data structures, keep this in mind. ([#f8a39a2](https://github.com/bodkan/slendr/commit/f8a39a2))
+
 # slendr 0.4.0
 
 - The `msprime()` function now makes sure that a given _slendr_ model can fully coalesce to a single common ancestor population. Previously, having multiple ancestral populations created with `parent = "ancestor"` would cause an infinite simulation when plugged into the `msprime()` backend. ([#095b124](https://github.com/bodkan/slendr/commit/095b124))
