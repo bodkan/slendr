@@ -235,10 +235,13 @@ map <- world(xrange = xrange, yrange = yrange, crs = "EPSG:31970")
 plot_map(map)
 ```
 
-Let's lay out demes in a more scattered, irregular fashion. For illustration purposes, we will define each population's geographic range as a circle with the radius of 200 km.
+Let's lay out demes in a more scattered, irregular fashion. For illustration purposes, we will define each population's geographic range as a circle with the radius of 200 km. Importantly, note that we have introduced one ancestral population but that that population does not have an associated location on a world map! Because we want to simulate data with a coalescent backend, we *have* to formally encode a population in which all genealogies eventually coalesce. In other words, the models we have specified above would not run with the `msprime()` back end because they contain isolated demes which do not formally descend from a single ancestor&nbsp;had we run these models with msprime, we would get an error about infinite coalescent times. This is why we formally introduce an ancestral population here:
 
 ```{r}
-p_anc <- population("p_anc", N = 1000, time = 1)
+# non-spatial ancestral population
+p_anc <- population("p_anc", N = 1000, time = 1, remove = 500)
+
+# spatial populations
 p1 <- population("p1", N = 1000, time = 500, parent = p_anc, map = map, center = c(-75, 0), radius = 200e3)
 p2 <- population("p2", N = 1000, time = 500, parent = p_anc, map = map, center = c(-60, 5), radius = 200e3)
 p3 <- population("p3", N = 1000, time = 500, parent = p_anc, map = map, center = c(-65, -5), radius = 200e3)
@@ -300,13 +303,22 @@ model <- compile_model(
 )
 ```
 
-Now we can plot the spatial organization of our demes on a map in all of its glory, including all gene flow events (one arrow per each unidirectional gene flow):
+We can make sure the demographic model is specified correctly by quickly visualizing it:
 
 ```{r}
 plot_model(model)
+```
+
+We can also plot the spatial organization of our demes on a map in all of its glory, including all gene flow events (one arrow per each unidirectional gene flow). Note that we get a warning message stating that the (non-spatial) ancestral population won't be visualized on a map:
+
+```{r}
 plot_map(model, gene_flow = TRUE)
 ```
 
+Finally, we can simulate the tree sequence from the model! Notice that we are simulating data using `msprime()`, which is effectively dropping the continuous space dimension of our model. In this situation, the map above serves more as a visual aid, making it easier to set up a complex "spatial" position of demes on a map.
+
 ```{r}
-msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
+ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
+
+ts
 ```
