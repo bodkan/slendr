@@ -146,7 +146,12 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
       pop_maps <- pops
     }
 
-    if (intersect) pop_maps <- lapply(pop_maps, intersect_features)
+    if (intersect) {
+      intersected_maps <- pop_maps %>% Filter(has_map, .) %>% lapply(intersect_features)
+      if (length(intersected_maps) != length(pop_maps))
+        warning("Non-spatial populations in your model won't be visualized", call. = FALSE)
+      pop_maps <- intersected_maps
+    }
 
     pop_maps <- do.call(rbind, pop_maps)
     pop_maps$pop <- factor(pop_maps$pop, levels = pop_names)
