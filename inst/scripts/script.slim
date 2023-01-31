@@ -459,14 +459,14 @@ s12 late() /* End of simulation */ {
 }
 
 2: fitnessEffect() /* Compute fitness of individuals */ {
-    if (!SPATIAL) return 1.0;
+    if (!SPATIAL | !subpop.getValue("spatial")) return 1.0;
     interaction = community.allInteractionTypes[2 * subpop.id];
     totalStrength = interaction.totalOfNeighborStrengths(individual);
     return 1.1 - totalStrength / subpop.individualCount;
 }
 
 2: mateChoice() /* Compute mating interaction */ {
-    if (!SPATIAL) return NULL;
+    if (!SPATIAL | !subpop.getValue("spatial")) return NULL;
     return community.allInteractionTypes[2 * subpop.id + 1].strength(individual);
 }
 
