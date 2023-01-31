@@ -66,14 +66,15 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
     slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
   # get values of all map attributes across populations
-  maps <- unique(lapply(populations, function(pop) attr(pop, "map"))) %>%
-    Filter(function(x) inherits(x, "slendr_map"), .)
+  maps <- lapply(populations, get_map) %>% Filter(Negate(is.null), .) %>% unique()
 
   if (length(maps) > 1)
     stop("Multiple spatial maps detected across populations but only a single\n",
          "world map is allowed for spatial models.", call. = FALSE)
-  else
+  else if (length(maps) == 1)
     map <- maps[[1]]
+  else
+    map <- NULL
 
   if (!is.null(map) && is.null(resolution) && serialize)
     stop("A map resolution must be specified for spatial models", call. = FALSE)
