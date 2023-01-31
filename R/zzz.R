@@ -53,15 +53,13 @@ PYTHON_ENV <-
 
   packageStartupMessage(
     "=======================================================================\n",
-    "NOTE: Due to frequent issues with some user's Python setups, slendr no\n",
-    "longer activates its Python environment automatically upon calling\n",
-    "library(slendr).\n\n",
+    "NOTE: Due to occasional Python setup issues which have been causing\n",
+    "major trouble particularly for novice users, calling library(slendr)\n",
+    "no longer activates slendr's Python environment automatically.\n\n",
     "In order to use slendr's msprime back end or its tree-sequence\n",
-    "functionality, users now must activate slendr's Python environments\n",
-    "manually by calling init_env().\n\n",
-    "This inconvenience is a compromise in order to help novice users avoid\n",
-    "having to debug very technical, low-level Python-specific issues. This\n",
-    "note will be removed in a future version of slendr.",
+    "functionality, users must now activate slendr's Python environment\n",
+    "manually by executing init_env() after calling library(slendr).\n\n",
+    "(This note will be removed in a future version of slendr.)",
     "\n======================================================================="
   )
 }
