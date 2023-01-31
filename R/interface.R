@@ -55,16 +55,22 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
   if (!is.character(name) || length(name) != 1)
     stop("A population name must be a character scalar value", call. = FALSE)
 
-  # is this the first population defined in the model?
-  if (is.null(parent)) {
-    if (!is.logical(map) && !inherits(map, "slendr_map"))
-      stop("Ancestral population must specify its 'map'", call. = FALSE)
+  # if this population splits from a parental population, check that the parent
+  # really exists and that the split time make sense given the time of appearance
+  # of the parental population
+  if (!is.null(parent)) {
+    if (!inherits(parent, "slendr_pop"))
+      stop("Only slendr_pop objects can represent parental populations", call. = FALSE)
     else
-      map <- map
-  } else {
-    check_split_time(time, parent)
-    map <- attr(parent, "map")
+      check_split_time(time, parent)
   }
+
+  if (!is.logical(map) && !inherits(map, "slendr_map"))
+    stop("A simulation landscape must be an object of the class slendr_map", call. = FALSE)
+
+  if (!is.null(parent) && is.logical(map) && map == FALSE)
+    map <- attr(parent, "map")
+
   time <- as.integer(time)
   if (time < 1) stop("Split time must be a non-negative integer number", call. = FALSE)
   N <- as.integer(N)
@@ -572,10 +578,10 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
 
   # make sure both participating populations are present at the start of the
   # gene flow event (`check_present_time()` is reused from the sampling functionality)
-  check_present_time(start, from, offset = 0)
-  check_present_time(end, from, offset = 0)
-  check_present_time(start, to, offset = 0)
-  check_present_time(end, to, offset = 0)
+  # check_present_time(start, from, offset = 0)
+  # check_present_time(end, from, offset = 0)
+  # check_present_time(start, to, offset = 0)
+  # check_present_time(end, to, offset = 0)
 
   # make sure the population is not removed during the the admixture period
   # (note that this will only be relevant for SLiM simulations at this moment)

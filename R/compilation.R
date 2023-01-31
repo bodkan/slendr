@@ -65,7 +65,16 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
   if (is.null(slim_script))
     slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
-  map <- get_map(populations[[1]])
+  # get values of all map attributes across populations
+  maps <- unique(lapply(populations, function(pop) attr(pop, "map"))) %>%
+    Filter(function(x) inherits(x, "slendr_map"), .)
+
+  if (length(maps) > 1)
+    stop("Multiple spatial maps detected across populations but only a single\n",
+         "world map is allowed for spatial models.", call. = FALSE)
+  else
+    map <- maps[[1]]
+
   if (!is.null(map) && is.null(resolution) && serialize)
     stop("A map resolution must be specified for spatial models", call. = FALSE)
 
@@ -120,9 +129,6 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
   }
 
   if (is.data.frame(gene_flow)) gene_flow <- list(gene_flow)
-
-  if (length(unique(sapply(populations, has_map))) != 1)
-    stop("Populations must be either all spatial or non-spatial, but not both", call. = FALSE)
 
   # make sure all populations share the same direction of time
   time_dir <- setdiff(unique(sapply(populations, time_direction)), "unknown")
@@ -916,12 +922,13 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
   map_table <- map_table[!duplicated(map_table[, c("pop", "time_gen")]), ]
   map_table$path <- seq_len(nrow(map_table)) %>% paste0(., ".png")
 
-  # maps of ancestral populations have to be set in the first generation,
-  # regardless of the specified split time
+  # maps of ancestral populations (that is, those that are spatial) have to
+  # be set in the first generation, regardless of the specified split time
   ancestral_pops <- split_table[split_table$parent == "__pop_is_ancestor", ]$pop
   ancestral_maps <- purrr::map(ancestral_pops, ~ which(map_table$pop == .x)) %>%
     purrr::map_int(~ .x[1])
-  map_table[ancestral_maps, ]$time_gen <- 1
+  if (any(!is.na(ancestral_maps)))
+    map_table[ancestral_maps[!is.na(ancestral_maps)], ]$time_gen <- 1
 
   map_table
 }
@@ -1045,7 +1052,10 @@ compile_dispersals <- function(populations, generation_time, direction,
 
 # Render population boundaries to black-and-white spatial maps
 render <- function(pops, resolution) {
-  raster_list <- lapply(pops, function(pop) {
+  # process only populations which have a map
+  spatial_pops <- Filter(has_map, pops)
+
+  raster_list <- lapply(spatial_pops, function(pop) {
     # iterate over temporal maps for the current population
     snapshots <- lapply(unique(pop$time), function(t) {
       snapshot <- pop[pop$time == t, ]
