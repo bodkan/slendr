@@ -555,12 +555,13 @@ function (void) create_pop(object<Dictionary> pop) {
 
     // explicitly tag populations which have a map assigned (as of slendr v0.5,
     // spatial and non-spatial populations are allowed within the same model)
-    spatial_pops = unique(MAPS.getValue("pop_id"));
-    if (any(pop_id == spatial_pops))
-        spatial = T;
-    else
-        spatial = F;
-    get_pop(pop_id).setValue("spatial", spatial);
+    spatial_tag = F;
+    if (SPATIAL) {
+        spatial_pops = unique(MAPS.getValue("pop_id"));
+        if (any(pop_id == spatial_pops))
+            spatial_tag = T;
+    }
+    get_pop(pop_id).setValue("spatial", spatial_tag);
 }
 
 // Start or stop geneflow
