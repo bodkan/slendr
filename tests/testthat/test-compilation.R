@@ -51,7 +51,7 @@ test_that("invalid blank maps are prevented", {
                "No occupiable pixel on a rasterized map")
 })
 
-test_that("deletion in non-interactive modem must be forced", {
+test_that("deletion in non-interactive mode must be forced", {
   skip_if(interactive())
   p <- population(name = "pop", N = 700, time = 100) %>% resize(N = 100, time = 50, how = "step")
   directory <- file.path(tempdir(), "dir-forced")
