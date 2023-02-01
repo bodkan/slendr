@@ -128,17 +128,15 @@
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; =======================================================================</span></span>
-<span><span class="co">#&gt; NOTE: Due to frequent issues with some user's Python setups, slendr no</span></span>
-<span><span class="co">#&gt; longer activates its Python environment automatically upon calling</span></span>
-<span><span class="co">#&gt; library(slendr).</span></span>
+<span><span class="co">#&gt; NOTE: Due to occasional Python setup issues which have been causing</span></span>
+<span><span class="co">#&gt; major trouble particularly for novice users, calling library(slendr)</span></span>
+<span><span class="co">#&gt; no longer activates slendr's Python environment automatically.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; In order to use slendr's msprime back end or its tree-sequence</span></span>
-<span><span class="co">#&gt; functionality, users now must activate slendr's Python environments</span></span>
-<span><span class="co">#&gt; manually by calling init_env().</span></span>
+<span><span class="co">#&gt; functionality, users must now activate slendr's Python environment</span></span>
+<span><span class="co">#&gt; manually by executing init_env() after calling library(slendr).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; This inconvenience is a compromise in order to help novice users avoid</span></span>
-<span><span class="co">#&gt; having to debug very technical, low-level Python-specific issues. This</span></span>
-<span><span class="co">#&gt; note will be removed in a future version of slendr.</span></span>
+<span><span class="co">#&gt; (This note will be removed in a future version of slendr.)</span></span>
 <span><span class="co">#&gt; =======================================================================</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -357,7 +355,7 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">13</span>, <span class="fl">70</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">65</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">3035</span><span class="op">)</span></span>
 <span><span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span></span>
-<span><span class="co">#&gt; Source: "/private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/RtmpYluy3O/naturalearth", layer: "ne_110m_land"</span></span>
+<span><span class="co">#&gt; Source: "/private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/RtmpYsdwdY/naturalearth", layer: "ne_110m_land"</span></span>
 <span><span class="co">#&gt; with 127 features</span></span>
 <span><span class="co">#&gt; It has 3 fields</span></span>
 <span></span>
@@ -389,7 +387,7 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">13</span>, <span class="fl">70</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18</span>, <span class="fl">65</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">3035</span><span class="op">)</span></span>
 <span><span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span></span>
-<span><span class="co">#&gt; Source: "/private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/RtmpYluy3O/naturalearth", layer: "ne_110m_land"</span></span>
+<span><span class="co">#&gt; Source: "/private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/RtmpYsdwdY/naturalearth", layer: "ne_110m_land"</span></span>
 <span><span class="co">#&gt; with 127 features</span></span>
 <span><span class="co">#&gt; It has 3 fields</span></span>
 <span></span>
@@ -418,7 +416,7 @@
 <span></span>
 <span><span class="va">yam</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span></span>
 <span>  <span class="st">"YAM"</span>, time <span class="op">=</span> <span class="fl">7000</span>, N <span class="op">=</span> <span class="fl">600</span>, parent <span class="op">=</span> <span class="va">ehg</span>, remove <span class="op">=</span> <span class="fl">2500</span>,</span>
-<span>  map <span class="op">=</span> <span class="va">m</span>, polygon <span class="op">=</span> <span class="va">R5</span></span>
+<span>  map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">R5</span></span>
 <span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/move.html">move</a></span><span class="op">(</span>trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">5000</span>, end <span class="op">=</span> <span class="fl">3000</span>, snapshots <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
@@ -618,22 +616,22 @@ Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version
 <tbody>
 <tr class="odd">
 <td align="left">ex1</td>
-<td align="right">5.6776763</td>
+<td align="right">5.381474</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex2</td>
-<td align="right">14.3824192</td>
+<td align="right">12.321568</td>
 <td align="left">mins</td>
 </tr>
 <tr class="odd">
 <td align="left">ex3</td>
-<td align="right">2.6993147</td>
+<td align="right">2.419523</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex4</td>
-<td align="right">0.7542241</td>
+<td align="right">0.734159</td>
 <td align="left">secs</td>
 </tr>
 </tbody>

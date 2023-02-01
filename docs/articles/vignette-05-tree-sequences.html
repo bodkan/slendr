@@ -128,17 +128,15 @@ entirely from R.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; =======================================================================</span></span>
-<span><span class="co">#&gt; NOTE: Due to frequent issues with some user's Python setups, slendr no</span></span>
-<span><span class="co">#&gt; longer activates its Python environment automatically upon calling</span></span>
-<span><span class="co">#&gt; library(slendr).</span></span>
+<span><span class="co">#&gt; NOTE: Due to occasional Python setup issues which have been causing</span></span>
+<span><span class="co">#&gt; major trouble particularly for novice users, calling library(slendr)</span></span>
+<span><span class="co">#&gt; no longer activates slendr's Python environment automatically.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; In order to use slendr's msprime back end or its tree-sequence</span></span>
-<span><span class="co">#&gt; functionality, users now must activate slendr's Python environments</span></span>
-<span><span class="co">#&gt; manually by calling init_env().</span></span>
+<span><span class="co">#&gt; functionality, users must now activate slendr's Python environment</span></span>
+<span><span class="co">#&gt; manually by executing init_env() after calling library(slendr).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; This inconvenience is a compromise in order to help novice users avoid</span></span>
-<span><span class="co">#&gt; having to debug very technical, low-level Python-specific issues. This</span></span>
-<span><span class="co">#&gt; note will be removed in a future version of slendr.</span></span>
+<span><span class="co">#&gt; (This note will be removed in a future version of slendr.)</span></span>
 <span><span class="co">#&gt; =======================================================================</span></span></code></pre>
 <div class="section level2">
 <h2 id="setting-up-python-environment">Setting up Python environment<a class="anchor" aria-label="anchor" href="#setting-up-python-environment"></a>
@@ -351,11 +349,11 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; msprime command to be executed:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105874e2b33cd_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105874e2b33cd_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105877d218098.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105873fddd651 --verbose  </span></span>
+<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp7VZz4v/file15ea74393d24f_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp7VZz4v/file15ea74393d24f_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp7VZz4v/file15ea7179aae6c.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp7VZz4v/file15ea77c1a21b3 --verbose  </span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Tree sequence was saved to:</span></span>
-<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105877d218098.trees </span></span>
+<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp7VZz4v/file15ea7179aae6c.trees </span></span>
 <span><span class="co">#&gt; Loading the tree-sequence file...</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span></span></code></pre></div>
@@ -442,7 +440,7 @@ to the tree-sequence file ourselves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file1058773321ccc"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp7VZz4v/file15ea7558582f3"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced

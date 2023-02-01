@@ -161,17 +161,15 @@ script being generated under the hood.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; =======================================================================</span></span>
-<span><span class="co">#&gt; NOTE: Due to frequent issues with some user's Python setups, slendr no</span></span>
-<span><span class="co">#&gt; longer activates its Python environment automatically upon calling</span></span>
-<span><span class="co">#&gt; library(slendr).</span></span>
+<span><span class="co">#&gt; NOTE: Due to occasional Python setup issues which have been causing</span></span>
+<span><span class="co">#&gt; major trouble particularly for novice users, calling library(slendr)</span></span>
+<span><span class="co">#&gt; no longer activates slendr's Python environment automatically.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; In order to use slendr's msprime back end or its tree-sequence</span></span>
-<span><span class="co">#&gt; functionality, users now must activate slendr's Python environments</span></span>
-<span><span class="co">#&gt; manually by calling init_env().</span></span>
+<span><span class="co">#&gt; functionality, users must now activate slendr's Python environment</span></span>
+<span><span class="co">#&gt; manually by executing init_env() after calling library(slendr).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; This inconvenience is a compromise in order to help novice users avoid</span></span>
-<span><span class="co">#&gt; having to debug very technical, low-level Python-specific issues. This</span></span>
-<span><span class="co">#&gt; note will be removed in a future version of slendr.</span></span>
+<span><span class="co">#&gt; (This note will be removed in a future version of slendr.)</span></span>
 <span><span class="co">#&gt; =======================================================================</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -269,7 +267,7 @@ population dynamics with an animation later.</p>
 <span><span class="co">#&gt; ╟───────────┼─────┼────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│    7│ 3.2 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│    1│33.7 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│    1│34.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │    0│16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧═════╧════════╧════════════╝</span></span></code></pre>
