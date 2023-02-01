@@ -1341,7 +1341,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
       if (!dir.exists(reticulate::miniconda_path()))
         reticulate::install_miniconda()
 
-      reticulate::conda_create(envname = PYTHON_ENV)
+      reticulate::conda_create(envname = PYTHON_ENV, python_version = "3.11")
       reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
 
       # parse the Python env name back to the list of dependencies
