@@ -9,9 +9,10 @@ msp <- NULL
 # define slendr's required Python dependencies and compose an environment name
 # that will be used specifically for them
 PYTHON_ENV <-
-  c("msprime==1.2.0", "tskit==0.5.2", "pyslim==1.0") %>%
+  c("msprime==1.2.0", "tskit==0.5.4", "pyslim==1.0.1") %>%
   gsub("==", "-", .) %>%
-  paste(collapse = "_")
+  paste(collapse = "_") %>%
+  paste0("Python-3.11_", .)
 
 .onAttach <- function(libname, pkgname) {
   # check for presence of the slim binary in user's PATH and display
@@ -43,10 +44,11 @@ PYTHON_ENV <-
     if (!getOption("slendr.custom_env")) {
       version <- strsplit(PYTHON_ENV, "_")[[1]] %>% gsub(".*-", "", .)
       packageStartupMessage(
-        sprintf(paste0("A slendr Python environment with the necessary versions of msprime (%s),\n",
-        "tskit (%s), and pyslim (%s) has not been found.\n"), version[1], version[2], version[3]),
-        "\nYou can setup a pre-configured environment with all of slendr's Python\n",
-        "dependencies automatically by running the function setup_env()."
+        sprintf(paste0("A slendr Python (%s) environment with the necessary versions of\n",
+          "msprime (%s), tskit (%s), and pyslim (%s) has not been found.\n"),
+          version[1], version[2], version[3], version[4]),
+          "\nYou can setup a pre-configured environment with all of slendr's Python\n",
+          "dependencies automatically by running the function setup_env()."
       )
     }
   } else {

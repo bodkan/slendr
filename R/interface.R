@@ -1341,15 +1341,15 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
       if (!dir.exists(reticulate::miniconda_path()))
         reticulate::install_miniconda()
 
-      reticulate::conda_create(envname = PYTHON_ENV, python_version = "3.11")
-      reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
-
       # parse the Python env name back to the list of dependencies
       # (the environment is defined in .onAttach(), and this makes sure the
       # dependencies are defined all in one place)
-      version_deps <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
-      other_deps <- "pandas"
-      deps <- c(version_deps, other_deps)
+      versions <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
+      python_version <- gsub("Python==", "", versions[1])
+      package_versions <- c(versions[-1], "pandas")
+
+      reticulate::conda_create(envname = PYTHON_ENV, python_version = python_version)
+      reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
 
       # msprime/tskit conda dependency is broken on M1 Mac architecture, fallback
       # to pip in cases like this (otherwise use conda to avoid any potential
@@ -1357,7 +1357,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
       if (is.null(pip))
         pip <- all(Sys.info()[c("sysname", "machine")] == c("Darwin", "arm64"))
 
-      reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions, pip = pip)
 
       if (!quiet) {
         message("======================================================================")
