@@ -318,7 +318,7 @@ plot_map(model, gene_flow = TRUE)
 Finally, we can simulate the tree sequence from the model! Notice that we are simulating data using `msprime()`, which is effectively dropping the continuous space dimension of our model. In this situation, the map above serves more as a visual aid, making it easier to set up a complex "spatial" position of demes on a map.
 
 ```{r}
-ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
+ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8, random_seed = 42)
 
 ts
 ```
