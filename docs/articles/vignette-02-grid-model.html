@@ -140,15 +140,15 @@ two-dimensional abstract world map:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; =======================================================================</span></span>
-<span><span class="co">#&gt; NOTE: Due to occasional Python setup issues which have been causing</span></span>
-<span><span class="co">#&gt; major trouble particularly for novice users, calling library(slendr)</span></span>
+<span><span class="co">#&gt; NOTE: Due to Python setup issues on some systems which have been</span></span>
+<span><span class="co">#&gt; causing trouble particularly for novice users, calling library(slendr)</span></span>
 <span><span class="co">#&gt; no longer activates slendr's Python environment automatically.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; In order to use slendr's msprime back end or its tree-sequence</span></span>
 <span><span class="co">#&gt; functionality, users must now activate slendr's Python environment</span></span>
 <span><span class="co">#&gt; manually by executing init_env() after calling library(slendr).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; (This note will be removed in a future version of slendr.)</span></span>
+<span><span class="co">#&gt; (This note will be removed in the next major version of slendr.)</span></span>
 <span><span class="co">#&gt; =======================================================================</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -294,19 +294,19 @@ function.</p>
 <span><span class="co">#&gt; ╔═══════════╤════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows│Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │9029│282.2 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │9060│283.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│6261│613.0 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│6331│619.9 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │   0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │   0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │9054│336.7 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │9085│337.8 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│  25│  5.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│   1│ 34.0 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│   1│ 33.9 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │   0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧════╧═════════╧════════════╝</span></span></code></pre>
@@ -390,13 +390,8 @@ customize the spatial layout in much more detail.</p>
 <code class="sourceCode R"><span><span class="va">xrange</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">90</span>, <span class="op">-</span><span class="fl">20</span><span class="op">)</span></span>
 <span><span class="va">yrange</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">58</span>, <span class="fl">15</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="va">xrange</span>, yrange <span class="op">=</span> <span class="va">yrange</span>, crs <span class="op">=</span> <span class="st">"EPSG:31970"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; OGR data source with driver: ESRI Shapefile </span></span>
-<span><span class="co">#&gt; Source: "/private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/RtmpBOcJu0/naturalearth", layer: "ne_110m_land"</span></span>
-<span><span class="co">#&gt; with 127 features</span></span>
-<span><span class="co">#&gt; It has 3 fields</span></span></code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="va">xrange</span>, yrange <span class="op">=</span> <span class="va">yrange</span>, crs <span class="op">=</span> <span class="st">"EPSG:31970"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/map_america-1.png" width="480"></p>
 <p>Let’s lay out demes in a more scattered, irregular fashion. For
 illustration purposes, we will define each population’s geographic range
@@ -411,7 +406,7 @@ which do not formally descend from a single ancestor had we run these
 models with msprime, we would get an error about infinite coalescent
 times. This is why we formally introduce an ancestral population
 here:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># non-spatial ancestral population</span></span>
 <span><span class="va">p_anc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"p_anc"</span>, N <span class="op">=</span> <span class="fl">1000</span>, time <span class="op">=</span> <span class="fl">1</span>, remove <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span></span>
@@ -430,7 +425,7 @@ here:</p>
 complex interaction/gene-flow network between each deme, which we can
 encode like this (instead of forcing a regular arrangement of demes and
 gene-flow interactions in previous examples):</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="fl">0.1</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span><span class="va">p2</span>, <span class="va">p1</span>, <span class="fl">0.1</span>, <span class="fl">1000</span>, <span class="fl">2000</span>, overlap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
@@ -476,7 +471,7 @@ Mostly just to demonstrate this is possible! However, there are
 certainly situations where this “half-spatial” model would be useful –
 for instance, in situation where within-deme individual dynamics are not
 of interest, but the location of each subpopulation is.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p_anc</span>, <span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span>, <span class="va">p6</span>, <span class="va">p7</span>, <span class="va">p8</span>, <span class="va">p9</span>, <span class="va">p10</span><span class="op">)</span>, gene_flow <span class="op">=</span> <span class="va">gf</span>,</span>
 <span>  generation_time <span class="op">=</span> <span class="fl">1</span>, simulation_length <span class="op">=</span> <span class="fl">5000</span>,</span>
@@ -488,7 +483,7 @@ of interest, but the location of each subpopulation is.</p>
 <span><span class="co">#&gt; Compiled like this, your model can only be simulated with msprime.</span></span></code></pre>
 <p>We can make sure the demographic model is specified correctly by
 quickly visualizing it:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/model_america-1.png" width="480"></p>
 <p>We can also plot the spatial organization of our demes on a map in
@@ -496,7 +491,7 @@ all of its glory, including all gene flow events (one arrow per each
 unidirectional gene flow). Note that we get a warning message stating
 that the (non-spatial) ancestral population won’t be visualized on a
 map:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">model</span>, gene_flow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Warning: All gene-flow event will be visualized at once. If you wish to visualize</span></span>
 <span><span class="co">#&gt; gene flows at a particular point in time, use the `time` argument.</span></span></code></pre>
@@ -507,14 +502,14 @@ that we are simulating data using <code><a href="../reference/msprime.html">mspr
 effectively dropping the continuous space dimension of our model. In
 this situation, the map above serves more as a visual aid, making it
 easier to set up a complex “spatial” position of demes on a map.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ts</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │      34255║</span></span>
+<span><span class="co">#&gt; ║Trees          │      34122║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│   10000000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -527,7 +522,7 @@ easier to set up a complex “spatial” position of demes on a map.</p>
 <span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │177855│  5.4 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │177371│  5.4 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Individuals│ 11000│300.8 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -535,7 +530,7 @@ easier to set up a complex “spatial” position of demes on a map.</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │ 68052│  1.8 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Nodes      │ 67964│  1.8 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│    11│605 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>

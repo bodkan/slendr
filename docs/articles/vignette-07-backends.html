@@ -650,7 +650,7 @@ standard <em>slendr</em> simulation pipeline (1. create population(s);
 <p>Now that we have the whole pipeline, we can generate all of our
 simulated data and bind all the result into a single data frame:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">afs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">afs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">compile_run_afs</span><span class="op">(</span><span class="st">"constant"</span>, <span class="va">forward_const</span><span class="op">)</span>,</span>
 <span>  <span class="fu">compile_run_afs</span><span class="op">(</span><span class="st">"constant"</span>, <span class="va">backward_const</span><span class="op">)</span>,</span>
 <span>  <span class="fu">compile_run_afs</span><span class="op">(</span><span class="st">"step contraction"</span>, <span class="va">forward_decr</span><span class="op">)</span>,</span>
