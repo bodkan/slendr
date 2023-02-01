@@ -53,8 +53,8 @@ PYTHON_ENV <-
 
   packageStartupMessage(
     "=======================================================================\n",
-    "NOTE: Due to occasional Python setup issues which have been causing\n",
-    "major trouble particularly for novice users, calling library(slendr)\n",
+    "NOTE: Due to issues with some users' Python setups which have been\n",
+    "causing trouble particularly for novice users, calling library(slendr)\n",
     "no longer activates slendr's Python environment automatically.\n\n",
     "In order to use slendr's msprime back end or its tree-sequence\n",
     "functionality, users must now activate slendr's Python environment\n",
