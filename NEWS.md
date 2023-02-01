@@ -12,6 +12,8 @@ Splitting the Python virtual environment activation step into its own `init_env(
 
 So, to recap: `library(slendr)` no longer activates _slendr_'s isolated Python virtual environment. In order to simulate tree sequences and analyse them using its interface to _tskit_, it is necessary to call `init_env()`. This function performs the same Python-activation steps that `library(slendr)` used to call automagically in earlier _slendr_ versions. No other change to your scripts is necessary.
 
+- Related to the previous point: _slendr_ now requires Python 3.11, msprime 1.2.0, tskit 0.5.4, and pyslim 1.0.1, to keep up with recent releases of its Python dependencies. Again, this presents no hassle to the user, and the only thing required is re-running `setup_env()`. (PR [#112](https://github.com/bodkan/slendr/pull/121)).
+
 - When a named list is provided as a `sample_sets =` argument to a oneway statistic function, the names are used in a `set` column of the resulting data frame even if only single samples were used. ([#2a6781](https://github.com/bodkan/slendr/commit/2a6781))
 
 - It is now possible to have non-spatial populations in an otherwise spatial model. Of course, when plotting such models on a map, only spatial components of the model will be plotted and _slendr_ will give a warning. To be absolutely sure that users intends to do this, _slendr_ will also give a warning when running `compile_model()` on models like this. Please consider this option experimental for the time-being as it is hard to predict which edge cases might break because of this (all unit tests and documentation tests are passing though). Feedback is more than welcome. (PR [#112](https://github.com/bodkan/slendr/pull/121)).
