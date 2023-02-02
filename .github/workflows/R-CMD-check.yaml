@@ -38,10 +38,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: "Test Windows as if on CRAN"
+      - name: Set NOT_CRAN on Windows
         if: runner.os == 'Windows'
-        env:
-          NOT_CRAN: 'false'
+        run: |
+          echo "NOT_CRAN=false" >> $GITHUB_ENV
+      - name: Set NOT_CRAN on unix
+        if: runner.os != 'Windows'
+        run: |
+          echo "NOT_CRAN=true" >> $GITHUB_ENV
 
       - name: Print env var
         run: echo "$NOT_CRAN"
