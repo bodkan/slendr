@@ -38,14 +38,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set NOT_CRAN on Windows
+      - name: Set NOT_CRAN=false on Windows
         if: runner.os == 'Windows'
         run: |
           echo "NOT_CRAN=false" >> $GITHUB_ENV
         shell: bash
-
-      - name: Print env var
-        run: echo "$NOT_CRAN"
 
       - name: Install rgdal dependencies (macOS)
         if: runner.os == 'macOS'
