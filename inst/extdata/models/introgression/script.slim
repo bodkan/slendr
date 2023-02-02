@@ -459,14 +459,14 @@ s12 late() /* End of simulation */ {
 }
 
 2: fitnessEffect() /* Compute fitness of individuals */ {
-    if (!SPATIAL) return 1.0;
+    if (!SPATIAL | !subpop.getValue("spatial")) return 1.0;
     interaction = community.allInteractionTypes[2 * subpop.id];
     totalStrength = interaction.totalOfNeighborStrengths(individual);
     return 1.1 - totalStrength / subpop.individualCount;
 }
 
 2: mateChoice() /* Compute mating interaction */ {
-    if (!SPATIAL) return NULL;
+    if (!SPATIAL | !subpop.getValue("spatial")) return NULL;
     return community.allInteractionTypes[2 * subpop.id + 1].strength(individual);
 }
 
@@ -474,7 +474,7 @@ modifyChild() /* Place offspring within its population's boundary */ {
     // set flag marking availability for sampling
     child.tag = 0;
 
-    if (!SPATIAL) return T;
+    if (!SPATIAL | !subpop.getValue("spatial")) return T;
 
     // in case of spatially non-overlapping geneflow, assign locations uniformly
     if (child.migrant) {
@@ -504,8 +504,8 @@ modifyChild() /* Place offspring within its population's boundary */ {
     do {
         attempts = attempts + 1;
 
-        dispersal_param = get_pop(subpop.id).getValue("dispersal");
-        dispersal_fun = get_pop(subpop.id).getValue("dispersal_fun");
+        dispersal_param = subpop.getValue("dispersal");
+        dispersal_fun = subpop.getValue("dispersal_fun");
 
         movement = dispersal_fun(dispersal_fun, dispersal_param);
         pos = parent1.spatialPosition + movement;
@@ -552,6 +552,16 @@ function (void) create_pop(object<Dictionary> pop) {
     // dispersal distance is set in a script block (here we just create the variable)
     get_pop(pop_id).setValue("dispersal", -1);
     get_pop(pop_id).setValue("dispersal_fun", "");
+
+    // explicitly tag populations which have a map assigned (as of slendr v0.5,
+    // spatial and non-spatial populations are allowed within the same model)
+    spatial_tag = F;
+    if (SPATIAL) {
+        spatial_pops = unique(MAPS.getValue("pop_id"));
+        if (any(pop_id == spatial_pops))
+            spatial_tag = T;
+    }
+    get_pop(pop_id).setValue("spatial", spatial_tag);
 }
 
 // Start or stop geneflow
