@@ -110,7 +110,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           export PATH="$HOME/deps/SLiM:$HOME/deps/AdmixTools-7.0.2/bin:$PATH"
-          echo "PATH=$PATH" > ~/.Renviron
+          echo "PATH=$PATH" >> ~/.Renviron
 
       - name: Setup dedicated Python environment for slendr
         if: runner.os != 'Windows'
@@ -131,10 +131,5 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
-
-      - name: "Test Windows as if on CRAN"
-        if: runner.os == 'Windows'
-        run:
-          echo "NOT_CRAN='false'" > ~/.Renviron
 
       - uses: r-lib/actions/check-r-package@v2
