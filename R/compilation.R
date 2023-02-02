@@ -1091,6 +1091,11 @@ render <- function(pops, resolution) {
   rasters
 }
 
+on_cran_windows <- function() {
+  on_cran <- !identical(Sys.getenv("NOT_CRAN"), "true")
+  on_windows <- tolower(Sys.info()[["sysname"]]) == "windows"
+  on_cran && on_windows
+}
 
 # Rasterize the vector form of a population spatial boundary
 rasterize <- function(x, resolution) {
@@ -1106,7 +1111,20 @@ rasterize <- function(x, resolution) {
   template <- stars::st_as_stars(bbox, dx = resolution, dy = resolution)
 
   # perform the rasterization using the dummy single-value factor column
-  raster <- stars::st_rasterize(x["fill"], template)
+
+  # Windows CI machines have started giving mysterious errors, possibly due to
+  # some sf-starts-GDAL changes? The full warning is this:
+  # "GDAL Message 1: The definition of geographic CRS EPSG:4258 got from GeoTIFF keys is not the
+  # same as the one from the EPSG registry, which may cause issues during reprojection operations.
+  # Set GTIFF_SRS_SOURCE configuration option to EPSG to use official parameters (overriding the
+  # ones from GeoTIFF keys), or to GEOKEYS to use custom values from GeoTIFF keys and drop the
+  # EPSG code."
+  # Because spatial SLiM simulations on Windows are not yet supported, I will silence this
+  # call on Windows for the time being because these warnings are turned into errors on CRAN,
+  # making all tests failing -- including functionality used by users who have no intention of
+  # running spatial simulations.
+  wrapper <- if (on_cran_windows()) suppressWarnings else identity
+  raster <- wrapper(stars::st_rasterize(x["fill"], template))
 
   if (length(table(raster$ID)) == 1) {
     stop(sprintf("
