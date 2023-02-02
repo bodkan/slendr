@@ -73,7 +73,7 @@ If some of its dependencies (such as SLiM or necessary Python modules) are missi
 
 Before we do anything else, we need to define a section of the map of the world which will provide context for all downstream spatio-temporal manipulation of population ranges.
 
-In principle, any source of geospatial data which can be manipulated using the [simple features (sf)](https://r-spatial.github.io/sf/) infrastructure could be used. For now the *slendr* package implicitly uses the [Natural Earth](https://www.naturalearthdata.com/) project data (in its vectorized form!), which it internally loads using the [rnaturalearth](https://cran.r-project.org/package=rnaturalearth/README.html) interface.
+In principle, any source of geospatial data which can be manipulated using the [simple features (sf)](https://r-spatial.github.io/sf/) infrastructure could be used. For now the *slendr* package implicitly uses the [Natural Earth](https://www.naturalearthdata.com/) project data (in its vectorized form!), which it internally loads using the [rnaturalearth](https://CRAN.R-project.org/package=rnaturalearth) interface.
 
 The first *slendr* function we will look at is `map()`. This function will load the map of the entire world in a vectorized format and zoom in to a specified section of the world.
 
