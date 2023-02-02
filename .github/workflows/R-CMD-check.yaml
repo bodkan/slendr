@@ -40,8 +40,11 @@ jobs:
 
       - name: "Test Windows as if on CRAN"
         if: runner.os == 'Windows'
-        run: |
-          echo "NOT_CRAN=false" >> $GITHUB_ENV
+        env:
+          NOT_CRAN: 'false'
+
+      - name: Print env var
+        run: echo "$NOT_CRAN"
 
       - name: Install rgdal dependencies (macOS)
         if: runner.os == 'macOS'
