@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 0.5.0
 
 - **<u>Minor breaking change!</u> Python environments of _slendr_ are no longer automatically activated upon calling `library(slendr)`! Using the coalescent _msprime_ back end and _slendr_'s tree-sequence functions now requires making an explicit call to a new function `init_env()` after `library(slendr)` is executed.** (PR [#102](https://github.com/bodkan/slendr/pull/118))
 
