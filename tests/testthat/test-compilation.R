@@ -51,7 +51,7 @@ test_that("invalid blank maps are prevented", {
                "No occupiable pixel on a rasterized map")
 })
 
-test_that("deletion in non-interactive modem must be forced", {
+test_that("deletion in non-interactive mode must be forced", {
   skip_if(interactive())
   p <- population(name = "pop", N = 700, time = 100) %>% resize(N = 100, time = 50, how = "step")
   directory <- file.path(tempdir(), "dir-forced")
@@ -99,4 +99,35 @@ test_that("recombination rate can only be an integer number (msprime)", {
   expect_error(msprime(model, sequence_length = 100, recombination_rate = "asdf", random_seed = 42), error_msg)
   expect_error(msprime(model, sequence_length = 100, recombination_rate = -1, random_seed = 42), error_msg)
   expect_silent(msprime(model, sequence_length = 100, recombination_rate = 1e-8, random_seed = 42))
+})
+
+test_that("mix of spatial and non-spatial populations gives a warning", {
+  map <- readRDS("map.rds")
+  p1 <- population(name = "pop1", N = 700, map = map, time = 40000)
+  p2 <- population(name = "pop2", N = 700, time = 4000)
+  expect_warning(
+    compile_model(populations = list(p1, p2), generation_time = 30, direction = "backward",
+                  resolution = 10e3, competition = 10e3, mating = 10e3, dispersal = 10e3),
+    "Model containing a mix of spatial and non-spatial populations"
+  )
+})
+
+test_that("purely spatial populations compile in silence", {
+  map <- readRDS("map.rds")
+  p1 <- population(name = "pop1", N = 700, map = map, time = 40000)
+  p2 <- population(name = "pop2", N = 700, map = map, time = 4000)
+  expect_s3_class(
+    compile_model(populations = list(p1, p2), generation_time = 30, direction = "backward",
+                  resolution = 10e3, competition = 10e3, mating = 10e3, dispersal = 10e3),
+    "slendr_model"
+  )
+})
+
+test_that("purely non-spatial populations compile in silence", {
+  p1 <- population(name = "pop1", N = 700, time = 40000)
+  p2 <- population(name = "pop2", N = 700, time = 4000)
+  expect_s3_class(
+    compile_model(populations = list(p1, p2), generation_time = 30, direction = "backward"),
+    "slendr_model"
+  )
 })

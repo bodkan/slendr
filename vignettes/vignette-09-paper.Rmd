@@ -321,7 +321,7 @@ ana <- population(
 
 yam <- population(
   "YAM", time = 7000, N = 600, parent = ehg, remove = 2500,
-  map = m, polygon = R5
+  map = map, polygon = R5
 ) %>%
   move(trajectory = list(c(15, 50)), start = 5000, end = 3000, snapshots = 10)
 

@@ -213,11 +213,21 @@ get_geneflows <- function(model, time) {
     after_op <- `<=`
   }
 
-  geneflows <- subset(model$geneflow, before_op(tstart_orig, time) & after_op(tend_orig, time))
+  if (!is.null(time))
+    geneflows <- subset(model$geneflow, before_op(tstart_orig, time) & after_op(tend_orig, time))
+  else
+    geneflows <- model$geneflow
+
   geneflows$from <- factor(geneflows$from, levels = pop_names)
   geneflows$to <- factor(geneflows$to, levels = pop_names)
 
   migr_coords <- lapply(seq_len(nrow(geneflows)), function(row_i) {
+
+    # if time point was not provided, simply take the midpoint of the current
+    # gene-flow event
+    if (is.null(time)) {
+      time <- geneflows[row_i, c("tstart_orig", "tend_orig")] %>% as.numeric() %>% mean()
+    }
 
     from <- model$populations[pop_names == geneflows[row_i, ]$from][[1]] %>%
       .[before_op(.$time, time), ] %>%

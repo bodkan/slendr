@@ -9,9 +9,10 @@ msp <- NULL
 # define slendr's required Python dependencies and compose an environment name
 # that will be used specifically for them
 PYTHON_ENV <-
-  c("msprime==1.2.0", "tskit==0.5.2", "pyslim==1.0") %>%
+  c("msprime==1.2.0", "tskit==0.5.4", "pyslim==1.0.1") %>%
   gsub("==", "-", .) %>%
-  paste(collapse = "_")
+  paste(collapse = "_") %>%
+  paste0("Python-3.11_", .)
 
 .onAttach <- function(libname, pkgname) {
   # check for presence of the slim binary in user's PATH and display
@@ -43,25 +44,24 @@ PYTHON_ENV <-
     if (!getOption("slendr.custom_env")) {
       version <- strsplit(PYTHON_ENV, "_")[[1]] %>% gsub(".*-", "", .)
       packageStartupMessage(
-        sprintf(paste0("A slendr Python environment with the necessary versions of msprime (%s),\n",
-        "tskit (%s), and pyslim (%s) has not been found.\n"), version[1], version[2], version[3]),
-        "\nYou can setup a pre-configured environment with all of slendr's Python\n",
-        "dependencies automatically by running the function setup_env()."
+        sprintf(paste0("A slendr Python (%s) environment with the necessary versions of\n",
+          "msprime (%s), tskit (%s), and pyslim (%s) has not been found.\n"),
+          version[1], version[2], version[3], version[4]),
+          "\nYou can setup a pre-configured environment with all of slendr's Python\n",
+          "dependencies automatically by running the function setup_env()."
       )
     }
   }
 
   packageStartupMessage(
     "=======================================================================\n",
-    "NOTE: Due to frequent issues with some user's Python setups, slendr no\n",
-    "longer activates its Python environment automatically upon calling\n",
-    "library(slendr).\n\n",
+    "NOTE: Due to Python setup issues on some systems which have been\n",
+    "causing trouble particularly for novice users, calling library(slendr)\n",
+    "no longer activates slendr's Python environment automatically.\n\n",
     "In order to use slendr's msprime back end or its tree-sequence\n",
-    "functionality, users now must activate slendr's Python environments\n",
-    "manually by calling init_env().\n\n",
-    "This inconvenience is a compromise in order to help novice users avoid\n",
-    "having to debug very technical, low-level Python-specific issues. This\n",
-    "note will be removed in a future version of slendr.",
+    "functionality, users must now activate slendr's Python environment\n",
+    "manually by executing init_env() after calling library(slendr).\n\n",
+    "(This note will be removed in the next major version of slendr.)",
     "\n======================================================================="
   )
 }

@@ -128,17 +128,15 @@ entirely from R.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; =======================================================================</span></span>
-<span><span class="co">#&gt; NOTE: Due to frequent issues with some user's Python setups, slendr no</span></span>
-<span><span class="co">#&gt; longer activates its Python environment automatically upon calling</span></span>
-<span><span class="co">#&gt; library(slendr).</span></span>
+<span><span class="co">#&gt; NOTE: Due to Python setup issues on some systems which have been</span></span>
+<span><span class="co">#&gt; causing trouble particularly for novice users, calling library(slendr)</span></span>
+<span><span class="co">#&gt; no longer activates slendr's Python environment automatically.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; In order to use slendr's msprime back end or its tree-sequence</span></span>
-<span><span class="co">#&gt; functionality, users now must activate slendr's Python environments</span></span>
-<span><span class="co">#&gt; manually by calling init_env().</span></span>
+<span><span class="co">#&gt; functionality, users must now activate slendr's Python environment</span></span>
+<span><span class="co">#&gt; manually by executing init_env() after calling library(slendr).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; This inconvenience is a compromise in order to help novice users avoid</span></span>
-<span><span class="co">#&gt; having to debug very technical, low-level Python-specific issues. This</span></span>
-<span><span class="co">#&gt; note will be removed in a future version of slendr.</span></span>
+<span><span class="co">#&gt; (This note will be removed in the next major version of slendr.)</span></span>
 <span><span class="co">#&gt; =======================================================================</span></span></code></pre>
 <div class="section level2">
 <h2 id="setting-up-python-environment">Setting up Python environment<a class="anchor" aria-label="anchor" href="#setting-up-python-environment"></a>
@@ -174,13 +172,13 @@ environment for us:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the currently active Python environment:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python </span></span>
-<span><span class="co">#&gt; Python version: 3.8.15 | packaged by conda-forge | (default, Nov 22 2022, 08:49:06)  [Clang 14.0.6 ] </span></span>
+<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.4_pyslim-1.0.1/bin/python </span></span>
+<span><span class="co">#&gt; Python version: 3.11.0 | packaged by conda-forge | (main, Jan 14 2023, 12:26:40) [Clang 14.0.6 ] </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; slendr requirements:</span></span>
-<span><span class="co">#&gt;  - tskit: version 0.5.2 ✓ </span></span>
+<span><span class="co">#&gt;  - tskit: version 0.5.4 ✓ </span></span>
 <span><span class="co">#&gt;  - msprime: version 1.2.0 ✓ </span></span>
-<span><span class="co">#&gt;  - pyslim: version 1.0 ✓</span></span></code></pre>
+<span><span class="co">#&gt;  - pyslim: version 1.0.1 ✓</span></span></code></pre>
 <p>Now we’re good to go and ready to simulate and analyse tree sequence
 outputs in R!</p>
 <div class="section level3">
@@ -351,11 +349,11 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; msprime command to be executed:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/msprime-1.2.0_tskit-0.5.2_pyslim-1.0/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105874e2b33cd_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105874e2b33cd_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105877d218098.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105873fddd651 --verbose  </span></span>
+<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.4_pyslim-1.0.1/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp66mOnO/file96ca70b39612_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp66mOnO/file96ca70b39612_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp66mOnO/file96ca3911dac7.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp66mOnO/file96ca146beb02 --verbose  </span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Tree sequence was saved to:</span></span>
-<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file105877d218098.trees </span></span>
+<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp66mOnO/file96ca3911dac7.trees </span></span>
 <span><span class="co">#&gt; Loading the tree-sequence file...</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span></span></code></pre></div>
@@ -442,7 +440,7 @@ to the tree-sequence file ourselves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpZ8RbF8/file1058773321ccc"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp66mOnO/file96ca1f3bcad1"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
@@ -749,79 +747,81 @@ in R:</p>
 <span><span class="co">#&gt;   [3] "as_fasta"                        "as_nexus"                       </span></span>
 <span><span class="co">#&gt;   [5] "as_vcf"                          "aslist"                         </span></span>
 <span><span class="co">#&gt;   [7] "at"                              "at_index"                       </span></span>
-<span><span class="co">#&gt;   [9] "breakpoints"                     "coiterate"                      </span></span>
-<span><span class="co">#&gt;  [11] "count_topologies"                "decapitate"                     </span></span>
-<span><span class="co">#&gt;  [13] "delete_intervals"                "delete_sites"                   </span></span>
-<span><span class="co">#&gt;  [15] "diffs"                           "discrete_genome"                </span></span>
-<span><span class="co">#&gt;  [17] "discrete_time"                   "divergence"                     </span></span>
-<span><span class="co">#&gt;  [19] "diversity"                       "draw_svg"                       </span></span>
-<span><span class="co">#&gt;  [21] "draw_text"                       "dump"                           </span></span>
-<span><span class="co">#&gt;  [23] "dump_tables"                     "dump_text"                      </span></span>
-<span><span class="co">#&gt;  [25] "edge"                            "edge_diffs"                     </span></span>
-<span><span class="co">#&gt;  [27] "edges"                           "edges_child"                    </span></span>
-<span><span class="co">#&gt;  [29] "edges_left"                      "edges_parent"                   </span></span>
-<span><span class="co">#&gt;  [31] "edges_right"                     "edgesets"                       </span></span>
-<span><span class="co">#&gt;  [33] "equals"                          "f2"                             </span></span>
-<span><span class="co">#&gt;  [35] "f3"                              "f4"                             </span></span>
-<span><span class="co">#&gt;  [37] "file_uuid"                       "first"                          </span></span>
-<span><span class="co">#&gt;  [39] "Fst"                             "genealogical_nearest_neighbours"</span></span>
-<span><span class="co">#&gt;  [41] "general_stat"                    "genetic_relatedness"            </span></span>
-<span><span class="co">#&gt;  [43] "genotype_matrix"                 "get_ll_tree_sequence"           </span></span>
-<span><span class="co">#&gt;  [45] "get_num_mutations"               "get_num_nodes"                  </span></span>
-<span><span class="co">#&gt;  [47] "get_num_records"                 "get_num_sites"                  </span></span>
-<span><span class="co">#&gt;  [49] "get_num_trees"                   "get_pairwise_diversity"         </span></span>
-<span><span class="co">#&gt;  [51] "get_population"                  "get_sample_size"                </span></span>
-<span><span class="co">#&gt;  [53] "get_samples"                     "get_sequence_length"            </span></span>
-<span><span class="co">#&gt;  [55] "get_time"                        "haplotypes"                     </span></span>
-<span><span class="co">#&gt;  [57] "has_reference_sequence"          "ibd_segments"                   </span></span>
-<span><span class="co">#&gt;  [59] "indexes_edge_insertion_order"    "indexes_edge_removal_order"     </span></span>
-<span><span class="co">#&gt;  [61] "individual"                      "individual_locations"           </span></span>
-<span><span class="co">#&gt;  [63] "individual_populations"          "individual_times"               </span></span>
-<span><span class="co">#&gt;  [65] "individuals"                     "individuals_flags"              </span></span>
-<span><span class="co">#&gt;  [67] "individuals_location"            "individuals_population"         </span></span>
-<span><span class="co">#&gt;  [69] "individuals_time"                "kc_distance"                    </span></span>
-<span><span class="co">#&gt;  [71] "keep_intervals"                  "last"                           </span></span>
-<span><span class="co">#&gt;  [73] "ll_tree_sequence"                "load"                           </span></span>
-<span><span class="co">#&gt;  [75] "load_tables"                     "ltrim"                          </span></span>
-<span><span class="co">#&gt;  [77] "max_root_time"                   "mean_descendants"               </span></span>
-<span><span class="co">#&gt;  [79] "metadata"                        "metadata_schema"                </span></span>
-<span><span class="co">#&gt;  [81] "migration"                       "migrations"                     </span></span>
-<span><span class="co">#&gt;  [83] "migrations_dest"                 "migrations_left"                </span></span>
-<span><span class="co">#&gt;  [85] "migrations_node"                 "migrations_right"               </span></span>
-<span><span class="co">#&gt;  [87] "migrations_source"               "migrations_time"                </span></span>
-<span><span class="co">#&gt;  [89] "mutation"                        "mutations"                      </span></span>
-<span><span class="co">#&gt;  [91] "mutations_node"                  "mutations_parent"               </span></span>
-<span><span class="co">#&gt;  [93] "mutations_site"                  "mutations_time"                 </span></span>
-<span><span class="co">#&gt;  [95] "nbytes"                          "newick_trees"                   </span></span>
-<span><span class="co">#&gt;  [97] "node"                            "nodes"                          </span></span>
-<span><span class="co">#&gt;  [99] "nodes_flags"                     "nodes_individual"               </span></span>
-<span><span class="co">#&gt; [101] "nodes_population"                "nodes_time"                     </span></span>
-<span><span class="co">#&gt; [103] "num_edges"                       "num_individuals"                </span></span>
-<span><span class="co">#&gt; [105] "num_migrations"                  "num_mutations"                  </span></span>
-<span><span class="co">#&gt; [107] "num_nodes"                       "num_populations"                </span></span>
-<span><span class="co">#&gt; [109] "num_provenances"                 "num_samples"                    </span></span>
-<span><span class="co">#&gt; [111] "num_sites"                       "num_trees"                      </span></span>
-<span><span class="co">#&gt; [113] "pairwise_diversity"              "parse_windows"                  </span></span>
-<span><span class="co">#&gt; [115] "population"                      "populations"                    </span></span>
-<span><span class="co">#&gt; [117] "provenance"                      "provenances"                    </span></span>
-<span><span class="co">#&gt; [119] "records"                         "reference_sequence"             </span></span>
-<span><span class="co">#&gt; [121] "rtrim"                           "sample_count_stat"              </span></span>
-<span><span class="co">#&gt; [123] "sample_size"                     "samples"                        </span></span>
-<span><span class="co">#&gt; [125] "segregating_sites"               "sequence_length"                </span></span>
-<span><span class="co">#&gt; [127] "simplify"                        "site"                           </span></span>
-<span><span class="co">#&gt; [129] "sites"                           "sites_position"                 </span></span>
-<span><span class="co">#&gt; [131] "split_edges"                     "subset"                         </span></span>
-<span><span class="co">#&gt; [133] "table_metadata_schemas"          "tables"                         </span></span>
-<span><span class="co">#&gt; [135] "tables_dict"                     "Tajimas_D"                      </span></span>
-<span><span class="co">#&gt; [137] "time_units"                      "to_macs"                        </span></span>
-<span><span class="co">#&gt; [139] "to_nexus"                        "trait_correlation"              </span></span>
-<span><span class="co">#&gt; [141] "trait_covariance"                "trait_linear_model"             </span></span>
-<span><span class="co">#&gt; [143] "trait_regression"                "trees"                          </span></span>
-<span><span class="co">#&gt; [145] "trim"                            "union"                          </span></span>
-<span><span class="co">#&gt; [147] "variants"                        "write_fasta"                    </span></span>
-<span><span class="co">#&gt; [149] "write_nexus"                     "write_vcf"                      </span></span>
-<span><span class="co">#&gt; [151] "Y1"                              "Y2"                             </span></span>
-<span><span class="co">#&gt; [153] "Y3"</span></span></code></pre>
+<span><span class="co">#&gt;   [9] "breakpoints"                     "check_index"                    </span></span>
+<span><span class="co">#&gt;  [11] "coalescence_time_distribution"   "coiterate"                      </span></span>
+<span><span class="co">#&gt;  [13] "count_topologies"                "decapitate"                     </span></span>
+<span><span class="co">#&gt;  [15] "delete_intervals"                "delete_sites"                   </span></span>
+<span><span class="co">#&gt;  [17] "diffs"                           "discrete_genome"                </span></span>
+<span><span class="co">#&gt;  [19] "discrete_time"                   "divergence"                     </span></span>
+<span><span class="co">#&gt;  [21] "diversity"                       "draw_svg"                       </span></span>
+<span><span class="co">#&gt;  [23] "draw_text"                       "dump"                           </span></span>
+<span><span class="co">#&gt;  [25] "dump_tables"                     "dump_text"                      </span></span>
+<span><span class="co">#&gt;  [27] "edge"                            "edge_diffs"                     </span></span>
+<span><span class="co">#&gt;  [29] "edges"                           "edges_child"                    </span></span>
+<span><span class="co">#&gt;  [31] "edges_left"                      "edges_parent"                   </span></span>
+<span><span class="co">#&gt;  [33] "edges_right"                     "edgesets"                       </span></span>
+<span><span class="co">#&gt;  [35] "equals"                          "f2"                             </span></span>
+<span><span class="co">#&gt;  [37] "f3"                              "f4"                             </span></span>
+<span><span class="co">#&gt;  [39] "file_uuid"                       "first"                          </span></span>
+<span><span class="co">#&gt;  [41] "Fst"                             "genealogical_nearest_neighbours"</span></span>
+<span><span class="co">#&gt;  [43] "general_stat"                    "genetic_relatedness"            </span></span>
+<span><span class="co">#&gt;  [45] "genotype_matrix"                 "get_ll_tree_sequence"           </span></span>
+<span><span class="co">#&gt;  [47] "get_num_mutations"               "get_num_nodes"                  </span></span>
+<span><span class="co">#&gt;  [49] "get_num_records"                 "get_num_sites"                  </span></span>
+<span><span class="co">#&gt;  [51] "get_num_trees"                   "get_pairwise_diversity"         </span></span>
+<span><span class="co">#&gt;  [53] "get_population"                  "get_sample_size"                </span></span>
+<span><span class="co">#&gt;  [55] "get_samples"                     "get_sequence_length"            </span></span>
+<span><span class="co">#&gt;  [57] "get_time"                        "haplotypes"                     </span></span>
+<span><span class="co">#&gt;  [59] "has_reference_sequence"          "ibd_segments"                   </span></span>
+<span><span class="co">#&gt;  [61] "indexes_edge_insertion_order"    "indexes_edge_removal_order"     </span></span>
+<span><span class="co">#&gt;  [63] "individual"                      "individual_locations"           </span></span>
+<span><span class="co">#&gt;  [65] "individual_populations"          "individual_times"               </span></span>
+<span><span class="co">#&gt;  [67] "individuals"                     "individuals_flags"              </span></span>
+<span><span class="co">#&gt;  [69] "individuals_location"            "individuals_population"         </span></span>
+<span><span class="co">#&gt;  [71] "individuals_time"                "kc_distance"                    </span></span>
+<span><span class="co">#&gt;  [73] "keep_intervals"                  "last"                           </span></span>
+<span><span class="co">#&gt;  [75] "ll_tree_sequence"                "load"                           </span></span>
+<span><span class="co">#&gt;  [77] "load_tables"                     "ltrim"                          </span></span>
+<span><span class="co">#&gt;  [79] "max_root_time"                   "max_time"                       </span></span>
+<span><span class="co">#&gt;  [81] "mean_descendants"                "metadata"                       </span></span>
+<span><span class="co">#&gt;  [83] "metadata_schema"                 "migration"                      </span></span>
+<span><span class="co">#&gt;  [85] "migrations"                      "migrations_dest"                </span></span>
+<span><span class="co">#&gt;  [87] "migrations_left"                 "migrations_node"                </span></span>
+<span><span class="co">#&gt;  [89] "migrations_right"                "migrations_source"              </span></span>
+<span><span class="co">#&gt;  [91] "migrations_time"                 "min_time"                       </span></span>
+<span><span class="co">#&gt;  [93] "mutation"                        "mutations"                      </span></span>
+<span><span class="co">#&gt;  [95] "mutations_node"                  "mutations_parent"               </span></span>
+<span><span class="co">#&gt;  [97] "mutations_site"                  "mutations_time"                 </span></span>
+<span><span class="co">#&gt;  [99] "nbytes"                          "newick_trees"                   </span></span>
+<span><span class="co">#&gt; [101] "node"                            "nodes"                          </span></span>
+<span><span class="co">#&gt; [103] "nodes_flags"                     "nodes_individual"               </span></span>
+<span><span class="co">#&gt; [105] "nodes_population"                "nodes_time"                     </span></span>
+<span><span class="co">#&gt; [107] "num_edges"                       "num_individuals"                </span></span>
+<span><span class="co">#&gt; [109] "num_migrations"                  "num_mutations"                  </span></span>
+<span><span class="co">#&gt; [111] "num_nodes"                       "num_populations"                </span></span>
+<span><span class="co">#&gt; [113] "num_provenances"                 "num_samples"                    </span></span>
+<span><span class="co">#&gt; [115] "num_sites"                       "num_trees"                      </span></span>
+<span><span class="co">#&gt; [117] "pairwise_diversity"              "parse_windows"                  </span></span>
+<span><span class="co">#&gt; [119] "population"                      "populations"                    </span></span>
+<span><span class="co">#&gt; [121] "provenance"                      "provenances"                    </span></span>
+<span><span class="co">#&gt; [123] "records"                         "reference_sequence"             </span></span>
+<span><span class="co">#&gt; [125] "rtrim"                           "sample_count_stat"              </span></span>
+<span><span class="co">#&gt; [127] "sample_size"                     "samples"                        </span></span>
+<span><span class="co">#&gt; [129] "segregating_sites"               "sequence_length"                </span></span>
+<span><span class="co">#&gt; [131] "simplify"                        "site"                           </span></span>
+<span><span class="co">#&gt; [133] "sites"                           "sites_position"                 </span></span>
+<span><span class="co">#&gt; [135] "split_edges"                     "subset"                         </span></span>
+<span><span class="co">#&gt; [137] "table_metadata_schemas"          "tables"                         </span></span>
+<span><span class="co">#&gt; [139] "tables_dict"                     "Tajimas_D"                      </span></span>
+<span><span class="co">#&gt; [141] "time_units"                      "to_macs"                        </span></span>
+<span><span class="co">#&gt; [143] "to_nexus"                        "trait_correlation"              </span></span>
+<span><span class="co">#&gt; [145] "trait_covariance"                "trait_linear_model"             </span></span>
+<span><span class="co">#&gt; [147] "trait_regression"                "trees"                          </span></span>
+<span><span class="co">#&gt; [149] "trim"                            "union"                          </span></span>
+<span><span class="co">#&gt; [151] "variants"                        "write_fasta"                    </span></span>
+<span><span class="co">#&gt; [153] "write_nexus"                     "write_vcf"                      </span></span>
+<span><span class="co">#&gt; [155] "Y1"                              "Y2"                             </span></span>
+<span><span class="co">#&gt; [157] "Y3"</span></span></code></pre>
 <p>In fact, you will recognize some of the elements in the output above
 from examples involving <code>ts_</code> functions in this vignette! In
 short, there is no blackbox—<em>slendr</em> only provides a slightly
@@ -847,30 +847,30 @@ which calculate the well-known set of Patterson’s <span class="math inline">\(
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f2</a></span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   A     B            f2</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 0.000<span style="text-decoration: underline;">057</span>2</span></span></code></pre>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># f4 is a measure of the drift shared between A and B after their split from C</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f3</a></span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span>, C <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
 <span><span class="co">#&gt;   A     B     C            f3</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 CH_1  0.000<span style="text-decoration: underline;">021</span>8</span></span></code></pre>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this value should be very close to zero (no introgression in Africans)</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"NEA_1"</span>, <span class="st">"CH_1"</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;   W     X     Y     Z            f4</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 AFR_2 NEA_1 CH_1      -<span style="color: #BB0000;">120.</span></span></span></code></pre>
+<span><span class="co">#&gt;   W     X     Y     Z        f4</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 AFR_2 NEA_1 CH_1  -<span style="color: #BB0000;">120.</span></span></span></code></pre>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this value should be significantly negative (many more ABBA sites</span></span>
 <span><span class="co"># compared to BABA site due to the introgression into Europeans)</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR_1"</span>, <span class="st">"EUR_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"CH_1"</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;   W     X     Y     Z            f4</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 NEA_1 CH_1      -<span style="color: #BB0000;">686.</span></span></span></code></pre>
+<span><span class="co">#&gt;   W     X     Y     Z        f4</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 NEA_1 CH_1  -<span style="color: #BB0000;">686.</span></span></span></code></pre>
 <p>These functions accept a <code>mode =</code> argument, specifying
 whether the statistics should be calculated using mutation site patterns
 (<code>mode = "site"</code>, the default), branch lengths
@@ -1018,7 +1018,7 @@ proportion <code>alpha</code>):</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">result_admixr</span>, <span class="va">result_ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">result_admixr</span>, <span class="va">result_ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">alpha_ts</span>, <span class="va">alpha_admixr</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"red"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>

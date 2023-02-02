@@ -2258,7 +2258,7 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
   # add numeric node IDs to each individual
   combined <-
     dplyr::bind_rows(sampled, not_sampled) %>%
-    dplyr::right_join(nodes, by = "ind_id") %>%
+    dplyr::right_join(nodes, by = "ind_id", multiple = "all") %>% # required after dplyr v1.1.0
     dplyr::mutate(time = ifelse(is.na(ind_id), time.y, time.x),
                   time_tskit = time_tskit.y,
                   sampled = ifelse(is.na(ind_id), FALSE, sampled)) %>%
@@ -2361,7 +2361,7 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
 
   # add numeric node IDs to each individual
   combined <- dplyr::select(individuals, -time, -pop_id) %>%
-    dplyr::right_join(nodes, by = "ind_id") %>%
+    dplyr::right_join(nodes, by = "ind_id", multiple = "all") %>%  # required after dplyr v1.1.0
     dplyr::rename(pop = pop.y, time_tskit = time_tskit.y)
 
   # for tree sequences which have some individuals/nodes marked as 'sampled', mark the
@@ -2422,7 +2422,10 @@ get_annotated_edges <- function(x) {
       dplyr::select(parent_pop = pop,
                     parent_node_id = node_id,
                     parent_time = time, parent_location = location)
-  parent_nodes <- dplyr::left_join(parent_nodes, edges, by = stats::setNames("parent", join1)) %>%
+  parent_nodes <- dplyr::left_join(
+    parent_nodes, edges,
+    by = stats::setNames("parent", join1), multiple = "all"
+  ) %>% # multiple = "all" required after dplyr v1.1.0
     dplyr::arrange(!!join1)
 
   # take the `parent_nodes` able above and do another join operation, this time
@@ -2438,16 +2441,11 @@ get_annotated_edges <- function(x) {
       dplyr::select(child_pop = pop,
                     child_node_id = node_id,
                     child_time = time, child_location = location)
-  edge_nodes <- dplyr::inner_join(edge_nodes, parent_nodes, by = stats::setNames("child", join2)) %>%
+  edge_nodes <- dplyr::inner_join(
+    edge_nodes, parent_nodes,
+    by = stats::setNames("child", join2)
+  ) %>%
     dplyr::arrange(!!join2)
-
-  # data %>%
-  #   dplyr::filter(phylo_id %in% edges$child) %>%
-  #   dplyr::select(child_pop  = pop,
-  #                 child_phylo_id = phylo_id, child_node_id = node_id,
-  #                 child_time = time, child_location = location) %>%
-  #   dplyr::inner_join(parent_nodes, by = c("child_phylo_id" = "child")) %>%
-  #   dplyr::arrange(child_phylo_id)
 
   # transforming individual child/parent location columns (type POINT) into a
   # line (type LINESTRING)
