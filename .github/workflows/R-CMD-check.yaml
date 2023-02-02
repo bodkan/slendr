@@ -38,10 +38,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: "Test Windows as if on CRAN"
+      - name: Set NOT_CRAN=false on Windows
         if: runner.os == 'Windows'
-        run:
-          echo "NOT_CRAN='false'" >> ~/.Renviron
+        run: |
+          echo "NOT_CRAN=false" >> $GITHUB_ENV
+        shell: bash
 
       - name: Install rgdal dependencies (macOS)
         if: runner.os == 'macOS'
