@@ -41,11 +41,8 @@ jobs:
       - name: Set NOT_CRAN on Windows
         if: runner.os == 'Windows'
         run: |
-          echo "NOT_CRAN=false" >> $GITHUB_ENV
-      - name: Set NOT_CRAN on unix
-        if: runner.os != 'Windows'
-        run: |
-          echo "NOT_CRAN=true" >> $GITHUB_ENV
+          echo "NOT_CRAN=false" >> $env:$GITHUB_ENV
+        shell: pwsh
 
       - name: Print env var
         run: echo "$NOT_CRAN"
