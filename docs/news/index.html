@@ -80,7 +80,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.0" id="slendr-050">slendr 0.5.0<a class="anchor" aria-label="anchor" href="#slendr-050"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.5.0" id="slendr-050">slendr 0.5.0<a class="anchor" aria-label="anchor" href="#slendr-050"></a></h2><p class="text-muted">CRAN release: 2023-02-02</p>
 <ul><li>
 <strong><u>Minor breaking change!</u> Python environments of <em>slendr</em> are no longer automatically activated upon calling <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code>! Using the coalescent <em>msprime</em> back end and <em>slendr</em>’s tree-sequence functions now requires making an explicit call to a new function <code><a href="../reference/init_env.html">init_env()</a></code> after <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> is executed.</strong> (PR <a href="https://github.com/bodkan/slendr/pull/118" class="external-link">#102</a>)</li>
 </ul><p>Motivation for the change: A small proportion of users have been experiencing issues with broken conda environments and various other issues with Python virtual environments in general. It’s hard to guess how frequent this has been, but experience from workshops and courses suggests perhaps 1 in 20 of users experiencing Python issues which hindered their ability to use <em>slendr</em> .(Fun fact: the first user-submitted GitHub issue upon releasing the first version of the <em>slendr</em> R package was… a Python virtual environment issue).</p>
