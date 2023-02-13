@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -200,7 +200,7 @@ population:</p>
 <p>Let’s plot the whole spatial population configuration, to make sure
 we set up things correctly:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" width="480"></p>
 <p>So far, the way the model is specified, each population would be
 stuck on its own circular “island”. We can change that by programming
@@ -294,15 +294,15 @@ function.</p>
 <span><span class="co">#&gt; ╔═══════════╤════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows│Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │9036│282.4 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │9055│283.0 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│6288│615.7 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│6271│614.0 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │   0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │   0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │9061│336.9 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │9080│337.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│  25│  5.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
@@ -369,7 +369,7 @@ helper function:</p>
 <p>Let’s plot the layout of the population grid on the real geographic
 background:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/demes_africa-1.png" width="480"></p>
 <p>Next, we would probably set up some scenario of gene flow between
 subpopulations; perhaps we would be interested in studying how a
