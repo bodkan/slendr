@@ -1965,11 +1965,14 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' Compute the allele frequency spectrum (AFS)
 #'
 #' This function computes the AFS with respect to the given set of individuals
+#' or nodes.
 #'
 #' For more information on the format of the result and dimensions, in
-#' particular the interpretation of the first and the last element of the AFS,
-#' please see the tskit manual at
-#' <https://tskit.dev/tskit/docs/stable/python-api.html>
+#' particular the interpretation of the first and the last element of the AFS
+#' (when \code{complete = TRUE}), please see the tskit manual at
+#' <https://tskit.dev/tskit/docs/stable/python-api.html> and the example
+#' section dedicated to AFS at
+#' <https://tskit.dev/tutorials/analysing_tree_sequences.html#allele-frequency-spectra>.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param sample_sets A list (optionally a named list) of character vectors with
@@ -1985,7 +1988,9 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @param span_normalise Argument passed to tskit's \code{allele_frequency_spectrum}
 #'   method
 #'
-#' @return Allele frequency spectrum values for the given sample set
+#' @return Allele frequency spectrum values for the given sample set. Note that the
+#'   contents of the first and last elements of the AFS might surprise you. Read the
+#'   links in the description for more detail on how tskit handles things.
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
@@ -2006,8 +2011,9 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @export
 ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = FALSE,
-                   polarised = FALSE) {
+                   polarised = FALSE, complete = FALSE) {
   mode <- match.arg(mode)
+
   if (is.null(sample_sets))
     sample_sets <- list(ts_samples(ts)$name)
   else if (!is.list(sample_sets))
@@ -2025,9 +2031,6 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
     span_normalise = span_normalise,
     polarised = polarised
   )
-
-  # drop the useless 0-th element when there's no windowing
-  if (is.null(windows)) result <- result[-1]
 
   result
 }

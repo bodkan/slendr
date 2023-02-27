@@ -359,8 +359,8 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
 
   # compute the AFS from the SLiM and msprime tree sequences and bind the
   # results (derived allele counts per frequency bin) in a data frame
-  msprime_afs <- ts_afs(ts_msprime, polarised = TRUE)
-  slim_afs <- ts_afs(ts_slim, polarised = TRUE)
+  msprime_afs <- ts_afs(ts_msprime, polarised = TRUE)[-1]
+  slim_afs <- ts_afs(ts_slim, polarised = TRUE)[-1]
 
   rbind(
     data.frame(simulator = "msprime", model = model_name, f = msprime_afs),

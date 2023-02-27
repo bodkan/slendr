@@ -172,36 +172,36 @@ slim_forward_exp_decr_ts <- load_tree_sequence("SLiM", "forward", exp_decr_ts, f
 slim_backward_exp_decr_ts <- load_tree_sequence("SLiM", "backward", exp_decr_ts, forward_exp_decr_model, N, rec_rate, mut_rate, seed)
 
 # compute AFS from all tree sequence files - msprime
-msprime_forward_const_afs <- ts_afs(msprime_forward_const_ts, polarised = TRUE)
-msprime_backward_const_afs <- ts_afs(msprime_backward_const_ts, polarised = TRUE)
+msprime_forward_const_afs <- ts_afs(msprime_forward_const_ts, polarised = TRUE)[-1]
+msprime_backward_const_afs <- ts_afs(msprime_backward_const_ts, polarised = TRUE)[-1]
 
-msprime_forward_contr_afs <- ts_afs(msprime_forward_contr_ts, polarised = TRUE)
-msprime_backward_contr_afs <- ts_afs(msprime_backward_contr_ts, polarised = TRUE)
+msprime_forward_contr_afs <- ts_afs(msprime_forward_contr_ts, polarised = TRUE)[-1]
+msprime_backward_contr_afs <- ts_afs(msprime_backward_contr_ts, polarised = TRUE)[-1]
 
-msprime_forward_expansion_afs <- ts_afs(msprime_forward_expansion_ts, polarised = TRUE)
-msprime_backward_expansion_afs <- ts_afs(msprime_backward_expansion_ts, polarised = TRUE)
+msprime_forward_expansion_afs <- ts_afs(msprime_forward_expansion_ts, polarised = TRUE)[-1]
+msprime_backward_expansion_afs <- ts_afs(msprime_backward_expansion_ts, polarised = TRUE)[-1]
 
-msprime_forward_exp_inc_afs <- ts_afs(msprime_forward_exp_inc_ts, polarised = TRUE)
-msprime_backward_exp_inc_afs <- ts_afs(msprime_backward_exp_inc_ts, polarised = TRUE)
+msprime_forward_exp_inc_afs <- ts_afs(msprime_forward_exp_inc_ts, polarised = TRUE)[-1]
+msprime_backward_exp_inc_afs <- ts_afs(msprime_backward_exp_inc_ts, polarised = TRUE)[-1]
 
-msprime_forward_exp_decr_afs <- ts_afs(msprime_forward_exp_decr_ts, polarised = TRUE)
-msprime_backward_exp_decr_afs <- ts_afs(msprime_backward_exp_decr_ts, polarised = TRUE)
+msprime_forward_exp_decr_afs <- ts_afs(msprime_forward_exp_decr_ts, polarised = TRUE)[-1]
+msprime_backward_exp_decr_afs <- ts_afs(msprime_backward_exp_decr_ts, polarised = TRUE)[-1]
 
 # compute AFS from all tree sequence files - SLiM
-slim_forward_const_afs <- ts_afs(slim_forward_const_ts, polarised = TRUE)
-slim_backward_const_afs <- ts_afs(slim_backward_const_ts, polarised = TRUE)
+slim_forward_const_afs <- ts_afs(slim_forward_const_ts, polarised = TRUE)[-1]
+slim_backward_const_afs <- ts_afs(slim_backward_const_ts, polarised = TRUE)[-1]
 
-slim_forward_contr_afs <- ts_afs(slim_forward_contr_ts, polarised = TRUE)
-slim_backward_contr_afs <- ts_afs(slim_backward_contr_ts, polarised = TRUE)
+slim_forward_contr_afs <- ts_afs(slim_forward_contr_ts, polarised = TRUE)[-1]
+slim_backward_contr_afs <- ts_afs(slim_backward_contr_ts, polarised = TRUE)[-1]
 
-slim_forward_expansion_afs <- ts_afs(slim_forward_expansion_ts, polarised = TRUE)
-slim_backward_expansion_afs <- ts_afs(slim_backward_expansion_ts, polarised = TRUE)
+slim_forward_expansion_afs <- ts_afs(slim_forward_expansion_ts, polarised = TRUE)[-1]
+slim_backward_expansion_afs <- ts_afs(slim_backward_expansion_ts, polarised = TRUE)[-1]
 
-slim_forward_exp_inc_afs <- ts_afs(slim_forward_exp_inc_ts, polarised = TRUE)
-slim_backward_exp_inc_afs <- ts_afs(slim_backward_exp_inc_ts, polarised = TRUE)
+slim_forward_exp_inc_afs <- ts_afs(slim_forward_exp_inc_ts, polarised = TRUE)[-1]
+slim_backward_exp_inc_afs <- ts_afs(slim_backward_exp_inc_ts, polarised = TRUE)[-1]
 
-slim_forward_exp_decr_afs <- ts_afs(slim_forward_exp_decr_ts, polarised = TRUE)
-slim_backward_exp_decr_afs <- ts_afs(slim_backward_exp_decr_ts, polarised = TRUE)
+slim_forward_exp_decr_afs <- ts_afs(slim_forward_exp_decr_ts, polarised = TRUE)[-1]
+slim_backward_exp_decr_afs <- ts_afs(slim_backward_exp_decr_ts, polarised = TRUE)[-1]
 
 # bind together all allele frequency spectra results
 afs <- dplyr::bind_rows(
