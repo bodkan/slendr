@@ -1557,6 +1557,76 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
     return(FALSE)
 }
 
+#' Collect Identity-by-Descent (IBD) tracts
+#'
+#' This function iterates over a tree sequence and returns IBD tracts between
+#' pairs of nodes (i.e. chromosomes or parts of chromosomes).
+#'
+#' Iternally, this function leverages the tskit \code{TreeSequence} method
+#' \code{ibd_segments}. Also, note that the \code{ts_ibd} function always returns
+#' a data frame of IBD tracts, it does not provide an option to iterate over
+#' individual IBD segments as shown in the official tskit documentation
+#' <https://tskit.dev/tskit/docs/stable/ibd.html>. In general, R handles
+#' heavy iteration poorly, and this function does not attempt to serve as
+#' a full wrapper to \code{ibd_segments}.
+#'
+#' @param coordinates Should coordinates of all detected IBD tracts be reported?
+#'   If \code{FALSE} (the default), only the total pairwise IBD sharing statistics
+#'   are reported. If \code{TRUE}, coordinates of each segment will be given.
+ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
+                   min_length = NULL, max_time = NULL) {
+  if (is.null(min_length))
+    warning("No minimum IBD length (min_span) has been provided. As a result,\n",
+            "all IBD tracts will be reported. Depending on the size of your tree\n",
+            "sequence, this might produce an *extremely* huge amount of data.", call. = FALSE)
+  if (!is.null(within))
+    within <- unlist(purrr::map(within, ~ get_node_ids(ts, .x)))
+  else if (!is.null(between)) {
+    between <- purrr::map(between, ~ get_node_ids(ts, .x))
+    # another bug in reticulate? if the list has names, Python gives us:
+    #   Error in py_call_impl(callable, dots$args, dots$keywords):
+    #     TypeError: '<' not supported between instances of 'numpy.ndarray' and 'int'
+    # names(between) <- NULL
+  }
+
+  ibd_segments <- reticulate::py$collect_ibd_segments(
+      ts,
+      coordinates = coordinates,
+      within = within,
+      between = between,
+      min_span = min_length,
+      max_time = max_time
+  )
+
+  if (coordinates) {
+    ncol <- 5
+    col_names <- c("start", "end", "length", "id1", "id2")
+    final_columns <- c("chrom", col_names, "name1", "name2", "pop1", "pop2")
+  } else {
+    ncol <- 4
+    col_names <- c("nsegments", "length", "id1", "id2")
+    final_columns <- c(col_names, "name1", "name2", "pop1", "pop2")
+  }
+  if (is.null(ibd_segments)) ibd_segments <- matrix(NA, nrow = 0, ncol = ncol)
+
+  colnames(ibd_segments) <- col_names
+
+  result <- tibble::as_tibble(ibd_segments)
+
+  nodes <- ts_nodes(ts)
+
+  if (!is.null(attr(ts, "model"))) {
+    result[["name1"]] <- sapply(result$id1, function(i) nodes[nodes$node_id == i, ]$name)
+    result[["name2"]] <- sapply(result$id2, function(i) nodes[nodes$node_id == i, ]$name)
+    result[["pop1"]] <- sapply(result$id1, function(i) nodes[nodes$node_id == i, ]$pop)
+    result[["pop2"]] <- sapply(result$id2, function(i) nodes[nodes$node_id == i, ]$pop)
+  }
+
+  if (coordinates) result$chrom <- chrom
+
+  result[, final_columns, with = FALSE]
+}
+
 # f-statistics ------------------------------------------------------------
 
 fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {
