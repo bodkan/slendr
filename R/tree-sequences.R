@@ -1572,7 +1572,20 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'
 #' @param coordinates Should coordinates of all detected IBD tracts be reported?
 #'   If \code{FALSE} (the default), only the total pairwise IBD sharing statistics
-#'   are reported. If \code{TRUE}, coordinates of each segment will be given.
+#'   are reported. If \code{TRUE}, coordinates of each segment will be given. This
+#'   can have a massive impact on memory usage. See details for more information.
+#' @param within A character vector with individual names or an integer vector with
+#'   node IDs, indicating a set of nodes within which to look for IBD fragments.
+#' @param between A list of lists of character vectors with individual names or
+#'   integer vectors with node IDs, indicating a set of nodes between which to
+#'   look for shared IBD fragments.
+#' @param min_length Minimum length of an IBD segment to return in results
+#' @param max_time Oldest MRCA of a node to be considered as an IBD ancestor to
+#'   return an IBD fragment in results.
+#'
+#' @return A data frame with IBD result
+#'
+#' @export
 ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
                    min_length = NULL, max_time = NULL) {
   if (is.null(min_length))
@@ -1589,7 +1602,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
     # names(between) <- NULL
   }
 
-  ibd_segments <- reticulate::py$collect_ibd_segments(
+  ibd_segments <- reticulate::py$collect_ibd(
       ts,
       coordinates = coordinates,
       within = within,
@@ -1600,11 +1613,11 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
 
   if (coordinates) {
     ncol <- 5
-    col_names <- c("start", "end", "length", "id1", "id2")
-    final_columns <- c("chrom", col_names, "name1", "name2", "pop1", "pop2")
+    col_names <- c("start", "end", "length", "node1", "node2")
+    final_columns <- c(col_names, "name1", "name2", "pop1", "pop2")
   } else {
     ncol <- 4
-    col_names <- c("nsegments", "length", "id1", "id2")
+    col_names <- c("count", "total", "node1", "node2")
     final_columns <- c(col_names, "name1", "name2", "pop1", "pop2")
   }
   if (is.null(ibd_segments)) ibd_segments <- matrix(NA, nrow = 0, ncol = ncol)
@@ -1616,13 +1629,11 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
   nodes <- ts_nodes(ts)
 
   if (!is.null(attr(ts, "model"))) {
-    result[["name1"]] <- sapply(result$id1, function(i) nodes[nodes$node_id == i, ]$name)
-    result[["name2"]] <- sapply(result$id2, function(i) nodes[nodes$node_id == i, ]$name)
-    result[["pop1"]] <- sapply(result$id1, function(i) nodes[nodes$node_id == i, ]$pop)
-    result[["pop2"]] <- sapply(result$id2, function(i) nodes[nodes$node_id == i, ]$pop)
+    result[["name1"]] <- sapply(result$node1, function(i) nodes[nodes$node_id == i, ]$name)
+    result[["name2"]] <- sapply(result$node2, function(i) nodes[nodes$node_id == i, ]$name)
+    result[["pop1"]] <- sapply(result$node1, function(i) nodes[nodes$node_id == i, ]$pop)
+    result[["pop2"]] <- sapply(result$node2, function(i) nodes[nodes$node_id == i, ]$pop)
   }
-
-  if (coordinates) result$chrom <- chrom
 
   result[, final_columns, with = FALSE]
 }
