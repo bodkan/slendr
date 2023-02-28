@@ -2032,6 +2032,9 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
     polarised = polarised
   )
 
+  # convert 1D array to a simple vector
+  if (length(sample_sets) == 1) result <- as.numeric(result)
+
   result
 }
 
