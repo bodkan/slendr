@@ -20,7 +20,11 @@ def get_pedigree_ids(ts):
   # https://github.com/rstudio/reticulate/issues/323)
   return [float(ind.metadata["pedigree_id"]) for ind in ts.individuals()]
 
-def collect_ibd_segments(ts, coordinates = False, within=None, between=None, min_span=None, max_time=None):
+def collect_ibd(ts, coordinates = False, within=None, between=None,
+               min_span=None, max_time=None):
+    """Extract IBD fragments (or the summary of pairwise IBD sharing) from
+    a tree sequence.
+    """
     ibd_segments = ts.ibd_segments(
         within=within,
         between=between,
@@ -36,8 +40,8 @@ def collect_ibd_segments(ts, coordinates = False, within=None, between=None, min
         if coordinates:
             node1 = numpy.repeat(pair[0], len(ibd))
             node2 = numpy.repeat(pair[1], len(ibd))
-            left = pair.left
-            right = pair.right
+            left = numpy.fromiter((i.left for i in ibd), dtype=int)
+            right = numpy.fromiter((i.right for i in ibd), dtype=int)
             pair_result = numpy.column_stack((left, right, right - left, node1, node2)).astype(int)
         else:
             pair_result = numpy.asarray([len(ibd), ibd.total_span, pair[0], pair[1]], dtype=int)
