@@ -10,8 +10,7 @@ ts_afs(
   mode = c("site", "branch", "node"),
   windows = NULL,
   span_normalise = FALSE,
-  polarised = FALSE,
-  complete = FALSE
+  polarised = FALSE
 )
 }
 \arguments{
@@ -35,7 +34,9 @@ be folded (i.e. the counts will not depend on knowing which allele is
 ancestral)}
 }
 \value{
-Allele frequency spectrum values for the given sample set
+Allele frequency spectrum values for the given sample set. Note that the
+contents of the first and last elements of the AFS might surprise you. Read the
+links in the description for more detail on how tskit handles things.
 }
 \description{
 This function computes the AFS with respect to the given set of individuals

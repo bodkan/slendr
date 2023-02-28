@@ -2011,7 +2011,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @export
 ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
                    windows = NULL, span_normalise = FALSE,
-                   polarised = FALSE, complete = FALSE) {
+                   polarised = FALSE) {
   mode <- match.arg(mode)
 
   if (is.null(sample_sets))
