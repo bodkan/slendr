@@ -1560,38 +1560,48 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' Collect Identity-by-Descent (IBD) tracts
 #'
 #' This function iterates over a tree sequence and returns IBD tracts between
-#' pairs of nodes (i.e. chromosomes or parts of chromosomes).
+#' pairs of individuals or nodes
 #'
 #' Iternally, this function leverages the tskit \code{TreeSequence} method
-#' \code{ibd_segments}. Also, note that the \code{ts_ibd} function always returns
-#' a data frame of IBD tracts, it does not provide an option to iterate over
-#' individual IBD segments as shown in the official tskit documentation
+#' \code{ibd_segments}. However, note that the \code{ts_ibd} function always
+#' returns a data frame of IBD tracts, it does not provide an option to iterate
+#' over individual IBD segments as shown in the official tskit documentation
 #' <https://tskit.dev/tskit/docs/stable/ibd.html>. In general, R handles
 #' heavy iteration poorly, and this function does not attempt to serve as
 #' a full wrapper to \code{ibd_segments}.
 #'
 #' @param coordinates Should coordinates of all detected IBD tracts be reported?
-#'   If \code{FALSE} (the default), only the total pairwise IBD sharing statistics
-#'   are reported. If \code{TRUE}, coordinates of each segment will be given. This
-#'   can have a massive impact on memory usage. See details for more information.
+#'   If \code{FALSE} (the default), only the total length of shared IBD segments
+#'   and their numbers are reported. If \code{TRUE}, coordinates of each segment
+#'   will be returned (but note that this can have a massive impact on memory
+#'   usage). See details for more information.
 #' @param within A character vector with individual names or an integer vector with
-#'   node IDs, indicating a set of nodes within which to look for IBD fragments.
+#'   node IDs indicating a set of nodes within which to look for IBD fragments.
 #' @param between A list of lists of character vectors with individual names or
 #'   integer vectors with node IDs, indicating a set of nodes between which to
 #'   look for shared IBD fragments.
-#' @param min_length Minimum length of an IBD segment to return in results
-#' @param max_time Oldest MRCA of a node to be considered as an IBD ancestor to
-#'   return an IBD fragment in results.
+#' @param minimum_length Minimum length of an IBD segment to return in results.
+#'   This is useful for reducing the total amount of IBD returned.
+#' @param maximum_tmrca Oldest MRCA of a node to be considered as an IBD ancestor
+#'   to return that IBD fragment in results. This is useful for reducing the total
+#'   amount of IBD returned.
 #'
-#' @return A data frame with IBD result
+#' @return A data frame with IBD results (either coordinates of each IBD segment
+#'   shared by a pair of nodes, or summary statistics about the total IBD sharing
+#'   for that pair)
 #'
 #' @export
 ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
-                   min_length = NULL, max_time = NULL) {
-  if (is.null(min_length))
-    warning("No minimum IBD length (min_span) has been provided. As a result,\n",
-            "all IBD tracts will be reported. Depending on the size of your tree\n",
-            "sequence, this might produce an *extremely* huge amount of data.", call. = FALSE)
+                   minimum_length = NULL, maximum_tmrca = NULL) {
+  # make sure warnings are reported immediately
+  opts <- options(warn = 1)
+  on.exit(options(opts))
+
+  if (is.null(minimum_length) && is.null(maximum_tmrca))
+    warning("No minimum IBD length (minimum_length) or maximum age of an IBD\nancestor ",
+            "(maximum_tmrca) has been provided. As a result all IBD tracts will be\n",
+            "reported. Depending on the size of your tree sequence, this might produce\n",
+            "extremely huge amount of data.", call. = FALSE)
   if (!is.null(within))
     within <- unlist(purrr::map(within, ~ get_node_ids(ts, .x)))
   else if (!is.null(between)) {
@@ -1607,8 +1617,8 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
       coordinates = coordinates,
       within = within,
       between = between,
-      min_span = min_length,
-      max_time = max_time
+      min_span = minimum_length,
+      max_time = maximum_tmrca
   )
 
   if (coordinates) {

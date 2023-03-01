@@ -9,24 +9,41 @@ ts_ibd(
   coordinates = FALSE,
   within = NULL,
   between = NULL,
-  min_length = NULL,
-  max_time = NULL
+  minimum_length = NULL,
+  maximum_tmrca = NULL
 )
 }
 \arguments{
 \item{coordinates}{Should coordinates of all detected IBD tracts be reported?
-If \code{FALSE} (the default), only the total pairwise IBD sharing statistics
-are reported. If \code{TRUE}, coordinates of each segment will be given.}
+If \code{FALSE} (the default), only the total length of shared IBD segments
+and their numbers are reported. If \code{TRUE}, coordinates of each segment
+will be returned (but note that this can have a massive impact on memory
+usage). See details for more information.}
+
+\item{within}{A character vector with individual names or an integer vector with
+node IDs indicating a set of nodes within which to look for IBD fragments.}
+
+\item{between}{A list of lists of character vectors with individual names or
+integer vectors with node IDs, indicating a set of nodes between which to
+look for shared IBD fragments.}
+
+\item{minimum_length}{Minimum length of an IBD segment to return in results}
+
+\item{maximum_tmrca}{Oldest MRCA of a node to be considered as an IBD ancestor
+to return that IBD fragment in results.}
+}
+\value{
+A data frame with IBD results
 }
 \description{
 This function iterates over a tree sequence and returns IBD tracts between
-pairs of nodes (i.e. chromosomes or parts of chromosomes).
+pairs of individuals or nodes
 }
 \details{
 Iternally, this function leverages the tskit \code{TreeSequence} method
-\code{ibd_segments}. Also, note that the \code{ts_ibd} function always returns
-a data frame of IBD tracts, it does not provide an option to iterate over
-individual IBD segments as shown in the official tskit documentation
+\code{ibd_segments}. However, note that the \code{ts_ibd} function always
+returns a data frame of IBD tracts, it does not provide an option to iterate
+over individual IBD segments as shown in the official tskit documentation
 \url{https://tskit.dev/tskit/docs/stable/ibd.html}. In general, R handles
 heavy iteration poorly, and this function does not attempt to serve as
 a full wrapper to \code{ibd_segments}.

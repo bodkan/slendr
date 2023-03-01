@@ -30,7 +30,8 @@ def collect_ibd(ts, coordinates = False, within=None, between=None,
         between=between,
         store_pairs=True,
         store_segments=coordinates,
-        min_span=min_span
+        min_span=min_span,
+        max_time=max_time
     )
 
     if ibd_segments.num_pairs == 0: return None
