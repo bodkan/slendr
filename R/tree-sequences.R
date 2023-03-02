@@ -1668,6 +1668,15 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
 
   nodes <- ts_nodes(ts)
 
+  # add node times to the IBD results table
+  result <- result %>%
+    dplyr::inner_join(nodes[, c("node_id", "time")], by = c("node1" = "node_id")) %>%
+    dplyr::rename(node1_time = time) %>%
+    dplyr::inner_join(nodes[, c("node_id", "time")], by = c("node2" = "node_id")) %>%
+    dplyr::rename(node2_time = time)
+
+  final_columns <- c(final_columns, c("node1_time", "node2_time"))
+
   # perform further data processing if the model in question is spatial (and if there
   # are any IBD segments at all)
   if (spatial && sf && nrow(result) > 0) {

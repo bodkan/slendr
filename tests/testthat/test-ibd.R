@@ -12,7 +12,7 @@ test_that("aggregate ts_ibd(ts, coordinates = TRUE) matches IBD totals", {
 
   # compute IBD totals from individual fragments manually
   ibd_totals2 <-
-    dplyr::group_by(ibd_fragments, node1, node2, name1, name2, pop1, pop2) %>%
+    dplyr::group_by(ibd_fragments, node1, node2, name1, name2, pop1, pop2, node1_time, node2_time) %>%
     dplyr::summarise(count = dplyr::n(), total = sum(length), .groups = "keep") %>%
     dplyr::select(count, total, dplyr::everything()) %>%
     dplyr::ungroup()

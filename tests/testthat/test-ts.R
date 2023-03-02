@@ -735,7 +735,8 @@ test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (no CRS
 
   # except for the spatial columns, the IBD results are the same
   expect_equal(as.data.frame(slim_ibd_sf)[, c("start", "end", "length", "node1", "node2",
-                                              "name1", "name2", "pop1", "pop2")],
+                                              "name1", "name2", "pop1", "pop2",
+                                              "node1_time", "node2_time")],
                as.data.frame(slim_ibd_nosf))
 })
 
@@ -751,7 +752,8 @@ test_that("ts_ibd() on msprime/slendr tree sequences works properly", {
 
   # except for the spatial columns, the IBD results are the same
   expect_equal(as.data.frame(msprime_ibd_sf)[, c("start", "end", "length", "node1", "node2",
-                                                 "name1", "name2", "pop1", "pop2")],
+                                                 "name1", "name2", "pop1", "pop2",
+                                                 "node1_time", "node2_time")],
                as.data.frame(msprime_ibd_nosf))
 })
 
@@ -783,6 +785,7 @@ test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (with C
 
   # except for the spatial columns, the IBD results are the same
   expect_equal(as.data.frame(ibd_sf)[, c("start", "end", "length", "node1", "node2",
-                                              "name1", "name2", "pop1", "pop2")],
+                                         "name1", "name2", "pop1", "pop2",
+                                         "node1_time", "node2_time")],
                as.data.frame(ibd_nosf))
 })
