@@ -1649,7 +1649,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
 
   colnames(ibd_segments) <- col_names
 
-  result <- tibble::as_tibble(ibd_segments)
+  result <- dplyr::as_tibble(ibd_segments)
 
   nodes <- ts_nodes(ts)
 
