@@ -2,7 +2,7 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_ibd}
 \alias{ts_ibd}
-\title{Collect Identity-by-Descent (IBD) tracts}
+\title{Collect Identity-by-Descent (IBD) segments}
 \usage{
 ts_ibd(
   ts,
@@ -10,7 +10,8 @@ ts_ibd(
   within = NULL,
   between = NULL,
   minimum_length = NULL,
-  maximum_tmrca = NULL
+  maximum_tmrca = NULL,
+  sf = TRUE
 )
 }
 \arguments{
@@ -23,18 +24,21 @@ will be returned (but note that this can have a massive impact on memory
 usage). See details for more information.}
 
 \item{within}{A character vector with individual names or an integer vector with
-node IDs indicating a set of nodes within which to look for IBD fragments.}
+node IDs indicating a set of nodes within which to look for IBD segments.}
 
 \item{between}{A list of lists of character vectors with individual names or
 integer vectors with node IDs, indicating a set of nodes between which to
-look for shared IBD fragments.}
+look for shared IBD segments.}
 
 \item{minimum_length}{Minimum length of an IBD segment to return in results.
 This is useful for reducing the total amount of IBD returned.}
 
 \item{maximum_tmrca}{Oldest MRCA of a node to be considered as an IBD ancestor
-to return that IBD fragment in results. This is useful for reducing the total
+to return that IBD segment in results. This is useful for reducing the total
 amount of IBD returned.}
+
+\item{sf}{If IBD segments in a spatial tree sequence are being analyzed, should
+the returned table be a spatial sf object? Default is \code{TRUE}.}
 }
 \value{
 A data frame with IBD results (either coordinates of each IBD segment
@@ -50,7 +54,7 @@ Iternally, this function leverages the tskit \code{TreeSequence} method
 \code{ibd_segments}. However, note that the \code{ts_ibd} function always
 returns a data frame of IBD tracts, it does not provide an option to iterate
 over individual IBD segments as shown in the official tskit documentation
-\url{https://tskit.dev/tskit/docs/stable/ibd.html}. In general, R handles
+at \url{https://tskit.dev/tskit/docs/stable/ibd.html}. In general, R handles
 heavy iteration poorly, and this function does not attempt to serve as
 a full wrapper to \code{ibd_segments}.
 }
@@ -67,5 +71,10 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 ts <- ts_load(slendr_ts, model, simplify = TRUE)
 
 # find IBD segments between specified Neanderthals and Europeans
-ts_ibd(ts, between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")))
+ts_ibd(
+  ts,
+  coordinates = TRUE,
+  between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")),
+  minimum_length = 40000
+)
 }

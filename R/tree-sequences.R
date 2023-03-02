@@ -1557,7 +1557,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
     return(FALSE)
 }
 
-#' Collect Identity-by-Descent (IBD) tracts
+#' Collect Identity-by-Descent (IBD) segments
 #'
 #' This function iterates over a tree sequence and returns IBD tracts between
 #' pairs of individuals or nodes
@@ -1566,7 +1566,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' \code{ibd_segments}. However, note that the \code{ts_ibd} function always
 #' returns a data frame of IBD tracts, it does not provide an option to iterate
 #' over individual IBD segments as shown in the official tskit documentation
-#' <https://tskit.dev/tskit/docs/stable/ibd.html>. In general, R handles
+#' at <https://tskit.dev/tskit/docs/stable/ibd.html>. In general, R handles
 #' heavy iteration poorly, and this function does not attempt to serve as
 #' a full wrapper to \code{ibd_segments}.
 #'
@@ -1606,7 +1606,12 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' ts <- ts_load(slendr_ts, model, simplify = TRUE)
 #'
 #' # find IBD segments between specified Neanderthals and Europeans
-#' ts_ibd(ts, between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")))
+#' ts_ibd(
+#'   ts,
+#'   coordinates = TRUE,
+#'   between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")),
+#'   minimum_length = 40000
+#' )
 #' @export
 ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
                    minimum_length = NULL, maximum_tmrca = NULL, sf = TRUE) {
