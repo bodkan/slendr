@@ -1,5 +1,5 @@
 skip_if(!is_slendr_env_present())
-init_env()
+init_env(quiet = TRUE)
 
 test_that("aggregate ts_ibd(ts, coordinates = TRUE) matches IBD totals", {
   pop <- population("POP", time = 1, N = 1000)

@@ -770,19 +770,19 @@ test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (with C
   suppressWarnings(ibd_nosf <- ts_ibd(ts, coordinates = TRUE, within = samples, sf = FALSE))
 
   # returned object is of a sf class (or not), as requested by the user
-  expect_s3_class(slim_ibd_sf, "sf")
-  expect_true(!inherits(slim_ibd_nosf, "sf"))
+  expect_s3_class(ibd_sf, "sf")
+  expect_true(!inherits(ibd_nosf, "sf"))
 
   # the IBD sf object has the CRS attribute of the map itself
   expect_true(sf::st_crs(map) == sf::st_crs(ibd_sf))
 
   # spatial IBD links within the same individual give an EMPTY linestring with
   # no coordinates
-  within_ibd <- slim_ibd_sf %>% dplyr::filter(name1 == name2) %>% dplyr::select(connection)
+  within_ibd <- ibd_sf %>% dplyr::filter(name1 == name2) %>% dplyr::select(connection)
   expect_true(nrow(sf::st_coordinates(within_ibd)) == 0)
 
   # except for the spatial columns, the IBD results are the same
-  expect_equal(as.data.frame(slim_ibd_sf)[, c("start", "end", "length", "node1", "node2",
+  expect_equal(as.data.frame(ibd_sf)[, c("start", "end", "length", "node1", "node2",
                                               "name1", "name2", "pop1", "pop2")],
-               as.data.frame(slim_ibd_nosf))
+               as.data.frame(ibd_nosf))
 })

@@ -1,4 +1,5 @@
 skip_if(!is_slendr_env_present())
+init_env(quiet = TRUE)
 
 set.seed(42)
 
@@ -60,8 +61,8 @@ test_that("non-slendr SLiM tree sequence locations are correctly loaded", {
 })
 
 test_that("ts_ibd() on spatial SLiM tree sequences works with coordinates = (T|F)", {
-  suppressWarnings(ibd_totals <- ts_ibd(ts, coordinates = FALSE))
-  suppressWarnings(ibd_fragments <- ts_ibd(ts, coordinates = TRUE))
+  suppressWarnings(ibd_totals <- ts_ibd(ts, coordinates = FALSE, sf = FALSE))
+  suppressWarnings(ibd_fragments <- ts_ibd(ts, coordinates = TRUE, sf = FALSE))
 
   # compute IBD totals from individual fragments manually
   ibd_totals2 <-
