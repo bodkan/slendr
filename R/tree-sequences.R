@@ -1590,6 +1590,20 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'   shared by a pair of nodes, or summary statistics about the total IBD sharing
 #'   for that pair)
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' }
+#' init_env()
+#'
+#' # load an example model with an already simulated tree sequence
+#' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+#' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#'
+#' # look for IBD sharing between Neanderthals and Europeans
+#' ts_ibd(ts, between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")))
 #' @export
 ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
                    minimum_length = NULL, maximum_tmrca = NULL) {

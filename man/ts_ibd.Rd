@@ -27,13 +27,17 @@ node IDs indicating a set of nodes within which to look for IBD fragments.}
 integer vectors with node IDs, indicating a set of nodes between which to
 look for shared IBD fragments.}
 
-\item{minimum_length}{Minimum length of an IBD segment to return in results}
+\item{minimum_length}{Minimum length of an IBD segment to return in results.
+This is useful for reducing the total amount of IBD returned.}
 
 \item{maximum_tmrca}{Oldest MRCA of a node to be considered as an IBD ancestor
-to return that IBD fragment in results.}
+to return that IBD fragment in results. This is useful for reducing the total
+amount of IBD returned.}
 }
 \value{
-A data frame with IBD results
+A data frame with IBD results (either coordinates of each IBD segment
+shared by a pair of nodes, or summary statistics about the total IBD sharing
+for that pair)
 }
 \description{
 This function iterates over a tree sequence and returns IBD tracts between
