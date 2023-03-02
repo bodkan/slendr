@@ -1,4 +1,3 @@
-devtools::load_all()
 skip_if(!is_slendr_env_present())
 init_env()
 
