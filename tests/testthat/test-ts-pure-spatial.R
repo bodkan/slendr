@@ -59,3 +59,16 @@ test_that("non-slendr SLiM tree sequence locations are correctly loaded", {
   expect_true(all(data$pedigree_id == locations$pedigree_id))
 })
 
+test_that("ts_ibd() on spatial SLiM tree sequences works with coordinates = (T|F)", {
+  suppressWarnings(ibd_totals <- ts_ibd(ts, coordinates = FALSE))
+  suppressWarnings(ibd_fragments <- ts_ibd(ts, coordinates = TRUE))
+
+  # compute IBD totals from individual fragments manually
+  ibd_totals2 <-
+    dplyr::group_by(ibd_fragments, node1, node2) %>%
+    dplyr::summarise(count = dplyr::n(), total = sum(length), .groups = "keep") %>%
+    dplyr::select(count, total, dplyr::everything()) %>%
+    dplyr::ungroup()
+
+  expect_equal(ibd_totals, ibd_totals2)
+})

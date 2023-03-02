@@ -261,3 +261,37 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
 
   expect_true(all(sort(unique(ts_nodes(ts)$pop) == c("p1", "p2", "p3", "p4"))))
 })
+
+test_that("ts_ibd() on nonspatial SLiM tree sequences works with coordinates = (T|F)", {
+  ts_file <- simulate_slim_ts(1000)
+  suppressMessages(ts <- ts_load(ts_file))
+
+  suppressWarnings(ibd_totals <- ts_ibd(ts, coordinates = FALSE))
+  suppressWarnings(ibd_fragments <- ts_ibd(ts, coordinates = TRUE))
+
+  # compute IBD totals from individual fragments manually
+  ibd_totals2 <-
+    dplyr::group_by(ibd_fragments, node1, node2) %>%
+    dplyr::summarise(count = dplyr::n(), total = sum(length), .groups = "keep") %>%
+    dplyr::select(count, total, dplyr::everything()) %>%
+    dplyr::ungroup()
+
+  expect_equal(ibd_totals, ibd_totals2)
+})
+
+test_that("ts_ibd() on nonspatial msprime tree sequences works with coordinates = (T|F)", {
+  ts_file <- msprime_ts_sim_ancestry(100)
+  suppressMessages(ts <- ts_load(ts_file))
+
+  suppressWarnings(ibd_totals <- ts_ibd(ts, coordinates = FALSE))
+  suppressWarnings(ibd_fragments <- ts_ibd(ts, coordinates = TRUE))
+
+  # compute IBD totals from individual fragments manually
+  ibd_totals2 <-
+    dplyr::group_by(ibd_fragments, node1, node2) %>%
+    dplyr::summarise(count = dplyr::n(), total = sum(length), .groups = "keep") %>%
+    dplyr::select(count, total, dplyr::everything()) %>%
+    dplyr::ungroup()
+
+  expect_equal(ibd_totals, ibd_totals2)
+})
