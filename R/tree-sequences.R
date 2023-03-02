@@ -1570,6 +1570,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' heavy iteration poorly, and this function does not attempt to serve as
 #' a full wrapper to \code{ibd_segments}.
 #'
+#' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param coordinates Should coordinates of all detected IBD tracts be reported?
 #'   If \code{FALSE} (the default), only the total length of shared IBD segments
 #'   and their numbers are reported. If \code{TRUE}, coordinates of each segment
@@ -1602,7 +1603,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' # load the tree-sequence object from disk
 #' ts <- ts_load(slendr_ts, model, simplify = TRUE)
 #'
-#' # look for IBD sharing between Neanderthals and Europeans
+#' # find IBD segments between specified Neanderthals and Europeans
 #' ts_ibd(ts, between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")))
 #' @export
 ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,

@@ -101,7 +101,11 @@ pairs of individuals or nodes</p>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>coordinates</dt>
+    <dl><dt>ts</dt>
+<dd><p>Tree sequence object of the class <code>slendr_ts</code></p></dd>
+
+
+<dt>coordinates</dt>
 <dd><p>Should coordinates of all detected IBD tracts be reported?
 If <code>FALSE</code> (the default), only the total length of shared IBD segments
 and their numbers are reported. If <code>TRUE</code>, coordinates of each segment
@@ -150,6 +154,77 @@ heavy iteration poorly, and this function does not attempt to serve as
 a full wrapper to <code>ibd_segments</code>.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load the tree-sequence object from disk</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># look for IBD sharing between Neanderthals and Europeans</span></span></span>
+<span class="r-in"><span><span class="fu">ts_ibd</span><span class="op">(</span><span class="va">ts</span>, between <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>No minimum IBD length (minimum_length) or maximum age of an IBD</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> ancestor (maximum_tmrca) has been provided. As a result all IBD tracts will be</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> reported. Depending on the size of your tree sequence, this might produce</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> extremely huge amount of data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Called from: ts_ibd(ts, between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1650: if (is.null(attr(ts, "model"))) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     final_columns &lt;- setdiff(final_columns, c("name1", "name2", </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         "pop1", "pop2"))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ncol &lt;- ncol - 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1655: if (is.null(ibd_segments)) ibd_segments &lt;- matrix(NA, nrow = 0, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ncol = ncol)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1657: colnames(ibd_segments) &lt;- col_names</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1659: result &lt;- tibble::as_tibble(ibd_segments)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1661: nodes &lt;- ts_nodes(ts)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1663: if (!is.null(attr(ts, "model"))) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     result[["name1"]] &lt;- sapply(result$node1, function(i) nodes[nodes$node_id == </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         i, ]$name)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     result[["name2"]] &lt;- sapply(result$node2, function(i) nodes[nodes$node_id == </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         i, ]$name)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     result[["pop1"]] &lt;- sapply(result$node1, function(i) nodes[nodes$node_id == </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         i, ]$pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     result[["pop2"]] &lt;- sapply(result$node2, function(i) nodes[nodes$node_id == </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         i, ]$pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1664: result[["name1"]] &lt;- sapply(result$node1, function(i) nodes[nodes$node_id == </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     i, ]$name)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1665: result[["name2"]] &lt;- sapply(result$node2, function(i) nodes[nodes$node_id == </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     i, ]$name)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1666: result[["pop1"]] &lt;- sapply(result$node1, function(i) nodes[nodes$node_id == </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     i, ]$pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1667: result[["pop2"]] &lt;- sapply(result$node2, function(i) nodes[nodes$node_id == </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     i, ]$pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> debug at /Users/mp/Projects/slendr/R/tree-sequences.R#1670: result[, final_columns, with = FALSE]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 16 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    count  total node1 node2 name1 name2 pop1  pop2 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    17 <span style="text-decoration: underline;">500</span>000     0    16 NEA_1 EUR_1 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    18 <span style="text-decoration: underline;">500</span>000     0    17 NEA_1 EUR_1 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    17 <span style="text-decoration: underline;">500</span>000     0    18 NEA_1 EUR_2 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    17 <span style="text-decoration: underline;">500</span>000     0    19 NEA_1 EUR_2 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    17 <span style="text-decoration: underline;">500</span>000     1    16 NEA_1 EUR_1 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    18 <span style="text-decoration: underline;">500</span>000     1    17 NEA_1 EUR_1 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    17 <span style="text-decoration: underline;">500</span>000     1    18 NEA_1 EUR_2 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    17 <span style="text-decoration: underline;">500</span>000     1    19 NEA_1 EUR_2 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    17 <span style="text-decoration: underline;">500</span>000     2    16 NEA_2 EUR_1 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    18 <span style="text-decoration: underline;">500</span>000     2    17 NEA_2 EUR_1 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span>    17 <span style="text-decoration: underline;">500</span>000     2    18 NEA_2 EUR_2 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span>    17 <span style="text-decoration: underline;">500</span>000     2    19 NEA_2 EUR_2 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span>    17 <span style="text-decoration: underline;">500</span>000     3    16 NEA_2 EUR_1 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span>    18 <span style="text-decoration: underline;">500</span>000     3    17 NEA_2 EUR_1 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span>    17 <span style="text-decoration: underline;">500</span>000     3    18 NEA_2 EUR_2 NEA   EUR  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span>    17 <span style="text-decoration: underline;">500</span>000     3    19 NEA_2 EUR_2 NEA   EUR  </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

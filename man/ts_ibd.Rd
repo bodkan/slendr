@@ -14,6 +14,8 @@ ts_ibd(
 )
 }
 \arguments{
+\item{ts}{Tree sequence object of the class \code{slendr_ts}}
+
 \item{coordinates}{Should coordinates of all detected IBD tracts be reported?
 If \code{FALSE} (the default), only the total length of shared IBD segments
 and their numbers are reported. If \code{TRUE}, coordinates of each segment
@@ -51,4 +53,19 @@ over individual IBD segments as shown in the official tskit documentation
 \url{https://tskit.dev/tskit/docs/stable/ibd.html}. In general, R handles
 heavy iteration poorly, and this function does not attempt to serve as
 a full wrapper to \code{ibd_segments}.
+}
+\examples{
+\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+}
+init_env()
+
+# load an example model with an already simulated tree sequence
+slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
+
+# load the tree-sequence object from disk
+ts <- ts_load(slendr_ts, model, simplify = TRUE)
+
+# find IBD segments between specified Neanderthals and Europeans
+ts_ibd(ts, between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")))
 }
