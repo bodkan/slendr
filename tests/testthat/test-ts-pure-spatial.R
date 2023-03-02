@@ -72,3 +72,16 @@ test_that("ts_ibd() on spatial SLiM tree sequences works with coordinates = (T|F
 
   expect_equal(ibd_totals, ibd_totals2)
 })
+
+test_that("ts_ibd() on spatial SLiM tree sequences gives a correct sf object", {
+  ibd_sf <- ts_ibd(ts, coordinates = FALSE, minimum_length = 1e6)
+  ibd_nosf <- ts_ibd(ts, coordinates = FALSE, minimum_length = 1e6, sf = FALSE)
+
+  # returned object is of a sf class (or not), as requested by the user
+  expect_s3_class(ibd_sf, "sf")
+  expect_true(!inherits(ibd_nosf, "sf"))
+
+  # except for the spatial columns, the IBD results are the same
+  expect_equal(as.data.frame(ibd_sf)[, c("count", "total", "node1", "node2")],
+               as.data.frame(ibd_nosf))
+})

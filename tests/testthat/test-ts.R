@@ -710,3 +710,44 @@ test_that("all names of individuals must be present in the tree sequence", {
   expect_error(ts_diversity(ts, c("p1_1", "p2_2")), "Not all individual names")
   expect_s3_class(ts_diversity(ts, c("pop1_1", "pop2_2")), "data.frame")
 })
+
+# --------------------------------------------------------------------------------
+# IBD-related test for spatial tree sequences (more is in test-ibd.R,
+# test-ts-pure-spatial.R and test-ts-pure-nonspatial.R)
+
+test_that("ts_ibd() on spatial and SLiM/slendr tree sequences works properly", {
+  suppressWarnings(ts_slim <- ts_load(model, file = slim_ts, simplify = TRUE))
+
+  suppressWarnings(slim_ibd_sf <- ts_ibd(ts_slim, coordinates = TRUE))
+  suppressWarnings(slim_ibd_nosf <- ts_ibd(ts_slim, coordinates = TRUE, sf = FALSE))
+
+  # returned object is of a sf class (or not), as requested by the user
+  expect_s3_class(slim_ibd_sf, "sf")
+  expect_true(!inherits(slim_ibd_nosf, "sf"))
+
+  # spatial IBD links within the same individual give an EMPTY linestring with
+  # no coordinates
+  within_ibd <- slim_ibd_sf %>% dplyr::filter(name1 == name2) %>% dplyr::select(connection)
+  expect_true(nrow(sf::st_coordinates(within_ibd)) == 0)
+
+  # except for the spatial columns, the IBD results are the same
+  expect_equal(as.data.frame(slim_ibd_sf)[, c("start", "end", "length", "node1", "node2",
+                                              "name1", "name2", "pop1", "pop2")],
+               as.data.frame(slim_ibd_nosf))
+})
+
+test_that("ts_ibd() on spatial and SLiM/slendr tree sequences works properly", {
+  ts_msprime <- ts_load(model, file = msprime_ts)
+
+  suppressWarnings(msprime_ibd_sf <- ts_ibd(ts_msprime, coordinates = TRUE))
+  suppressWarnings(msprime_ibd_nosf <- ts_ibd(ts_msprime, coordinates = TRUE, sf = FALSE))
+
+  # returned object is of a sf class (or not), as requested by the user
+  expect_true(!inherits(msprime_ibd_sf, "sf"))
+  expect_true(!inherits(msprime_ibd_nosf, "sf"))
+
+  # except for the spatial columns, the IBD results are the same
+  expect_equal(as.data.frame(msprime_ibd_sf)[, c("start", "end", "length", "node1", "node2",
+                                                 "name1", "name2", "pop1", "pop2")],
+               as.data.frame(msprime_ibd_nosf))
+})
