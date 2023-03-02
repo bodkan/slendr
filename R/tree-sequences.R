@@ -1682,17 +1682,18 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
     result <- purrr::map2(
       result$node1_location, result$node2_location, ~
         if (.x == .y)
-          sf::st_sf(connection = sf::st_sfc(sf::st_linestring()), crs = sf::st_crs(result))
+          sf::st_sf(connection = sf::st_sfc(sf::st_linestring()), crs = sf::st_crs(nodes))
         else {
           sf::st_union(.x, .y) %>%
           sf::st_cast("LINESTRING") %>%
           sf::st_sfc() %>%
-          sf::st_sf(connection = ., crs = sf::st_crs(result))
+          sf::st_sf(connection = ., crs = sf::st_crs(nodes))
         }
       ) %>%
       dplyr::bind_rows() %>%
       dplyr::bind_cols(result, .) %>%
-        sf::st_set_geometry("connection")
+        sf::st_set_geometry("connection") %>%
+      sf::st_set_crs(sf::st_crs(nodes))
   }
 
   if (!is.null(model)) {
