@@ -1577,15 +1577,17 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'   will be returned (but note that this can have a massive impact on memory
 #'   usage). See details for more information.
 #' @param within A character vector with individual names or an integer vector with
-#'   node IDs indicating a set of nodes within which to look for IBD fragments.
+#'   node IDs indicating a set of nodes within which to look for IBD segments.
 #' @param between A list of lists of character vectors with individual names or
 #'   integer vectors with node IDs, indicating a set of nodes between which to
-#'   look for shared IBD fragments.
+#'   look for shared IBD segments.
 #' @param minimum_length Minimum length of an IBD segment to return in results.
 #'   This is useful for reducing the total amount of IBD returned.
 #' @param maximum_tmrca Oldest MRCA of a node to be considered as an IBD ancestor
-#'   to return that IBD fragment in results. This is useful for reducing the total
+#'   to return that IBD segment in results. This is useful for reducing the total
 #'   amount of IBD returned.
+#' @param sf If IBD segments in a spatial tree sequence are being analyzed, should
+#'   the returned table be a spatial sf object? Default is \code{TRUE}.
 #'
 #' @return A data frame with IBD results (either coordinates of each IBD segment
 #'   shared by a pair of nodes, or summary statistics about the total IBD sharing
@@ -1607,10 +1609,13 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' ts_ibd(ts, between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")))
 #' @export
 ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
-                   minimum_length = NULL, maximum_tmrca = NULL) {
+                   minimum_length = NULL, maximum_tmrca = NULL, sf = TRUE) {
   # make sure warnings are reported immediately
   opts <- options(warn = 1)
   on.exit(options(opts))
+
+  model <- attr(ts, "model")
+  spatial <- attr(ts, "spatial")
 
   if (is.null(minimum_length) && is.null(maximum_tmrca))
     warning("No minimum IBD length (minimum_length) or maximum age of an IBD\nancestor ",
@@ -1647,7 +1652,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
   }
 
   # make sure symbolic columns are removed for non-slendr tree sequences
-  if (is.null(attr(ts, "model")))
+  if (is.null(model))
     final_columns <- setdiff(final_columns, c("name1", "name2", "pop1", "pop2"))
 
   if (is.null(ibd_segments)) ibd_segments <- matrix(NA, nrow = 0, ncol = ncol)
@@ -1658,7 +1663,34 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
 
   nodes <- ts_nodes(ts)
 
-  if (!is.null(attr(ts, "model"))) {
+  # perform further data processing if the model in question is spatial (and if there
+  # are any IBD segments at all)
+  if (spatial && sf && nrow(result) > 0) {
+    result <- result %>%
+      dplyr::inner_join(nodes[, c("node_id", "location")], by = c("node1" = "node_id")) %>%
+      dplyr::rename(node1_location = location) %>%
+      dplyr::inner_join(nodes[, c("node_id", "location")], by = c("node2" = "node_id")) %>%
+      dplyr::rename(node2_location = location)
+
+    final_columns <- c(final_columns, c("connection", "node1_location", "node2_location"))
+
+    result <- purrr::map2(
+      result$node1_location, result$node2_location, ~
+        if (.x == .y)
+          sf::st_sf(connection = sf::st_sfc(sf::st_linestring()), crs = sf::st_crs(result))
+        else {
+          sf::st_union(.x, .y) %>%
+          sf::st_cast("LINESTRING") %>%
+          sf::st_sfc() %>%
+          sf::st_sf(connection = ., crs = sf::st_crs(result))
+        }
+      ) %>%
+      dplyr::bind_rows() %>%
+      dplyr::bind_cols(result, .) %>%
+        sf::st_set_geometry("connection")
+  }
+
+  if (!is.null(model)) {
     result[["name1"]] <- sapply(result$node1, function(i) nodes[nodes$node_id == i, ]$name)
     result[["name2"]] <- sapply(result$node2, function(i) nodes[nodes$node_id == i, ]$name)
     result[["pop1"]] <- sapply(result$node1, function(i) nodes[nodes$node_id == i, ]$pop)
