@@ -1645,6 +1645,11 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
     col_names <- c("count", "total", "node1", "node2")
     final_columns <- c(col_names, "name1", "name2", "pop1", "pop2")
   }
+
+  # make sure symbolic columns are removed for non-slendr tree sequences
+  if (is.null(attr(ts, "model")))
+    final_columns <- setdiff(final_columns, c("name1", "name2", "pop1", "pop2"))
+
   if (is.null(ibd_segments)) ibd_segments <- matrix(NA, nrow = 0, ncol = ncol)
 
   colnames(ibd_segments) <- col_names
