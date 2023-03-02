@@ -66,7 +66,7 @@ test_that("ts_ibd() on spatial SLiM tree sequences works with coordinates = (T|F
 
   # compute IBD totals from individual fragments manually
   ibd_totals2 <-
-    dplyr::group_by(ibd_fragments, node1, node2) %>%
+    dplyr::group_by(ibd_fragments, node1, node2, node1_time, node2_time) %>%
     dplyr::summarise(count = dplyr::n(), total = sum(length), .groups = "keep") %>%
     dplyr::select(count, total, dplyr::everything()) %>%
     dplyr::ungroup()

@@ -10,7 +10,7 @@ ts_ibd(
   within = NULL,
   between = NULL,
   minimum_length = NULL,
-  maximum_tmrca = NULL,
+  maximum_time = NULL,
   sf = TRUE
 )
 }
@@ -33,7 +33,7 @@ look for shared IBD segments.}
 \item{minimum_length}{Minimum length of an IBD segment to return in results.
 This is useful for reducing the total amount of IBD returned.}
 
-\item{maximum_tmrca}{Oldest MRCA of a node to be considered as an IBD ancestor
+\item{maximum_time}{Oldest MRCA of a node to be considered as an IBD ancestor
 to return that IBD segment in results. This is useful for reducing the total
 amount of IBD returned.}
 

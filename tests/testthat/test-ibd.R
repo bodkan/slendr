@@ -72,7 +72,7 @@ test_that("IBD of a given minimum length is returned", {
 })
 
 # Get a vector of TMRCA of pairs of nodes that share IBD fragment
-# (this is used below for testing that the `maximum_tmrca` cutoff of
+# (this is used below for testing that the `maximum_time` cutoff of
 # the ts_ibd() function does what its supposed to).
 get_pairs_tmrca <- function(ts, ibd) {
   times <- c()
@@ -102,23 +102,23 @@ test_that("only IBD with MRCA of a given maximum age is reported", {
   set.seed(42)
   samples <- sample(ts_samples(ts)$name, 10)
 
-  ibd_totals10 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_tmrca = 10)
+  ibd_totals10 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_time = 10)
   tmrca10 <- get_pairs_tmrca(ts, ibd_totals10)
   expect_true(max(tmrca10) <= 10)
 
-  ibd_totals20 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_tmrca = 20)
+  ibd_totals20 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_time = 20)
   tmrca20 <- get_pairs_tmrca(ts, ibd_totals20)
   expect_true(max(tmrca20) <= 20)
 
-  ibd_totals50 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_tmrca = 50)
+  ibd_totals50 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_time = 50)
   tmrca50 <- get_pairs_tmrca(ts, ibd_totals50)
   expect_true(max(tmrca50) <= 50)
 
-  ibd_totals100 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_tmrca = 100)
+  ibd_totals100 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_time = 100)
   tmrca100 <- get_pairs_tmrca(ts, ibd_totals100)
   expect_true(max(tmrca100) <= 100)
 
-  ibd_totals500 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_tmrca = 500)
+  ibd_totals500 <- ts_ibd(ts, coordinates = TRUE, within = samples, maximum_time = 500)
   tmrca500 <- get_pairs_tmrca(ts, ibd_totals500)
   expect_true(max(tmrca100) <= 500)
 })

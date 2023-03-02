@@ -1583,7 +1583,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'   look for shared IBD segments.
 #' @param minimum_length Minimum length of an IBD segment to return in results.
 #'   This is useful for reducing the total amount of IBD returned.
-#' @param maximum_tmrca Oldest MRCA of a node to be considered as an IBD ancestor
+#' @param maximum_time Oldest MRCA of a node to be considered as an IBD ancestor
 #'   to return that IBD segment in results. This is useful for reducing the total
 #'   amount of IBD returned.
 #' @param sf If IBD segments in a spatial tree sequence are being analyzed, should
@@ -1614,7 +1614,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' )
 #' @export
 ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
-                   minimum_length = NULL, maximum_tmrca = NULL, sf = TRUE) {
+                   minimum_length = NULL, maximum_time = NULL, sf = TRUE) {
   # make sure warnings are reported immediately
   opts <- options(warn = 1)
   on.exit(options(opts))
@@ -1622,9 +1622,9 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
 
-  if (is.null(minimum_length) && is.null(maximum_tmrca))
+  if (is.null(minimum_length) && is.null(maximum_time))
     warning("No minimum IBD length (minimum_length) or maximum age of an IBD\nancestor ",
-            "(maximum_tmrca) has been provided. As a result all IBD tracts will be\n",
+            "(maximum_time) has been provided. As a result all IBD tracts will be\n",
             "reported. Depending on the size of your tree sequence, this might produce\n",
             "extremely huge amount of data.", call. = FALSE)
   if (!is.null(within))
@@ -1643,7 +1643,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
       within = within,
       between = between,
       min_span = minimum_length,
-      max_time = maximum_tmrca
+      max_time = maximum_time
   )
 
   if (coordinates) {
