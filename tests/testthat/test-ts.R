@@ -710,3 +710,82 @@ test_that("all names of individuals must be present in the tree sequence", {
   expect_error(ts_diversity(ts, c("p1_1", "p2_2")), "Not all individual names")
   expect_s3_class(ts_diversity(ts, c("pop1_1", "pop2_2")), "data.frame")
 })
+
+# --------------------------------------------------------------------------------
+# IBD-related test for spatial tree sequences (more is in test-ibd.R,
+# test-ts-pure-spatial.R and test-ts-pure-nonspatial.R)
+
+test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (no CRS)", {
+  suppressWarnings(ts_slim <- ts_load(model, file = slim_ts, simplify = TRUE))
+
+  suppressWarnings(slim_ibd_sf <- ts_ibd(ts_slim, coordinates = TRUE))
+  suppressWarnings(slim_ibd_nosf <- ts_ibd(ts_slim, coordinates = TRUE, sf = FALSE))
+
+  # returned object is of a sf class (or not), as requested by the user
+  expect_s3_class(slim_ibd_sf, "sf")
+  expect_true(!inherits(slim_ibd_nosf, "sf"))
+
+  # the model does not have a CRS, and neither should the IBD table
+  expect_true(is.na(sf::st_crs(slim_ibd_sf)))
+
+  # spatial IBD links within the same individual give an EMPTY linestring with
+  # no coordinates
+  within_ibd <- slim_ibd_sf %>% dplyr::filter(name1 == name2) %>% dplyr::select(connection)
+  expect_true(nrow(sf::st_coordinates(within_ibd)) == 0)
+
+  # except for the spatial columns, the IBD results are the same
+  expect_equal(as.data.frame(slim_ibd_sf)[, c("start", "end", "length", "node1", "node2",
+                                              "name1", "name2", "pop1", "pop2",
+                                              "node1_time", "node2_time")],
+               as.data.frame(slim_ibd_nosf))
+})
+
+test_that("ts_ibd() on msprime/slendr tree sequences works properly", {
+  ts_msprime <- ts_load(model, file = msprime_ts)
+
+  suppressWarnings(msprime_ibd_sf <- ts_ibd(ts_msprime, coordinates = TRUE))
+  suppressWarnings(msprime_ibd_nosf <- ts_ibd(ts_msprime, coordinates = TRUE, sf = FALSE))
+
+  # returned object is of a sf class (or not), as requested by the user
+  expect_true(!inherits(msprime_ibd_sf, "sf"))
+  expect_true(!inherits(msprime_ibd_nosf, "sf"))
+
+  # except for the spatial columns, the IBD results are the same
+  expect_equal(as.data.frame(msprime_ibd_sf)[, c("start", "end", "length", "node1", "node2",
+                                                 "name1", "name2", "pop1", "pop2",
+                                                 "node1_time", "node2_time")],
+               as.data.frame(msprime_ibd_nosf))
+})
+
+test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (with CRS)", {
+  map <- readRDS("map.rds")
+  p <- population(competition = 10e3, mating = 10e3, dispersal = 10e3, name = "pop1",
+                  N = 1000, time = 3000, radius = 600000, center = c(10, 25), map = map)
+  ts <- compile_model(populations = list(p), generation_time = 30,
+                      resolution = 10e3, direction = "backward") %>%
+    slim(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)
+
+  set.seed(42)
+  samples <- sample(ts_samples(ts)$name, 20)
+
+  suppressWarnings(ibd_sf <- ts_ibd(ts, coordinates = TRUE, within = samples))
+  suppressWarnings(ibd_nosf <- ts_ibd(ts, coordinates = TRUE, within = samples, sf = FALSE))
+
+  # returned object is of a sf class (or not), as requested by the user
+  expect_s3_class(ibd_sf, "sf")
+  expect_true(!inherits(ibd_nosf, "sf"))
+
+  # the IBD sf object has the CRS attribute of the map itself
+  expect_true(sf::st_crs(map) == sf::st_crs(ibd_sf))
+
+  # spatial IBD links within the same individual give an EMPTY linestring with
+  # no coordinates
+  within_ibd <- ibd_sf %>% dplyr::filter(name1 == name2) %>% dplyr::select(connection)
+  expect_true(nrow(sf::st_coordinates(within_ibd)) == 0)
+
+  # except for the spatial columns, the IBD results are the same
+  expect_equal(as.data.frame(ibd_sf)[, c("start", "end", "length", "node1", "node2",
+                                         "name1", "name2", "pop1", "pop2",
+                                         "node1_time", "node2_time")],
+               as.data.frame(ibd_nosf))
+})

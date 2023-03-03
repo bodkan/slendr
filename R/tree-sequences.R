@@ -1557,6 +1557,164 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
     return(FALSE)
 }
 
+#' Collect Identity-by-Descent (IBD) segments
+#'
+#' This function iterates over a tree sequence and returns IBD tracts between
+#' pairs of individuals or nodes
+#'
+#' Iternally, this function leverages the tskit \code{TreeSequence} method
+#' \code{ibd_segments}. However, note that the \code{ts_ibd} function always
+#' returns a data frame of IBD tracts, it does not provide an option to iterate
+#' over individual IBD segments as shown in the official tskit documentation
+#' at <https://tskit.dev/tskit/docs/stable/ibd.html>. In general, R handles
+#' heavy iteration poorly, and this function does not attempt to serve as
+#' a full wrapper to \code{ibd_segments}.
+#'
+#' @param ts Tree sequence object of the class \code{slendr_ts}
+#' @param coordinates Should coordinates of all detected IBD tracts be reported?
+#'   If \code{FALSE} (the default), only the total length of shared IBD segments
+#'   and their numbers are reported. If \code{TRUE}, coordinates of each segment
+#'   will be returned (but note that this can have a massive impact on memory
+#'   usage). See details for more information.
+#' @param within A character vector with individual names or an integer vector with
+#'   node IDs indicating a set of nodes within which to look for IBD segments.
+#' @param between A list of lists of character vectors with individual names or
+#'   integer vectors with node IDs, indicating a set of nodes between which to
+#'   look for shared IBD segments.
+#' @param minimum_length Minimum length of an IBD segment to return in results.
+#'   This is useful for reducing the total amount of IBD returned.
+#' @param maximum_time Oldest MRCA of a node to be considered as an IBD ancestor
+#'   to return that IBD segment in results. This is useful for reducing the total
+#'   amount of IBD returned.
+#' @param sf If IBD segments in a spatial tree sequence are being analyzed, should
+#'   the returned table be a spatial sf object? Default is \code{TRUE}.
+#'
+#' @return A data frame with IBD results (either coordinates of each IBD segment
+#'   shared by a pair of nodes, or summary statistics about the total IBD sharing
+#'   for that pair)
+#'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' }
+#' init_env()
+#'
+#' # load an example model with an already simulated tree sequence
+#' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+#' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
+#'
+#' # load the tree-sequence object from disk
+#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#'
+#' # find IBD segments between specified Neanderthals and Europeans
+#' ts_ibd(
+#'   ts,
+#'   coordinates = TRUE,
+#'   between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")),
+#'   minimum_length = 40000
+#' )
+#' @export
+ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
+                   minimum_length = NULL, maximum_time = NULL, sf = TRUE) {
+  # make sure warnings are reported immediately
+  opts <- options(warn = 1)
+  on.exit(options(opts))
+
+  model <- attr(ts, "model")
+  spatial <- attr(ts, "spatial")
+
+  if (is.null(minimum_length) && is.null(maximum_time))
+    warning("No minimum IBD length (minimum_length) or maximum age of an IBD\nancestor ",
+            "(maximum_time) has been provided. As a result all IBD tracts will be\n",
+            "reported. Depending on the size of your tree sequence, this might produce\n",
+            "extremely huge amount of data.", call. = FALSE)
+  if (!is.null(within))
+    within <- unlist(purrr::map(within, ~ get_node_ids(ts, .x)))
+  else if (!is.null(between)) {
+    between <- purrr::map(between, ~ get_node_ids(ts, .x))
+    # another bug in reticulate? if the list has names, Python gives us:
+    #   Error in py_call_impl(callable, dots$args, dots$keywords):
+    #     TypeError: '<' not supported between instances of 'numpy.ndarray' and 'int'
+    # names(between) <- NULL
+  }
+
+  ibd_segments <- reticulate::py$collect_ibd(
+      ts,
+      coordinates = coordinates,
+      within = within,
+      between = between,
+      min_span = minimum_length,
+      max_time = maximum_time
+  )
+
+  if (coordinates) {
+    ncol <- 5
+    col_names <- c("start", "end", "length", "node1", "node2")
+    final_columns <- c(col_names, "name1", "name2", "pop1", "pop2")
+  } else {
+    ncol <- 4
+    col_names <- c("count", "total", "node1", "node2")
+    final_columns <- c(col_names, "name1", "name2", "pop1", "pop2")
+  }
+
+  # make sure symbolic columns are removed for non-slendr tree sequences
+  if (is.null(model))
+    final_columns <- setdiff(final_columns, c("name1", "name2", "pop1", "pop2"))
+
+  if (is.null(ibd_segments)) ibd_segments <- matrix(NA, nrow = 0, ncol = ncol)
+
+  colnames(ibd_segments) <- col_names
+
+  result <- dplyr::as_tibble(ibd_segments)
+
+  nodes <- ts_nodes(ts)
+
+  # add node times to the IBD results table
+  result <- result %>%
+    dplyr::inner_join(nodes[, c("node_id", "time")], by = c("node1" = "node_id")) %>%
+    dplyr::rename(node1_time = time) %>%
+    dplyr::inner_join(nodes[, c("node_id", "time")], by = c("node2" = "node_id")) %>%
+    dplyr::rename(node2_time = time)
+
+  final_columns <- c(final_columns, c("node1_time", "node2_time"))
+
+  # perform further data processing if the model in question is spatial (and if there
+  # are any IBD segments at all)
+  if (spatial && sf && nrow(result) > 0) {
+    result <- result %>%
+      dplyr::inner_join(nodes[, c("node_id", "location")], by = c("node1" = "node_id")) %>%
+      dplyr::rename(node1_location = location) %>%
+      dplyr::inner_join(nodes[, c("node_id", "location")], by = c("node2" = "node_id")) %>%
+      dplyr::rename(node2_location = location)
+
+    final_columns <- c(final_columns, c("connection", "node1_location", "node2_location"))
+
+    result <- purrr::map2(
+      result$node1_location, result$node2_location, ~
+        if (.x == .y)
+          sf::st_sf(connection = sf::st_sfc(sf::st_linestring()), crs = sf::st_crs(nodes))
+        else {
+          sf::st_union(.x, .y) %>%
+          sf::st_cast("LINESTRING") %>%
+          sf::st_sfc() %>%
+          sf::st_sf(connection = ., crs = sf::st_crs(nodes))
+        }
+      ) %>%
+      dplyr::bind_rows() %>%
+      dplyr::bind_cols(result, .) %>%
+        sf::st_set_geometry("connection") %>%
+      sf::st_set_crs(sf::st_crs(nodes))
+  }
+
+  if (!is.null(model)) {
+    result[["name1"]] <- sapply(result$node1, function(i) nodes[nodes$node_id == i, ]$name)
+    result[["name2"]] <- sapply(result$node2, function(i) nodes[nodes$node_id == i, ]$name)
+    result[["pop1"]] <- sapply(result$node1, function(i) nodes[nodes$node_id == i, ]$pop)
+    result[["pop2"]] <- sapply(result$node2, function(i) nodes[nodes$node_id == i, ]$pop)
+  }
+
+  result[, final_columns, with = FALSE]
+}
+
 # f-statistics ------------------------------------------------------------
 
 fstat <- function(ts, stat, sample_sets, mode, windows, span_normalise) {

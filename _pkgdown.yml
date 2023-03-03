@@ -148,3 +148,4 @@ reference:
     - ts_fst
     - ts_tajima
     - ts_segregating
+    - ts_ibd
