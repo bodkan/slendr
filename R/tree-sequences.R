@@ -2204,6 +2204,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 #'     "c('phylo', 'slendr_phylo')"}
 #'
 #' @param x Tree object of the class \code{slendr_phylo}
+#' @param ... Additional (unused) arguments of the \code{as.phylo} S3 method
 #'
 #' @return Standard phylogenetic tree object implemented by the R package ape
 #'
@@ -2211,7 +2212,7 @@ ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
 #' @export as.phylo.slendr_phylo
 #' @export
 #' @keywords internal
-as.phylo.slendr_phylo <- function(x) { class(x) <- "phylo"; x }
+as.phylo.slendr_phylo <- function(x, ...) { class(x) <- "phylo"; x }
 
 
 #' Print tskit's summary table of the Python tree-sequence object
