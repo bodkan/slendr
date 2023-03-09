@@ -1,6 +1,5 @@
-This update implements bugfixes, adds a couple of new features, and makes
-the required changes to match the latest versions of the package's Python
-dependencies.
+This fixes one "checking S3 generic/method consistency" warning that has
+recently appeared in CRAN check results.
 
 # R CMD check results
 
