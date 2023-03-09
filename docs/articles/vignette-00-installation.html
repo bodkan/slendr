@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -203,10 +203,10 @@ problems, look for help <a href="https://r-spatial.github.io/sf/index.html#insta
 system reported that they needed to install <code>libgit2</code> in
 order to be able to install the package <em>devtools</em> for the
 <code>devtools::install_github("bodkan/slendr")</code> step described on
-top of this page. Additionally, they had to install a couple of C/C++
-libraries as well (all dependencies of the <em>sf</em> package). In the
-end, they were able to successfully install <em>slendr</em> after
-running:</p>
+top of this page.</p>
+<p>Additionally, they had to install a couple of C/C++ libraries as well
+(all dependencies of the <em>sf</em> package). In the end, they were
+able to successfully install <em>slendr</em> after running:</p>
 <pre><code>brew install libgit2 udunits gdal proj</code></pre>
 <p>Note that this assumes that you have the <a href="https://brew.sh/" class="external-link">Homebrew</a> package manager already setup on
 your Mac. If you’re a beginning computational scientist using a Mac, I
@@ -214,6 +214,20 @@ strongly encourage you to install Homebrew. Sooner or later you will
 need some specific Linux/unix program anyway, and Homebrew is the way to
 get it (Mac is a unix machine, but without Homebrew a very poor one by
 default).</p>
+</div>
+<div class="section level4">
+<h4 id="linux">
+<strong>Linux</strong><a class="anchor" aria-label="anchor" href="#linux"></a>
+</h4>
+<p>Testing <em>slendr</em> installation on a fresh, pristine Debian
+installation with no dependencies previously installed, I had to run the
+following:</p>
+<pre><code>sudo apt-get install libudunits2-dev libssl-dev libgdal-dev libgsl-dev</code></pre>
+<p>It’s very unlikely you would need all of the above (and you might
+need other packages on non-Debian distributions), but this is what got
+<em>slendr</em> and all of its dependencies running on a completely
+clean system. Might be a good start in case you have trouble on your
+Linux machine.</p>
 </div>
 </div>
 <div class="section level3">

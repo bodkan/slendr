@@ -45,11 +45,21 @@ That said, *sf* itself depends on a number of geospatial libraries and depending
 
 #### **macOS**
 
-One user who recently installed *slendr* on a fresh macOS system reported that they needed to install `libgit2` in order to be able to install the package *devtools* for the `devtools::install_github("bodkan/slendr")` step described on top of this page. Additionally, they had to install a couple of C/C++ libraries as well (all dependencies of the *sf* package). In the end, they were able to successfully install *slendr* after running:
+One user who recently installed *slendr* on a fresh macOS system reported that they needed to install `libgit2` in order to be able to install the package *devtools* for the `devtools::install_github("bodkan/slendr")` step described on top of this page.
+
+Additionally, they had to install a couple of C/C++ libraries as well (all dependencies of the *sf* package). In the end, they were able to successfully install *slendr* after running:
 
     brew install libgit2 udunits gdal proj
 
 Note that this assumes that you have the [Homebrew](https://brew.sh/) package manager already setup on your Mac. If you're a beginning computational scientist using a Mac, I strongly encourage you to install Homebrew. Sooner or later you will need some specific Linux/unix program anyway, and Homebrew is the way to get it (Mac is a unix machine, but without Homebrew a very poor one by default).
+
+#### **Linux**
+
+Testing _slendr_ installation on a fresh, pristine Debian installation with no dependencies previously installed, I had to run the following:
+
+    sudo apt-get install libudunits2-dev libssl-dev libgdal-dev libgsl-dev
+
+It's very unlikely you would need all of the above (and you might need other packages on non-Debian distributions), but this is what got _slendr_ and all of its dependencies running on a completely clean system. Might be a good start in case you have trouble on your Linux machine.
 
 ### SLiM
 
