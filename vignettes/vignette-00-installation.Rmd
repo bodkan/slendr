@@ -57,7 +57,7 @@ Note that this assumes that you have the [Homebrew](https://brew.sh/) package ma
 
 Testing _slendr_ installation on a fresh, pristine Debian installation with no dependencies previously installed, I had to run the following:
 
-    sudo apt-get install libudunits2-dev libssl-dev libgdal-dev libgsl-dev
+    sudo apt-get install libudunits2-dev libssl-dev libgdal-dev libgsl-dev libgit2-dev libfontconfig1-dev libharfbuzz-dev
 
 It's very unlikely you would need all of the above (and you might need other packages on non-Debian distributions), but this is what got _slendr_ and all of its dependencies running on a completely clean system. Might be a good start in case you have trouble on your Linux machine.
 
