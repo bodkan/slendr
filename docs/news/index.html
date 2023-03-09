@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,8 +80,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
-<ul><li>A new function <code><a href="../reference/ts_ibd.html">ts_ibd()</a></code> has been added, representing an R interface to the <em>tskit</em> method <code>TreeSequence.ibd_segments()</code>. However, note that <code><a href="../reference/ts_ibd.html">ts_ibd()</a></code> returns IBD results as a data frame (optionally, a spatially annotated <em>sf</em> data frame). The function does not operate around iteration, as does its Python counterpart in _tskit. (PR <a href="https://github.com/bodkan/slendr/pull/123" class="external-link">#123</a>)</li>
+<h2 class="pkg-version" data-toc-text="0.5.1" id="slendr-051">slendr 0.5.1<a class="anchor" aria-label="anchor" href="#slendr-051"></a></h2>
+<ul><li><p>A new function <code><a href="../reference/ts_ibd.html">ts_ibd()</a></code> has been added, representing an R interface to the <em>tskit</em> method <code>TreeSequence.ibd_segments()</code>. However, note that <code><a href="../reference/ts_ibd.html">ts_ibd()</a></code> returns IBD results as a data frame (optionally, a spatially annotated <em>sf</em> data frame). The function does not operate around iteration, as does its Python counterpart in _tskit. (PR <a href="https://github.com/bodkan/slendr/pull/123" class="external-link">#123</a>)</p></li>
+<li><p>Emergency fix for a trivial CRAN warning (except “nothing” is trivial when it comes to CRAN). (<a href="https://github.com/bodkan/slendr/commit/5600a4" class="external-link">#5600a4</a>)</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="slendr-050">slendr 0.5.0<a class="anchor" aria-label="anchor" href="#slendr-050"></a></h2><p class="text-muted">CRAN release: 2023-02-02</p>
