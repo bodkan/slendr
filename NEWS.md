@@ -1,8 +1,9 @@
 # slendr 0.5.1
 
-- A new function `ts_ibd()` has been added, representing an R interface to the _tskit_ method `TreeSequence.ibd_segments()`. However, note that `ts_ibd()` returns IBD results as a data frame (optionally, a spatially annotated _sf_ data frame). The function does not operate around iteration, as does its Python counterpart in _tskit. (PR [#123](https://github.com/bodkan/slendr/pull/123))
+- This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
 
-- Emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
+- A new function `ts_ibd()` has been added, representing an R interface to the _tskit_ method `TreeSequence.ibd_segments()`. However, note that `ts_ibd()` returns IBD results as a data frame (optionally, a spatially annotated _sf_ data frame). The function does not operate around iteration, as does its Python counterpart in _tskit_. Until the next major version of _slendr_, this function should be considered experimental. (PR [#123](https://github.com/bodkan/slendr/pull/123))
+
 
 # slendr 0.5.0
 
