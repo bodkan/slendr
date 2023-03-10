@@ -1,3 +1,5 @@
+# slendr (development version)
+
 # slendr 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
