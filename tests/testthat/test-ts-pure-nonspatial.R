@@ -273,7 +273,7 @@ test_that("ts_ibd() on nonspatial SLiM tree sequences works with coordinates = (
   ibd_totals2 <-
     dplyr::group_by(ibd_fragments, node1, node2, node1_time, node2_time) %>%
     dplyr::summarise(count = dplyr::n(), total = sum(length), .groups = "keep") %>%
-    dplyr::select(count, total, dplyr::everything()) %>%
+    dplyr::select(node1, node2, count, total, node1_time, node2_time) %>%
     dplyr::ungroup()
 
   expect_equal(ibd_totals, ibd_totals2)
@@ -290,7 +290,7 @@ test_that("ts_ibd() on nonspatial msprime tree sequences works with coordinates 
   ibd_totals2 <-
     dplyr::group_by(ibd_fragments, node1, node2, node1_time, node2_time) %>%
     dplyr::summarise(count = dplyr::n(), total = sum(length), .groups = "keep") %>%
-    dplyr::select(count, total, dplyr::everything()) %>%
+    dplyr::select(node1, node2, count, total, node1_time, node2_time) %>%
     dplyr::ungroup()
 
   expect_equal(ibd_totals, ibd_totals2)
@@ -308,7 +308,5 @@ test_that("ts_ibd() on non-spatial msprime tree sequences gives a correct object
   expect_true(!inherits(ibd_nosf, "sf"))
 
   # except for the spatial columns, the IBD results are the same
-  expect_equal(as.data.frame(ibd_sf)[, c("count", "total", "node1", "node2",
-                                         "node1_time", "node2_time")],
-               as.data.frame(ibd_nosf))
+  expect_equal(ibd_sf, ibd_nosf)
 })

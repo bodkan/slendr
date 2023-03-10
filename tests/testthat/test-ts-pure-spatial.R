@@ -69,6 +69,7 @@ test_that("ts_ibd() on spatial SLiM tree sequences works with coordinates = (T|F
     dplyr::group_by(ibd_fragments, node1, node2, node1_time, node2_time) %>%
     dplyr::summarise(count = dplyr::n(), total = sum(length), .groups = "keep") %>%
     dplyr::select(count, total, dplyr::everything()) %>%
+    dplyr::select(node1, node2, count, total, node1_time, node2_time) %>%
     dplyr::ungroup()
 
   expect_equal(ibd_totals, ibd_totals2)
@@ -83,7 +84,7 @@ test_that("ts_ibd() on spatial SLiM tree sequences gives a correct sf object", {
   expect_true(!inherits(ibd_nosf, "sf"))
 
   # except for the spatial columns, the IBD results are the same
-  expect_equal(as.data.frame(ibd_sf)[, c("count", "total", "node1", "node2",
+  expect_equal(as.data.frame(ibd_sf)[, c("node1", "node2", "count", "total",
                                          "node1_time", "node2_time")],
                as.data.frame(ibd_nosf))
 })

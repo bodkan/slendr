@@ -3,7 +3,8 @@
 # It is distributed under the same conditions and license as the rest of the
 # slendr R package codebase.
 
-import numpy
+import numpy as np
+import pandas as pd
 import tskit
 
 def mult_roots(ts):
@@ -34,19 +35,28 @@ def collect_ibd(ts, coordinates = False, within=None, between=None,
         max_time=max_time
     )
 
-    if ibd_segments.num_pairs == 0: return None
-
     result = []
     for pair, ibd in ibd_segments.items():
         if coordinates:
-            node1 = numpy.repeat(pair[0], len(ibd))
-            node2 = numpy.repeat(pair[1], len(ibd))
-            left = numpy.fromiter((i.left for i in ibd), dtype=int)
-            right = numpy.fromiter((i.right for i in ibd), dtype=int)
-            pair_result = numpy.column_stack((left, right, right - left, node1, node2)).astype(int)
+            for segment in ibd:
+                mrca = segment.node
+                tmrca = ts.node(mrca).time
+                result.append((pair[0], pair[1], segment.right - segment.left,
+                               mrca, tmrca, segment.left, segment.right))
+            # node1 = np.repeat(pair[0], len(ibd))
+            # node2 = np.repeat(pair[1], len(ibd))
+            # left = np.fromiter((i.left for i in ibd), dtype=int)
+            # right = np.fromiter((i.right for i in ibd), dtype=int)
+            # pair_result = np.column_stack((left, right, right - left, node1, node2)).astype(int)
         else:
-            pair_result = numpy.asarray([len(ibd), ibd.total_span, pair[0], pair[1]], dtype=int)
-        result.append(pair_result)
-    result = numpy.vstack(result)
+            # pair_result = np.asarray([len(ibd), ibd.total_span, pair[0], pair[1]], dtype=int)
+            result.append((pair[0], pair[1], len(ibd), ibd.total_span))
+        # result.append(pair_result)
+    # result = np.vstack(result)
 
-    return result
+    if coordinates:
+        columns = ["node1", "node2", "length", "mrca", "tmrca", "left", "right"]
+    else:
+        columns = ["node1", "node2", "count", "total"]
+
+    return pd.DataFrame(result, columns=columns)

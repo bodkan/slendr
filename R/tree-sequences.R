@@ -1637,56 +1637,38 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
     # names(between) <- NULL
   }
 
-  ibd_segments <- reticulate::py$collect_ibd(
+  result <- reticulate::py$collect_ibd(
       ts,
       coordinates = coordinates,
       within = within,
       between = between,
       min_span = minimum_length,
       max_time = maximum_time
-  )
+  ) %>% dplyr::as_tibble()
 
-  if (coordinates) {
-    ncol <- 5
-    col_names <- c("start", "end", "length", "node1", "node2")
-    final_columns <- c(col_names, "name1", "name2", "pop1", "pop2")
-  } else {
-    ncol <- 4
-    col_names <- c("count", "total", "node1", "node2")
-    final_columns <- c(col_names, "name1", "name2", "pop1", "pop2")
-  }
+  # drop a useless internal attribute (not a loss of information -- *we* are the ones
+  # who created the pandas DataFrame in the first place)
+  attr(result, "pandas.index") <- NULL
 
-  # make sure symbolic columns are removed for non-slendr tree sequences
-  if (is.null(model))
-    final_columns <- setdiff(final_columns, c("name1", "name2", "pop1", "pop2"))
-
-  if (is.null(ibd_segments)) ibd_segments <- matrix(NA, nrow = 0, ncol = ncol)
-
-  colnames(ibd_segments) <- col_names
-
-  result <- dplyr::as_tibble(ibd_segments)
+  if (!nrow(result)) return(result)
 
   nodes <- ts_nodes(ts)
 
   # add node times to the IBD results table
   result <- result %>%
-    dplyr::inner_join(nodes[, c("node_id", "time")], by = c("node1" = "node_id")) %>%
+    dplyr::inner_join(as.data.frame(nodes)[, c("node_id", "time")], by = c("node1" = "node_id")) %>%
     dplyr::rename(node1_time = time) %>%
-    dplyr::inner_join(nodes[, c("node_id", "time")], by = c("node2" = "node_id")) %>%
+    dplyr::inner_join(as.data.frame(nodes)[, c("node_id", "time")], by = c("node2" = "node_id")) %>%
     dplyr::rename(node2_time = time)
-
-  final_columns <- c(final_columns, c("node1_time", "node2_time"))
 
   # perform further data processing if the model in question is spatial (and if there
   # are any IBD segments at all)
-  if (spatial && sf && nrow(result) > 0) {
+  if (spatial && sf) {
     result <- result %>%
       dplyr::inner_join(nodes[, c("node_id", "location")], by = c("node1" = "node_id")) %>%
       dplyr::rename(node1_location = location) %>%
       dplyr::inner_join(nodes[, c("node_id", "location")], by = c("node2" = "node_id")) %>%
       dplyr::rename(node2_location = location)
-
-    final_columns <- c(final_columns, c("connection", "node1_location", "node2_location"))
 
     result <- purrr::map2(
       result$node1_location, result$node2_location, ~
@@ -1712,7 +1694,14 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
     result[["pop2"]] <- sapply(result$node2, function(i) nodes[nodes$node_id == i, ]$pop)
   }
 
-  result[, final_columns, with = FALSE]
+  if (coordinates)
+    result <- dplyr::select(result, node1, node2, length, mrca, node1_time, node2_time, tmrca,
+                                    dplyr::everything())
+  else
+    result <- dplyr::select(result, node1, node2, count, total, node1_time, node2_time,
+                                    dplyr::everything())
+
+  result
 }
 
 # f-statistics ------------------------------------------------------------
