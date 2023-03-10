@@ -2242,11 +2242,11 @@ get_ts_raw_nodes <- function(ts) {
 
   # in case of slendr tree sequences, convert times to the model time units
   if (from_slendr)
-    node_table$time <- time_fun(ts)(table$time, model)
+    node_table$time <- as.numeric(time_fun(ts)(table$time, model))
   else
-    node_table$time <- table$time
+    node_table$time <- as.numeric(table$time)
 
-  node_table$time_tskit <- table$time
+  node_table$time_tskit <- as.numeric(table$time)
 
   # -1 as a missing value in tskit is not very R like, so let's replace it with
   # a proper NA
@@ -2340,8 +2340,8 @@ get_ts_raw_mutations <- function(ts) {
     id = seq_len(table$num_rows) - 1,
     site = as.vector(table[["site"]]),
     node = as.vector(table[["node"]]),
-    time = time,
-    time_tskit = table[["time"]]
+    time = as.numeric(time),
+    time_tskit = as.numeric(table[["time"]])
   )
 }
 
