@@ -98,17 +98,6 @@ ts_load <- function(file, model = NULL,
   else
     type <- "SLiM"
 
-  # this is an awful workaround around the reticulate/Python bug which prevents
-  # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
-  #   Error in py_call_impl(callable, dots$args, dots$keywords) :
-  #     TypeError: integer argument expected, got float
-  # in places with no integer/float conversion in sight
-  #
-  # at least it prevents having to do things like:
-  # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
-  #                                                              for ind in ts.individuals()]")
-  reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
-
   attr(ts, "type") <- type
   attr(ts, "model") <- model
   attr(ts, "spatial") <- type == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != ""

@@ -1271,6 +1271,19 @@ init_env <- function(quiet = FALSE) {
          "To set up a dedicated Python environment you first need to run setup_env().", call. = FALSE)
   else {
     reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
+
+    # this is an awful workaround around the reticulate/Python bug which prevents
+    # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
+    #   Error in py_call_impl(callable, dots$args, dots$keywords) :
+    #     TypeError: integer argument expected, got float
+    # in places with no integer/float conversion in sight
+    #
+    # at least it prevents having to do things like:
+    # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
+    #                                                              for ind in ts.individuals()]")
+    # (moved from ts_load() here because this is a better place for loading our Python functions)
+    reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
+
     if (!reticulate::py_module_available("msprime") ||
         !reticulate::py_module_available("tskit") ||
         !reticulate::py_module_available("pyslim")) {
