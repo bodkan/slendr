@@ -395,14 +395,14 @@ check_event_time <- function(time, pop) {
 # (used exclusively in the schedule_sampling() function to avoid situations when
 # a user would sample from a population in the same generation that it
 # would be created)
-check_present_time <- function(time, pop, offset, direction = NULL) {
+check_present_time <- function(time, pop, offset, direction = NULL, allow_same = FALSE) {
   if (is.null(direction))
     direction <- time_direction(pop)
   split_time <- get_lineage_splits(pop)[1]
 
-  if (time == split_time |
-      (direction == "backward" & time > split_time - offset) |
-      (direction == "forward" & time < split_time + offset))
+  if ((!allow_same && time == split_time) ||
+      (direction == "backward" && time > split_time - offset) ||
+      (direction == "forward" && time < split_time + offset))
     stop("Population ", pop$pop[1], " is not present at a time ", time, call. = FALSE)
 }
 

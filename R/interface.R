@@ -55,6 +55,8 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
   if (!is.character(name) || length(name) != 1)
     stop("A population name must be a character scalar value", call. = FALSE)
 
+  time <- as.integer(time)
+
   # if this population splits from a parental population, check that the parent
   # really exists and that the split time make sense given the time of appearance
   # of the parental population
@@ -71,7 +73,6 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
   if (!is.null(parent) && is.logical(map) && map == FALSE)
     map <- attr(parent, "map")
 
-  time <- as.integer(time)
   if (time < 1) stop("Split time must be a non-negative integer number", call. = FALSE)
   N <- as.integer(N)
 
@@ -573,30 +574,22 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
     stop("Both 'from' and 'to' arguments must be slendr population objects",
          call. = FALSE)
 
+  # TODO: this needs some serious restructuring -- this function originated when slendr
+  # could only do spatial simulations and some consistency checks relied on spatial
+  # attributes; as a result, some checks are overlapping and/or redundant
+
   if ((has_map(from) && !has_map(to)) || (!has_map(from) && has_map(to)))
     stop("Both or neither populations must be spatial", call. = FALSE)
 
-  # make sure both participating populations are present at the start of the
-  # gene flow event (`check_present_time()` is reused from the sampling functionality)
-  # check_present_time(start, from, offset = 0)
-  # check_present_time(end, from, offset = 0)
-  # check_present_time(start, to, offset = 0)
-  # check_present_time(end, to, offset = 0)
-
-  # make sure the population is not removed during the the admixture period
-  # (note that this will only be relevant for SLiM simulations at this moment)
-  check_removal_time(start, from)
-  check_removal_time(end, from)
-  check_removal_time(start, to)
-  check_removal_time(end, to)
+  # make sure that gene flow has a sensible value between 0 and 1
+  if (rate < 0 || rate > 1)
+    stop("Gene-flow rate must be a numeric value between 0 and 1", call. = FALSE)
 
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
-  if (start == end)
-    stop(sprintf("No time allowed for the %s -> %s gene flow at time %s to happen",
-                 from_name, to_name, start), call. = FALSE)
-
+  # make sure that the start->end time direction of the given gene flow corresponds to
+  # the time direction implied by the split time of the populations involved
   if (from$time[1] <= start & from$time[1] <= end &
       to$time[1] <= start & to$time[1] <= end)
     comp <- `<=`
@@ -607,6 +600,31 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
     stop(sprintf("Specified times are not consistent with the assumed direction of
 time (gene flow %s -> %s in the time window %s-%s)",
                  from_name, to_name, start, end), call. = FALSE)
+
+  if (start == end)
+    stop(sprintf("Start and end time for the %s -> %s gene flow is the same (%s)",
+                 from_name, to_name, start), call. = FALSE)
+
+  # make sure both participating populations are present at the start of the
+  # gene flow event (`check_present_time()` is reused from the sampling functionality)
+  direction <- if (start < end) "forward" else "backward"
+  tryCatch(
+    {
+      check_present_time(start, from, offset = 0, direction = direction, allow_same = TRUE)
+      check_present_time(end, from, offset = 0, direction = direction, allow_same = TRUE)
+      check_present_time(start, to, offset = 0, direction = direction, allow_same = TRUE)
+      check_present_time(end, to, offset = 0, direction = direction, allow_same = TRUE)
+
+      check_removal_time(start, from)
+      check_removal_time(end, from)
+      check_removal_time(start, to)
+      check_removal_time(end, to)
+    },
+    error = function(e) {
+      stop(sprintf("Both %s and %s must be present within the gene-flow window %s-%s",
+                   from_name, to_name, start, end), call. = FALSE)
+    }
+  )
 
   if (has_map(from) && has_map(to)) {
     # get the last specified spatial maps before the geneflow time
