@@ -55,7 +55,11 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
   if (!is.character(name) || length(name) != 1)
     stop("A population name must be a character scalar value", call. = FALSE)
 
-  time <- as.integer(time)
+  N <- round(N)
+  time <- round(time)
+
+  if (time < 1) stop("Split time must be a non-negative number", call. = FALSE)
+  if (N < 1) stop("Population size must be a non-negative number", call. = FALSE)
 
   # if this population splits from a parental population, check that the parent
   # really exists and that the split time make sense given the time of appearance
@@ -72,9 +76,6 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
 
   if (!is.null(parent) && is.logical(map) && map == FALSE)
     map <- attr(parent, "map")
-
-  if (time < 1) stop("Split time must be a non-negative integer number", call. = FALSE)
-  N <- as.integer(N)
 
   if (inherits(map, "slendr_map")) {
     # define the population range as a simple geometry object
@@ -1185,7 +1186,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   if (!inherits(model, "slendr_model"))
     stop("A slendr_model object must be specified", call. = FALSE)
 
-  times <- unique(as.integer(sort(times)))
+  times <- unique(as.integer(round(sort(times))))
 
   samples <- list(...)
   sample_pops <- purrr::map(samples, 1)

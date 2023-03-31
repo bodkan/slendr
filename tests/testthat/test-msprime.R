@@ -340,3 +340,19 @@ test_that("ensure that a model reaches full coalescence", {
     "slendr_ts"
   )
 })
+
+test_that("population size must be a non-negative number", {
+  expect_error(pop <- population("asd", N = -1, time = 100),
+               "Population size must be a non-negative number")
+  expect_error(pop <- population("asd", N = 0, time = 100),
+               "Population size must be a non-negative number")
+  expect_s3_class(pop <- population("asd", N = 1, time = 100), "slendr_pop")
+})
+
+test_that("population time must be a non-negative number", {
+  expect_error(pop <- population("asd", N = 100, time = -1),
+               "Split time must be a non-negative number")
+  expect_error(pop <- population("asd", N = 100, time = 0),
+               "Split time must be a non-negative number")
+  expect_s3_class(pop <- population("asd", N = 1, time = 100), "slendr_pop")
+})
