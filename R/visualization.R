@@ -285,6 +285,8 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
     # pop <- populations[[i]]
     name <- pop$pop[1]
     center <- centers[centers$pop == name, ]$center
+
+    # collect all historical events from the present to the past
     history <- attr(pop, "history") %>%
       purrr::keep(~ .$event %in% c("split", "resize")) %>%
       rev() %>%
@@ -305,8 +307,10 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       # time of the next event
       if (next_event$event == "split")
         ys <- c(ys, rep(next_event$time, 2))
-      else if (next_event$event == "resize")
+      else if (next_event$event == "resize" && next_event$how == "step")
         ys <- c(ys, rep(next_event$tresize, 2))
+      else if (next_event$event == "resize" && next_event$how == "exponential")
+        ys <- c(ys, next_event$tend, rep(next_event$tresize, 2), next_event$tend)
       else
         stop("Invalid 'next event'. This is a slendr bug! (2)", call. = FALSE)
 
@@ -323,7 +327,9 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       if (next_event$event == "split" || next_event$how == "step")
         xs <- c(xs, center + next_event$N / 2, center - next_event$N / 2)
       else if (next_event$event == "split" || next_event$how == "exponential")
-        xs <- c(xs, center + next_event$prev_N / 2, center - next_event$prev_N / 2)
+        xs <- c(xs,
+                center + next_event$N / 2, center + next_event$prev_N / 2,
+                center - next_event$prev_N / 2, center - next_event$N / 2)
       else
         stop("Invalid 'next event'. This is a slendr bug! (4)", call. = FALSE)
 
