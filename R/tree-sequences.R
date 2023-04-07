@@ -1619,7 +1619,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
   if (!is.null(within))
     within <- unlist(purrr::map(within, ~ get_node_ids(ts, .x)))
   else if (!is.null(between)) {
-    between <- purrr::map(between, ~ get_node_ids(ts, .x))
+    between <- unname(purrr::map(between, ~ get_node_ids(ts, .x)))
     # another bug in reticulate? if the list has names, Python gives us:
     #   Error in py_call_impl(callable, dots$args, dots$keywords):
     #     TypeError: '<' not supported between instances of 'numpy.ndarray' and 'int'
