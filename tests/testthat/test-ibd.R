@@ -43,10 +43,19 @@ test_that("`within =` argument of ts_ibd() does what it is supposed to", {
 })
 
 test_that("`between =` argument of ts_ibd() does what it is supposed to", {
-  ibd_totals <- ts_ibd(ts, coordinates = FALSE, minimum_length = 100000,
-                       between = list(pop1_samples, pop2_samples))
-  expect_true("POP1" == unique(unlist(ibd_totals$pop1)))
-  expect_true("POP2" == unique(unlist(ibd_totals$pop2)))
+  # individual names in a named list
+  ibd_totals1 <- ts_ibd(ts, coordinates = FALSE, minimum_length = 100000,
+                        between = list(x = pop1_samples, y = pop2_samples))
+  expect_true("POP1" == unique(unlist(ibd_totals1$pop1)))
+  expect_true("POP2" == unique(unlist(ibd_totals1$pop2)))
+
+  # individual names in an unnamed list
+  ibd_totals2 <- ts_ibd(ts, coordinates = FALSE, minimum_length = 100000,
+                        between = list(pop1_samples, pop2_samples))
+  expect_true("POP1" == unique(unlist(ibd_totals2$pop1)))
+  expect_true("POP2" == unique(unlist(ibd_totals2$pop2)))
+
+  expect_true(all(ibd_totals1 == ibd_totals2))
 })
 
 test_that("IBD of a given minimum length is returned", {

@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -188,7 +188,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmplILLSA/file124d7649d2475");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmppDugH7/file673c56b97c40");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -242,7 +242,7 @@ also include spatial information—see below):</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 26,020 × 11</span></span></span>
 <span><span class="co">#&gt;    pop   node_id  time time_tskit sampled remembe…¹ retai…² alive pedig…³ ind_id</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p1          0     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      0</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p1          1     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      0</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p1          2     0          0 TRUE    FALSE     FALSE   TRUE   2.01<span style="color: #949494;">e</span>7      1</span></span>
@@ -368,18 +368,18 @@ and analyze it with the slendr functionality:</p>
 <span><span class="co">#&gt; overview of the underlying table object:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 199 × 7</span></span></span>
-<span><span class="co">#&gt;    pop   ind_id node_id      time time_tskit sampled pop_id</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl[1d]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 0         <span style="color: #BB0000;">NA</span>       0         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 0         <span style="color: #BB0000;">NA</span>       1         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 0         <span style="color: #BB0000;">NA</span>       2         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 0         <span style="color: #BB0000;">NA</span>       3         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 0         <span style="color: #BB0000;">NA</span>       4         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 0         <span style="color: #BB0000;">NA</span>       5         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 0         <span style="color: #BB0000;">NA</span>       6         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 0         <span style="color: #BB0000;">NA</span>       7         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 0         <span style="color: #BB0000;">NA</span>       8         0          0 TRUE         0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 0         <span style="color: #BB0000;">NA</span>       9         0          0 TRUE         0</span></span>
+<span><span class="co">#&gt;    pop   ind_id node_id  time time_tskit sampled pop_id</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 0         <span style="color: #BB0000;">NA</span>       0     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 0         <span style="color: #BB0000;">NA</span>       1     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 0         <span style="color: #BB0000;">NA</span>       2     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 0         <span style="color: #BB0000;">NA</span>       3     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 0         <span style="color: #BB0000;">NA</span>       4     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 0         <span style="color: #BB0000;">NA</span>       5     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 0         <span style="color: #BB0000;">NA</span>       6     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 0         <span style="color: #BB0000;">NA</span>       7     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 0         <span style="color: #BB0000;">NA</span>       8     0          0 TRUE         0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 0         <span style="color: #BB0000;">NA</span>       9     0          0 TRUE         0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 189 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -423,7 +423,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmplILLSA/file124d7293bddc1");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmppDugH7/file673c13accdd3");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
@@ -460,7 +460,7 @@ spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,955 × 12</span></span></span>
 <span><span class="co">#&gt;    pop   node_id  time time_…¹               location sampled remembered retai…²</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl[1&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;POINT&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;POINT&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p1          0     0       0   (0.904485 0.0777489) TRUE    FALSE      TRUE   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p1          1     0       0   (0.904485 0.0777489) TRUE    FALSE      TRUE   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p1          2     0       0   (0.668828 0.5246381) TRUE    FALSE      TRUE   </span></span>

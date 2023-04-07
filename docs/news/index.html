@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,6 +79,13 @@
       <small>Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li><p><code><a href="../reference/ts_ibd.html">ts_ibd()</a></code> now returns the ID number of a MRCA node of a pair of nodes sharing a given IBD segment, as well as the TMRCA of that node. (<a href="https://github.com/bodkan/slendr/commit/7e2825" class="external-link">#7e2825</a>)</p></li>
+<li><p>Trivial parameter errors are caught during <code><a href="../reference/population.html">population()</a></code> calls rather than during simulation (solving minor issues discovered via big simulation runs during the development of <a href="https://github.com/bodkan/demografr" class="external-link"><em>demografr</em></a>). (<a href="https://github.com/bodkan/slendr/commit/e33373" class="external-link">#e33373</a>)</p></li>
+<li><p>Fix error in plotting exponential resizes which do not last until “the present”. (<a href="https://github.com/bodkan/slendr/commit/4c49a4" class="external-link">#4c49a4</a>)</p></li>
+<li><p><code><a href="../reference/ts_ibd.html">ts_ibd()</a></code> no longer gives obscure error when <code>between =</code> is provided as a named list of individuals’ names (instead of an expected unnamed list). The names of list elements are not used in any way, but the error happens somewhere deeply in the R-&gt;Python translation layer inside <a href="https://rstudio.github.io/reticulate/" class="external-link"><em>reticulate</em></a> and there’s no need for the users to concern themselves with it. (<a href="https://github.com/bodkan/slendr/commit/7965e4" class="external-link">#7965e4</a>)</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.1" id="slendr-051">slendr 0.5.1<a class="anchor" aria-label="anchor" href="#slendr-051"></a></h2><p class="text-muted">CRAN release: 2023-03-09</p>
 <ul><li><p>This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. (<a href="https://github.com/bodkan/slendr/commit/5600a4" class="external-link">#5600a4</a>)</p></li>
