@@ -2,6 +2,10 @@
 
 - `ts_ibd()` now returns the ID number of a MRCA node of a pair of nodes sharing a given IBD segment, as well as the TMRCA of that node. ([#7e2825](https://github.com/bodkan/slendr/commit/7e2825))
 
+- Trivial parameter errors are caught during `population()` calls rather than during simulation (solving minor issues discovered via big simulation runs during the development of [_demografr_](https://github.com/bodkan/demografr)). ([#e33373](https://github.com/bodkan/slendr/commit/e33373))
+
+- Fix error in plotting exponential resizes which do not last until "the present". ([#4c49a4](https://github.com/bodkan/slendr/commit/4c49a4))
+
 # slendr 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
