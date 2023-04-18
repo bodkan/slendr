@@ -10,7 +10,7 @@ ts_afs(
   mode = c("site", "branch", "node"),
   windows = NULL,
   span_normalise = FALSE,
-  polarised = FALSE
+  polarised = TRUE
 )
 }
 \arguments{
@@ -29,9 +29,9 @@ are added automatically)}
 \item{span_normalise}{Argument passed to tskit's \code{allele_frequency_spectrum}
 method}
 
-\item{polarised}{When FALSE (the default) the allele frequency spectrum will
-be folded (i.e. the counts will not depend on knowing which allele is
-ancestral)}
+\item{polarised}{When TRUE (the default) the allele frequency spectrum will
+not be folded (i.e. the counts will assume knowledge of which allele is ancestral,
+and which is derived, which is known in a simulation)}
 }
 \value{
 Allele frequency spectrum values for the given sample set. Note that the

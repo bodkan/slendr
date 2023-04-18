@@ -2139,9 +2139,9 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' @param windows Coordinates of breakpoints between windows. The first
 #'   coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
 #'   are added automatically)
-#' @param polarised When FALSE (the default) the allele frequency spectrum will
-#'   be folded (i.e. the counts will not depend on knowing which allele is
-#'   ancestral)
+#' @param polarised When TRUE (the default) the allele frequency spectrum will
+#'   not be folded (i.e. the counts will assume knowledge of which allele is ancestral,
+#'   and which is derived, which is known in a simulation)
 #' @param span_normalise Argument passed to tskit's \code{allele_frequency_spectrum}
 #'   method
 #'
@@ -2167,8 +2167,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' ts_afs(ts, sample_sets = list(samples$name))
 #' @export
 ts_afs <- function(ts, sample_sets = NULL, mode = c("site", "branch", "node"),
-                   windows = NULL, span_normalise = FALSE,
-                   polarised = FALSE) {
+                   windows = NULL, span_normalise = FALSE, polarised = TRUE) {
   mode <- match.arg(mode)
 
   if (is.null(sample_sets))
