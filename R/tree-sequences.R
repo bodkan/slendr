@@ -1753,7 +1753,7 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' <https://github.com/DReichLab/AdmixTools/blob/master/README.3PopTest#L5>).
 #' Specifically, the widely used notation introduced by Patterson assumes the
 #' population triplet as f3(C; A, B), with C being the "focal" sample (i.e., either
-#' the outgroup or a sample tested for admixture). In contract, tskit implements
+#' the outgroup or a sample tested for admixture). In contrast, tskit implements
 #' f3(A; B, C), with the "focal sample" being A.
 #'
 #' Although this is likely to confuse many ADMIXTOOLS users, slendr does not have
