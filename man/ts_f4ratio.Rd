@@ -67,7 +67,25 @@ nomenclature of Patterson et al. 2021)}
 Data frame with statistics calculated for the given sets of individuals
 }
 \description{
-Calculate the f2, f3, f4, and f4-ratio statistics
+These functions present an R interface to the corresponding f-statistics methods
+in tskit.
+}
+\details{
+Note that the order of populations f3 statistic implemented in tskit
+(\url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.f3}) is
+different from what you might expect from ADMIXTOOLS, as defined in
+Patterson 2012 (see \url{https://academic.oup.com/genetics/article/192/3/1065/5935193}
+under heading "The three-population test and introduction of f-statistics",
+as well as ADMIXTOOLS documentation at
+\url{https://github.com/DReichLab/AdmixTools/blob/master/README.3PopTest#L5}).
+Specifically, the widely used notation introduced by Patterson assumes the
+population triplet as f3(C; A, B), with C being the "focal" sample (i.e., either
+the outgroup or a sample tested for admixture). In contract, tskit implements
+f3(A; B, C), with the "focal sample" being A.
+
+Although this is likely to confuse many ADMIXTOOLS users, slendr does not have
+much choice in this, because its \code{ts_*()} functions are designed to be
+broadly compatible with raw tskit methods.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present

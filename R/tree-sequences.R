@@ -1720,6 +1720,7 @@ ts_f2 <- function(ts, A, B, mode = c("site", "branch", "node"),
 }
 
 #' @rdname ts_f4ratio
+#'
 #' @export
 ts_f3 <- function(ts, A, B, C, mode = c("site", "branch", "node"),
                   span_normalise = TRUE, windows = NULL) {
@@ -1739,6 +1740,25 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 }
 
 #' Calculate the f2, f3, f4, and f4-ratio statistics
+#'
+#' These functions present an R interface to the corresponding f-statistics methods
+#' in tskit.
+#'
+#' Note that the order of populations f3 statistic implemented in tskit
+#' (<https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.f3>) is
+#' different from what you might expect from ADMIXTOOLS, as defined in
+#' Patterson 2012 (see <https://academic.oup.com/genetics/article/192/3/1065/5935193>
+#' under heading "The three-population test and introduction of f-statistics",
+#' as well as ADMIXTOOLS documentation at
+#' <https://github.com/DReichLab/AdmixTools/blob/master/README.3PopTest#L5>).
+#' Specifically, the widely used notation introduced by Patterson assumes the
+#' population triplet as f3(C; A, B), with C being the "focal" sample (i.e., either
+#' the outgroup or a sample tested for admixture). In contract, tskit implements
+#' f3(A; B, C), with the "focal sample" being A.
+#'
+#' Although this is likely to confuse many ADMIXTOOLS users, slendr does not have
+#' much choice in this, because its \code{ts_*()} functions are designed to be
+#' broadly compatible with raw tskit methods.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param W,X,Y,Z,A,B,C,O Character vectors of individual names (following the
