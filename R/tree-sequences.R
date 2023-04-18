@@ -1761,8 +1761,9 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' broadly compatible with raw tskit methods.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
-#' @param W,X,Y,Z,A,B,C,O Character vectors of individual names (following the
-#'   nomenclature of Patterson et al. 2021)
+#' @param W,X,Y,Z,A,B,C,O Character vectors of individual names (largely following
+#'   the nomenclature of Patterson 2021, but see crucial differences between
+#'   tskit and ADMIXTOOLS in Details)
 #' @param span_normalise Divide the result by the span of the window? Default
 #'   TRUE, see the tskit documentation for more detail.
 #' @param windows Coordinates of breakpoints between windows. The first

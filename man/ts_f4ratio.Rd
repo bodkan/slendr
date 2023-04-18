@@ -60,8 +60,9 @@ TRUE, see the tskit documentation for more detail.}
 coordinate (0) and the last coordinate (equal to \code{ts$sequence_length})
 do not have to be specified as they are added automatically.}
 
-\item{W, X, Y, Z, A, B, C, O}{Character vectors of individual names (following the
-nomenclature of Patterson et al. 2021)}
+\item{W, X, Y, Z, A, B, C, O}{Character vectors of individual names (largely following
+the nomenclature of Patterson 2021, but see crucial differences between
+tskit and ADMIXTOOLS in Details)}
 }
 \value{
 Data frame with statistics calculated for the given sets of individuals
