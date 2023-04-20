@@ -8,6 +8,8 @@
 
 - `ts_ibd()` no longer gives obscure error when `between =` is provided as a named list of individuals' names (instead of an expected unnamed list). The names of list elements are not used in any way, but the error happens somewhere deeply in the R->Python translation layer inside [_reticulate_](https://rstudio.github.io/reticulate/) and there's no need for the users to concern themselves with it. ([#7965e4](https://github.com/bodkan/slendr/commit/7965e4))
 
+- Population size parameters and times are now explicitly converted to integer numbers. This is more of an internal, formal change (the conversion has been happening implicitly inside the SLiM engine anyway) but is now explicitly stated, also in the documentation of each relevant function. ([#b7e89e](https://github.com/bodkan/slendr/commit/b7e89e))
+
 # slendr 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
