@@ -27,7 +27,7 @@ test_that("Population size is increased correctly in two steps", {
   pop <- population("pop", time = 1000, N = 100, map = map, center = c(20, 50), radius = 500e3)
   res <- run_sim(
     resize(pop, N = 50, time = 900, how = "step") %>%
-      resize(pop, N = 500, time = 300, how = "step"), "backward")
+      resize(N = 500, time = 300, how = "step"), "backward")
   start_N <- attr(pop, "history")[[1]]$N
   expect_true(dplyr::filter(res, time > 900) %>% { all(.$N == start_N) })
   expect_true(dplyr::filter(res, time <= 900 & time > 300) %>% { all(.$N == 50) })
