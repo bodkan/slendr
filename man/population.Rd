@@ -82,6 +82,10 @@ defined (and named) using the \code{region} function, iv) with just a world
 map specified (circular or polygon range parameters set to the default
 \code{NULL} value), the population will be allowed to occupy the entire
 landscape.
+
+Note that because slendr models have to accomodate both SLiM and msprime
+back ends, population sizes and split times are rounded to the nearest
+integer value.
 }
 \examples{
 # spatial definitions -----------------------------------------------------

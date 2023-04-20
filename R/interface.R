@@ -10,6 +10,10 @@
 #' \code{NULL} value), the population will be allowed to occupy the entire
 #' landscape.
 #'
+#' Note that because slendr models have to accomodate both SLiM and msprime
+#' back ends, population sizes and split times are rounded to the nearest
+#' integer value.
+#'
 #' @param name Name of the population
 #' @param time Time of the population's first appearance
 #' @param N Number of individuals at the time of first appearance
@@ -55,8 +59,8 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
   if (!is.character(name) || length(name) != 1)
     stop("A population name must be a character scalar value", call. = FALSE)
 
-  N <- round(N)
-  time <- round(time)
+  N <- as.integer(round(N))
+  time <- as.integer(round(time))
 
   if (time < 1) stop("Split time must be a non-negative number", call. = FALSE)
   if (N < 1) stop("Population size must be a non-negative number", call. = FALSE)
@@ -282,6 +286,10 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 #' Expands the spatial population range by a specified distance in a given
 #' time-window
 #'
+#' Note that because slendr models have to accomodate both SLiM and msprime
+#' back ends, population sizes and times of events are rounded to the nearest
+#' integer value.
+#'
 #' @param pop Object of the class \code{slendr_pop}
 #' @param by How many units of distance to expand by?
 #' @param start,end When does the expansion start/end?
@@ -308,6 +316,10 @@ move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
 expand_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                          polygon = NULL, lock = FALSE, verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
+
+  start <- as.integer(round(start))
+  end <- as.integer(round(end))
+
   shrink_or_expand(pop, by, end, start, overlap, snapshots, polygon, lock, verbose)
 }
 
@@ -316,6 +328,10 @@ expand_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #'
 #' Shrinks the spatial population range by a specified distance in a given
 #' time-window
+#'
+#' Note that because slendr models have to accomodate both SLiM and msprime
+#' back ends, population sizes and split times are rounded to the nearest
+#' integer value.
 #'
 #' @param pop Object of the class \code{slendr_pop}
 #' @param by How many units of distance to shrink by?
@@ -437,6 +453,10 @@ set_range <- function(pop, time, center = NULL, radius = NULL,
 #' specified time period until it reaches \code{N} individuals. If \code{N} is
 #' smaller, the population will shrink exponentially.
 #'
+#' Note that because slendr models have to accomodate both SLiM and msprime
+#' back ends, population sizes and split times are rounded to the nearest
+#' integer value.
+#'
 #' @param pop Object of the class \code{slendr_pop}
 #' @param N Population size after the change
 #' @param how How to change the population size (options are \code{"step"} or
@@ -455,6 +475,10 @@ set_range <- function(pop, time, center = NULL, radius = NULL,
 #' @example man/examples/model_definition.R
 resize <- function(pop, N, how, time, end = NULL) {
   if (N < 1) stop("resize(): Only positive, non-zero population sizes are allowed", call. = FALSE)
+
+  N <- as.integer(round(N))
+  time <- as.integer(round(time))
+  if (!is.null(end)) end <- as.integer(round(end))
 
   if (!how %in% c("step", "exponential"))
     stop("resize(): Only 'step' or 'exponential' are allowed as arguments for the 'how' parameter", call. = FALSE)

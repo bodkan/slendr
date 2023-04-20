@@ -117,7 +117,7 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
   if (lock) {
     areas <- as.numeric(sapply(inter_regions, sf::st_area))
     area_changes <- areas[-1] / areas[-length(areas)]
-    new_N <- round(cumprod(area_changes) * prev_N)
+    new_N <- as.integer(round(cumprod(area_changes) * prev_N))
     prev_N <- c(prev_N, new_N[-length(new_N)])
     times <- sapply(inter_regions[-1], `[[`, "time")
     changes <- lapply(seq_len(length(new_N)), function(i) {

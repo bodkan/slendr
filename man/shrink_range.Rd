@@ -46,6 +46,11 @@ boundary.
 Shrinks the spatial population range by a specified distance in a given
 time-window
 }
+\details{
+Note that because slendr models have to accomodate both SLiM and msprime
+back ends, population sizes and split times are rounded to the nearest
+integer value.
+}
 \examples{
 # spatial definitions -----------------------------------------------------
 

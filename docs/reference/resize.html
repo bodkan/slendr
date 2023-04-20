@@ -131,6 +131,9 @@ boundary.</p>
 the current size, the population will be exponentially growing over the
 specified time period until it reaches <code>N</code> individuals. If <code>N</code> is
 smaller, the population will shrink exponentially.</p>
+<p>Note that because slendr models have to accomodate both SLiM and msprime
+back ends, population sizes and split times are rounded to the nearest
+integer value.</p>
     </div>
 
     <div class="section level2">

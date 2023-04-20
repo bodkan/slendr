@@ -34,6 +34,10 @@ In the case of exponential size change, if the final \code{N} is larger than
 the current size, the population will be exponentially growing over the
 specified time period until it reaches \code{N} individuals. If \code{N} is
 smaller, the population will shrink exponentially.
+
+Note that because slendr models have to accomodate both SLiM and msprime
+back ends, population sizes and split times are rounded to the nearest
+integer value.
 }
 \examples{
 # spatial definitions -----------------------------------------------------
