@@ -47,6 +47,9 @@ test_that("gene-flow rate must be a value between 0 and 1", {
 })
 
 test_that("populations must be already created for a gene flow to happen (forward model)", {
+  skip_if(!is_slendr_env_present())
+  init_env(quiet = TRUE)
+
   pop1 <- population("pop1", N = 100, time = 100)
   pop2 <- population("pop2", N = 100, time = 200, parent = pop1)
 
