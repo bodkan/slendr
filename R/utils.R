@@ -717,6 +717,6 @@ utils::globalVariables(
     "pop.y", "pop_id.y", "time_tskit", "time_tskit.x", "time_tskit.y",
     "N", "center", "child_node_id", "child_phylo_id", "geometry", "parent_node_id",
     "parent_phylo_id", "set_boundary", "xend", "xmax", "xmin", "yend",
-    "arc_degree"
+    "arc_degree", "node1", "node2", "mrca", "node1_time", "node2_time", "tmrca", "count", "total"
   ), package = "slendr"
 )
