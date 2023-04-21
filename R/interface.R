@@ -613,32 +613,26 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
 
-  # make sure that the start->end time direction of the given gene flow corresponds to
-  # the time direction implied by the split time of the populations involved
-  if (from$time[1] <= start & from$time[1] <= end &
-      to$time[1] <= start & to$time[1] <= end)
-    comp <- `<=`
-  else if (from$time[1] >= start & from$time[1] >= end &
-           to$time[1] >= start & to$time[1] >= end)
-    comp <- `>=`
-  else
-    stop(sprintf("Specified times are not consistent with the assumed direction of
-time (gene flow %s -> %s in the time window %s-%s)",
-                 from_name, to_name, start, end), call. = FALSE)
-
   if (start == end)
     stop(sprintf("Start and end time for the %s -> %s gene flow is the same (%s)",
                  from_name, to_name, start), call. = FALSE)
 
+  gf_dir <- if (start < end) "forward" else "backward"
+  from_dir <- time_direction(from)
+  to_dir <- time_direction(to)
+  direction <- unique(setdiff(c(gf_dir, from_dir, to_dir), "unknown"))
+
+  if (length(direction) > 1)
+    stop("Inconsistent time direction implied by populations and the gene flow event", call. = FALSE)
+
   # make sure both participating populations are present at the start of the
   # gene flow event (`check_present_time()` is reused from the sampling functionality)
-  direction <- if (start < end) "forward" else "backward"
   tryCatch(
     {
-      check_present_time(start, from, offset = 0, direction = direction, allow_same = TRUE)
-      check_present_time(end, from, offset = 0, direction = direction, allow_same = TRUE)
-      check_present_time(start, to, offset = 0, direction = direction, allow_same = TRUE)
-      check_present_time(end, to, offset = 0, direction = direction, allow_same = TRUE)
+      check_present_time(start, from, offset = 0, direction = direction)
+      check_present_time(end, from, offset = 0, direction = direction)
+      check_present_time(start, to, offset = 0, direction = direction)
+      check_present_time(end, to, offset = 0, direction = direction)
 
       check_removal_time(start, from)
       check_removal_time(end, from)
@@ -646,12 +640,14 @@ time (gene flow %s -> %s in the time window %s-%s)",
       check_removal_time(end, to)
     },
     error = function(e) {
-      stop(sprintf("Both %s and %s must be present within the gene-flow window %s-%s",
+      stop(sprintf("Both %s and %s must be already present within the gene-flow window %s-%s",
                    from_name, to_name, start, end), call. = FALSE)
     }
   )
 
   if (has_map(from) && has_map(to)) {
+    comp <- if (direction == "forward") `<=` else `>=`
+
     # get the last specified spatial maps before the geneflow time
     region_from <- intersect_features(from[comp(from$time, start), ] %>% .[nrow(.), ])
     region_to <- intersect_features(to[comp(to$time, start), ] %>% .[nrow(.), ])
