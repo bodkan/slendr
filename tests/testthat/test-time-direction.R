@@ -10,7 +10,7 @@ test_that("forward and backward time model objects are equivalent", {
   p4 <- population(name = "p4", parent = p3, time = 4, N = 1, center = c(1, 1), radius = 1)
   p5 <- population(name = "p5", parent = p2, time = 5, N = 1, center = c(1, 1), radius = 1)
 
-  geneflows <- gene_flow(p1, p2, start = 2, end = 3, rate = 0.5, overlap = FALSE)
+  geneflows <- gene_flow(p1, p2, start = 3, end = 4, rate = 0.5, overlap = FALSE)
 
   forward <- compile_model(
     path = file.path(tempdir(), "tmp-forward"),
@@ -28,7 +28,7 @@ test_that("forward and backward time model objects are equivalent", {
   p4 <- population(name = "p4", parent = p3, time = 2, N = 1, center = c(1, 1), radius = 1)
   p5 <- population(name = "p5", parent = p2, time = 1, N = 1, center = c(1, 1), radius = 1)
 
-  geneflows <- gene_flow(p1, p2, start = 4, end = 3, rate = 0.5, overlap = FALSE)
+  geneflows <- gene_flow(p1, p2, start = 3, end = 2, rate = 0.5, overlap = FALSE)
 
   backward <- compile_model(
     path = file.path(tempdir(), "tmp-backward"),
@@ -48,7 +48,6 @@ test_that("forward and backward time model objects are equivalent", {
   components <- c("generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 })
-
 
 test_that("forward and backward models yield the same simulation result", {
   skip_if(Sys.which("slim") == "")

@@ -395,12 +395,12 @@ check_event_time <- function(time, pop) {
 # (used exclusively in the schedule_sampling() function to avoid situations when
 # a user would sample from a population in the same generation that it
 # would be created)
-check_present_time <- function(time, pop, offset, direction = NULL, allow_same = FALSE) {
+check_present_time <- function(time, pop, offset, direction = NULL) {
   if (is.null(direction))
     direction <- time_direction(pop)
   split_time <- get_lineage_splits(pop)[1]
 
-  if ((!allow_same && time == split_time) ||
+  if (time == split_time ||
       (direction == "backward" && time > split_time - offset) ||
       (direction == "forward" && time < split_time + offset))
     stop("Population ", pop$pop[1], " is not present at a time ", time, call. = FALSE)
@@ -717,6 +717,6 @@ utils::globalVariables(
     "pop.y", "pop_id.y", "time_tskit", "time_tskit.x", "time_tskit.y",
     "N", "center", "child_node_id", "child_phylo_id", "geometry", "parent_node_id",
     "parent_phylo_id", "set_boundary", "xend", "xmax", "xmin", "yend",
-    "arc_degree"
+    "arc_degree", "node1", "node2", "mrca", "node1_time", "node2_time", "tmrca", "count", "total"
   ), package = "slendr"
 )
