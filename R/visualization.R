@@ -275,17 +275,7 @@ sort_splits <- function(model) {
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations
 
-  # extract population split times and order population names in the order of
-  # their appearance in the simulation
-  # split_times <- purrr::map_int(populations, function(pop) {
-  #   attr(pop, "history")[[1]]$time
-  # })
-  # if (model$direction == "backward") {
-  #   split_times <- sort(split_times, decreasing = TRUE)
-  # } else {
-  #   split_times <- sort(split_times)
-  # }
-  # pop_names <- names(split_times)
+  # layout populations along the x-axis according to an in-order population tree traversal
   pop_names <- sort_splits(model)
   split_times <- vapply(pop_names, function(x) attr(populations[[x]], "history")[[1]]$time,
                         numeric(1))
