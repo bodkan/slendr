@@ -202,6 +202,35 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
     p_coord
 }
 
+sort_inorder <- function(splits, root) {
+  children <- splits[splits$parent == root, ]$pop
+
+  if (!length(children))
+    return(root)
+
+  result <- c()
+  for (pop in children) {
+    result <- c(result, sort_inorder(splits, pop))
+  }
+
+  if (length(result) > 1) {
+    left_pops <- result[seq(1, length(result), 2)]
+    right_pops <- result[seq(2, length(result), 2)]
+    sorted <- c(left_pops, root, right_pops)
+  } else {
+    sorted <- c(result, root)
+  }
+
+  list(sorted)
+}
+
+sort_splits <- function(model) {
+  splits <- model$splits
+  ancestors <- subset(splits, parent == "__pop_is_ancestor")$pop
+  lineage_splits <- lapply(ancestors, function(x) unlist(sort_inorder(splits, x), recursive = TRUE))
+  do.call(c, lineage_splits)
+}
+
 #' Plot demographic history encoded in a slendr model
 #'
 #' @param model Compiled \code{slendr_model} model object
@@ -229,15 +258,18 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 
   # extract population split times and order population names in the order of
   # their appearance in the simulation
-  split_times <- purrr::map_int(populations, function(pop) {
-    attr(pop, "history")[[1]]$time
-  })
-  if (model$direction == "backward") {
-    split_times <- sort(split_times, decreasing = TRUE)
-  } else {
-    split_times <- sort(split_times)
-  }
-  pop_names <- names(split_times)
+  # split_times <- purrr::map_int(populations, function(pop) {
+  #   attr(pop, "history")[[1]]$time
+  # })
+  # if (model$direction == "backward") {
+  #   split_times <- sort(split_times, decreasing = TRUE)
+  # } else {
+  #   split_times <- sort(split_times)
+  # }
+  # pop_names <- names(split_times)
+  pop_names <- sort_splits(model)
+  split_times <- vapply(pop_names, function(x) attr(populations[[x]], "history")[[1]]$time,
+                        numeric(1))
 
   # extract times at which each population will be removed from the simulation
   default_end <- if (model$direction == "backward") 0 else model$orig_length
