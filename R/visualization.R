@@ -467,8 +467,18 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   }
 
   # labels with population names
-  p <- p + geom_label(data = centers, aes(label = pop, x = center, y = time,
-                                          fill = pop, fontface = "bold"))
+  # except for outgroups and populations with more than two daughter populations, all
+  # population labels will be plotted on the bottom
+  end_labels <- model$splits[
+    model$splits$parent != "__pop_is_ancestor" &
+    (
+      model$splits$tremove_orig == -1 |
+      vapply(model$splits$pop, function(x) sum(x == model$splits$parent), integer(1)) < 2
+    )
+  , ]$pop
+  centers[centers$pop %in% end_labels, ]$time <- end_times[end_labels]
+  p <- p + geom_label(data = centers, size = 3,
+                      aes(label = pop, x = center, y = time, fill = pop))
 
   # add gene flow arrows and proportion labels
   if (!is.null(gene_flow)) {
