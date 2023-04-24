@@ -275,13 +275,15 @@ sort_splits <- function(model) {
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations
 
+  log10_ydelta <- 0.001
+
   # layout populations along the x-axis according to an in-order population tree traversal
   pop_names <- sort_splits(model)
   split_times <- vapply(pop_names, function(x) attr(populations[[x]], "history")[[1]]$time,
                         numeric(1))
 
   # extract times at which each population will be removed from the simulation
-  default_end <- if (model$direction == "backward") 0.001 else model$orig_length
+  default_end <- if (model$direction == "backward") log10_ydelta else model$orig_length
   end_times <- purrr::map_int(populations, function(pop) {
     remove <- attr(pop, "remove")
     if (remove == -1)
@@ -377,7 +379,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       dplyr::tibble(
         pop = factor(name, levels = pop_names),
         x = xs,
-        y = ifelse(ys == 0, 0.001, ys)
+        y = ifelse(ys == 0, log10_ydelta, ys)
       )
     })
   })
@@ -414,8 +416,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
         x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
         xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
         y = tstart_orig,
-        yend = tend_orig,
-        yend = ifelse(yend == 0, 0.001, yend)
+        yend = tend_orig
       )
   } else
     gene_flow <- NULL
@@ -472,14 +473,15 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   # add gene flow arrows and proportion labels
   if (!is.null(gene_flow)) {
     p <- p + geom_segment(data = gene_flow,
-                          aes(x = x, xend = xend, y = y, yend = yend),
+                          aes(x = x, xend = xend, y = y, yend = yend + log10_ydelta),
                           arrow = arrow(length = unit(0.2, "cm")))
     p <- p + geom_point(data = gene_flow, aes(x = x, y = y))
-    if (proportions)
+    if (proportions) {
       p <- p + geom_label(data = gene_flow,
                           aes(label = sprintf("%s%%", 100 * rate),
                               x = xend - (xend - x) / 2,
-                              y = yend - (yend - y) / 2), size = 3)
+                              y = sqrt(y * (yend + log10_ydelta))), size = 3)
+    }
   }
 
   p
