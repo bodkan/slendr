@@ -202,32 +202,51 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
     p_coord
 }
 
+# Traverse the tree topology encoded by population splits in an in-order recursive fashion,
+# return encountered populations sorted in this way
 sort_inorder <- function(splits, root) {
+  # get all populations splitting from the current root (not necessarily the
+  # real root of the whole population phylogeny, but a root of a current "subtree" in
+  # a recursive sense)
   children <- splits[splits$parent == root, ]$pop
 
+  # terminating condition for the recursion
   if (!length(children))
     return(root)
 
+  # collect in-order sorted leaves below children of the current root
   result <- c()
   for (pop in children) {
     result <- c(result, sort_inorder(splits, pop))
   }
 
+  # if multiple daughter populations split from the current population, interleave their
+  # splits left and right from that population
   if (length(result) > 1) {
     left_pops <- result[seq(1, length(result), 2)]
     right_pops <- result[seq(2, length(result), 2)]
     sorted <- c(left_pops, root, right_pops)
   } else {
-    sorted <- c(result, root)
+    sorted <- c(result, root) # otherwise put the sole splitting daughter population to the left
   }
 
+  # return recursively as a list (it will eventually be flattened on the top level in
+  # the sort_splits function)
   list(sorted)
 }
 
 sort_splits <- function(model) {
+  # extract names of all ancestral populations from the split table
   splits <- model$splits
   ancestors <- subset(splits, parent == "__pop_is_ancestor")$pop
+
+  # iterate over all ancestors (i.e., roots of individual phylogenies if the whole model
+  # is not rooted under a single ancestral population) and flatten the nested lists
+  # (if this is done with recursive = TRUE, the sorted order of populations will be retained
+  # which is what we want!)
   lineage_splits <- lapply(ancestors, function(x) unlist(sort_inorder(splits, x), recursive = TRUE))
+
+  # concatenate all sublineages into a single vector of population names
   do.call(c, lineage_splits)
 }
 
