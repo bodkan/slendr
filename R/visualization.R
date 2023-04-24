@@ -447,10 +447,6 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       ))
     )
 
-  if (log) p <- p + scale_y_log10()
-
-  if (model$direction == "forward") p <- p + scale_y_reverse()
-
   # add each each epoch resize segment
   for (lineage in size_changes) {
     for (event in lineage)
@@ -476,9 +472,9 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       vapply(model$splits$pop, function(x) sum(x == model$splits$parent), integer(1)) < 2
     )
   , ]$pop
-  centers[centers$pop %in% end_labels, ]$time <- end_times[end_labels]
+  centers[centers$pop %in% end_labels, ]$time <- end_times[end_labels] + log10_ydelta
   p <- p + geom_label(data = centers, size = 3,
-                      aes(label = pop, x = center, y = time, fill = pop))
+                      aes(label = pop, x = center, y = time, fill = pop), fontface = "bold")
 
   # add gene flow arrows and proportion labels
   if (!is.null(gene_flow)) {
@@ -493,6 +489,12 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
                               y = sqrt(y * (yend + log10_ydelta))), size = 3)
     }
   }
+
+  trans_funs <- if (log) "log10" else "identity"
+  if (model$direction == "forward")
+      trans_funs <- c(trans_funs, "reverse")
+
+  p <- p + scale_y_continuous(trans = scales::compose_trans(trans_funs))
 
   p
 }
