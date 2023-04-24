@@ -281,7 +281,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
                         numeric(1))
 
   # extract times at which each population will be removed from the simulation
-  default_end <- if (model$direction == "backward") 0 else model$orig_length
+  default_end <- if (model$direction == "backward") 0.001 else model$orig_length
   end_times <- purrr::map_int(populations, function(pop) {
     remove <- attr(pop, "remove")
     if (remove == -1)
@@ -410,10 +410,13 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   # arrows
   if (!is.null(model$geneflow)) {
     gene_flow <- model$geneflow %>%
-      dplyr::mutate(x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
-             xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
-             y = tstart_orig,
-             yend = tend_orig)
+      dplyr::mutate(
+        x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
+        xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
+        y = tstart_orig,
+        yend = tend_orig,
+        yend = ifelse(yend == 0, 0.001, yend)
+      )
   } else
     gene_flow <- NULL
 
