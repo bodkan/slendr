@@ -10,6 +10,8 @@
 
 - Population size parameters and times are now explicitly converted to integer numbers. This is more of an internal, formal change (the conversion has been happening implicitly inside the SLiM engine anyway) but is now explicitly stated, also in the documentation of each relevant function. ([#b7e89e](https://github.com/bodkan/slendr/commit/b7e89e))
 
+- Population names are now restricted to only those strings which are also valid Python identifiers. Although this restriction is only needed for the msprime back end of _slendr_ (not SLiM), it makes sense to keep things tidy and unified. This fixes msprime crashing with `ValueError: A population name must be a valid Python identifier`. ([#4ef5184](https://github.com/bodkan/slendr/commit/4ef5184))
+
 # slendr 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
