@@ -56,8 +56,12 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
                        remove = NULL, intersect = TRUE,
                        competition = NA, mating = NA, dispersal = NA,
                        dispersal_fun = NULL, aquatic = FALSE) {
-  if (!is.character(name) || length(name) != 1)
-    stop("A population name must be a character scalar value", call. = FALSE)
+  if (!is.character(name) ||
+      length(name) != 1 ||
+      !grepl("^(?:[_\\p{L}\\p{Nl}])(?:[_\\p{L}\\p{Nl}\\p{Mn}\\p{Mc}\\p{Nd}\\p{Pc}])*$",
+            name, perl = TRUE))
+    stop("A population name must be a character scalar value which must also be\n",
+         "valid Python identifiers (a restriction of the msprime simulation engine)", call. = FALSE)
 
   N <- as.integer(round(N))
   time <- as.integer(round(time))
