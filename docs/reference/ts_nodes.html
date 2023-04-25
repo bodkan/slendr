@@ -175,20 +175,20 @@ the spatial context.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> overview of the underlying table object:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 68 × 12</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    name  pop   node_id  time time_tskit sampled remembered retai…¹ alive pedig…²</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> CH_1  CH         14     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>343</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> CH_1  CH         15     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>343</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AFR_1 AFR         4     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AFR_1 AFR         5     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AFR_2 AFR         6     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>351</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AFR_2 AFR         7     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>351</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AFR_3 AFR         8     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>352</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AFR_3 AFR         9     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>352</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AFR_4 AFR        10     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AFR_4 AFR        11     0          0 TRUE    TRUE       TRUE    TRUE  5<span style="text-decoration: underline;">520</span>357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 58 more rows, 2 more variables: ind_id &lt;dbl&gt;, pop_id &lt;int&gt;, and</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   abbreviated variable names ¹​retained, ²​pedigree_id</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    name  pop   node_id  time time_tskit sampled remembered retained alive</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> CH_1  CH         14     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> CH_1  CH         15     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AFR_1 AFR         4     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AFR_1 AFR         5     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AFR_2 AFR         6     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AFR_2 AFR         7     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AFR_3 AFR         8     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AFR_3 AFR         9     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AFR_4 AFR        10     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AFR_4 AFR        11     0          0 TRUE    TRUE       TRUE     TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 58 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: pedigree_id &lt;dbl&gt;, ind_id &lt;dbl&gt;, pop_id &lt;int&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
