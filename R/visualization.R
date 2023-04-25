@@ -18,7 +18,7 @@
 #'   shiny app)
 #'
 #' @return A ggplot2 object with the visualized slendr map
-#' @importFrom ggplot2 coord_sf geom_sf guides guide_legend theme_bw
+#' @importFrom ggplot2 coord_sf geom_sf guides guide_legend theme_bw geom_sf_label
 #' @export
 #'
 plot_map <- function(..., time = NULL, gene_flow = FALSE,
