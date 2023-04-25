@@ -18,14 +18,14 @@
 #'   shiny app)
 #'
 #' @return A ggplot2 object with the visualized slendr map
-#'
+#' @importFrom ggplot2 coord_sf geom_sf guides guide_legend theme_bw
 #' @export
 #'
-#' @import ggplot2
 plot_map <- function(..., time = NULL, gene_flow = FALSE,
                      graticules = "original",
                      intersect = TRUE, show_map = TRUE,
                      title = NULL, interpolated_maps = NULL) {
+# @importFrom ggplot2 ggplot geom_sf aes scale_fill_discrete scale_color_discrete guides guide_legend geom_point geom_segment arrow geom_sf_label labs theme_bw expand_limits
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
@@ -271,6 +271,10 @@ sort_splits <- function(model) {
 #' model <- read_model(path)
 #'
 #' plot_model(model, sizes = FALSE, log = TRUE)
+#' @importFrom ggplot2 ggplot expand_limits theme_classic element_line unit
+#'   geom_polygon geom_label scale_y_continuous scale_color_discrete scale_fill_discrete
+#'   labs geom_segment arrow
+#' @importFrom scales identity_trans reverse_trans log10_trans
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations
@@ -508,7 +512,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 #' @return If `gif = NULL`, return gganimate animation object. Otherwise a GIF
 #'   file is saved and no value is returned.
 #'
-#' @import ggplot2
+#' @importFrom ggplot2 geom_point aes theme element_blank ggtitle
 #' @export
 animate_model <- function(model, file, steps, gif = NULL, width = 800, height = 560) {
   if (!requireNamespace("magick", quietly = TRUE))
