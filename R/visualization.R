@@ -274,7 +274,6 @@ sort_splits <- function(model) {
 #' @importFrom ggplot2 ggplot expand_limits theme_classic element_line unit
 #'   geom_polygon geom_label scale_y_continuous scale_color_discrete scale_fill_discrete
 #'   labs geom_segment arrow
-#' @importFrom scales identity_trans reverse_trans log10_trans
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations
@@ -491,11 +490,17 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
     }
   }
 
-  trans_funs <- if (log) "log10" else "identity"
-  if (model$direction == "forward")
-      trans_funs <- c(trans_funs, "reverse")
+  if (model$direction == "forward") {
+    if (log)
+      trans <- scales::compose_trans(scales::log10_trans(), scales::reverse_trans())
+    else
+      trans <- scales::reverse_trans()
+  } else if (log)
+    trans <- scales::log10_trans()
+  else
+    trans <- scales::identity_trans()
 
-  p <- p + scale_y_continuous(trans = scales::compose_trans(trans_funs))
+  p <- p + scale_y_continuous(trans = trans)
 
   p
 }
