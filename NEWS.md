@@ -12,6 +12,8 @@
 
 - Population names are now restricted to only those strings which are also valid Python identifiers. Although this restriction is only needed for the msprime back end of _slendr_ (not SLiM), it makes sense to keep things tidy and unified. This fixes msprime crashing with `ValueError: A population name must be a valid Python identifier`. ([#4ef5184](https://github.com/bodkan/slendr/commit/4ef5184))
 
+- The layout algorithm of `plot_model()` has been improved significantly. (PR [#135](https://github.com/bodkan/slendr/pull/135)).
+
 # slendr 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))

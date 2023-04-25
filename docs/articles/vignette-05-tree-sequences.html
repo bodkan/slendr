@@ -312,7 +312,7 @@ doing this:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> <span style="text-decoration: underline;">13</span>744 EUR       1 <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="text-decoration: underline;">14</span>775 EUR       1 <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="text-decoration: underline;">16</span>362 EUR       1 <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 30 more rows</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 30 more rows</span></span></span></code></pre>
 <p>This samples a single ancient European individuals at randomly chosen
 times between 40 and 10 ky ago.</p>
 <p>One nice feature of the <code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> function is
@@ -349,11 +349,11 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; msprime command to be executed:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.4_pyslim-1.0.1/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpu2CX4o/file6b1020c40f3c_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpu2CX4o/file6b1020c40f3c_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpu2CX4o/file6b1045fa9516.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpu2CX4o/file6b101b96bf90 --verbose  </span></span>
+<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.4_pyslim-1.0.1/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpgA4ZPX/filed2e1d382fcc_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpgA4ZPX/filed2e1d382fcc_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpgA4ZPX/filed2e54bfa152.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpgA4ZPX/filed2ea47632b --verbose  </span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Tree sequence was saved to:</span></span>
-<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpu2CX4o/file6b1045fa9516.trees </span></span>
+<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpgA4ZPX/filed2e54bfa152.trees </span></span>
 <span><span class="co">#&gt; Loading the tree-sequence file...</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span></span></code></pre></div>
@@ -440,7 +440,7 @@ to the tree-sequence file ourselves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpu2CX4o/file6b103045c783"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpgA4ZPX/filed2e38a53dc4"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
@@ -903,7 +903,7 @@ function <code><a href="../reference/ts_samples.html">ts_samples()</a></code>:</
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_6 <span style="text-decoration: underline;">35</span>945 EUR  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_7 <span style="text-decoration: underline;">33</span>900 EUR  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_8 <span style="text-decoration: underline;">33</span>854 EUR  </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 48 more rows</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 48 more rows</span></span></span></code></pre>
 <p>That said, if you would like to run some statistics on nodes rather
 than on individuals, you can do it simply by using integer IDs instead
 of character names in each function’s interface.</p>

@@ -47,7 +47,8 @@ Imports:
     ijtiff,
     shinyWidgets,
     shiny,
-    ape
+    ape,
+    scales
 Suggests:
     testthat (>= 3.0.0),
     knitr,

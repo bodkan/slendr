@@ -381,21 +381,21 @@ of the spatio-temporal data extracted from the tree sequence:</p>
 <span><span class="co">#&gt; overview of the underlying sf object:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 944 × 13</span></span></span>
-<span><span class="co">#&gt;    name  pop   node_id  time time_ts…¹           location sampled remembered</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AFR_1 AFR       362     0         0   (3072714 315424) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AFR_1 AFR       363     0         0   (3072714 315424) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AFR_2 AFR       364     0         0  (2898146 1202818) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AFR_2 AFR       365     0         0  (2898146 1202818) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AFR_3 AFR       366     0         0  (3466565 1087738) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AFR_3 AFR       367     0         0  (3466565 1087738) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AFR_4 AFR       368     0         0 (3030706 587947.3) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AFR_4 AFR       369     0         0 (3030706 587947.3) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AFR_5 AFR       370     0         0   (4464229 538126) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AFR_5 AFR       371     0         0   (4464229 538126) TRUE    TRUE      </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 934 more rows, 5 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   pedigree_id &lt;dbl&gt;, ind_id &lt;dbl&gt;, pop_id &lt;int&gt;, and abbreviated variable</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   name ¹​time_tskit</span></span></span></code></pre>
+<span><span class="co">#&gt;    name  pop   node_id  time time_tskit           location sampled</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AFR_1 AFR       362     0          0   (3072714 315424) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AFR_1 AFR       363     0          0   (3072714 315424) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AFR_2 AFR       364     0          0  (2898146 1202818) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AFR_2 AFR       365     0          0  (2898146 1202818) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AFR_3 AFR       366     0          0  (3466565 1087738) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AFR_3 AFR       367     0          0  (3466565 1087738) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AFR_4 AFR       368     0          0 (3030706 587947.3) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AFR_4 AFR       369     0          0 (3030706 587947.3) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AFR_5 AFR       370     0          0   (4464229 538126) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AFR_5 AFR       371     0          0   (4464229 538126) TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 934 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: remembered &lt;lgl&gt;, retained &lt;lgl&gt;, alive &lt;lgl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   pedigree_id &lt;dbl&gt;, ind_id &lt;dbl&gt;, pop_id &lt;int&gt;</span></span></span></code></pre>
 <p>In the first part of the summary, we see how many individuals
 (sampled or retained) and nodes are present in the tree sequence
 together with additional useful information, including a section of the
@@ -542,22 +542,22 @@ node or individual (in our example, <code>"EUR_25"</code>):</p>
 <span><span class="co">#&gt; Bounding box:  xmin: 2721964 ymin: 546923.8 xmax: 8458020 ymax: 4686009</span></span>
 <span><span class="co">#&gt; Projected CRS: ETRS89-extended / LAEA Europe</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 154 × 15</span></span></span>
-<span><span class="co">#&gt;    name   pop   node_id level child_id parent_id child…¹ paren…² child…³ paren…⁴</span></span>
-<span><span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> EUR_67 EUR       406 1          406       450       0    <span style="text-decoration: underline;">1</span>810 EUR     EUR    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> EUR_67 EUR       406 1          406       525       0    <span style="text-decoration: underline;">8</span>770 EUR     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> EUR_67 EUR       406 2          450       525    <span style="text-decoration: underline;">1</span>810    <span style="text-decoration: underline;">8</span>770 EUR     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> EUR_67 EUR       406 2          525       543    <span style="text-decoration: underline;">8</span>770    <span style="text-decoration: underline;">9</span>760 ANA     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> EUR_67 EUR       406 3          543       715    <span style="text-decoration: underline;">9</span>760   <span style="text-decoration: underline;">24</span>130 ANA     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> EUR_67 EUR       406 4          715       769   <span style="text-decoration: underline;">24</span>130   <span style="text-decoration: underline;">26</span>830 ANA     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> EUR_67 EUR       406 4          715       774   <span style="text-decoration: underline;">24</span>130   <span style="text-decoration: underline;">26</span>950 ANA     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_67 EUR       406 4          715       787   <span style="text-decoration: underline;">24</span>130   <span style="text-decoration: underline;">27</span>760 ANA     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_67 EUR       406 5          769       787   <span style="text-decoration: underline;">26</span>830   <span style="text-decoration: underline;">27</span>760 ANA     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_67 EUR       406 5          774       811   <span style="text-decoration: underline;">26</span>950   <span style="text-decoration: underline;">28</span>240 ANA     OOA    </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 144 more rows, 5 more variables: child_location &lt;POINT [m]&gt;,</span></span></span>
+<span><span class="co">#&gt;    name  pop   node_id level child_id parent_id child_time parent_time child_pop</span></span>
+<span><span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> EUR_… EUR       406 1          406       450          0        <span style="text-decoration: underline;">1</span>810 EUR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> EUR_… EUR       406 1          406       525          0        <span style="text-decoration: underline;">8</span>770 EUR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> EUR_… EUR       406 2          450       525       <span style="text-decoration: underline;">1</span>810        <span style="text-decoration: underline;">8</span>770 EUR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> EUR_… EUR       406 2          525       543       <span style="text-decoration: underline;">8</span>770        <span style="text-decoration: underline;">9</span>760 ANA      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> EUR_… EUR       406 3          543       715       <span style="text-decoration: underline;">9</span>760       <span style="text-decoration: underline;">24</span>130 ANA      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> EUR_… EUR       406 4          715       769      <span style="text-decoration: underline;">24</span>130       <span style="text-decoration: underline;">26</span>830 ANA      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> EUR_… EUR       406 4          715       774      <span style="text-decoration: underline;">24</span>130       <span style="text-decoration: underline;">26</span>950 ANA      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_… EUR       406 4          715       787      <span style="text-decoration: underline;">24</span>130       <span style="text-decoration: underline;">27</span>760 ANA      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_… EUR       406 5          769       787      <span style="text-decoration: underline;">26</span>830       <span style="text-decoration: underline;">27</span>760 ANA      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_… EUR       406 5          774       811      <span style="text-decoration: underline;">26</span>950       <span style="text-decoration: underline;">28</span>240 ANA      </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 144 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: parent_pop &lt;fct&gt;, child_location &lt;POINT [m]&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   parent_location &lt;POINT [m]&gt;, connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   right_pos &lt;dbl&gt;, and abbreviated variable names ¹​child_time, ²​parent_time,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ³​child_pop, ⁴​parent_pop</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;">#   right_pos &lt;dbl&gt;</span></span></span></code></pre>
 <p>In each row of the table, two columns <code>location</code> and
 <code>parent_location</code> carry the spatial location of a node
 (<code>node_id</code>) and its parent node (<code>parent_id</code>),
@@ -586,15 +586,14 @@ sampled individual (i.e. nodes at the level 1) using the
 <span><span class="co">#&gt; Bounding box:  xmin: 5202360 ymin: 2284049 xmax: 5564577 ymax: 2754068</span></span>
 <span><span class="co">#&gt; Projected CRS: ETRS89-extended / LAEA Europe</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 15</span></span></span>
-<span><span class="co">#&gt;   name   pop   node_id level child_id parent_id child_…¹ paren…² child…³ paren…⁴</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_67 EUR       406 1          406       450        0    <span style="text-decoration: underline;">1</span>810 EUR     EUR    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> EUR_67 EUR       406 1          406       525        0    <span style="text-decoration: underline;">8</span>770 EUR     ANA    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> EUR_67 EUR       407 1          407       449        0    <span style="text-decoration: underline;">1</span>810 EUR     EUR    </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 5 more variables: child_location &lt;POINT [m]&gt;,</span></span></span>
+<span><span class="co">#&gt;   name   pop   node_id level child_id parent_id child_time parent_time child_pop</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_67 EUR       406 1          406       450          0        <span style="text-decoration: underline;">1</span>810 EUR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> EUR_67 EUR       406 1          406       525          0        <span style="text-decoration: underline;">8</span>770 EUR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> EUR_67 EUR       407 1          407       449          0        <span style="text-decoration: underline;">1</span>810 EUR      </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6 more variables: parent_pop &lt;fct&gt;, child_location &lt;POINT [m]&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   parent_location &lt;POINT [m]&gt;, connection &lt;LINESTRING [m]&gt;, left_pos &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   right_pos &lt;dbl&gt;, and abbreviated variable names ¹​child_time, ²​parent_time,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ³​child_pop, ⁴​parent_pop</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;">#   right_pos &lt;dbl&gt;</span></span></span></code></pre>
 <p>As we mentioned above, there are three columns encoding spatial
 information: <code>location</code> and <code>parent_location</code>
 carry information about the location of the child and parent node
@@ -699,7 +698,7 @@ individuals:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> ANA_8  <span style="text-decoration: underline;">24</span>000 ANA  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ANA_9  <span style="text-decoration: underline;">23</span>500 ANA  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> ANA_10 <span style="text-decoration: underline;">23</span>000 ANA  </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 38 more rows</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 38 more rows</span></span></span></code></pre>
 <p>Can we see a hint of the spatial dynamics of Anatolians in the
 spatio-temporal distribution of ancestral node locations of one of the
 sampled individuals? Let’s pick the last individual and immediately plot
@@ -762,7 +761,7 @@ on the following subset of columns:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> (7175192 1476174, 6867500 1338048)      <span style="text-decoration: underline;">47</span>740       <span style="text-decoration: underline;">48</span>730</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> (6867500 1338048, 6754277 1091742)      <span style="text-decoration: underline;">48</span>730       <span style="text-decoration: underline;">49</span>810</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  (6754277 1091742, 3520987 724306)      <span style="text-decoration: underline;">49</span>810       <span style="text-decoration: underline;">52</span>900</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 23,415 more rows</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 23,415 more rows</span></span></span></code></pre>
 <p>We can use standard <em>dplyr</em> table manipulation functions to
 compute the distances between connected notes and the times that
 separate them (i.e. branch lengths in the traditional phylogenetic

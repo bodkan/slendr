@@ -18,14 +18,14 @@
 #'   shiny app)
 #'
 #' @return A ggplot2 object with the visualized slendr map
-#'
+#' @importFrom ggplot2 coord_sf geom_sf guides guide_legend theme_bw geom_sf_label
 #' @export
 #'
-#' @import ggplot2
 plot_map <- function(..., time = NULL, gene_flow = FALSE,
                      graticules = "original",
                      intersect = TRUE, show_map = TRUE,
                      title = NULL, interpolated_maps = NULL) {
+# @importFrom ggplot2 ggplot geom_sf aes scale_fill_discrete scale_color_discrete guides guide_legend geom_point geom_segment arrow geom_sf_label labs theme_bw expand_limits
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
@@ -202,6 +202,54 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
     p_coord
 }
 
+# Traverse the tree topology encoded by population splits in an in-order recursive fashion,
+# return encountered populations sorted in this way
+sort_inorder <- function(splits, root) {
+  # get all populations splitting from the current root (not necessarily the
+  # real root of the whole population phylogeny, but a root of a current "subtree" in
+  # a recursive sense)
+  children <- splits[splits$parent == root, ]$pop
+
+  # terminating condition for the recursion
+  if (!length(children))
+    return(root)
+
+  # collect in-order sorted leaves below children of the current root
+  result <- c()
+  for (pop in children) {
+    result <- c(result, sort_inorder(splits, pop))
+  }
+
+  # if multiple daughter populations split from the current population, interleave their
+  # splits left and right from that population
+  if (length(result) > 1) {
+    left_pops <- result[seq(1, length(result), 2)]
+    right_pops <- result[seq(2, length(result), 2)]
+    sorted <- c(left_pops, root, right_pops)
+  } else {
+    sorted <- c(result, root) # otherwise put the sole splitting daughter population to the left
+  }
+
+  # return recursively as a list (it will eventually be flattened on the top level in
+  # the sort_splits function)
+  list(sorted)
+}
+
+sort_splits <- function(model) {
+  # extract names of all ancestral populations from the split table
+  splits <- model$splits
+  ancestors <- subset(splits, parent == "__pop_is_ancestor")$pop
+
+  # iterate over all ancestors (i.e., roots of individual phylogenies if the whole model
+  # is not rooted under a single ancestral population) and flatten the nested lists
+  # (if this is done with recursive = TRUE, the sorted order of populations will be retained
+  # which is what we want!)
+  lineage_splits <- lapply(ancestors, function(x) unlist(sort_inorder(splits, x), recursive = TRUE))
+
+  # concatenate all sublineages into a single vector of population names
+  do.call(c, lineage_splits)
+}
+
 #' Plot demographic history encoded in a slendr model
 #'
 #' @param model Compiled \code{slendr_model} model object
@@ -223,24 +271,24 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
 #' model <- read_model(path)
 #'
 #' plot_model(model, sizes = FALSE, log = TRUE)
+#' @importFrom ggplot2 ggplot expand_limits theme_classic element_line unit
+#'   geom_polygon geom_label scale_y_continuous scale_color_discrete scale_fill_discrete
+#'   labs geom_segment arrow
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   populations <- model$populations
 
-  # extract population split times and order population names in the order of
-  # their appearance in the simulation
-  split_times <- purrr::map_int(populations, function(pop) {
-    attr(pop, "history")[[1]]$time
-  })
-  if (model$direction == "backward") {
-    split_times <- sort(split_times, decreasing = TRUE)
-  } else {
-    split_times <- sort(split_times)
-  }
-  pop_names <- names(split_times)
+  log10_ydelta <- 0.001
+
+  # layout populations along the x-axis according to an in-order population tree traversal
+  pop_names <- sort_splits(model)
+  split_times <- vapply(pop_names, function(x) attr(populations[[x]], "history")[[1]]$time,
+                        numeric(1))
+
+  pop_factors <- order_pops(model$populations, model$direction)
 
   # extract times at which each population will be removed from the simulation
-  default_end <- if (model$direction == "backward") 0 else model$orig_length
+  default_end <- if (model$direction == "backward") log10_ydelta else model$orig_length
   end_times <- purrr::map_int(populations, function(pop) {
     remove <- attr(pop, "remove")
     if (remove == -1)
@@ -269,7 +317,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 
   # compute center of each "population column" along the bottom of the x-axis
   centers <- dplyr::tibble(
-    pop = factor(pop_names, levels = pop_names),
+    pop = factor(pop_names, levels = pop_factors),
     N = final_sizes,
     time = split_times,
   ) %>%
@@ -334,9 +382,9 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
         stop("Invalid 'next event'. This is a slendr bug! (4)", call. = FALSE)
 
       dplyr::tibble(
-        pop = factor(name, levels = pop_names),
+        pop = factor(name, levels = pop_factors),
         x = xs,
-        y = ifelse(ys == 0, 0.001, ys)
+        y = ifelse(ys == 0, log10_ydelta, ys)
       )
     })
   })
@@ -354,8 +402,8 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       to_x <- centers[centers$pop == pop_name, ]$center
       time_y <- event$time
       splits[[length(splits) + 1]] <- dplyr::tibble(
-        pop = factor(pop_name, levels = pop_names),
-        from = factor(parent_name, levels = pop_names),
+        pop = factor(pop_name, levels = pop_factors),
+        from = factor(parent_name, levels = pop_factors),
         x = from_x,
         xend = to_x,
         y = time_y,
@@ -369,10 +417,12 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   # arrows
   if (!is.null(model$geneflow)) {
     gene_flow <- model$geneflow %>%
-      dplyr::mutate(x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
-             xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
-             y = tstart_orig,
-             yend = tend_orig)
+      dplyr::mutate(
+        x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),
+        xend = purrr::map_dbl(to, ~ centers[centers$pop == .x, ]$center),
+        y = tstart_orig,
+        yend = tend_orig
+      )
   } else
     gene_flow <- NULL
 
@@ -402,9 +452,14 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       ))
     )
 
-  if (log) p <- p + scale_y_log10()
-
-  if (model$direction == "forward") p <- p + scale_y_reverse()
+  # add horizontal split lines
+  if (!is.null(splits)) {
+    p <- p + geom_segment(
+      data = splits,
+      aes(x = x, xend = xend, y = y, yend = yend, color = pop),
+      size = 1
+    )
+  }
 
   # add each each epoch resize segment
   for (lineage in size_changes) {
@@ -412,31 +467,42 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       p <- p + geom_polygon(data = event, aes(x, y, fill = pop))
   }
 
-  # add horizontal split lines
-  if (!is.null(splits)) {
-    p <- p + geom_segment(
-      data = splits,
-      aes(x = x, xend = xend, y = y, yend = yend, color = from),
-      size = 2
-    )
-  }
-
   # labels with population names
-  p <- p + geom_label(data = centers, aes(label = pop, x = center, y = time,
-                                          fill = pop, fontface = "bold"))
+  # except for outgroups and populations with two or more daughter populations, all
+  # population labels will be plotted at the bottom of the figure
+  end_labels <- model$splits[
+    model$splits$parent != "__pop_is_ancestor" &
+    vapply(model$splits$pop, function(x) sum(x == model$splits$parent), integer(1)) < 2
+  , ]$pop
+  centers[centers$pop %in% end_labels, ]$time[end_labels] <- end_times[end_labels] + log10_ydelta
+  p <- p + geom_label(data = centers, size = 3,
+                      aes(label = pop, x = center, y = time, fill = pop), fontface = "bold")
 
   # add gene flow arrows and proportion labels
   if (!is.null(gene_flow)) {
     p <- p + geom_segment(data = gene_flow,
-                          aes(x = x, xend = xend, y = y, yend = yend),
+                          aes(x = x, xend = xend, y = y, yend = yend + log10_ydelta),
                           arrow = arrow(length = unit(0.2, "cm")))
     p <- p + geom_point(data = gene_flow, aes(x = x, y = y))
-    if (proportions)
+    if (proportions) {
       p <- p + geom_label(data = gene_flow,
                           aes(label = sprintf("%s%%", 100 * rate),
                               x = xend - (xend - x) / 2,
-                              y = yend - (yend - y) / 2), size = 3)
+                              y = sqrt(y * (yend + log10_ydelta))), size = 3)
+    }
   }
+
+  if (model$direction == "forward") {
+    if (log)
+      trans <- scales::compose_trans(scales::log10_trans(), scales::reverse_trans())
+    else
+      trans <- scales::reverse_trans()
+  } else if (log)
+    trans <- scales::log10_trans()
+  else
+    trans <- scales::identity_trans()
+
+  p <- p + scale_y_continuous(trans = trans)
 
   p
 }
@@ -453,7 +519,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 #' @return If `gif = NULL`, return gganimate animation object. Otherwise a GIF
 #'   file is saved and no value is returned.
 #'
-#' @import ggplot2
+#' @importFrom ggplot2 geom_point aes theme element_blank ggtitle
 #' @export
 animate_model <- function(model, file, steps, gif = NULL, width = 800, height = 560) {
   if (!requireNamespace("magick", quietly = TRUE))

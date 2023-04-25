@@ -402,7 +402,7 @@ For this purpose, the package includes a function named `plot_model()` which tak
 One important thing to note here is that unlike traditional admixture graphs where each node/population is present only once, in the full *slendr* graph a single population can participate in many gene flow events over the course of its history. This is visualized by assigning a color to each population, and different nodes of the same color represent snapshots in time when a demographic event affecting that population happens.
 
 ```{r plot_model, fig.width = 8, fig.height = 7}
-plot_model(model)
+plot_model(model, proportions = TRUE)
 ```
 
 ## Interactive exploration of spatio-temporal models
