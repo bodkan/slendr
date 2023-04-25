@@ -285,6 +285,8 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   split_times <- vapply(pop_names, function(x) attr(populations[[x]], "history")[[1]]$time,
                         numeric(1))
 
+  pop_factors <- order_pops(model$populations, model$direction)
+
   # extract times at which each population will be removed from the simulation
   default_end <- if (model$direction == "backward") log10_ydelta else model$orig_length
   end_times <- purrr::map_int(populations, function(pop) {
@@ -315,7 +317,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 
   # compute center of each "population column" along the bottom of the x-axis
   centers <- dplyr::tibble(
-    pop = factor(pop_names, levels = pop_names),
+    pop = factor(pop_names, levels = pop_factors),
     N = final_sizes,
     time = split_times,
   ) %>%
@@ -380,7 +382,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
         stop("Invalid 'next event'. This is a slendr bug! (4)", call. = FALSE)
 
       dplyr::tibble(
-        pop = factor(name, levels = pop_names),
+        pop = factor(name, levels = pop_factors),
         x = xs,
         y = ifelse(ys == 0, log10_ydelta, ys)
       )
@@ -400,8 +402,8 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
       to_x <- centers[centers$pop == pop_name, ]$center
       time_y <- event$time
       splits[[length(splits) + 1]] <- dplyr::tibble(
-        pop = factor(pop_name, levels = pop_names),
-        from = factor(parent_name, levels = pop_names),
+        pop = factor(pop_name, levels = pop_factors),
+        from = factor(parent_name, levels = pop_factors),
         x = from_x,
         xend = to_x,
         y = time_y,
