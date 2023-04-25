@@ -463,16 +463,13 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
   }
 
   # labels with population names
-  # except for outgroups and populations with more than two daughter populations, all
-  # population labels will be plotted on the bottom
+  # except for outgroups and populations with two or more daughter populations, all
+  # population labels will be plotted at the bottom of the figure
   end_labels <- model$splits[
     model$splits$parent != "__pop_is_ancestor" &
-    (
-      model$splits$tremove_orig == -1 |
-      vapply(model$splits$pop, function(x) sum(x == model$splits$parent), integer(1)) < 2
-    )
+    vapply(model$splits$pop, function(x) sum(x == model$splits$parent), integer(1)) < 2
   , ]$pop
-  centers[centers$pop %in% end_labels, ]$time <- end_times[end_labels] + log10_ydelta
+  centers[centers$pop %in% end_labels, ]$time[end_labels] <- end_times[end_labels] + log10_ydelta
   p <- p + geom_label(data = centers, size = 3,
                       aes(label = pop, x = center, y = time, fill = pop), fontface = "bold")
 
