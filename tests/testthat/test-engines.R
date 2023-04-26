@@ -1,3 +1,6 @@
+skip_if(!is_slendr_env_present())
+init_env(quiet = TRUE)
+
 test_that("only serialized models can be run on the command line", {
   pop1 <- population("pop1", N = 1000, time = 1)
   pop2 <- population("pop2", N = 1000, time = 2, parent = pop1)
