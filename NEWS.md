@@ -10,9 +10,11 @@
 
 - Population size parameters and times are now explicitly converted to integer numbers. This is more of an internal, formal change (the conversion has been happening implicitly inside the SLiM engine anyway) but is now explicitly stated, also in the documentation of each relevant function. ([#b7e89e](https://github.com/bodkan/slendr/commit/b7e89e))
 
-- Population names are now restricted to only those strings which are also valid Python identifiers. Although this restriction is only needed for the msprime back end of _slendr_ (not SLiM), it makes sense to keep things tidy and unified. This fixes msprime crashing with `ValueError: A population name must be a valid Python identifier`. ([#4ef5184](https://github.com/bodkan/slendr/commit/4ef5184))
+- Population names are now restricted to only those strings which are also valid Python identifiers. Although this restriction is only needed for the msprime back end of _slendr_ (not SLiM), it makes sense to keep things tidy and unified. This fixes msprime crashing with `ValueError: A population name must be a valid Python identifier`. ([#4ef518](https://github.com/bodkan/slendr/commit/4ef518))
 
 - The layout algorithm of `plot_model()` has been improved significantly. (PR [#135](https://github.com/bodkan/slendr/pull/135)).
+
+- A new optional argument `run =` has been added to `slim()` and `msprime()`. If set to `TRUE` (the default), the engines will operate the usual way. If set to `FALSE`, no simulation will be run and the functions will simply print a command-line command to execute the engine in question (returning the CLI command invisibly).  ([#2e5b85](https://github.com/bodkan/slendr/commit/2e5b85))
 
 # slendr 0.5.1
 
