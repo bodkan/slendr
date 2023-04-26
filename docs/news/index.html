@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.0" id="slendr-060">slendr 0.6.0<a class="anchor" aria-label="anchor" href="#slendr-060"></a></h2>
 <ul><li><p><code><a href="../reference/ts_ibd.html">ts_ibd()</a></code> now returns the ID number of a MRCA node of a pair of nodes sharing a given IBD segment, as well as the TMRCA of that node. (<a href="https://github.com/bodkan/slendr/commit/7e2825" class="external-link">#7e2825</a>)</p></li>
 <li><p>Trivial parameter errors are caught during <code><a href="../reference/population.html">population()</a></code> calls rather than during simulation (solving minor issues discovered via big simulation runs during the development of <a href="https://github.com/bodkan/demografr" class="external-link"><em>demografr</em></a>). (<a href="https://github.com/bodkan/slendr/commit/e33373" class="external-link">#e33373</a>)</p></li>
 <li><p>Fix error in plotting exponential resizes which do not last until “the present”. (<a href="https://github.com/bodkan/slendr/commit/4c49a4" class="external-link">#4c49a4</a>)</p></li>
@@ -89,7 +89,16 @@
 <li><p>Population names are now restricted to only those strings which are also valid Python identifiers. Although this restriction is only needed for the msprime back end of <em>slendr</em> (not SLiM), it makes sense to keep things tidy and unified. This fixes msprime crashing with <code>ValueError: A population name must be a valid Python identifier</code>. (<a href="https://github.com/bodkan/slendr/commit/4ef518" class="external-link">#4ef518</a>)</p></li>
 <li><p>The layout algorithm of <code><a href="../reference/plot_model.html">plot_model()</a></code> has been improved significantly. (PR <a href="https://github.com/bodkan/slendr/pull/135" class="external-link">#135</a>).</p></li>
 <li><p>A new optional argument <code>run =</code> has been added to <code><a href="../reference/slim.html">slim()</a></code> and <code><a href="../reference/msprime.html">msprime()</a></code>. If set to <code>TRUE</code> (the default), the engines will operate the usual way. If set to <code>FALSE</code>, no simulation will be run and the functions will simply print a command-line command to execute the engine in question (returning the CLI command invisibly). (<a href="https://github.com/bodkan/slendr/commit/2e5b85" class="external-link">#2e5b85</a>)</p></li>
-</ul></div>
+<li><p>The following start-up note is no longer shown upon calling <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code>:</p></li>
+</ul><pre><code>    NOTE: Due to Python setup issues on some systems which have been
+    causing trouble particularly for novice users, calling library(slendr)
+    no longer activates slendr's Python environment automatically.
+    In order to use slendr's msprime back end or its tree-sequence
+    functionality, users must now activate slendr's Python environment
+    manually by executing init_env() after calling library(slendr).
+    (This note will be removed in the next major version of slendr.)</code></pre>
+<p>Users have to call <code><a href="../reference/init_env.html">init_env()</a></code> to manually activate the Python environment of slendr (see note under version 0.5.0 below for an extended explanation).</p>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.1" id="slendr-051">slendr 0.5.1<a class="anchor" aria-label="anchor" href="#slendr-051"></a></h2><p class="text-muted">CRAN release: 2023-03-09</p>
 <ul><li><p>This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. (<a href="https://github.com/bodkan/slendr/commit/5600a4" class="external-link">#5600a4</a>)</p></li>

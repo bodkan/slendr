@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 0.6.0
 
 - `ts_ibd()` now returns the ID number of a MRCA node of a pair of nodes sharing a given IBD segment, as well as the TMRCA of that node. ([#7e2825](https://github.com/bodkan/slendr/commit/7e2825))
 
@@ -15,6 +15,20 @@
 - The layout algorithm of `plot_model()` has been improved significantly. (PR [#135](https://github.com/bodkan/slendr/pull/135)).
 
 - A new optional argument `run =` has been added to `slim()` and `msprime()`. If set to `TRUE` (the default), the engines will operate the usual way. If set to `FALSE`, no simulation will be run and the functions will simply print a command-line command to execute the engine in question (returning the CLI command invisibly).  ([#2e5b85](https://github.com/bodkan/slendr/commit/2e5b85))
+
+- The following start-up note is no longer shown upon calling `library(slendr)`:
+
+```
+    NOTE: Due to Python setup issues on some systems which have been
+    causing trouble particularly for novice users, calling library(slendr)
+    no longer activates slendr's Python environment automatically.
+    In order to use slendr's msprime back end or its tree-sequence
+    functionality, users must now activate slendr's Python environment
+    manually by executing init_env() after calling library(slendr).
+    (This note will be removed in the next major version of slendr.)
+```
+
+Users have to call `init_env()` to manually activate the Python environment of slendr (see note under version 0.5.0 below for an extended explanation).
 
 # slendr 0.5.1
 
