@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,32 +159,21 @@ simulation. Even complex models can be programmed using only a couple of
 lines of extremely simple R code, resulting in a robust SLiM simulation
 script being generated under the hood.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; =======================================================================</span></span>
-<span><span class="co">#&gt; NOTE: Due to Python setup issues on some systems which have been</span></span>
-<span><span class="co">#&gt; causing trouble particularly for novice users, calling library(slendr)</span></span>
-<span><span class="co">#&gt; no longer activates slendr's Python environment automatically.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; In order to use slendr's msprime back end or its tree-sequence</span></span>
-<span><span class="co">#&gt; functionality, users must now activate slendr's Python environment</span></span>
-<span><span class="co">#&gt; manually by executing init_env() after calling library(slendr).</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; (This note will be removed in the next major version of slendr.)</span></span>
-<span><span class="co">#&gt; =======================================================================</span></span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">314159</span><span class="op">)</span></span></code></pre></div>
 <p>To demonstrate this feature, let’s look at a simple example. Let’s
 make a rectangular world map first:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3500</span><span class="op">)</span>, yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">700</span><span class="op">)</span>, landscape <span class="op">=</span> <span class="st">"blank"</span><span class="op">)</span></span></code></pre></div>
 <p>We have constructed seven populations, each occupying a discrete
 circular range on a blank landscape 3500 distances units wide and 700
 distance units tall. All are programmed to appear in the simulation in
 generation one and have the same number of individuals.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">3000</span>; <span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">350</span>; <span class="va">r</span> <span class="op">=</span> <span class="fl">240</span></span>
 <span></span>
 <span><span class="va">p0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"pop0"</span>, time <span class="op">=</span> <span class="fl">1</span>, N <span class="op">=</span> <span class="va">N</span>, map <span class="op">=</span> <span class="va">map</span>, center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="va">y</span><span class="op">)</span>, radius <span class="op">=</span> <span class="va">r</span><span class="op">)</span></span>
@@ -207,7 +196,7 @@ to the change in its spatial dynamics. This is not a realistic model for
 any evolutionary scenario, of course, but when animated, it will allow
 us to see the influence of the parameter choice on the spatial dynamics
 that emerge from the simulation.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_dispersal.html">set_dispersal</a></span><span class="op">(</span><span class="va">p1</span>, time <span class="op">=</span> <span class="fl">100</span>, competition <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_dispersal.html">set_dispersal</a></span><span class="op">(</span><span class="va">p2</span>, time <span class="op">=</span> <span class="fl">200</span>, competition <span class="op">=</span> <span class="fl">130</span><span class="op">)</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_dispersal.html">set_dispersal</a></span><span class="op">(</span><span class="va">p3</span>, time <span class="op">=</span> <span class="fl">300</span>, competition <span class="op">=</span> <span class="fl">170</span><span class="op">)</span></span>
@@ -220,7 +209,7 @@ present and runs into the future (unlike previous models that started in
 the past and ran up to the present), we need to specify the total length
 of the simulation with <code>simulation_length = 1000</code> to know
 when to terminate it.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p0</span>, <span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, <span class="va">p5</span>, <span class="va">p6</span><span class="op">)</span>,</span>
 <span>  generation_time <span class="op">=</span> <span class="fl">1</span>, resolution <span class="op">=</span> <span class="fl">1</span>, simulation_length <span class="op">=</span> <span class="fl">1000</span>,</span>
@@ -232,7 +221,7 @@ at the beginning of the simulation, we will let the simulation run
 through a burnin period of 100 generations. We will also save the
 spatial locations of all individuals in order to visualize the spatial
 population dynamics with an animation later.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">locations_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".gz"</span><span class="op">)</span></span>
 <span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, locations <span class="op">=</span> <span class="va">locations_file</span>,</span>
 <span>           burnin <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"batch"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">314159</span><span class="op">)</span></span>
@@ -275,12 +264,12 @@ population dynamics with an animation later.</p>
 spatial population dynamics simulated by the SLiM back end script as an
 animated GIF (we skip this animation in this vignette to make the
 package installation size smaller):</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/animate_model.html">animate_model</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">locations_file</span>, steps <span class="op">=</span> <span class="fl">80</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, we can use tree sequence processing features of slendr
 to just capture the last spatial snapshot of the simulated populations,
 which will be even faster:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">)</span></span>
