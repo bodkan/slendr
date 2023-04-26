@@ -19,6 +19,7 @@ test_that("msprime command run manually on the command line give the correct out
 
   # check that a simulated tree-sequence file is where it's supposed to be if the
   # model is run on the CLI
+  out <- tempfile()
   out_cmd <- capture.output(
     cmd <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, output = out, run = FALSE, random_seed = 42))
   system(cmd, ignore.stdout = TRUE)
@@ -41,6 +42,7 @@ test_that("slim command run manually on the command line give the correct output
 
   # check that a simulated tree-sequence file is where it's supposed to be if the
   # model is run on the CLI
+  out <- tempfile()
   out_cmd <- capture.output(
     cmd <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = out, run = FALSE, random_seed = 42))
   system(cmd, ignore.stdout = TRUE)
