@@ -78,7 +78,7 @@ slendr demographic model."><meta property="og:image" content="https://www.slendr
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Run a slendr model in msprime</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/compilation.R" class="external-link"><code>R/compilation.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/engines.R" class="external-link"><code>R/engines.R</code></a></small>
       <div class="d-none name"><code>msprime.Rd</code></div>
     </div>
 
@@ -98,7 +98,8 @@ slendr demographic model.</p>
 <span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  run <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -146,6 +147,11 @@ file is written to a custom location to be loaded at a later point.</p></dd>
 
 <dt>debug</dt>
 <dd><p>Write msprime's debug log to the console (default <code>FALSE</code>)?</p></dd>
+
+
+<dt>run</dt>
+<dd><p>Should the msprime engine be run? If <code>FALSE</code>, the command line msprime
+command will be printed (and returned invisibly as a character vector) but not executed.</p></dd>
 
 </dl></div>
     <div class="section level2">

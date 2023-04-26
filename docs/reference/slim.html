@@ -78,7 +78,7 @@ function during the compilation of a slendr demographic model."><meta property="
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Run a slendr model in SLiM</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/compilation.R" class="external-link"><code>R/compilation.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/engines.R" class="external-link"><code>R/engines.R</code></a></small>
       <div class="d-none name"><code>slim.Rd</code></div>
     </div>
 
@@ -101,6 +101,7 @@ function during the compilation of a slendr demographic model.</p>
 <span>  coalescent_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"batch"</span>, <span class="st">"gui"</span><span class="op">)</span>,</span>
 <span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  run <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  locations <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -160,11 +161,16 @@ a spatial mode.</p></dd>
 
 <dt>method</dt>
 <dd><p>How to run the script? ("gui" - open in SLiMgui, "batch" - run
-on the command-line)</p></dd>
+on the command line)</p></dd>
 
 
 <dt>random_seed</dt>
 <dd><p>Random seed (if missing, SLiM's own seed will be used)</p></dd>
+
+
+<dt>run</dt>
+<dd><p>Should the SLiM engine be run? If <code>FALSE</code>, the command line SLiM
+command will be printed (and returned invisibly as a character vector) but not executed.</p></dd>
 
 
 <dt>verbose</dt>
@@ -185,8 +191,8 @@ will be saved (most likely for use with <code>animate_model</code>).</p></dd>
 
 
 <dt>slim_path</dt>
-<dd><p>Optional way to specify path to an appropriate SLiM binary (this is useful
-if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
+<dd><p>Optional way to specify path to an appropriate SLiM binary (this
+is useful if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -248,24 +254,24 @@ if the <code>slim</code> binary is not on the <code>$PATH</code>).</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │     1046║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │320.0 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │321.3 KiB║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤═════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size     │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │1913│ 59.8 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │1920│ 60.0 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│1345│133.1 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│1355│134.1 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│  8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│  1.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │1914│ 71.7 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │1921│ 72.0 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│  2.5 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│ 34.1 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│ 33.9 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│ 16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧═════════╧════════════╝</span>

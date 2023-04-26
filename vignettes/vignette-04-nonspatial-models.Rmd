@@ -65,8 +65,7 @@ The compilation step is also the same. The only (internal) difference is that we
 ```{r}
 model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
-  gene_flow = gf, generation_time = 30,
-  path = paste0(tempfile(), "_non-spatial-model")
+  gene_flow = gf, generation_time = 30
 )
 ```
 
