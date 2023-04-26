@@ -52,18 +52,6 @@ PYTHON_ENV <-
       )
     }
   }
-
-  packageStartupMessage(
-    "=======================================================================\n",
-    "NOTE: Due to Python setup issues on some systems which have been\n",
-    "causing trouble particularly for novice users, calling library(slendr)\n",
-    "no longer activates slendr's Python environment automatically.\n\n",
-    "In order to use slendr's msprime back end or its tree-sequence\n",
-    "functionality, users must now activate slendr's Python environment\n",
-    "manually by executing init_env() after calling library(slendr).\n\n",
-    "(This note will be removed in the next major version of slendr.)",
-    "\n======================================================================="
-  )
 }
 
 .onLoad <- function(libname, pkgname) {
