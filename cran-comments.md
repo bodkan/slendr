@@ -1,6 +1,3 @@
-This fixes a "checking S3 generic/method consistency" warning that has
-recently appeared in CRAN check results.
-
 # R CMD check results
 
 There were no ERRORs, no WARNINGs, no NOTEs.
