@@ -288,6 +288,12 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #'   after the simplification.
 #' @param keep_input_roots Should the history ancestral to the MRCA of all
 #'   samples be retained in the tree sequence? Default is \code{FALSE}.
+#' @param keep_unary Should unary nodes be preserved through simplification?
+#'   Default is \code{FALSE}.
+#' @param keep_unary_in_individuals Should unary nodes be preserved through
+#'   simplification if they are associated with an individual recorded in
+#'   the table of individuals? Default is \code{FALSE}. Cannot be set to
+#'   \code{TRUE} if \code{keep_unary} is also true.
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
 #'   an interface point for the Python module tskit using slendr functions with
@@ -321,7 +327,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #'
 #' ts_small
 #' @export
-ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
+ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
+                        keep_unary = FALSE, keep_unary_in_individuals = FALSE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -365,7 +372,9 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE) {
 
   ts_new <- ts$simplify(as.integer(samples),
                         filter_populations = FALSE,
-                        keep_input_roots = keep_input_roots)
+                        keep_input_roots = keep_input_roots,
+                        keep_unary = keep_unary,
+                        keep_unary_in_individuals = keep_unary_in_individuals)
 
   # copy attributes over to the new tree-sequence object or generate updates
   # ones where necessary

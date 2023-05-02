@@ -4,7 +4,13 @@
 \alias{ts_simplify}
 \title{Simplify the tree sequence down to a given set of individuals}
 \usage{
-ts_simplify(ts, simplify_to = NULL, keep_input_roots = FALSE)
+ts_simplify(
+  ts,
+  simplify_to = NULL,
+  keep_input_roots = FALSE,
+  keep_unary = FALSE,
+  keep_unary_in_individuals = FALSE
+)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -16,6 +22,14 @@ after the simplification.}
 
 \item{keep_input_roots}{Should the history ancestral to the MRCA of all
 samples be retained in the tree sequence? Default is \code{FALSE}.}
+
+\item{keep_unary}{Should unary nodes be preserved through simplification?
+Default is \code{FALSE}.}
+
+\item{keep_unary_in_individuals}{Should unary nodes be preserved through
+simplification if they are associated with an individual recorded in
+the table of individuals? Default is \code{FALSE}. Cannot be set to
+\code{TRUE} if \code{keep_unary} is also true.}
 }
 \value{
 Tree-sequence object of the class \code{slendr_ts}, which serves as
