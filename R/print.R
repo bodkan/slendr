@@ -95,8 +95,8 @@ print.slendr_model <- function(x, ...) {
 }
 
 
-#' @rdname print.slendr_pop
-#' @export
+# @rdname print.slendr_pop
+# @export
 print.slendr_nodes <- function(x, ...) {
   model <- attr(x, "model")
   type <- attr(x, "type")
