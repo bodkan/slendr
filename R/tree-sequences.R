@@ -293,7 +293,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #' @param keep_unary_in_individuals Should unary nodes be preserved through
 #'   simplification if they are associated with an individual recorded in
 #'   the table of individuals? Default is \code{FALSE}. Cannot be set to
-#'   \code{TRUE} if \code{keep_unary} is also true.
+#'   \code{TRUE} if \code{keep_unary} is also TRUE
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
 #'   an interface point for the Python module tskit using slendr functions with

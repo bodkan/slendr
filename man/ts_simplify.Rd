@@ -29,7 +29,7 @@ Default is \code{FALSE}.}
 \item{keep_unary_in_individuals}{Should unary nodes be preserved through
 simplification if they are associated with an individual recorded in
 the table of individuals? Default is \code{FALSE}. Cannot be set to
-\code{TRUE} if \code{keep_unary} is also true.}
+\code{TRUE} if \code{keep_unary} is also TRUE}
 }
 \value{
 Tree-sequence object of the class \code{slendr_ts}, which serves as
