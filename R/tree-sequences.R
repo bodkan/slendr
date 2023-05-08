@@ -160,10 +160,11 @@ ts_load <- function(file, model = NULL,
 ts_save <- function(ts, file) {
   check_ts_class(ts)
   type <- attr(ts, "type")
+  from_slendr <- !is.null(attr(ts, "model"))
 
   # overwrite the original list of sample names (if the tree sequence was simplified
   # down to a smaller number of individuals than originally sampled)
-  if (nrow(ts_samples(ts)) != nrow(attr(ts, "metadata")$sampling)) {
+  if (from_slendr && nrow(ts_samples(ts)) != nrow(attr(ts, "metadata")$sampling)) {
     tables <- ts$dump_tables()
     tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
 
