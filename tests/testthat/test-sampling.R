@@ -282,7 +282,6 @@ test_that("sampling table is correctly adjusted after simplification (msprime)",
   expect_error(ts_samples(ts_small2_nomodel), "Sampling schedule can only be extracted")
 })
 
-
 test_that("sampling table is correctly adjusted after simplification (SLiM)", {
   skip_if(!is_slendr_env_present())
   init_env(quiet = TRUE)

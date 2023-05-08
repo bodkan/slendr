@@ -149,8 +149,9 @@ def simulate(
   # (this vector is used in downstream analyses to keep track of which individuals
   # were kept during the process of ts_simplify() etc.)
   sample_names = []
-  for sample_group in samples.itertuples():
-      sample_names += [f"{sample_group.pop}_{i}" for i in range(1, sample_group.n + 1)]
+  for pop in samples["pop"].unique():
+      n = sum(samples[samples["pop"] == pop]["n"])
+      sample_names += [f"{pop}_{i}" for i in range(1, n + 1)]
 
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
