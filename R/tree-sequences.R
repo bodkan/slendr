@@ -159,11 +159,25 @@ ts_load <- function(file, model = NULL,
 #' @export
 ts_save <- function(ts, file) {
   check_ts_class(ts)
-  browser()
-  tables <- ts$dump_tables()
-  tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
+  type <- attr(ts, "type")
+
+  # overwrite the original list of sample names (if the tree sequence was simplified
+  # down to a smaller number of individuals than originally sampled)
+  if (nrow(ts_samples(ts)) != nrow(attr(ts, "metadata")$sampling)) {
+    tables <- ts$dump_tables()
+    tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
+
+    sample_names <- attr(ts, "metadata")$sample_names
+    if (type == "SLiM")
+      tables$metadata$SLiM$user_metadata$slendr[[1]]$sample_names <- sample_names
+    else
+      tables$metadata$slendr$sample_names <- sample_names
+
+    # put the tree sequence object back together
+    ts <- tables$tree_sequence()
+  }
+
   ts$dump(path.expand(file))
-  ts$dump("/tmp/asd.trees")
 }
 
 
@@ -442,6 +456,15 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
                                          "retained", "alive", "pedigree_id", "ind_id", "pop_id")]
   } else
     attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
+
+  # replace the names of sampled individuals (if simplification led to subsetting)
+  if (from_slendr) {
+    attr(ts_new, "metadata")$sample_names <-
+      attr(ts_new, "nodes") %>%
+      dplyr::filter(sampled, !is.na(name)) %>%
+      .$name %>%
+      unique
+  }
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -1144,9 +1167,8 @@ ts_samples <- function(ts) {
          "from a slendr model. To access information about times and\nlocations ",
          "of nodes and individuals from non-slendr tree sequences,\nuse the ",
          "function ts_nodes().\n", call. = FALSE)
-  data <- ts_nodes(ts) %>% dplyr::filter(sampled, !is.na(name))
   samples <- attr(ts, "metadata")$sampling %>%
-    dplyr::filter(name %in% data$name)
+    dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
 
   samples
 }
@@ -2415,7 +2437,9 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
 
   # load information about samples at times and from populations of remembered individuals
   if (from_slendr) {
-    samples <- attr(ts, "metadata")$sampling %>% dplyr::arrange(-time, pop)
+    samples <- attr(ts, "metadata")$sampling %>%
+      dplyr::arrange(-time, pop) %>%
+      dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
     if (!is.null(simplify_to))
       samples <- samples %>% dplyr::filter(name %in% simplify_to)
   } else
@@ -2506,7 +2530,8 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
   # load information about samples at times and from populations of remembered
   # individuals
   if (from_slendr) {
-    samples <- attr(ts, "metadata")$sampling
+    samples <- attr(ts, "metadata")$sampling %>%
+      dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
     samples <- dplyr::arrange(samples, -time, pop)
@@ -2795,7 +2820,7 @@ get_sampling <- function(metadata) {
   } else
     sampling <- dplyr::as_tibble(metadata$sampling)
 
-  sampling %>%
+  df <- sampling %>%
     dplyr::select(-time_gen) %>%
     {
       rbind(
@@ -2809,6 +2834,10 @@ get_sampling <- function(metadata) {
     dplyr::arrange(-time_orig, pop) %>%
     dplyr::rename(time = time_orig) %>%
     dplyr::select(name, time, pop)
+
+  # if needed (i.e. after simplification to a smaller set of sampled individuals), subset
+  # the full original sampling schedule table to only individuals of interest
+  df %>% dplyr::filter(name %in% metadata$sample_names)
 }
 
 # Extract list with slendr metadata (created as Eidos Dictionaries by SLiM and Python
@@ -2831,6 +2860,7 @@ get_slendr_metadata <- function(ts) {
     version = metadata$version,
     description = metadata$description,
     sampling = get_sampling(metadata),
+    sample_names = metadata$sample_names,
     map = metadata$map[[1]],
     arguments = arguments
   )

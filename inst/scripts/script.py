@@ -145,6 +145,13 @@ def simulate(
       random_seed=seed
   )
 
+  # symbolic names of individuals that have been recorded in the tree sequence
+  # (this vector is used in downstream analyses to keep track of which individuals
+  # were kept during the process of ts_simplify() etc.)
+  sample_names = []
+  for sample_group in samples.itertuples():
+      sample_names += [f"{sample_group.pop}_{i}" for i in range(1, sample_group.n + 1)]
+
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
       "slendr": {
@@ -161,6 +168,7 @@ def simulate(
               "x_orig" : list(samples["x_orig"].astype(numpy.float32)),
               "y_orig" : list(samples["y_orig"].astype(numpy.float32))
           },
+          "sample_names": sample_names,
           "arguments": {
             "SEQUENCE_LENGTH"   : sequence_length,
             "RECOMB_RATE"       : recombination_rate,
