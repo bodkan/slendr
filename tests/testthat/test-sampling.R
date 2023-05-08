@@ -210,3 +210,43 @@ test_that("sampling is as close to the multiple specified positions as possible"
   expect_true(all.equal(individuals$y, locs$y, tolerance = 0.001))
   expect_true(all.equal(individuals$distance, locs$distance, tolerance = 0.001))
 })
+
+test_that("sampling locations may only be given for spatial models", {
+  map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+  p1 <- population(name = "p1", time = 10, N = 100)
+  p2 <- population(name = "p2", parent = p1, time = 20, N = 100, center = c(1, 1), radius = 10)
+  model <- compile_model(populations = list(p1, p2), generation_time = 1,
+                         resolution = 1, simulation_length = 1000,
+                         competition = 0, mating = 1, dispersal = 10)
+  expect_error(
+    schedule_sampling(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE),
+    "Sampling locations may only be specified for a spatial model"
+  )
+})
+
+test_that("a mix of spatial and non-spatial samplings is not allowed for a single population", {
+  map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+  p1 <- population(name = "p1", time = 10, N = 100)
+  p2 <- population(name = "p2", map = map, time = 20, N = 100, center = c(1, 1), radius = 10)
+  suppressWarnings(
+    model <- compile_model(populations = list(p1, p2), generation_time = 1,
+                         resolution = 1, simulation_length = 1000,
+                         competition = 0, mating = 1, dispersal = 10)
+  )
+  s1 <- schedule_sampling(model, time = 35, list(p1, 3), strict = TRUE)
+  s2 <- schedule_sampling(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE)
+  # this gives error
+  s3 <- schedule_sampling(model, time = 35, list(p2, 5), strict = TRUE)
+  s <- rbind(s1, s2, s3)
+  expect_error(
+    slim(model, samples = s, sequence_length = 1000, recombination_rate = 0),
+    "For each population, samples must be all spatial or all non-spatial.\nThis is not true for the following populations: p2"
+  )
+  # this passes
+  s3 <- schedule_sampling(model, time = 35, list(p2, 5), locations = list(c(10, 15)), strict = TRUE)
+  s <- rbind(s1, s2, s3)
+  expect_s3_class(slim(model, samples = s, sequence_length = 1000, recombination_rate = 0), "slendr_ts")
+})
+
+# test_that("sampling table is correctly adjusted after simplification", {
+# })

@@ -159,7 +159,11 @@ ts_load <- function(file, model = NULL,
 #' @export
 ts_save <- function(ts, file) {
   check_ts_class(ts)
+  browser()
+  tables <- ts$dump_tables()
+  tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
   ts$dump(path.expand(file))
+  ts$dump("/tmp/asd.trees")
 }
 
 
