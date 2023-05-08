@@ -84,3 +84,19 @@ test_that("pure SLiM and slendr versions of the same model give the same phylo o
   expect_equal(t1$node.label, t2$node.label)
   expect_equal(t1$Nnode, t2$Nnode)
 })
+
+# simplification tests (after introducing constant tracking of names of sampled individuals)
+test_that("simplification on pure SLiM tree sequence retains the correct data", {
+  tmp_small <- tempfile()
+  suppressWarnings(ts_small <- ts_simplify(ts2, simplify_to = c(0, 42, 100, 256)))
+  ts_save(ts_small, tmp_small)
+  ts_small_loaded <- ts_load(tmp_small)
+  expect_equal(ts_nodes(ts_small_loaded) %>% dplyr::filter(sampled) %>% nrow, 4)
+
+  # for a mysterious reason not worth investigating right now, the last two
+  # columns of ts_nodes (ind_id, pop_id) are flipped between ts_small and ts_small_loaded,
+  # so let's compare the ts_nodes contents by explicitly ordered columns
+  cols <- c("pop", "node_id", "time", "time_tskit", "sampled", "remembered",
+            "retained", "alive", "pedigree_id", "ind_id", "pop_id")
+  expect_equal(ts_nodes(ts_small)[, cols], ts_nodes(ts_small_loaded)[, cols])
+})
