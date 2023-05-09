@@ -2444,6 +2444,11 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
 
   # load information about samples at times and from populations of remembered individuals
   if (from_slendr) {
+    # when a tree sequence is being loaded from a file where it was saved in its
+    # simplified form, the metadata table saved along side it won't correspond to the
+    # subset of sampled nodes -- in these situations, subset the original sampling table
+    # using the names of sampled individuals that are propagated through serialization
+    # (this is achieved by the filter() step right below)
     samples <- attr(ts, "metadata")$sampling %>%
       dplyr::arrange(-time, pop) %>%
       dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
@@ -2537,6 +2542,10 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
   # load information about samples at times and from populations of remembered
   # individuals
   if (from_slendr) {
+    # when a tree sequence is being loaded from a file where it was saved in its
+    # simplified form, the metadata table saved along side it won't correspond to the
+    # subset of sampled nodes -- in these situations, subset the original sampling table
+    # using the names of sampled individuals that are propagated through serialization
     samples <- attr(ts, "metadata")$sampling %>%
       dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
     if (!is.null(simplify_to))
