@@ -169,9 +169,11 @@ ts_save <- function(ts, file) {
     tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
 
     sample_names <- attr(ts, "metadata")$sample_names
-    if (type == "SLiM")
+    pedigree_ids <- attr(ts, "metadata")$sample_ids
+    if (type == "SLiM") {
       tables$metadata$SLiM$user_metadata$slendr[[1]]$sample_names <- sample_names
-    else
+      tables$metadata$SLiM$user_metadata$slendr[[1]]$sample_ids <- pedigree_ids
+    } else
       tables$metadata$slendr$sample_names <- sample_names
 
     # put the tree sequence object back together
@@ -267,6 +269,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
     # inherit the information about which individuals should be marked as
     # explicitly "sampled" from the previous tree sequence object (if that
     # was specified) -- this is only necessary for a SLiM sequence
+    # TODO: no longer necessary
     old_individuals <- attr(ts, "raw_individuals")
     sampled_ids <- old_individuals[old_individuals$sampled, ]$pedigree_id
     attr(ts_new, "raw_individuals") <- attr(ts_new, "raw_individuals") %>%
@@ -460,11 +463,10 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
 
   # replace the names of sampled individuals (if simplification led to subsetting)
   if (from_slendr) {
-    attr(ts_new, "metadata")$sample_names <-
-      attr(ts_new, "nodes") %>%
-      dplyr::filter(sampled, !is.na(name)) %>%
-      .$name %>%
-      unique
+    sampled_nodes <- attr(ts_new, "nodes") %>% dplyr::filter(sampled)
+    attr(ts_new, "metadata")$sample_names <-  unique(sampled_nodes$name)
+    if (type == "SLiM")
+      attr(ts_new, "metadata")$sample_ids <- unique(sampled_nodes$pedigree_id)
   }
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
@@ -2341,7 +2343,11 @@ get_ts_raw_individuals <- function(ts) {
     if (from_slendr) {
       ind_table$time <- time_fun(ts)(ts$individual_times, model)
       # for slendr SLiM models, "sampled" nodes are those were explicitly scheduled for sampling
-      ind_table$sampled <- ind_table$remembered
+      # - for "original" SLiM/slendr tree sequences, sampled nodes are those that are remembered
+      if (is.null(attr(ts, "metadata")$sample_ids))
+        ind_table$sampled <- ind_table$remembered
+      else # - for previously simplified tree sequences, use information from pedigree IDs
+        ind_table$sampled <- ind_table$pedigree_id %in% attr(ts, "metadata")$sample_ids
     } else {
       ind_table$time <- ts$individual_times
       # for pure SLiM tree sequences, simply use the sampling information encoded in the data
@@ -2862,6 +2868,7 @@ get_slendr_metadata <- function(ts) {
     description = metadata$description,
     sampling = get_sampling(metadata),
     sample_names = metadata$sample_names,
+    sample_ids = metadata$sample_ids,
     map = metadata$map[[1]],
     arguments = arguments
   )
