@@ -316,6 +316,9 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #'   simplification if they are associated with an individual recorded in
 #'   the table of individuals? Default is \code{FALSE}. Cannot be set to
 #'   \code{TRUE} if \code{keep_unary} is also TRUE
+#' @param filter_nodes Should nodes be reindexed after simplification? Default is
+#'   \code{TRUE}. See tskit's documentation for the Python method \code{simplify()}
+#    for more detail.
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
 #'   an interface point for the Python module tskit using slendr functions with
@@ -350,7 +353,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #' ts_small
 #' @export
 ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
-                        keep_unary = FALSE, keep_unary_in_individuals = FALSE) {
+                        keep_unary = FALSE, keep_unary_in_individuals = FALSE,
+                        filter_nodes = TRUE) {
   check_ts_class(ts)
 
   model <- attr(ts, "model")
@@ -394,6 +398,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
 
   ts_new <- ts$simplify(as.integer(samples),
                         filter_populations = FALSE,
+                        filter_nodes = filter_nodes,
                         keep_input_roots = keep_input_roots,
                         keep_unary = keep_unary,
                         keep_unary_in_individuals = keep_unary_in_individuals)

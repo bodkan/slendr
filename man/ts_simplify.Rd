@@ -9,7 +9,8 @@ ts_simplify(
   simplify_to = NULL,
   keep_input_roots = FALSE,
   keep_unary = FALSE,
-  keep_unary_in_individuals = FALSE
+  keep_unary_in_individuals = FALSE,
+  filter_nodes = TRUE
 )
 }
 \arguments{
@@ -30,6 +31,9 @@ Default is \code{FALSE}.}
 simplification if they are associated with an individual recorded in
 the table of individuals? Default is \code{FALSE}. Cannot be set to
 \code{TRUE} if \code{keep_unary} is also TRUE}
+
+\item{filter_nodes}{Should nodes be reindexed after simplification? Default is
+\code{TRUE}. See tskit's documentation for the Python method \code{simplify()}}
 }
 \value{
 Tree-sequence object of the class \code{slendr_ts}, which serves as
