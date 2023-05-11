@@ -296,7 +296,7 @@ tree sequence (recapitate and simplify it):</p>
 <span><span class="co">#&gt; ╟───────────────┼─────────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │      432║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼─────────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │206.4 KiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │208.8 KiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═════════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤════╤════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows│Size    │Has Metadata║</span></span>
@@ -313,7 +313,7 @@ tree sequence (recapitate and simplify it):</p>
 <span><span class="co">#&gt; ╟───────────┼────┼────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│   7│ 2.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│   3│37.2 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│   3│37.7 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │   0│16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧════╧════════╧════════════╝</span></span></code></pre>
@@ -354,32 +354,11 @@ data</em>:</p>
 of the spatio-temporal data extracted from the tree sequence:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; slendr 'nodes' object </span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; times are expressed in a backward time direction</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; summary of the table data contents:</span></span>
-<span><span class="co">#&gt;   AFR - 5 'sampled', 5 'remembered', 5 'retained', 5 'alive' individuals</span></span>
-<span><span class="co">#&gt;   EUR - 79 'sampled', 79 'remembered', 30 'retained', 30 'alive' individuals</span></span>
-<span><span class="co">#&gt;   OOA - 31 'sampled', 31 'remembered', NA 'retained', 0 'alive' individuals</span></span>
-<span><span class="co">#&gt;   ANA - 48 'sampled', 48 'remembered', NA 'retained', 0 'alive' individuals</span></span>
-<span><span class="co">#&gt;   EHG - 44 'sampled', 44 'remembered', NA 'retained', 0 'alive' individuals</span></span>
-<span><span class="co">#&gt;   YAM - 9 'sampled', 9 'remembered', NA 'retained', 0 'alive' individuals</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; total:</span></span>
-<span><span class="co">#&gt;   - 216 'sampled' individuals</span></span>
-<span><span class="co">#&gt;   - 216 'remembered' individuals</span></span>
-<span><span class="co">#&gt;   - 508 'retained' individuals</span></span>
-<span><span class="co">#&gt;   - 35 'alive' individuals</span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; oldest sampled individual: 40000 time units 'before present' </span></span>
-<span><span class="co">#&gt; youngest sampled individual: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; oldest node: 252014.9 time units 'before present' </span></span>
-<span><span class="co">#&gt; youngest node: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; overview of the underlying sf object:</span></span>
-<span><span class="co">#&gt; </span></span>
+<pre><code><span><span class="co">#&gt; Simple feature collection with 944 features and 12 fields (with 4 geometries empty)</span></span>
+<span><span class="co">#&gt; Geometry type: POINT</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: 2721964 ymin: 315424 xmax: 8598650 ymax: 4914514</span></span>
+<span><span class="co">#&gt; Projected CRS: ETRS89-extended / LAEA Europe</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 944 × 13</span></span></span>
 <span><span class="co">#&gt;    name  pop   node_id  time time_tskit           location sampled</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;POINT [m]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span></span>
@@ -771,7 +750,7 @@ periods of the history of a sample:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">distances</span> <span class="op">&lt;-</span> <span class="va">lineages</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>branch_length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">parent_time</span> <span class="op">-</span> <span class="va">child_time</span><span class="op">)</span> <span class="op">/</span> <span class="va">model</span><span class="op">$</span><span class="va">generation_time</span>,</span>
-<span>         distance <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html" class="external-link">st_length</a></span><span class="op">(</span><span class="va">connection</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/units/man/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>         distance <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html" class="external-link">st_length</a></span><span class="op">(</span><span class="va">connection</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html" class="external-link">set_units</a></span><span class="op">(</span><span class="va">km</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>         speed <span class="op">=</span> <span class="va">distance</span> <span class="op">/</span> <span class="va">branch_length</span>,</span>
 <span>         epoch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">parent_time</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">Inf</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">60000</span>, <span class="fl">0</span>, by <span class="op">=</span> <span class="op">-</span><span class="fl">3000</span><span class="op">)</span><span class="op">)</span>, dig.lab <span class="op">=</span> <span class="fl">10</span>, include.lowest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># strip away the spatial annotation</span></span>
