@@ -135,7 +135,7 @@ samples <- sample(data$node_id, 10)
 ts_small <- ts_simplify(ts, simplify_to = samples)
 
 # extract the 42nd tree in the genealogy to an R 'phylo' format
-tree <- ts_phylo(ts_small, 42)
+tree <- ts_phylo(ts_small, 42 - 1)
 tree
 ```
 

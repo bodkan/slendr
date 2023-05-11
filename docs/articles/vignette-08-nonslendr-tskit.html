@@ -188,7 +188,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp6yBp8X/file771a252bc0fd");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpqnF20F/file37a139ce579a");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -262,7 +262,7 @@ R package. Here we first simplify the tree sequence even further to just
 <span><span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># extract the 42nd tree in the genealogy to an R 'phylo' format</span></span>
-<span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_phylo.html">ts_phylo</a></span><span class="op">(</span><span class="va">ts_small</span>, <span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_phylo.html">ts_phylo</a></span><span class="op">(</span><span class="va">ts_small</span>, <span class="fl">42</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Starting checking the validity of tree...</span></span>
 <span><span class="co">#&gt; Found number of tips: n = 10 </span></span>
 <span><span class="co">#&gt; Found number of nodes: m = 9 </span></span>
@@ -393,7 +393,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp6yBp8X/file771a104bae91");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpqnF20F/file37a1d6fe686");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>

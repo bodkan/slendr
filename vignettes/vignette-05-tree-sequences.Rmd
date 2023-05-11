@@ -224,7 +224,7 @@ Now we introduce a function `ts_phylo()` which can be used to extract one tree f
 
 ```{r}
 # extract the 42nd tree in the tree sequence
-tree <- ts_phylo(ts_small, 42)
+tree <- ts_phylo(ts_small, 42 - 1)
 ```
 
 When we type the tree object to an R console, we can verify that we got an ordinary `phylo` object:
