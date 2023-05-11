@@ -6,7 +6,7 @@ test_that("minimal tree sequence (nodes+edges) is correctly loaded", {
   path <- reticulate::py$filename
   ts <- ts_load(path)
 
-  # ts_tree(ts, 1) %>% ts_draw()
+  # ts_tree(ts, 0) %>% ts_draw()
 
   edges <- ts_table(ts, "edges")
   expect_true(all(edges$child == c(0, 1, 3, 4, 2, 5)))
@@ -33,7 +33,7 @@ test_that("minimal tree sequence (nodes+edges+inds) is correctly loaded", {
   path <- reticulate::py$filename
   ts <- ts_load(path)
 
-  # ts_tree(ts, 1) %>% ts_draw()
+  # ts_tree(ts, 0) %>% ts_draw()
 
   edges <- ts_table(ts, "edges")
   expect_true(all(edges$child == c(0, 1, 3, 4, 2, 5)))
@@ -60,7 +60,7 @@ test_that("minimal tree sequence (nodes+edges+inds+pops) is correctly loaded", {
   path <- reticulate::py$filename
   ts <- ts_load(path)
 
-  # ts_tree(ts, 1) %>% ts_draw()
+  # ts_tree(ts, 0) %>% ts_draw()
 
   edges <- ts_table(ts, "edges")
   expect_true(all(edges$child == c(0, 1, 3, 4, 2, 5)))
@@ -87,7 +87,7 @@ test_that("minimal tree sequence (nodes+edges+inds+pops+muts) is correctly loade
   path <- reticulate::py$filename
   ts <- ts_load(path)
 
-  # ts_tree(ts, 1) %>% ts_draw()
+  # ts_tree(ts, 0) %>% ts_draw()
 
   edges <- ts_table(ts, "edges")
   expect_true(all(edges$child == c(0, 1, 3, 4, 2, 5)))

@@ -73,8 +73,8 @@ test_that("pure SLiM and slendr versions of the same model give the same node/in
 })
 
 test_that("pure SLiM and slendr versions of the same model give the same phylo object", {
-  t1 <- ts_recapitate(ts1, Ne = N, recombination_rate = 0, random_seed = 42) %>% ts_simplify() %>% ts_phylo(1, quiet = TRUE)
-  t2 <- ts_recapitate(ts1, Ne = N, recombination_rate = 0, random_seed = 42) %>% ts_simplify() %>% ts_phylo(1, quiet = TRUE)
+  t1 <- ts_recapitate(ts1, Ne = N, recombination_rate = 0, random_seed = 42) %>% ts_simplify() %>% ts_phylo(0, quiet = TRUE)
+  t2 <- ts_recapitate(ts1, Ne = N, recombination_rate = 0, random_seed = 42) %>% ts_simplify() %>% ts_phylo(0, quiet = TRUE)
 
   # plot(t1)
   # plot(t2)

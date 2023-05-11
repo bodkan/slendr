@@ -12,7 +12,7 @@ ts <- ts_load(ts_file, model, recapitate = TRUE, simplify = TRUE,
               simplify_to = paste0("POP_", seq(1, 10)))
 
 # library(ggtree)
-# tree <- ts_phylo(ts, 1)
+# tree <- ts_phylo(ts, 0)
 # labels <- ts_nodes(tree) %>% dplyr::select(node = phylo_id, tskit_id = node_id)
 # ggtree(tree, branch.length="none") %<+% labels +
 #   geom_label(aes(label = tskit_id))

@@ -86,8 +86,8 @@ test_that("non-serialized models give the same result as serialized models (no s
   expect_true(all(ts_table(ts_ser_small, "mutations")   == ts_table(ts_nonser_small, "mutations"), na.rm = TRUE))
 
   # check equivalence of trees of both tree sequences
-  tree_ser <- ts_phylo(ts_ser_small, 1, quiet = TRUE)
-  tree_nonser <- ts_phylo(ts_nonser_small, 1, quiet = TRUE)
+  tree_ser <- ts_phylo(ts_ser_small, 0, quiet = TRUE)
+  tree_nonser <- ts_phylo(ts_nonser_small, 0, quiet = TRUE)
   expect_true(all(sapply(names(tree_ser), function(x) all(tree_ser[[x]] == tree_nonser[[x]]))))
 })
 
@@ -152,7 +152,7 @@ test_that("non-serialized models give the same result as serialized models (with
   expect_true(all(ts_table(ts_ser_small, "mutations")   == ts_table(ts_nonser_small, "mutations"), na.rm = TRUE))
 
   # check equivalence of trees of both tree sequences
-  tree_ser <- ts_phylo(ts_ser_small, 1, quiet = TRUE)
-  tree_nonser <- ts_phylo(ts_nonser_small, 1, quiet = TRUE)
+  tree_ser <- ts_phylo(ts_ser_small, 0, quiet = TRUE)
+  tree_nonser <- ts_phylo(ts_nonser_small, 0, quiet = TRUE)
   expect_true(all(sapply(names(tree_ser), function(x) all(tree_ser[[x]] == tree_nonser[[x]]))))
 })

@@ -65,7 +65,7 @@ compare_ts_phylo <- function(ts, N) {
   ts2 <- ts_simplify(ts)
 
   tskit_tree <- ts2$at(0)
-  tree <- ts_phylo(ts2, i = 1, quiet = TRUE)
+  tree <- ts_phylo(ts2, i = 0, quiet = TRUE)
   tree_data <- ts_nodes(tree)
   # make sure that the converted phylo tree has the same number of edges and
   # nodes as the original tskit Tree object

@@ -36,8 +36,8 @@ test_that("pure msprime and slendr versions of the same model give the same node
 })
 
 test_that("pure msprime and slendr versions of the same model give the same phylo object", {
-  t1 <- ts1 %>% ts_phylo(1, quiet = TRUE)
-  t2 <- ts2 %>% ts_phylo(1, quiet = TRUE)
+  t1 <- ts1 %>% ts_phylo(0, quiet = TRUE)
+  t2 <- ts2 %>% ts_phylo(0, quiet = TRUE)
 
   expect_equal(t1$edge, t2$edge)
   expect_equal(t1$edge.length, t2$edge.length)

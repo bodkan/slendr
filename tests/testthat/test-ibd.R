@@ -100,7 +100,7 @@ get_pairs_tmrca <- function(ts, ibd) {
     # ... then search for the age of the MRCA of those nodes in trees within that IBD
     # segment
     for (tree_i in seq_len(ts$num_trees)) {
-      tree <- ts_tree(ts, tree_i, mode = "index")
+      tree <- ts_tree(ts, tree_i - 1, mode = "index")
       # skip trees which are outside of the IBD segment's boundaries
       if (tree$interval$right <= coords[1] || tree$interval$left >= coords[2])
         next
