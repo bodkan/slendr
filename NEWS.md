@@ -36,6 +36,8 @@ Users have to call `init_env()` to manually activate the Python environment of s
 
 - Metadata summary of `ts_nodes()` results is no longer printed whenever typed into the R console. Instead, summary can be obtained by explicit call to `summary()` on the `ts_nodes()` tables.  ([#01af51](https://github.com/bodkan/slendr/commit/01af51) [#8176b5](https://github.com/bodkan/slendr/commit/8176b5))
 
+- `ts_tree()` and `ts_phylo()` now extract trees based on tskit's own zero-based indexing [#554e13](https://github.com/bodkan/slendr/commit/554e13).
+
 # slendr 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
