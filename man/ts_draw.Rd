@@ -6,10 +6,11 @@
 \usage{
 ts_draw(
   x,
-  width = 1500,
-  height = 500,
+  width = 1000,
+  height = 1000,
   labels = FALSE,
   sampled_only = TRUE,
+  title = NULL,
   ...
 )
 }
@@ -23,6 +24,8 @@ ts_draw(
 \item{sampled_only}{Should only individuals explicitly sampled through
 simplification be labeled? This is relevant in situations in which sampled
 individuals can themselves be among the ancestral nodes.}
+
+\item{title}{Optional title for the figure}
 
 \item{...}{Keyword arguments to the tskit \code{draw_svg} function.}
 }

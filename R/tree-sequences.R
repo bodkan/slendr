@@ -1483,6 +1483,7 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @param sampled_only Should only individuals explicitly sampled through
 #'   simplification be labeled? This is relevant in situations in which sampled
 #'   individuals can themselves be among the ancestral nodes.
+#' @param title Optional title for the figure
 #' @param ... Keyword arguments to the tskit \code{draw_svg} function.
 #'
 #' @return No return value, called for side effects
@@ -1505,10 +1506,11 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' # ts_draw accepts various optional arguments of tskit.Tree.draw_svg
 #' ts_draw(tree, time_scale = "rank")
 #' @export
-ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
-                    sampled_only = TRUE, ...) {
+ts_draw <- function(x, width = 1000, height = 1000, labels = FALSE,
+                    sampled_only = TRUE, title = NULL, ...) {
   # set margins to zero, save original settings
-  orig_par <- graphics::par(mar = c(0, 0, 0, 0))
+  top_margin <- if (is.null(title)) 0 else 5
+  orig_par <- graphics::par(mar = c(0, 0, top_margin, 0))
   # restore original settings
   on.exit(graphics::par(orig_par))
 
@@ -1539,8 +1541,10 @@ ts_draw <- function(x, width = 1500, height = 500, labels = FALSE,
   # plot the PNG image, filling the entire plotting window
   img <- png::readPNG(tmp_file)
   graphics::plot.new()
-  graphics::plot.window(0:1, 0:1)
-  graphics::rasterImage(img, 0, 0, 1, 1)
+  aspect_ratio <- dim(img)[1] / dim(img)[2]
+  graphics::plot.window(xlim = c(0, 1), ylim = c(0, 1), asp = aspect_ratio)
+  graphics::rasterImage(img, xleft = 0, ybottom = 0, xright = 1, ytop = 1)
+  graphics::title(title)
 }
 
 #' Check that all trees in the tree sequence are fully coalesced
