@@ -1,4 +1,4 @@
-.PHONY: build docs website
+.PHONY: build docs website test
 
 version := $(shell less DESCRIPTION | grep 'Version' | sed 's/Version: \(.*\)$$/\1/')
 pkg := build/slendr_$(version).tar.gz
@@ -32,6 +32,9 @@ website: $(logo) README.md
 	#git restore docs/reference/slim.html
 	#git restore docs/reference/world.html
 	#git restore docs/reference/expand_range-1.png
+
+test:
+	R -e 'devtools::test()'
 
 build: $(pkg)
 
