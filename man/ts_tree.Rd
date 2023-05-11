@@ -10,9 +10,9 @@ ts_tree(ts, i, mode = c("index", "position"), ...)
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{i}{Position of the tree in the tree sequence. If \code{mode = "index"},
-an i-th tree will be returned (in one-based indexing), if \code{mode =
-  "position"}, a tree covering an i-th base of the simulated genome will be
-returned.}
+an i-th tree will be returned (in zero-based indexing as in tskit), if
+\code{mode = "position"}, a tree covering the i-th base of the simulated genome will be
+returned (again, in tskit's indexing).}
 
 \item{mode}{How should the \code{i} argument be interpreted? Either "index"
 as an i-th tree in the sequence of genealogies, or "position" along the
@@ -40,9 +40,9 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 # load the tree-sequence object from disk
 ts <- ts_load(slendr_ts, model, simplify = TRUE)
 
-# extract the first tree in the tree sequence
-tree <- ts_tree(ts, i = 1)
+# extract the zero-th tree in the tree sequence
+tree <- ts_tree(ts, i = 0)
 
-# extract the tree at a position 100000bp in the tree sequence
+# extract the tree at a position in the tree sequence
 tree <- ts_tree(ts, i = 100000, mode = "position")
 }

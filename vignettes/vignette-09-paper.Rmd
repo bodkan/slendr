@@ -499,7 +499,8 @@ ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.pdf", 
 ```{r, ex4, time_it = TRUE, eval = eval_chunk, fig.keep='none'}
 ts_small <- ts_simplify(ts, simplify_to = c("EUR_578", "YAM_75", "ANA_163", "EHG_208"))
 
-tree <- ts_phylo(ts_small, i = 20 / scaling)
+# tskit uses zero-based indexing
+tree <- ts_phylo(ts_small, i = 19 / scaling)
 nodes <- ts_nodes(tree)
 edges <- ts_edges(tree)
 
