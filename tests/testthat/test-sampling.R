@@ -210,3 +210,108 @@ test_that("sampling is as close to the multiple specified positions as possible"
   expect_true(all.equal(individuals$y, locs$y, tolerance = 0.001))
   expect_true(all.equal(individuals$distance, locs$distance, tolerance = 0.001))
 })
+
+test_that("sampling locations may only be given for spatial models", {
+  map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+  p1 <- population(name = "p1", time = 10, N = 100)
+  p2 <- population(name = "p2", parent = p1, time = 20, N = 100, center = c(1, 1), radius = 10)
+  model <- compile_model(populations = list(p1, p2), generation_time = 1,
+                         resolution = 1, simulation_length = 1000,
+                         competition = 0, mating = 1, dispersal = 10)
+  expect_error(
+    schedule_sampling(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE),
+    "Sampling locations may only be specified for a spatial model"
+  )
+})
+
+test_that("a mix of spatial and non-spatial samplings is not allowed for a single population", {
+  skip_if(!is_slendr_env_present())
+
+  map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
+  p1 <- population(name = "p1", time = 10, N = 100)
+  p2 <- population(name = "p2", map = map, time = 20, N = 100, center = c(1, 1), radius = 10)
+  suppressWarnings(
+    model <- compile_model(populations = list(p1, p2), generation_time = 1,
+                         resolution = 1, simulation_length = 1000,
+                         competition = 0, mating = 1, dispersal = 10)
+  )
+  s1 <- schedule_sampling(model, time = 35, list(p1, 3), strict = TRUE)
+  s2 <- schedule_sampling(model, time = 35, list(p2, 4), locations = list(c(75, 25)), strict = TRUE)
+  # this gives error
+  s3 <- schedule_sampling(model, time = 35, list(p2, 5), strict = TRUE)
+  s <- rbind(s1, s2, s3)
+  expect_error(
+    slim(model, samples = s, sequence_length = 1000, recombination_rate = 0),
+    "For each population, samples must be all spatial or all non-spatial.\nThis is not true for the following populations: p2"
+  )
+  # this passes
+  s3 <- schedule_sampling(model, time = 35, list(p2, 5), locations = list(c(10, 15)), strict = TRUE)
+  s <- rbind(s1, s2, s3)
+  expect_s3_class(slim(model, samples = s, sequence_length = 1000, recombination_rate = 0), "slendr_ts")
+})
+
+test_that("sampling table is correctly adjusted after simplification (msprime)", {
+  skip_if(!is_slendr_env_present())
+
+  pop1 <- population("pop1", time = 1, N = 100)
+  pop2 <- population("pop2", time = 10, N = 42, parent = pop1)
+  model <- compile_model(list(pop1, pop2), generation_time = 1, simulation_length = 1000, direction = "forward")
+
+  # original tree sequence can be saved and loaded with or without the model
+  tmp_big <- tempfile()
+  ts_big <- msprime(model, sequence_length = 1000, recombination_rate = 0)
+  ts_save(ts_big, tmp_big)
+  expect_s3_class(ts_big_model <- ts_load(tmp_big, model), "slendr_ts")
+  expect_s3_class(ts_big_nomodel <- ts_load(tmp_big), "slendr_ts")
+  expect_true(nrow(ts_samples(ts_big_model)) == 142)
+  expect_error(ts_samples(ts_big_nomodel), "Sampling schedule can only be extracted")
+
+  # 'simple' simplified tree sequence can be saved and loaded with or without the model
+  tmp_small1 <- tempfile()
+  suppressWarnings(ts_simplify(ts_big) %>% ts_save(tmp_small1))
+  expect_s3_class(ts_small1_model <- ts_load(tmp_small1, model), "slendr_ts")
+  expect_s3_class(ts_small1_nomodel <- ts_load(tmp_small1), "slendr_ts")
+  expect_true(nrow(ts_samples(ts_small1_model)) == 142)
+  expect_error(ts_samples(ts_small1_nomodel), "Sampling schedule can only be extracted")
+
+  # tree sequence simplified to a subset can be saved and loaded with or without the model
+  tmp_small2 <- tempfile()
+  ts_simplify(ts_big, simplify_to = c("pop1_1", "pop1_2", "pop1_3", "pop2_5")) %>% ts_save(tmp_small2)
+  expect_s3_class(ts_small2_model <- ts_load(tmp_small2, model), "slendr_ts")
+  expect_s3_class(ts_small2_nomodel <- ts_load(tmp_small2), "slendr_ts")
+  expect_true(nrow(ts_samples(ts_small2_model)) == 4)
+  expect_error(ts_samples(ts_small2_nomodel), "Sampling schedule can only be extracted")
+})
+
+test_that("sampling table is correctly adjusted after simplification (SLiM)", {
+  skip_if(!is_slendr_env_present())
+
+  pop1 <- population("pop1", time = 1, N = 100)
+  pop2 <- population("pop2", time = 10, N = 42, parent = pop1)
+  model <- compile_model(list(pop1, pop2), generation_time = 1, simulation_length = 1000, direction = "forward")
+
+  # original tree sequence can be saved and loaded with or without the model
+  tmp_big <- tempfile()
+  ts_big <- slim(model, sequence_length = 1000, recombination_rate = 0) %>% ts_recapitate(recombination_rate = 0, Ne = 100)
+  ts_save(ts_big, tmp_big)
+  expect_s3_class(ts_big_model <- ts_load(tmp_big, model), "slendr_ts")
+  expect_s3_class(ts_big_nomodel <- ts_load(tmp_big), "slendr_ts")
+  expect_true(nrow(ts_samples(ts_big_model)) == 142)
+  expect_error(ts_samples(ts_big_nomodel), "Sampling schedule can only be extracted")
+
+  # 'simple' simplified tree sequence can be saved and loaded with or without the model
+  tmp_small1 <- tempfile()
+  suppressWarnings(ts_simplify(ts_big) %>% ts_save(tmp_small1))
+  expect_s3_class(ts_small1_model <- ts_load(tmp_small1, model), "slendr_ts")
+  expect_s3_class(ts_small1_nomodel <- ts_load(tmp_small1), "slendr_ts")
+  expect_true(nrow(ts_samples(ts_small1_model)) == 142)
+  expect_error(ts_samples(ts_small1_nomodel), "Sampling schedule can only be extracted")
+
+  # tree sequence simplified to a subset can be saved and loaded with or without the model
+  tmp_small2 <- tempfile()
+  ts_simplify(ts_big, simplify_to = c("pop1_1", "pop1_2", "pop1_3", "pop2_5")) %>% ts_save(tmp_small2)
+  expect_s3_class(ts_small2_model <- ts_load(tmp_small2, model), "slendr_ts")
+  expect_s3_class(ts_small2_nomodel <- ts_load(tmp_small2), "slendr_ts")
+  expect_true(nrow(ts_samples(ts_small2_model)) == 4)
+  expect_error(ts_samples(ts_small2_nomodel), "Sampling schedule can only be extracted")
+})

@@ -554,6 +554,18 @@ process_sampling <- function(samples, model, verbose = FALSE) {
     dplyr::summarise(n = sum(n), .groups = "drop") %>%
     dplyr::arrange(time)
 
+  # samples must either all have a sampling location defined, or none
+  pop_consistent <- split(df, df$pop) %>% vapply(function(pop) {
+    all(is.na(pop$x_orig) | is.na(pop$y_orig)) ||
+    all(!is.na(pop$x_orig) | !is.na(pop$y_orig))
+  }, logical(1))
+  if (!all(pop_consistent)) {
+    stop("For each population, samples must be all spatial or all non-spatial.\n",
+         "This is not true for the following populations: ",
+         paste(names(pop_consistent)[!pop_consistent], collapse = ", "),
+         call. = FALSE)
+  }
+
   # in case a backwards time model is not to be simulated all the way to the
   # present (i.e. time 0), the conversion of sampling times from absolute model
   # time units into SLiM's forward time units needs to be adjusted relative

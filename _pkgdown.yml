@@ -105,8 +105,8 @@ reference:
     - print.slendr_region
     - print.slendr_pop
     - print.slendr_model
-    - print.slendr_nodes
     - print.slendr_ts
+    - summary.slendr_nodes
 
   - title: Tree sequence loading and processing
     contents:

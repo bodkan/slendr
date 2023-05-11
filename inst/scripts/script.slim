@@ -647,6 +647,19 @@ function (object<Dictionary>) collect_metadata(void) {
     // sampling schedule table
     metadata.setValue("sampling", SAMPLING);
 
+    // sumbolic names of individuals that have been recorded in the tree sequence
+    // (this vector is used in downstream analyses to keep track of which individuals
+    // were kept during the process of ts_simplify() etc.)
+	sample_names = c();
+	for (pop in unique(SAMPLING.getValue("pop"))) {
+        n = asInteger(sum(filter(SAMPLING, "pop", pop).getValue("n")));
+        sample_names = c(
+            sample_names,
+            sapply(seq(1, n), "paste0(pop, '_', applyValue);")
+        );
+    }
+	metadata.setValue("sample_names", sample_names);
+
     if (SPATIAL) {
         spatial_metadata = Dictionary();
         // EPSG code of the CRS used

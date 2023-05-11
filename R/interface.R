@@ -1216,6 +1216,9 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   sample_pops <- purrr::map(samples, 1)
   sample_counts <- purrr::map(samples, 2)
 
+  if (is.null(model$world) && !is.null(locations))
+    stop("Sampling locations may only be specified for a spatial model", call. = FALSE)
+
   if (length(sample_pops) != length(sample_counts))
     stop("Samples must be represented by pairs of <slendr_pop>-<n>", call. = FALSE)
 

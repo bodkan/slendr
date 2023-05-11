@@ -188,7 +188,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEFczN2/file51d716ce20d5");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp6yBp8X/file771a252bc0fd");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -216,30 +216,6 @@ also include spatial information—see below):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sampled</span><span class="op">)</span></span>
 <span><span class="va">data</span></span>
-<span><span class="co">#&gt; slendr 'nodes' object </span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; times are expressed in a forward time direction</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; summary of the table data contents:</span></span>
-<span><span class="co">#&gt;   p1 - 10 'sampled', 0 'remembered', 0 'retained', 10 'alive' individuals</span></span>
-<span><span class="co">#&gt;   p2 - 500 'sampled', 0 'remembered', 0 'retained', 500 'alive' individuals</span></span>
-<span><span class="co">#&gt;   p3 - 2500 'sampled', 0 'remembered', 0 'retained', 2500 'alive' individuals</span></span>
-<span><span class="co">#&gt;   p4 - 10000 'sampled', 0 'remembered', 0 'retained', 10000 'alive' individuals</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; total:</span></span>
-<span><span class="co">#&gt;   - 13010 'sampled' individuals</span></span>
-<span><span class="co">#&gt;   - 0 'remembered' individuals</span></span>
-<span><span class="co">#&gt;   - 0 'retained' individuals</span></span>
-<span><span class="co">#&gt;   - 13010 'alive' individuals</span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; oldest sampled individual: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; youngest sampled individual: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; oldest node: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; youngest node: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; overview of the underlying table object:</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 26,020 × 11</span></span></span>
 <span><span class="co">#&gt;    pop   node_id  time time_tskit sampled remembered retained alive pedigree_id</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -361,12 +337,6 @@ and analyze it with the slendr functionality:</p>
 <code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">msprime_trees_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span>
-<span><span class="co">#&gt; slendr 'nodes' object </span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; times are expressed in a backward time direction</span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; overview of the underlying table object:</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 199 × 7</span></span></span>
 <span><span class="co">#&gt;    pop   ind_id node_id  time time_tskit sampled pop_id</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
@@ -423,7 +393,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpEFczN2/file51d7708b19be");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp6yBp8X/file771a104bae91");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
@@ -437,27 +407,11 @@ spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span>
 <span><span class="va">data</span></span>
-<span><span class="co">#&gt; slendr 'nodes' object </span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; times are expressed in a forward time direction</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; summary of the table data contents:</span></span>
-<span><span class="co">#&gt;   p1 - 500 'sampled', 0 'remembered', 500 'retained', 500 'alive' individuals</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; total:</span></span>
-<span><span class="co">#&gt;   - 500 'sampled' individuals</span></span>
-<span><span class="co">#&gt;   - 0 'remembered' individuals</span></span>
-<span><span class="co">#&gt;   - 895 'retained' individuals</span></span>
-<span><span class="co">#&gt;   - 500 'alive' individuals</span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; oldest sampled individual: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; youngest sampled individual: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; oldest node: 8463 time units 'before present' </span></span>
-<span><span class="co">#&gt; youngest node: 0 time units 'before present' </span></span>
-<span><span class="co">#&gt; --------------------- </span></span>
-<span><span class="co">#&gt; overview of the underlying sf object:</span></span>
-<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Simple feature collection with 1955 features and 11 fields</span></span>
+<span><span class="co">#&gt; Geometry type: POINT</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: 0.07649281 ymin: 0.0006142841 xmax: 0.9984433 ymax: 0.9892587</span></span>
+<span><span class="co">#&gt; CRS:           NA</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,955 × 12</span></span></span>
 <span><span class="co">#&gt;    pop   node_id  time time_tskit               location sampled remembered</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;POINT&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span></span>

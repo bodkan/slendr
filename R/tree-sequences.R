@@ -159,6 +159,27 @@ ts_load <- function(file, model = NULL,
 #' @export
 ts_save <- function(ts, file) {
   check_ts_class(ts)
+  type <- attr(ts, "type")
+  from_slendr <- !is.null(attr(ts, "model"))
+
+  # overwrite the original list of sample names (if the tree sequence was simplified
+  # down to a smaller number of individuals than originally sampled)
+  if (from_slendr && nrow(ts_samples(ts)) != nrow(attr(ts, "metadata")$sampling)) {
+    tables <- ts$dump_tables()
+    tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
+
+    sample_names <- attr(ts, "metadata")$sample_names
+    pedigree_ids <- attr(ts, "metadata")$sample_ids
+    if (type == "SLiM") {
+      tables$metadata$SLiM$user_metadata$slendr[[1]]$sample_names <- sample_names
+      tables$metadata$SLiM$user_metadata$slendr[[1]]$sample_ids <- pedigree_ids
+    } else
+      tables$metadata$slendr$sample_names <- sample_names
+
+    # put the tree sequence object back together
+    ts <- tables$tree_sequence()
+  }
+
   ts$dump(path.expand(file))
 }
 
@@ -248,6 +269,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
     # inherit the information about which individuals should be marked as
     # explicitly "sampled" from the previous tree sequence object (if that
     # was specified) -- this is only necessary for a SLiM sequence
+    # TODO: no longer necessary
     old_individuals <- attr(ts, "raw_individuals")
     sampled_ids <- old_individuals[old_individuals$sampled, ]$pedigree_id
     attr(ts_new, "raw_individuals") <- attr(ts_new, "raw_individuals") %>%
@@ -438,6 +460,14 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
                                          "retained", "alive", "pedigree_id", "ind_id", "pop_id")]
   } else
     attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
+
+  # replace the names of sampled individuals (if simplification led to subsetting)
+  if (from_slendr) {
+    sampled_nodes <- attr(ts_new, "nodes") %>% dplyr::filter(sampled)
+    attr(ts_new, "metadata")$sample_names <-  unique(sampled_nodes$name)
+    if (type == "SLiM")
+      attr(ts_new, "metadata")$sample_ids <- unique(sampled_nodes$pedigree_id)
+  }
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
@@ -1140,9 +1170,8 @@ ts_samples <- function(ts) {
          "from a slendr model. To access information about times and\nlocations ",
          "of nodes and individuals from non-slendr tree sequences,\nuse the ",
          "function ts_nodes().\n", call. = FALSE)
-  data <- ts_nodes(ts) %>% dplyr::filter(sampled, !is.na(name))
   samples <- attr(ts, "metadata")$sampling %>%
-    dplyr::filter(name %in% data$name)
+    dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
 
   samples
 }
@@ -2314,7 +2343,11 @@ get_ts_raw_individuals <- function(ts) {
     if (from_slendr) {
       ind_table$time <- time_fun(ts)(ts$individual_times, model)
       # for slendr SLiM models, "sampled" nodes are those were explicitly scheduled for sampling
-      ind_table$sampled <- ind_table$remembered
+      # - for "original" SLiM/slendr tree sequences, sampled nodes are those that are remembered
+      if (is.null(attr(ts, "metadata")$sample_ids))
+        ind_table$sampled <- ind_table$remembered
+      else # - for previously simplified tree sequences, use information from pedigree IDs
+        ind_table$sampled <- ind_table$pedigree_id %in% attr(ts, "metadata")$sample_ids
     } else {
       ind_table$time <- ts$individual_times
       # for pure SLiM tree sequences, simply use the sampling information encoded in the data
@@ -2411,7 +2444,14 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
 
   # load information about samples at times and from populations of remembered individuals
   if (from_slendr) {
-    samples <- attr(ts, "metadata")$sampling %>% dplyr::arrange(-time, pop)
+    # when a tree sequence is being loaded from a file where it was saved in its
+    # simplified form, the metadata table saved along side it won't correspond to the
+    # subset of sampled nodes -- in these situations, subset the original sampling table
+    # using the names of sampled individuals that are propagated through serialization
+    # (this is achieved by the filter() step right below)
+    samples <- attr(ts, "metadata")$sampling %>%
+      dplyr::arrange(-time, pop) %>%
+      dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
     if (!is.null(simplify_to))
       samples <- samples %>% dplyr::filter(name %in% simplify_to)
   } else
@@ -2502,7 +2542,12 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
   # load information about samples at times and from populations of remembered
   # individuals
   if (from_slendr) {
-    samples <- attr(ts, "metadata")$sampling
+    # when a tree sequence is being loaded from a file where it was saved in its
+    # simplified form, the metadata table saved along side it won't correspond to the
+    # subset of sampled nodes -- in these situations, subset the original sampling table
+    # using the names of sampled individuals that are propagated through serialization
+    samples <- attr(ts, "metadata")$sampling %>%
+      dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
     samples <- dplyr::arrange(samples, -time, pop)
@@ -2791,7 +2836,7 @@ get_sampling <- function(metadata) {
   } else
     sampling <- dplyr::as_tibble(metadata$sampling)
 
-  sampling %>%
+  df <- sampling %>%
     dplyr::select(-time_gen) %>%
     {
       rbind(
@@ -2805,6 +2850,10 @@ get_sampling <- function(metadata) {
     dplyr::arrange(-time_orig, pop) %>%
     dplyr::rename(time = time_orig) %>%
     dplyr::select(name, time, pop)
+
+  # if needed (i.e. after simplification to a smaller set of sampled individuals), subset
+  # the full original sampling schedule table to only individuals of interest
+  df %>% dplyr::filter(name %in% metadata$sample_names)
 }
 
 # Extract list with slendr metadata (created as Eidos Dictionaries by SLiM and Python
@@ -2827,6 +2876,8 @@ get_slendr_metadata <- function(ts) {
     version = metadata$version,
     description = metadata$description,
     sampling = get_sampling(metadata),
+    sample_names = metadata$sample_names,
+    sample_ids = metadata$sample_ids,
     map = metadata$map[[1]],
     arguments = arguments
   )

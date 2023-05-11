@@ -32,6 +32,10 @@ Users have to call `init_env()` to manually activate the Python environment of s
 
 - `ts_simplify()` now accepts optional arguments `keep_unary` and `keep_unary_in_individuals` (see the official [tskit docs](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify) for more detail) ([#1b2112](https://github.com/bodkan/slendr/commit/1b2112))
 
+- Fix for `ts_load()` failing to load _slendr_-produced tree sequences after they were simplified down to a smaller set of sampled individuals (reported [here](https://github.com/bodkan/slendr/issues/136)). The issue was caused by incompatible sizes of the sampling table (always in the same form as used during simulation) and the table of individuals stored in the tree sequence after simplification (potentially containing a smaller set of individuals than in the original sampling table). To fix this, _slendr_ tree sequence objects now track information about which individuals are regarded as "samples" (i.e. those with symbolic names) which is maintained through simplification, serialization and loading, and used by _slendr_'s internal machinery during join operations. (PR [#137](https://github.com/bodkan/slendr/pull/137))
+
+- Metadata summary of `ts_nodes()` results is no longer printed whenever typed into the R console. Instead, summary can be obtained by explicit call to `summary()` on the `ts_nodes()` tables.  ([#01af51](https://github.com/bodkan/slendr/commit/01af51) [#8176b5](https://github.com/bodkan/slendr/commit/8176b5))
+
 # slendr 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))

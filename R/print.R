@@ -95,15 +95,18 @@ print.slendr_model <- function(x, ...) {
 }
 
 
-# @rdname print.slendr_pop
-# @export
-print.slendr_nodes <- function(x, ...) {
-  model <- attr(x, "model")
-  type <- attr(x, "type")
+#' Summarise the contents of a \code{ts_nodes} result
+#' @param object Data frame produced by the function \code{ts_nodes}
+#' @param ... Additional formal arguments to the \code{summary} method (unused here)
+#' @return Used for its output to the terminal
+#' @export
+summary.slendr_nodes <- function(object, ...) {
+  model <- attr(object, "model")
+  type <- attr(object, "type")
 
   from_slendr <- !is.null(model)
 
-  sep <- print_header_info(x)
+  sep <- print_header_info(object)
 
   if (from_slendr)
     direction <- model$direction
@@ -112,7 +115,7 @@ print.slendr_nodes <- function(x, ...) {
 
   cat("times are expressed in a", direction, "time direction\n")
 
-  individuals <- as.data.frame(x) %>%
+  individuals <- as.data.frame(object) %>%
     dplyr::filter(!is.na(ind_id)) %>%
     dplyr::distinct(ind_id, .keep_all = TRUE)
 
@@ -187,18 +190,18 @@ print.slendr_nodes <- function(x, ...) {
       cat("youngest sampled individual:", funs[[2]](.$time), "time units", direction, "\n")
     }
 
-    cat("\noldest node:", funs[[1]](x$time), "time units", direction, "\n")
-    cat("youngest node:", funs[[2]](x$time), "time units", direction, "\n")
+    cat("\noldest node:", funs[[1]](object$time), "time units", direction, "\n")
+    cat("youngest node:", funs[[2]](object$time), "time units", direction, "\n")
 
     cat(sep)
   }
 
-  if (inherits(x, "sf"))
+  if (inherits(object, "sf"))
     cat("overview of the underlying sf object:\n\n")
   else
     cat("overview of the underlying table object:\n\n")
 
-  dplyr::as_tibble(x) %>% print()
+  dplyr::as_tibble(object) %>% print()
 }
 
 
