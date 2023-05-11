@@ -97,7 +97,8 @@ SLiM using the <span class="pkg">slendr</span> R package.</p>
 <span>  simplify_to <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  keep_unary <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  keep_unary_in_individuals <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  keep_unary_in_individuals <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  filter_nodes <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -129,6 +130,11 @@ Default is <code>FALSE</code>.</p></dd>
 simplification if they are associated with an individual recorded in
 the table of individuals? Default is <code>FALSE</code>. Cannot be set to
 <code>TRUE</code> if <code>keep_unary</code> is also TRUE</p></dd>
+
+
+<dt>filter_nodes</dt>
+<dd><p>Should nodes be reindexed after simplification? Default is
+<code>TRUE</code>. See tskit's documentation for the Python method <code>simplify()</code></p></dd>
 
 </dl></div>
     <div class="section level2">

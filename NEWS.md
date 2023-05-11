@@ -38,6 +38,9 @@ Users have to call `init_env()` to manually activate the Python environment of s
 
 - `ts_tree()` and `ts_phylo()` now extract trees based on tskit's own zero-based indexing [#554e13](https://github.com/bodkan/slendr/commit/554e13).
 
+- `ts_simplify()` now accepts `filter_nodes = TRUE|FALSE`, with the same behavior to tskit's [own method](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify) [#f07ffed](https://github
+.com/bodkan/slendr/commit/f07ffed).
+
 # slendr 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))

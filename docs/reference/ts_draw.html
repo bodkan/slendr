@@ -97,10 +97,11 @@ provided and will be automatically passed to the method behind the scenes.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_draw</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  width <span class="op">=</span> <span class="fl">1500</span>,</span>
-<span>  height <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  width <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  labels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  sampled_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -123,6 +124,10 @@ provided and will be automatically passed to the method behind the scenes.</p>
 <dd><p>Should only individuals explicitly sampled through
 simplification be labeled? This is relevant in situations in which sampled
 individuals can themselves be among the ancestral nodes.</p></dd>
+
+
+<dt>title</dt>
+<dd><p>Optional title for the figure</p></dd>
 
 
 <dt>...</dt>
