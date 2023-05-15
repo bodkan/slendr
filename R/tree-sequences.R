@@ -369,13 +369,6 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
 
   data <- attr(ts, "nodes")
 
-  if (is.null(simplify_to) && type == "generic") {
-    warning("If you want to simplify an msprime tree sequence, you must specify\n",
-            "the names of individuals to simplify to via the `simplify_to = `\n",
-            "function argument.", call. = FALSE)
-    return(ts)
-  }
-
   if (is.null(simplify_to)) { # no individuals/nodes were given to guide the simplification
     samples <- dplyr::filter(data, sampled)$node_id # simplify to all sampled nodes
   } else if (is.character(simplify_to)) { # a vector of slendr individual names was given
