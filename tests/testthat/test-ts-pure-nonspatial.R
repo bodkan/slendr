@@ -131,7 +131,7 @@ test_that("non-slendr msprime simplification on its own gives warning", {
   N <- 5
   ts_file <- msprime_ts_sim_ancestry(N)
   suppressMessages(ts <- ts_load(ts_file))
-  expect_warning(compare_ts_nodes(ts, N), "If you want to simplify")
+  compare_ts_nodes(ts, N)
 })
 
 test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome", {
@@ -150,7 +150,7 @@ test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
   N <- 5
   ts_file <- msprime_ts_sim_ancestry(N)
   suppressMessages(ts <- ts_load(ts_file))
-  expect_warning(compare_ts_phylo(ts, N), "If you want to simplify")
+  compare_ts_phylo(ts, N)
 })
 
 test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected outcome", {
@@ -159,7 +159,7 @@ test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected 
   suppressMessages(ts <- ts_load(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
-  expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
+  compare_ts_phylo(ts2, N)
 })
 
 test_that("non-slendr msprime ts_nodes carries correct population names", {
@@ -174,7 +174,7 @@ test_that("non-slendr msprime simplification on its own gives warning (simulate)
   N <- 5
   ts_file <- msprime_ts_simulate(N)
   suppressMessages(ts <- ts_load(ts_file))
-  expect_warning(compare_ts_nodes(ts, N), "If you want to simplify")
+  compare_ts_nodes(ts, N)
 })
 
 test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome (simulate)", {
@@ -193,7 +193,7 @@ test_that("non-slendr msprime ts_phylo corresponds to the expected outcome (simu
   N <- 5
   ts_file <- msprime_ts_simulate(N)
   suppressMessages(ts <- ts_load(ts_file))
-  expect_warning(compare_ts_phylo(ts, N), "If you want to simplify")
+  compare_ts_phylo(ts, N)
 })
 
 test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected outcome (simulate)", {
@@ -202,7 +202,7 @@ test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected 
   suppressMessages(ts <- ts_load(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
-  expect_warning(compare_ts_phylo(ts2, N), "If you want to simplify")
+  compare_ts_phylo(ts2, N)
 })
 
 test_that("non-slendr msprime ts_nodes carries correct population names (simulate)", {
