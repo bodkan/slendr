@@ -228,3 +228,8 @@ test_that("simplified tree sequence with/without unary nodes squashes `within` I
     dplyr::select(ibd_simple_unfilt_summary, -node1, -node2, -mrca)
   ))
 })
+
+test_that("`squash = TRUE` with `minimum_length` cutoff gives a warning", {
+  expect_warning(ts_ibd(ts_full, squash = TRUE, minimum_length = 1), "Please note that")
+  expect_warning(ts_ibd(ts_full, squash = TRUE), "No minimum IBD")
+})

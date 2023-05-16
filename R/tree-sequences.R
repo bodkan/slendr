@@ -1660,6 +1660,14 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
   opts <- options(warn = 1)
   on.exit(options(opts))
 
+  if (squash && !is.null(minimum_length)) {
+    warning("Please note that when 'squashed' IBD segments are requested,\n",
+            "the minimum IBD length cut off involves the 'distinct genealogical path'\n",
+            "IBD segments at the tskit level, not the length of the squashed IBD\n",
+            "segments. See the documentation of `ts_ibd()` for more detail and\n",
+            "additional information.", call. = FALSE)
+  }
+
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
 
