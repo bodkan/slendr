@@ -63,7 +63,7 @@ ts_full <- ts_load(tmp)
 test_that("full tree sequence with unary nodes produces correct squashing results", {
   # get IBDs from a tree sequence without and with squashing
   ibd_full <- ts_ibd(ts_full, coordinates = TRUE, minimum_length = 0)
-  ibd_full_squashed <- ts_ibd(ts_full, coordinates = TRUE, squash = TRUE, minimum_length = 0)
+  suppressWarnings(ibd_full_squashed <- ts_ibd(ts_full, coordinates = TRUE, squash = TRUE))
 
   # on the non-squashed IBD data frame, perform the squashing "manually"
   ibd_full_summary <- manual_squash(ibd_full)
@@ -87,8 +87,8 @@ test_that("simplified tree sequence with/without unary nodes squashes IBDs corre
   ibd_simple <- ts_ibd(ts_simple, coordinates = TRUE, minimum_length = 0)
   ibd_simple_unfilt <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, minimum_length = 0)
   # - squashed
-  ibd_simple_squashed <- ts_ibd(ts_simple, coordinates = TRUE, squash = TRUE, minimum_length = 0)
-  ibd_simple_unfilt_squashed <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, squash = TRUE, minimum_length = 0)
+  suppressWarnings(ibd_simple_squashed <- ts_ibd(ts_simple, coordinates = TRUE, squash = TRUE))
+  suppressWarnings(ibd_simple_unfilt_squashed <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, squash = TRUE))
 
   # first, IBD from filtered and unfiltered simplified tree sequences must be the same
   # up to node numbering
@@ -126,8 +126,8 @@ test_that("simplified (subsetted) tree sequence with/without unary nodes squashe
   ibd_simple <- ts_ibd(ts_simple, coordinates = TRUE, minimum_length = 0)
   ibd_simple_unfilt <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, minimum_length = 0)
   # - squashed
-  ibd_simple_squashed <- ts_ibd(ts_simple, coordinates = TRUE, squash = TRUE, minimum_length = 0)
-  ibd_simple_unfilt_squashed <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, squash = TRUE, minimum_length = 0)
+  suppressWarnings(ibd_simple_squashed <- ts_ibd(ts_simple, coordinates = TRUE, squash = TRUE, minimum_length = 0))
+  suppressWarnings(ibd_simple_unfilt_squashed <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, squash = TRUE, minimum_length = 0))
 
   # first, IBD from filtered and unfiltered simplified tree sequences must be the same
   # up to node numbering
@@ -165,8 +165,8 @@ test_that("simplified tree sequence with/without unary nodes squashes `between` 
   ibd_simple <- ts_ibd(ts_simple, coordinates = TRUE, minimum_length = 0, between = list(0, 2))
   ibd_simple_unfilt <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, minimum_length = 0, between = list(0, 2))
   # - squashed
-  ibd_simple_squashed <- ts_ibd(ts_simple, coordinates = TRUE, squash = TRUE, minimum_length = 0, between = list(0, 2))
-  ibd_simple_unfilt_squashed <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, squash = TRUE, minimum_length = 0, between = list(0, 2))
+  suppressWarnings(ibd_simple_squashed <- ts_ibd(ts_simple, coordinates = TRUE, squash = TRUE, between = list(0, 2)))
+  suppressWarnings(ibd_simple_unfilt_squashed <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, squash = TRUE, between = list(0, 2)))
 
   # first, IBD from filtered and unfiltered simplified tree sequences must be the same
   # up to node numbering
@@ -204,8 +204,8 @@ test_that("simplified tree sequence with/without unary nodes squashes `within` I
   ibd_simple <- ts_ibd(ts_simple, coordinates = TRUE, minimum_length = 0, within = list(0, 2))
   ibd_simple_unfilt <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, minimum_length = 0, within = list(0, 2))
   # - squashed
-  ibd_simple_squashed <- ts_ibd(ts_simple, coordinates = TRUE, squash = TRUE, minimum_length = 0, within = list(0, 2))
-  ibd_simple_unfilt_squashed <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, squash = TRUE, minimum_length = 0, within = list(0, 2))
+  suppressWarnings(ibd_simple_squashed <- ts_ibd(ts_simple, coordinates = TRUE, squash = TRUE, within = list(0, 2)))
+  suppressWarnings(ibd_simple_unfilt_squashed <- ts_ibd(ts_simple_unfilt, coordinates = TRUE, squash = TRUE, within = list(0, 2)))
 
   # first, IBD from filtered and unfiltered simplified tree sequences must be the same
   # up to node numbering
