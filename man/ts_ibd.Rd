@@ -9,6 +9,7 @@ ts_ibd(
   coordinates = FALSE,
   within = NULL,
   between = NULL,
+  squash = FALSE,
   minimum_length = NULL,
   maximum_time = NULL,
   sf = TRUE
@@ -30,8 +31,13 @@ node IDs indicating a set of nodes within which to look for IBD segments.}
 integer vectors with node IDs, indicating a set of nodes between which to
 look for shared IBD segments.}
 
+\item{squash}{Should adjacent IBD segments for pairs of nodes be squashed if they
+only differ by their 'genealogical paths' but not by their MRCA? Default is
+\code{FALSE}. For more context, see \url{https://github.com/tskit-dev/tskit/issues/2459}.
+This option is EXPERIMENTAL!}
+
 \item{minimum_length}{Minimum length of an IBD segment to return in results.
-This is useful for reducing the total amount of IBD returned.}
+This is useful for reducing the total amount of IBD returned (but see Details).}
 
 \item{maximum_time}{Oldest MRCA of a node to be considered as an IBD ancestor
 to return that IBD segment in results. This is useful for reducing the total
@@ -57,6 +63,14 @@ over individual IBD segments as shown in the official tskit documentation
 at \url{https://tskit.dev/tskit/docs/stable/ibd.html}. In general, R handles
 heavy iteration poorly, and this function does not attempt to serve as
 a full wrapper to \code{ibd_segments}.
+
+Unfortunately, the distinction between "squashed IBD" (what many would consider
+to be the expected definition of IBD) and tskit’s IBD which is defined via
+distinct genealogical paths (see \url{https://github.com/tskit-dev/tskit/issues/2459}
+for a discussion of the topic), makes the meaning of the filtering parameter
+of the \code{ibd_segments()} method of tskit \code{minimum_length} complicated.
+As of this moment, this function argument filters on IBD segments on the tskit’s
+level, not the level of the squashed IBD segments!
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
