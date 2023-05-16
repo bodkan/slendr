@@ -45,16 +45,17 @@ def collect_ibd(ts, coordinates = False, within=None, between=None,
             ibd = sorted(ibd, key=lambda segment: segment.left)
             if squash:
                 curr_left = ibd[0].left
+                curr_right = ibd[0].right
                 curr_mrca = ibd[0].node
-                curr_tmrca = ts.node(ibd[0].node).time
                 for segment in ibd:
                     next_mrca = segment.node
                     next_tmrca = ts.node(next_mrca).time
                     if next_mrca != curr_mrca:
                         result.append((pair[0], pair[1],
-                                       curr_mrca, curr_tmrca, curr_left, segment.left))
-                        curr_left, curr_mrca, curr_tmrca = segment.left, next_mrca, next_tmrca
-                result.append((pair[0], pair[1], curr_mrca, curr_tmrca, curr_left, segment.right))
+                                       curr_mrca, ts.node(curr_mrca).time, curr_left, curr_right))
+                        curr_left, curr_right, curr_mrca = segment.left, segment.right, next_mrca
+                result.append((pair[0], pair[1],
+                               curr_mrca, ts.node(curr_mrca).time, curr_left, segment.right))
             else:
                 for segment in ibd:
                     mrca = segment.node
