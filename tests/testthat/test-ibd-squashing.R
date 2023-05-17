@@ -72,7 +72,6 @@ test_that("full tree sequence with unary nodes produces correct squashing result
   expect_true(all(ibd_full_summary == ibd_full_squashed))
 })
 
-
 test_that("simplified tree sequence with/without unary nodes squashes IBDs correctly", {
   # normal simplified t.s.
   ts_simple <- ts_simplify(ts_full)

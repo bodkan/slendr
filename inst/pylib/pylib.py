@@ -49,11 +49,11 @@ def collect_ibd(ts, coordinates = False, within=None, between=None,
                 curr_mrca = ibd[0].node
                 for segment in ibd:
                     next_mrca = segment.node
-                    next_tmrca = ts.node(next_mrca).time
                     if next_mrca != curr_mrca:
                         result.append((pair[0], pair[1],
                                        curr_mrca, ts.node(curr_mrca).time, curr_left, curr_right))
-                        curr_left, curr_right, curr_mrca = segment.left, segment.right, next_mrca
+                        curr_left, curr_mrca = segment.left, next_mrca
+                    curr_right = segment.right
                 result.append((pair[0], pair[1],
                                curr_mrca, ts.node(curr_mrca).time, curr_left, segment.right))
             else:
