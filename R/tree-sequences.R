@@ -1694,7 +1694,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
       min_span = minimum_length,
       max_time = maximum_time,
       squash = squash
-  ) %>% dplyr::as_tibble()
+  )
 
   # drop a useless internal attribute (not a loss of information -- *we* are the ones
   # who created the pandas DataFrame in the first place)
@@ -1751,7 +1751,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
     result <- dplyr::select(result, node1, node2, count, total, node1_time, node2_time,
                                     dplyr::everything())
 
-  result
+  dplyr::tibble(result)
 }
 
 # f-statistics ------------------------------------------------------------
