@@ -1,5 +1,9 @@
 skip_if(!is_slendr_env_present())
 
+#
+# first batch of tests involves a small, manually constructed tree sequence below
+#
+
 io <- reticulate::import("io")
 tskit <- reticulate::import("tskit")
 
@@ -60,7 +64,7 @@ ts_full <- ts_load(tmp)
 
 # ts_draw(ts_full)
 
-test_that("full tree sequence with unary nodes produces correct squashing results", {
+test_that("full tree sequence with unary nodes produces correct squashing results (manual)", {
   # get IBDs from a tree sequence without and with squashing
   ibd_full <- ts_ibd(ts_full, coordinates = TRUE, minimum_length = 0)
   suppressWarnings(ibd_full_squashed <- ts_ibd(ts_full, coordinates = TRUE, squash = TRUE))
@@ -72,7 +76,7 @@ test_that("full tree sequence with unary nodes produces correct squashing result
   expect_true(all(ibd_full_summary == ibd_full_squashed))
 })
 
-test_that("simplified tree sequence with/without unary nodes squashes IBDs correctly", {
+test_that("simplified tree sequence with/without unary nodes squashes IBDs correctly (manual)", {
   # normal simplified t.s.
   ts_simple <- ts_simplify(ts_full)
   # t.s. simplified while keeping node indices intact
@@ -111,7 +115,7 @@ test_that("simplified tree sequence with/without unary nodes squashes IBDs corre
   ))
 })
 
-test_that("simplified (subsetted) tree sequence with/without unary nodes squashes IBDs correctly", {
+test_that("simplified (subsetted) tree sequence with/without unary nodes squashes IBDs correctly (manual)", {
   # normal simplified t.s.
   ts_simple <- ts_simplify(ts_full, simplify_to = c(0, 2))
   # t.s. simplified while keeping node indices intact
@@ -150,7 +154,7 @@ test_that("simplified (subsetted) tree sequence with/without unary nodes squashe
   ))
 })
 
-test_that("simplified tree sequence with/without unary nodes squashes `between` IBDs correctly", {
+test_that("simplified tree sequence with/without unary nodes squashes `between` IBDs correctly (manual)", {
   # normal simplified t.s.
   ts_simple <- ts_simplify(ts_full)
   # t.s. simplified while keeping node indices intact
@@ -189,7 +193,7 @@ test_that("simplified tree sequence with/without unary nodes squashes `between` 
   ))
 })
 
-test_that("simplified tree sequence with/without unary nodes squashes `within` IBDs correctly", {
+test_that("simplified tree sequence with/without unary nodes squashes `within` IBDs correctly (manual)", {
   # normal simplified t.s.
   ts_simple <- ts_simplify(ts_full)
   # t.s. simplified while keeping node indices intact
@@ -231,4 +235,49 @@ test_that("simplified tree sequence with/without unary nodes squashes `within` I
 test_that("`squash = TRUE` with `minimum_length` cutoff gives a warning", {
   expect_warning(ts_ibd(ts_full, squash = TRUE, minimum_length = 1), "Please note that")
   expect_warning(ts_ibd(ts_full, squash = TRUE), "No minimum IBD")
+})
+
+#
+# second batch of tests involves working with a slim tree sequence
+#
+
+ts_slim <- population("pop", N = 1000, time = 1) %>%
+  compile_model(generation_time = 1, simulation_length = 1000) %>%
+  slim(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42, coalescent_only = FALSE) %>%
+  ts_recapitate(Ne = 1000, recombination_rate = 1e-8, random_seed = 42) %>%
+  ts_simplify(simplify_to = paste0("pop_", 1:5), filter_nodes = FALSE, keep_unary = TRUE)
+
+test_that("full tree sequence with unary nodes produces correct squashing results (SLiM)", {
+  # get IBDs from a tree sequence without and with squashing
+  ibd <- ts_ibd(ts_slim, coordinates = TRUE, minimum_length = 0)
+  suppressWarnings(ibd_squashed <- ts_ibd(ts_slim, coordinates = TRUE, squash = TRUE))
+
+  # on the non-squashed IBD data frame, perform the squashing "manually"
+  ibd_summary <- manual_squash(ibd)
+
+  # the result must be equivalent to the squashing result done on the Python/tskit level
+  expect_true(all(ibd_summary == ibd_squashed))
+})
+
+
+ts_msprime <- population("pop", N = 1000, time = 1) %>%
+  compile_model(generation_time = 1, simulation_length = 1000) %>%
+  msprime(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)
+
+debugonce(get_tskit_table_data)
+ts_msprime %>%
+  ts_simplify(simplify_to = paste0("pop_", 1:5), filter_nodes = FALSE)
+ts_msprime %>%
+  ts_simplify(simplify_to = paste0("pop_", 1:5))
+
+test_that("full tree sequence with unary nodes produces correct squashing results (SLiM)", {
+  # get IBDs from a tree sequence without and with squashing
+  ibd <- ts_ibd(ts_slim, coordinates = TRUE, minimum_length = 0)
+  suppressWarnings(ibd_squashed <- ts_ibd(ts_slim, coordinates = TRUE, squash = TRUE))
+
+  # on the non-squashed IBD data frame, perform the squashing "manually"
+  ibd_summary <- manual_squash(ibd)
+
+  # the result must be equivalent to the squashing result done on the Python/tskit level
+  expect_true(all(ibd_summary == ibd_squashed))
 })
