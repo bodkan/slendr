@@ -319,18 +319,18 @@ test_that("tree sequence with unary nodes produces correct squashing results (SL
 # TODO: check tests also with `filter_nodes = FALSE` (but see a bug below in ts_simplify())
 #
 
-ts_msprime <- population("pop", N = 1000, time = 1) %>%
-  compile_model(generation_time = 1, simulation_length = 1000) %>%
-  msprime(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)
-
-# TODO: fix filter_nodes = FALSE for msprime tree sequences (branch `fix-msprime-filter-nodes`)
-# ts_msprime %>% ts_simplify(simplify_to = paste0("pop_", 1:5), filter_nodes = FALSE)
-ts_msprime <- ts_msprime %>% ts_simplify(simplify_to = paste0("pop_", 1:5))
-
 test_that("full tree sequence with unary nodes produces correct squashing results (SLiM)", {
+  ts_msprime <- population("pop", N = 1000, time = 1) %>%
+    compile_model(generation_time = 1, simulation_length = 1000) %>%
+    msprime(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)
+
+  # TODO: fix filter_nodes = FALSE for msprime tree sequences (branch `fix-msprime-filter-nodes`)
+  # ts_msprime %>% ts_simplify(simplify_to = paste0("pop_", 1:5), filter_nodes = FALSE)
+  ts_msprime <- ts_msprime %>% ts_simplify(simplify_to = paste0("pop_", 1:5))
+
   # get IBDs from a tree sequence without and with squashing
-  ibd <- ts_ibd(ts_slim, coordinates = TRUE, minimum_length = 0)
-  suppressWarnings(ibd_squashed <- ts_ibd(ts_slim, coordinates = TRUE, squash = TRUE))
+  ibd <- ts_ibd(ts_msprime, coordinates = TRUE, minimum_length = 0)
+  suppressWarnings(ibd_squashed <- ts_ibd(ts_msprime, coordinates = TRUE, squash = TRUE))
 
   # on the non-squashed IBD data frame, perform the squashing "manually"
   ibd_summary <- manual_squash(ibd)
