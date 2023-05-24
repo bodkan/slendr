@@ -1709,7 +1709,8 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
     dplyr::inner_join(as.data.frame(nodes)[, c("node_id", "time")], by = c("node1" = "node_id")) %>%
     dplyr::rename(node1_time = time) %>%
     dplyr::inner_join(as.data.frame(nodes)[, c("node_id", "time")], by = c("node2" = "node_id")) %>%
-    dplyr::rename(node2_time = time)
+    dplyr::rename(node2_time = time) %>%
+    dplyr::tibble()
 
   # perform further data processing if the model in question is spatial (and if there
   # are any IBD segments at all)
@@ -1751,7 +1752,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
     result <- dplyr::select(result, node1, node2, count, total, node1_time, node2_time,
                                     dplyr::everything())
 
-  dplyr::tibble(result)
+  result
 }
 
 # f-statistics ------------------------------------------------------------
