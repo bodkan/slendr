@@ -1586,10 +1586,15 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
     return(FALSE)
 }
 
-#' Collect Identity-by-Descent (IBD) segments
+#' Collect Identity-by-Descent (IBD) segments (EXPERIMENTAL)
 #'
 #' This function iterates over a tree sequence and returns IBD tracts between
 #' pairs of individuals or nodes
+#'
+#' This function is considered experimental. For full control over IBD segment
+#' detection in tree-sequence data, users can (and perhaps, for the time being,
+#' should) rely on the tskit method \code{ibd_segments}
+#' (see <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments>).
 #'
 #' Iternally, this function leverages the tskit \code{TreeSequence} method
 #' \code{ibd_segments}. However, note that the \code{ts_ibd} function always
@@ -1603,9 +1608,9 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' to be the expected definition of IBD) and tskit’s IBD which is defined via
 #' distinct genealogical paths (see <https://github.com/tskit-dev/tskit/issues/2459>
 #' for a discussion of the topic), makes the meaning of the filtering parameter
-#' of the \code{ibd_segments()} method of tskit \code{minimum_length} complicated.
-#' As of this moment, this function argument filters on IBD segments on the tskit’s
-#' level, not the level of the squashed IBD segments!
+#' of the \code{ibd_segments()} method of tskit \code{minimum_length} somewhat
+#' unintuitive. As of this moment, this function argument filters on IBD segments
+#' on the tskit level, not the level of the squashed IBD segments!
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param coordinates Should coordinates of all detected IBD tracts be reported?
