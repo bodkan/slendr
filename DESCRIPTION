@@ -55,7 +55,6 @@ Suggests:
     rmarkdown,
     admixr,
     units,
-    rgdal,
     magick,
     cowplot,
     forcats,
