@@ -159,8 +159,7 @@ Note that in order to make this example executable in a reasonable time on my ex
 
 ```r
 afr <- population( # African ancestral population
-  "AFR", time = 52000, N = 3000,
-  map = map, polygon = africa
+  "AFR", time = 52000, N = 3000, map = map, polygon = africa
 )
 
 ooa <- population( # population of the first migrants out of Africa
@@ -243,7 +242,7 @@ Compiled model is kept as an R object which can be passed to different functions
 
 #### 6. Visualize the model
 
-The package provides an [R shiny](https://shiny.rstudio.com)-based browser app `explore_model()` for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:
+The package provides an [R shiny](https://shiny.posit.co/)-based browser app `explore_model()` for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:
 
 
 ```r
