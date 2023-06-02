@@ -245,7 +245,7 @@ ggtree(tree) +
 ```
 
 
-```{r, plot_apetree, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") != TRUE}
+```{r, plot_apetree, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") != TRUE && Sys.getenv("RUNNER_OS") == ""}
 library(ape)
 plot(tree)
 nodelabels()
