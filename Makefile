@@ -32,6 +32,7 @@ website: $(logo) README.md
 	#git restore docs/reference/slim.html
 	#git restore docs/reference/world.html
 	#git restore docs/reference/expand_range-1.png
+	git restore docs/reference/area-1.png
 
 test:
 	R -e 'devtools::test()'
