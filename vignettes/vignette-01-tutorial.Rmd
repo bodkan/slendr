@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 80,
-  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
+  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") == ""
 )
 ```
 
@@ -407,7 +407,7 @@ plot_model(model, proportions = TRUE)
 
 ## Interactive exploration of spatio-temporal models
 
-A slightly fancier way to visualize models is implemented in the function `explore_model()`. This function accepts a compiled model as its only parameter and spawns an [R shiny](https://shiny.rstudio.com)-based browser app which makes it possible to click through the time snapshots interactively and visualize the spatial maps in each time point.
+A slightly fancier way to visualize models is implemented in the function `explore_model()`. This function accepts a compiled model as its only parameter and spawns an [R shiny](https://shiny.posit.co/)-based browser app which makes it possible to click through the time snapshots interactively and visualize the spatial maps in each time point.
 
 ```{r eval = FALSE}
 explore_model(model)

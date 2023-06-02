@@ -1586,10 +1586,15 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
     return(FALSE)
 }
 
-#' Collect Identity-by-Descent (IBD) segments
+#' Collect Identity-by-Descent (IBD) segments (EXPERIMENTAL)
 #'
 #' This function iterates over a tree sequence and returns IBD tracts between
 #' pairs of individuals or nodes
+#'
+#' This function is considered experimental. For full control over IBD segment
+#' detection in tree-sequence data, users can (and perhaps, for the time being,
+#' should) rely on the tskit method \code{ibd_segments}
+#' (see <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments>).
 #'
 #' Iternally, this function leverages the tskit \code{TreeSequence} method
 #' \code{ibd_segments}. However, note that the \code{ts_ibd} function always
@@ -1598,6 +1603,14 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' at <https://tskit.dev/tskit/docs/stable/ibd.html>. In general, R handles
 #' heavy iteration poorly, and this function does not attempt to serve as
 #' a full wrapper to \code{ibd_segments}.
+#'
+#' Unfortunately, the distinction between "squashed IBD" (what many would consider
+#' to be the expected definition of IBD) and tskit’s IBD which is defined via
+#' distinct genealogical paths (see <https://github.com/tskit-dev/tskit/issues/2459>
+#' for a discussion of the topic), makes the meaning of the filtering parameter
+#' of the \code{ibd_segments()} method of tskit \code{minimum_length} somewhat
+#' unintuitive. As of this moment, this function argument filters on IBD segments
+#' on the tskit level, not the level of the squashed IBD segments!
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param coordinates Should coordinates of all detected IBD tracts be reported?
@@ -1610,8 +1623,12 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' @param between A list of lists of character vectors with individual names or
 #'   integer vectors with node IDs, indicating a set of nodes between which to
 #'   look for shared IBD segments.
+#' @param squash Should adjacent IBD segments for pairs of nodes be squashed if they
+#'   only differ by their 'genealogical paths' but not by their MRCA? Default is
+#'   \code{FALSE}. For more context, see <https://github.com/tskit-dev/tskit/issues/2459>.
+#'   This option is EXPERIMENTAL!
 #' @param minimum_length Minimum length of an IBD segment to return in results.
-#'   This is useful for reducing the total amount of IBD returned.
+#'   This is useful for reducing the total amount of IBD returned (but see Details).
 #' @param maximum_time Oldest MRCA of a node to be considered as an IBD ancestor
 #'   to return that IBD segment in results. This is useful for reducing the total
 #'   amount of IBD returned.
@@ -1642,11 +1659,19 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'   minimum_length = 40000
 #' )
 #' @export
-ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
+ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squash = FALSE,
                    minimum_length = NULL, maximum_time = NULL, sf = TRUE) {
   # make sure warnings are reported immediately
   opts <- options(warn = 1)
   on.exit(options(opts))
+
+  if (squash && !is.null(minimum_length)) {
+    warning("Please note that when 'squashed' IBD segments are requested,\n",
+            "the minimum IBD length cut off involves the 'distinct genealogical path'\n",
+            "IBD segments at the tskit level, not the length of the squashed IBD\n",
+            "segments. See the documentation of `ts_ibd()` for more detail and\n",
+            "additional information.", call. = FALSE)
+  }
 
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
@@ -1672,8 +1697,9 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
       within = within,
       between = between,
       min_span = minimum_length,
-      max_time = maximum_time
-  ) %>% dplyr::as_tibble()
+      max_time = maximum_time,
+      squash = squash
+  )
 
   # drop a useless internal attribute (not a loss of information -- *we* are the ones
   # who created the pandas DataFrame in the first place)
@@ -1688,7 +1714,8 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
     dplyr::inner_join(as.data.frame(nodes)[, c("node_id", "time")], by = c("node1" = "node_id")) %>%
     dplyr::rename(node1_time = time) %>%
     dplyr::inner_join(as.data.frame(nodes)[, c("node_id", "time")], by = c("node2" = "node_id")) %>%
-    dplyr::rename(node2_time = time)
+    dplyr::rename(node2_time = time) %>%
+    dplyr::tibble()
 
   # perform further data processing if the model in question is spatial (and if there
   # are any IBD segments at all)
@@ -1724,8 +1751,8 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL,
   }
 
   if (coordinates)
-    result <- dplyr::select(result, node1, node2, length, mrca, node1_time, node2_time, tmrca,
-                                    dplyr::everything())
+    result <- dplyr::mutate(result, length = right - left) %>%
+      dplyr::select(node1, node2, length, mrca, node1_time, node2_time, tmrca, dplyr::everything())
   else
     result <- dplyr::select(result, node1, node2, count, total, node1_time, node2_time,
                                     dplyr::everything())

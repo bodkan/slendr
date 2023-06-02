@@ -259,8 +259,7 @@
 <p>Note that in order to make this example executable in a reasonable time on my extremely old laptop, I decreased the sizes of all populations to unrealistic levels. This will speed up the SLiM simulation at a later step.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># African ancestral population</span></span>
-<span>  <span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span>,</span>
-<span>  map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">africa</span></span>
+<span>  <span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span>, map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">africa</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/population.html">population</a></span><span class="op">(</span> <span class="co"># population of the first migrants out of Africa</span></span>
@@ -333,7 +332,7 @@
 <div class="section level4">
 <h4 id="id_6-visualize-the-model">6. Visualize the model<a class="anchor" aria-label="anchor" href="#id_6-visualize-the-model"></a>
 </h4>
-<p>The package provides an <a href="https://shiny.rstudio.com" class="external-link">R shiny</a>-based browser app <code><a href="reference/explore_model.html">explore_model()</a></code> for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:</p>
+<p>The package provides an <a href="https://shiny.posit.co/" class="external-link">R shiny</a>-based browser app <code><a href="reference/explore_model.html">explore_model()</a></code> for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/explore_model.html">explore_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <p>The function has two modes:</p>
