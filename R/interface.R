@@ -79,6 +79,15 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
       check_split_time(time, parent)
   }
 
+  parent_remove <- attr(parent, "remove")
+  if (!is.null(parent) && parent_remove != -1) {
+    direction <- if (time > parent$time) "forward" else "backward"
+    if (direction == "forward" && parent_remove <= time)
+      stop("Parent population will be removed before the split event", call. = FALSE)
+    else if (direction == "backward" && parent_remove >= time)
+      stop("Parent population will be removed before the split event", call. = FALSE)
+  }
+
   if (!is.logical(map) && !inherits(map, "slendr_map"))
     stop("A simulation landscape must be an object of the class slendr_map", call. = FALSE)
 

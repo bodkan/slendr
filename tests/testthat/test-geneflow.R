@@ -81,7 +81,7 @@ test_that("populations must be already created for a gene flow to happen (forwar
 # that the issue has been solved
 # https://github.com/bodkan/slendr/issues/132
 test_that("gene_flow() behaves as expected in some concrete situations", {
-  anc <- population("ancestor", time = 9e6, remove=8e6, N=100)
+  anc <- population("ancestor", time = 9e6, remove=6e6, N=100)
   popA <- population("A", time = 8e6, parent=anc, N=100)
   popB <- population("B", time = 7e6, parent=anc, N=100)
 

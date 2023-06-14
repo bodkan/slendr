@@ -23,6 +23,43 @@ test_that("non-integer population split time is rounded", {
   expect_true(attr(pop, "history")[[1]]$N == 101)
 })
 
+test_that("parent cannot be scheduled for removal before a daughter splits (forward)", {
+  error_msg <- "Parent population will be removed"
+
+  parent <- population("parent", time = 1, N = 1, remove = 50)
+  expect_error(population("daughter", time = 100, N = 1, parent = parent), error_msg)
+  expect_error(population("daughter", time = 50, N = 1, parent = parent), error_msg)
+  expect_s3_class(population("daughter", time = 30, N = 1, parent = parent), "slendr_pop")
+
+  parent <- population("parent", time = 100, N = 1, remove = 150)
+  expect_error(population("daughter", time = 200, N = 1, parent = parent), error_msg)
+  expect_error(population("daughter", time = 150, N = 1, parent = parent), error_msg)
+  expect_s3_class(daughter <- population("daughter", time = 120, N = 1, parent = parent), "slendr_pop")
+
+  model <- compile_model(list(parent, daughter), simulation_length = 300, generation_time = 10)
+
+  # successful model definition in slendr is one thing, but let's make sure the
+  # simulation themselves really run
+  expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
+  expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
+})
+
+test_that("parent cannot be scheduled for removal before a daughter splits (backward)", {
+  error_msg <- "Parent population will be removed"
+
+  parent <- population("parent", time = 1000, N = 1, remove = 500)
+  expect_error(population("daughter", time = 100, N = 1, parent = parent), error_msg)
+  expect_error(population("daughter", time = 500, N = 1, parent = parent), error_msg)
+  expect_s3_class(daughter <- population("daughter", time = 800, N = 1, parent = parent), "slendr_pop")
+
+  model <- compile_model(list(parent, daughter), generation_time = 10)
+
+  # successful model definition in slendr is one thing, but let's make sure the
+  # simulation themselves really run
+  expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
+  expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
+})
+
 #
 # population resizes (step)
 #
