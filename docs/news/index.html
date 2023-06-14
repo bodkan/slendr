@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,8 +80,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.0" id="slendr-060">slendr 0.6.0<a class="anchor" aria-label="anchor" href="#slendr-060"></a></h2>
-<p>This is a relatively large update, which unfortunately had to be released in haste due to the <a href="https://r-spatial.org/r/2023/05/15/evolution4.html" class="external-link">retirement of the <em>rgdal</em> package</a> – a significant dependency of the entire spatial R ecosystem which is being phased out in the effort to move towards modern low-level geospatial architecture. Although <em>slendr</em> itself does not depend on <em>rgdal</em>, many of its dependencies used to (but won’t in the short term). The most significant update has been the addition of IBD functionality of <em>tskit</em>, as described below. However, large part of this functionality has not been extensively tested and should be considered extremely experimental at this stage. If you would like to use it, it might be safer to either wait for a later release in which the IBD functionality will be more stable, or use the underlying, battle-tested <a href="https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments" class="external-link">Python implementation in <em>tskit</em></a>.</p>
+<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li>A potential issue with a parent population being scheduled for removal before a daughter population splits from it is now caught at the moment of the daughter <code><a href="../reference/population.html">population()</a></code> call rather than during a simulation <code><a href="../reference/slim.html">slim()</a></code> run. (<a href="https://github.com/bodkan/slendr/commit/0791b5" class="external-link">#0791b5</a>)</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="slendr-060">slendr 0.6.0<a class="anchor" aria-label="anchor" href="#slendr-060"></a></h2><p class="text-muted">CRAN release: 2023-06-07</p>
+<p>This is a relatively large update, which unfortunately had to be released in haste due to the <a href="https://r-spatial.org/r/2023/05/15/evolution4.html" class="external-link">retirement of the <em>rgdal</em> package</a> – a significant dependency of the entire spatial R ecosystem which is being phased out in the effort to move towards modern low-level geospatial architecture. Although <em>slendr</em> itself does not depend on <em>rgdal</em>, many of its dependencies used to (but won’t in the short term, hence the push to remove the <em>rgdal</em> dependency). The most significant update has been the addition of IBD functionality of <em>tskit</em>, as described below. However, large part of this functionality has not been extensively tested and should be considered extremely experimental at this stage. If you would like to use it, it might be safer to either wait for a later release in which the IBD functionality will be more stable, or use the underlying, battle-tested <a href="https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments" class="external-link">Python implementation in <em>tskit</em></a>.</p>
 <ul><li><p><code><a href="../reference/ts_ibd.html">ts_ibd()</a></code> now returns the ID number of a MRCA node of a pair of nodes sharing a given IBD segment, as well as the TMRCA of that node. (<a href="https://github.com/bodkan/slendr/commit/7e2825" class="external-link">#7e2825</a>)</p></li>
 <li><p>Trivial parameter errors are caught during <code><a href="../reference/population.html">population()</a></code> calls rather than during simulation (solving minor issues discovered via big simulation runs during the development of <a href="https://github.com/bodkan/demografr" class="external-link"><em>demografr</em></a>). (<a href="https://github.com/bodkan/slendr/commit/e33373" class="external-link">#e33373</a>)</p></li>
 <li><p>Fix error in plotting exponential resizes which do not last until “the present”. (<a href="https://github.com/bodkan/slendr/commit/4c49a4" class="external-link">#4c49a4</a>)</p></li>
