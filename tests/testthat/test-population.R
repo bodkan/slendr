@@ -40,8 +40,8 @@ test_that("parent cannot be scheduled for removal before a daughter splits (forw
 
   # successful model definition in slendr is one thing, but let's make sure the
   # simulation themselves really run
+  skip_if(!is_slendr_env_present())
   expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
-  skip_if(Sys.which("slim") == "")
   expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
 })
 
@@ -57,8 +57,8 @@ test_that("parent cannot be scheduled for removal before a daughter splits (back
 
   # successful model definition in slendr is one thing, but let's make sure the
   # simulation themselves really run
+  skip_if(!is_slendr_env_present())
   expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
-  skip_if(Sys.which("slim") == "")
   expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
 })
 
