@@ -256,6 +256,7 @@ sort_splits <- function(model) {
 #' @param sizes Should population size changes be visualized?
 #' @param proportions Should gene flow proportions be visualized (\code{FALSE}
 #'   by default to prevent cluttering and overplotting)
+#' @param gene_flow Should gene-flow arrows be visualized (default \code{TRUE}).
 #' @param log Should the y-axis be plotted on a log scale? Useful for models
 #'   over very long time-scales.
 #'
@@ -275,7 +276,7 @@ sort_splits <- function(model) {
 #'   geom_polygon geom_label scale_y_continuous scale_color_discrete scale_fill_discrete
 #'   labs geom_segment arrow
 #' @export
-plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
+plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRUE, log = FALSE) {
   populations <- model$populations
 
   log10_ydelta <- 0.001
@@ -415,7 +416,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, log = FALSE) {
 
   # generate a table of gene flow events to be used for plotting gene flow
   # arrows
-  if (!is.null(model$geneflow)) {
+  if (!is.null(model$geneflow) && gene_flow) {
     gene_flow <- model$geneflow %>%
       dplyr::mutate(
         x = purrr::map_dbl(from, ~ centers[centers$pop == .x, ]$center),

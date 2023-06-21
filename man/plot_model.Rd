@@ -4,7 +4,13 @@
 \alias{plot_model}
 \title{Plot demographic history encoded in a slendr model}
 \usage{
-plot_model(model, sizes = TRUE, proportions = FALSE, log = FALSE)
+plot_model(
+  model,
+  sizes = TRUE,
+  proportions = FALSE,
+  gene_flow = TRUE,
+  log = FALSE
+)
 }
 \arguments{
 \item{model}{Compiled \code{slendr_model} model object}
@@ -13,6 +19,8 @@ plot_model(model, sizes = TRUE, proportions = FALSE, log = FALSE)
 
 \item{proportions}{Should gene flow proportions be visualized (\code{FALSE}
 by default to prevent cluttering and overplotting)}
+
+\item{gene_flow}{Should gene-flow arrows be visualized (default \code{TRUE}).}
 
 \item{log}{Should the y-axis be plotted on a log scale? Useful for models
 over very long time-scales.}
