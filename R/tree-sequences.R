@@ -1460,6 +1460,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
   check_ts_class(ts)
   mode <- match.arg(mode)
+  i <- as.integer(i)
   if (mode == "index")
     tree <- ts$at_index(index = i, ...)
   else
