@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- Emergency upgrade to match the latest pyslim 1.0.3 due to a serious bug in recapitation (see [here](https://github.com/tskit-dev/pyslim/issues/307) and [here](https://github.com/bodkan/slendr/issues/141) for an extensive discussion. ([#45539a](https://github.com/bodkan/slendr/commit/45539a))
+
 - A potential issue with a parent population being scheduled for removal before a daughter population splits from it is now caught at the moment of the daughter `population()` call rather than during a simulation `slim()` run. ([#0791b5](https://github.com/bodkan/slendr/commit/0791b5))
 
 # slendr 0.6.0

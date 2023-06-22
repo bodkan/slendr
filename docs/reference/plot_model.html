@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_model</span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">TRUE</span>, proportions <span class="op">=</span> <span class="cn">FALSE</span>, log <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_model</span><span class="op">(</span></span>
+<span>  <span class="va">model</span>,</span>
+<span>  sizes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  proportions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  gene_flow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  log <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -102,6 +108,10 @@
 <dt>proportions</dt>
 <dd><p>Should gene flow proportions be visualized (<code>FALSE</code>
 by default to prevent cluttering and overplotting)</p></dd>
+
+
+<dt>gene_flow</dt>
+<dd><p>Should gene-flow arrows be visualized (default <code>TRUE</code>).</p></dd>
 
 
 <dt>log</dt>
