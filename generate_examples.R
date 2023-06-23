@@ -35,6 +35,7 @@ ts <- slim(
 )
 
 ts %>%
+  ts_recapitate(Ne = 10, recombination_rate = 1e-8) %>%
   ts_simplify() %>%
   ts_save("inst/extdata/models/introgression.trees")
 
