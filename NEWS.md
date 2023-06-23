@@ -4,6 +4,8 @@
 
 - A potential issue with a parent population being scheduled for removal before a daughter population splits from it is now caught at the moment of the daughter `population()` call rather than during a simulation `slim()` run. ([#0791b5](https://github.com/bodkan/slendr/commit/0791b5))
 
+- The function `plot_model()` has a new argument `gene_flow=<TRUE|FALSE>` which determines whether gene-flow arrows will be visualized or not. ([#104aa6](https://github.com/bodkan/slendr/commit/104aa6))
+
 # slendr 0.6.0
 
 This is a relatively large update, which unfortunately had to be released in haste due to the [retirement of the _rgdal_ package](https://r-spatial.org/r/2023/05/15/evolution4.html) -- a significant dependency of the entire spatial R ecosystem which is being phased out in the effort to move towards modern low-level geospatial architecture. Although _slendr_ itself does not depend on _rgdal_, many of its dependencies used to (but won't in the short term, hence the push to remove the _rgdal_ dependency). The most significant update has been the addition of IBD functionality of _tskit_, as described below. However, large part of this functionality has not been extensively tested and should be considered extremely experimental at this stage. If you would like to use it, it might be safer to either wait for a later release in which the IBD functionality will be more stable, or use the underlying, battle-tested [Python implementation in _tskit_](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments).

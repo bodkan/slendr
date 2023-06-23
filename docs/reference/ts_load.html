@@ -12,7 +12,7 @@ Optionally, the tree sequence can be recapitated and simplified."><meta property
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -215,10 +215,14 @@ map</p></div>
 <span class="r-in"><span><span class="co"># load tree sequence, recapitate it and simplify it</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> ValueError: Not all roots of the provided tree sequence are at the time expected by recapitate(). This could happen if you've simplified in python before recapitating (fix: don't simplify first). If could also happen in other situations, e.g., you added new individuals without parents in SLiM during the course of the simulation with sim.addSubPop(), in which case you will probably need to recapitate with msprime.sim_ancestry(initial_state=ts, ...). (Expected root time: 216668; Observed root times: [200006.0])</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load tree sequence, recapitate it, simplify it and overlay neutral mutations</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, random_seed <span class="op">=</span> <span class="fl">42</span>,</span></span>
 <span class="r-in"><span>              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> ValueError: Not all roots of the provided tree sequence are at the time expected by recapitate(). This could happen if you've simplified in python before recapitating (fix: don't simplify first). If could also happen in other situations, e.g., you added new individuals without parents in SLiM during the course of the simulation with sim.addSubPop(), in which case you will probably need to recapitate with msprime.sim_ancestry(initial_state=ts, ...). (Expected root time: 216668; Observed root times: [200006.0])</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ts</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔════════════════════════╗</span>
@@ -232,7 +236,7 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │      26║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │59.7 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │57.5 KiB║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size    │Has Metadata║</span>
@@ -247,9 +251,9 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  68│ 3.2 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   5│ 2.6 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│ 2.5 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   4│37.7 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   3│35.5 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>
