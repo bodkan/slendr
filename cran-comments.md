@@ -1,4 +1,4 @@
-Update to match an important bugfix of an external Python dependency of this R package.
+Update to include an important bugfix of an external dependency (Python module 'pyslim').
 
 # R CMD check results
 
