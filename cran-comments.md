@@ -1,3 +1,5 @@
+Update to match an important bugfix of an external Python dependency of this R package.
+
 # R CMD check results
 
 There were no ERRORs, no WARNINGs, no NOTEs.

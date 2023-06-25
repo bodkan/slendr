@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 0.6.1
 
 - Emergency upgrade to match the latest pyslim 1.0.3 due to a serious bug in recapitation (see [here](https://github.com/tskit-dev/pyslim/issues/307) and [here](https://github.com/bodkan/slendr/issues/141) for an extensive discussion. **This will require you to re-run `setup_env()` in order to update slendr's Python internals by creating a new internal Python virtual environment. ([#45539a](https://github.com/bodkan/slendr/commit/45539a))
 
