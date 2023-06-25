@@ -1,10 +1,12 @@
 # slendr (development version)
 
-- Emergency upgrade to match the latest pyslim 1.0.3 due to a serious bug in recapitation (see [here](https://github.com/tskit-dev/pyslim/issues/307) and [here](https://github.com/bodkan/slendr/issues/141) for an extensive discussion. ([#45539a](https://github.com/bodkan/slendr/commit/45539a))
+- Emergency upgrade to match the latest pyslim 1.0.3 due to a serious bug in recapitation (see [here](https://github.com/tskit-dev/pyslim/issues/307) and [here](https://github.com/bodkan/slendr/issues/141) for an extensive discussion. **This will require you to re-run `setup_env()` in order to update slendr's Python internals by creating a new internal Python virtual environment. ([#45539a](https://github.com/bodkan/slendr/commit/45539a))
 
 - A potential issue with a parent population being scheduled for removal before a daughter population splits from it is now caught at the moment of the daughter `population()` call rather than during a simulation `slim()` run. ([#0791b5](https://github.com/bodkan/slendr/commit/0791b5))
 
 - The function `plot_model()` has a new argument `gene_flow=<TRUE|FALSE>` which determines whether gene-flow arrows will be visualized or not. ([#104aa6](https://github.com/bodkan/slendr/commit/104aa6))
+
+**Loading `library(slendr)` will prompt a message _"The legacy packages maptools, rgdal, and rgeos, underpinning the sp package, which was just loaded, will retire in October 2023. [...]."_ This is an internal business of packages used by _slendr_ which unfortunately cannot be silenced from _slendr_'s side. There's no reason to panic, you can safely ignore them. Apologies for the unnecessary noise.**
 
 # slendr 0.6.0
 
