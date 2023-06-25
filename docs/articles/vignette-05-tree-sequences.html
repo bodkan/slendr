@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -338,11 +338,11 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; msprime command:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.5_pyslim-1.0.3/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpBsAY25/file176b5780ccb3_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpBsAY25/file176b5780ccb3_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpBsAY25/file176b52838165.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpBsAY25/file176b7bd4d74e --verbose  </span></span>
+<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.5_pyslim-1.0.3/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpN47Z5J/file5535384e823d_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpN47Z5J/file5535384e823d_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpN47Z5J/file55354543dde1.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpN47Z5J/file5535a52d97a --verbose  </span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Tree sequence was saved to:</span></span>
-<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpBsAY25/file176b52838165.trees </span></span>
+<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpN47Z5J/file55354543dde1.trees </span></span>
 <span><span class="co">#&gt; Loading the tree-sequence file...</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span></span></code></pre></div>
@@ -429,7 +429,7 @@ to the tree-sequence file ourselves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpBsAY25/file176b7e663c1c"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpN47Z5J/file5535285b43e9"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
