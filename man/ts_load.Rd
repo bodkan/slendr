@@ -13,29 +13,6 @@ slendr model or a standard non-slendr tree sequence).}
 \item{model}{Optional \code{slendr_model} object which produced the
 tree-sequence \code{file}. Used for adding various annotation data and
 metadata to the standard tskit tree-sequence object.}
-
-\item{recapitate}{Should the tree sequence be recapitated?}
-
-\item{simplify}{Should the tree sequence be simplified down to a set of sampled
-individuals (those explicitly recorded)?}
-
-\item{mutate}{Should the tree sequence be mutated?}
-
-\item{recombination_rate, Ne}{Arguments passed to \code{ts_recapitate}}
-
-\item{mutation_rate}{Mutation rate passed to \code{ts_mutate}}
-
-\item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
-
-\item{simplify_to}{A character vector of individual names. If NULL, all
-remembered individuals will be retained. Only used when \code{simplify =
-  TRUE}.}
-
-\item{keep_input_roots}{Should the history ancestral to the MRCA of all
-samples be retained in the tree sequence? Default is \code{FALSE}.}
-
-\item{demography}{Ancestral demography to be passed internally to
-\code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)}
 }
 \value{
 Tree-sequence object of the class \code{slendr_ts}, which serves as

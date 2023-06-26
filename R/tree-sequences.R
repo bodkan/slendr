@@ -20,20 +20,6 @@
 #' @param model Optional \code{slendr_model} object which produced the
 #'   tree-sequence \code{file}. Used for adding various annotation data and
 #'   metadata to the standard tskit tree-sequence object.
-#' @param recapitate Should the tree sequence be recapitated?
-#' @param simplify Should the tree sequence be simplified down to a set of sampled
-#'   individuals (those explicitly recorded)?
-#' @param mutate Should the tree sequence be mutated?
-#' @param recombination_rate,Ne Arguments passed to \code{ts_recapitate}
-#' @param mutation_rate Mutation rate passed to \code{ts_mutate}
-#' @param random_seed Random seed passed to pyslim's \code{recapitate} method
-#' @param simplify_to A character vector of individual names. If NULL, all
-#'   remembered individuals will be retained. Only used when \code{simplify =
-#'   TRUE}.
-#' @param keep_input_roots Should the history ancestral to the MRCA of all
-#'   samples be retained in the tree sequence? Default is \code{FALSE}.
-#' @param demography Ancestral demography to be passed internally to
-#'   \code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
 #'   an interface point for the Python module tskit using slendr functions with

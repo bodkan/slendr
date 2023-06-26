@@ -104,47 +104,6 @@ slendr model or a standard non-slendr tree sequence).</p></dd>
 tree-sequence <code>file</code>. Used for adding various annotation data and
 metadata to the standard tskit tree-sequence object.</p></dd>
 
-
-<dt>recapitate</dt>
-<dd><p>Should the tree sequence be recapitated?</p></dd>
-
-
-<dt>simplify</dt>
-<dd><p>Should the tree sequence be simplified down to a set of sampled
-individuals (those explicitly recorded)?</p></dd>
-
-
-<dt>mutate</dt>
-<dd><p>Should the tree sequence be mutated?</p></dd>
-
-
-<dt>recombination_rate, Ne</dt>
-<dd><p>Arguments passed to <code>ts_recapitate</code></p></dd>
-
-
-<dt>mutation_rate</dt>
-<dd><p>Mutation rate passed to <code>ts_mutate</code></p></dd>
-
-
-<dt>random_seed</dt>
-<dd><p>Random seed passed to pyslim's <code>recapitate</code> method</p></dd>
-
-
-<dt>simplify_to</dt>
-<dd><p>A character vector of individual names. If NULL, all
-remembered individuals will be retained. Only used when <code>simplify =
-  TRUE</code>.</p></dd>
-
-
-<dt>keep_input_roots</dt>
-<dd><p>Should the history ancestral to the MRCA of all
-samples be retained in the tree sequence? Default is <code>FALSE</code>.</p></dd>
-
-
-<dt>demography</dt>
-<dd><p>Ancestral demography to be passed internally to
-<code>msprime.sim_ancestry()</code> (see msprime's documentation for mode detail)</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
