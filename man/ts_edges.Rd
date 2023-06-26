@@ -30,7 +30,7 @@ slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(slendr_ts, model, simplify = TRUE)
+ts <- ts_load(slendr_ts, model)
 
 # extract an annotated table with (spatio-)temporal edge information
 ts_edges(ts)

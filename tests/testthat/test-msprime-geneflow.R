@@ -54,11 +54,15 @@ slim(model_gf, output = ts_slim_gf, sequence_length = seq_len, recombination_rat
 msprime(model_gf, output = ts_msprime_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 
 # Load tree sequence files saved by the SLiM backend script from the two models:
-slim_nogf <- ts_load(model = model_nogf, file = ts_slim_nogf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-                     Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, random_seed = seed)
+slim_nogf <- ts_load(model = model_nogf, file = ts_slim_nogf) %>%
+  ts_recapitate(Ne = 10, recombination_rate = rec_rate, random_seed = seed) %>%
+  ts_simplify() %>%
+  ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 
-slim_gf <- ts_load(model = model_gf, file = ts_slim_gf, recapitate = TRUE, simplify = TRUE, mutate = TRUE,
-                   Ne = 10, recombination_rate = rec_rate, mutation_rate = mut_rate, random_seed = seed)
+slim_gf <- ts_load(model = model_gf, file = ts_slim_gf) %>%
+  ts_recapitate(Ne = 10, recombination_rate = rec_rate, random_seed = seed) %>%
+  ts_simplify() %>%
+  ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:
 slim_individuals <- ts_samples(slim_gf) %>%
@@ -88,11 +92,11 @@ df_slim_f4ratio <- rbind(
 
 
 # Load tree sequence files saved by the SLiM backend script from the two models:
-msprime_nogf <- ts_load(model = model_nogf, file = ts_msprime_nogf, mutate = TRUE,
-                        mutation_rate = mut_rate, random_seed = seed)
+msprime_nogf <- ts_load(model = model_nogf, file = ts_msprime_nogf) %>%
+  ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 
-msprime_gf <- ts_load(model = model_gf, file = ts_msprime_gf, mutate = TRUE,
-                      mutation_rate = mut_rate, random_seed = seed)
+msprime_gf <- ts_load(model = model_gf, file = ts_msprime_gf) %>%
+  ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 
 # Extract vector of names of the "test individuals" in populations `x1` and `x2`:
 msprime_individuals <- ts_samples(msprime_gf) %>%

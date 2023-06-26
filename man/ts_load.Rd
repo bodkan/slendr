@@ -4,20 +4,7 @@
 \alias{ts_load}
 \title{Load a tree sequence file produced by a given model}
 \usage{
-ts_load(
-  file,
-  model = NULL,
-  recapitate = FALSE,
-  simplify = FALSE,
-  mutate = FALSE,
-  recombination_rate = NULL,
-  mutation_rate = NULL,
-  Ne = NULL,
-  random_seed = NULL,
-  simplify_to = NULL,
-  keep_input_roots = FALSE,
-  demography = NULL
-)
+ts_load(file, model = NULL)
 }
 \arguments{
 \item{file}{A path to the tree-sequence file (either originating from a
@@ -89,19 +76,22 @@ ts <- ts_load(msprime_ts)
 # load tree sequence and immediately simplify it only to sampled individuals
 # (note that the example tree sequence is already simplified so this operation
 # does not do anything in this case)
-ts <- ts_load(slendr_ts, model = model, simplify = TRUE)
+ts <- ts_load(slendr_ts, model = model) \%>\% ts_simplify(keep_input_roots = TRUE)
 
 # load tree sequence and simplify it to a subset of sampled individuals
 ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2",
                                             "AFR_1", "AFR_2", "EUR_1", "EUR_2"))
 
 # load tree sequence, recapitate it and simplify it
-ts <- ts_load(slendr_ts, model, recapitate = TRUE, simplify = TRUE,
-              recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
+ts <- ts_load(slendr_ts, model) \%>\%
+  ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42) \%>\%
+  ts_simplify()
 
 # load tree sequence, recapitate it, simplify it and overlay neutral mutations
-ts <- ts_load(slendr_ts, model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
-              recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+ts <- ts_load(slendr_ts, model) \%>\%
+  ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42) \%>\%
+  ts_simplify() \%>\%
+  ts_mutate(mutation_rate = 1e-8)
 
 ts
 }

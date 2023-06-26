@@ -195,7 +195,7 @@ ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1", "
 ts_small
 ```
 
-Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapitation]https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation). Again, this is not needed for an *msprime* tree sequence, which is fully coalesced (and recapitated) by definition. Still, if we were dealing with a SLiM tree sequence, which is the case for some of our other vignetted, we could do this in one go, by specifying `recapitate = TRUE` in the call to `ts_load()` after specifying a couple of additional arguments required for recapitation (see the pyslim documentation in the [recapitation](https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation) section for more detail). If we do this on our current tree sequence object, we simply get a warning informing us that we're attempting to do something that has no effect:
+Similarly, *slendr* provides a function `ts_recapitate()` which performs [recapitation]https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation). Again, this is not needed for an *msprime* tree sequence, which is fully coalesced (and recapitated) by definition. If we do this on our current tree sequence object, we simply get a warning informing us that we're attempting to do something that has no effect:
 
 ```{r, eval = FALSE}
 ts <- ts_recapitate(ts, recombination_rate = 1e-8, Ne = 10000)

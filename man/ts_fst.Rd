@@ -46,7 +46,7 @@ slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+ts <- ts_load(slendr_ts, model) \%>\% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 
 # compute F_st between two sets of individuals in a given tree sequence ts
 ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),

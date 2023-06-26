@@ -41,7 +41,11 @@ modifyChild() {
 
 system2("slim", script_file, stdout = FALSE)
 
-suppressMessages(ts <- ts_load(ts_file, simplify = TRUE))
+suppressMessages(
+  ts <- ts_load(ts_file) %>%
+    ts_recapitate(Ne = 100, recombination_rate = 1e-8) %>%
+    ts_simplify()
+)
 
 test_that("non-slendr SLiM tree sequence locations are correctly loaded", {
   data <- ts_nodes(ts, sf = FALSE) %>%

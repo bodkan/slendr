@@ -62,34 +62,26 @@
 #' # load tree sequence and immediately simplify it only to sampled individuals
 #' # (note that the example tree sequence is already simplified so this operation
 #' # does not do anything in this case)
-#' ts <- ts_load(slendr_ts, model = model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model = model) %>% ts_simplify(keep_input_roots = TRUE)
 #'
 #' # load tree sequence and simplify it to a subset of sampled individuals
 #' ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2",
 #'                                             "AFR_1", "AFR_2", "EUR_1", "EUR_2"))
 #'
 #' # load tree sequence, recapitate it and simplify it
-#' ts <- ts_load(slendr_ts, model, recapitate = TRUE, simplify = TRUE,
-#'               recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model) %>%
+#'   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42) %>%
+#'   ts_simplify()
 #'
 #' # load tree sequence, recapitate it, simplify it and overlay neutral mutations
-#' ts <- ts_load(slendr_ts, model, recapitate = TRUE, simplify = TRUE, random_seed = 42,
-#'               recombination_rate = 1e-8, Ne = 10000, mutation_rate = 1e-8)
+#' ts <- ts_load(slendr_ts, model) %>%
+#'   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42) %>%
+#'   ts_simplify() %>%
+#'   ts_mutate(mutation_rate = 1e-8)
 #'
 #' ts
 #' @export
-ts_load <- function(file, model = NULL,
-                    recapitate = FALSE, simplify = FALSE, mutate = FALSE,
-                    recombination_rate = NULL, mutation_rate = NULL,
-                    Ne = NULL, random_seed = NULL, simplify_to = NULL, keep_input_roots = FALSE,
-                    demography = NULL) {
-  if (recapitate && (is.null(recombination_rate) || is.null(Ne)))
-    stop("Recombination rate and Ne must be specified for recapitation", call. = FALSE)
-
-  if (mutate && is.null(mutation_rate))
-    stop("Mutation rate must be given in order to be able to mutate the tree sequence",
-         call. = FALSE)
-
+ts_load <- function(file, model = NULL) {
   # load the tree sequence, converting it to a SLiM tree sequence if necessary
   ts <- if (is.character(file)) tskit$load(path.expand(file)) else file
 
@@ -120,16 +112,6 @@ ts_load <- function(file, model = NULL,
   attr(ts, "raw_mutations") <- get_ts_raw_mutations(ts)
 
   attr(ts, "nodes") <- if (type == "SLiM") get_pyslim_table_data(ts) else get_tskit_table_data(ts)
-
-  if (recapitate)
-    ts <- ts_recapitate(ts, recombination_rate = recombination_rate, Ne = Ne,
-                        random_seed = random_seed, demography = demography)
-
-  if (simplify)
-    ts <- ts_simplify(ts, simplify_to, keep_input_roots = keep_input_roots)
-
-  if (mutate)
-    ts <- ts_mutate(ts, mutation_rate = mutation_rate, random_seed = random_seed)
 
   ts
 }
@@ -210,8 +192,7 @@ ts_save <- function(ts, file) {
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
-#' ts <-
-#'   ts_load(slendr_ts, model) %>%
+#' ts <- ts_load(slendr_ts, model) %>%
 #'   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 #'
 #' ts
@@ -344,11 +325,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #' ts_simplified <- ts_simplify(ts)
 #'
 #' # simplify to a subset of sampled individuals
-#' ts_small <- ts_simplify(
-#'   ts,
-#'   simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
-#'                   "AFR_2", "EUR_1", "EUR_2")
-#' )
+#' ts_small <- ts_simplify(ts, simplify_to = c("CH_1", "NEA_1", "NEA_2", "AFR_1",
+#'                                             "AFR_2", "EUR_1", "EUR_2"))
 #'
 #' ts_small
 #' @export
@@ -591,9 +569,11 @@ ts_metadata <- function(ts) {
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
-#' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE, mutate = TRUE,
-#'               mutation_rate = 1e-8, random_seed = 42)
+#' # load the tree-sequence object from disk, recapitate it, simplify it, and mutate it
+#' ts <- ts_load(slendr_ts, model) %>%
+#'   ts_recapitate(Ne = 10000, recombination_rate = 1e-8) %>%
+#'   ts_simplify() %>%
+#'   ts_mutate(mutation_rate = 1e-8)
 #'
 #' # extract the genotype matrix (this could take  a long time consume lots
 #' # of memory!)
@@ -782,7 +762,9 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model) %>%
+#'   ts_recapitate(Ne = 10000, recombination_rate = 1e-8) %>%
+#'   ts_simplify()
 #'
 #' # extract the 1st tree from a given tree sequence, return ape object
 #' tree <- ts_phylo(ts, i = 1, mode = "index", quiet = TRUE)
@@ -1017,7 +999,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' # extract an annotated table with (spatio-)temporal node information
 #' ts_nodes(ts)
@@ -1079,9 +1061,8 @@ ts_nodes <- function(x, sf = TRUE) {
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
-#' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE, mutate = TRUE,
-#'               mutation_rate = 1e-8, random_seed = 42)
+#' # load the tree-sequence object from disk and add mutations to it
+#' ts <- ts_load(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # get the 'raw' tskit table of individuals
 #' ts_table(ts, "individuals")
@@ -1125,7 +1106,7 @@ ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' # extract an annotated table with (spatio-)temporal edge information
 #' ts_edges(ts)
@@ -1157,7 +1138,7 @@ ts_edges <- function(x) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' # extract the table of individuals scheduled for simulation and sampling
 #' ts_samples(ts)
@@ -1199,7 +1180,7 @@ ts_samples <- function(ts) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' # find the complete ancestry information for a given individual
 #' ts_ancestors(ts, "EUR_1", verbose = TRUE)
@@ -1327,7 +1308,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' # find the complete descendancy information for a given individual
 #' ts_descendants(ts, x = 62, verbose = TRUE)
@@ -1449,7 +1430,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' # extract the zero-th tree in the tree sequence
 #' tree <- ts_tree(ts, i = 0)
@@ -1497,7 +1478,7 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' # extract the first tree in the tree sequence and draw it
 #' tree <- ts_tree(ts, i = 1)
@@ -1565,7 +1546,7 @@ ts_draw <- function(x, width = 1000, height = 1000, labels = FALSE,
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' ts_coalesced(ts) # is the tree sequence fully coalesced? (TRUE or FALSE)
 #'
@@ -1650,7 +1631,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, simplify = TRUE)
+#' ts <- ts_load(slendr_ts, model)
 #'
 #' # find IBD segments between specified Neanderthals and Europeans
 #' ts_ibd(
@@ -1850,8 +1831,8 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
-#' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' # load the tree-sequence object from disk and add mutations to it
+#' ts <- ts_load(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # calculate f2 for two individuals in a previously loaded tree sequence
 #' ts_f2(ts, A = "AFR_1", B = "EUR_1")
@@ -1974,7 +1955,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # compute F_st between two sets of individuals in a given tree sequence ts
 #' ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
@@ -2005,7 +1986,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
@@ -2087,7 +2068,7 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
@@ -2123,7 +2104,7 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # collect sampled individuals from all populations in a list
 #' sample_sets <- ts_samples(ts) %>%
@@ -2171,7 +2152,7 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' # calculate Tajima's D for given sets of individuals in a tree sequence ts
 #' ts_tajima(ts, list(eur = c("EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"),
@@ -2227,7 +2208,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(slendr_ts, model, mutate = TRUE, mutation_rate = 1e-8, random_seed = 42)
+#' ts <- ts_load(slendr_ts, model) %>% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 #'
 #' samples <- ts_samples(ts) %>% .[.$pop %in% c("AFR", "EUR"), ]
 #'

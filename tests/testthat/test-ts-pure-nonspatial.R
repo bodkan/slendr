@@ -108,7 +108,7 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
 test_that("non-slendr SLiM ts_phylo corresponds to the expected outcome", {
   N <- 500
   ts_file <- simulate_slim_ts(N)
-  suppressMessages(ts <- ts_load(ts_file, recapitate = TRUE, recombination_rate = 1e-8, Ne = 100))
+  suppressMessages(ts <- ts_load(ts_file) %>% ts_recapitate(recombination_rate = 1e-8, Ne = 100))
   compare_ts_phylo(ts, N)
 })
 
@@ -245,7 +245,12 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
 
   system2("slim", script_file, stdout = FALSE)
 
-  suppressMessages(ts <- ts_load(ts_file, simplify = TRUE, mutate = TRUE, mutation_rate = 1e-7))
+  suppressMessages(
+    ts <- ts_load(ts_file) %>%
+      ts_recapitate(Ne = 10, recombination_rate = 1e-8) %>%
+      ts_simplify() %>%
+      ts_mutate(mutation_rate = 1e-7)
+  )
 
   data <- ts_nodes(ts) %>% dplyr::filter(sampled)
 

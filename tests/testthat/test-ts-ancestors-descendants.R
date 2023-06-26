@@ -7,9 +7,8 @@ model <- compile_model(populations = pop, generation_time = 1, simulation_length
 ts_file <- tempfile(fileext = ".trees")
 slim(model, sequence_length = 1000000, recombination_rate = 0, random_seed = 42, output = ts_file)
 
-ts <- ts_load(ts_file, model, recapitate = TRUE, simplify = TRUE,
-              Ne = 100, recombination_rate = 0, random_seed = 42,
-              simplify_to = paste0("POP_", seq(1, 10)))
+ts <- ts_load(ts_file, model) %>% ts_recapitate(Ne = 100, recombination_rate = 0, random_seed = 42) %>%
+  ts_simplify(simplify_to = paste0("POP_", seq(1, 10)))
 
 # library(ggtree)
 # tree <- ts_phylo(ts, 0)

@@ -41,8 +41,7 @@ init_env()
 slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
-ts <-
-  ts_load(slendr_ts, model) \%>\%
+ts <- ts_load(slendr_ts, model) \%>\%
   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 
 ts

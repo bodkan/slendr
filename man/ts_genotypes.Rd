@@ -25,9 +25,11 @@ init_env()
 slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
-# load the tree-sequence object from disk
-ts <- ts_load(slendr_ts, model, simplify = TRUE, mutate = TRUE,
-              mutation_rate = 1e-8, random_seed = 42)
+# load the tree-sequence object from disk, recapitate it, simplify it, and mutate it
+ts <- ts_load(slendr_ts, model) \%>\%
+  ts_recapitate(Ne = 10000, recombination_rate = 1e-8) \%>\%
+  ts_simplify() \%>\%
+  ts_mutate(mutation_rate = 1e-8)
 
 # extract the genotype matrix (this could take  a long time consume lots
 # of memory!)

@@ -1,4 +1,5 @@
 skip_if(!is_slendr_env_present())
+init_env(quiet = TRUE)
 
 map <- world(xrange = c(0, 3500), yrange = c(0, 700), landscape = "blank")
 
@@ -38,13 +39,13 @@ msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprim
         random_seed = 314159, samples = samples, verbose = FALSE)
 
 test_that("ts_load generates an object of the correct type (SLiM)", {
-  ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
+  ts <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>% ts_simplify()
   expect_true(inherits(ts, "tskit.trees.TreeSequence"))
 })
 
 test_that("unnecessary recapitation is prevented (msprime)", {
   expect_warning(
-    ts_load(model, file = msprime_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0),
+    ts_load(model, file = msprime_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0),
     "There is no need to recapitate"
   )
 })
@@ -81,8 +82,8 @@ test_that("ts_save and ts_load result in the same tree sequence (msprime)", {
 })
 
 test_that("tree sequence contains the right number of sampled individuals (SLiM)", {
-  ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1,
-                recombination_rate = 0, simplify = TRUE)
+  ts <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>%
+    ts_simplify()
   counts <- ts_nodes(ts) %>%
     dplyr::filter(sampled) %>%
     dplyr::as_tibble() %>%
@@ -92,7 +93,7 @@ test_that("tree sequence contains the right number of sampled individuals (SLiM)
 })
 
 test_that("locations and times in the tree sequence match values saved by SLiM", {
-  ts <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE)
+  ts <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>% ts_simplify()
   individuals <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::distinct(ind_id, .keep_all = TRUE)
   true_locations <- readr::read_tsv(locations_file, col_types = "iicidd") %>%
     dplyr::mutate(time = convert_slim_time(gen, model))
@@ -112,15 +113,13 @@ test_that("extracted individual, node, edge, and mutation counts match the tree 
   ts1 <- ts_load(model, file = slim_ts)
   table1 <- ts_nodes(ts1)
 
-  ts2 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
+  ts2 <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1000, recombination_rate = 0)
   table2 <- ts_nodes(ts2)
 
-  ts3 <- ts_load(model, file = slim_ts, recapitate = TRUE, simplify = TRUE, Ne = 1000, recombination_rate = 0)
+  ts3 <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1000, recombination_rate = 0) %>% ts_simplify()
   table3 <- ts_nodes(ts3)
 
-  suppressWarnings(ts4 <- ts_load(model, file = slim_ts, recapitate = TRUE,
-                                  simplify = TRUE, Ne = 1000, recombination_rate = 0,
-                                  mutate = TRUE, mutation_rate = 1e-6))
+  suppressWarnings(ts4 <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1000, recombination_rate = 0) %>% ts_mutate(mutation_rate = 1e-6))
   table4 <- ts_nodes(ts4)
 
   expect_true(ts1$num_individuals == sum(!is.na(unique(table1$ind_id))))
@@ -160,17 +159,13 @@ test_that("extracted individual, node, edge, and mutation counts match the tree 
   ts1 <- ts_load(model, file = msprime_ts)
   table1 <- ts_nodes(ts1)
 
-  suppressWarnings(ts2 <- ts_load(model, file = msprime_ts, recapitate = TRUE,
-                                  Ne = 1000, recombination_rate = 0))
+  suppressWarnings(ts2 <- ts_load(model, file = msprime_ts) %>% ts_recapitate(Ne = 1000, recombination_rate = 0))
   table2 <- ts_nodes(ts2)
 
-  suppressWarnings(ts3 <- ts_load(model, file = msprime_ts, recapitate = TRUE,
-                                  simplify = TRUE, Ne = 1000, recombination_rate = 0))
+  suppressWarnings(ts3 <- ts_load(model, file = msprime_ts) %>% ts_recapitate(Ne = 1000, recombination_rate = 0) %>% ts_simplify())
   table3 <- ts_nodes(ts3)
 
-  suppressWarnings(ts4 <- ts_load(model, file = msprime_ts, recapitate = TRUE,
-                                  simplify = TRUE, Ne = 1000, recombination_rate = 0,
-                                  mutate = TRUE, mutation_rate = 1e-6))
+  suppressWarnings(ts4 <- ts_load(model, file = msprime_ts) %>% ts_recapitate(Ne = 1000, recombination_rate = 0) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-6))
   table4 <- ts_nodes(ts4)
 
   expect_true(ts1$num_individuals == sum(!is.na(unique(table1$ind_id))))
@@ -212,22 +207,23 @@ test_that("extracted individual, node, edge, and mutation counts match the tree 
 
 test_that("simplification works only for samples that are really present", {
   msg <- "The following individuals are not present"
-  expect_error(ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE, simplify_to = "xyz"), msg)
-  expect_error(ts_load(model, file = msprime_ts, simplify = TRUE, simplify_to = "xyz"), msg)
+  expect_error(ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>% ts_simplify(simplify_to = "xyz"), msg)
+  expect_error(ts_load(model, file = msprime_ts) %>% ts_simplify(simplify_to = "xyz"), msg)
 })
 
 test_that("simplification retains only specified samples (SLiM)", {
   simplify_to <- c("pop1_1", "pop1_2", "pop2_7")
-  ts <- ts_load(model, file = slim_ts,
-                recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
-                simplify_to = simplify_to)
+  ts <- ts_load(model, file = slim_ts) %>%
+    ts_recapitate(Ne = 1, recombination_rate = 0) %>%
+    ts_simplify(simplify_to = simplify_to)
   df_samples <- ts_samples(ts) %>% dplyr::arrange(name, time)
   df_data <- ts_nodes(ts) %>% stats::na.omit() %>% dplyr::distinct(name, .keep_all = TRUE) %>% dplyr::arrange(name, time)
   expect_true(all(df_data$name == df_samples$name))
   expect_true(all(df_data$time == df_samples$time))
   expect_true(all(df_data$pop == df_samples$pop))
 
-  suppressWarnings(ts2 <- ts_load(model, file = slim_ts, recapitate = TRUE, recombination_rate = 0, Ne = 1))
+  suppressWarnings(ts2 <- ts_load(model, file = slim_ts) %>%
+    ts_recapitate(recombination_rate = 0, Ne = 1))
   simplify_to <- sample(ts_samples(ts2)$name, 10)
 
   ts2 <- ts_simplify(ts2, simplify_to = simplify_to)
@@ -240,14 +236,14 @@ test_that("simplification retains only specified samples (SLiM)", {
 
 test_that("simplification retains only specified samples (msprime)", {
   simplify_to <- c("pop1_1", "pop1_2", "pop2_7")
-  ts <- ts_load(model, file = msprime_ts, simplify = TRUE, simplify_to = simplify_to)
+  ts <- ts_load(model, file = msprime_ts) %>% ts_simplify(simplify_to = simplify_to)
   df_samples <- ts_samples(ts) %>% dplyr::arrange(name, time)
   df_data <- ts_nodes(ts) %>% stats::na.omit() %>% dplyr::distinct(name, .keep_all = TRUE) %>% dplyr::arrange(name, time)
   expect_true(all(df_data$name == df_samples$name))
   expect_true(all(df_data$time == df_samples$time))
   expect_true(all(df_data$pop == df_samples$pop))
 
-  suppressWarnings(ts2 <- ts_load(model, file = msprime_ts, recapitate = TRUE, recombination_rate = 0, Ne = 1))
+  suppressWarnings(ts2 <- ts_load(model, file = msprime_ts) %>% ts_recapitate(recombination_rate = 0, Ne = 1))
   simplify_to <- sample(ts_samples(ts2)$name, 10)
 
   ts2 <- ts_simplify(ts2, simplify_to = simplify_to)
@@ -261,10 +257,10 @@ test_that("simplification retains only specified samples (msprime)", {
 test_that("ts_samples() names match ts_nodes() information (SLiM)", {
   simplify_to <- c("pop1_1", "pop1_2", "pop2_7")
 
-  ts1 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0)
-  ts2 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
-  ts3 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0,
-                 simplify = TRUE, simplify_to = simplify_to)
+  ts1 <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0)
+  ts2 <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1000, recombination_rate = 0)
+  ts3 <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>%
+    ts_simplify(simplify_to = simplify_to)
   simplify_to <- sample(ts_samples(ts1)$name, 10)
   ts4 <- ts_simplify(ts1, simplify_to = simplify_to)
 
@@ -297,7 +293,7 @@ test_that("ts_samples() names match ts_nodes() information (msprime)", {
   simplify_to <- c("pop1_1", "pop1_2", "pop2_7")
 
   ts1 <- ts_load(model, file = msprime_ts)
-  ts3 <- ts_load(model, file = msprime_ts, simplify = TRUE, simplify_to = simplify_to)
+  ts3 <- ts_load(model, file = msprime_ts) %>% ts_simplify(simplify_to = simplify_to)
   simplify_to <- sample(ts_samples(ts1)$name, 10)
   ts4 <- ts_simplify(ts1, simplify_to = simplify_to)
 
@@ -323,13 +319,14 @@ test_that("ts_samples() names match ts_nodes() information (msprime)", {
 test_that("ts_eigenstrat requires recapitated and mutated data (SLiM)", {
   skip_if(Sys.which("qpDstat") == "")
   ts1 <- ts_load(model, file = slim_ts)
-  ts2 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
-  ts3 <- ts_load(model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
-                 simplify_to = c("pop1_1", "pop1_2"))
-  ts4 <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000)
+  ts2 <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1000, recombination_rate = 0)
+  ts3 <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>% ts_simplify(simplify_to = c("pop1_1", "pop1_2"))
+  ts4 <- ts_load(model, file = slim_ts) %>% ts_recapitate(recombination_rate = 0, Ne = 10000) %>%
+    ts_simplify()
   ts5 <- ts_mutate(ts4, mutation_rate = 1e-7)
-  ts6 <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000,
-                 mutate = TRUE, mutation_rate = 1e-7)
+  ts6 <- ts_load(model, file = slim_ts) %>% ts_recapitate(recombination_rate = 0, Ne = 10000) %>%
+    ts_simplify() %>%
+    ts_mutate(mutation_rate = 1e-7)
 
   prefix <- file.path(tempdir(), "eigen")
   expect_error(ts_eigenstrat(ts1, prefix), "Tree sequence was not recapitated")
@@ -351,11 +348,10 @@ test_that("ts_eigenstrat requires recapitated and mutated data (SLiM)", {
 test_that("ts_eigenstrat requires recapitated and mutated data (msprime)", {
   skip_if(Sys.which("qpDstat") == "")
   ts1 <- ts_load(model, file = msprime_ts)
-  ts3 <- ts_load(model, file = msprime_ts, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2", "pop2_7"))
-  ts4 <- ts_load(model, file = msprime_ts, simplify = TRUE)
+  ts3 <- ts_load(model, file = msprime_ts) %>% ts_simplify(simplify_to = c("pop1_1", "pop1_2", "pop2_7"))
+  ts4 <- ts_load(model, file = msprime_ts) %>% ts_simplify()
   ts5 <- ts_mutate(ts4, mutation_rate = 1e-7)
-  ts6 <- ts_load(model, file = msprime_ts, simplify = TRUE, simplify_to = c("pop1_1", "pop1_2", "pop2_7"),
-                 mutate = TRUE, mutation_rate = 1e-7)
+  ts6 <- ts_load(model, file = msprime_ts) %>% ts_simplify(simplify_to = c("pop1_1", "pop1_2", "pop2_7")) %>% ts_mutate(mutation_rate = 1e-7)
 
   # this is not supposed to fail (unlike the previous SLiM case) because all
   # msprime sequences are "recapitated" by virtue of beling coalescent!
@@ -394,15 +390,10 @@ test_that("ts_simplify-ing a non-recapitated tree sequence gives a warning", {
   expect_silent(ts_simplify(ts, keep_input_roots = TRUE))
 })
 
-test_that("mutation rate must be present in order to mutate a tree sequence", {
-  expect_error(ts_load(model, file = slim_ts, mutate = TRUE), "Mutation rate must be given ")
-  expect_error(ts_load(model, file = msprime_ts, mutate = TRUE), "Mutation rate must be given ")
-})
-
 test_that("ts_eigenstrat and tsv_cf create correct data (SLiM)", {
   skip_if(Sys.which("qpDstat") == "")
-  ts <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE,
-                recombination_rate = 0, Ne = 10000) %>%
+  ts <- ts_load(model, file = slim_ts) %>% ts_recapitate(recombination_rate = 0, Ne = 10000) %>%
+    ts_simplify() %>%
     ts_mutate(mutation_rate = 1e-7)
 
   ts_names <- sort(unique(ts_nodes(ts) %>% dplyr::filter(sampled) %>% .$name))
@@ -449,7 +440,8 @@ test_that("ts_eigenstrat and tsv_cf create correct data (msprime)", {
 
 test_that("ts_eigenstrat correctly adds an outgroup when instructed (SLiM)", {
   skip_if(Sys.which("qpDstat") == "")
-  ts <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000) %>%
+  ts <- ts_load(model, file = slim_ts) %>% ts_recapitate(recombination_rate = 0, Ne = 10000) %>%
+    ts_simplify() %>%
     ts_mutate(mutation_rate = 1e-7)
 
   ts_names <- sort(unique(ts_nodes(ts) %>% dplyr::filter(sampled) %>% .$name))
@@ -557,26 +549,26 @@ test_that("slendr metadata is correctly loaded (non-spatial msprime model)", {
 })
 
 test_that("ts_mutate and mutation through ts_load give the same result (SLiM)", {
-  ts <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, random_seed = 123,
-                recombination_rate = 0, Ne = 100)
+  ts <- ts_load(model, file = slim_ts) %>%
+    ts_recapitate(random_seed = 123, recombination_rate = 0, Ne = 100) %>% ts_simplify()
   ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
-  ts_mut2 <- ts_load(model, file = slim_ts, simplify = TRUE, recapitate = TRUE, mutate = TRUE, mutation_rate = 1e-7,
-                     random_seed = 123, recombination_rate = 0, Ne = 100)
+  ts_mut2 <- ts_load(model, file = slim_ts) %>% ts_recapitate(random_seed = 123, recombination_rate = 0, Ne = 100) %>% ts_simplify() %>% ts_mutate(mutation_rate = 1e-7, random_seed = 123)
   expect_equal(suppressMessages(ts_genotypes(ts_mut1)),
                suppressMessages(ts_genotypes(ts_mut2)))
 })
 
 test_that("ts_mutate and mutation through ts_load give the same result (msprime)", {
-  ts <- ts_load(model, file = msprime_ts, random_seed = 123)
+  ts <- ts_load(model, file = msprime_ts)
   ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
-  ts_mut2 <- ts_load(msprime_ts, model, mutate = TRUE, mutation_rate = 1e-7, random_seed = 123)
+  ts_mut2 <- ts_load(msprime_ts, model) %>% ts_mutate(mutation_rate = 1e-7, random_seed = 123)
   expect_equal(suppressMessages(ts_genotypes(ts_mut1)),
                suppressMessages(ts_genotypes(ts_mut2)))
 })
 
 test_that("ts_mutate correctly specifies the SLiM mutation type", {
-  ts <- ts_load(slim_ts, model, simplify = TRUE, recapitate = TRUE, random_seed = 123,
-                recombination_rate = 0, Ne = 100)
+  ts <- ts_load(slim_ts, model) %>%
+    ts_recapitate(random_seed = 123, recombination_rate = 0, Ne = 100) %>%
+    ts_simplify()
   ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
   ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123, mut_type = 123456789)
 
@@ -651,20 +643,26 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
   simplify_to <- c("pop1_1", "pop1_2", "pop1_17")
 
   sts1 <- ts_load(model = model, file = slim_ts)
-  sts2 <- ts_load(model = model, file = slim_ts, recapitate = TRUE, Ne = 1000, recombination_rate = 0)
-  sts3 <- ts_load(model = model, file = slim_ts, recapitate = TRUE, Ne = 1, recombination_rate = 0, simplify = TRUE,
-                 simplify_to = simplify_to)
-  sts4 <- ts_load(model = model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000)
+  sts2 <- ts_load(model = model, file = slim_ts) %>%
+    ts_recapitate(Ne = 1000, recombination_rate = 0)
+  sts3 <- ts_load(model = model, file = slim_ts) %>%
+    ts_recapitate(Ne = 1, recombination_rate = 0) %>%
+    ts_simplify(simplify_to = simplify_to)
+  sts4 <- ts_load(model = model, file = slim_ts) %>%
+    ts_recapitate(recombination_rate = 0, Ne = 10000) %>%
+    ts_simplify()
   sts5 <- ts_mutate(sts4, mutation_rate = 1e-7)
-  sts6 <- ts_load(model = model, file = slim_ts, simplify = TRUE, recapitate = TRUE, recombination_rate = 0, Ne = 10000,
-                 mutate = TRUE, mutation_rate = 1e-7)
+  sts6 <- ts_load(model = model, file = slim_ts) %>%
+    ts_recapitate(recombination_rate = 0, Ne = 10000) %>%
+    ts_simplify() %>%
+    ts_mutate(mutation_rate = 1e-7)
 
   mts1 <- ts_load(model = model, file = msprime_ts)
   mts2 <- ts_load(model = model, file = msprime_ts)
-  mts3 <- ts_load(model = model, file = msprime_ts, simplify = TRUE, simplify_to = simplify_to)
-  suppressWarnings(mts4 <- ts_load(model = model, file = msprime_ts, simplify = TRUE))
+  mts3 <- ts_load(model = model, file = msprime_ts) %>% ts_simplify(simplify_to = simplify_to)
+  suppressWarnings(mts4 <- ts_load(model = model, file = msprime_ts) %>% ts_simplify())
   mts5 <- ts_mutate(mts4, mutation_rate = 1e-7)
-  mts6 <- ts_load(model = model, file = msprime_ts, mutate = TRUE, mutation_rate = 1e-7)
+  mts6 <- ts_load(model = model, file = msprime_ts) %>% ts_mutate(mutation_rate = 1e-7)
 
   expect_equal(ts_samples(sts1), ts_samples(mts1))
   expect_equal(ts_samples(sts2), ts_samples(mts2))
@@ -712,7 +710,7 @@ test_that("all names of individuals must be present in the tree sequence", {
 # test-ts-pure-spatial.R and test-ts-pure-nonspatial.R)
 
 test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (no CRS)", {
-  suppressWarnings(ts_slim <- ts_load(model, file = slim_ts, simplify = TRUE))
+  suppressWarnings(ts_slim <- ts_load(model, file = slim_ts) %>% ts_simplify())
 
   suppressWarnings(slim_ibd_sf <- ts_ibd(ts_slim, coordinates = TRUE))
   suppressWarnings(slim_ibd_nosf <- ts_ibd(ts_slim, coordinates = TRUE, sf = FALSE))
