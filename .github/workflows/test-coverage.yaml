@@ -104,5 +104,5 @@ jobs:
           extra-packages: covr
 
       - name: Test coverage
-        run: covr::codecov(type = c("tests", "vignettes"), function_exclusions = "print\\.")
+        run: covr::codecov(type = c("tests", "vignettes"), function_exclusions = c("print\\.", "setup_env", "init_env", "check_env"))
         shell: Rscript {0}
