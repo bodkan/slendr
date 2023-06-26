@@ -12,7 +12,7 @@ Optionally, the tree sequence can be recapitated and simplified."><meta property
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,20 +89,7 @@ Optionally, the tree sequence can be recapitated and simplified.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_load</span><span class="op">(</span></span>
-<span>  <span class="va">file</span>,</span>
-<span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recapitate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  simplify <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  mutate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  recombination_rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mutation_rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  Ne <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  simplify_to <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  keep_input_roots <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  demography <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_load</span><span class="op">(</span><span class="va">file</span>, model <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -206,21 +193,24 @@ map</p></div>
 <span class="r-in"><span><span class="co"># load tree sequence and immediately simplify it only to sampled individuals</span></span></span>
 <span class="r-in"><span><span class="co"># (note that the example tree sequence is already simplified so this operation</span></span></span>
 <span class="r-in"><span><span class="co"># does not do anything in this case)</span></span></span>
-<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, model <span class="op">=</span> <span class="va">model</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span>keep_input_roots <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load tree sequence and simplify it to a subset of sampled individuals</span></span></span>
 <span class="r-in"><span><span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span>,</span></span>
 <span class="r-in"><span>                                            <span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load tree sequence, recapitate it and simplify it</span></span></span>
-<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ts_recapitate.html">ts_recapitate</a></span><span class="op">(</span>recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> ValueError: Not all roots of the provided tree sequence are at the time expected by recapitate(). This could happen if you've simplified in python before recapitating (fix: don't simplify first). If could also happen in other situations, e.g., you added new individuals without parents in SLiM during the course of the simulation with sim.addSubPop(), in which case you will probably need to recapitate with msprime.sim_ancestry(initial_state=ts, ...). (Expected root time: 216668; Observed root times: [200006.0])</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load tree sequence, recapitate it, simplify it and overlay neutral mutations</span></span></span>
-<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, recapitate <span class="op">=</span> <span class="cn">TRUE</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, random_seed <span class="op">=</span> <span class="fl">42</span>,</span></span>
-<span class="r-in"><span>              recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ts_recapitate.html">ts_recapitate</a></span><span class="op">(</span>recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ts_mutate.html">ts_mutate</a></span><span class="op">(</span>mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> ValueError: Not all roots of the provided tree sequence are at the time expected by recapitate(). This could happen if you've simplified in python before recapitating (fix: don't simplify first). If could also happen in other situations, e.g., you added new individuals without parents in SLiM during the course of the simulation with sim.addSubPop(), in which case you will probably need to recapitate with msprime.sim_ancestry(initial_state=ts, ...). (Expected root time: 216668; Observed root times: [200006.0])</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>

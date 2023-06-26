@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -143,28 +143,27 @@ object? Options are either a population name or a tskit integer node ID
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load the tree-sequence object from disk</span></span></span>
-<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ts_recapitate.html">ts_recapitate</a></span><span class="op">(</span>Ne <span class="op">=</span> <span class="fl">10000</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> ValueError: Not all roots of the provided tree sequence are at the time expected by recapitate(). This could happen if you've simplified in python before recapitating (fix: don't simplify first). If could also happen in other situations, e.g., you added new individuals without parents in SLiM during the course of the simulation with sim.addSubPop(), in which case you will probably need to recapitate with msprime.sim_ancestry(initial_state=ts, ...). (Expected root time: 216668; Observed root times: [200006.0])</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract the 1st tree from a given tree sequence, return ape object</span></span></span>
 <span class="r-in"><span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu">ts_phylo</span><span class="op">(</span><span class="va">ts</span>, i <span class="op">=</span> <span class="fl">1</span>, mode <span class="op">=</span> <span class="st">"index"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Not a tree sequence object created by ts_load, ts_simplify, ts_recapitate or ts_mutate</span>
 <span class="r-in"><span><span class="va">tree</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Phylogenetic tree with 26 tips and 25 internal nodes.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tip labels:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   25 (EUR_5), 24 (EUR_5), 23 (EUR_4), 22 (EUR_4), 21 (EUR_3), 20 (EUR_3), ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Node labels:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   67, 27, 26, 29, 30, 31, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rooted; includes branch lengths.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'tree' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract the tree at a 42th basepair in the given tree sequence</span></span></span>
 <span class="r-in"><span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu">ts_phylo</span><span class="op">(</span><span class="va">ts</span>, i <span class="op">=</span> <span class="fl">42</span>, mode <span class="op">=</span> <span class="st">"position"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Not a tree sequence object created by ts_load, ts_simplify, ts_recapitate or ts_mutate</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># because the tree is a standard ape phylo object, we can plot it easily</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span>, use.edge.length <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot(tree, use.edge.length = FALSE):</span> object 'tree' not found</span>
 <span class="r-in"><span><span class="fu">ape</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html" class="external-link">nodelabels</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="ts_phylo-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in get("last_plot.phylo", envir = .PlotPhyloEnv):</span> object 'last_plot.phylo' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
