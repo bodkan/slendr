@@ -36,9 +36,8 @@ ts <- slim(
 
 ts %>%
   ts_recapitate(Ne = 10, recombination_rate = 1e-8) %>%
-  ts_simplify() %>%
+  ts_simplify(keep_input_roots = TRUE) %>%
   ts_save("inst/extdata/models/introgression.trees")
-
 
 # generate a non-slendr msprime tree sequence
 py_cmd <- sprintf("import msprime; msprime.sim_ancestry(%d, random_seed=42, population_size=%d).dump('%s')",
