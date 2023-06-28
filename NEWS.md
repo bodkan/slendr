@@ -1,6 +1,10 @@
+# slendr (development version)
+
 # slendr 0.7.0
 
-- Emergency upgrade to match the latest pyslim 1.0.3 due to a serious bug in recapitation (see [here](https://github.com/tskit-dev/pyslim/issues/307) and [here](https://github.com/bodkan/slendr/issues/141) for an extensive discussion). **This will require you to re-run `setup_env()` in order to update slendr's Python internals by creating a new internal Python virtual environment.** ([#45539a](https://github.com/bodkan/slendr/commit/45539a))
+**This is an emergency upgrade to match the latest pyslim 1.0.3 due to a serious bug in recapitation.** See [here](https://github.com/tskit-dev/pyslim/issues/307) and [here](https://github.com/bodkan/slendr/issues/141) for an extensive discussion during the process of identification of the bug and its eventual fix. For a brief summary of the practical consequences of this bug, see [this](https://ecoevo.social/@petrelharp/110583379684954818) thread by pyslim's developer and its formal announcement [here](https://groups.google.com/g/slim-discuss/c/Rtkkx_8pW58/m/PRyu9kpBAAAJ).
+
+- This change will require you to re-run `setup_env()` in order to update slendr's Python internals by creating a new internal Python virtual environment. ([#45539a](https://github.com/bodkan/slendr/commit/45539a))
 
 - A potential issue with a parent population being scheduled for removal before a daughter population splits from it is now caught at the moment of the daughter `population()` call rather than during a simulation `slim()` run. ([#0791b5](https://github.com/bodkan/slendr/commit/0791b5))
 
@@ -8,7 +12,7 @@
 
 - The possibility to perform recapitation, simplification, or mutation of a tree sequence right inside a call to `ts_load()` (by providing `recapitate = TRUE`, `simplify = TRUE`, and `mutate = TRUE`, together with their own arguments) has now been removed. The motivation for this change is the realization that there is no benefit of  doing things like `ts_load("<path>", recapitate = TRUE, Ne = ..., recombination_rate = ...)` over `ts_load("<path>") %>% ts_recapitate(Ne = ..., recombination_rate = ...)`, and the frequent confusion when `recapitate = TRUE` or other switches are forgotten by the user. All _slendr_ teaching material and most actively used research codebases I know of use the latter, more explicit, pipeline approach anyway, and this has been the one example where reduncancy does more harm than good. ([#ad82ee](https://github.com/bodkan/slendr/commit/ad82ee))
 
-**Loading `library(slendr)` will prompt a message _"The legacy packages maptools, rgdal, and rgeos, underpinning the sp package, which was just loaded, will retire in October 2023. [...]."_ This is an internal business of packages used by _slendr_ which unfortunately cannot be silenced from _slendr_'s side. There's no reason to panic, you can safely ignore them. Apologies for the unnecessary noise.**
+**Note:** Loading `library(slendr)` will prompt a message _"The legacy packages maptools, rgdal, and rgeos, underpinning the sp package, which was just loaded, will retire in October 2023. [...]."_ This is an internal business of packages used by _slendr_ which unfortunately cannot be silenced from _slendr_'s side. There's no reason to panic, you can safely ignore them. Apologies for the unnecessary noise.
 
 # slendr 0.6.0
 
