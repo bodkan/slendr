@@ -56,7 +56,7 @@ def simulate(
       # parent population)
       if pop.parent != "__pop_is_ancestor":
           demography.add_population_split(
-              time=length - pop.tsplit_gen,
+              time=length - pop.tsplit_gen + 1,
               derived=[pop.pop],
               ancestral=pop.parent
           )
