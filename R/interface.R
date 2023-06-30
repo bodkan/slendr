@@ -493,6 +493,9 @@ resize <- function(pop, N, how, time, end = NULL) {
   time <- as.integer(round(time))
   if (!is.null(end)) end <- as.integer(round(end))
 
+  if (time == attr(pop, "history")[[1]]$time)
+    stop("Population resize cannot happen at the time the population is created", call. = FALSE)
+
   if (!how %in% c("step", "exponential"))
     stop("resize(): Only 'step' or 'exponential' are allowed as arguments for the 'how' parameter", call. = FALSE)
 

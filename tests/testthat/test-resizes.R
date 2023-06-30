@@ -105,3 +105,43 @@ test_that("Multiple resize event types are allowed (forward model)", {
   # sizes match expectations
   expect_true(dplyr::filter(res, time <= t1 & time >= t2) %>% { all(.$N == expected_N) })
 })
+
+test_that("Resize cannot happen at the same time as population split (forward)", {
+  error_msg <- "Population resize cannot happen at the time the population is created"
+
+  anc <- population("anc", time = 1, N = 1000)
+  pop <- population("pop", time = 10, N = 1000, parent = anc)
+
+  expect_error(resize(pop, time = 10, N = 100, how = "step"), error_msg)
+  expect_error(resize(pop, time = 10, end = 20, N = 100, how = "exponential"), error_msg)
+
+  expect_s3_class(resize(pop, time = 11, N = 100, how = "step"), "slendr_pop")
+  resized_step <- resize(pop, time = 11, N = 100, how = "step")
+  expect_true(attr(resized_step, "history")[[2]]$event == "resize")
+  expect_true(is.na(attr(resized_step, "history")[[2]]$tend))
+
+  expect_s3_class(resize(pop, time = 11, end = 20, N = 100, how = "exponential"), "slendr_pop")
+  resized_exp <- resize(pop, time = 11, end = 20, N = 100, how = "exponential")
+  expect_true(attr(resized_exp, "history")[[2]]$event == "resize")
+  expect_true(attr(resized_exp, "history")[[2]]$tend == 20)
+})
+
+test_that("Resize cannot happen at the same time as population split (backward)", {
+  error_msg <- "Population resize cannot happen at the time the population is created"
+
+  anc <- population("anc", time = 1000, N = 1000)
+  pop <- population("pop", time = 100, N = 1000, parent = anc)
+
+  expect_error(resize(pop, time = 100, N = 100, how = "step"), error_msg)
+  expect_error(resize(pop, time = 100, end = 20, N = 100, how = "exponential"), error_msg)
+
+  expect_s3_class(resize(pop, time = 99, N = 100, how = "step"), "slendr_pop")
+  resized_step <- resize(pop, time = 99, N = 100, how = "step")
+  expect_true(attr(resized_step, "history")[[2]]$event == "resize")
+  expect_true(is.na(attr(resized_step, "history")[[2]]$tend))
+
+  expect_s3_class(resize(pop, time = 99, end = 20, N = 100, how = "exponential"), "slendr_pop")
+  resized_exp <- resize(pop, time = 99, end = 20, N = 100, how = "exponential")
+  expect_true(attr(resized_exp, "history")[[2]]$event == "resize")
+  expect_true(attr(resized_exp, "history")[[2]]$tend == 20)
+})
