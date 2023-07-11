@@ -791,3 +791,20 @@ test_that("ts_load tracks a path to the tree-sequence file if loaded from a file
   expect_true(attr(ts3, "path") == normalizePath(slim_ts))
   expect_true(attr(ts4, "path") == normalizePath(slim_ts))
 })
+
+test_that("ts_load does not track any file path if a tree sequence is directly loaded", {
+  nonser_model <- model
+  nonser_model$path <- NULL
+
+  ts1 <- msprime(nonser_model, sequence_length = 100000, recombination_rate = 0,
+                 random_seed = 314159, samples = samples)
+
+  suppressWarnings(ts2 <- ts_recapitate(ts1, recombination_rate = 0, Ne = 100))
+  ts3 <- ts_simplify(ts2)
+  ts4 <- ts_mutate(ts1, 1e-8)
+
+  expect_true(is.null(attr(ts1, "path")))
+  expect_true(is.null(attr(ts2, "path")))
+  expect_true(is.null(attr(ts3, "path")))
+  expect_true(is.null(attr(ts4, "path")))
+})
