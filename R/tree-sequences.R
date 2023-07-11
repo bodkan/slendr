@@ -99,6 +99,9 @@ ts_load <- function(file, model = NULL) {
 
   attr(ts, "nodes") <- if (type == "SLiM") get_pyslim_table_data(ts) else get_tskit_table_data(ts)
 
+  # if the tree sequence was loaded from a file, save the path
+  if (is.character(file)) attr(ts, "path") <- normalizePath(file)
+
   ts
 }
 
@@ -231,6 +234,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 
   attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
   attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
+
+  attr(ts_new, "path") <- attr(ts, "path")
 
   if (type == "SLiM") {
     # inherit the information about which individuals should be marked as
@@ -423,6 +428,8 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
   } else
     attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
 
+  attr(ts_new, "path") <- attr(ts, "path")
+
   # replace the names of sampled individuals (if simplification led to subsetting)
   if (from_slendr) {
     sampled_nodes <- attr(ts_new, "nodes") %>% dplyr::filter(sampled)
@@ -505,6 +512,8 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
 
   attr(ts_new, "nodes") <- attr(ts, "nodes")
+
+  attr(ts_new, "path") <- attr(ts, "path")
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 

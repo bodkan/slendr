@@ -33,10 +33,10 @@ locations_file <- tempfile(fileext = ".gz")
 slim(model, sequence_length = 100000, recombination_rate = 0, output = slim_ts,
      locations = locations_file, burnin = 0,
      method = "batch", random_seed = 314159,
-     samples = samples, verbose = FALSE)
+     samples = samples, verbose = FALSE, load = FALSE)
 
 msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprime_ts,
-        random_seed = 314159, samples = samples, verbose = FALSE)
+        random_seed = 314159, samples = samples, verbose = FALSE, load = FALSE)
 
 test_that("ts_load generates an object of the correct type (SLiM)", {
   ts <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>% ts_simplify()
@@ -778,4 +778,16 @@ test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (with C
   expect_true(all(dplyr::select(as.data.frame(ibd_sf),
                             -node1_location, -node2_location, -connection) ==
                as.data.frame(ibd_nosf)))
+})
+
+test_that("ts_load tracks a path to the tree-sequence file if loaded from a file", {
+  ts1 <- ts_load(slim_ts, model)
+  ts2 <- ts_recapitate(ts1, recombination_rate = 0, Ne = 100)
+  ts3 <- ts_simplify(ts2)
+  ts4 <- ts_mutate(ts1, 1e-8)
+
+  expect_true(attr(ts1, "path") == normalizePath(slim_ts))
+  expect_true(attr(ts2, "path") == normalizePath(slim_ts))
+  expect_true(attr(ts3, "path") == normalizePath(slim_ts))
+  expect_true(attr(ts4, "path") == normalizePath(slim_ts))
 })
