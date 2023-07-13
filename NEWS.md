@@ -1,5 +1,11 @@
 # slendr 0.7.1
 
+- **Starting from this release, the spatial simulation and data analysis functionality of _slendr_ is conditional on the presence of R geospatial packages _sf_, _stars_, and _rnaturalearth_ on the system.**
+
+This means that users will be able to install _slendr_ (and use all of its non-spatial functionality) even without having these R packages installed, but calling any spatial _slendr_ function (such as `world()`, `move()`, etc.) will lead to an error, printing an information on how to install spatial dependencies via `install.packages()`. ([#7a10ea](https://github.com/bodkan/slendr/commit/7a10ea))
+
+**Why?** It's true the main reason for _slendr_'s existence is its ability to simulate spatio-temporal data on realistic landscapes via SLiM. However, in practice, perhaps surprisingly, most of the use-cases of _slendr_ in research in the wild (and in the classrooms!) rely on its traditional, non-spatial interface, with its spatial features being used comparatively rarely at the moment, more for some cutting-edge research. Given that setting up all of the spatial dependencies can be a bit of a hurdle, we have decided to make these dependencies optional. **That said, nothing really changes in practice: spatial features of _slendr_ are just one `install.packages(c("sf", "stars", "rnaturalearth"))` away!**
+
 - A function `check_dependencies()` is now exported and can be used to check whether a _slendr_ Python environment () or SLiM () are present. This is useful for other software building upon _slendr_, normal users can freely ignore this. ([#6ae6ce](https://github.com/bodkan/slendr/commit/6ae6ce))
 
 - A path to a file from which a tree sequence was loaded from is now tracked internally via a `attr(<tree sequence>, "path")` attribute. Note that this has been implemented for the purposes of clean up for large-scale simulation studies (such as those facilitated by [_demografr_](https://github.com/bodkan/demografr/)) as a mostly internal feature, and should be considered experimental. ([#f181a2](https://github.com/bodkan/slendr/commit/f181a2))
