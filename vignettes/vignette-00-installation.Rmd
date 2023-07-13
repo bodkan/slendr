@@ -15,7 +15,7 @@ If you want (or need) to get its development version, you can install it directl
 
 Once you install *slendr*, **calling `library(slendr)` will check that all software dependencies are available**. If they are not, the R package will provide a brief helpful guide on how to resolve potential issues. The rest of this vignette talks about the necessary software dependencies in a bit more detail.
 
-**Please note that *slendr* is fully supported only on macOS and Linux at the moment.** That said, there is an experimental support for running coalescent simulation via _slendr_'s Python backend `msprime()` and for analyzing tree-sequence outputs using its _tskit_ interface.
+**Please note that *slendr* is fully supported only on macOS and Linux at the moment.** That said, there is an experimental support on Windows for running coalescent simulation via _slendr_'s Python backend `msprime()` and for analyzing tree-sequence outputs using its _tskit_ interface.
 
 ## Software dependencies
 
@@ -29,19 +29,19 @@ Once you install *slendr*, **calling `library(slendr)` will check that all softw
 
 All three are widely used in their respective fields and, as such, are easily obtainable on all major operating systems (see below for more information on how to troubleshoot potential problems).
 
-**Note that depending on your use case, not all three sets of dependencies will be necessarily needed.** If you're not going to be running forward spatial simulations, you don't need SLiM. If you don't want to analyze tree sequences in R, you won't necesarily need *slendr*'s Python dependencies.
+**Note that depending on your use case, not all three sets of dependencies will be necessarily needed.** If you're not going to be running forward spatial simulations, you don't need SLiM or geospatial R packages _sf_, _stars_, and _rnaturalearth_.
 
 In this vignette, I will briefly explain how to get all *slendr'*s software dependencies installed. That said, note that under normal circumstances (with the exception of SLiM), no manual installation of individual dependencies is required.
 
-### *sf*
+### *sf*, *stars*, *rnaturalearth*
 
-The R package *sf* is at the heart of geospatial data analysis in R. It is available on CRAN and can be installed for all major platforms by executing `install.packages("sf")` in your R session.
+The R package *sf* is at the heart of geospatial data analysis in R. It is available on CRAN and can be installed for all major platforms by executing `install.packages("sf")` in your R session. The same applies for _stars_ and _rnaturalearth_.
 
-When you install *slendr* (see the very top of this page), the installation procedure will automatically install *sf* for you. Under normal circumstances, you should not have to worry about *sf* at all.
+When you first load _slendr_ via `library(slendr)`, if you're missing any of the three geospatial R packages, you will be notified and instructed how you can easily obtain them from CRAN using a single call to `install.packages()`.
 
 That said, *sf* itself depends on a number of geospatial libraries and depending on the exact setup of your Linux or macOS machine, some of those libraries could be missing. Luckily, all of them are very easy to install via Homebrew (on macOS) or via the appropriate package manager of your Linux distribution (Ubuntu, Fedora, etc.). Detailed instructions on how to do this for your operating system can be found [here](https://r-spatial.github.io/sf/index.html#installing).
 
-**If you're having trouble installing *slendr* in your R session, it's worth testing whether you can run `install.packages("sf")` and successfully load `library(sf)`.** In nearly 100% cases of my test cases, if a *slendr* installation failed, it was due to a problem with some missing dependency of *sf*. If you're having these problems, look for help [here](https://r-spatial.github.io/sf/index.html#installing).
+**If you're having problems with the installation of any of these three packages, look for help [here](https://r-spatial.github.io/sf/index.html#installing).**
 
 #### **macOS**
 
