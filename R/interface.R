@@ -1193,7 +1193,7 @@ area <- function(x) {
 #'   from, how many individuals to sample
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1485,7 +1485,7 @@ clear_env <- function(force = FALSE) {
 #'   (slendr Python environment is not present).
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #' check_env()

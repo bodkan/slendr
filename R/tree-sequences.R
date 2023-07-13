@@ -30,7 +30,7 @@
 #'   map
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -113,7 +113,7 @@ ts_load <- function(file, model = NULL) {
 #' @return No return value, called for side effects
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -173,7 +173,7 @@ ts_save <- function(ts, file) {
 #'   map
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -301,7 +301,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 #'   map
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -463,7 +463,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
 #'   map
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -527,7 +527,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 #' @return List of metadata fields extracted from the tree-sequence object
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -556,7 +556,7 @@ ts_metadata <- function(ts) {
 #'   of simulated individuals in columns
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -748,7 +748,7 @@ ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
 #' @return Standard phylogenetic tree object implemented by the R package ape
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -985,7 +985,7 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #'   as a spatial object of the class \code{sf}.
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1092,7 +1092,7 @@ ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")
 #'   start-end coordinates of edges across space
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1124,7 +1124,7 @@ ts_edges <- function(x) {
 #' @return Table of individuals scheduled for sampling across space and time
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1166,7 +1166,7 @@ ts_samples <- function(ts) {
 #'   way up to the root of the tree sequence
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1294,7 +1294,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #'   way down to the leaves of the tree sequence
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1416,7 +1416,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 #' @return Python-reticulate-based object of the class tskit.trees.Tree
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1464,7 +1464,7 @@ ts_tree <- function(ts, i, mode = c("index", "position"), ...) {
 #' @return No return value, called for side effects
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1532,7 +1532,7 @@ ts_draw <- function(x, width = 1000, height = 1000, labels = FALSE,
 #'   (tskit Python 0-based) indices of trees which failed the coalescence test
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1617,7 +1617,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'   for that pair)
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1818,7 +1818,7 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' @return Data frame with statistics calculated for the given sets of individuals
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1941,7 +1941,7 @@ multiway_stat <- function(ts, stat = c("fst", "divergence"),
 #'   of Fst values (one for each window)
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -1972,7 +1972,7 @@ ts_fst <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of divergence values (one for each window)
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -2054,7 +2054,7 @@ oneway_stat <- function(ts, stat, sample_sets, mode, windows, span_normalise = N
 #'   vector of diversity values (one for each window)
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -2090,7 +2090,7 @@ ts_segregating <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of diversity values (one for each window)
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -2138,7 +2138,7 @@ ts_diversity <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   vector of Tajima's D values (one for each window)
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -2194,7 +2194,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #'   links in the description for more detail on how tskit handles things.
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'

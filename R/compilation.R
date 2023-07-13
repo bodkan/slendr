@@ -235,7 +235,7 @@ setting `direction = 'backward'.`", call. = FALSE)
 #'   in a SLiM simulation, if applicable)
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'

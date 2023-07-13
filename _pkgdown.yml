@@ -60,12 +60,13 @@ reference:
     - read_model
     - schedule_sampling
 
-  - title: Installation and configuration of Python dependencies
+  - title: Installation and configuration of external dependencies
     contents:
     - setup_env
     - init_env
     - check_env
     - clear_env
+    - check_dependencies
 
   - title: Model components
     contents:

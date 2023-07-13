@@ -29,7 +29,7 @@
 #'   vector, respectively.
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
@@ -228,7 +228,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #'   vector, respectively.
 #'
 #' @examples
-#' \dontshow{check_dependencies(python = TRUE, slim = TRUE) # make sure dependencies are present
+#' \dontshow{check_dependencies(python = TRUE, slim = TRUE, quit = TRUE) # dependencies must be present
 #' }
 #' init_env()
 #'
