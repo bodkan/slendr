@@ -139,7 +139,7 @@ vignette talks about the necessary software dependencies in a bit more
 detail.</p>
 <p><strong>Please note that <em>slendr</em> is fully supported only on
 macOS and Linux at the moment.</strong> That said, there is an
-experimental support for running coalescent simulation via
+experimental support on Windows for running coalescent simulation via
 <em>slendr</em>’s Python backend <code><a href="../reference/msprime.html">msprime()</a></code> and for
 analyzing tree-sequence outputs using its <em>tskit</em> interface.</p>
 </div>
@@ -162,25 +162,26 @@ are easily obtainable on all major operating systems (see below for more
 information on how to troubleshoot potential problems).</p>
 <p><strong>Note that depending on your use case, not all three sets of
 dependencies will be necessarily needed.</strong> If you’re not going to
-be running forward spatial simulations, you don’t need SLiM. If you
-don’t want to analyze tree sequences in R, you won’t necesarily need
-<em>slendr</em>’s Python dependencies.</p>
+be running forward spatial simulations, you don’t need SLiM or
+geospatial R packages <em>sf</em>, <em>stars</em>, and
+<em>rnaturalearth</em>.</p>
 <p>In this vignette, I will briefly explain how to get all
 <em>slendr’</em>s software dependencies installed. That said, note that
 under normal circumstances (with the exception of SLiM), no manual
 installation of individual dependencies is required.</p>
 <div class="section level3">
-<h3 id="sf">
-<em>sf</em><a class="anchor" aria-label="anchor" href="#sf"></a>
+<h3 id="sf-stars-rnaturalearth">
+<em>sf</em>, <em>stars</em>, <em>rnaturalearth</em><a class="anchor" aria-label="anchor" href="#sf-stars-rnaturalearth"></a>
 </h3>
 <p>The R package <em>sf</em> is at the heart of geospatial data analysis
 in R. It is available on CRAN and can be installed for all major
 platforms by executing <code>install.packages("sf")</code> in your R
-session.</p>
-<p>When you install <em>slendr</em> (see the very top of this page), the
-installation procedure will automatically install <em>sf</em> for you.
-Under normal circumstances, you should not have to worry about
-<em>sf</em> at all.</p>
+session. The same applies for <em>stars</em> and
+<em>rnaturalearth</em>.</p>
+<p>When you first load <em>slendr</em> via <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code>,
+if you’re missing any of the three geospatial R packages, you will be
+notified and instructed how you can easily obtain them from CRAN using a
+single call to <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>.</p>
 <p>That said, <em>sf</em> itself depends on a number of geospatial
 libraries and depending on the exact setup of your Linux or macOS
 machine, some of those libraries could be missing. Luckily, all of them
@@ -188,13 +189,8 @@ are very easy to install via Homebrew (on macOS) or via the appropriate
 package manager of your Linux distribution (Ubuntu, Fedora, etc.).
 Detailed instructions on how to do this for your operating system can be
 found <a href="https://r-spatial.github.io/sf/index.html#installing" class="external-link">here</a>.</p>
-<p><strong>If you’re having trouble installing <em>slendr</em> in your R
-session, it’s worth testing whether you can run
-<code>install.packages("sf")</code> and successfully load
-<code><a href="https://r-spatial.github.io/sf/" class="external-link">library(sf)</a></code>.</strong> In nearly 100% cases of my test
-cases, if a <em>slendr</em> installation failed, it was due to a problem
-with some missing dependency of <em>sf</em>. If you’re having these
-problems, look for help <a href="https://r-spatial.github.io/sf/index.html#installing" class="external-link">here</a>.</p>
+<p><strong>If you’re having problems with the installation of any of
+these three packages, look for help <a href="https://r-spatial.github.io/sf/index.html#installing" class="external-link">here</a>.</strong></p>
 <div class="section level4">
 <h4 id="macos">
 <strong>macOS</strong><a class="anchor" aria-label="anchor" href="#macos"></a>

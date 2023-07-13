@@ -138,11 +138,19 @@ is only approximated using a random-mating model.</p>
 <p>First, let’s load the <em>slendr</em> R package and create a
 two-dimensional abstract world map:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,</span></span>
+<span><span class="co">#&gt; which was just loaded, will retire in October 2023.</span></span>
+<span><span class="co">#&gt; Please refer to R-spatial evolution reports for details, especially</span></span>
+<span><span class="co">#&gt; https://r-spatial.org/r/2023/05/15/evolution4.html.</span></span>
+<span><span class="co">#&gt; It may be desirable to make the sf package available;</span></span>
+<span><span class="co">#&gt; package maintainers should consider adding sf to Suggests:.</span></span>
+<span><span class="co">#&gt; The sp package is now running under evolution status 2</span></span>
+<span><span class="co">#&gt;      (status 2 uses the sf package in place of rgdal)</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span></span>
 <span>  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,</span>
 <span>  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span><span class="op">)</span>,</span>
@@ -154,7 +162,7 @@ appropriate coordinate on the lattice on the world map based on the
 numeric identifier of the population <em>i</em> (where <em>i</em> runs
 from 1 to <span class="math inline">\(n \times n\)</span> , <em>n</em>
 being the total number of demes along one side of the regular grid):</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">create_pop</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span>, <span class="va">n_side</span>, <span class="va">map</span>, <span class="va">N</span>, <span class="va">radius</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># get dimensions of the world map</span></span>
 <span>  <span class="va">dim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"xrange"</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">map</span>, <span class="st">"yrange"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -180,7 +188,7 @@ being the total number of demes along one side of the regular grid):</p>
 model. Let’s say that we want to create a regular grid of <em>n</em> ×
 <em>n</em> populations, with <em>N</em> individuals in each
 population:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span></span>
 <span><span class="va">populations</span> <span class="op">&lt;-</span></span>
@@ -188,7 +196,7 @@ population:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">create_pop</span>, n_side <span class="op">=</span> <span class="va">n</span>, map <span class="op">=</span> <span class="va">map</span>, N <span class="op">=</span> <span class="fl">100</span>, radius <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></span></code></pre></div>
 <p>Let’s plot the whole spatial population configuration, to make sure
 we set up things correctly:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" width="480"></p>
 <p>So far, the way the model is specified, each population would be
@@ -200,7 +208,7 @@ relationships on the two-dimensional grid, allowing each population to
 exchange migrants with each of its neighbors (making sure the
 coordinates of each population stay within the grid using simple modulo
 arithmetic on the population index <em>i</em>).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">set_geneflow</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span>, <span class="va">n_side</span>, <span class="va">rate</span>, <span class="va">start</span>, <span class="va">end</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">pop</span> <span class="op">&lt;-</span> <span class="va">populations</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
@@ -233,7 +241,7 @@ population in the lower left corner of the grid (so, the very first
 population in the series)? If everything works, this population should
 only be allowed to exchange migrants with its neighbor to the right
 (population number 2) and its neighbor above.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">set_geneflow</span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.1</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;   from_name to_name tstart tend rate overlap</span></span>
 <span><span class="co">#&gt; 1      pop1    pop2      2 1000  0.1   FALSE</span></span>
@@ -242,18 +250,18 @@ only be allowed to exchange migrants with its neighbor to the right
 <span><span class="co">#&gt; 4      pop6    pop1      2 1000  0.1   FALSE</span></span></code></pre>
 <p>Looks right! Let’s generate the entire set of continuous gene flow
 events:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">geneflows</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">set_geneflow</span>, <span class="va">n</span>, rate <span class="op">=</span> <span class="fl">0.05</span>, start <span class="op">=</span> <span class="fl">2</span>, end <span class="op">=</span> <span class="fl">1000</span>, <span class="va">populations</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">.</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">unique</span> <span class="co"># filter out duplicate events due to symmetries</span></span></code></pre></div>
 <p>The total number of individual gene flow events is:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">geneflows</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] 80</span></span></code></pre>
 <p>Finally, we can compile the whole model:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>  populations <span class="op">=</span> <span class="va">populations</span>, gene_flow <span class="op">=</span> <span class="va">geneflows</span>,</span>
 <span>  generation_time <span class="op">=</span> <span class="fl">1</span>, resolution <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -264,7 +272,7 @@ events:</p>
 in section 5.3.3.</p>
 <p>Finally, we can run our simulation using the <code><a href="../reference/slim.html">slim()</a></code>
 function.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10000</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="co"># simulate a single 10kb locus</span></span>
 <span><span class="va">ts</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════╗</span></span>
@@ -278,20 +286,20 @@ function.</p>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │   5000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │1.3 MiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │1.4 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows│Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │9057│283.0 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │9089│284.0 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│6333│620.1 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│6361│622.8 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │   0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │   0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │9082│337.7 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │9114│338.9 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│  25│  5.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
@@ -309,22 +317,14 @@ geographic context?</p>
 <p>Let’s zoom in on some interesting part of the world and then create a
 grid of demes using the same helper function <code>create_pop</code> we
 defined above (each population boundary being 300 km in diameter):</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span></span>
 <span>  xrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">25</span>, <span class="fl">55</span><span class="op">)</span>,</span>
 <span>  yrange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">32</span>, <span class="fl">35</span><span class="op">)</span>,</span>
 <span>  crs <span class="op">=</span> <span class="fl">4326</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,</span></span>
-<span><span class="co">#&gt; which was just loaded, will retire in October 2023.</span></span>
-<span><span class="co">#&gt; Please refer to R-spatial evolution reports for details, especially</span></span>
-<span><span class="co">#&gt; https://r-spatial.org/r/2023/05/15/evolution4.html.</span></span>
-<span><span class="co">#&gt; It may be desirable to make the sf package available;</span></span>
-<span><span class="co">#&gt; package maintainers should consider adding sf to Suggests:.</span></span>
-<span><span class="co">#&gt; The sp package is now running under evolution status 2</span></span>
-<span><span class="co">#&gt;      (status 2 uses the sf package in place of rgdal)</span></span></code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
 <span></span>
 <span><span class="va">populations</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
