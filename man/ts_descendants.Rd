@@ -28,7 +28,7 @@ way down to the leaves of the tree sequence
 Extract all descendants of a given tree-sequence node
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

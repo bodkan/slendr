@@ -37,7 +37,7 @@ options of the \code{mode} argument, please see the tskit documentation at
 \url{https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode}.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

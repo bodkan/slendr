@@ -21,7 +21,7 @@ Extract spatio-temporal edge annotation table from a given tree or tree
 sequence
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

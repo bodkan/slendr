@@ -89,7 +89,7 @@ much choice in this, because its \code{ts_*()} functions are designed to be
 broadly compatible with raw tskit methods.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

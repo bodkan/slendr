@@ -28,7 +28,7 @@ way up to the root of the tree sequence
 Extract (spatio-)temporal ancestral history for given nodes/individuals
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

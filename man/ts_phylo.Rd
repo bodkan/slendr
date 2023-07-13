@@ -37,7 +37,7 @@ Standard phylogenetic tree object implemented by the R package ape
 Convert a tree in the tree sequence to an object of the class \code{phylo}
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

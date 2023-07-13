@@ -32,7 +32,7 @@ A ggplot2 object with the visualized slendr model
 Plot demographic history encoded in a slendr model
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

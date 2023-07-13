@@ -18,7 +18,7 @@ No return value, called for side effects
 Save a tree sequence to a file
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

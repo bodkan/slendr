@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -135,7 +135,7 @@ map</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span>, quit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># dependencies must be present</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
@@ -146,75 +146,41 @@ map</p></div>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">ts_recapitate</span><span class="op">(</span>recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> ValueError: Not all roots of the provided tree sequence are at the time expected by recapitate(). This could happen if you've simplified in python before recapitating (fix: don't simplify first). If could also happen in other situations, e.g., you added new individuals without parents in SLiM during the course of the simulation with sim.addSubPop(), in which case you will probably need to recapitate with msprime.sim_ancestry(initial_state=ts, ...). (Expected root time: 216668; Observed root times: [200006.0])</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ts</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (data = NA, start = 1, end = numeric(), frequency = 1, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     deltat = 1, ts.eps = getOption("ts.eps"), class = if (nseries &gt; </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1) c("mts", "ts", "matrix") else "ts", names = if (!is.null(dimnames(data))) colnames(data) else paste("Series", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         seq(nseries))) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.data.frame(data)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         data &lt;- data.matrix(data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.matrix(data)) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         nseries &lt;- ncol(data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ndata &lt;- nrow(data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         dimnames(data) &lt;- list(NULL, names)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         nseries &lt;- 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ndata &lt;- length(data)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (ndata == 0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'ts' object must have one or more observations")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (missing(frequency)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         frequency &lt;- 1/deltat</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     else if (missing(deltat)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         deltat &lt;- 1/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (frequency &gt; 1 &amp;&amp; 0 &lt; (d &lt;- abs(frequency - round(frequency))) &amp;&amp; </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         d &lt; ts.eps) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         frequency &lt;- round(frequency)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!missing(start)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- as.numeric(start)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(start) &gt; 1L) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- start[1L] + (start[2L] - 1)/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!missing(end)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- as.numeric(end)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(end) &gt; 1L) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- end[1L] + (end[2L] - 1)/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (missing(end)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- start + (ndata - 1)/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     else if (missing(start)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- end - (ndata - 1)/frequency</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (start &gt; end) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'start' cannot be after 'end'")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     cycles &lt;- as.numeric((end - start) * frequency)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (abs(round(cycles) - cycles) &gt; ts.eps * max(cycles, 1)) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'end' must be a whole number of cycles after 'start'")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     nobs &lt;- floor(cycles + 1.01)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (nobs != ndata) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         data &lt;- if (NCOL(data) == 1) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ndata &lt; nobs) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 rep_len(data, nobs)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             else if (ndata &gt; nobs) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[1L:nobs]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ndata &lt; nobs) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[rep_len(1L:ndata, nobs), ]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             else if (ndata &gt; nobs) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[1L:nobs, ]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     attr(data, "tsp") &lt;- c(start, end, frequency)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!is.null(class) &amp;&amp; class[[1]] != "none") </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         attr(data, "class") &lt;- class</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     data</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x16b4d5cb8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:stats&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔════════════════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence            ║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │      24║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│  500000║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │   ticks║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │      26║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │61.9 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧════════╝</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤════════╤════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size    │Has Metadata║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪════════╪════════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 134│ 4.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│  56│ 7.3 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│ 8 Bytes│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│ 1.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  69│ 3.2 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   6│ 2.7 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   4│39.6 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│16 Bytes│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

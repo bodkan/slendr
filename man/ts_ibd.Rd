@@ -78,7 +78,7 @@ unintuitive. As of this moment, this function argument filters on IBD segments
 on the tskit level, not the level of the squashed IBD segments!
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

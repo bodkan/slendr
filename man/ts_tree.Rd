@@ -29,7 +29,7 @@ For more information about optional keyword arguments see tskit documentation:
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#the-treesequence-class}
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

@@ -12,7 +12,7 @@ Optionally, the tree sequence can be recapitated and simplified."><meta property
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,7 +133,7 @@ map</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># make sure dependencies are present</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span>, quit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># dependencies must be present</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
@@ -162,31 +162,27 @@ map</p></div>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ts_recapitate.html">ts_recapitate</a></span><span class="op">(</span>recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> ValueError: Not all roots of the provided tree sequence are at the time expected by recapitate(). This could happen if you've simplified in python before recapitating (fix: don't simplify first). If could also happen in other situations, e.g., you added new individuals without parents in SLiM during the course of the simulation with sim.addSubPop(), in which case you will probably need to recapitate with msprime.sim_ancestry(initial_state=ts, ...). (Expected root time: 216668; Observed root times: [200006.0])</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load tree sequence, recapitate it, simplify it and overlay neutral mutations</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">ts_load</span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ts_recapitate.html">ts_recapitate</a></span><span class="op">(</span>recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, Ne <span class="op">=</span> <span class="fl">10000</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="ts_mutate.html">ts_mutate</a></span><span class="op">(</span>mutation_rate <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> ValueError: Not all roots of the provided tree sequence are at the time expected by recapitate(). This could happen if you've simplified in python before recapitating (fix: don't simplify first). If could also happen in other situations, e.g., you added new individuals without parents in SLiM during the course of the simulation with sim.addSubPop(), in which case you will probably need to recapitate with msprime.sim_ancestry(initial_state=ts, ...). (Expected root time: 216668; Observed root times: [200006.0])</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ts</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔════════════════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence            ║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │      24║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│  500000║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │   ticks║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │      26║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │59.7 KiB║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧════════╝</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═════════════════════════╗</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence             ║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═════════╣</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │       24║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│   500000║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │    ticks║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │       26║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │191.7 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size    │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪════════╪════════════╣</span>
@@ -196,15 +192,15 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│ 8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│ 1.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │2128│78.1 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  68│ 3.2 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   5│ 2.6 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   6│ 2.7 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   4│37.7 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   6│40.8 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│16 Bytes│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │2123│51.8 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>

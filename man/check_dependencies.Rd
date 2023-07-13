@@ -2,20 +2,26 @@
 % Please edit documentation in R/utils.R
 \name{check_dependencies}
 \alias{check_dependencies}
-\title{Check that all dependencies are available for slendr examples}
+\title{Check that the required dependencies are available for slendr to work}
 \usage{
-check_dependencies(python = FALSE, slim = FALSE)
+check_dependencies(python = FALSE, slim = FALSE, quit = FALSE)
 }
 \arguments{
 \item{python}{Is the slendr Python environment required?}
 
 \item{slim}{Is SLiM required?}
+
+\item{quit}{Should the R interpreter quit if required slendr dependencies are
+missing? This option (which is not turned on by default, being set to
+\code{FALSE}) is used mainly in avoiding running slendr man page examples on
+machines which lack dependencies. If set to \code{TRUE}, a logical value
+is returned.}
 }
 \value{
-No return value. Called only to result in an error message if a
-particular software dependency is missing for an example to run.
+If \code{quit = TRUE}, no values is returned, if \code{quit = FALSE},
+a scalar logical value is returned indicating whether or not the dependencies
+are present.
 }
 \description{
-Check that all dependencies are available for slendr examples
+Check that the required dependencies are available for slendr to work
 }
-\keyword{internal}

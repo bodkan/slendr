@@ -61,7 +61,7 @@ ancient DNA samples) is in the pyslim documentation at
 \url{https://tskit.dev/pyslim/docs/latest/tutorial.html#historical-individuals}.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

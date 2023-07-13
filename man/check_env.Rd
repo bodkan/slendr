@@ -20,7 +20,7 @@ reticulate package and prints the versions of all slendr Python dependencies
 to the console.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 check_env()

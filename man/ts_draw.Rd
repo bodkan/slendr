@@ -39,7 +39,7 @@ the many optional keyword arguments of the \code{draw_svg} method can be
 provided and will be automatically passed to the method behind the scenes.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

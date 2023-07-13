@@ -18,7 +18,7 @@ Extract names and times of individuals of interest in the current tree sequence
 (either all sampled individuals or those that the user simplified to)
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

@@ -58,7 +58,7 @@ This function will execute a built-in msprime script and run a compiled
 slendr demographic model.
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 

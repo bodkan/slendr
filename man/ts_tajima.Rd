@@ -30,7 +30,7 @@ For a discussion on the difference between "site" and "branch" options of the
 \url{https://tskit.dev/tskit/docs/stable/stats.html#sec-stats-mode}
 }
 \examples{
-\dontshow{check_dependencies(python = TRUE) # make sure dependencies are present
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
 init_env()
 
