@@ -41,8 +41,6 @@ Imports:
     tidyr,
     png,
     ijtiff,
-    shinyWidgets,
-    shiny,
     ape,
     scales
 Suggests:
@@ -57,6 +55,8 @@ Suggests:
     units,
     magick,
     cowplot,
+    shinyWidgets,
+    shiny,
     forcats,
     rsvg
 VignetteBuilder: knitr

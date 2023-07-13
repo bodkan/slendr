@@ -8,6 +8,8 @@
 #' @import shiny
 #' @export
 explore_model <- function(model) {
+  check_spatial_pkgs()
+
   if (!has_map(model$populations[[1]]))
     stop("Cannot plot spatial map dynamics for non-spatial models.
 As an alternative, consider using the plot_model() function to explore
