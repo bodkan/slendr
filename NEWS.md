@@ -1,10 +1,10 @@
 # slendr 0.7.1
 
-- A function `check_dependencies()` is now exported which can check whether a _slendr_ Python environment () or SLiM () are present. This is useful for other software building upon _slendr_, normal users can ignore this. ([#6ae6ce](https://github.com/bodkan/slendr/commit/6ae6ce))
+- A function `check_dependencies()` is now exported and can be used to check whether a _slendr_ Python environment () or SLiM () are present. This is useful for other software building upon _slendr_, normal users can freely ignore this. ([#6ae6ce](https://github.com/bodkan/slendr/commit/6ae6ce))
 
-- A path to a file from which (if at all) a tree sequence was loaded from is now tracked internally via a `attr(<tree sequence>, "path")` attribute. Note that this has been implemented for the purposes of clean up for large-scale simulation studies (such as those facilitated by [_demografr_](https://github.com/bodkan/demografr/)) and should be considered experimental. ([#f181a2](https://github.com/bodkan/slendr/commit/f181a2))
+- A path to a file from which a tree sequence was loaded from is now tracked internally via a `attr(<tree sequence>, "path")` attribute. Note that this has been implemented for the purposes of clean up for large-scale simulation studies (such as those facilitated by [_demografr_](https://github.com/bodkan/demografr/)) as a mostly internal feature, and should be considered experimental. ([#f181a2](https://github.com/bodkan/slendr/commit/f181a2))
 
-- Attempts to resize a population right at the time of the split (which led to issues with simulations) is now prevented. ([#f181a2](https://github.com/bodkan/slendr/commit/f181a2))
+- Attempts to resize a population right at the time of the split (which led to issues with simulations) are now prevented. ([#f181a2](https://github.com/bodkan/slendr/commit/f181a2))
 
 - Fix for a minor issue preventing sampling an _msprime_ population right at the time of its creation. ([#aea231](https://github.com/bodkan/slendr/commit/aea231))
 
