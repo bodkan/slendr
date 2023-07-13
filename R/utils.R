@@ -715,6 +715,25 @@ order_pops <- function(populations, direction) {
   names(split_times)
 }
 
+check_spatial_pkgs <- function(error = TRUE) {
+  missing <- !all(c(requireNamespace("sf", quietly = TRUE),
+                    requireNamespace("stars", quietly = TRUE),
+                    requireNamespace("rnaturalearth", quietly = TRUE)))
+  msg <- paste0(
+    "In order to use spatial features of slendr, packages 'sf', 'stars',\n",
+    "and 'rnaturalearth' are required but not all are present.\n\n",
+    "You can install all of them with\n",
+    "  `install.packages(\"sf\", \"stars\", \"rnaturalearth\")`."
+  )
+
+  if (missing) {
+    if (error)
+      stop(msg, call. = FALSE)
+    else
+      packageStartupMessage(paste0(msg, "\n--------------------"))
+  }
+}
+
 #' Pipe operator
 #'
 #' @return See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.

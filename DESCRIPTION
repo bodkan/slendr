@@ -32,8 +32,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 SystemRequirements: 'SLiM' is a forward simulation software for population genetics and evolutionary biology. See <https://messerlab.org/slim/> for installation instructions and further information. The 'Python' coalescent framework 'msprime' and the 'tskit' module can by installed by following the instructions at <https://tskit.dev/>.
 Imports:
-    sf,
-    stars,
     ggplot2,
     dplyr,
     purrr,
@@ -41,8 +39,6 @@ Imports:
     magrittr,
     reticulate,
     tidyr,
-    rnaturalearth,
-    gganimate,
     png,
     ijtiff,
     shinyWidgets,
@@ -51,6 +47,10 @@ Imports:
     scales
 Suggests:
     testthat (>= 3.0.0),
+    sf,
+    stars,
+    rnaturalearth,
+    gganimate,
     knitr,
     rmarkdown,
     admixr,

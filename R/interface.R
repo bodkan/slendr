@@ -95,6 +95,8 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
     map <- attr(parent, "map")
 
   if (inherits(map, "slendr_map")) {
+    check_spatial_pkgs()
+
     # define the population range as a simple geometry object
     # and bind it with the annotation info into an sf object
     if (is.null(polygon) && is.null(center) && is.null(radius)) {
@@ -177,6 +179,8 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
 move <- function(pop, trajectory, end, start, overlap = 0.8, snapshots = NULL,
                  verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
+
+  check_spatial_pkgs()
 
   check_event_time(c(start, end), pop)
   check_removal_time(start, pop)
@@ -330,6 +334,8 @@ expand_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                          polygon = NULL, lock = FALSE, verbose = TRUE) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
 
+  check_spatial_pkgs()
+
   start <- as.integer(round(start))
   end <- as.integer(round(end))
 
@@ -370,6 +376,10 @@ expand_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @example man/examples/model_definition.R
 shrink_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
                          lock = FALSE, verbose = TRUE) {
+  if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
+
+  check_spatial_pkgs()
+
   shrink_or_expand(pop, -by, end, start, overlap, snapshots, polygon = NULL, lock, verbose)
 }
 
@@ -404,8 +414,9 @@ shrink_range <- function(pop, by, end, start, overlap = 0.8, snapshots = NULL,
 #' @example man/examples/model_definition.R
 set_range <- function(pop, time, center = NULL, radius = NULL,
                       polygon = NULL, lock = FALSE) {
-  if (!has_map(pop))
-    stop("This operation is only allowed for spatial models", call. = FALSE)
+  if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
+
+  check_spatial_pkgs()
 
   check_event_time(time, pop)
   check_removal_time(time, pop)
@@ -561,6 +572,8 @@ resize <- function(pop, N, how, time, end = NULL) {
 set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = NA,
                           dispersal_fun = NULL) {
   if (!has_map(pop)) stop("This operation is only allowed for spatial models", call. = FALSE)
+
+  check_spatial_pkgs()
 
   if (is.na(competition) && is.na(mating) && is.na(dispersal) &&
       is.null(dispersal_fun))
@@ -743,6 +756,8 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
 #' @example man/examples/spatial_functions.R
 world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
                   scale = c("small", "medium", "large")) {
+  check_spatial_pkgs()
+
   if (length(xrange) != 2 || length(yrange) != 2)
     stop("Horizontal (i.e. longitude) and vertical (i.e. latitude) must be\n",
          "specified as two-dimensional vectors such as:\n",
@@ -852,6 +867,8 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
 #'
 #' @example man/examples/spatial_functions.R
 region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygon = NULL) {
+  check_spatial_pkgs()
+
   # for accurate circular areas see: https://stackoverflow.com/a/65280376
   if (is.null(name)) name <- "unnamed region"
   region <- sf::st_sf(
@@ -989,6 +1006,8 @@ reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
 #'
 #' @example man/examples/spatial_functions.R
 join <- function(x, y, name = NULL) {
+  check_spatial_pkgs()
+
   if (!inherits(x, "slendr")) x <- region(polygon = x)
   if (!inherits(y, "slendr")) y <- region(polygon = y)
 
@@ -1015,6 +1034,8 @@ join <- function(x, y, name = NULL) {
 #'
 #' @export
 overlap <- function(x, y, name = NULL) {
+  check_spatial_pkgs()
+
   if (!inherits(x, "slendr")) x <- region(polygon = x)
   if (!inherits(y, "slendr")) y <- region(polygon = y)
 

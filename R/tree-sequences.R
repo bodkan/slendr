@@ -912,8 +912,10 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
       )
     )
   }
-  if (type == "SLiM" && spatial)
+  if (type == "SLiM" && spatial) {
+    check_spatial_pkgs()
     data <- sf::st_as_sf(data)
+  }
 
   class(data) <- set_class(data, "nodes")
 
@@ -1000,6 +1002,8 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #' ts_nodes(ts)
 #' @export
 ts_nodes <- function(x, sf = TRUE) {
+  if (sf) check_spatial_pkgs()
+
   if (!inherits(x, "slendr_ts") && !inherits(x, "slendr_phylo"))
     stop("Annotation data table can be only extracted for a slendr tree sequence\n",
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
@@ -1185,6 +1189,7 @@ ts_ancestors <- function(ts, x, verbose = FALSE, complete = TRUE) {
 
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
+  if (spatial) check_spatial_pkgs()
   from_slendr <- !is.null(model)
 
   edges <- ts_table(ts, "edges")
@@ -1313,6 +1318,7 @@ ts_descendants <- function(ts, x, verbose = FALSE, complete = TRUE) {
 
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
+  if (spatial) check_spatial_pkgs()
   from_slendr <- !is.null(model)
 
   edges <- ts_table(ts, "edges")
@@ -2606,6 +2612,7 @@ get_annotated_edges <- function(x) {
   data <- ts_nodes(x) %>% dplyr::as_tibble()
   source <- if (inherits(x, "slendr_phylo")) "tree" else "tskit"
   spatial <- attr(x, "spatial")
+  if (spatial) check_spatial_pkgs()
   from_slendr <- !is.null(attr(x, "model"))
 
   if (spatial && any(sf::st_is_empty(data$location))) {

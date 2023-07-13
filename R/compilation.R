@@ -76,6 +76,8 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
   else
     map <- NULL
 
+  if (!is.null(map)) check_spatial_pkgs()
+
   if (!is.null(map) && length(maps) != length(populations))
     warning("Model containing a mix of spatial and non-spatial populations will be compiled.\n",
             "Although this is definitely supported, make sure this is really what you want.",

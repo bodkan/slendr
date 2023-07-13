@@ -25,7 +25,8 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
                      graticules = "original",
                      intersect = TRUE, show_map = TRUE,
                      title = NULL, interpolated_maps = NULL) {
-# @importFrom ggplot2 ggplot geom_sf aes scale_fill_discrete scale_color_discrete guides guide_legend geom_point geom_segment arrow geom_sf_label labs theme_bw expand_limits
+  check_spatial_pkgs()
+
   if (!graticules %in% c("internal", "original"))
     stop("Graticules can be either 'original' or 'internal'", call. = FALSE)
 
@@ -523,6 +524,8 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
 #' @importFrom ggplot2 geom_point aes theme element_blank ggtitle
 #' @export
 animate_model <- function(model, file, steps, gif = NULL, width = 800, height = 560) {
+  check_spatial_pkgs()
+
   if (!requireNamespace("magick", quietly = TRUE))
     message("For rendering animated GIFs, please install the R package ",
             "magick by calling `install.packages(\"magick\")")

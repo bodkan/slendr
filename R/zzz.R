@@ -20,9 +20,9 @@ PYTHON_ENV <-
   path_check <- all(Sys.which("slim") != "")
   if (!path_check) {
     packageStartupMessage(
-      "The slim binary was not found in your $PATH variable. Most of\n",
-      "the functionality in this package will work without any issues\n",
-      "but you will not be able to simulate data with the `slim()` function.\n",
+      "The 'slim' binary could not be found in your $PATH. Most of\n",
+      "the functionality of slendr will work without any issues but\n",
+      "you will not be able to simulate data with the `slim()` function.\n",
       "\nIf you want to run SLiM simulations, make sure to modify the $PATH\n",
       "variable so that it points to the directory containing the slim\n",
       "command-line program. One easy way to do this is to add this:\n\n",
@@ -40,6 +40,8 @@ PYTHON_ENV <-
       )
   }
 
+  check_spatial_pkgs(error = FALSE)
+
   if (!is_slendr_env_present()) {
     if (!getOption("slendr.custom_env")) {
       version <- strsplit(PYTHON_ENV, "_")[[1]] %>% gsub(".*-", "", .)
@@ -48,7 +50,7 @@ PYTHON_ENV <-
           "msprime (%s), tskit (%s), and pyslim (%s) has not been found.\n"),
           version[1], version[2], version[3], version[4]),
           "\nYou can setup a pre-configured environment with all of slendr's Python\n",
-          "dependencies automatically by running the function setup_env()."
+          "dependencies automatically by running the function `setup_env()`."
       )
     }
   }
