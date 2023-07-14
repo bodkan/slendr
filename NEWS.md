@@ -1,3 +1,5 @@
+# slendr (development version)
+
 # slendr 0.7.1
 
 - **Starting from this release, the \*spatial\* simulation and data analysis functionality of _slendr_ is conditional on the presence of R geospatial packages _sf_, _stars_, and _rnaturalearth_ on the system. This means that users will be able to install _slendr_ (and use all of its non-spatial functionality) even without having these R packages installed. That said, nothing really changes in practice: spatial features of _slendr_ are just one `install.packages(c("sf", "stars", "rnaturalearth"))` away! The difference is that _slendr_ doesn't try to do this during its own installation, but users are instructed to do this themselves (if needed) when the package is loaded.** ([#7a10ea](https://github.com/bodkan/slendr/commit/7a10ea))
