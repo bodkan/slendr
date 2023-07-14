@@ -185,12 +185,16 @@
 </h3>
 <p><em>slendr</em> is now available CRAN which means that you can install it simply by entering <code>install.packages("slendr")</code> into your R console.</p>
 <p>If you would like to test the latest features of the software (perhaps because you need some bug fixes), you can install it with <code>devtools::install_github("bodkan/slendr")</code> (note that this requires the R package <em>devtools</em>).</p>
+<p>⚠️⚠️⚠️</p>
+<p><strong>Note:</strong> the default <em>slendr</em> installation no longer has a hard dependency on geospatial R packages <em>sf</em>, <em>stars</em>, and <em>rnaturalearth</em>. If you indend to use <em>slendr</em> for spatial genomic simulations and data analysis, you have to run <code>install.packages(c("sf", "stars", "rnaturalearth"))</code> first.</p>
+<p>We made this change to ease the installation burden for researchers who might only need <em>slendr</em>’s support for traditional, non-spatial simulations (which represent the majority of use-cases in population genetics in general). The geospatial R packages imply a non-negligible amount of software dependencies themselves, which has proven to be an unnecessary hurdle for many users who might not need them (at least not at first).</p>
+<p>⚠️⚠️⚠️</p>
 <hr>
 <p><strong>This software is under active development!</strong></p>
 <p>If you would like to stay updated:</p>
 <ol style="list-style-type: decimal">
 <li><p>Click on the “Watch” button on the project’s <a href="https://github.com/bodkan/slendr/" class="external-link">GitHub website</a>.</p></li>
-<li><p>Follow me on social media where I will be posting progress updates (you can find links on my <a href="https://www.bodkan.net" class="external-link">homepage</a>).</p></li>
+<li><p>Follow me on social media where I will be posting progress updates (you can find links on my <a href="https://bodkan.net" class="external-link">homepage</a>).</p></li>
 <li><p>From time to time, take a look at the <a href="https://www.slendr.net/news/index.html">changelog</a> where I will post updates on new features, breaking changes, etc.</p></li>
 </ol>
 <hr>

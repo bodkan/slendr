@@ -60,6 +60,14 @@ Once you get a browser-based RStudio session, you can navigate to the `vignettes
 
 If you would like to test the latest features of the software (perhaps because you need some bug fixes), you can install it with `devtools::install_github("bodkan/slendr")` (note that this requires the R package *devtools*).
 
+⚠️⚠️⚠️
+
+**Note:** the default _slendr_ installation no longer has a hard dependency on geospatial R packages _sf_, _stars_, and _rnaturalearth_. If you indend to use _slendr_ for spatial genomic simulations and data analysis, you have to run `install.packages(c("sf", "stars", "rnaturalearth"))` first.
+
+We made this change to ease the installation burden for researchers who might only need _slendr_'s support for traditional, non-spatial simulations (which represent the majority of use-cases in population genetics in general). The geospatial R packages imply a non-negligible amount of software dependencies themselves, which has proven to be an unnecessary hurdle for many users who might not need them (at least not at first).
+
+⚠️⚠️⚠️
+
 ------------------------------------------------------------------------
 
 **This software is under active development!**
@@ -68,7 +76,7 @@ If you would like to stay updated:
 
 1.  Click on the "Watch" button on the project's [GitHub website](https://github.com/bodkan/slendr/).
 
-2.  Follow me on social media where I will be posting progress updates (you can find links on my [homepage](https://www.bodkan.net)).
+2.  Follow me on social media where I will be posting progress updates (you can find links on my [homepage](https://bodkan.net)).
 
 3.  From time to time, take a look at the [changelog](https://www.slendr.net/news/index.html) where I will post updates on new features, breaking changes, etc.
 
