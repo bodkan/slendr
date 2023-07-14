@@ -79,6 +79,7 @@ ts_load <- function(file, model = NULL) {
   attr(ts, "type") <- type
   attr(ts, "model") <- model
   attr(ts, "spatial") <- type == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != ""
+  if (attr(ts, "spatial")) check_spatial_pkgs()
 
   attr(ts, "metadata") <- get_slendr_metadata(ts)
 
@@ -1002,13 +1003,13 @@ ts_phylo <- function(ts, i, mode = c("index", "position"),
 #' ts_nodes(ts)
 #' @export
 ts_nodes <- function(x, sf = TRUE) {
-  if (sf) check_spatial_pkgs()
-
   if (!inherits(x, "slendr_ts") && !inherits(x, "slendr_phylo"))
     stop("Annotation data table can be only extracted for a slendr tree sequence\n",
          "object or a phylo object created by the ts_phylo function", call. = FALSE)
 
   data <- attr(x, "nodes")
+
+  if (inherits(sf) check_spatial_pkgs()
 
   if (!sf && inherits(data, "sf")) {
     # unwrap the geometry column into separate x and y coordinates
