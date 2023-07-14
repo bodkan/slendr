@@ -1009,7 +1009,7 @@ ts_nodes <- function(x, sf = TRUE) {
 
   data <- attr(x, "nodes")
 
-  if (inherits(sf)) check_spatial_pkgs()
+  if (inherits(x, "sf")) check_spatial_pkgs()
 
   if (!sf && inherits(data, "sf")) {
     # unwrap the geometry column into separate x and y coordinates
