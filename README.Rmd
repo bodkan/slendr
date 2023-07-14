@@ -82,7 +82,7 @@ If you would like to stay updated:
 
 1.  Click on the "Watch" button on the project's [GitHub website](https://github.com/bodkan/slendr/).
 
-2.  Follow me on social media where I will be posting progress updates (you can find links on my [homepage](https://www.bodkan.net)).
+2.  Follow me on social media where I will be posting progress updates (you can find links on my [homepage](https://bodkan.net)).
 
 3.  From time to time, take a look at the [changelog](https://www.slendr.net/news/index.html) where I will post updates on new features, breaking changes, etc.
 

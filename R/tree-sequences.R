@@ -614,7 +614,7 @@ ts_genotypes <- function(ts) {
 #' Convert genotypes to the EIGENSTRAT file format
 #'
 #' EIGENSTRAT data produced by this function can be used by the admixr R package
-#' (<https://www.bodkan.net/admixr/>).
+#' (<https://bodkan.net/admixr/>).
 #'
 #' In case an outgroup was not formally specified in a slendr model which
 #' generated the tree sequence data, it is possible to artificially create an
