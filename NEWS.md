@@ -4,9 +4,9 @@
 
 - **Starting from this release, the \*spatial\* simulation and data analysis functionality of _slendr_ is conditional on the presence of R geospatial packages _sf_, _stars_, and _rnaturalearth_ on the system. This means that users will be able to install _slendr_ (and use all of its non-spatial functionality) even without having these R packages installed. That said, nothing really changes in practice: spatial features of _slendr_ are just one `install.packages(c("sf", "stars", "rnaturalearth"))` away! The difference is that _slendr_ doesn't try to do this during its own installation, but users are instructed to do this themselves (if needed) when the package is loaded.** ([#7a10ea](https://github.com/bodkan/slendr/commit/7a10ea))
 
-If spatial dependencies are not present but a spatial _slendr_ function is called regardless (such as `world()`, `move()`, etc.), an error message is printed with an information on how to install spatial dependencies via `install.packages()`.
+If spatial dependencies are not present but a spatial _slendr_ function is called regardless (such as `world()`, `move()`, etc.), an error message is printed with an information on how to install spatial dependencies via `install.packages()` as above.
 
-**Why?** It's true that the main reason for _slendr_'s existence is its ability to simulate spatio-temporal data on realistic landscapes via SLiM. However, in practice, most of the "average" uses of _slendr_ in the wild (and in classrooms!) rely on its traditional, non-spatial interface, with its spatial features being used comparatively rarely at the moment (except for some cutting-edge exploratory research). Given that setting up all of the spatial dependencies can be a bit of a hurdle, we have decided to make these dependencies optional.
+**Why?** It's true that the main reason for _slendr_'s existence is its ability to simulate spatio-temporal data on realistic landscapes via SLiM. However, in practice, most of the "average" uses of _slendr_ in the wild (and in classrooms!) rely on its traditional, non-spatial interface, with its spatial features being used comparatively rarely at the moment (except for some cutting-edge exploratory research). Given that setting up all of the spatial dependencies can be a bit of a hurdle, we have decided to make these dependencies optional, rather than force _every_ user to go through the process of their installation whether they need the spatial features or not.
 
 - A function `check_dependencies()` is now exported and can be used to check whether a _slendr_ Python environment () or SLiM () are present. This is useful for other software building upon _slendr_, normal users can freely ignore this. ([#6ae6ce](https://github.com/bodkan/slendr/commit/6ae6ce))
 
@@ -15,6 +15,7 @@ If spatial dependencies are not present but a spatial _slendr_ function is calle
 - Attempts to resize a population right at the time of the split (which led to issues with simulations) are now prevented. ([#f181a2](https://github.com/bodkan/slendr/commit/f181a2))
 
 - Fix for a minor issue preventing sampling an _msprime_ population right at the time of its creation. ([#aea231](https://github.com/bodkan/slendr/commit/aea231))
+
 
 
 # slendr 0.7.0
