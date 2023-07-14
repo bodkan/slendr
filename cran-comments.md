@@ -1,4 +1,7 @@
-Update to include an important bugfix of an external dependency (Python module 'pyslim').
+A few minor bugfixes. This update also moves geospatial dependencies
+'sf', 'stars', and 'rnaturalearth' from "Imports:" to "Suggests:" to
+ease the installation burden for users who do not need the spatial
+features of the package.
 
 # R CMD check results
 
