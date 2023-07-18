@@ -9,7 +9,8 @@ plot_model(
   sizes = TRUE,
   proportions = FALSE,
   gene_flow = TRUE,
-  log = FALSE
+  log = FALSE,
+  order = NULL
 )
 }
 \arguments{
@@ -24,6 +25,11 @@ by default to prevent cluttering and overplotting)}
 
 \item{log}{Should the y-axis be plotted on a log scale? Useful for models
 over very long time-scales.}
+
+\item{order}{Order of the populations along the x-axis, given as a character
+vector of population names. If \code{NULL} (the default), the default plotting
+algorithm will be used, ordering populations from the most ancestral to the
+most recent using an in-order tree traversal.}
 }
 \value{
 A ggplot2 object with the visualized slendr model

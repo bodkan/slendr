@@ -157,3 +157,23 @@ test_that("only strings fitting the requirements of valid Python identifiers can
     expect_s3_class(slim(model, sequence_length = 1000, recombination_rate = 0), "slendr_ts")
   }
 })
+
+test_that("plot_model catches incorrect order specification", {
+  popA <- population("popA", time = 1, N = 1)
+  popB <- population("popB", time = 2, N = 1, parent = popA)
+  popC <- population("popC", time = 3, N = 1, parent = popB)
+  popD <- population("popD", time = 4, N = 1, parent = popC)
+
+  model <- compile_model(
+    populations = list(popA, popB, popC, popD),
+    generation_time = 1, simulation_length = 10000,
+    direction = "forward"
+  )
+
+  p <- plot_model(model)
+  expect_s3_class(p, "ggplot")
+  expect_error(p <- plot_model(model, order = c("popA"),
+               "If order is given manually, all population names must be specified"))
+  expect_error(p <- plot_model(model, order = c("popA", "popC", "popD", "popB"),
+               "If order is given manually, all population names must be specified"))
+})

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,7 +91,8 @@
 <span>  sizes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  proportions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  gene_flow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  log <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  order <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -117,6 +118,13 @@ by default to prevent cluttering and overplotting)</p></dd>
 <dt>log</dt>
 <dd><p>Should the y-axis be plotted on a log scale? Useful for models
 over very long time-scales.</p></dd>
+
+
+<dt>order</dt>
+<dd><p>Order of the populations along the x-axis, given as a character
+vector of population names. If <code>NULL</code> (the default), the default plotting
+algorithm will be used, ordering populations from the most ancestral to the
+most recent using an in-order tree traversal.</p></dd>
 
 </dl></div>
     <div class="section level2">
