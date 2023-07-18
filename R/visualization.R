@@ -181,7 +181,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
             data = migr_df,
             aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
             arrow = arrow(length = unit(2, "mm"), type = "closed"),
-            lineend = "round", size = 0.5, arrow.fill = "black"
+            lineend = "round", linewidth = 0.5, arrow.fill = "black"
           ) +
           scale_color_discrete(drop = FALSE) +
           guides(color = "none")
