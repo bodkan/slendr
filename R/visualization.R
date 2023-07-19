@@ -472,7 +472,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
     p <- p + geom_segment(
       data = splits,
       aes(x = x, xend = xend, y = y, yend = yend, color = pop),
-      size = 1
+      linewidth = 1
     )
   }
 
