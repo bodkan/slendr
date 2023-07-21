@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- `plot_model()` now has an argument `file =`, making it possible to save a visualization of a model without actually opening a plotting device. This can be useful particularly while working on a remote server, in order to avoid the often slow X11 rendering. ([#e60078](https://github.com/bodkan/slendr/commit/e60078))
+
 - `plot_model()` now has an argument `order =` allowing to override the default [in-order](https://en.wikipedia.org/wiki/Tree_traversal#Inorder_traversal) ordering of populations along the x-axis. ([#7a10ea](https://github.com/bodkan/slendr/commit/7a10ea))
 
 # slendr 0.7.1
