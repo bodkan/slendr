@@ -920,6 +920,8 @@ region <- function(name = NULL, map = NULL, center = NULL, radius = NULL, polygo
 #' @export
 reproject <- function(from, to, x = NULL, y = NULL, coords = NULL, model = NULL,
                       add = FALSE, input_prefix = "", output_prefix = "new") {
+  check_spatial_pkgs()
+
   if ((is.null(x) | is.null(y)) & is.null(coords))
     stop("Coordinates for conversion are missing", call. = FALSE)
 
@@ -1074,6 +1076,8 @@ overlap <- function(x, y, name = NULL) {
 #'
 #' @export
 subtract <- function(x, y, name = NULL) {
+  check_spatial_pkgs()
+
   if (!inherits(x, "slendr")) x <- region(polygon = x)
   if (!inherits(y, "slendr")) y <- region(polygon = y)
 
@@ -1126,6 +1130,8 @@ subtract <- function(x, y, name = NULL) {
 #' distance(region_a, region_b, measure = "border")
 #' @export
 distance <- function(x, y, measure, time = NULL) {
+  check_spatial_pkgs()
+
   if (!measure %in% c("center", "border"))
     stop("Unknown distance measure method provided (must be either 'center' or 'border')", call. = FALSE)
 
@@ -1167,6 +1173,8 @@ distance between population boundaries", call. = FALSE)
 #' area(region_b)
 #' @export
 area <- function(x) {
+  check_spatial_pkgs()
+
   if (!inherits(x, "slendr") & !inherits(x, "sf"))
     stop("Input must be of the type 'slendr' or 'sf'", call. = FALSE)
 
