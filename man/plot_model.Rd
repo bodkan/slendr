@@ -10,7 +10,9 @@ plot_model(
   proportions = FALSE,
   gene_flow = TRUE,
   log = FALSE,
-  order = NULL
+  order = NULL,
+  file = NULL,
+  ...
 )
 }
 \arguments{
@@ -30,6 +32,10 @@ over very long time-scales.}
 vector of population names. If \code{NULL} (the default), the default plotting
 algorithm will be used, ordering populations from the most ancestral to the
 most recent using an in-order tree traversal.}
+
+\item{file}{Output file for a figure saved via \code{ggsave}}
+
+\item{...}{Optional argument which will be passed to \code{ggsave}}
 }
 \value{
 A ggplot2 object with the visualized slendr model

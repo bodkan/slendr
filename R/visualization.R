@@ -264,6 +264,8 @@ sort_splits <- function(model) {
 #'   vector of population names. If \code{NULL} (the default), the default plotting
 #'   algorithm will be used, ordering populations from the most ancestral to the
 #'   most recent using an in-order tree traversal.
+#' @param file Output file for a figure saved via \code{ggsave}
+#' @param ... Optional argument which will be passed to \code{ggsave}
 #'
 #' @return A ggplot2 object with the visualized slendr model
 #'
@@ -282,7 +284,7 @@ sort_splits <- function(model) {
 #'   labs geom_segment arrow
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRUE, log = FALSE,
-                       order = NULL) {
+                       order = NULL, file = NULL, ...) {
   populations <- model$populations
 
   log10_ydelta <- 0.001
@@ -519,7 +521,10 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
 
   p <- p + scale_y_continuous(trans = trans)
 
-  p
+  if (!is.null(file))
+    ggplot2::ggsave(file, plot = p, ...)
+  else
+    p
 }
 
 #' Animate the simulated population dynamics

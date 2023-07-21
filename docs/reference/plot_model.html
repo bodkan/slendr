@@ -92,7 +92,9 @@
 <span>  proportions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  gene_flow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  log <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  order <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -125,6 +127,14 @@ over very long time-scales.</p></dd>
 vector of population names. If <code>NULL</code> (the default), the default plotting
 algorithm will be used, ordering populations from the most ancestral to the
 most recent using an in-order tree traversal.</p></dd>
+
+
+<dt>file</dt>
+<dd><p>Output file for a figure saved via <code>ggsave</code></p></dd>
+
+
+<dt>...</dt>
+<dd><p>Optional argument which will be passed to <code>ggsave</code></p></dd>
 
 </dl></div>
     <div class="section level2">
