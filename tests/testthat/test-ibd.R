@@ -29,7 +29,7 @@ model <- compile_model(populations = list(pop1, pop2),
                         generation_time = 1, simulation_length = 2000)
 
 ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
-samples <- ts_samples(ts) %>% split(., .$pop) %>% lapply(`[[`, "name")
+samples <- ts_names(ts, split = "pop")
 
 pop1_samples <- sample(samples$POP1, 20)
 pop2_samples <- sample(samples$POP2, 20)
