@@ -808,3 +808,33 @@ test_that("ts_load does not track any file path if a tree sequence is directly l
   expect_true(is.null(attr(ts3, "path")))
   expect_true(is.null(attr(ts4, "path")))
 })
+
+#------------------------------------------------------------------
+# testing names extraction
+
+ts_msprime <- ts_load(msprime_ts, model)
+ts_slim <- ts_load(slim_ts, model)
+
+test_that("ts_names(ts) returns a simple character vector", {
+  expect_type(ts_names(ts_msprime), "character")
+  expect_type(ts_names(ts_slim), "character")
+
+  expect_true(length(ts_names(ts_msprime)) == sum(samples$n))
+  expect_true(length(ts_names(ts_slim)) == sum(samples$n))
+})
+
+test_that("ts_names(ts, split = 'pop') returns a list of character vectors", {
+  expect_type(ts_names(ts_msprime, split = "pop"), "list")
+  expect_type(ts_names(ts_slim, split = "pop"), "list")
+
+  expect_true(length(ts_names(ts_msprime, split = "pop")) == 2)
+  expect_true(length(ts_names(ts_slim, split = "pop")) == 2)
+})
+
+test_that("ts_names(ts, split = 'time') returns a list of character vectors", {
+  expect_type(ts_names(ts_msprime, split = "time"), "list")
+  expect_type(ts_names(ts_slim, split = "time"), "list")
+
+  expect_true(length(ts_names(ts_msprime, split = "time")) == length(unique(samples$time)))
+  expect_true(length(ts_names(ts_slim, split = "time")) == length(unique(samples$time)))
+})
