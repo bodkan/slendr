@@ -1155,6 +1155,33 @@ ts_samples <- function(ts) {
   samples
 }
 
+#' Extract names of individuals in a tree sequence
+#'
+#' @param ts Tree sequence object of the class \code{slendr_ts}
+#' @param split Should sample names in the tree sequence be split by a column
+#'   (a population or time column)? Default is \code{NULL} and all names of
+#'   samples will be returned as a single character vector. If set to "pop" or
+#'   "time", a list of character vectors will be returned, one vector for each
+#'   unique "pop" or "time" grouping.
+#'
+#' @return A vector of character sample names. If \code{split} is specified,
+#'   a list of such vectors is returned, one element of the list per population
+#'   or sampling time.
+#'
+#' @export
+ts_names <- function(ts, split = NULL) {
+  df <- ts_samples(ts)
+
+  if (is.null(split)) { # return all names if splitting not requested
+    result <- df$name
+  } else if (split %in% colnames(df)) { # otherwise split by a given column
+    result <- df %>% split(., .[[split]]) %>% lapply(`[[`, "name")
+  } else
+    stop("Column '", split, "' not present in the samples table", call. = FALSE)
+
+  result
+}
+
 #' Extract (spatio-)temporal ancestral history for given nodes/individuals
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
