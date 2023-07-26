@@ -319,10 +319,15 @@ slim <- function(
   specify the path manually by setting the 'binary_path' argument.", binary),
   call. = FALSE)
 
-  seed <- if (is.null(random_seed)) "" else paste0(" \\\n    -d SEED=", random_seed)
-  samples <- if (is.null(sampling_path)) ""
-             else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
-
+  seed <- if (is.null(random_seed)) "" else paste0(" -d SEED=", random_seed)
+  samples <- if (is.null(sampling_path)) {
+    ""
+  } else {
+    paste0(" -d \"SAMPLES='", sampling_path, "'\"")
+  }
+  
+##Hi Martin, I should note, I don't ever work with the slim gui, so I only changed the command request for the non-gui based slim request. I can look into the gui if necessary, 
+  ##but I don't currently have any experience with it.
   if (method == "gui") {
     # to be able to execute the script in the SLiMgui, we have to hardcode
     # the path to the model configuration directory
@@ -334,33 +339,28 @@ slim <- function(
       cat(file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
-    slim_command <- sprintf("%s %s %s \\
-    -d 'MODEL=\"%s\"' \\
-    -d 'OUTPUT_TS=\"%s\"' \\
-    -d SPATIAL=%s \\
-    -d SEQUENCE_LENGTH=%s \\
-    -d RECOMB_RATE=%s \\
-    -d BURNIN_LENGTH=%s \\
-    -d SIMULATION_LENGTH=%s \\
-    -d 'OUTPUT_LOCATIONS=\"%s\"' \\
-    -d COALESCENT_ONLY=%s \\
-    -d MAX_ATTEMPTS=%i \\
-    %s 2>&1",
-      binary, # path to the SLiM binary on the command line
-      seed,
-      samples,
-      path.expand(model_dir),
-      output,
-      spatial,
-      sequence_length,
-      recombination_rate,
-      burnin,
-      model$length,
-      locations,
-      coalescent_only,
-      max_attempts,
-      script_path
-    )
+   ##Hi Martin, As mentioned, I used a bit of a hack job here to get it working.
+   ##It isn't an elegant solution by any means but this was one thing I changed to get it working locally:
+    samples <- gsub("\\\\", "/", samples)
+    output <- gsub("\\\\", "/", output)
+    script_path <- gsub("\\\\", "/", script_path)
+    model_dir <- gsub("\\\\", "/", model_dir)
+    
+    slim_command <- paste(binary, 
+                          seed,
+                          samples,
+                          paste0("-d \"MODEL='",model_dir,"'\""),
+                          paste0("-d \"OUTPUT_TS='", output, "'\""),
+                          paste0("-d SPATIAL=",spatial),
+                          paste0("-d SEQUENCE_LENGTH=",sequence_length),
+                          paste0("-d RECOMB_RATE=",recombination_rate),
+                          paste0("-d BURNIN_LENGTH=",burnin),
+                          paste0("-d SIMULATION_LENGTH=",model$length),
+                          paste0("-d \"OUTPUT_LOCATIONS='",locations,"'\""),
+                          paste0("-d COALESCENT_ONLY=",coalescent_only),
+                          paste0("-d MAX_ATTEMPTS=",max_attempts),
+                          script_path)
+    print(slim_command)
 
     if (verbose || !run) {
       cat("--------------------------------------------------\n")
