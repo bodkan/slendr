@@ -124,7 +124,7 @@ jobs:
           mkdir ~/R_LIBS
           echo "R_LIBS_USER=~/R_LIBS" >> ~/.Renviron
           R -e 'install.packages("reticulate", repos = "http://cran.rstudio.com"); reticulate::install_miniconda()'
-          R -e 'deps <- c("msprime==1.2.0", "tskit==0.5.4", "pyslim==1.0.1"); PYTHON_ENV <- paste0("Python-3.11_", paste(gsub("==", "-", deps), collapse = "_")); reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.11'); reticulate::use_condaenv(PYTHON_ENV, required = TRUE); reticulate::conda_install(envname = PYTHON_ENV, packages = c(deps, "pandas"), pip = TRUE)'
+          R -e 'deps <- c("msprime==1.2.0", "tskit==0.5.5", "pyslim==1.0.3"); PYTHON_ENV <- paste0("Python-3.11_", paste(gsub("==", "-", deps), collapse = "_")); reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.11'); reticulate::use_condaenv(PYTHON_ENV, required = TRUE); reticulate::conda_install(envname = PYTHON_ENV, packages = c(deps, "pandas"), pip = TRUE)'
 
       - uses: r-lib/actions/setup-pandoc@v2
 
