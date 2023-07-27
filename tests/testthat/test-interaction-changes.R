@@ -167,8 +167,8 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   set.seed(42)
   distances <- distances[sort(sample(1:nrow(distances), size = 5000)), ]
 
-  current_tsv <- paste0(tempfile(), ".tsv.gz")
-  readr::write_tsv(distances, current_tsv, progress = FALSE)
+  # current_tsv <- paste0(tempfile(), ".tsv.gz")
+  # readr::write_tsv(distances, current_tsv, progress = FALSE)
   original_tsv <- "distances.tsv.gz"
   # readr::write_tsv(distances, original_tsv, progress = FALSE)
   orig_distances <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)

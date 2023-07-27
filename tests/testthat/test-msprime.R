@@ -313,9 +313,9 @@ test_that("SLiM forward/backward sims are exactly the same", {
 # and SLiM simulations match almost perfectly assuming we simulate large enough
 # data to eliminate most of the nose
 test_that("AFS distributions from SLiM and msprime simulations match", {
-  current_tsv <- paste0(tempfile(), ".tsv.gz")
   afs <- afs %>% dplyr::mutate(sim = as.character(sim), model = as.character(model))
-  readr::write_tsv(afs, current_tsv, progress = FALSE)
+  # current_tsv <- paste0(tempfile(), ".tsv.gz")
+  # readr::write_tsv(afs, current_tsv, progress = FALSE)
 
   original_tsv <- sprintf("afs_%s.tsv.gz", Sys.info()["sysname"])
   # readr::write_tsv(afs, original_tsv, progress = FALSE)
