@@ -2971,6 +2971,8 @@ define_windows <- function(ts, breakpoints) {
 concat <- function(x) {
   if (is.list(x) && !is.null(names(x)))
     return(names(x))
+  else if (is.list(x) && is.null(names(x)))
+    return(paste(x[[1]], collapse = "+"))
   else
     return(paste(x, collapse = "+"))
 }
