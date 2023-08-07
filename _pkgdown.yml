@@ -116,8 +116,9 @@ reference:
     - ts_recapitate
     - ts_simplify
     - ts_mutate
-    - ts_coalesced
     - ts_samples
+    - ts_names
+    - ts_coalesced
 
   - title: Tree sequence format conversion
     contents:

@@ -1,6 +1,8 @@
 # slendr (development version)
 
-- Fixed broken concatenation of symbolic sample names in tree-sequence statistic functions, when those were provided as unnamed single-element lists of character vectors. ([#b3c650](https://github.com/bodkan/slendr/commit/b3c650) 
+- A new function `ts_names()` has been added, avoiding the need for the extremely frequent (and, unfortunately, cumbersome) trick of getting named lists of individual symbolic names `ts_samples(ts) %>% split(., .[[split]]) %>% lapply(`[[`, "name")` which is very confusing for all but the more experienced R users. ([#7db6ea](https://github.com/bodkan/slendr/commit/7db6ea))
+
+- Fixed broken concatenation of symbolic sample names in tree-sequence statistic functions, when those were provided as unnamed single-element lists of character vectors. ([#b3c650](https://github.com/bodkan/slendr/commit/b3c650))
 
 - `plot_model()` now has an argument `file =`, making it possible to save a visualization of a model without actually opening a plotting device. This can be useful particularly while working on a remote server, in order to avoid the often slow X11 rendering. ([#e60078](https://github.com/bodkan/slendr/commit/e60078))
 
