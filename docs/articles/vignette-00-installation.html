@@ -155,7 +155,8 @@ data),</p></li>
 simulations),</p></li>
 <li><p>Python modules <a href="https://tskit.dev/" class="external-link"><em>tskit</em>,
 <em>msprime</em>, and <em>pyslim</em></a> (for coalescent simulations
-and tree-sequence analysis).</p></li>
+and tree-sequence analysis), and also <em>pandas</em> used internally by
+the simulation back ends.</p></li>
 </ol>
 <p>All three are widely used in their respective fields and, as such,
 are easily obtainable on all major operating systems (see below for more
@@ -246,7 +247,8 @@ you of any potential issues with your SLiM installation.</p>
 </h3>
 <p>In order to be able to run coalescent simulations and process
 tree-sequence files, <em>slendr</em> needs Python modules
-<em>tskit</em>, <em>msprime</em>, and <em>pyslim.</em></p>
+<em>tskit</em>, <em>msprime</em>, and <em>pyslim</em> (it also needs the
+<em>pandas</em> library).</p>
 <p>Setting up an isolated Python environment with specific version of
 Python packages (which is very important to avoid clashes among
 different Python programs needed by your system) can be a <a href="https://xkcd.com/1987/" class="external-link">bit of a hassle</a> for some users. This
@@ -270,12 +272,32 @@ you don’t need to worry beyond calling <code><a href="../reference/setup_env.
 <code><a href="../reference/init_env.html">init_env()</a></code>, no interaction with Python is necessary for
 working with <em>slendr</em> in R.</p>
 <div class="section level4">
+<h4 id="failing-conda">Failing <em>conda</em>?<a class="anchor" aria-label="anchor" href="#failing-conda"></a>
+</h4>
+<p>In order to support Windows, <em>slendr</em> uses conda to download a
+Python interpreter as explained above. Given this fact, when you run
+<code><a href="../reference/setup_env.html">setup_env()</a></code>, <em>slendr</em> tries to leverage conda being
+present to install its Python dependencies (<em>msprime</em>,
+<em>tskit</em>, <em>pyslim</em>, <em>pandas</em>) via conda itself.</p>
+<p>Unfortunately, conda can break for frustratingly many random reasons
+which completely trips up <code><a href="../reference/setup_env.html">setup_env()</a></code>. If you run into this
+issue, <strong>there is a fallback option to install Python dependencies
+<em>msprime</em>, <em>tskit</em>, <em>pyslim</em>, and <em>pandas</em>
+via <code>pip</code></strong> which, unlike conda, works practically
+every time. You can do this <strong>by calling
+<code>setup_env(pip = TRUE)</code></strong> instead of the default
+<code><a href="../reference/setup_env.html">setup_env()</a></code>. Note that <strong>this might require you to
+install the <a href="https://www.gnu.org/software/gsl/" class="external-link">GSL</a>
+numerical library, but that’s a trivial issue on macOS
+(<code>brew install gsl</code>) and Linux (on Ubuntu, for instance,
+<code>sudo apt-get install libgsl-dev</code>)</strong>.</p>
+</div>
+<div class="section level4">
 <h4 id="information-for-python-experts">Information for Python experts<a class="anchor" aria-label="anchor" href="#information-for-python-experts"></a>
 </h4>
 <p>In case you are wondering how does <em>slendr</em> accomplish the
-above: <em>slendr</em>’s Python interface is not a hack that would
-simply call Python from the command-line in the background, but is
-implemented using the R package <a href="https://rstudio.github.io/reticulate/" class="external-link"><em>reticulate</em></a><em>.</em>
+above: <em>slendr</em>’s Python interface is implemented using the R
+package <a href="https://rstudio.github.io/reticulate/" class="external-link"><em>reticulate</em></a><em>.</em>
 This embeds a Python session within an R session, enabling
 high-performance interoperability between both languages without any
 need for user intervention.</p>
