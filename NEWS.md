@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 0.7.2
 
 - A new function `ts_names()` has been added, avoiding the need for the extremely frequent (and, unfortunately, cumbersome) trick of getting named lists of individual symbolic names `ts_samples(ts) %>% split(., .[[split]]) %>% lapply(`[[`, "name")` which is very confusing for all but the more experienced R users. ([#7db6ea](https://github.com/bodkan/slendr/commit/7db6ea))
 
