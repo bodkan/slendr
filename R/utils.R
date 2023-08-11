@@ -723,7 +723,7 @@ check_spatial_pkgs <- function(error = TRUE) {
     "In order to use spatial features of slendr, packages 'sf', 'stars',\n",
     "and 'rnaturalearth' are required but not all are present.\n\n",
     "You can install all of them with\n",
-    "  `install.packages(\"sf\", \"stars\", \"rnaturalearth\")`."
+    "  `install.packages(c(\"sf\", \"stars\", \"rnaturalearth\"))`."
   )
 
   if (missing) {
