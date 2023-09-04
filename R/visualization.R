@@ -546,7 +546,7 @@ animate_model <- function(model, file, steps, gif = NULL, width = 800, height = 
 
   if (!requireNamespace("magick", quietly = TRUE))
     message("For rendering animated GIFs, please install the R package ",
-            "magick by calling `install.packages(\"magick\")")
+            "magick by calling `install.packages(\"magick\")`")
 
   if (!file.exists(file))
     stop("Could not find file with locations at", file, call. = FALSE)
