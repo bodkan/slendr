@@ -79,7 +79,7 @@ ts_load <- function(file, model = NULL) {
   attr(ts, "type") <- type
   attr(ts, "model") <- model
   attr(ts, "spatial") <-
-    (type != "SLiM" && nrow(ts$individual_locations) > 0) ||
+    (type != "SLiM" && nrow(ts$individual_locations) > 0 && ncol(ts$individual_locations) > 0) ||
     (type == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != "")
   if (attr(ts, "spatial")) check_spatial_pkgs()
 
