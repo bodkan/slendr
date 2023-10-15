@@ -1446,7 +1446,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
       # dependencies are defined all in one place)
       versions <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
       python_version <- gsub("Python==", "", versions[1])
-      package_versions <- c(versions[-1], "pandas", "jsonschema==4.18.6")
+      package_versions <- c(versions[-1], "pandas")
 
       reticulate::conda_create(envname = PYTHON_ENV, python_version = python_version)
       reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
