@@ -1,3 +1,9 @@
+# slendr (development version)
+
+- Updated Python dependencies (bugfix pyslim release [v1.0.4](https://github.com/tskit-dev/pyslim/releases/tag/1.0.4) and tskit [v0.5.6](https://github.com/tskit-dev/tskit/releases/tag/0.5.6), the latter due to a broken `jsonschema` dependency of tskit). ([#001ee5](https://github.com/bodkan/slendr/commit/001ee5))
+
+- Experimental support for [manually created](https://github.com/bodkan/slendr/pull/144) spatial tree sequences. ([PR #144](https://github.com/bodkan/slendr/pull/144))
+
 # slendr 0.7.2
 
 - A new function `ts_names()` has been added, avoiding the need for the extremely frequent (and, unfortunately, cumbersome) trick of getting named lists of individual symbolic names `ts_samples(ts) %>% split(., .[[split]]) %>% lapply(`[[`, "name")` which is very confusing for all but the more experienced R users. ([#7db6ea](https://github.com/bodkan/slendr/commit/7db6ea))
