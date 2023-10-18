@@ -78,7 +78,9 @@ ts_load <- function(file, model = NULL) {
 
   attr(ts, "type") <- type
   attr(ts, "model") <- model
-  attr(ts, "spatial") <- type == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != ""
+  attr(ts, "spatial") <-
+    (type != "SLiM" && nrow(ts$individual_locations) > 0 && ncol(ts$individual_locations) > 0) ||
+    (type == "SLiM" && ts$metadata$SLiM$spatial_dimensionality != "")
   if (attr(ts, "spatial")) check_spatial_pkgs()
 
   attr(ts, "metadata") <- get_slendr_metadata(ts)
@@ -2372,8 +2374,6 @@ get_ts_raw_individuals <- function(ts) {
       ind_table,
       # pedigree_id = pylib$get_pedigree_ids(ts), # TODO: check whether the reticulate bug is gone
       pedigree_id = reticulate::py$get_pedigree_ids(ts),
-      raster_x = ts$individual_locations[, 1],
-      raster_y = ts$individual_locations[, 2],
       pop_id = ts$individual_populations,
       alive = bitwAnd(individuals[["flags"]], pyslim$INDIVIDUAL_ALIVE) != 0,
       remembered = bitwAnd(individuals[["flags"]], pyslim$INDIVIDUAL_REMEMBERED) != 0,
@@ -2413,6 +2413,11 @@ get_ts_raw_individuals <- function(ts) {
 
     # in a non-SLiM tree sequence, genomes/nodes of all individuals are "samples"
     ind_table$sampled <- TRUE
+  }
+
+  if (attr(ts, "spatial")) {
+    ind_table$raster_x <- ts$individual_locations[, 1]
+    ind_table$raster_y <- ts$individual_locations[, 2]
   }
 
   ind_table %>% dplyr::select(ind_id, time, dplyr::everything())
@@ -2541,6 +2546,7 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
 
 get_tskit_table_data <- function(ts, simplify_to = NULL) {
   model <- attr(ts, "model")
+  spatial <- attr(ts, "spatial")
   from_slendr <- !is.null(model)
 
   # get data from the original individual table
@@ -2625,6 +2631,12 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
   # nodes which do not have individuals assigned to them as FALSE
   if (any(!is.na(combined$ind_id)))
     combined <- dplyr::mutate(combined, sampled = ifelse(is.na(ind_id), FALSE, sampled))
+
+  if (spatial) {
+    combined <- convert_to_sf(combined, model)
+    location_cols <- "location"
+  } else
+    location_cols <- NULL
 
   if (from_slendr) {
     combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))

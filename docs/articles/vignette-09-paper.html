@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -287,8 +287,8 @@
 <span>  <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">10e6</span> <span class="op">/</span> <span class="va">scaling</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, random_seed <span class="op">=</span> <span class="va">SEED</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span>mutation_rate <span class="op">=</span> <span class="fl">1e-7</span>, random_seed <span class="op">=</span> <span class="va">SEED</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Simplifying a non-recapitated tree sequence. Make sure this is what you</span></span>
-<span><span class="co">#&gt; really want</span></span>
+<span><span class="co">#&gt; Warning: Simplifying a non-recapitated tree sequence. Make sure this is what</span></span>
+<span><span class="co">#&gt; you really want</span></span>
 <span></span>
 <span><span class="va">locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -481,7 +481,37 @@
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.amazon.com/Integration-Manipulation-Visualization-Phylogenetic-Computational-ebook/dp/B0B5NLZR1Z/" class="external-link">ggtree</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">ggtree v3.6.2 For help: https://yulab-smu.top/treedata-book/</span></span></span>
+<span><span class="co">#&gt; Registered S3 methods overwritten by 'treeio':</span></span>
+<span><span class="co">#&gt;   method              from    </span></span>
+<span><span class="co">#&gt;   MRCA.phylo          tidytree</span></span>
+<span><span class="co">#&gt;   MRCA.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   Nnode.treedata      tidytree</span></span>
+<span><span class="co">#&gt;   Ntip.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   ancestor.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   ancestor.treedata   tidytree</span></span>
+<span><span class="co">#&gt;   child.phylo         tidytree</span></span>
+<span><span class="co">#&gt;   child.treedata      tidytree</span></span>
+<span><span class="co">#&gt;   full_join.phylo     tidytree</span></span>
+<span><span class="co">#&gt;   full_join.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   groupClade.phylo    tidytree</span></span>
+<span><span class="co">#&gt;   groupClade.treedata tidytree</span></span>
+<span><span class="co">#&gt;   groupOTU.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   groupOTU.treedata   tidytree</span></span>
+<span><span class="co">#&gt;   inner_join.phylo    tidytree</span></span>
+<span><span class="co">#&gt;   inner_join.treedata tidytree</span></span>
+<span><span class="co">#&gt;   is.rooted.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   nodeid.phylo        tidytree</span></span>
+<span><span class="co">#&gt;   nodeid.treedata     tidytree</span></span>
+<span><span class="co">#&gt;   nodelab.phylo       tidytree</span></span>
+<span><span class="co">#&gt;   nodelab.treedata    tidytree</span></span>
+<span><span class="co">#&gt;   offspring.phylo     tidytree</span></span>
+<span><span class="co">#&gt;   offspring.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   parent.phylo        tidytree</span></span>
+<span><span class="co">#&gt;   parent.treedata     tidytree</span></span>
+<span><span class="co">#&gt;   root.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   rootnode.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   sibling.phylo       tidytree</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">ggtree v3.8.2 For help: https://yulab-smu.top/treedata-book/</span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; </span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; If you use the ggtree package suite in published research, please cite</span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; the appropriate paper(s):</span></span></span>
@@ -606,22 +636,22 @@ Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version
 <tbody>
 <tr class="odd">
 <td align="left">ex1</td>
-<td align="right">5.219964</td>
+<td align="right">5.0277110</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex2</td>
-<td align="right">12.336309</td>
+<td align="right">12.7292815</td>
 <td align="left">mins</td>
 </tr>
 <tr class="odd">
 <td align="left">ex3</td>
-<td align="right">2.059338</td>
+<td align="right">2.0312325</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex4</td>
-<td align="right">0.643569</td>
+<td align="right">0.6565118</td>
 <td align="left">secs</td>
 </tr>
 </tbody>

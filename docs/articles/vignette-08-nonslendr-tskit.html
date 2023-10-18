@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -188,7 +188,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpoDGavH/file5abe7898ccb1");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpQbFjbI/filed89f3bcf0994");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -285,7 +285,37 @@ node IDs in the tskit tree-sequence data to be able to plot them in the
 tree.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.amazon.com/Integration-Manipulation-Visualization-Phylogenetic-Computational-ebook/dp/B0B5NLZR1Z/" class="external-link">ggtree</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">ggtree v3.6.2 For help: https://yulab-smu.top/treedata-book/</span></span></span>
+<span><span class="co">#&gt; Registered S3 methods overwritten by 'treeio':</span></span>
+<span><span class="co">#&gt;   method              from    </span></span>
+<span><span class="co">#&gt;   MRCA.phylo          tidytree</span></span>
+<span><span class="co">#&gt;   MRCA.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   Nnode.treedata      tidytree</span></span>
+<span><span class="co">#&gt;   Ntip.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   ancestor.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   ancestor.treedata   tidytree</span></span>
+<span><span class="co">#&gt;   child.phylo         tidytree</span></span>
+<span><span class="co">#&gt;   child.treedata      tidytree</span></span>
+<span><span class="co">#&gt;   full_join.phylo     tidytree</span></span>
+<span><span class="co">#&gt;   full_join.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   groupClade.phylo    tidytree</span></span>
+<span><span class="co">#&gt;   groupClade.treedata tidytree</span></span>
+<span><span class="co">#&gt;   groupOTU.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   groupOTU.treedata   tidytree</span></span>
+<span><span class="co">#&gt;   inner_join.phylo    tidytree</span></span>
+<span><span class="co">#&gt;   inner_join.treedata tidytree</span></span>
+<span><span class="co">#&gt;   is.rooted.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   nodeid.phylo        tidytree</span></span>
+<span><span class="co">#&gt;   nodeid.treedata     tidytree</span></span>
+<span><span class="co">#&gt;   nodelab.phylo       tidytree</span></span>
+<span><span class="co">#&gt;   nodelab.treedata    tidytree</span></span>
+<span><span class="co">#&gt;   offspring.phylo     tidytree</span></span>
+<span><span class="co">#&gt;   offspring.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   parent.phylo        tidytree</span></span>
+<span><span class="co">#&gt;   parent.treedata     tidytree</span></span>
+<span><span class="co">#&gt;   root.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   rootnode.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   sibling.phylo       tidytree</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">ggtree v3.8.2 For help: https://yulab-smu.top/treedata-book/</span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; </span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; If you use the ggtree package suite in published research, please cite</span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; the appropriate paper(s):</span></span></span>
@@ -393,7 +423,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpoDGavH/file5abe620bbd35");
+    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpQbFjbI/filed89f7fa98734");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
