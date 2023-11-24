@@ -1373,9 +1373,10 @@ init_env <- function(quiet = FALSE) {
 
     if (!reticulate::py_module_available("msprime") ||
         !reticulate::py_module_available("tskit") ||
-        !reticulate::py_module_available("pyslim")) {
+        !reticulate::py_module_available("pyslim") ||
+        !reticulate::py_module_available("tspop")) {
       stop("Python environment ", PYTHON_ENV, " has been found but it",
-           " does not appear to have msprime, tskit and pyslim modules all",
+           " does not appear to have msprime, tskit, pyslim and tspop modules all",
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
            " environment is recommended.", call. = FALSE)
@@ -1531,6 +1532,7 @@ check_env <- function(verbose = TRUE) {
   has_tskit <- reticulate::py_module_available("tskit")
   has_msprime <- reticulate::py_module_available("msprime")
   has_pyslim <- reticulate::py_module_available("pyslim")
+  has_tspop <- reticulate::py_module_available("tspop")
   # has_pylib <- !is.null(pylib)
 
   if (has_tskit)
@@ -1548,6 +1550,11 @@ check_env <- function(verbose = TRUE) {
   else
     pyslim_version <- "MISSING \u274C"
 
+  if (has_tspop)
+    tspop_version <- paste("version", tspop$pyslim_version, "\u2713")
+  else
+    tspop_version <- "MISSING \u274C"
+
   # if (has_pylib)
   #   pylib_status <- "successfully loaded \u2713"
   # else
@@ -1562,10 +1569,11 @@ check_env <- function(verbose = TRUE) {
     cat(" - tskit:", tskit_version, "\n")
     cat(" - msprime:", msprime_version, "\n")
     cat(" - pyslim:", pyslim_version, "\n")
+    cat(" - tspop:", tspop_version, "\n")
     # cat(" - slendr module:", pylib_status, "\n")
   }
 
-  if (!all(c(has_tskit, has_pyslim, has_msprime))) {
+  if (!all(c(has_tskit, has_pyslim, has_msprime, has_tspop))) {
     return_value <- FALSE
     if (verbose)
       cat("\nNote that due to the technical limitations of embedded Python,",
