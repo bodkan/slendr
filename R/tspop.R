@@ -4,7 +4,7 @@
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param census Census time (in slendr time units)
 #' @param squashed Should ancestry tracts be squashed?
-#' @param source
+#' @param source Source population to filter ancestry tracts for
 #' @export
 ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
   model <- attr(ts, "model")
