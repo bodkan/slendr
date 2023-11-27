@@ -1,7 +1,7 @@
 #' Extract ancestry tracts
 #' See <https://tspop.readthedocs.io/en/latest/basicusage.html> for more
 #' details.
-ts_ancestry <- function(ts, census, squashed = TRUE, source = NULL) {
+ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
   model <- attr(ts, "model")
   from_slendr <- !is.null(model)
 
