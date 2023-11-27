@@ -1,0 +1,169 @@
+---
+title: "Examples from the slendr paper"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Examples from the slendr paper}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include = FALSE}
+env_present <- slendr:::is_slendr_env_present()
+eval_chunk <- Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dpi = 80,
+  eval = eval_chunk
+)
+
+devtools::load_all()
+```
+
+Let's imagine the following toy model of Neanderthal and Denisovan introgression into modern humans:
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+library(slendr)
+init_env()
+
+anc_all <- population("ancestor_all", time = 1e6, N = 10000, remove = 640e3)
+afr <- population("AFR", parent = anc_all, time = 650e3, N = 10000)
+anc_arch <- population("ancestor_archaics", parent = anc_all, time = 650e3, N = 10000, remove = 390e3)
+nea <- population("NEA", parent = anc_arch, time = 400e3, N = 1000, remove = 45e3)
+den <- population("DEN", parent = anc_arch, time = 400e3, N = 1000, remove = 30e3)
+nonafr <- population("ancestor_nonAFR", parent = afr, time = 70e3, N = 5000, remove = 39e3)
+eur <- population("EUR", parent = nonafr, time = 40e3, N = 5000)
+pap <- population("PAP", parent = nonafr, time = 40e3, N = 5000)
+
+gf <- list(
+  gene_flow(from = nea, to = nonafr, rate = 0.03, start = 55000, end = 45000),
+  gene_flow(from = den, to = pap, rate = 0.07, start = 35000, end = 30000)
+)
+
+model <- compile_model(
+  populations = list(anc_all, afr, anc_arch, nea, den, nonafr, eur, pap),
+  gene_flow = gf,
+  generation_time = 30
+)
+
+plot_model(
+  model, sizes = FALSE,
+  order = c("AFR", "EUR", "ancestor_nonAFR", "PAP", "ancestor_all", "NEA", "ancestor_archaics", "DEN")
+)
+```
+
+Let's now simulate a 50Mb tree sequence:
+
+```{r}
+samples <- schedule_sampling(model, times = 0, list(eur, 50), list(pap, 50))
+
+ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8, samples = samples)
+ts
+```
+
+```{r}
+anc <- ts_ancestry(ts, census = 55000)
+```
+
+This is what a table with all ancestry tracts looks like:
+
+```{r}
+anc
+```
+
+Summarise ancestry proportions in target EUR and PAP populations:
+
+```{r}
+summary <- anc %>%
+  group_by(name, node_id, pop, source_pop) %>%
+  summarise(prop = sum(length) / 50e6)
+
+summary %>% group_by(pop, source_pop) %>% summarise(mean(prop))
+```
+
+```{r}
+ggplot(summary, aes(source_pop, prop, color = source_pop, fill = source_pop)) +
+  # scale_fill_discrete(drop = FALSE) +
+  geom_jitter() +
+  coord_cartesian(ylim = c(0, 1)) +
+  geom_hline(yintercept = c(0.03, 0.07, 0.97, 0.9), linetype = 2) +
+  ylab("ancestry proportion") +
+  facet_wrap(~ pop) +
+  ggtitle("Ancestry proportions in each individual",
+          "Vertical lines show baseline expectations of 3% - 97% (EUR), and 3% - 7% - 90% (PAP)")
+```
+
+Plot ancestry tracts:
+
+```{r}
+anc %>%
+mutate(chrom = paste(name, " (node", node_id, ")")) %>%
+ggplot(aes(x = left, xend = right, y = chrom, yend = chrom, color = source_pop)) +
+  geom_segment(linewidth = 3) +
+  # scale_color_discrete(drop = FALSE) +
+  theme_minimal() +
+  labs(x = "position [bp]", y = "individual (node)") +
+  ggtitle("True ancestry tracts along each chromosome") +
+  facet_wrap(~ pop, scales = "free_y")
+```
+
+Average tract lengths:
+
+```{r}
+anc %>%
+  filter(source_pop %in% c("NEA", "DEN")) %>%
+  group_by(pop, source_pop) %>%
+  summarise(mean(length))
+```
+
+Theoretical expectations (from Racimo and Slatkin 2015, Box 1)
+
+- Neanderthal tracts:
+
+```{r}
+m <- 0.03
+t <- 50000 / 30
+r <- 1e-8
+
+mean_nea <- 1 / ((1 - m) * r * (t - 1))
+mean_nea
+```
+
+- Denisovan tracts:
+
+```{r}
+m <- 0.07
+t <- 32500 / 30
+r <- 1e-8
+
+mean_den <- 1 / ((1 - m) * r * (t - 1))
+mean_den
+```
+
+
+Plot distributions of tracts lengths of different ancestries:
+
+```{r}
+expectation_df <- data.frame(
+  pop = c("EUR", "PAP", "PAP"),
+  source_pop = c("NEA", "NEA", "DEN"),
+  length = c(mean_nea, mean_nea, mean_den)
+)
+```
+
+```{r}
+p_dens <- anc %>%
+ggplot(aes(length, color = source_pop)) +
+  geom_density() +
+  geom_vline(data = expectation_df, aes(xintercept = length, color = source_pop),
+             linetype = 2) +
+  facet_wrap(~ pop) +
+  ggtitle("Distribution of tract lengths per different ancestries")
+
+cowplot::plot_grid(p_dens, p_dens + scale_x_log10(), nrow = 2)
+```
+
