@@ -3,7 +3,7 @@ title: "Extracting true ancestry tracts"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{Examples from the slendr paper}
+  %\VignetteIndexEntry{Extracting true ancestry tracts}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
@@ -39,7 +39,7 @@ init_env()
 
 Let's imagine the following demographic models which includes Neanderthal introgression into the ancestors of all non-Africans (represented by "EUR" and "PAP" populations, approximating European and Papuan people living today):
 
-```{r}
+```{r introgression_model}
 anc_all <- population("ancestor_all", time = 1e6, N = 10000, remove = 640e3)
 afr <- population("AFR", parent = anc_all, time = 650e3, N = 10000)
 anc_arch <- population("ancestor_archaics", parent = anc_all, time = 650e3, N = 10000, remove = 390e3)
@@ -73,8 +73,8 @@ Let's now simulate a 50Mb tree sequence from this model, recording 50 diploid in
 ```{r}
 samples <- schedule_sampling(model, times = 0, list(eur, 50), list(pap, 50))
 
-ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8, samples = samples)
-ts
+ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8, samples = samples,
+              random_seed = 42)
 ```
 
 ### Extracting ancestry tracts
@@ -113,7 +113,7 @@ summary %>% group_by(pop, source_pop) %>% summarise(mean(prop))
 
 Let's visualize these proportions at an individual level:
 
-```{r}
+```{r, anc_prop_summary}
 ggplot(summary, aes(source_pop, prop, color = source_pop, fill = source_pop)) +
   geom_jitter() +
   coord_cartesian(ylim = c(0, 0.2)) +
@@ -128,7 +128,7 @@ ggplot(summary, aes(source_pop, prop, color = source_pop, fill = source_pop)) +
 
 Because the `tracts` object contains the coordinates of every single ancestry segment in each of the simulated individuals, we can "paint" each chromosome with each of the two archaic human ancestries:
 
-```{r}
+```{r chrom_painting, fig.width=12, fig.height=10}
 tracts %>%
 mutate(chrom = paste(name, " (node", node_id, ")")) %>%
 ggplot(aes(x = left, xend = right, y = chrom, yend = chrom, color = source_pop)) +
@@ -189,7 +189,7 @@ expectation_df <- data.frame(
 )
 ```
 
-```{r}
+```{r tract_lengths}
 p_densities <- tracts %>%
 ggplot(aes(length, color = source_pop)) +
   geom_density() +
