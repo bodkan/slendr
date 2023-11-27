@@ -1,6 +1,11 @@
 #' Extract ancestry tracts
 #' See <https://tspop.readthedocs.io/en/latest/basicusage.html> for more
 #' details.
+#' @param ts Tree sequence object of the class \code{slendr_ts}
+#' @param census Census time (in slendr time units)
+#' @param squashed Should ancestry tracts be squashed?
+#' @param source
+#' @export
 ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
   model <- attr(ts, "model")
   from_slendr <- !is.null(model)
@@ -52,7 +57,7 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
 
   if (!is.null(source)) {
     if (all(is.character(source))) {
-      tracts <- tracts[tracts$source %in% source, ]
+      tracts <- tracts[tracts$source_pop %in% source, ]
     } else if (all(is.integer(source))) {
       tracts <- tracts[tracts$source_id %in% source, ]
     } else {
@@ -63,7 +68,7 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
   }
 
   tracts <-
-    dplyr::select(tracts, name, pop, source, left, right, dplyr::everything()) %>%
+    dplyr::select(tracts, name, pop, source_pop, left, right, dplyr::everything()) %>%
     dplyr::mutate(length = right - left)
 
   tracts
