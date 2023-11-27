@@ -15,7 +15,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   dpi = 80,
-  eval = eval_chunk
+  eval = eval_chunk,
+  fig.width = 8,
+  fig.height = 6
 )
 
 devtools::load_all()
@@ -66,7 +68,7 @@ ts
 ```
 
 ```{r}
-anc <- ts_ancestry(ts, census = 55000)
+anc <- ts_tracts(ts, census = 55000)
 ```
 
 This is what a table with all ancestry tracts looks like:
