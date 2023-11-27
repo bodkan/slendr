@@ -1,5 +1,5 @@
 ---
-title: "Examples from the slendr paper"
+title: "Extracting true ancestry tracts"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
@@ -23,15 +23,23 @@ knitr::opts_chunk$set(
 devtools::load_all()
 ```
 
-Let's imagine the following toy model of Neanderthal and Denisovan introgression into modern humans:
+_slendr_ now includes an experimental, use-it-at-your-own-risk interface to an exciting [new algorithm](https://academic.oup.com/bioinformaticsadvances/advance-article/doi/10.1093/bioadv/vbad163/7429395) for extracting true tracts of ancestry as implemented in the Python module [_tspop_](https://tspop.readthedocs.io/en/latest/index.html).
 
-```{r}
+The interface is implemented in an R function `ts_tracts()` and this vignette describes its use on a simple toy model of Neanderthal and Denisovan introgression into modern humans.
+
+```{r, message=FALSE}
 library(ggplot2)
 library(dplyr)
 
 library(slendr)
 init_env()
+```
 
+### Demographic model
+
+Let's imagine the following demographic models which includes Neanderthal introgression into the ancestors of all non-Africans (represented by "EUR" and "PAP" populations, approximating European and Papuan people living today):
+
+```{r}
 anc_all <- population("ancestor_all", time = 1e6, N = 10000, remove = 640e3)
 afr <- population("AFR", parent = anc_all, time = 650e3, N = 10000)
 anc_arch <- population("ancestor_archaics", parent = anc_all, time = 650e3, N = 10000, remove = 390e3)
@@ -58,7 +66,9 @@ plot_model(
 )
 ```
 
-Let's now simulate a 50Mb tree sequence:
+### Tree sequence simulation
+
+Let's now simulate a 50Mb tree sequence from this model, recording 50 diploid individuals from EUR and PAP populations:
 
 ```{r}
 samples <- schedule_sampling(model, times = 0, list(eur, 50), list(pap, 50))
@@ -67,56 +77,75 @@ ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8, samples 
 ts
 ```
 
+### Extracting ancestry tracts
+
+In order to extract tracts of Neanderthal and Denisovan ancestry, we can use _slendr_'s new function `ts_tracts()` which serves as a simplified R-friendly interface to the Python method `[tspop.get_pop_ancestry](https://tspop.readthedocs.io/en/latest/tspop.html#tspop.get_pop_ancestry)`. A crucial piece of information used by the function is a so-called "census time", which records the time of recording of the "ancestral population" identity of each node ancestral to each subsegment in our sample set. Please see the excellent [vignette of _tspop_](https://tspop.readthedocs.io/en/latest/ideas.html) for more information on the inner workings of the algorithm.
+
+In our case, let's extract the ancestry tracts corresponding to ancestral nodes present at 55 thousand years ago -- this time corresponds to the moment of the start of the archaic introgression:
+
 ```{r}
-anc <- ts_tracts(ts, census = 55000)
+tracts <- ts_tracts(ts, census = 55000)
 ```
 
-This is what a table with all ancestry tracts looks like:
+This is what a table with all ancestry tracts looks like. As we would expect, we see a column indicating a name of each individual, the left and right coordinates of each tract in each individual, as well as the population name of the source of each ancestry tract:
 
 ```{r}
-anc
+tracts
 ```
 
-Summarise ancestry proportions in target EUR and PAP populations:
+Let's subset the ancestry tracts only to ancestries originating in Neanderthals or Denisovans, because this is what we're interested in studying:
 
 ```{r}
-summary <- anc %>%
+tracts <- filter(tracts, source_pop %in% c("NEA", "DEN"))
+```
+
+### Summaries of ancestral proportions
+
+When we summarise the ancestry proportions in target EUR and PAP populations, we see that the EUR population only carries about ~3% of Neanderthal ancestry and that this is also true for the PAP population. However, we also see that Papuans carry about 7% of Denisovan ancestry. This is consistent with our model, but also with the expectation from [empirical data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5772775/).
+
+```{r}
+summary <- tracts %>%
   group_by(name, node_id, pop, source_pop) %>%
   summarise(prop = sum(length) / 50e6)
 
 summary %>% group_by(pop, source_pop) %>% summarise(mean(prop))
 ```
 
+Let's visualize these proportions at an individual level:
+
 ```{r}
 ggplot(summary, aes(source_pop, prop, color = source_pop, fill = source_pop)) +
-  # scale_fill_discrete(drop = FALSE) +
   geom_jitter() +
-  coord_cartesian(ylim = c(0, 1)) +
-  geom_hline(yintercept = c(0.03, 0.07, 0.97, 0.9), linetype = 2) +
+  coord_cartesian(ylim = c(0, 0.2)) +
+  geom_hline(yintercept = c(0.03, 0.08), linetype = 2) +
   ylab("ancestry proportion") +
   facet_wrap(~ pop) +
   ggtitle("Ancestry proportions in each individual",
-          "Vertical lines show baseline expectations of 3% - 97% (EUR), and 3% - 7% - 90% (PAP)")
+          "(vertical lines represent 3% and 7% baseline expectations")
 ```
 
-Plot ancestry tracts:
+### "Chromosome painting" of ancestry tracts
+
+Because the `tracts` object contains the coordinates of every single ancestry segment in each of the simulated individuals, we can "paint" each chromosome with each of the two archaic human ancestries:
 
 ```{r}
-anc %>%
+tracts %>%
 mutate(chrom = paste(name, " (node", node_id, ")")) %>%
 ggplot(aes(x = left, xend = right, y = chrom, yend = chrom, color = source_pop)) +
   geom_segment(linewidth = 3) +
-  # scale_color_discrete(drop = FALSE) +
   theme_minimal() +
-  labs(x = "position [bp]", y = "individual (node)") +
+  labs(x = "position [bp]", y = "haplotype") +
   ggtitle("True ancestry tracts along each chromosome") +
+  theme(axis.text.y = element_blank()) +
   facet_wrap(~ pop, scales = "free_y")
 ```
 
-Average tract lengths:
+### Average tract lengths:
+
+Let's compute simple summaries of tract lengths in the simulated data, and compare them to theoretical expectations.
 
 ```{r}
-anc %>%
+tracts %>%
   filter(source_pop %in% c("NEA", "DEN")) %>%
   group_by(pop, source_pop) %>%
   summarise(mean(length))
@@ -146,8 +175,11 @@ mean_den <- 1 / ((1 - m) * r * (t - 1))
 mean_den
 ```
 
+As we can see, our simulations are not that far of from the theoretical expectations, giving us confidence that our simulations (and the ancestry tract extraction algorithm) are working as expected.
 
-Plot distributions of tracts lengths of different ancestries:
+### Distribution of ancestry tract lengths
+
+Finally, let's plot the distributions of lengths of each of the ancestry tracts. The case of archaic human introgression is very well studied so it's perhaps not that exciting to look at these figures. That said, in less well studied species, it might be interesting to use these kinds of simulations for inference of introgression times and proportions via Approximate Bayesian Computation or by another method:
 
 ```{r}
 expectation_df <- data.frame(
@@ -158,7 +190,7 @@ expectation_df <- data.frame(
 ```
 
 ```{r}
-p_dens <- anc %>%
+p_densities <- tracts %>%
 ggplot(aes(length, color = source_pop)) +
   geom_density() +
   geom_vline(data = expectation_df, aes(xintercept = length, color = source_pop),
@@ -166,6 +198,6 @@ ggplot(aes(length, color = source_pop)) +
   facet_wrap(~ pop) +
   ggtitle("Distribution of tract lengths per different ancestries")
 
-cowplot::plot_grid(p_dens, p_dens + scale_x_log10(), nrow = 2)
+cowplot::plot_grid(p_densities, p_densities + scale_x_log10(), nrow = 2)
 ```
 
