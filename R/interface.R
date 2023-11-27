@@ -1551,7 +1551,7 @@ check_env <- function(verbose = TRUE) {
     pyslim_version <- "MISSING \u274C"
 
   if (has_tspop)
-    tspop_version <- paste("version", tspop$pyslim_version, "\u2713")
+    tspop_version <- paste("present \u2713")
   else
     tspop_version <- "MISSING \u274C"
 
