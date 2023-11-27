@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- Experimental support for the [_tspop_](https://tspop.readthedocs.io/en/latest/) `link-ancestors` algorithm for detection of ancestry tracts in the form of a new _slendr_ function `ts_tracts()`. Only works on _slendr_-specific _msprime_ tree sequences for now, and has been only tested on a few toy models. More general support is in progress. **Note:** the _tspop_ Python module is not published on conda. In order to set up a new _slendr_ Python environment, you will have to run `setup_env(pip = TRUE)` to make sure that Python dependencies are installed with pip. ([PR #145](https://github.com/bodkan/slendr/pull/145))
+
 - Updated Python dependencies (bugfix pyslim release [v1.0.4](https://github.com/tskit-dev/pyslim/releases/tag/1.0.4) and tskit [v0.5.6](https://github.com/tskit-dev/tskit/releases/tag/0.5.6), the latter due to a broken `jsonschema` dependency of tskit). ([#001ee5](https://github.com/bodkan/slendr/commit/001ee5))
 
 - Experimental support for [manually created](https://github.com/bodkan/slendr/pull/144) spatial tree sequences. ([PR #144](https://github.com/bodkan/slendr/pull/144))

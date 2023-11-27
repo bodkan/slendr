@@ -47,6 +47,8 @@ navbar:
           href: articles/vignette-08-nonslendr-tskit.html
         - text: Examples from the slendr paper
           href: articles/vignette-09-paper.html
+        - text: Extracting true ancestry tracts
+          href: articles/vignette-10-tracts.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/fleventy5
