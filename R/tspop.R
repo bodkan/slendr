@@ -1,6 +1,9 @@
 #' Extract ancestry tracts
+#' Extract ancestry tracts in sampled chromosomes (EXPERIMENTAL)
+#'
 #' See <https://tspop.readthedocs.io/en/latest/basicusage.html> for more
 #' details.
+#'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param census Census time (in slendr time units)
 #' @param squashed Should ancestry tracts be squashed?

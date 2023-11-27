@@ -3,8 +3,7 @@
 \name{ts_tracts}
 \alias{ts_tracts}
 \title{Extract ancestry tracts
-See \url{https://tspop.readthedocs.io/en/latest/basicusage.html} for more
-details.}
+Extract ancestry tracts in sampled chromosomes (EXPERIMENTAL)}
 \usage{
 ts_tracts(ts, census, squashed = TRUE, source = NULL)
 }
@@ -18,7 +17,6 @@ ts_tracts(ts, census, squashed = TRUE, source = NULL)
 \item{source}{Source population to filter ancestry tracts for}
 }
 \description{
-Extract ancestry tracts
 See \url{https://tspop.readthedocs.io/en/latest/basicusage.html} for more
 details.
 }
