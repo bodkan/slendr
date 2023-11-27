@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 
-devtools::load_all()
+set.seed(42)
 ```
 
 _slendr_ now includes an experimental, use-it-at-your-own-risk interface to an exciting [new algorithm](https://academic.oup.com/bioinformaticsadvances/advance-article/doi/10.1093/bioadv/vbad163/7429395) for extracting true tracts of ancestry as implemented in the Python module [_tspop_](https://tspop.readthedocs.io/en/latest/index.html).
