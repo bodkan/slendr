@@ -2,19 +2,21 @@
 % Please edit documentation in R/tspop.R
 \name{ts_tracts}
 \alias{ts_tracts}
-\title{Extract ancestry tracts
-Extract ancestry tracts in sampled chromosomes (EXPERIMENTAL)}
+\title{Extract ancestry tracts from the tree sequence (EXPERIMENTAL)}
 \usage{
-ts_tracts(ts, census, squashed = TRUE, source = NULL)
+ts_tracts(ts, census, squashed = TRUE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{census}{Census time (in slendr time units)}
 
-\item{squashed}{Should ancestry tracts be squashed?}
-
-\item{source}{Source population to filter ancestry tracts for}
+\item{squashed}{Should ancestry tracts be squashed (i.e., should continuous
+tracts that can be traced to different ancestral nodes be merged)? Default
+is \code{TRUE}.}
+}
+\value{
+A data frame containing coordinates of ancestry tracts
 }
 \description{
 See \url{https://tspop.readthedocs.io/en/latest/basicusage.html} for more

@@ -1,15 +1,18 @@
-#' Extract ancestry tracts
-#' Extract ancestry tracts in sampled chromosomes (EXPERIMENTAL)
+#' Extract ancestry tracts from the tree sequence (EXPERIMENTAL)
 #'
 #' See <https://tspop.readthedocs.io/en/latest/basicusage.html> for more
 #' details.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param census Census time (in slendr time units)
-#' @param squashed Should ancestry tracts be squashed?
-#' @param source Source population to filter ancestry tracts for
+#' @param squashed Should ancestry tracts be squashed (i.e., should continuous
+#'   tracts that can be traced to different ancestral nodes be merged)? Default
+#'   is \code{TRUE}.
+#'
+#' @returns A data frame containing coordinates of ancestry tracts
+#'
 #' @export
-ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
+ts_tracts <- function(ts, census, squashed = TRUE) {
   model <- attr(ts, "model")
   from_slendr <- !is.null(model)
 
@@ -45,41 +48,36 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
   tracts <- dplyr::as_tibble(tracts)
 
   if (from_slendr) {
-    nodes <- ts_nodes(ts)
+    # add symbolic names of individuals and their populations to each tract by
+    # joining with the annotated nodes table based on the node ID
+    samples <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::select(name, node_id, pop)
+    tracts <- dplyr::inner_join(tracts, samples, by = c("sample" = "node_id"))
 
-    tracts$source_pop <- model$splits$pop[tracts$population + 1]
-    tracts$source_pop_id <- tracts$population
-    tracts$population <- NULL
+    # add symbolic names of the source populations
     pop_factors <- order_pops(model$populations, model$direction)
-    tracts$source_pop <- factor(tracts$source_pop, levels = pop_factors)
+    tracts$source_pop <- factor(model$splits$pop[tracts$population + 1], levels = pop_factors)
 
-    # tracts$name <- vapply(tracts$sample, function(node_id) nodes[nodes$node_id == node_id, ]$name,
-    #                       FUN.VALUE = character(1))
-    # tracts$node_id <- tracts$sample
-    tracts <- dplyr::inner_join(
-      tracts,
-      nodes %>% dplyr::filter(sampled) %>% dplyr::select(name, node_id, pop),
-      by = c("sample" = "node_id")
-    )
+    # rename the population/sample/ancestor ID columns to match other slendr functions
+    tracts$source_pop_id <- tracts$population
     tracts$node_id <- tracts$sample
+    # and remove the original names
+    tracts$population <- NULL
     tracts$sample <- NULL
+
+    # non-squashed tract table contains an extra column, so take care of it
+    if (!squashed) {
+      tracts$ancestor_id <- tracts$ancestor
+      tracts$ancestor <- NULL
+      ancestor_col <- "ancestor_id"
+    } else
+      ancestor_col <- NULL
+
+    columns <- c("name", "node_id", "pop", "source_pop", "left", "right", "length",
+                 ancestor_col, "source_pop_id")
   }
 
-  if (!is.null(source)) {
-    if (all(is.character(source))) {
-      tracts <- tracts[tracts$source_pop %in% source, ]
-    } else if (all(is.integer(source))) {
-      tracts <- tracts[tracts$source_id %in% source, ]
-    } else {
-      stop("When providing multiple ancestry sources, all must be of the same type\n",
-           "(either a vector of population names or integer IDs).",
-           call. = FALSE)
-    }
-  }
-
-  tracts <-
-    dplyr::select(tracts, name, pop, source_pop, left, right, dplyr::everything()) %>%
-    dplyr::mutate(length = right - left)
+  # add a length of each tract and reorder columns, for convenience
+  tracts <- tracts %>% dplyr::mutate(length = right - left) %>% .[, columns]
 
   tracts
 }
