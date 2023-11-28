@@ -37,7 +37,7 @@ init_env()
 
 ### Demographic model
 
-Let's imagine the following demographic models which includes Neanderthal introgression into the ancestors of all non-Africans (represented by "EUR" and "PAP" populations, approximating European and Papuan people living today):
+Let's imagine the following demographic model of Neanderthal introgression into the ancestors of all non-Africans (represented by "EUR" and "PAP" populations, approximating European and Papuan people living today), followed by Denisovan introgression into the ancestors of Papuans:
 
 ```{r introgression_model}
 anc_all <- population("ancestor_all", time = 1e6, N = 10000, remove = 640e3)
@@ -73,13 +73,12 @@ Let's now simulate a 50Mb tree sequence from this model, recording 50 diploid in
 ```{r}
 samples <- schedule_sampling(model, times = 0, list(eur, 50), list(pap, 50))
 
-ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8, samples = samples,
-              random_seed = 42)
+ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8, samples = samples, random_seed = 42)
 ```
 
 ### Extracting ancestry tracts
 
-In order to extract tracts of Neanderthal and Denisovan ancestry, we can use _slendr_'s new function `ts_tracts()` which serves as a simplified R-friendly interface to the Python method `[tspop.get_pop_ancestry](https://tspop.readthedocs.io/en/latest/tspop.html#tspop.get_pop_ancestry)`. A crucial piece of information used by the function is a so-called "census time", which records the time of recording of the "ancestral population" identity of each node ancestral to each subsegment in our sample set. Please see the excellent [vignette of _tspop_](https://tspop.readthedocs.io/en/latest/ideas.html) for more information on the inner workings of the algorithm.
+In order to extract tracts of Neanderthal and Denisovan ancestry, we can use _slendr_'s new function `ts_tracts()` which serves as a simplified R-friendly interface to the Python method [`tspop.get_pop_ancestry()`](https://tspop.readthedocs.io/en/latest/tspop.html#tspop.get_pop_ancestry). An important piece of information used by the function is a so-called "census time", which records the time of recording of the "ancestral population" identity of each node ancestral to each subsegment in our sample set. Please see the excellent [vignette of _tspop_](https://tspop.readthedocs.io/en/latest/ideas.html) for more information on the inner workings of the algorithm.
 
 In our case, let's extract the ancestry tracts corresponding to ancestral nodes present at 55 thousand years ago -- this time corresponds to the moment of the start of the archaic introgression:
 
@@ -87,11 +86,17 @@ In our case, let's extract the ancestry tracts corresponding to ancestral nodes 
 tracts <- ts_tracts(ts, census = 55000)
 ```
 
+**TODO:** Find out what is the interpretation/use of the census time for use cases which want to work with multiple sets of ancestry tracts (Neanderthal and Denisovan tracts in this case). The simple analysis below suggests that we get the Denisovan tracts without problem... but maybe this `census = 55000` wouldn't work if Denisovans split into two subpopulations _after_ this first gene flow event, both of which would contribute tracts separately? 
+
+**NOTE:** It appears that the `census` argument of `tspop.get_pop_ancestry()` [can be a list](https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L17) can be a list of integer values, so perhaps one is supposed to input all relevant census times to really get all tracts properly assigned to ancestral sources? Although [this](https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L26) doesn't look like `census_time` can be a list?
+
 This is what a table with all ancestry tracts looks like. As we would expect, we see a column indicating a name of each individual, the left and right coordinates of each tract in each individual, as well as the population name of the source of each ancestry tract:
 
 ```{r}
 tracts
 ```
+
+**TODO:** Tidy up the data frame and make sure the column names a) are concise enough, b) match similar output tables from other _slendr_ / _tskit_ interface functions.
 
 Let's subset the ancestry tracts only to ancestries originating in Neanderthals or Denisovans, because this is what we're interested in studying:
 

@@ -134,10 +134,11 @@ humans.</p>
 <div class="section level3">
 <h3 id="demographic-model">Demographic model<a class="anchor" aria-label="anchor" href="#demographic-model"></a>
 </h3>
-<p>Let’s imagine the following demographic models which includes
-Neanderthal introgression into the ancestors of all non-Africans
-(represented by “EUR” and “PAP” populations, approximating European and
-Papuan people living today):</p>
+<p>Let’s imagine the following demographic model of Neanderthal
+introgression into the ancestors of all non-Africans (represented by
+“EUR” and “PAP” populations, approximating European and Papuan people
+living today), followed by Denisovan introgression into the ancestors of
+Papuans:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">anc_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_all"</span>, time <span class="op">=</span> <span class="fl">1e6</span>, N <span class="op">=</span> <span class="fl">10000</span>, remove <span class="op">=</span> <span class="fl">640e3</span><span class="op">)</span></span>
 <span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="va">anc_all</span>, time <span class="op">=</span> <span class="fl">650e3</span>, N <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span>
@@ -173,17 +174,15 @@ diploid individuals from EUR and PAP populations:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pap</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">50e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>,</span>
-<span>              random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">50e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="extracting-ancestry-tracts">Extracting ancestry tracts<a class="anchor" aria-label="anchor" href="#extracting-ancestry-tracts"></a>
 </h3>
 <p>In order to extract tracts of Neanderthal and Denisovan ancestry, we
 can use <em>slendr</em>’s new function <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> which
-serves as a simplified R-friendly interface to the Python method
-<code>[tspop.get_pop_ancestry](https://tspop.readthedocs.io/en/latest/tspop.html#tspop.get_pop_ancestry)</code>.
-A crucial piece of information used by the function is a so-called
+serves as a simplified R-friendly interface to the Python method <a href="https://tspop.readthedocs.io/en/latest/tspop.html#tspop.get_pop_ancestry" class="external-link"><code>tspop.get_pop_ancestry()</code></a>.
+An important piece of information used by the function is a so-called
 “census time”, which records the time of recording of the “ancestral
 population” identity of each node ancestral to each subsegment in our
 sample set. Please see the excellent <a href="https://tspop.readthedocs.io/en/latest/ideas.html" class="external-link">vignette of
@@ -201,6 +200,19 @@ to the moment of the start of the archaic introgression:</p>
 <span><span class="co">#&gt; Number of ancestors:             23917</span></span>
 <span><span class="co">#&gt; Total length of genomes:         10000000000.000000</span></span>
 <span><span class="co">#&gt; Ancestral coverage:          10000000000.000000</span></span></code></pre></div>
+<p><strong>TODO:</strong> Find out what is the interpretation/use of the
+census time for use cases which want to work with multiple sets of
+ancestry tracts (Neanderthal and Denisovan tracts in this case). The
+simple analysis below suggests that we get the Denisovan tracts without
+problem… but maybe this <code>census = 55000</code> wouldn’t work if
+Denisovans split into two subpopulations <em>after</em> this first gene
+flow event, both of which would contribute tracts separately?</p>
+<p><strong>NOTE:</strong> It appears that the <code>census</code>
+argument of <code>tspop.get_pop_ancestry()</code> <a href="https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L17" class="external-link">can
+be a list</a> can be a list of integer values, so perhaps one is
+supposed to input all relevant census times to really get all tracts
+properly assigned to ancestral sources? Although <a href="https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L26" class="external-link">this</a>
+doesn’t look like <code>census_time</code> can be a list?</p>
 <p>This is what a table with all ancestry tracts looks like. As we would
 expect, we see a column indicating a name of each individual, the left
 and right coordinates of each tract in each individual, as well as the
@@ -221,6 +233,9 @@ population name of the source of each ancestry tract:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_1 EUR   ancestor_nonAFR 5<span style="text-decoration: underline;">019</span>961 5<span style="text-decoration: underline;">025</span>228             5       0    <span style="text-decoration: underline;">5</span>267</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_1 EUR   NEA             5<span style="text-decoration: underline;">025</span>228 5<span style="text-decoration: underline;">025</span>510             3       0     282</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 13,621 more rows</span></span></span></code></pre></div>
+<p><strong>TODO:</strong> Tidy up the data frame and make sure the
+column names a) are concise enough, b) match similar output tables from
+other <em>slendr</em> / <em>tskit</em> interface functions.</p>
 <p>Let’s subset the ancestry tracts only to ancestries originating in
 Neanderthals or Denisovans, because this is what we’re interested in
 studying:</p>
