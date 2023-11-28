@@ -15,7 +15,7 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
 
   if (from_slendr) {
     if (attr(ts, "type") == "SLiM")
-      stop("Extracting ancestry tracts is currently (experimentally) supported for msprime tree sequences",
+      stop("Extracting ancestry tracts is only supported for non-SLiM tree sequences",
            call. = FALSE)
 
     if (!census %in% model$geneflow$tstart_orig)
