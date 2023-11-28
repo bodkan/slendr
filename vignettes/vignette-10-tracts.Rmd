@@ -88,7 +88,7 @@ tracts <- ts_tracts(ts, census = 55000)
 
 **TODO:** Find out what is the interpretation/use of the census time for use cases which want to work with multiple sets of ancestry tracts (Neanderthal and Denisovan tracts in this case). The simple analysis below suggests that we get the Denisovan tracts without problem... but maybe this `census = 55000` wouldn't work if Denisovans split into two subpopulations _after_ this first gene flow event, both of which would contribute tracts separately? 
 
-**NOTE:** It appears that the `census` argument of `tspop.get_pop_ancestry()` [can be a list](https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L17) can be a list of integer values, so perhaps one is supposed to input all relevant census times to really get all tracts properly assigned to ancestral sources? Although [this](https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L26) doesn't look like `census_time` can be a list?
+**NOTE:** It appears that the `census` argument of `tspop.get_pop_ancestry()` [can be a list](https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L17) of integer values, so perhaps one is supposed to input all relevant census times to really get all tracts properly assigned to ancestral sources? Although [this](https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L26) doesn't look like `census_time` can be a list?
 
 This is what a table with all ancestry tracts looks like. As we would expect, we see a column indicating a name of each individual, the left and right coordinates of each tract in each individual, as well as the population name of the source of each ancestry tract:
 
