@@ -13,6 +13,8 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
   model <- attr(ts, "model")
   from_slendr <- !is.null(model)
 
+  # slendr tree sequences assume census times given in slendr-based time units
+  # (whatever those might be depending on the user model)
   if (from_slendr) {
     if (attr(ts, "type") == "SLiM")
       stop("Extracting ancestry tracts is only supported for non-SLiM tree sequences",
@@ -22,11 +24,16 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
       stop("Census time ", census, " is not among gene-flow times in the model", call. = FALSE)
 
     which_gf <- model$geneflow$tstart_orig == census
-    census_gen <- model$length - model$geneflow$tstart_gen[which_gf] + 1 # time of geneflow in script.py
-  } else
+    # get backwards-time generations-based time of gene flow in script.py
+    census_gen <- model$length - model$geneflow$tstart_gen[which_gf] + 1
+  } else {
+    # non-slendr tree sequences naturally expect census time to be in tskit
+    # time units
     census_gen <- census
+  }
 
   pa <- tspop$get_pop_ancestry(ts, census_gen)
+  # print out the summary right away
   summary(pa)
   cat("\n")
 
