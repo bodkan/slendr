@@ -127,10 +127,21 @@ def simulate(
           source=event.to,
           dest=event._1,
       )
-      # add corresponding census event -- this seems like a hack but let's
-      # follow this for the time being:
+      # add a corresponding census event following this:
       # https://tspop.readthedocs.io/en/latest/simulationsetup.html
+      demography.add_census(time=tend+100)
+      demography.add_census(time=tend+10)
+      demography.add_census(time=tend+1)
+      demography.add_census(time=tend+0.1)
+      demography.add_census(time=tend+0.01)
+      demography.add_census(time=tend+0.001)
       demography.add_census(time=tend)
+      demography.add_census(time=tend-0.001)
+      demography.add_census(time=tend-0.01)
+      demography.add_census(time=tend-0.1)
+      demography.add_census(time=tend-1)
+      demography.add_census(time=tend-10)
+      demography.add_census(time=tend-100)
 
   # make sure all slendr events are sorted by time of occurence
   # (otherwise msprime complains)
