@@ -1,7 +1,15 @@
-#' Extract ancestry tracts from the tree sequence (EXPERIMENTAL)
+#' Extract ancestry tracts from a tree sequence (EXPERIMENTAL)
 #'
-#' See <https://tspop.readthedocs.io/en/latest/basicusage.html> for more
-#' details.
+#' Extracts a table of ancestry tracts from a given tree sequence
+#'
+#' This functions implements an R-friendly interface to an algorithm for
+#' extracting ancestry tracts provided by the Python module tspop
+#' <https://tspop.readthedocs.io/en/latest/> and described by Georgia Tsambos.
+#' Please make sure to cite their paper which describes the algorithm in
+#' detail: <https://academic.oup.com/bioinformaticsadvances/article/3/1/vbad163/7429395>.
+#'
+#' For more technical details, see also the tutorial at:
+#' <https://tspop.readthedocs.io/en/latest/basicusage.html>.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param census Census time (in slendr time units) corresponding to some gene

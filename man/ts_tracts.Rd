@@ -2,7 +2,7 @@
 % Please edit documentation in R/tspop.R
 \name{ts_tracts}
 \alias{ts_tracts}
-\title{Extract ancestry tracts from the tree sequence (EXPERIMENTAL)}
+\title{Extract ancestry tracts from a tree sequence (EXPERIMENTAL)}
 \usage{
 ts_tracts(ts, census, squashed = TRUE, source = NULL)
 }
@@ -28,6 +28,15 @@ ignored for non-slendr tree sequences!}
 A data frame containing coordinates of ancestry tracts
 }
 \description{
-See \url{https://tspop.readthedocs.io/en/latest/basicusage.html} for more
-details.
+Extracts a table of ancestry tracts from a given tree sequence
+}
+\details{
+This functions implements an R-friendly interface to an algorithm for
+extracting ancestry tracts provided by the Python module tspop
+\url{https://tspop.readthedocs.io/en/latest/} and described by Georgia Tsambos.
+Please make sure to cite their paper which describes the algorithm in
+detail: \url{https://academic.oup.com/bioinformaticsadvances/article/3/1/vbad163/7429395}.
+
+For more technical details, see also the tutorial at:
+\url{https://tspop.readthedocs.io/en/latest/basicusage.html}.
 }
