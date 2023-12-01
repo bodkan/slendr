@@ -4,16 +4,25 @@
 \alias{ts_tracts}
 \title{Extract ancestry tracts from the tree sequence (EXPERIMENTAL)}
 \usage{
-ts_tracts(ts, census, squashed = TRUE)
+ts_tracts(ts, census, squashed = TRUE, source = NULL)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
-\item{census}{Census time (in slendr time units)}
+\item{census}{Census time (in slendr time units) corresponding to some gene
+flow event}
 
 \item{squashed}{Should ancestry tracts be squashed (i.e., should continuous
 tracts that can be traced to different ancestral nodes be merged)? Default
-is \code{TRUE}.}
+is \code{TRUE}. If \code{FALSE}, these effectively continuous ancestry
+tracts will be split into individual segments, each assigned to a specific
+ancestral node ID (recorded in a column \code{ancestor_id}).}
+
+\item{source}{From which source population to extract tracts for? if \code{NULL}
+(the default), ancestry tracts for all populations contributing gene flow
+at the census time will be reported. Otherwise, ancestry tracts from only
+specified source populations will be extracted. Note that this option is
+ignored for non-slendr tree sequences!}
 }
 \value{
 A data frame containing coordinates of ancestry tracts
