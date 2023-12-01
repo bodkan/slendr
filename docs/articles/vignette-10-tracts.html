@@ -117,6 +117,13 @@
 
     
     
+<p><strong>Please note that the <em>tspop</em> support in
+<em>slendr</em> implemented in the <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> function is
+extremely experimental, only minimally tested, and its functionality is
+expected to change quite a bit. Please wait for the release of the next
+major version of <em>slendr</em> (which should include a more developed
+<code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>) before you use this in your own
+work.</strong></p>
 <p><em>slendr</em> now includes an experimental, use-it-at-your-own-risk
 interface to an exciting <a href="https://academic.oup.com/bioinformaticsadvances/advance-article/doi/10.1093/bioadv/vbad163/7429395" class="external-link">new
 algorithm</a> for extracting true tracts of ancestry as implemented in
@@ -140,29 +147,30 @@ introgression into the ancestors of all non-Africans (represented by
 living today), followed by Denisovan introgression into the ancestors of
 Papuans:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">anc_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_all"</span>, time <span class="op">=</span> <span class="fl">1e6</span>, N <span class="op">=</span> <span class="fl">10000</span>, remove <span class="op">=</span> <span class="fl">640e3</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">anc_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_all"</span>, time <span class="op">=</span> <span class="fl">700e3</span>, N <span class="op">=</span> <span class="fl">10000</span>, remove <span class="op">=</span> <span class="fl">640e3</span><span class="op">)</span></span>
 <span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="va">anc_all</span>, time <span class="op">=</span> <span class="fl">650e3</span>, N <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span>
 <span><span class="va">anc_arch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_archaics"</span>, parent <span class="op">=</span> <span class="va">anc_all</span>, time <span class="op">=</span> <span class="fl">650e3</span>, N <span class="op">=</span> <span class="fl">10000</span>, remove <span class="op">=</span> <span class="fl">390e3</span><span class="op">)</span></span>
-<span><span class="va">nea</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"NEA"</span>, parent <span class="op">=</span> <span class="va">anc_arch</span>, time <span class="op">=</span> <span class="fl">400e3</span>, N <span class="op">=</span> <span class="fl">1000</span>, remove <span class="op">=</span> <span class="fl">45e3</span><span class="op">)</span></span>
-<span><span class="va">den</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"DEN"</span>, parent <span class="op">=</span> <span class="va">anc_arch</span>, time <span class="op">=</span> <span class="fl">400e3</span>, N <span class="op">=</span> <span class="fl">1000</span>, remove <span class="op">=</span> <span class="fl">30e3</span><span class="op">)</span></span>
-<span><span class="va">nonafr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_nonAFR"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">70e3</span>, N <span class="op">=</span> <span class="fl">5000</span>, remove <span class="op">=</span> <span class="fl">39e3</span><span class="op">)</span></span>
-<span><span class="va">eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"EUR"</span>, parent <span class="op">=</span> <span class="va">nonafr</span>, time <span class="op">=</span> <span class="fl">40e3</span>, N <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
-<span><span class="va">pap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"PAP"</span>, parent <span class="op">=</span> <span class="va">nonafr</span>, time <span class="op">=</span> <span class="fl">40e3</span>, N <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
+<span><span class="va">nea</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"NEA"</span>, parent <span class="op">=</span> <span class="va">anc_arch</span>, time <span class="op">=</span> <span class="fl">400e3</span>, N <span class="op">=</span> <span class="fl">100</span>, remove <span class="op">=</span> <span class="fl">30e3</span><span class="op">)</span></span>
+<span><span class="va">den</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"DEN"</span>, parent <span class="op">=</span> <span class="va">anc_arch</span>, time <span class="op">=</span> <span class="fl">400e3</span>, N <span class="op">=</span> <span class="fl">100</span>, remove <span class="op">=</span> <span class="fl">30e3</span><span class="op">)</span></span>
+<span><span class="va">nonafr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_nonAFR"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">100e3</span>, N <span class="op">=</span> <span class="fl">1000</span>, remove <span class="op">=</span> <span class="fl">39e3</span><span class="op">)</span></span>
+<span><span class="va">eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"EUR"</span>, parent <span class="op">=</span> <span class="va">nonafr</span>, time <span class="op">=</span> <span class="fl">45e3</span>, N <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
+<span><span class="va">pap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"PAP"</span>, parent <span class="op">=</span> <span class="va">nonafr</span>, time <span class="op">=</span> <span class="fl">45e3</span>, N <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">nea</span>, to <span class="op">=</span> <span class="va">nonafr</span>, rate <span class="op">=</span> <span class="fl">0.03</span>, start <span class="op">=</span> <span class="fl">55000</span>, end <span class="op">=</span> <span class="fl">45000</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">nea</span>, to <span class="op">=</span> <span class="va">nonafr</span>, rate <span class="op">=</span> <span class="fl">0.03</span>, start <span class="op">=</span> <span class="fl">55000</span>, end <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">den</span>, to <span class="op">=</span> <span class="va">pap</span>, rate <span class="op">=</span> <span class="fl">0.07</span>, start <span class="op">=</span> <span class="fl">35000</span>, end <span class="op">=</span> <span class="fl">30000</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">anc_all</span>, <span class="va">afr</span>, <span class="va">anc_arch</span>, <span class="va">nea</span>, <span class="va">den</span>, <span class="va">nonafr</span>, <span class="va">eur</span>, <span class="va">pap</span><span class="op">)</span>,</span>
 <span>  gene_flow <span class="op">=</span> <span class="va">gf</span>,</span>
-<span>  generation_time <span class="op">=</span> <span class="fl">30</span></span>
+<span>  generation_time <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  serialize <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span></span>
 <span>  <span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span>, <span class="st">"ancestor_nonAFR"</span>, <span class="st">"PAP"</span>, <span class="st">"ancestor_all"</span>, <span class="st">"NEA"</span>, <span class="st">"ancestor_archaics"</span>, <span class="st">"DEN"</span><span class="op">)</span></span>
+<span>  order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span>, <span class="st">"ancestor_nonAFR"</span>, <span class="st">"PAP"</span>, <span class="st">"ancestor_all"</span>, <span class="st">"DEN"</span>, <span class="st">"ancestor_archaics"</span>, <span class="st">"NEA"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-10-tracts_files/figure-html/introgression_model-1.png" width="640"></p>
 </div>
@@ -172,9 +180,9 @@ Papuans:</p>
 <p>Let’s now simulate a 50Mb tree sequence from this model, recording 50
 diploid individuals from EUR and PAP populations:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pap</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pap</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">50e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="extracting-ancestry-tracts">Extracting ancestry tracts<a class="anchor" aria-label="anchor" href="#extracting-ancestry-tracts"></a>
@@ -192,55 +200,44 @@ algorithm.</p>
 ancestral nodes present at 55 thousand years ago – this time corresponds
 to the moment of the start of the archaic introgression:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">ts</span>, census <span class="op">=</span> <span class="fl">55000</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">nea_tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">ts</span>, census <span class="op">=</span> <span class="fl">55000</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; PopAncestry summary</span></span>
 <span><span class="co">#&gt; Number of ancestral populations:     3</span></span>
-<span><span class="co">#&gt; Number of sample chromosomes:        200</span></span>
-<span><span class="co">#&gt; Number of ancestors:             23917</span></span>
+<span><span class="co">#&gt; Number of sample chromosomes:        100</span></span>
+<span><span class="co">#&gt; Number of ancestors:             21298</span></span>
 <span><span class="co">#&gt; Total length of genomes:         10000000000.000000</span></span>
-<span><span class="co">#&gt; Ancestral coverage:          10000000000.000000</span></span></code></pre></div>
-<p><strong>TODO:</strong> Find out what is the interpretation/use of the
-census time for use cases which want to work with multiple sets of
-ancestry tracts (Neanderthal and Denisovan tracts in this case). The
-simple analysis below suggests that we get the Denisovan tracts without
-problem… but maybe this <code>census = 55000</code> wouldn’t work if
-Denisovans split into two subpopulations <em>after</em> this first gene
-flow event, both of which would contribute tracts separately?</p>
-<p><strong>NOTE:</strong> It appears that the <code>census</code>
-argument of <code>tspop.get_pop_ancestry()</code> <a href="https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L17" class="external-link">can
-be a list</a> of integer values, so perhaps one is supposed to input all
-relevant census times to really get all tracts properly assigned to
-ancestral sources? Although <a href="https://github.com/gtsambos/tspop/blob/main/src/tspop.py#L26" class="external-link">this</a>
-doesn’t look like <code>census_time</code> can be a list?</p>
+<span><span class="co">#&gt; Ancestral coverage:          10000000000.000000</span></span>
+<span><span class="va">den_tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">ts</span>, census <span class="op">=</span> <span class="fl">35000</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; PopAncestry summary</span></span>
+<span><span class="co">#&gt; Number of ancestral populations:     3</span></span>
+<span><span class="co">#&gt; Number of sample chromosomes:        100</span></span>
+<span><span class="co">#&gt; Number of ancestors:             48617</span></span>
+<span><span class="co">#&gt; Total length of genomes:         10000000000.000000</span></span>
+<span><span class="co">#&gt; Ancestral coverage:          10000000000.000000</span></span>
+<span></span>
+<span><span class="va">tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">nea_tracts</span>, <span class="va">den_tracts</span><span class="op">)</span></span></code></pre></div>
 <p>This is what a table with all ancestry tracts looks like. As we would
 expect, we see a column indicating a name of each individual, the left
 and right coordinates of each tract in each individual, as well as the
 population name of the source of each ancestry tract:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tracts</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 13,631 × 8</span></span></span>
-<span><span class="co">#&gt;    name  pop   source_pop         left   right source_pop_id node_id  length</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> EUR_1 EUR   ancestor_nonAFR       0  <span style="text-decoration: underline;">984</span>469             5       0  <span style="text-decoration: underline;">984</span>469</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> EUR_1 EUR   NEA              <span style="text-decoration: underline;">984</span>469 1<span style="text-decoration: underline;">000</span>288             3       0   <span style="text-decoration: underline;">15</span>819</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> EUR_1 EUR   ancestor_nonAFR 1<span style="text-decoration: underline;">000</span>288 1<span style="text-decoration: underline;">326</span>829             5       0  <span style="text-decoration: underline;">326</span>541</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> EUR_1 EUR   NEA             1<span style="text-decoration: underline;">326</span>829 1<span style="text-decoration: underline;">435</span>371             3       0  <span style="text-decoration: underline;">108</span>542</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> EUR_1 EUR   ancestor_nonAFR 1<span style="text-decoration: underline;">435</span>371 2<span style="text-decoration: underline;">081</span>296             5       0  <span style="text-decoration: underline;">645</span>925</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> EUR_1 EUR   NEA             2<span style="text-decoration: underline;">081</span>296 2<span style="text-decoration: underline;">094</span>024             3       0   <span style="text-decoration: underline;">12</span>728</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> EUR_1 EUR   ancestor_nonAFR 2<span style="text-decoration: underline;">094</span>024 4<span style="text-decoration: underline;">965</span>691             5       0 2<span style="text-decoration: underline;">871</span>667</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_1 EUR   NEA             4<span style="text-decoration: underline;">965</span>691 5<span style="text-decoration: underline;">019</span>961             3       0   <span style="text-decoration: underline;">54</span>270</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_1 EUR   ancestor_nonAFR 5<span style="text-decoration: underline;">019</span>961 5<span style="text-decoration: underline;">025</span>228             5       0    <span style="text-decoration: underline;">5</span>267</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_1 EUR   NEA             5<span style="text-decoration: underline;">025</span>228 5<span style="text-decoration: underline;">025</span>510             3       0     282</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 13,621 more rows</span></span></span></code></pre></div>
-<p><strong>TODO:</strong> Tidy up the data frame and make sure the
-column names a) are concise enough, b) match similar output tables from
-other <em>slendr</em> / <em>tskit</em> interface functions.</p>
-<p>Let’s subset the ancestry tracts only to ancestries originating in
-Neanderthals or Denisovans, because this is what we’re interested in
-studying:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tracts</span>, <span class="va">source_pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA"</span>, <span class="st">"DEN"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8,183 × 8</span></span></span>
+<span><span class="co">#&gt;    name  node_id pop   source_pop     left    right length source_pop_id</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> EUR_1       0 EUR   NEA         4<span style="text-decoration: underline;">042</span>276  4<span style="text-decoration: underline;">300</span>495 <span style="text-decoration: underline;">258</span>219             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> EUR_1       0 EUR   NEA         9<span style="text-decoration: underline;">301</span>658  9<span style="text-decoration: underline;">402</span>135 <span style="text-decoration: underline;">100</span>477             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> EUR_1       0 EUR   NEA        12<span style="text-decoration: underline;">126</span>085 12<span style="text-decoration: underline;">129</span>348   <span style="text-decoration: underline;">3</span>263             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">142</span>318 13<span style="text-decoration: underline;">278</span>133 <span style="text-decoration: underline;">135</span>815             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">370</span>659 13<span style="text-decoration: underline;">406</span>675  <span style="text-decoration: underline;">36</span>016             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">525</span>468 13<span style="text-decoration: underline;">588</span>316  <span style="text-decoration: underline;">62</span>848             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">678</span>102 13<span style="text-decoration: underline;">743</span>316  <span style="text-decoration: underline;">65</span>214             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">751</span>818 13<span style="text-decoration: underline;">780</span>186  <span style="text-decoration: underline;">28</span>368             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">913</span>832 13<span style="text-decoration: underline;">982</span>765  <span style="text-decoration: underline;">68</span>933             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_1       0 EUR   NEA        14<span style="text-decoration: underline;">048</span>413 14<span style="text-decoration: underline;">050</span>647   <span style="text-decoration: underline;">2</span>234             3</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8,173 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="summaries-of-ancestral-proportions">Summaries of ancestral proportions<a class="anchor" aria-label="anchor" href="#summaries-of-ancestral-proportions"></a>
@@ -251,26 +248,27 @@ Neanderthal ancestry and that this is also true for the PAP population.
 However, we also see that Papuans carry about 7% of Denisovan ancestry.
 This is consistent with our model, but also with the expectation from <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5772775/" class="external-link">empirical
 data</a>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="va">tracts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">node_id</span>, <span class="va">pop</span>, <span class="va">source_pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">length</span><span class="op">)</span> <span class="op">/</span> <span class="fl">50e6</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">length</span><span class="op">)</span> <span class="op">/</span> <span class="fl">100e6</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `summarise()` has grouped output by 'name', 'node_id', 'pop'. You can override</span></span>
 <span><span class="co">#&gt; using the `.groups` argument.</span></span>
 <span></span>
-<span><span class="va">summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span>, <span class="va">source_pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">prop</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span>, <span class="va">source_pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">prop</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">source_pop</span>, <span class="va">pop</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `summarise()` has grouped output by 'pop'. You can override using the `.groups`</span></span>
 <span><span class="co">#&gt; argument.</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 3</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Groups:   pop [2]</span></span></span>
 <span><span class="co">#&gt;   pop   source_pop `mean(prop)`</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR   NEA              0.024<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PAP   NEA              0.028<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PAP   DEN              0.064<span style="text-decoration: underline;">0</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR   NEA              0.034<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PAP   NEA              0.028<span style="text-decoration: underline;">2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PAP   DEN              0.071<span style="text-decoration: underline;">2</span></span></span></code></pre></div>
 <p>Let’s visualize these proportions at an individual level:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">summary</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">source_pop</span>, <span class="va">prop</span>, color <span class="op">=</span> <span class="va">source_pop</span>, fill <span class="op">=</span> <span class="va">source_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">source_pop</span>, <span class="va">prop</span>, color <span class="op">=</span> <span class="va">source_pop</span>, fill <span class="op">=</span> <span class="va">source_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html" class="external-link">geom_jitter</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.03</span>, <span class="fl">0.08</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
@@ -287,7 +285,7 @@ data</a>.</p>
 every single ancestry segment in each of the simulated individuals, we
 can “paint” each chromosome with each of the two archaic human
 ancestries:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tracts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>chrom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">name</span>, <span class="st">" (node"</span>, <span class="va">node_id</span>, <span class="st">")"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">left</span>, xend <span class="op">=</span> <span class="va">right</span>, y <span class="op">=</span> <span class="va">chrom</span>, yend <span class="op">=</span> <span class="va">chrom</span>, color <span class="op">=</span> <span class="va">source_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -295,18 +293,21 @@ ancestries:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"position [bp]"</span>, y <span class="op">=</span> <span class="st">"haplotype"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"True ancestry tracts along each chromosome"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">pop</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>, panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">~</span> <span class="va">.</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-10-tracts_files/figure-html/chrom_painting-1.png" width="960"></p>
+<p>By lining up NEA &amp; DEN ancestry tracts in both EUR and PAP
+populations, we can see how the common origin of Neanderthal ancestry in
+both non-African populations manifests in a significant overlap of NEA
+tracts between both populations.</p>
 </div>
 <div class="section level3">
 <h3 id="average-tract-lengths">Average tract lengths:<a class="anchor" aria-label="anchor" href="#average-tract-lengths"></a>
 </h3>
 <p>Let’s compute simple summaries of tract lengths in the simulated
 data, and compare them to theoretical expectations.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tracts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">source_pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA"</span>, <span class="st">"DEN"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pop</span>, <span class="va">source_pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">length</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `summarise()` has grouped output by 'pop'. You can override using the `.groups`</span></span>
@@ -315,32 +316,32 @@ data, and compare them to theoretical expectations.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># Groups:   pop [2]</span></span></span>
 <span><span class="co">#&gt;   pop   source_pop `mean(length)`</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR   NEA                <span style="text-decoration: underline;">66</span>066.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PAP   NEA                <span style="text-decoration: underline;">69</span>106.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PAP   DEN               <span style="text-decoration: underline;">109</span>221.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR   NEA                <span style="text-decoration: underline;">68</span>273.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PAP   NEA                <span style="text-decoration: underline;">63</span>883.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PAP   DEN               <span style="text-decoration: underline;">103</span>087.</span></span></code></pre></div>
 <p>Theoretical expectations (from Racimo and Slatkin 2015, Box 1)</p>
 <ul>
 <li>Neanderthal tracts:</li>
 </ul>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fl">0.03</span></span>
-<span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fl">50000</span> <span class="op">/</span> <span class="fl">30</span></span>
+<span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fl">52500</span> <span class="op">/</span> <span class="fl">30</span></span>
 <span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span></span>
 <span></span>
 <span><span class="va">mean_nea</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">m</span><span class="op">)</span> <span class="op">*</span> <span class="va">r</span> <span class="op">*</span> <span class="op">(</span><span class="va">t</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">mean_nea</span></span>
-<span><span class="co">#&gt; [1] 61892.81</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 58943.84</span></span></code></pre></div>
 <ul>
 <li>Denisovan tracts:</li>
 </ul>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fl">0.07</span></span>
-<span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fl">32500</span> <span class="op">/</span> <span class="fl">30</span></span>
+<span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fl">37500</span> <span class="op">/</span> <span class="fl">30</span></span>
 <span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">1e-8</span></span>
 <span></span>
 <span><span class="va">mean_den</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">m</span><span class="op">)</span> <span class="op">*</span> <span class="va">r</span> <span class="op">*</span> <span class="op">(</span><span class="va">t</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">mean_den</span></span>
-<span><span class="co">#&gt; [1] 99347.29</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 86090.38</span></span></code></pre></div>
 <p>As we can see, our simulations are not that far of from the
 theoretical expectations, giving us confidence that our simulations (and
 the ancestry tract extraction algorithm) are working as expected.</p>
@@ -355,13 +356,13 @@ said, in less well studied species, it might be interesting to use these
 kinds of simulations for inference of introgression times and
 proportions via Approximate Bayesian Computation or by another
 method:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expectation_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR"</span>, <span class="st">"PAP"</span>, <span class="st">"PAP"</span><span class="op">)</span>,</span>
 <span>  source_pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA"</span>, <span class="st">"NEA"</span>, <span class="st">"DEN"</span><span class="op">)</span>,</span>
 <span>  length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mean_nea</span>, <span class="va">mean_nea</span>, <span class="va">mean_den</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p_densities</span> <span class="op">&lt;-</span> <span class="va">tracts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">length</span>, color <span class="op">=</span> <span class="va">source_pop</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -372,6 +373,128 @@ method:</p>
 <span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p_densities</span>, <span class="va">p_densities</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-10-tracts_files/figure-html/tract_lengths-1.png" width="640"></p>
+</div>
+<div class="section level2">
+<h2 id="pure-msprime-tree-sequence">Pure <em>msprime</em> tree sequence<a class="anchor" aria-label="anchor" href="#pure-msprime-tree-sequence"></a>
+</h2>
+<p>Finally, as a sanity check, let’s use the pure <em>msprime</em>
+simulation example from the <a href="https://tspop.readthedocs.io/en/latest/basicusage.html" class="external-link">official
+<em>tspop</em> documentation</a> to test that <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>
+behaves as expected even on a standard <em>msprime</em> tree-sequence
+object.</p>
+<p>First, let’s run the simulation code exactly as it is:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="im">import</span> msprime</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>pop_size <span class="op">=</span> <span class="dv">500</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>sequence_length <span class="op">=</span> <span class="fl">1e7</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">98765</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>rho <span class="op">=</span> <span class="fl">3e-8</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co"># Make the Demography object.</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>demography <span class="op">=</span> msprime.Demography()</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"RED"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='RED', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=0)</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"BLUE"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='BLUE', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=1)</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ADMIX"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ADMIX', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=2)</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ANC"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ANC', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=3)</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>demography.add_admixture(</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">100</span>, derived<span class="op">=</span><span class="st">"ADMIX"</span>, ancestral<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], proportions<span class="op">=</span>[<span class="fl">0.5</span>, <span class="fl">0.5</span>]</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>)</span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; Admixture(time=100, derived='ADMIX', ancestral=['RED', 'BLUE'], proportions=[0.5, 0.5])</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>demography.add_census(time<span class="op">=</span><span class="fl">100.01</span>) <span class="co"># Census is here!</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; CensusEvent(time=100.01)</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>demography.add_population_split(</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">1000</span>, derived<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], ancestral<span class="op">=</span><span class="st">"ANC"</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>)</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; PopulationSplit(time=1000, derived=['RED', 'BLUE'], ancestral='ANC')</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co"># Simulate.</span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>ts <span class="op">=</span> msprime.sim_ancestry(</span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>    samples<span class="op">=</span>{<span class="st">"RED"</span>: <span class="dv">0</span>, <span class="st">"BLUE"</span>: <span class="dv">0</span>, <span class="st">"ADMIX"</span> : <span class="dv">2</span>},</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>    demography<span class="op">=</span>demography,</span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>    random_seed<span class="op">=</span>seed,</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>    sequence_length<span class="op">=</span>sequence_length,</span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>    recombination_rate<span class="op">=</span>rho</span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>)</span></code></pre></div>
+<p>Let’s save the <em>msprime</em> tree sequence to disk so that we can
+load it into R (i.e., approximating what you might want to do should you
+want to use <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> without running a <em>slendr</em>
+simulation first):</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>ts.dump(<span class="st">"/tmp/sim.trees"</span>)</span></code></pre></div>
+<p>Now let’s move to R again, load the tree sequence into
+<em>slendr</em> and extract ancestry tracts from it using
+<code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="st">"/tmp/sim.trees"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">squashed_tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">sim_ts</span>, census <span class="op">=</span> <span class="fl">100.01</span>, squashed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; PopAncestry summary</span></span>
+<span><span class="co">#&gt; Number of ancestral populations:     2</span></span>
+<span><span class="co">#&gt; Number of sample chromosomes:        4</span></span>
+<span><span class="co">#&gt; Number of ancestors:             118</span></span>
+<span><span class="co">#&gt; Total length of genomes:         40000000.000000</span></span>
+<span><span class="co">#&gt; Ancestral coverage:          40000000.000000</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">squashed_tracts</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">#&gt;   sample    left   right population</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>      0       0  <span style="text-decoration: underline;">419</span>848          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>      0  <span style="text-decoration: underline;">419</span>848  <span style="text-decoration: underline;">483</span>009          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>      0  <span style="text-decoration: underline;">483</span>009 1<span style="text-decoration: underline;">475</span>765          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>      0 1<span style="text-decoration: underline;">475</span>765 2<span style="text-decoration: underline;">427</span>904          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>      0 2<span style="text-decoration: underline;">427</span>904 3<span style="text-decoration: underline;">635</span>390          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>      0 3<span style="text-decoration: underline;">635</span>390 4<span style="text-decoration: underline;">606</span>954          1</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">squashed_tracts</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">#&gt;   sample    left    right population</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>      3 7<span style="text-decoration: underline;">134</span>130  7<span style="text-decoration: underline;">362</span>300          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>      3 7<span style="text-decoration: underline;">362</span>300  7<span style="text-decoration: underline;">369</span>409          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>      3 7<span style="text-decoration: underline;">369</span>409  7<span style="text-decoration: underline;">596</span>783          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>      3 7<span style="text-decoration: underline;">596</span>783  8<span style="text-decoration: underline;">289</span>015          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>      3 8<span style="text-decoration: underline;">289</span>015  8<span style="text-decoration: underline;">918</span>727          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>      3 8<span style="text-decoration: underline;">918</span>727 10<span style="text-decoration: underline;">000</span>000          0</span></span></code></pre></div>
+<p>By setting <code>squashed = FALSE</code>, we get the full,
+un-squashed ancestry segments, each with its appropriate ancestral node
+ID:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">full_tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">sim_ts</span>, census <span class="op">=</span> <span class="fl">100.01</span>, squashed <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; PopAncestry summary</span></span>
+<span><span class="co">#&gt; Number of ancestral populations:     2</span></span>
+<span><span class="co">#&gt; Number of sample chromosomes:        4</span></span>
+<span><span class="co">#&gt; Number of ancestors:             118</span></span>
+<span><span class="co">#&gt; Total length of genomes:         40000000.000000</span></span>
+<span><span class="co">#&gt; Ancestral coverage:          40000000.000000</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">full_tracts</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
+<span><span class="co">#&gt;   sample   left   right ancestor population</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>      0      0   <span style="text-decoration: underline;">33</span>027       74          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>      0  <span style="text-decoration: underline;">33</span>027  <span style="text-decoration: underline;">155</span>453       33          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>      0 <span style="text-decoration: underline;">155</span>453  <span style="text-decoration: underline;">290</span>542       46          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>      0 <span style="text-decoration: underline;">290</span>542  <span style="text-decoration: underline;">419</span>848       18          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>      0 <span style="text-decoration: underline;">419</span>848  <span style="text-decoration: underline;">483</span>009       83          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>      0 <span style="text-decoration: underline;">483</span>009 1<span style="text-decoration: underline;">475</span>765       28          0</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">full_tracts</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
+<span><span class="co">#&gt;   sample    left    right ancestor population</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>      3 8<span style="text-decoration: underline;">477</span>625  8<span style="text-decoration: underline;">672</span>850       94          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>      3 8<span style="text-decoration: underline;">672</span>850  8<span style="text-decoration: underline;">849</span>756       95          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>      3 8<span style="text-decoration: underline;">849</span>756  8<span style="text-decoration: underline;">918</span>727      131          1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>      3 8<span style="text-decoration: underline;">918</span>727  9<span style="text-decoration: underline;">165</span>035       44          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>      3 9<span style="text-decoration: underline;">165</span>035  9<span style="text-decoration: underline;">176</span>562       47          0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>      3 9<span style="text-decoration: underline;">176</span>562 10<span style="text-decoration: underline;">000</span>000       58          0</span></span></code></pre></div>
+<p>By comparing the two tables above to the <em>pandas</em> data frames
+in the <a href="https://tspop.readthedocs.io/en/latest/basicusage.html" class="external-link"><em>tspop</em>
+documentation</a>, we can see that we obtained the same results.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
