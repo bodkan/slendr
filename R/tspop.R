@@ -4,31 +4,50 @@
 #' details.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
-#' @param census Census time (in slendr time units)
+#' @param census Census time (in slendr time units) corresponding to some gene
+#'   flow event
 #' @param squashed Should ancestry tracts be squashed (i.e., should continuous
 #'   tracts that can be traced to different ancestral nodes be merged)? Default
-#'   is \code{TRUE}.
+#'   is \code{TRUE}. If \code{FALSE}, these effectively continuous ancestry
+#'   tracts will be split into individual segments, each assigned to a specific
+#'   ancestral node ID (recorded in a column \code{ancestor_id}).
+#' @param source From which source population to extract tracts for? if \code{NULL}
+#'   (the default), ancestry tracts for all populations contributing gene flow
+#'   at the census time will be reported. Otherwise, ancestry tracts from only
+#'   specified source populations will be extracted. Note that this option is
+#'   ignored for non-slendr tree sequences!
 #'
 #' @returns A data frame containing coordinates of ancestry tracts
 #'
 #' @export
-ts_tracts <- function(ts, census, squashed = TRUE) {
+ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
   model <- attr(ts, "model")
   from_slendr <- !is.null(model)
 
-  # slendr tree sequences assume census times given in slendr-based time units
-  # (whatever those might be depending on the user model)
+  # again, as with many other tskit interface functions in slendr, make sure
+  # the census time is correctly transformed from slendr-time context into
+  # tskit's backward time units
   if (from_slendr) {
     if (attr(ts, "type") == "SLiM")
-      stop("Extracting ancestry tracts is only supported for non-SLiM tree sequences",
+      stop("Extracting ancestry tracts is currently supported for non-SLiM tree sequences",
            call. = FALSE)
 
-    if (!census %in% model$geneflow$tstart_orig)
-      stop("Census time ", census, " is not among gene-flow times in the model", call. = FALSE)
+    # slendr tree sequences assume census times given in slendr-based time units
+    # (whatever those might be depending on the user model)
+      if (!census %in% model$geneflow$tstart_orig)
+        stop("Census time ", census, " does not correspond to any gene-flow times", call. = FALSE)
 
+    # identify which gene-flow event does the census time correspond to
     which_gf <- model$geneflow$tstart_orig == census
     # get backwards-time generations-based time of gene flow in script.py
-    census_gen <- model$length - model$geneflow$tstart_gen[which_gf] + 1
+    census_gen <- model$length - unique(model$geneflow$tstart_gen[which_gf]) + 1
+
+    sources <- model$geneflow$from[which_gf]
+    if (!is.null(source) && any(!source %in% sources))
+      stop("These source(s) do not participate in the specified gene flow event: ",
+           paste0(source[!source %in% sources], collapse = ", "), call. = FALSE)
+    else
+      source <- unique(model$geneflow$from[which_gf])
   } else {
     # non-slendr tree sequences naturally expect census time to be in tskit
     # time units
@@ -47,6 +66,9 @@ ts_tracts <- function(ts, census, squashed = TRUE) {
 
   tracts <- dplyr::as_tibble(tracts)
 
+  # population the raw tspop data frame with slendr-specific symbolic names for
+  # all columns where it makes sense, and rename columns to match other slendr's
+  # tskit-related functions
   if (from_slendr) {
     # add symbolic names of individuals and their populations to each tract by
     # joining with the annotated nodes table based on the node ID
@@ -74,10 +96,13 @@ ts_tracts <- function(ts, census, squashed = TRUE) {
 
     columns <- c("name", "node_id", "pop", "source_pop", "left", "right", "length",
                  ancestor_col, "source_pop_id")
-  }
 
-  # add a length of each tract and reorder columns, for convenience
-  tracts <- tracts %>% dplyr::mutate(length = right - left) %>% .[, columns]
+    # filter for source populations of interest
+    tracts <- tracts[tracts$source_pop %in% source, ]
+
+    # add a length of each tract and reorder columns, for convenience
+    tracts <- tracts %>% dplyr::mutate(length = right - left) %>% .[, columns]
+  }
 
   tracts
 }
