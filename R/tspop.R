@@ -76,7 +76,7 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
 
   tracts <- dplyr::as_tibble(tracts)
 
-  # population the raw tspop data frame with slendr-specific symbolic names for
+  # populate the raw tspop data frame with slendr-specific symbolic names for
   # all columns where it makes sense, and rename columns to match other slendr's
   # tskit-related functions
   if (from_slendr) {
