@@ -25,6 +25,8 @@ set.seed(42)
 devtools::load_all()
 ```
 
+**Please note that the _tspop_ support in _slendr_ implemented in the `ts_tracts()` function is extremely experimental, only minimally tested, and its functionality is expected to change quite a bit. Please wait for the release of the next major version of _slendr_ (which should include a more developed `ts_tracts()`) before you use this in your own work.**
+
 _slendr_ now includes an experimental, use-it-at-your-own-risk interface to an exciting [new algorithm](https://academic.oup.com/bioinformaticsadvances/advance-article/doi/10.1093/bioadv/vbad163/7429395) for extracting true tracts of ancestry as implemented in the Python module [_tspop_](https://tspop.readthedocs.io/en/latest/index.html).
 
 The interface is implemented in an R function `ts_tracts()` and this vignette describes its use on a simple toy model of Neanderthal and Denisovan introgression into modern humans.
