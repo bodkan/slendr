@@ -1,6 +1,6 @@
 #' Extract ancestry tracts from a tree sequence (EXPERIMENTAL)
 #'
-#' Extracts a table of ancestry tracts from a given tree sequence
+#' Extract a data frame with coordinates of ancestry tracts from a given tree sequence.
 #'
 #' This functions implements an R-friendly interface to an algorithm for
 #' extracting ancestry tracts provided by the Python module tspop
@@ -12,8 +12,10 @@
 #' <https://tspop.readthedocs.io/en/latest/basicusage.html>.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
-#' @param census Census time (in slendr time units) corresponding to some gene
-#'   flow event
+#' @param census Census time. See the documentation linked in the Details for more
+#'   information. If a slendr-specific tree sequence was provided as \code{ts},
+#'   the census time is expected to be given in slendr model-specific time units,
+#'   and must correspond to some gene-flow event encoded by the model.
 #' @param squashed Should ancestry tracts be squashed (i.e., should continuous
 #'   tracts that can be traced to different ancestral nodes be merged)? Default
 #'   is \code{TRUE}. If \code{FALSE}, these effectively continuous ancestry

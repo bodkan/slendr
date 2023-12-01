@@ -9,8 +9,10 @@ ts_tracts(ts, census, squashed = TRUE, source = NULL)
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
-\item{census}{Census time (in slendr time units) corresponding to some gene
-flow event}
+\item{census}{Census time. See the documentation linked in the Details for more
+information. If a slendr-specific tree sequence was provided as \code{ts},
+the census time is expected to be given in slendr model-specific time units,
+and must correspond to some gene-flow event encoded by the model.}
 
 \item{squashed}{Should ancestry tracts be squashed (i.e., should continuous
 tracts that can be traced to different ancestral nodes be merged)? Default
@@ -28,7 +30,7 @@ ignored for non-slendr tree sequences!}
 A data frame containing coordinates of ancestry tracts
 }
 \description{
-Extracts a table of ancestry tracts from a given tree sequence
+Extract a data frame with coordinates of ancestry tracts from a given tree sequence.
 }
 \details{
 This functions implements an R-friendly interface to an algorithm for
