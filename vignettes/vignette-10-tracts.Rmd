@@ -21,8 +21,6 @@ knitr::opts_chunk$set(
 )
 
 set.seed(42)
-
-devtools::load_all()
 ```
 
 **Please note that the _tspop_ support in _slendr_ implemented in the `ts_tracts()` function is extremely experimental, only minimally tested, and its functionality is expected to change quite a bit. Please wait for the release of the next major version of _slendr_ (which should include a more developed `ts_tracts()`) before you use this in your own work.**
