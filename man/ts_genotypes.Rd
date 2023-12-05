@@ -22,7 +22,7 @@ Extract genotype table from the tree sequence
 init_env()
 
 # load an example model with an already simulated tree sequence
-slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk, recapitate it, simplify it, and mutate it

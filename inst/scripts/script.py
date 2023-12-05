@@ -111,6 +111,8 @@ def simulate(
 
   logging.info("Setting up gene flow events")
 
+  census_times = []
+
   # schedule gene flow events
   for event in geneflows.itertuples():
       tstart = length - event.tend_gen + 1
@@ -128,9 +130,18 @@ def simulate(
           source=event.to,
           dest=event._1,
       )
-      # add a corresponding census event following this:
-      # https://tspop.readthedocs.io/en/latest/simulationsetup.html
-      demography.add_census(time=tend)
+      # collect all census times first, then schedule census events later
+      census_times.append(tend)
+
+  # schedule individual census events
+  # TODO: for some reason msprime crashes when demography.add_census() is called
+  # multiple times for the same time, so I moved the following outside of the for
+  # loop above and schedule the census events at set(census_times) (which removes
+  # duplicate times)
+  for t in set(census_times):
+    # add a corresponding census event following this:
+    # https://tspop.readthedocs.io/en/latest/simulationsetup.html
+    demography.add_census(time=t)
 
   # make sure all slendr events are sorted by time of occurence
   # (otherwise msprime complains)

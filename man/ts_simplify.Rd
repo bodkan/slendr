@@ -66,7 +66,7 @@ ancient DNA samples) is in the pyslim documentation at
 init_env()
 
 # load an example model with an already simulated tree sequence
-slendr_ts <- system.file("extdata/models/introgression.trees", package = "slendr")
+slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 ts <- ts_load(slendr_ts, model)

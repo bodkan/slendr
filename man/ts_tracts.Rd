@@ -4,7 +4,7 @@
 \alias{ts_tracts}
 \title{Extract ancestry tracts from a tree sequence (EXPERIMENTAL)}
 \usage{
-ts_tracts(ts, census, squashed = TRUE, source = NULL)
+ts_tracts(ts, census, squashed = TRUE, source = NULL, target = NULL)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -25,6 +25,9 @@ ancestral node ID (recorded in a column \code{ancestor_id}).}
 at the census time will be reported. Otherwise, ancestry tracts from only
 specified source populations will be extracted. Note that this option is
 ignored for non-slendr tree sequences!}
+
+\item{target}{Similar purpose as \code{source} above, except that it filters
+for tracts discovered in the target population(s)}
 }
 \value{
 A data frame containing coordinates of ancestry tracts
@@ -57,4 +60,25 @@ Python method.
 That said, when run on a tree sequence which does not originate from a slendr
 simulation, the behavior of \code{ts_tracts()} is identical to that of the
 underlying \code{tspop.get_pop_ancestry()}.
+
+As of the current version of slendr, \code{ts_tracts()} only works for
+slendr/msprime sequences but not on slendr/SLiM tree sequences. Support for
+slendr-generated SLiM tree sequences is in development. Tree sequences from
+non-slendr msprime and SLiM tree sequences is not restricted in any way and,
+as mentioned in the previous paragraph, \code{ts_tracts()} on such tree
+sequences effectively reduces to the standard \code{tspop.get_pop_ancestry()}
+call.
+}
+\examples{
+\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
+}
+init_env()
+
+# load an example model with an already simulated tree sequence
+slendr_ts <- system.file("extdata/models/introgression_msprime.trees", package = "slendr")
+model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
+
+# load the tree-sequence object from disk and add mutations to it
+ts <- ts_load(slendr_ts, model)
+
 }
