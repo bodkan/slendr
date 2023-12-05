@@ -10,7 +10,7 @@ chimp <- population("CH", time = 6.5e6, N = 10)
 
 # two populations of anatomically modern humans: Africans and Europeans
 afr <- population("AFR", parent = chimp, time = 6e6, N = 10)
-eur <- population("EUR", parent = afr, time = 70e3, N = 500)
+eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
 # (becomes extinct by 40 ky ago)
@@ -44,7 +44,7 @@ ts_slim %>%
 
 # msprime tree sequence
 ts_msprime <- msprime(
-  model, sequence_length = 0.5e6, recombination_rate = 1e-8,
+  model, sequence_length = 5e6, recombination_rate = 1e-8,
   samples = rbind(nea_samples, present_samples),
   random_seed = 314159, verbose = TRUE
 )
