@@ -48,6 +48,7 @@
     <a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
+    <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
   </div>
 </li>
 <li class="nav-item">
@@ -128,7 +129,7 @@ way down to the leaves of the tree sequence</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
-<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression_slim.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load the tree-sequence object from disk</span></span></span>
@@ -138,11 +139,13 @@ way down to the leaves of the tree sequence</p>
 <span class="r-in"><span><span class="fu">ts_descendants</span><span class="op">(</span><span class="va">ts</span>, x <span class="op">=</span> <span class="fl">62</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Generating data about spatial relationships of nodes...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 12</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 12</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name  pop   node_id level child_id parent_id child_time parent_time child_pop</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> NEA_1 NEA        62 1            0        62      <span style="text-decoration: underline;">70</span>000       <span style="text-decoration: underline;">70</span>040 NEA      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> NEA_1 NEA        62 1            1        62      <span style="text-decoration: underline;">70</span>000       <span style="text-decoration: underline;">70</span>040 NEA      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> EUR_4 EUR        62 1           22        62          0       <span style="text-decoration: underline;">51</span>680 EUR      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #BB0000;">NA</span>    EUR        62 1           33        62        500       <span style="text-decoration: underline;">51</span>680 EUR      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> EUR_1 EUR        62 2           16        33          0         500 EUR      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> EUR_2 EUR        62 2           18        33          0         500 EUR      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: parent_pop &lt;fct&gt;, left_pos &lt;dbl&gt;, right_pos &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>

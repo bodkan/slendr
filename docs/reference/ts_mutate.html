@@ -48,6 +48,7 @@
     <a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
+    <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
   </div>
 </li>
 <li class="nav-item">
@@ -143,7 +144,7 @@ map</p></div>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
-<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression_slim.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span></span>
@@ -153,7 +154,7 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═════════════════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence             ║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │       24║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │       70║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│   500000║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
@@ -161,26 +162,26 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │       26║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │197.3 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │204.6 KiB║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size    │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 134│ 4.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 298│ 9.3 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│  56│ 7.3 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│  73│ 8.9 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│ 8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │2269│83.2 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │2246│82.3 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  69│ 3.2 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  86│ 3.9 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   5│ 2.6 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   4│37.8 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │2265│55.3 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │2240│54.7 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>

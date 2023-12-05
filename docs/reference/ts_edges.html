@@ -52,6 +52,7 @@ sequence"><meta property="og:image" content="https://www.slendr.net/logo.png"><!
     <a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
+    <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
   </div>
 </li>
 <li class="nav-item">
@@ -119,7 +120,7 @@ start-end coordinates of edges across space</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
-<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression_slim.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load the tree-sequence object from disk</span></span></span>
@@ -127,20 +128,20 @@ start-end coordinates of edges across space</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract an annotated table with (spatio-)temporal edge information</span></span></span>
 <span class="r-in"><span><span class="fu">ts_edges</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 134 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 298 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    child_node_id parent_node_id child_time parent_time child_pop parent_pop</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>             0             62      <span style="text-decoration: underline;">70</span>000       <span style="text-decoration: underline;">70</span>040 NEA       NEA       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>             1             62      <span style="text-decoration: underline;">70</span>000       <span style="text-decoration: underline;">70</span>040 NEA       NEA       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>             2             60      <span style="text-decoration: underline;">40</span>000       <span style="text-decoration: underline;">40</span>460 NEA       NEA       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>             3             60      <span style="text-decoration: underline;">40</span>000       <span style="text-decoration: underline;">40</span>460 NEA       NEA       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>             4             36          0        <span style="text-decoration: underline;">1</span>430 AFR       AFR       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>             5             30          0          80 AFR       AFR       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>             6             27          0          20 AFR       AFR       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>             7             28          0          20 AFR       AFR       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>             8             28          0          20 AFR       AFR       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>             9             31          0         110 AFR       AFR       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 124 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>             0             74      <span style="text-decoration: underline;">70</span>000       <span style="text-decoration: underline;">70</span>040 NEA       NEA       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>             1             74      <span style="text-decoration: underline;">70</span>000       <span style="text-decoration: underline;">70</span>040 NEA       NEA       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>             2             55      <span style="text-decoration: underline;">40</span>000       <span style="text-decoration: underline;">40</span>220 NEA       NEA       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>             3             55      <span style="text-decoration: underline;">40</span>000       <span style="text-decoration: underline;">40</span>220 NEA       NEA       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>             4             34          0         740 AFR       AFR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>             5             28          0          80 AFR       AFR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>             6             26          0          20 AFR       AFR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>             7             27          0          80 AFR       AFR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>             8             27          0          80 AFR       AFR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>             9             36          0        <span style="text-decoration: underline;">1</span>160 AFR       AFR       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 288 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

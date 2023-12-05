@@ -50,6 +50,7 @@ or nodes."><meta property="og:image" content="https://www.slendr.net/logo.png"><
     <a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
+    <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
   </div>
 </li>
 <li class="nav-item">
@@ -158,7 +159,7 @@ section dedicated to AFS at
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
-<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression_slim.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load the tree-sequence object from disk</span></span></span>
@@ -168,8 +169,8 @@ section dedicated to AFS at
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compute AFS for the given set of individuals</span></span></span>
 <span class="r-in"><span><span class="fu">ts_afs</span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">samples</span><span class="op">$</span><span class="va">name</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1123    4    2    0    0    1    0    0    1    0   20    0    0    0    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16]    0    0    0    0    0 1033</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1080   73   21    8    1    4    0    0    0    0   11    0    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16]    1    0    3    5   10  935</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

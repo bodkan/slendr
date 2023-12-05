@@ -81,4 +81,7 @@ model <- read_model(path = system.file("extdata/models/introgression", package =
 # load the tree-sequence object from disk and add mutations to it
 ts <- ts_load(slendr_ts, model)
 
+# extract Neanderthal ancestry tracts (i.e. those corresponding to the
+# census event at the gene-flow time at 55000 kya)
+nea_tracts <- ts_tracts(ts, census = 55000)
 }

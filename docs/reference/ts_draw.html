@@ -54,6 +54,7 @@ provided and will be automatically passed to the method behind the scenes."><met
     <a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
+    <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
   </div>
 </li>
 <li class="nav-item">
@@ -149,7 +150,7 @@ individuals can themselves be among the ancestral nodes.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
-<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression_slim.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load the tree-sequence object from disk</span></span></span>
@@ -160,8 +161,7 @@ individuals can themselves be among the ancestral nodes.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ts_draw accepts various optional arguments of tskit.Tree.draw_svg</span></span></span>
 <span class="r-in"><span><span class="fu">ts_draw</span><span class="op">(</span><span class="va">tree</span>, time_scale <span class="op">=</span> <span class="st">"rank"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ts_draw(tree, time_scale = "rank"):</span> For plotting trees using the native SVG tskit capabilities, please</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> install the R package rsvg by calling `install.packages("rsvg")</span>
+<span class="r-plt img"><img src="ts_draw-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

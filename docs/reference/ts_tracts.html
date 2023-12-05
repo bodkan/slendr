@@ -87,7 +87,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_tracts</span><span class="op">(</span><span class="va">ts</span>, <span class="va">census</span>, squashed <span class="op">=</span> <span class="cn">TRUE</span>, source <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_tracts</span><span class="op">(</span><span class="va">ts</span>, <span class="va">census</span>, squashed <span class="op">=</span> <span class="cn">TRUE</span>, source <span class="op">=</span> <span class="cn">NULL</span>, target <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -117,6 +117,11 @@ ancestral node ID (recorded in a column <code>ancestor_id</code>).</p></dd>
 at the census time will be reported. Otherwise, ancestry tracts from only
 specified source populations will be extracted. Note that this option is
 ignored for non-slendr tree sequences!</p></dd>
+
+
+<dt>target</dt>
+<dd><p>Similar purpose as <code>source</code> above, except that it filters
+for tracts discovered in the target population(s)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -149,8 +154,42 @@ Python method.</p>
 <p>That said, when run on a tree sequence which does not originate from a slendr
 simulation, the behavior of <code>ts_tracts()</code> is identical to that of the
 underlying <code>tspop.get_pop_ancestry()</code>.</p>
+<p>As of the current version of slendr, <code>ts_tracts()</code> only works for
+slendr/msprime sequences but not on slendr/SLiM tree sequences. Support for
+slendr-generated SLiM tree sequences is in development. Tree sequences from
+non-slendr msprime and SLiM tree sequences is not restricted in any way and,
+as mentioned in the previous paragraph, <code>ts_tracts()</code> on such tree
+sequences effectively reduces to the standard <code>tspop.get_pop_ancestry()</code>
+call.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="check_dependencies.html">check_dependencies</a></span><span class="op">(</span>python <span class="op">=</span> <span class="cn">TRUE</span>, quit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># dependencies must be present</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The interface to all required Python modules has been activated.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load an example model with an already simulated tree sequence</span></span></span>
+<span class="r-in"><span><span class="va">slendr_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression_msprime.trees"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># load the tree-sequence object from disk and add mutations to it</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># extract Neanderthal ancestry tracts (i.e. those corresponding to the</span></span></span>
+<span class="r-in"><span><span class="co"># census event at the gene-flow time at 55000 kya)</span></span></span>
+<span class="r-in"><span><span class="va">nea_tracts</span> <span class="op">&lt;-</span> <span class="fu">ts_tracts</span><span class="op">(</span><span class="va">ts</span>, census <span class="op">=</span> <span class="fl">55000</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PopAncestry summary</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of ancestral populations: 	4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of sample chromosomes: 		26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of ancestors: 			763</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total length of genomes: 		130000000.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ancestral coverage: 			120000000.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
