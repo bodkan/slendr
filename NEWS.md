@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 0.7.3
 
 - Experimental support for the [_tspop_](https://tspop.readthedocs.io/en/latest/) `link-ancestors` algorithm for detection of ancestry tracts in the form of a new _slendr_ function `ts_tracts()`. Only works on _slendr_-generated _msprime_ tree sequences and "pure" _msprime_ and SLiM tree sequences (not _slendr_-generated SLiM tree sequences), and has been only tested on a few toy models. **Note:** the _tspop_ Python module is not published on conda. In order to set up a new _slendr_ Python environment, you will have to run `setup_env(pip = TRUE)` to make sure that Python dependencies are installed with pip instead of conda. ([PR #145](https://github.com/bodkan/slendr/pull/145))
 
