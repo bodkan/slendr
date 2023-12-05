@@ -50,11 +50,28 @@
 #'   at the census time will be reported. Otherwise, ancestry tracts from only
 #'   specified source populations will be extracted. Note that this option is
 #'   ignored for non-slendr tree sequences!
+#' @param target Similar purpose as \code{source} above, except that it filters
+#'   for tracts discovered in the target population(s)
 #'
 #' @returns A data frame containing coordinates of ancestry tracts
 #'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
+#' }
+#' init_env()
+#'
+#' # load an example model with an already simulated tree sequence
+#' slendr_ts <- system.file("extdata/models/introgression_msprime.trees", package = "slendr")
+#' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
+#'
+#' # load the tree-sequence object from disk and add mutations to it
+#' ts <- ts_load(slendr_ts, model)
+#'
+#' # extract Neanderthal ancestry tracts (i.e. those corresponding to the
+#' # census event at the gene-flow time at 55000 kya)
+#' nea_tracts <- ts_tracts(ts, census = 55000)
 #' @export
-ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
+ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL) {
   model <- attr(ts, "model")
   from_slendr <- !is.null(model)
 
@@ -76,12 +93,19 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
     # get backwards-time generations-based time of gene flow in script.py
     census_gen <- model$length - unique(model$geneflow$tstart_gen[which_gf]) + 1
 
-    sources <- model$geneflow$from[which_gf]
+    sources <- unique(model$geneflow$from[which_gf])
     if (!is.null(source) && any(!source %in% sources))
-      stop("These source(s) do not participate in the specified gene flow event: ",
+      stop("Given source(s) do not participate in the specified gene flow event: ",
            paste0(source[!source %in% sources], collapse = ", "), call. = FALSE)
-    else
-      source <- unique(model$geneflow$from[which_gf])
+    else if (is.null(source))
+      source <- sources
+
+    targets <- unique(unlist(lapply(model$geneflow$to[which_gf], function(pop) get_descendants(model, pop))))
+    if (!is.null(target) && any(!target %in% targets))
+      stop("Given target(s) do not participate in the specified gene flow event: ",
+           paste0(target[!target %in% targets], collapse = ", "), call. = FALSE)
+    else if (is.null(target))
+      target <- targets
   } else {
     # non-slendr tree sequences naturally expect census time to be in tskit
     # time units
@@ -131,8 +155,8 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL) {
     columns <- c("name", "node_id", "pop", "source_pop", "left", "right", "length",
                  ancestor_col, "source_pop_id")
 
-    # filter for source populations of interest
-    tracts <- tracts[tracts$source_pop %in% source, ]
+    # filter for target and source populations of interest
+    tracts <- tracts[tracts$pop %in% target & tracts$source_pop %in% source, ]
 
     # add a length of each tract and reorder columns, for convenience
     tracts <- tracts %>% dplyr::mutate(length = right - left) %>% .[, columns]
