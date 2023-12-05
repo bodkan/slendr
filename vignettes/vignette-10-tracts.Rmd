@@ -47,9 +47,9 @@ Let's imagine the following demographic model of Neanderthal introgression into 
 anc_all <- population("ancestor_all", time = 700e3, N = 10000, remove = 640e3)
 afr <- population("AFR", parent = anc_all, time = 650e3, N = 10000)
 anc_arch <- population("ancestor_archaics", parent = anc_all, time = 650e3, N = 10000, remove = 390e3)
-nea <- population("NEA", parent = anc_arch, time = 400e3, N = 100, remove = 30e3)
-den <- population("DEN", parent = anc_arch, time = 400e3, N = 100, remove = 30e3)
-nonafr <- population("ancestor_nonAFR", parent = afr, time = 100e3, N = 1000, remove = 39e3)
+nea <- population("NEA", parent = anc_arch, time = 400e3, N = 2000, remove = 30e3)
+den <- population("DEN", parent = anc_arch, time = 400e3, N = 2000, remove = 30e3)
+nonafr <- population("nonAFR", parent = afr, time = 100e3, N = 3000, remove = 39e3)
 eur <- population("EUR", parent = nonafr, time = 45e3, N = 5000)
 pap <- population("PAP", parent = nonafr, time = 45e3, N = 5000)
 
@@ -67,7 +67,7 @@ model <- compile_model(
 
 plot_model(
   model, sizes = FALSE,
-  order = c("AFR", "EUR", "ancestor_nonAFR", "PAP", "ancestor_all", "DEN", "ancestor_archaics", "NEA")
+  order = c("AFR", "EUR", "nonAFR", "PAP", "ancestor_all", "DEN", "ancestor_archaics", "NEA")
 )
 ```
 
