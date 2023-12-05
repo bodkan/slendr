@@ -164,3 +164,24 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL)
 
   tracts
 }
+
+# Get all populations in a subtree below the given population
+get_descendants <- function(model, pop) {
+  # initialize the queue and the list of results to the root population
+  queue <- result <- list(pop)
+
+  # while the queue is not empty...
+  while (length(queue) > 0) {
+    # ... take out its first element (population p)...
+    p <- queue[[1]]; queue[[1]] <- NULL
+    # ... get all descendant populations of p ...
+    descendants <- model$splits$pop[model$splits$parent == p]
+    # ... and add them to the queue (and the list of results)
+    for (d in descendants) {
+      queue[[length(queue) + 1]] <- result[[length(result) + 1]] <- d
+    }
+  }
+
+  # return the list of visited populations
+  unlist(result)
+}
