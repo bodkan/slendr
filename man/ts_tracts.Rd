@@ -38,7 +38,23 @@ extracting ancestry tracts provided by the Python module tspop
 \url{https://tspop.readthedocs.io/en/latest/} and described by Georgia Tsambos.
 Please make sure to cite their paper which describes the algorithm in
 detail: \url{https://academic.oup.com/bioinformaticsadvances/article/3/1/vbad163/7429395}.
-
 For more technical details, see also the tutorial at:
 \url{https://tspop.readthedocs.io/en/latest/basicusage.html}.
+
+In general, when using this function on a slendr-generated tree sequence,
+please be aware that the output changes slightly to what you would get by
+running the pure \code{tspop.get_pop_ancestry()} in Python. First,
+\code{ts_tracts()} populates the output data frame with additional metadata
+(such as names of individuals or populations). Additionally, for slendr models,
+it is specifically designed to only return ancestry tracts originating to a
+an ancestral population which contributed its ancestry during a gene-flow
+event which started at a specific time (i.e., scheduled in a model via
+the \code{gene_flow()}) function. It does not return every single ancestry
+tracts present in the tree sequence for every single sample node (and every
+single potential ancestry population) as does the \code{tspop.get_pop_ancestry()}
+Python method.
+
+That said, when run on a tree sequence which does not originate from a slendr
+simulation, the behavior of \code{ts_tracts()} is identical to that of the
+underlying \code{tspop.get_pop_ancestry()}.
 }
