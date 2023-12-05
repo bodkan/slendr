@@ -27,6 +27,14 @@
 #' simulation, the behavior of \code{ts_tracts()} is identical to that of the
 #' underlying \code{tspop.get_pop_ancestry()}.
 #'
+#' As of the current version of slendr, \code{ts_tracts()} only works for
+#' slendr/msprime sequences but not on slendr/SLiM tree sequences. Support for
+#' slendr-generated SLiM tree sequences is in development. Tree sequences from
+#' non-slendr msprime and SLiM tree sequences is not restricted in any way and,
+#' as mentioned in the previous paragraph, \code{ts_tracts()} on such tree
+#' sequences effectively reduces to the standard \code{tspop.get_pop_ancestry()}
+#' call.
+#'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param census Census time. See the documentation linked in the Details for more
 #'   information. If a slendr-specific tree sequence was provided as \code{ts},
