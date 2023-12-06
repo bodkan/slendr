@@ -1458,7 +1458,12 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
       if (is.null(pip))
         pip <- all(Sys.info()[c("sysname", "machine")] == c("Darwin", "arm64"))
 
-      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions, pip = pip)
+      # tspop isn't available on conda so it will need to be installed by pip
+      # no matter the user's preference (given by the pip function argument value)
+      # TODO: check at some point later if tspop is on conda
+      which_tspop <- grepl("tspop", package_versions)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!which_tspop], pip = pip)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[which_tspop], pip = TRUE)
 
       if (!quiet) {
         message("======================================================================")
