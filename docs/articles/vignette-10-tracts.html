@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -150,9 +150,9 @@ Papuans:</p>
 <code class="sourceCode R"><span><span class="va">anc_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_all"</span>, time <span class="op">=</span> <span class="fl">700e3</span>, N <span class="op">=</span> <span class="fl">10000</span>, remove <span class="op">=</span> <span class="fl">640e3</span><span class="op">)</span></span>
 <span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, parent <span class="op">=</span> <span class="va">anc_all</span>, time <span class="op">=</span> <span class="fl">650e3</span>, N <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span>
 <span><span class="va">anc_arch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_archaics"</span>, parent <span class="op">=</span> <span class="va">anc_all</span>, time <span class="op">=</span> <span class="fl">650e3</span>, N <span class="op">=</span> <span class="fl">10000</span>, remove <span class="op">=</span> <span class="fl">390e3</span><span class="op">)</span></span>
-<span><span class="va">nea</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"NEA"</span>, parent <span class="op">=</span> <span class="va">anc_arch</span>, time <span class="op">=</span> <span class="fl">400e3</span>, N <span class="op">=</span> <span class="fl">100</span>, remove <span class="op">=</span> <span class="fl">30e3</span><span class="op">)</span></span>
-<span><span class="va">den</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"DEN"</span>, parent <span class="op">=</span> <span class="va">anc_arch</span>, time <span class="op">=</span> <span class="fl">400e3</span>, N <span class="op">=</span> <span class="fl">100</span>, remove <span class="op">=</span> <span class="fl">30e3</span><span class="op">)</span></span>
-<span><span class="va">nonafr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"ancestor_nonAFR"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">100e3</span>, N <span class="op">=</span> <span class="fl">1000</span>, remove <span class="op">=</span> <span class="fl">39e3</span><span class="op">)</span></span>
+<span><span class="va">nea</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"NEA"</span>, parent <span class="op">=</span> <span class="va">anc_arch</span>, time <span class="op">=</span> <span class="fl">400e3</span>, N <span class="op">=</span> <span class="fl">2000</span>, remove <span class="op">=</span> <span class="fl">30e3</span><span class="op">)</span></span>
+<span><span class="va">den</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"DEN"</span>, parent <span class="op">=</span> <span class="va">anc_arch</span>, time <span class="op">=</span> <span class="fl">400e3</span>, N <span class="op">=</span> <span class="fl">2000</span>, remove <span class="op">=</span> <span class="fl">30e3</span><span class="op">)</span></span>
+<span><span class="va">nonafr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"nonAFR"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">100e3</span>, N <span class="op">=</span> <span class="fl">3000</span>, remove <span class="op">=</span> <span class="fl">39e3</span><span class="op">)</span></span>
 <span><span class="va">eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"EUR"</span>, parent <span class="op">=</span> <span class="va">nonafr</span>, time <span class="op">=</span> <span class="fl">45e3</span>, N <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
 <span><span class="va">pap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"PAP"</span>, parent <span class="op">=</span> <span class="va">nonafr</span>, time <span class="op">=</span> <span class="fl">45e3</span>, N <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
 <span></span>
@@ -170,7 +170,7 @@ Papuans:</p>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span></span>
 <span>  <span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span>, <span class="st">"ancestor_nonAFR"</span>, <span class="st">"PAP"</span>, <span class="st">"ancestor_all"</span>, <span class="st">"DEN"</span>, <span class="st">"ancestor_archaics"</span>, <span class="st">"NEA"</span><span class="op">)</span></span>
+<span>  order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span>, <span class="st">"nonAFR"</span>, <span class="st">"PAP"</span>, <span class="st">"ancestor_all"</span>, <span class="st">"DEN"</span>, <span class="st">"ancestor_archaics"</span>, <span class="st">"NEA"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-10-tracts_files/figure-html/introgression_model-1.png" width="640"></p>
 </div>
@@ -180,9 +180,9 @@ Papuans:</p>
 <p>Let’s now simulate a 50Mb tree sequence from this model, recording 50
 diploid individuals from EUR and PAP populations:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pap</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">50</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">pap</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="extracting-ancestry-tracts">Extracting ancestry tracts<a class="anchor" aria-label="anchor" href="#extracting-ancestry-tracts"></a>
@@ -204,18 +204,18 @@ to the moment of the start of the archaic introgression:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; PopAncestry summary</span></span>
 <span><span class="co">#&gt; Number of ancestral populations:     3</span></span>
-<span><span class="co">#&gt; Number of sample chromosomes:        100</span></span>
-<span><span class="co">#&gt; Number of ancestors:             21298</span></span>
-<span><span class="co">#&gt; Total length of genomes:         10000000000.000000</span></span>
-<span><span class="co">#&gt; Ancestral coverage:          10000000000.000000</span></span>
+<span><span class="co">#&gt; Number of sample chromosomes:        200</span></span>
+<span><span class="co">#&gt; Number of ancestors:             44052</span></span>
+<span><span class="co">#&gt; Total length of genomes:         20000000000.000000</span></span>
+<span><span class="co">#&gt; Ancestral coverage:          20000000000.000000</span></span>
 <span><span class="va">den_tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">ts</span>, census <span class="op">=</span> <span class="fl">35000</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; PopAncestry summary</span></span>
 <span><span class="co">#&gt; Number of ancestral populations:     3</span></span>
-<span><span class="co">#&gt; Number of sample chromosomes:        100</span></span>
-<span><span class="co">#&gt; Number of ancestors:             48617</span></span>
-<span><span class="co">#&gt; Total length of genomes:         10000000000.000000</span></span>
-<span><span class="co">#&gt; Ancestral coverage:          10000000000.000000</span></span>
+<span><span class="co">#&gt; Number of sample chromosomes:        200</span></span>
+<span><span class="co">#&gt; Number of ancestors:             55373</span></span>
+<span><span class="co">#&gt; Total length of genomes:         20000000000.000000</span></span>
+<span><span class="co">#&gt; Ancestral coverage:          20000000000.000000</span></span>
 <span></span>
 <span><span class="va">tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">nea_tracts</span>, <span class="va">den_tracts</span><span class="op">)</span></span></code></pre></div>
 <p>This is what a table with all ancestry tracts looks like. As we would
@@ -224,20 +224,20 @@ and right coordinates of each tract in each individual, as well as the
 population name of the source of each ancestry tract:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tracts</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 8,183 × 8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 17,002 × 8</span></span></span>
 <span><span class="co">#&gt;    name  node_id pop   source_pop     left    right length source_pop_id</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> EUR_1       0 EUR   NEA         4<span style="text-decoration: underline;">042</span>276  4<span style="text-decoration: underline;">300</span>495 <span style="text-decoration: underline;">258</span>219             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> EUR_1       0 EUR   NEA         9<span style="text-decoration: underline;">301</span>658  9<span style="text-decoration: underline;">402</span>135 <span style="text-decoration: underline;">100</span>477             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> EUR_1       0 EUR   NEA        12<span style="text-decoration: underline;">126</span>085 12<span style="text-decoration: underline;">129</span>348   <span style="text-decoration: underline;">3</span>263             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">142</span>318 13<span style="text-decoration: underline;">278</span>133 <span style="text-decoration: underline;">135</span>815             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">370</span>659 13<span style="text-decoration: underline;">406</span>675  <span style="text-decoration: underline;">36</span>016             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">525</span>468 13<span style="text-decoration: underline;">588</span>316  <span style="text-decoration: underline;">62</span>848             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">678</span>102 13<span style="text-decoration: underline;">743</span>316  <span style="text-decoration: underline;">65</span>214             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">751</span>818 13<span style="text-decoration: underline;">780</span>186  <span style="text-decoration: underline;">28</span>368             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">913</span>832 13<span style="text-decoration: underline;">982</span>765  <span style="text-decoration: underline;">68</span>933             3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_1       0 EUR   NEA        14<span style="text-decoration: underline;">048</span>413 14<span style="text-decoration: underline;">050</span>647   <span style="text-decoration: underline;">2</span>234             3</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 8,173 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> EUR_1       0 EUR   NEA          <span style="text-decoration: underline;">781</span>887   <span style="text-decoration: underline;">852</span>668  <span style="text-decoration: underline;">70</span>781             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> EUR_1       0 EUR   NEA         1<span style="text-decoration: underline;">451</span>389  1<span style="text-decoration: underline;">463</span>837  <span style="text-decoration: underline;">12</span>448             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> EUR_1       0 EUR   NEA         1<span style="text-decoration: underline;">596</span>995  1<span style="text-decoration: underline;">601</span>441   <span style="text-decoration: underline;">4</span>446             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> EUR_1       0 EUR   NEA         1<span style="text-decoration: underline;">629</span>857  1<span style="text-decoration: underline;">689</span>656  <span style="text-decoration: underline;">59</span>799             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> EUR_1       0 EUR   NEA         3<span style="text-decoration: underline;">203</span>711  3<span style="text-decoration: underline;">339</span>565 <span style="text-decoration: underline;">135</span>854             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> EUR_1       0 EUR   NEA         3<span style="text-decoration: underline;">850</span>629  3<span style="text-decoration: underline;">947</span>923  <span style="text-decoration: underline;">97</span>294             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> EUR_1       0 EUR   NEA         6<span style="text-decoration: underline;">190</span>700  6<span style="text-decoration: underline;">205</span>627  <span style="text-decoration: underline;">14</span>927             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> EUR_1       0 EUR   NEA        10<span style="text-decoration: underline;">394</span>211 10<span style="text-decoration: underline;">426</span>667  <span style="text-decoration: underline;">32</span>456             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> EUR_1       0 EUR   NEA        13<span style="text-decoration: underline;">044</span>685 13<span style="text-decoration: underline;">180</span>258 <span style="text-decoration: underline;">135</span>573             3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> EUR_1       0 EUR   NEA        14<span style="text-decoration: underline;">858</span>956 14<span style="text-decoration: underline;">912</span>068  <span style="text-decoration: underline;">53</span>112             3</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16,992 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="summaries-of-ancestral-proportions">Summaries of ancestral proportions<a class="anchor" aria-label="anchor" href="#summaries-of-ancestral-proportions"></a>
@@ -262,9 +262,9 @@ data</a>.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># Groups:   pop [2]</span></span></span>
 <span><span class="co">#&gt;   pop   source_pop `mean(prop)`</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR   NEA              0.034<span style="text-decoration: underline;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PAP   NEA              0.028<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PAP   DEN              0.071<span style="text-decoration: underline;">2</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR   NEA              0.030<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PAP   NEA              0.034<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PAP   DEN              0.073<span style="text-decoration: underline;">9</span></span></span></code></pre></div>
 <p>Let’s visualize these proportions at an individual level:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -316,9 +316,9 @@ data, and compare them to theoretical expectations.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># Groups:   pop [2]</span></span></span>
 <span><span class="co">#&gt;   pop   source_pop `mean(length)`</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR   NEA                <span style="text-decoration: underline;">68</span>273.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PAP   NEA                <span style="text-decoration: underline;">63</span>883.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PAP   DEN               <span style="text-decoration: underline;">103</span>087.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR   NEA                <span style="text-decoration: underline;">65</span>765.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> PAP   NEA                <span style="text-decoration: underline;">69</span>204.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> PAP   DEN               <span style="text-decoration: underline;">100</span>317.</span></span></code></pre></div>
 <p>Theoretical expectations (from Racimo and Slatkin 2015, Box 1)</p>
 <ul>
 <li>Neanderthal tracts:</li>
@@ -383,47 +383,47 @@ simulation example from the <a href="https://tspop.readthedocs.io/en/latest/basi
 behaves as expected even on a standard <em>msprime</em> tree-sequence
 object.</p>
 <p>First, let’s run the simulation code exactly as it is:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="im">import</span> msprime</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>pop_size <span class="op">=</span> <span class="dv">500</span></span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>sequence_length <span class="op">=</span> <span class="fl">1e7</span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">98765</span></span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>rho <span class="op">=</span> <span class="fl">3e-8</span></span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co"># Make the Demography object.</span></span>
-<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>demography <span class="op">=</span> msprime.Demography()</span>
-<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"RED"</span>, initial_size<span class="op">=</span>pop_size)</span>
-<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='RED', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=0)</span></span>
-<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"BLUE"</span>, initial_size<span class="op">=</span>pop_size)</span>
-<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='BLUE', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=1)</span></span>
-<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ADMIX"</span>, initial_size<span class="op">=</span>pop_size)</span>
-<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ADMIX', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=2)</span></span>
-<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ANC"</span>, initial_size<span class="op">=</span>pop_size)</span>
-<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ANC', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=3)</span></span>
-<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>demography.add_admixture(</span>
-<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">100</span>, derived<span class="op">=</span><span class="st">"ADMIX"</span>, ancestral<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], proportions<span class="op">=</span>[<span class="fl">0.5</span>, <span class="fl">0.5</span>]</span>
-<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>)</span>
-<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; Admixture(time=100, derived='ADMIX', ancestral=['RED', 'BLUE'], proportions=[0.5, 0.5])</span></span>
-<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>demography.add_census(time<span class="op">=</span><span class="fl">100.01</span>) <span class="co"># Census is here!</span></span>
-<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; CensusEvent(time=100.01)</span></span>
-<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>demography.add_population_split(</span>
-<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">1000</span>, derived<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], ancestral<span class="op">=</span><span class="st">"ANC"</span></span>
-<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>)</span>
-<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; PopulationSplit(time=1000, derived=['RED', 'BLUE'], ancestral='ANC')</span></span>
-<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a></span>
-<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co"># Simulate.</span></span>
-<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>ts <span class="op">=</span> msprime.sim_ancestry(</span>
-<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>    samples<span class="op">=</span>{<span class="st">"RED"</span>: <span class="dv">0</span>, <span class="st">"BLUE"</span>: <span class="dv">0</span>, <span class="st">"ADMIX"</span> : <span class="dv">2</span>},</span>
-<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>    demography<span class="op">=</span>demography,</span>
-<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>    random_seed<span class="op">=</span>seed,</span>
-<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>    sequence_length<span class="op">=</span>sequence_length,</span>
-<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>    recombination_rate<span class="op">=</span>rho</span>
-<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> msprime</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>pop_size <span class="op">=</span> <span class="dv">500</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>sequence_length <span class="op">=</span> <span class="fl">1e7</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">98765</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>rho <span class="op">=</span> <span class="fl">3e-8</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the Demography object.</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>demography <span class="op">=</span> msprime.Demography()</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"RED"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='RED', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=0)</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"BLUE"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='BLUE', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=1)</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ADMIX"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ADMIX', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=2)</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ANC"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ANC', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=3)</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>demography.add_admixture(</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">100</span>, derived<span class="op">=</span><span class="st">"ADMIX"</span>, ancestral<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], proportions<span class="op">=</span>[<span class="fl">0.5</span>, <span class="fl">0.5</span>]</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Admixture(time=100, derived='ADMIX', ancestral=['RED', 'BLUE'], proportions=[0.5, 0.5])</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>demography.add_census(time<span class="op">=</span><span class="fl">100.01</span>) <span class="co"># Census is here!</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; CensusEvent(time=100.01)</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>demography.add_population_split(</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">1000</span>, derived<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], ancestral<span class="op">=</span><span class="st">"ANC"</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PopulationSplit(time=1000, derived=['RED', 'BLUE'], ancestral='ANC')</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate.</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>ts <span class="op">=</span> msprime.sim_ancestry(</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    samples<span class="op">=</span>{<span class="st">"RED"</span>: <span class="dv">0</span>, <span class="st">"BLUE"</span>: <span class="dv">0</span>, <span class="st">"ADMIX"</span> : <span class="dv">2</span>},</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    demography<span class="op">=</span>demography,</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    random_seed<span class="op">=</span>seed,</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    sequence_length<span class="op">=</span>sequence_length,</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    recombination_rate<span class="op">=</span>rho</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Let’s save the <em>msprime</em> tree sequence to disk so that we can
 load it into R (i.e., approximating what you might want to do should you
 want to use <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> without running a <em>slendr</em>
 simulation first):</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>ts.dump(<span class="st">"/tmp/sim.trees"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ts.dump(<span class="st">"/tmp/sim.trees"</span>)</span></code></pre></div>
 <p>Now let’s move to R again, load the tree sequence into
 <em>slendr</em> and extract ancestry tracts from it using
 <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>:</p>

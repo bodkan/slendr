@@ -83,5 +83,6 @@ ts <- ts_load(slendr_ts, model)
 
 # extract Neanderthal ancestry tracts (i.e. those corresponding to the
 # census event at the gene-flow time at 55000 kya)
-nea_tracts <- ts_tracts(ts, census = 55000)
+nea_tracts <- ts_tracts(ts, census = 55000, source = "NEA")
+nea_tracts
 }

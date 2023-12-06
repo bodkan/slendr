@@ -43,6 +43,9 @@
     <loc>https://www.slendr.net/articles/vignette-09-paper.html</loc>
   </url>
   <url>
+    <loc>https://www.slendr.net/articles/vignette-10-tracts.html</loc>
+  </url>
+  <url>
     <loc>https://www.slendr.net/authors.html</loc>
   </url>
   <url>
@@ -236,6 +239,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_tajima.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/ts_tracts.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_tree.html</loc>

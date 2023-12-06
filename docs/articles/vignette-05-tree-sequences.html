@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,7 @@
     <a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
+    <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
   </div>
 </li>
 <li class="nav-item">
@@ -169,13 +170,14 @@ environment for us:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the currently active Python environment:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4/bin/python </span></span>
+<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2/bin/python </span></span>
 <span><span class="co">#&gt; Python version: 3.11.6 | packaged by conda-forge | (main, Oct  3 2023, 10:37:07) [Clang 15.0.7 ] </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; slendr requirements:</span></span>
 <span><span class="co">#&gt;  - tskit: version 0.5.6 ✓ </span></span>
 <span><span class="co">#&gt;  - msprime: version 1.2.0 ✓ </span></span>
-<span><span class="co">#&gt;  - pyslim: version 1.0.4 ✓</span></span></code></pre>
+<span><span class="co">#&gt;  - pyslim: version 1.0.4 ✓ </span></span>
+<span><span class="co">#&gt;  - tspop: present ✓</span></span></code></pre>
 <p>Now we’re good to go and ready to simulate and analyse tree sequence
 outputs in R!</p>
 <div class="section level3">
@@ -346,18 +348,18 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; msprime command:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpzBewSg/filed2c42c734a5e_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpzBewSg/filed2c42c734a5e_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpzBewSg/filed2c4604416f6.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpzBewSg/filed2c41e7438e8 --verbose  </span></span>
+<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpoiADTJ/file45fa2801b73b_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpoiADTJ/file45fa2801b73b_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpoiADTJ/file45fa16149cd7.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpoiADTJ/file45fa2d1e2515 --verbose  </span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Tree sequence was saved to:</span></span>
-<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpzBewSg/filed2c4604416f6.trees </span></span>
+<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpoiADTJ/file45fa16149cd7.trees </span></span>
 <span><span class="co">#&gt; Loading the tree-sequence file...</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     237139║</span></span>
+<span><span class="co">#&gt; ║Trees          │     240041║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -365,12 +367,12 @@ downstream analysis.</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │        116║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │   36.5 MiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │   40.0 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │858284│ 26.2 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │916588│ 28.0 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Individuals│    58│  1.6 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -378,7 +380,7 @@ downstream analysis.</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │138518│  3.7 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Nodes      │189654│  5.1 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -437,7 +439,7 @@ to the tree-sequence file ourselves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpzBewSg/filed2c42b9afa9f"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpoiADTJ/file45fa391e4a3"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
@@ -455,7 +457,7 @@ only once, and only during loading):</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     237139║</span></span>
+<span><span class="co">#&gt; ║Trees          │     240041║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -463,12 +465,12 @@ only once, and only during loading):</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │        116║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │   36.5 MiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │   40.0 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │858284│ 26.2 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │916588│ 28.0 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Individuals│    58│  1.6 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -476,7 +478,7 @@ only once, and only during loading):</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │138518│  3.7 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Nodes      │189654│  5.1 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -496,7 +498,7 @@ simplified form, by definition coming from a coalescent simulator.</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     237139║</span></span>
+<span><span class="co">#&gt; ║Trees          │     238681║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -504,12 +506,12 @@ simplified form, by definition coming from a coalescent simulator.</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │        116║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │   36.5 MiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │   36.7 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │858284│ 26.2 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │864772│ 26.4 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Individuals│    58│  1.6 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -517,7 +519,7 @@ simplified form, by definition coming from a coalescent simulator.</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │138518│  3.7 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Nodes      │139203│  3.7 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -539,7 +541,7 @@ this:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     131734║</span></span>
+<span><span class="co">#&gt; ║Trees          │     132496║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -547,12 +549,12 @@ this:</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │         14║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │   18.8 MiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │   19.0 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │437821│ 13.4 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │441206│ 13.5 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Individuals│     7│220 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -560,7 +562,7 @@ this:</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │ 79086│  2.1 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Nodes      │ 79249│  2.1 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
@@ -595,7 +597,7 @@ running:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     237139║</span></span>
+<span><span class="co">#&gt; ║Trees          │     240041║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -603,26 +605,26 @@ running:</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Sample Nodes   │        116║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Total Size     │   73.3 MiB║</span></span>
+<span><span class="co">#&gt; ║Total Size     │   76.8 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
 <span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │858284│ 26.2 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │916588│ 28.0 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Individuals│    58│  1.6 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │     0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Mutations  │624636│ 22.0 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Mutations  │623249│ 22.0 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │138518│  3.7 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Nodes      │189654│  5.1 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Provenances│     2│  7.7 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Sites      │622653│ 14.8 MiB│          No║</span></span>
+<span><span class="co">#&gt; ║Sites      │621331│ 14.8 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>
 <p>Having processed the simulated tree sequence, we can calculate some
 basic statistics on our simulated data.</p>
@@ -664,7 +666,7 @@ got an ordinary <code>phylo</code> object:</p>
 <span><span class="co">#&gt; Tip labels:</span></span>
 <span><span class="co">#&gt;   13 (EUR_50), 12 (EUR_50), 11 (CH_1), 10 (CH_1), 9 (AFR_2), 8 (AFR_2), ...</span></span>
 <span><span class="co">#&gt; Node labels:</span></span>
-<span><span class="co">#&gt;   75030, 70, 6515, 7147, 7489, 8411, ...</span></span>
+<span><span class="co">#&gt;   77386, 70, 2699, 5175, 5199, 6642, ...</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Rooted; includes branch lengths.</span></span></code></pre>
 <p>This means that we have the whole R phylogenetic ecosystem at our
@@ -867,21 +869,21 @@ which calculate the well-known set of Patterson’s <span class="math inline">\(
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   A     B            f2</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 0.000<span style="text-decoration: underline;">046</span>3</span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 0.000<span style="text-decoration: underline;">044</span>8</span></span></code></pre>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># f4 is a measure of the drift shared between A and B after their split from C</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f3</a></span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span>, C <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
 <span><span class="co">#&gt;   A     B     C            f3</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 CH_1  0.000<span style="text-decoration: underline;">015</span>4</span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> EUR_1 AFR_1 CH_1  0.000<span style="text-decoration: underline;">013</span>0</span></span></code></pre>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this value should be very close to zero (no introgression in Africans)</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"NEA_1"</span>, <span class="st">"CH_1"</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
 <span><span class="co">#&gt;   W     X     Y     Z        f4</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 AFR_2 NEA_1 CH_1   15.6</span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 AFR_2 NEA_1 CH_1  -<span style="color: #BB0000;">118.</span></span></span></code></pre>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this value should be significantly negative (many more ABBA sites</span></span>
 <span><span class="co"># compared to BABA site due to the introgression into Europeans)</span></span>
@@ -889,7 +891,7 @@ which calculate the well-known set of Patterson’s <span class="math inline">\(
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
 <span><span class="co">#&gt;   W     X     Y     Z        f4</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 NEA_1 CH_1  -<span style="color: #BB0000;">604.</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 NEA_1 CH_1  -<span style="color: #BB0000;">741.</span></span></span></code></pre>
 <p>These functions accept a <code>mode =</code> argument, specifying
 whether the statistics should be calculated using mutation site patterns
 (<code>mode = "site"</code>, the default), branch lengths
@@ -994,7 +996,7 @@ package for running automated ADMIXTOOLS analyses entirely from R and
 makes these types of analyses very convenient.</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_eigenstrat.html">ts_eigenstrat</a></span><span class="op">(</span><span class="va">ts</span>, prefix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"eigenstrat"</span>, <span class="st">"data"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; 1322 multiallelic sites (0.212% out of 622653 total) detected and removed</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; 1282 multiallelic sites (0.206% out of 621331 total) detected and removed</span></span></code></pre>
 <p>Running an <em>admixr</em> analysis is then as easy as plugging the
 object into an <em>admixr</em> function. For instance, we can estimate
 the proportion of Neanderthal ancestry in a couple of individuals <span class="math inline">\(X\)</span> like this (<em>admixr</em> calls this
@@ -1013,11 +1015,11 @@ proportion <code>alpha</code>):</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
-<span><span class="co">#&gt;   A     B     X     C     O         alpha  stderr Zscore</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> NEA_1 NEA_2 EUR_1 AFR_1 CH_1   0.016<span style="text-decoration: underline;">3</span>   0.005<span style="text-decoration: underline;">86</span>  2.78 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> NEA_1 NEA_2 EUR_2 AFR_1 CH_1   0.029<span style="text-decoration: underline;">3</span>   0.009<span style="text-decoration: underline;">15</span>  3.20 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> NEA_1 NEA_2 AFR_2 AFR_1 CH_1  -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">705</span> 0.001<span style="text-decoration: underline;">71</span> -<span style="color: #BB0000;">0.411</span></span></span></code></pre>
+<span><span class="co">#&gt;   A     B     X     C     O       alpha  stderr Zscore</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> NEA_1 NEA_2 EUR_1 AFR_1 CH_1  0.021<span style="text-decoration: underline;">8</span>  0.005<span style="text-decoration: underline;">06</span>   4.30</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> NEA_1 NEA_2 EUR_2 AFR_1 CH_1  0.032<span style="text-decoration: underline;">8</span>  0.007<span style="text-decoration: underline;">88</span>   4.16</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> NEA_1 NEA_2 AFR_2 AFR_1 CH_1  0.004<span style="text-decoration: underline;">08</span> 0.002<span style="text-decoration: underline;">08</span>   1.96</span></span></code></pre>
 <p>In fact, lets compare the values obtained by both <em>tskit</em> and
 <em>admixr</em>/ADMIXTOOLS for all individuals:</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
@@ -1087,7 +1089,7 @@ is to be calculated (i.e. not a window-based calculation), the
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   0.050<span style="text-decoration: underline;">1</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   0.049<span style="text-decoration: underline;">5</span></span></span></code></pre>
 <p>In case a non-named list of sample sets was provided, set names are
 generated automatically:</p>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
@@ -1095,7 +1097,7 @@ generated automatically:</p>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> set_1 set_2 0.050<span style="text-decoration: underline;">1</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> set_1 set_2 0.049<span style="text-decoration: underline;">5</span></span></span></code></pre>
 <p>Of course, this is much less readable and we encourage you to name
 the sample sets appropriately.</p>
 <p>In case more than two sample sets are specified, all pairwise
@@ -1107,9 +1109,9 @@ statistics are computed:</p>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   0.050<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> afr   nea   0.556 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> eur   nea   0.543</span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   0.049<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> afr   nea   0.555 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> eur   nea   0.541</span></span></code></pre>
 <p>As with many other statistics implemented by <a href="https://tskit.dev/tskit/docs/stable/python-api.html" class="external-link"><em>tskit</em></a><em>,</em>
 <code><a href="../reference/ts_fst.html">ts_fst()</a></code> accepts a <code>windows</code> argument,
 specifying the breakpoints between windows. In this case, the
@@ -1145,10 +1147,10 @@ introduction).</p>
 <div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">win_fst</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">Fst</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $`1`</span></span>
-<span><span class="co">#&gt;  [1] 0.04801217 0.05332213 0.05595146 0.03980105 0.07733833 0.04944570</span></span>
-<span><span class="co">#&gt;  [7] 0.05691089 0.04215276 0.04642110 0.03704610 0.04953114 0.05507096</span></span>
-<span><span class="co">#&gt; [13] 0.05772262 0.05053986 0.04360335 0.03271019 0.05961845 0.04907126</span></span>
-<span><span class="co">#&gt; [19] 0.05492154 0.04406241</span></span></code></pre>
+<span><span class="co">#&gt;  [1] 0.04241163 0.06803338 0.04129167 0.06031210 0.05516414 0.03059425</span></span>
+<span><span class="co">#&gt;  [7] 0.03320629 0.05755971 0.05271680 0.04346970 0.03659568 0.05432308</span></span>
+<span><span class="co">#&gt; [13] 0.05913699 0.05905198 0.04119386 0.04389669 0.05086942 0.06181126</span></span>
+<span><span class="co">#&gt; [19] 0.03929837 0.06373172</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="tajimas-d">Tajima’s <span class="math inline">\(D\)</span><a class="anchor" aria-label="anchor" href="#tajimas-d"></a>
@@ -1161,10 +1163,10 @@ character vectors with individual names):</p>
 <div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
-<span><span class="co">#&gt;   set        D</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   0.032<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> eur   0.024<span style="text-decoration: underline;">4</span></span></span></code></pre>
+<span><span class="co">#&gt;   set           D</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">701</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> eur   -<span style="color: #BB0000;">0.014</span><span style="color: #BB0000; text-decoration: underline;">0</span></span></span></code></pre>
 <p>For window-based version, the function returns the <code>D</code>
 column as a list column of vectors with <span class="math inline">\(i\)</span>-th element being the Tajima’s D value
 for the <span class="math inline">\(i\)</span>-th window:</p>
@@ -1219,10 +1221,10 @@ results in an increasing order of diversity:</p>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
 <span><span class="co">#&gt;   set   diversity</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> CH    0.000<span style="text-decoration: underline;">042</span>7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> NEA   0.000<span style="text-decoration: underline;">046</span>1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> EUR   0.000<span style="text-decoration: underline;">395</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> AFR   0.000<span style="text-decoration: underline;">405</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> CH    0.000<span style="text-decoration: underline;">043</span>1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> NEA   0.000<span style="text-decoration: underline;">045</span>5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> EUR   0.000<span style="text-decoration: underline;">394</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> AFR   0.000<span style="text-decoration: underline;">400</span></span></span></code></pre>
 <p>Great! This matches our expectations. We simulated chimp “population”
 as only one individual, so we expect essentially no diversity after
 millions of years of evolution.</p>
@@ -1242,12 +1244,12 @@ divergence from the outgroup chimpanzee <code>CH</code>.</p>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y     divergence</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR   EUR     0.000<span style="text-decoration: underline;">452</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> EUR   NEA     0.000<span style="text-decoration: underline;">763</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> AFR   NEA     0.000<span style="text-decoration: underline;">787</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> CH    NEA     0.004<span style="text-decoration: underline;">02</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CH    EUR     0.004<span style="text-decoration: underline;">03</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> AFR   CH      0.004<span style="text-decoration: underline;">04</span></span></span></code></pre>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR   EUR     0.000<span style="text-decoration: underline;">449</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> EUR   NEA     0.000<span style="text-decoration: underline;">757</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> AFR   NEA     0.000<span style="text-decoration: underline;">780</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> CH    NEA     0.004<span style="text-decoration: underline;">01</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> CH    EUR     0.004<span style="text-decoration: underline;">02</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> AFR   CH      0.004<span style="text-decoration: underline;">02</span></span></span></code></pre>
 <p>After sorting the table based on the value in the divergence column,
 we can see the results fit our expectations.</p>
 </div>
