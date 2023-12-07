@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -132,10 +132,10 @@ for tracts discovered in the target population(s)</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This functions implements an R-friendly interface to an algorithm for
+    <p>This function implements an R-friendly interface to an algorithm for
 extracting ancestry tracts provided by the Python module tspop
-<a href="https://tspop.readthedocs.io/en/latest/" class="external-link">https://tspop.readthedocs.io/en/latest/</a> and described by Georgia Tsambos.
-Please make sure to cite their paper which describes the algorithm in
+<a href="https://tspop.readthedocs.io/en/latest/" class="external-link">https://tspop.readthedocs.io/en/latest/</a> and developed by Georgia Tsambos.
+Please make sure to cite the paper which describes the algorithm in
 detail: <a href="https://academic.oup.com/bioinformaticsadvances/article/3/1/vbad163/7429395" class="external-link">https://academic.oup.com/bioinformaticsadvances/article/3/1/vbad163/7429395</a>.
 For more technical details, see also the tutorial at:
 <a href="https://tspop.readthedocs.io/en/latest/basicusage.html" class="external-link">https://tspop.readthedocs.io/en/latest/basicusage.html</a>.</p>
@@ -156,11 +156,11 @@ simulation, the behavior of <code>ts_tracts()</code> is identical to that of the
 underlying <code>tspop.get_pop_ancestry()</code>.</p>
 <p>As of the current version of slendr, <code>ts_tracts()</code> only works for
 slendr/msprime sequences but not on slendr/SLiM tree sequences. Support for
-slendr-generated SLiM tree sequences is in development. Tree sequences from
-non-slendr msprime and SLiM tree sequences is not restricted in any way and,
-as mentioned in the previous paragraph, <code>ts_tracts()</code> on such tree
-sequences effectively reduces to the standard <code>tspop.get_pop_ancestry()</code>
-call.</p>
+slendr-generated SLiM tree sequences is in development. Tracts from tree
+sequences originating from non-slendr msprime and SLiM simulations are not
+restricted in any way and, as mentioned in the previous paragraph,
+<code>ts_tracts()</code> in this situation effectively reduces to the standard
+<code>tspop.get_pop_ancestry()</code> call.</p>
     </div>
 
     <div class="section level2">

@@ -36,10 +36,10 @@ A data frame containing coordinates of ancestry tracts
 Extract a data frame with coordinates of ancestry tracts from a given tree sequence.
 }
 \details{
-This functions implements an R-friendly interface to an algorithm for
+This function implements an R-friendly interface to an algorithm for
 extracting ancestry tracts provided by the Python module tspop
-\url{https://tspop.readthedocs.io/en/latest/} and described by Georgia Tsambos.
-Please make sure to cite their paper which describes the algorithm in
+\url{https://tspop.readthedocs.io/en/latest/} and developed by Georgia Tsambos.
+Please make sure to cite the paper which describes the algorithm in
 detail: \url{https://academic.oup.com/bioinformaticsadvances/article/3/1/vbad163/7429395}.
 For more technical details, see also the tutorial at:
 \url{https://tspop.readthedocs.io/en/latest/basicusage.html}.
@@ -63,11 +63,11 @@ underlying \code{tspop.get_pop_ancestry()}.
 
 As of the current version of slendr, \code{ts_tracts()} only works for
 slendr/msprime sequences but not on slendr/SLiM tree sequences. Support for
-slendr-generated SLiM tree sequences is in development. Tree sequences from
-non-slendr msprime and SLiM tree sequences is not restricted in any way and,
-as mentioned in the previous paragraph, \code{ts_tracts()} on such tree
-sequences effectively reduces to the standard \code{tspop.get_pop_ancestry()}
-call.
+slendr-generated SLiM tree sequences is in development. Tracts from tree
+sequences originating from non-slendr msprime and SLiM simulations are not
+restricted in any way and, as mentioned in the previous paragraph,
+\code{ts_tracts()} in this situation effectively reduces to the standard
+\code{tspop.get_pop_ancestry()} call.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
