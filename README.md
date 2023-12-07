@@ -14,7 +14,7 @@
 
 *slendr* is an R package toolbox for defining population genetic models and simulating genomic data entirely from R. It has been originally conceived as a framework for simulating spatially-explicit genomic data on real geographic landscapes but it has grown to be much more than that.
 
-This page briefly summarizes *slendr'*s most important features. A a much detailed description of the *slendr* architecture and an extensive set of practical code examples can be found in our [preprint](https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1) on bioRxiv and on our [website](https://www.slendr.net).
+This page briefly summarizes *slendr*'s most important features. A a much detailed description of the *slendr* architecture and an extensive set of practical code examples can be found in our [preprint](https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1) on bioRxiv and on our [website](https://www.slendr.net).
 
 ------------------------------------------------------------------------
 
