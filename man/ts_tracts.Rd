@@ -72,17 +72,18 @@ restricted in any way and, as mentioned in the previous paragraph,
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
 }
-init_env()
+init_env(quiet = TRUE)
 
 # load an example model with an already simulated tree sequence
 slendr_ts <- system.file("extdata/models/introgression_msprime.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
-# load the tree-sequence object from disk and add mutations to it
-ts <- ts_load(slendr_ts, model)
+# load the tree-sequence object from disk
+ts <- ts_load(file = slendr_ts, model = model)
 
 # extract Neanderthal ancestry tracts (i.e. those corresponding to the
-# census event at the gene-flow time at 55000 kya)
+# census event at the gene-flow time at 55000 kya as scheduled by
+# the simulation which produced the tree sequence)
 nea_tracts <- ts_tracts(ts, census = 55000, source = "NEA")
 nea_tracts
 }
