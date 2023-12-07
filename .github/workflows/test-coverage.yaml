@@ -76,7 +76,7 @@ jobs:
           cd ~/deps
 
           # installation instructions copied from the SLiM manual:
-          wget http://benhaller.com/slim/SLiM.zip
+          wget https://github.com/MesserLab/SLiM/releases/download/v4.0.1/SLiM.zip
           unzip SLiM.zip
           cd SLiM
           cmake .
