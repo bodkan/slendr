@@ -296,6 +296,9 @@ time_direction <- function(x) {
 
   split_times <- get_lineage_splits(x)
 
+  # if there was only one population split event in the history of this
+  # population, take a look inside its other demographic event to guess
+  # the intended flow of time implied by the model
   if (length(split_times) == 1) {
     history <- attr(x, "history")
     event_times <-
@@ -316,6 +319,8 @@ time_direction <- function(x) {
       unlist %>%
       unique %>%
       stats::na.omit()
+    # if there wasn't a second demographic event after the population's split,
+    # check if the user specified a removal event and use that
     if (length(event_times) == 1) {
       removal_time <- attr(x, "remove")
       if (removal_time == -1)
@@ -326,13 +331,13 @@ time_direction <- function(x) {
         "forward"
       else
         stop("Inconsistent time direction of population events", call. = FALSE)
-    } else if (all(diff(event_times) < 0))
+    } else if (all(diff(event_times) < 0)) # event times decrease moving forward
       "backward"
-    else
+    else # event times increase moving forward
       "forward"
-  } else if (all(diff(split_times) > 0))
+  } else if (all(diff(split_times) > 0)) # split times decrease moving forward
     "backward"
-  else
+  else # split times increase moving forward
     "forward"
 }
 
