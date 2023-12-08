@@ -119,12 +119,14 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
   end_area <- sf::st_area(utils::tail(inter_regions, 1)[[1]])
   action <- ifelse(start_area < end_area, "expand", "contract")
 
-  attr(result, "history") <- append(attr(result, "history"), list(data.frame(
+  event <- list(data.frame(
     pop =  unique(region_start$pop),
     event = action,
     tstart = start,
-    tend = end
-  )))
+    tend = end,
+    lock = lock
+  ))
+  attr(result, "history") <- append(attr(result, "history"), event)
 
 
   if (lock) {
@@ -295,9 +297,22 @@ time_direction <- function(x) {
   split_times <- get_lineage_splits(x)
 
   if (length(split_times) == 1) {
-    event_times <- attr(x, "history") %>%
-      sapply(function(event) c(event$time, event$tresize, event$tend,
-                               event$start, event$end)) %>%
+    history <- attr(x, "history")
+    event_times <-
+      history %>%
+      sapply(function(event) {
+        # skip extracting times from the expansion/shrinking event if that
+        # would also include locked in population size (this is because we
+        # can use the resize progression which comes in events immediately
+        # after this one to detect time direction and, more importantly,
+        # because the expansion/shrinking and resize progression
+        # would effectively contradict the true time direction of the model)
+        # -- this fixes https://github.com/bodkan/slendr/issues/143
+        if (length(history) > 2 && !is.null(event$lock) && event$lock == TRUE)
+          return(NA)
+        else
+          c(event$time, event$tresize, event$tend, event$start, event$end)
+      }) %>%
       unlist %>%
       unique %>%
       stats::na.omit()
