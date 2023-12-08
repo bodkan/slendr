@@ -82,7 +82,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
-</div>
+<ul><li>Fixed an <a href="https://github.com/bodkan/slendr/issues/143" class="external-link">issue</a> of apparent contradiction in time direction in models where range expansion was scheduled within some time interval together with associated “locked-in” changes in population size over that time interval. (<a href="https://github.com/bodkan/slendr/commit/d2a29e" class="external-link">#d2a29e</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.0" id="slendr-080">slendr 0.8.0<a class="anchor" aria-label="anchor" href="#slendr-080"></a></h2><p class="text-muted">CRAN release: 2023-12-07</p>
 <ul><li><p>In order to support the new <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> function backed by the <em>tspop</em> module (see the item below), a new <em>slendr</em> Python environment is required. As such, users will have to run <code><a href="../reference/setup_env.html">setup_env()</a></code> to get all the required Python dependencies which will be now installed in the internal virtual environment named <code>Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2</code>. (<a href="https://github.com/bodkan/slendr/commit/b5330c" class="external-link">#b5330c</a>)</p></li>

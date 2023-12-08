@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- Fixed an [issue](https://github.com/bodkan/slendr/issues/143) of apparent contradiction in time direction in models where range expansion was scheduled within some time interval together with associated "locked-in" changes in population size over that time interval. ([#d2a29e](https://github.com/bodkan/slendr/commit/d2a29e))
+
 # slendr 0.8.0
 
 - In order to support the new `ts_tracts()` function backed by the _tspop_ module (see the item below), a new _slendr_ Python environment is required. As such, users will have to run `setup_env()` to get all the required Python dependencies which will be now installed in the internal virtual environment named `Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2`. ([#b5330c](https://github.com/bodkan/slendr/commit/b5330c))
