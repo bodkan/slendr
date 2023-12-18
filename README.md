@@ -14,7 +14,21 @@
 
 *slendr* is an R package toolbox for defining population genetic models and simulating genomic data entirely from R. It has been originally conceived as a framework for simulating spatially-explicit genomic data on real geographic landscapes but it has grown to be much more than that.
 
-This page briefly summarizes *slendr*'s most important features. A a much detailed description of the *slendr* architecture and an extensive set of practical code examples can be found in our [preprint](https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1) on bioRxiv and on our [website](https://www.slendr.net).
+This page briefly summarizes *slendr*'s most important features. A a much detailed description of the *slendr* architecture and an extensive set of practical code examples can be found in our [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/) in the PCI journal and on our [website](https://www.slendr.net).
+
+------------------------------------------------------------------------
+
+### Citing _slendr_
+
+The _slendr_ paper is now [published in the Peer Community Journal](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/)!
+
+If you use _slendr_ in your work, please cite it as:
+
+> Petr, Martin; Haller, Benjamin C.; Ralph, Peter L.; Racimo, Fernando.
+> slendr: a framework for spatio-temporal population genomic simulations on geographic landscapes.
+> Peer Community Journal, Volume 3 (2023), article no. e121. doi : 10.24072/pcjournal.354.
+
+Citations help me justify further development and fixing bugs! Thank you! ❤️
 
 ------------------------------------------------------------------------
 
@@ -313,4 +327,4 @@ The example above provides only a very brief and incomplete overview of the full
 
 -   For spatially explicit population models, the *slendr* package automatically converts the simulated output data to a format which makes it possible to analyse it with many available R packages for geospatial data analysis. A brief description of this functionality can be found in [this vignette](https://www.slendr.net/articles/vignette-06-locations.html).
 
--   You can find complete reproducible code behind the examples in our [preprint](https://www.biorxiv.org/content/10.1101/2022.03.20.485041v1) in a dedicated R vignette [here](https://www.slendr.net/articles/vignette-09-paper.html).
+-   You can find complete reproducible code behind the examples in our [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/) in a dedicated R vignette [here](https://www.slendr.net/articles/vignette-09-paper.html).
