@@ -1,5 +1,7 @@
 # slendr 0.8.1
 
+- **WARNING**: SLiM 4.1 which has just been released includes [backwards incompatible changes](https://github.com/MesserLab/SLiM/releases/tag/v4.1) which prevent the current version of _slendr_'s `slim()` function from working correctly. If you rely on the functionality provided by the `slim()` function, you will have to use SLiM 4.0. (Note that if you want to have multiple versions of SLiM on your system, you can either use the `slim_path =` argument of `slim()` or specify the `$PATH` to the required version of SLiM in your `~/.Renviron` file). Porting _slendr_ for SLiM 4.1 is being worked on.
+
 - Fixed an [issue](https://github.com/bodkan/slendr/issues/143) of apparent contradiction in time direction in models where range expansion was scheduled within some time interval together with associated "locked-in" changes in population size over that time interval. ([#cbe960](https://github.com/bodkan/slendr/commit/cbe960))
 
 - The introduction of _tspop_ which is only installable via pip (see changelog for the previous version) caused GLIBCXX-related errors between conda and pip dependencies related to the pandas Python package. To work around this issue, `setup_env()` no longer installs _pandas_ from conda regardless of the setting of the `pip = TRUE|FALSE` parameter. Instead, _pandas_ is installed via pip in a single step when _tspop_ is being installed. ([#cbe960](https://github.com/bodkan/slendr/commit/cbe960))
