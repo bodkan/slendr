@@ -358,7 +358,7 @@ geographic regions in the context of the defined section of the world
 map:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">africa</span>, <span class="va">europe</span>, <span class="va">anatolia</span>, title <span class="op">=</span> <span class="st">"Geographic regions"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_europe_anatolia-1.png" width="480"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_europe_anatolia-1.png" width="360"></p>
 <p>Note that the <code>map</code> object is no longer explicitly
 specified. It is not needed, because each other class of objects
 provided to the <code><a href="../reference/plot_map.html">plot_map()</a></code> function must carry it as a
@@ -402,7 +402,7 @@ restrict the spatial boundary of the African population to the
 <code class="sourceCode R"><span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span>, map <span class="op">=</span> <span class="va">map</span>, polygon <span class="op">=</span> <span class="va">africa</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_afr-1.png" width="480"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_afr-1.png" width="360"></p>
 </div>
 <div class="section level3">
 <h3 id="circular-population-ranges">Circular population ranges<a class="anchor" aria-label="anchor" href="#circular-population-ranges"></a>
@@ -431,7 +431,7 @@ the <code><a href="../reference/plot_map.html">plot_map()</a></code> function re
 ranges by default.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">ooa</span>, intersect <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"'Intersected' population range"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_ooa-1.png" width="480"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_ooa-1.png" width="360"></p>
 </div>
 </div>
 <div class="section level2">
@@ -470,7 +470,7 @@ locations:</p>
 <p>Checking the result visually again, we see:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">ooa</span>, title <span class="op">=</span> <span class="st">"Intermediate migration maps"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_ooa_migration-1.png" width="480"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_ooa_migration-1.png" width="360"></p>
 <p>Let’s create a population of Eastern Hunter Gatherers (EHG), which
 split from the first non-Africans 28000 years ago:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -538,7 +538,7 @@ spatial maps (“snapshots”) of the expansion process across time:</p>
 <p>We can (and should) check the results visually:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">ana</span>, title <span class="op">=</span> <span class="st">"Anatolian expansion into Europe"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_ana-1.png" width="480"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_ana-1.png" width="360"></p>
 <p>To visually see what is really going on behind the scenes, you can
 also plot the raw, non-intersected form of the expansion with:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
@@ -563,7 +563,7 @@ to implementing gene flow between them.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">yam</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_yam_migr-1.png" width="480"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_yam_migr-1.png" width="360"></p>
 </div>
 <div class="section level2">
 <h2 id="plotting-multiple-slendr-objects">Plotting multiple <em>slendr</em> objects<a class="anchor" aria-label="anchor" href="#plotting-multiple-slendr-objects"></a>
@@ -576,7 +576,7 @@ potential issues before the export of individual spatio-temporal maps.
 Obviously, this is a lot of multi-dimensional information:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_maps-1.png" width="480"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_maps-1.png" width="360"></p>
 <p>Below you will see a better way to explore a <em>slendr</em> model
 interactively.</p>
 </div>
@@ -742,7 +742,7 @@ color represent snapshots in time when a demographic event affecting
 that population happens.</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, proportions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-01-tutorial_files/figure-html/plot_model-1.png" width="640"></p>
+<p><img src="vignette-01-tutorial_files/figure-html/plot_model-1.png" width="480"></p>
 </div>
 <div class="section level2">
 <h2 id="interactive-exploration-of-spatio-temporal-models">Interactive exploration of spatio-temporal models<a class="anchor" aria-label="anchor" href="#interactive-exploration-of-spatio-temporal-models"></a>
@@ -782,7 +782,7 @@ user:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence           ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │    125║</span></span>
+<span><span class="co">#&gt; ║Trees          │    141║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│ 100000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
@@ -795,15 +795,15 @@ user:</p>
 <span><span class="co">#&gt; ╔═══════════╤═════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪═════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │18659│583.1 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │18797│587.4 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│12805│  1.2 MiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│12917│  1.2 MiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │    0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │    0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │18330│680.9 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │18434│684.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│    6│  2.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>

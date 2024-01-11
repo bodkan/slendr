@@ -250,12 +250,12 @@ plot a graph summarizing population divergences and geneflow events by
 calling <code>plot_model(model)</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-06-locations_files/figure-html/demographic_model-1.png" width="480"></p>
+<p><img src="vignette-06-locations_files/figure-html/demographic_model-1.png" width="360"></p>
 <p>And for completeness, here is a (slightly busy) overview of the
 spatial population ranges that we defined above:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-06-locations_files/figure-html/spatial_maps-1.png" width="480"></p>
+<p><img src="vignette-06-locations_files/figure-html/spatial_maps-1.png" width="360"></p>
 </div>
 <div class="section level2">
 <h2 id="scheduling-sampling-events-and-simulation">Scheduling sampling events and simulation<a class="anchor" aria-label="anchor" href="#scheduling-sampling-events-and-simulation"></a>
@@ -441,7 +441,7 @@ map (also an <code>sf</code> object):</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Locations of simulated sampled individuals"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html" class="external-link">scale_color_continuous</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"viridis"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-06-locations_files/figure-html/slendr_map_ts-1.png" width="480"></p>
+<p><img src="vignette-06-locations_files/figure-html/slendr_map_ts-1.png" width="360"></p>
 <p>Because <code>sf</code> <em>simple features</em> objects (and, by
 extension, even <code>slendr_spatial</code> objects) are internally
 stored as <a href="https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized" class="external-link">normal
@@ -472,7 +472,7 @@ corresponding to one epoch (the warning can be safely ignored):</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">epoch</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Locations of simulated sampled individuals in different epochs"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-06-locations_files/figure-html/map_epochs-1.png" width="480"></p>
+<p><img src="vignette-06-locations_files/figure-html/map_epochs-1.png" width="360"></p>
 <p>We hope this little excursion to handling <em>slendr</em> spatial
 objects (and, by extension, <code>sf</code> objects) with standard data
 frame manipulation functions and <em>ggplot2</em> visualisation
@@ -592,7 +592,7 @@ line) individually on a map:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">level1_branches</span><span class="op">[</span>, <span class="op">]</span><span class="op">$</span><span class="va">parent_location</span>, shape <span class="op">=</span> <span class="fl">20</span>, color <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Parent nodes (blue) of a focal individual (red)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-06-locations_files/figure-html/level1_branches-1.png" width="480"></p>
+<p><img src="vignette-06-locations_files/figure-html/level1_branches-1.png" width="360"></p>
 <p>In the figure above we can see the red focal node and its immediate
 parents in the tree sequence genealogy (in the coalescent sense, not
 immediate parents of that individual!). In case you’re surprised to see
@@ -636,7 +636,7 @@ diploid individual, we get two sets of paths for each of its nodes
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"longitude"</span>, y <span class="op">=</span> <span class="st">"latitude"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">node_id</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Ancestry encoded by two nodes (chromosomes) of EUR_67"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-06-locations_files/figure-html/plot_ancestors_time-1.png" width="480"></p>
+<p><img src="vignette-06-locations_files/figure-html/plot_ancestors_time-1.png" width="360"></p>
 <p>You can compare this result to the animation which recapitulates the
 simulation, presented in <a href="vignette-01-tutorial.html">the first
 vignette</a>.</p>
@@ -698,7 +698,7 @@ its spatial ancestry tidyverse-style using the pipe operator
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"longitude"</span>, y <span class="op">=</span> <span class="st">"latitude"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">.</span> <span class="op">~</span> <span class="va">node_id</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Ancestry encoded by two nodes (chromosomes) of ANA_45"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-06-locations_files/figure-html/plot_ancestors_levels_ana-1.png" width="480"></p>
+<p><img src="vignette-06-locations_files/figure-html/plot_ancestors_levels_ana-1.png" width="360"></p>
 <p>As we might expect given the late age of the sample, its position in
 the map above (red crossed circle) is not in Anatolia but in Europe
 because it represents one of the descendants of migrants who moved from
@@ -783,7 +783,7 @@ the raw data with individual nodes):</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">facet</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span><span class="st">"ancestral node population"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
-<p><img src="vignette-06-locations_files/figure-html/smooth_distance_fits-1.png" width="480"></p>
+<p><img src="vignette-06-locations_files/figure-html/smooth_distance_fits-1.png" width="360"></p>
 <!-- # Directional movement -->
 <!-- Rather then looking at absolute distances traveled (or the speed of movement), we might be interested in knowing something about the *direction* of movement. -->
 <!-- ```{r} -->

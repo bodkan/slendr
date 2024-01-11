@@ -246,10 +246,10 @@ ancestry in <code>x1</code>, and only one individual from the rest.</p>
 set up correctly:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model_nogf</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-backends_files/figure-html/unnamed-chunk-5-1.png" width="640"></p>
+<p><img src="vignette-07-backends_files/figure-html/unnamed-chunk-5-1.png" width="480"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model_gf</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>, proportions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-backends_files/figure-html/unnamed-chunk-5-2.png" width="640"></p>
+<p><img src="vignette-07-backends_files/figure-html/unnamed-chunk-5-2.png" width="480"></p>
 <p>Now we will run both models (with and without gene flow) in the two
 <em>slendr</em> backends, SLiM and msprime:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -455,7 +455,7 @@ processes at play).</p>
 <span>       title <span class="op">=</span> <span class="st">"f4(c, x1 or x2; b, outgroup)"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"f4 ~0 is consistent with no gene flow, negative value indicates gene flow with 'b'"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-backends_files/figure-html/msprime_slim_f4_distributions-1.png" width="640"></p>
+<p><img src="vignette-07-backends_files/figure-html/msprime_slim_f4_distributions-1.png" width="480"></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_f4ratio</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">df_slim_f4ratio</span>, <span class="va">df_msprime_f4ratio</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>population <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"x1_"</span>, <span class="va">X</span><span class="op">)</span>,</span>
@@ -470,7 +470,7 @@ processes at play).</p>
 <span>       title <span class="op">=</span> <span class="st">"f4-ratio estimate of 'b' ancestry calculated from simulated data"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"f4-ratio = f4(a, outgroup; x1 or x2, c) / f4(a, outgroup; b, c)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-backends_files/figure-html/msprime_slim_f4ratio_distributions-1.png" width="640"></p>
+<p><img src="vignette-07-backends_files/figure-html/msprime_slim_f4ratio_distributions-1.png" width="480"></p>
 <p>Things seem to be looking good and behave as expected! A couple of
 observations:</p>
 <ul>
@@ -682,7 +682,7 @@ for the two time directions, and for the two simulation back ends:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_linetype_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">100</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-07-backends_files/figure-html/msprime_slim_afs-1.png" width="640"></p>
+<p><img src="vignette-07-backends_files/figure-html/msprime_slim_afs-1.png" width="480"></p>
 <p>Again, a couple of things to note:</p>
 <ul>
 <li><p>The two models that involve population contraction (be it in a

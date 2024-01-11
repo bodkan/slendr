@@ -199,7 +199,7 @@ population:</p>
 we set up things correctly:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">populations</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" width="480"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/demes_grid-1.png" width="360"></p>
 <p>So far, the way the model is specified, each population would be
 stuck on its own circular “island”. We can change that by programming
 gene flow events using the <em>slendr</em> function
@@ -292,15 +292,15 @@ function.</p>
 <span><span class="co">#&gt; ╔═══════════╤════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows│Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │9083│283.9 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │9100│284.4 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│6325│619.3 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│6341│620.8 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │   0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │   0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │9108│338.7 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │9125│339.3 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│  25│  5.7 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼────┼─────────┼────────────╢</span></span>
@@ -368,7 +368,7 @@ helper function:</p>
 background:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">plot_map</span>, <span class="va">filtered</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/demes_africa-1.png" width="480"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/demes_africa-1.png" width="360"></p>
 <p>Next, we would probably set up some scenario of gene flow between
 subpopulations; perhaps we would be interested in studying how a
 selected allele spreads through the continent based on some factors of
@@ -390,7 +390,7 @@ customize the spatial layout in much more detail.</p>
 <span></span>
 <span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/world.html">world</a></span><span class="op">(</span>xrange <span class="op">=</span> <span class="va">xrange</span>, yrange <span class="op">=</span> <span class="va">yrange</span>, crs <span class="op">=</span> <span class="st">"EPSG:31970"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/map_america-1.png" width="480"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/map_america-1.png" width="360"></p>
 <p>Let’s lay out demes in a more scattered, irregular fashion. For
 illustration purposes, we will define each population’s geographic range
 as a circle with the radius of 200 km. Importantly, note that we have
@@ -483,7 +483,7 @@ of interest, but the location of each subpopulation is.</p>
 quickly visualizing it:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-02-grid-model_files/figure-html/model_america-1.png" width="480"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/model_america-1.png" width="360"></p>
 <p>We can also plot the spatial organization of our demes on a map in
 all of its glory, including all gene flow events (one arrow per each
 unidirectional gene flow). Note that we get a warning message stating
@@ -494,7 +494,7 @@ map:</p>
 <pre><code><span><span class="co">#&gt; Warning: All gene-flow event will be visualized at once. If you wish to visualize</span></span>
 <span><span class="co">#&gt; gene flows at a particular point in time, use the `time` argument.</span></span></code></pre>
 <pre><code><span><span class="co">#&gt; Warning: Non-spatial populations in your model won't be visualized</span></span></code></pre>
-<p><img src="vignette-02-grid-model_files/figure-html/model_map_america-1.png" width="480"></p>
+<p><img src="vignette-02-grid-model_files/figure-html/model_map_america-1.png" width="360"></p>
 <p>Finally, we can simulate the tree sequence from the model! Notice
 that we are simulating data using <code><a href="../reference/msprime.html">msprime()</a></code>, which is
 effectively dropping the continuous space dimension of our model. In

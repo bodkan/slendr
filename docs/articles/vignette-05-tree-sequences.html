@@ -236,7 +236,7 @@ correct:</p>
 <span>  <span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, sizes <span class="op">=</span> <span class="cn">FALSE</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  nrow <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/introgression_graph-1.png" width="640"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/introgression_graph-1.png" width="480"></p>
 </div>
 </div>
 <div class="section level2">
@@ -348,11 +348,11 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; msprime command:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpq5Z5LG/fileeeee727caf1d_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpq5Z5LG/fileeeee727caf1d_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpq5Z5LG/fileeeee2a87656f.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpq5Z5LG/fileeeee6149a74f --verbose  </span></span>
+<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2/bin/python /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpP4XYFF/fileecc9462db049_introgression/script.py --seed 314159 --model /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpP4XYFF/fileecc9462db049_introgression --output /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpP4XYFF/fileecc92378bf17.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpP4XYFF/fileecc9390f6bf5 --verbose  </span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Tree sequence was saved to:</span></span>
-<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpq5Z5LG/fileeeee2a87656f.trees </span></span>
+<span><span class="co">#&gt;  /var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpP4XYFF/fileecc92378bf17.trees </span></span>
 <span><span class="co">#&gt; Loading the tree-sequence file...</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span></span></code></pre></div>
@@ -439,7 +439,7 @@ to the tree-sequence file ourselves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmpq5Z5LG/fileeeee76d3be1f"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//RtmpP4XYFF/fileecc971db90be"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
@@ -725,7 +725,7 @@ package <em>ggtree</em> to plot the tree we have just extracted:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/geom_point2.html" class="external-link">geom_point2</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>subset <span class="op">=</span> <span class="op">!</span><span class="va">isTip</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># points for internal nodes</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/geom_tiplab.html" class="external-link">geom_tiplab</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="co"># sample labels for tips</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/ggexpand.html" class="external-link">hexpand</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span>    <span class="co"># make more space for the tip labels</span></span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/plot_ggtree-1.png" width="480"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/plot_ggtree-1.png" width="360"></p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ape-package.ird.fr/" class="external-link">ape</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span></span>
@@ -958,7 +958,7 @@ simulated between):</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Neanderthal ancestry proportion"</span>, x <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_distributions-1.png" width="480"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_distributions-1.png" width="360"></p>
 <p>This is exactly as we specified in the model configuration above,
 suggesting that our simulations work as they should. You can see that
 there is quite a bit of noise but that’s because we simulated only a
@@ -974,7 +974,7 @@ present-day DNA samples:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">40000</span>, <span class="fl">0</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"time [years ago]"</span>, y <span class="op">=</span> <span class="st">"Neanderthal ancestry proportion"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
-<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_trajectory-1.png" width="480"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_nea_trajectory-1.png" width="360"></p>
 <p>Again, this is a result consistent with empirical estimates of
 Neanderthal ancestry using ancient DNA data (see Petr <em>et al.</em>,
 PNAS 2019).</p>
@@ -1045,7 +1045,7 @@ proportion <code>alpha</code>):</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"red"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"f4-ratio statistic calculated with admixr/ADMIXTOOLS"</span>,</span>
 <span>       y <span class="op">=</span> <span class="st">"f4-ratio statistic calculated with tskit"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-05-tree-sequences_files/figure-html/ts_vs_admixr-1.png" width="480"></p>
+<p><img src="vignette-05-tree-sequences_files/figure-html/ts_vs_admixr-1.png" width="360"></p>
 <p>The correspondence between the two looks good! 🎉 Again, note that
 the large amount of variance around the expected value of 3% ancestry is
 due to an extremely small amount of sequence data simulated here.</p>
