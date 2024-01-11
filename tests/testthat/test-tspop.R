@@ -30,7 +30,7 @@ plot_model(
 
 samples <- schedule_sampling(model, times = 0, list(eur, 25), list(pap, 25))
 
-ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8, samples = samples)
+ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8, samples = samples, random_seed = 42)
 
 test_that("census time must correspond to the start of some gene-flow event", {
   expect_error(ts_tracts(ts, census = 123),
