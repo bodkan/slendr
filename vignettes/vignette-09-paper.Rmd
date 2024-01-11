@@ -14,7 +14,7 @@ eval_chunk <- Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") 
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  dpi = 80,
+  dpi = 60,
   eval = eval_chunk
 )
 

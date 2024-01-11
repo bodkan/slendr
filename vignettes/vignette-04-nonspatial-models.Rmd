@@ -71,7 +71,7 @@ model <- compile_model(
 
 Using the `plot_map()` function doesn't make sense, as there are no spatial maps to plot. However, we can still plot the demographic graph, verifying that the model has been specified correctly:
 
-```{r non-spatial_graph, fig.width = 6, fig.height = 6, dpi = 80}
+```{r non-spatial_graph, fig.width = 6, fig.height = 6, dpi = 60}
 plot_model(model)
 ```
 
