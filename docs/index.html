@@ -223,6 +223,11 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># this sets up internal Python environment and needs to be ran only once!</span></span>
+<span><span class="co"># (do not put this in your R scripts, run this command in the R console</span></span>
+<span><span class="co"># after you (re-)install slendr)</span></span>
+<span><span class="fu"><a href="reference/setup_env.html">setup_env</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># activate the internal Python environment needed for simulation and</span></span>
 <span><span class="co"># tree-sequence processing</span></span>
 <span><span class="fu"><a href="reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span>
