@@ -108,6 +108,11 @@ First, we define the spatial context of the simulation. This will represent the 
 ```r
 library(slendr)
 
+# this sets up internal Python environment and needs to be ran only once!
+# (do not put this in your R scripts, run this command in the R console
+# after you (re-)install slendr)
+setup_env()
+
 # activate the internal Python environment needed for simulation and
 # tree-sequence processing
 init_env()
