@@ -1,3 +1,5 @@
+# slendr (development version)
+
 # slendr 0.8.1
 
 - Fixed an [issue](https://github.com/bodkan/slendr/issues/143) of apparent contradiction in time direction in models where range expansion was scheduled within some time interval together with associated "locked-in" changes in population size over that time interval. ([#d2a29e](https://github.com/bodkan/slendr/commit/d2a29e))

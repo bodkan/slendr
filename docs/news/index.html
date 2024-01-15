@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,11 +81,14 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.1" id="slendr-081">slendr 0.8.1<a class="anchor" aria-label="anchor" href="#slendr-081"></a></h2>
-<ul><li><p><strong>WARNING</strong>: SLiM 4.1 which has just been released includes <a href="https://github.com/MesserLab/SLiM/releases/tag/v4.1" class="external-link">backwards incompatible changes</a> which prevent the current version of <em>slendr</em>’s <code><a href="../reference/slim.html">slim()</a></code> function from working correctly. If you rely on the functionality provided by the <code><a href="../reference/slim.html">slim()</a></code> function, you will have to use SLiM 4.0. (Note that if you want to have multiple versions of SLiM on your system, you can either use the <code>slim_path =</code> argument of <code><a href="../reference/slim.html">slim()</a></code> or specify the <code>$PATH</code> to the required version of SLiM in your <code>~/.Renviron</code> file). Porting <em>slendr</em> for SLiM 4.1 is being worked on.</p></li>
-<li><p>Fixed an <a href="https://github.com/bodkan/slendr/issues/143" class="external-link">issue</a> of apparent contradiction in time direction in models where range expansion was scheduled within some time interval together with associated “locked-in” changes in population size over that time interval. (<a href="https://github.com/bodkan/slendr/commit/cbe960" class="external-link">#cbe960</a>)</p></li>
+<ul><li><p>Fixed an <a href="https://github.com/bodkan/slendr/issues/143" class="external-link">issue</a> of apparent contradiction in time direction in models where range expansion was scheduled within some time interval together with associated “locked-in” changes in population size over that time interval. (<a href="https://github.com/bodkan/slendr/commit/d2a29e" class="external-link">#d2a29e</a>)</p></li>
 <li><p>The introduction of <em>tspop</em> which is only installable via pip (see changelog for the previous version) caused GLIBCXX-related errors between conda and pip dependencies related to the pandas Python package. To work around this issue, <code><a href="../reference/setup_env.html">setup_env()</a></code> no longer installs <em>pandas</em> from conda regardless of the setting of the <code>pip = TRUE|FALSE</code> parameter. Instead, <em>pandas</em> is installed via pip in a single step when <em>tspop</em> is being installed. (<a href="https://github.com/bodkan/slendr/commit/cbe960" class="external-link">#cbe960</a>)</p></li>
-</ul></div>
+</ul><hr><p><strong>WARNING</strong>: SLiM 4.1 which has just been released includes a couple of <a href="https://github.com/MesserLab/SLiM/releases/tag/v4.1" class="external-link">backwards incompatible changes</a> related to the implementation of spatial maps which prevent the current version of <em>slendr</em>’s <code><a href="../reference/slim.html">slim()</a></code> function from working correctly. If you rely on the functionality provided by the <code><a href="../reference/slim.html">slim()</a></code> function, you will have to use SLiM 4.0. (Note that if you want to have multiple versions of SLiM on your system, you can either use the <code>slim_path =</code> argument of <code><a href="../reference/slim.html">slim()</a></code> or specify the <code>$PATH</code> to the required version of SLiM in your <code>~/.Renviron</code> file just like you do under normal circumstances). Porting <em>slendr</em> for SLiM 4.1 is being worked on.</p>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.0" id="slendr-080">slendr 0.8.0<a class="anchor" aria-label="anchor" href="#slendr-080"></a></h2><p class="text-muted">CRAN release: 2023-12-07</p>
 <ul><li><p>In order to support the new <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> function backed by the <em>tspop</em> module (see the item below), a new <em>slendr</em> Python environment is required. As such, users will have to run <code><a href="../reference/setup_env.html">setup_env()</a></code> to get all the required Python dependencies which will be now installed in the internal virtual environment named <code>Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2</code>. (<a href="https://github.com/bodkan/slendr/commit/b5330c" class="external-link">#b5330c</a>)</p></li>
