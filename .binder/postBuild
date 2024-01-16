@@ -1,7 +1,7 @@
 mkdir bin
 
 # installation instructions from the SLiM manual:
-wget https://github.com/MesserLab/SLiM/releases/download/v4.0.1/SLiM.zip
+wget https://github.com/MesserLab/SLiM/releases/download/v4.1/SLiM.zip
 unzip SLiM.zip
 cd SLiM
 cmake .

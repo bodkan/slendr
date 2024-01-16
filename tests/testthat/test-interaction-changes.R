@@ -131,6 +131,7 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
 
   distances <- rbind(slim_distances, r_distances)
 
+  # library(ggplot2)
   # p <- ggplot2::ggplot(distances, aes(distance, color = source)) +
   #   geom_density() +
   #   coord_cartesian(xlim = c(0, 50)) +

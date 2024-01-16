@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,6 +117,19 @@
 
     
     
+<div class="section level2">
+<h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a>
+</h2>
+<p>Since the publication of the <a href="https://evolbiol.peercommunityin.org/articles/rec?id=630" class="external-link"><em>slendr</em>
+paper</a>, new versions of SLiM and <em>slendr</em> have been released.
+Specifically, the results in the paper are based on SLiM version 4.0.1
+and slendr version 0.5. Whenever a new version of SLiM is released,
+there’s always a chance that some aspect of randomness in a simulation
+changes slightly, which affects the results even though the random seed
+is kept at the same value. As such, the figures in this paper
+(specifically the figure for <em>Example 4</em> in our paper) will look
+slightly different. However, the results are still relevant and
+applicable, its just the presentation which has changed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># workaround for GitHub actions getting "Killed" due to out of memory issues</span></span>
 <span><span class="co"># -- when running unit tests on GitHub, smaller amount of sequence will be</span></span>
@@ -162,6 +175,7 @@
 <span><span class="va">p_code</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"code will be here"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="example-1-figure-2">Example 1 (Figure 2)<a class="anchor" aria-label="anchor" href="#example-1-figure-2"></a>
 </h2>
@@ -467,7 +481,7 @@
 <code class="sourceCode R"><span><span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_578"</span>, <span class="st">"YAM_75"</span>, <span class="st">"ANA_163"</span>, <span class="st">"EHG_208"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># tskit uses zero-based indexing</span></span>
-<span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_phylo.html">ts_phylo</a></span><span class="op">(</span><span class="va">ts_small</span>, i <span class="op">=</span> <span class="op">(</span><span class="fl">20</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="va">scaling</span><span class="op">)</span></span>
+<span><span class="va">tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_phylo.html">ts_phylo</a></span><span class="op">(</span><span class="va">ts_small</span>, i <span class="op">=</span> <span class="fl">15</span> <span class="op">/</span> <span class="va">scaling</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Starting checking the validity of tree...</span></span>
 <span><span class="co">#&gt; Found number of tips: n = 8 </span></span>
 <span><span class="co">#&gt; Found number of nodes: m = 7 </span></span>
@@ -620,6 +634,15 @@
 <span></span>
 <span><span class="va">p_ex4</span></span></code></pre></div>
 <p><img src="vignette-09-paper_files/figure-html/figure_ex4-1.png" width="510"></p>
+<p><strong>As explained on top of this page, the random number
+generation in the current SLiM is slightly different from the version
+4.0.1 which was available at the time of writing of our paper. This is
+why the figure above looks a little different as well (different random
+generation implies different movement of individuals, and different
+individuals being sampled). For the record, here’s the original figure
+used in our paper which was also originally part of this
+vignette:</strong></p>
+<p><img src="images/original_ex4.png" style="width:60.0%"></p>
 </div>
 </div>
 <div class="section level2">
@@ -637,22 +660,22 @@ Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version
 <tbody>
 <tr class="odd">
 <td align="left">ex1</td>
-<td align="right">6.9015956</td>
+<td align="right">5.3502272</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex2</td>
-<td align="right">12.8133210</td>
+<td align="right">10.9738856</td>
 <td align="left">mins</td>
 </tr>
 <tr class="odd">
 <td align="left">ex3</td>
-<td align="right">1.9953809</td>
+<td align="right">1.8237868</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex4</td>
-<td align="right">0.6103868</td>
+<td align="right">0.6161139</td>
 <td align="left">secs</td>
 </tr>
 </tbody>

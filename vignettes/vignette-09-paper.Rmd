@@ -1,11 +1,17 @@
 ---
 title: "Examples from the slendr paper"
 output: rmarkdown::html_vignette
+resource_files:
+  - images/original_ex4.png
 vignette: >
   %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{Examples from the slendr paper}
   %\VignetteEngine{knitr::rmarkdown}
 ---
+
+## Note
+
+Since the publication of the [_slendr_ paper](https://evolbiol.peercommunityin.org/articles/rec?id=630), new versions of SLiM and _slendr_ have been released. Specifically, the results in the paper are based on SLiM version 4.0.1 and slendr version 0.5. Whenever a new version of SLiM is released, there's always a chance that some aspect of randomness in a simulation changes slightly, which affects the results even though the random seed is kept at the same value. As such, the figures in this paper (specifically the figure for _Example 4_ in our paper) will look slightly different. However, the results are still relevant and applicable, its just the presentation which has changed.
 
 ```{r, include = FALSE}
 env_present <- slendr:::is_slendr_env_present()
@@ -500,7 +506,7 @@ ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.pdf", 
 ts_small <- ts_simplify(ts, simplify_to = c("EUR_578", "YAM_75", "ANA_163", "EHG_208"))
 
 # tskit uses zero-based indexing
-tree <- ts_phylo(ts_small, i = (20 - 1) / scaling)
+tree <- ts_phylo(ts_small, i = 15 / scaling)
 nodes <- ts_nodes(tree)
 edges <- ts_edges(tree)
 
@@ -605,6 +611,10 @@ p_ex4
 ```{r, include = FALSE, eval = eval_chunk && record_snapshot}
 ggsave("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex4.pdf", p_ex4, width = 8.5, height = 9, units = "in")
 ```
+
+**As explained on top of this page, the random number generation in the current SLiM is slightly different from the version 4.0.1 which was available at the time of writing of our paper. This is why the figure above looks a little different as well (different random generation implies different movement of individuals, and different individuals being sampled). For the record, here's the original figure used in our paper which was also originally part of this vignette:**
+
+![](images/original_ex4.png){width="60%"}
 
 ## Run time of each code example from the paper
 
