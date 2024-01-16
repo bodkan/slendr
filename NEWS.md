@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- A trivial change has been made to _slendr_'s SLiM back-end script fixing the issue introduced in a SLiM 4.1 upgrade (see changelog for version 0.8.1 below). This is not expected to lead to different simulation outputs between the two versions of slendr (0.8.2 vs 0.8.1) or SLiM (4.1 vs 4.0.1) used. ([PR #148](https://github.com/bodkan/slendr/pull/148))
+
 # slendr 0.8.1
 
 - Fixed an [issue](https://github.com/bodkan/slendr/issues/143) of apparent contradiction in time direction in models where range expansion was scheduled within some time interval together with associated "locked-in" changes in population size over that time interval. ([#d2a29e](https://github.com/bodkan/slendr/commit/d2a29e))
