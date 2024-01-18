@@ -127,12 +127,13 @@ jobs:
       - name: Setup dedicated Python environment for slendr
         run: |
           install.packages("reticulate", repos = "http://cran.rstudio.com"); reticulate::install_miniconda()
-          deps <- c("msprime==1.2.0", "tskit==0.5.6", "pyslim==1.0.4", "tspop==0.0.2")
+          deps <- c("msprime==1.2.0", "tskit==0.5.6", "pyslim==1.0.4")
           PYTHON_ENV <- paste0("Python-3.11_", paste(gsub("==", "-", deps), collapse = "_"))
           reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.11')
           reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
           pip <- Sys.info()["sysname"] != "Windows"
-          reticulate::conda_install(envname = PYTHON_ENV, packages = c(deps, "pandas"), pip = pip)
+          reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
+          reticulate::conda_install(envname = PYTHON_ENV, packages = "tspop==0.0.2", pip = TRUE)
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-pandoc@v2
