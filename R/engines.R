@@ -286,7 +286,10 @@ slim <- function(
     warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
             "a temporary file after the simulation has been prevented", call. = FALSE)
 
-  if (is.null(output)) output <- tempfile(fileext = ".trees")
+  if (is.null(output)) {
+    output <- tempfile(fileext = ".trees") %>%
+      normalizePath(winslash = "/", mustWork = FALSE)
+  }
 
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
@@ -316,7 +319,7 @@ slim <- function(
   coalescent_only <- if (coalescent_only) "T" else "F"
   burnin <- round(burnin / model$generation_time)
 
-  sampling_path <- tempfile()
+  sampling_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   sampling_df <- process_sampling(samples, model, verbose)
   readr::write_tsv(sampling_df, sampling_path)
 
@@ -334,17 +337,12 @@ slim <- function(
     # the path to the model configuration directory
     modif_path <- tempfile()
     readLines(script_path) %>%
-      gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path), "\""), .) %>%
-      gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path), "\""), .) %>%
+      gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
+      gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
       gsub("required_arg\\(\"OUTPUT_TS\"\\)", sprintf("defineConstant(\"OUTPUT_TS\", \"%s\")", output), .) %>%
       cat(file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
-    samples <- gsub("\\\\", "/", samples)
-    output <- gsub("\\\\", "/", output)
-    script_path <- gsub("\\\\", "/", script_path)
-    model_dir <- gsub("\\\\", "/", model_dir)
-
     slim_command <- paste(binary,
                           seed,
                           samples,

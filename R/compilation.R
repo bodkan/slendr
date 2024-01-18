@@ -200,6 +200,8 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   names(populations) <- pop_names
 
+  if (!is.null(path)) path <- normalizePath(path, winslash = "/")
+
   # compile the result
   result <- list(
     path = path,
