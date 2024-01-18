@@ -217,8 +217,9 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #' @param locations If \code{NULL}, locations are not saved. Otherwise, the
 #'   path to the file where locations of each individual throughout the simulation
 #'   will be saved (most likely for use with \code{animate_model}).
-#' @param slim_path Optional way to specify path to an appropriate SLiM binary (this
-#'   is useful if the \code{slim} binary is not on the \code{$PATH}).
+#' @param slim_path Path to the appropriate SLiM binary (this is useful if the
+#'   \code{slim} binary is not on the \code{$PATH}). Note that this argument must
+#'   be specified if the function is being run on Windows.
 #' @param run Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
 #'   command will be printed (and returned invisibly as a character vector) but not executed.
 #'
@@ -272,6 +273,12 @@ slim <- function(
 ) {
   method <- match.arg(method)
 
+  if (Sys.info()[["sysname"]] == "Windows" && is.null(slim_path)) {
+    stop("To run SLiM simulations on Windows, the path to the SLiM binary\n",
+         "(either a slim.exe or SLiMgui.exe depending on the value of the\n",
+         "`method` used) must be provided via the `slim_path` argument.", call. = FALSE)
+  }
+
   if (is.null(model$path))
     stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
 
@@ -320,14 +327,8 @@ slim <- function(
   call. = FALSE)
 
   seed <- if (is.null(random_seed)) "" else paste0(" -d SEED=", random_seed)
-  samples <- if (is.null(sampling_path)) {
-    ""
-  } else {
-    paste0(" -d \"SAMPLES='", sampling_path, "'\"")
-  }
-  
-##Hi Martin, I should note, I don't ever work with the slim gui, so I only changed the command request for the non-gui based slim request. I can look into the gui if necessary, 
-  ##but I don't currently have any experience with it.
+  samples <- if (is.null(sampling_path)) "" else paste0(" -d \"SAMPLES='", sampling_path, "'\"")
+
   if (method == "gui") {
     # to be able to execute the script in the SLiMgui, we have to hardcode
     # the path to the model configuration directory
@@ -339,14 +340,12 @@ slim <- function(
       cat(file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
-   ##Hi Martin, As mentioned, I used a bit of a hack job here to get it working.
-   ##It isn't an elegant solution by any means but this was one thing I changed to get it working locally:
     samples <- gsub("\\\\", "/", samples)
     output <- gsub("\\\\", "/", output)
     script_path <- gsub("\\\\", "/", script_path)
     model_dir <- gsub("\\\\", "/", model_dir)
-    
-    slim_command <- paste(binary, 
+
+    slim_command <- paste(binary,
                           seed,
                           samples,
                           paste0("-d \"MODEL='",model_dir,"'\""),
@@ -360,7 +359,6 @@ slim <- function(
                           paste0("-d COALESCENT_ONLY=",coalescent_only),
                           paste0("-d MAX_ATTEMPTS=",max_attempts),
                           script_path)
-    print(slim_command)
 
     if (verbose || !run) {
       cat("--------------------------------------------------\n")
