@@ -47,6 +47,8 @@ navbar:
           href: articles/vignette-08-nonslendr-tskit.html
         - text: Examples from the slendr paper
           href: articles/vignette-09-paper.html
+        - text: Extracting true ancestry tracts
+          href: articles/vignette-10-tracts.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/fleventy5
@@ -116,8 +118,9 @@ reference:
     - ts_recapitate
     - ts_simplify
     - ts_mutate
-    - ts_coalesced
     - ts_samples
+    - ts_names
+    - ts_coalesced
 
   - title: Tree sequence format conversion
     contents:
@@ -150,3 +153,4 @@ reference:
     - ts_tajima
     - ts_segregating
     - ts_ibd
+    - ts_tracts

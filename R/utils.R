@@ -119,12 +119,14 @@ seconds, but if you don't want to wait, you can set `snapshots = N` manually.")
   end_area <- sf::st_area(utils::tail(inter_regions, 1)[[1]])
   action <- ifelse(start_area < end_area, "expand", "contract")
 
-  attr(result, "history") <- append(attr(result, "history"), list(data.frame(
+  event <- list(data.frame(
     pop =  unique(region_start$pop),
     event = action,
     tstart = start,
-    tend = end
-  )))
+    tend = end,
+    lock = lock
+  ))
+  attr(result, "history") <- append(attr(result, "history"), event)
 
 
   if (lock) {
@@ -294,13 +296,31 @@ time_direction <- function(x) {
 
   split_times <- get_lineage_splits(x)
 
+  # if there was only one population split event in the history of this
+  # population, take a look inside its other demographic event to guess
+  # the intended flow of time implied by the model
   if (length(split_times) == 1) {
-    event_times <- attr(x, "history") %>%
-      sapply(function(event) c(event$time, event$tresize, event$tend,
-                               event$start, event$end)) %>%
+    history <- attr(x, "history")
+    event_times <-
+      history %>%
+      sapply(function(event) {
+        # skip extracting times from the expansion/shrinking event if that
+        # would also include locked in population size (this is because we
+        # can use the resize progression which comes in events immediately
+        # after this one to detect time direction and, more importantly,
+        # because the expansion/shrinking and resize progression
+        # would effectively contradict the true time direction of the model)
+        # -- this fixes https://github.com/bodkan/slendr/issues/143
+        if (length(history) > 2 && !is.null(event$lock) && event$lock == TRUE)
+          return(NA)
+        else
+          c(event$time, event$tresize, event$tend, event$start, event$end)
+      }) %>%
       unlist %>%
       unique %>%
       stats::na.omit()
+    # if there wasn't a second demographic event after the population's split,
+    # check if the user specified a removal event and use that
     if (length(event_times) == 1) {
       removal_time <- attr(x, "remove")
       if (removal_time == -1)
@@ -311,13 +331,13 @@ time_direction <- function(x) {
         "forward"
       else
         stop("Inconsistent time direction of population events", call. = FALSE)
-    } else if (all(diff(event_times) < 0))
+    } else if (all(diff(event_times) < 0)) # event times decrease moving forward
       "backward"
-    else
+    else # event times increase moving forward
       "forward"
-  } else if (all(diff(split_times) > 0))
+  } else if (all(diff(split_times) > 0)) # split times decrease moving forward
     "backward"
-  else
+  else # split times increase moving forward
     "forward"
 }
 
@@ -723,7 +743,7 @@ check_spatial_pkgs <- function(error = TRUE) {
     "In order to use spatial features of slendr, packages 'sf', 'stars',\n",
     "and 'rnaturalearth' are required but not all are present.\n\n",
     "You can install all of them with\n",
-    "  `install.packages(\"sf\", \"stars\", \"rnaturalearth\")`."
+    "  `install.packages(c(\"sf\", \"stars\", \"rnaturalearth\"))`."
   )
 
   if (missing) {

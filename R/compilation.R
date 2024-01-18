@@ -119,7 +119,7 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
         if (interactive() && !force) {
           answer <- utils::menu(c("Yes", "No"),
             title = paste0("Are you ABSOLUTELY SURE you want to delete '", path,
-                           "'?\nThere is no going back.")
+                           "'?\nThere will be no going back after this.")
           )
           force <- answer == 1
         }

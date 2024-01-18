@@ -14,3 +14,9 @@ test_that("distances beyond the world dimension throw and error", {
   expect_silent(check_resolution(map, xrange / 10))
   expect_silent(check_resolution(map, yrange / 10))
 })
+
+test_that("concat() function correctly collapses sample identifiers", {
+  expect_equal(concat(c("A", "B")), "A+B")
+  expect_equal(concat(list(c("A", "B"))), "A+B")
+  expect_equal(concat(list(xyz=c("A", "B"))), "xyz")
+})

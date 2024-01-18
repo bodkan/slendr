@@ -4,12 +4,13 @@
 tskit <- NULL
 pyslim <- NULL
 msp <- NULL
+tspop <- NULL
 # pylib <- NULL
 
 # define slendr's required Python dependencies and compose an environment name
 # that will be used specifically for them
 PYTHON_ENV <-
-  c("msprime==1.2.0", "tskit==0.5.5", "pyslim==1.0.3") %>%
+  c("msprime==1.2.0", "tskit==0.5.6", "pyslim==1.0.4", "tspop==0.0.2") %>%
   gsub("==", "-", .) %>%
   paste(collapse = "_") %>%
   paste0("Python-3.11_", .)
@@ -47,8 +48,8 @@ PYTHON_ENV <-
       version <- strsplit(PYTHON_ENV, "_")[[1]] %>% gsub(".*-", "", .)
       packageStartupMessage(
         sprintf(paste0("A slendr Python (%s) environment with the necessary versions of\n",
-          "msprime (%s), tskit (%s), and pyslim (%s) has not been found.\n"),
-          version[1], version[2], version[3], version[4]),
+          "msprime (%s), tskit (%s), pyslim (%s), and tspop (%s)\nhas not been found.\n"),
+          version[1], version[2], version[3], version[4], version[5]),
           "\nYou can setup a pre-configured environment with all of slendr's Python\n",
           "dependencies automatically by running the function `setup_env()`."
       )
@@ -61,6 +62,7 @@ PYTHON_ENV <-
   tskit <<- reticulate::import("tskit", delay_load = TRUE)
   pyslim <<- reticulate::import("pyslim", delay_load = TRUE)
   msp <<- reticulate::import("msprime", delay_load = TRUE)
+  tspop <<- reticulate::import("tspop", delay_load = TRUE)
 
   # setup slendr options (https://r-pkgs.org/r.html#when-you-do-need-side-effects)
   op <- options()

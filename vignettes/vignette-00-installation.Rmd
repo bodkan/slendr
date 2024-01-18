@@ -25,7 +25,7 @@ Once you install *slendr*, **calling `library(slendr)` will check that all softw
 
 2.  forward population genetic simulator [SLiM](https://messerlab.org/slim/) (for forward simulations),
 
-3.  Python modules [*tskit*, *msprime*, and *pyslim*](https://tskit.dev/) (for coalescent simulations and tree-sequence analysis).
+3.  Python modules [*tskit*, *msprime*, and *pyslim*](https://tskit.dev/) (for coalescent simulations and tree-sequence analysis), and also _pandas_ used internally by the simulation back ends.
 
 All three are widely used in their respective fields and, as such, are easily obtainable on all major operating systems (see below for more information on how to troubleshoot potential problems).
 
@@ -69,7 +69,7 @@ Note that *slendr* requires SLiM 4.0 and will not work with an earlier version. 
 
 ### Python
 
-In order to be able to run coalescent simulations and process tree-sequence files, *slendr* needs Python modules *tskit*, *msprime*, and *pyslim.*
+In order to be able to run coalescent simulations and process tree-sequence files, *slendr* needs Python modules *tskit*, *msprime*, and *pyslim* (it also needs the _pandas_ library).
 
 Setting up an isolated Python environment with specific version of Python packages (which is very important to avoid clashes among different Python programs needed by your system) can be a [bit of a hassle](https://xkcd.com/1987/) for some users. This is especially true for R users who might not use Python in their daily work, such as yours truly.
 
@@ -77,9 +77,15 @@ In order to make sure that the R package has the most appropriate version of Pyt
 
 **Next time you call `library(slendr)`, you will need to activate this environment automatically by calling `init_env()`**. If you're not comfortable with Python you don't need to worry&nbsp;beyond calling `setup_env()` and `init_env()`, no interaction with Python is necessary for working with *slendr* in R.
 
+#### Failing *conda*?
+
+In order to support Windows, _slendr_ uses conda to download a Python interpreter as explained above. Given this fact, when you run `setup_env()`, _slendr_ tries to leverage conda being present to install its Python dependencies (_msprime_, _tskit_, _pyslim_, _pandas_) via conda itself.
+
+Unfortunately, conda can break for frustratingly many random reasons which completely trips up `setup_env()`. If you run into this issue, **there is a fallback option to install Python dependencies _msprime_, _tskit_, _pyslim_, and _pandas_ via `pip`** which, unlike conda, works practically every time. You can do this **by calling `setup_env(pip = TRUE)`** instead of the default `setup_env()`. Note that **this might require you to install the [GSL](https://www.gnu.org/software/gsl/) numerical library, but that's a trivial issue on macOS (`brew install gsl`) and Linux (on Ubuntu, for instance, `sudo apt-get install libgsl-dev`)**.
+
 #### Information for Python experts
 
-In case you are wondering how does *slendr* accomplish the above: *slendr*'s Python interface is not a hack that would simply call Python from the command-line in the background, but is implemented using the R package [*reticulate*](https://rstudio.github.io/reticulate/)*.* This embeds a Python session within an R session, enabling high-performance interoperability between both languages without any need for user intervention.
+In case you are wondering how does *slendr* accomplish the above: *slendr*'s Python interface is implemented using the R package [*reticulate*](https://rstudio.github.io/reticulate/)*.* This embeds a Python session within an R session, enabling high-performance interoperability between both languages without any need for user intervention.
 
 ## Docker
 
