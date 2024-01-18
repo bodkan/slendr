@@ -128,7 +128,7 @@ jobs:
         run: |
           install.packages("reticulate", repos = "http://cran.rstudio.com"); reticulate::install_miniconda()
           deps <- c("msprime==1.2.0", "tskit==0.5.6", "pyslim==1.0.4")
-          PYTHON_ENV <- paste0("Python-3.11_", paste(gsub("==", "-", deps), collapse = "_"))
+          PYTHON_ENV <- paste0("Python-3.11_", paste(gsub("==", "-", c(deps, "tspop==0.0.2")), collapse = "_"))
           reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.11')
           reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
           pip <- Sys.info()["sysname"] != "Windows"
