@@ -167,9 +167,9 @@ get_binary <- function(method) {
       binary <- "SLiMgui"
   } else {
     if (Sys.info()["sysname"] == "Windows")
-      binary <- "slim"
-    else
       binary <- "slim.exe"
+    else
+      binary <- "slim"
   }
 
   binary
