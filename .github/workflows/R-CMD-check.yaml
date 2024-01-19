@@ -143,7 +143,7 @@ jobs:
       - name: Populate PATH with compiled binaries on Windows
         if: runner.os == 'Windows'
         run: |
-          tmp_dir=normalizePath("${{ runner.temp }}", winslash = "/")
+          tmp_dir=normalizePath(r"${{ runner.temp }}", winslash = "/")
           cat(tmp_dir, "\n")
           writeLines(
             paste0(
