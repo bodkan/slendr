@@ -129,6 +129,7 @@ jobs:
       - name: Install pandoc on Windows
         if: runner.os == 'Windows'
         run: |
+          install.packages("gh", repos = "http://cran.rstudio.com")
           install.packages("pandoc", repos = "http://cran.rstudio.com")
           pandoc::pandoc_install()
         shell: Rscript {0}
