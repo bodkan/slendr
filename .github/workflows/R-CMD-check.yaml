@@ -142,9 +142,12 @@ jobs:
               "PATH=",
               Sys.getenv("PATH"),
               ";C:\\msys64\\mingw64\\bin",
-              ";", normalizePath(dirname(pandoc::pandoc_bin()))
+              ";", normalizePath(dirname(pandoc::pandoc_bin())),
+              "\n",
+              "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()))
             ),
             con = paste0(path.expand("~"), "\\.Renviron"))
+
         shell: Rscript {0}
 
       - name: Set R_LIBS path on unix
