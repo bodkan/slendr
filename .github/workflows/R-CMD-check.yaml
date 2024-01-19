@@ -137,7 +137,7 @@ jobs:
       - name: Check bin contents
         if: runner.os == 'Windows'
         run: |
-          dir ${{ runner.temp }}/msys64/mingw64/bin
+          dir ${{ runner.temp }}\msys64\mingw64\bin
         shell: cmd
 
       - name: Populate PATH with compiled binaries on Windows
