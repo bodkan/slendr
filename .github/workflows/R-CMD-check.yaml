@@ -147,7 +147,7 @@ jobs:
           cat(tmp_dir, "\n")
           writeLines(
             paste0(
-              "PATH=", tmp_dir, "/msys64/mingw64/bin",
+              "PATH="D:/a/_temp/msys64/mingw64/bin",
               "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
             ),
