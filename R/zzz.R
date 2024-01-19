@@ -18,8 +18,8 @@ PYTHON_ENV <-
 .onAttach <- function(libname, pkgname) {
   if (Sys.info()[["sysname"]] == "Windows") {
     slim_binary <- "slim.exe"
-    renviron_dir <- "C://Users/<your username>/Documents/"
-    path_dir <- "C://path/to/directory/with/slim.exe/binary"
+    renviron_dir <- "C:\\Users\\<your username>\\Documents\\"
+    path_dir <- "C:\\path\\to\\directory\\with\\slim.exe\\binary"
   } else {
     slim_binary <- "slim"
     renviron_dir <- "~/"

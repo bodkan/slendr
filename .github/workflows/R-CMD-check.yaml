@@ -139,7 +139,7 @@ jobs:
         run: |
           writeLines(
             paste0(
-              "PATH=C://msys64/mingw64/bin",
+              "PATH=C:\\msys64\\mingw64\\bin",
               "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
             ),
@@ -152,6 +152,12 @@ jobs:
           cat(Sys.getenv("PATH"), "\n")
           cat(Sys.getenv("RSTUDIO_PANDOC"), "\n")
         shell: Rscript {0}
+
+      - name: Check bin contents
+        if: runner.os == 'Windows'
+        run: |
+          dir C:\msys64\mingw64\bin
+        shell: cmd
 
       - name: Set R_LIBS path on unix
         if: runner.os != 'Windows'
