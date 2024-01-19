@@ -156,7 +156,7 @@ jobs:
       - name: Check bin contents
         if: runner.os == 'Windows'
         run: |
-          dir C:\msys64\mingw64\bin
+          dir ${{ runner.temp }}/msys/msys64/mingw64/bin
         shell: cmd
 
       - name: Set R_LIBS path on unix
