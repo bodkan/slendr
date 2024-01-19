@@ -130,7 +130,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           writeLines(paste0("PATH=", Sys.getenv("PATH"), ";C:\\msys64\\mingw64\\bin"),
-                     con = file.path(path.expand("~"), "Documents", ".Renviron"))
+                     con = paste0(path.expand("~"), "\.Renviron"))
         shell: Rscript {0}
 
       - name: Set R_LIBS path on unix
