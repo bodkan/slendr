@@ -129,7 +129,7 @@ jobs:
       - name: Install pandoc on Windows
         if: runner.os == 'Windows'
         run: |
-          install.packages("pandoc")
+          install.packages("pandoc", repos = "http://cran.rstudio.com")
           pandoc::pandoc_install()
         shell: Rscript {0}
 
@@ -148,7 +148,8 @@ jobs:
 
       - name: Setup dedicated Python environment for slendr
         run: |
-          install.packages("reticulate", repos = "http://cran.rstudio.com"); reticulate::install_miniconda()
+          install.packages("reticulate", repos = "http://cran.rstudio.com")
+          reticulate::install_miniconda()
           deps <- c("msprime==1.2.0", "tskit==0.5.6", "pyslim==1.0.4")
           PYTHON_ENV <- paste0("Python-3.11_", paste(gsub("==", "-", c(deps, "tspop==0.0.2")), collapse = "_"))
           reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.11')
