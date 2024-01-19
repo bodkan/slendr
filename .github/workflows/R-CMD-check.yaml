@@ -98,7 +98,7 @@ jobs:
           # we need to do this in bash because of $OSTYPE above
         shell: bash
 
-      - name: Compile and install SLiM
+      - name: Compile and install SLiM on Unix
         if: runner.os != 'Windows'
         run: |
           # download SLiM into a separate directory to avoid CRAN errors
@@ -112,11 +112,20 @@ jobs:
           cmake .
           make slim
 
-      - name: Populate PATH with compiled binaries
+      - name: Populate PATH with compiled binaries on Unix
         if: runner.os != 'Windows'
         run: |
           export PATH="$HOME/deps/SLiM:$HOME/deps/AdmixTools-7.0.2/bin:$PATH"
           echo "PATH=$PATH" >> ~/.Renviron
+
+      - name: Install SLiM on Windows
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{matrix.sys}}
+          update: true
+          install: >-
+            mingw-w64-x86_64-slim-simulator
 
       - name: Set R_LIBS path on unix
         if: runner.os != 'Windows'
