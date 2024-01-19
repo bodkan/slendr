@@ -126,6 +126,13 @@ jobs:
           install: >-
             mingw-w64-x86_64-slim-simulator
 
+      - name: Install pandoc on Windows
+        if: runner.os == 'Windows'
+        run: |
+          install.packages("pandoc")
+          pandoc::pandoc_install()
+        shell: Rscript {0}
+
       - name: Populate PATH with compiled binaries on Windows
         if: runner.os == 'Windows'
         run: |
