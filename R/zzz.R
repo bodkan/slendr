@@ -16,22 +16,34 @@ PYTHON_ENV <-
   paste0("Python-3.11_", .)
 
 .onAttach <- function(libname, pkgname) {
+  if (Sys.info()[["sysname"]] == "Windows") {
+    slim_binary <- "slim.exe"
+    renviron_dir <- "C://Users/<your username>/Documents/"
+    path_dir <- "C://path/to/directory/with/slim.exe/binary"
+  } else {
+    slim_binary <- "slim"
+    renviron_dir <- "~/"
+    path_dir <- "path/to/directory/with/slim/binary"
+  }
+
   # check for presence of the slim binary in user's PATH and display
   # a warning if it's not present
-  path_check <- all(Sys.which("slim") != "")
+  path_check <- all(Sys.which(slim_binary) != "")
   if (!path_check) {
     packageStartupMessage(
-      "The 'slim' binary could not be found in your $PATH. Most of\n",
+      "The '", slim_binary, "' binary could not be found in your $PATH. Most of\n",
       "the functionality of slendr will work without any issues but\n",
       "you will not be able to simulate data with the `slim()` function.\n",
       "\nIf you want to run SLiM simulations, make sure to modify the $PATH\n",
       "variable so that it points to the directory containing the slim\n",
       "command-line program. One easy way to do this is to add this:\n\n",
-      "PATH=\"path/to/the/directory/with/slim/program\"\n\n",
-      "to your ~/.Renviron file.\n--------------------")
+      "PATH=\"", path_dir, "\"\n\n",
+      "to your ", renviron_dir, ".Renviron file.\n\n",
+      "Alternatively, use the `slim_path` argument",
+      " of the `slim()` function.\n--------------------")
   } else {
     required_version <- "4.0"
-    slim_version <- system("slim -v", intern = TRUE) %>%
+    slim_version <- system(paste(slim_binary, "-v"), intern = TRUE) %>%
       gsub("SLiM version (.*),.*$", "\\1", .) %>% .[1]
     if (utils::compareVersion(slim_version, required_version) < 0)
       packageStartupMessage(
