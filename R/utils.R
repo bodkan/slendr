@@ -161,10 +161,16 @@ get_binary <- function(method) {
   if (method == "gui") {
     if (Sys.info()["sysname"] == "Darwin")
       binary <- "open -a SLiMgui"
+    else if (Sys.info()["sysname"] == "Windows")
+      binary <- "SLiMgui.exe"
     else
       binary <- "SLiMgui"
-  } else
-    binary <- "slim"
+  } else {
+    if (Sys.info()["sysname"] == "Windows")
+      binary <- "slim"
+    else
+      binary <- "slim.exe"
+  }
 
   binary
 }

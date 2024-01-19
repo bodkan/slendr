@@ -273,12 +273,6 @@ slim <- function(
 ) {
   method <- match.arg(method)
 
-  if (Sys.info()[["sysname"]] == "Windows" && is.null(slim_path)) {
-    stop("To run SLiM simulations on Windows, the path to the SLiM binary\n",
-         "(either a slim.exe or SLiMgui.exe depending on the value of the\n",
-         "`method` used) must be provided via the `slim_path` argument.", call. = FALSE)
-  }
-
   if (is.null(model$path))
     stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
 
