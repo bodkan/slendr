@@ -143,8 +143,6 @@ jobs:
       - name: Populate PATH with compiled binaries on Windows
         if: runner.os == 'Windows'
         run: |
-          tmp_dir=normalizePath(r"${{ runner.temp }}", winslash = "/")
-          cat(tmp_dir, "\n")
           writeLines(
             paste0(
               "PATH="D:/a/_temp/msys64/mingw64/bin",
