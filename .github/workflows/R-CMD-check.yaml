@@ -122,8 +122,6 @@ jobs:
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
-          msystem: ${{matrix.sys}}
-          update: true
           run: |
             pacman -Syu
             pacman -S mingw-w64-x86_64-slim-simulator
