@@ -137,8 +137,14 @@ jobs:
       - name: Populate PATH with compiled binaries on Windows
         if: runner.os == 'Windows'
         run: |
-          writeLines(paste0("PATH=", Sys.getenv("PATH"), ";C:\\msys64\\mingw64\\bin"),
-                     con = paste0(path.expand("~"), "\\.Renviron"))
+          writeLines(
+            paste0(
+              "PATH=",
+              Sys.getenv("PATH"),
+              ";C:\\msys64\\mingw64\\bin",
+              ";", normalizePath(dirname(pandoc::pandoc_bin()))
+            ),
+            con = paste0(path.expand("~"), "\\.Renviron"))
         shell: Rscript {0}
 
       - name: Set R_LIBS path on unix
