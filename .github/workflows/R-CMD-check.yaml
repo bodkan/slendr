@@ -134,6 +134,12 @@ jobs:
           pandoc::pandoc_install()
         shell: Rscript {0}
 
+      - name: Check bin contents
+        if: runner.os == 'Windows'
+        run: |
+          dir ${{ runner.temp }}/msys64/mingw64/bin
+        shell: cmd
+
       - name: Populate PATH with compiled binaries on Windows
         if: runner.os == 'Windows'
         run: |
@@ -154,12 +160,6 @@ jobs:
           cat(Sys.getenv("PATH"), "\n")
           cat(Sys.getenv("RSTUDIO_PANDOC"), "\n")
         shell: Rscript {0}
-
-      - name: Check bin contents
-        if: runner.os == 'Windows'
-        run: |
-          dir ${{ runner.temp }}/msys64/mingw64/bin
-        shell: cmd
 
       - name: Set R_LIBS path on unix
         if: runner.os != 'Windows'
