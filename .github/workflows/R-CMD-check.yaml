@@ -139,14 +139,11 @@ jobs:
         run: |
           writeLines(
             paste0(
-              "PATH=",
-              Sys.getenv("PATH"),
-              ";C:\\msys64\\mingw64\\bin",
-              ";", normalizePath(dirname(pandoc::pandoc_bin())),
+              "PATH=C:\\msys64\\mingw64\\bin",
               "\n",
-              "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()))
+              "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
             ),
-            con = paste0(path.expand("~"), "\\.Renviron"))
+            con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
 
       - name: Check PATHs
