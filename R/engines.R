@@ -307,7 +307,7 @@ slim <- function(
   script_path <- path.expand(file.path(model_dir, "script.slim"))
 
   spatial <- if (spatial) "T" else "F"
-  locations <- if (is.character(locations)) locations else ""
+  locations <- if (is.character(locations)) normalizePath(locations, winslash = "/", mustWork = FALSE) else ""
   coalescent_only <- if (coalescent_only) "T" else "F"
   burnin <- round(burnin / model$generation_time)
 
