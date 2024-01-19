@@ -280,10 +280,8 @@ slim <- function(
     warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
             "a temporary file after the simulation has been prevented", call. = FALSE)
 
-  if (is.null(output)) {
-    output <- tempfile(fileext = ".trees") %>%
-      normalizePath(winslash = "/", mustWork = FALSE)
-  }
+  if (is.null(output)) output <- tempfile(fileext = ".trees")
+  output <- normalizePath(output, winslash = "/", mustWork = FALSE)
 
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
