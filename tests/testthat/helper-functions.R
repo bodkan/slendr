@@ -70,3 +70,7 @@ load_tree_sequence <- function(backend, direction, ts_list, model, N, rec_rate, 
     ts_load(model = model, file = ts_file) %>%
       ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 }
+
+slim_is_missing <- function() {
+  Sys.which("slim") == "" && Sys.which("slim.exe") == ""
+}

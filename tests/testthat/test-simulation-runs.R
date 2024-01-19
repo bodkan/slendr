@@ -1,4 +1,5 @@
 skip_if(!is_slendr_env_present())
+skip_if(slim_is_missing())
 
 # Run a given forward/backward simulation with different combinations
 # of start-end and burnin parameters

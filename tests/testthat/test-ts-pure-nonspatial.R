@@ -1,4 +1,6 @@
 skip_if(!is_slendr_env_present())
+skip_if(slim_is_missing())
+
 init_env(quiet = TRUE)
 
 set.seed(42)

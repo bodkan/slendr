@@ -66,6 +66,7 @@ skip_if(!is_slendr_env_present())
 init_env(quiet = TRUE)
 
 test_that("sequence length can only be an integer number (SLiM)", {
+  skip_if(slim_is_missing())
   p <- population(name = "pop1", N = 700, time = 1)
   model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
   error_msg <- "Sequence length must be a non-negative integer number"
@@ -84,6 +85,7 @@ test_that("sequence length can only be an integer number (msprime)", {
 })
 
 test_that("recombination rate can only be an integer number (SLiM)", {
+  skip_if(slim_is_missing())
   p <- population(name = "pop1", N = 700, time = 1)
   model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
   error_msg <- "Recombination rate must be a numeric value"

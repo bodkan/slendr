@@ -1,3 +1,5 @@
+skip_if(slim_is_missing())
+
 # Note that this script pre-dates automatic loading of tree-sequence outputs by slim() and msprime()
 # functions. This is why it loads simulated outputs via the original ts_load() method (which is still
 # valid, so it actually makes sense to test things this way).
