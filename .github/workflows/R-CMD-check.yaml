@@ -139,7 +139,7 @@ jobs:
         run: |
           writeLines(
             paste0(
-              "PATH=${{ runner.temp }}/msys/msys64/mingw64/bin",
+              "PATH=", normalizePath("${{ runner.temp }}/msys64/mingw64/bin", winslash = "/"),
               "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
             ),
@@ -156,7 +156,7 @@ jobs:
       - name: Check bin contents
         if: runner.os == 'Windows'
         run: |
-          dir ${{ runner.temp }}/msys/msys64/mingw64/bin
+          dir ${{ runner.temp }}/msys64/mingw64/bin
         shell: cmd
 
       - name: Set R_LIBS path on unix
