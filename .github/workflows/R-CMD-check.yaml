@@ -124,8 +124,10 @@ jobs:
         with:
           msystem: ${{matrix.sys}}
           update: true
-          install: >-
-            mingw-w64-x86_64-slim-simulator
+          run: |
+            pacman -Syu
+            pacman -S mingw-w64-x86_64-slim-simulator
+          shell: msys2 {0}
 
       - name: Set R_LIBS path on unix
         if: runner.os != 'Windows'
