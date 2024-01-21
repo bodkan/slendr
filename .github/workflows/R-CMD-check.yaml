@@ -143,11 +143,9 @@ jobs:
       - name: Populate PATH with compiled binaries on Windows
         if: runner.os == 'Windows'
         run: |
-          tmp_dir=normalizePath("${{ runner.temp }}", winslash = "/")
-          cat(tmp_dir, "\n")
           writeLines(
             paste0(
-              "PATH=", tmp_dir, "/msys64/mingw64/bin",
+              "PATH=D:/a/_temp/msys64/mingw64/bin",
               "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
             ),
