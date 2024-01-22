@@ -2,7 +2,7 @@
 
 - A trivial change has been made to _slendr_'s SLiM back-end script fixing the issue introduced in a SLiM 4.1 upgrade (see changelog for version 0.8.1 below). This is not expected to lead to different simulation outputs between the two versions of slendr (0.8.2 vs 0.8.1) or SLiM (4.1 vs 4.0.1) used. ([PR #148](https://github.com/bodkan/slendr/pull/148))
 
-- The _msprime_ internal dependency of _slendr_ was updated to 1.3.0. As a result, after loading _slendr_, users will be prompted to re-run `setup_env()` to make sure that the dedicated _slendr_ Python environment is fully updated. At the same time, this prevents a failing installation on (at the very least) M1 macOS using `pip`. ([#5ce212](https://github.com/bodkan/slendr/commit/5ce212))
+- The _msprime_ internal dependency of _slendr_ was updated to 1.3.0, and Python to 3.12. As a result, after loading _slendr_, users will be prompted to re-run `setup_env()` to make sure that the dedicated _slendr_ Python environment is fully updated. At the same time, this prevents a failing installation on (at the very least) M1 macOS using `pip`. ([#5ce212](https://github.com/bodkan/slendr/commit/5ce212), [#a210d4](https://github.com/bodkan/slendr/commit/a210d4))
 
 # slendr 0.8.1
 
