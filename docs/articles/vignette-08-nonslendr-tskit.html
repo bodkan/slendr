@@ -189,7 +189,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5RvG7J/file69d257e07d29");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmpac2qgg/filec8c012bde1f1");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -286,37 +286,7 @@ node IDs in the tskit tree-sequence data to be able to plot them in the
 tree.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.amazon.com/Integration-Manipulation-Visualization-Phylogenetic-Computational-ebook/dp/B0B5NLZR1Z/" class="external-link">ggtree</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Registered S3 methods overwritten by 'treeio':</span></span>
-<span><span class="co">#&gt;   method              from    </span></span>
-<span><span class="co">#&gt;   MRCA.phylo          tidytree</span></span>
-<span><span class="co">#&gt;   MRCA.treedata       tidytree</span></span>
-<span><span class="co">#&gt;   Nnode.treedata      tidytree</span></span>
-<span><span class="co">#&gt;   Ntip.treedata       tidytree</span></span>
-<span><span class="co">#&gt;   ancestor.phylo      tidytree</span></span>
-<span><span class="co">#&gt;   ancestor.treedata   tidytree</span></span>
-<span><span class="co">#&gt;   child.phylo         tidytree</span></span>
-<span><span class="co">#&gt;   child.treedata      tidytree</span></span>
-<span><span class="co">#&gt;   full_join.phylo     tidytree</span></span>
-<span><span class="co">#&gt;   full_join.treedata  tidytree</span></span>
-<span><span class="co">#&gt;   groupClade.phylo    tidytree</span></span>
-<span><span class="co">#&gt;   groupClade.treedata tidytree</span></span>
-<span><span class="co">#&gt;   groupOTU.phylo      tidytree</span></span>
-<span><span class="co">#&gt;   groupOTU.treedata   tidytree</span></span>
-<span><span class="co">#&gt;   inner_join.phylo    tidytree</span></span>
-<span><span class="co">#&gt;   inner_join.treedata tidytree</span></span>
-<span><span class="co">#&gt;   is.rooted.treedata  tidytree</span></span>
-<span><span class="co">#&gt;   nodeid.phylo        tidytree</span></span>
-<span><span class="co">#&gt;   nodeid.treedata     tidytree</span></span>
-<span><span class="co">#&gt;   nodelab.phylo       tidytree</span></span>
-<span><span class="co">#&gt;   nodelab.treedata    tidytree</span></span>
-<span><span class="co">#&gt;   offspring.phylo     tidytree</span></span>
-<span><span class="co">#&gt;   offspring.treedata  tidytree</span></span>
-<span><span class="co">#&gt;   parent.phylo        tidytree</span></span>
-<span><span class="co">#&gt;   parent.treedata     tidytree</span></span>
-<span><span class="co">#&gt;   root.treedata       tidytree</span></span>
-<span><span class="co">#&gt;   rootnode.phylo      tidytree</span></span>
-<span><span class="co">#&gt;   sibling.phylo       tidytree</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">ggtree v3.8.2 For help: https://yulab-smu.top/treedata-book/</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">ggtree v3.10.0 For help: https://yulab-smu.top/treedata-book/</span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; </span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; If you use the ggtree package suite in published research, please cite</span></span></span>
 <span><span class="co"><span style="color: #949494;">#&gt; the appropriate paper(s):</span></span></span>
@@ -359,9 +329,9 @@ tree.</p>
 really not that surprising, given that it’s all tskit under the
 hood).</p>
 <p>We can start with Python:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> msprime</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ts <span class="op">=</span> msprime.sim_ancestry(<span class="dv">100</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ts.dump(<span class="op">&lt;</span>trees <span class="bu">file</span><span class="op">&gt;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="im">import</span> msprime</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>ts <span class="op">=</span> msprime.sim_ancestry(<span class="dv">100</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>ts.dump(<span class="op">&lt;</span>trees <span class="bu">file</span><span class="op">&gt;</span>)</span></code></pre></div>
 <p>And then we can proceed with loading the msprime tree sequence into R
 and analyze it with the slendr functionality:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -424,7 +394,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T//Rtmp5RvG7J/file69d252864106");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmpac2qgg/filec8c01bdf6836");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>

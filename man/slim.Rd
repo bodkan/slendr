@@ -73,8 +73,9 @@ file is written to a custom location to be loaded at a later point.}
 path to the file where locations of each individual throughout the simulation
 will be saved (most likely for use with \code{animate_model}).}
 
-\item{slim_path}{Optional way to specify path to an appropriate SLiM binary (this
-is useful if the \code{slim} binary is not on the \code{$PATH}).}
+\item{slim_path}{Path to the appropriate SLiM binary (this is useful if the
+\code{slim} binary is not on the \code{$PATH}). Note that this argument must
+be specified if the function is being run on Windows.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
