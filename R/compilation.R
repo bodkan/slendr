@@ -320,7 +320,7 @@ read_model <- function(path) {
 }
 
 hash_file <- function(f) {
-  if (grepl("(txt|tsv)$", f)) {
+  if (grepl("(txt|tsv|slim|py)$", f)) {
     file <- FALSE
     f <- paste(readLines(f), sep = " ")
   } else
