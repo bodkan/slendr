@@ -326,7 +326,7 @@ calculate_checksums <- function(files) {
 
   data.frame(
     file = basename(files),
-    hash = as.vector(tools::md5sum(files))
+    hash = as.vector(vapply(files, digest::digest, algo = "md5", file = TRUE, FUN.VALUE = character(1)))
   )
 }
 
@@ -334,7 +334,7 @@ calculate_checksums <- function(files) {
 # Make sure the checksums of a given set of files matches the expectation
 verify_checksums <- function(files, hashes) {
   for (i in seq_along(files)) {
-    if (tools::md5sum(files[i]) != hashes[i]) {
+    if (digest::digest(files[i], algo = "md5", file = TRUE) != hashes[i]) {
       warning("Checksum of '", basename(files[i]), "' does not match its compiled state",
               call. = FALSE)
     }

@@ -20,7 +20,7 @@ import pandas
 import numpy
 import math
 
-VERSION = "slendr_0.7.2.9000"
+VERSION = "slendr_0.8.1.9000"
 
 
 def simulate(
@@ -171,7 +171,7 @@ def simulate(
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
       "slendr": {
-          "version": "slendr_0.7.2.9000",
+          "version": "slendr_0.8.1.9000",
           "backend": "msprime",
           "description": description,
           "sampling": {
