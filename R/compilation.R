@@ -319,6 +319,15 @@ read_model <- function(path) {
   result
 }
 
+hash_file <- function(f) {
+  if (grepl("(txt|tsv)$", f)) {
+    file <- FALSE
+    f <- paste(readLines(f), sep = " ")
+  } else
+    file <- TRUE
+
+  digest::digest(f, algo = "md5", file = file, serialize = FALSE)
+}
 
 calculate_checksums <- function(files) {
   if (!all(file.exists(files)))
@@ -326,8 +335,8 @@ calculate_checksums <- function(files) {
 
   data.frame(
     file = basename(files),
-    hash = as.vector(vapply(files, digest::digest, algo = "md5", file = TRUE,
-                            serialize = FALSE, FUN.VALUE = character(1)))
+    hash = as.vector(vapply(files, hash_file, FUN.VALUE = character(1))
+    )
   )
 }
 
@@ -335,7 +344,7 @@ calculate_checksums <- function(files) {
 # Make sure the checksums of a given set of files matches the expectation
 verify_checksums <- function(files, hashes) {
   for (i in seq_along(files)) {
-    if (digest::digest(files[i], algo = "md5", serialize = FALSE, file = TRUE) != hashes[i]) {
+    if (hash_file(files[i]) != hashes[i]) {
       warning("Checksum of '", basename(files[i]), "' does not match its compiled state",
               call. = FALSE)
     }
