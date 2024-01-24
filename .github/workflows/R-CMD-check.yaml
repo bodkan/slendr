@@ -175,7 +175,7 @@ jobs:
           reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
           pip <- Sys.info()["sysname"] != "Windows"
           reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
-          reticulate::conda_install(envname = PYTHON_ENV, packages = "tspop==0.0.2", pip = TRUE)
+          reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2", "pyarrow"), pip = TRUE)
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-pandoc@v2
