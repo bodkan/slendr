@@ -293,6 +293,7 @@ test_that("SLiM forward/backward sims are exactly the same", {
 
 # SLiM and msprime simulations from the same model give the same result
 # (tested by comparing the distribution plots)
+# library(ggplot2)
 # p <- ggplot(afs, aes(n, f, color = direction, linetype = sim)) +
 #   geom_line(stat = "identity", alpha = 0.5) +
 #   facet_wrap(~ model) +
