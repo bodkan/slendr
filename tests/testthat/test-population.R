@@ -60,6 +60,7 @@ test_that("parent cannot be scheduled for removal before a daughter splits (back
   # simulation themselves really run
   skip_if(!is_slendr_env_present())
   expect_s3_class(msprime(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
+  skip_if(slim_is_missing())
   expect_s3_class(slim(model, sequence_length = 1, recombination_rate = 0), "slendr_ts")
 })
 
