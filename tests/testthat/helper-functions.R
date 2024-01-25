@@ -72,5 +72,5 @@ load_tree_sequence <- function(backend, direction, ts_list, model, N, rec_rate, 
 }
 
 slim_is_missing <- function() {
-  Sys.which("slim") == "" && Sys.which("slim.exe") == "" && Sys.info()[["sysname"]] == "Windows"
+  (Sys.which("slim") == "" && Sys.which("slim.exe") == "") || (Sys.info()[["sysname"]] == "Windows")
 }
