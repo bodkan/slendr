@@ -6,8 +6,8 @@ init_env(quiet = TRUE)
 set.seed(42)
 
 script_file <- tempfile()
-ts_file <- tempfile()
-loc_file <- tempfile()
+ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+loc_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
 writeLines(sprintf('
 initialize() {
