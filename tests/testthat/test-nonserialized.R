@@ -1,4 +1,6 @@
 skip_if(!is_slendr_env_present())
+skip_if(slim_is_missing())
+
 init_env(quiet = TRUE)
 
 ooa <- population("OOA", time = 30000, N = 50, remove = 25000)
