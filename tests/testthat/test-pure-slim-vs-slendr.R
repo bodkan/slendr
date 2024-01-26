@@ -54,7 +54,12 @@ simulate_slim_ts <- function(N, T, output, script_file , verbose = FALSE) {
   }
   ', N, T + 1, N, T + 1, output), script_file)
 
-  out <- system2("slim", script_file, stdout = TRUE)
+  if (Sys.info()["sysname"] == "Windows")
+    binary <- "slim.exe"
+  else
+    binary <- "slim"
+
+  out <- system2(binary, script_file, stdout = TRUE)
   if (verbose) cat(paste(out, collapse = "\n"))
 
   ts_load(output)
