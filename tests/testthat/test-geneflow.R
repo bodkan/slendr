@@ -71,7 +71,7 @@ test_that("populations must be already created for a gene flow to happen (forwar
   })
   expect_s3_class(ts_msprime <- msprime(model, sequence_length = 100, recombination_rate = 0),
                   "slendr_ts")
-  skip_if(slim_is_missing())
+  #skip_if(slim_is_missing())
   expect_s3_class(ts_slim <- slim(model, sequence_length = 100, recombination_rate = 0),
                   "slendr_ts")
 })

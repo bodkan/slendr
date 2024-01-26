@@ -1,4 +1,4 @@
-skip_if(slim_is_missing())
+#skip_if(slim_is_missing())
 
 map <- readRDS("map.rds")
 

@@ -245,7 +245,7 @@ test_that("`squash = TRUE` with `minimum_length` cutoff gives a warning", {
 #
 
 test_that("tree sequence with unary nodes produces correct squashing results (SLiM raw)", {
-  skip_if(slim_is_missing())
+  #skip_if(slim_is_missing())
   ts_slim <- population("pop", N = 10, time = 1) %>%
     compile_model(generation_time = 1, simulation_length = 1000) %>%
     slim(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42, coalescent_only = FALSE)
@@ -263,7 +263,7 @@ test_that("tree sequence with unary nodes produces correct squashing results (SL
 
 
 test_that("tree sequence with unary nodes produces correct squashing results (SLiM recapitated)", {
-  skip_if(slim_is_missing())
+  #skip_if(slim_is_missing())
   ts_slim <- population("pop", N = 10, time = 1) %>%
     compile_model(generation_time = 1, simulation_length = 1000) %>%
     slim(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42, coalescent_only = FALSE) %>%
@@ -281,7 +281,7 @@ test_that("tree sequence with unary nodes produces correct squashing results (SL
 })
 
 test_that("tree sequence with unary nodes produces correct squashing results (SLiM unary simplified)", {
-  skip_if(slim_is_missing())
+  #skip_if(slim_is_missing())
   ts_slim <- population("pop", N = 1000, time = 1) %>%
     compile_model(generation_time = 1, simulation_length = 1000) %>%
     slim(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42, coalescent_only = FALSE) %>%
@@ -300,7 +300,7 @@ test_that("tree sequence with unary nodes produces correct squashing results (SL
 })
 
 test_that("tree sequence with unary nodes produces correct squashing results (SLiM no-unary simplified)", {
-  skip_if(slim_is_missing())
+  #skip_if(slim_is_missing())
   ts_slim <- population("pop", N = 1000, time = 1) %>%
     compile_model(generation_time = 1, simulation_length = 1000) %>%
     slim(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42, coalescent_only = FALSE) %>%

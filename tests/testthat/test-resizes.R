@@ -1,5 +1,5 @@
 skip_if(!is_slendr_env_present())
-skip_if(slim_is_missing())
+#skip_if(slim_is_missing())
 
 map <- readRDS("map.rds")
 

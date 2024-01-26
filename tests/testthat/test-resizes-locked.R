@@ -1,5 +1,5 @@
 skip_if(!is_slendr_env_present())
-skip_if(slim_is_missing())
+#skip_if(slim_is_missing())
 
 map <- world(xrange = c(0, 1e6), yrange = c(0, 1e6), landscape = "blank")
 
