@@ -11,7 +11,7 @@ simulation_run <- function(direction, start, burnin, gen_time, simulation_length
                          generation_time = gen_time, resolution = 1,
                          competition = 10, mating = 10, dispersal = 10,
                          overwrite = TRUE, force = TRUE)
-  locations_file <- tempfile(fileext = ".gz")
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
   ts <- slim(model, burnin = burnin, sequence_length = 1, recombination_rate = 0,
        locations = locations_file, verbose = verbose, method = method)
 
