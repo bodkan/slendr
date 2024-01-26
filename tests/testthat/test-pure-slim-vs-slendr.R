@@ -21,8 +21,8 @@ ts1 <- slim(model, method = "batch", sequence_length = 1,
 # run a pure SLiM version of the same model -------------------------------
 
 simulate_slim_ts <- function(N, T, output, script_file , verbose = FALSE) {
-  script_file <- tempfile()
-  output <- tempfile()
+  script_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  output <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   writeLines(sprintf('initialize() {
     setSeed(42);
