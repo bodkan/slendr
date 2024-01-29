@@ -216,8 +216,8 @@ test_that("non-slendr msprime ts_nodes carries correct population names (simulat
 # SLiM tskit statistics interface -----------------------------------------
 
 test_that("tskit statistics interface works on non-slendr SLiM outputs", {
-  script_file <- tempfile()
-  ts_file <- tempfile()
+  script_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   writeLines(sprintf('initialize() {
     setSeed(123);
