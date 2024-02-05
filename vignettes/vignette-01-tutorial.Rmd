@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 60,
-  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("RUNNER_OS") != "Windows"
+  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
 )
 ```
 

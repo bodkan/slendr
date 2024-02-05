@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
   fig.width = 8,
   fig.height = 6,
   dpi = 60,
-  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("RUNNER_OS") != "Windows"
+  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
 )
 
 nonspatial_slim <- tempfile()
@@ -150,7 +150,7 @@ ggtree(tree, branch.length = "none") %<+% labels +
   geom_label(aes(label = tskit_id))
 ```
 
-```{r, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("RUNNER_OS") != "Windows" && Sys.getenv("R_HAS_GGTREE") != TRUE}
+```{r, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") != TRUE}
 library(ape)
 plot(tree, show.tip.label = FALSE)
 nodelabels()
