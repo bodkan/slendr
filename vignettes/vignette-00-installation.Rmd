@@ -15,7 +15,7 @@ If you want (or need) to get its development version, you can install it directl
 
 Once you install *slendr*, **calling `library(slendr)` will check that all software dependencies are available**. If they are not, the R package will provide a brief helpful guide on how to resolve potential issues. The rest of this vignette talks about the necessary software dependencies in a bit more detail.
 
-**Please note that *slendr* is fully supported only on macOS and Linux at the moment.** That said, there is an experimental support on Windows for running coalescent simulation via _slendr_'s Python backend `msprime()` and for analyzing tree-sequence outputs using its _tskit_ interface.
+**Please note that *slendr* has been extensively tested only on macOS and Linux at the moment.** However, there is an experimental support for runnig both SLiM and *msprime* simulations on Windows and for analyzing tree-sequence outputs using its *tskit* interface on this platform as well. Feedback on issues with using *slendr* on Windows is highly appreciated.
 
 ## Software dependencies
 
@@ -25,19 +25,19 @@ Once you install *slendr*, **calling `library(slendr)` will check that all softw
 
 2.  forward population genetic simulator [SLiM](https://messerlab.org/slim/) (for forward simulations),
 
-3.  Python modules [*tskit*, *msprime*, and *pyslim*](https://tskit.dev/) (for coalescent simulations and tree-sequence analysis), and also _pandas_ used internally by the simulation back ends.
+3.  Python modules [*tskit*, *msprime*, and *pyslim*](https://tskit.dev/) (for coalescent simulations and tree-sequence analysis), and also *pandas* used internally by the simulation back ends.
 
 All three are widely used in their respective fields and, as such, are easily obtainable on all major operating systems (see below for more information on how to troubleshoot potential problems).
 
-**Note that depending on your use case, not all three sets of dependencies will be necessarily needed.** If you're not going to be running forward spatial simulations, you don't need SLiM or geospatial R packages _sf_, _stars_, and _rnaturalearth_.
+**Note that depending on your use case, not all three sets of dependencies will be necessarily needed.** If you're not going to be running forward spatial simulations, you don't need SLiM or geospatial R packages *sf*, *stars*, and *rnaturalearth*. This applies also to the animation of spatial models using the *gganimate* R package. **This is why *slendr* does not install those as dependencies. If you need this functionality, you will have to install the respective R packages manually.**
 
 In this vignette, I will briefly explain how to get all *slendr'*s software dependencies installed. That said, note that under normal circumstances (with the exception of SLiM), no manual installation of individual dependencies is required.
 
 ### *sf*, *stars*, *rnaturalearth*
 
-The R package *sf* is at the heart of geospatial data analysis in R. It is available on CRAN and can be installed for all major platforms by executing `install.packages("sf")` in your R session. The same applies for _stars_ and _rnaturalearth_.
+The R package *sf* is at the heart of geospatial data analysis in R. It is available on CRAN and can be installed for all major platforms by executing `install.packages("sf")` in your R session. The same applies for *stars* and *rnaturalearth*.
 
-When you first load _slendr_ via `library(slendr)`, if you're missing any of the three geospatial R packages, you will be notified and instructed how you can easily obtain them from CRAN using a single call to `install.packages()`.
+When you first load *slendr* via `library(slendr)`, if you're missing any of the three geospatial R packages, you will be notified and instructed how you can easily obtain them from CRAN using a single call to `install.packages()`.
 
 That said, *sf* itself depends on a number of geospatial libraries and depending on the exact setup of your Linux or macOS machine, some of those libraries could be missing. Luckily, all of them are very easy to install via Homebrew (on macOS) or via the appropriate package manager of your Linux distribution (Ubuntu, Fedora, etc.). Detailed instructions on how to do this for your operating system can be found [here](https://r-spatial.github.io/sf/index.html#installing).
 
@@ -49,50 +49,54 @@ One user who recently installed *slendr* on a fresh macOS system reported that t
 
 Additionally, they had to install a couple of C/C++ libraries as well (all dependencies of the *sf* package). In the end, they were able to successfully install *slendr* after running:
 
-    brew install libgit2 udunits gdal proj
+```         
+brew install libgit2 udunits gdal proj
+```
 
 Note that this assumes that you have the [Homebrew](https://brew.sh/) package manager already setup on your Mac. If you're a beginning computational scientist using a Mac, I strongly encourage you to install Homebrew. Sooner or later you will need some specific Linux/unix program anyway, and Homebrew is the way to get it (Mac is a unix machine, but without Homebrew a very poor one by default).
 
 #### **Linux**
 
-Testing _slendr_ installation on a fresh, pristine Debian installation with no dependencies previously installed, I had to run the following:
+Testing *slendr* installation on a fresh, pristine Debian installation with no dependencies previously installed, I had to run the following:
 
-    sudo apt-get install libudunits2-dev libssl-dev libgdal-dev libgsl-dev libgit2-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev
+```         
+sudo apt-get install libudunits2-dev libssl-dev libgdal-dev libgsl-dev libgit2-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev
+```
 
-It's very unlikely you would need all of the above (and you might need other packages on non-Debian distributions), but this is what got _slendr_ and all of its dependencies running on a completely clean system. Might be a good start in case you have trouble on your Linux machine.
+It's very unlikely you would need all of the above (and you might need other packages on non-Debian distributions), but this is what got *slendr* and all of its dependencies running on a completely clean system. Might be a good start in case you have trouble on your Linux machine.
+
+**Windows**
+
+No special treatment should be necessary to get *slendr* running. If you install *slendr* via `install.packages("slendr")`, you will get the binary version of the package and all its dependencies without any need for compiling sources.
 
 ### SLiM
 
-The forward population genetic software SLiM is available on all major software platforms. Its complete installation instructions can be found [here](https://messerlab.org/slim/). On a Mac, I recommend installing SLiM via the `pkg` installer available for direct download from its [website](https://messerlab.org/slim/). On Linux, you can either install SLiM via the appropriate package manager for your Linux distribution (see SLiM manual [here](https://messerlab.org/slim/) for more information), or you can easily compile your own.
+The forward population genetic software SLiM is available on all major software platforms. Its complete installation instructions can be found [here](https://messerlab.org/slim/). **On a Mac**, I recommend installing SLiM via the `pkg` installer available for direct download from its [website](https://messerlab.org/slim/). **On Linux**, you can either install SLiM via the appropriate package manager for your Linux distribution (see SLiM manual [here](https://messerlab.org/slim/) for more information), or you can easily compile your own. To install SLiM **on Windows**, please follow the instructions in section 2.3.1 of the SLiM manual. Note that although SLiM is also available on conda, it comes without SLiMgui!
 
 Note that *slendr* requires SLiM 4.0 and will not work with an earlier version. Again, running `library(slendr)` will inform you of any potential issues with your SLiM installation.
 
 ### Python
 
-In order to be able to run coalescent simulations and process tree-sequence files, *slendr* needs Python modules *tskit*, *msprime*, and *pyslim* (it also needs the _pandas_ library).
+In order to be able to run coalescent simulations and process tree-sequence files, *slendr* needs Python modules *tskit*, *msprime*, and *pyslim* (it also needs the *pandas* library).
 
-Setting up an isolated Python environment with specific version of Python packages (which is very important to avoid clashes among different Python programs needed by your system) can be a [bit of a hassle](https://xkcd.com/1987/) for some users. This is especially true for R users who might not use Python in their daily work, such as yours truly.
+Setting up an isolated Python environment with specific version of Python packages (which is very important to avoid clashes among different Python programs needed by your system) can be a [bit of a hassle](https://xkcd.com/1987/) for some users. This is especially true for R users who might not use Python in their daily work.
 
 In order to make sure that the R package has the most appropriate version of Python available, with the correct versions of all of its Python module dependencies, *slendr* provides a dedicated function `setup_env()` which automatically **downloads a completely separate Python distribution and installs the required versions of *tskit*, *msprime*, and *pyslim* modules into a dedicated virtual environment**. Moreover, this Python installation and virtual environment are **entirely isolated from other Python configurations that are already present on the user's system**, avoiding potential conflicts with the versions of Python and Python modules required by *slendr*.
 
-**Next time you call `library(slendr)`, you will need to activate this environment automatically by calling `init_env()`**. If you're not comfortable with Python you don't need to worry&nbsp;beyond calling `setup_env()` and `init_env()`, no interaction with Python is necessary for working with *slendr* in R.
+**Next time you call `library(slendr)`, you will need to activate this environment automatically by calling `init_env()`**. If you're not comfortable with Python you don't need to worry beyond calling `setup_env()` and `init_env()`, no interaction with Python is necessary for working with *slendr* in R.
 
 #### Failing *conda*?
 
-In order to support Windows, _slendr_ uses conda to download a Python interpreter as explained above. Given this fact, when you run `setup_env()`, _slendr_ tries to leverage conda being present to install its Python dependencies (_msprime_, _tskit_, _pyslim_, _pandas_) via conda itself.
+In order to support Windows, *slendr* uses conda to download a Python interpreter as explained above. Given this fact, when you run `setup_env()`, *slendr* tries to leverage conda being present to install its Python dependencies (*msprime*, *tskit*, *pyslim*, *pandas*) via conda itself.
 
-Unfortunately, conda can break for frustratingly many random reasons which completely trips up `setup_env()`. If you run into this issue, **there is a fallback option to install Python dependencies _msprime_, _tskit_, _pyslim_, and _pandas_ via `pip`** which, unlike conda, works practically every time. You can do this **by calling `setup_env(pip = TRUE)`** instead of the default `setup_env()`. Note that **this might require you to install the [GSL](https://www.gnu.org/software/gsl/) numerical library, but that's a trivial issue on macOS (`brew install gsl`) and Linux (on Ubuntu, for instance, `sudo apt-get install libgsl-dev`)**.
+Unfortunately, conda can break for frustratingly many random reasons which completely trips up `setup_env()`. If you run into this issue, **there is a fallback option to install Python dependencies *msprime*, *tskit*, *pyslim*, and *pandas* via `pip`** which, unlike conda, works practically every time. If your `setup_env()` fails for some conda-related reason, first clear the broken environment by calling `clear_env()`, restart your R session, and then **call `setup_env(pip = TRUE)`** instead of the default `setup_env()`. Note that **this might require you to install the [GSL](https://www.gnu.org/software/gsl/) numerical library, but that's a trivial issue on macOS (`brew install gsl`) and Linux (on Ubuntu, for instance, `sudo apt-get install libgsl-dev`)**.
 
 #### Information for Python experts
 
-In case you are wondering how does *slendr* accomplish the above: *slendr*'s Python interface is implemented using the R package [*reticulate*](https://rstudio.github.io/reticulate/)*.* This embeds a Python session within an R session, enabling high-performance interoperability between both languages without any need for user intervention.
+In case you are wondering how does *slendr* accomplish the above: *slendr*'s Python interface is implemented using the R package [*reticulate*](https://rstudio.github.io/reticulate/)*.* This embeds a Python interpreter *inside* an R session, enabling high-performance interoperability between both languages without any need for user intervention.
 
 ## Docker
 
-There is currently no official Docker image for *slendr* but there will be once the R package finally lands on the official CRAN repository. The current plan is to use the geospatial image published by the [Rocker project](https://rocker-project.org/) (which already contains pre-compiled R, RStudio, and all necessary R package dependencies such as *sf* ) and extend it with *slendr* and SLiM.
+There is currently no official Docker image for *slendr* but there will be one soon. The current plan is to use the geospatial image published by the [Rocker project](https://rocker-project.org/) (which already contains pre-compiled R, RStudio, and all necessary R package dependencies such as *sf* ) and extend it with *slendr* and SLiM.
 
 Stay tuned!
-
-## renv
-
-TODO: Advertise the [renv](https://rstudio.github.io/renv/articles/renv.html) solution for managing reproducible environments for R packages.
