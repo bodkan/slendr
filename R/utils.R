@@ -1,3 +1,9 @@
+set_random_seed <- function(seed) {
+  if (is.null(seed))
+    seed <- sample.int(n = .Machine$integer.max, size = 1)
+  seed
+}
+
 #' Check that the required dependencies are available for slendr to work
 #'
 #' @param python Is the slendr Python environment required?

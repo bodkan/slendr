@@ -14,7 +14,8 @@
 #'   recorded in the tree-sequence output file.
 #' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
 #'   tree sequence will be saved to a temporary file.
-#' @param random_seed Random seed (if missing, SLiM's own seed will be used)
+#' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
+#'   0 and the maximum integer number available)
 #' @param load Should the final tree sequence be immediately loaded and returned?
 #'   Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
 #'   file is written to a custom location to be loaded at a later point.
@@ -90,6 +91,8 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   } else
     sampling <- ""
 
+  random_seed <- set_random_seed(random_seed)
+
   # call msprime back-end code directly for non-serialized models
   if (is.null(model$path)) {
     if (!run)
@@ -140,7 +143,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     "%s %s %s --model %s --output %s --sequence-length %d --recombination-rate %s %s %s %s",
     reticulate::py_exe(),
     script_path,
-    ifelse(is.null(random_seed), "", paste("--seed", random_seed)),
+    paste("--seed", random_seed),
     path.expand(model_dir),
     output,
     sequence_length,
@@ -208,7 +211,8 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #'   "retainCoalescentOnly" in the SLiM manual for more detail.
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
 #'   on the command line)
-#' @param random_seed Random seed (if missing, SLiM's own seed will be used)
+#' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
+#'   0 and the maximum integer number available)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
 #' @param load Should the final tree sequence be immediately loaded and returned?
@@ -321,7 +325,9 @@ slim <- function(
   specify the path manually by setting the 'binary_path' argument.", binary),
   call. = FALSE)
 
-  seed <- if (is.null(random_seed)) "" else paste0(" -d SEED=", random_seed)
+  random_seed <- set_random_seed(random_seed)
+  seed <- paste0(" -d SEED=", random_seed)
+
   samples <- if (is.null(sampling_path)) "" else paste0(" -d \"SAMPLES='", sampling_path, "'\"")
 
   if (method == "gui") {
