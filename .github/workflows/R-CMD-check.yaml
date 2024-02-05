@@ -125,6 +125,7 @@ jobs:
           update: true
           install: >-
             mingw-w64-x86_64-slim-simulator
+            bash
 
       - name: Install pandoc on Windows
         if: runner.os == 'Windows'
@@ -134,10 +135,16 @@ jobs:
           pandoc::pandoc_install()
         shell: Rscript {0}
 
-      - name: Check bin contents
+      - name: Check ming64/bin contents
         if: runner.os == 'Windows'
         run: |
           dir ${{ runner.temp }}\msys64\mingw64\bin
+        shell: cmd
+
+      - name: Check usr/bin contents
+        if: runner.os == 'Windows'
+        run: |
+          dir ${{ runner.temp }}\msys64\usr\bin
         shell: cmd
 
       - name: Populate PATH with compiled binaries on Windows
@@ -145,7 +152,7 @@ jobs:
         run: |
           writeLines(
             paste0(
-              "PATH=D:/a/_temp/msys64/mingw64/bin",
+              "PATH=\"D:/a/_temp/msys64/mingw64/bin;D:/a/_temp/msys64/usr/bin\"",
               "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
             ),
