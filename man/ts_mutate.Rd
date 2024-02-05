@@ -17,7 +17,9 @@ ts_mutate(
 
 \item{mutation_rate}{Mutation rate used by msprime to simulate mutations}
 
-\item{random_seed}{Random seed passed to msprime's \code{mutate} method}
+\item{random_seed}{Random seed passed to msprime's \code{mutate} method
+(if \code{NULL}, a seed will be generated between 0 and the maximum integer
+number available)}
 
 \item{keep_existing}{Keep existing mutations?}
 

@@ -57,7 +57,8 @@ a spatial mode.}
 \item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
 on the command line)}
 
-\item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
+\item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
+0 and the maximum integer number available)}
 
 \item{run}{Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
 command will be printed (and returned invisibly as a character vector) but not executed.}
