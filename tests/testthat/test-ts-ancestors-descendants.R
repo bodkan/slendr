@@ -1,5 +1,4 @@
 skip_if(!is_slendr_env_present())
-#skip_if(slim_is_missing())
 
 pop <- population("POP", time = 1, N = 100)
 

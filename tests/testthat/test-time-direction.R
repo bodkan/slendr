@@ -50,8 +50,6 @@ test_that("forward and backward time model objects are equivalent", {
 })
 
 test_that("forward and backward models yield the same simulation result", {
-  #skip_if(slim_is_missing())
-
   map <- readRDS("map.rds")
 
   # forward simulation ------------------------------------------------------
@@ -133,8 +131,6 @@ test_that("forward and backward models yield the same simulation result", {
 })
 
 test_that("forward and backward models yield the same simulation result (nonspatial)", {
-  #skip_if(slim_is_missing())
-
   # forward simulation ------------------------------------------------------
   p1 <- population(name = "pop1", N = 100, time = 1)
   p2 <- population(name = "pop2", parent = p1, time = 10, N = 100)

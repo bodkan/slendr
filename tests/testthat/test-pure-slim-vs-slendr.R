@@ -2,7 +2,6 @@
 # result (i.e. tree sequence tables) after loading than a pure SLiM script
 
 skip_if(!is_slendr_env_present())
-#skip_if(slim_is_missing())
 init_env(quiet = TRUE)
 
 # total length of the test simulation run

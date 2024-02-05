@@ -38,7 +38,6 @@ test_that("msprime command run manually on the command line give the correct out
 })
 
 test_that("slim command run manually on the command line give the correct output", {
-  #skip_if(slim_is_missing())
   pop1 <- population("pop1", N = 1000, time = 1)
   pop2 <- population("pop2", N = 1000, time = 2, parent = pop1)
 
