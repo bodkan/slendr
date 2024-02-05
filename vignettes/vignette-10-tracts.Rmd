@@ -243,13 +243,16 @@ ts = msprime.sim_ancestry(
 Let's save the _msprime_ tree sequence to disk so that we can load it into R (i.e., approximating what you might want to do should you want to use `ts_tracts()` without running a _slendr_ simulation first):
 
 ```{python}
-ts.dump("/tmp/sim.trees")
+import tempfile
+path = tempfile.NamedTemporaryFile(suffix=".trees").name
+
+ts.dump(path)
 ```
 
 Now let's move to R again, load the tree sequence into _slendr_ and extract ancestry tracts from it using `ts_tracts()`:
 
 ```{r}
-sim_ts <- ts_load("/tmp/sim.trees")
+sim_ts <- ts_load(reticulate::py$path)
 
 squashed_tracts <- ts_tracts(sim_ts, census = 100.01, squashed = TRUE)
 
