@@ -10,13 +10,22 @@ vignette: >
 ```{r, include = FALSE}
 env_present <- slendr:::is_slendr_env_present()
 
+if (Sys.getenv("RUNNER_OS") == "Windows") {
+  bash_path <- "D:/a/_temp/msys64/usr/bin/bash.exe"
+} else {
+  bash_path <- NULL
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 8,
   fig.height = 6,
   dpi = 60,
-  eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS"
+  eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS",
+  engine.path = list(
+    bash = "/path/to/bash.exe"
+)
 )
 
 nonspatial_slim <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
