@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 60,
-  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.which("qpDstat") != ""
+  eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "" ) && env_present && Sys.which("qpDstat") != ""
 )
 ```
 
@@ -235,7 +235,7 @@ tree
 
 This means that we have the whole R phylogenetic ecosystem at our disposal to analyze such trees. For instance we can use the powerful package *ggtree* to plot the tree we have just extracted:
 
-```{r, plot_ggtree, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") == TRUE && Sys.which("qpDstat") != ""}
+```{r, plot_ggtree, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("R_HAS_GGTREE") == TRUE && Sys.which("qpDstat") != ""}
 library(ggtree)
 
 ggtree(tree) +
@@ -245,7 +245,7 @@ ggtree(tree) +
 ```
 
 
-```{r, plot_apetree, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") != TRUE && Sys.which("qpDstat") != ""}
+```{r, plot_apetree, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("R_HAS_GGTREE") != TRUE && Sys.which("qpDstat") != ""}
 library(ape)
 plot(tree)
 nodelabels()

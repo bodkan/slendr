@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
   fig.width = 8,
   fig.height = 6,
   dpi = 60,
-  eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS",
+  eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present,
   engine.path = list(bash = bash_path)
 )
 
@@ -148,7 +148,7 @@ tree
 
 Once we have that R tree object, we can use packages like [ggtree](https://yulab-smu.top/treedata-book/) to visualize the tree (any other phylogenetic package would work too). Note that because nodes of 'ape phylo' trees must conform to a strict format (they must be labelled `1...N`), we will extract the information about the node IDs in the tskit tree-sequence data to be able to plot them in the tree.
 
-```{r, nonslendr_tree, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") == TRUE }
+```{r, nonslendr_tree, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("R_HAS_GGTREE") == TRUE }
 library(ggtree)
 
 labels <- ts_nodes(tree) %>% select(node = phylo_id, tskit_id = node_id)
@@ -157,7 +157,7 @@ ggtree(tree, branch.length = "none") %<+% labels +
   geom_label(aes(label = tskit_id))
 ```
 
-```{r, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") != TRUE}
+```{r, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("R_HAS_GGTREE") != TRUE}
 library(ape)
 plot(tree, show.tip.label = FALSE)
 nodelabels()
