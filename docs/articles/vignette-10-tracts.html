@@ -423,12 +423,15 @@ object.</p>
 load it into R (i.e., approximating what you might want to do should you
 want to use <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> without running a <em>slendr</em>
 simulation first):</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>ts.dump(<span class="st">"/tmp/sim.trees"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="im">import</span> tempfile</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>path <span class="op">=</span> tempfile.NamedTemporaryFile(suffix<span class="op">=</span><span class="st">".trees"</span>).name</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>ts.dump(path)</span></code></pre></div>
 <p>Now let’s move to R again, load the tree sequence into
 <em>slendr</em> and extract ancestry tracts from it using
 <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="st">"/tmp/sim.trees"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="fu">reticulate</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/reticulate/reference/py.html" class="external-link">py</a></span><span class="op">$</span><span class="va">path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">squashed_tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">sim_ts</span>, census <span class="op">=</span> <span class="fl">100.01</span>, squashed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
