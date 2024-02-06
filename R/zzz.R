@@ -19,7 +19,7 @@ PYTHON_ENV <-
   if (Sys.info()[["sysname"]] == "Windows") {
     slim_binary <- "slim.exe"
     renviron_dir <- "C:\\Users\\<your username>\\Documents\\"
-    path_dir <- "C:\\path\\to\\directory\\with\\slim.exe\\binary"
+    path_dir <- "C:\\path\\to\\directory\\with\\slim.exe\\"
   } else {
     slim_binary <- "slim"
     renviron_dir <- "~/"
