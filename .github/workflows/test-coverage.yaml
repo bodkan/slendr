@@ -87,6 +87,11 @@ jobs:
           export PATH="$HOME/deps/SLiM:$HOME/deps/AdmixTools-7.0.2/bin:$PATH"
           echo "PATH=$PATH" >> ~/.Renviron
 
+      - name: Set R_LIBS path on unix
+        run: |
+          mkdir ~/R_LIBS
+          echo "R_LIBS_USER=~/R_LIBS" >> ~/.Renviron
+
       - name: Setup dedicated Python environment for slendr
         run: |
           install.packages("reticulate", repos = "http://cran.rstudio.com")
