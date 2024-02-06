@@ -22,3 +22,4 @@
 ^.*\.gif
 ^cran-comments.md
 ^generate_examples.R
+.codecov.yml
