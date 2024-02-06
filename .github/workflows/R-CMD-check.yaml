@@ -152,7 +152,7 @@ jobs:
         run: |
           writeLines(
             paste0(
-              "PATH=\"D:/a/_temp/msys64/mingw64/bin;D:/a/_temp/msys64/usr/bin\"",
+              "PATH=D:/a/_temp/msys64/mingw64/bin",
               "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
             ),
