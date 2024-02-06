@@ -1,3 +1,9 @@
+set_random_seed <- function(seed) {
+  if (is.null(seed))
+    seed <- sample.int(n = .Machine$integer.max, size = 1)
+  seed
+}
+
 #' Check that the required dependencies are available for slendr to work
 #'
 #' @param python Is the slendr Python environment required?
@@ -161,10 +167,16 @@ get_binary <- function(method) {
   if (method == "gui") {
     if (Sys.info()["sysname"] == "Darwin")
       binary <- "open -a SLiMgui"
+    else if (Sys.info()["sysname"] == "Windows")
+      binary <- "SLiMgui.exe"
     else
       binary <- "SLiMgui"
-  } else
-    binary <- "slim"
+  } else {
+    if (Sys.info()["sysname"] == "Windows")
+      binary <- "slim.exe"
+    else
+      binary <- "slim"
+  }
 
   binary
 }

@@ -22,7 +22,9 @@ ts_recapitate(
 \item{demography}{Ancestral demography to be passed internally to
 \code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)}
 
-\item{random_seed}{Random seed passed to pyslim's \code{recapitate} method}
+\item{random_seed}{Random seed passed to pyslim's \code{recapitate} method
+(if \code{NULL}, a seed will be generated between 0 and the maximum integer
+number available)}
 }
 \value{
 Tree-sequence object of the class \code{slendr_ts}, which serves as

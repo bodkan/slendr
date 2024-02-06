@@ -1,11 +1,12 @@
 skip_if(!is_slendr_env_present())
+
 init_env(quiet = TRUE)
 
 set.seed(42)
 
 simulate_slim_ts <- function(N) {
-  script_file <- tempfile()
-  ts_file <- tempfile()
+  script_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   writeLines(sprintf('initialize() {
     setSeed(42);
@@ -30,13 +31,13 @@ simulate_slim_ts <- function(N) {
 }
 
 msprime_ts_sim_ancestry <- function(N) {
-  msprime_file <- tempfile()
+  msprime_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   slendr:::msp$sim_ancestry(N)$dump(msprime_file)
   msprime_file
 }
 
 msprime_ts_simulate <- function(N) {
-  msprime_file <- tempfile()
+  msprime_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   slendr:::msp$simulate(as.integer(N))$dump(msprime_file)
   msprime_file
 }
@@ -214,8 +215,8 @@ test_that("non-slendr msprime ts_nodes carries correct population names (simulat
 # SLiM tskit statistics interface -----------------------------------------
 
 test_that("tskit statistics interface works on non-slendr SLiM outputs", {
-  script_file <- tempfile()
-  ts_file <- tempfile()
+  script_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   writeLines(sprintf('initialize() {
     setSeed(123);

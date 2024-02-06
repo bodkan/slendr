@@ -1463,7 +1463,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
       # TODO: check at some point later if tspop is on conda
       which_tspop <- grepl("tspop", package_versions)
       reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!which_tspop], pip = pip)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[which_tspop], pip = TRUE)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = c(package_versions[which_tspop], "pyarrow"), pip = TRUE)
 
       if (!quiet) {
         message("======================================================================")

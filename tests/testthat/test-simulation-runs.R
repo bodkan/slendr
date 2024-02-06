@@ -10,7 +10,7 @@ simulation_run <- function(direction, start, burnin, gen_time, simulation_length
                          generation_time = gen_time, resolution = 1,
                          competition = 10, mating = 10, dispersal = 10,
                          overwrite = TRUE, force = TRUE)
-  locations_file <- tempfile(fileext = ".gz")
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
   ts <- slim(model, burnin = burnin, sequence_length = 1, recombination_rate = 0,
        locations = locations_file, verbose = verbose, method = method)
 
@@ -337,4 +337,13 @@ test_that("Backward simulation of limited length has the correct length with bur
   expect_true(max(result$time) == start)
   expect_true(min(result$time) == start - gen_time * (simulation_length %/% gen_time) - gen_time)
   expect_true(length(unique(result$time)) == round(simulation_length / gen_time) + 1)
+})
+
+test_that("SLiM runner finishes correctly even without a tree-sequence output", {
+  p <- population("pop", N = 5, time = 1)
+  model <- compile_model(p, direction = "forward", simulation_length = 100,
+                         generation_time = 1)
+  expect_silent(
+    capture.output(suppressWarnings(slim(model, sequence_length = 100, recombination_rate = 0, load = FALSE)))
+  )
 })

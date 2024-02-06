@@ -20,8 +20,8 @@ ts1 <- slim(model, method = "batch", sequence_length = 1,
 # run a pure SLiM version of the same model -------------------------------
 
 simulate_slim_ts <- function(N, T, output, script_file , verbose = FALSE) {
-  script_file <- tempfile()
-  output <- tempfile()
+  script_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  output <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   writeLines(sprintf('initialize() {
     setSeed(42);
@@ -53,7 +53,12 @@ simulate_slim_ts <- function(N, T, output, script_file , verbose = FALSE) {
   }
   ', N, T + 1, N, T + 1, output), script_file)
 
-  out <- system2("slim", script_file, stdout = TRUE)
+  if (Sys.info()["sysname"] == "Windows")
+    binary <- "slim.exe"
+  else
+    binary <- "slim"
+
+  out <- system2(binary, script_file, stdout = TRUE)
   if (verbose) cat(paste(out, collapse = "\n"))
 
   ts_load(output)

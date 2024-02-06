@@ -14,7 +14,8 @@
 #'   recorded in the tree-sequence output file.
 #' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
 #'   tree sequence will be saved to a temporary file.
-#' @param random_seed Random seed (if missing, SLiM's own seed will be used)
+#' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
+#'   0 and the maximum integer number available)
 #' @param load Should the final tree sequence be immediately loaded and returned?
 #'   Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
 #'   file is written to a custom location to be loaded at a later point.
@@ -90,6 +91,8 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   } else
     sampling <- ""
 
+  random_seed <- set_random_seed(random_seed)
+
   # call msprime back-end code directly for non-serialized models
   if (is.null(model$path)) {
     if (!run)
@@ -140,7 +143,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     "%s %s %s --model %s --output %s --sequence-length %d --recombination-rate %s %s %s %s",
     reticulate::py_exe(),
     script_path,
-    ifelse(is.null(random_seed), "", paste("--seed", random_seed)),
+    paste("--seed", random_seed),
     path.expand(model_dir),
     output,
     sequence_length,
@@ -208,7 +211,8 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #'   "retainCoalescentOnly" in the SLiM manual for more detail.
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
 #'   on the command line)
-#' @param random_seed Random seed (if missing, SLiM's own seed will be used)
+#' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
+#'   0 and the maximum integer number available)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
 #' @param load Should the final tree sequence be immediately loaded and returned?
@@ -217,8 +221,9 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #' @param locations If \code{NULL}, locations are not saved. Otherwise, the
 #'   path to the file where locations of each individual throughout the simulation
 #'   will be saved (most likely for use with \code{animate_model}).
-#' @param slim_path Optional way to specify path to an appropriate SLiM binary (this
-#'   is useful if the \code{slim} binary is not on the \code{$PATH}).
+#' @param slim_path Path to the appropriate SLiM binary (this is useful if the
+#'   \code{slim} binary is not on the \code{$PATH}). Note that this argument must
+#'   be specified if the function is being run on Windows.
 #' @param run Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
 #'   command will be printed (and returned invisibly as a character vector) but not executed.
 #'
@@ -280,6 +285,7 @@ slim <- function(
             "a temporary file after the simulation has been prevented", call. = FALSE)
 
   if (is.null(output)) output <- tempfile(fileext = ".trees")
+  output <- normalizePath(output, winslash = "/", mustWork = FALSE)
 
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
@@ -305,11 +311,11 @@ slim <- function(
   script_path <- path.expand(file.path(model_dir, "script.slim"))
 
   spatial <- if (spatial) "T" else "F"
-  locations <- if (is.character(locations)) locations else ""
+  locations <- if (is.character(locations)) normalizePath(locations, winslash = "/", mustWork = FALSE) else ""
   coalescent_only <- if (coalescent_only) "T" else "F"
   burnin <- round(burnin / model$generation_time)
 
-  sampling_path <- tempfile()
+  sampling_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   sampling_df <- process_sampling(samples, model, verbose)
   readr::write_tsv(sampling_df, sampling_path)
 
@@ -319,48 +325,36 @@ slim <- function(
   specify the path manually by setting the 'binary_path' argument.", binary),
   call. = FALSE)
 
-  seed <- if (is.null(random_seed)) "" else paste0(" \\\n    -d SEED=", random_seed)
-  samples <- if (is.null(sampling_path)) ""
-             else paste0(" \\\n    -d 'SAMPLES=\"", sampling_path, "\"'")
+  random_seed <- set_random_seed(random_seed)
+  seed <- paste0(" -d SEED=", random_seed)
+
+  samples <- if (is.null(sampling_path)) "" else paste0(" -d \"SAMPLES='", sampling_path, "'\"")
 
   if (method == "gui") {
     # to be able to execute the script in the SLiMgui, we have to hardcode
     # the path to the model configuration directory
-    modif_path <- tempfile()
+    modif_path <- normalizePath(tempfile(), winslash = "/", mustWork = TRUE)
     readLines(script_path) %>%
-      gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path), "\""), .) %>%
-      gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path), "\""), .) %>%
+      gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
+      gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
       gsub("required_arg\\(\"OUTPUT_TS\"\\)", sprintf("defineConstant(\"OUTPUT_TS\", \"%s\")", output), .) %>%
       cat(file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
-    slim_command <- sprintf("%s %s %s \\
-    -d 'MODEL=\"%s\"' \\
-    -d 'OUTPUT_TS=\"%s\"' \\
-    -d SPATIAL=%s \\
-    -d SEQUENCE_LENGTH=%s \\
-    -d RECOMB_RATE=%s \\
-    -d BURNIN_LENGTH=%s \\
-    -d SIMULATION_LENGTH=%s \\
-    -d 'OUTPUT_LOCATIONS=\"%s\"' \\
-    -d COALESCENT_ONLY=%s \\
-    -d MAX_ATTEMPTS=%i \\
-    %s 2>&1",
-      binary, # path to the SLiM binary on the command line
-      seed,
-      samples,
-      path.expand(model_dir),
-      output,
-      spatial,
-      sequence_length,
-      recombination_rate,
-      burnin,
-      model$length,
-      locations,
-      coalescent_only,
-      max_attempts,
-      script_path
-    )
+    slim_command <- paste(binary,
+                          seed,
+                          samples,
+                          paste0("-d \"MODEL='",model_dir,"'\""),
+                          paste0("-d \"OUTPUT_TS='", output, "'\""),
+                          paste0("-d SPATIAL=",spatial),
+                          paste0("-d SEQUENCE_LENGTH=",sequence_length),
+                          paste0("-d RECOMB_RATE=",recombination_rate),
+                          paste0("-d BURNIN_LENGTH=",burnin),
+                          paste0("-d SIMULATION_LENGTH=",model$length),
+                          paste0("-d \"OUTPUT_LOCATIONS='",locations,"'\""),
+                          paste0("-d COALESCENT_ONLY=",coalescent_only),
+                          paste0("-d MAX_ATTEMPTS=",max_attempts),
+                          script_path)
 
     if (verbose || !run) {
       cat("--------------------------------------------------\n")

@@ -34,8 +34,8 @@ model_nogf <- compile_model(populations = list(a, b, x1, x2, c, o), generation_t
 
 samples <- schedule_sampling(model_nogf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
-ts_slim_nogf <- tempfile()
-ts_msprime_nogf <- tempfile()
+ts_slim_nogf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+ts_msprime_nogf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
 slim(model_nogf, output = ts_slim_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 msprime(model_nogf, output = ts_msprime_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
@@ -47,8 +47,8 @@ model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf
 
 samples <- schedule_sampling(model_gf, times = 2200, list(a, 1), list(b, 1), list(x1, 50), list(x2, 50), list(c, 1), list(o, 1))
 
-ts_slim_gf <- tempfile()
-ts_msprime_gf <- tempfile()
+ts_slim_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+ts_msprime_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
 slim(model_gf, output = ts_slim_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 msprime(model_gf, output = ts_msprime_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)

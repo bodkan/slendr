@@ -200,6 +200,8 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   names(populations) <- pop_names
 
+  if (!is.null(path)) path <- normalizePath(path, winslash = "/")
+
   # compile the result
   result <- list(
     path = path,
@@ -317,6 +319,15 @@ read_model <- function(path) {
   result
 }
 
+hash_file <- function(f) {
+  if (grepl("(txt|tsv|slim|py)$", f)) {
+    file <- FALSE
+    f <- paste(readLines(f), sep = " ")
+  } else
+    file <- TRUE
+
+  digest::digest(f, algo = "md5", file = file, serialize = FALSE)
+}
 
 calculate_checksums <- function(files) {
   if (!all(file.exists(files)))
@@ -324,7 +335,8 @@ calculate_checksums <- function(files) {
 
   data.frame(
     file = basename(files),
-    hash = as.vector(tools::md5sum(files))
+    hash = as.vector(vapply(files, hash_file, FUN.VALUE = character(1))
+    )
   )
 }
 
@@ -332,7 +344,7 @@ calculate_checksums <- function(files) {
 # Make sure the checksums of a given set of files matches the expectation
 verify_checksums <- function(files, hashes) {
   for (i in seq_along(files)) {
-    if (tools::md5sum(files[i]) != hashes[i]) {
+    if (hash_file(files[i]) != hashes[i]) {
       warning("Checksum of '", basename(files[i]), "' does not match its compiled state",
               call. = FALSE)
     }

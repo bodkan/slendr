@@ -10,22 +10,29 @@ vignette: >
 ```{r, include = FALSE}
 env_present <- slendr:::is_slendr_env_present()
 
+if (Sys.getenv("RUNNER_OS") == "Windows") {
+  bash_path <- "D:/a/_temp/msys64/usr/bin/bash.exe"
+} else {
+  bash_path <- NULL
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width = 8,
   fig.height = 6,
   dpi = 60,
-  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
+  eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS",
+  engine.path = list(bash = bash_path)
 )
 
-nonspatial_slim <- tempfile()
-nonspatial_trees_file <- tempfile()
+nonspatial_slim <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+nonspatial_trees_file <-normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-spatial_slim <- tempfile()
-spatial_trees_file <- tempfile()
+spatial_slim <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+spatial_trees_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-msprime_trees_file <- tempfile()
+msprime_trees_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
 Sys.setenv(NONSPATIAL_SLIM = nonspatial_slim)
 Sys.setenv(NONSPATIAL_TREES = nonspatial_trees_file)
@@ -141,7 +148,7 @@ tree
 
 Once we have that R tree object, we can use packages like [ggtree](https://yulab-smu.top/treedata-book/) to visualize the tree (any other phylogenetic package would work too). Note that because nodes of 'ape phylo' trees must conform to a strict format (they must be labelled `1...N`), we will extract the information about the node IDs in the tskit tree-sequence data to be able to plot them in the tree.
 
-```{r, nonslendr_tree, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") == TRUE }
+```{r, nonslendr_tree, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") == TRUE }
 library(ggtree)
 
 labels <- ts_nodes(tree) %>% select(node = phylo_id, tskit_id = node_id)
@@ -150,7 +157,7 @@ ggtree(tree, branch.length = "none") %<+% labels +
   geom_label(aes(label = tskit_id))
 ```
 
-```{r, eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") != TRUE}
+```{r, eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS" && Sys.getenv("R_HAS_GGTREE") != TRUE}
 library(ape)
 plot(tree, show.tip.label = FALSE)
 nodelabels()

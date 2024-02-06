@@ -150,7 +150,6 @@ test_that("only strings fitting the requirements of valid Python identifiers can
   }
 
   # slim passes
-  skip_if(Sys.which("slim") == "")
   for (n in valid_names) {
     expect_s3_class(pop <- population(n, time = 1000, N = 100), "slendr_pop")
     model <- compile_model(pop, generation_time = 100, direction = "backward")

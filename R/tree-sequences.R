@@ -166,6 +166,8 @@ ts_save <- function(ts, file) {
 #' @param demography Ancestral demography to be passed internally to
 #'   \code{msprime.sim_ancestry()} (see msprime's documentation for mode detail)
 #' @param random_seed Random seed passed to pyslim's \code{recapitate} method
+#'   (if \code{NULL}, a seed will be generated between 0 and the maximum integer
+#'   number available)
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
 #'   an interface point for the Python module tskit using slendr functions with
@@ -199,6 +201,8 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
   model <- attr(ts, "model")
   type <- attr(ts, "type")
   spatial <- attr(ts, "spatial")
+
+  random_seed <- set_random_seed(random_seed)
 
   if (type == "SLiM") {
     if (!is.null(Ne))
@@ -451,6 +455,8 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param mutation_rate Mutation rate used by msprime to simulate mutations
 #' @param random_seed Random seed passed to msprime's \code{mutate} method
+#'   (if \code{NULL}, a seed will be generated between 0 and the maximum integer
+#'   number available)
 #' @param keep_existing Keep existing mutations?
 #' @param mut_type Assign SLiM mutation type to neutral mutations? If
 #'   \code{NULL} (default), no special mutation type will be used. If an
@@ -487,6 +493,8 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 
   if (is.numeric(mut_type) && attr(ts, "type") == "SLiM")
     mut_type <- msp$SLiMMutationModel(type = as.integer(mut_type))
+
+  random_seed <- set_random_seed(random_seed)
 
   ts_new <-
     msp$sim_mutations(

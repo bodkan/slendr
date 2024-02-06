@@ -383,47 +383,47 @@ simulation example from the <a href="https://tspop.readthedocs.io/en/latest/basi
 behaves as expected even on a standard <em>msprime</em> tree-sequence
 object.</p>
 <p>First, let’s run the simulation code exactly as it is:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> msprime</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>pop_size <span class="op">=</span> <span class="dv">500</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>sequence_length <span class="op">=</span> <span class="fl">1e7</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">98765</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>rho <span class="op">=</span> <span class="fl">3e-8</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the Demography object.</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>demography <span class="op">=</span> msprime.Demography()</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"RED"</span>, initial_size<span class="op">=</span>pop_size)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='RED', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=0)</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"BLUE"</span>, initial_size<span class="op">=</span>pop_size)</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='BLUE', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=1)</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ADMIX"</span>, initial_size<span class="op">=</span>pop_size)</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ADMIX', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=2)</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ANC"</span>, initial_size<span class="op">=</span>pop_size)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ANC', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=3)</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>demography.add_admixture(</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">100</span>, derived<span class="op">=</span><span class="st">"ADMIX"</span>, ancestral<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], proportions<span class="op">=</span>[<span class="fl">0.5</span>, <span class="fl">0.5</span>]</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Admixture(time=100, derived='ADMIX', ancestral=['RED', 'BLUE'], proportions=[0.5, 0.5])</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>demography.add_census(time<span class="op">=</span><span class="fl">100.01</span>) <span class="co"># Census is here!</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; CensusEvent(time=100.01)</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>demography.add_population_split(</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">1000</span>, derived<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], ancestral<span class="op">=</span><span class="st">"ANC"</span></span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; PopulationSplit(time=1000, derived=['RED', 'BLUE'], ancestral='ANC')</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate.</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>ts <span class="op">=</span> msprime.sim_ancestry(</span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    samples<span class="op">=</span>{<span class="st">"RED"</span>: <span class="dv">0</span>, <span class="st">"BLUE"</span>: <span class="dv">0</span>, <span class="st">"ADMIX"</span> : <span class="dv">2</span>},</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    demography<span class="op">=</span>demography,</span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    random_seed<span class="op">=</span>seed,</span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    sequence_length<span class="op">=</span>sequence_length,</span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    recombination_rate<span class="op">=</span>rho</span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="im">import</span> msprime</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>pop_size <span class="op">=</span> <span class="dv">500</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>sequence_length <span class="op">=</span> <span class="fl">1e7</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>seed <span class="op">=</span> <span class="dv">98765</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>rho <span class="op">=</span> <span class="fl">3e-8</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co"># Make the Demography object.</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>demography <span class="op">=</span> msprime.Demography()</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"RED"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='RED', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=0)</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"BLUE"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='BLUE', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=1)</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ADMIX"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ADMIX', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=2)</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>demography.add_population(name<span class="op">=</span><span class="st">"ANC"</span>, initial_size<span class="op">=</span>pop_size)</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; Population(initial_size=500, growth_rate=0, name='ANC', description='', extra_metadata={}, default_sampling_time=None, initially_active=None, id=3)</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>demography.add_admixture(</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">100</span>, derived<span class="op">=</span><span class="st">"ADMIX"</span>, ancestral<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], proportions<span class="op">=</span>[<span class="fl">0.5</span>, <span class="fl">0.5</span>]</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>)</span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; Admixture(time=100, derived='ADMIX', ancestral=['RED', 'BLUE'], proportions=[0.5, 0.5])</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>demography.add_census(time<span class="op">=</span><span class="fl">100.01</span>) <span class="co"># Census is here!</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; CensusEvent(time=100.01)</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>demography.add_population_split(</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>    time<span class="op">=</span><span class="dv">1000</span>, derived<span class="op">=</span>[<span class="st">"RED"</span>, <span class="st">"BLUE"</span>], ancestral<span class="op">=</span><span class="st">"ANC"</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>)</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; PopulationSplit(time=1000, derived=['RED', 'BLUE'], ancestral='ANC')</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co"># Simulate.</span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>ts <span class="op">=</span> msprime.sim_ancestry(</span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>    samples<span class="op">=</span>{<span class="st">"RED"</span>: <span class="dv">0</span>, <span class="st">"BLUE"</span>: <span class="dv">0</span>, <span class="st">"ADMIX"</span> : <span class="dv">2</span>},</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>    demography<span class="op">=</span>demography,</span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>    random_seed<span class="op">=</span>seed,</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>    sequence_length<span class="op">=</span>sequence_length,</span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>    recombination_rate<span class="op">=</span>rho</span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>)</span></code></pre></div>
 <p>Let’s save the <em>msprime</em> tree sequence to disk so that we can
 load it into R (i.e., approximating what you might want to do should you
 want to use <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> without running a <em>slendr</em>
 simulation first):</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ts.dump(<span class="st">"/tmp/sim.trees"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>ts.dump(<span class="st">"/tmp/sim.trees"</span>)</span></code></pre></div>
 <p>Now let’s move to R again, load the tree sequence into
 <em>slendr</em> and extract ancestry tracts from it using
 <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>:</p>

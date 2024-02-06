@@ -13,10 +13,10 @@ pop <- population("pop", time = 1, N = N)
 model <- compile_model(pop, generation_time = 1, direction = "forward", simulation_length = 1000)
 ts1 <- msprime(model, sequence_length = 1, recombination_rate = 0, random_seed = 42)
 
-# run a pure SLiM version of the same model -------------------------------
+# run a pure msprime version of the same model -------------------------------
 
 simulate_msprime_ts <- function(N) {
-  output <- tempfile()
+  output <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   py_cmd <- sprintf("import msprime; msprime.sim_ancestry(%d, random_seed=42, population_size=%d).dump('%s')", N, N, output)
   reticulate::py_run_string(py_cmd)
   ts_load(output)

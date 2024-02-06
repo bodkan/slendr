@@ -319,7 +319,7 @@ test_that("tree sequence with unary nodes produces correct squashing results (SL
 # TODO: check tests also with `filter_nodes = FALSE` (but see a bug below in ts_simplify())
 #
 
-test_that("full tree sequence with unary nodes produces correct squashing results (SLiM)", {
+test_that("full tree sequence with unary nodes produces correct squashing results (msprime)", {
   ts_msprime <- population("pop", N = 1000, time = 1) %>%
     compile_model(generation_time = 1, simulation_length = 1000) %>%
     msprime(sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)

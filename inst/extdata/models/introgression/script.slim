@@ -219,7 +219,6 @@ s4 late() /* Update spatial population boundaries */ {
             valueRange=c(min_pixel, max_pixel),
             colors=c("#000000", "#FFFFFF")
         );
-        pop.setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
 
         // uniformly distribute individuals if this is the very first boundary
         // of the population
@@ -558,8 +557,10 @@ function (void) create_pop(object<Dictionary> pop) {
     spatial_tag = F;
     if (SPATIAL) {
         spatial_pops = unique(MAPS.getValue("pop_id"));
-        if (any(pop_id == spatial_pops))
+        if (any(pop_id == spatial_pops)) {
             spatial_tag = T;
+            get_pop(pop_id).setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
+        }
     }
     get_pop(pop_id).setValue("spatial", spatial_tag);
 }
@@ -639,7 +640,7 @@ function (object<Dictionary>) collect_metadata(void) {
     metadata = Dictionary();
 
     // slendr version and commit hash that generated this script
-    metadata.setValue("version", "slendr_0.7.2.9000");
+    metadata.setValue("version", "slendr_0.8.1.9000");
     metadata.setValue("backend", "SLiM");
 
     metadata.setValue("description", DESCRIPTION);

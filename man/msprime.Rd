@@ -34,7 +34,8 @@ recorded in the tree-sequence output file.}
 \item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
 tree sequence will be saved to a temporary file.}
 
-\item{random_seed}{Random seed (if missing, SLiM's own seed will be used)}
+\item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
+0 and the maximum integer number available)}
 
 \item{load}{Should the final tree sequence be immediately loaded and returned?
 Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence

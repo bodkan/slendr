@@ -138,11 +138,12 @@ are available</strong>. If they are not, the R package will provide a
 brief helpful guide on how to resolve potential issues. The rest of this
 vignette talks about the necessary software dependencies in a bit more
 detail.</p>
-<p><strong>Please note that <em>slendr</em> is fully supported only on
-macOS and Linux at the moment.</strong> That said, there is an
-experimental support on Windows for running coalescent simulation via
-<em>slendr</em>’s Python backend <code><a href="../reference/msprime.html">msprime()</a></code> and for
-analyzing tree-sequence outputs using its <em>tskit</em> interface.</p>
+<p><strong>Please note that <em>slendr</em> has been extensively tested
+only on macOS and Linux at the moment.</strong> However, there is an
+experimental support for runnig both SLiM and <em>msprime</em>
+simulations on Windows and for analyzing tree-sequence outputs using its
+<em>tskit</em> interface on this platform as well. Feedback on issues
+with using <em>slendr</em> on Windows is highly appreciated.</p>
 </div>
 <div class="section level2">
 <h2 id="software-dependencies">Software dependencies<a class="anchor" aria-label="anchor" href="#software-dependencies"></a>
@@ -166,7 +167,11 @@ information on how to troubleshoot potential problems).</p>
 dependencies will be necessarily needed.</strong> If you’re not going to
 be running forward spatial simulations, you don’t need SLiM or
 geospatial R packages <em>sf</em>, <em>stars</em>, and
-<em>rnaturalearth</em>.</p>
+<em>rnaturalearth</em>. This applies also to the animation of spatial
+models using the <em>gganimate</em> R package. <strong>This is why
+<em>slendr</em> does not install those as dependencies. If you need this
+functionality, you will have to install the respective R packages
+manually.</strong></p>
 <p>In this vignette, I will briefly explain how to get all
 <em>slendr’</em>s software dependencies installed. That said, note that
 under normal circumstances (with the exception of SLiM), no manual
@@ -226,6 +231,12 @@ need other packages on non-Debian distributions), but this is what got
 <em>slendr</em> and all of its dependencies running on a completely
 clean system. Might be a good start in case you have trouble on your
 Linux machine.</p>
+<p><strong>Windows</strong></p>
+<p>No special treatment should be necessary to get <em>slendr</em>
+running. If you install <em>slendr</em> via
+<code>install.packages("slendr")</code>, you will get the binary version
+of the package and all its dependencies without any need for compiling
+sources.</p>
 </div>
 </div>
 <div class="section level3">
@@ -233,12 +244,15 @@ Linux machine.</p>
 </h3>
 <p>The forward population genetic software SLiM is available on all
 major software platforms. Its complete installation instructions can be
-found <a href="https://messerlab.org/slim/" class="external-link">here</a>. On a Mac, I
-recommend installing SLiM via the <code>pkg</code> installer available
-for direct download from its <a href="https://messerlab.org/slim/" class="external-link">website</a>. On Linux, you can either
-install SLiM via the appropriate package manager for your Linux
-distribution (see SLiM manual <a href="https://messerlab.org/slim/" class="external-link">here</a> for more information), or
-you can easily compile your own.</p>
+found <a href="https://messerlab.org/slim/" class="external-link">here</a>. <strong>On a
+Mac</strong>, I recommend installing SLiM via the <code>pkg</code>
+installer available for direct download from its <a href="https://messerlab.org/slim/" class="external-link">website</a>. <strong>On
+Linux</strong>, you can either install SLiM via the appropriate package
+manager for your Linux distribution (see SLiM manual <a href="https://messerlab.org/slim/" class="external-link">here</a> for more information), or
+you can easily compile your own. To install SLiM <strong>on
+Windows</strong>, please follow the instructions in section 2.3.1 of the
+SLiM manual. Note that although SLiM is also available on conda, it
+comes without SLiMgui!</p>
 <p>Note that <em>slendr</em> requires SLiM 4.0 and will not work with an
 earlier version. Again, running <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> will inform
 you of any potential issues with your SLiM installation.</p>
@@ -254,7 +268,7 @@ tree-sequence files, <em>slendr</em> needs Python modules
 Python packages (which is very important to avoid clashes among
 different Python programs needed by your system) can be a <a href="https://xkcd.com/1987/" class="external-link">bit of a hassle</a> for some users. This
 is especially true for R users who might not use Python in their daily
-work, such as yours truly.</p>
+work.</p>
 <p>In order to make sure that the R package has the most appropriate
 version of Python available, with the correct versions of all of its
 Python module dependencies, <em>slendr</em> provides a dedicated
@@ -285,7 +299,9 @@ which completely trips up <code><a href="../reference/setup_env.html">setup_env(
 issue, <strong>there is a fallback option to install Python dependencies
 <em>msprime</em>, <em>tskit</em>, <em>pyslim</em>, and <em>pandas</em>
 via <code>pip</code></strong> which, unlike conda, works practically
-every time. You can do this <strong>by calling
+every time. If your <code><a href="../reference/setup_env.html">setup_env()</a></code> fails for some
+conda-related reason, first clear the broken environment by calling
+<code><a href="../reference/clear_env.html">clear_env()</a></code>, restart your R session, and then <strong>call
 <code>setup_env(pip = TRUE)</code></strong> instead of the default
 <code><a href="../reference/setup_env.html">setup_env()</a></code>. Note that <strong>this might require you to
 install the <a href="https://www.gnu.org/software/gsl/" class="external-link">GSL</a>
@@ -299,7 +315,7 @@ numerical library, but that’s a trivial issue on macOS
 <p>In case you are wondering how does <em>slendr</em> accomplish the
 above: <em>slendr</em>’s Python interface is implemented using the R
 package <a href="https://rstudio.github.io/reticulate/" class="external-link"><em>reticulate</em></a><em>.</em>
-This embeds a Python session within an R session, enabling
+This embeds a Python interpreter <em>inside</em> an R session, enabling
 high-performance interoperability between both languages without any
 need for user intervention.</p>
 </div>
@@ -309,19 +325,12 @@ need for user intervention.</p>
 <h2 id="docker">Docker<a class="anchor" aria-label="anchor" href="#docker"></a>
 </h2>
 <p>There is currently no official Docker image for <em>slendr</em> but
-there will be once the R package finally lands on the official CRAN
-repository. The current plan is to use the geospatial image published by
-the <a href="https://rocker-project.org/" class="external-link">Rocker project</a> (which
-already contains pre-compiled R, RStudio, and all necessary R package
-dependencies such as <em>sf</em> ) and extend it with <em>slendr</em>
-and SLiM.</p>
+there will be one soon. The current plan is to use the geospatial image
+published by the <a href="https://rocker-project.org/" class="external-link">Rocker
+project</a> (which already contains pre-compiled R, RStudio, and all
+necessary R package dependencies such as <em>sf</em> ) and extend it
+with <em>slendr</em> and SLiM.</p>
 <p>Stay tuned!</p>
-</div>
-<div class="section level2">
-<h2 id="renv">renv<a class="anchor" aria-label="anchor" href="#renv"></a>
-</h2>
-<p>TODO: Advertise the <a href="https://rstudio.github.io/renv/articles/renv.html" class="external-link">renv</a>
-solution for managing reproducible environments for R packages.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
