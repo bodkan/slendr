@@ -23,9 +23,7 @@ knitr::opts_chunk$set(
   fig.height = 6,
   dpi = 60,
   eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS",
-  engine.path = list(
-    bash = "/path/to/bash.exe"
-)
+  engine.path = list(bash = bash_path)
 )
 
 nonspatial_slim <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
