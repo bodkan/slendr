@@ -16,16 +16,16 @@ knitr::opts_chunk$set(
   fig.width = 8,
   fig.height = 6,
   dpi = 60,
-  eval = Sys.which("slim") != "" && env_present && Sys.getenv("RUNNER_OS") != "macOS"
+  eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present && Sys.getenv("RUNNER_OS") != "macOS"
 )
 
-nonspatial_slim <- tempfile()
-nonspatial_trees_file <- tempfile()
+nonspatial_slim <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+nonspatial_trees_file <-normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-spatial_slim <- tempfile()
-spatial_trees_file <- tempfile()
+spatial_slim <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+spatial_trees_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-msprime_trees_file <- tempfile()
+msprime_trees_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
 Sys.setenv(NONSPATIAL_SLIM = nonspatial_slim)
 Sys.setenv(NONSPATIAL_TREES = nonspatial_trees_file)
