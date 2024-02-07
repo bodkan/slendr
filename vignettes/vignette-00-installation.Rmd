@@ -75,6 +75,72 @@ The forward population genetic software SLiM is available on all major software 
 
 Note that *slendr* requires SLiM 4.0 and will not work with an earlier version. Again, running `library(slendr)` will inform you of any potential issues with your SLiM installation.
 
+### Adding SLiM to the `$PATH`
+
+In order for *slendr* to be able to find your SLiM installation, R must be able to find the `slim` binary (or `slim.exe` in case of Windows) in the so called [`$PATH` variable](https://en.wikipedia.org/wiki/PATH_(variable)). The easiest way to verify that this is true is to call `Sys.which("slim")` (or `Sys.which("slim.exe")` on Windows) in your R session. For instance, on my own Mac, I get this:
+
+```         
+> Sys.which("slim")
+                 slim 
+"/usr/local/bin/slim" 
+```
+
+On Windows, I get this (I followed the section 2.3.1 of the SLiM manual describing the most "official" way to install SLiM and I recommend you follow this as well):
+
+```         
+> Sys.which("slim.exe")
+                            slim.exe 
+"C:\\msys64\\mingw64\\bin\\slim.exe" 
+```
+
+If, on the other hand, you might get something like this — an empty string:
+
+```         
+> Sys.which("slim")
+slim 
+  "" 
+```
+
+**This means that your `$PATH` R is not configured properly and R (and *slendr*) won't be able to find SLiM in the `$PATH`.**
+
+How to add SLiM to the `$PATH` then? Probably the most convenient way to do this is by editing the `.Renviron` file. The precise location of this file depends on your operation system but you can automatically get it open in a text editor by using this command (you might have to do `install.packages("usethis")` first):
+
+```         
+usethis::edit_r_environ()
+```
+
+Then, you can either add the following (note that there's no `$` in this line!):
+
+```         
+PATH="<path to directory with SLiM binaries>"
+```
+
+Alternatively, should you already have some `$PATH` contents specified for your R session, you can get it by calling `Sys.getenv("PATH")` in your R console, grab the entire string you get in this way, and append the path where you installed SLiM using an appropriate delimiter (`:` on Linux/macOS, `;` on Windows) to this string. In this case, the edit might look something like this:
+
+```         
+PATH="<original Sys.getenv("PATH") content><delimiter><path to directory with SLiM binaries>"
+```
+
+For instance, on my Mac, the `.Renviron` file contains this line (note the last item `/usr/local/bin` matches the path to `slim` I showed above):
+
+```         
+PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/Users/mp/.my_local/bin:/Users/mp/.my_local/AdmixTools/bin:/Library/TeX/texbin:/opt/homebrew/opt/gnu-sed/libexec/gnubin:/opt/homebrew/opt/coreutils/libexec/gnubin:/usr/local/bin"
+```
+
+On my testing Windows machine, I have this in the `.Renviron` file (again, look for the path `C:/msys64/mingw64/bin;$PATH"` which matches the `slim.exe` binary shown above):
+
+```         
+PATH="C:\\msys64\\usr\\bin;C:\\rtools43\\x86_64-w64-mingw32.static.posix\\bin;C:\\rtools43\\usr\\bin;C:\\Program Files (x86)\\R\\R-4.3.2\\bin\\x64;C:/msys64/mingw64/bin"
+```
+
+**The most important check that your R can find SLiM is using the `Sys.which()` command described above. Before this gives you a positive result, you won't be able to use *slendr*'s spatial SLiM simulations*.* If you're struggling with this, search for advice related to `.Renviron` and `$PATH` online.**
+
+#### Fallback options
+
+If you don't want to deal with editing the `.Renviron` file, you should be able to set the path to SLiM using the command `Sys.setenv(PATH = "<path to directory with SLiM binaries>")`. You will have to do this at the beginning of each of your slendr R scripts though.
+
+Alternatively, the `slim()` function has an argument `slim_path=` where you can specify the full path to the `slim` or `slim.exe` binaries directly (not the directory as it's the case with the `$PATH`! the full path to the `slim`/`slim.exe` binary itself).
+
 ### Python
 
 In order to be able to run coalescent simulations and process tree-sequence files, *slendr* needs Python modules *tskit*, *msprime*, and *pyslim* (it also needs the *pandas* library).
