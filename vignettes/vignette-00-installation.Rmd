@@ -75,7 +75,7 @@ The forward population genetic software SLiM is available on all major software 
 
 Note that *slendr* requires SLiM 4.0 and will not work with an earlier version. Again, running `library(slendr)` will inform you of any potential issues with your SLiM installation.
 
-### Adding SLiM to the `$PATH`
+#### Adding SLiM to the `$PATH`
 
 In order for *slendr* to be able to find your SLiM installation, R must be able to find the `slim` binary (or `slim.exe` in case of Windows) in the so called [`$PATH` variable](https://en.wikipedia.org/wiki/PATH_(variable)). The easiest way to verify that this is true is to call `Sys.which("slim")` (or `Sys.which("slim.exe")` on Windows) in your R session. For instance, on my own Mac, I get this:
 
@@ -135,7 +135,7 @@ PATH="C:\\msys64\\usr\\bin;C:\\rtools43\\x86_64-w64-mingw32.static.posix\\bin;C:
 
 **The most important check that your R can find SLiM is using the `Sys.which()` command described above. Before this gives you a positive result, you won't be able to use *slendr*'s spatial SLiM simulations*.* If you're struggling with this, search for advice related to `.Renviron` and `$PATH` online.**
 
-#### Fallback options
+##### Fallback options
 
 If you don't want to deal with editing the `.Renviron` file, you should be able to set the path to SLiM using the command `Sys.setenv(PATH = "<path to directory with SLiM binaries>")`. You will have to do this at the beginning of each of your slendr R scripts though.
 
