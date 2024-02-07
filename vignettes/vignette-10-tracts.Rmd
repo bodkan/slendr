@@ -128,7 +128,7 @@ ggplot(aes(source_pop, prop, color = source_pop, fill = source_pop)) +
 
 Because the `tracts` object contains the coordinates of every single ancestry segment in each of the simulated individuals, we can "paint" each chromosome with each of the two archaic human ancestries:
 
-```{r chrom_painting, fig.width=12, fig.height=10}
+```{r chrom_painting, fig.width=8, fig.height=6}
 tracts %>%
 mutate(chrom = paste(name, " (node", node_id, ")")) %>%
 ggplot(aes(x = left, xend = right, y = chrom, yend = chrom, color = source_pop)) +

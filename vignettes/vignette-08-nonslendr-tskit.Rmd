@@ -19,8 +19,8 @@ if (Sys.getenv("RUNNER_OS") == "Windows") {
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 8,
-  fig.height = 6,
+  fig.width = 6,
+  fig.height = 5,
   dpi = 60,
   eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "") && env_present,
   engine.path = list(bash = bash_path)
