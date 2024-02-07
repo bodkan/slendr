@@ -1,4 +1,4 @@
-pandoc: 3.1.1
+pandoc: 3.1.11.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -13,7 +13,7 @@ articles:
   vignette-08-nonslendr-tskit: vignette-08-nonslendr-tskit.html
   vignette-09-paper: vignette-09-paper.html
   vignette-10-tracts: vignette-10-tracts.html
-last_built: 2024-02-06T15:16Z
+last_built: 2024-02-07T09:51Z
 urls:
   reference: https://www.slendr.net/reference
   article: https://www.slendr.net/articles

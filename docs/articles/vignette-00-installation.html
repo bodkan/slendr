@@ -256,6 +256,80 @@ comes without SLiMgui!</p>
 <p>Note that <em>slendr</em> requires SLiM 4.0 and will not work with an
 earlier version. Again, running <code><a href="https://github.com/bodkan/slendr" class="external-link">library(slendr)</a></code> will inform
 you of any potential issues with your SLiM installation.</p>
+<div class="section level4">
+<h4 id="adding-slim-to-the-path">Adding SLiM to the <code>$PATH</code><a class="anchor" aria-label="anchor" href="#adding-slim-to-the-path"></a>
+</h4>
+<p>In order for <em>slendr</em> to be able to find your SLiM
+installation, R must be able to find the <code>slim</code> binary (or
+<code>slim.exe</code> in case of Windows) in the so called <a href="https://en.wikipedia.org/wiki/PATH_(variable)" class="external-link"><code>$PATH</code>
+variable</a>. The easiest way to verify that this is true is to call
+<code>Sys.which("slim")</code> (or <code>Sys.which("slim.exe")</code> on
+Windows) in your R session. For instance, on my own Mac, I get this:</p>
+<pre><code>&gt; Sys.which("slim")
+                 slim 
+"/usr/local/bin/slim" </code></pre>
+<p>On Windows, I get this (I followed the section 2.3.1 of the SLiM
+manual describing the most “official” way to install SLiM and I
+recommend you follow this as well):</p>
+<pre><code>&gt; Sys.which("slim.exe")
+                            slim.exe 
+"C:\\msys64\\mingw64\\bin\\slim.exe" </code></pre>
+<p>If, on the other hand, you might get something like this — an empty
+string:</p>
+<pre><code>&gt; Sys.which("slim")
+slim 
+  "" </code></pre>
+<p><strong>This means that your <code>$PATH</code> R is not configured
+properly and R (and <em>slendr</em>) won’t be able to find SLiM in the
+<code>$PATH</code>.</strong></p>
+<p>How to add SLiM to the <code>$PATH</code> then? Probably the most
+convenient way to do this is by editing the <code>.Renviron</code> file.
+The precise location of this file depends on your operation system but
+you can automatically get it open in a text editor by using this command
+(you might have to do <code>install.packages("usethis")</code>
+first):</p>
+<pre><code><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/edit.html" class="external-link">edit_r_environ</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
+<p>Then, you can either add the following (note that there’s no
+<code>$</code> in this line!):</p>
+<pre><code><span><span class="va">PATH</span><span class="op">=</span><span class="st">"&lt;path to directory with SLiM binaries&gt;"</span></span></code></pre>
+<p>Alternatively, should you already have some <code>$PATH</code>
+contents specified for your R session, you can get it by calling
+<code>Sys.getenv("PATH")</code> in your R console, grab the entire
+string you get in this way, and append the path where you installed SLiM
+using an appropriate delimiter (<code>:</code> on Linux/macOS,
+<code>;</code> on Windows) to this string. In this case, the edit might
+look something like this:</p>
+<pre><code>PATH="&lt;original Sys.getenv("PATH") content&gt;&lt;delimiter&gt;&lt;path to directory with SLiM binaries&gt;"</code></pre>
+<p>For instance, on my Mac, the <code>.Renviron</code> file contains
+this line (note the last item <code>/usr/local/bin</code> matches the
+path to <code>slim</code> I showed above):</p>
+<pre><code><span><span class="va">PATH</span><span class="op">=</span><span class="st">"/opt/homebrew/bin:/opt/homebrew/sbin:/Users/mp/.my_local/bin:/Users/mp/.my_local/AdmixTools/bin:/Library/TeX/texbin:/opt/homebrew/opt/gnu-sed/libexec/gnubin:/opt/homebrew/opt/coreutils/libexec/gnubin:/usr/local/bin"</span></span></code></pre>
+<p>On my testing Windows machine, I have this in the
+<code>.Renviron</code> file (again, look for the path
+<code>C:/msys64/mingw64/bin;$PATH"</code> which matches the
+<code>slim.exe</code> binary shown above):</p>
+<pre><code><span><span class="va">PATH</span><span class="op">=</span><span class="st">"C:\\msys64\\usr\\bin;C:\\rtools43\\x86_64-w64-mingw32.static.posix\\bin;C:\\rtools43\\usr\\bin;C:\\Program Files (x86)\\R\\R-4.3.2\\bin\\x64;C:/msys64/mingw64/bin"</span></span></code></pre>
+<p><strong>The most important check that your R can find SLiM is using
+the <code><a href="https://rdrr.io/r/base/Sys.which.html" class="external-link">Sys.which()</a></code> command described above. Before this gives
+you a positive result, you won’t be able to use <em>slendr</em>’s
+spatial SLiM simulations<em>.</em> If you’re struggling with this,
+search for advice related to <code>.Renviron</code> and
+<code>$PATH</code> online.</strong></p>
+<div class="section level5">
+<h5 id="fallback-options">Fallback options<a class="anchor" aria-label="anchor" href="#fallback-options"></a>
+</h5>
+<p>If you don’t want to deal with editing the <code>.Renviron</code>
+file, you should be able to set the path to SLiM using the command
+<code>Sys.setenv(PATH = "&lt;path to directory with SLiM binaries&gt;")</code>.
+You will have to do this at the beginning of each of your slendr R
+scripts though.</p>
+<p>Alternatively, the <code><a href="../reference/slim.html">slim()</a></code> function has an argument
+<code>slim_path=</code> where you can specify the full path to the
+<code>slim</code> or <code>slim.exe</code> binaries directly (not the
+directory as it’s the case with the <code>$PATH</code>! the full path to
+the <code>slim</code>/<code>slim.exe</code> binary itself).</p>
+</div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="python">Python<a class="anchor" aria-label="anchor" href="#python"></a>
