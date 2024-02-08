@@ -23,10 +23,10 @@ model <- compile_model(
   generation_time = 30
 )
 
-plot_model(
-  model, sizes = FALSE,
-  order = c("AFR", "EUR", "nonAFR", "PAP", "ancestor_all", "DEN", "ancestor_archaics", "NEA")
-)
+# plot_model(
+#   model, sizes = FALSE,
+#   order = c("AFR", "EUR", "nonAFR", "PAP", "ancestor_all", "DEN", "ancestor_archaics", "NEA")
+# )
 
 samples <- schedule_sampling(model, times = 0, list(eur, 25), list(pap, 25))
 
@@ -71,4 +71,11 @@ test_that("given target population filters the admixture tracts", {
 test_that("providing multiple targets filters for all relevant tracts", {
   capture.output(tracts <- ts_tracts(ts, census = 35000, target = c("EUR", "PAP")))
   expect_equal(sort(as.character(unique(tracts$pop))), c("EUR", "PAP"))
+})
+
+test_that("summary of tspop output can be silenced", {
+  out1 <- capture.output(tracts <- ts_tracts(ts, census = 35000))
+  expect_true(length(out1) > 1)
+  out2 <- capture.output(tracts <- ts_tracts(ts, census = 35000, quiet = TRUE))
+  expect_true(length(out2) == 0)
 })

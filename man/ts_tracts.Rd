@@ -4,7 +4,14 @@
 \alias{ts_tracts}
 \title{Extract ancestry tracts from a tree sequence (EXPERIMENTAL)}
 \usage{
-ts_tracts(ts, census, squashed = TRUE, source = NULL, target = NULL)
+ts_tracts(
+  ts,
+  census,
+  squashed = TRUE,
+  source = NULL,
+  target = NULL,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -28,6 +35,9 @@ ignored for non-slendr tree sequences!}
 
 \item{target}{Similar purpose as \code{source} above, except that it filters
 for tracts discovered in the target population(s)}
+
+\item{quiet}{Should the default summary output of the \code{tspop} Python package
+be silenced? Default is \code{FALSE}.}
 }
 \value{
 A data frame containing coordinates of ancestry tracts

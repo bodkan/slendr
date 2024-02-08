@@ -52,6 +52,8 @@
 #'   ignored for non-slendr tree sequences!
 #' @param target Similar purpose as \code{source} above, except that it filters
 #'   for tracts discovered in the target population(s)
+#' @param quiet Should the default summary output of the \code{tspop} Python package
+#'   be silenced? Default is \code{FALSE}.
 #'
 #' @returns A data frame containing coordinates of ancestry tracts
 #'
@@ -73,7 +75,8 @@
 #' nea_tracts <- ts_tracts(ts, census = 55000, source = "NEA")
 #' nea_tracts
 #' @export
-ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL) {
+ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL,
+                      quiet = FALSE) {
   model <- attr(ts, "model")
   from_slendr <- !is.null(model)
 
@@ -115,9 +118,12 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL)
   }
 
   pa <- tspop$get_pop_ancestry(ts, census_gen)
+
   # print out the summary right away
-  summary(pa)
-  cat("\n")
+  if (!quiet) {
+    summary(pa)
+    cat("\n")
+  }
 
   if (squashed)
     tracts <- pa$squashed_table
