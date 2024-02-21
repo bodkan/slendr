@@ -75,6 +75,22 @@ Using the `plot_map()` function doesn't make sense, as there are no spatial maps
 plot_model(model)
 ```
 
+Let's say we also want to schedule specific sampling events at specific times (which record only specified individuals in a tree sequence). We can use `schedule_sampling()` to do just that:
+
+```{r}
+samples <- schedule_sampling(
+  model,
+  times = c(0, 5000, 12000, 20000, 35000, 39000, 43000),
+  list(eur, 3), list(ehg, 1), list(yam, 1), list(ana, 3), list(ooa, 1), list(afr, 1)
+)
+```
+
+Because it's not just the model itself that's useful to visually verify (which is the main purpose of `plot_model()`) but also the sampling scheme, _slendr_ makes it possible to overlay the numbers of individuals scheduled for tree-sequence recording from each lineage at each timepoint. Here we drop the gene-flow arrows to make the figure a bit less cluttered:
+
+```{r, non-spatial-graph_sampling, fig.width=7, fig.height=4}
+plot_model(model, samples = samples, gene_flow = FALSE)
+```
+
 Even the final step---execution of the model in SLiM---is the same, using the built-in `slim()` function:
 
 ```{r, eval = FALSE}

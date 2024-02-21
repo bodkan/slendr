@@ -265,6 +265,7 @@ sort_splits <- function(model) {
 #'   algorithm will be used, ordering populations from the most ancestral to the
 #'   most recent using an in-order tree traversal.
 #' @param file Output file for a figure saved via \code{ggsave}
+#' @param samples Sampling schedule to be visualized over the model
 #' @param ... Optional argument which will be passed to \code{ggsave}
 #'
 #' @return A ggplot2 object with the visualized slendr model
@@ -284,7 +285,7 @@ sort_splits <- function(model) {
 #'   labs geom_segment arrow
 #' @export
 plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRUE, log = FALSE,
-                       order = NULL, file = NULL, ...) {
+                       order = NULL, file = NULL, samples = NULL, ...) {
   populations <- model$populations
 
   log10_ydelta <- 0.001
@@ -487,11 +488,12 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   # labels with population names
   # except for outgroups and populations with two or more daughter populations, all
   # population labels will be plotted at the bottom of the figure
-  end_labels <- model$splits[
-    model$splits$parent != "__pop_is_ancestor" &
-    vapply(model$splits$pop, function(x) sum(x == model$splits$parent), integer(1)) < 2
-  , ]$pop
-  centers[centers$pop %in% end_labels, ]$time[end_labels] <- end_times[end_labels] + log10_ydelta
+  # (not currently done because of issues with overplotting with sampling labels)
+  # end_labels <- model$splits[
+  #   model$splits$parent != "__pop_is_ancestor" &
+  #   vapply(model$splits$pop, function(x) sum(x == model$splits$parent), integer(1)) < 2
+  # , ]$pop
+  # centers[centers$pop %in% end_labels, ]$time[end_labels] <- end_times[end_labels] + log10_ydelta
   p <- p + geom_label(data = centers, size = 3,
                       aes(label = pop, x = center, y = time, fill = pop), fontface = "bold")
 
@@ -520,6 +522,14 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
     trans <- scales::identity_trans()
 
   p <- p + scale_y_continuous(trans = trans)
+
+  # if specified, overlay sampling points over the model
+  if (!is.null(samples)) {
+    sampling_points <- dplyr::select(centers, pop, center) %>%
+      dplyr::inner_join(samples, by = "pop")
+    p <- p + geom_label(data = sampling_points, aes(label = n, x = center, y = time),
+                   fontface = "bold", alpha = 0.5)
+  }
 
   if (!is.null(file))
     ggplot2::ggsave(file, plot = p, ...)
