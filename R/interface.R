@@ -1480,31 +1480,58 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
 
 #' Remove the automatically created slendr Python environment
 #'
-#' @param force Ask before deleting the environment?
+#' @param force Ask before deleting any environment?
+#' @param all Should all (present and past) slendr Python environments be removed
+#'   (default is \code{FALSE}) or just the current environment?
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-clear_env <- function(force = FALSE) {
-  if (is_slendr_env_present()) {
-    path <- reticulate::conda_list() %>%
-      dplyr::filter(grepl(PYTHON_ENV, name)) %>%
-      { gsub("bin\\/python", "", .$python) }
+clear_env <- function(force = FALSE, all = FALSE) {
+  envs_to_delete <- reticulate::conda_list()$name %>%
+    grep("Python-.*_msprime-.*_tskit-.*_pyslim-.*", ., value = TRUE)
+  if (!all)
+    envs_to_delete <- grep(PYTHON_ENV, envs_to_delete, value = TRUE)
 
-    answer <- utils::menu(
-      c("No", "Yes"),
-      title = paste0(
-        "Are you sure you want to delete the automatically created slendr ",
-        "Python\nenvironment? It is located in:\n\n", path, "\n\n",
-        "If you remove it, you can create it again by running",
-        "`setup_env()`\nwithout any arguments in a new R session."
-      )
-    )
-    if (answer == 2) reticulate::conda_remove(PYTHON_ENV)
-    message("The slendr Python environment has been sucessfully removed.")
-  } else
-    warning("No automatic slendr Python environment has been found so there is\n",
-            "nothing to delete.", call. = FALSE)
+  if (length(envs_to_delete) == 0) {
+    warning("No slendr Python environment has been found, nothing to delete.", call. = FALSE)
+  } else {
+    env_names <- paste(paste0("[#", seq_along(envs_to_delete), "]"), envs_to_delete)
+    cat("The following slendr-looking Python environments have been identified:\n\n")
+    cat(paste0(paste0(" - ", env_names, "\n"), collapse = ""))
+    if (!force) {
+      cat("\nYou will be asked for confirmation before any of them are deleted.\n")
+      if (all == TRUE) {
+        cat("To remove all of them at once, you can call `clear_env(force = TRUE, all = TRUE)`.\n")
+      }
+      cat("\n")
+    }
+
+    for (i in seq_along(envs_to_delete)) {
+      env <- envs_to_delete[i]
+
+      path <- reticulate::conda_list() %>%
+        dplyr::filter(grepl(env, name)) %>%
+        { gsub("bin\\/python", "", .$python) }
+
+      if (force) {
+        answer <- 2
+      } else {
+        answer <- utils::menu(
+          c("No", "Yes"),
+          title = paste0("Do you want to delete Python environment [#", i, "]? (Hit ESC to cancel.)\n\n", path)
+        )
+      }
+
+      if (answer == 2) {
+        reticulate::conda_remove(env)
+        message("slendr environment '", env, "' has been sucessfully removed.")
+      } else {
+        message("slendr environment '", env, "' has not been removed.")
+      }
+    }
+  }
+}
 
 #' Get the name of the current slendr Python environment
 #'
