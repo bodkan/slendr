@@ -1505,6 +1505,12 @@ clear_env <- function(force = FALSE) {
   } else
     warning("No automatic slendr Python environment has been found so there is\n",
             "nothing to delete.", call. = FALSE)
+
+#' Get the name of the current slendr Python environment
+#'
+#' @return Name of the slendr Python environment
+get_env <- function() {
+  PYTHON_ENV
 }
 
 #' Check that the active Python environment is setup for slendr
