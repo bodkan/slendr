@@ -1,12 +1,12 @@
 # slendr 0.9.1
 
-- A new helper function `get_env()` now returns the name of the built-in _slendr_ Python environment (without activating it). (#162ccc)
+- A new helper function `get_env()` now returns the name of the built-in _slendr_ Python environment (without activating it). ([#162ccc](https://github.com/bodkan/slendr/commit/162ccc))
 
-- `clear_env()` now has a new argument `all = (TRUE|FALSE)` which allows deleting all _slendr_ Python environments. Previously, the function always removed only the recent environment, which lead to the accumulation of potentially large number of _slendr_ environments over time. (#8707b9)
+- `clear_env()` now has a new argument `all = (TRUE|FALSE)` which allows deleting all _slendr_ Python environments. Previously, the function always removed only the recent environment, which lead to the accumulation of potentially large number of _slendr_ environments over time. ([#8707b9](https://github.com/bodkan/slendr/commit/8707b9))
 
-- `plot_model()` has a new optional argument `samples =` which will -- when set to a result of a sampling schedule created by `schedule_sampling()` -- visualize the counts of samples to be recorded at each given time-point. (#d72ac5)
+- `plot_model()` has a new optional argument `samples =` which will -- when set to a result of a sampling schedule created by `schedule_sampling()` -- visualize the counts of samples to be recorded at each given time-point. ([#d72ac5](https://github.com/bodkan/slendr/commit/d72ac5))
 
-- The _msprime_ dependency of _slendr_ has been updated to version 1.3.1. As a result, `setup_env()` will have to be re-run to update the internal _slendr_ Python environment. (#dcb83d)
+- The _msprime_ dependency of _slendr_ has been updated to version 1.3.1. As a result, `setup_env()` will have to be re-run to update the internal _slendr_ Python environment. ([#dcb83d](https://github.com/bodkan/slendr/commit/dcb83d))
 
 # slendr 0.9.0
 

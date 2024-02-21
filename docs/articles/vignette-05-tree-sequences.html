@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -162,12 +162,12 @@ environment for us:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the currently active Python environment:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.3.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2/bin/python </span></span>
-<span><span class="co">#&gt; Python version: 3.12.1 | packaged by conda-forge | (main, Dec 23 2023, 08:01:35) [Clang 16.0.6 ] </span></span>
+<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.3.1_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2/bin/python </span></span>
+<span><span class="co">#&gt; Python version: 3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ] </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; slendr requirements:</span></span>
 <span><span class="co">#&gt;  - tskit: version 0.5.6 ✓ </span></span>
-<span><span class="co">#&gt;  - msprime: version 1.3.0 ✓ </span></span>
+<span><span class="co">#&gt;  - msprime: version 1.3.1 ✓ </span></span>
 <span><span class="co">#&gt;  - pyslim: version 1.0.4 ✓ </span></span>
 <span><span class="co">#&gt;  - tspop: present ✓</span></span></code></pre>
 <p>Now we’re good to go and ready to simulate and analyse tree sequence
@@ -340,11 +340,11 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; msprime command:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.3.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2/bin/python /private/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T/RtmpQbon7e/filee17860409253_introgression/script.py --seed 314159 --model /private/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T/RtmpQbon7e/filee17860409253_introgression --output /var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpQbon7e/filee1784cccb6b3.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpQbon7e/filee17859cbb4d3 --verbose  </span></span>
+<span><span class="co">#&gt; /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.3.1_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2/bin/python /private/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T/Rtmp1N5UNL/file10d9023ac675d_introgression/script.py --seed 314159 --model /private/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T/Rtmp1N5UNL/file10d9023ac675d_introgression --output /var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp1N5UNL/file10d9041197df2.trees --sequence-length 100000000 --recombination-rate 1e-08 --sampling-schedule /var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp1N5UNL/file10d906f4b6ddb --verbose  </span></span>
 <span><span class="co">#&gt; --------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Tree sequence was saved to:</span></span>
-<span><span class="co">#&gt;  /var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpQbon7e/filee1784cccb6b3.trees </span></span>
+<span><span class="co">#&gt;  /var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp1N5UNL/file10d9041197df2.trees </span></span>
 <span><span class="co">#&gt; Loading the tree-sequence file...</span></span></code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts</span></span></code></pre></div>
@@ -431,7 +431,7 @@ to the tree-sequence file ourselves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpQbon7e/filee17821d8acf8"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp1N5UNL/file10d90648929"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_load.html">ts_load()</a></code>. If we’re dealing with a tree sequence produced
