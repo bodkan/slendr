@@ -4,10 +4,13 @@
 \alias{clear_env}
 \title{Remove the automatically created slendr Python environment}
 \usage{
-clear_env(force = FALSE)
+clear_env(force = FALSE, all = FALSE)
 }
 \arguments{
-\item{force}{Ask before deleting the environment?}
+\item{force}{Ask before deleting any environment?}
+
+\item{all}{Should all (present and past) slendr Python environments be removed
+(default is \code{FALSE}) or just the current environment?}
 }
 \value{
 No return value, called for side effects

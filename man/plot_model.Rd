@@ -12,6 +12,7 @@ plot_model(
   log = FALSE,
   order = NULL,
   file = NULL,
+  samples = NULL,
   ...
 )
 }
@@ -34,6 +35,8 @@ algorithm will be used, ordering populations from the most ancestral to the
 most recent using an in-order tree traversal.}
 
 \item{file}{Output file for a figure saved via \code{ggsave}}
+
+\item{samples}{Sampling schedule to be visualized over the model}
 
 \item{...}{Optional argument which will be passed to \code{ggsave}}
 }
