@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 0.9.1
 
 - A new helper function `get_env()` now returns the name of the built-in _slendr_ Python environment (without activating it). (#162ccc)
 
