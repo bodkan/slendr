@@ -6,6 +6,8 @@
 
 - `plot_model()` has a new optional argument `samples =` which will -- when set to a result of a sampling schedule created by `schedule_sampling()` -- visualize the counts of samples to be recorded at each given time-point. (#d72ac5)
 
+- The _msprime_ dependency of _slendr_ has been updated to version 1.3.1. As a result, `setup_env()` will have to be re-run to update the internal _slendr_ Python environment. (#dcb83d)
+
 # slendr 0.9.0
 
 - A full support for running SLiM and _msprime_ simulations with _slendr_ and for analyzing tree sequences using its [_tskit_](https://tskit.dev) interface has been implemented. Please note that the Windows support is still rather experimental -- the internal _slendr_ test suite currently assumes that SLiM has been installed using the _msys2_ system as described in the section 2.3.1 of the SLiM manual and other means of installing SLiM (such as via conda) might require additional adjustments. A fallback option in the form of the `slim_path=` argument of the `slim()` function can be used in non-standard SLiM installation circumstances. For most convenience, please add the path to the directory containing the `slim.exe` binary to the `PATH` variable by editing the `C:/Users/<username>/Documents/.Renviron` file accordingly. See the relevant section on Windows installation in the [_slendr_ documentation](https://www.slendr.net/articles/vignette-00-installation.html) for additional information. Feedback on the Windows functionality and bug reports are highly appreciated via [GitHub](https://github.com/bodkan/slendr/issues) issues! **Many thanks to @GKresearch and @rdinnager for their huge help in making the Windows port happen!** (PR #149)
