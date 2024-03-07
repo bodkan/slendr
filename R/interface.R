@@ -1282,8 +1282,8 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
       times <- times[times <= model$orig_length]
   }
 
-  schedule <- purrr::map_dfr(times, function(t) {
-    purrr::map_dfr(samples, function(s) {
+  schedule <- lapply(times, function(t) {
+    lapply(samples, function(s) {
       pop <- s[[1]]
       n <- s[[2]]
       tryCatch(
@@ -1298,18 +1298,15 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
             return(NULL)
           else
             stop("Cannot schedule sampling for '", pop$pop, "' at time ", t,
-                 " because the population will not yet be present in the simulation",
-                 " at that point. Consider running this function with `strict = FALSE`",
-                 " which will automatically retain only valid sampling events.",
+                 " because\nthe population will not yet be present in the simulation",
+                 " at that\npoint. Consider running this function with `strict = FALSE`",
+                 " which\nwill automatically retain only valid sampling events.",
                  call. = FALSE)
         })
-    })
-  })
+    }) %>% do.call(rbind, .)
+  }) %>% do.call(rbind, .)
 
-  if (is.null(schedule))
-    stop("No sampling events have been generated", call. = FALSE)
-
-  if (!nrow(schedule)) {
+  if (is.null(schedule)) {
     warning("No valid sampling events were retained", call. = FALSE)
     return(NULL)
   }

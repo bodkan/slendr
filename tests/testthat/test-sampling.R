@@ -1,5 +1,7 @@
 msg <- "Cannot schedule sampling"
 
+init_env(quiet = TRUE)
+
 test_that("sampling from a population which is not present is prevented (forward)", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   p1 <- population(name = "p1", time = 10, N = 1, center = c(1, 1), radius = 10, map = map, remove = 100)
