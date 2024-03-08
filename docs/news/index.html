@@ -81,7 +81,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.9.1" id="slendr-091">slendr 0.9.1<a class="anchor" aria-label="anchor" href="#slendr-091"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.9.1" id="slendr-091">slendr 0.9.1<a class="anchor" aria-label="anchor" href="#slendr-091"></a></h2><p class="text-muted">CRAN release: 2024-02-21</p>
 <ul><li><p>A new helper function <code><a href="../reference/get_env.html">get_env()</a></code> now returns the name of the built-in <em>slendr</em> Python environment (without activating it). (<a href="https://github.com/bodkan/slendr/commit/162ccc" class="external-link">#162ccc</a>)</p></li>
 <li><p><code><a href="../reference/clear_env.html">clear_env()</a></code> now has a new argument <code>all = (TRUE|FALSE)</code> which allows deleting all <em>slendr</em> Python environments. Previously, the function always removed only the recent environment, which lead to the accumulation of potentially large number of <em>slendr</em> environments over time. (<a href="https://github.com/bodkan/slendr/commit/8707b9" class="external-link">#8707b9</a>)</p></li>
 <li><p><code><a href="../reference/plot_model.html">plot_model()</a></code> has a new optional argument <code>samples =</code> which will – when set to a result of a sampling schedule created by <code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> – visualize the counts of samples to be recorded at each given time-point. (<a href="https://github.com/bodkan/slendr/commit/d72ac5" class="external-link">#d72ac5</a>)</p></li>
