@@ -735,6 +735,14 @@ is_slendr_env_present <- function() {
   )
 }
 
+is_slim_present <- function() {
+  if (Sys.info()["sysname"] == "Windows")
+    binary <- "slim.exe"
+  else
+    binary <- "slim"
+  Sys.which(binary)
+}
+
 order_pops <- function(populations, direction) {
   pop_names <- purrr::map_chr(populations, ~ .x$pop[1])
   split_times <- purrr::map_int(populations, ~ attr(.x, "history")[[1]]$time)
