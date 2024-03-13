@@ -15,7 +15,7 @@ Since the publication of the [_slendr_ paper](https://evolbiol.peercommunityin.o
 
 ```{r, include = FALSE}
 env_present <- slendr:::is_slendr_env_present()
-eval_chunk <- (Sys.which("slim") != "" || Sys.which("slim.exe") != "" ) && env_present
+eval_chunk <- slendr:::is_slim_present() && env_present
 
 knitr::opts_chunk$set(
   collapse = TRUE,

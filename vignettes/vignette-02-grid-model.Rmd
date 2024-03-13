@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 60,
-  eval = (Sys.which("slim") != "" || Sys.which("slim.exe") != "" ) && env_present
+  eval = slendr:::is_slim_present() && env_present
 )
 ```
 
