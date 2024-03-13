@@ -1,4 +1,4 @@
-skip_if(!is_slendr_env_present())
+skip_if(!is_slendr_env_present() || !is_slim_present())
 
 init_env(quiet = TRUE)
 
@@ -40,7 +40,8 @@ modifyChild() {
 }
 ', ts_file, loc_file), script_file)
 
-system2("slim", script_file, stdout = FALSE)
+binary <- get_binary("batch")
+system2(binary, script_file, stdout = FALSE)
 
 suppressMessages(
   ts <- ts_load(ts_file) %>%

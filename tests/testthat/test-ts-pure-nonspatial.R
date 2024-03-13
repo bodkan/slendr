@@ -25,7 +25,8 @@ simulate_slim_ts <- function(N) {
   	sim.treeSeqOutput("%s");
   }
   ', N, ts_file), script_file)
-  system2("slim", script_file, stdout = FALSE)
+  binary <- get_binary("batch")
+  system2(binary, script_file, stdout = FALSE)
 
   ts_file
 }
@@ -244,7 +245,8 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
   }
   ', ts_file), script_file)
 
-  system2("slim", script_file, stdout = FALSE)
+  binary <- get_binary("batch")
+  system2(binary, script_file, stdout = FALSE)
 
   suppressMessages(
     ts <- ts_load(ts_file) %>%

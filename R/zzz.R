@@ -28,7 +28,7 @@ PYTHON_ENV <-
 
   # check for presence of the slim binary in user's PATH and display
   # a warning if it's not present
-  path_check <- all(Sys.which(slim_binary) != "")
+  path_check <- is_slim_present()
   if (!path_check) {
     packageStartupMessage(
       "The '", slim_binary, "' binary could not be found in your $PATH. Most of\n",
