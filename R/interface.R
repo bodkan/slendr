@@ -1399,17 +1399,12 @@ init_env <- function(quiet = FALSE) {
 #'   is \code{FALSE}.
 #' @param agree Automatically agree to all questions?
 #' @param pip Should pip be used instead of conda for installing slendr's Python
-#'   dependencies? Note that this will still use the conda distribution to
-#'   install Python itself, but will change the repository from which slendr
-#'   will install its Python dependencies. Unless explicitly set to \code{TRUE},
-#'   Python dependencies will be installed from conda repositories by default,
-#'   expect for the case of osx-arm64 Mac architecture, for which conda
-#'   dependencies are broken.
+#'   dependencies?
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
+setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
   if (is_slendr_env_present()) {
     message("A required slendr Python environment is already present. You can activate\n",
             "it by calling init_env().")
@@ -1449,18 +1444,19 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = NULL) {
       reticulate::conda_create(envname = PYTHON_ENV, python_version = python_version)
       reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
 
-      # msprime/tskit conda dependency is broken on M1 Mac architecture, fallback
-      # to pip in cases like this (otherwise use conda to avoid any potential
-      # compilation issues such as missing libgsl)
-      if (is.null(pip))
-        pip <- all(Sys.info()[c("sysname", "machine")] == c("Darwin", "arm64"))
+      # # some Python dependencies are  broken on M1 Mac architecture, so fallback
+      # # to pip in cases like this (otherwise use conda to avoid any potential
+      # # compilation issues such as missing libgsl)
+      # if (is.null(pip))
+      #   pip <- all(Sys.info()[c("sysname", "machine")] == c("Darwin", "arm64"))
 
-      # tspop isn't available on conda so it will need to be installed by pip
+      # tspop isn't available on conda and pyslim gives installation errors with conda
+      # on M-architecture Macs, so they will need to be installed by pip
       # no matter the user's preference (given by the pip function argument value)
-      # TODO: check at some point later if tspop is on conda
-      which_tspop <- grepl("tspop", package_versions)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!which_tspop], pip = pip)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = c(package_versions[which_tspop], "pyarrow"), pip = TRUE)
+      # TODO: check at some point later if tspop / pyslim are on conda for all systems
+      which_tspop_and_pyslim <- grepl("tspop|pyslim", package_versions)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!which_tspop_and_pyslim], pip = pip)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = c(package_versions[which_tspop_and_pyslim], "pyarrow"), pip = TRUE)
 
       if (!quiet) {
         message("======================================================================")
