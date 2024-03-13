@@ -21,7 +21,7 @@ set_random_seed <- function(seed) {
 #' @export
 check_dependencies <- function(python = FALSE, slim = FALSE, quit = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
-  missing_slim <- if (slim) !all(Sys.which("slim") != "") else FALSE
+  missing_slim <- if (slim) !is_slim_present() else FALSE
   missing_python <- if (python) !is_slendr_env_present() else FALSE
 
   fail <- missing_slim || missing_python
@@ -740,7 +740,7 @@ is_slim_present <- function() {
     binary <- "slim.exe"
   else
     binary <- "slim"
-  Sys.which(binary)
+  Sys.which(binary) != ""
 }
 
 order_pops <- function(populations, direction) {
