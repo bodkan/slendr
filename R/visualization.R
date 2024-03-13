@@ -526,7 +526,8 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   # if specified, overlay sampling points over the model
   if (!is.null(samples)) {
     sampling_points <- dplyr::select(centers, pop, center) %>%
-      dplyr::inner_join(samples, by = "pop")
+      dplyr::inner_join(samples, by = "pop") %>%
+      dplyr::mutate(time = ifelse(time == 0, log10_ydelta, time))
     p <- p + geom_label(data = sampling_points, aes(label = n, x = center, y = time),
                    fontface = "bold", alpha = 0.5)
   }
