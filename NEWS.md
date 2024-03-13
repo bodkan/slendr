@@ -1,6 +1,6 @@
 # slendr (development version)
 
-- Due to frequent issues with installation of Python dependencies of _slendr_ in a completely platform independent way (in the latest instance this being conda installation of pyslim crashing on M-architecture Macs), `setup_env()` now only uses conda to install _msprime_ and _tskit_ -- _pyslim_ and _tspop_ are always installed via pip no matter whether `setup_env(pip = FALSE)` (the default) or `setup_env(pip = TRUE)` is used. ([#408948](https://github.com/bodkan/slendr/commit/408948))
+- Due to frequent issues with installation of Python dependencies of _slendr_ in a completely platform independent way (in the latest instance this being conda installation of pyslim crashing on M-architecture Macs), `setup_env()` now only uses conda to install _msprime_ and _tskit_ -- _pyslim_ and _tspop_ are always installed via pip regardless of whether `setup_env(pip = FALSE)` (the default) or `setup_env(pip = TRUE)` is used. ([#408948](https://github.com/bodkan/slendr/commit/408948))
 
 # slendr 0.9.1
 
