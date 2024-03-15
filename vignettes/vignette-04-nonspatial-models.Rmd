@@ -13,7 +13,10 @@ env_present <- slendr:::is_slendr_env_present()
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
-  eval = env_present
+  eval = env_present,
+  fig.width = 6,
+  fig.height = 4,
+  dpi = 70
 )
 ```
 
@@ -70,11 +73,7 @@ model <- compile_model(
 )
 ```
 
-Using the `plot_map()` function doesn't make sense, as there are no spatial maps to plot. However, we can still plot the demographic graph, verifying that the model has been specified correctly:
-
-```{r non-spatial_graph, fig.width = 6, fig.height = 6, dpi = 60}
-plot_model(model)
-```
+Using the `plot_map()` function doesn't make sense, as there are no spatial maps to plot. However, we can still plot the demographic graph, verifying that the model has been specified correctly using the function `plot_model()` as shown below.
 
 Let's say we also want to schedule specific sampling events at specific times (which record only specified individuals in a tree sequence). We can use `schedule_sampling()` to do just that:
 
@@ -86,10 +85,10 @@ samples <- schedule_sampling(
 )
 ```
 
-Because it's not just the model itself that's useful to visually verify (which is the main purpose of `plot_model()`) but also the sampling scheme, _slendr_ makes it possible to overlay the numbers of individuals scheduled for tree-sequence recording from each lineage at each timepoint. Here we drop the gene-flow arrows to make the figure a bit less cluttered:
+Because it's not just the model itself that's useful to visually verify (which is the main purpose of `plot_model()`) but also the sampling scheme, _slendr_ makes it possible to overlay the numbers of individuals scheduled for tree-sequence recording from each lineage at each timepoint:
 
-```{r, non-spatial-graph_sampling, fig.width=7, fig.height=4}
-plot_model(model, samples = samples, gene_flow = FALSE)
+```{r, non-spatial-graph_sampling, fig.width=6, fig.height=4}
+plot_model(model, samples = samples)
 ```
 
 Even the final step---execution of the model in SLiM---is the same, using the built-in `slim()` function:

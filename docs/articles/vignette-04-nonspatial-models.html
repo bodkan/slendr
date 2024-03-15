@@ -189,16 +189,13 @@ boundaries:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Using the <code><a href="../reference/plot_map.html">plot_map()</a></code> function doesn’t make sense, as
 there are no spatial maps to plot. However, we can still plot the
-demographic graph, verifying that the model has been specified
-correctly:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-04-nonspatial-models_files/figure-html/non-spatial_graph-1.png" width="360"></p>
+demographic graph, verifying that the model has been specified correctly
+using the function <code><a href="../reference/plot_model.html">plot_model()</a></code> as shown below.</p>
 <p>Let’s say we also want to schedule specific sampling events at
 specific times (which record only specified individuals in a tree
 sequence). We can use <code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> to do just
 that:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
 <span>  times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5000</span>, <span class="fl">12000</span>, <span class="fl">20000</span>, <span class="fl">35000</span>, <span class="fl">39000</span>, <span class="fl">43000</span><span class="op">)</span>,</span>
@@ -208,14 +205,13 @@ that:</p>
 verify (which is the main purpose of <code><a href="../reference/plot_model.html">plot_model()</a></code>) but also
 the sampling scheme, <em>slendr</em> makes it possible to overlay the
 numbers of individuals scheduled for tree-sequence recording from each
-lineage at each timepoint. Here we drop the gene-flow arrows to make the
-figure a bit less cluttered:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, samples <span class="op">=</span> <span class="va">samples</span>, gene_flow <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-04-nonspatial-models_files/figure-html/non-spatial-graph_sampling-1.png" width="672"></p>
+lineage at each timepoint:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model.html">plot_model</a></span><span class="op">(</span><span class="va">model</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></code></pre></div>
+<p><img src="vignette-04-nonspatial-models_files/figure-html/non-spatial-graph_sampling-1.png" width="420"></p>
 <p>Even the final step—execution of the model in SLiM—is the same, using
 the built-in <code><a href="../reference/slim.html">slim()</a></code> function:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts_slim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100000</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <p>Even for non-spatial models, this function still uses the same SLiM
 back end script used for spatial models. The only difference is that all
@@ -226,7 +222,7 @@ if it wouldn’t be more efficient to use a coalescent simulator. Indeed,
 <em>slendr</em> also provides an alternative <em>msprime</em> back end
 just for this purpose. We could run the exact same simulation with
 <em>msprime</em> like this:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ts_msprime</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100000</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <p>In fact, because both SLiM and <em>msprime</em> back ends save
 outputs in a tree sequence format, we can analyse them using the same
@@ -243,7 +239,7 @@ random distributions and we need to know which parameters had been used
 <code><a href="../reference/extract_parameters.html">extract_parameters()</a></code> can be used. This function peeks into
 a <em>slendr</em> tree sequence object and extract parameters of the
 original <em>slendr</em> model:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_parameters.html">extract_parameters</a></span><span class="op">(</span><span class="va">ts_msprime</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $splits</span></span>
 <span><span class="co">#&gt;   pop parent    N  time</span></span>
@@ -268,7 +264,7 @@ original <em>slendr</em> model:</p>
 either, the function can also get parameters from any compiled model.
 For instance, we can check which parameters were used to compile the
 built-in <em>slendr</em> introgression model by running:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">introgression_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/extract_parameters.html">extract_parameters</a></span><span class="op">(</span><span class="va">introgression_model</span><span class="op">)</span></span></code></pre></div>
