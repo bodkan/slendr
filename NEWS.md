@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- A new function `extract_parameters()` can extract parameters of either a compiled _slendr_ model object or a tree sequence simulated from a _slendr_ model. This can be useful particularly for simulation-based inferences where model parameters are often drawn from random distributions and there's a need to know which parameters of a model (split times, gene-flow rates, etc.) have been drawn. ([#3632bd0](https://github.com/bodkan/slendr/commit/3632bd0))
+
 - Due to frequent issues with installation of Python dependencies of _slendr_ in a completely platform independent way (in the latest instance this being conda installation of pyslim crashing on M-architecture Macs), `setup_env()` now only uses conda to install _msprime_ and _tskit_ -- _pyslim_ and _tspop_ are always installed via pip regardless of whether `setup_env(pip = FALSE)` (the default) or `setup_env(pip = TRUE)` is used. ([#408948](https://github.com/bodkan/slendr/commit/408948))
 
 # slendr 0.9.1
