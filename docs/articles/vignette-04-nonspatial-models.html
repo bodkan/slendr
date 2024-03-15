@@ -155,7 +155,8 @@ events (note the missing <code>map</code> argument, which is set to
 <span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># first migrants out of Africa</span></span>
-<span><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"OOA"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">51000</span>, N <span class="op">=</span> <span class="fl">500</span>, remove <span class="op">=</span> <span class="fl">25000</span><span class="op">)</span></span>
+<span><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"OOA"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">51000</span>, N <span class="op">=</span> <span class="fl">500</span>, remove <span class="op">=</span> <span class="fl">25000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/resize.html">resize</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2000</span>, time <span class="op">=</span> <span class="fl">40000</span>, how <span class="op">=</span> <span class="st">"step"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Eastern hunter-gatherers</span></span>
 <span><span class="va">ehg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"EHG"</span>, parent <span class="op">=</span> <span class="va">ooa</span>, time <span class="op">=</span> <span class="fl">28000</span>, N <span class="op">=</span> <span class="fl">1000</span>, remove <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span></span>
@@ -233,6 +234,58 @@ tools. See <a href="vignette-05-tree-sequences.html">this vignette</a>
 for more information about tree sequence analysis with <em>slendr</em>,
 and for more discussion on alternative simulation back ends and more
 extensive examples of data analysis with tree sequences you can read <a href="vignette-07-backends.html">this tutorial</a>.</p>
+<div class="section level2">
+<h2 id="extracting-parameters-from-a-model-or-tree-sequences">Extracting parameters from a model or tree sequences<a class="anchor" aria-label="anchor" href="#extracting-parameters-from-a-model-or-tree-sequences"></a>
+</h2>
+<p>In some situations (such as when model parameters are drawn from
+random distributions and we need to know which parameters had been used
+<em>after</em> the simulations), function
+<code><a href="../reference/extract_parameters.html">extract_parameters()</a></code> can be used. This function peeks into
+a <em>slendr</em> tree sequence object and extract parameters of the
+original <em>slendr</em> model:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_parameters.html">extract_parameters</a></span><span class="op">(</span><span class="va">ts_msprime</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; $splits</span></span>
+<span><span class="co">#&gt;   pop parent    N  time</span></span>
+<span><span class="co">#&gt; 1 AFR   &lt;NA&gt; 3000 52000</span></span>
+<span><span class="co">#&gt; 2 OOA    AFR  500 51000</span></span>
+<span><span class="co">#&gt; 3 EHG    OOA 1000 28000</span></span>
+<span><span class="co">#&gt; 5 ANA    OOA 3000 28000</span></span>
+<span><span class="co">#&gt; 4 EUR    EHG 2000 25000</span></span>
+<span><span class="co">#&gt; 6 YAM    EHG  500  7000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $gene_flows</span></span>
+<span><span class="co">#&gt;   from  to start  end rate</span></span>
+<span><span class="co">#&gt; 1  ANA YAM  6500 6400 0.50</span></span>
+<span><span class="co">#&gt; 2  ANA EUR  8000 6000 0.50</span></span>
+<span><span class="co">#&gt; 3  YAM EUR  4000 3000 0.75</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $resizes</span></span>
+<span><span class="co">#&gt;   pop         how     N  time end</span></span>
+<span><span class="co">#&gt; 1 OOA        step  2000 40000  NA</span></span>
+<span><span class="co">#&gt; 2 EUR exponential 10000  5000   0</span></span></code></pre>
+<p>For completeness, although this isn’t relevant in this example
+either, the function can also get parameters from any compiled model.
+For instance, we can check which parameters were used to compile the
+built-in <em>slendr</em> introgression model by running:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">introgression_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/extract_parameters.html">extract_parameters</a></span><span class="op">(</span><span class="va">introgression_model</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; $splits</span></span>
+<span><span class="co">#&gt;   pop parent    N    time</span></span>
+<span><span class="co">#&gt; 1  CH   &lt;NA&gt;   10 6500000</span></span>
+<span><span class="co">#&gt; 2 AFR     CH   10 6000000</span></span>
+<span><span class="co">#&gt; 3 NEA    AFR   10  600000</span></span>
+<span><span class="co">#&gt; 4 EUR    AFR 5000   70000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $gene_flows</span></span>
+<span><span class="co">#&gt;   from  to start   end rate</span></span>
+<span><span class="co">#&gt; 1  NEA EUR 55000 45000 0.03</span></span></code></pre>
+<p>As we can see, <code><a href="../reference/extract_parameters.html">extract_parameters()</a></code> returns a list of
+data frames, one data frame for each aspect of a demographic model
+(where applicable).</p>
+</div>
   </main>
 </div>
 

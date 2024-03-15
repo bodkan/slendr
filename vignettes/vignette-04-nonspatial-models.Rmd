@@ -102,8 +102,26 @@ Even for non-spatial models, this function still uses the same SLiM back end scr
 
 Given that we are running a non-spatial simulation, you might wonder if it wouldn't be more efficient to use a coalescent simulator. Indeed, *slendr* also provides an alternative *msprime* back end just for this purpose. We could run the exact same simulation with *msprime* like this:
 
-```{r, eval = FALSE}
+```{r}
 ts_msprime <- msprime(model, sequence_length = 100000, recombination_rate = 0)
 ```
 
 In fact, because both SLiM and *msprime* back ends save outputs in a tree sequence format, we can analyse them using the same tools. See [this vignette](vignette-05-tree-sequences.html) for more information about tree sequence analysis with *slendr*, and for more discussion on alternative simulation back ends and more extensive examples of data analysis with tree sequences you can read [this tutorial](vignette-07-backends.html).
+
+## Extracting parameters from a model or tree sequences
+
+In some situations (such as when model parameters are drawn from random distributions and we need to know which parameters had been used _after_ the simulations), function `extract_parameters()` can be used. This function peeks into a _slendr_ tree sequence object and extract parameters of the original _slendr_ model:
+
+```{r}
+extract_parameters(ts_msprime)
+```
+
+For completeness, although this isn't relevant in this example either, the function can also get parameters from any compiled model. For instance, we can check which parameters were used to compile the built-in _slendr_ introgression model by running:
+
+```{r}
+introgression_model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
+
+extract_parameters(introgression_model)
+```
+
+As we can see, `extract_parameters()` returns a list of data frames, one data frame for each aspect of a demographic model (where applicable).
