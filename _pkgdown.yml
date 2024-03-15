@@ -111,6 +111,7 @@ reference:
     - print.slendr_model
     - print.slendr_ts
     - summary.slendr_nodes
+    - extract_parameters
 
   - title: Tree sequence loading and processing
     contents:

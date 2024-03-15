@@ -131,3 +131,104 @@ test_that("purely non-spatial populations compile in silence", {
     "slendr_model"
   )
 })
+
+# tests of the extract_parameters function --------------------------------------
+
+# first compile a model (taken from vignette number 4)
+
+afr <- population("AFR", time = 52000, N = 3000)
+ooa <- population("OOA", parent = afr, time = 51000, N = 500, remove = 25000) %>%
+  resize(N = 2000, time = 40000, how = "step")
+ehg <- population("EHG", parent = ooa, time = 28000, N = 1000, remove = 6000)
+eur <- population("EUR", parent = ehg, time = 25000, N = 2000) %>%
+  resize(N = 10000, how = "exponential", time = 5000, end = 0)
+ana <- population("ANA", time = 28000, N = 3000, parent = ooa, remove = 4000)
+yam <- population("YAM", time = 7000, N = 500, parent = ehg, remove = 2500)
+
+gf <- list(
+  gene_flow(from = ana, to = yam, rate = 0.5, start = 6500, end = 6400),
+  gene_flow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
+  gene_flow(from = yam, to = eur, rate = 0.75, start = 4000, end = 3000)
+)
+
+# full model
+model <- compile_model(populations = list(afr, ooa, ehg, eur, ana, yam),
+                       gene_flow = gf, generation_time = 30)
+
+# no-gene-flow model
+model_nogf <- compile_model(populations = list(afr, ooa, ehg, eur, ana, yam),
+                            generation_time = 30)
+
+# no-resizes model
+ooa <- population("OOA", parent = afr, time = 51000, N = 500, remove = 25000)
+eur <- population("EUR", parent = ehg, time = 25000, N = 2000)
+model_noresizes <- compile_model(populations = list(afr, ooa, ehg, eur, ana, yam),
+                                 gene_flow = gf, generation_time = 30)
+
+# model with no dynamics
+model_base <- compile_model(populations = list(afr, ooa, ehg, eur, ana, yam),
+                            generation_time = 30)
+
+test_that("parameters of the full model are extracted properly (from model)", {
+  pars <- extract_parameters(model)
+  expect_length(pars, 3)
+  expect_equal(names(pars), c("splits", "gene_flows", "resizes"))
+})
+
+test_that("parameters of the no-gf model are extracted properly (from model)", {
+  pars <- extract_parameters(model_nogf)
+  expect_length(pars, 2)
+  expect_equal(names(pars), c("splits", "resizes"))
+})
+
+test_that("parameters of the no-resize model are extracted properly (from model)", {
+  pars <- extract_parameters(model_noresizes)
+  expect_length(pars, 2)
+  expect_equal(names(pars), c("splits", "gene_flows"))
+})
+
+test_that("parameters of the base model are extracted properly (from model)", {
+  pars <- extract_parameters(model_base)
+  expect_length(pars, 1)
+  expect_equal(names(pars), "splits")
+})
+
+skip_if(!is_slendr_env_present())
+init_env(quiet = TRUE)
+
+ts <- msprime(model, sequence_length = 1, recombination_rate = 0)
+ts_nogf <- msprime(model_nogf, sequence_length = 1, recombination_rate = 0)
+ts_noresizes <- msprime(model_noresizes, sequence_length = 1, recombination_rate = 0)
+ts_base <- msprime(model_base, sequence_length = 1, recombination_rate = 0)
+
+test_that("parameters of the full model are extracted properly (from t.s.)", {
+  pars <- extract_parameters(ts)
+  expect_length(pars, 3)
+  expect_equal(names(pars), c("splits", "gene_flows", "resizes"))
+})
+
+test_that("parameters of the no-gf model are extracted properly (from t.s.)", {
+  pars <- extract_parameters(ts_nogf)
+  expect_length(pars, 2)
+  expect_equal(names(pars), c("splits", "resizes"))
+})
+
+test_that("parameters of the no-resize model are extracted properly (from t.s.)", {
+  pars <- extract_parameters(ts_noresizes)
+  expect_length(pars, 2)
+  expect_equal(names(pars), c("splits", "gene_flows"))
+})
+
+test_that("parameters of the base model are extracted properly (from t.s.)", {
+  pars <- extract_parameters(ts_base)
+  expect_length(pars, 1)
+  expect_equal(names(pars), "splits")
+})
+
+test_that("extract_parameters fails gracefully when non-slendr tree sequence is used", {
+  output <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  py_cmd <- sprintf("import msprime; msprime.sim_ancestry(%d, random_seed=42, population_size=%d).dump('%s')", 10, 10, output)
+  reticulate::py_run_string(py_cmd)
+  ts <- ts_load(output)
+  expect_error(extract_parameters(ts), "No slendr model configuration present in the tree sequence.")
+})
