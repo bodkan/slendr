@@ -161,8 +161,8 @@ Unfortunately, conda can break for frustratingly many random reasons which compl
 
 In case you are wondering how does *slendr* accomplish the above: *slendr*'s Python interface is implemented using the R package [*reticulate*](https://rstudio.github.io/reticulate/)*.* This embeds a Python interpreter *inside* an R session, enabling high-performance interoperability between both languages without any need for user intervention.
 
-## Docker
+#### `ModuleNotFoundError: No module named 'tskit'` error
 
-There is currently no official Docker image for *slendr* but there will be one soon. The current plan is to use the geospatial image published by the [Rocker project](https://rocker-project.org/) (which already contains pre-compiled R, RStudio, and all necessary R package dependencies such as *sf* ) and extend it with *slendr* and SLiM.
+If you're running into this error, it means that _slendr_ was prevented from activating its internal Python virtual environment. Most likely you either didn't run `setup_env()` as described above, or you forgot to run `init_env()` before attempting to simulate tree sequence data, or the Python environment got somehow corrupted. All of these cause _slendr_'s internal machinery to fail to pick up it's Python dependencies for tree-sequence simulation and analysis, leading to the `No module named 'tskit'` error.
 
-Stay tuned!
+Before reporting this error on GitHub, please carefully read [this writeup](https://github.com/bodkan/slendr/issues/154#issuecomment-1997714497) which I put together when a user reported the same error. It contains all the required information on how does _slendr_'s Python environment activation works and why, and why you're running into the error. Because this issue is almost always caused by a problem outside of _slendr_'s influence, it's important that you understand what's going on before reporting what is often assumed to be a _slendr_ bug when in reality it isn't.
