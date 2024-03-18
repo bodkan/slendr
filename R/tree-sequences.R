@@ -1904,11 +1904,11 @@ ts_f4ratio <- function(ts, X, A, B, C, O, mode = c("site", "branch"), span_norma
   mode <- match.arg(mode)
 
   purrr::map_dfr(
-    X, function(.x) {
+    seq_along(X), function(i) {
       alpha <-
-        ts_f4(ts, A, O, .x, C, mode = mode)$f4 /
+        ts_f4(ts, A, O, X[i], C, mode = mode)$f4 /
         ts_f4(ts, A, O, B, C, mode = mode)$f4
-      dplyr::tibble(X = .x, A = concat(A), B = concat(B),
+      dplyr::tibble(X = concat(X[i]), A = concat(A), B = concat(B),
                     C = concat(C), O = concat(O), alpha)
     }
   )
