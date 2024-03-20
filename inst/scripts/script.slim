@@ -137,17 +137,17 @@ initialize() {
         community.deregisterScriptBlock(s8);
 
     // remember individuals for tree sequence recording
-    community.rescheduleScriptBlock(s10, start = SIMULATION_START, end = SIMULATION_END);
+    community.rescheduleScriptBlock(s9, start = SIMULATION_START, end = SIMULATION_END);
 
     // remove populations from the simulation
     cleanups = filter(POPULATIONS, "tremove_gen", -1, negate = T);
     if (num_rows(cleanups))
-         community.rescheduleScriptBlock(s11, ticks = BURNIN_LENGTH + unique(cleanups.getValue("tremove_gen")));
+         community.rescheduleScriptBlock(s10, ticks = BURNIN_LENGTH + unique(cleanups.getValue("tremove_gen")));
     else
-         community.deregisterScriptBlock(s11);
+         community.deregisterScriptBlock(s10);
 
     // save data and stop the simulation
-    community.rescheduleScriptBlock(s12, ticks = SIMULATION_END);
+    community.rescheduleScriptBlock(s11, ticks = SIMULATION_END);
 }
 
 ///
@@ -349,7 +349,7 @@ s8 late() /* Save locations of all individuals */ {
     }
 }
 
-s10 late() /* Remember individuals for tree sequence recording */ {
+s9 late() /* Remember individuals for tree sequence recording */ {
     events = filter(SAMPLING, "time_gen", community.tick - BURNIN_LENGTH);
 
     for (i in seqLen(num_rows(events))) {
@@ -426,7 +426,7 @@ s10 late() /* Remember individuals for tree sequence recording */ {
     sim.treeSeqRememberIndividuals(sim.subpopulations.individuals, permanent = F);
 }
 
-s11 late() /* Schedule removal of populations */ {
+s10 late() /* Schedule removal of populations */ {
     pops = filter(POPULATIONS, "tremove_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
@@ -436,7 +436,7 @@ s11 late() /* Schedule removal of populations */ {
     }
 }
 
-s12 late() /* End of simulation */ {
+s11 late() /* End of simulation */ {
     filename = OUTPUT_TS;
 
     // add slendr-specific metadata to its own Dictionary key
