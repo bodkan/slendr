@@ -1,0 +1,148 @@
+---
+title: "Non-neutral simulations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Non-neutral simulations}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4,
+  dpi = 60,
+  eval = check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
+)
+```
+
+## Introduction
+
+_slendr_ has been designed specifically for the purpose of making it as easy as possible to program population genetic simulations of spatio-temporal demographic histories using SLiM. Our primary goal was to have the means to simulate arbitrarily complex spatial scenarios and simulate data which could be used for development of new spatial inference population genetic methods (and benchmarking of current methods). This functionality is briefly described in [vignette #1]() and in more detail in [vignette #6]().
+
+After the spatial simulation features have been largely implemented, it turned out to be relatively easy to support "traditional", non-spatial demographic models, such as those described in [vignette #4]() and [vignette #5](). Because non-spatial models can be often implemented (and executed) more efficient in a coalescent setting, we added the possibility to run any compiled _slendr_ model not through SLiM but through a back-end script implemented in _msprime_, hidden behind the _slendr_ function `msprime()`.
+
+Throughout all this time, _slendr_ models were purely neutral, without much planning to extend simulations toward non-neutral scenarios.
+
+## Model specification
+
+Let's first load all required R libraries:
+
+```{r, collapse = TRUE, message = FALSE}
+library(slendr)
+
+library(dplyr)
+library(ggplot2)
+
+init_env()
+
+seed <- 314159
+set.seed(seed)
+```
+
+## Intended use cases for non-neutral model
+
+In order to maintain the sanity of _slendr_ users and developers, there's one hard limit we're not planning to cross: **the _slendr_ built-in SLiM script functionality is assumed to remain unmodified.**
+
+Whatever customization of the standard _slendr_ simulations you're interested in doing, we're making the assumption that you will not be changing the internal.
+
+
+## _slendr_ "API" to its SLiM-based back end
+
+### Referring to populations: `population()`
+
+When you program a _slendr_ model, you can refer to populations using symbolic names such as "AFR", "EUR", etc. in the following way:
+
+```{r, eval=FALSE}
+afr <- population("AFR", time = 100000, N = 20000)
+eur <- population("EUR", time = 60000, N = 2000, parent = afr)
+```
+
+When we then want to analyze the tree-sequence output of _slendr_ models, we can refer to populations (or individuals sampled from those populations) using the same symbolic names.
+
+When you're building a customized _slendr_/SLiM simulation, you can get a `Subpopulation` SLiM object corresponding to a symbolic name of a _slendr_ population using the provided Eidos function `population()`. For instance, let's assume we compiled a toy model of human demography from the [vignette #4]() and ran it in the SLiMgui using `slim(..., method = "gui"). We can then open an Eidos console in the GUI and type the following:
+
+```
+> // get a SLiM object corresponding to the "AFR" population
+> population("AFR")
+Subpopulation<p0>
+> 
+> // get the number of genomes in the population
+> length(population("AFR").genomes)
+6000
+> 
+> // get both "AFR" and "OOA" subpopulation objects
+> population(c("AFR", "OOA"))
+Subpopulation<p0> Subpopulation<p1>
+```
+
+Because the purpose of this vignette is to show how to extend _slendr_ to non-neutral scenarios (within the boundaries imposed by the design of its current SLiM back-end script), we could for instance use the `population()` Eidos function to add a beneficial mutation at the 1 milion-th position of a chromosome using this bit of Eidos code:
+
+```
+population("AFR").genomes[0].addNewMutation(m0, selectionCoeff = 0.05, position = 1000000);
+```
+
+As a side note, if we try to get a SLiM `Subpopulation` object corresponding to a _slendr_ population which will exist at some point but doesn't yet exist in a running SLiM simulation at a particular time, we will get an informative error:
+
+```
+> population("EUR")
+The following populations not yet present in generation 276: EUR
+```
+
+### Referring to times: `tick()`
+
+The section above shows how to access the SLiM `Subpopulation` object of a _slendr_ population, perhaps in order to add a beneficial mutation, by referring to symbolic name of that population used in the _slendr_ R script.
+
+Another useful feature of _slendr_ is its ability to use arbitrary time units in model definition. For instance, when creating a "EUR" population in the snippet above, we wrote this:
+
+```{r, eval=FALSE}
+afr <- population("AFR", time = 100000, N = 20000)
+eur <- population("EUR", time = 60000, N = 2000, parent = afr)
+```
+
+The numbers 100000 and 60000 in the split time are not meaningful by themselves, but if we compile the _slendr_ model like this:
+
+```{r, eval=FALSE}
+model <- compile_model(populations = list(afr, eur), generation_time = 30, ...)
+```
+
+we can then conveniently interpret 100000 and 60000 as "years before present", which is particularly convenient when we're building models using radiocarbon-dated or fossil-dated ages, rather than using traditional units of generations (or ticks, forward in time as in SLiM; backwards in time as in _msprime).
+
+Similarly to referring to _slendr_ population symbolic names in a consistent way between R and SLiM itself, we can also refer to times of events using _slendr_-specific time units using the function `tick()`. This function takes in a time in _slendr_ time units -- years before present, generations backwards in time, whatever you used in your _slendr_ R script, and translates those to SLiM's "ticks". For instance, in our example model of modern human history, we could get the tick number corresponding to the time of 40 thousand years ago by calling:
+
+```
+> tick(40000)
+401
+```
+
+Similarly to the consistency check performed by the `population()` Eidos function, `tick()` also makes sure that the time given lies within the time window expected for the running simulation. For instance, our example model only starts at 100 thousand years ago, so if we try to get the tick number corresponding to a million years ago, we get this:
+
+```
+> tick(1e6)
+Some of the times fall outside of the range of the slendr model:
+  - oldest possible event: 100000
+  - youngest possible event: 0
+
+The offending times were: 1000000
+```
+
+Indeed, the tick-based time boundaries of the model are:
+
+```
+> // the very first time point of the simulation
+> tick(100e3)
+1
+> // the very last time point of the simulation
+> tick(0)
+3334
+```
+
+As with `population()`, we can also perform the _slendr_-time-to-tick conversion in a vectorized manner:
+
+```
+> tick(c(100000, 0))
+1 3334
+```
+
