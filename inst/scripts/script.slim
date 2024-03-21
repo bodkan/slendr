@@ -39,6 +39,10 @@ initialize() {
     defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
     defineConstant("SAMPLING", read_table(SAMPLES));
 
+    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
+    defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
+    defineConstant("ORIG_LENGTH", asInteger(readFile(config_path("orig_length.txt"))));
+
     defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
 
     if (SPATIAL) {
@@ -626,16 +630,6 @@ function (f) dispersal_fun(s$ fun, f$ param) {
     return(c(x, y));
 }
 
-// Get subpopulation object based on a given identifier
-// (SLiM-based numerber or a user-defined string name)
-function (lifso<Subpopulation>$) population(si$ i) {
-    if (isString(i)) i = filter(POPULATIONS, "pop", i).getValue("pop_id");
-    if (!any(i == sim.subpopulations.id))
-        stop("Population " + filter(POPULATIONS, "pop_id", i).getValue("pop") +
-                 " not present in the simulation in generation " + community.tick);
-    return sim.subpopulations[i == sim.subpopulations.id];
-}
-
 function (object<Dictionary>) collect_metadata(void) {
     metadata = Dictionary();
 
@@ -809,4 +803,34 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
         stop("Unknown column '" + column_name + "' in a dataframe");
 
     return values;
+}
+
+///
+/// Public-facing "slendr API"
+///
+
+// Given a string containing a symbolic name of a slendr population (as used in
+// a slendr R script), return the corresponding SLiM subpopulation object
+function (lifso<Subpopulation>$) population(si$ i) {
+    if (isString(i))
+      i = filter(POPULATIONS, "pop", i).getValue("pop_id");
+    if (!any(i == sim.subpopulations.id))
+        stop("Population " + filter(POPULATIONS, "pop_id", i).getValue("pop") +
+                 " not present in the simulation in generation " + community.tick);
+    return sim.subpopulations[i == sim.subpopulations.id];
+}
+
+// Convert a time value specified in time units used by a corresponding slendr
+// model to forward-time tick value used in SLiM
+function (i$) tick(i$ time) {
+    // for backward-time slendr models, first convert time to forward direction
+    // (assuming a given generation time and the total expected run time of the
+    // simulation)
+    if (DIRECTION == "backward")
+      time = ORIG_LENGTH - time + GENERATION_TIME;
+
+    // convert the forward time from slendr time units to generations (ticks)
+    time = asInteger(round(time / GENERATION_TIME));
+
+    return(time);
 }
