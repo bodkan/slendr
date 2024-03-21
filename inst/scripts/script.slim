@@ -204,7 +204,7 @@ s4 late() /* Update spatial population boundaries */ {
         log_output("updating map for " + map.getValue("pop") + "(p" + id + ")");
 
         img = map.getValue("image");
-        pop = get_pop(map.getValue("pop"));
+        pop = population(map.getValue("pop"));
 
         // take care of an edge case in which the entire map is habitable
         // (i.e. minimum observed pixel value is equal to the maximum value)
@@ -224,7 +224,7 @@ s4 late() /* Update spatial population boundaries */ {
         // of the population
         tsplit = filter(POPULATIONS, "pop_id", id).getValue("tsplit_gen");
         if (tsplit == community.tick | tsplit == community.tick - BURNIN_LENGTH)
-            set_coordinates(get_pop(id).individuals, id);
+            set_coordinates(population(id).individuals, id);
     }
 }
 
@@ -236,7 +236,7 @@ s5 /* Step population size changes */ early() {
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         pop = event.getValue("pop"); pop_size = event.getValue("N");
-        get_pop(pop).setSubpopulationSize(pop_size);
+        population(pop).setSubpopulationSize(pop_size);
         log_output(pop + "(p" + event.getValue("pop_id") + ") resized to " +
                              pop_size + " individuals");
     }
@@ -264,14 +264,14 @@ s6 /* Exponential population size changes */ early() {
         tdelta = community.tick - tstart;
         Nt = asInteger(round(Nstart * exp(r * tdelta)));
 
-        get_pop(id).setSubpopulationSize(Nt);
+        population(id).setSubpopulationSize(Nt);
 
         if (Nstart < Nend)
             event_type = "growth";
         else
             event_type = "shrinking";
 
-        current_size = get_pop(id).individualCount;
+        current_size = population(id).individualCount;
         if (community.tick == tstart)
             log_output("start of exponential " + event_type + " of " + pop + "(p" + id +
                        ") from size " + current_size);
@@ -302,8 +302,8 @@ s7 late() /* Changing interaction distances and dispersals */ {
         // 'competition' maxDistance at 2*i and mate choice maxDistance at 2*i + 1
         competition = community.allInteractionTypes[2 * pop_id];
         mating = community.allInteractionTypes[2 * pop_id + 1];
-        dispersal = get_pop(pop).getValue("dispersal");
-        fun = get_pop(pop).getValue("dispersal_fun");
+        dispersal = population(pop).getValue("dispersal");
+        fun = population(pop).getValue("dispersal_fun");
 
         // only change parameters that are scheduled for change in this event
         if (competition_dist != competition.maxDistance) {
@@ -322,13 +322,13 @@ s7 late() /* Changing interaction distances and dispersals */ {
             if (dispersal != -1)
                 log_output("setting offspring dispersal distance for " + pop +
                            "(p" + pop_id + ") to " + dispersal_dist);
-            get_pop(pop).setValue("dispersal", dispersal_dist);
+            population(pop).setValue("dispersal", dispersal_dist);
         }
         if (dispersal_fun != fun) {
             if (fun != "")
                 log_output("changing dispersal kernel for " + pop +
                            "(p" + pop_id + ") to " + dispersal_fun);
-            get_pop(pop).setValue("dispersal_fun", dispersal_fun);
+            population(pop).setValue("dispersal_fun", dispersal_fun);
         }
     }
 
@@ -357,7 +357,7 @@ s9 late() /* Remember individuals for tree sequence recording */ {
         // which population and how many individuals to sample from it?
         pop = event.getValue("pop");
         n = event.getValue("n");
-        all_inds = get_pop(pop).individuals;
+        all_inds = population(pop).individuals;
 
         // only individuals not yet sampled are eligible for sampling
         all_inds = all_inds[all_inds.tag != 1];
@@ -386,12 +386,12 @@ s9 late() /* Remember individuals for tree sequence recording */ {
             n_str = asString(asInteger(n));
 
         log_output("sampling " + n_str + " individuals of " +
-                             pop + "(p" + get_pop(pop).id + ")" + where);
+                             pop + "(p" + population(pop).id + ")" + where);
 
         // give a warning in case more individuals are scheduled for sampling
         // than are present in the population
         if (n > length(all_inds)) {
-            catn("\nWARNING: Population " + pop + "(p" + get_pop(pop).id + ") has " +
+            catn("\nWARNING: Population " + pop + "(p" + population(pop).id + ") has " +
                  length(all_inds) + " individuals " +
                  "but sampling of " + n +
                  " was requested. Only " + length(all_inds) +
@@ -432,7 +432,7 @@ s10 late() /* Schedule removal of populations */ {
         pop = pops.getRowValues(i);
         log_output("cleanup of " + pop.getValue("pop") +
                              "(p" + pop.getValue("pop_id") + ")");
-        get_pop(pop.getValue("pop")).setSubpopulationSize(0);
+        population(pop.getValue("pop")).setSubpopulationSize(0);
     }
 }
 
@@ -549,8 +549,8 @@ function (void) create_pop(object<Dictionary> pop) {
     }
 
     // dispersal distance is set in a script block (here we just create the variable)
-    get_pop(pop_id).setValue("dispersal", -1);
-    get_pop(pop_id).setValue("dispersal_fun", "");
+    population(pop_id).setValue("dispersal", -1);
+    population(pop_id).setValue("dispersal_fun", "");
 
     // explicitly tag populations which have a map assigned (as of slendr v0.5,
     // spatial and non-spatial populations are allowed within the same model)
@@ -559,10 +559,10 @@ function (void) create_pop(object<Dictionary> pop) {
         spatial_pops = unique(MAPS.getValue("pop_id"));
         if (any(pop_id == spatial_pops)) {
             spatial_tag = T;
-            get_pop(pop_id).setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
+            population(pop_id).setSpatialBounds(c(0.0, 0.0, asFloat(WIDTH) - 1, asFloat(HEIGHT) - 1));
         }
     }
-    get_pop(pop_id).setValue("spatial", spatial_tag);
+    population(pop_id).setValue("spatial", spatial_tag);
 }
 
 // Start or stop geneflow
@@ -580,7 +580,7 @@ function (void) set_geneflow(object<Dictionary> event, f$ rate) {
         log_output("geneflow " + from + "(p" + from_id + ")" +
                              " -> " + to + "(p" + to_id + ")" + " set to 0%");
 
-    get_pop(to_id).setMigrationRates(from_id, rate);
+    population(to_id).setMigrationRates(from_id, rate);
 }
 
 // Distribute individuals uniformly within the boundary of the given population
@@ -590,7 +590,7 @@ function (void) set_coordinates(lifso<Individual> inds, i$ id, [l$ log = T]) {
                         "(p" + id + ")");
     for (ind in inds) {
         do pos = c(runif(1, 0, WIDTH), runif(1, 0, HEIGHT));
-        while (get_pop(id).spatialMapValue("world", pos) == 1.0);
+        while (population(id).spatialMapValue("world", pos) == 1.0);
         ind.setSpatialPosition(pos);
     }
 }
@@ -628,7 +628,7 @@ function (f) dispersal_fun(s$ fun, f$ param) {
 
 // Get subpopulation object based on a given identifier
 // (SLiM-based numerber or a user-defined string name)
-function (lifso<Subpopulation>$) get_pop(si$ i) {
+function (lifso<Subpopulation>$) population(si$ i) {
     if (isString(i)) i = filter(POPULATIONS, "pop", i).getValue("pop_id");
     if (!any(i == sim.subpopulations.id))
         stop("Population " + filter(POPULATIONS, "pop_id", i).getValue("pop") +
