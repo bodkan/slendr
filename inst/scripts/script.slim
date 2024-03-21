@@ -41,7 +41,7 @@ initialize() {
 
     defineConstant("DIRECTION", readFile(config_path("direction.txt")));
     defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
-    defineConstant("ORIG_LENGTH", asInteger(readFile(config_path("orig_length.txt"))));
+    defineConstant("ORIGINAL_LENGTH", asInteger(readFile(config_path("orig_length.txt"))));
 
     defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
 
@@ -841,10 +841,24 @@ function (i$) tick(i$ time) {
     // (assuming a given generation time and the total expected run time of the
     // simulation)
     if (DIRECTION == "backward")
-      time = ORIG_LENGTH - time + GENERATION_TIME;
+        original_time = ORIGINAL_LENGTH - time + GENERATION_TIME;
 
     // convert the forward time from slendr time units to generations (ticks)
-    time = asInteger(round(time / GENERATION_TIME));
+    tick_time = asInteger(round(original_time / GENERATION_TIME));
 
-    return(time);
+    if (tick_time < 1 | tick_time > SIMULATION_END) {
+        split_times = POPULATIONS.getValue("tsplit_orig");
+        if (DIRECTION == "backward") {
+            oldest_event = max(split_times);
+            youngest_event = oldest_event - ORIGINAL_LENGTH;
+        } else {
+            oldest_event = min(split_times);
+            youngest_event = oldest_event + ORIGINAL_LENGTH;
+        }
+        stop("The provided time falls outside of the range of the slendr model:\n" +
+             "  - oldest possible event: " + oldest_event + "\n" +
+             "  - youngest possible event: " +  youngest_event + "");
+    }
+
+    return(tick_time);
 }
