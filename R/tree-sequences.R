@@ -1597,7 +1597,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 
   # single_roots <- pylib$mult_roots(ts)
 
-  single_roots <- reticulate::py$mult_roots(ts)
+  single_roots <- reticulate::py[["__slendr_mult_roots"]](ts)
 
   if (all(single_roots))
     return(TRUE)
@@ -1712,7 +1712,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
     # names(between) <- NULL
   }
 
-  result <- reticulate::py$collect_ibd(
+  result <- reticulate::py[["__slendr_collect_ibd"]](
       ts,
       coordinates = coordinates,
       within = within,
@@ -2381,7 +2381,7 @@ get_ts_raw_individuals <- function(ts) {
     ind_table <- dplyr::tibble(
       ind_table,
       # pedigree_id = pylib$get_pedigree_ids(ts), # TODO: check whether the reticulate bug is gone
-      pedigree_id = reticulate::py$get_pedigree_ids(ts),
+      pedigree_id = reticulate::py[["__slendr_get_pedigree_ids"]](ts),
       pop_id = ts$individual_populations,
       alive = bitwAnd(individuals[["flags"]], pyslim$INDIVIDUAL_ALIVE) != 0,
       remembered = bitwAnd(individuals[["flags"]], pyslim$INDIVIDUAL_REMEMBERED) != 0,
