@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- Running `slim(..., method = "gui")` was broken due to recent changes to make _slendr_ work on Windows. A path to a generated SLiM script executed in SLiMgui was incorrectly normalized. Non-SLiMgui runs were not affected. ([#ccae1df](https://github.com/bodkan/slendr/commit/ccae1df))
+
 - When a named list of samples is used as `X` input to `ts_f4ratio()`, the name of the element is used in the `X` column of the resulting data frame. ([#0571a6](https://github.com/bodkan/slendr/commit/0571a6))
 
 - A new function `extract_parameters()` can extract parameters of either a compiled _slendr_ model object or a tree sequence simulated from a _slendr_ model. This can be useful particularly for simulation-based inferences where model parameters are often drawn from random distributions and there's a need to know which parameters of a model (split times, gene-flow rates, etc.) have been drawn. ([#3632bd0](https://github.com/bodkan/slendr/commit/3632bd0))
