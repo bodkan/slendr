@@ -146,3 +146,31 @@ As with `population()`, we can also perform the _slendr_-time-to-tick conversion
 1 3334
 ```
 
+Naturally, if our model does not use any special time units (for instance, if all times are encoded in generations, even forward in time), the `tick()` function becomes an identity function:
+
+```{r}
+pop <- population("pop", time = 1, N = 1000)
+model <- compile_model(pop, generation_time = 1, simulation_length = 1000)
+
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, method = "gui")
+```
+
+Indeed, if we pop up the Eidos console in SLiMgui for this model, we can verify this:
+
+```
+> // no conversion needed for models using times of generations
+> tick(c(1, 1001))
+1 1001
+```
+
+Still, the `tick()` function can be useful even for _slendr_ models which use the same time units as SLiM itself (generations forward in time) because it provides useful boundary checking. For instance, this is what happens if we try to get the tick number in a model above (which only runs from generation 1 to generation 1 + 1000):
+
+```
+> tick(c(0, 1e6))
+Some of the times fall outside of the range of the slendr model:
+  - oldest possible event: 1
+  - youngest possible event: 1001
+
+The offending times were: 0, 1000000
+```
+
