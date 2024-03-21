@@ -842,6 +842,8 @@ function (i) tick(i time) {
     // simulation)
     if (DIRECTION == "backward")
         original_time = ORIGINAL_LENGTH - time + GENERATION_TIME;
+    else
+        original_time = time;
 
     // convert the forward time from slendr time units to generations (ticks)
     tick_time = asInteger(round(original_time / GENERATION_TIME));
