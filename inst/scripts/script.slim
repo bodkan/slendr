@@ -836,7 +836,7 @@ function (lifso<Subpopulation>) population(si id) {
 
 // Convert a time value specified in time units used by a corresponding slendr
 // model to forward-time tick value used in SLiM
-function (i$) tick(i$ time) {
+function (i) tick(i time) {
     // for backward-time slendr models, first convert time to forward direction
     // (assuming a given generation time and the total expected run time of the
     // simulation)
@@ -846,7 +846,8 @@ function (i$) tick(i$ time) {
     // convert the forward time from slendr time units to generations (ticks)
     tick_time = asInteger(round(original_time / GENERATION_TIME));
 
-    if (tick_time < 1 | tick_time > SIMULATION_END) {
+    invalid_time = tick_time < 1 | tick_time > SIMULATION_END;
+    if (any(invalid_time)) {
         split_times = POPULATIONS.getValue("tsplit_orig");
         if (DIRECTION == "backward") {
             oldest_event = max(split_times);
@@ -855,9 +856,10 @@ function (i$) tick(i$ time) {
             oldest_event = min(split_times);
             youngest_event = oldest_event + ORIGINAL_LENGTH;
         }
-        stop("The provided time falls outside of the range of the slendr model:\n" +
+        stop("Some of the times fall outside of the range of the slendr model:\n" +
              "  - oldest possible event: " + oldest_event + "\n" +
-             "  - youngest possible event: " +  youngest_event + "");
+             "  - youngest possible event: " +  youngest_event + "\n\n" +
+             "The offending times were: " + paste(time[invalid_time], sep = ", "));
     }
 
     return(tick_time);
