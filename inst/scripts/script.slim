@@ -809,15 +809,29 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
 /// Public-facing "slendr API"
 ///
 
-// Given a string containing a symbolic name of a slendr population (as used in
-// a slendr R script), return the corresponding SLiM subpopulation object
-function (lifso<Subpopulation>$) population(si$ i) {
-    if (isString(i))
-      i = filter(POPULATIONS, "pop", i).getValue("pop_id");
-    if (!any(i == sim.subpopulations.id))
-        stop("Population " + filter(POPULATIONS, "pop_id", i).getValue("pop") +
-                 " not present in the simulation in generation " + community.tick);
-    return sim.subpopulations[i == sim.subpopulations.id];
+// Given a string containing a symbolic name of a slendr population (or
+// multiple populations) as used in a slendr R script, return the corresponding
+// SLiM subpopulation objects
+function (lifso<Subpopulation>) population(si id) {
+    // if a string name was given, extract the corresponding population index
+    if (isString(id)) {
+      index = filter(POPULATIONS, "pop", id).getValue("pop_id");
+      names = id;
+    } else {
+      index = id;
+      names = filter(POPULATIONS, "pop", id).getValue("pop");
+    }
+
+    // extract matches of given population identifiers to SLiM objects
+    matches = sapply(index, "any(applyValue == sim.subpopulations.id);");
+
+    // check that all the given populations already exist in the simulation
+    if (!all(matches)) {
+      stop("The following populations not yet present in generation " +
+           community.tick + ": " + paste(names[!matches], sep = ", "));
+    }
+
+    return sim.subpopulations[index];
 }
 
 // Convert a time value specified in time units used by a corresponding slendr
