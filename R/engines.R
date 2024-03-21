@@ -333,7 +333,7 @@ slim <- function(
   if (method == "gui") {
     # to be able to execute the script in the SLiMgui, we have to hardcode
     # the path to the model configuration directory
-    modif_path <- normalizePath(tempfile(), winslash = "/", mustWork = TRUE)
+    modif_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
     readLines(script_path) %>%
       gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
       gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
