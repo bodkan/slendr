@@ -812,9 +812,9 @@ function (lifso<Subpopulation>) population(si id) {
     if (isString(id)) {
       index = filter(POPULATIONS, "pop", id).getValue("pop_id");
       names = id;
-    } else {
+    } else { // slendr internally uses also numerical identifiers (non-public)
       index = id;
-      names = filter(POPULATIONS, "pop", id).getValue("pop");
+      names = filter(POPULATIONS, "pop_id", id).getValue("pop");
     }
 
     // extract matches of given population identifiers to SLiM objects
