@@ -817,21 +817,23 @@ function (lifso<Subpopulation>) population(si id) {
       names = filter(POPULATIONS, "pop_id", id).getValue("pop");
     }
 
+    // check that all identifiers correspond to populations in the slendr model
     if (length(index) != length(id) | length(names) != length(id))
         stop("Not all provided population identifiers are present in the model.\n" +
              "Check your code to make sure that all of these are defined: " +
              paste(id, sep = ", "));
 
-    // extract matches of given population identifiers to SLiM objects
+    // check that all given populations exist in the simulation at this time
     matches = sapply(index, "any(applyValue == sim.subpopulations.id);");
-
-    // check that all the given populations already exist in the simulation
     if (!all(matches)) {
       stop("The following populations not yet present in generation " +
            community.tick + ": " + paste(names[!matches], sep = ", "));
     }
 
-    return sim.subpopulations[index];
+    // extract matches of given population identifiers to SLiM objects
+    extract = sapply(sim.subpopulations.id, "any(applyValue == index);");
+
+    return sim.subpopulations[extract];
 }
 
 // Convert a time value specified in time units used by a corresponding slendr
