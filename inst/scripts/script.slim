@@ -696,11 +696,6 @@ function (void) write_locations_header(void) {
     writeFile(filename, header_str, compress = T);
 }
 
-// Write the given log output message with the time stamp
-function (void) log_output(s$ str) {
-    catn("Generation " + community.tick + ": " + str);
-}
-
 ///
 /// Data frame functions
 ///
@@ -865,4 +860,9 @@ function (i) tick(i time) {
     }
 
     return(tick_time);
+}
+
+// Print a log output message with a time stamp
+function (void) log_output(s$ str) {
+    catn("Generation " + community.tick + ": " + str);
 }
