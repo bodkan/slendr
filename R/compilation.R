@@ -92,7 +92,7 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
             call. = FALSE)
   }
   if (serialize && is.null(path))
-    path <- tempfile()
+    path <- tempfile(file = "_slendr_model")
 
   # make sure that all parents are present
   pop_names <- purrr::map_chr(populations, ~ .x$pop[1])
