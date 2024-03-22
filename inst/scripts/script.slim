@@ -35,7 +35,7 @@ initialize() {
 
     // model configuration tables
     defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
-    defineConstant("GENEFLOWS", read_table(config_path("geneflow.tsv")));
+    defineConstant("GENE_FLOWS", read_table(config_path("geneflow.tsv")));
     defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
     defineConstant("SAMPLING", read_table(SAMPLES));
 
@@ -93,9 +93,9 @@ initialize() {
     community.rescheduleScriptBlock(s1, ticks = unique(c(1, BURNIN_LENGTH + POPULATIONS.getValue("tsplit_gen"))));
 
     // geneflow events
-    if (num_rows(GENEFLOWS)) {
-        community.rescheduleScriptBlock(s2, ticks = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tstart_gen")));
-        community.rescheduleScriptBlock(s3, ticks = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tend_gen")));
+    if (num_rows(GENE_FLOWS)) {
+        community.rescheduleScriptBlock(s2, ticks = BURNIN_LENGTH + unique(GENE_FLOWS.getValue("tstart_gen")));
+        community.rescheduleScriptBlock(s3, ticks = BURNIN_LENGTH + unique(GENE_FLOWS.getValue("tend_gen")));
     } else {
         community.deregisterScriptBlock(s2);
         community.deregisterScriptBlock(s3);
@@ -179,7 +179,7 @@ s1 late() /* Population splits */ {
 }
 
 s2 late() /* Geneflow events */ {
-    events = filter(GENEFLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
+    events = filter(GENE_FLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, event.getValue("rate"));
@@ -187,7 +187,7 @@ s2 late() /* Geneflow events */ {
 }
 
 s3 late() /* Stopping geneflow */ {
-    events = filter(GENEFLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
+    events = filter(GENE_FLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, 0.0);
@@ -482,18 +482,18 @@ modifyChild() /* Place offspring within its population's boundary */ {
     // in case of spatially non-overlapping geneflow, assign locations uniformly
     if (child.migrant) {
         // get indices of the currently active geneflow events
-        active = (GENEFLOWS.getValue("tstart_gen") <= community.tick - BURNIN_LENGTH) &
-                 (community.tick - BURNIN_LENGTH <= GENEFLOWS.getValue("tend_gen"));
+        active = (GENE_FLOWS.getValue("tstart_gen") <= community.tick - BURNIN_LENGTH) &
+                 (community.tick - BURNIN_LENGTH <= GENE_FLOWS.getValue("tend_gen"));
 
         // get population of the offspring's parents
-        source = sourceSubpop.id == GENEFLOWS.getValue("from_id");
+        source = sourceSubpop.id == GENE_FLOWS.getValue("from_id");
 
         // get the offspring's new population
-        target = subpop.id == GENEFLOWS.getValue("to_id");
+        target = subpop.id == GENE_FLOWS.getValue("to_id");
 
         // if the current admixture event is non-overlapping, set the
         // childs coordinates freely
-        overlap = GENEFLOWS.getValue("overlap")[active & target & source];
+        overlap = GENE_FLOWS.getValue("overlap")[active & target & source];
 
         if (!overlap) {
             set_coordinates(child, subpop.id, log = F);
