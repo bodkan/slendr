@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 60,
-  eval = check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
+  eval = slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
 )
 ```
 
@@ -42,7 +42,7 @@ seed <- 314159
 set.seed(seed)
 ```
 
-## Intended use cases for non-neutral model
+## Intended use cases for non-neutral models
 
 In order to maintain the sanity of _slendr_ users and developers, there's one hard limit we're not planning to cross: **the _slendr_ built-in SLiM script functionality is assumed to remain unmodified.**
 
@@ -51,7 +51,7 @@ Whatever customization of the standard _slendr_ simulations you're interested in
 
 ## _slendr_ "API" to its SLiM-based back end
 
-### Referring to populations: `population()`
+### Referring to populations: `population()` Eidos function
 
 When you program a _slendr_ model, you can refer to populations using symbolic names such as "AFR", "EUR", etc. in the following way:
 
@@ -91,7 +91,7 @@ As a side note, if we try to get a SLiM `Subpopulation` object corresponding to 
 The following populations not yet present in generation 276: EUR
 ```
 
-### Referring to times: `tick()`
+### Referring to times: `tick()` Eidos function
 
 The section above shows how to access the SLiM `Subpopulation` object of a _slendr_ population, perhaps in order to add a beneficial mutation, by referring to symbolic name of that population used in the _slendr_ R script.
 
@@ -148,7 +148,7 @@ As with `population()`, we can also perform the _slendr_-time-to-tick conversion
 
 Naturally, if our model does not use any special time units (for instance, if all times are encoded in generations, even forward in time), the `tick()` function becomes an identity function:
 
-```{r}
+```{r, eval=FALSE}
 pop <- population("pop", time = 1, N = 1000)
 model <- compile_model(pop, generation_time = 1, simulation_length = 1000)
 
@@ -174,3 +174,45 @@ Some of the times fall outside of the range of the slendr model:
 The offending times were: 0, 1000000
 ```
 
+### Logging: `log_output()` Eidos function
+
+### Useful constants
+
+- `SEQUENCE_LENGTH`: the total length of the simulated sequence
+- `SEED`: random seed passed to SLiM from the _slendr_ R code
+- `POPULATIONS`: a `DataFrame` object
+- `GENE_FLOWS`
+- `SAMPLING`
+- `GENERATION_TIME`
+
+These are _slendr_'s SLiM constants which are most likely to be useful for user-defined custom SLiM extension snippets. There are othe constants present in the codebase, though -- you can find them by inspecting the `initialize()` block at the beginning of the _slendr_ SLiM script -- but those should be considered to be _slendr_'s internal matter. Use them only with caution, as their use can slightly change over time.
+
+## Adding a SLiM snippet to the _slendr_ engine
+
+The above examples show how you can refer to a _slendr_ population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the _slendr_ built-in SLiM script, and how you can convert _slendr_-specific time units into SLiM's internal ticks using the `tick()` function.
+
+And it turns out that as long as you're OK with keeping _slendr_'s built-in SLiM script intact (which, as we point out above, is a hard requirement we make in this vignette) you can use whatever SLiM features you have at your disposal and still easily refer to _slendr_ populations and times of _slendr_ model events. One way to do this would be to edit the built-in _slendr_ SLiM script and manually add your own SLiM code, but that would be brittle and not very reproducible. There's a much better way to do this, leveraging what we call _slendr_/SLiM snippets.
+
+To demonstrate all of this in practice, let's say we want to simulate the allele frequency trajectory of a beneficial mutation which arose on the European lineage (the "EUR" population in our toy model) at 15 thousand years before present. We already know how to add a mutation to a SLiM `Subpopulation` corresponding to the "EUR" _slendr_ population, and we also know how to convert 15 thousand years ago to SLiM's tick units.
+
+
+```
+s100 late() { /* Add a beneficial mutation at a given time */
+  // when to add the mutation ("years before present")
+  event_time = 15000; 
+
+  // parameters of the beneficial allele
+  init_freq = 0.05;
+  s = 0.1;    
+
+  // make sure the callback is executed only at the given time point
+  if (community.tick != tick(event_time)) return;
+  
+  // add the beneficial mutation at a given frequency
+  eur_genomes = population("EUR").genomes;
+  eur_sample = sample(eur_genomes, n = init_freq * length(eur_genomes));
+  eur_sample.addNewMutation(m0, s, 0); 
+
+  log_output("Added beneficial mutation at " + event_time + "years ago");
+}
+```
