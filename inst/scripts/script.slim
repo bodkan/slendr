@@ -817,6 +817,11 @@ function (lifso<Subpopulation>) population(si id) {
       names = filter(POPULATIONS, "pop_id", id).getValue("pop");
     }
 
+    if (length(index) != length(id) | length(names) != length(id))
+        stop("Not all provided population identifiers are present in the model.\n" +
+             "Check your code to make sure that all of these are defined: " +
+             paste(id, sep = ", "));
+
     // extract matches of given population identifiers to SLiM objects
     matches = sapply(index, "any(applyValue == sim.subpopulations.id);");
 
