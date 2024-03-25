@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- The `sim_length` argument of `compile_model()` has been removed following a long period of deprecatiaon. ([#12da50](https://github.com/bodkan/slendr/commit/12da50))
+
 - Running `slim(..., method = "gui")` was broken due to recent changes to make _slendr_ work on Windows. A path to a generated SLiM script executed in SLiMgui was incorrectly normalized. Non-SLiMgui runs were not affected. ([#ccae1df](https://github.com/bodkan/slendr/commit/ccae1df))
 
 - When a named list of samples is used as `X` input to `ts_f4ratio()`, the name of the element is used in the `X` column of the resulting data frame. ([#0571a6](https://github.com/bodkan/slendr/commit/0571a6))
