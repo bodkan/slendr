@@ -40,7 +40,7 @@ test_that("msprime and SLiM metadata is exactly the same (forward model)", {
   m_meta <- ts_metadata(forward_mts)[fields]
   expect_true(all(sapply(fields, function(f) all(s_meta[[f]] == m_meta[[f]]))))
 
-  args <- c("RECOMB_RATE", "SEED", "SEQUENCE_LENGTH", "SIMULATION_LENGTH")
+  args <- c("RECOMBINATION_RATE", "SEED", "SEQUENCE_LENGTH", "SIMULATION_LENGTH")
   s_args <- ts_metadata(forward_sts)$arguments[args]
   m_args <- ts_metadata(forward_mts)$arguments[args]
   expect_true(all(sapply(args, function(f) all(s_args[[f]] == m_args[[f]]))))
@@ -101,7 +101,7 @@ test_that("msprime and SLiM metadata is exactly the same (backward model)", {
   m_meta <- ts_metadata(backward_mts)[fields]
   expect_true(all(sapply(fields, function(f) all(s_meta[[f]] == m_meta[[f]]))))
 
-  args <- c("RECOMB_RATE", "SEED", "SEQUENCE_LENGTH", "SIMULATION_LENGTH")
+  args <- c("RECOMBINATION_RATE", "SEED", "SEQUENCE_LENGTH", "SIMULATION_LENGTH")
   s_args <- ts_metadata(backward_sts)$arguments[args]
   m_args <- ts_metadata(backward_mts)$arguments[args]
   expect_true(all(sapply(args, function(f) all(s_args[[f]] == m_args[[f]]))))

@@ -472,12 +472,12 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
 
   burnin_length <- 123
   max_attempts <- 3
-  recomb_rate <- 0.001
+  RECOMBINATION_RATE <- 0.001
   locations_file <- tempfile(fileext = ".gz")
   seed <- 987
   sequence_length <- 999
 
-  ts <- slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
+  ts <- slim(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
        locations = locations_file, burnin = burnin_length,
        method = "batch", random_seed = seed, max_attempts = max_attempts,
        samples = samples, verbose = FALSE, output = output)
@@ -493,7 +493,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   args <- metadata$arguments
   expect_equal(args$BURNIN_LENGTH, burnin_length)
   expect_equal(args$MAX_ATTEMPTS, max_attempts)
-  expect_equal(args$RECOMB_RATE, recomb_rate)
+  expect_equal(args$RECOMBINATION_RATE, RECOMBINATION_RATE)
   expect_equal(args$SEED, seed)
   expect_equal(args$SEQUENCE_LENGTH, sequence_length)
 })
@@ -502,13 +502,13 @@ test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
   output <- paste0(tempfile(), "non-spatial_SLiM_test")
 
   burnin_length <- 123
-  recomb_rate <- 0.001
+  RECOMBINATION_RATE <- 0.001
   locations_file <- tempfile(fileext = ".gz")
   seed <- 987
   sequence_length <- 999
   spatial <- FALSE
 
-  ts <- slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
+  ts <- slim(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
        locations = locations_file, burnin = burnin_length,
        method = "batch", random_seed = seed,
        samples = samples, verbose = FALSE, spatial = spatial, output = output)
@@ -521,7 +521,7 @@ test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
 
   args <- metadata$arguments
   expect_equal(args$BURNIN_LENGTH, burnin_length)
-  expect_equal(args$RECOMB_RATE, recomb_rate)
+  expect_equal(args$RECOMBINATION_RATE, RECOMBINATION_RATE)
   expect_equal(args$SEED, seed)
   expect_equal(args$SEQUENCE_LENGTH, sequence_length)
 })
@@ -530,12 +530,12 @@ test_that("slendr metadata is correctly loaded (non-spatial msprime model)", {
   output <- paste0(tempfile(), "non-spatial_msprime_test")
 
   burnin_length <- 123
-  recomb_rate <- 0.001
+  RECOMBINATION_RATE <- 0.001
   seed <- 987
   sequence_length <- 999
   spatial <- FALSE
 
-  ts <- msprime(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
+  ts <- msprime(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
        random_seed = seed, samples = samples, verbose = FALSE, output = output)
   metadata <- ts_metadata(ts)
 
@@ -544,7 +544,7 @@ test_that("slendr metadata is correctly loaded (non-spatial msprime model)", {
   expect_true(metadata$description == desc)
 
   args <- metadata$arguments
-  expect_equal(args$RECOMB_RATE, recomb_rate)
+  expect_equal(args$RECOMBINATION_RATE, RECOMBINATION_RATE)
   expect_equal(args$SEED, seed)
   expect_equal(args$SEQUENCE_LENGTH, sequence_length)
 })

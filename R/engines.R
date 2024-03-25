@@ -348,7 +348,7 @@ slim <- function(
                           paste0("-d \"OUTPUT_TS='", output, "'\""),
                           paste0("-d SPATIAL=",spatial),
                           paste0("-d SEQUENCE_LENGTH=",sequence_length),
-                          paste0("-d RECOMB_RATE=",recombination_rate),
+                          paste0("-d RECOMBINATION_RATE=",recombination_rate),
                           paste0("-d BURNIN_LENGTH=",burnin),
                           paste0("-d SIMULATION_LENGTH=",model$length),
                           paste0("-d \"OUTPUT_LOCATIONS='",locations,"'\""),
