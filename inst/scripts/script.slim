@@ -875,10 +875,10 @@ function (i) tick(i time) {
 // Save the complete state of the simulation, including slendr-specific
 // population tags and values.
 function (void) save_state (void) {
-  // save the full state of the simulation in case we need to restart
+  // save the full genomic state of the simulation to a file
   sim.outputFull(STATE_PATH + "population.txt");
 
-  // extract slendr-specific metadata
+  // extract slendr-specific metadata and save it to a file too
   pop_data = Dictionary(
     "pop_id", sim.subpopulations.id,
     "dispersal", sim.subpopulations.getValue("dispersal"),
@@ -895,10 +895,11 @@ function (void) reset_state (void) {
   sim.readFromPopulationFile(STATE_PATH + "population.txt");
 
   // increment the random seed after loading the simulation state
-  setSeed(rdunif(1, 0, asInteger(2^31) - 1);
+  setSeed(rdunif(1, 0, asInteger(2^31) - 1));
 
   // read the slendr metadata and assign appropriate tag values to each
-  // loaded population to reset the proper slendr state
+  // loaded population to reset the proper slendr state (these tags are
+  // not saved by sim.outputFull)
   pop_data = Dictionary(readFile(STATE_PATH + "slendr.txt"));
   for (pop_id in pop_data.getValue("pop_id")) {
       pop = population(pop_id);
