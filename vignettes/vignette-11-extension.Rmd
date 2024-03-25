@@ -49,7 +49,7 @@ In order to maintain the sanity of _slendr_ users and developers, there's one ha
 Whatever customization of the standard _slendr_ simulations you're interested in doing, we're making the assumption that you will not be changing the internal.
 
 
-## _slendr_ "API" to its SLiM-based back end
+## _slendr_ / SLiM "API"
 
 ### Referring to populations: `population()` Eidos function
 
@@ -228,6 +228,8 @@ tick(15000):SIMULATION_END late() {
 }
 ```
 
+**Note that we're using an advanced new feature of SLiM 4.2 for direct specification of callback timing described in the third item of the [SLiM changelog](https://github.com/MesserLab/SLiM/releases/tag/v4.2). This features makes customization of _slendr_ / SLiM simulations inifinitely easier, so make sure you read about it in the SLiM manual!**
+
 ### Global constants
 
 By inspecting the built-in SLiM simulation script of _slendr_, you will find that it contains a number of global constants. Most of them should be considered internal and users shouldn't rely on them in their code. However, one useful contant which you can see being used in the snippet above is `SEQUENCE_LENGTH` -- this is the total amount of sequence simulated (i.e., the number passed as `slim(<model>, sequence_length = <SEQUENCE_LENGTH>, ...)` in your R code).
@@ -235,46 +237,59 @@ By inspecting the built-in SLiM simulation script of _slendr_, you will find tha
 
 ## Putting it all together: running a customized _slendr_ simulation 
 
-The above examples show how you can refer to a _slendr_ population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the _slendr_ built-in SLiM script, and how you can convert _slendr_-specific time units into SLiM's internal ticks using the `tick()` function. You've also learned how to save and reset SLiM state using provided functions `save_state()` and `reset_state()` and how to log outputs using the function `log_output()`. We demonstrated all this by defining a customized snippet of SLiM code which we now want to use in a full _slendr_ simulation run.
+The above examples show how you can refer to a _slendr_ population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the _slendr_ built-in SLiM script, and how you can convert _slendr_-specific time units into SLiM's internal ticks using the `tick()` function. You've also learned how to save and reset SLiM state using provided functions `save_state()` and `reset_state()` and how to log outputs using the function `log_output()`. We demonstrated all this by defining a customized snippet of SLiM code which we now want to use in a full _slendr_ simulation run. Of course, the example we've chosen is extremely trivial -- you could, in principle, use any feature available for SLiM (as long as it's compatible with Wright-Fisher models, which _slendr_ currently assumes as a basis for its models).
 
-And it turns out that as long as you're OK with keeping _slendr_'s built-in SLiM script intact (which, as we point out above, is a hard requirement we make in this vignette) you can use whatever SLiM features you have at your disposal and still easily refer to _slendr_ populations and times of _slendr_ model events. One way to do this would be to edit the built-in _slendr_ SLiM script and manually add your own SLiM code, but that would be brittle and not very reproducible. There's a much better way to do this, leveraging what we call _slendr_/SLiM snippets.
+How do we use this customization in practice? One way to do this would be to edit the built-in _slendr_ SLiM script and manually add your own SLiM code, but that would be brittle and not very reproducible. There's a much better way to do this that's directly supported by _slendr_'s R interface.
 
-To demonstrate all of this in practice, let's say we want to simulate the allele frequency trajectory of a beneficial mutation which arose on the European lineage (the "EUR" population in our toy model) at 15 thousand years before present. We already know how to add a mutation to a SLiM `Subpopulation` corresponding to the "EUR" _slendr_ population, and we also know how to convert 15 thousand years ago to SLiM's tick units.
+Let's say that we defined the following model of modern human demographic history in slendr. This is exactly the same example as the one we show in [vignette #4]():
 
+```{r, model_plot}
+devtools::load_all()
+library(slendr)
 
+init_env()
+
+# African ancestral population
+afr <- population("AFR", time = 100000, N = 3000)
+
+# first migrants out of Africa
+ooa <- population("OOA", parent = afr, time = 60000, N = 500, remove = 23000) %>%
+  resize(N = 2000, time = 40000, how = "step")
+
+# Eastern hunter-gatherers
+ehg <- population("EHG", parent = ooa, time = 28000, N = 1000, remove = 6000)
+
+# European population
+eur <- population("EUR", parent = ehg, time = 25000, N = 5000)
+
+# Anatolian farmers
+ana <- population("ANA", time = 28000, N = 3000, parent = ooa, remove = 4000)
+
+# Yamnaya steppe population
+yam <- population("YAM", time = 8000, N = 500, parent = ehg, remove = 2500)
+
+# define gene-flow events
+gf <- list(
+  gene_flow(from = ana, to = yam, rate = 0.4, start = 7900, end = 7800),
+  gene_flow(from = ana, to = eur, rate = 0.5, start = 6000, end = 5000),
+  gene_flow(from = yam, to = eur, rate = 0.65, start = 4000, end = 3500)
+)
+
+# compile a slendr model
+model <- compile_model(
+  populations = list(afr, ooa, ehg, eur, ana, yam),
+  gene_flow = gf, generation_time = 30,
+  slim_extension = "~/Desktop/asd.txt"
+)
+
+plot_model(model, order = c("EUR", "EHG", "YAM", "ANA", "OOA", "AFR"), proportions = TRUE)
 ```
-initialize() {
-    initializeMutationType("m1", 0.5, "f", 0.2);
-}
 
-function (void) add_mutation(void) {
-    // sample one target carrier of the new mutation...
-    target = sample(population("EUR").genomes, 1);
-    // ... and add the mutation to it
-    target.addNewDrawnMutation(m1, position = asInteger(SEQUENCE_LENGTH / 2));
-
-    log_output("added beneficial mutation at 15 kya");
-}
-
-tick(15000) late() { /* Add a beneficial mutation at 15 thousand years ago*/
-    // save the full state of the simulation in case we need to restart
-    sim.outputFull(tempdir() + "slim_" + SEED + ".txt");
-
-    add_mutation();
-}
-
-tick(15000):SIMULATION_END late() {
-    segregating = sim.countOfMutationsOfType(m1) > 0;
-    fixed = sum(sim.substitutions.mutationType == m1) == 1;
-
-    // the mutation is not segregating and is not fixed either -- we must restart
-    if (!segregating & !fixed) {
-        log_output("mutation lost -- restarting");
-
-        sim.readFromPopulationFile(tempdir() + "slim_" + SEED + ".txt");
-        setSeed(rdunif(1, 0, asInteger(2^62) - 1));
-
-        add_mutation();
-    }
-}
+```{r}
+extend_slim(model, slim_extension)
 ```
+
+```{r}
+slim(model, sequence_length = 1e6, recombination_rate = 0, method = "gui")
+```
+
