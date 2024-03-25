@@ -29,6 +29,9 @@ initialize() {
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
 
+    // prefix for saving
+    defineConstant("STATE_PATH", tempdir() + "state_" + SEED + "_");
+
     // how many attempts should be made to place an offspring on a map before
     // discarding it?
     optional_arg("MAX_ATTEMPTS", 1);
@@ -867,6 +870,43 @@ function (i) tick(i time) {
     }
 
     return(tick_time);
+}
+
+// Save the complete state of the simulation, including slendr-specific
+// population tags and values.
+function (void) save_state (void) {
+  // save the full state of the simulation in case we need to restart
+  sim.outputFull(STATE_PATH + "population.txt");
+
+  // extract slendr-specific metadata
+  pop_data = Dictionary(
+    "pop_id", sim.subpopulations.id,
+    "dispersal", sim.subpopulations.getValue("dispersal"),
+    "dispersal_fun", sim.subpopulations.getValue("dispersal_fun"),
+    "spatial", sim.subpopulations.getValue("spatial")
+  ).serialize(format = "json");
+  writeFile(STATE_PATH + "slendr.txt", pop_data);
+}
+
+// Load the complete state of the simulation, including slendr-specific
+// population tags and values, and choose a new random seed.
+function (void) reset_state (void) {
+  // read the genomic state of the simulation
+  sim.readFromPopulationFile(STATE_PATH + "population.txt");
+
+  // increment the random seed after loading the simulation state
+  setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+
+  // read the slendr metadata and assign appropriate tag values to each
+  // loaded population to reset the proper slendr state
+  pop_data = Dictionary(readFile(STATE_PATH + "slendr.txt"));
+  for (pop_id in pop_data.getValue("pop_id")) {
+      pop = population(pop_id);
+      pop_values = filter(pop_data, "pop_id", pop_id);
+      pop.setValue("dispersal", pop_values.getValue("dispersal"));
+      pop.setValue("dispersal_fun", pop_values.getValue("dispersal_fun"));
+      pop.setValue("spatial", pop_values.getValue("spatial"));
+  }
 }
 
 // Print a log output message with a time stamp
