@@ -29,15 +29,22 @@ initialize() {
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
 
+    // prefix for saving
+    defineConstant("STATE_PATH", tempdir() + "state_" + SEED + "_");
+
     // how many attempts should be made to place an offspring on a map before
     // discarding it?
     optional_arg("MAX_ATTEMPTS", 1);
 
     // model configuration tables
     defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
-    defineConstant("GENEFLOWS", read_table(config_path("geneflow.tsv")));
+    defineConstant("GENE_FLOWS", read_table(config_path("geneflow.tsv")));
     defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
     defineConstant("SAMPLING", read_table(SAMPLES));
+
+    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
+    defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
+    defineConstant("ORIGINAL_LENGTH", asInteger(readFile(config_path("orig_length.txt"))));
 
     defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
 
@@ -89,9 +96,9 @@ initialize() {
     community.rescheduleScriptBlock(s1, ticks = unique(c(1, BURNIN_LENGTH + POPULATIONS.getValue("tsplit_gen"))));
 
     // geneflow events
-    if (num_rows(GENEFLOWS)) {
-        community.rescheduleScriptBlock(s2, ticks = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tstart_gen")));
-        community.rescheduleScriptBlock(s3, ticks = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tend_gen")));
+    if (num_rows(GENE_FLOWS)) {
+        community.rescheduleScriptBlock(s2, ticks = BURNIN_LENGTH + unique(GENE_FLOWS.getValue("tstart_gen")));
+        community.rescheduleScriptBlock(s3, ticks = BURNIN_LENGTH + unique(GENE_FLOWS.getValue("tend_gen")));
     } else {
         community.deregisterScriptBlock(s2);
         community.deregisterScriptBlock(s3);
@@ -175,7 +182,7 @@ s1 late() /* Population splits */ {
 }
 
 s2 late() /* Geneflow events */ {
-    events = filter(GENEFLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
+    events = filter(GENE_FLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, event.getValue("rate"));
@@ -183,7 +190,7 @@ s2 late() /* Geneflow events */ {
 }
 
 s3 late() /* Stopping geneflow */ {
-    events = filter(GENEFLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
+    events = filter(GENE_FLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, 0.0);
@@ -478,18 +485,18 @@ modifyChild() /* Place offspring within its population's boundary */ {
     // in case of spatially non-overlapping geneflow, assign locations uniformly
     if (child.migrant) {
         // get indices of the currently active geneflow events
-        active = (GENEFLOWS.getValue("tstart_gen") <= community.tick - BURNIN_LENGTH) &
-                 (community.tick - BURNIN_LENGTH <= GENEFLOWS.getValue("tend_gen"));
+        active = (GENE_FLOWS.getValue("tstart_gen") <= community.tick - BURNIN_LENGTH) &
+                 (community.tick - BURNIN_LENGTH <= GENE_FLOWS.getValue("tend_gen"));
 
         // get population of the offspring's parents
-        source = sourceSubpop.id == GENEFLOWS.getValue("from_id");
+        source = sourceSubpop.id == GENE_FLOWS.getValue("from_id");
 
         // get the offspring's new population
-        target = subpop.id == GENEFLOWS.getValue("to_id");
+        target = subpop.id == GENE_FLOWS.getValue("to_id");
 
         // if the current admixture event is non-overlapping, set the
         // childs coordinates freely
-        overlap = GENEFLOWS.getValue("overlap")[active & target & source];
+        overlap = GENE_FLOWS.getValue("overlap")[active & target & source];
 
         if (!overlap) {
             set_coordinates(child, subpop.id, log = F);
@@ -626,16 +633,6 @@ function (f) dispersal_fun(s$ fun, f$ param) {
     return(c(x, y));
 }
 
-// Get subpopulation object based on a given identifier
-// (SLiM-based numerber or a user-defined string name)
-function (lifso<Subpopulation>$) population(si$ i) {
-    if (isString(i)) i = filter(POPULATIONS, "pop", i).getValue("pop_id");
-    if (!any(i == sim.subpopulations.id))
-        stop("Population " + filter(POPULATIONS, "pop_id", i).getValue("pop") +
-                 " not present in the simulation in generation " + community.tick);
-    return sim.subpopulations[i == sim.subpopulations.id];
-}
-
 function (object<Dictionary>) collect_metadata(void) {
     metadata = Dictionary();
 
@@ -700,11 +697,6 @@ function (void) write_locations_header(void) {
     filename = OUTPUT_LOCATIONS;
     header_str = "gen\tpop_id\tpop\tind\tx\ty";
     writeFile(filename, header_str, compress = T);
-}
-
-// Write the given log output message with the time stamp
-function (void) log_output(s$ str) {
-    catn("Generation " + community.tick + ": " + str);
 }
 
 ///
@@ -809,4 +801,116 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
         stop("Unknown column '" + column_name + "' in a dataframe");
 
     return values;
+}
+
+///
+/// Public-facing "slendr API"
+///
+
+// Given a string containing a symbolic name of a slendr population (or
+// multiple populations) as used in a slendr R script, return the corresponding
+// SLiM subpopulation objects
+function (lifso<Subpopulation>) population(si id) {
+    // if a string name was given, extract the corresponding population index
+    if (isString(id)) {
+      index = filter(POPULATIONS, "pop", id).getValue("pop_id");
+      names = id;
+    } else { // slendr internally uses also numerical identifiers (non-public)
+      index = id;
+      names = filter(POPULATIONS, "pop_id", id).getValue("pop");
+    }
+
+    // check that all identifiers correspond to populations in the slendr model
+    if (length(index) != length(id) | length(names) != length(id))
+        stop("Not all provided population identifiers are present in the model.\n" +
+             "Check your code to make sure that all of these are defined: " +
+             paste(id, sep = ", "));
+
+    // check that all given populations exist in the simulation at this time
+    matches = sapply(index, "any(applyValue == sim.subpopulations.id);");
+    if (!all(matches)) {
+      stop("The following populations not yet present in generation " +
+           community.tick + ": " + paste(names[!matches], sep = ", "));
+    }
+
+    // extract matches of given population identifiers to SLiM objects
+    extract = sapply(sim.subpopulations.id, "any(applyValue == index);");
+
+    return sim.subpopulations[extract];
+}
+
+// Convert a time value specified in time units used by a corresponding slendr
+// model to forward-time tick value used in SLiM
+function (i) tick(i time) {
+    // for backward-time slendr models, first convert time to forward direction
+    // (assuming a given generation time and the total expected run time of the
+    // simulation)
+    if (DIRECTION == "backward")
+        original_time = ORIGINAL_LENGTH - time + GENERATION_TIME;
+    else
+        original_time = time;
+
+    // convert the forward time from slendr time units to generations (ticks)
+    tick_time = asInteger(round(original_time / GENERATION_TIME));
+
+    invalid_time = tick_time < 1 | tick_time > SIMULATION_END;
+    if (any(invalid_time)) {
+        split_times = POPULATIONS.getValue("tsplit_orig");
+        if (DIRECTION == "backward") {
+            oldest_event = max(split_times);
+            youngest_event = oldest_event - ORIGINAL_LENGTH;
+        } else {
+            oldest_event = min(split_times);
+            youngest_event = oldest_event + ORIGINAL_LENGTH;
+        }
+        stop("Some of the times fall outside of the range of the slendr model:\n" +
+             "  - oldest possible event: " + oldest_event + "\n" +
+             "  - youngest possible event: " +  youngest_event + "\n\n" +
+             "The offending times were: " + paste(time[invalid_time], sep = ", "));
+    }
+
+    return(tick_time);
+}
+
+// Save the complete state of the simulation, including slendr-specific
+// population tags and values.
+function (void) save_state (void) {
+  // save the full genomic state of the simulation to a file
+  sim.outputFull(STATE_PATH + "population.txt");
+
+  // extract slendr-specific metadata and save it to a file too
+  pop_data = Dictionary(
+    "pop_id", sim.subpopulations.id,
+    "dispersal", sim.subpopulations.getValue("dispersal"),
+    "dispersal_fun", sim.subpopulations.getValue("dispersal_fun"),
+    "spatial", sim.subpopulations.getValue("spatial")
+  ).serialize(format = "json");
+  writeFile(STATE_PATH + "slendr.txt", pop_data);
+}
+
+// Load the complete state of the simulation, including slendr-specific
+// population tags and values, and choose a new random seed.
+function (void) reset_state (void) {
+  // read the genomic state of the simulation
+  sim.readFromPopulationFile(STATE_PATH + "population.txt");
+
+  // increment the random seed after loading the simulation state
+  setSeed(rdunif(1, 0, asInteger(2^31) - 1));
+
+  // read the slendr metadata and assign appropriate tag values to each
+  // loaded population to reset the proper slendr state (these tags are
+  // not saved by sim.outputFull)
+  pop_data = Dictionary(readFile(STATE_PATH + "slendr.txt"));
+  for (pop_id in pop_data.getValue("pop_id")) {
+      pop = population(pop_id);
+      pop_values = filter(pop_data, "pop_id", pop_id);
+      pop.setValue("dispersal", pop_values.getValue("dispersal"));
+      pop.setValue("dispersal_fun", pop_values.getValue("dispersal_fun"));
+      pop.setValue("spatial", pop_values.getValue("spatial"));
+  }
+}
+
+// Print a log output message with a time stamp
+function (void) log_output(s$ str) {
+    catn("Generation " + community.tick + ": " + str);
 }
