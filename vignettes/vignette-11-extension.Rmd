@@ -176,20 +176,66 @@ The offending times were: 0, 1000000
 
 ### Logging: `log_output()` Eidos function
 
-### Useful constants
+`log_output()` is a tiny helper function provided by _slendr_'s SLiM back-end script which serves to print out a given string to the SLiM log output together with the appropriate tick number at that time.
 
-- `SEQUENCE_LENGTH`: the total length of the simulated sequence
-- `SEED`: random seed passed to SLiM from the _slendr_ R code
-- `POPULATIONS`: a `DataFrame` object
-- `GENE_FLOWS`
-- `SAMPLING`
-- `GENERATION_TIME`
+### Saving and re-starting simulation state: `save_state()` and `reset_state()`
 
-These are _slendr_'s SLiM constants which are most likely to be useful for user-defined custom SLiM extension snippets. There are othe constants present in the codebase, though -- you can find them by inspecting the `initialize()` block at the beginning of the _slendr_ SLiM script -- but those should be considered to be _slendr_'s internal matter. Use them only with caution, as their use can slightly change over time.
+Whenever we're dealing with the simulation of, say, beneficial allele frequency trajectories, we usually have to take care of situations in which the allele of interest gets lost before the simulation finishes running. In this case, we often want to reset the simulation to a state just before the mutation was added and try again. Section 9.2 of the venerable SLiM manual ("Making sweeps conditional on fixation") is a great example on how to solve this with base SLiM.
 
-## Adding a SLiM snippet to the _slendr_ engine
+Although it would be quite easy to use the same approach in the _slendr_/SLiM extension snippets described here, there's one issue with this approach: `sim.outputFull()` and `sim.readFromPopulationFile()` do not preserve some important _slendr_ tags which are assigned using `<Subpopulation>.{set,get}Value()` methods. Doing so would require poking into _slendr_'s SLiM codebase, which would be confusing for any user.
 
-The above examples show how you can refer to a _slendr_ population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the _slendr_ built-in SLiM script, and how you can convert _slendr_-specific time units into SLiM's internal ticks using the `tick()` function.
+To circumvent the problem, _slendr_'s SLiM back-end script provides these two functions:
+
+- `save_state()`: saves the full state of the SLiM simulation (just as `sim.outputFull()` does), while also saving those few _slendr_-specific values;
+- `reset_state()`: restores the full SLiM simulation state (including _slendr_ specific tags and values), and **chooses a new random seed**. The latter is performed because restarting a simulation using the `save_state()` - `reset_state()` tandem is practically always done in order to change the outcome of a simulation.
+
+
+As an example, let's say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far, to define the following _slendr_ extension snippet:
+
+```
+initialize() {
+  initializeMutationType("m1", 0.5, "f", 0.05);
+}
+
+function (void) add_mutation(s pop_name) {
+  // sample one target carrier of the new mutation...
+  target = sample(population(pop_name).genomes, 1);
+  // ... and add the mutation to it
+  target.addNewDrawnMutation(m1, position = asInteger(SEQUENCE_LENGTH / 2));
+  
+  log_output("added beneficial mutation at 15 kya");
+}
+
+tick(15000) late() { /* Add a beneficial mutation at 15 thousand years ago*/
+    // save simulation state in case we need to restart if the mutation is lost
+  save_state();
+  
+  add_mutation("EUR");
+}
+
+tick(15000):SIMULATION_END late() {
+  segregating = sim.countOfMutationsOfType(m1) > 0;
+  fixed = sum(sim.substitutions.mutationType == m1) == 1;
+  
+  // the mutation is not segregating and is not fixed either -- we must restart
+  if (!segregating & !fixed) {
+    log_output("mutation lost -- restarting");
+    
+    reset_state();
+    
+    add_mutation("EUR");
+  }
+}
+```
+
+### Global constants
+
+By inspecting the built-in SLiM simulation script of _slendr_, you will find that it contains a number of global constants. Most of them should be considered internal and users shouldn't rely on them in their code. However, one useful contant which you can see being used in the snippet above is `SEQUENCE_LENGTH` -- this is the total amount of sequence simulated (i.e., the number passed as `slim(<model>, sequence_length = <SEQUENCE_LENGTH>, ...)` in your R code).
+
+
+## Putting it all together: running a customized _slendr_ simulation 
+
+The above examples show how you can refer to a _slendr_ population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the _slendr_ built-in SLiM script, and how you can convert _slendr_-specific time units into SLiM's internal ticks using the `tick()` function. You've also learned how to save and reset SLiM state using provided functions `save_state()` and `reset_state()` and how to log outputs using the function `log_output()`. We demonstrated all this by defining a customized snippet of SLiM code which we now want to use in a full _slendr_ simulation run.
 
 And it turns out that as long as you're OK with keeping _slendr_'s built-in SLiM script intact (which, as we point out above, is a hard requirement we make in this vignette) you can use whatever SLiM features you have at your disposal and still easily refer to _slendr_ populations and times of _slendr_ model events. One way to do this would be to edit the built-in _slendr_ SLiM script and manually add your own SLiM code, but that would be brittle and not very reproducible. There's a much better way to do this, leveraging what we call _slendr_/SLiM snippets.
 
@@ -197,22 +243,38 @@ To demonstrate all of this in practice, let's say we want to simulate the allele
 
 
 ```
-s100 late() { /* Add a beneficial mutation at a given time */
-  // when to add the mutation ("years before present")
-  event_time = 15000; 
+initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.2);
+}
 
-  // parameters of the beneficial allele
-  init_freq = 0.05;
-  s = 0.1;    
+function (void) add_mutation(void) {
+    // sample one target carrier of the new mutation...
+    target = sample(population("EUR").genomes, 1);
+    // ... and add the mutation to it
+    target.addNewDrawnMutation(m1, position = asInteger(SEQUENCE_LENGTH / 2));
 
-  // make sure the callback is executed only at the given time point
-  if (community.tick != tick(event_time)) return;
-  
-  // add the beneficial mutation at a given frequency
-  eur_genomes = population("EUR").genomes;
-  eur_sample = sample(eur_genomes, n = init_freq * length(eur_genomes));
-  eur_sample.addNewMutation(m0, s, 0); 
+    log_output("added beneficial mutation at 15 kya");
+}
 
-  log_output("Added beneficial mutation at " + event_time + "years ago");
+tick(15000) late() { /* Add a beneficial mutation at 15 thousand years ago*/
+    // save the full state of the simulation in case we need to restart
+    sim.outputFull(tempdir() + "slim_" + SEED + ".txt");
+
+    add_mutation();
+}
+
+tick(15000):SIMULATION_END late() {
+    segregating = sim.countOfMutationsOfType(m1) > 0;
+    fixed = sum(sim.substitutions.mutationType == m1) == 1;
+
+    // the mutation is not segregating and is not fixed either -- we must restart
+    if (!segregating & !fixed) {
+        log_output("mutation lost -- restarting");
+
+        sim.readFromPopulationFile(tempdir() + "slim_" + SEED + ".txt");
+        setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+
+        add_mutation();
+    }
 }
 ```
