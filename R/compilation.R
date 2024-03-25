@@ -38,7 +38,6 @@
 #'   present? Useful for non-interactive uses. In an interactive mode, the user
 #'   is asked to confirm the deletion manually.
 #' @param description Optional short description of the model
-#' @param sim_length Deprecated. Use \code{simulation_length} instead.
 #'
 #' @return Compiled \code{slendr_model} model object which encapsulates all
 #'   information about the specified model (which populations are involved,
@@ -54,12 +53,7 @@ compile_model <- function(populations, generation_time, path = NULL, resolution 
                           gene_flow = list(), overwrite = FALSE, force = FALSE,
                           simulation_length = NULL, direction = NULL,
                           serialize = TRUE,
-                          slim_script = NULL, description = "", sim_length = NULL) {
-  if (is.null(simulation_length) && !is.null(sim_length)) {
-    warning("Argument `sim_length` will soon be deprecated in favor of `simulation_length`.", call. = FALSE)
-    simulation_length <- sim_length
-  }
-
+                          slim_script = NULL, description = "") {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
   if (is.null(slim_script))
