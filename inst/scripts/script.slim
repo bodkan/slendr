@@ -895,7 +895,7 @@ function (void) reset_state (void) {
   sim.readFromPopulationFile(STATE_PATH + "population.txt");
 
   // increment the random seed after loading the simulation state
-  setSeed(rdunif(1, 0, asInteger(2^62) - 1));
+  setSeed(rdunif(1, 0, asInteger(2^31) - 1);
 
   // read the slendr metadata and assign appropriate tag values to each
   // loaded population to reset the proper slendr state
