@@ -22,12 +22,12 @@ function (void) add_mutation(s pop_name, f selection_coef) {
     log_output("added beneficial mutation");
 }
 
-tick(onset_time) late() { /* Add a beneficial mutation at 15 thousand years ago*/
+tick(onset_time) late() {
     // save simulation state in case we need to restart if the mutation is lost
     save_state();
 
     add_mutation(target_pop, s);
-    writeFile(output_file, "generation\tfrequency");
+    writeFile(output_file, "tick\ttime\tfrequency");
 }
 
 tick(onset_time):SIMULATION_END late() {
@@ -41,10 +41,14 @@ tick(onset_time):SIMULATION_END late() {
         reset_state();
 
         add_mutation(target_pop, s);
-        writeFile(output_file, "generation\tfrequency");
+        writeFile(output_file, "tick\ttime\tfrequency");
     }
 
+    if (fixed)
+        frequency = 1.0;
+    else
+        frequency = population(target_pop).genomes.mutationFrequenciesInGenomes();
     time = model_time(community.tick);
-    frequency = population(target_pop).genomes.mutationFrequenciesInGenomes();
-    writeFile(output_file, time + "\t" + frequency, append = T);
+
+    writeFile(output_file, community.tick + "\t" + time + "\t" + frequency, append = T);
 }
