@@ -10,17 +10,17 @@ slim(
   recombination_rate,
   samples = NULL,
   output = NULL,
+  method = c("batch", "gui"),
+  random_seed = NULL,
+  verbose = FALSE,
+  load = TRUE,
+  run = TRUE,
+  slim_path = NULL,
   burnin = 0,
   max_attempts = 1,
   spatial = !is.null(model$world),
   coalescent_only = TRUE,
-  method = c("batch", "gui"),
-  random_seed = NULL,
-  run = TRUE,
-  verbose = FALSE,
-  load = TRUE,
-  locations = NULL,
-  slim_path = NULL
+  locations = NULL
 )
 }
 \arguments{
@@ -40,6 +40,26 @@ recorded in the tree-sequence output file.}
 \item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
 tree sequence will be saved to a temporary file.}
 
+\item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
+on the command line)}
+
+\item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
+0 and the maximum integer number available)}
+
+\item{verbose}{Write the SLiM output log to the console (default
+\code{FALSE})?}
+
+\item{load}{Should the final tree sequence be immediately loaded and returned?
+Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
+file is written to a custom location to be loaded at a later point.}
+
+\item{run}{Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
+command will be printed (and returned invisibly as a character vector) but not executed.}
+
+\item{slim_path}{Path to the appropriate SLiM binary (this is useful if the
+\code{slim} binary is not on the \code{$PATH}). Note that this argument must
+be specified if the function is being run on Windows.}
+
 \item{burnin}{Length of the burnin (in model's time units, i.e. years)}
 
 \item{max_attempts}{How many attempts should be made to place an offspring
@@ -54,29 +74,9 @@ a spatial mode.}
   <...>)} be set to \code{TRUE} (the default) or \code{FALSE}? See
 "retainCoalescentOnly" in the SLiM manual for more detail.}
 
-\item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
-on the command line)}
-
-\item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
-0 and the maximum integer number available)}
-
-\item{run}{Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
-command will be printed (and returned invisibly as a character vector) but not executed.}
-
-\item{verbose}{Write the SLiM output log to the console (default
-\code{FALSE})?}
-
-\item{load}{Should the final tree sequence be immediately loaded and returned?
-Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
-file is written to a custom location to be loaded at a later point.}
-
 \item{locations}{If \code{NULL}, locations are not saved. Otherwise, the
 path to the file where locations of each individual throughout the simulation
 will be saved (most likely for use with \code{animate_model}).}
-
-\item{slim_path}{Path to the appropriate SLiM binary (this is useful if the
-\code{slim} binary is not on the \code{$PATH}). Note that this argument must
-be specified if the function is being run on Windows.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}

@@ -199,6 +199,17 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #'   recorded in the tree-sequence output file.
 #' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
 #'   tree sequence will be saved to a temporary file.
+#' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
+#'   on the command line)
+#' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
+#'   0 and the maximum integer number available)
+#' @param load Should the final tree sequence be immediately loaded and returned?
+#'   Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
+#'   file is written to a custom location to be loaded at a later point.
+#' @param verbose Write the SLiM output log to the console (default
+#'   \code{FALSE})?
+#' @param run Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
+#'   command will be printed (and returned invisibly as a character vector) but not executed.
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
 #' @param max_attempts How many attempts should be made to place an offspring
 #'   near one of its parents? Serves to prevent infinite loops on the SLiM
@@ -209,23 +220,12 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #' @param coalescent_only Should \code{initializeTreeSeq(retainCoalescentOnly =
 #'   <...>)} be set to \code{TRUE} (the default) or \code{FALSE}? See
 #'   "retainCoalescentOnly" in the SLiM manual for more detail.
-#' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
-#'   on the command line)
-#' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
-#'   0 and the maximum integer number available)
-#' @param verbose Write the SLiM output log to the console (default
-#'   \code{FALSE})?
-#' @param load Should the final tree sequence be immediately loaded and returned?
-#'   Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
-#'   file is written to a custom location to be loaded at a later point.
 #' @param locations If \code{NULL}, locations are not saved. Otherwise, the
 #'   path to the file where locations of each individual throughout the simulation
 #'   will be saved (most likely for use with \code{animate_model}).
 #' @param slim_path Path to the appropriate SLiM binary (this is useful if the
 #'   \code{slim} binary is not on the \code{$PATH}). Note that this argument must
 #'   be specified if the function is being run on Windows.
-#' @param run Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
-#'   command will be printed (and returned invisibly as a character vector) but not executed.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). Optionally,
@@ -271,9 +271,11 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #' @export
 slim <- function(
   model, sequence_length, recombination_rate, samples = NULL, output = NULL,
-  burnin = 0, max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
   method = c("batch", "gui"), random_seed = NULL,
-  run = TRUE, verbose = FALSE, load = TRUE, locations = NULL, slim_path = NULL
+  verbose = FALSE, load = TRUE, run = TRUE,
+  slim_path = NULL, burnin = 0,
+  max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
+  locations = NULL
 ) {
   method <- match.arg(method)
 
