@@ -188,13 +188,31 @@ setting `direction = 'backward'.`", call. = FALSE)
   slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
   if (!is.null(slim_extension)) {
-    script_contents <- readLines(slim_script, warn = FALSE)
     extension_contents <- readLines(slim_extension, warn = FALSE)
+    script_contents <- readLines(slim_script, warn = FALSE)
+
+    # check whether the customization snippet contains user-defined genomic
+    # initialization code
+    custom_init <- check_initialization(extension_contents)
+
+    # if it does, swap it out for the default slendr initialization code
+    if (custom_init) {
+      init_start <- grep("default slendr neutral initialization -- start", script_contents)
+      init_end <- grep("default slendr neutral initialization -- end", script_contents)
+      script_contents <- script_contents[-(init_start:init_end)]
+    }
+
     slim_script <- tempfile()
-    writeLines(
-      c(script_contents, "\n//\n// user extension code follows\n//\n", extension_contents),
-      slim_script
+
+    combined_script <- c(
+      script_contents,
+      "\n//////////////////////////////////////////////////",
+      "// user extension code follows",
+      "//////////////////////////////////////////////////\n",
+      extension_contents
     )
+
+    writeLines(combined_script, slim_script)
 
   }
 
@@ -349,6 +367,41 @@ calculate_checksums <- function(files) {
   )
 }
 
+check_initialization <- function(code) {
+  # check for the presence of initialize*() SLiM calls
+  init_calls <-
+    c(any(grepl("initializeMutationType", code)),
+      any(grepl("initializeMutationType", code)),
+      any(grepl("initializeGenomicElementType", code)),
+      any(grepl("initializeGenomicElement", code)),
+      any(grepl("initializeMutationRate", code)),
+      any(grepl("initializeRecombinationRate", code)))
+
+  # an extension SLiM snippet can either have none or all the required
+  # initialize*() calls
+  if (!(sum(init_calls) == 0 || sum(init_calls) == length(init_calls))) {
+    stop("SLiM extension snippets must either contain no initialize*()\n",
+         "calls (and thus rely entirely on slendr's default initialization), or\n",
+         "they must contain an initialization callback with at least the\n",
+         "following minimal set of genomic initialization calls anywhere in\n",
+         "the extension code:\n\n",
+         "initialize() {\n",
+         "    initializeMutationType(...);\n",
+         "    initializeGenomicElementType(...);\n",
+         "    initializeGenomicElement(...);\n",
+         "    initializeMutationRate(...);\n",
+         "    initializeRecombinationRate(...);\n",
+         "}\n\n",
+         "This is just a minimal required example. Of course, you are free to\n",
+         "set up mutation and genomic initialization of arbitrary complexity.\n\n",
+         "If you wish, you can still use slendr's constants SEQUENCE_LENGTH\n",
+         "and RECOMBINATION_RATE as passed through the slim() function.",
+         call. = FALSE
+    )
+  }
+
+  sum(init_calls) == length(init_calls)
+}
 
 # Make sure the checksums of a given set of files matches the expectation
 verify_checksums <- function(files, hashes) {
