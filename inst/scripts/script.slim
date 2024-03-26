@@ -884,6 +884,8 @@ function (i) tick(i time) {
     // convert the forward time from slendr time units to generations (ticks)
     tick_time = asInteger(round(original_time / GENERATION_TIME));
 
+    tick_time = tick_time + BURNIN_LENGTH;
+
     invalid_time = tick_time < 1 | tick_time > SIMULATION_END;
     if (any(invalid_time)) {
         split_times = POPULATIONS.getValue("tsplit_orig");
