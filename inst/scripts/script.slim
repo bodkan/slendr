@@ -485,8 +485,6 @@ s11 late() /* End of simulation */ {
 
     log_output("simulation finished");
     sim.simulationFinished();
-
-    sim.subpopulations.setSubpopulationSize(0);
 }
 
 ///
@@ -909,11 +907,6 @@ function (i) tick(i time) {
 // Save the complete state of the simulation, including slendr-specific
 // population tags and values.
 function (void) save_state (void) {
-  if (length(sim.subpopulations) == 0)
-      stop("No population present in tick " +
-           community.tick + " corresponding to slendr model time " +
-           model_time(community.tick) + "\n");
-
   // save the full genomic state of the simulation to a file
   sim.outputFull(STATE_PATH + "population.txt");
 
