@@ -19,7 +19,7 @@ function (void) add_mutation(s pop_name, f selection_coef) {
     // ... and add the mutation to it
     target.addNewMutation(m1, selectionCoeff = selection_coef, position = asInteger(SEQUENCE_LENGTH / 2));
 
-    log_output("added beneficial mutation");
+    log_output("adding beneficial mutation");
 }
 
 tick(onset_time) late() {
