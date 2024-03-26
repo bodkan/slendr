@@ -841,7 +841,7 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
 // Given a string containing a symbolic name of a slendr population (or
 // multiple populations) as used in a slendr R script, return the corresponding
 // SLiM subpopulation objects
-function (lifso<Subpopulation>) population(si id) {
+function (lifso<Subpopulation>) population(si id, [l$ check = F]) {
     // if a string name was given, extract the corresponding population index
     if (isString(id)) {
       index = filter(POPULATIONS, "pop", id).getValue("pop_id");
@@ -859,9 +859,12 @@ function (lifso<Subpopulation>) population(si id) {
 
     // check that all given populations exist in the simulation at this time
     matches = sapply(index, "any(applyValue == sim.subpopulations.id);");
-    if (!all(matches)) {
-      stop("The following populations not yet present in generation " +
-           community.tick + ": " + paste(names[!matches], sep = ", "));
+    if (check)
+      return(all(matches));
+    else if (!all(matches)) {
+        stop("The following populations not present in tick " +
+             community.tick + " (slendr model time " + model_time(community.tick) +
+             "): " + paste(names[!matches], sep = ", "));
     }
 
     // extract matches of given population identifiers to SLiM objects
