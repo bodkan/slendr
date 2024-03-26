@@ -340,7 +340,8 @@ slim <- function(
     script_contents <- readLines(script_path) %>%
       gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
       gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
-      gsub("required_arg\\(\"OUTPUT_TS\"\\)", sprintf("defineConstant(\"OUTPUT_TS\", \"%s\")", output), .)
+      gsub("required_arg\\(\"OUTPUT_TS\"\\)", sprintf("defineConstant(\"OUTPUT_TS\", \"%s\")", output), .) %>%
+      gsub("optional_arg\\(\"BURNIN_LENGTH\", 0\\)", sprintf("defineConstant(\"BURNIN_LENGTH\", %s)", burnin), .)
 
     # similarly, user-defined command-line arguments must be defined in the
     # SLiM script if it's to be run via SLiMgui
