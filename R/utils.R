@@ -673,8 +673,7 @@ convert_slim_time <- function(times, model) {
   if (model$direction == "backward") {
     oldest_time <- max(ancestors[, ]$tsplit_orig)
 
-    result <- times * model$generation_time +
-      (max(ancestors[, ]$tsplit_orig) - model$orig_length)
+    result <- times * model$generation_time + (oldest_time - model$orig_length)
 
     # does the backward simulation model terminate sooner than "present-day"? if
     # so, shift the times to start at the original time specified by user (also
