@@ -193,15 +193,11 @@ To circumvent the problem, _slendr_'s SLiM back-end script provides these two fu
 As an example, let's say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far, to define the following _slendr_ extension snippet:
 
 ```
-initialize() {
-  initializeMutationType("m1", 0.5, "f", 0.05);
-}
-
 function (void) add_mutation(s pop_name) {
   // sample one target carrier of the new mutation...
   target = sample(population(pop_name).genomes, 1);
   // ... and add the mutation to it
-  target.addNewDrawnMutation(m1, position = asInteger(SEQUENCE_LENGTH / 2));
+  target.addNewDrawnMutation(m0, position = asInteger(SEQUENCE_LENGTH / 2));
   
   log_output("added beneficial mutation at 15 kya");
 }
@@ -214,8 +210,8 @@ tick(15000) late() { /* Add a beneficial mutation at 15 thousand years ago*/
 }
 
 tick(15000):SIMULATION_END late() {
-  segregating = sim.countOfMutationsOfType(m1) > 0;
-  fixed = sum(sim.substitutions.mutationType == m1) == 1;
+  segregating = sim.countOfMutationsOfType(m0) > 0;
+  fixed = sum(sim.substitutions.mutationType == m0) == 1;
   
   // the mutation is not segregating and is not fixed either -- we must restart
   if (!segregating & !fixed) {
@@ -274,22 +270,51 @@ gf <- list(
   gene_flow(from = ana, to = eur, rate = 0.5, start = 6000, end = 5000),
   gene_flow(from = yam, to = eur, rate = 0.65, start = 4000, end = 3500)
 )
+```
 
-# compile a slendr model
+```{r model_for_plot, echo=FALSE}
+model_for_plot <- compile_model(
+  populations = list(afr, ooa, ehg, eur, ana, yam),
+  gene_flow = gf, generation_time = 30
+)
+plot_model(model_for_plot, order = c("EUR", "EHG", "YAM", "ANA", "OOA", "AFR"), proportions = TRUE)
+```
+
+So far so good. Let's also assume we have the following "SLiM snippet file":
+
+```{r}
+extension_path <- system.file("extdata", "extension1.txt", package = "slendr")
+```
+
+```{r, echo=FALSE}
+Sys.setenv(EXTENSION = extension_path)
+```
+
+```{bash, echo = FALSE, comment = ""}
+less ${EXTENSION}
+```
+
+We can include the extension snippet into the standard _slendr_ engine SLiM script by providing a path to it in `compile_model()`:
+
+```{r, eval=FALSE}
 model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf, generation_time = 30,
-  slim_extension = "~/Desktop/asd.txt"
+  slim_extension = extension_path  # <--- include the SLiM extension snippet
 )
-
-plot_model(model, order = c("EUR", "EHG", "YAM", "ANA", "OOA", "AFR"), proportions = TRUE)
 ```
 
-```{r}
-extend_slim(model, slim_extension)
+```{r, echo=FALSE}
+model <- compile_model(
+  populations = list(afr, ooa, ehg, eur, ana, yam),
+  gene_flow = gf, generation_time = 30,
+  slim_extension = extension_path
+)
 ```
 
-```{r}
+You can check that the extension snippet was really appended to the built-in SLiM engine script by running `slim()` function and setting `method = "gui"` (look towards the end of the script!):
+
+```{r, eval=FALSE}
 slim(model, sequence_length = 1e6, recombination_rate = 0, method = "gui")
 ```
 
