@@ -7,7 +7,7 @@ function(i) model_time (i tick) {
     invalid_tick = tick < SIMULATION_START | tick > SIMULATION_END;
 
     if (any(invalid_tick)) {
-        stop("Some of the ticks fall outside of the range of the current simulation:\n" +
+        stop("Some tick values are outside of the time range of the current simulation:\n" +
              "  - oldest possible event: " + SIMULATION_START + "\n" +
              "  - youngest possible event: " +  SIMULATION_END + "\n\n" +
              "The offending times were: " + paste(tick[invalid_tick], sep = ", "));
@@ -485,6 +485,8 @@ s11 late() /* End of simulation */ {
 
     log_output("simulation finished");
     sim.simulationFinished();
+
+    sim.subpopulations.setSubpopulationSize(0);
 }
 
 ///
@@ -907,6 +909,11 @@ function (i) tick(i time) {
 // Save the complete state of the simulation, including slendr-specific
 // population tags and values.
 function (void) save_state (void) {
+  if (length(sim.subpopulations) == 0)
+      stop("No population present in tick " +
+           community.tick + " corresponding to slendr model time " +
+           model_time(community.tick) + "\n");
+
   // save the full genomic state of the simulation to a file
   sim.outputFull(STATE_PATH + "population.txt");
 
