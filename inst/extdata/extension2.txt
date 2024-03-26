@@ -44,6 +44,7 @@ tick(onset_time):SIMULATION_END late() {
         writeFile(output_file, "generation\tfrequency");
     }
 
+    time = model_time(community.tick);
     frequency = population(target_pop).genomes.mutationFrequenciesInGenomes();
-    writeFile(output_file, community.tick + "\t" + frequency, append = T);
+    writeFile(output_file, time + "\t" + frequency, append = T);
 }
