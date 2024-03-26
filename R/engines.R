@@ -273,6 +273,7 @@ slim <- function(
   model, sequence_length, recombination_rate, samples = NULL, output = NULL,
   method = c("batch", "gui"), random_seed = NULL,
   verbose = FALSE, load = TRUE, run = TRUE,
+  arguments = NULL,
   slim_path = NULL, burnin = 0,
   max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
   locations = NULL
@@ -336,13 +337,52 @@ slim <- function(
     # to be able to execute the script in the SLiMgui, we have to hardcode
     # the path to the model configuration directory
     modif_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-    readLines(script_path) %>%
+    script_contents <- readLines(script_path) %>%
       gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
       gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
-      gsub("required_arg\\(\"OUTPUT_TS\"\\)", sprintf("defineConstant(\"OUTPUT_TS\", \"%s\")", output), .) %>%
-      cat(file = modif_path, sep = "\n")
+      gsub("required_arg\\(\"OUTPUT_TS\"\\)", sprintf("defineConstant(\"OUTPUT_TS\", \"%s\")", output), .)
+
+    # similarly, user-defined command-line arguments must be defined in the
+    # SLiM script if it's to be run via SLiMgui
+    if (!is.null(arguments)) {
+      arguments <- vapply(
+        names(arguments),
+        FUN.VALUE = character(1),
+        function(arg) {
+          value <- arguments[[arg]]
+          if (is.character(value))
+            sprintf("    defineConstant(\"%s\", \"%s\");", arg, value)
+          else
+            sprintf("    defineConstant(\"%s\", %s);", arg, value)
+        }
+      )
+      script_contents <- c(
+        script_contents,
+        "\n//////////////////////////////////////////////////",
+        "// user-defined command-line argument values",
+        "// (this has been added for running in SLiMgui)",
+        "//////////////////////////////////////////////////",
+        "\ninitialize() {", arguments, "}\n"
+        )
+    }
+
+    cat(script_contents, file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
+    if (!is.null(arguments)) {
+      arguments <- vapply(
+        names(arguments),
+        FUN.VALUE = character(1),
+        function(arg) {
+          value <- arguments[[arg]]
+          if (is.character(value))
+            sprintf("-d \"%s='%s'\"", arg, value)
+          else
+            sprintf("-d %s=%s", arg, value)
+        }
+      ) %>% paste0(collapse = " ")
+    }
+
     slim_command <- paste(binary,
                           seed,
                           samples,
@@ -356,6 +396,7 @@ slim <- function(
                           paste0("-d \"OUTPUT_LOCATIONS='",locations,"'\""),
                           paste0("-d COALESCENT_ONLY=",coalescent_only),
                           paste0("-d MAX_ATTEMPTS=",max_attempts),
+                          arguments,
                           script_path)
 
     if (verbose || !run) {
