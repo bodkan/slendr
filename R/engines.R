@@ -420,7 +420,7 @@ slim <- function(
               paste(log_warnings, collapse = "\n"), call. = FALSE)
     }
 
-    if (!grepl("simulation finished", log_output[length(log_output)])) {
+    if (!any(grepl("simulation finished", log_output))) {
       if (!verbose) cat(log_output, sep = "\n")
       stop("Unfortunately SLiM terminated before a tree sequence was saved.\n",
            "See the above for an indication of where things ",
