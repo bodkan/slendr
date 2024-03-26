@@ -26,6 +26,8 @@ After the spatial simulation features have been largely implemented, it turned o
 
 Throughout all this time, _slendr_ models were purely neutral, without much planning to extend simulations toward non-neutral scenarios.
 
+**You can imagine things this way: with the extension functionality, _slendr_ takes care of demographic history (population divergences, gene-flow events, resizes). You only have to provide custom SLiM code for non-neutral evolution.**
+
 ## Model specification
 
 Let's first load all required R libraries:
@@ -393,6 +395,40 @@ head(trajectory)
 tail(trajectory)
 
 plot(trajectory$time, trajectory$frequency, type = "l")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=FALSE}
+extension_path <- system.file("extdata", "extension3.txt", package = "slendr")
+
+extension <- substitute(extension_path, s = 0.1, onset_time = 15000)
+model <- compile_model(
+  populations = list(afr, ooa, ehg, eur, ana, yam),
+  gene_flow = gf, generation_time = 30,
+  extension = extension 
+)
+
+arguments <- list(output_file = "~/Desktop/output_eur.tsv", target_pop = "EUR")
+ts <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, arguments = arguments)
+
+arguments <- list(output_file = "~/Desktop/output_ana.tsv", target_pop = "ANA")
+ts <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, arguments = arguments)
+
+trajectory <- read.table("~/Desktop/output_eur.tsv", header = TRUE)
+plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
+
+trajectory <- read.table("~/Desktop/output_ana.tsv", header = TRUE)
+plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
 ```
 
 
