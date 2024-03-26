@@ -60,9 +60,6 @@ compile_model <- function(
 ) {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
-  if (is.null(slim_script))
-    slim_script <- system.file("scripts", "script.slim", package = "slendr")
-
   # get values of all map attributes across populations
   maps <- lapply(populations, get_map) %>% Filter(Negate(is.null), .)
 
@@ -186,6 +183,20 @@ setting `direction = 'backward'.`", call. = FALSE)
   }
 
   simulation_length <- if (is.null(simulation_length)) end_time else simulation_length
+
+
+  slim_script <- system.file("scripts", "script.slim", package = "slendr")
+
+  if (!is.null(slim_extension)) {
+    script_contents <- readLines(slim_script, warn = FALSE)
+    extension_contents <- readLines(slim_extension, warn = FALSE)
+    slim_script <- tempfile()
+    writeLines(
+      c(script_contents, "\n//\n// user extension code follows\n//\n", extension_contents),
+      slim_script
+    )
+
+  }
 
   if (serialize)
     checksums <- write_model(
