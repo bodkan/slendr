@@ -25,7 +25,7 @@ function (void) add_mutation(s pop_name, f selection_coef) {
     // ... and add the mutation to it
     target.addNewMutation(m1, selectionCoeff = selection_coef, position = asInteger(SEQUENCE_LENGTH / 2));
 
-    log_output("adding beneficial mutation");
+    log_output("adding beneficial mutation to population " + pop_name);
 }
 
 tick(onset_time) late() {
@@ -36,7 +36,11 @@ tick(onset_time) late() {
     writeFile(output_file, "tick\ttime\tfrequency");
 }
 
+// check that the allele of interest is still segregating (and save its
+// frequency to a file)
 tick(onset_time):SIMULATION_END late() {
+    if (!population(target_pop, check = T)) return;
+
     segregating = sim.countOfMutationsOfType(m1) > 0;
     fixed = sum(sim.substitutions.mutationType == m1) == 1;
 
