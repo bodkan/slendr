@@ -277,6 +277,7 @@ model_for_plot <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf, generation_time = 30
 )
+
 plot_model(model_for_plot, order = c("EUR", "EHG", "YAM", "ANA", "OOA", "AFR"), proportions = TRUE)
 ```
 
@@ -287,16 +288,16 @@ extension_path <- system.file("extdata", "extension1.txt", package = "slendr")
 ```
 
 ```{r, echo=FALSE}
-Sys.setenv(EXTENSION = extension_path)
+Sys.setenv(EXTENSION1 = extension_path)
 ```
 
 ```{bash, echo = FALSE, comment = ""}
-less ${EXTENSION}
+less ${EXTENSION1}
 ```
 
 We can include the extension snippet into the standard _slendr_ engine SLiM script by providing a path to it in `compile_model()`:
 
-```{r, eval=FALSE}
+```{r}
 model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf, generation_time = 30,
@@ -304,17 +305,58 @@ model <- compile_model(
 )
 ```
 
-```{r, echo=FALSE}
-model <- compile_model(
-  populations = list(afr, ooa, ehg, eur, ana, yam),
-  gene_flow = gf, generation_time = 30,
-  slim_extension = extension_path
-)
-```
-
 You can check that the extension snippet was really appended to the built-in SLiM engine script by running `slim()` function and setting `method = "gui"` (look towards the end of the script!):
 
 ```{r, eval=FALSE}
 slim(model, sequence_length = 1e6, recombination_rate = 0, method = "gui")
+```
+
+```{r}
+extension_path <- system.file("extdata", "extension2.txt", package = "slendr")
+
+model <- compile_model(
+  populations = list(afr, ooa, ehg, eur, ana, yam),
+  gene_flow = gf, generation_time = 30,
+  slim_extension = extension_path  # <--- include the SLiM extension snippet
+)
+```
+
+```{r}
+arguments <- list(
+  output_file = "~/Desktop/output.tsv",
+  target_pop = "AFR",
+  onset_time = 90000,
+  s = 0.15
+)
+
+slim(model, sequence_length = 1e6, recombination_rate = 0, arguments = arguments)
+```
+
+```{r}
+library(ggplot2)
+
+trajectory <- read.table("~/Desktop/output.tsv", header = TRUE)
+
+ggplot(trajectory) + geom_line(aes(generation, frequency))
+```
+
+
+```{r}
+arguments <- list(
+  output_file = "~/Desktop/output.tsv",
+  target_pop = "EUR",
+  onset_time = 15000,
+  s = 0.1
+)
+
+slim(model, sequence_length = 1e6, recombination_rate = 0, arguments = arguments)
+```
+
+```{r}
+library(ggplot2)
+
+trajectory <- read.table("~/Desktop/output.tsv", header = TRUE)
+
+ggplot(trajectory) + geom_line(aes(generation, frequency))
 ```
 

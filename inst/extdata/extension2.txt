@@ -1,0 +1,49 @@
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture. Note that we can refer to slendr's constants
+// SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values passed
+// through from the slim() R function.
+initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(RECOMBINATION_RATE);
+}
+
+function (void) add_mutation(s pop_name, f selection_coef) {
+    // sample one target carrier of the new mutation...
+    target = sample(population(pop_name).genomes, 1);
+    // ... and add the mutation to it
+    target.addNewMutation(m1, selectionCoeff = selection_coef, position = asInteger(SEQUENCE_LENGTH / 2));
+
+    log_output("added beneficial mutation");
+}
+
+tick(onset_time) late() { /* Add a beneficial mutation at 15 thousand years ago*/
+    // save simulation state in case we need to restart if the mutation is lost
+    save_state();
+
+    add_mutation(target_pop, s);
+    writeFile(output_file, "generation\tfrequency");
+}
+
+tick(onset_time):SIMULATION_END late() {
+    segregating = sim.countOfMutationsOfType(m1) > 0;
+    fixed = sum(sim.substitutions.mutationType == m1) == 1;
+
+    // the mutation is not segregating and is not fixed either -- we must restart
+    if (!segregating & !fixed) {
+        log_output("mutation lost -- restarting");
+
+        reset_state();
+
+        add_mutation(target_pop, s);
+        writeFile(output_file, "generation\tfrequency");
+    }
+
+    frequency = population(target_pop).genomes.mutationFrequenciesInGenomes();
+    writeFile(output_file, community.tick + "\t" + frequency, append = T);
+}
