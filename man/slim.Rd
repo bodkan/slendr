@@ -15,6 +15,7 @@ slim(
   verbose = FALSE,
   load = TRUE,
   run = TRUE,
+  arguments = NULL,
   slim_path = NULL,
   burnin = 0,
   max_attempts = 1,

@@ -19,7 +19,7 @@ compile_model(
   competition = NULL,
   mating = NULL,
   dispersal = NULL,
-  slim_extension = NULL
+  extension = NULL
 )
 }
 \arguments{
@@ -64,7 +64,7 @@ distance}
 \item{dispersal}{Standard deviation of the normal distribution of the
 parent-offspring distance}
 
-\item{slim_extension}{Path to a SLiM script to be used for extending slendr's
+\item{extension}{Path to a SLiM script to be used for extending slendr's
 built-in SLiM simulation engine. This can either be a file with the snippet
 of Eidos code, or a string containing the code directly. Regardless, the
 provided snippet will be appended after the contents of the bundled slendr
