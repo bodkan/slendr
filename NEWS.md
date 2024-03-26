@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- The `slim_script` argument of `compile_model()` has been replaced by `slim_extension` argument, which allows users to provide their custom-designed SLiM snippets for extending the behavior of _slendr_'s SLiM simulation engine. ([#d11ac7](https://github.com/bodkan/slendr/commit/d11ac7))
+
 - The `sim_length` argument of `compile_model()` has been removed following a long period of deprecatiaon. ([#12da50](https://github.com/bodkan/slendr/commit/12da50))
 
 - Running `slim(..., method = "gui")` was broken due to recent changes to make _slendr_ work on Windows. A path to a generated SLiM script executed in SLiMgui was incorrectly normalized. Non-SLiMgui runs were not affected. ([#ccae1df](https://github.com/bodkan/slendr/commit/ccae1df))
