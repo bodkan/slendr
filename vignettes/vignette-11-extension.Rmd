@@ -329,8 +329,14 @@ arguments <- list(
   s = 0.15
 )
 
-slim(model, sequence_length = 1e6, recombination_rate = 0, arguments = arguments)
+slim(model, sequence_length = 1e6, recombination_rate = 0, arguments = arguments, verbose = TRUE, random_seed = 42)
 ```
+
+```{r}
+x = read.table("~/Desktop/output.tsv", header = TRUE)
+ggplot(x) + geom_line(aes(time, frequency))
+```
+
 
 ```{r}
 library(ggplot2)
@@ -359,4 +365,35 @@ trajectory <- read.table("~/Desktop/output.tsv", header = TRUE)
 
 ggplot(trajectory) + geom_line(aes(generation, frequency))
 ```
+
+
+
+
+
+
+
+
+
+```{r, eval=FALSE}
+devtools::load_all()
+init_env(quiet = TRUE)
+
+pop <- population("pop", time = 1, N = 1000)
+
+extension <- substitute(extension_path, s = 0.01, onset_time = 250)
+model <- compile_model(pop, generation_time = 1, simulation_length = 1000, extension = extension)
+
+arguments <- list(output_file = "~/Desktop/output.tsv", target_pop = "pop")
+
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, arguments = arguments)
+
+trajectory <- read.table("~/Desktop/output.tsv", header = TRUE)
+
+head(trajectory)
+tail(trajectory)
+
+plot(trajectory$time, trajectory$frequency, type = "l")
+```
+
+
 

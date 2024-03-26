@@ -35,7 +35,7 @@
 #'   distance
 #' @param dispersal Standard deviation of the normal distribution of the
 #'   parent-offspring distance
-#' @param slim_extension Path to a SLiM script to be used for extending slendr's
+#' @param extension Path to a SLiM script to be used for extending slendr's
 #'   built-in SLiM simulation engine. This can either be a file with the snippet
 #'   of Eidos code, or a string containing the code directly. Regardless, the
 #'   provided snippet will be appended after the contents of the bundled slendr
@@ -56,7 +56,7 @@ compile_model <- function(
     serialize = TRUE, path = NULL, overwrite = FALSE, force = FALSE,
     description = "",
     resolution = NULL, competition = NULL, mating = NULL, dispersal = NULL,
-    slim_extension = NULL
+    extension = NULL
 ) {
   if (inherits(populations, "slendr_pop"))  populations <- list(populations)
 
@@ -187,8 +187,8 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
-  if (!is.null(slim_extension)) {
-    extension_contents <- readLines(slim_extension, warn = FALSE)
+  if (!is.null(extension)) {
+    extension_contents <- readLines(extension, warn = FALSE)
     script_contents <- readLines(slim_script, warn = FALSE)
 
     # check whether the customization snippet contains user-defined genomic
@@ -213,7 +213,6 @@ setting `direction = 'backward'.`", call. = FALSE)
     )
 
     writeLines(combined_script, slim_script)
-
   }
 
   if (serialize)
@@ -365,42 +364,6 @@ calculate_checksums <- function(files) {
     hash = as.vector(vapply(files, hash_file, FUN.VALUE = character(1))
     )
   )
-}
-
-check_initialization <- function(code) {
-  # check for the presence of initialize*() SLiM calls
-  init_calls <-
-    c(any(grepl("initializeMutationType", code)),
-      any(grepl("initializeMutationType", code)),
-      any(grepl("initializeGenomicElementType", code)),
-      any(grepl("initializeGenomicElement", code)),
-      any(grepl("initializeMutationRate", code)),
-      any(grepl("initializeRecombinationRate", code)))
-
-  # an extension SLiM snippet can either have none or all the required
-  # initialize*() calls
-  if (!(sum(init_calls) == 0 || sum(init_calls) == length(init_calls))) {
-    stop("SLiM extension snippets must either contain no initialize*()\n",
-         "calls (and thus rely entirely on slendr's default initialization), or\n",
-         "they must contain an initialization callback with at least the\n",
-         "following minimal set of genomic initialization calls anywhere in\n",
-         "the extension code:\n\n",
-         "initialize() {\n",
-         "    initializeMutationType(...);\n",
-         "    initializeGenomicElementType(...);\n",
-         "    initializeGenomicElement(...);\n",
-         "    initializeMutationRate(...);\n",
-         "    initializeRecombinationRate(...);\n",
-         "}\n\n",
-         "This is just a minimal required example. Of course, you are free to\n",
-         "set up mutation and genomic initialization of arbitrary complexity.\n\n",
-         "If you wish, you can still use slendr's constants SEQUENCE_LENGTH\n",
-         "and RECOMBINATION_RATE as passed through the slim() function.",
-         call. = FALSE
-    )
-  }
-
-  sum(init_calls) == length(init_calls)
 }
 
 # Make sure the checksums of a given set of files matches the expectation
