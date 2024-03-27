@@ -1,8 +1,9 @@
 // Because we want to simulate non-neutral evolution, we have to provide a
 // custom initialization callback -- slendr will use it to replace its default
-// neutral genomic architecture. Note that we can refer to slendr's constants
-// SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values passed
-// through from the slim() R function.
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations). Note that we can refer to slendr's
+// constants SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values
+// passed through from R via slendr's slim() R function.
 initialize() {
     initializeMutationType("m1", 0.5, "f", 0.0);
 
@@ -14,7 +15,8 @@ initialize() {
 }
 
 // Define model constants (to be substituted) all in one place
-// (each {{placeholder}} will be replaced by a value passed from R)
+// (each {{placeholder}} will be replaced by a value passed from R).
+// Note that string constant template patterns are surrounded by "quotes"!
 initialize() {
     defineConstant("s", {{s}});
     defineConstant("onset_time", {{onset_time}});
@@ -42,8 +44,11 @@ tick(onset_time) late() {
 // check that the allele of interest is still segregating (and save its
 // frequency to a file)
 tick(onset_time):SIMULATION_END late() {
+    // if the target population doesn't exist anymore, there's no reason to
+    // compute allele frequency -- just return from the callback
     if (!population(target_pop, check = T)) return;
 
+    // is the mutation of interest segregating or fixed?
     segregating = sim.countOfMutationsOfType(m1) > 0;
     fixed = sum(sim.substitutions.mutationType == m1) == 1;
 
@@ -57,6 +62,8 @@ tick(onset_time):SIMULATION_END late() {
         writeFile(output_file, "tick\ttime\tfrequency");
     }
 
+    // compute the frequency of the mutation of interest and add it to the
+    // output file
     if (fixed)
         frequency = 1.0;
     else
