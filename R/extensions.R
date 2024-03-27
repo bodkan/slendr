@@ -25,6 +25,15 @@ substitute <- function(template, ...) {
     extension_code <- gsub(pattern, as.character(value), extension_code)
   }
 
+  remaining_code <- gsub("(.*)//.*$", "\\1", extension_code)
+  match_info <- regexpr("(\\{\\{.*\\}\\})", remaining_code)
+  matched_groups <- regmatches(extension_code, match_info)
+
+  if (length(matched_groups) > 0) {
+    stop("The extension script contains the following unsubstituted patterns: ",
+         paste(matched_groups, collapse = ", "), call. = FALSE)
+  }
+
   output <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   writeLines(extension_code, output)
 
