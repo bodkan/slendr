@@ -382,14 +382,17 @@ init_env(quiet = TRUE)
 
 pop <- population("pop", time = 1, N = 1000)
 
-extension <- substitute(extension_path, s = 0.01, onset_time = 250)
+extension <- substitute(
+  extension_path,
+  s = 0.01, onset_time = 250, target_pop = "pop",
+  output_dir = "~/Desktop/"
+)
+
 model <- compile_model(pop, generation_time = 1, simulation_length = 1000, extension = extension)
 
-arguments <- list(output_file = "~/Desktop/output.tsv", target_pop = "pop")
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
 
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, arguments = arguments)
-
-trajectory <- read.table("~/Desktop/output.tsv", header = TRUE)
+trajectory <- read.table("~/Desktop/traj_pop.tsv", header = TRUE)
 
 head(trajectory)
 tail(trajectory)
@@ -411,25 +414,125 @@ plot(trajectory$time, trajectory$frequency, type = "l")
 ```{r, eval=FALSE}
 extension_path <- system.file("extdata", "extension3.txt", package = "slendr")
 
-extension <- substitute(extension_path, s = 0.1, onset_time = 15000)
+extension <- substitute(
+  extension_path,
+  s = 0.1, onset_time = 15000, target_pop = "ANA",
+  output_dir = "~/Desktop/"
+)
+
 model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf, generation_time = 30,
   extension = extension 
 )
 
-arguments <- list(output_file = "~/Desktop/output_eur.tsv", target_pop = "EUR")
-ts <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, arguments = arguments)
+ts <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
 
-arguments <- list(output_file = "~/Desktop/output_ana.tsv", target_pop = "ANA")
-ts <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, arguments = arguments)
-
-trajectory <- read.table("~/Desktop/output_eur.tsv", header = TRUE)
+trajectory <- read.table("~/Desktop/traj_EUR.tsv", header = TRUE)
 plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
 
-trajectory <- read.table("~/Desktop/output_ana.tsv", header = TRUE)
+trajectory <- read.table("~/Desktop/traj_ANA.tsv", header = TRUE)
 plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
 ```
 
 
+
+
+
+
+Alternatively, thanks to the multiline string support implemented in R 4.2, we can specify the SLiM extension code directly as an R string. Including the SLiM code directly in an R script in this way makes it a little easier to iterate during development by eliminating the need to edit multiple files:
+
+```{r}
+extension_template <- r"(
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture. Note that we can refer to slendr's constants
+// SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values passed
+// through from the slim() R function.
+initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(RECOMBINATION_RATE);
+}
+
+// Define model constants (to be substituted) all in one place
+// (each {{placeholder}} will be replaced by a value passed from R)
+initialize() {
+    defineConstant("s", {{s}});
+    defineConstant("onset_time", {{onset_time}});
+    defineConstant("target_pop", "{{target_pop}}");
+    defineConstant("output_file", "{{output_dir}}" + "/" + "traj_" + target_pop + ".tsv");
+}
+
+function (void) add_mutation(s pop_name, f selection_coef) {
+    // sample one target carrier of the new mutation...
+    target = sample(population(pop_name).genomes, 1);
+    // ... and add the mutation to it
+    target.addNewMutation(m1, selectionCoeff = selection_coef, position = asInteger(SEQUENCE_LENGTH / 2));
+
+    log_output("adding beneficial mutation to population " + pop_name);
+}
+
+tick(onset_time) late() {
+    // save simulation state in case we need to restart if the mutation is lost
+    save_state();
+
+    add_mutation(target_pop, s);
+    writeFile(output_file, "tick\ttime\tfrequency");
+}
+
+// check that the allele of interest is still segregating (and save its
+// frequency to a file)
+tick(onset_time):SIMULATION_END late() {
+    if (!population(target_pop, check = T)) return;
+
+    segregating = sim.countOfMutationsOfType(m1) > 0;
+    fixed = sum(sim.substitutions.mutationType == m1) == 1;
+
+    // the mutation is not segregating and is not fixed either -- we must restart
+    if (!segregating & !fixed) {
+        log_output("mutation lost -- restarting");
+
+        reset_state();
+
+        add_mutation(target_pop, s);
+        writeFile(output_file, "tick\ttime\tfrequency");
+    }
+
+    if (fixed)
+        frequency = 1.0;
+    else
+        frequency = population(target_pop).genomes.mutationFrequenciesInGenomes();
+    time = model_time(community.tick);
+
+    writeFile(output_file, community.tick + "\t" + time + "\t" + frequency, append = T);
+}
+)"
+```
+
+```{r}
+extension <- substitute(
+  extension_template,
+  s = 0.1, onset_time = 15000, target_pop = "ANA",
+  output_dir = "~/Desktop/"
+)
+
+model <- compile_model(
+  populations = list(afr, ooa, ehg, eur, ana, yam),
+  gene_flow = gf, generation_time = 30,
+  extension = extension 
+)
+
+ts <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
+
+trajectory <- read.table("~/Desktop/traj_EUR.tsv", header = TRUE)
+plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
+
+trajectory <- read.table("~/Desktop/traj_ANA.tsv", header = TRUE)
+plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
+```
 

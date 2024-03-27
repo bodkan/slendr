@@ -13,10 +13,13 @@ initialize() {
     initializeRecombinationRate(RECOMBINATION_RATE);
 }
 
-// Define model constants all in one place
+// Define model constants (to be substituted) all in one place
+// (each {{placeholder}} will be replaced by a value passed from R)
 initialize() {
     defineConstant("s", {{s}});
     defineConstant("onset_time", {{onset_time}});
+    defineConstant("target_pop", "{{target_pop}}");
+    defineConstant("output_file", "{{output_dir}}" + "/" + "traj_" + target_pop + ".tsv");
 }
 
 function (void) add_mutation(s pop_name, f selection_coef) {

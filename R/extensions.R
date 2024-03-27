@@ -7,11 +7,11 @@
 #'
 #' @returns Path to a file with a saved extension script containing all
 #'   substituted values
-substitute <- function(extension, ...) {
-  if (file.exists(extension))
-    extension_code <- readLines(extension, warn = FALSE)
+substitute <- function(template, ...) {
+  if (file.exists(template))
+    extension_code <- readLines(template, warn = FALSE)
   else
-    extension_code <- extension
+    extension_code <- template
 
   arguments <- list(...)
 
