@@ -1,29 +1,3 @@
-
-// Convert a tick time in the simulation to the original slendr model time
-// (i.e., if the model was specified in units of "years before present", this
-// function will convert a tick value in the SLiM simulation back to "years
-// before present").
-function(i) model_time (i tick) {
-    invalid_tick = tick < SIMULATION_START | tick > SIMULATION_END;
-
-    if (any(invalid_tick)) {
-        stop("Some tick values are outside of the time range of the current simulation:\n" +
-             "  - oldest possible event: " + SIMULATION_START + "\n" +
-             "  - youngest possible event: " +  SIMULATION_END + "\n\n" +
-             "The offending times were: " + paste(tick[invalid_tick], sep = ", "));
-    }
-
-    if (DIRECTION == "backward") {
-        model_time = ORIGINAL_LENGTH - (tick - BURNIN_LENGTH - 1) * GENERATION_TIME;
-    } else {
-        model_time = (tick - SIMULATION_START + 1) * GENERATION_TIME;
-    }
-
-    return(asInteger(model_time));
-}
-
-
-
 // This SLiM script serves as a simulation back end of the slendr package.
 // As such it is distributed under the same conditions and license as the
 // rest of the slendr R package codebase.
@@ -908,6 +882,28 @@ function (i) tick(i time) {
     return(tick_time);
 }
 
+// Convert a tick time in the simulation to the original slendr model time
+// (i.e., if the model was specified in units of "years before present", this
+// function will convert a tick value in the SLiM simulation back to "years
+// before present").
+function(i) model_time (i tick) {
+    invalid_tick = tick < SIMULATION_START | tick > SIMULATION_END;
+
+    if (any(invalid_tick)) {
+        stop("Some tick values are outside of the time range of the current simulation:\n" +
+             "  - oldest possible event: " + SIMULATION_START + "\n" +
+             "  - youngest possible event: " +  SIMULATION_END + "\n\n" +
+             "The offending times were: " + paste(tick[invalid_tick], sep = ", "));
+    }
+
+    if (DIRECTION == "backward") {
+        model_time = ORIGINAL_LENGTH - (tick - BURNIN_LENGTH - 1) * GENERATION_TIME;
+    } else {
+        model_time = (tick - SIMULATION_START + 1) * GENERATION_TIME;
+    }
+
+    return(asInteger(model_time));
+}
 
 // Save the complete state of the simulation, including slendr-specific
 // population tags and values.
