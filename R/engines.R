@@ -410,7 +410,7 @@ slim <- function(
 
   # if the simulation was run in GUI mode, wait for the confirmation from the user that it
   # finished before loading the tree-sequence output file
-  if (method == "gui")
+  if (method == "gui" && output != "")
     readline("Please confirm that the SLiMgui simulation is finished [press ENTER]")
 
   if (load && output != "") {
