@@ -6,15 +6,8 @@
 /// Initialization block
 ///
 initialize() {
-    // if the script is being run in SLiMgui, specify dummy values for
-    // total sequence length and recombination rate
-    if (exists("slimgui")) {
-        defineConstant("SEQUENCE_LENGTH", 1);
-        defineConstant("RECOMBINATION_RATE", 0);
-    } else {
-        required_arg("SEQUENCE_LENGTH");
-        required_arg("RECOMBINATION_RATE");
-    }
+    required_arg("SEQUENCE_LENGTH");
+    required_arg("RECOMBINATION_RATE");
 
     optional_arg("SEED", getSeed());
     setSeed(SEED); catn("SEED: " + getSeed());
