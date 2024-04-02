@@ -198,7 +198,9 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
 #' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
-#'   tree sequence will be saved to a temporary file.
+#'   tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
+#'   file will be generated (this is only useful for running customized slendr SLiM
+#'   scripts).
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
 #'   on the command line)
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
@@ -282,12 +284,24 @@ slim <- function(
   if (is.null(model$path))
     stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
 
-  if (is.null(output) & !load)
-    warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
-            "a temporary file after the simulation has been prevented", call. = FALSE)
+  if (is.logical(output) && output == FALSE) {
+    simulate_ts <- "F"
+    output <- ""
+  } else if (!is.null(output) && !is.character(output))
+    stop("Invalid path to the output tree sequence. The `output =` argument\n",
+         "must be either NULL (the default when a temporary path will be created),\n",
+         "a proper file path,or `FALSE` if no output tree sequence ",
+         "should be created.", call. = FALSE)
+  else
+    simulate_ts <- "T"
 
-  if (is.null(output)) output <- tempfile(fileext = ".trees")
-  output <- normalizePath(output, winslash = "/", mustWork = FALSE)
+  if (is.null(output)) {
+    if (!load)
+      warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
+              "a temporary file after the simulation has been prevented", call. = FALSE)
+    output <- tempfile(fileext = ".trees")
+    output <- normalizePath(output, winslash = "/", mustWork = FALSE)
+  }
 
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
@@ -339,7 +353,7 @@ slim <- function(
     script_contents <- readLines(script_path) %>%
       gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
       gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
-      gsub("required_arg\\(\"OUTPUT_TS\"\\)", sprintf("defineConstant(\"OUTPUT_TS\", \"%s\")", output), .) %>%
+      gsub("required_arg\\(\"TS_PATH\"\\)", sprintf("defineConstant(\"TS_PATH\", \"%s\")", output), .) %>%
       gsub("optional_arg\\(\"BURNIN_LENGTH\", 0\\)", sprintf("defineConstant(\"BURNIN_LENGTH\", %s)", burnin), .)
 
     cat(script_contents, file = modif_path, sep = "\n")
@@ -349,7 +363,8 @@ slim <- function(
                           seed,
                           samples,
                           paste0("-d \"MODEL='",model_dir,"'\""),
-                          paste0("-d \"OUTPUT_TS='", output, "'\""),
+                          paste0("-d SIMULATE_TS=", simulate_ts),
+                          paste0("-d \"TS_PATH='", output, "'\""),
                           paste0("-d SPATIAL=",spatial),
                           paste0("-d SEQUENCE_LENGTH=",sequence_length),
                           paste0("-d RECOMBINATION_RATE=",recombination_rate),
@@ -398,10 +413,10 @@ slim <- function(
   if (method == "gui")
     readline("Please confirm that the SLiMgui simulation is finished [press ENTER]")
 
-  if (!file.exists(output))
-    stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
+  if (load && output != "") {
+    if (!file.exists(output))
+      stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
 
-  if (load) {
     if (verbose) {
       cat("Tree sequence was saved to:\n", output, "\n")
       cat("Loading the tree-sequence file...\n")

@@ -15,7 +15,6 @@ slim(
   verbose = FALSE,
   load = TRUE,
   run = TRUE,
-  arguments = NULL,
   slim_path = NULL,
   burnin = 0,
   max_attempts = 1,
@@ -39,7 +38,9 @@ missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
 \item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
-tree sequence will be saved to a temporary file.}
+tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
+file will be generated (this is only useful for running customized slendr SLiM
+scripts).}
 
 \item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
 on the command line)}

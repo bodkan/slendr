@@ -19,7 +19,8 @@ initialize() {
     optional_arg("SEED", getSeed());
     setSeed(SEED); catn("SEED: " + getSeed());
 
-    required_arg("OUTPUT_TS");
+    required_arg("TS_PATH");
+    optional_arg("SIMULATE_TS", T);
     optional_arg("MODEL", "."); // directory containing model configuration files
     optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
     optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
@@ -78,7 +79,8 @@ initialize() {
     defineConstant("SIMULATION_START", BURNIN_LENGTH + min(POPULATIONS.getValue("tsplit_gen")));
     defineConstant("SIMULATION_END", SIMULATION_START + SIMULATION_LENGTH);
 
-    initializeTreeSeq(retainCoalescentOnly = COALESCENT_ONLY);
+    if (SIMULATE_TS)
+      initializeTreeSeq(retainCoalescentOnly = COALESCENT_ONLY);
 }
 
 // default slendr neutral initialization -- start
@@ -149,7 +151,10 @@ initialize() {
         community.deregisterScriptBlock(s8);
 
     // remember individuals for tree sequence recording
-    community.rescheduleScriptBlock(s9, start = SIMULATION_START, end = SIMULATION_END);
+    if (SIMULATE_TS)
+      community.rescheduleScriptBlock(s9, start = SIMULATION_START, end = SIMULATION_END);
+    else
+      community.deregisterScriptBlock(s9);
 
     // remove populations from the simulation
     cleanups = filter(POPULATIONS, "tremove_gen", -1, negate = T);
@@ -158,8 +163,14 @@ initialize() {
     else
          community.deregisterScriptBlock(s10);
 
-    // save data and stop the simulation
-    community.rescheduleScriptBlock(s11, ticks = SIMULATION_END);
+    // save tree sequence
+    if (SIMULATE_TS)
+      community.rescheduleScriptBlock(s11, ticks = SIMULATION_END);
+    else
+      community.deregisterScriptBlock(s11);
+
+    // stop the simulation
+    community.rescheduleScriptBlock(s12, ticks = SIMULATION_END);
 }
 
 ///
@@ -433,6 +444,8 @@ s9 late() /* Remember individuals for tree sequence recording */ {
 }
 
 1: late() /* Retain all individuals in each generation */ {
+    if (!SIMULATE_TS) return;
+
     // note that permanent remembering takes priority in SLiM so this doesn't
     // override permanent remembering performed above
     sim.treeSeqRememberIndividuals(sim.subpopulations.individuals, permanent = F);
@@ -448,18 +461,21 @@ s10 late() /* Schedule removal of populations */ {
     }
 }
 
-s11 late() /* End of simulation */ {
-    filename = OUTPUT_TS;
+s11 late() /* Save the tree sequence */ {
+    filename = TS_PATH;
 
     // add slendr-specific metadata to its own Dictionary key
     metadata = collect_metadata();
 
-    sim.treeSeqOutput(OUTPUT_TS, metadata = Dictionary("slendr", metadata));
-    log_output("saving the tree sequence output to '" + OUTPUT_TS + "'");
+    sim.treeSeqOutput(TS_PATH, metadata = Dictionary("slendr", metadata));
+    log_output("saving the tree sequence output to '" + TS_PATH + "'");
+}
 
+s12 late() /* End of simulation */ {
     log_output("simulation finished");
     sim.simulationFinished();
 }
+
 
 ///
 /// Interaction and fitness callbacks
