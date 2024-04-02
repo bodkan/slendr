@@ -4,14 +4,14 @@
 \alias{substitute}
 \title{Substitute values of parameters in a given slendr/SLiM extension}
 \usage{
-substitute(extension, ...)
+substitute(template, ...)
 }
 \arguments{
-\item{extension}{Either a path to an extension script file, or a string
-containing the entire SLiM extension code}
-
 \item{...}{Named function arguments interpreted as key=value pairs to be
 used in argument substitution}
+
+\item{extension}{Either a path to an extension script file, or a string
+containing the entire SLiM extension code}
 }
 \value{
 Path to a file with a saved extension script containing all
