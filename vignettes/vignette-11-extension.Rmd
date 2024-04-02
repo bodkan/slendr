@@ -387,13 +387,13 @@ extension_path <- system.file("extdata", "extension3.txt", package = "slendr")
 
 extension <- substitute(
   extension_path,
-  s = 0.01, onset_time = 250, target_pop = "pop",
+  s = 0.1, onset_time = 250, target_pop = "pop",
   output_dir = "~/Desktop/"
 )
 
 model <- compile_model(pop, generation_time = 1, simulation_length = 1000, extension = extension)
 
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
+slim(model, output = FALSE, method = "gui")
 
 trajectory <- read.table("~/Desktop/traj_pop.tsv", header = TRUE)
 
@@ -569,10 +569,12 @@ simulate_sweep <- function(s) {
   
   # compile a simple slendr model, including the extension SLiM script
   pop <- population("pop", time = 1, N = 10000)
-  model <- compile_model(pop, generation_time = 1, simulation_length = 1000, extension = extension)
+  model <- compile_model(pop, generation_time = 1, simulation_length = 1000,
+                         extension = extension)
   
-  # run the slendr model through SLiM, but don't simulate any tree sequence
-  slim(model, sequence_length = 10e6, recombination_rate = 1e-8, burnin = 1000, output = FALSE)
+  # run the slendr model through SLiM (but don't simulate any tree sequence!)
+  slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
+       burnin = 1000, output = FALSE)
   
   # load the simulated frequency table (remember, no tree sequence was
   # simulated here because we set `output = FALSE` above!) and note what
