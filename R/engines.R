@@ -369,7 +369,7 @@ slim <- function(
                           paste0("-d RECOMBINATION_RATE=", recombination_rate),
                           paste0("-d BURNIN_LENGTH=", burnin),
                           paste0("-d SIMULATION_LENGTH=", model$length),
-                          paste0("-d \"OUTPUT_LOCATIONS='", locations, "'\""),
+                          paste0("-d \"LOCATIONS_PATH='", locations, "'\""),
                           paste0("-d COALESCENT_ONLY=", coalescent_only),
                           paste0("-d MAX_ATTEMPTS=", max_attempts),
                           script_path)

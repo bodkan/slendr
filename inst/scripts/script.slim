@@ -16,7 +16,7 @@ initialize() {
     optional_arg("MODEL", "."); // directory containing model configuration files
     optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
     optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
-    optional_arg("OUTPUT_LOCATIONS", ""); // where should locations of individuals be saved?
+    optional_arg("LOCATIONS_PATH", ""); // where should locations of individuals be saved?
     optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
@@ -138,7 +138,7 @@ initialize() {
         community.deregisterScriptBlock(s7);
 
     // output locations of individuals
-    if (OUTPUT_LOCATIONS != "" & SPATIAL) {
+    if (LOCATIONS_PATH != "" & SPATIAL) {
         community.rescheduleScriptBlock(s8, start = SIMULATION_START, end = SIMULATION_END);
         write_locations_header();
     } else
@@ -362,7 +362,7 @@ s8 late() /* Save locations of all individuals */ {
             ind.spatialPosition,
             sep = "\t"
         );
-        writeFile(OUTPUT_LOCATIONS, ind_str, append = T, compress = T);
+        writeFile(LOCATIONS_PATH, ind_str, append = T, compress = T);
     }
 }
 
@@ -709,7 +709,7 @@ function (s) config_path(s file) {
 
 // Write the locations table header
 function (void) write_locations_header(void) {
-    filename = OUTPUT_LOCATIONS;
+    filename = LOCATIONS_PATH;
     header_str = "gen\tpop_id\tpop\tind\tx\ty";
     writeFile(filename, header_str, compress = T);
 }
