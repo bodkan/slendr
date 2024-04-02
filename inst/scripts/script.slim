@@ -13,7 +13,6 @@ initialize() {
     setSeed(SEED); catn("SEED: " + getSeed());
 
     required_arg("TS_PATH");
-    optional_arg("SIMULATE_TS", T);
     optional_arg("MODEL", "."); // directory containing model configuration files
     optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
     optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
@@ -23,7 +22,9 @@ initialize() {
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
 
-    // prefix for saving
+    defineConstant("SIMULATE_TS", TS_PATH != "");
+
+    // prefix for saving state
     defineConstant("STATE_PATH", tempdir() + "state_" + SEED + "_");
 
     // how many attempts should be made to place an offspring on a map before
