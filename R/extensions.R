@@ -11,7 +11,7 @@ substitute <- function(template, ...) {
   if (file.exists(template))
     extension_code <- readLines(template, warn = FALSE)
   else
-    extension_code <- template
+    extension_code <- strsplit(template, "\n")[[1]]
 
   arguments <- list(...)
 
