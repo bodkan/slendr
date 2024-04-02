@@ -33,6 +33,7 @@ Throughout all this time, _slendr_ models were purely neutral, without much plan
 Let's first load all required R libraries:
 
 ```{r, collapse = TRUE, message = FALSE}
+devtools::load_all()
 library(slendr)
 
 library(dplyr)
@@ -382,6 +383,8 @@ init_env(quiet = TRUE)
 
 pop <- population("pop", time = 1, N = 1000)
 
+extension_path <- system.file("extdata", "extension3.txt", package = "slendr")
+
 extension <- substitute(
   extension_path,
   s = 0.01, onset_time = 250, target_pop = "pop",
@@ -390,7 +393,7 @@ extension <- substitute(
 
 model <- compile_model(pop, generation_time = 1, simulation_length = 1000, extension = extension)
 
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
 
 trajectory <- read.table("~/Desktop/traj_pop.tsv", header = TRUE)
 
@@ -416,7 +419,7 @@ extension_path <- system.file("extdata", "extension3.txt", package = "slendr")
 
 extension <- substitute(
   extension_path,
-  s = 0.1, onset_time = 15000, target_pop = "ANA",
+  s = 0.1, onset_time = 15000, target_pop = "EUR",
   output_dir = "~/Desktop/"
 )
 
@@ -426,7 +429,7 @@ model <- compile_model(
   extension = extension 
 )
 
-ts <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
 
 trajectory <- read.table("~/Desktop/traj_EUR.tsv", header = TRUE)
 plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
@@ -443,6 +446,9 @@ plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
 Alternatively, thanks to the multiline string support implemented in R 4.2, we can specify the SLiM extension code directly as an R string. Including the SLiM code directly in an R script in this way makes it a little easier to iterate during development by eliminating the need to edit multiple files:
 
 ```{r}
+# extension "template" provided as a single string (this contains
+# the same code as the script used just above, except specified directly
+# in R)
 extension_template <- r"(
 // Because we want to simulate non-neutral evolution, we have to provide a
 // custom initialization callback -- slendr will use it to replace its default
@@ -527,7 +533,7 @@ model <- compile_model(
   extension = extension 
 )
 
-ts <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8)
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
 
 trajectory <- read.table("~/Desktop/traj_EUR.tsv", header = TRUE)
 plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
@@ -535,4 +541,70 @@ plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
 trajectory <- read.table("~/Desktop/traj_ANA.tsv", header = TRUE)
 plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
 ```
+
+
+
+
+
+
+
+
+
+
+
+```{r, eval=FALSE}
+simulate_sweep <- function(s) {
+  output_path <- file.path(tempdir(), paste("sweep_frequencies", s, ".tsv", sep = "_"))
+
+  # substitute values of given parameters into the "extension template" file:
+  #   - s: selection coefficient of the sweep mutation
+  #   - onset_time: time at which to add the mutation
+  #   - output_file: where to save frequencies of surrounding mutations
+  extension <- substitute(
+    template = system.file("extdata", "extension_sweep.txt", package = "slendr"),
+    s = s,
+    onset_time = 1,
+    output_file = output_path
+  )
+  
+  # compile a simple slendr model, including the extension SLiM script
+  pop <- population("pop", time = 1, N = 10000)
+  model <- compile_model(pop, generation_time = 1, simulation_length = 1000, extension = extension)
+  
+  # run the slendr model through SLiM, but don't simulate any tree sequence
+  slim(model, sequence_length = 10e6, recombination_rate = 1e-8, burnin = 1000, output = FALSE)
+  
+  # load the simulated frequency table (remember, no tree sequence was
+  # simulated here because we set `output = FALSE` above!) and note what
+  # was the selection coefficient value for downstream analysis
+  results <- read.table(output_path, header = TRUE)
+  results$s <- s
+
+  results
+}
+```
+
+```{r}
+library(parallel)
+
+s_grid <- c(0.001, 0.005, 0.01, 0.05, 0.1, 0.25)
+
+results <- mclapply(s_grid, simulate_sweep, mc.cores = detectCores()) %>% do.call(rbind, .)
+```
+
+```{r}
+head(results, n = 20)
+```
+
+```{r}
+ggplot(results) +
+  geom_vline(xintercept = 5e6, linetype = "dashed", color = "black") +
+  geom_line(aes(pos, freq, color = as.factor(s))) +
+  guides(color = guide_legend("s")) +
+  labs(x = "position [bp]", y = "frequency") +
+  ggtitle("Frequencies of neutral mutations surrounding a sweep mutation") +
+  facet_wrap(~ s) +
+  scale_x_continuous(labels = scales::label_comma())
+```
+
 

@@ -4,7 +4,7 @@
 initialize() {
   defineConstant("s", {{s}});
   defineConstant("onset_time", {{onset_time}});
-  defineConstant("output_file", "{{output_dir}}" + "/frequencies.tsv");
+  defineConstant("output_file", "{{output_file}}");
 }
 
 // Because we want to simulate non-neutral evolution, we have to provide a
@@ -25,9 +25,9 @@ initialize() {
 }
 
 function (void) add_mutation(s pop_name, f selection_coef) {
-  // sample one target carrier of the new mutation...
+  // sample the first target carrier chromosome of the new mutation...
   target = sample(population(pop_name).genomes, 1);
-  // ... and add the mutation to it
+  // ... and add the mutation right in the middle of it
   mutation = target.addNewDrawnMutation(m2, position = asInteger(SEQUENCE_LENGTH / 2));
 
   defineGlobal("BACKGROUND", target.mutations);
@@ -41,12 +41,11 @@ tick(onset_time) late() {
   save_state();
 
   add_mutation("pop", s);
-  writeFile(output_file, "tick\ttime\tfrequency");
 }
 
 tick(onset_time):SIMULATION_END late() {
   // the mutation is not segregating and is not fixed either -- we must restart
-  if (SWEEP.isSegregating & !SWEEP.isFixed) {
+  if (!SWEEP.isSegregating & !SWEEP.isFixed) {
     log_output("mutation lost -- restarting");
 
     reset_state();
@@ -55,10 +54,11 @@ tick(onset_time):SIMULATION_END late() {
   }
 }
 
+// save mutation frequencies along the genome to a TSV file
 SIMULATION_END late() {
-  nonSeg = BACKGROUND[!BACKGROUND.isSegregating];
-  fixed = nonSeg[nonSeg.isFixed];
-  lost = nonSeg[!nonSeg.isFixed];
-  writeFile("fixed.txt", paste(fixed.position, sep=", "));
-  writeFile("lost.txt", paste(lost.position, sep=", "));
+  df = DataFrame(
+    "pos", BACKGROUND.position,
+    "freq", sim.mutationFrequencies(NULL, BACKGROUND)
+  );
+  writeFile(output_file, df.serialize(format = "tsv"));
 }
