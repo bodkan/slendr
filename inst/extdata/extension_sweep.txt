@@ -1,0 +1,64 @@
+// Define model constants (to be substituted) all in one place
+// (each {{placeholder}} will be replaced by a value passed from R).
+// Note that string constant template patterns are surrounded by "quotes"!
+initialize() {
+  defineConstant("s", {{s}});
+  defineConstant("onset_time", {{onset_time}});
+  defineConstant("output_file", "{{output_dir}}" + "/frequencies.tsv");
+}
+
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations). Note that we can refer to slendr's
+// constants SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values
+// passed through from R via slendr's slim() R function.
+initialize() {
+  initializeMutationType("m1", 0.5, "f", 0.0); // neutral mutations
+  initializeMutationType("m2", 0.5, "f", s); // beneficial mutation
+
+  initializeGenomicElementType("g1", m1, 1.0);
+  initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
+
+  initializeMutationRate(1e-8);
+  initializeRecombinationRate(RECOMBINATION_RATE);
+}
+
+function (void) add_mutation(s pop_name, f selection_coef) {
+  // sample one target carrier of the new mutation...
+  target = sample(population(pop_name).genomes, 1);
+  // ... and add the mutation to it
+  mutation = target.addNewDrawnMutation(m2, position = asInteger(SEQUENCE_LENGTH / 2));
+
+  defineGlobal("BACKGROUND", target.mutations);
+  defineGlobal("SWEEP", mutation);
+
+  log_output("adding beneficial mutation to population " + pop_name);
+}
+
+tick(onset_time) late() {
+  // save simulation state in case we need to restart if the mutation is lost
+  save_state();
+
+  add_mutation("pop", s);
+  writeFile(output_file, "tick\ttime\tfrequency");
+}
+
+tick(onset_time):SIMULATION_END late() {
+  // the mutation is not segregating and is not fixed either -- we must restart
+  if (SWEEP.isSegregating & !SWEEP.isFixed) {
+    log_output("mutation lost -- restarting");
+
+    reset_state();
+
+    add_mutation("pop", s);
+  }
+}
+
+SIMULATION_END late() {
+  nonSeg = BACKGROUND[!BACKGROUND.isSegregating];
+  fixed = nonSeg[nonSeg.isFixed];
+  lost = nonSeg[!nonSeg.isFixed];
+  writeFile("fixed.txt", paste(fixed.position, sep=", "));
+  writeFile("lost.txt", paste(lost.position, sep=", "));
+}
