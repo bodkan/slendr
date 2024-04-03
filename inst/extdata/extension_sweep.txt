@@ -24,9 +24,9 @@ initialize() {
   initializeRecombinationRate(RECOMBINATION_RATE);
 }
 
-function (void) add_mutation(s pop_name, f selection_coef) {
+function (void) add_mutation(void) {
   // sample the first target carrier chromosome of the new mutation...
-  target = sample(population(pop_name).genomes, 1);
+  target = sample(population("pop").genomes, 1);
   // ... and add the mutation right in the middle of it
   mutation = target.addNewDrawnMutation(m2, position = asInteger(SEQUENCE_LENGTH / 2));
 
