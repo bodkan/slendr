@@ -1,0 +1,61 @@
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations). Note that we can refer to slendr's
+// constants SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values
+// passed through from R via slendr's slim() R function.
+initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(RECOMBINATION_RATE);
+
+    // define some parameters of the model
+    defineConstant("s", 0.1);
+    defineConstant("onset_time", 15000);
+    defineConstant("target_pop", "EUR");
+
+    defineConstant("output_file", "~/Desktop/output.tsv");
+}
+
+function (void) add_mutation(void) {
+    // sample one target carrier of the new mutation...
+    target = sample(population(target_pop).genomes, 1);
+    // ... and add the mutation in the middle of it
+    mut = target.addNewMutation(m1, s, position = asInteger(SEQUENCE_LENGTH / 2));
+
+    // save the mutation for later reference
+    defineGlobal("MUTATION", mut);
+
+    log_output("adding beneficial mutation to population " + target_pop);
+}
+
+tick(onset_time) late() {
+    // save simulation state in case we need to restart if the mutation is lost
+    save_state();
+
+    add_mutation();
+    writeFile(output_file, "tick\ttime\tfrequency");
+}
+
+tick(onset_time):SIMULATION_END late() {
+    // the mutation is not segregating and is not fixed either -- we must restart
+    if (!MUTATION.isSegregating & !MUTATION.isFixed) {
+        log_output("mutation lost -- restarting");
+
+        reset_state();
+
+        add_mutation();
+        writeFile(output_file, "tick\ttime\tfrequency");
+    }
+
+    // compute the frequency of the mutation of interest and save it
+    frequency = population("EUR").genomes.mutationFrequenciesInGenomes();
+    writeFile(output_file,
+              community.tick + "\t" +
+              model_time(community.tick) + "\t" +
+              frequency, append = T);
+}

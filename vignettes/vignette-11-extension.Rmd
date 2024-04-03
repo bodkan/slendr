@@ -235,33 +235,36 @@ tick 696: hello from the current event
 
 ### Saving and re-starting simulation state: `save_state()` and `reset_state()`
 
-Whenever we're dealing with the simulation of, say, beneficial allele frequency trajectories, we usually have to take care of situations in which the allele of interest gets lost before the simulation finishes running. In this case, we often want to reset the simulation to a state just before the mutation was added and try again. Section 9.2 of the venerable SLiM manual ("Making sweeps conditional on fixation") is a great example on how to solve this with base SLiM.
+Whenever we're dealing with simulations of, say, trajectories of beneficial alleles, we usually have to take care of situations in which the allele of interest gets lost before the simulation finishes running. In such cases, we often need to reset the simulation to a state just before the mutation was added and try again. Section 9.2 of the venerable SLiM manual ("Making sweeps conditional on fixation") is a great example on how to solve this with base SLiM.
 
 Although it would be quite easy to use the same approach in the _slendr_/SLiM extension snippets described here, there's one issue with this approach: `sim.outputFull()` and `sim.readFromPopulationFile()` do not preserve some important _slendr_ tags which are assigned using `<Subpopulation>.{set,get}Value()` methods. Doing so would require poking into _slendr_'s SLiM codebase, which would be confusing for any user.
 
-To circumvent the problem, _slendr_'s SLiM back-end script provides these two functions:
+To circumvent the problem, _slendr_'s SLiM back-end script provides the following functions:
 
 - `save_state()`: saves the full state of the SLiM simulation (just as `sim.outputFull()` does), while also saving those few _slendr_-specific values;
 - `reset_state()`: restores the full SLiM simulation state (including _slendr_ specific tags and values), and **chooses a new random seed**. The latter is performed because restarting a simulation using the `save_state()` - `reset_state()` tandem is practically always done in order to change the outcome of a simulation.
 
 
-As an example, let's say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far, to define the following _slendr_ extension snippet:
+As an example, let's build on the model of the African and Eurasian history above, and say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far to define the following _slendr_ extension snippet:
 
 ```
-function (void) add_mutation(s pop_name) {
-  // sample one target carrier of the new mutation...
+function (void) add_mutation(s pop_name, f selection_coef) {
+  // sample the first target carrier chromosome of the new mutation...
   target = sample(population(pop_name).genomes, 1);
   // ... and add the mutation to it
-  target.addNewDrawnMutation(m0, position = asInteger(SEQUENCE_LENGTH / 2));
-  
-  log_output("added beneficial mutation at 15 kya");
+  mutation = target.addNewDrawnMutation(m0, position = 1);
+
+  defineGlobal("BACKGROUND", target.mutations);
+  defineGlobal("FOCAL", mutation);
+
+  log_output("adding beneficial mutation to population " + pop_name);
 }
 
-tick(15000) late() { /* Add a beneficial mutation at 15 thousand years ago*/
-    // save simulation state in case we need to restart if the mutation is lost
+tick(15000) late() {
+  // save simulation state in case we need to restart if the mutation is lost
   save_state();
-  
-  add_mutation("EUR");
+
+  add_mutation("pop", s);
 }
 
 tick(15000):SIMULATION_END late() {
@@ -279,25 +282,24 @@ tick(15000):SIMULATION_END late() {
 }
 ```
 
-**Note that we're using an advanced new feature of SLiM 4.2 for direct specification of callback timing described in the third item of the [SLiM changelog](https://github.com/MesserLab/SLiM/releases/tag/v4.2). This features makes customization of _slendr_ / SLiM simulations inifinitely easier, so make sure you read about it in the SLiM manual!**
+**Note that for simplicity we don't define our own mutation types, and simply re-use the `m0` mutation type used by _slendr_ by default. This is unlikely to be very useful for more complex simulations and we will look at a more general solution below.** The point of this example is to show the use of `save_state()` and `reset_state()` in practice.
 
 ### Global constants
 
 By inspecting the built-in SLiM simulation script of _slendr_, you will find that it contains a number of global constants. Most of them should be considered internal and users shouldn't rely on them in their code. However, one useful contant which you can see being used in the snippet above is `SEQUENCE_LENGTH` -- this is the total amount of sequence simulated (i.e., the number passed as `slim(<model>, sequence_length = <SEQUENCE_LENGTH>, ...)` in your R code).
 
+Of course, specifying your own `initialize() {...}` callback with your own genomic elements will give you more flexibility and you might want to skip specifying `sequence_length =` entirely, as we show below.
 
 ## Putting it all together: running a customized _slendr_ simulation 
 
 The above examples show how you can refer to a _slendr_ population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the _slendr_ built-in SLiM script, and how you can convert _slendr_-specific time units into SLiM's internal ticks using the `tick()` function. You've also learned how to save and reset SLiM state using provided functions `save_state()` and `reset_state()` and how to log outputs using the function `log_output()`. We demonstrated all this by defining a customized snippet of SLiM code which we now want to use in a full _slendr_ simulation run. Of course, the example we've chosen is extremely trivial -- you could, in principle, use any feature available for SLiM (as long as it's compatible with Wright-Fisher models, which _slendr_ currently assumes as a basis for its models).
 
-How do we use this customization in practice? One way to do this would be to edit the built-in _slendr_ SLiM script and manually add your own SLiM code, but that would be brittle and not very reproducible. There's a much better way to do this that's directly supported by _slendr_'s R interface.
+How do we use this customization in practice? One way to do this would be to edit the built-in _slendr_ SLiM script and manually add your own SLiM code, but that would be brittle and not reproducible. There's a much better way to do this that's directly supported by _slendr_'s R interface.
 
 Let's say that we defined the following model of modern human demographic history in slendr. This is exactly the same example as the one we show in [vignette #4]():
 
 ```{r, model_plot}
-devtools::load_all()
 library(slendr)
-
 init_env()
 
 # African ancestral population
@@ -336,10 +338,10 @@ model_for_plot <- compile_model(
 plot_model(model_for_plot, order = c("EUR", "EHG", "YAM", "ANA", "OOA", "AFR"), proportions = TRUE)
 ```
 
-So far so good. Let's also assume we have the following "SLiM snippet file":
+Let's also assume we have the following "SLiM snippet file":
 
 ```{r}
-extension_path <- system.file("extdata", "extension1.txt", package = "slendr")
+extension_path <- system.file("extdata", "extension_trajectory.txt", package = "slendr")
 ```
 
 ```{r, echo=FALSE}
@@ -356,138 +358,126 @@ We can include the extension snippet into the standard _slendr_ engine SLiM scri
 model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf, generation_time = 30,
-  slim_extension = extension_path  # <--- include the SLiM extension snippet
+  extension = extension_path  # <--- include the SLiM extension snippet
 )
 ```
 
 You can check that the extension snippet was really appended to the built-in SLiM engine script by running `slim()` function and setting `method = "gui"` (look towards the end of the script!):
 
 ```{r, eval=FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, method = "gui")
+slim(model, sequence_length = 1e6, recombination_rate = 0, output = FALSE, method = "gui")
 ```
 
-```{r}
-extension_path <- system.file("extdata", "extension2.txt", package = "slendr")
+```{r, echo=FALSE}
+slim(model, sequence_length = 1e6, recombination_rate = 0, output = FALSE)
+```
 
-model <- compile_model(
+Note that we set `output = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `~/Desktop/output.tsv`.
+
+Checking the output file shows that the frequency trajectories were indeed saved:
+
+```
+$ head ~/Desktop/output.tsv 
+tick    time    frequency
+2501    15000   0.0001
+2502    14970   0.0002
+2503    14940   0.0005
+2504    14910   0.0001
+2505    14880   0.0001
+2506    14850   0.0002
+2507    14820   0.0002
+2508    14790   0.0004
+2509    14760   0.0003
+```
+
+Speaking of which: one thing that's a little annoying about the [extension snippet](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory.txt) used in this example is that all the parameters are hard-coded (selection coefficient, target population, and even the output file path). If we wanted to run the _slendr_ script for different values of selection coefficient, or examining the behavior of the model depending on in which population does the beneficial allele arise, we'd have to create multiple copies of the extension script. We can do better using _slendr_'s support for substitution or "templating".
+
+## Putting it all together: parametrizing a customized _slendr_ simulation 
+
+For easy parametrization of customized _slendr_ / SLiM models, slendr provides a function `substitute()`. Simply speaking, rather than having to hard code values of parameters in your extension SLiM snippet files, you can indicate that a parameter value should be substituted in the file using a simple syntax `{{parameter_name}}`.
+
+Take a look at a [new, flexible version](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory_params.txt) of the snippet we used above and look for the `{{...}}` templace placeholders. This version has been expanded to study the trajectory of the focal selected allele depending on in which population it originated.
+
+```{r}
+extension_path <- system.file("extdata", "extension_trajectory_params.txt", package = "slendr")
+```
+
+```{r, echo=FALSE}
+Sys.setenv(EXTENSION = extension_path)
+```
+
+```{bash, echo = FALSE, comment = ""}
+less ${EXTENSION}
+```
+
+
+```{r}
+extension_eur <- substitute(
+  extension_path,
+  s = 0.1, onset_time = 15000,
+  origin_pop = "EUR", target_pop = "EUR",
+  output_dir = tempdir()
+)
+
+model_eur <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf, generation_time = 30,
-  slim_extension = extension_path  # <--- include the SLiM extension snippet
-)
-```
-
-```{r}
-arguments <- list(
-  output_file = "~/Desktop/output.tsv",
-  target_pop = "AFR",
-  onset_time = 90000,
-  s = 0.15
+  extension = extension_eur
 )
 
-slim(model, sequence_length = 1e6, recombination_rate = 0, arguments = arguments, verbose = TRUE, random_seed = 42)
+slim(model_eur, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
 ```
 
+We can leverage the flexibility of this solution to run another version of this model, this time adding the mutation to a different population. In fact, let's check what happens when the beneficial allele appears in EHG, ANA, and YAM populations. Note that this uses the same extension snippet, and just substitutes different values to the placeholder parameters:
+
 ```{r}
-x = read.table("~/Desktop/output.tsv", header = TRUE)
-ggplot(x) + geom_line(aes(time, frequency))
+run_model <- function(origin_pop, onset_time) {
+  extension <- substitute(
+    extension_path,
+    s = 0.1, onset_time = onset_time,
+    origin_pop = origin_pop, target_pop = "EUR",
+    output_dir = tempdir()
+  )
+  
+  model <- compile_model(
+    populations = list(afr, ooa, ehg, eur, ana, yam),
+    gene_flow = gf, generation_time = 30,
+    extension = extension
+  )
+  
+  slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
+}
+
+run_model("EUR", onset_time = 15000)
+run_model("ANA", onset_time = 15000)
+run_model("EHG", onset_time = 15000)
+run_model("YAM", onset_time = 8000)
 ```
 
+We can visualize the different trajectories like this. Not that the different allele frequency trajectories reflect the more complex demographic history in the European population, particularly the dilution of the frequency due to influx of ancestry from other populations into Europeans, as shown in the demographic tree above. In simulations in which the allele originated not directly in EUR but in another population where EUR can trace its ancestry through ancient gene flow, the trajectory of the allele leading to fixation is a bit delayed, depending on when a particular gene flow happened. Still, because it's been under such a strong selection in all of them that it reached fixation even prior to a gene flow and because the gene flow happened in such a strong proportion, it reaches fixation much faster.
 
 ```{r}
+load_traj <- function(origin_pop) {
+  df <- read.table(file.path(tempdir(), paste0("traj_EUR_", origin_pop, ".tsv")), header = TRUE)
+  df$origin <- origin_pop
+  df$target <- "EUR"
+  df
+}
+
+traj <- rbind(load_traj("EUR"), load_traj("ANA"), load_traj("EHG"), load_traj("YAM"))
+
 library(ggplot2)
 
-trajectory <- read.table("~/Desktop/output.tsv", header = TRUE)
-
-ggplot(trajectory) + geom_line(aes(generation, frequency))
-```
-
-
-```{r}
-arguments <- list(
-  output_file = "~/Desktop/output.tsv",
-  target_pop = "EUR",
-  onset_time = 15000,
-  s = 0.1
-)
-
-slim(model, sequence_length = 1e6, recombination_rate = 0, arguments = arguments)
-```
-
-```{r}
-library(ggplot2)
-
-trajectory <- read.table("~/Desktop/output.tsv", header = TRUE)
-
-ggplot(trajectory) + geom_line(aes(generation, frequency))
-```
-
-
-
-
-
-
-
-
-
-```{r, eval=FALSE}
-devtools::load_all()
-init_env(quiet = TRUE)
-
-pop <- population("pop", time = 1, N = 1000)
-
-extension_path <- system.file("extdata", "extension3.txt", package = "slendr")
-
-extension <- substitute(
-  extension_path,
-  s = 0.1, onset_time = 250, target_pop = "pop",
-  output_dir = "~/Desktop/"
-)
-
-model <- compile_model(pop, generation_time = 1, simulation_length = 1000, extension = extension)
-
-slim(model, output = FALSE, method = "gui")
-
-trajectory <- read.table("~/Desktop/traj_pop.tsv", header = TRUE)
-
-head(trajectory)
-tail(trajectory)
-
-plot(trajectory$time, trajectory$frequency, type = "l")
-```
-
-
-
-
-
-
-
-
-
-
-
-
-```{r, eval=FALSE}
-extension_path <- system.file("extdata", "extension3.txt", package = "slendr")
-
-extension <- substitute(
-  extension_path,
-  s = 0.1, onset_time = 15000, target_pop = "EUR",
-  output_dir = "~/Desktop/"
-)
-
-model <- compile_model(
-  populations = list(afr, ooa, ehg, eur, ana, yam),
-  gene_flow = gf, generation_time = 30,
-  extension = extension 
-)
-
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
-
-trajectory <- read.table("~/Desktop/traj_EUR.tsv", header = TRUE)
-plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
-
-trajectory <- read.table("~/Desktop/traj_ANA.tsv", header = TRUE)
-plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
+ggplot(traj) +
+  geom_line(aes(time, freq_target, linetype = "EUR"), color = "black") +
+  geom_line(aes(time, freq_origin, color = origin), linetype = "dashed") +
+  xlim(15000, 0) +
+  labs(title = "Allele frequency in EUR given the origin in another population",
+       x = "years before present", y = "allele frequency",
+       color = "frequency\nin original\npopulation",
+       linetype = "frequency\nin target\npopulation") +
+  scale_linetype_manual(values = c("solid", "dashed")) +
+  facet_wrap(~ origin)
 ```
 
 

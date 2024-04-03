@@ -21,54 +21,54 @@ initialize() {
     defineConstant("s", {{s}});
     defineConstant("onset_time", {{onset_time}});
     defineConstant("target_pop", "{{target_pop}}");
-    defineConstant("output_file", "{{output_dir}}" + "/" + "traj_" + target_pop + ".tsv");
+    defineConstant("origin_pop", "{{origin_pop}}");
+    defineConstant("output_file", "{{output_dir}}" + "/" +
+                                  "traj_" + target_pop + "_" + origin_pop + ".tsv");
 }
 
-function (void) add_mutation(s pop_name, f selection_coef) {
+function (void) add_mutation(void) {
     // sample one target carrier of the new mutation...
-    target = sample(population(pop_name).genomes, 1);
-    // ... and add the mutation to it
-    target.addNewMutation(m1, selectionCoeff = selection_coef, position = asInteger(SEQUENCE_LENGTH / 2));
+    target = sample(population(origin_pop).genomes, 1);
+    // ... and add the mutation in the middle of it
+    mut = target.addNewMutation(m1, s, position = asInteger(SEQUENCE_LENGTH / 2));
 
-    log_output("adding beneficial mutation to population " + pop_name);
+    // save the mutation for later reference
+    defineGlobal("MUTATION", mut);
+
+    log_output("adding beneficial mutation to population " + target_pop);
 }
 
 tick(onset_time) late() {
     // save simulation state in case we need to restart if the mutation is lost
     save_state();
 
-    add_mutation(target_pop, s);
-    writeFile(output_file, "tick\ttime\tfrequency");
+    add_mutation();
+    writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
 }
 
-// check that the allele of interest is still segregating (and save its
-// frequency to a file)
 tick(onset_time):SIMULATION_END late() {
-    // if the target population doesn't exist anymore, there's no reason to
-    // compute allele frequency -- just return from the callback
-    if (!population(target_pop, check = T)) return;
-
-    // is the mutation of interest segregating or fixed?
-    segregating = sim.countOfMutationsOfType(m1) > 0;
-    fixed = sum(sim.substitutions.mutationType == m1) == 1;
-
     // the mutation is not segregating and is not fixed either -- we must restart
-    if (!segregating & !fixed) {
+    if (!MUTATION.isSegregating & !MUTATION.isFixed) {
         log_output("mutation lost -- restarting");
 
         reset_state();
 
-        add_mutation(target_pop, s);
-        writeFile(output_file, "tick\ttime\tfrequency");
+        add_mutation();
+        writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
     }
 
-    // compute the frequency of the mutation of interest and add it to the
-    // output file
-    if (fixed)
-        frequency = 1.0;
-    else
-        frequency = population(target_pop).genomes.mutationFrequenciesInGenomes();
-    time = model_time(community.tick);
+    // compute the frequency of the mutation of interest and save it (if the
+    // mutation is missing at this time, save its frequency as NA)
+    freq_origin = "NA";
+    freq_target = "NA";
+    if (population(origin_pop, check = T))
+      freq_origin = population(origin_pop).genomes.mutationFrequenciesInGenomes();
+    if (population(target_pop, check = T))
+      freq_target = population(target_pop).genomes.mutationFrequenciesInGenomes();
 
-    writeFile(output_file, community.tick + "\t" + time + "\t" + frequency, append = T);
+    writeFile(output_file,
+              community.tick + "\t" +
+              model_time(community.tick) + "\t" +
+              freq_origin + "\t" +
+              freq_target, append = T);
 }
