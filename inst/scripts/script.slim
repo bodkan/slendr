@@ -897,11 +897,11 @@ function (i) tick(i time) {
 // function will convert a tick value in the SLiM simulation back to "years
 // before present").
 function(i) model_time (i tick) {
-    invalid_tick = tick < SIMULATION_START | tick > SIMULATION_END;
+    invalid_tick = tick < (SIMULATION_START - BURNIN_LENGTH) | tick > SIMULATION_END;
 
     if (any(invalid_tick)) {
         stop("Some tick values are outside of the time range of the current simulation:\n" +
-             "  - oldest possible event: " + SIMULATION_START + "\n" +
+             "  - oldest possible event: " + (SIMULATION_START - BURNIN_LENGTH) + "\n" +
              "  - youngest possible event: " +  SIMULATION_END + "\n\n" +
              "The offending times were: " + paste(tick[invalid_tick], sep = ", "));
     }
