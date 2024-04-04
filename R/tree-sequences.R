@@ -99,6 +99,7 @@ ts_load <- function(file, model = NULL) {
   attr(ts, "raw_edges") <- get_ts_raw_edges(ts)
   attr(ts, "raw_individuals") <- get_ts_raw_individuals(ts)
   attr(ts, "raw_mutations") <- get_ts_raw_mutations(ts)
+  attr(ts, "raw_sites") <- get_ts_raw_sites(ts)
 
   attr(ts, "nodes") <- if (type == "SLiM") get_pyslim_table_data(ts) else get_tskit_table_data(ts)
 
@@ -241,6 +242,7 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 
   attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
   attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
+  attr(ts_new, "raw_sites") <- get_ts_raw_sites(ts_new)
 
   attr(ts_new, "path") <- attr(ts, "path")
 
@@ -388,6 +390,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
   attr(ts_new, "raw_edges") <- get_ts_raw_edges(ts_new)
   attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
   attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
+  attr(ts_new, "raw_sites") <- get_ts_raw_sites(ts_new)
 
   # use pedigree IDs to cross-check the original data with simplified table
   if (type == "SLiM") {
@@ -521,6 +524,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   attr(ts_new, "raw_edges") <- attr(ts, "raw_edges")
   attr(ts_new, "raw_individuals") <- attr(ts, "raw_individuals")
   attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
+  attr(ts_new, "raw_sites") <- get_ts_raw_sites(ts_new)
 
   attr(ts_new, "nodes") <- attr(ts, "nodes")
 
@@ -1045,7 +1049,7 @@ ts_nodes <- function(x, sf = TRUE) {
   data
 }
 
-#' Get the table of individuals/nodes/edges/mutations from the tree sequence
+#' Get the table of individuals/nodes/edges/mutations/sites from the tree sequence
 #'
 #' This function extracts data from a given tree sequence table. All times are
 #' converted to model-specific time units from tskit's "generations backwards"
@@ -1085,8 +1089,11 @@ ts_nodes <- function(x, sf = TRUE) {
 #'
 #' # get the 'raw' tskit table of mutations
 #' ts_table(ts, "mutations")
+#'
+#' # get the 'raw' tskit table of sites
+#' ts_table(ts, "sites")
 #' @export
-ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations")) {
+ts_table <- function(ts, table = c("individuals", "edges", "nodes", "mutations", "sites")) {
   table <- match.arg(table)
   check_ts_class(ts)
   df <- attr(ts, paste0("raw_", table))
@@ -2458,6 +2465,20 @@ get_ts_raw_mutations <- function(ts) {
     time = as.numeric(time),
     time_tskit = as.numeric(table[["time"]])
   )
+}
+
+# Extract information from the muations table
+get_ts_raw_sites <- function(ts) {
+  model <- attr(ts, "model")
+  table <- ts$tables$sites
+  result <- dplyr::tibble(
+    id = seq_len(table$num_rows) - 1,
+    position = as.vector(table[["position"]])
+  )
+  ancestral_state <- as.vector(table[["ancestral_state"]])
+  if (length(ancestral_state))
+    result$ancestral_state <- ancestral_state
+  result
 }
 
 time_fun <- function(ts) {
