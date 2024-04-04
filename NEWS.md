@@ -12,6 +12,8 @@
 
 - Due to frequent issues with installation of Python dependencies of _slendr_ in a completely platform independent way (in the latest instance this being conda installation of pyslim crashing on M-architecture Macs), `setup_env()` now only uses conda to install _msprime_ and _tskit_ -- _pyslim_ and _tspop_ are always installed via pip regardless of whether `setup_env(pip = FALSE)` (the default) or `setup_env(pip = TRUE)` is used. ([#408948](https://github.com/bodkan/slendr/commit/408948))
 
+- `ts_table()` can now extract the "sites" _tskit_ table as `ts_table(ts, "sites")`. ([#e708f2](https://github.com/bodkan/slendr/commit/e708f2))
+
 # slendr 0.9.1
 
 - A new helper function `get_env()` now returns the name of the built-in _slendr_ Python environment (without activating it). ([#162ccc](https://github.com/bodkan/slendr/commit/162ccc))

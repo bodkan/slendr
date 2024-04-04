@@ -2,9 +2,9 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_table}
 \alias{ts_table}
-\title{Get the table of individuals/nodes/edges/mutations from the tree sequence}
+\title{Get the table of individuals/nodes/edges/mutations/sites from the tree sequence}
 \usage{
-ts_table(ts, table = c("individuals", "edges", "nodes", "mutations"))
+ts_table(ts, table = c("individuals", "edges", "nodes", "mutations", "sites"))
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
@@ -45,6 +45,9 @@ ts_table(ts, "nodes")
 
 # get the 'raw' tskit table of mutations
 ts_table(ts, "mutations")
+
+# get the 'raw' tskit table of sites
+ts_table(ts, "sites")
 }
 \seealso{
 \code{\link{ts_nodes}} and \code{\link{ts_edges}} for accessing an
