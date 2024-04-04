@@ -8,6 +8,8 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+devtools::load_all()
+
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
@@ -52,7 +54,6 @@ init_env()
 
 library(dplyr)
 library(ggplot2)
-
 
 seed <- 42
 set.seed(seed)
@@ -480,10 +481,7 @@ ggplot(traj) +
   facet_wrap(~ origin)
 ```
 
-
-
-
-
+## Extension SLiM snippets directly in R scripts
 
 Alternatively, thanks to the multiline string support implemented in R 4.2, we can specify the SLiM extension code directly as an R string. Including the SLiM code directly in an R script in this way makes it a little easier to iterate during development by eliminating the need to edit multiple files:
 
@@ -494,9 +492,10 @@ Alternatively, thanks to the multiline string support implemented in R 4.2, we c
 extension_template <- r"(
 // Because we want to simulate non-neutral evolution, we have to provide a
 // custom initialization callback -- slendr will use it to replace its default
-// neutral genomic architecture. Note that we can refer to slendr's constants
-// SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values passed
-// through from the slim() R function.
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations). Note that we can refer to slendr's
+// constants SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values
+// passed through from R via slendr's slim() R function.
 initialize() {
     initializeMutationType("m1", 0.5, "f", 0.0);
 
@@ -508,80 +507,90 @@ initialize() {
 }
 
 // Define model constants (to be substituted) all in one place
-// (each {{placeholder}} will be replaced by a value passed from R)
+// (each {{placeholder}} will be replaced by a value passed from R).
+// Note that string constant template patterns are surrounded by "quotes"!
 initialize() {
     defineConstant("s", {{s}});
     defineConstant("onset_time", {{onset_time}});
     defineConstant("target_pop", "{{target_pop}}");
-    defineConstant("output_file", "{{output_dir}}" + "/" + "traj_" + target_pop + ".tsv");
+    defineConstant("origin_pop", "{{origin_pop}}");
+    defineConstant("output_file", "{{output_dir}}" + "/" +
+                                  "traj_" + target_pop + "_" + origin_pop + ".tsv");
 }
 
-function (void) add_mutation(s pop_name, f selection_coef) {
+function (void) add_mutation(void) {
     // sample one target carrier of the new mutation...
-    target = sample(population(pop_name).genomes, 1);
-    // ... and add the mutation to it
-    target.addNewMutation(m1, selectionCoeff = selection_coef, position = asInteger(SEQUENCE_LENGTH / 2));
+    target = sample(population(origin_pop).genomes, 1);
+    // ... and add the mutation in the middle of it
+    mut = target.addNewMutation(m1, s, position = asInteger(SEQUENCE_LENGTH / 2));
 
-    log_output("adding beneficial mutation to population " + pop_name);
+    // save the mutation for later reference
+    defineGlobal("MUTATION", mut);
+
+    log_output("adding beneficial mutation to population " + target_pop);
 }
 
 tick(onset_time) late() {
     // save simulation state in case we need to restart if the mutation is lost
     save_state();
 
-    add_mutation(target_pop, s);
-    writeFile(output_file, "tick\ttime\tfrequency");
+    add_mutation();
+    writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
 }
 
-// check that the allele of interest is still segregating (and save its
-// frequency to a file)
 tick(onset_time):SIMULATION_END late() {
-    if (!population(target_pop, check = T)) return;
-
-    segregating = sim.countOfMutationsOfType(m1) > 0;
-    fixed = sum(sim.substitutions.mutationType == m1) == 1;
-
     // the mutation is not segregating and is not fixed either -- we must restart
-    if (!segregating & !fixed) {
+    if (!MUTATION.isSegregating & !MUTATION.isFixed) {
         log_output("mutation lost -- restarting");
 
         reset_state();
 
-        add_mutation(target_pop, s);
-        writeFile(output_file, "tick\ttime\tfrequency");
+        add_mutation();
+        writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
     }
 
-    if (fixed)
-        frequency = 1.0;
-    else
-        frequency = population(target_pop).genomes.mutationFrequenciesInGenomes();
-    time = model_time(community.tick);
+    // compute the frequency of the mutation of interest and save it (if the
+    // mutation is missing at this time, save its frequency as NA)
+    freq_origin = "NA";
+    freq_target = "NA";
+    if (population(origin_pop, check = T))
+      freq_origin = population(origin_pop).genomes.mutationFrequenciesInGenomes();
+    if (population(target_pop, check = T))
+      freq_target = population(target_pop).genomes.mutationFrequenciesInGenomes();
 
-    writeFile(output_file, community.tick + "\t" + time + "\t" + frequency, append = T);
+    writeFile(output_file,
+              community.tick + "\t" +
+              model_time(community.tick) + "\t" +
+              freq_origin + "\t" +
+              freq_target, append = T);
 }
+
 )"
 ```
 
+Having defined the SLiM snippet in this way, the rest of our code will work in exactly the same way as the example just shown:
+
 ```{r}
-extension <- substitute(
-  extension_template,
-  s = 0.1, onset_time = 15000, target_pop = "ANA",
-  output_dir = "~/Desktop/"
-)
+run_model <- function(origin_pop, onset_time) {
+  extension <- substitute(
+    extension_template, # <--- template SLiM code string directly (not as a file!)
+    s = 0.1, onset_time = onset_time,
+    origin_pop = origin_pop, target_pop = "EUR",
+    output_dir = tempdir()
+  )
+  
+  model <- compile_model(
+    populations = list(afr, ooa, ehg, eur, ana, yam),
+    gene_flow = gf, generation_time = 30,
+    extension = extension
+  )
+  
+  slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
+}
 
-model <- compile_model(
-  populations = list(afr, ooa, ehg, eur, ana, yam),
-  gene_flow = gf, generation_time = 30,
-  extension = extension 
-)
+run_model("EUR", onset_time = 15000)
 
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = FALSE)
-
-trajectory <- read.table("~/Desktop/traj_EUR.tsv", header = TRUE)
-plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
-
-trajectory <- read.table("~/Desktop/traj_ANA.tsv", header = TRUE)
-plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
+head(load_traj("EUR"))
 ```
 
 
@@ -591,8 +600,78 @@ plot(-trajectory$time, trajectory$frequency, type = "l", xlim = c(-15e3, 0))
 
 
 
-### Parametrizing selective sweep simulations
+### Completely customized genomic architecture (selective sweep simulations)
 
+**Customization of _slendr_ / SLiM models can extend also to the genomic architecture itself.** Because altering the initialization procedure by providing a custom `initialize() {...}` callback in the SLiM extension code entirely overrides setting up a (by default just one) genomic element type and recombination rate, users might want to set those up entirely by themselves. This means that it's possible to avoid the `SEQUENCE_LENGTH` and `RECOMBINATION_RATE` arguments used by the _slendr_ back-end engine provided via the `slim(..., sequence_length = ..., recombination_rate = ..., ...)` arguments.
+
+Let's take the following _slendr_ demographic model of Neanderthal introgression:
+
+```{r}
+ancestor <- population("ancestor", time = 1e6, N = 5000)#, remove = 599e3)
+
+# two populations of anatomically modern humans: Africans and Europeans
+afr <- population("AFR", parent = ancestor, time = 600e3, N = 10000)
+eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
+
+# Neanderthal population splitting at 600 ky ago from modern humans
+# (becomes extinct by 40 ky ago)
+nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000)
+
+# 3% Neanderthal introgression into Europeans between 55-50 ky ago
+gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 40000)
+
+extension <- r"(
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations).
+initialize() {
+  initializeMutationType("m0", 0.5, "f", 0.0); // neutral
+  initializeMutationType("m1", 0.5, "f", -0.001); // deleterious
+
+  //initializeGenomicElementType("g1", m0, 1.0); // intron
+  //g1.color = "green";
+  initializeGenomicElementType("g2", c(m0, m1), c(1, 5)); // exon
+  g2.color = "red";
+
+  total_length = 1000000;
+  exon_length = 50000;
+  intron_length = 50000;
+
+  start = 0;
+  end = start + intron_length - 1;
+  while (start < total_length) {
+    //initializeGenomicElement(g1, start, end);
+
+    start = end + 1;
+    end = start + intron_length - 1;
+    initializeGenomicElement(g2, start, end);
+
+    start = end + 1;
+    end = start + intron_length - 1;
+  }
+
+  initializeRecombinationRate(1e-8);
+  initializeMutationRate(1e-7);
+}
+)"
+
+model <- compile_model(
+  populations = list(ancestor, nea, afr, eur), gene_flow = gf,
+  generation_time = 30,
+  extension = extension,
+  simulation_length = 100000
+)
+
+plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"))
+
+ts <- slim(model, method = "gui")
+ts_save(ts, "purifying.trees")
+```
+
+It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
+
+In [this] _slendr_/SLiM extension snippet, we override the default neutral, single chromosome genomic architecture of _slendr_ and replace it with a series of alternating "introns" (smaller negative selective impact of mutations, approximated by appropriate selective coefficient of deleterious mutations and higher recombination) and "exons" (more deleterious mutations and lower recombination). We run the model including a burnin and then compute Neanderthal ancestry in exons vs introns. If everything works, our toy model should reveal a smaller
 
 ```{r, eval=FALSE}
 simulate_sweep <- function(s) {
@@ -616,7 +695,7 @@ simulate_sweep <- function(s) {
   
   # run the slendr model through SLiM (but don't simulate any tree sequence!)
   slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
-       burnin = 1000, output = FALSE)
+       burnin = 1000, output = FALSE, method = "gui")
   
   # load the simulated frequency table (remember, no tree sequence was
   # simulated here because we set `output = FALSE` above!) and note what
