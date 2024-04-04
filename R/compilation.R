@@ -188,7 +188,12 @@ setting `direction = 'backward'.`", call. = FALSE)
   slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
   if (!is.null(extension)) {
-    extension_contents <- readLines(extension, warn = FALSE)
+    if (length(extension) == 1) {
+      if (file.exists(extension))
+        extension_contents <- readLines(extension, warn = FALSE)
+      else
+        extension_contents <- strsplit(extension, "\n")[[1]]
+    }
     script_contents <- readLines(slim_script, warn = FALSE)
 
     # check whether the customization snippet contains user-defined genomic
