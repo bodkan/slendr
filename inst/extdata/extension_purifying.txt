@@ -1,0 +1,14 @@
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations).
+initialize() {
+  initializeMutationType("m0", 0.5, "f", 0.0);    // neutral
+  initializeMutationType("m1", 0.1, "f", -0.001); // deleterious
+
+  initializeGenomicElementType("g1", c(m0, m1), c(1, 5)); // exon
+  initializeGenomicElementType("g2", m0, 1.0); // intron
+
+  initializeMutationRate(1e-7);
+  initializeRecombinationRate(1e-7);
+}
