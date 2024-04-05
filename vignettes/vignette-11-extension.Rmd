@@ -607,15 +607,15 @@ head(load_traj("EUR"))
 Let's take the following _slendr_ demographic model of Neanderthal introgression:
 
 ```{r}
-chimp <- population("chimp", time = 1.1e6, N = 5000)#, remove = 599e3)
+# ancestral population of Neanderthals and anatomically modern humans
+ancestor <- population("ancestor", time = 650e3, N = 10000, remove = 599e3)
 
 # two populations of anatomically modern humans: Africans and Europeans
-afr <- population("AFR", parent = chimp, time = 1e6, N = 10000)
+afr <- population("AFR", parent = ancestor, time = 600e3, N = 10000)
 eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
-# (becomes extinct by 40 ky ago)
-nea <- population("NEA", parent = afr, time = 600e3, N = 1000)
+nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e3)
 
 # 3% Neanderthal introgression into Europeans between 55-50 ky ago
 gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 40000)
@@ -629,11 +629,10 @@ initialize() {
   initializeMutationType("m1", 0.5, "f", -0.001); // deleterious mutations
   initializeGenomicElementType("g2", m1, 1.0); // 'exon' genomic type
 
-  initializeMutationRate(1e-8);
-
-  total_length = 1000000;
-  exon_length = 100000;
-  gap_length = 100000;
+  // parameters to be substitute()'d in R below
+  total_length = {{total_length}};
+  exon_length = {{exon_length}};
+  gap_length = {{gap_length}};
 
   exons = c(); // exon start-end coordinates
   breakpoints = c(); // recombination breakpoints
@@ -650,23 +649,38 @@ initialize() {
 	 rates = c(rates, 1e-8, 0.5);
   }
 
+  // odd elements = starts, even elements == ends
   exon_starts = integerMod(seqAlong(exons), 2) == 0;
   exon_ends = integerMod(seqAlong(exons), 2) == 1;
+
   initializeGenomicElement(g2, exons[exon_starts], exons[exon_ends]);
-  
+
   initializeRecombinationRate(rates, breakpoints);
+  initializeMutationRate(1e-8);
+
 }
-)"
+)" %>%
+  substitute(total_length = 10e6, exon_length = 100e3, gap_length = 100e3)
 
 model <- compile_model(
-  populations = list(chimp, nea, afr, eur), gene_flow = gf,
+  populations = list(ancestor, nea, afr, eur), gene_flow = gf,
   generation_time = 30,
   extension = extension
 )
 
-plot_model(model, proportions = TRUE, order = c("chimp", "NEA", "EUR", "AFR"))
+# slim(model, verbose = TRUE, method = "gui", output = FALSE)
+```
 
-slim(model, verbose = TRUE, method = "gui", output = FALSE)
+```{r}
+ancestor <- population("ancestor", time = 800e3, N = 10000, remove = 599e3)
+
+model_for_plot <- compile_model(
+  populations = list(ancestor, nea, afr, eur), gene_flow = gf,
+  generation_time = 30,
+  extension = extension
+)
+
+plot_model(model_for_plot, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"))
 ```
 
 ```{r}
