@@ -604,11 +604,11 @@ head(load_traj("EUR"))
 
 **Customization of _slendr_ / SLiM models can extend also to the genomic architecture itself.** Because altering the initialization procedure by providing a custom `initialize() {...}` callback in the SLiM extension code entirely overrides setting up a (by default just one) genomic element type and recombination rate, users might want to set those up entirely by themselves. This means that it's possible to avoid the `SEQUENCE_LENGTH` and `RECOMBINATION_RATE` arguments used by the _slendr_ back-end engine provided via the `slim(..., sequence_length = ..., recombination_rate = ..., ...)` arguments.
 
-Let's take the following _slendr_ demographic model of Neanderthal introgression:
+Let's take the following _slendr_ model of Neanderthal introgression:
 
 ```{r}
-# ancestral population of Neanderthals and anatomically modern humans
-ancestor <- population("ancestor", time = 650e3, N = 10000, remove = 599e3)
+# ancestor of Neanderthals and anatomically modern humans
+ancestor <- population("ancestor", time = 650e3, N = 5000, remove = 599e3)
 
 # two populations of anatomically modern humans: Africans and Europeans
 afr <- population("AFR", parent = ancestor, time = 600e3, N = 10000)
@@ -619,7 +619,11 @@ nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e
 
 # 3% Neanderthal introgression into Europeans between 55-50 ky ago
 gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 40000)
+```
 
+Now we put together SLiM extension code to set up a non-neutral _slendr_ simulation:
+
+```{r}
 extension <- r"(
 // Because we want to simulate non-neutral evolution, we have to provide a
 // custom initialization callback -- slendr will use it to replace its default
@@ -627,7 +631,7 @@ extension <- r"(
 // by default for neutral simulations).
 initialize() {
   initializeMutationType("m1", 0.5, "f", -0.001); // deleterious mutations
-  initializeGenomicElementType("g2", m1, 1.0); // 'exon' genomic type
+  initializeGenomicElementType("g1", m1, 1.0); // 'exon' genomic type
 
   // parameters to be substitute()'d in R below
   total_length = {{total_length}};
@@ -638,58 +642,72 @@ initialize() {
   breakpoints = c(); // recombination breakpoints
   rates = c(); // recombination rates
 
+  // compute coordinates of exons, as well as the recombination map
   start = 0;
   while (start < total_length) {
+    // start-end of an exon
     end = start + exon_length - 1;
     exons = c(exons, start, end);
-    breakpoints = c(breakpoints, end, end + 1);
+
+    // uniform recombination within the exon, followed by a 0.5 recombination breakpoint
     rates = c(rates, 1e-8, 0.5);
+    breakpoints = c(breakpoints, end, end + 1);
+
+    // start of the following gap
     start = end + gap_length + 1;
-	 breakpoints = c(breakpoints, start - 1, start);
-	 rates = c(rates, 1e-8, 0.5);
+
+    // uniform recombination within the gap, followed by a 0.5 recombination breakpoint
+	  rates = c(rates, 1e-8, 0.5);
+  	breakpoints = c(breakpoints, start - 1, start);
   }
 
-  // odd elements = starts, even elements == ends
+  // odd elements --> starts of exons, even elements --> ends of exons
   exon_starts = integerMod(seqAlong(exons), 2) == 0;
   exon_ends = integerMod(seqAlong(exons), 2) == 1;
 
-  initializeGenomicElement(g2, exons[exon_starts], exons[exon_ends]);
+  // set up all the exons at once
+  initializeGenomicElement(g1, exons[exon_starts], exons[exon_ends]);
 
+  // set up 0.5 recombination between exons/gaps, uniform recombination within
   initializeRecombinationRate(rates, breakpoints);
-  initializeMutationRate(1e-8);
 
+  // mutation rate of deleterious mutations within exons
+  initializeMutationRate(1e-8);
 }
 )" %>%
-  substitute(total_length = 10e6, exon_length = 100e3, gap_length = 100e3)
+  substitute(total_length = 1e6, exon_length = 10e3, gap_length = 10e3)
+```
 
+And put everything together by compiling a _slendr_ model (which now swaps _slendr_'s default neutrality for a non-neutral genomic architecture, including deleterious mutations):
+
+```{r}
 model <- compile_model(
   populations = list(ancestor, nea, afr, eur), gene_flow = gf,
   generation_time = 30,
   extension = extension
 )
 
-# slim(model, verbose = TRUE, method = "gui", output = FALSE)
+plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"))
 ```
 
+We will also record 10 Neanderthals and 100 Africans and Europeans each in a tree sequence:
+
 ```{r}
-ancestor <- population("ancestor", time = 800e3, N = 10000, remove = 599e3)
+nea_samples <- schedule_sampling(model, times = 50000, list(nea, 10))
+modern_samples <- schedule_sampling(model, times = 0, list(eur, 100), list(afr, 100))
 
-model_for_plot <- compile_model(
-  populations = list(ancestor, nea, afr, eur), gene_flow = gf,
-  generation_time = 30,
-  extension = extension
-)
-
-plot_model(model_for_plot, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"))
+samples <- rbind(nea_samples, modern_samples)
 ```
 
+
+Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
+
 ```{r}
-ts <- slim(model, output = "purifying.trees", verbose = TRUE)
+ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE)
 ```
 
 ```{e}
-ts <- ts_load("purifying.trees", model) %>%
-  ts_recapitate(Ne = 5000, recombination_rate = 1e-8) %>%
+ts <- ts_recapitate(ts, Ne = 5000, recombination_rate = 1e-8) %>%
   ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE)
 
 # plot(ts_table(ts, "sites")$position, rep(1, length(ts_table(ts, "sites")$position)), pch = ".")
@@ -697,44 +715,20 @@ ts <- ts_load("purifying.trees", model) %>%
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
 
-```{r}
-total_length <- 100000000
-exon_length <- 50000
-gap_length <- 200000
-
-breakpoints <- c()
-start <- 0
-while (start < total_length) {
-  end <- start + exon_length;
-  breakpoints <- c(breakpoints, start, end)
-  start <- end + gap_length;
-}
-breakpoints <- breakpoints[-1]
-
-head(breakpoints)
-```
+The above implies that if we compute Neanderthal-Eurasian divergence (as a simplified introgression-detection statistic), we should observe lower introgression levels within "exons" than within "gaps", because purifying selection should be removing Neanderthal introgressed DNA from those regions under selective constraint compared to neutral regions. Let's verify this.
 
 ```{r}
+windows <- seq(from = 0, to = 1e6, by = 50000)
+
 samples <- ts_names(ts, split = "pop")
 
-f4 <- ts_f4(ts, W = samples["AFR"], X = samples["EUR"], Y = samples["NEA"], Z= samples["chimp"], windows = breakpoints)$f4[[1]]
+div_afr_nea <- ts_divergence(ts, samples[c("AFR", "NEA")], windows = windows)$divergence[[1]]
+div_eur_nea <- ts_divergence(ts, samples[c("EUR", "NEA")], windows = windows)$divergence[[1]]
 
-exon_f4 <- f4[c(TRUE, FALSE)]
-gap_f4 <- f4[c(TRUE, FALSE)]
-
-df <- rbind(
-  dplyr::tibble(f4 = exon_f4, region = "exon"),
-  dplyr::tibble(f4 = gap_f4, region = "gap")
-)
+plot(div_afr_nea, type = "l", col = "darkgray")
+lines(div_eur_nea, col = "red")
 ```
 
-```{r}
-group_by(df, region) %>% summarise(mean(f4))
-```
-
-```{r}
-ggplot(df) + geom_jitter(aes(region, f4, color = region))
-```
 
 
 
