@@ -907,7 +907,8 @@ function(i) model_time (i tick) {
     }
 
     if (DIRECTION == "backward") {
-        model_time = ORIGINAL_LENGTH - (tick - BURNIN_LENGTH - 1) * GENERATION_TIME;
+        oldest_time = max(POPULATIONS.getValue("tsplit_orig"));
+        model_time = oldest_time - (tick - BURNIN_LENGTH - 1) * GENERATION_TIME;
     } else {
         model_time = (tick - SIMULATION_START + 1) * GENERATION_TIME;
     }
