@@ -607,15 +607,15 @@ head(load_traj("EUR"))
 Let's take the following _slendr_ demographic model of Neanderthal introgression:
 
 ```{r}
-ancestor <- population("ancestor", time = 1e6, N = 5000)#, remove = 599e3)
+chimp <- population("chimp", time = 1.1e6, N = 5000)#, remove = 599e3)
 
 # two populations of anatomically modern humans: Africans and Europeans
-afr <- population("AFR", parent = ancestor, time = 600e3, N = 10000)
+afr <- population("AFR", parent = chimp, time = 1e6, N = 10000)
 eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
 # (becomes extinct by 40 ky ago)
-nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000)
+nea <- population("NEA", parent = afr, time = 600e3, N = 1000)
 
 # 3% Neanderthal introgression into Europeans between 55-50 ky ago
 gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 40000)
@@ -626,50 +626,115 @@ extension <- r"(
 // neutral genomic architecture (i.e. the initialize() {...} callback it uses
 // by default for neutral simulations).
 initialize() {
-  initializeMutationType("m0", 0.5, "f", 0.0); // neutral
-  initializeMutationType("m1", 0.5, "f", -0.001); // deleterious
+  initializeMutationType("m1", 0.5, "f", -0.001); // deleterious mutations
+  initializeGenomicElementType("g2", m1, 1.0); // 'exon' genomic type
 
-  //initializeGenomicElementType("g1", m0, 1.0); // intron
-  //g1.color = "green";
-  initializeGenomicElementType("g2", c(m0, m1), c(1, 5)); // exon
-  g2.color = "red";
+  initializeMutationRate(1e-8);
 
   total_length = 1000000;
-  exon_length = 50000;
-  intron_length = 50000;
+  exon_length = 100000;
+  gap_length = 100000;
+
+  exons = c(); // exon start-end coordinates
+  breakpoints = c(); // recombination breakpoints
+  rates = c(); // recombination rates
 
   start = 0;
-  end = start + intron_length - 1;
   while (start < total_length) {
-    //initializeGenomicElement(g1, start, end);
-
-    start = end + 1;
-    end = start + intron_length - 1;
-    initializeGenomicElement(g2, start, end);
-
-    start = end + 1;
-    end = start + intron_length - 1;
+    end = start + exon_length - 1;
+    exons = c(exons, start, end);
+    breakpoints = c(breakpoints, end, end + 1);
+    rates = c(rates, 1e-8, 0.5);
+    start = end + gap_length + 1;
+	 breakpoints = c(breakpoints, start - 1, start);
+	 rates = c(rates, 1e-8, 0.5);
   }
 
-  initializeRecombinationRate(1e-8);
-  initializeMutationRate(1e-7);
+  exon_starts = integerMod(seqAlong(exons), 2) == 0;
+  exon_ends = integerMod(seqAlong(exons), 2) == 1;
+  initializeGenomicElement(g2, exons[exon_starts], exons[exon_ends]);
+  
+  initializeRecombinationRate(rates, breakpoints);
 }
 )"
 
 model <- compile_model(
-  populations = list(ancestor, nea, afr, eur), gene_flow = gf,
+  populations = list(chimp, nea, afr, eur), gene_flow = gf,
   generation_time = 30,
-  extension = extension,
-  simulation_length = 100000
+  extension = extension
 )
 
-plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"))
+plot_model(model, proportions = TRUE, order = c("chimp", "NEA", "EUR", "AFR"))
 
-ts <- slim(model, method = "gui")
-ts_save(ts, "purifying.trees")
+slim(model, verbose = TRUE, method = "gui", output = FALSE)
+```
+
+```{r}
+ts <- slim(model, output = "purifying.trees", verbose = TRUE)
+```
+
+```{e}
+ts <- ts_load("purifying.trees", model) %>%
+  ts_recapitate(Ne = 5000, recombination_rate = 1e-8) %>%
+  ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE)
+
+# plot(ts_table(ts, "sites")$position, rep(1, length(ts_table(ts, "sites")$position)), pch = ".")
 ```
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
+
+```{r}
+total_length <- 100000000
+exon_length <- 50000
+gap_length <- 200000
+
+breakpoints <- c()
+start <- 0
+while (start < total_length) {
+  end <- start + exon_length;
+  breakpoints <- c(breakpoints, start, end)
+  start <- end + gap_length;
+}
+breakpoints <- breakpoints[-1]
+
+head(breakpoints)
+```
+
+```{r}
+samples <- ts_names(ts, split = "pop")
+
+f4 <- ts_f4(ts, W = samples["AFR"], X = samples["EUR"], Y = samples["NEA"], Z= samples["chimp"], windows = breakpoints)$f4[[1]]
+
+exon_f4 <- f4[c(TRUE, FALSE)]
+gap_f4 <- f4[c(TRUE, FALSE)]
+
+df <- rbind(
+  dplyr::tibble(f4 = exon_f4, region = "exon"),
+  dplyr::tibble(f4 = gap_f4, region = "gap")
+)
+```
+
+```{r}
+group_by(df, region) %>% summarise(mean(f4))
+```
+
+```{r}
+ggplot(df) + geom_jitter(aes(region, f4, color = region))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 In [this] _slendr_/SLiM extension snippet, we override the default neutral, single chromosome genomic architecture of _slendr_ and replace it with a series of alternating "introns" (smaller negative selective impact of mutations, approximated by appropriate selective coefficient of deleterious mutations and higher recombination) and "exons" (more deleterious mutations and lower recombination). We run the model including a burnin and then compute Neanderthal ancestry in exons vs introns. If everything works, our toy model should reveal a smaller
 
