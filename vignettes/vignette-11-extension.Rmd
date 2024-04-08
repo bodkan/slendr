@@ -608,10 +608,13 @@ Let's take the following _slendr_ model of Neanderthal introgression:
 
 ```{r}
 # ancestor of Neanderthals and anatomically modern humans
-ancestor <- population("ancestor", time = 650e3, N = 5000, remove = 599e3)
+# chimp <- population("chimp", time = 6.1e6, N = 2)
+
+# ancestor <- population("ancestor", parent = chimp, time = 6e6, N = 5, remove = 599e3)
+ancestor <- population("ancestor", time = 650e3, N = 5, remove = 599e3)
 
 # two populations of anatomically modern humans: Africans and Europeans
-afr <- population("AFR", parent = ancestor, time = 600e3, N = 10000)
+afr <- population("AFR", parent = ancestor, time = 600e3, N = 5)
 eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
@@ -630,52 +633,56 @@ extension <- r"(
 // neutral genomic architecture (i.e. the initialize() {...} callback it uses
 // by default for neutral simulations).
 initialize() {
-  initializeMutationType("m1", 0.5, "f", -0.001); // deleterious mutations
-  initializeGenomicElementType("g1", m1, 1.0); // 'exon' genomic type
+  initializeMutationType("m1", 0.5, "f", {{s}}); // deleterious mutation type
+  initializeGenomicElementType("g1", m1, 1.0); // genomic type of 'genes'
 
   // parameters to be substitute()'d in R below
   total_length = {{total_length}};
-  exon_length = {{exon_length}};
-  gap_length = {{gap_length}};
+  gene_length = {{gene_length}};
 
-  exons = c(); // exon start-end coordinates
+  genes = c(); // gene start-end coordinates
   breakpoints = c(); // recombination breakpoints
   rates = c(); // recombination rates
 
   // compute coordinates of exons, as well as the recombination map
   start = 0;
   while (start < total_length) {
-    // start-end of an exon
-    end = start + exon_length - 1;
-    exons = c(exons, start, end);
+    // start-end of a gene
+    end = start + gene_length - 1;
+    genes = c(genes, start, end);
 
-    // uniform recombination within the exon, followed by a 0.5 recombination breakpoint
+    // uniform recombination within the gene, followed by a 0.5 recombination breakpoint
     rates = c(rates, 1e-8, 0.5);
     breakpoints = c(breakpoints, end, end + 1);
 
     // start of the following gap
-    start = end + gap_length + 1;
-
-    // uniform recombination within the gap, followed by a 0.5 recombination breakpoint
-	  rates = c(rates, 1e-8, 0.5);
-  	breakpoints = c(breakpoints, start - 1, start);
+    start = end + 1;
   }
 
   // odd elements --> starts of exons, even elements --> ends of exons
-  exon_starts = integerMod(seqAlong(exons), 2) == 0;
-  exon_ends = integerMod(seqAlong(exons), 2) == 1;
+  gene_starts_idx = integerMod(seqAlong(genes), 2) == 0;
+  gene_ends_idx = integerMod(seqAlong(genes), 2) == 1;
+  defineConstant("gene_starts", genes[gene_starts_idx]);
+  defineConstant("gene_ends", genes[gene_ends_idx]);
 
   // set up all the exons at once
-  initializeGenomicElement(g1, exons[exon_starts], exons[exon_ends]);
+  initializeGenomicElement(g1, gene_starts, gene_ends);
 
   // set up 0.5 recombination between exons/gaps, uniform recombination within
   initializeRecombinationRate(rates, breakpoints);
 
-  // mutation rate of deleterious mutations within exons
-  initializeMutationRate(1e-8);
+  // no mutation rate (we will add neutral variation after the SLiM run)
+  initializeMutationRate(0);
+}
+
+tick(60000) early() {
+  log_output("adding fixed deleterious mutations to Neanderthals");
+
+  gene_centers = asInteger((gene_ends + gene_starts) / 2);
+  population("NEA").genomes.addNewDrawnMutation(m1, position = gene_centers);
 }
 )" %>%
-  substitute(total_length = 1e6, exon_length = 10e3, gap_length = 10e3)
+  substitute(total_length = 1000e6, s = -0.005, gene_length = 1e6);
 ```
 
 And put everything together by compiling a _slendr_ model (which now swaps _slendr_'s default neutrality for a non-neutral genomic architecture, including deleterious mutations):
@@ -687,14 +694,14 @@ model <- compile_model(
   extension = extension
 )
 
-plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"))
+plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"), log = T)
 ```
 
 We will also record 10 Neanderthals and 100 Africans and Europeans each in a tree sequence:
 
 ```{r}
-nea_samples <- schedule_sampling(model, times = 50000, list(nea, 10))
-modern_samples <- schedule_sampling(model, times = 0, list(eur, 100), list(afr, 100))
+nea_samples <- schedule_sampling(model, times = 50000, list(nea, 1))
+modern_samples <- schedule_sampling(model, times = 0, list(afr, 100), list(eur, 100))
 
 samples <- rbind(nea_samples, modern_samples)
 ```
@@ -703,13 +710,23 @@ samples <- rbind(nea_samples, modern_samples)
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
 ```{r}
-ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE)
+ts <- slim(model, verbose = TRUE, method = "gui")
+```
+
+```{r}
+start <- Sys.time()
+
+ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE, method = "gui")
+
+end <- Sys.time()
+end - start
 ```
 
 ```{e}
 ts <- ts_recapitate(ts, Ne = 5000, recombination_rate = 1e-8) %>%
   ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE)
 
+ts_save(ts, "purifying_mutated.trees")
 # plot(ts_table(ts, "sites")$position, rep(1, length(ts_table(ts, "sites")$position)), pch = ".")
 ```
 
@@ -718,15 +735,23 @@ It's been suggested that Neanderthals had a significantly lower $N_e$ compared t
 The above implies that if we compute Neanderthal-Eurasian divergence (as a simplified introgression-detection statistic), we should observe lower introgression levels within "exons" than within "gaps", because purifying selection should be removing Neanderthal introgressed DNA from those regions under selective constraint compared to neutral regions. Let's verify this.
 
 ```{r}
-windows <- seq(from = 0, to = 1e6, by = 50000)
-
 samples <- ts_names(ts, split = "pop")
 
+windows <- seq(from = 0, to = 100e6, by = 100e3)
 div_afr_nea <- ts_divergence(ts, samples[c("AFR", "NEA")], windows = windows)$divergence[[1]]
 div_eur_nea <- ts_divergence(ts, samples[c("EUR", "NEA")], windows = windows)$divergence[[1]]
 
 plot(div_afr_nea, type = "l", col = "darkgray")
 lines(div_eur_nea, col = "red")
+
+div <- rbind(
+  tibble(pop = "AFR", region = "exon", div = div_afr_nea[c(TRUE, FALSE)]),
+  tibble(pop = "AFR", region = "intron", div = div_afr_nea[c(FALSE, TRUE)]),
+  tibble(pop = "EUR", region = "exon", div = div_eur_nea[c(TRUE, FALSE)]),
+  tibble(pop = "EUR", region = "intron", div = div_eur_nea[c(FALSE, TRUE)])
+)
+
+ggplot(div) + geom_boxplot(aes(region, div)) + facet_wrap(~ pop)
 ```
 
 
