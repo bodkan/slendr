@@ -608,14 +608,11 @@ Let's take the following _slendr_ model of Neanderthal introgression:
 
 ```{r}
 # ancestor of Neanderthals and anatomically modern humans
-# chimp <- population("chimp", time = 6.1e6, N = 2)
-
-# ancestor <- population("ancestor", parent = chimp, time = 6e6, N = 5, remove = 599e3)
-ancestor <- population("ancestor", time = 650e3, N = 5, remove = 599e3)
+ancestor <- population("ancestor", time = 650e3, N = 1000, remove = 599e3)
 
 # two populations of anatomically modern humans: Africans and Europeans
-afr <- population("AFR", parent = ancestor, time = 600e3, N = 5)
-eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
+afr <- population("AFR", parent = ancestor, time = 600e3, N = 100)
+eur <- population("EUR", parent = afr, time = 80e3, N = 10000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
 nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e3)
@@ -682,7 +679,8 @@ tick(60000) early() {
   population("NEA").genomes.addNewDrawnMutation(m1, position = gene_centers);
 }
 )" %>%
-  substitute(total_length = 1000e6, s = -0.005, gene_length = 1e6);
+  # substitute values of the {{placeholder}} parameters above
+  substitute(total_length = 2000e6, s = -0.0005, gene_length = 2e6)
 ```
 
 And put everything together by compiling a _slendr_ model (which now swaps _slendr_'s default neutrality for a non-neutral genomic architecture, including deleterious mutations):
@@ -710,20 +708,16 @@ samples <- rbind(nea_samples, modern_samples)
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
 ```{r}
-ts <- slim(model, verbose = TRUE, method = "gui")
-```
-
-```{r}
 start <- Sys.time()
 
-ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE, method = "gui")
+ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE)
 
 end <- Sys.time()
-end - start
+end - start # 41 minutes
 ```
 
 ```{e}
-ts <- ts_recapitate(ts, Ne = 5000, recombination_rate = 1e-8) %>%
+ts <- ts_recapitate(ts, Ne = 1000, recombination_rate = 1e-8) %>%
   ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE)
 
 ts_save(ts, "purifying_mutated.trees")
@@ -737,22 +731,38 @@ The above implies that if we compute Neanderthal-Eurasian divergence (as a simpl
 ```{r}
 samples <- ts_names(ts, split = "pop")
 
-windows <- seq(from = 0, to = 100e6, by = 100e3)
-div_afr_nea <- ts_divergence(ts, samples[c("AFR", "NEA")], windows = windows)$divergence[[1]]
-div_eur_nea <- ts_divergence(ts, samples[c("EUR", "NEA")], windows = windows)$divergence[[1]]
+total_length <- 100e6
+gene_length <- 1e6
+window_length <- 50e3
 
-plot(div_afr_nea, type = "l", col = "darkgray")
-lines(div_eur_nea, col = "red")
+genes <- unlist(lapply(seq_len(total_length / gene_length), function(window_i) rep(window_i, gene_length / window_length)))
+
+windows <- seq(from = 0, to = total_length - 1, by = window_length)
+div_afr <- ts_divergence(ts, samples[c("AFR", "NEA")], windows = windows)$divergence[[1]]
+div_eur <- ts_divergence(ts, samples[c("EUR", "NEA")], windows = windows)$divergence[[1]]
 
 div <- rbind(
-  tibble(pop = "AFR", region = "exon", div = div_afr_nea[c(TRUE, FALSE)]),
-  tibble(pop = "AFR", region = "intron", div = div_afr_nea[c(FALSE, TRUE)]),
-  tibble(pop = "EUR", region = "exon", div = div_eur_nea[c(TRUE, FALSE)]),
-  tibble(pop = "EUR", region = "intron", div = div_eur_nea[c(FALSE, TRUE)])
-)
-
-ggplot(div) + geom_boxplot(aes(region, div)) + facet_wrap(~ pop)
+  tibble(pop = "afr", gene = genes, div = div_afr),
+  tibble(pop = "eur", gene = genes, div = div_eur)
+) %>% group_by(pop, gene) %>% mutate(window = 1:n())
 ```
+
+```{r}
+ggplot(div, aes(window, div, color = gene, group = gene)) +
+  geom_vline(xintercept = (gene_length / window_length) / 2, linetype = "dashed", color = "red") +
+  geom_line(alpha = 0.1) +
+  facet_wrap(~ pop)
+```
+
+```{r}
+div %>%
+  group_by(pop, window) %>%
+  summarise(div = mean(div)) %>%
+ggplot(aes(window, div, color = pop)) +
+  geom_vline(xintercept = (gene_length / window_length) / 2, linetype = "dashed", color = "red") +
+  geom_line()
+```
+
 
 
 
