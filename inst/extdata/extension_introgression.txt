@@ -1,0 +1,51 @@
+// Define model constants all in one place (each {{placeholder}} will be
+// substituted by slendr with a value passed from R).
+// Note that string constant template patterns must be surrounded by "quotes"!
+initialize() {
+  defineConstant("s", {{s}});
+  defineConstant("introgression_time", {{introgression_time}});
+  defineConstant("n_markers", {{n_markers}});
+  defineConstant("output_file", "{{output_file}}");
+}
+
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations). Note that we can refer to slendr's
+// constants SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values
+// passed through from R via slendr's slim() R function.
+initialize() {
+  initializeMutationType("m0", 0.5, "f", 0.0); // neutral Neanderthal markers
+  initializeMutationType("m1", 0.5, "f", s); // deleterious Neanderthal mutation
+
+  initializeGenomicElementType("g1", m0, 1.0);
+  initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
+
+  initializeMutationRate(0.0);
+  initializeRecombinationRate(RECOMBINATION_RATE);
+}
+
+tick(introgression_time) - 1 late() {
+  // get all Neanderthal chromosomes just prior to the introgression
+  target = population("NEA").genomes;
+
+  log_output("adding neutral Neanderthal markers");
+
+  positions = asInteger(seq(0, SEQUENCE_LENGTH - 1, by = round(SEQUENCE_LENGTH / n_markers)));
+  mutations = target.addNewDrawnMutation(m0, position = positions);
+  defineConstant("MARKERS", target.mutations);
+
+  log_output("adding deleterious Neanderthal mutation");
+
+  target.addNewDrawnMutation(m1, position = asInteger(SEQUENCE_LENGTH / 2));
+  slimgui.pauseExecution();
+}
+
+// save mutation frequencies along the genome to a TSV file
+SIMULATION_END late() {
+  df = DataFrame(
+    "pos", MARKERS.position,
+    "freq", sim.mutationFrequencies(population("EUR"), MARKERS)
+  );
+  writeFile(output_file, df.serialize(format = "tsv"));
+}

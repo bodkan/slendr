@@ -611,8 +611,8 @@ Let's take the following _slendr_ model of Neanderthal introgression:
 ancestor <- population("ancestor", time = 650e3, N = 1000, remove = 599e3)
 
 # two populations of anatomically modern humans: Africans and Europeans
-afr <- population("AFR", parent = ancestor, time = 600e3, N = 100)
-eur <- population("EUR", parent = afr, time = 80e3, N = 10000)
+afr <- population("AFR", parent = ancestor, time = 600e3, N = 5000)
+eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
 nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e3)
@@ -708,34 +708,68 @@ samples <- rbind(nea_samples, modern_samples)
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
 ```{r}
+slim(model, output = FALSE, samples = samples, method = "gui")
+```
+
+```{r}
 start <- Sys.time()
 
 ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE)
 
 end <- Sys.time()
-end - start # 41 minutes
+end - start # 11 hours
 ```
 
-```{e}
-ts <- ts_recapitate(ts, Ne = 1000, recombination_rate = 1e-8) %>%
-  ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE)
+```{r}
+ts <- ts_load("purifying.trees", model) %>%
+  ts_recapitate(Ne = 1000, recombination_rate = 1e-8) %>%
+  ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE) %>% 
+  ts_simplify()
+```
 
+```{r}
 ts_save(ts, "purifying_mutated.trees")
-# plot(ts_table(ts, "sites")$position, rep(1, length(ts_table(ts, "sites")$position)), pch = ".")
 ```
+
+```{r}
+ts <- ts_load("purifying_mutated.trees", model)
+```
+
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
 
 The above implies that if we compute Neanderthal-Eurasian divergence (as a simplified introgression-detection statistic), we should observe lower introgression levels within "exons" than within "gaps", because purifying selection should be removing Neanderthal introgressed DNA from those regions under selective constraint compared to neutral regions. Let's verify this.
 
 ```{r}
+total_length <- 2000e6
+gene_length <- 2e6
+window_length <- 10e3
+```
+
+```{r}
+tracts <- ts_tracts(ts, census = 55000, source = "NEA")
+
+tracts_ <- tracts %>% 
+  mutate(gene = round(((left + right) / 2) / gene_length))
+         # left = left %% gene_length,
+         # right = right %% gene_length)
+```
+
+```{r}
+tracts_ %>%
+ggplot +
+  # geom_segment(aes(x = left, xend = right, y = gene, yend = gene + 1)) +
+  geom_vline(aes(xintercept = left)) +
+  coord_cartesian(xlim = c(0, total_length))
+```
+
+
+
+```{r}
 samples <- ts_names(ts, split = "pop")
 
-total_length <- 100e6
-gene_length <- 1e6
-window_length <- 50e3
-
-genes <- unlist(lapply(seq_len(total_length / gene_length), function(window_i) rep(window_i, gene_length / window_length)))
+genes <- unlist(lapply(seq_len(total_length / gene_length),
+                       function(window_i) rep(window_i, gene_length / window_length)))
 
 windows <- seq(from = 0, to = total_length - 1, by = window_length)
 div_afr <- ts_divergence(ts, samples[c("AFR", "NEA")], windows = windows)$divergence[[1]]
@@ -749,7 +783,8 @@ div <- rbind(
 
 ```{r}
 ggplot(div, aes(window, div, color = gene, group = gene)) +
-  geom_vline(xintercept = (gene_length / window_length) / 2, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = (gene_length / window_length) / 2,
+             linetype = "dashed", color = "red") +
   geom_line(alpha = 0.1) +
   facet_wrap(~ pop)
 ```
@@ -759,13 +794,95 @@ div %>%
   group_by(pop, window) %>%
   summarise(div = mean(div)) %>%
 ggplot(aes(window, div, color = pop)) +
-  geom_vline(xintercept = (gene_length / window_length) / 2, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = (gene_length / window_length) / 2,
+             linetype = "dashed", color = "red") +
   geom_line()
 ```
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# ancestor of Neanderthals and anatomically modern humans
+ancestor <- population("ancestor", time = 650e3, N = 1000, remove = 599e3)
+
+# two populations of anatomically modern humans: Africans and Europeans
+afr <- population("AFR", parent = ancestor, time = 600e3, N = 5000)
+eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
+
+# Neanderthal population splitting at 600 ky ago from modern humans
+nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e3)
+
+# 3% Neanderthal introgression into Europeans between 55-50 ky ago
+gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 40000)
+```
+
+```{r}
+extension <-
+  system.file("extdata", "extension_introgression.txt", package = "slendr") %>%
+  substitute(s = -0.001, introgression_time = 55000, n_markers = 100, output_file = "./output.tsv")
+```
+
+And put everything together by compiling a _slendr_ model (which now swaps _slendr_'s default neutrality for a non-neutral genomic architecture, including deleterious mutations):
+
+```{r}
+model <- compile_model(
+  populations = list(ancestor, nea, afr, eur), gene_flow = gf,
+  generation_time = 30,
+  extension = extension
+)
+
+plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"), log = T)
+```
+
+We will also record 10 Neanderthals and 100 Africans and Europeans each in a tree sequence:
+
+```{r}
+nea_samples <- schedule_sampling(model, times = 50000, list(nea, 1))
+modern_samples <- schedule_sampling(model, times = 0, list(afr, 100), list(eur, 100))
+
+samples <- rbind(nea_samples, modern_samples)
+```
+
+
+Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
+
+```{r}
+slim(model, output = FALSE, samples = samples, method = "gui")
+```
+
+```{r}
+start <- Sys.time()
+
+ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE)
+
+end <- Sys.time()
+end - start # 11 hours
+```
+
+```{r}
+library(readr)
+library(ggplot2)
+
+freqs <- read_tsv("~/Desktop/output.tsv")
+
+freqs %>%
+ggplot +
+  geom_line(aes(pos, freq)) +
+  geom_vline(xintercept = )
+```
 
 
 
