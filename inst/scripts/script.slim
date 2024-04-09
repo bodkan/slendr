@@ -3,45 +3,41 @@
 // rest of the slendr R package codebase.
 
 ///
-/// Initialization block
+/// Initialization of slendr model parameters
 ///
 initialize() {
-    required_arg("SEQUENCE_LENGTH");
-    required_arg("RECOMBINATION_RATE");
-
     optional_arg("SEED", getSeed());
     setSeed(SEED); catn("SEED: " + getSeed());
 
-    required_arg("TS_PATH");
-    optional_arg("MODEL", "."); // directory containing model configuration files
-    optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
-    optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
-    optional_arg("LOCATIONS_PATH", ""); // where should locations of individuals be saved?
-    optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
+    required_arg("SEQUENCE_LENGTH");
+    required_arg("RECOMBINATION_RATE");
+
+    optional_arg("MODEL_PATH", "."); // directory with model definition files
+    optional_arg("TS_PATH", ""); // path to the output tree sequence
+    optional_arg("SAMPLES_PATH", ""); // path to a table with the sampling schedule
+    optional_arg("LOCATIONS_PATH", ""); // wheere should locations of individuals be saved?
+
+    // load model definition information
+    defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
+    defineConstant("GENE_FLOWS", read_table(config_path("geneflow.tsv")));
+    defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
+    defineConstant("SAMPLING", read_table(SAMPLES_PATH));
+    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
+    defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
+    defineConstant("ORIGINAL_LENGTH", asInteger(readFile(config_path("orig_length.txt"))));
+    defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
+
+    // prefix path of slendr simulation state files
+    defineConstant("STATE_PATH", tempdir() + "state_" + SEED + "_");
+
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
 
     defineConstant("SIMULATE_TS", TS_PATH != "");
+    optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
 
-    // prefix for saving state
-    defineConstant("STATE_PATH", tempdir() + "state_" + SEED + "_");
-
-    // how many attempts should be made to place an offspring on a map before
-    // discarding it?
-    optional_arg("MAX_ATTEMPTS", 1);
-
-    // model configuration tables
-    defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
-    defineConstant("GENE_FLOWS", read_table(config_path("geneflow.tsv")));
-    defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
-    defineConstant("SAMPLING", read_table(SAMPLES));
-
-    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
-    defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
-    defineConstant("ORIGINAL_LENGTH", asInteger(readFile(config_path("orig_length.txt"))));
-
-    defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
+    optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
 
     if (SPATIAL) {
         defineConstant("INTERACTIONS", read_table(config_path("dispersals.tsv")));
@@ -53,6 +49,8 @@ initialize() {
         // world map dimensions
         defineConstant("WIDTH", MAPS.getValue("image")[0].width);
         defineConstant("HEIGHT", MAPS.getValue("image")[0].height);
+
+        optional_arg("MAX_ATTEMPTS", 1); // attempts to place an offspring before discarding it
 
         initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
 
@@ -705,7 +703,7 @@ function (object<Dictionary>) collect_metadata(void) {
 
 // Compose a path to a configuration file
 function (s) config_path(s file) {
-    return MODEL + "/" + file;
+    return MODEL_PATH + "/" + file;
 }
 
 // Write the locations table header

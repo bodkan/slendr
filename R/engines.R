@@ -348,7 +348,7 @@ slim <- function(
   random_seed <- set_random_seed(random_seed)
   seed <- paste0(" -d SEED=", random_seed)
 
-  samples <- if (is.null(sampling_path)) "" else paste0(" -d \"SAMPLES='", sampling_path, "'\"")
+  samples <- if (is.null(sampling_path)) "" else paste0(" -d \"SAMPLES_PATH='", sampling_path, "'\"")
 
   script_path <- path.expand(file.path(model_dir, "script.slim"))
 
@@ -357,8 +357,8 @@ slim <- function(
     # the path to the model configuration directory
     modif_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
     script_contents <- readLines(script_path) %>%
-      gsub("\"MODEL\", \".\"", paste0("\"MODEL\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
-      gsub("\"SAMPLES\", \"\"", paste0("\"SAMPLES\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
+      gsub("\"MODEL_PATH\", \".\"", paste0("\"MODEL_PATH\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
+      gsub("\"SAMPLES_PATH\", \"\"", paste0("\"SAMPLES_PATH\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
       gsub("required_arg\\(\"TS_PATH\"\\)", sprintf("defineConstant(\"TS_PATH\", \"%s\")", output_path), .) %>%
       gsub("required_arg\\(\"SEQUENCE_LENGTH\"\\)", sprintf("defineConstant(\"SEQUENCE_LENGTH\", %s)", sequence_length), .) %>%
       gsub("required_arg\\(\"RECOMBINATION_RATE\"\\)", sprintf("defineConstant(\"RECOMBINATION_RATE\", %s)", recombination_rate), .) %>%
@@ -370,7 +370,7 @@ slim <- function(
     slim_command <- paste(binary,
                           seed,
                           samples,
-                          paste0("-d \"MODEL='", model_dir, "'\""),
+                          paste0("-d \"MODEL_PATH='", model_dir, "'\""),
                           paste0("-d \"TS_PATH='", output_path, "'\""),
                           paste0("-d SPATIAL=", spatial),
                           paste0("-d SEQUENCE_LENGTH=", sequence_length),
