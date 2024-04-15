@@ -588,7 +588,7 @@ ts_metadata <- function(ts) {
 #' gts <- ts_genotypes(ts)
 #' @export
 ts_genotypes <- function(ts) {
-  if (!attr(ts, "mutated"))
+  if (ts$num_mutations == 0)
     stop("Extracting genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
 
@@ -610,8 +610,11 @@ ts_genotypes <- function(ts) {
     positions <- positions[biallelic_pos]
   }
 
-  chromosomes <- ts_nodes(ts) %>%
-    dplyr::filter(!is.na(name)) %>%
+  if (is.null(attr(ts, "model")))
+    data$name <- paste(data$pop, data$ind_id, sep = "_")
+
+  chromosomes <- data %>%
+    dplyr::filter(sampled) %>%
     dplyr::as_tibble() %>%
     dplyr::mutate(chr_name = sprintf("%s_chr%i", name, 1:2)) %>%
     dplyr::select(chr_name, node_id) %>%
