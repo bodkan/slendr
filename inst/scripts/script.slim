@@ -454,13 +454,7 @@ s10 late() /* Schedule removal of populations */ {
 }
 
 s11 late() /* Save the tree sequence */ {
-    filename = TS_PATH;
-
-    // add slendr-specific metadata to its own Dictionary key
-    metadata = collect_metadata();
-
-    sim.treeSeqOutput(TS_PATH, metadata = Dictionary("slendr", metadata));
-    log_output("saving the tree sequence output to '" + TS_PATH + "'");
+    save_ts(TS_PATH);
 }
 
 s12 late() /* End of simulation */ {
@@ -959,3 +953,10 @@ function (void) log_output(s$ str) {
     catn("tick " + tick_value + " (model time " + model_time(tick_value) + "):\n  - " + str);
 }
 
+function (void) save_ts(s$ path) {
+    // add slendr-specific metadata to its own Dictionary key
+    metadata = collect_metadata();
+
+    sim.treeSeqOutput(path, metadata = Dictionary("slendr", metadata));
+    log_output("saving the tree sequence output to '" + path + "'");
+}
