@@ -246,7 +246,7 @@ To circumvent the problem, _slendr_'s SLiM back-end script provides the followin
 - `reset_state()`: restores the full SLiM simulation state (including _slendr_ specific tags and values), and **chooses a new random seed**. The latter is performed because restarting a simulation using the `save_state()` - `reset_state()` tandem is practically always done in order to change the outcome of a simulation.
 
 
-As an example, let's build on the model of the African and Eurasian history above, and say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far to define the following _slendr_ extension snippet:
+To demonstrate how these two functions might be used in practice, let's say we wanted to build on the (by default purely neutral!) model of African and Eurasian history from [this vignette]() discussed above, and say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far to define the following _slendr_ extension snippet (for now let's ignore the question of how to actually plug this into a _slendr_ simulation):
 
 ```
 function (void) add_mutation(s pop_name, f selection_coef) {
@@ -289,7 +289,11 @@ tick(15000):SIMULATION_END late() {
 
 By inspecting the built-in SLiM simulation script of _slendr_, you will find that it contains a number of global constants. Most of them should be considered internal and users shouldn't rely on them in their code. However, one useful contant which you can see being used in the snippet above is `SEQUENCE_LENGTH` -- this is the total amount of sequence simulated (i.e., the number passed as `slim(<model>, sequence_length = <SEQUENCE_LENGTH>, ...)` in your R code).
 
-Of course, specifying your own `initialize() {...}` callback with your own genomic elements will give you more flexibility and you might want to skip specifying `sequence_length =` entirely, as we show below.
+Of course, specifying your own `initialize() {...}` callback with your own genomic elements will give you more flexibility and you might want to skip specifying `sequence_length =` entirely, as we also show below.
+
+Another very useful pair of _slendr_ constants are `SIMULATION_START` and `SIMULATION_END`, which specify at which time points (in ticks!) does a given _slendr_ model start and end. The latter can be partifularly helpful for customized output callbacks.
+
+# Practical examples
 
 ## Putting it all together: running a customized _slendr_ simulation 
 
@@ -481,9 +485,9 @@ ggplot(traj) +
   facet_wrap(~ origin)
 ```
 
-## Extension SLiM snippets directly in R scripts
+## Programming _slendr_/SLiM extension snippets directly in R scripts
 
-Alternatively, thanks to the multiline string support implemented in R 4.2, we can specify the SLiM extension code directly as an R string. Including the SLiM code directly in an R script in this way makes it a little easier to iterate during development by eliminating the need to edit multiple files:
+Thanks to the multiline string support implemented in R 4.2, we can specify the SLiM extension code directly as an R string inside our R script, instead of having to plug it in from an external file like we did in the previous example. Including the SLiM code directly in this way makes it a little easier to iterate during development.
 
 ```{r}
 # extension "template" provided as a single string (this contains
@@ -568,7 +572,7 @@ tick(onset_time):SIMULATION_END late() {
 )"
 ```
 
-Having defined the SLiM snippet in this way, the rest of our code will work in exactly the same way as the example just shown:
+Having defined the SLiM snippet in this way, the rest of our code will work in exactly the same way as in the example just above (the only thing that we changed in the code below is providing the SLiM extension string directly instead of providing a path to a file):
 
 ```{r}
 run_model <- function(origin_pop, onset_time) {
@@ -600,106 +604,156 @@ head(load_traj("EUR"))
 
 
 
-### Completely customized genomic architecture (selective sweep simulations)
+### Customizing genomic architecture (selective sweep simulations)
 
 **Customization of _slendr_ / SLiM models can extend also to the genomic architecture itself.** Because altering the initialization procedure by providing a custom `initialize() {...}` callback in the SLiM extension code entirely overrides setting up a (by default just one) genomic element type and recombination rate, users might want to set those up entirely by themselves. This means that it's possible to avoid the `SEQUENCE_LENGTH` and `RECOMBINATION_RATE` arguments used by the _slendr_ back-end engine provided via the `slim(..., sequence_length = ..., recombination_rate = ..., ...)` arguments.
 
 Let's take the following _slendr_ model of Neanderthal introgression:
 
 ```{r}
+devtools::load_all()
+init_env()
+
 # ancestor of Neanderthals and anatomically modern humans
-ancestor <- population("ancestor", time = 650e3, N = 1000, remove = 599e3)
+# ancestor <- population("ancestor", time = 650e3, N = 10, remove = 599e3)
 
 # two populations of anatomically modern humans: Africans and Europeans
-afr <- population("AFR", parent = ancestor, time = 600e3, N = 5000)
-eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
+# afr <- population("AFR", parent = ancestor, time = 600e3, N = 5000)
+# eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
+eur <- population("EUR", time = 80e3, N = 10000)
 
 # Neanderthal population splitting at 600 ky ago from modern humans
-nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e3)
+# nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e3)
+nea <- population("NEA", time = 600e3, N = 1, remove = 40e3)
 
 # 3% Neanderthal introgression into Europeans between 55-50 ky ago
-gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 40000)
+gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 54500)
 ```
 
 Now we put together SLiM extension code to set up a non-neutral _slendr_ simulation:
 
 ```{r}
 extension <- r"(
+initialize() {
+  // model parameters to be substitute()'d from R below
+  defineConstant("gene_length", {{gene_length}});
+  defineConstant("n_genes", {{n_genes}});
+  defineConstant("n_markers", {{n_markers}});
+  defineConstant("introgression_time", {{introgression_time}});
+  defineConstant("uniform_rate", {{uniform_rate}});
+  defineConstant("output_file", "{{output_file}}");
+
+  // total length of the genome to be simulated
+  defineConstant("total_length", n_genes * gene_length);
+
+  // positions of neutral Neanderthal markers along the genome
+  defineConstant("neutral_pos", seq(0, total_length - 1, by = gene_length / n_markers));
+  // positions of deleterious mutations in the center of each gene
+  defineConstant("selected_pos", seq(gene_length / 2, total_length - 1, by = gene_length));
+}
+
 // Because we want to simulate non-neutral evolution, we have to provide a
 // custom initialization callback -- slendr will use it to replace its default
 // neutral genomic architecture (i.e. the initialize() {...} callback it uses
 // by default for neutral simulations).
 initialize() {
-  initializeMutationType("m1", 0.5, "f", {{s}}); // deleterious mutation type
-  initializeGenomicElementType("g1", m1, 1.0); // genomic type of 'genes'
-
-  // parameters to be substitute()'d in R below
-  total_length = {{total_length}};
-  gene_length = {{gene_length}};
+  initializeMutationType("m0", 0.5, "f", 0.0); // neutral Neanderthal marker mutation type
+  initializeMutationType("m1", 0.5, "f", {{s}}); // deleterious Neanderthal mutation type
+  initializeGenomicElementType("g1", m0, 1.0); // genomic type of 'genes'
 
   genes = c(); // gene start-end coordinates
   breakpoints = c(); // recombination breakpoints
   rates = c(); // recombination rates
 
-  // compute coordinates of exons, as well as the recombination map
+  // compute coordinates of genes, as well as the recombination map breakpoints
+  // between each gene
   start = 0;
-  while (start < total_length) {
-    // start-end of a gene
+  for (i in seqLen(n_genes)) {
+    // end of the next gene
     end = start + gene_length - 1;
     genes = c(genes, start, end);
 
-    // uniform recombination within the gene, followed by a 0.5 recombination breakpoint
-    rates = c(rates, 1e-8, 0.5);
+    // uniform recombination within a gene, followed by a 0.5 recombination breakpoint
+    rates = c(rates, {{uniform_rate}}, 0.5);
     breakpoints = c(breakpoints, end, end + 1);
 
-    // start of the following gap
+    // start of the following genes
     start = end + 1;
   }
 
-  // odd elements --> starts of exons, even elements --> ends of exons
-  gene_starts_idx = integerMod(seqAlong(genes), 2) == 0;
-  gene_ends_idx = integerMod(seqAlong(genes), 2) == 1;
-  defineConstant("gene_starts", genes[gene_starts_idx]);
-  defineConstant("gene_ends", genes[gene_ends_idx]);
+  // odd elements --> starts of genes
+  gene_starts = integerMod(seqAlong(genes), 2) == 0;
+  // even elements --> ends of genes
+  gene_ends = integerMod(seqAlong(genes), 2) == 1;
 
-  // set up all the exons at once
-  initializeGenomicElement(g1, gene_starts, gene_ends);
+  // set up all the genes at once
+  initializeGenomicElement(g1, genes[gene_starts], genes[gene_ends]);
 
-  // set up 0.5 recombination between exons/gaps, uniform recombination within
+  // set up the recombination map
   initializeRecombinationRate(rates, breakpoints);
 
   // no mutation rate (we will add neutral variation after the SLiM run)
   initializeMutationRate(0);
 }
 
-tick(60000) early() {
-  log_output("adding fixed deleterious mutations to Neanderthals");
+// Add Neanderthal-specific mutations one tick prior to the introgression
+tick(introgression_time) - 1 late() {
+  // get all Neanderthal chromosomes just prior to the introgression
+  target = population("NEA").genomes;
 
-  gene_centers = asInteger((gene_ends + gene_starts) / 2);
-  population("NEA").genomes.addNewDrawnMutation(m1, position = gene_centers);
+  log_output("adding neutral Neanderthal markers");
+
+  mutations = target.addNewDrawnMutation(m0, position = asInteger(neutral_pos));
+  defineConstant("MARKERS", target.mutations);
+
+  log_output("adding deleterious Neanderthal mutation");
+
+  target.addNewDrawnMutation(m1, position = asInteger(selected_pos));
 }
-)" %>%
-  # substitute values of the {{placeholder}} parameters above
-  substitute(total_length = 2000e6, s = -0.0005, gene_length = 2e6)
+
+// At the end, output Neanderthal ancestry proportions along the genome to a file
+// (in our R analysis code we will compare the results of this with the
+// equivalent computation using a tree sequence)
+SIMULATION_END late() {
+  df = DataFrame(
+    "gene", asInteger(MARKERS.position / gene_length),
+    "pos", MARKERS.position,
+    "freq", sim.mutationFrequencies(population("EUR"), MARKERS)
+  );
+  writeFile(output_file, df.serialize(format = "tsv"));
+}
+)"
+```
+
+```{r}
+extension_sdel <- extension %>%
+  substitute(
+    introgression_time = 55000, s = -0.001, uniform_rate = 1e-8,
+    gene_length = 5e6, n_genes = 100, n_markers = 100,
+    output_file = "~/Desktop/output_sdel.tsv"
+  )
 ```
 
 And put everything together by compiling a _slendr_ model (which now swaps _slendr_'s default neutrality for a non-neutral genomic architecture, including deleterious mutations):
 
 ```{r}
 model <- compile_model(
-  populations = list(ancestor, nea, afr, eur), gene_flow = gf,
+  # populations = list(ancestor, nea, afr, eur), gene_flow = gf,
+  populations = list(nea, eur), gene_flow = gf,
   generation_time = 30,
-  extension = extension
+  extension = extension_sdel
 )
 
-plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"), log = T)
+# plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"), log = T)
+plot_model(model, proportions = TRUE, order = c("NEA", "EUR"), log = T)
 ```
 
 We will also record 10 Neanderthals and 100 Africans and Europeans each in a tree sequence:
 
 ```{r}
 nea_samples <- schedule_sampling(model, times = 50000, list(nea, 1))
-modern_samples <- schedule_sampling(model, times = 0, list(afr, 100), list(eur, 100))
+# modern_samples <- schedule_sampling(model, times = 0, list(afr, 100), list(eur, 100))
+modern_samples <- schedule_sampling(model, times = 0, list(eur, 100))
 
 samples <- rbind(nea_samples, modern_samples)
 ```
@@ -707,33 +761,49 @@ samples <- rbind(nea_samples, modern_samples)
 
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
-```{r}
-slim(model, output = FALSE, samples = samples, method = "gui")
-```
 
 ```{r}
 start <- Sys.time()
 
-ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE)
+# ts <- slim(model, output = "purifying.trees", samples = samples, verbose = TRUE)
+slim(model, output = FALSE, samples = samples, verbose = TRUE)
 
 end <- Sys.time()
-end - start # 11 hours
+end - start # 18 minutes
 ```
 
-```{r}
-ts <- ts_load("purifying.trees", model) %>%
-  ts_recapitate(Ne = 1000, recombination_rate = 1e-8) %>%
-  ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE) %>% 
-  ts_simplify()
-```
+<!-- ```{r} -->
+<!-- ts <- ts_load("purifying.trees", model) %>% -->
+<!--   ts_recapitate(Ne = 1000, recombination_rate = 1e-8) %>% -->
+<!--   ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE) %>%  -->
+<!--   ts_simplify() -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- ts_save(ts, "purifying_mutated.trees") -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- ts <- ts_load("purifying_mutated.trees", model) -->
+<!-- ``` -->
 
 ```{r}
-ts_save(ts, "purifying_mutated.trees")
+library(ggplot2)
+library(readr)
+library(dplyr)
+
+freqs <- read_tsv("~/Desktop/output_sdel.tsv") %>% mutate(pos = pos %% 5e6)
+
+ggplot() +
+  # geom_line(data = freqs, aes(pos, freq, group = gene), color = "gray", alpha = 0.75) +
+  geom_line(data = group_by(freqs, pos) %>% summarise(freq = mean(freq)), aes(pos, freq)) +
+  geom_vline(xintercept = 5e6 / 2, linetype = "dashed", color = "red") +
+  expand_limits(y = 0)
 ```
 
-```{r}
-ts <- ts_load("purifying_mutated.trees", model)
-```
+
+
+
 
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
