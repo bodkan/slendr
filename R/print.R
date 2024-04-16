@@ -91,7 +91,7 @@ print.slendr_model <- function(x, ...) {
   if (is.null(x$path))
     cat("non-serialized slendr model\n")
   else
-    cat("configuration files in:", normalizePath(x$path), "\n")
+    cat("configuration files in:", normalizePath(x$path, mustWork = FALSE), "\n")
 }
 
 
