@@ -13,9 +13,12 @@ initialize() {
     required_arg("RECOMBINATION_RATE");
 
     optional_arg("MODEL_PATH", "."); // directory with model definition files
-    optional_arg("TS_PATH", ""); // path to the output tree sequence
-    optional_arg("SAMPLES_PATH", ""); // path to a table with the sampling schedule
+    optional_arg("TS_PATH", ""); // user-defined path to the output tree sequence
     optional_arg("LOCATIONS_PATH", ""); // wheere should locations of individuals be saved?
+    optional_arg("OUTPUT_DIR", ""); // directory for storing output files
+    if (OUTPUT_DIR != "" & !fileExists(OUTPUT_DIR))
+        createDirectory(OUTPUT_DIR);
+    optional_arg("SAMPLES_PATH", ""); // path to a table with the sampling schedule
 
     // load model definition information
     defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
@@ -38,6 +41,7 @@ initialize() {
     optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
 
     optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
+    optional_arg("MAX_ATTEMPTS", 1); // attempts to place an offspring before discarding it
 
     if (SPATIAL) {
         defineConstant("INTERACTIONS", read_table(config_path("dispersals.tsv")));
@@ -49,8 +53,6 @@ initialize() {
         // world map dimensions
         defineConstant("WIDTH", MAPS.getValue("image")[0].width);
         defineConstant("HEIGHT", MAPS.getValue("image")[0].height);
-
-        optional_arg("MAX_ATTEMPTS", 1); // attempts to place an offspring before discarding it
 
         initializeSLiMOptions(keepPedigrees = T, dimensionality = "xy");
 
@@ -454,7 +456,14 @@ s10 late() /* Schedule removal of populations */ {
 }
 
 s11 late() /* Save the tree sequence */ {
-    save_ts(TS_PATH);
+    if (OUTPUT_DIR != "")
+        defineConstant("OUTPUT_TS", OUTPUT_DIR + "/output.trees");
+    else if (TS_PATH != "")
+        defineConstant("OUTPUT_TS", TS_PATH);
+    else // this should never happen because the block would be deregistered
+        stop("No tree-sequence output path has been set\n");
+
+    save_ts(OUTPUT_TS);
 }
 
 s12 late() /* End of simulation */ {
