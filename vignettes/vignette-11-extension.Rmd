@@ -630,23 +630,33 @@ head(load_traj("EUR"))
 
 Let's take the following _slendr_ model of Neanderthal introgression:
 
+<!-- ```{r} -->
+<!-- library(slendr) -->
+<!-- init_env() -->
+
+<!-- # ancestor of Neanderthals and anatomically modern humans -->
+<!-- # ancestor <- population("ancestor", time = 650e3, N = 10, remove = 599e3) -->
+
+<!-- # two populations of anatomically modern humans: Africans and Europeans -->
+<!-- # afr <- population("AFR", parent = ancestor, time = 600e3, N = 5000) -->
+<!-- # eur <- population("EUR", parent = afr, time = 80e3, N = 5000) -->
+<!-- eur <- population("EUR", time = 80e3, N = 10000) -->
+
+<!-- # Neanderthal population splitting at 600 ky ago from modern humans -->
+<!-- # nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e3) -->
+<!-- nea <- population("NEA", time = 600e3, N = 1000, remove = 40e3) -->
+
+<!-- # 3% Neanderthal introgression into Europeans between 55-50 ky ago -->
+<!-- gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 54500) -->
+<!-- ``` -->
+
 ```{r}
 library(slendr)
 init_env()
 
-# ancestor of Neanderthals and anatomically modern humans
-# ancestor <- population("ancestor", time = 650e3, N = 10, remove = 599e3)
+eur <- population("EUR", time = 100e3, N = 10000)
+nea <- population("NEA", time = 100e3, N = 1000, remove = 40000)
 
-# two populations of anatomically modern humans: Africans and Europeans
-# afr <- population("AFR", parent = ancestor, time = 600e3, N = 5000)
-# eur <- population("EUR", parent = afr, time = 80e3, N = 5000)
-eur <- population("EUR", time = 80e3, N = 10000)
-
-# Neanderthal population splitting at 600 ky ago from modern humans
-# nea <- population("NEA", parent = ancestor, time = 600e3, N = 1000, remove = 40e3)
-nea <- population("NEA", time = 600e3, N = 1000, remove = 40e3)
-
-# 3% Neanderthal introgression into Europeans between 55-50 ky ago
 gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 54500)
 ```
 
@@ -753,21 +763,19 @@ And put everything together by compiling a _slendr_ model (which now swaps _slen
 
 ```{r}
 model <- compile_model(
-  # populations = list(ancestor, nea, afr, eur), gene_flow = gf,
   populations = list(nea, eur), gene_flow = gf,
   generation_time = 30,
   extension = extension
 )
 
-# plot_model(model, proportions = TRUE, order = c("NEA", "ancestor", "EUR", "AFR"), log = T)
-plot_model(model, proportions = TRUE, order = c("NEA", "EUR"), log = T)
+plot_model(model, proportions = TRUE, order = c("NEA", "EUR"))
 ```
 
 We will also record 10 Neanderthals and 100 Africans and Europeans each in a tree sequence:
 
 ```{r}
 nea_samples <- schedule_sampling(model, times = 50000, list(nea, 1))
-modern_samples <- schedule_sampling(model, times = 0, list(afr, 100), list(eur, 100))
+modern_samples <- schedule_sampling(model, times = 0, list(eur, 100))
 
 samples <- rbind(nea_samples, modern_samples)
 ```
@@ -776,20 +784,17 @@ samples <- rbind(nea_samples, modern_samples)
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
 
-```{r}
-slim(model, recombination_rate = 1e-8, samples = samples, output_dir = "~/Desktop/asdf")
+```{r, eval = FALSE}
+slim(model, recombination_rate = 1e-8, samples = samples, output_dir = "~/Desktop/introgression")
 ```
 
 ```{r}
-library(ggplot2)
-library(readr)
-library(dplyr)
+freqs <- read_tsv("~/Desktop/introgression/output_frequencies.tsv") %>% mutate(pos = pos %% 5e6)
 
-freqs <- read_tsv("~/Desktop/output_frequencies.tsv") %>% mutate(pos = pos %% 5e6)
-
+group_by(freqs, pos) %>%
+summarise(freq = 100 * mean(freq)) %>%
 ggplot() +
-  # geom_line(data = freqs, aes(pos, freq, group = gene), color = "gray", alpha = 0.75) +
-  geom_line(data = group_by(freqs, pos) %>% summarise(freq = 100 * mean(freq)), aes(pos, freq)) +
+  geom_line(aes(pos, freq)) +
   geom_vline(xintercept = 5e6 / 2, linetype = 2) +
   labs(x = "coordinate along a gene", y = "Neanderthal ancestry proportion [%]",
        title = "Proportion of Neanderthal ancestry in Europeans along 5Mb independent genes",
@@ -825,13 +830,13 @@ window_length <- 100e3
 
 ```{r}
 # load a tree sequence and extract the names of recorded individuals
-ts <- ts_load(file = "~/Desktop/output.trees", model)
+ts <- ts_load(file = "~/Desktop/introgression/output.trees", model)
 samples <- ts_names(ts, split = "pop")
 
 samples
 
 # compute coordinates of sliding windows along the genome
-windows <- seq(from = window_length, to = n_genes * gene_length - 1, by = window_length)
+windows <- seq(from = 0, to = n_genes * gene_length - 1, by = window_length)
 
 head(windows)
 tail(windows)
@@ -842,7 +847,7 @@ divergence <- ts_divergence(ts, samples, windows = windows, mode = "branch")$div
 # compute average divergence at each position in a gene, and a 95% C.I.
 div_df <- tibble(
   pop = "eur",
-  pos = c(0, windows) %% gene_length,
+  pos = windows %% gene_length,
   div = divergence
 ) %>%
   group_by(pop, pos) %>%
