@@ -13,9 +13,9 @@ devtools::load_all()
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
-  fig.width = 10,
-  fig.height = 8,
-  dpi = 60,
+  fig.width = 8,
+  fig.height = 6,
+  dpi = 120,
   eval = slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
 )
 ```
@@ -94,7 +94,7 @@ eur_samples <- c("EUR_1", "EUR_2", "EUR_3")
 ts_divergence(ts, list(afr = afr_samples, eur = eur_samples))
 ```
 
-Along the same lines, when you're customizing a _slendr_/SLiM simulation, you can get a `Subpopulation` SLiM object corresponding to a symbolic name of a _slendr_ population (as used by the R side of things) using the Eidos function `population()`. For instance, let's assume we compiled a toy model of human demography from the [vignette #4]() and ran it in the SLiMgui using `slim(..., method = "gui"). We can then open an Eidos console in the GUI and type the following:
+Along the same lines, when you're customizing a _slendr_/SLiM simulation, you can get a `Subpopulation` SLiM object corresponding to a symbolic name of a _slendr_ population (as used by the R side of things) using the Eidos function `population()`. For instance, let's assume we compiled a toy model of human demography from the [vignette #4]() and ran it in the SLiMgui using `slim(..., method = "gui")`. We can then open an Eidos console in the GUI and type the following:
 
 ```
 > // get a SLiM object corresponding to the "AFR" population
@@ -399,16 +399,16 @@ Checking the output file shows that the frequency trajectories were indeed saved
 
 ```
 $ head ~/Desktop/output.tsv 
-tick    time    frequency
-2501    15000   0.0001
-2502    14970   0.0002
-2503    14940   0.0005
-2504    14910   0.0001
-2505    14880   0.0001
-2506    14850   0.0002
-2507    14820   0.0002
-2508    14790   0.0004
-2509    14760   0.0003
+time    frequency
+15000   0.0001
+14970   0.0005
+14940   0.0007
+14910   0.0008
+14880   0.0005
+14850   0.0007
+14820   0.0009
+14790   0.001
+14760   0.0013
 ```
 
 Speaking of which: one thing that's a little annoying about the [extension snippet](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory.txt) used in this example is that all the parameters are hard-coded (selection coefficient, target population, and even the output file path). If we wanted to run the _slendr_ script for different values of selection coefficient, or examining the behavior of the model depending on in which population does the beneficial allele arise, we'd have to create multiple copies of the extension script. We can do better using _slendr_'s support for substitution or "templating".
@@ -417,7 +417,7 @@ Speaking of which: one thing that's a little annoying about the [extension snipp
 
 For easy parametrization of customized _slendr_ / SLiM models, slendr provides a function `substitute()`. Simply speaking, rather than having to hard code values of parameters in your extension SLiM snippet files, you can indicate that a parameter value should be substituted in the file using a simple syntax `{{parameter_name}}`.
 
-Take a look at a [new, flexible version](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory_params.txt) of the snippet we used above and look for the `{{...}}` templace placeholders. This version has been expanded to study the trajectory of the focal selected allele depending on in which population it originated.
+Take a look at a [new, flexible version](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory_params.txt) of the snippet we used above and look for the `{{...}}` template placeholders. This version has been expanded to study the trajectory of the focal selected allele depending on in which population it originated.
 
 ```{r}
 extension_path <- system.file("extdata", "extension_trajectory_params.txt", package = "slendr")
@@ -800,6 +800,10 @@ Using the compiled model, we can simulate a tree sequence using the `slim()` fun
 slim(model, recombination_rate = 1e-8, samples = samples, output_dir = "~/Desktop/introgression")
 ```
 
+It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
+
+The above implies that if we compute the proportion of Neanderthal ancestry along a sample of European genomes, we should see a clear dip in the amount of surviving Neanderthal DNA as a function of distance from a locus under selection. Because our customized SLiM snippet saved the allele frequency of each Neanderthal marker in Europeans, we can just load this data and directly visualize it:
+
 ```{r}
 freqs <- read_tsv("~/Desktop/introgression/output_frequencies.tsv") %>% mutate(pos = pos %% 5e6)
 
@@ -814,25 +818,11 @@ ggplot() +
   coord_cartesian(ylim = c(0, 5))
 ```
 
+The hypothesis clearly stands against the data!
 
+We shouldn't forget that the core output data structure of _slendr_ is a tree sequence. This gives us much more flexibility in terms of which statistics can we compute, and how effectively can they be computed because we don't need any mutations or genotype files to calculate them.
 
-
-It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
-
-The above implies that if we compute Neanderthal-Eurasian divergence (as a simplified introgression-detection statistic), we should observe lower introgression levels within "exons" than within "gaps", because purifying selection should be removing Neanderthal introgressed DNA from those regions under selective constraint compared to neutral regions. Let's verify this.
-
-<!-- ```{r} -->
-<!-- ts <- ts_load(file = "~/Desktop/output.trees", model) %>% -->
-<!--   ts_recapitate(Ne = 1000, recombination_rate = 1e-8) %>% -->
-<!--   ts_mutate(mutation_rate = 1e-8, keep_existing = FALSE) %>% -->
-<!--   ts_simplify() -->
-
-<!-- ts_save(ts, "~/Desktop/output_mutated.trees") -->
-<!-- ``` -->
-
-<!-- ```{r} -->
-<!-- ts <- ts_load("~/Desktop/output_mutated.trees", model) -->
-<!-- ``` -->
+For instance, as an alternative to the direct computation of allele frequencies during the SLiM run (saved in `output_frequencies.tsv`), we could use the simulated tree sequence to quickly calculate the genetic divergence between Europeans and a Neanderthal in windows along the simulated genome.
 
 ```{r}
 n_genes <- 200
@@ -855,7 +845,9 @@ tail(windows)
 
 # compute divergence from the tree sequence in each window separately
 divergence <- ts_divergence(ts, samples, windows = windows, mode = "branch")$divergence[[1]]
+```
 
+```{r}
 # compute average divergence at each position in a gene, and a 95% C.I.
 div_df <- tibble(
   pop = "eur",
@@ -875,10 +867,16 @@ ggplot(div_df) +
   geom_ribbon(aes(pos, ymin = ci_low, ymax = ci_up), fill = "grey70") +
   geom_line(aes(pos, mean)) +
   geom_vline(aes(xintercept = median(pos) - window_length / 2), linetype = 2) +
-  labs(x = "coordinate along a gene", y = "genetic divergence",
+  labs(x = "coordinate along a gene", y = "divergence to Neanderthal",
        title = "Divergence of Europeans to a Neanderthal genome along 5Mb independent genes",
        subtitle = "(dashed line indicates introgressed deleterious Neanderthal allele)")
 ```
 
+Indeed, we clearly observe lower introgression levels (indicated by an increased European-Neanderthal divergence) around loci under selection and increased surviving introgression far from those loci, because purifying selection has removed Neanderthal introgressed DNA from regions under selective constraint.
 
 
+## Questions to the forum
+
+This functionality clearly makes most difference for complex models -- either complex from a demographic perspective (lots of lineages, gene flow, etc) or from the perspective of a genomic architecture (polygenic selection, complex traits).
+
+Ideas for some projects?
