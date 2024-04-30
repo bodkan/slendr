@@ -13,8 +13,8 @@ devtools::load_all()
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
-  fig.width = 6,
-  fig.height = 4,
+  fig.width = 10,
+  fig.height = 8,
   dpi = 60,
   eval = slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
 )
@@ -54,10 +54,22 @@ init_env()
 
 library(dplyr)
 library(ggplot2)
+library(readr)
 
 seed <- 42
 set.seed(seed)
 ```
+
+Below we will describe the following slendr / SLiM "API" functions and constants you can use to customize the default, purely neutral, SLiM back-end script built-in to _slendr_:
+
+- `population()`
+- `tick()` and `model_time()`
+- `save_state()` and `reset_state()`
+- `log_output()`
+
+- `SIMULATION_START` and `SIMULATION_END`
+- `SEQUENCE_LENGTH`
+- `OUTPUT_DIR`
 
 ### Referring to populations: `population()` Eidos function
 
@@ -374,11 +386,11 @@ model <- compile_model(
 You can check that the extension snippet was really appended to the built-in SLiM engine script by running `slim()` function and setting `method = "gui"` (look towards the end of the script!):
 
 ```{r, eval=FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, output = FALSE, method = "gui")
+slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, method = "gui")
 ```
 
 ```{r, echo=FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, output = FALSE)
+slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE)
 ```
 
 Note that we set `output = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `~/Desktop/output.tsv`.
@@ -450,7 +462,7 @@ model_eur <- compile_model(
   extension = extension_eur
 )
 
-slim(model_eur, sequence_length = 1e6, recombination_rate = 1e-8, output_dir = "~/Desktop", verbose = TRUE)
+slim(model_eur, sequence_length = 1e6, recombination_rate = 1e-8, output_dir = "~/Desktop/trajectories")
 ```
 
 We can leverage the flexibility of this solution to run another version of this model, this time adding the mutation to a different population. In fact, let's check what happens when the beneficial allele appears in EHG, ANA, and YAM populations. Note that this uses the same extension snippet, and just substitutes different values to the placeholder parameters:
@@ -470,7 +482,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 1e-8,
-       output_dir = "~/Desktop", ts = FALSE)
+       output_dir = "~/Desktop/trajectories", ts = FALSE)
 }
 
 run_model(origin_pop = "EUR", onset_time = 15000)
@@ -483,7 +495,7 @@ We can visualize the different trajectories like this. Not that the different al
 
 ```{r}
 load_traj <- function(origin_pop) {
-  df <- read.table(paste0("~/Desktop/traj_EUR_", origin_pop, ".tsv"), header = TRUE)
+  df <- read.table(paste0("~/Desktop/trajectories/traj_EUR_", origin_pop, ".tsv"), header = TRUE)
   df$origin <- origin_pop
   df$target <- "EUR"
   df
@@ -609,7 +621,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 1e-8,
-       output_dir = "~/Desktop", ts = FALSE)
+       output_dir = "~/Desktop/trajectories", ts = FALSE)
 }
 
 run_model("EUR", onset_time = 15000)
