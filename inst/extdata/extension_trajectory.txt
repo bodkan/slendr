@@ -5,18 +5,18 @@
 // constants SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values
 // passed through from R via slendr's slim() R function.
 initialize() {
-    initializeMutationType("m1", 0.5, "f", 0.0);
+    // define some parameters of the model
+    defineConstant("s", 0.1);
+    defineConstant("onset_time", 15000);
+    defineConstant("target_pop", "EUR");
+
+    initializeMutationType("m1", 0.5, "f", s);
 
     initializeGenomicElementType("g1", m1, 1.0);
     initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
 
     initializeMutationRate(0);
     initializeRecombinationRate(RECOMBINATION_RATE);
-
-    // define some parameters of the model
-    defineConstant("s", 0.1);
-    defineConstant("onset_time", 15000);
-    defineConstant("target_pop", "EUR");
 
     defineConstant("output_file", "~/Desktop/output.tsv");
 }
@@ -25,7 +25,7 @@ function (void) add_mutation(void) {
     // sample one target carrier of the new mutation...
     target = sample(population(target_pop).genomes, 1);
     // ... and add the mutation in the middle of it
-    mut = target.addNewMutation(m1, s, position = asInteger(SEQUENCE_LENGTH / 2));
+    mut = target.addNewDrawnMutation(m1, position = asInteger(SEQUENCE_LENGTH / 2));
 
     // save the mutation for later reference
     defineGlobal("MUTATION", mut);
