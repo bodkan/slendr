@@ -435,7 +435,7 @@ less ${EXTENSION}
 Substitute values of parameters in a customization SLiM extension script:
 
 ```{r}
-extension_eur <- substitute(
+extension <- substitute(
   extension_path,
   s = 0.1, onset_time = 15000,
   origin_pop = "EUR", target_pop = "EUR"
@@ -445,7 +445,7 @@ extension_eur <- substitute(
 Missing a parameter gives an error immediately:
 
 ```{r, eval = FALSE}
-extension_eur <- substitute(
+extension <- substitute(
   extension_path,
   # specification of `s` is missing!
   onset_time = 15000,
@@ -456,13 +456,13 @@ extension_eur <- substitute(
 Then plug the parametrized script into `compile_model()` just as we did above:
 
 ```{r}
-model_eur <- compile_model(
+model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf, generation_time = 30,
-  extension = extension_eur
+  extension = extension
 )
 
-slim(model_eur, sequence_length = 1e6, recombination_rate = 1e-8, output_dir = "~/Desktop/trajectories")
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output_dir = "~/Desktop/trajectories")
 ```
 
 We can leverage the flexibility of this solution to run another version of this model, this time adding the mutation to a different population. In fact, let's check what happens when the beneficial allele appears in EHG, ANA, and YAM populations. Note that this uses the same extension snippet, and just substitutes different values to the placeholder parameters:
@@ -670,6 +670,16 @@ eur <- population("EUR", time = 100e3, N = 10000)
 nea <- population("NEA", time = 100e3, N = 1000, remove = 40000)
 
 gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 54500)
+```
+
+```{r, echo=FALSE, fig.width=8, fig.height=5}
+model_for_plotting <- compile_model(
+  populations = list(nea, eur), gene_flow = gf,
+  generation_time = 30,
+  extension = extension
+)
+
+plot_model(model_for_plotting, proportions = TRUE, order = c("NEA", "EUR"))
 ```
 
 Now we put together SLiM extension code to set up a non-neutral _slendr_ simulation:
