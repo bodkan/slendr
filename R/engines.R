@@ -281,7 +281,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #' # useful when a custom path to a tree-sequence output is given for later downstream analyses
 #' output_file <- tempfile(fileext = ".trees")
 #' slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
-#'      output = output_file, load = FALSE)
+#'      ts = output_file, load = FALSE)
 #' # ... at a later stage:
 #' ts <- ts_load(output_file, model)
 #'
@@ -289,7 +289,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #' @export
 slim <- function(
   model, sequence_length, recombination_rate, samples = NULL,
-  output = NULL, output_dir = NULL,
+  ts = NULL, output_dir = NULL,
   random_seed = NULL, method = c("batch", "gui"),
   verbose = FALSE, load = TRUE, run = TRUE,
   slim_path = NULL, burnin = 0,
@@ -301,25 +301,21 @@ slim <- function(
   if (is.null(model$path))
     stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
 
-  if (!is.null(output_dir)) {
-    if (is.null(output))
-      output <- file.path(output_dir, "output.trees")
-    else
-      stop("Either `output =` or `output_dir =` can be set, but not both", call. = FALSE)
-  }
+  if (!is.null(output_dir) && is.null(ts))
+      ts <- file.path(output_dir, "output.trees")
 
-  if (is.logical(output) && output == FALSE) {
+  if (is.logical(ts) && ts == FALSE) {
     output_path <- ""
-  } else if (!is.null(output) && !is.character(output)) {
+  } else if (!is.null(ts) && !is.character(ts)) {
     stop("Invalid path to the output tree sequence. The `output =` argument\n",
          "must be either NULL (the default when a temporary path will be created),\n",
          "a proper file path,or `FALSE` if no output tree sequence ",
          "should be created.", call. = FALSE)
-  } else if (is.null(output)) {
+  } else if (is.null(ts)) {
     output_path <- tempfile(fileext = ".trees")
     output_path <- normalizePath(output_path, winslash = "/", mustWork = FALSE)
   } else
-    output_path <- output
+    output_path <- ts
 
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
@@ -441,7 +437,7 @@ slim <- function(
     readline("Please confirm that the SLiMgui simulation is finished [press ENTER]")
 
   if (!is.null(output_dir))
-    return(output_dir)
+    return(invisible(output_dir))
   else if (load && output_path != "") {
     if (!file.exists(output_path))
       stop("Tree sequence was not found at the expected location:\n", output_path, call. = FALSE)
@@ -452,8 +448,8 @@ slim <- function(
 
     }
 
-    ts <- ts_load(model, file = output_path)
-    return(ts)
+    ts_object <- ts_load(model, file = output_path)
+    return(ts_object)
   } else
-    invisible(output_path)
+    return(invisible(output_path))
 }
