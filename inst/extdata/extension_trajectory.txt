@@ -33,7 +33,7 @@ function (void) add_mutation(void) {
     log_output("adding beneficial mutation to population " + target_pop);
 
     // write the header of the output file
-    writeFile(output_file, "tick\ttime\tfrequency");
+    writeFile(output_file, "time\tfrequency");
 }
 
 tick(onset_time) late() {
@@ -61,7 +61,6 @@ tick(onset_time):SIMULATION_END late() {
 
     // save the current frequency to the output file
     writeFile(output_file,
-              community.tick + "\t" +
               model_time(community.tick) + "\t" +
               frequency, append = T);
 }
