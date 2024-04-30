@@ -22,7 +22,9 @@ initialize() {
     defineConstant("onset_time", {{onset_time}});
     defineConstant("target_pop", "{{target_pop}}");
     defineConstant("origin_pop", "{{origin_pop}}");
-    defineConstant("output_file", "{{output_dir}}" + "/" +
+
+    // compose an output file based on given parameters
+    defineConstant("output_file", OUTPUT_DIR + "/" +
                                   "traj_" + target_pop + "_" + origin_pop + ".tsv");
 }
 
@@ -36,6 +38,8 @@ function (void) add_mutation(void) {
     defineGlobal("MUTATION", mut);
 
     log_output("adding beneficial mutation to population " + target_pop);
+
+    writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
 }
 
 tick(onset_time) late() {
@@ -43,7 +47,6 @@ tick(onset_time) late() {
     save_state();
 
     add_mutation();
-    writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
 }
 
 tick(onset_time):SIMULATION_END late() {
@@ -54,7 +57,6 @@ tick(onset_time):SIMULATION_END late() {
         reset_state();
 
         add_mutation();
-        writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
     }
 
     // compute the frequency of the mutation of interest and save it (if the

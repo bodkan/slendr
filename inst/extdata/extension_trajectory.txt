@@ -31,14 +31,17 @@ function (void) add_mutation(void) {
     defineGlobal("MUTATION", mut);
 
     log_output("adding beneficial mutation to population " + target_pop);
+
+    // write the header of the output file
+    writeFile(output_file, "tick\ttime\tfrequency");
 }
 
 tick(onset_time) late() {
     // save simulation state in case we need to restart if the mutation is lost
+    // (save_state() is a built-in function provided by slendr for customization)
     save_state();
 
     add_mutation();
-    writeFile(output_file, "tick\ttime\tfrequency");
 }
 
 tick(onset_time):SIMULATION_END late() {
@@ -46,14 +49,17 @@ tick(onset_time):SIMULATION_END late() {
     if (!MUTATION.isSegregating & !MUTATION.isFixed) {
         log_output("mutation lost -- restarting");
 
+        // reload the simulation state from just before we added the beneficial
+        // mutation above (reset_state() is another built-in slendr function)
         reset_state();
 
         add_mutation();
-        writeFile(output_file, "tick\ttime\tfrequency");
     }
 
-    // compute the frequency of the mutation of interest and save it
+    // compute the frequency of the mutation of interest
     frequency = population("EUR").genomes.mutationFrequenciesInGenomes();
+
+    // save the current frequency to the output file
     writeFile(output_file,
               community.tick + "\t" +
               model_time(community.tick) + "\t" +
