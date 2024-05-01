@@ -393,7 +393,7 @@ slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, method = 
 slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE)
 ```
 
-Note that we set `output = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `~/Desktop/output.tsv`.
+Note that we set `ts = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `~/Desktop/output.tsv`.
 
 Checking the output file shows that the frequency trajectories were indeed saved:
 
