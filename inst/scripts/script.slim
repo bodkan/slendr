@@ -861,14 +861,14 @@ function (lifso<Subpopulation>) population(si id, [l$ check = F]) {
 
 // Convert a time value specified in time units used by a corresponding slendr
 // model to forward-time tick value used in SLiM
-function (i) tick(i time) {
+function (i) tick(i model_time) {
     // for backward-time slendr models, first convert time to forward direction
     // (assuming a given generation time and the total expected run time of the
     // simulation)
     if (DIRECTION == "backward")
-        original_time = ORIGINAL_LENGTH - time + GENERATION_TIME;
+        original_time = ORIGINAL_LENGTH - model_time + GENERATION_TIME;
     else
-        original_time = time;
+        original_time = model_time;
 
     // convert the forward time from slendr time units to generations (ticks)
     tick_time = asInteger(round(original_time / GENERATION_TIME));
