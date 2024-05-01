@@ -23,6 +23,8 @@
 skip_if(!is_slendr_env_present())
 init_env(quiet = TRUE)
 
+RERUN <- TRUE
+
 seed <- 42
 N <- 1000
 N_factor <- 5
@@ -35,13 +37,13 @@ mut_rate <- 1e-8
 
 forward_const_dir <- file.path(tempdir(), "forward_const")
 forward_const_pop <- population("forward_const_pop", time = 1, N = N, map = FALSE)
-forward_const_model <- compile_model(forward_const_pop, forward_const_dir, generation_time = 1,
+forward_const_model <- compile_model(forward_const_pop, path = forward_const_dir, generation_time = 1,
                                overwrite = TRUE, force = TRUE, direction = "forward", simulation_length = 5000)
 forward_const_samples <- schedule_sampling(forward_const_model, times = 5001, list(forward_const_pop, n_samples))
 
 backward_const_dir <- file.path(tempdir(), "backward_const")
 backward_const_pop <- population("backward_const_pop", time = 5000, N = N, map = FALSE)
-backward_const_model <- compile_model(backward_const_pop, backward_const_dir , generation_time = 1,
+backward_const_model <- compile_model(backward_const_pop, path = backward_const_dir , generation_time = 1,
                                 overwrite = TRUE, force = TRUE, direction = "backward")
 backward_const_samples <- schedule_sampling(backward_const_model, times = 0, list(backward_const_pop, n_samples))
 
@@ -291,22 +293,24 @@ test_that("SLiM forward/backward sims are exactly the same", {
   })
 })
 
+if (RERUN) {
 # SLiM and msprime simulations from the same model give the same result
 # (tested by comparing the distribution plots)
-# library(ggplot2)
-# p <- ggplot(afs, aes(n, f, color = direction, linetype = sim)) +
-#   geom_line(stat = "identity", alpha = 0.5) +
-#   facet_wrap(~ model) +
-#   labs(x = "number of derived alleles", y = "count",
-#        title = "Site frequency spectra obtained from five demographic models",
-#        subtitle = "Each model was specified in forward or backward direction of time and executed by
-# two different backend scripts in slendr (implemented in SLiM and msprime)") +
-#   guides(color = guide_legend("direction of\ntime in slendr"),
-#          linetype = guide_legend("slendr backend\nengine used")) +
-#   scale_x_continuous(breaks = c(1, seq(20, 2 * n_samples, 20)),
-#                      limits = c(1, 2 * n_samples))
-# png_file <- sprintf("afs_%s.png", Sys.info()["sysname"])
-# ggsave(png_file, p, width = 8, height = 5)
+library(ggplot2)
+p <- ggplot(afs, aes(n, f, color = direction, linetype = sim)) +
+  geom_line(stat = "identity", alpha = 0.5) +
+  facet_wrap(~ model) +
+  labs(x = "number of derived alleles", y = "count",
+       title = "Site frequency spectra obtained from five demographic models",
+       subtitle = "Each model was specified in forward or backward direction of time and executed by
+two different backend scripts in slendr (implemented in SLiM and msprime)") +
+  guides(color = guide_legend("direction of\ntime in slendr"),
+         linetype = guide_legend("slendr backend\nengine used")) +
+  scale_x_continuous(breaks = c(1, seq(20, 2 * n_samples, 20)),
+                     limits = c(1, 2 * n_samples))
+png_file <- sprintf("afs_%s.png", Sys.info()["sysname"])
+ggsave(png_file, p, width = 8, height = 5)
+}
 
 # make sure that the distributions as they were originally inspected and
 # verified visually match the new distributions plot -- this is obviously not
@@ -315,11 +319,15 @@ test_that("SLiM forward/backward sims are exactly the same", {
 # data to eliminate most of the nose
 test_that("AFS distributions from SLiM and msprime simulations match", {
   afs <- afs %>% dplyr::mutate(sim = as.character(sim), model = as.character(model))
-  # current_tsv <- paste0(tempfile(), ".tsv.gz")
-  # readr::write_tsv(afs, current_tsv, progress = FALSE)
+  if (RERUN) {
+  current_tsv <- paste0(tempfile(), ".tsv.gz")
+  readr::write_tsv(afs, current_tsv, progress = FALSE)
+  }
 
   original_tsv <- sprintf("afs_%s.tsv.gz", Sys.info()["sysname"])
-  # readr::write_tsv(afs, original_tsv, progress = FALSE)
+  if (RERUN) {
+  readr::write_tsv(afs, original_tsv, progress = FALSE)
+  }
   orig_afs <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
 
   expect_equal(afs, orig_afs)

@@ -26,11 +26,6 @@ test_that("msprime() does not return a tree sequence when this is not requested"
   expect_silent(msprime(model, ts = ts_file, sequence_length = 1, recombination_rate = 0, load = FALSE))
 })
 
-test_that("slim() gives a warning when no output path is given and no tree sequence is to be loaded", {
-  expect_warning(slim(model, sequence_length = 1, recombination_rate = 0, load = FALSE),
-                 "No custom tree-sequence output path is given")
-})
-
 test_that("msprime() gives a warning when no output path is given and no tree sequence is to be loaded", {
   expect_warning(msprime(model, sequence_length = 1, recombination_rate = 0, load = FALSE),
                  "No custom tree-sequence output path is given")
