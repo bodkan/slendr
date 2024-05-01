@@ -117,12 +117,12 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
       samples = reticulate::r_to_py(samples),
       debug = debug
     )
-    ts <- ts_load(ts_msprime, model = model)
+    ts_object <- ts_load(ts_msprime, model = model)
 
     if (!is.null(ts))
-      ts_save(ts, normalizePath(ts, winslash = "/", mustWork = FALSE))
+      ts_save(ts_object, normalizePath(ts, winslash = "/", mustWork = FALSE))
 
-    return(ts)
+    return(ts_object)
   }
 
   if (is.null(ts) & !load)
