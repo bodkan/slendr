@@ -663,23 +663,40 @@ Let's take the following _slendr_ model of Neanderthal introgression:
 <!-- ``` -->
 
 ```{r}
-library(slendr)
-init_env()
+# create the ancestor of everyone and a chimpanzee outgroup
+# (we set both N = 1 to reduce the computational time for this model)
+chimp <- population("CH", time = 6.5e6, N = 1000)
 
+# two populations of anatomically modern humans: Africans and Europeans
+afr <- population("AFR", parent = chimp, time = 6e6, N = 10000)
+eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
+
+# Neanderthal population splitting at 600 ky ago from modern humans
+# (becomes extinct by 40 ky ago)
+nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 40e3)
+
+# 5% Neanderthal introgression into Europeans between 55-50 ky ago
+gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 45000)
+
+model <- compile_model(
+  populations = list(chimp, nea, afr, eur), gene_flow = gf,
+  generation_time = 30
+)
+```
+
+```{r, echo=FALSE, fig.width=6, fig.height=4}
+cowplot::plot_grid(
+  plot_model(model, sizes = FALSE, proportions = TRUE),
+  plot_model(model, sizes = FALSE, log = TRUE, proportions = TRUE),
+  nrow = 1
+)
+```
+
+```{r, echo=FALSE}
 eur <- population("EUR", time = 100e3, N = 10000)
 nea <- population("NEA", time = 100e3, N = 1000, remove = 40000)
 
 gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 54500)
-```
-
-```{r, echo=FALSE, fig.width=8, fig.height=5}
-model_for_plotting <- compile_model(
-  populations = list(nea, eur), gene_flow = gf,
-  generation_time = 30,
-  extension = extension
-)
-
-plot_model(model_for_plotting, proportions = TRUE, order = c("NEA", "EUR"))
 ```
 
 Now we put together SLiM extension code to set up a non-neutral _slendr_ simulation:
@@ -781,16 +798,15 @@ SIMULATION_END late() {
   )
 ```
 
+
 And put everything together by compiling a _slendr_ model (which now swaps _slendr_'s default neutrality for a non-neutral genomic architecture, including deleterious mutations):
 
-```{r}
+```{r, echo=FALSE}
 model <- compile_model(
   populations = list(nea, eur), gene_flow = gf,
   generation_time = 30,
   extension = extension
 )
-
-plot_model(model, proportions = TRUE, order = c("NEA", "EUR"))
 ```
 
 We will also record 10 Neanderthals and 100 Africans and Europeans each in a tree sequence:
