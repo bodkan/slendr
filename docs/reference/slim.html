@@ -95,18 +95,19 @@ function during the compilation of a slendr demographic model.</p>
 <span>  <span class="va">sequence_length</span>,</span>
 <span>  <span class="va">recombination_rate</span>,</span>
 <span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  output <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"batch"</span>, <span class="st">"gui"</span><span class="op">)</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  run <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  slim_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  burnin <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  max_attempts <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  spatial <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">model</span><span class="op">$</span><span class="va">world</span><span class="op">)</span>,</span>
 <span>  coalescent_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"batch"</span>, <span class="st">"gui"</span><span class="op">)</span>,</span>
-<span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  run <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  locations <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  slim_path <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  locations <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -133,9 +134,44 @@ missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
 
 
-<dt>output</dt>
-<dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
-tree sequence will be saved to a temporary file.</p></dd>
+<dt>output_dir</dt>
+<dd><p>Path to a directory where various output files can be saved.
+This argument cannot be set when <code>output</code> is set. This is predominately
+intended to provide easier means to save outputs of slim simulations utilizing
+user-defined extension scripts. For tree-sequence only simulations, use
+<code>output</code> to set the path to the output tree sequence file instead.</p></dd>
+
+
+<dt>random_seed</dt>
+<dd><p>Random seed (if <code>NULL</code>, a seed will be generated between
+0 and the maximum integer number available)</p></dd>
+
+
+<dt>method</dt>
+<dd><p>How to run the script? ("gui" - open in SLiMgui, "batch" - run
+on the command line)</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Write the SLiM output log to the console (default
+<code>FALSE</code>)?</p></dd>
+
+
+<dt>load</dt>
+<dd><p>Should the final tree sequence be immediately loaded and returned?
+Default is <code>TRUE</code>. The alternative (<code>FALSE</code>) is useful when a tree-sequence
+file is written to a custom location to be loaded at a later point.</p></dd>
+
+
+<dt>run</dt>
+<dd><p>Should the SLiM engine be run? If <code>FALSE</code>, the command line SLiM
+command will be printed (and returned invisibly as a character vector) but not executed.</p></dd>
+
+
+<dt>slim_path</dt>
+<dd><p>Path to the appropriate SLiM binary (this is useful if the
+<code>slim</code> binary is not on the <code>$PATH</code>). Note that this argument must
+be specified if the function is being run on Windows.</p></dd>
 
 
 <dt>burnin</dt>
@@ -160,42 +196,17 @@ a spatial mode.</p></dd>
 "retainCoalescentOnly" in the SLiM manual for more detail.</p></dd>
 
 
-<dt>method</dt>
-<dd><p>How to run the script? ("gui" - open in SLiMgui, "batch" - run
-on the command line)</p></dd>
-
-
-<dt>random_seed</dt>
-<dd><p>Random seed (if <code>NULL</code>, a seed will be generated between
-0 and the maximum integer number available)</p></dd>
-
-
-<dt>run</dt>
-<dd><p>Should the SLiM engine be run? If <code>FALSE</code>, the command line SLiM
-command will be printed (and returned invisibly as a character vector) but not executed.</p></dd>
-
-
-<dt>verbose</dt>
-<dd><p>Write the SLiM output log to the console (default
-<code>FALSE</code>)?</p></dd>
-
-
-<dt>load</dt>
-<dd><p>Should the final tree sequence be immediately loaded and returned?
-Default is <code>TRUE</code>. The alternative (<code>FALSE</code>) is useful when a tree-sequence
-file is written to a custom location to be loaded at a later point.</p></dd>
-
-
 <dt>locations</dt>
 <dd><p>If <code>NULL</code>, locations are not saved. Otherwise, the
 path to the file where locations of each individual throughout the simulation
 will be saved (most likely for use with <code>animate_model</code>).</p></dd>
 
 
-<dt>slim_path</dt>
-<dd><p>Path to the appropriate SLiM binary (this is useful if the
-<code>slim</code> binary is not on the <code>$PATH</code>). Note that this argument must
-be specified if the function is being run on Windows.</p></dd>
+<dt>output</dt>
+<dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
+tree sequence will be saved to a temporary file. If <code>FALSE</code>, no tree-sequence
+file will be generated (this is only useful for running customized slendr SLiM
+scripts). This argument cannot be set when <code>output_dir</code> is set.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -208,6 +219,15 @@ be specified if the function is being run on Windows.</p></dd>
 <p>(internally represented by the Python object <code>tskit.trees.TreeSequence</code>). Optionally,
 depending on the value of the arguments <code>load =</code> or <code>run =</code>, nothing or a character
 vector, respectively.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The arguments <code>sequence_length</code> and <code>recombination_rate</code> can be
+omitted for slendr models utilizing customized initialization of genomic
+architecture. In such cases, users may either provide hard-coded values
+directly through SLiM's <code>initializeGenomicElement()</code> and
+<code>initializeRecombinationRate()</code> functions or utilize slendr's
+templating functionality provided by its <code><a href="substitute.html">substitute()</a></code> function.</p>
     </div>
 
     <div class="section level2">
@@ -238,49 +258,103 @@ vector, respectively.</p>
 <span class="r-in"><span><span class="co"># run a simulation using the SLiM back end from a compiled slendr model object and return</span></span></span>
 <span class="r-in"><span><span class="co"># a tree-sequence output</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">slim</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // Initial random seed:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1847106956913526471</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // RunInitializeCallbacks():</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SEED: 31749990</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Unfortunately SLiM terminated before a tree sequence was saved.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> See the above for an indication of where things could have gone wrong.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> SLiM exit status: 1</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Message: </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># automatic loading of a simulated output can be prevented by `load = FALSE`, which can be</span></span></span>
 <span class="r-in"><span><span class="co"># useful when a custom path to a tree-sequence output is given for later downstream analyses</span></span></span>
 <span class="r-in"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">slim</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span>,</span></span>
-<span class="r-in"><span>     output <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>     ts <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // Initial random seed:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2073640918115507570</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // RunInitializeCallbacks():</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SEED: 2137934383</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Unfortunately SLiM terminated before a tree sequence was saved.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> See the above for an indication of where things could have gone wrong.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> SLiM exit status: 1</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Message: </span>
 <span class="r-in"><span><span class="co"># ... at a later stage:</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp933wjD/file42724579384c.trees'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ts</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence           ║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═══════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │      1║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│ 100000║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │  ticks║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │  10046║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │2.6 MiB║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════╝</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤═════╤═════════╤════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows │Size     │Has Metadata║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪═════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │18361│573.8 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│12858│  1.2 MiB│         Yes║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │    0│  8 Bytes│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │    0│  1.2 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │18362│682.1 KiB│         Yes║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│    4│  2.5 KiB│         Yes║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│    1│ 34.6 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │    0│ 16 Bytes│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧═════╧═════════╧════════════╝</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (data = NA, start = 1, end = numeric(), frequency = 1, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     deltat = 1, ts.eps = getOption("ts.eps"), class = if (nseries &gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1) c("mts", "ts", "matrix", "array") else "ts", names = if (!is.null(dimnames(data))) colnames(data) else paste("Series", </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         seq(nseries))) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.data.frame(data)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         data &lt;- data.matrix(data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.matrix(data)) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         nseries &lt;- ncol(data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ndata &lt;- nrow(data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         dimnames(data) &lt;- list(NULL, names)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     else {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         nseries &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ndata &lt;- length(data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (ndata == 0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'ts' object must have one or more observations")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (missing(frequency)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         frequency &lt;- 1/deltat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     else if (missing(deltat)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         deltat &lt;- 1/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (frequency &gt; 1 &amp;&amp; 0 &lt; (d &lt;- abs(frequency - round(frequency))) &amp;&amp; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d &lt; ts.eps) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         frequency &lt;- round(frequency)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!missing(start)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- as.numeric(start)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(start) &gt; 1L) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- start[1L] + (start[2L] - 1)/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!missing(end)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- as.numeric(end)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(end) &gt; 1L) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- end[1L] + (end[2L] - 1)/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (missing(end)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- start + (ndata - 1)/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     else if (missing(start)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- end - (ndata - 1)/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (start &gt; end) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'start' cannot be after 'end'")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cycles &lt;- as.numeric((end - start) * frequency)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (abs(round(cycles) - cycles) &gt; ts.eps * max(cycles, 1)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'end' must be a whole number of cycles after 'start'")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     nobs &lt;- floor(cycles + 1.01)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (nobs != ndata) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         data &lt;- if (NCOL(data) == 1) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ndata &lt; nobs) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 rep_len(data, nobs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             else if (ndata &gt; nobs) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[1L:nobs]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         else {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ndata &lt; nobs) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[rep_len(1L:ndata, nobs), ]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             else if (ndata &gt; nobs) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[1L:nobs, ]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     attr(data, "tsp") &lt;- c(start, end, frequency)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!is.null(class) &amp;&amp; class[[1]] != "none") </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         attr(data, "class") &lt;- class</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x17f166b30&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:stats&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
