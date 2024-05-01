@@ -56,7 +56,7 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
 
   slim_sim <- function(dispersal_fun, dispersal, seed) {
-
+    # dispersal_fun <- "normal"; dispersal <- 10; seed <- 42
     pop <- population("pop", time = 1, N = 3000, map = map, center = c(50, 50), radius = 0.5,
                        dispersal = 0.1) %>%
       set_range(time = 2, center = c(50, 50), radius = 50) %>%
