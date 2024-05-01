@@ -570,7 +570,13 @@ function (void) create_pop(object<Dictionary> pop) {
         );
         sim.addSubpopSplit(pop_id, pop.getValue("N"), pop.getValue("parent_id"));
     }
-    population(pop_id).name = pop.getValue("pop");
+    // TODO: We cannot use the 'name' propertion of a Subpopulation object because
+    // if a slendr user names a population, say, "p1", but in SLiM that Subpopulation
+    // is, say, p0, SLiM crashes with this error:
+    // ERROR (Subpopulation::SetName): property name must not be a subpopulation symbol
+    // ('p1', 'p2', etc.) unless it matches the symbol of the subpopulation itself.
+    // Commenting this out for the time being:
+    // population(pop_id).name = pop.getValue("pop");
 
     // dispersal distance is set in a script block (here we just create the variable)
     population(pop_id).setValue("dispersal", -1);
