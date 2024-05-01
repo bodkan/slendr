@@ -428,7 +428,7 @@ s9 late() /* Remember individuals for tree sequence recording */ {
         }
 
         if (exists("distances"))
-            inds = all_inds[order(distances)][0 : (n - 1)];
+            inds = all_inds[order(distances)][asInteger(0 : (n - 1))];
         else
             inds = sample(all_inds, asInteger(n));
 
