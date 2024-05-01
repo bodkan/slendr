@@ -28,8 +28,8 @@ forward_samples <- rbind(
 ts_forward_slim <- tempfile(fileext = ".trees")
 ts_forward_msprime <- tempfile(fileext = ".trees")
 
-slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, output = ts_forward_slim, samples = forward_samples, random_seed = seed)
-msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, output = ts_forward_msprime, samples = forward_samples, random_seed = seed)
+slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, ts = ts_forward_slim, samples = forward_samples, random_seed = seed)
+msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, ts = ts_forward_msprime, samples = forward_samples, random_seed = seed)
 
 forward_sts <- ts_load(model = forward_model, file = ts_forward_slim)
 forward_mts <- ts_load(model = forward_model, file = ts_forward_msprime)
@@ -89,8 +89,8 @@ backward_samples <- rbind(
 ts_backward_slim <- tempfile(fileext = ".trees")
 ts_backward_msprime <- tempfile(fileext = ".trees")
 
-slim(backward_model, output = ts_backward_slim, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
-msprime(backward_model, output = ts_backward_msprime, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
+slim(backward_model, ts = ts_backward_slim, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
+msprime(backward_model, ts = ts_backward_msprime, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
 
 backward_sts <- ts_load(model = backward_model, file = ts_backward_slim)
 backward_mts <- ts_load(model = backward_model, file = ts_backward_msprime)

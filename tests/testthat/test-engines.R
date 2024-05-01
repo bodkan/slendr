@@ -9,7 +9,7 @@ test_that("only serialized models can be run on the command line", {
 
   out <- tempfile()
   expect_error(
-    msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, output = out, run = FALSE),
+    msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = out, run = FALSE),
     "Impossible to run a non-serialized slendr model on the command line"
   )
 })
@@ -24,7 +24,7 @@ test_that("msprime command run manually on the command line give the correct out
   # model is run on the CLI
   out <- tempfile()
   out_cmd <- capture.output(
-    cmd <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, output = out, run = FALSE, random_seed = 42))
+    cmd <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = out, run = FALSE, random_seed = 42))
   system(cmd, ignore.stdout = TRUE)
   ts_manual <- ts_load(out, model = model)
   expect_s3_class(ts_manual, "slendr_ts")
@@ -47,7 +47,7 @@ test_that("slim command run manually on the command line give the correct output
   # model is run on the CLI
   out <- tempfile()
   out_cmd <- capture.output(
-    cmd <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output = out, run = FALSE, random_seed = 42))
+    cmd <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = out, run = FALSE, random_seed = 42))
   system(cmd, ignore.stdout = TRUE)
   ts_manual <- ts_load(out, model = model)
   expect_s3_class(ts_manual, "slendr_ts")

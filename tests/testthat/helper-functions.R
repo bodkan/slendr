@@ -34,20 +34,20 @@ run_slim_msprime <- function(forward_model, backward_model,
   ts_slim_forward <- tempfile()
   ts_msprime_forward <- tempfile()
 
-  slim(forward_model, output = ts_slim_forward, sequence_length = seq_len, recombination_rate = rec_rate,
+  slim(forward_model, ts = ts_slim_forward, sequence_length = seq_len, recombination_rate = rec_rate,
        samples = forward_samples, random_seed = seed, verbose = verbose)
   suppressWarnings({
-    msprime(forward_model, output = ts_msprime_forward, sequence_length = seq_len, recombination_rate = rec_rate,
+    msprime(forward_model, ts = ts_msprime_forward, sequence_length = seq_len, recombination_rate = rec_rate,
           samples = forward_samples, random_seed = seed, verbose = verbose)
   })
 
   ts_slim_backward <- tempfile()
   ts_msprime_backward <- tempfile()
 
-  slim(backward_model, output = ts_slim_backward, sequence_length = seq_len, recombination_rate = rec_rate,
+  slim(backward_model, ts = ts_slim_backward, sequence_length = seq_len, recombination_rate = rec_rate,
        samples = backward_samples, random_seed = seed, verbose = verbose)
   suppressWarnings({
-  msprime(backward_model, output = ts_msprime_backward, sequence_length = seq_len, recombination_rate = rec_rate,
+  msprime(backward_model, ts = ts_msprime_backward, sequence_length = seq_len, recombination_rate = rec_rate,
           samples = backward_samples, random_seed = seed, verbose = verbose)
   })
 

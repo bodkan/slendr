@@ -37,8 +37,8 @@ samples <- schedule_sampling(model_nogf, times = 2200, list(a, 1), list(b, 1), l
 ts_slim_nogf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 ts_msprime_nogf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-slim(model_nogf, output = ts_slim_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
-msprime(model_nogf, output = ts_msprime_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+slim(model_nogf, ts = ts_slim_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+msprime(model_nogf, ts = ts_msprime_nogf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 
 # model with gene flow
 gf <- gene_flow(from = b, to = x1, start = 2010, end = 2200, rate = 0.1)
@@ -50,8 +50,8 @@ samples <- schedule_sampling(model_gf, times = 2200, list(a, 1), list(b, 1), lis
 ts_slim_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 ts_msprime_gf <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-slim(model_gf, output = ts_slim_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
-msprime(model_gf, output = ts_msprime_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+slim(model_gf, ts = ts_slim_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
+msprime(model_gf, ts = ts_msprime_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 
 # Load tree sequence files saved by the SLiM backend script from the two models:
 slim_nogf <- ts_load(model = model_nogf, file = ts_slim_nogf) %>%

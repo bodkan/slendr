@@ -12,7 +12,7 @@
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
-#' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
+#' @param ts Path to the output tree-sequence file. If \code{NULL} (the default),
 #'   tree sequence will be saved to a temporary file.
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
 #'   0 and the maximum integer number available)
@@ -59,14 +59,14 @@
 #' # useful when a custom path to a tree-sequence output is given for later downstream analyses
 #' output_file <- tempfile(fileext = ".trees")
 #' msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
-#'         output = output_file, load = FALSE, random_seed = 42)
+#'         ts = output_file, load = FALSE, random_seed = 42)
 #' # ... at a later stage:
 #' ts <- ts_load(output_file, model)
 #'
 #' summary(ts)
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
-                    output = NULL, random_seed = NULL,
+                    ts = NULL, random_seed = NULL,
                     load = TRUE, verbose = FALSE, debug = FALSE, run = TRUE) {
   if (sequence_length %% 1 != 0 | sequence_length <= 0)
     stop("Sequence length must be a non-negative integer number", call. = FALSE)
@@ -119,17 +119,17 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     )
     ts <- ts_load(ts_msprime, model = model)
 
-    if (!is.null(output))
-      ts_save(ts, normalizePath(output, winslash = "/", mustWork = FALSE))
+    if (!is.null(ts))
+      ts_save(ts, normalizePath(ts, winslash = "/", mustWork = FALSE))
 
     return(ts)
   }
 
-  if (is.null(output) & !load)
+  if (is.null(ts) & !load)
     warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
             "a temporary file after the simulation has been prevented", call. = FALSE)
 
-  if (is.null(output)) output <- tempfile(fileext = ".trees")
+  if (is.null(ts)) ts <- tempfile(fileext = ".trees")
 
   model_dir <- model$path
   if (!dir.exists(model_dir))
@@ -149,7 +149,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     script_path,
     paste("--seed", random_seed),
     path.expand(model_dir),
-    output,
+    ts,
     sequence_length,
     recombination_rate,
     sampling,
@@ -171,17 +171,17 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
   # if (system(msprime_command, ignore.stdout = !verbose) != 0)
   #   stop("msprime simulation resulted in an error -- see the output above", call. = FALSE)
 
-  if (!file.exists(output))
-    stop("Tree sequence was not found at the expected location:\n", output, call. = FALSE)
+  if (!file.exists(ts))
+    stop("Tree sequence was not found at the expected location:\n", ts, call. = FALSE)
 
   if (load) {
     if (verbose) {
-      cat("Tree sequence was saved to:\n", output, "\n")
+      cat("Tree sequence was saved to:\n", ts, "\n")
       cat("Loading the tree-sequence file...\n")
 
     }
 
-    ts <- ts_load(model, file = output)
+    ts <- ts_load(model, file = ts)
     return(ts)
   }
 }

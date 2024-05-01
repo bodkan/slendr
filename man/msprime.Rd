@@ -9,7 +9,7 @@ msprime(
   sequence_length,
   recombination_rate,
   samples = NULL,
-  output = NULL,
+  ts = NULL,
   random_seed = NULL,
   load = TRUE,
   verbose = FALSE,
@@ -31,7 +31,7 @@ function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
-\item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
+\item{ts}{Path to the output tree-sequence file. If \code{NULL} (the default),
 tree sequence will be saved to a temporary file.}
 
 \item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
@@ -88,7 +88,7 @@ ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = sa
 # useful when a custom path to a tree-sequence output is given for later downstream analyses
 output_file <- tempfile(fileext = ".trees")
 msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
-        output = output_file, load = FALSE, random_seed = 42)
+        ts = output_file, load = FALSE, random_seed = 42)
 # ... at a later stage:
 ts <- ts_load(output_file, model)
 
