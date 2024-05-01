@@ -197,7 +197,7 @@ check_resolution <- function(map, val) {
   yrange <- sf::st_bbox(map)[c("ymin", "ymax")]
   if (diff(xrange) < val | diff(yrange) < val)
     stop(sprintf("Value of %s = %s larger than the overall world size",
-                 deparse(substitute(val)), val),
+                 deparse(base::substitute(val)), val),
          call. = FALSE)
 }
 

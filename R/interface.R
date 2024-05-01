@@ -702,8 +702,8 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
   this makes sense for your model, you can add `overlap = F` which
   will instruct slendr to simulate gene flow without spatial overlap
   between populations.",
-  from_name, to_name, start, deparse(substitute(from)),
-  deparse(substitute(to))), call. = FALSE)
+  from_name, to_name, start, deparse(base::substitute(from)),
+  deparse(base::substitute(to))), call. = FALSE)
     }
   } else
     overlap <- FALSE
@@ -1048,8 +1048,8 @@ overlap <- function(x, y, name = NULL) {
       result <- sf::st_sf(geometry = sf::st_combine(result))
 
     if (is.null(name)) {
-      xname <- deparse(substitute(x))
-      yname <- deparse(substitute(y))
+      xname <- deparse(base::substitute(x))
+      yname <- deparse(base::substitute(y))
       result$region <- sprintf("(overlap of %s and %s)", xname, yname)
     } else
       result$region <- name
@@ -1085,8 +1085,8 @@ subtract <- function(x, y, name = NULL) {
 
   if (nrow(result)) {
     if (is.null(name)) {
-      xname <- deparse(substitute(x))
-      yname <- deparse(substitute(y))
+      xname <- deparse(base::substitute(x))
+      yname <- deparse(base::substitute(y))
       result$region <- sprintf("(%s minus %s)", xname, yname)
     } else
       result$region <- name
