@@ -571,7 +571,9 @@ test_that("ts_mutate correctly specifies the SLiM mutation type", {
     ts_recapitate(random_seed = 123, recombination_rate = 0, Ne = 100) %>%
     ts_simplify()
   ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
-  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123, mut_type = 123456789)
+  msprime_module <- reticulate::import("msprime")
+  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123,
+                       mutation_model = msprime_module$SLiMMutationModel(123456789L))
 
   get_mut_type <- function(m) {
     mut_metadata <- m$metadata$mutation_list
