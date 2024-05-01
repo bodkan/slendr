@@ -9,9 +9,10 @@ slim(
   sequence_length,
   recombination_rate,
   samples = NULL,
-  output = NULL,
-  method = c("batch", "gui"),
+  ts = NULL,
+  output_dir = NULL,
   random_seed = NULL,
+  method = c("batch", "gui"),
   verbose = FALSE,
   load = TRUE,
   run = TRUE,
@@ -37,16 +38,17 @@ function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
-\item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
-tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
-file will be generated (this is only useful for running customized slendr SLiM
-scripts).}
-
-\item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
-on the command line)}
+\item{output_dir}{Path to a directory where various output files can be saved.
+This argument cannot be set when \code{output} is set. This is predominately
+intended to provide easier means to save outputs of slim simulations utilizing
+user-defined extension scripts. For tree-sequence only simulations, use
+\code{output} to set the path to the output tree sequence file instead.}
 
 \item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
 0 and the maximum integer number available)}
+
+\item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
+on the command line)}
 
 \item{verbose}{Write the SLiM output log to the console (default
 \code{FALSE})?}
@@ -79,6 +81,11 @@ a spatial mode.}
 \item{locations}{If \code{NULL}, locations are not saved. Otherwise, the
 path to the file where locations of each individual throughout the simulation
 will be saved (most likely for use with \code{animate_model}).}
+
+\item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
+tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
+file will be generated (this is only useful for running customized slendr SLiM
+scripts). This argument cannot be set when \code{output_dir} is set.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
@@ -129,7 +136,7 @@ ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = sampl
 # useful when a custom path to a tree-sequence output is given for later downstream analyses
 output_file <- tempfile(fileext = ".trees")
 slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
-     output = output_file, load = FALSE)
+     ts = output_file, load = FALSE)
 # ... at a later stage:
 ts <- ts_load(output_file, model)
 
