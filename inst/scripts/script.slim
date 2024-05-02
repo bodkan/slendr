@@ -173,9 +173,9 @@ initialize() {
 
 s0 late() /* Log the start of the simulation */ {
     if (community.tick == 1 & BURNIN_LENGTH > 0)
-        log_output("start of burnin");
+        write_log("start of burnin");
     else
-        log_output("starting the simulation");
+        write_log("starting the simulation");
 }
 
 s1 late() /* Population splits */ {
@@ -218,7 +218,7 @@ s4 late() /* Update spatial population boundaries */ {
 
         id = map.getValue("pop_id");
 
-        log_output("updating map for " + map.getValue("pop") + "(p" + id + ")");
+        write_log("updating map for " + map.getValue("pop") + "(p" + id + ")");
 
         img = map.getValue("image");
         pop = population(map.getValue("pop"));
@@ -254,7 +254,7 @@ s5 /* Step population size changes */ early() {
         event = events.getRowValues(i);
         pop = event.getValue("pop"); pop_size = event.getValue("N");
         population(pop).setSubpopulationSize(pop_size);
-        log_output(pop + "(p" + event.getValue("pop_id") + ") resized to " +
+        write_log(pop + "(p" + event.getValue("pop_id") + ") resized to " +
                              pop_size + " individuals");
     }
 }
@@ -290,10 +290,10 @@ s6 /* Exponential population size changes */ early() {
 
         current_size = population(id).individualCount;
         if (community.tick == tstart)
-            log_output("start of exponential " + event_type + " of " + pop + "(p" + id +
+            write_log("start of exponential " + event_type + " of " + pop + "(p" + id +
                        ") from size " + current_size);
         if (community.tick == tend)
-            log_output("end of exponential " + event_type + " of " + pop + "(p" + id +
+            write_log("end of exponential " + event_type + " of " + pop + "(p" + id +
                        ") at size " + current_size);
     }
 }
@@ -324,26 +324,26 @@ s7 late() /* Changing interaction distances and dispersals */ {
 
         // only change parameters that are scheduled for change in this event
         if (competition_dist != competition.maxDistance) {
-            log_output("setting competition interaction distance for " + pop + "(p" +
+            write_log("setting competition interaction distance for " + pop + "(p" +
                        pop_id + ") to " + competition_dist);
             competition.unevaluate();
             competition.maxDistance = competition_dist;
         }
         if (mating_dist != mating.maxDistance) {
-            log_output("setting mate choice distance for " + pop + "(p" +
+            write_log("setting mate choice distance for " + pop + "(p" +
                                  pop_id + ") to " + mating_dist);
             mating.unevaluate();
             mating.maxDistance = mating_dist;
         }
         if (dispersal_dist != dispersal) {
             if (dispersal != -1)
-                log_output("setting offspring dispersal distance for " + pop +
+                write_log("setting offspring dispersal distance for " + pop +
                            "(p" + pop_id + ") to " + dispersal_dist);
             population(pop).setValue("dispersal", dispersal_dist);
         }
         if (dispersal_fun != fun) {
             if (fun != "")
-                log_output("changing dispersal kernel for " + pop +
+                write_log("changing dispersal kernel for " + pop +
                            "(p" + pop_id + ") to " + dispersal_fun);
             population(pop).setValue("dispersal_fun", dispersal_fun);
         }
@@ -402,7 +402,7 @@ s9 late() /* Remember individuals for tree sequence recording */ {
         } else
             n_str = asString(asInteger(n));
 
-        log_output("sampling " + n_str + " individuals of " +
+        write_log("sampling " + n_str + " individuals of " +
                              pop + "(p" + population(pop).id + ")" + where);
 
         // give a warning in case more individuals are scheduled for sampling
@@ -449,7 +449,7 @@ s10 late() /* Schedule removal of populations */ {
     pops = filter(POPULATIONS, "tremove_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
-        log_output("cleanup of " + pop.getValue("pop") +
+        write_log("cleanup of " + pop.getValue("pop") +
                              "(p" + pop.getValue("pop_id") + ")");
         population(pop.getValue("pop")).setSubpopulationSize(0);
     }
@@ -467,7 +467,7 @@ s11 late() /* Save the tree sequence */ {
 }
 
 s12 late() /* End of simulation */ {
-    log_output("simulation finished");
+    write_log("simulation finished");
     sim.simulationFinished();
 }
 
@@ -561,10 +561,10 @@ function (void) create_pop(object<Dictionary> pop) {
     pop_id = pop.getValue("pop_id");
 
     if (pop.getValue("parent") ==  "__pop_is_ancestor") {
-        log_output("creating " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")");
+        write_log("creating " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")");
         sim.addSubpop(pop_id, pop.getValue("N"));
     } else {
-        log_output(
+        write_log(
             "split of " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")" +
             " from " + pop.getValue("parent") + "(p" + pop.getValue("parent_id")  + ")"
         );
@@ -603,11 +603,11 @@ function (void) set_geneflow(object<Dictionary> event, f$ rate) {
     if (rate > 0) {
         span = event.getValue("tend_gen") - event.getValue("tstart_gen");
         rate = rate / span;
-        log_output("geneflow " + from + "(p" + from_id + ")" +
+        write_log("geneflow " + from + "(p" + from_id + ")" +
                              " -> " + to + "(p" + to_id + ")" +
                              " (" + rate + "% over " + span + " generations)");
     } else
-        log_output("geneflow " + from + "(p" + from_id + ")" +
+        write_log("geneflow " + from + "(p" + from_id + ")" +
                              " -> " + to + "(p" + to_id + ")" + " set to 0%");
 
     population(to_id).setMigrationRates(from_id, rate);
@@ -615,7 +615,7 @@ function (void) set_geneflow(object<Dictionary> event, f$ rate) {
 
 // Distribute individuals uniformly within the boundary of the given population
 function (void) set_coordinates(lifso<Individual> inds, i$ id, [l$ log = T]) {
-    if (log) log_output("distributing individuals of " +
+    if (log) write_log("distributing individuals of " +
                         filter(POPULATIONS, "pop_id", id).getValue("pop") +
                         "(p" + id + ")");
     for (ind in inds) {
@@ -963,7 +963,7 @@ function (void) reset_state (void) {
 }
 
 // Print a log output message with a time stamp
-function (void) log_output(s$ str) {
+function (void) write_log(s$ str) {
     tick_value = community.tick;
     catn("tick " + tick_value + " (model time " + model_time(tick_value) + "):\n  - " + str);
 }
@@ -973,5 +973,5 @@ function (void) save_ts(s$ path) {
     metadata = collect_metadata();
 
     sim.treeSeqOutput(path, metadata = Dictionary("slendr", metadata));
-    log_output("saving the tree sequence output to '" + path + "'");
+    write_log("saving the tree sequence output to '" + path + "'");
 }

@@ -36,17 +36,28 @@ One motivation for supporting non-neutral customized genomic architecture and mu
 
 ## Disclaimers and caveats
 
-If you want to use the _slendr_/SLiM extension functionality described in this vignette, you should be aware of the following:
+If you want to use the _slendr_/SLiM extension functionality described in this vignette, you should be aware of the following restrictions and guidelines:
 
-- The [built-in SLiM engine of _slendr_](https://github.com/bodkan/slendr/blob/main/inst/scripts/script.slim) stays unmodified. Any extension _SLiM_ code customization snippets will be added on top of it. In particular, this includes customizing mutation types, genomic element types, recombination maps, etc. Functionality involving demographic events (splits, gene-flow, etc.) will stay in place as it is, unchanged and will be handled by _slendr_ itself.
+- It is assumed that the [SLiM script bundled with _slendr_](https://github.com/bodkan/slendr/blob/main/inst/scripts/script.slim) stays unmodified. Any extension _SLiM_ code customization snippets will be added on top of it -- customizing mutation types, genomic element types, recombination maps, custom fitness callbacks, etc. Functionality involving demographic events (splits, gene-flow, etc.) will stay in place as it is. User-provided custom code is not allowed to change how this functionality operates.
 
-- Related to the above point -- _slendr_ models assume (and will always assume) Wright-Fisher (WF) dynamics. Although perhaps not necessarily a problem for simulating non-spatial selection models (i.e. _slendr_ models which don't include a map), adding selection to spatial models in SLiM WF setting is unlikely to lead to very meaningful results. 
+- Related to the above point -- _slendr_ models assume (and will always assume) Wright-Fisher (WF) dynamics. Although perhaps not necessarily a problem for simulating non-spatial selection models (i.e. _slendr_ models which don't include a map), adding selection to spatial models in SLiM WF setting is unlikely to lead to very meaningful results. If you need non-WF models, you will have to use pure SLiM. _slendr_ will not be useful for you.
 
-- The built-in SLiM engine of _slendr_ provides several utility Eidos functions which make it easy to extend the engine with custom callbacks. See the list in the section below.
+- The built-in SLiM engine of _slendr_ provides several utility Eidos functions which make it easy to extend the engine with custom callbacks, and give the possibility to refer to some _slendr_-specific model information. See the list in the section below.
 
 ## _slendr_ / SLiM "API"
 
-Let's first load all required R libraries:
+Below we will describe the following slendr / SLiM "API" functions and constants you can use to customize the default, SLiM back-end script that comes bundled with _slendr_:
+
+- `population()`
+- `tick()` and `model_time()`
+- `save_state()` and `reset_state()`
+- `write_log()`
+
+- `SIMULATION_START` and `SIMULATION_END`
+- `SEQUENCE_LENGTH`
+- `OUTPUT_DIR`
+
+Let's first load all required R libraries before we dive in:
 
 ```{r, collapse = TRUE, message = FALSE}
 library(slendr)
@@ -59,17 +70,6 @@ library(readr)
 seed <- 42
 set.seed(seed)
 ```
-
-Below we will describe the following slendr / SLiM "API" functions and constants you can use to customize the default, purely neutral, SLiM back-end script built-in to _slendr_:
-
-- `population()`
-- `tick()` and `model_time()`
-- `save_state()` and `reset_state()`
-- `log_output()`
-
-- `SIMULATION_START` and `SIMULATION_END`
-- `SEQUENCE_LENGTH`
-- `OUTPUT_DIR`
 
 ### Referring to populations: `population()` Eidos function
 
@@ -239,12 +239,12 @@ This gives us model time corresponding to the very last tick of the simulation (
 0
 ```
 
-### Logging: `log_output()` Eidos function
+### Logging: `write_log()` Eidos function
 
-`log_output()` is a tiny helper function provided by _slendr_'s SLiM back-end script which serves to print out a given string to the SLiM log output together with the appropriate tick number at that time. This produces output of the following kind:
+`write_log()` is a tiny helper function provided by _slendr_'s SLiM back-end script which serves to print out a given string to the SLiM log output together with the appropriate tick number at that time. This produces output of the following kind:
 
 ```
-> log_output("hello from the current event")
+> write_log("hello from the current event")
 tick 696: hello from the current event
 ```
 
@@ -272,7 +272,7 @@ function (void) add_mutation(s pop_name, f selection_coef) {
   defineGlobal("BACKGROUND", target.mutations);
   defineGlobal("FOCAL", mutation);
 
-  log_output("adding beneficial mutation to population " + pop_name);
+  write_log("adding beneficial mutation to population " + pop_name);
 }
 
 tick(15000) late() {
@@ -288,7 +288,7 @@ tick(15000):SIMULATION_END late() {
   
   // the mutation is not segregating and is not fixed either -- we must restart
   if (!segregating & !fixed) {
-    log_output("mutation lost -- restarting");
+    write_log("mutation lost -- restarting");
     
     reset_state();
     
@@ -313,7 +313,7 @@ Even more relevant to writing customized SLiM extension scripts for _slendr_ are
 
 ## Putting it all together: running a customized _slendr_ simulation 
 
-The above examples show how you can refer to a _slendr_ population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the _slendr_ built-in SLiM script, and how you can convert _slendr_-specific time units into SLiM's internal ticks using the `tick()` function. You've also learned how to save and reset SLiM state using provided functions `save_state()` and `reset_state()` and how to log outputs using the function `log_output()`. We demonstrated all this by defining a customized snippet of SLiM code which we now want to use in a full _slendr_ simulation run. Of course, the example we've chosen is extremely trivial -- you could, in principle, use any feature available for SLiM (as long as it's compatible with Wright-Fisher models, which _slendr_ currently assumes as a basis for its models).
+The above examples show how you can refer to a _slendr_ population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the _slendr_ built-in SLiM script, and how you can convert _slendr_-specific time units into SLiM's internal ticks using the `tick()` function. You've also learned how to save and reset SLiM state using provided functions `save_state()` and `reset_state()` and how to log outputs using the function `write_log()`. We demonstrated all this by defining a customized snippet of SLiM code which we now want to use in a full _slendr_ simulation run. Of course, the example we've chosen is extremely trivial -- you could, in principle, use any feature available for SLiM (as long as it's compatible with Wright-Fisher models, which _slendr_ currently assumes as a basis for its models).
 
 How do we use this customization in practice? One way to do this would be to edit the built-in _slendr_ SLiM script and manually add your own SLiM code, but that would be brittle and not reproducible. There's a much better way to do this that's directly supported by _slendr_'s R interface.
 
@@ -564,7 +564,7 @@ function (void) add_mutation(void) {
     // save the mutation for later reference
     defineGlobal("MUTATION", mut);
 
-    log_output("adding beneficial mutation to population " + target_pop);
+    write_log("adding beneficial mutation to population " + target_pop);
 
     writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
 }
@@ -579,7 +579,7 @@ tick(onset_time) late() {
 tick(onset_time):SIMULATION_END late() {
     // the mutation is not segregating and is not fixed either -- we must restart
     if (!MUTATION.isSegregating & !MUTATION.isFixed) {
-        log_output("mutation lost -- restarting");
+        write_log("mutation lost -- restarting");
 
         reset_state();
 
@@ -769,12 +769,12 @@ tick(introgression_time) - 1 late() {
   // get all Neanderthal chromosomes just prior to the introgression
   target = population("NEA").genomes;
 
-  log_output("adding neutral Neanderthal markers");
+  write_log("adding neutral Neanderthal markers");
 
   mutations = target.addNewDrawnMutation(m0, position = asInteger(neutral_pos));
   defineConstant("MARKERS", target.mutations);
 
-  log_output("adding deleterious Neanderthal mutation");
+  write_log("adding deleterious Neanderthal mutation");
 
   target.addNewDrawnMutation(m1, position = asInteger(selected_pos));
 }
