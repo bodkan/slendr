@@ -49,6 +49,8 @@ navbar:
           href: articles/vignette-09-paper.html
         - text: Extracting true ancestry tracts
           href: articles/vignette-10-tracts.html
+        - text: Selection simulations using slendr
+          href: articles/vignette-11-extensions.html
     twitter:
       icon: fa-twitter
       href: https://twitter.com/fleventy5

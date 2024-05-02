@@ -1,9 +1,9 @@
 ---
-title: "Non-neutral simulations"
+title: "Extending models with custom SLiM code"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{Non-neutral simulations}
+  %\VignetteIndexEntry{Extending models with custom SLiM code}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
@@ -15,8 +15,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 8,
   fig.height = 6,
-  dpi = 120,
-  eval = FALSE #slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
+  dpi = 60,
+  eval = Sys.getenv("RUNNER_OS") == "" && slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
 )
 ```
 
@@ -37,6 +37,8 @@ One motivation for supporting non-neutral customized genomic architecture and mu
 ## Disclaimers and caveats
 
 If you want to use the _slendr_/SLiM extension functionality described in this vignette, you should be aware of the following restrictions and guidelines:
+
+- The extension functionality is primarily design to support complex selection models using customized SLiM snippets while still using _slendr_ for handling the basic demographic modeling scaffold (population splits, resizes, gene flows, etc.). Because the handling of these demographic events remains unchanged even for `slim()` models, the coalescent `msprime()` engine of _slendr_ (which implements the coalescent, neutral counterpart of _slendr_ models) has not changed and there is no means to customize it.
 
 - It is assumed that the [SLiM script bundled with _slendr_](https://github.com/bodkan/slendr/blob/main/inst/scripts/script.slim) stays unmodified. Any extension _SLiM_ code customization snippets will be added on top of it -- customizing mutation types, genomic element types, recombination maps, custom fitness callbacks, etc. Functionality involving demographic events (splits, gene-flow, etc.) will stay in place as it is. User-provided custom code is not allowed to change how this functionality operates.
 
@@ -321,7 +323,7 @@ How do we use this customization in practice? One way to do this would be to edi
 
 Let's say that we defined the following model of modern human demographic history in slendr. This is exactly the same example as the one we show in [vignette #4]():
 
-```{r, model_plot}
+```{r}
 library(slendr)
 init_env()
 
@@ -352,7 +354,7 @@ gf <- list(
 )
 ```
 
-```{r model_for_plot, echo=FALSE}
+```{r model_plot, echo=FALSE}
 model_for_plot <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam),
   gene_flow = gf, generation_time = 30
@@ -495,7 +497,7 @@ run_model(origin_pop = "YAM", onset_time = 8000)
 
 We can visualize the different trajectories like this. Not that the different allele frequency trajectories reflect the more complex demographic history in the European population, particularly the dilution of the frequency due to influx of ancestry from other populations into Europeans, as shown in the demographic tree above. In simulations in which the allele originated not directly in EUR but in another population where EUR can trace its ancestry through ancient gene flow, the trajectory of the allele leading to fixation is a bit delayed, depending on when a particular gene flow happened. Still, because it's been under such a strong selection in all of them that it reached fixation even prior to a gene flow and because the gene flow happened in such a strong proportion, it reaches fixation much faster.
 
-```{r}
+```{r trajectories}
 load_traj <- function(origin_pop) {
   df <- read.table(paste0("~/Desktop/trajectories/traj_EUR_", origin_pop, ".tsv"), header = TRUE)
   df$origin <- origin_pop
@@ -637,7 +639,6 @@ head(load_traj("EUR"))
 
 
 
-
 ### Customizing genomic architecture (selective sweep simulations)
 
 **Customization of _slendr_ / SLiM models can extend also to the genomic architecture itself.** Because altering the initialization procedure by providing a custom `initialize() {...}` callback in the SLiM extension code entirely overrides setting up a (by default just one) genomic element type and recombination rate, users might want to set those up entirely by themselves. This means that it's possible to avoid the `SEQUENCE_LENGTH` and `RECOMBINATION_RATE` arguments used by the _slendr_ back-end engine provided via the `slim(..., sequence_length = ..., recombination_rate = ..., ...)` arguments.
@@ -686,7 +687,7 @@ model <- compile_model(
 )
 ```
 
-```{r, echo=FALSE, fig.width=6, fig.height=4}
+```{r introgression_model, echo=FALSE, fig.width=6, fig.height=4}
 cowplot::plot_grid(
   plot_model(model, sizes = FALSE, proportions = TRUE),
   plot_model(model, sizes = FALSE, log = TRUE, proportions = TRUE),
@@ -832,7 +833,7 @@ It's been suggested that Neanderthals had a significantly lower $N_e$ compared t
 
 The above implies that if we compute the proportion of Neanderthal ancestry along a sample of European genomes, we should see a clear dip in the amount of surviving Neanderthal DNA as a function of distance from a locus under selection. Because our customized SLiM snippet saved the allele frequency of each Neanderthal marker in Europeans, we can just load this data and directly visualize it:
 
-```{r}
+```{r introgression_freqs}
 freqs <- read_tsv("~/Desktop/introgression/output_frequencies.tsv") %>% mutate(pos = pos %% 5e6)
 
 group_by(freqs, pos) %>%
@@ -890,7 +891,7 @@ div_df <- tibble(
   ) 
 ```
 
-```{r}
+```{r introgression_divergence}
 ggplot(div_df) +
   geom_ribbon(aes(pos, ymin = ci_low, ymax = ci_up), fill = "grey70") +
   geom_line(aes(pos, mean)) +
