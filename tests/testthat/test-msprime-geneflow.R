@@ -5,7 +5,7 @@
 skip_if(!is_slendr_env_present())
 init_env(quiet = TRUE)
 
-RERUN <- TRUE
+RERUN <- FALSE
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed

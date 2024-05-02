@@ -23,7 +23,7 @@
 skip_if(!is_slendr_env_present())
 init_env(quiet = TRUE)
 
-RERUN <- TRUE
+RERUN <- FALSE
 
 seed <- 42
 N <- 1000

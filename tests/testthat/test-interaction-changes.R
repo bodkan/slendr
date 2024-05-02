@@ -1,4 +1,4 @@
-RERUN <- TRUE
+RERUN <- FALSE
 
 map <- readRDS("map.rds")
 
