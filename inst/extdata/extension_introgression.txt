@@ -29,13 +29,13 @@ tick(introgression_time) - 1 late() {
   // get all Neanderthal chromosomes just prior to the introgression
   target = population("NEA").genomes;
 
-  log_output("adding neutral Neanderthal markers");
+  write_log("adding neutral Neanderthal markers");
 
   positions = asInteger(seq(0, SEQUENCE_LENGTH - 1, by = round(SEQUENCE_LENGTH / n_markers)));
   mutations = target.addNewDrawnMutation(m0, position = positions);
   defineConstant("MARKERS", target.mutations);
 
-  log_output("adding deleterious Neanderthal mutation");
+  write_log("adding deleterious Neanderthal mutation");
 
   target.addNewDrawnMutation(m1, position = asInteger(SEQUENCE_LENGTH / 2));
   slimgui.pauseExecution();

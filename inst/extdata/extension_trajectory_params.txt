@@ -36,7 +36,7 @@ function (void) add_mutation(void) {
     // save the mutation for later reference
     defineGlobal("MUTATION", mut);
 
-    log_output("adding beneficial mutation to population " + target_pop);
+    write_log("adding beneficial mutation to population " + target_pop);
 
     writeFile(output_file, "time\tfreq_origin\tfreq_target");
 }
@@ -51,7 +51,7 @@ tick(onset_time) late() {
 tick(onset_time):SIMULATION_END late() {
     // the mutation is not segregating and is not fixed either -- we must restart
     if (!MUTATION.isSegregating & !MUTATION.isFixed) {
-        log_output("mutation lost -- restarting");
+        write_log("mutation lost -- restarting");
 
         reset_state();
 
