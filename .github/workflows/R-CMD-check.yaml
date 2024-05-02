@@ -52,12 +52,13 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
 
-      - name: Install ADMIXTOOLS dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: brew install openblas gsl lapack bedtools
+      # - name: Install ADMIXTOOLS dependencies (macOS)
+      #   if: runner.os == 'macOS'
+      #   run: brew install openblas gsl lapack bedtools
 
-      - name: Compile and install ADMIXTOOLS (Linux + macOS)
-        if: runner.os != 'Windows'
+      - name: Compile and install ADMIXTOOLS (Linux) # + macOS)
+        # if: runner.os != 'Windows'
+        if: runner.os == 'Linux'
         run: |
           # create a single directory for all external software
           mkdir -p ~/deps
