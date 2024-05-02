@@ -165,31 +165,49 @@ evolution.**</p>
 <h3 id="disclaimers-and-caveats">Disclaimers and caveats<a class="anchor" aria-label="anchor" href="#disclaimers-and-caveats"></a>
 </h3>
 <p>If you want to use the <em>slendr</em>/SLiM extension functionality
-described in this vignette, you should be aware of the following:</p>
+described in this vignette, you should be aware of the following
+restrictions and guidelines:</p>
 <ul>
-<li><p>The <a href="https://github.com/bodkan/slendr/blob/main/inst/scripts/script.slim" class="external-link">built-in
-SLiM engine of <em>slendr</em></a> stays unmodified. Any extension
-<em>SLiM</em> code customization snippets will be added on top of it. In
-particular, this includes customizing mutation types, genomic element
-types, recombination maps, etc. Functionality involving demographic
-events (splits, gene-flow, etc.) will stay in place as it is, unchanged
-and will be handled by <em>slendr</em> itself.</p></li>
+<li><p>It is assumed that the <a href="https://github.com/bodkan/slendr/blob/main/inst/scripts/script.slim" class="external-link">SLiM
+script bundled with <em>slendr</em></a> stays unmodified. Any extension
+<em>SLiM</em> code customization snippets will be added on top of it –
+customizing mutation types, genomic element types, recombination maps,
+custom fitness callbacks, etc. Functionality involving demographic
+events (splits, gene-flow, etc.) will stay in place as it is.
+User-provided custom code is not allowed to change how this
+functionality operates.</p></li>
 <li><p>Related to the above point – <em>slendr</em> models assume (and
 will always assume) Wright-Fisher (WF) dynamics. Although perhaps not
 necessarily a problem for simulating non-spatial selection models
 (i.e. <em>slendr</em> models which don’t include a map), adding
 selection to spatial models in SLiM WF setting is unlikely to lead to
-very meaningful results.</p></li>
+very meaningful results. If you need non-WF models, you will have to use
+pure SLiM. <em>slendr</em> will not be useful for you.</p></li>
 <li><p>The built-in SLiM engine of <em>slendr</em> provides several
 utility Eidos functions which make it easy to extend the engine with
-custom callbacks. See the list in the section below.</p></li>
+custom callbacks, and give the possibility to refer to some
+<em>slendr</em>-specific model information. See the list in the section
+below.</p></li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="slendr-slim-api">
 <em>slendr</em> / SLiM “API”<a class="anchor" aria-label="anchor" href="#slendr-slim-api"></a>
 </h3>
-<p>Let’s first load all required R libraries:</p>
+<p>Below we will describe the following slendr / SLiM “API” functions
+and constants you can use to customize the default, SLiM back-end script
+that comes bundled with <em>slendr</em>:</p>
+<ul>
+<li><p><code><a href="../reference/population.html">population()</a></code></p></li>
+<li><p><code>tick()</code> and <code>model_time()</code></p></li>
+<li><p><code>save_state()</code> and <code>reset_state()</code></p></li>
+<li><p><code>write_log()</code></p></li>
+<li><p><code>SIMULATION_START</code> and
+<code>SIMULATION_END</code></p></li>
+<li><p><code>SEQUENCE_LENGTH</code></p></li>
+<li><p><code>OUTPUT_DIR</code></p></li>
+</ul>
+<p>Let’s first load all required R libraries before we dive in:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -200,19 +218,6 @@ custom callbacks. See the list in the section below.</p></li>
 <span></span>
 <span><span class="va">seed</span> <span class="op">&lt;-</span> <span class="fl">42</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span></span></code></pre></div>
-<p>Below we will describe the following slendr / SLiM “API” functions
-and constants you can use to customize the default, purely neutral, SLiM
-back-end script built-in to <em>slendr</em>:</p>
-<ul>
-<li><p><code><a href="../reference/population.html">population()</a></code></p></li>
-<li><p><code>tick()</code> and <code>model_time()</code></p></li>
-<li><p><code>save_state()</code> and <code>reset_state()</code></p></li>
-<li><p><code>log_output()</code></p></li>
-<li><p><code>SIMULATION_START</code> and
-<code>SIMULATION_END</code></p></li>
-<li><p><code>SEQUENCE_LENGTH</code></p></li>
-<li><p><code>OUTPUT_DIR</code></p></li>
-</ul>
 <div class="section level4">
 <h4 id="referring-to-populations-population-eidos-function">Referring to populations: <code>population()</code> Eidos
 function<a class="anchor" aria-label="anchor" href="#referring-to-populations-population-eidos-function"></a>
@@ -256,11 +261,13 @@ Subpopulation&lt;p0&gt;
 &gt; // get both "AFR" and "OOA" subpopulation objects
 &gt; population(c("AFR", "OOA"))
 Subpopulation&lt;p0&gt; Subpopulation&lt;p1&gt;</code></pre>
-<p>The <code><a href="../reference/population.html">population()</a></code> Eidos function servers as a convenience
-shortcut for poking into <em>slendr</em> internals from SLiM (internally
-it uses the standard vectorized filtering of the
-<code>sim.subpopulations</code> list), as it provides some helpful error
-checking. For instance, if we try to get a SLiM
+<p>This way, if our population is named “AFR” or “OOA”, when we write a
+SLiM extension code for <em>slendr</em> (described in detail below) we
+don’t have to know whether this or that population is called
+<code>p0</code> or <code>p2</code> on the SLiM side, etc. We can use the
+names of populations as programmed on the R side of slendr.</p>
+<p>Additionally, the <code><a href="../reference/population.html">population()</a></code> Eidos function provides
+some helpful error checking. For instance, if we try to get a SLiM
 <code>Subpopulation</code> object corresponding to a <em>slendr</em>
 population which will exist at some point but doesn’t yet exist in a
 running SLiM simulation at a particular time, we will get an informative
@@ -393,13 +400,13 @@ simulation (i.e. the present-day at “0 years before present”):</p>
 0</code></pre>
 </div>
 <div class="section level4">
-<h4 id="logging-log_output-eidos-function">Logging: <code>log_output()</code> Eidos function<a class="anchor" aria-label="anchor" href="#logging-log_output-eidos-function"></a>
+<h4 id="logging-write_log-eidos-function">Logging: <code>write_log()</code> Eidos function<a class="anchor" aria-label="anchor" href="#logging-write_log-eidos-function"></a>
 </h4>
-<p><code>log_output()</code> is a tiny helper function provided by
+<p><code>write_log()</code> is a tiny helper function provided by
 <em>slendr</em>’s SLiM back-end script which serves to print out a given
 string to the SLiM log output together with the appropriate tick number
 at that time. This produces output of the following kind:</p>
-<pre><code>&gt; log_output("hello from the current event")
+<pre><code>&gt; write_log("hello from the current event")
 tick 696: hello from the current event</code></pre>
 </div>
 <div class="section level4">
@@ -453,7 +460,7 @@ plug this into a <em>slendr</em> simulation):</p>
   defineGlobal("BACKGROUND", target.mutations);
   defineGlobal("FOCAL", mutation);
 
-  log_output("adding beneficial mutation to population " + pop_name);
+  write_log("adding beneficial mutation to population " + pop_name);
 }
 
 tick(15000) late() {
@@ -469,7 +476,7 @@ tick(15000):SIMULATION_END late() {
   
   // the mutation is not segregating and is not fixed either -- we must restart
   if (!segregating &amp; !fixed) {
-    log_output("mutation lost -- restarting");
+    write_log("mutation lost -- restarting");
     
     reset_state();
     
@@ -529,7 +536,7 @@ time units into SLiM’s internal ticks using the <code>tick()</code>
 function. You’ve also learned how to save and reset SLiM state using
 provided functions <code>save_state()</code> and
 <code>reset_state()</code> and how to log outputs using the function
-<code>log_output()</code>. We demonstrated all this by defining a
+<code>write_log()</code>. We demonstrated all this by defining a
 customized snippet of SLiM code which we now want to use in a full
 <em>slendr</em> simulation run. Of course, the example we’ve chosen is
 extremely trivial – you could, in principle, use any feature available
@@ -776,7 +783,7 @@ way makes it a little easier to iterate during development.</p>
 <span><span class="st">    // save the mutation for later reference</span></span>
 <span><span class="st">    defineGlobal("MUTATION", mut);</span></span>
 <span><span class="st"></span></span>
-<span><span class="st">    log_output("adding beneficial mutation to population " + target_pop);</span></span>
+<span><span class="st">    write_log("adding beneficial mutation to population " + target_pop);</span></span>
 <span><span class="st"></span></span>
 <span><span class="st">    writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");</span></span>
 <span><span class="st">}</span></span>
@@ -791,7 +798,7 @@ way makes it a little easier to iterate during development.</p>
 <span><span class="st">tick(onset_time):SIMULATION_END late() {</span></span>
 <span><span class="st">    // the mutation is not segregating and is not fixed either -- we must restart</span></span>
 <span><span class="st">    if (!MUTATION.isSegregating &amp; !MUTATION.isFixed) {</span></span>
-<span><span class="st">        log_output("mutation lost -- restarting");</span></span>
+<span><span class="st">        write_log("mutation lost -- restarting");</span></span>
 <span><span class="st"></span></span>
 <span><span class="st">        reset_state();</span></span>
 <span><span class="st"></span></span>
@@ -960,12 +967,12 @@ introgression:</p>
 <span><span class="st">  // get all Neanderthal chromosomes just prior to the introgression</span></span>
 <span><span class="st">  target = population("NEA").genomes;</span></span>
 <span><span class="st"></span></span>
-<span><span class="st">  log_output("adding neutral Neanderthal markers");</span></span>
+<span><span class="st">  write_log("adding neutral Neanderthal markers");</span></span>
 <span><span class="st"></span></span>
 <span><span class="st">  mutations = target.addNewDrawnMutation(m0, position = asInteger(neutral_pos));</span></span>
 <span><span class="st">  defineConstant("MARKERS", target.mutations);</span></span>
 <span><span class="st"></span></span>
-<span><span class="st">  log_output("adding deleterious Neanderthal mutation");</span></span>
+<span><span class="st">  write_log("adding deleterious Neanderthal mutation");</span></span>
 <span><span class="st"></span></span>
 <span><span class="st">  target.addNewDrawnMutation(m1, position = asInteger(selected_pos));</span></span>
 <span><span class="st">}</span></span>

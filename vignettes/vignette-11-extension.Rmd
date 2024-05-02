@@ -110,7 +110,9 @@ Subpopulation<p0>
 Subpopulation<p0> Subpopulation<p1>
 ```
 
-The `population()` Eidos function servers as a convenience shortcut for poking into _slendr_ internals from SLiM (internally it uses the standard vectorized filtering of the `sim.subpopulations` list), as it provides some helpful error checking. For instance, if we try to get a SLiM `Subpopulation` object corresponding to a _slendr_ population which will exist at some point but doesn't yet exist in a running SLiM simulation at a particular time, we will get an informative error:
+This way, if our population is named "AFR" or "OOA", when we write a SLiM extension code for _slendr_ we don't have to know whether this or that population is called `p0` or `p2` on the SLiM side, etc. We can use the names of populations as programmed on the R side of slendr.
+
+Additionally, the `population()` Eidos function provides some helpful error checking. For instance, if we try to get a SLiM `Subpopulation` object corresponding to a _slendr_ population which will exist at some point but doesn't yet exist in a running SLiM simulation at a particular time, we will get an informative error:
 
 ```
 > population("YAM")
@@ -125,7 +127,7 @@ Not all provided population identifiers are present in the model.
 Check your code to make sure that all of these are defined: asdf
 ```
 
-**Why is this function useful?** Because the purpose of this vignette is to show how to extend _slendr_ to non-neutral scenarios, we could for instance select a random chromosome from a given population using the `population()` function like this (maybe to add a beneficial mutation):
+**How is this function useful in practice, though?** Because the purpose of this vignette is to show how to extend _slendr_ to non-neutral scenarios, we could for instance select a random chromosome from a given population using the `population()` function like this (maybe to add a beneficial mutation). We use this bit of code in the more elaborate complete examples below.
 
 ```
 target_genome = sample(population("AFR").genomes, 1);
