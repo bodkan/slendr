@@ -189,7 +189,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp0YZn2T/file14f155024e0cf");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpbKpXOt/file7fbb5aa3152e");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -394,7 +394,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp0YZn2T/file14f15353b4788");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpbKpXOt/file7fbb66b37157");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
@@ -408,25 +408,25 @@ spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span>
 <span><span class="va">data</span></span>
-<span><span class="co">#&gt; Simple feature collection with 1941 features and 11 fields</span></span>
+<span><span class="co">#&gt; Simple feature collection with 1955 features and 11 fields</span></span>
 <span><span class="co">#&gt; Geometry type: POINT</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: 0.02032986 ymin: 0.001180405 xmax: 0.9990375 ymax: 0.9979969</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: 0.07649281 ymin: 0.0006142841 xmax: 0.9984433 ymax: 0.9892587</span></span>
 <span><span class="co">#&gt; CRS:           NA</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,941 × 12</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,955 × 12</span></span></span>
 <span><span class="co">#&gt;    pop   node_id  time time_tskit               location sampled remembered</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;POINT&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p1          0     0          0  (0.3158008 0.8489413) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p1          1     0          0  (0.3158008 0.8489413) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p1          2     0          0  (0.5946915 0.5792152) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> p1          3     0          0  (0.5946915 0.5792152) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> p1          4     0          0  (0.8320243 0.5595862) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> p1          5     0          0  (0.8320243 0.5595862) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> p1          6     0          0  (0.5532792 0.1833623) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> p1          7     0          0  (0.5532792 0.1833623) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> p1          8     0          0 (0.7333698 0.01834573) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p1          9     0          0 (0.7333698 0.01834573) TRUE    FALSE     </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,931 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> p1          0     0          0   (0.904485 0.0777489) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> p1          1     0          0   (0.904485 0.0777489) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> p1          2     0          0   (0.668828 0.5246381) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> p1          3     0          0   (0.668828 0.5246381) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> p1          4     0          0  (0.7707701 0.1518462) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> p1          5     0          0  (0.7707701 0.1518462) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> p1          6     0          0  (0.7617792 0.2616453) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> p1          7     0          0  (0.7617792 0.2616453) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> p1          8     0          0 (0.9807475 0.04223008) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> p1          9     0          0 (0.9807475 0.04223008) TRUE    FALSE     </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1,945 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 5 more variables: retained &lt;lgl&gt;, alive &lt;lgl&gt;, pedigree_id &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   ind_id &lt;dbl&gt;, pop_id &lt;int&gt;</span></span></span></code></pre></div>
 <p>Because we get the tree sequence converted to the spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</em></a> data format, we

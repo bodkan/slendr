@@ -899,10 +899,3 @@ ggplot(div_df) +
 ```
 
 Indeed, we clearly observe lower introgression levels (indicated by an increased European-Neanderthal divergence) around loci under selection and increased surviving introgression far from those loci, because purifying selection has removed Neanderthal introgressed DNA from regions under selective constraint.
-
-
-## Questions to the forum
-
-This functionality clearly makes most difference for complex models -- either complex from a demographic perspective (lots of lineages, gene flow, etc) or from the perspective of a genomic architecture (polygenic selection, complex traits).
-
-Ideas for some projects?
