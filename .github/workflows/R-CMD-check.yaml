@@ -136,17 +136,18 @@ jobs:
           pandoc::pandoc_install()
         shell: Rscript {0}
 
-      # - name: Check ming64/bin contents
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     dir ${{ runner.temp }}\msys64\mingw64\bin
-      #   shell: cmd
-      #
-      # - name: Check usr/bin contents
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     dir ${{ runner.temp }}\msys64\usr\bin
-      #   shell: cmd
+      - name: Check ming64/bin contents
+         if: runner.os == 'Windows'
+         run: |
+           dir ${{ runner.temp }}\msys64\mingw64\bin
+           dir D:/a/_temp/msys64/usr/bin/
+         shell: cmd
+      
+       - name: Check usr/bin contents
+         if: runner.os == 'Windows'
+         run: |
+           dir ${{ runner.temp }}\msys64\usr\bin
+         shell: cmd
 
       - name: Populate PATH with compiled binaries on Windows
         if: runner.os == 'Windows'
