@@ -71,7 +71,7 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
     )
 
     locations_file <- tempfile(fileext = ".gz")
-    slim(model, sequence_length = 1, recombination_rate = 0, method = "batch",
+    slim(model, sequence_length = 1, recombination_rate = 0, method = "batch", ts = FALSE,
          locations = locations_file, max_attempts = 1, verbose = FALSE, random_seed = seed)
 
     locations <- readr::read_tsv(locations_file, show_col_types = FALSE, progress = FALSE) %>%
