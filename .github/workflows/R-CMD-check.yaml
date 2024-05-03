@@ -188,8 +188,8 @@ jobs:
           PYTHON_ENV <- paste0("Python-3.12_", paste(gsub("==", "-", c(deps, "tspop==0.0.2")), collapse = "_"))
           reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.11')
           reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
-          pip <- Sys.info()["sysname"] != "Windows"
-          reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
+          #pip <- Sys.info()["sysname"] != "Windows"
+          reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = FALSE)
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2", "pyarrow"), pip = TRUE)
         shell: Rscript {0}
 
