@@ -140,7 +140,6 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           dir ${{ runner.temp }}\msys64\mingw64\bin
-          dir D:/a/_temp/msys64/usr/bin/
         shell: cmd
       
       - name: Check usr/bin contents
