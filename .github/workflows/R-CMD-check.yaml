@@ -202,6 +202,10 @@ jobs:
           PYTHON_ENV <- paste0("Python-3.12_", paste(gsub("==", "-", c(deps, "tspop==0.0.2")), collapse = "_"))
           use_condaenv(condaenv = PYTHON_ENV)
           py_config()
+          import("tskit")
+          import("msprime")
+          import("pyslim")
+          import("tspop")
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
