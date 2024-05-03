@@ -208,7 +208,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
-#' @param output Path to the output tree-sequence file. If \code{NULL} (the default),
+#' @param ts Path to the output tree-sequence file. If \code{NULL} (the default),
 #'   tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
 #'   file will be generated (this is only useful for running customized slendr SLiM
 #'   scripts). This argument cannot be set when \code{output_dir} is set.

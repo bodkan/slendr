@@ -38,6 +38,11 @@ function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
+\item{ts}{Path to the output tree-sequence file. If \code{NULL} (the default),
+tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
+file will be generated (this is only useful for running customized slendr SLiM
+scripts). This argument cannot be set when \code{output_dir} is set.}
+
 \item{output_dir}{Path to a directory where various output files can be saved.
 This argument cannot be set when \code{output} is set. This is predominately
 intended to provide easier means to save outputs of slim simulations utilizing
@@ -81,11 +86,6 @@ a spatial mode.}
 \item{locations}{If \code{NULL}, locations are not saved. Otherwise, the
 path to the file where locations of each individual throughout the simulation
 will be saved (most likely for use with \code{animate_model}).}
-
-\item{output}{Path to the output tree-sequence file. If \code{NULL} (the default),
-tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
-file will be generated (this is only useful for running customized slendr SLiM
-scripts). This argument cannot be set when \code{output_dir} is set.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}

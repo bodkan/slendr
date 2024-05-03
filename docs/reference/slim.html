@@ -135,6 +135,13 @@ missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
 
 
+<dt>ts</dt>
+<dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
+tree sequence will be saved to a temporary file. If <code>FALSE</code>, no tree-sequence
+file will be generated (this is only useful for running customized slendr SLiM
+scripts). This argument cannot be set when <code>output_dir</code> is set.</p></dd>
+
+
 <dt>output_dir</dt>
 <dd><p>Path to a directory where various output files can be saved.
 This argument cannot be set when <code>output</code> is set. This is predominately
@@ -201,13 +208,6 @@ a spatial mode.</p></dd>
 <dd><p>If <code>NULL</code>, locations are not saved. Otherwise, the
 path to the file where locations of each individual throughout the simulation
 will be saved (most likely for use with <code>animate_model</code>).</p></dd>
-
-
-<dt>output</dt>
-<dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
-tree sequence will be saved to a temporary file. If <code>FALSE</code>, no tree-sequence
-file will be generated (this is only useful for running customized slendr SLiM
-scripts). This argument cannot be set when <code>output_dir</code> is set.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -280,24 +280,24 @@ templating functionality provided by its <code><a href="substitute.html">substit
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │  10046║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │2.7 MiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │2.6 MiB║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤═════╤═════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows │Size     │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪═════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │18430│575.9 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │18317│572.4 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│12899│  1.2 MiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│12783│  1.2 MiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │    0│  8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │    0│  1.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │18431│684.6 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │18318│680.4 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│    4│  2.5 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│    1│ 42.0 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│    1│ 41.8 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │    0│ 16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧═════╧═════════╧════════════╝</span>

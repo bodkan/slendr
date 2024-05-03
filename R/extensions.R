@@ -1,6 +1,6 @@
 #' Substitute values of parameters in a given slendr/SLiM extension
 #'
-#' @param extension Either a path to an extension script file, or a string
+#' @param template Either a path to an extension script file, or a string
 #'   containing the entire SLiM extension code
 #' @param ... Named function arguments interpreted as key=value pairs to be
 #'   used in argument substitution
