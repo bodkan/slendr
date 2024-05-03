@@ -1,5 +1,7 @@
 RERUN <- FALSE
 
+init_env(quiet = TRUE)
+
 map <- readRDS("map.rds")
 
 pop <- population("pop", time = 1000, N = 10, map = map, center = c(0, 40), radius = 500e3) %>%
