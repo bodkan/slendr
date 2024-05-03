@@ -160,18 +160,26 @@ jobs:
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
 
-      - name: Check PATHs
-        if: runner.os == 'Windows'
-        run: |
-          cat(Sys.getenv("PATH"), "\n")
-          cat(Sys.getenv("RSTUDIO_PANDOC"), "\n")
-        shell: Rscript {0}
+      # - name: Check PATHs
+      #   if: runner.os == 'Windows'
+      #   run: |
+      #     cat(Sys.getenv("PATH"), "\n")
+      #     cat(Sys.getenv("RSTUDIO_PANDOC"), "\n")
+      #   shell: Rscript {0}
 
       - name: Set R_LIBS path on unix
         if: runner.os != 'Windows'
         run: |
           mkdir ~/R_LIBS
           echo "R_LIBS_USER=~/R_LIBS" >> ~/.Renviron
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
 
       - name: Setup dedicated Python environment for slendr
         run: |
@@ -185,14 +193,6 @@ jobs:
           reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2", "pyarrow"), pip = TRUE)
         shell: Rscript {0}
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
