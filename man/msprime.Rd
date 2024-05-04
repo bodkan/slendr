@@ -86,7 +86,7 @@ ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = sa
 
 # automatic loading of a simulated output can be prevented by `load = FALSE`, which can be
 # useful when a custom path to a tree-sequence output is given for later downstream analyses
-output_file <- tempfile(fileext = ".trees")
+output_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
         ts = output_file, load = FALSE, random_seed = 42)
 # ... at a later stage:
