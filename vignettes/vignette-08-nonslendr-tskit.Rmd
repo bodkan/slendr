@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 5,
   dpi = 60,
-  eval = slendr:::is_slim_present() && env_present && Sys.getenv("RUNNER_OS") =! "Windows"#,
+  eval = slendr:::is_slim_present() && env_present && Sys.getenv("RUNNER_OS") != "Windows"#,
   #engine.path = list(bash = bash_path)
 )
 
