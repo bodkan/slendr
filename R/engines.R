@@ -129,7 +129,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     warning("No custom tree-sequence output path is given but loading a tree sequence from\n",
             "a temporary file after the simulation has been prevented", call. = FALSE)
 
-  if (is.null(ts)) ts <- tempfile(fileext = ".trees")
+  if (is.null(ts)) ts <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 
   model_dir <- model$path
   if (!dir.exists(model_dir))
