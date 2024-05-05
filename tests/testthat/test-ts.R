@@ -44,7 +44,7 @@ test_that("ts_load generates an object of the correct type (SLiM)", {
   expect_true(inherits(ts, "tskit.trees.TreeSequence"))
 })
 
-test_that("unnecessary recapitation is prevented (msprime)", {
+test_that("unnecessary recapitation is prevented (msprime)", {um
   expect_warning(
     ts_load(model, file = msprime_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0),
     "There is no need to recapitate"
@@ -499,7 +499,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
 })
 
 test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
-  output <- paste0(tempfile(), "non-spatial_SLiM_test")
+  output <- normalizePath(paste0(tempfile(), "non-spatial_SLiM_test"), winslash = "/", mustWork = FALSE)
 
   burnin_length <- 123
   RECOMBINATION_RATE <- 0.001
