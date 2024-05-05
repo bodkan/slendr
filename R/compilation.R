@@ -766,8 +766,9 @@ rasterize <- function(x, resolution) {
   # call on Windows for the time being because these warnings are turned into errors on CRAN,
   # making all tests failing -- including functionality used by users who have no intention of
   # running spatial simulations.
-  wrapper <- if (on_cran_windows()) suppressWarnings else identity
-  raster <- wrapper(stars::st_rasterize(x["fill"], template))
+  # wrapper <- if (on_cran_windows()) suppressWarnings else identity
+  # raster <- wrapper(stars::st_rasterize(x["fill"], template))
+  raster <- stars::st_rasterize(x["fill"], template)
 
   if (length(table(raster$ID)) == 1) {
     stop(sprintf("
