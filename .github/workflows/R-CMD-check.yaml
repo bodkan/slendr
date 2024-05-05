@@ -141,7 +141,7 @@ jobs:
       #  run: |
       #    dir ${{ runner.temp }}\msys64\mingw64\bin
       #  shell: cmd
-      
+
       #- name: Check usr/bin contents
       #  if: runner.os == 'Windows'
       #  run: dir ${{ runner.temp }}\msys64\usr\bin
@@ -154,7 +154,9 @@ jobs:
             paste0(
               "PATH=D:/a/_temp/msys64/mingw64/bin",
               "\n",
-              "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
+              "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/"),
+              "\n",
+              "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning"
             ),
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
@@ -167,10 +169,10 @@ jobs:
       #   shell: Rscript {0}
 
       - name: Set R_LIBS path on unix
-        if: runner.os != 'Windows'
+        if: runner.os == 'Windows'
         run: |
           mkdir ~/R_LIBS
-          echo "R_LIBS_USER=~/R_LIBS" >> ~/.Renviron
+          echo "GTIFF_SRS_SOURCE='EPSG'" >> ~/.Renviron
 
       - uses: r-lib/actions/setup-pandoc@v2
 
