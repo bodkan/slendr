@@ -161,6 +161,10 @@ jobs:
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
 
+        # The Windows GDAL GitHub Actions warning solved by setting 'GTIFF_SRS_SOURCE' above
+        # is actually not the first time this happened, interesting:
+        # https://github.com/bodkan/slendr/blob/3e02fa2ad7fb085ccbcc23df518bca6b72e782b1/R/compilation.R#L730
+
       # - name: Check PATHs
       #   if: runner.os == 'Windows'
       #   run: |
