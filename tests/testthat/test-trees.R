@@ -15,8 +15,8 @@ model <- compile_model(
 
 samples <- schedule_sampling(model, times = 100, list(pop, 10))
 
-slim_ts <- tempfile(fileext = ".slim.trees")
-msprime_ts <- tempfile(fileext = ".msprime.trees")
+slim_ts <- normalizePath(tempfile(fileext = ".slim.trees"), winslash = "/", mustWork = FALSE)
+msprime_ts <- normalizePath(tempfile(fileext = ".msprime.trees"), winslash = "/", mustWork = FALSE)
 
 slim(
   model, samples = samples, ts = slim_ts,

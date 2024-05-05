@@ -4,7 +4,7 @@ init_env(quiet = TRUE)
 
 set.seed(42)
 
-script_file <- tempfile()
+script_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 loc_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 

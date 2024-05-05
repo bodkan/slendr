@@ -47,7 +47,7 @@ test_that("pure msprime and slendr versions of the same model give the same phyl
 
 # simplification tests (after introducing constant tracking of names of sampled individuals)
 test_that("simplification on pure msprime tree sequence retains the correct data", {
-  tmp_small <- tempfile()
+  tmp_small <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_small <- ts_simplify(ts2, simplify_to = c(0, 42, 100, 256)))
   ts_save(ts_small, tmp_small)
   ts_small_loaded <- ts_load(tmp_small)

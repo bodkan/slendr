@@ -9,7 +9,7 @@ run_sim <- function(pop, direction, simulation_length = NULL, method = "batch", 
     path = model_dir, direction = direction, simulation_length = simulation_length, overwrite = TRUE, force = TRUE
   )
 
-  locations_file <- tempfile(fileext = ".gz")
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
   slim(model, sequence_length = 1, recombination_rate = 0,,
        method = method, verbose = verbose, locations = locations_file)
 
@@ -31,8 +31,8 @@ run_sim <- function(pop, direction, simulation_length = NULL, method = "batch", 
 run_slim_msprime <- function(forward_model, backward_model,
                              forward_samples, backward_samples,
                              seq_len, rec_rate, seed, verbose) {
-  ts_slim_forward <- tempfile()
-  ts_msprime_forward <- tempfile()
+  ts_slim_forward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  ts_msprime_forward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   slim(forward_model, ts = ts_slim_forward, sequence_length = seq_len, recombination_rate = rec_rate,
        samples = forward_samples, random_seed = seed, verbose = verbose)
@@ -41,8 +41,8 @@ run_slim_msprime <- function(forward_model, backward_model,
           samples = forward_samples, random_seed = seed, verbose = verbose)
   })
 
-  ts_slim_backward <- tempfile()
-  ts_msprime_backward <- tempfile()
+  ts_slim_backward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  ts_msprime_backward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   slim(backward_model, ts = ts_slim_backward, sequence_length = seq_len, recombination_rate = rec_rate,
        samples = backward_samples, random_seed = seed, verbose = verbose)

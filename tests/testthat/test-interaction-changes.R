@@ -70,7 +70,7 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
       simulation_length = 2, resolution = 0.1, overwrite = TRUE, force = TRUE
     )
 
-    locations_file <- tempfile(fileext = ".gz")
+    locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
     slim(model, sequence_length = 1, recombination_rate = 0, method = "batch", ts = FALSE,
          locations = locations_file, max_attempts = 1, verbose = FALSE, random_seed = seed)
 

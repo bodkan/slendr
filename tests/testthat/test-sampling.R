@@ -75,7 +75,7 @@ test_that("sampling is as close to the a single specified position as possible",
   times <- c(10, 100)
   locations <- list(c(50, 50))
   simulation_length <- 100
-  locations_file <- tempfile(fileext = ".gz")
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
 
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
@@ -132,7 +132,7 @@ test_that("sampling is as close to the multiple specified positions as possible"
   times <- c(10, 100)
   locations <- list(c(0, 0), c(100, 100))
   simulation_length <- 100
-  locations_file <- tempfile(fileext = ".gz")
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
 
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
   pop <- population("pop", 1, 100, map = map, center = c(50, 50), radius = 50)
@@ -260,7 +260,7 @@ test_that("sampling table is correctly adjusted after simplification (msprime)",
   model <- compile_model(list(pop1, pop2), generation_time = 1, simulation_length = 1000, direction = "forward")
 
   # original tree sequence can be saved and loaded with or without the model
-  tmp_big <- tempfile()
+  tmp_big <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_big <- msprime(model, sequence_length = 1000, recombination_rate = 0)
   ts_save(ts_big, tmp_big)
   expect_s3_class(ts_big_model <- ts_load(tmp_big, model), "slendr_ts")
@@ -269,7 +269,7 @@ test_that("sampling table is correctly adjusted after simplification (msprime)",
   expect_error(ts_samples(ts_big_nomodel), "Sampling schedule can only be extracted")
 
   # 'simple' simplified tree sequence can be saved and loaded with or without the model
-  tmp_small1 <- tempfile()
+  tmp_small1 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_simplify(ts_big) %>% ts_save(tmp_small1))
   expect_s3_class(ts_small1_model <- ts_load(tmp_small1, model), "slendr_ts")
   expect_s3_class(ts_small1_nomodel <- ts_load(tmp_small1), "slendr_ts")
@@ -277,7 +277,7 @@ test_that("sampling table is correctly adjusted after simplification (msprime)",
   expect_error(ts_samples(ts_small1_nomodel), "Sampling schedule can only be extracted")
 
   # tree sequence simplified to a subset can be saved and loaded with or without the model
-  tmp_small2 <- tempfile()
+  tmp_small2 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_simplify(ts_big, simplify_to = c("pop1_1", "pop1_2", "pop1_3", "pop2_5")) %>% ts_save(tmp_small2)
   expect_s3_class(ts_small2_model <- ts_load(tmp_small2, model), "slendr_ts")
   expect_s3_class(ts_small2_nomodel <- ts_load(tmp_small2), "slendr_ts")
@@ -293,7 +293,7 @@ test_that("sampling table is correctly adjusted after simplification (SLiM)", {
   model <- compile_model(list(pop1, pop2), generation_time = 1, simulation_length = 1000, direction = "forward")
 
   # original tree sequence can be saved and loaded with or without the model
-  tmp_big <- tempfile()
+  tmp_big <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_big <- slim(model, sequence_length = 1000, recombination_rate = 0) %>% ts_recapitate(recombination_rate = 0, Ne = 100)
   ts_save(ts_big, tmp_big)
   expect_s3_class(ts_big_model <- ts_load(tmp_big, model), "slendr_ts")
@@ -302,7 +302,7 @@ test_that("sampling table is correctly adjusted after simplification (SLiM)", {
   expect_error(ts_samples(ts_big_nomodel), "Sampling schedule can only be extracted")
 
   # 'simple' simplified tree sequence can be saved and loaded with or without the model
-  tmp_small1 <- tempfile()
+  tmp_small1 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_simplify(ts_big) %>% ts_save(tmp_small1))
   expect_s3_class(ts_small1_model <- ts_load(tmp_small1, model), "slendr_ts")
   expect_s3_class(ts_small1_nomodel <- ts_load(tmp_small1), "slendr_ts")
@@ -310,7 +310,7 @@ test_that("sampling table is correctly adjusted after simplification (SLiM)", {
   expect_error(ts_samples(ts_small1_nomodel), "Sampling schedule can only be extracted")
 
   # tree sequence simplified to a subset can be saved and loaded with or without the model
-  tmp_small2 <- tempfile()
+  tmp_small2 <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_simplify(ts_big, simplify_to = c("pop1_1", "pop1_2", "pop1_3", "pop2_5")) %>% ts_save(tmp_small2)
   expect_s3_class(ts_small2_model <- ts_load(tmp_small2, model), "slendr_ts")
   expect_s3_class(ts_small2_nomodel <- ts_load(tmp_small2), "slendr_ts")

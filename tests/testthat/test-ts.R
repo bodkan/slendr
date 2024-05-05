@@ -26,10 +26,10 @@ samples <- rbind(
   schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
-slim_ts <- tempfile(fileext = ".trees")
-msprime_ts <- tempfile(fileext = ".trees")
+slim_ts <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
+msprime_ts <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 
-locations_file <- tempfile(fileext = ".gz")
+locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
 
 slim(model, sequence_length = 100000, recombination_rate = 0, ts = slim_ts,
      locations = locations_file, burnin = 0,
@@ -473,7 +473,7 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   burnin_length <- 123
   max_attempts <- 3
   RECOMBINATION_RATE <- 0.001
-  locations_file <- tempfile(fileext = ".gz")
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
   seed <- 987
   sequence_length <- 999
 
@@ -503,7 +503,7 @@ test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
 
   burnin_length <- 123
   RECOMBINATION_RATE <- 0.001
-  locations_file <- tempfile(fileext = ".gz")
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
   seed <- 987
   sequence_length <- 999
   spatial <- FALSE

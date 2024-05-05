@@ -17,12 +17,12 @@ test_that("msprime() returns a tree-sequence object by default", {
 })
 
 test_that("slim() does not return a tree sequence when this is not requested", {
-  ts_file <- tempfile()
+  ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   expect_silent(slim(model, ts = ts_file, sequence_length = 1, recombination_rate = 0, load = FALSE))
 })
 
 test_that("msprime() does not return a tree sequence when this is not requested", {
-  ts_file <- tempfile()
+  ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   expect_silent(msprime(model, ts = ts_file, sequence_length = 1, recombination_rate = 0, load = FALSE))
 })
 
