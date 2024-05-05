@@ -632,8 +632,8 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
     schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
   )
 
-  slim_ts <- file.path(model_dir, "output_slim.trees")
-  msprime_ts <- file.path(model_dir, "msprime_output.trees")
+  slim_ts <- normalizePath(file.path(model_dir, "output_slim.trees"), winslash = "/", mustWork = FALSE)
+  msprime_ts <- normalizePath(file.path(model_dir, "msprime_output.trees"), winslash = "/", mustWork = FALSE)
 
   slim(model, sequence_length = 100000, recombination_rate = 0,
        locations = locations_file, burnin = 10,
