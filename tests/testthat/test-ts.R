@@ -44,7 +44,7 @@ test_that("ts_load generates an object of the correct type (SLiM)", {
   expect_true(inherits(ts, "tskit.trees.TreeSequence"))
 })
 
-test_that("unnecessary recapitation is prevented (msprime)", {um
+test_that("unnecessary recapitation is prevented (msprime)", {
   expect_warning(
     ts_load(model, file = msprime_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0),
     "There is no need to recapitate"
