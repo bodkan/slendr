@@ -468,7 +468,7 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed (msprime)", 
 })
 
 test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
-  output <- paste0(tempfile(), "spatial_test")
+  output <- normalizePath(paste0(tempfile(), "spatial_test"), winslash = "/", mustWork = FALSE)
 
   burnin_length <- 123
   max_attempts <- 3
