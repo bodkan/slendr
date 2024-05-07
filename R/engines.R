@@ -357,7 +357,7 @@ slim <- function(
   burnin <- round(burnin / model$generation_time)
 
   sampling_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-  if (ts != FALSE) {
+  if (output_path != "") {
     sampling_df <- process_sampling(samples, model, verbose)
     readr::write_tsv(sampling_df, sampling_path)
   }
