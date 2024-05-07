@@ -80,7 +80,7 @@ slendr demographic model."><meta property="og:image" content="https://www.slendr
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Run a slendr model in msprime</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/engines.R" class="external-link"><code>R/engines.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/msprime.R" class="external-link"><code>R/msprime.R</code></a></small>
       <div class="d-none name"><code>msprime.Rd</code></div>
     </div>
 
@@ -199,7 +199,7 @@ vector, respectively.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># automatic loading of a simulated output can be prevented by `load = FALSE`, which can be</span></span></span>
 <span class="r-in"><span><span class="co"># useful when a custom path to a tree-sequence output is given for later downstream analyses</span></span></span>
-<span class="r-in"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>, winslash <span class="op">=</span> <span class="st">"/"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span>,</span></span>
 <span class="r-in"><span>        ts <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># ... at a later stage:</span></span></span>
@@ -234,7 +234,7 @@ vector, respectively.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│338 Bytes│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│  3.0 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│  2.9 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│ 16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧═════════╧════════════╝</span>

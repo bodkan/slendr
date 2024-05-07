@@ -63,7 +63,7 @@ reference:
     - compile_model
     - read_model
     - schedule_sampling
-    - substitute
+    - substitute_values
 
   - title: Installation and configuration of external dependencies
     contents:

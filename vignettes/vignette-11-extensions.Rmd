@@ -417,7 +417,7 @@ Speaking of which: one thing that's a little annoying about the [extension snipp
 
 ## Putting it all together: parametrizing a customized _slendr_ simulation 
 
-For easy parametrization of customized _slendr_ / SLiM models, slendr provides a function `substitute()`. Simply speaking, rather than having to hard code values of parameters in your extension SLiM snippet files, you can indicate that a parameter value should be substituted in the file using a simple syntax `{{parameter_name}}`.
+For easy parametrization of customized _slendr_ / SLiM models, slendr provides a function `substitute_values()`. Simply speaking, rather than having to hard code values of parameters in your extension SLiM snippet files, you can indicate that a parameter value should be substituted in the file using a simple syntax `{{parameter_name}}`.
 
 Take a look at a [new, flexible version](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory_params.txt) of the snippet we used above and look for the `{{...}}` template placeholders. This version has been expanded to study the trajectory of the focal selected allele depending on in which population it originated.
 
@@ -437,7 +437,7 @@ less ${EXTENSION}
 Substitute values of parameters in a customization SLiM extension script:
 
 ```{r}
-extension <- substitute(
+extension <- substitute_values(
   extension_path,
   s = 0.1, onset_time = 15000,
   origin_pop = "EUR", target_pop = "EUR"
@@ -447,7 +447,7 @@ extension <- substitute(
 Missing a parameter gives an error immediately:
 
 ```{r, eval = FALSE}
-extension <- substitute(
+extension <- substitute_values(
   extension_path,
   # specification of `s` is missing!
   onset_time = 15000,
@@ -471,7 +471,7 @@ We can leverage the flexibility of this solution to run another version of this 
 
 ```{r}
 run_model <- function(origin_pop, onset_time) {
-  extension <- substitute(
+  extension <- substitute_values(
     extension_path,
     s = 0.1, onset_time = onset_time,
     origin_pop = origin_pop, target_pop = "EUR"
@@ -610,7 +610,7 @@ Having defined the SLiM snippet in this way, the rest of our code will work in e
 
 ```{r}
 run_model <- function(origin_pop, onset_time) {
-  extension <- substitute(
+  extension <- substitute_values(
     extension_template, # <--- template SLiM code string directly (not as a file!)
     s = 0.1, onset_time = onset_time,
     origin_pop = origin_pop, target_pop = "EUR"
@@ -705,7 +705,7 @@ Now we put together SLiM extension code to set up a non-neutral _slendr_ simulat
 ```{r}
 extension <- r"(
 initialize() {
-  // model parameters to be substitute()'d from R below
+  // model parameters to be substitute_values()'d from R below
   defineConstant("gene_length", {{gene_length}});
   defineConstant("n_genes", {{n_genes}});
   defineConstant("n_markers", {{n_markers}});
@@ -792,7 +792,7 @@ SIMULATION_END late() {
   writeFile(output_file, df.serialize(format = "tsv"));
 }
 )" %>%
-  substitute(
+  substitute_values(
     introgression_time = 55000, s = -0.001,
     gene_length = 5e6, n_genes = 200, n_markers = 100,
     output_file = "output_frequencies.tsv"
