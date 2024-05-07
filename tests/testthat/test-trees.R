@@ -15,18 +15,18 @@ model <- compile_model(
 
 samples <- schedule_sampling(model, times = 100, list(pop, 10))
 
-slim_ts <- tempfile(fileext = ".slim.trees")
-msprime_ts <- tempfile(fileext = ".msprime.trees")
+slim_ts <- normalizePath(tempfile(fileext = ".slim.trees"), winslash = "/", mustWork = FALSE)
+msprime_ts <- normalizePath(tempfile(fileext = ".msprime.trees"), winslash = "/", mustWork = FALSE)
 
 slim(
-  model, samples = samples, output = slim_ts,
+  model, samples = samples, ts = slim_ts,
   sequence_length = 100000, recombination_rate = 1e-8,
   method = "batch",
   random_seed = 42
 )
 
 msprime(
-  model, samples = samples, output = msprime_ts,
+  model, samples = samples, ts = msprime_ts,
   sequence_length = 100000, recombination_rate = 1e-8,
   random_seed = 42
 )

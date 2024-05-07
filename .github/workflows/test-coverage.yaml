@@ -76,7 +76,7 @@ jobs:
           cd ~/deps
 
           # installation instructions copied from the SLiM manual:
-          wget https://github.com/MesserLab/SLiM/releases/download/v4.1/SLiM.zip
+          wget https://github.com/MesserLab/SLiM/releases/download/v4.2/SLiM.zip
           unzip SLiM.zip
           cd SLiM
           cmake .
@@ -122,7 +122,7 @@ jobs:
             clean = FALSE,
             install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package"),
             type = c("tests", "vignettes"),
-            function_exclusions = c("print\\.", "setup_env", "init_env", "check_env", "check_dependencies", "animate_model", "ts_draw")
+            function_exclusions = c("print\\.", "setup_env", "clear_env", "init_env", "check_env", "check_dependencies", "animate_model", "ts_draw")
           )
         shell: Rscript {0}
 

@@ -38,8 +38,9 @@ extract_parameters <- function(data) {
   result <- list()
 
   result[["splits"]] <- model$splits %>%
-    dplyr::select(pop, parent, N, time = tsplit_orig) %>%
-    dplyr::mutate(parent = ifelse(parent == "__pop_is_ancestor", NA, parent))
+    dplyr::select(pop, parent, N, time = tsplit_orig, remove = tremove_orig) %>%
+    dplyr::mutate(parent = ifelse(parent == "__pop_is_ancestor", NA, parent),
+                  remove = ifelse(remove == -1, NA, remove))
 
   if (!is.null(model$geneflow))
     result[["gene_flows"]] <- model$geneflow %>%

@@ -26,17 +26,17 @@ samples <- rbind(
   schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
 )
 
-slim_ts <- tempfile(fileext = ".trees")
-msprime_ts <- tempfile(fileext = ".trees")
+slim_ts <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
+msprime_ts <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 
-locations_file <- tempfile(fileext = ".gz")
+locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
 
-slim(model, sequence_length = 100000, recombination_rate = 0, output = slim_ts,
+slim(model, sequence_length = 100000, recombination_rate = 0, ts = slim_ts,
      locations = locations_file, burnin = 0,
      method = "batch", random_seed = 314159,
      samples = samples, verbose = FALSE, load = FALSE)
 
-msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprime_ts,
+msprime(model, sequence_length = 100000, recombination_rate = 0, ts = msprime_ts,
         random_seed = 314159, samples = samples, verbose = FALSE, load = FALSE)
 
 test_that("ts_load generates an object of the correct type (SLiM)", {
@@ -468,19 +468,19 @@ test_that("ts_eigenstrat correctly adds an outgroup when instructed (msprime)", 
 })
 
 test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
-  output <- paste0(tempfile(), "spatial_test")
+  output <- normalizePath(paste0(tempfile(), "spatial_test"), winslash = "/", mustWork = FALSE)
 
   burnin_length <- 123
   max_attempts <- 3
-  recomb_rate <- 0.001
-  locations_file <- tempfile(fileext = ".gz")
+  RECOMBINATION_RATE <- 0.001
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
   seed <- 987
   sequence_length <- 999
 
-  ts <- slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
+  ts <- slim(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
        locations = locations_file, burnin = burnin_length,
        method = "batch", random_seed = seed, max_attempts = max_attempts,
-       samples = samples, verbose = FALSE, output = output)
+       samples = samples, verbose = FALSE, ts = output)
 
   metadata <- ts_metadata(ts)
 
@@ -493,25 +493,25 @@ test_that("slendr metadata is correctly loaded (spatial model without CRS)", {
   args <- metadata$arguments
   expect_equal(args$BURNIN_LENGTH, burnin_length)
   expect_equal(args$MAX_ATTEMPTS, max_attempts)
-  expect_equal(args$RECOMB_RATE, recomb_rate)
+  expect_equal(args$RECOMBINATION_RATE, RECOMBINATION_RATE)
   expect_equal(args$SEED, seed)
   expect_equal(args$SEQUENCE_LENGTH, sequence_length)
 })
 
 test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
-  output <- paste0(tempfile(), "non-spatial_SLiM_test")
+  output <- normalizePath(paste0(tempfile(), "non-spatial_SLiM_test"), winslash = "/", mustWork = FALSE)
 
   burnin_length <- 123
-  recomb_rate <- 0.001
-  locations_file <- tempfile(fileext = ".gz")
+  RECOMBINATION_RATE <- 0.001
+  locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
   seed <- 987
   sequence_length <- 999
   spatial <- FALSE
 
-  ts <- slim(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
+  ts <- slim(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
        locations = locations_file, burnin = burnin_length,
        method = "batch", random_seed = seed,
-       samples = samples, verbose = FALSE, spatial = spatial, output = output)
+       samples = samples, verbose = FALSE, spatial = spatial, ts = output)
 
   metadata <- ts_metadata(ts)
 
@@ -521,7 +521,7 @@ test_that("slendr metadata is correctly loaded (non-spatial SLiM model)", {
 
   args <- metadata$arguments
   expect_equal(args$BURNIN_LENGTH, burnin_length)
-  expect_equal(args$RECOMB_RATE, recomb_rate)
+  expect_equal(args$RECOMBINATION_RATE, RECOMBINATION_RATE)
   expect_equal(args$SEED, seed)
   expect_equal(args$SEQUENCE_LENGTH, sequence_length)
 })
@@ -530,13 +530,13 @@ test_that("slendr metadata is correctly loaded (non-spatial msprime model)", {
   output <- paste0(tempfile(), "non-spatial_msprime_test")
 
   burnin_length <- 123
-  recomb_rate <- 0.001
+  RECOMBINATION_RATE <- 0.001
   seed <- 987
   sequence_length <- 999
   spatial <- FALSE
 
-  ts <- msprime(model, sequence_length = sequence_length, recombination_rate = recomb_rate,
-       random_seed = seed, samples = samples, verbose = FALSE, output = output)
+  ts <- msprime(model, sequence_length = sequence_length, recombination_rate = RECOMBINATION_RATE,
+       random_seed = seed, samples = samples, verbose = FALSE, ts = output)
   metadata <- ts_metadata(ts)
 
   expect_true(gsub("slendr_", "", metadata$version) == packageVersion("slendr"))
@@ -544,7 +544,7 @@ test_that("slendr metadata is correctly loaded (non-spatial msprime model)", {
   expect_true(metadata$description == desc)
 
   args <- metadata$arguments
-  expect_equal(args$RECOMB_RATE, recomb_rate)
+  expect_equal(args$RECOMBINATION_RATE, RECOMBINATION_RATE)
   expect_equal(args$SEED, seed)
   expect_equal(args$SEQUENCE_LENGTH, sequence_length)
 })
@@ -571,7 +571,9 @@ test_that("ts_mutate correctly specifies the SLiM mutation type", {
     ts_recapitate(random_seed = 123, recombination_rate = 0, Ne = 100) %>%
     ts_simplify()
   ts_mut1 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123)
-  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123, mut_type = 123456789)
+  msprime_module <- reticulate::import("msprime")
+  ts_mut2 <- ts_mutate(ts, mutation_rate = 1e-7, random_seed = 123,
+                       mutation_model = msprime_module$SLiMMutationModel(123456789L))
 
   get_mut_type <- function(m) {
     mut_metadata <- m$metadata$mutation_list
@@ -630,15 +632,15 @@ test_that("metadata is the same for SLiM and msprime conditional on a model", {
     schedule_sampling(model, times = 300, list(p1, 10), list(p2, 10))
   )
 
-  slim_ts <- file.path(model_dir, "output_slim.trees")
-  msprime_ts <- file.path(model_dir, "msprime_output.trees")
+  slim_ts <- normalizePath(file.path(model_dir, "output_slim.trees"), winslash = "/", mustWork = FALSE)
+  msprime_ts <- normalizePath(file.path(model_dir, "msprime_output.trees"), winslash = "/", mustWork = FALSE)
 
   slim(model, sequence_length = 100000, recombination_rate = 0,
        locations = locations_file, burnin = 10,
        method = "batch", random_seed = 314159,
-       samples = samples, verbose = FALSE, output = slim_ts)
+       samples = samples, verbose = FALSE, ts = slim_ts)
 
-  msprime(model, sequence_length = 100000, recombination_rate = 0, output = msprime_ts,
+  msprime(model, sequence_length = 100000, recombination_rate = 0, ts = msprime_ts,
           random_seed = 314159, samples = samples, verbose = FALSE)
 
   simplify_to <- c("pop1_1", "pop1_2", "pop1_17")

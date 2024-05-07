@@ -25,11 +25,11 @@ forward_samples <- rbind(
   schedule_sampling(forward_model, times = c(2000, 2050, 1123), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
-ts_forward_slim <- tempfile(fileext = ".trees")
-ts_forward_msprime <- tempfile(fileext = ".trees")
+ts_forward_slim <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
+ts_forward_msprime <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 
-slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, output = ts_forward_slim, samples = forward_samples, random_seed = seed)
-msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, output = ts_forward_msprime, samples = forward_samples, random_seed = seed)
+slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, ts = ts_forward_slim, samples = forward_samples, random_seed = seed)
+msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate, ts = ts_forward_msprime, samples = forward_samples, random_seed = seed)
 
 forward_sts <- ts_load(model = forward_model, file = ts_forward_slim)
 forward_mts <- ts_load(model = forward_model, file = ts_forward_msprime)
@@ -40,7 +40,7 @@ test_that("msprime and SLiM metadata is exactly the same (forward model)", {
   m_meta <- ts_metadata(forward_mts)[fields]
   expect_true(all(sapply(fields, function(f) all(s_meta[[f]] == m_meta[[f]]))))
 
-  args <- c("RECOMB_RATE", "SEED", "SEQUENCE_LENGTH", "SIMULATION_LENGTH")
+  args <- c("RECOMBINATION_RATE", "SEED", "SEQUENCE_LENGTH", "SIMULATION_LENGTH")
   s_args <- ts_metadata(forward_sts)$arguments[args]
   m_args <- ts_metadata(forward_mts)$arguments[args]
   expect_true(all(sapply(args, function(f) all(s_args[[f]] == m_args[[f]]))))
@@ -86,11 +86,11 @@ backward_samples <- rbind(
   schedule_sampling(backward_model, times = c(123, 250, 1000), list(a, 1), list(b, 1), list(x1, 10), list(x2, 10), list(c, 1), list(o, 1))
 )
 
-ts_backward_slim <- tempfile(fileext = ".trees")
-ts_backward_msprime <- tempfile(fileext = ".trees")
+ts_backward_slim <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
+ts_backward_msprime <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
 
-slim(backward_model, output = ts_backward_slim, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
-msprime(backward_model, output = ts_backward_msprime, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
+slim(backward_model, ts = ts_backward_slim, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
+msprime(backward_model, ts = ts_backward_msprime, sequence_length = seq_len, recombination_rate = rec_rate, samples = backward_samples, random_seed = seed)
 
 backward_sts <- ts_load(model = backward_model, file = ts_backward_slim)
 backward_mts <- ts_load(model = backward_model, file = ts_backward_msprime)
@@ -101,7 +101,7 @@ test_that("msprime and SLiM metadata is exactly the same (backward model)", {
   m_meta <- ts_metadata(backward_mts)[fields]
   expect_true(all(sapply(fields, function(f) all(s_meta[[f]] == m_meta[[f]]))))
 
-  args <- c("RECOMB_RATE", "SEED", "SEQUENCE_LENGTH", "SIMULATION_LENGTH")
+  args <- c("RECOMBINATION_RATE", "SEED", "SEQUENCE_LENGTH", "SIMULATION_LENGTH")
   s_args <- ts_metadata(backward_sts)$arguments[args]
   m_args <- ts_metadata(backward_mts)$arguments[args]
   expect_true(all(sapply(args, function(f) all(s_args[[f]] == m_args[[f]]))))

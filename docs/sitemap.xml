@@ -46,6 +46,9 @@
     <loc>https://www.slendr.net/articles/vignette-10-tracts.html</loc>
   </url>
   <url>
+    <loc>https://www.slendr.net/articles/vignette-11-extensions.html</loc>
+  </url>
+  <url>
     <loc>https://www.slendr.net/authors.html</loc>
   </url>
   <url>
@@ -161,6 +164,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/slim.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/substitute.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/subtract.html</loc>

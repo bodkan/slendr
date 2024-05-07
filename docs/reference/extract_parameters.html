@@ -51,6 +51,7 @@ object or simulate a tree sequence"><meta property="og:image" content="https://w
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
     <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
+    <a class="dropdown-item" href="../articles/vignette-11-extensions.html">Selection simulations using slendr</a>
   </div>
 </li>
 <li class="nav-item">
@@ -79,7 +80,7 @@ object or simulate a tree sequence"><meta property="og:image" content="https://w
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Extract information from a compiled model or a simulated tree sequence</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/extract_model.R" class="external-link"><code>R/extract_model.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/extract_parameters.R" class="external-link"><code>R/extract_parameters.R</code></a></small>
       <div class="d-none name"><code>extract_parameters.Rd</code></div>
     </div>
 
@@ -121,11 +122,11 @@ compiling a model object</p>
 <span class="r-in"><span><span class="co"># extract model parameters from a compiled model object as a list of data frames</span></span></span>
 <span class="r-in"><span><span class="fu">extract_parameters</span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $splits</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pop parent    N    time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  CH   &lt;NA&gt;   10 6500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 AFR     CH   10 6000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 NEA    AFR   10  600000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 EUR    AFR 5000   70000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pop parent    N    time remove</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  CH   &lt;NA&gt;   10 6500000     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 AFR     CH   10 6000000     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 NEA    AFR   10  600000  40000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 EUR    AFR 5000   70000     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gene_flows</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   from  to start   end rate</span>
@@ -136,11 +137,11 @@ compiling a model object</p>
 <span class="r-in"><span><span class="co"># tree sequence</span></span></span>
 <span class="r-in"><span><span class="fu">extract_parameters</span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $splits</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pop parent    N    time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  CH   &lt;NA&gt;   10 6500000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 AFR     CH   10 6000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 NEA    AFR   10  600000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 EUR    AFR 5000   70000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pop parent    N    time remove</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  CH   &lt;NA&gt;   10 6500000     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 AFR     CH   10 6000000     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 NEA    AFR   10  600000  40000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 EUR    AFR 5000   70000     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $gene_flows</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   from  to start   end rate</span>

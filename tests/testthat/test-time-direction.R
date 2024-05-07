@@ -111,8 +111,8 @@ test_that("forward and backward models yield the same simulation result", {
   components <- c("generation_time", "resolution", "world")
   expect_true(all(sapply(components, function(i) all.equal(forward[[i]], backward[[i]]))))
 
-  locations_forward <- tempfile(fileext = ".gz")
-  locations_backward <- tempfile(fileext = ".gz")
+  locations_forward <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
+  locations_backward <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
 
   # simulation runs are the same
   slim(forward, sequence_length = 1, recombination_rate = 0, locations = locations_forward, method = "batch", random_seed = 123, verbose = FALSE)

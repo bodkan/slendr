@@ -73,6 +73,7 @@
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
     <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
+    <a class="dropdown-item" href="../articles/vignette-11-extensions.html">Selection simulations using slendr</a>
   </div>
 </li>
 <li class="nav-item">
@@ -152,10 +153,10 @@ events (note the missing <code>map</code> argument, which is set to
 <pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># African ancestral population</span></span>
-<span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">52000</span>, N <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
+<span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">100000</span>, N <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># first migrants out of Africa</span></span>
-<span><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"OOA"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">51000</span>, N <span class="op">=</span> <span class="fl">500</span>, remove <span class="op">=</span> <span class="fl">25000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">ooa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"OOA"</span>, parent <span class="op">=</span> <span class="va">afr</span>, time <span class="op">=</span> <span class="fl">60000</span>, N <span class="op">=</span> <span class="fl">500</span>, remove <span class="op">=</span> <span class="fl">23000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/resize.html">resize</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">2000</span>, time <span class="op">=</span> <span class="fl">40000</span>, how <span class="op">=</span> <span class="st">"step"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Eastern hunter-gatherers</span></span>
@@ -242,13 +243,13 @@ original <em>slendr</em> model:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract_parameters.html">extract_parameters</a></span><span class="op">(</span><span class="va">ts_msprime</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $splits</span></span>
-<span><span class="co">#&gt;   pop parent    N  time</span></span>
-<span><span class="co">#&gt; 1 AFR   &lt;NA&gt; 3000 52000</span></span>
-<span><span class="co">#&gt; 2 OOA    AFR  500 51000</span></span>
-<span><span class="co">#&gt; 3 EHG    OOA 1000 28000</span></span>
-<span><span class="co">#&gt; 5 ANA    OOA 3000 28000</span></span>
-<span><span class="co">#&gt; 4 EUR    EHG 2000 25000</span></span>
-<span><span class="co">#&gt; 6 YAM    EHG  500  7000</span></span>
+<span><span class="co">#&gt;   pop parent    N   time remove</span></span>
+<span><span class="co">#&gt; 1 AFR   &lt;NA&gt; 3000 100000     NA</span></span>
+<span><span class="co">#&gt; 2 OOA    AFR  500  60000  23000</span></span>
+<span><span class="co">#&gt; 3 EHG    OOA 1000  28000   6000</span></span>
+<span><span class="co">#&gt; 5 ANA    OOA 3000  28000   4000</span></span>
+<span><span class="co">#&gt; 4 EUR    EHG 2000  25000     NA</span></span>
+<span><span class="co">#&gt; 6 YAM    EHG  500   7000   2500</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $gene_flows</span></span>
 <span><span class="co">#&gt;   from  to start  end rate</span></span>
@@ -269,11 +270,11 @@ built-in <em>slendr</em> introgression model by running:</p>
 <span></span>
 <span><span class="fu"><a href="../reference/extract_parameters.html">extract_parameters</a></span><span class="op">(</span><span class="va">introgression_model</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $splits</span></span>
-<span><span class="co">#&gt;   pop parent    N    time</span></span>
-<span><span class="co">#&gt; 1  CH   &lt;NA&gt;   10 6500000</span></span>
-<span><span class="co">#&gt; 2 AFR     CH   10 6000000</span></span>
-<span><span class="co">#&gt; 3 NEA    AFR   10  600000</span></span>
-<span><span class="co">#&gt; 4 EUR    AFR 5000   70000</span></span>
+<span><span class="co">#&gt;   pop parent    N    time remove</span></span>
+<span><span class="co">#&gt; 1  CH   &lt;NA&gt;   10 6500000     NA</span></span>
+<span><span class="co">#&gt; 2 AFR     CH   10 6000000     NA</span></span>
+<span><span class="co">#&gt; 3 NEA    AFR   10  600000  40000</span></span>
+<span><span class="co">#&gt; 4 EUR    AFR 5000   70000     NA</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $gene_flows</span></span>
 <span><span class="co">#&gt;   from  to start   end rate</span></span>

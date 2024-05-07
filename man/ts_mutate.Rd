@@ -9,7 +9,7 @@ ts_mutate(
   mutation_rate,
   random_seed = NULL,
   keep_existing = TRUE,
-  mut_type = NULL
+  mutation_model = NULL
 )
 }
 \arguments{
@@ -23,10 +23,11 @@ number available)}
 
 \item{keep_existing}{Keep existing mutations?}
 
-\item{mut_type}{Assign SLiM mutation type to neutral mutations? If
-\code{NULL} (default), no special mutation type will be used. If an
-integer number is given, mutations of the SLiM mutation type with that
-integer identifier will be created.}
+\item{mutation_model}{Which mutation model to use? If \code{NULL} (default),
+no special mutation type will be used. Otherwise, a mutation model matching
+\url{https://tskit.dev/msprime/docs/stable/mutations.html} may be provided as
+a Python/reticulate object. For instance, \code{msprime$SLiMMutationModel(type=42L)}
+will add SLiM mutation with the mutation type 42.}
 }
 \value{
 Tree-sequence object of the class \code{slendr_ts}, which serves as

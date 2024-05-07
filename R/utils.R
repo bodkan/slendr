@@ -197,7 +197,7 @@ check_resolution <- function(map, val) {
   yrange <- sf::st_bbox(map)[c("ymin", "ymax")]
   if (diff(xrange) < val | diff(yrange) < val)
     stop(sprintf("Value of %s = %s larger than the overall world size",
-                 deparse(substitute(val)), val),
+                 deparse(base::substitute(val)), val),
          call. = FALSE)
 }
 
@@ -673,8 +673,7 @@ convert_slim_time <- function(times, model) {
   if (model$direction == "backward") {
     oldest_time <- max(ancestors[, ]$tsplit_orig)
 
-    result <- times * model$generation_time +
-      (max(ancestors[, ]$tsplit_orig) - model$orig_length)
+    result <- times * model$generation_time + (oldest_time - model$orig_length)
 
     # does the backward simulation model terminate sooner than "present-day"? if
     # so, shift the times to start at the original time specified by user (also
@@ -801,6 +800,7 @@ utils::globalVariables(
     "pop.y", "pop_id.y", "time_tskit", "time_tskit.x", "time_tskit.y",
     "N", "center", "child_node_id", "child_phylo_id", "geometry", "parent_node_id",
     "parent_phylo_id", "set_boundary", "xend", "xmax", "xmin", "yend",
-    "arc_degree", "node1", "node2", "mrca", "node1_time", "node2_time", "tmrca", "count", "total"
+    "arc_degree", "node1", "node2", "mrca", "node1_time", "node2_time", "tmrca",
+    "count", "total", "tsplit_orig", "tremove_orig", "tresize_orig", "how", "end"
   ), package = "slendr"
 )

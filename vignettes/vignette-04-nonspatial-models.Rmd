@@ -34,10 +34,10 @@ library(slendr)
 init_env()
 
 # African ancestral population
-afr <- population("AFR", time = 52000, N = 3000)
+afr <- population("AFR", time = 100000, N = 3000)
 
 # first migrants out of Africa
-ooa <- population("OOA", parent = afr, time = 51000, N = 500, remove = 25000) %>%
+ooa <- population("OOA", parent = afr, time = 60000, N = 500, remove = 23000) %>%
   resize(N = 2000, time = 40000, how = "step")
 
 # Eastern hunter-gatherers

@@ -51,6 +51,7 @@ slendr demographic model."><meta property="og:image" content="https://www.slendr
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
     <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
+    <a class="dropdown-item" href="../articles/vignette-11-extensions.html">Selection simulations using slendr</a>
   </div>
 </li>
 <li class="nav-item">
@@ -79,7 +80,7 @@ slendr demographic model."><meta property="og:image" content="https://www.slendr
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Run a slendr model in msprime</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/engines.R" class="external-link"><code>R/engines.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/R/msprime.R" class="external-link"><code>R/msprime.R</code></a></small>
       <div class="d-none name"><code>msprime.Rd</code></div>
     </div>
 
@@ -95,7 +96,7 @@ slendr demographic model.</p>
 <span>  <span class="va">sequence_length</span>,</span>
 <span>  <span class="va">recombination_rate</span>,</span>
 <span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  output <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -127,7 +128,7 @@ missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
 
 
-<dt>output</dt>
+<dt>ts</dt>
 <dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
 tree sequence will be saved to a temporary file.</p></dd>
 
@@ -198,9 +199,9 @@ vector, respectively.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># automatic loading of a simulated output can be prevented by `load = FALSE`, which can be</span></span></span>
 <span class="r-in"><span><span class="co"># useful when a custom path to a tree-sequence output is given for later downstream analyses</span></span></span>
-<span class="r-in"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>, winslash <span class="op">=</span> <span class="st">"/"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span>,</span></span>
-<span class="r-in"><span>        output <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        ts <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># ... at a later stage:</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

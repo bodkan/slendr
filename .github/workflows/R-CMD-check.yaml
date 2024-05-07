@@ -36,7 +36,7 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       # - name: Set NOT_CRAN=false on Windows
       #   if: runner.os == 'Windows'
@@ -52,12 +52,13 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
 
-      - name: Install ADMIXTOOLS dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: brew install openblas gsl lapack bedtools
+      # - name: Install ADMIXTOOLS dependencies (macOS)
+      #   if: runner.os == 'macOS'
+      #   run: brew install openblas gsl lapack bedtools
 
-      - name: Compile and install ADMIXTOOLS (Linux + macOS)
-        if: runner.os != 'Windows'
+      - name: Compile and install ADMIXTOOLS (Linux) # + macOS)
+        # if: runner.os != 'Windows'
+        if: runner.os == 'Linux'
         run: |
           # create a single directory for all external software
           mkdir -p ~/deps
@@ -106,7 +107,7 @@ jobs:
           cd ~/deps
 
           # installation instructions copied from the SLiM manual:
-          wget https://github.com/MesserLab/SLiM/releases/download/v4.1/SLiM.zip
+          wget https://github.com/MesserLab/SLiM/releases/download/v4.2/SLiM.zip
           unzip SLiM.zip
           cd SLiM
           cmake .
@@ -135,17 +136,16 @@ jobs:
           pandoc::pandoc_install()
         shell: Rscript {0}
 
-      # - name: Check ming64/bin contents
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     dir ${{ runner.temp }}\msys64\mingw64\bin
-      #   shell: cmd
-      #
-      # - name: Check usr/bin contents
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     dir ${{ runner.temp }}\msys64\usr\bin
-      #   shell: cmd
+      #- name: Check ming64/bin contents
+      #  if: runner.os == 'Windows'
+      #  run: |
+      #    dir ${{ runner.temp }}\msys64\mingw64\bin
+      #  shell: cmd
+
+      #- name: Check usr/bin contents
+      #  if: runner.os == 'Windows'
+      #  run: dir ${{ runner.temp }}\msys64\usr\bin
+      #  shell: cmd
 
       - name: Populate PATH with compiled binaries on Windows
         if: runner.os == 'Windows'
@@ -154,36 +154,29 @@ jobs:
             paste0(
               "PATH=D:/a/_temp/msys64/mingw64/bin",
               "\n",
-              "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/")
+              "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/"),
+              "\n",
+              "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning"
             ),
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
 
-      - name: Check PATHs
-        if: runner.os == 'Windows'
-        run: |
-          cat(Sys.getenv("PATH"), "\n")
-          cat(Sys.getenv("RSTUDIO_PANDOC"), "\n")
-        shell: Rscript {0}
+        # The Windows GDAL GitHub Actions warning solved by setting 'GTIFF_SRS_SOURCE' above
+        # is actually not the first time this happened, interesting:
+        # https://github.com/bodkan/slendr/blob/3e02fa2ad7fb085ccbcc23df518bca6b72e782b1/R/compilation.R#L730
+
+      # - name: Check PATHs
+      #   if: runner.os == 'Windows'
+      #   run: |
+      #     cat(Sys.getenv("PATH"), "\n")
+      #     cat(Sys.getenv("RSTUDIO_PANDOC"), "\n")
+      #   shell: Rscript {0}
 
       - name: Set R_LIBS path on unix
-        if: runner.os != 'Windows'
+        if: runner.os == 'Windows'
         run: |
           mkdir ~/R_LIBS
-          echo "R_LIBS_USER=~/R_LIBS" >> ~/.Renviron
-
-      - name: Setup dedicated Python environment for slendr
-        run: |
-          install.packages("reticulate", repos = "http://cran.rstudio.com")
-          reticulate::install_miniconda()
-          deps <- c("msprime==1.3.1", "tskit==0.5.6", "pyslim==1.0.4")
-          PYTHON_ENV <- paste0("Python-3.12_", paste(gsub("==", "-", c(deps, "tspop==0.0.2")), collapse = "_"))
-          reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.11')
-          reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
-          pip <- Sys.info()["sysname"] != "Windows"
-          reticulate::conda_install(envname = PYTHON_ENV, packages = deps, pip = pip)
-          reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2", "pyarrow"), pip = TRUE)
-        shell: Rscript {0}
+          echo "GTIFF_SRS_SOURCE='EPSG'" >> ~/.Renviron
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -193,8 +186,22 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Setup dedicated Python environment for slendr
+        run: |
+          install.packages("reticulate", repos = "http://cran.rstudio.com")
+          reticulate::install_miniconda()
+          deps <- c("msprime==1.3.1", "tskit==0.5.6", "pyslim==1.0.4")
+          PYTHON_ENV <- paste0("Python-3.12_", paste(gsub("==", "-", c(deps, "tspop==0.0.2")), collapse = "_"))
+          reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.11')
+          reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
+          #pip <- Sys.info()["sysname"] != "Windows"
+          reticulate::conda_install(envname = PYTHON_ENV, packages = c("msprime==1.3.1", "tskit==0.5.6"), pip = FALSE)
+          reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2", "pyslim==1.0.4", "pyarrow"), pip = TRUE)
+        shell: Rscript {0}
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck
+          extra-packages: any::rcmdcheck
+          needs: check
 
       - uses: r-lib/actions/check-r-package@v2

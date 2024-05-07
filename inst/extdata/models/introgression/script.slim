@@ -3,43 +3,45 @@
 // rest of the slendr R package codebase.
 
 ///
-/// Initialization block
+/// Initialization of slendr model parameters
 ///
 initialize() {
-    // if the script is being run in SLiMgui, specify dummy values for
-    // total sequence length and recombination rate
-    if (exists("slimgui")) {
-        defineConstant("SEQUENCE_LENGTH", 1);
-        defineConstant("RECOMB_RATE", 0);
-    } else {
-        required_arg("SEQUENCE_LENGTH");
-        required_arg("RECOMB_RATE");
-    }
-
     optional_arg("SEED", getSeed());
     setSeed(SEED); catn("SEED: " + getSeed());
 
-    required_arg("OUTPUT_TS");
-    optional_arg("MODEL", "."); // directory containing model configuration files
-    optional_arg("SAMPLES", ""); // path to a table with the sampling schedule
-    optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
-    optional_arg("OUTPUT_LOCATIONS", ""); // where should locations of individuals be saved?
-    optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
+    required_arg("SEQUENCE_LENGTH");
+    required_arg("RECOMBINATION_RATE");
+
+    optional_arg("MODEL_PATH", "."); // directory with model definition files
+    optional_arg("TS_PATH", ""); // user-defined path to the output tree sequence
+    optional_arg("LOCATIONS_PATH", ""); // wheere should locations of individuals be saved?
+    optional_arg("OUTPUT_DIR", ""); // directory for storing output files
+    if (OUTPUT_DIR != "" & !fileExists(OUTPUT_DIR))
+        createDirectory(OUTPUT_DIR);
+    optional_arg("SAMPLES_PATH", ""); // path to a table with the sampling schedule
+
+    // load model definition information
+    defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
+    defineConstant("GENE_FLOWS", read_table(config_path("geneflow.tsv")));
+    defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
+    defineConstant("SAMPLING", read_table(SAMPLES_PATH));
+    defineConstant("DIRECTION", readFile(config_path("direction.txt")));
+    defineConstant("GENERATION_TIME", asInteger(readFile(config_path("generation_time.txt"))));
+    defineConstant("ORIGINAL_LENGTH", asInteger(readFile(config_path("orig_length.txt"))));
+    defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
+
+    // prefix path of slendr simulation state files
+    defineConstant("STATE_PATH", tempdir() + "state_" + SEED + "_");
+
     optional_arg("BURNIN_LENGTH", 0); // length of the burnin period in generations
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
 
-    // how many attempts should be made to place an offspring on a map before
-    // discarding it?
-    optional_arg("MAX_ATTEMPTS", 1);
+    defineConstant("SIMULATE_TS", TS_PATH != "");
+    optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
 
-    // model configuration tables
-    defineConstant("POPULATIONS", read_table(config_path("populations.tsv")));
-    defineConstant("GENEFLOWS", read_table(config_path("geneflow.tsv")));
-    defineConstant("RESIZES", read_table(config_path("resizes.tsv")));
-    defineConstant("SAMPLING", read_table(SAMPLES));
-
-    defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
+    optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
+    optional_arg("MAX_ATTEMPTS", 1); // attempts to place an offspring before discarding it
 
     if (SPATIAL) {
         defineConstant("INTERACTIONS", read_table(config_path("dispersals.tsv")));
@@ -71,15 +73,21 @@ initialize() {
     defineConstant("SIMULATION_START", BURNIN_LENGTH + min(POPULATIONS.getValue("tsplit_gen")));
     defineConstant("SIMULATION_END", SIMULATION_START + SIMULATION_LENGTH);
 
-    initializeTreeSeq(retainCoalescentOnly = COALESCENT_ONLY);
-
-    initializeMutationType("m0", 0.5, "f", 0.0);
-    initializeGenomicElementType("g1", m0, 1.0);
-    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
-    initializeMutationRate(0);
-
-    initializeRecombinationRate(RECOMB_RATE);
+    if (SIMULATE_TS)
+      initializeTreeSeq(retainCoalescentOnly = COALESCENT_ONLY);
 }
+
+// default slendr neutral initialization -- start
+initialize() {
+    initializeMutationType("m0", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m0, 1.0);
+    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1); // default chromosome
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(RECOMBINATION_RATE); // default recombination rate
+}
+// default slendr neutral initialization -- end
 
 1 early() /* Schedule script block events */ {
     // start of the burnin and of the simulation itself
@@ -89,9 +97,9 @@ initialize() {
     community.rescheduleScriptBlock(s1, ticks = unique(c(1, BURNIN_LENGTH + POPULATIONS.getValue("tsplit_gen"))));
 
     // geneflow events
-    if (num_rows(GENEFLOWS)) {
-        community.rescheduleScriptBlock(s2, ticks = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tstart_gen")));
-        community.rescheduleScriptBlock(s3, ticks = BURNIN_LENGTH + unique(GENEFLOWS.getValue("tend_gen")));
+    if (num_rows(GENE_FLOWS)) {
+        community.rescheduleScriptBlock(s2, ticks = BURNIN_LENGTH + unique(GENE_FLOWS.getValue("tstart_gen")));
+        community.rescheduleScriptBlock(s3, ticks = BURNIN_LENGTH + unique(GENE_FLOWS.getValue("tend_gen")));
     } else {
         community.deregisterScriptBlock(s2);
         community.deregisterScriptBlock(s3);
@@ -130,14 +138,17 @@ initialize() {
         community.deregisterScriptBlock(s7);
 
     // output locations of individuals
-    if (OUTPUT_LOCATIONS != "" & SPATIAL) {
+    if (LOCATIONS_PATH != "" & SPATIAL) {
         community.rescheduleScriptBlock(s8, start = SIMULATION_START, end = SIMULATION_END);
         write_locations_header();
     } else
         community.deregisterScriptBlock(s8);
 
     // remember individuals for tree sequence recording
-    community.rescheduleScriptBlock(s9, start = SIMULATION_START, end = SIMULATION_END);
+    if (SIMULATE_TS)
+      community.rescheduleScriptBlock(s9, start = SIMULATION_START, end = SIMULATION_END);
+    else
+      community.deregisterScriptBlock(s9);
 
     // remove populations from the simulation
     cleanups = filter(POPULATIONS, "tremove_gen", -1, negate = T);
@@ -146,8 +157,14 @@ initialize() {
     else
          community.deregisterScriptBlock(s10);
 
-    // save data and stop the simulation
-    community.rescheduleScriptBlock(s11, ticks = SIMULATION_END);
+    // save tree sequence
+    if (SIMULATE_TS)
+      community.rescheduleScriptBlock(s11, ticks = SIMULATION_END);
+    else
+      community.deregisterScriptBlock(s11);
+
+    // stop the simulation
+    community.rescheduleScriptBlock(s12, ticks = SIMULATION_END);
 }
 
 ///
@@ -156,9 +173,9 @@ initialize() {
 
 s0 late() /* Log the start of the simulation */ {
     if (community.tick == 1 & BURNIN_LENGTH > 0)
-        log_output("start of burnin");
+        write_log("start of burnin");
     else
-        log_output("starting the simulation");
+        write_log("starting the simulation");
 }
 
 s1 late() /* Population splits */ {
@@ -175,7 +192,7 @@ s1 late() /* Population splits */ {
 }
 
 s2 late() /* Geneflow events */ {
-    events = filter(GENEFLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
+    events = filter(GENE_FLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, event.getValue("rate"));
@@ -183,7 +200,7 @@ s2 late() /* Geneflow events */ {
 }
 
 s3 late() /* Stopping geneflow */ {
-    events = filter(GENEFLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
+    events = filter(GENE_FLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, 0.0);
@@ -201,7 +218,7 @@ s4 late() /* Update spatial population boundaries */ {
 
         id = map.getValue("pop_id");
 
-        log_output("updating map for " + map.getValue("pop") + "(p" + id + ")");
+        write_log("updating map for " + map.getValue("pop") + "(p" + id + ")");
 
         img = map.getValue("image");
         pop = population(map.getValue("pop"));
@@ -237,7 +254,7 @@ s5 /* Step population size changes */ early() {
         event = events.getRowValues(i);
         pop = event.getValue("pop"); pop_size = event.getValue("N");
         population(pop).setSubpopulationSize(pop_size);
-        log_output(pop + "(p" + event.getValue("pop_id") + ") resized to " +
+        write_log(pop + "(p" + event.getValue("pop_id") + ") resized to " +
                              pop_size + " individuals");
     }
 }
@@ -273,10 +290,10 @@ s6 /* Exponential population size changes */ early() {
 
         current_size = population(id).individualCount;
         if (community.tick == tstart)
-            log_output("start of exponential " + event_type + " of " + pop + "(p" + id +
+            write_log("start of exponential " + event_type + " of " + pop + "(p" + id +
                        ") from size " + current_size);
         if (community.tick == tend)
-            log_output("end of exponential " + event_type + " of " + pop + "(p" + id +
+            write_log("end of exponential " + event_type + " of " + pop + "(p" + id +
                        ") at size " + current_size);
     }
 }
@@ -307,26 +324,26 @@ s7 late() /* Changing interaction distances and dispersals */ {
 
         // only change parameters that are scheduled for change in this event
         if (competition_dist != competition.maxDistance) {
-            log_output("setting competition interaction distance for " + pop + "(p" +
+            write_log("setting competition interaction distance for " + pop + "(p" +
                        pop_id + ") to " + competition_dist);
             competition.unevaluate();
             competition.maxDistance = competition_dist;
         }
         if (mating_dist != mating.maxDistance) {
-            log_output("setting mate choice distance for " + pop + "(p" +
+            write_log("setting mate choice distance for " + pop + "(p" +
                                  pop_id + ") to " + mating_dist);
             mating.unevaluate();
             mating.maxDistance = mating_dist;
         }
         if (dispersal_dist != dispersal) {
             if (dispersal != -1)
-                log_output("setting offspring dispersal distance for " + pop +
+                write_log("setting offspring dispersal distance for " + pop +
                            "(p" + pop_id + ") to " + dispersal_dist);
             population(pop).setValue("dispersal", dispersal_dist);
         }
         if (dispersal_fun != fun) {
             if (fun != "")
-                log_output("changing dispersal kernel for " + pop +
+                write_log("changing dispersal kernel for " + pop +
                            "(p" + pop_id + ") to " + dispersal_fun);
             population(pop).setValue("dispersal_fun", dispersal_fun);
         }
@@ -345,7 +362,7 @@ s8 late() /* Save locations of all individuals */ {
             ind.spatialPosition,
             sep = "\t"
         );
-        writeFile(OUTPUT_LOCATIONS, ind_str, append = T, compress = T);
+        writeFile(LOCATIONS_PATH, ind_str, append = T, compress = T);
     }
 }
 
@@ -385,7 +402,7 @@ s9 late() /* Remember individuals for tree sequence recording */ {
         } else
             n_str = asString(asInteger(n));
 
-        log_output("sampling " + n_str + " individuals of " +
+        write_log("sampling " + n_str + " individuals of " +
                              pop + "(p" + population(pop).id + ")" + where);
 
         // give a warning in case more individuals are scheduled for sampling
@@ -411,7 +428,7 @@ s9 late() /* Remember individuals for tree sequence recording */ {
         }
 
         if (exists("distances"))
-            inds = all_inds[order(distances)][0 : (n - 1)];
+            inds = all_inds[order(distances)][asInteger(0 : (n - 1))];
         else
             inds = sample(all_inds, asInteger(n));
 
@@ -421,6 +438,8 @@ s9 late() /* Remember individuals for tree sequence recording */ {
 }
 
 1: late() /* Retain all individuals in each generation */ {
+    if (!SIMULATE_TS) return;
+
     // note that permanent remembering takes priority in SLiM so this doesn't
     // override permanent remembering performed above
     sim.treeSeqRememberIndividuals(sim.subpopulations.individuals, permanent = F);
@@ -430,24 +449,28 @@ s10 late() /* Schedule removal of populations */ {
     pops = filter(POPULATIONS, "tremove_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
-        log_output("cleanup of " + pop.getValue("pop") +
+        write_log("cleanup of " + pop.getValue("pop") +
                              "(p" + pop.getValue("pop_id") + ")");
         population(pop.getValue("pop")).setSubpopulationSize(0);
     }
 }
 
-s11 late() /* End of simulation */ {
-    filename = OUTPUT_TS;
+s11 late() /* Save the tree sequence */ {
+    if (OUTPUT_DIR != "")
+        defineConstant("OUTPUT_TS", OUTPUT_DIR + "/output.trees");
+    else if (TS_PATH != "")
+        defineConstant("OUTPUT_TS", TS_PATH);
+    else // this should never happen because the block would be deregistered
+        stop("No tree-sequence output path has been set\n");
 
-    // add slendr-specific metadata to its own Dictionary key
-    metadata = collect_metadata();
+    save_ts(OUTPUT_TS);
+}
 
-    sim.treeSeqOutput(OUTPUT_TS, metadata = Dictionary("slendr", metadata));
-    log_output("saving the tree sequence output to '" + OUTPUT_TS + "'");
-
-    log_output("simulation finished");
+s12 late() /* End of simulation */ {
+    write_log("simulation finished");
     sim.simulationFinished();
 }
+
 
 ///
 /// Interaction and fitness callbacks
@@ -478,18 +501,18 @@ modifyChild() /* Place offspring within its population's boundary */ {
     // in case of spatially non-overlapping geneflow, assign locations uniformly
     if (child.migrant) {
         // get indices of the currently active geneflow events
-        active = (GENEFLOWS.getValue("tstart_gen") <= community.tick - BURNIN_LENGTH) &
-                 (community.tick - BURNIN_LENGTH <= GENEFLOWS.getValue("tend_gen"));
+        active = (GENE_FLOWS.getValue("tstart_gen") <= community.tick - BURNIN_LENGTH) &
+                 (community.tick - BURNIN_LENGTH <= GENE_FLOWS.getValue("tend_gen"));
 
         // get population of the offspring's parents
-        source = sourceSubpop.id == GENEFLOWS.getValue("from_id");
+        source = sourceSubpop.id == GENE_FLOWS.getValue("from_id");
 
         // get the offspring's new population
-        target = subpop.id == GENEFLOWS.getValue("to_id");
+        target = subpop.id == GENE_FLOWS.getValue("to_id");
 
         // if the current admixture event is non-overlapping, set the
         // childs coordinates freely
-        overlap = GENEFLOWS.getValue("overlap")[active & target & source];
+        overlap = GENE_FLOWS.getValue("overlap")[active & target & source];
 
         if (!overlap) {
             set_coordinates(child, subpop.id, log = F);
@@ -538,15 +561,22 @@ function (void) create_pop(object<Dictionary> pop) {
     pop_id = pop.getValue("pop_id");
 
     if (pop.getValue("parent") ==  "__pop_is_ancestor") {
-        log_output("creating " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")");
+        write_log("creating " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")");
         sim.addSubpop(pop_id, pop.getValue("N"));
     } else {
-        log_output(
+        write_log(
             "split of " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")" +
             " from " + pop.getValue("parent") + "(p" + pop.getValue("parent_id")  + ")"
         );
         sim.addSubpopSplit(pop_id, pop.getValue("N"), pop.getValue("parent_id"));
     }
+    // TODO: We cannot use the 'name' propertion of a Subpopulation object because
+    // if a slendr user names a population, say, "p1", but in SLiM that Subpopulation
+    // is, say, p0, SLiM crashes with this error:
+    // ERROR (Subpopulation::SetName): property name must not be a subpopulation symbol
+    // ('p1', 'p2', etc.) unless it matches the symbol of the subpopulation itself.
+    // Commenting this out for the time being:
+    // population(pop_id).name = pop.getValue("pop");
 
     // dispersal distance is set in a script block (here we just create the variable)
     population(pop_id).setValue("dispersal", -1);
@@ -573,11 +603,11 @@ function (void) set_geneflow(object<Dictionary> event, f$ rate) {
     if (rate > 0) {
         span = event.getValue("tend_gen") - event.getValue("tstart_gen");
         rate = rate / span;
-        log_output("geneflow " + from + "(p" + from_id + ")" +
+        write_log("geneflow " + from + "(p" + from_id + ")" +
                              " -> " + to + "(p" + to_id + ")" +
                              " (" + rate + "% over " + span + " generations)");
     } else
-        log_output("geneflow " + from + "(p" + from_id + ")" +
+        write_log("geneflow " + from + "(p" + from_id + ")" +
                              " -> " + to + "(p" + to_id + ")" + " set to 0%");
 
     population(to_id).setMigrationRates(from_id, rate);
@@ -585,7 +615,7 @@ function (void) set_geneflow(object<Dictionary> event, f$ rate) {
 
 // Distribute individuals uniformly within the boundary of the given population
 function (void) set_coordinates(lifso<Individual> inds, i$ id, [l$ log = T]) {
-    if (log) log_output("distributing individuals of " +
+    if (log) write_log("distributing individuals of " +
                         filter(POPULATIONS, "pop_id", id).getValue("pop") +
                         "(p" + id + ")");
     for (ind in inds) {
@@ -624,16 +654,6 @@ function (f) dispersal_fun(s$ fun, f$ param) {
     y = distance * sin(angle);
 
     return(c(x, y));
-}
-
-// Get subpopulation object based on a given identifier
-// (SLiM-based numerber or a user-defined string name)
-function (lifso<Subpopulation>$) population(si$ i) {
-    if (isString(i)) i = filter(POPULATIONS, "pop", i).getValue("pop_id");
-    if (!any(i == sim.subpopulations.id))
-        stop("Population " + filter(POPULATIONS, "pop_id", i).getValue("pop") +
-                 " not present in the simulation in generation " + community.tick);
-    return sim.subpopulations[i == sim.subpopulations.id];
 }
 
 function (object<Dictionary>) collect_metadata(void) {
@@ -676,7 +696,7 @@ function (object<Dictionary>) collect_metadata(void) {
 
     metadata.setValue("arguments", Dictionary(
         "SEQUENCE_LENGTH", SEQUENCE_LENGTH,
-        "RECOMB_RATE", RECOMB_RATE,
+        "RECOMBINATION_RATE", RECOMBINATION_RATE,
         "SEED", SEED,
         "BURNIN_LENGTH", BURNIN_LENGTH,
         "SIMULATION_LENGTH", SIMULATION_LENGTH,
@@ -692,19 +712,14 @@ function (object<Dictionary>) collect_metadata(void) {
 
 // Compose a path to a configuration file
 function (s) config_path(s file) {
-    return MODEL + "/" + file;
+    return MODEL_PATH + "/" + file;
 }
 
 // Write the locations table header
 function (void) write_locations_header(void) {
-    filename = OUTPUT_LOCATIONS;
+    filename = LOCATIONS_PATH;
     header_str = "gen\tpop_id\tpop\tind\tx\ty";
     writeFile(filename, header_str, compress = T);
-}
-
-// Write the given log output message with the time stamp
-function (void) log_output(s$ str) {
-    catn("Generation " + community.tick + ": " + str);
 }
 
 ///
@@ -809,4 +824,154 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
         stop("Unknown column '" + column_name + "' in a dataframe");
 
     return values;
+}
+
+///
+/// Public-facing "slendr API"
+///
+
+// Given a string containing a symbolic name of a slendr population (or
+// multiple populations) as used in a slendr R script, return the corresponding
+// SLiM subpopulation objects
+function (lifso<Subpopulation>) population(si id, [l$ check = F]) {
+    // if a string name was given, extract the corresponding population index
+    if (isString(id)) {
+      index = filter(POPULATIONS, "pop", id).getValue("pop_id");
+      names = id;
+    } else { // slendr internally uses also numerical identifiers (non-public)
+      index = id;
+      names = filter(POPULATIONS, "pop_id", id).getValue("pop");
+    }
+
+    // check that all identifiers correspond to populations in the slendr model
+    if (length(index) != length(id) | length(names) != length(id))
+        stop("Not all provided population identifiers are present in the model.\n" +
+             "Check your code to make sure that all of these are defined: " +
+             paste(id, sep = ", "));
+
+    // check that all given populations exist in the simulation at this time
+    matches = sapply(index, "any(applyValue == sim.subpopulations.id);");
+    if (check)
+      return(all(matches));
+    else if (!all(matches)) {
+        stop("The following populations not present in tick " +
+             community.tick + " (slendr model time " + model_time(community.tick) +
+             "): " + paste(names[!matches], sep = ", "));
+    }
+
+    // extract matches of given population identifiers to SLiM objects
+    extract = sapply(sim.subpopulations.id, "any(applyValue == index);");
+
+    return sim.subpopulations[extract];
+}
+
+// Convert a time value specified in time units used by a corresponding slendr
+// model to forward-time tick value used in SLiM
+function (i) tick(i model_time) {
+    // for backward-time slendr models, first convert time to forward direction
+    // (assuming a given generation time and the total expected run time of the
+    // simulation)
+    if (DIRECTION == "backward")
+        original_time = ORIGINAL_LENGTH - model_time + GENERATION_TIME;
+    else
+        original_time = model_time;
+
+    // convert the forward time from slendr time units to generations (ticks)
+    tick_time = asInteger(round(original_time / GENERATION_TIME));
+
+    tick_time = tick_time + BURNIN_LENGTH;
+
+    invalid_time = tick_time < 1 | tick_time > SIMULATION_END;
+    if (any(invalid_time)) {
+        split_times = POPULATIONS.getValue("tsplit_orig");
+        if (DIRECTION == "backward") {
+            oldest_event = max(split_times);
+            youngest_event = oldest_event - ORIGINAL_LENGTH;
+        } else {
+            oldest_event = min(split_times);
+            youngest_event = oldest_event + ORIGINAL_LENGTH;
+        }
+        stop("Some of the times fall outside of the range of the slendr model:\n" +
+             "  - oldest possible event: " + oldest_event + "\n" +
+             "  - youngest possible event: " +  youngest_event + "\n\n" +
+             "The offending times were: " + paste(time[invalid_time], sep = ", "));
+    }
+
+    return(tick_time);
+}
+
+// Convert a tick time in the simulation to the original slendr model time
+// (i.e., if the model was specified in units of "years before present", this
+// function will convert a tick value in the SLiM simulation back to "years
+// before present").
+function(i) model_time (i tick) {
+    invalid_tick = tick < (SIMULATION_START - BURNIN_LENGTH) | tick > SIMULATION_END;
+
+    if (any(invalid_tick)) {
+        stop("Some tick values are outside of the time range of the current simulation:\n" +
+             "  - oldest possible event: " + (SIMULATION_START - BURNIN_LENGTH) + "\n" +
+             "  - youngest possible event: " +  SIMULATION_END + "\n\n" +
+             "The offending times were: " + paste(tick[invalid_tick], sep = ", "));
+    }
+
+    if (DIRECTION == "backward") {
+        oldest_time = max(POPULATIONS.getValue("tsplit_orig"));
+        model_time = oldest_time - (tick - BURNIN_LENGTH - 1) * GENERATION_TIME;
+    } else {
+        model_time = (tick - SIMULATION_START + 1) * GENERATION_TIME;
+    }
+
+    return(asInteger(model_time));
+}
+
+// Save the complete state of the simulation, including slendr-specific
+// population tags and values.
+function (void) save_state (void) {
+  // save the full genomic state of the simulation to a file
+  sim.outputFull(STATE_PATH + "population.txt");
+
+  // extract slendr-specific metadata and save it to a file too
+  pop_data = Dictionary(
+    "pop_id", sim.subpopulations.id,
+    "dispersal", sim.subpopulations.getValue("dispersal"),
+    "dispersal_fun", sim.subpopulations.getValue("dispersal_fun"),
+    "spatial", sim.subpopulations.getValue("spatial")
+  ).serialize(format = "json");
+  writeFile(STATE_PATH + "slendr.txt", pop_data);
+}
+
+// Load the complete state of the simulation, including slendr-specific
+// population tags and values, and choose a new random seed.
+function (void) reset_state (void) {
+  // read the genomic state of the simulation
+  sim.readFromPopulationFile(STATE_PATH + "population.txt");
+
+  // increment the random seed after loading the simulation state
+  setSeed(rdunif(1, 0, asInteger(2^31) - 1));
+
+  // read the slendr metadata and assign appropriate tag values to each
+  // loaded population to reset the proper slendr state (these tags are
+  // not saved by sim.outputFull)
+  pop_data = Dictionary(readFile(STATE_PATH + "slendr.txt"));
+  for (pop_id in pop_data.getValue("pop_id")) {
+      pop = population(pop_id);
+      pop_values = filter(pop_data, "pop_id", pop_id);
+      pop.setValue("dispersal", pop_values.getValue("dispersal"));
+      pop.setValue("dispersal_fun", pop_values.getValue("dispersal_fun"));
+      pop.setValue("spatial", pop_values.getValue("spatial"));
+  }
+}
+
+// Print a log output message with a time stamp
+function (void) write_log(s$ str) {
+    tick_value = community.tick;
+    catn("tick " + tick_value + " (model time " + model_time(tick_value) + "):\n  - " + str);
+}
+
+function (void) save_ts(s$ path) {
+    // add slendr-specific metadata to its own Dictionary key
+    metadata = collect_metadata();
+
+    sim.treeSeqOutput(path, metadata = Dictionary("slendr", metadata));
+    write_log("saving the tree sequence output to '" + path + "'");
 }

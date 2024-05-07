@@ -49,6 +49,7 @@
     <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
     <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
     <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
+    <a class="dropdown-item" href="../articles/vignette-11-extensions.html">Selection simulations using slendr</a>
   </div>
 </li>
 <li class="nav-item">
@@ -92,7 +93,7 @@
 <span>  <span class="va">mutation_rate</span>,</span>
 <span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  keep_existing <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  mut_type <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  mutation_model <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -116,11 +117,12 @@ number available)</p></dd>
 <dd><p>Keep existing mutations?</p></dd>
 
 
-<dt>mut_type</dt>
-<dd><p>Assign SLiM mutation type to neutral mutations? If
-<code>NULL</code> (default), no special mutation type will be used. If an
-integer number is given, mutations of the SLiM mutation type with that
-integer identifier will be created.</p></dd>
+<dt>mutation_model</dt>
+<dd><p>Which mutation model to use? If <code>NULL</code> (default),
+no special mutation type will be used. Otherwise, a mutation model matching
+<a href="https://tskit.dev/msprime/docs/stable/mutations.html" class="external-link">https://tskit.dev/msprime/docs/stable/mutations.html</a> may be provided as
+a Python/reticulate object. For instance, <code>msprime$SLiMMutationModel(type=42L)</code>
+will add SLiM mutation with the mutation type 42.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -156,7 +158,7 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═════════════════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence             ║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │       70║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │       68║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│   500000║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
@@ -164,26 +166,26 @@ map</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │       26║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼─────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │204.8 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │209.8 KiB║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size    │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 298│ 9.3 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 294│ 9.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│  73│ 8.9 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│  71│ 8.7 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│ 8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │2246│82.3 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │2213│81.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  86│ 3.9 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │  85│ 3.8 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   5│ 2.6 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   4│38.1 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   4│45.3 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │2240│54.7 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │2210│54.0 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧════════╧════════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>

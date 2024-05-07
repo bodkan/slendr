@@ -1,0 +1,64 @@
+// Define model constants all in one place (each {{placeholder}} will be
+// substituted by slendr with a value passed from R).
+// Note that string constant template patterns must be surrounded by "quotes"!
+initialize() {
+  defineConstant("s", {{s}});
+  defineConstant("onset_time", {{onset_time}});
+  defineConstant("output_file", "{{output_file}}");
+}
+
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations). Note that we can refer to slendr's
+// constants SEQUENCE_LENGTH and RECOMBINATION_RATE, which will carry values
+// passed through from R via slendr's slim() R function.
+initialize() {
+  initializeMutationType("m1", 0.5, "f", 0.0); // neutral mutations
+  initializeMutationType("m2", 0.5, "f", s); // beneficial mutation
+
+  initializeGenomicElementType("g1", m1, 1.0);
+  initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
+
+  initializeMutationRate(1e-8);
+  initializeRecombinationRate(RECOMBINATION_RATE);
+}
+
+function (void) add_mutation(void) {
+  // sample the first target carrier chromosome of the new mutation...
+  target = sample(population("pop").genomes, 1);
+  // ... and add the mutation right in the middle of it
+  mutation = target.addNewDrawnMutation(m2, position = asInteger(SEQUENCE_LENGTH / 2));
+
+  defineGlobal("BACKGROUND", target.mutations);
+  defineGlobal("FOCAL", mutation);
+
+  write_log("adding beneficial mutation to population " + pop_name);
+}
+
+tick(onset_time) late() {
+  // save simulation state in case we need to restart if the mutation is lost
+  save_state();
+
+  add_mutation("pop", s);
+}
+
+tick(onset_time):SIMULATION_END late() {
+  // the mutation is not segregating and is not fixed either -- we must restart
+  if (!FOCAL.isSegregating & !FOCAL.isFixed) {
+    write_log("mutation lost -- restarting");
+
+    reset_state();
+
+    add_mutation("pop", s);
+  }
+}
+
+// save mutation frequencies along the genome to a TSV file
+SIMULATION_END late() {
+  df = DataFrame(
+    "pos", BACKGROUND.position,
+    "freq", sim.mutationFrequencies(population("pop"), BACKGROUND)
+  );
+  writeFile(output_file, df.serialize(format = "tsv"));
+}

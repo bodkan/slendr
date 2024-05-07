@@ -461,10 +461,11 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
 #'   (if \code{NULL}, a seed will be generated between 0 and the maximum integer
 #'   number available)
 #' @param keep_existing Keep existing mutations?
-#' @param mut_type Assign SLiM mutation type to neutral mutations? If
-#'   \code{NULL} (default), no special mutation type will be used. If an
-#'   integer number is given, mutations of the SLiM mutation type with that
-#'   integer identifier will be created.
+#' @param mutation_model Which mutation model to use? If \code{NULL} (default),
+#'   no special mutation type will be used. Otherwise, a mutation model matching
+#'   <https://tskit.dev/msprime/docs/stable/mutations.html> may be provided as
+#'   a Python/reticulate object. For instance, \code{msprime$SLiMMutationModel(type=42L)}
+#'   will add SLiM mutation with the mutation type 42.
 #'
 #' @return Tree-sequence object of the class \code{slendr_ts}, which serves as
 #'   an interface point for the Python module tskit using slendr functions with
@@ -489,13 +490,10 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
 #' ts_mutate
 #' @export
 ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
-                      keep_existing = TRUE, mut_type = NULL) {
+                      keep_existing = TRUE, mutation_model = NULL) {
   check_ts_class(ts)
 
   if (attr(ts, "mutated")) stop("Tree sequence already mutated", call. = FALSE)
-
-  if (is.numeric(mut_type) && attr(ts, "type") == "SLiM")
-    mut_type <- msp$SLiMMutationModel(type = as.integer(mut_type))
 
   random_seed <- set_random_seed(random_seed)
 
@@ -503,7 +501,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
     msp$sim_mutations(
       ts,
       rate = mutation_rate,
-      model = mut_type,
+      model = mutation_model,
       keep = keep_existing,
       random_seed = random_seed
     )
@@ -590,7 +588,7 @@ ts_metadata <- function(ts) {
 #' gts <- ts_genotypes(ts)
 #' @export
 ts_genotypes <- function(ts) {
-  if (!attr(ts, "mutated"))
+  if (ts$num_mutations == 0)
     stop("Extracting genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
 
@@ -612,8 +610,11 @@ ts_genotypes <- function(ts) {
     positions <- positions[biallelic_pos]
   }
 
-  chromosomes <- ts_nodes(ts) %>%
-    dplyr::filter(!is.na(name)) %>%
+  if (is.null(attr(ts, "model")))
+    data$name <- paste(data$pop, data$ind_id, sep = "_")
+
+  chromosomes <- data %>%
+    dplyr::filter(sampled) %>%
     dplyr::as_tibble() %>%
     dplyr::mutate(chr_name = sprintf("%s_chr%i", name, 1:2)) %>%
     dplyr::select(chr_name, node_id) %>%

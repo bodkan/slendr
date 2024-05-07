@@ -4,8 +4,8 @@ pop <- population("POP", time = 1, N = 100)
 
 model <- compile_model(populations = pop, generation_time = 1, simulation_length = 200)
 
-ts_file <- tempfile(fileext = ".trees")
-slim(model, sequence_length = 1000000, recombination_rate = 0, random_seed = 42, output = ts_file)
+ts_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
+slim(model, sequence_length = 1000000, recombination_rate = 0, random_seed = 42, ts = ts_file)
 
 ts <- ts_load(ts_file, model) %>% ts_recapitate(Ne = 100, recombination_rate = 0, random_seed = 42) %>%
   ts_simplify(simplify_to = paste0("POP_", seq(1, 10)))

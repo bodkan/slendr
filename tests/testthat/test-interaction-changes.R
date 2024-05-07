@@ -1,3 +1,7 @@
+RERUN <- FALSE
+
+init_env(quiet = TRUE)
+
 map <- readRDS("map.rds")
 
 pop <- population("pop", time = 1000, N = 10, map = map, center = c(0, 40), radius = 500e3) %>%
@@ -54,20 +58,20 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
 
   slim_sim <- function(dispersal_fun, dispersal, seed) {
-
+    # dispersal_fun <- "normal"; dispersal <- 10; seed <- 42
     pop <- population("pop", time = 1, N = 3000, map = map, center = c(50, 50), radius = 0.5,
                        dispersal = 0.1) %>%
       set_range(time = 2, center = c(50, 50), radius = 50) %>%
       set_dispersal(time = 2, dispersal = dispersal, dispersal_fun = dispersal_fun)
 
     model <- compile_model(
-      pop, file.path(tempdir(), paste0("model_", dispersal_fun)),
+      populations = pop, path = file.path(tempdir(), paste0("model_", dispersal_fun)),
       generation_time = 1, competition = 0, mating = 1,
       simulation_length = 2, resolution = 0.1, overwrite = TRUE, force = TRUE
     )
 
-    locations_file <- tempfile(fileext = ".gz")
-    slim(model, sequence_length = 1, recombination_rate = 0, method = "batch",
+    locations_file <- normalizePath(tempfile(fileext = ".gz"), winslash = "/", mustWork = FALSE)
+    slim(model, sequence_length = 1, recombination_rate = 0, method = "batch", ts = FALSE,
          locations = locations_file, max_attempts = 1, verbose = FALSE, random_seed = seed)
 
     locations <- readr::read_tsv(locations_file, show_col_types = FALSE, progress = FALSE) %>%
@@ -131,15 +135,17 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
 
   distances <- rbind(slim_distances, r_distances)
 
-  # library(ggplot2)
-  # p <- ggplot2::ggplot(distances, aes(distance, color = source)) +
-  #   geom_density() +
-  #   coord_cartesian(xlim = c(0, 50)) +
-  #   facet_wrap(~ fun, scales = "free") +
-  #   guides(color = guide_legend("simulation"))
-  #
-  # original_png <- "distances.png"
-  # ggsave(original_png, p, width = 8, height = 5)
+  if (RERUN) {
+  library(ggplot2)
+  p <- ggplot2::ggplot(distances, aes(distance, color = source)) +
+    geom_density() +
+    coord_cartesian(xlim = c(0, 50)) +
+    facet_wrap(~ fun, scales = "free") +
+    guides(color = guide_legend("simulation"))
+
+  original_png <- "distances.png"
+  ggsave(original_png, p, width = 8, height = 5)
+  }
 
   # compare the SLiM dispersal distributions to the distributions randomly
   # sampled in R using the Kolmogorov-Smirnov test
@@ -168,10 +174,14 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   set.seed(42)
   distances <- distances[sort(sample(1:nrow(distances), size = 5000)), ]
 
-  # current_tsv <- paste0(tempfile(), ".tsv.gz")
-  # readr::write_tsv(distances, current_tsv, progress = FALSE)
+  if (RERUN) {
+  current_tsv <- paste0(tempfile(), ".tsv.gz")
+  readr::write_tsv(distances, current_tsv, progress = FALSE)
+  }
   original_tsv <- "distances.tsv.gz"
-  # readr::write_tsv(distances, original_tsv, progress = FALSE)
+  if (RERUN) {
+  readr::write_tsv(distances, original_tsv, progress = FALSE)
+  }
   orig_distances <- readr::read_tsv(original_tsv, show_col_types = FALSE, progress = FALSE)
 
   # make sure that the current distance distribution matches the original one

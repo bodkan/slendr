@@ -1,0 +1,49 @@
+// Because we want to simulate non-neutral evolution, we have to provide a
+// custom initialization callback -- slendr will use it to replace its default
+// neutral genomic architecture (i.e. the initialize() {...} callback it uses
+// by default for neutral simulations).
+initialize() {
+  initializeMutationType("m1", 0.5, "f", -0.008); // deleterious mutations
+  initializeGenomicElementType("g1", m1, 1.0); // 'exon' genomic type
+
+  // parameters to be substitute()'d in R below
+  total_length = {{total_length}};
+  exon_length = {{exon_length}};
+  gap_length = {{gap_length}};
+
+  exons = c(); // exon start-end coordinates
+  breakpoints = c(); // recombination breakpoints
+  rates = c(); // recombination rates
+
+  // compute coordinates of exons, as well as the recombination map
+  start = 0;
+  while (start < total_length) {
+    // start-end of an exon
+    end = start + exon_length - 1;
+    exons = c(exons, start, end);
+
+    // uniform recombination within the exon, followed by a 0.5 recombination breakpoint
+    rates = c(rates, 1e-8, 0.5);
+    breakpoints = c(breakpoints, end, end + 1);
+
+    // start of the following gap
+    start = end + gap_length + 1;
+
+    // uniform recombination within the gap, followed by a 0.5 recombination breakpoint
+	  rates = c(rates, 1e-8, 0.5);
+  	breakpoints = c(breakpoints, start - 1, start);
+  }
+
+  // odd elements --> starts of exons, even elements --> ends of exons
+  exon_starts = integerMod(seqAlong(exons), 2) == 0;
+  exon_ends = integerMod(seqAlong(exons), 2) == 1;
+
+  // set up all the exons at once
+  initializeGenomicElement(g1, exons[exon_starts], exons[exon_ends]);
+
+  // set up 0.5 recombination between exons/gaps, uniform recombination within
+  initializeRecombinationRate(rates, breakpoints);
+
+  // mutation rate of deleterious mutations within exons
+  initializeMutationRate(1e-8);
+}

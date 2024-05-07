@@ -187,7 +187,7 @@ def simulate(
           "sample_names": sample_names,
           "arguments": {
             "SEQUENCE_LENGTH"   : sequence_length,
-            "RECOMB_RATE"       : recombination_rate,
+            "RECOMBINATION_RATE"       : recombination_rate,
             "SEED"              : seed,
             "SIMULATION_LENGTH" : length
           }
