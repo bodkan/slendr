@@ -94,6 +94,18 @@ test_that("SLiM extension file is correctly embedded into the compiled script", 
 
 test_that("if simulation length is not given in a model, slim() requires it (non-custom script)", {
   pop <- population("pop", time = 100, N = 100) %>% resize(time = 10, N = 10, how = "step")
+
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(RECOMBINATION_RATE);
+  })"
+
   model <- compile_model(populations = pop, generation_time = 1, extension = extension)
 
   msg <- "Specifying the `sequence_length =` argument is required"
@@ -104,6 +116,18 @@ test_that("if simulation length is not given in a model, slim() requires it (non
 
 test_that("if recombination rate is not given in a model, slim() requires it (non-custom script)", {
   pop <- population("pop", time = 100, N = 100) %>% resize(time = 10, N = 10, how = "step")
+
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(RECOMBINATION_RATE);
+  })"
+
   model <- compile_model(populations = pop, generation_time = 1, extension = extension)
 
   msg <- "Specifying the `recombination_rate =` argument is required"
@@ -129,8 +153,7 @@ test_that("if simulation length is not given in a model, slim() requires it (cus
 
   msg <- "Specifying the `sequence_length =` argument is required"
   expect_error(slim(model), msg)
-  expect_error(slim(model, recombination_rate = 1e-8), msg)
-  expect_s3_class(slim(model, sequence_length = 100, recombination_rate = 0), "slendr_ts")
+  expect_s3_class(slim(model, sequence_length = 100), "slendr_ts")
 })
 
 test_that("if recombination rate is not given in a model, slim() requires it (customized script)", {
@@ -151,8 +174,7 @@ test_that("if recombination rate is not given in a model, slim() requires it (cu
 
   msg <- "Specifying the `recombination_rate =` argument is required"
   expect_error(slim(model), msg)
-  expect_error(slim(model, sequence_length = 100), msg)
-  expect_s3_class(slim(model, sequence_length = 100, recombination_rate = 0), "slendr_ts")
+  expect_s3_class(slim(model, recombination_rate = 0), "slendr_ts")
 })
 
 test_that("slim() does not require sequence length and recombination rate with custom scripts", {
