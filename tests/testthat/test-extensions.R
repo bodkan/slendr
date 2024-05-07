@@ -1,3 +1,7 @@
+skip_if(!is_slendr_env_present())
+
+init_env(quiet = TRUE)
+
 # basic extension type and sanity checking --------------------------------
 
 test_that("an valid extension snippet must be a string or a file", {
