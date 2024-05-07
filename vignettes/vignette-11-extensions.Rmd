@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
   dpi = 60,
   eval = Sys.getenv("RUNNER_OS") == "" && slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
 )
+
+RERUN <- FALSE
 ```
 
 ## Introduction
@@ -832,7 +834,7 @@ samples <- rbind(nea_samples, modern_samples)
 
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
-```{r, eval = file.exists("~/Projects/introgression_data/output.trees")}
+```{r, eval = RERUN}
 output_dir <- tempdir()
 slim(model, recombination_rate = 1e-8, samples = samples, output_dir = output_dir)
 ```
@@ -841,7 +843,7 @@ It's been suggested that Neanderthals had a significantly lower $N_e$ compared t
 
 The above implies that if we compute the proportion of Neanderthal ancestry along a sample of European genomes, we should see a clear dip in the amount of surviving Neanderthal DNA as a function of distance from a locus under selection. Because our customized SLiM snippet saved the allele frequency of each Neanderthal marker in Europeans, we can just load this data and directly visualize it:
 
-```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/output.trees")}
+```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/output_frequencies.tsv")}
 freqs <- read_tsv("~/Projects/introgression_data/output_frequencies.tsv") %>% mutate(pos = pos %% 5e6)
 
 group_by(freqs, pos) %>%
