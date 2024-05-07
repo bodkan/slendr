@@ -449,10 +449,11 @@ Missing a parameter gives an error immediately:
 ```{r, eval = FALSE}
 extension <- substitute_values(
   extension_path,
-  # specification of `s` is missing!
   onset_time = 15000,
   origin_pop = "EUR", target_pop = "EUR"
 )
+
+# Error: The extension script contains the following unsubstituted patterns: {{s}}
 ```
 
 Then plug the parametrized script into `compile_model()` just as we did above:
@@ -463,8 +464,17 @@ model <- compile_model(
   gene_flow = gf, generation_time = 30,
   extension = extension
 )
+```
 
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output_dir = "~/Desktop/trajectories")
+```{r, echo = FALSE}
+output_dir <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output_dir = output_dir)
+```
+
+```{r, eval = FALSE}
+output_dir <- tempdir()
+slim(model, sequence_length = 1e6, recombination_rate = 0, output_dir = output_dir,
+     ts = FALSE, random_seed = 42)
 ```
 
 We can leverage the flexibility of this solution to run another version of this model, this time adding the mutation to a different population. In fact, let's check what happens when the beneficial allele appears in EHG, ANA, and YAM populations. Note that this uses the same extension snippet, and just substitutes different values to the placeholder parameters:
@@ -483,8 +493,8 @@ run_model <- function(origin_pop, onset_time) {
     extension = extension
   )
   
-  slim(model, sequence_length = 1e6, recombination_rate = 1e-8,
-       output_dir = "~/Desktop/trajectories", ts = FALSE)
+  slim(model, sequence_length = 1e6, recombination_rate = 0,
+       output_dir = output_dir, ts = FALSE, random_seed = 42)
 }
 
 run_model(origin_pop = "EUR", onset_time = 15000)
@@ -497,7 +507,7 @@ We can visualize the different trajectories like this. Not that the different al
 
 ```{r trajectories}
 load_traj <- function(origin_pop) {
-  df <- read.table(paste0("~/Desktop/trajectories/traj_EUR_", origin_pop, ".tsv"), header = TRUE)
+  df <- read.table(file.path(output_dir, paste0("traj_EUR_", origin_pop, ".tsv")), header = TRUE)
   df$origin <- origin_pop
   df$target <- "EUR"
   df
@@ -622,8 +632,8 @@ run_model <- function(origin_pop, onset_time) {
     extension = extension
   )
   
-  slim(model, sequence_length = 1e6, recombination_rate = 1e-8,
-       output_dir = "~/Desktop/trajectories", ts = FALSE)
+  slim(model, sequence_length = 1e6, recombination_rate = 0,
+       output_dir = output_dir, ts = FALSE, random_seed = 42)
 }
 
 run_model("EUR", onset_time = 15000)
@@ -822,17 +832,17 @@ samples <- rbind(nea_samples, modern_samples)
 
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
-
-```{r, eval = FALSE}
-slim(model, recombination_rate = 1e-8, samples = samples, output_dir = "~/Desktop/introgression")
+```{r, eval = file.exists("~/Projects/introgression_data/output.trees")}
+output_dir <- tempdir()
+slim(model, recombination_rate = 1e-8, samples = samples, output_dir = output_dir)
 ```
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
 
 The above implies that if we compute the proportion of Neanderthal ancestry along a sample of European genomes, we should see a clear dip in the amount of surviving Neanderthal DNA as a function of distance from a locus under selection. Because our customized SLiM snippet saved the allele frequency of each Neanderthal marker in Europeans, we can just load this data and directly visualize it:
 
-```{r introgression_freqs}
-freqs <- read_tsv("~/Desktop/introgression/output_frequencies.tsv") %>% mutate(pos = pos %% 5e6)
+```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/output.trees")}
+freqs <- read_tsv("~/Projects/introgression_data/output_frequencies.tsv") %>% mutate(pos = pos %% 5e6)
 
 group_by(freqs, pos) %>%
 summarise(freq = 100 * mean(freq)) %>%
@@ -851,15 +861,15 @@ We shouldn't forget that the core output data structure of _slendr_ is a tree se
 
 For instance, as an alternative to the direct computation of allele frequencies during the SLiM run (saved in `output_frequencies.tsv`), we could use the simulated tree sequence to quickly calculate the genetic divergence between Europeans and a Neanderthal in windows along the simulated genome.
 
-```{r}
+```{r, eval = file.exists("~/Projects/introgression_data/output.trees")}
 n_genes <- 200
 gene_length <- 5e6
 window_length <- 100e3
 ```
 
-```{r}
+```{r, eval = file.exists("~/Projects/introgression_data/output.trees")}
 # load a tree sequence and extract the names of recorded individuals
-ts <- ts_load(file = "~/Desktop/introgression/output.trees", model)
+ts <- ts_load(file = "~/Projects/introgression_data/output.trees", model)
 samples <- ts_names(ts, split = "pop")
 
 samples
@@ -874,7 +884,7 @@ tail(windows)
 divergence <- ts_divergence(ts, samples, windows = windows, mode = "branch")$divergence[[1]]
 ```
 
-```{r}
+```{r, eval = file.exists("~/Projects/introgression_data/output.trees")}
 # compute average divergence at each position in a gene, and a 95% C.I.
 div_df <- tibble(
   pop = "eur",
@@ -889,7 +899,7 @@ div_df <- tibble(
   ) 
 ```
 
-```{r introgression_divergence}
+```{r introgression_divergence, eval = file.exists("~/Projects/introgression_data/output.trees")}
 ggplot(div_df) +
   geom_ribbon(aes(pos, ymin = ci_low, ymax = ci_up), fill = "grey70") +
   geom_line(aes(pos, mean)) +
