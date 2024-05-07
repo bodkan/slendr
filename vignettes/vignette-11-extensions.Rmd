@@ -371,7 +371,7 @@ extension_path <- system.file("extdata", "extension_trajectory.txt", package = "
 Sys.setenv(EXTENSION1 = extension_path)
 ```
 
-```{bash, echo = FALSE, comment = ""}
+```{bash, echo = FALSE, comment = "", eval = (Sys.getenv("RUNNER_OS") != "Windows")}
 less ${EXTENSION1}
 ```
 
@@ -429,7 +429,7 @@ extension_path <- system.file("extdata", "extension_trajectory_params.txt", pack
 Sys.setenv(EXTENSION = extension_path)
 ```
 
-```{bash, echo = FALSE, comment = ""}
+```{bash, echo = FALSE, comment = "", eval = (Sys.getenv("RUNNER_OS") != "Windows")}
 less ${EXTENSION}
 ```
 
