@@ -324,9 +324,20 @@ slim <- function(
   if (!dir.exists(model_dir))
     stop(sprintf("Model directory '%s' does not exist", model_dir), call. = FALSE)
 
-  if (!missing(sequence_length) && (sequence_length %% 1 != 0 || sequence_length <= 0))
+  script_contents <- readLines(normalizePath(file.path(model$path, "script.slim"),
+                                             winslash = "/", mustWork = TRUE))
+  seqlen_required <- any(grepl("SEQUENCE_LENGTH", script_contents))
+  if (missing(sequence_length) && seqlen_required)
+    stop("Specifying the `sequence_length =` argument is required", call. = FALSE)
+  recrate_required <- any(grepl("RECOMBINATION_RATE", script_contents))
+  if (missing(recombination_rate) && recrate_required)
+    stop("Specifying the `recombination_rate =` argument is required", call. = FALSE)
+
+  if (!missing(sequence_length) && seqlen_required &&
+      (sequence_length %% 1 != 0 || sequence_length <= 0))
     stop("Sequence length must be a non-negative integer number", call. = FALSE)
-  if (!missing(sequence_length) && (!is.numeric(recombination_rate) || recombination_rate < 0))
+  if (!missing(sequence_length) && recrate_required &&
+      (!is.numeric(recombination_rate) || recombination_rate < 0))
     stop("Recombination rate must be a numeric value", call. = FALSE)
 
   if (missing(sequence_length)) sequence_length <- -1
