@@ -346,8 +346,10 @@ slim <- function(
   burnin <- round(burnin / model$generation_time)
 
   sampling_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-  sampling_df <- process_sampling(samples, model, verbose)
-  readr::write_tsv(sampling_df, sampling_path)
+  if (ts != FALSE) {
+    sampling_df <- process_sampling(samples, model, verbose)
+    readr::write_tsv(sampling_df, sampling_path)
+  }
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
   if (binary != "open -a SLiMgui" && Sys.which(binary) == "")
