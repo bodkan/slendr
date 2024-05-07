@@ -323,3 +323,138 @@ test_that("output directory can be set and files (but no tree sequence) are save
   expect_true(file.exists(output_file))
   expect_true(readLines(output_file) == "asdf")
 })
+
+test_that("substitute_values() complains about missing parameters", {
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, {{seq_len}});
+
+    initializeMutationRate(0);
+    initializeRecombinationRate({{rec_rate}});
+  }
+  )"
+
+  expect_error(
+    substitute_values(extension, seq_len = 123),
+    "The extension script contains the following unsubstituted patterns: \\{\\{rec_rate\\}\\}"
+  )
+})
+
+test_that("substitute_values() complains about extra parameters (string)", {
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, {{seq_len}});
+
+    initializeMutationRate(0);
+    initializeRecombinationRate({{rec_rate}});
+  }
+  )"
+
+  expect_error(
+    substitute_values(extension, seq_len = 123, rec_rate = 1e-8, ahoy = 42),
+    "Template pattern '\\{\\{ahoy\\}\\}' not found in the extension script"
+  )
+})
+
+test_that("substitute_values() complains about extra parameters (file)", {
+  extension_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, {{seq_len}});
+
+    initializeMutationRate(0);
+    initializeRecombinationRate({{rec_rate}});
+  }
+  )" %>% { writeLines(text = ., con = extension_file)}
+
+  expect_error(
+    substitute_values(extension_file, seq_len = 123),
+    "The extension script contains the following unsubstituted patterns: \\{\\{rec_rate\\}\\}"
+  )
+})
+
+test_that("substitute_values() complains about extra parameters (string)", {
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, {{seq_len}});
+
+    initializeMutationRate(0);
+    initializeRecombinationRate({{rec_rate}});
+  }
+  )"
+
+  expect_error(
+    substitute_values(extension, seq_len = 123, rec_rate = 1e-8, ahoy = 42),
+    "Template pattern '\\{\\{ahoy\\}\\}' not found in the extension script"
+  )
+})
+
+test_that("substitute_values() complains about extra parameters (file)", {
+  extension_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, {{seq_len}});
+
+    initializeMutationRate(0);
+    initializeRecombinationRate({{rec_rate}});
+  }
+  )" %>% { writeLines(text = ., con = extension_file)}
+
+  expect_error(
+    substitute_values(extension_file, seq_len = 123, rec_rate = 1e-8, ahoy = 42),
+    "Template pattern '\\{\\{ahoy\\}\\}' not found in the extension script"
+  )
+})
+
+test_that("substitute_values() correctly instantiates parameters (string)", {
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, {{seq_len}});
+
+    initializeMutationRate(0);
+    initializeRecombinationRate({{rec_rate}});
+  }
+  )" %>% substitute_values(seq_len = 424242, rec_rate = 0.123456789)
+
+  extension_code <- readLines(extension)
+  expect_true(sum(grepl("424242", extension_code)) == 1)
+  expect_true(sum(grepl("0.123456789", extension_code)) == 1)
+})
+
+test_that("substitute_values() correctly instantiates parameters (file)", {
+  extension_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, {{seq_len}});
+
+    initializeMutationRate(0);
+    initializeRecombinationRate({{rec_rate}});
+  }
+  )" %>% { writeLines(text = ., con = extension_file)}
+  extension <- substitute_values(extension_file, seq_len = 424242, rec_rate = 0.123456789)
+
+  extension_code <- readLines(extension)
+  expect_true(sum(grepl("424242", extension_code)) == 1)
+  expect_true(sum(grepl("0.123456789", extension_code)) == 1)
+})
