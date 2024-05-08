@@ -9,9 +9,6 @@ initialize() {
     optional_arg("SEED", getSeed());
     setSeed(SEED); catn("SEED: " + getSeed());
 
-    required_arg("SEQUENCE_LENGTH");
-    required_arg("RECOMBINATION_RATE");
-
     optional_arg("MODEL_PATH", "."); // directory with model definition files
     optional_arg("TS_PATH", ""); // user-defined path to the output tree sequence
     optional_arg("LOCATIONS_PATH", ""); // wheere should locations of individuals be saved?
@@ -79,13 +76,16 @@ initialize() {
 
 // default slendr neutral initialization -- start
 initialize() {
+    required_arg("SEQUENCE_LENGTH");
+    required_arg("RECOMBINATION_RATE");
+
     initializeMutationType("m0", 0.5, "f", 0.0);
 
     initializeGenomicElementType("g1", m0, 1.0);
-    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1); // default chromosome
+    initializeGenomicElement(g1, 0, SEQUENCE_LENGTH - 1);
 
     initializeMutationRate(0);
-    initializeRecombinationRate(RECOMBINATION_RATE); // default recombination rate
+    initializeRecombinationRate(RECOMBINATION_RATE);
 }
 // default slendr neutral initialization -- end
 
