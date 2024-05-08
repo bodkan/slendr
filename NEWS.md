@@ -1,5 +1,9 @@
 # slendr (development version)
 
+- **A massive update introducing the possibility of simulating non-neutral models with `slim()` has been introduced. This update is too big to describe in the changelog -- for more information and motivation, see the [description in the associated PR](https://github.com/bodkan/slendr/pull/155), or [the new extensive vignette](http://slendr.net/articles/vignette-11-extensions.html) on the topic. Feedback on this functionality, missing features, and bug reports are highly appreciated!** ([PR #155](https://github.com/bodkan/slendr/pull/155))
+
+- The `output =` argument of `slim()` (and `msprime()`) has been renamed to `ts = `. If given a path, a tree sequence will be saved to that location. If set to `FALSE`, no tree sequence will be simulated. This change has been made to avoid generating tree sequences for simulations with customized outputs.  ([PR #155](https://github.com/bodkan/slendr/pull/155))
+
 - `ts_genotypes()` now works even for non-_slendr_ tree sequences, which do not have _slendr_ individual names of samples in the `ts_nodes()` output. ([#d348ec](https://github.com/bodkan/slendr/commit/d348ec))
 
 - The `slim_script` argument of `compile_model()` has been replaced by `slim_extension` argument, which allows users to provide their custom-designed SLiM snippets for extending the behavior of _slendr_'s SLiM simulation engine. ([#d11ac7](https://github.com/bodkan/slendr/commit/d11ac7))
