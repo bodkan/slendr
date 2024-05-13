@@ -86,12 +86,15 @@ print.slendr_model <- function(x, ...) {
     cat("  - number of spatial maps:", nrow(x$maps), "\n")
     cat("  - resolution:", x$resolution, "distance units per pixel\n\n")
   } else
-    cat("non-spatial\n\n")
+    cat("non-spatial\n")
+
+  if (x$customized)
+    cat("model contains a user-defined SLiM customization\n")
 
   if (is.null(x$path))
-    cat("non-serialized slendr model\n")
+    cat("\nnon-serialized slendr model\n")
   else
-    cat("configuration files in:", normalizePath(x$path, mustWork = FALSE), "\n")
+    cat("\nconfiguration files in:", normalizePath(x$path, mustWork = FALSE), "\n")
 }
 
 

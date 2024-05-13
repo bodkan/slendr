@@ -341,7 +341,7 @@ read_model <- function(path) {
   direction <- scan(path_direction, what = character(), quiet = TRUE)
 
   customized <- readLines(file.path(path, "script.slim")) %>%
-    grepl("// user extension code follows") %>%
+    grepl("// user extension code follows", .) %>%
     any()
 
   result <- list(
