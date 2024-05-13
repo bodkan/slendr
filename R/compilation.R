@@ -223,7 +223,10 @@ setting `direction = 'backward'.`", call. = FALSE)
     )
 
     writeLines(combined_script, slim_script)
-  }
+
+    customized <- TRUE
+  } else
+    customized <- FALSE
 
   if (serialize)
     checksums <- write_model(
@@ -254,7 +257,8 @@ setting `direction = 'backward'.`", call. = FALSE)
     orig_length = simulation_length,
     direction = time_dir,
     description = description,
-    checksums = checksums
+    checksums = checksums,
+    customized = customized
   )
   class(result) <- set_class(result, "model")
 
@@ -336,6 +340,10 @@ read_model <- function(path) {
 
   direction <- scan(path_direction, what = character(), quiet = TRUE)
 
+  customized <- readLines(file.path(path, "script.slim")) %>%
+    grepl("// user extension code follows") %>%
+    any()
+
   result <- list(
     path = path,
     world = world,
@@ -349,7 +357,8 @@ read_model <- function(path) {
     length = length,
     orig_length = orig_length,
     direction = direction,
-    checksums = checksums
+    checksums = checksums,
+    customized = customized
   )
   class(result) <- set_class(result, "model")
   result
