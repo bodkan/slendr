@@ -179,10 +179,12 @@ s0 late() /* Log the start of the simulation */ {
 }
 
 s1 late() /* Population splits */ {
-    pops = filter(POPULATIONS, "tsplit_gen", community.tick - BURNIN_LENGTH);
+    pops = filter(POPULATIONS, "tsplit_gen", c(1, community.tick - BURNIN_LENGTH));
 
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
+        // skip over ancestral populations, who have been created in generation 1
+        if (community.tick > 1 & pop.getValue("tsplit_gen") == 1) next;
         create_pop(pop);
     }
 
