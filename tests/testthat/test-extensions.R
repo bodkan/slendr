@@ -217,9 +217,9 @@ test_that("slim() does not accept sequence length and recombination rate with cu
   model <- compile_model(populations = pop, generation_time = 1, extension = extension)
 
   expect_error(slim(model, sequence_length = 1000),
-               "The `sequence_length =` argument given even when length is specified")
+               "Specifying `sequence_length =` is not allowed when it is already given")
   expect_error(slim(model, recombination_rate = 1e-8),
-               "The `recombination_rate =` argument given even when the rate is specified")
+               "Specifying `recombination_rate =` is not allowed when it is already given")
   expect_s3_class(slim(model), "slendr_ts")
 })
 
