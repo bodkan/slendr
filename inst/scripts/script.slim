@@ -695,13 +695,16 @@ function (object<Dictionary>) collect_metadata(void) {
     metadata.setValue("map", spatial_metadata);
 
     metadata.setValue("arguments", Dictionary(
-        "SEQUENCE_LENGTH", SEQUENCE_LENGTH,
-        "RECOMBINATION_RATE", RECOMBINATION_RATE,
         "SEED", SEED,
         "BURNIN_LENGTH", BURNIN_LENGTH,
         "SIMULATION_LENGTH", SIMULATION_LENGTH,
         "MAX_ATTEMPTS", MAX_ATTEMPTS
     ));
+
+    if (exists("RECOMBINATION_RATE"))
+      metadata.getValue("arguments").setValue("RECOMBINATION_RATE", RECOMBINATION_RATE);
+    if (exists("SEQUENCE_LENGTH"))
+      metadata.getValue("arguments").setValue("SEQUENCE_LENGTH", SEQUENCE_LENGTH);
 
     return(metadata);
 }

@@ -137,18 +137,22 @@ slim <- function(
 
   script_contents <- readLines(normalizePath(file.path(model$path, "script.slim"),
                                              winslash = "/", mustWork = TRUE))
-  seqlen_required <- sum(grepl("SEQUENCE_LENGTH", script_contents)) > 1
+  # 2 occurences in the default script involve metadata -- more means that the
+  # constant must be given on the command line
+  seqlen_required <- sum(grepl("SEQUENCE_LENGTH", script_contents)) > 2
   if (missing(sequence_length) && seqlen_required)
     stop("Specifying the `sequence_length =` argument is required", call. = FALSE)
   if (!missing(sequence_length) && !seqlen_required)
-    stop("The `sequence_length =` argument given even when length is specified\n",
+    stop("Specifying `sequence_length =` is not allowed when it is already given\n",
          "in the customized script", call. = FALSE)
 
-  recrate_required <- sum(grepl("RECOMBINATION_RATE", script_contents)) > 1
+  # 2 occurences in the default script involve metadata -- more means that the
+  # constant must be given on the command line
+  recrate_required <- sum(grepl("RECOMBINATION_RATE", script_contents)) > 2
   if (missing(recombination_rate) && recrate_required)
     stop("Specifying the `recombination_rate =` argument is required", call. = FALSE)
   if (!missing(recombination_rate) && !recrate_required)
-    stop("The `recombination_rate =` argument given even when the rate is specified\n",
+    stop("Specifying `recombination_rate =` is not allowed when it is already given\n",
          "in the customized script", call. = FALSE)
 
   if (!missing(sequence_length) && seqlen_required &&
