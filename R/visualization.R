@@ -306,7 +306,11 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   pop_factors <- order_pops(model$populations, model$direction)
 
   # extract times at which each population will be removed from the simulation
-  default_end <- if (model$direction == "backward") log10_ydelta else model$orig_length
+  if (model$direction == "backward")
+    default_end <- log10_ydelta
+  else
+    default_end <- get_oldest_time(model$populations, model$direction) + model$orig_length
+
   end_times <- purrr::map_int(populations, function(pop) {
     remove <- attr(pop, "remove")
     if (remove == -1)
