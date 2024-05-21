@@ -578,7 +578,7 @@ function (void) add_mutation(void) {
     // save the mutation for later reference
     defineGlobal("MUTATION", mut);
 
-    write_log("adding beneficial mutation to population " + target_pop);
+    write_log("adding beneficial mutation to population " + origin_pop);
 
     writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
 }
