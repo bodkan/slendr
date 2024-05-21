@@ -521,7 +521,10 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   else
     trans <- scales::identity_trans()
 
-
+  # make sure that the y-axis of a model is truncated exactly at the start and end time
+  # (it seems that the first rectangle that is drawn is plotted even "earlier" than a
+  # model start but this takes care of things for now -- if more plotting issues pop up,
+  # they can be fixed later)
   ylim_high <- get_oldest_time(model$populations, model$direction)
   if (model$direction == "forward") {
     ylim_high <- get_oldest_time(model$populations, model$direction)
