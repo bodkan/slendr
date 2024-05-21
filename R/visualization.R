@@ -521,7 +521,17 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   else
     trans <- scales::identity_trans()
 
-  p <- p + scale_y_continuous(trans = trans)
+
+  ylim_high <- get_oldest_time(model$populations, model$direction)
+  if (model$direction == "forward") {
+    ylim_high <- get_oldest_time(model$populations, model$direction)
+    ylim_low <- ylim_high + model$orig_length
+  } else {
+    ylim_high <- get_oldest_time(model$populations, model$direction)
+    ylim_low <- ylim_high - model$orig_length
+  }
+
+  p <- p + scale_y_continuous(limits = c(ylim_low, ylim_high), trans = trans)
 
   # if specified, overlay sampling points over the model
   if (!is.null(samples)) {
