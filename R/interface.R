@@ -1278,8 +1278,10 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
 
     if (strict)
       stop("A sampling event was scheduled outside of the simulation time window", call. = FALSE)
+    else if (model$direction == "forward")
+      times <- times[times <= oldest_time + model$orig_length]
     else
-      times <- times[times <= model$orig_length]
+      times <- times[times >= oldest_time - model$orig_length]
   }
 
   schedule <- lapply(times, function(t) {

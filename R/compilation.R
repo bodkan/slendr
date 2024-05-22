@@ -164,7 +164,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     end_time <- simulation_length
 
   split_table <- compile_splits(populations, generation_time, time_dir, end_time)
-  admix_table <- compile_geneflows(gene_flow, split_table, generation_time, time_dir, end_time)
+  admix_table <- compile_geneflows(populations, gene_flow, split_table, generation_time, time_dir, end_time)
   resize_table <- compile_resizes(populations, generation_time, time_dir, end_time, split_table)
 
   if (serialize && inherits(map, "slendr_map")) {
@@ -525,6 +525,7 @@ compile_splits <- function(populations, generation_time, direction, end_time) {
     split_table,
     direction = direction,
     columns = c("tsplit", "tremove"),
+    start_time = get_oldest_time(populations, direction),
     end_time = end_time,
     generation_time = generation_time
   )
@@ -572,6 +573,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
     map_table,
     direction = direction,
     columns = "time",
+    start_time = get_oldest_time(populations, direction),
     end_time = end_time,
     generation_time = generation_time
   )
@@ -597,7 +599,7 @@ compile_maps <- function(populations, split_table, resolution, generation_time,
 }
 
 
-compile_geneflows <- function(geneflow, split_table, generation_time,
+compile_geneflows <- function(populations, geneflow, split_table, generation_time,
                               direction, end_time) {
   if (length(geneflow) == 0)
     return(NULL)
@@ -607,6 +609,7 @@ compile_geneflows <- function(geneflow, split_table, generation_time,
     admix_table,
     direction = direction,
     columns = c("tstart", "tend"),
+    start_time = get_oldest_time(populations, direction),
     end_time = end_time,
     generation_time = generation_time
   )
@@ -644,6 +647,7 @@ compile_resizes <- function(populations, generation_time, direction,
     resize_events,
     direction = direction,
     columns = c("tresize", "tend"),
+    start_time = get_oldest_time(populations, direction),
     end_time = end_time,
     generation_time = generation_time
   )
@@ -685,6 +689,7 @@ compile_dispersals <- function(populations, generation_time, direction,
     dispersal_events,
     direction = direction,
     columns = "tdispersal",
+    start_time = get_oldest_time(populations, direction),
     end_time = end_time,
     generation_time = generation_time
   )
@@ -827,13 +832,17 @@ save_png <- function(raster, path) {
 
 # Convert times given in specified columns of a data frame into
 # a SLiM forward direction given in generations
-convert_to_forward <- function(df, direction, columns, end_time, generation_time) {
+convert_to_forward <- function(df, direction, columns, start_time, end_time, generation_time) {
   for (column in columns) {
     times <- df[[column]]
 
     # if necessary, convert to forward direction
     if (direction == "backward")
       times[times != -1] <- end_time - times[times != -1] + generation_time
+    else if (direction == "forward")
+      times[times != -1] <- times[times != -1] - start_time + generation_time
+    else
+      stop("Invalid model direction. This is a critical error in slendr, please report it!", call. = FALSE)
 
     # convert to generations
     times[times != -1] <- as.integer(round(times[times != -1] / generation_time))

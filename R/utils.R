@@ -623,7 +623,6 @@ process_sampling <- function(samples, model, verbose = FALSE) {
   } else if (model$direction == "forward" && oldest_time > 1) {
     # same for forward models starting not in generation 1
     time_orig <- df$time
-    df$time <- df$time - oldest_time + model$generation_time
     end_time <- model$orig_length
   } else
     end_time <- model$orig_length
@@ -633,6 +632,7 @@ process_sampling <- function(samples, model, verbose = FALSE) {
       direction = model$direction,
       columns = "time",
       generation_time = model$generation_time,
+      start_time = oldest_time,
       end_time = end_time
     ) %>%
     dplyr::arrange(time_gen) %>%
