@@ -1,0 +1,3 @@
+# This is needed to get all dependencies missing in the rocker/rstudio Docker image:
+
+apt update && apt install libgit2-dev libxml2-dev libcurl-dev libfontconfig1-dev libragg-dev libharfbuzz-dev libharfbuzz-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev libwebp-dev libzstd-dev ibgsl-dev libudunits2-dev libgdal-dev 
