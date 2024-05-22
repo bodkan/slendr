@@ -531,12 +531,13 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   # they can be fixed later)
   ylim_high <- get_oldest_time(model$populations, model$direction)
   if (model$direction == "forward") {
-    ylim_high <- get_oldest_time(model$populations, model$direction)
-    ylim_low <- ylim_high + model$orig_length
+    ylim_low <- get_oldest_time(model$populations, model$direction)
+    ylim_high <- ylim_high + model$orig_length
   } else {
     ylim_high <- get_oldest_time(model$populations, model$direction)
     ylim_low <- ylim_high - model$orig_length
   }
+  if (ylim_low == 0) ylim_low <- log10_ydelta
 
   p <- p + scale_y_continuous(limits = c(ylim_low, ylim_high), trans = trans)
 
