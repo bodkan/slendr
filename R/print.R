@@ -78,7 +78,8 @@ print.slendr_model <- function(x, ...) {
     cat("[no geneflow]\n")
   cat("generation time:", x$generation_time, "\n")
   cat("time direction:", x$direction, "\n")
-  cat("total running length:", x$orig_length, "model time units\n")
+  cat("time units:", x$time_units, "\n")
+  cat("total running length:", x$orig_length, "time units\n")
 
   cat("model type: ")
   if (inherits(x$world, "slendr_map")) {
