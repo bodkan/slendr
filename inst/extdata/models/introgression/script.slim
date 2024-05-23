@@ -559,16 +559,18 @@ function (void) required_arg(s arg) {
 
 function (void) create_pop(object<Dictionary> pop) {
     pop_id = pop.getValue("pop_id");
+    N = pop.getValue("N");
 
     if (pop.getValue("parent") ==  "__pop_is_ancestor") {
-        write_log("creating " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")");
-        sim.addSubpop(pop_id, pop.getValue("N"));
+        write_log("creating " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")" +
+                  " with " + N + " individuals");
+        sim.addSubpop(pop_id, N);
     } else {
         write_log(
             "split of " + pop.getValue("pop") + "(p" + pop.getValue("pop_id") + ")" +
             " from " + pop.getValue("parent") + "(p" + pop.getValue("parent_id")  + ")"
         );
-        sim.addSubpopSplit(pop_id, pop.getValue("N"), pop.getValue("parent_id"));
+        sim.addSubpopSplit(pop_id, N, pop.getValue("parent_id"));
     }
     // TODO: We cannot use the 'name' propertion of a Subpopulation object because
     // if a slendr user names a population, say, "p1", but in SLiM that Subpopulation
