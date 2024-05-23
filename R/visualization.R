@@ -529,17 +529,19 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   # (it seems that the first rectangle that is drawn is plotted even "earlier" than a
   # model start but this takes care of things for now -- if more plotting issues pop up,
   # they can be fixed later)
-  ylim_high <- get_oldest_time(model$populations, model$direction)
+  oldest_time <- get_oldest_time(model$populations, model$direction)
   if (model$direction == "forward") {
     ylim_low <- get_oldest_time(model$populations, model$direction)
-    ylim_high <- ylim_high + model$orig_length
+    ylim_high <- oldest_time + model$orig_length
+    ylim <- c(ylim_high, ylim_low)
   } else {
     ylim_high <- get_oldest_time(model$populations, model$direction)
-    ylim_low <- ylim_high - model$orig_length
+    ylim_low <- oldest_time - model$orig_length
+    ylim <- c(ylim_low, ylim_high)
   }
-  if (ylim_low == 0) ylim_low <- log10_ydelta
+  ylim[ylim == 0] <- log10_ydelta
 
-  p <- p + scale_y_continuous(limits = c(ylim_low, ylim_high), trans = trans)
+  p <- p + scale_y_continuous(limits = ylim, trans = trans)
 
   # if specified, overlay sampling points over the model
   if (!is.null(samples)) {
