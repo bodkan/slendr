@@ -448,10 +448,8 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   } else
     gene_flow <- NULL
 
-  if (model$direction == "forward")
-    ylabel <- "time since the start"
-  else
-    ylabel <- "time before present"
+  ylabel <- "time"
+  if (model$time_units != "") ylabel <- sprintf("%s (%s)", ylabel, model$time_units)
 
   if (log) ylabel <- paste(ylabel, "(log scale)")
 

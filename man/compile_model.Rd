@@ -15,6 +15,7 @@ compile_model(
   overwrite = FALSE,
   force = FALSE,
   description = "",
+  time_units = "",
   resolution = NULL,
   competition = NULL,
   mating = NULL,
@@ -55,6 +56,8 @@ present? Useful for non-interactive uses. In an interactive mode, the user
 is asked to confirm the deletion manually.}
 
 \item{description}{Optional short description of the model}
+
+\item{time_units}{Units of time in which model event times are to be interpreted}
 
 \item{resolution}{How many distance units per pixel?}
 

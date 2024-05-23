@@ -30,6 +30,7 @@
 #'   present? Useful for non-interactive uses. In an interactive mode, the user
 #'   is asked to confirm the deletion manually.
 #' @param description Optional short description of the model
+#' @param time_units Units of time in which model event times are to be interpreted
 #' @param resolution How many distance units per pixel?
 #' @param competition,mating Maximum spatial competition and mating choice
 #'   distance
@@ -54,7 +55,7 @@ compile_model <- function(
     populations, generation_time, gene_flow = list(),
     direction = NULL, simulation_length = NULL,
     serialize = TRUE, path = NULL, overwrite = FALSE, force = FALSE,
-    description = "",
+    description = "", time_units = "",
     resolution = NULL, competition = NULL, mating = NULL, dispersal = NULL,
     extension = NULL
 ) {
@@ -232,7 +233,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     checksums <- write_model(
       path, populations, admix_table, map_table, split_table, resize_table,
       dispersal_table, generation_time, resolution, simulation_length, time_dir, slim_script,
-      description, map
+      description, time_units, map
     )
   else
     checksums <- NULL
@@ -257,6 +258,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     orig_length = simulation_length,
     direction = time_dir,
     description = description,
+    time_units = time_units,
     checksums = checksums,
     customized = customized
   )
@@ -303,6 +305,7 @@ read_model <- function(path) {
   path_orig_length <- file.path(path, "orig_length.txt")
   path_direction <- file.path(path, "direction.txt")
   path_description <- file.path(path, "description.txt")
+  path_time_units <- file.path(path, "time_units.txt")
 
   if (!dir.exists(path))
     stop(sprintf("Model directory '%s' does not exist", path), call. = FALSE)
@@ -314,7 +317,8 @@ read_model <- function(path) {
   generation_time <- scan(path_generation_time, what = integer(), quiet = TRUE)
   length <- as.integer(scan(path_length, what = numeric(), quiet = TRUE))
   orig_length <- as.integer(scan(path_orig_length, what = numeric(), quiet = TRUE))
-  description <- scan(path_description, what = character(), quiet = TRUE)
+  description <- readLines(path_description)
+  time_units <- readLines(path_time_units)
 
   split_table <- utils::read.table(path_splits, header = TRUE, stringsAsFactors = FALSE)
   resize_table <- NULL
@@ -357,6 +361,8 @@ read_model <- function(path) {
     length = length,
     orig_length = orig_length,
     direction = direction,
+    description = description,
+    time_units = time_units,
     checksums = checksums,
     customized = customized
   )
@@ -399,7 +405,7 @@ verify_checksums <- function(files, hashes) {
 write_model <- function(path, populations, admix_table, map_table, split_table,
                         resize_table, dispersal_table,
                         generation_time, resolution, length, direction,
-                        script_source, description, map) {
+                        script_source, description, time_units, map) {
   saved_files <- c()
 
   # table of split times and initial population sizes
@@ -457,11 +463,13 @@ write_model <- function(path, populations, admix_table, map_table, split_table,
   saved_files["orig_length"] <- file.path(path, "orig_length.txt")
   saved_files["direction"] <- file.path(path, "direction.txt")
   saved_files["description"] <- file.path(path, "description.txt")
+  saved_files["time_units"] <- file.path(path, "time_units.txt")
   base::write(generation_time, file.path(path, "generation_time.txt"))
   base::write(round(length / generation_time), file.path(path, "length.txt"))
   base::write(length, file.path(path, "orig_length.txt"))
   base::write(direction, file.path(path, "direction.txt"))
   base::write(description, file.path(path, "description.txt"))
+  base::write(time_units, file.path(path, "time_units.txt"))
 
   saved_files["slim_script"] <- file.path(path, "script.slim")
   saved_files["msprime_script"] <- file.path(path, "script.py")

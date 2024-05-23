@@ -7,12 +7,13 @@ test_that("read_model() restores a single-map model object", {
 
   model_dir <- file.path(tempdir(), "tmp-single-map-model-serialization")
   model1 <- compile_model(pop, path = model_dir, resolution = 10000, generation_time = 1, overwrite = TRUE, force = TRUE,
-                    competition = 100e3, mating = 100e3, dispersal = 10e3, direction = "backward")
+                    competition = 100e3, mating = 100e3, dispersal = 10e3, direction = "backward",
+                    description = "This is a model description", time_units = "These are the model time units")
   model2 <- read_model(model1$path)
 
   # make sure that all components of the model list object before and after
   # serialization are equal
-  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "direction", "length", "generation_time", "resolution", "world")
+  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "direction", "length", "generation_time", "resolution", "world", "description", "time_units")
   expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
   expect_equal(names(model1$populations), names(model1$populations))
@@ -47,7 +48,7 @@ test_that("read_model() restores a complex model object", {
   )
   model2 <- read_model(model1$path)
 
-  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "length", "orig_length", "direction", "generation_time", "resolution", "world")
+  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "length", "orig_length", "direction", "generation_time", "resolution", "world", "description", "time_units")
   expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(model1$populations[[i]] == model2$populations[[i]]))))
   expect_equal(names(model1$populations), names(model1$populations))
@@ -83,7 +84,7 @@ test_that("read_model() restores a single-map model object (nonspatial)", {
 
   # make sure that all components of the model list object before and after
   # serialization are equal
-  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "direction", "length", "generation_time", "resolution", "world")
+  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "direction", "length", "generation_time", "resolution", "world", "description", "time_units")
   expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(unlist(model1$populations[[i]]) == unlist(model2$populations[[i]])))))
 })
@@ -106,11 +107,13 @@ test_that("read_model() restores a complex model object (nonspatial)", {
     populations = list(p1, p2, p3, p4, p5),
     gene_flow = geneflow,
     generation_time = 30,
-    overwrite = TRUE, force = TRUE
+    overwrite = TRUE, force = TRUE,
+    description = "This is a description",
+    time_units = "These are time units"
   )
   model2 <- read_model(model1$path)
 
-  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "length", "orig_length", "direction", "generation_time", "resolution", "world")
+  components <- c("checksums", "splits", "resizes", "geneflow", "maps", "length", "orig_length", "direction", "generation_time", "resolution", "world", "description", "time_units")
   expect_true(all(sapply(components, function(i) all.equal(model1[[i]], model2[[i]]))))
   expect_true(all(sapply(seq_along(model1$populations), function(i) all(unlist(model1$populations[[i]]) == unlist(model2$populations[[i]])))))
   expect_equal(names(model1$populations), names(model1$populations))
