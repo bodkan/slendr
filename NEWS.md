@@ -6,6 +6,8 @@
 
 - `ts_genotypes()` now works even for non-_slendr_ tree sequences, which do not have _slendr_ individual names of samples in the `ts_nodes()` output. ([#d348ec](https://github.com/bodkan/slendr/commit/d348ec))
 
+- `compile_model()` now allows to specify a description of time units used while scheduling _slendr_ model events. This has purely descriptive purpose -- in particular, these units are used in model plotting functions, etc. ([#9b5b7ea0](https://github.com/bodkan/slendr/commit/9b5b7ea0))
+
 - The `slim_script` argument of `compile_model()` has been replaced by `slim_extension` argument, which allows users to provide their custom-designed SLiM snippets for extending the behavior of _slendr_'s SLiM simulation engine. ([#d11ac7](https://github.com/bodkan/slendr/commit/d11ac7))
 
 - The `sim_length` argument of `compile_model()` has been removed following a long period of deprecatiaon. ([#12da50](https://github.com/bodkan/slendr/commit/12da50))
