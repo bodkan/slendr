@@ -235,7 +235,7 @@ setting `direction = 'backward'.`", call. = FALSE)
     if (generation_time == 1)
       time_units <- "generations"
     else
-      time_units <- "model time units"
+      time_units <- ""
   }
 
   if (serialize)
