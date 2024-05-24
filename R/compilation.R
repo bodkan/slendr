@@ -30,7 +30,9 @@
 #'   present? Useful for non-interactive uses. In an interactive mode, the user
 #'   is asked to confirm the deletion manually.
 #' @param description Optional short description of the model
-#' @param time_units Units of time in which model event times are to be interpreted
+#' @param time_units Units of time in which model event times are to be interpreted.
+#'   If not specified and \code{generation_time} is set to 1, this will be set to
+#'   "generations", otherwise the value is "model time units".
 #' @param resolution How many distance units per pixel?
 #' @param competition,mating Maximum spatial competition and mating choice
 #'   distance
@@ -55,7 +57,7 @@ compile_model <- function(
     populations, generation_time, gene_flow = list(),
     direction = NULL, simulation_length = NULL,
     serialize = TRUE, path = NULL, overwrite = FALSE, force = FALSE,
-    description = "", time_units = "",
+    description = "", time_units = NULL,
     resolution = NULL, competition = NULL, mating = NULL, dispersal = NULL,
     extension = NULL
 ) {
@@ -228,6 +230,13 @@ setting `direction = 'backward'.`", call. = FALSE)
     customized <- TRUE
   } else
     customized <- FALSE
+
+  if (is.null(time_units)) {
+    if (generation_time == 1)
+      time_units <- "generations"
+    else
+      time_units <- ""
+  }
 
   if (serialize)
     checksums <- write_model(

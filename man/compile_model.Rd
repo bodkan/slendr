@@ -15,7 +15,7 @@ compile_model(
   overwrite = FALSE,
   force = FALSE,
   description = "",
-  time_units = "",
+  time_units = NULL,
   resolution = NULL,
   competition = NULL,
   mating = NULL,
@@ -57,7 +57,9 @@ is asked to confirm the deletion manually.}
 
 \item{description}{Optional short description of the model}
 
-\item{time_units}{Units of time in which model event times are to be interpreted}
+\item{time_units}{Units of time in which model event times are to be interpreted.
+If not specified and \code{generation_time} is set to 1, this will be set to
+"generations", otherwise the value is "model time units".}
 
 \item{resolution}{How many distance units per pixel?}
 
