@@ -1385,9 +1385,6 @@ init_env <- function(quiet = FALSE) {
       #   path = system.file("python", package = "slendr"),
       #   delay_load = TRUE
       # )
-      warn <- reticulate::import("warnings")
-      warn$simplefilter("ignore", msp$TimeUnitsMismatchWarning)
-
       if (!quiet)
         message("The interface to all required Python modules has been activated.")
     }

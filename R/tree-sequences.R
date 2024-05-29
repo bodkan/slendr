@@ -205,6 +205,12 @@ ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, 
 
   random_seed <- set_random_seed(random_seed)
 
+  # disable msprime time unit warnings for slendr tree sequences
+  if (!is.null(model)) {
+    warn <- reticulate::import("warnings")
+    warn$simplefilter("ignore", msp$TimeUnitsMismatchWarning)
+  }
+
   if (type == "SLiM") {
     if (!is.null(Ne))
       ts_new <- pyslim$recapitate(
