@@ -22,6 +22,8 @@
 
 - `ts_table()` can now extract the "sites" _tskit_ table as `ts_table(ts, "sites")`. ([#e708f2](https://github.com/bodkan/slendr/commit/e708f2))
 
+- When applied to _slendr_ tree sequences, `ts_recapitate()` no longer issues the warning: `TimeUnitsMismatchWarning: The initial_state has time_units=ticks but time is measured in generations in msprime. This may lead to significant discrepancies between the timescales. If you wish to suppress this warning, you can use, e.g., warnings.simplefilter('ignore', msprime.TimeUnitsMismatchWarning)`. For _slendr_ tree sequences, ticks are the same thing as generations anyway. ([#43c45083](https://github.com/bodkan/slendr/commit/43c45083))
+
 # slendr 0.9.1
 
 - A new helper function `get_env()` now returns the name of the built-in _slendr_ Python environment (without activating it). ([#162ccc](https://github.com/bodkan/slendr/commit/162ccc))
