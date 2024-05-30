@@ -22,12 +22,7 @@
 #' @param ts Path to the output tree-sequence file. If \code{NULL} (the default),
 #'   tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
 #'   file will be generated (this is only useful for running customized slendr SLiM
-#'   scripts). This argument cannot be set when \code{output_dir} is set.
-#' @param output_dir Path to a directory where various output files can be saved.
-#'   This argument cannot be set when \code{output} is set. This is predominately
-#'   intended to provide easier means to save outputs of slim simulations utilizing
-#'   user-defined extension scripts. For tree-sequence only simulations, use
-#'   \code{output} to set the path to the output tree sequence file instead.
+#'   scripts).
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
 #'   0 and the maximum integer number available)
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
@@ -99,8 +94,7 @@
 #' ts
 #' @export
 slim <- function(
-    model, sequence_length, recombination_rate, samples = NULL,
-    ts = NULL, output_dir = NULL,
+    model, sequence_length, recombination_rate, samples = NULL, ts = NULL,
     random_seed = NULL, method = c("batch", "gui"),
     verbose = FALSE, load = TRUE, run = TRUE,
     slim_path = NULL, burnin = 0,
@@ -111,9 +105,6 @@ slim <- function(
 
   if (is.null(model$path))
     stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
-
-  if (!is.null(output_dir) && is.null(ts))
-    ts <- file.path(output_dir, "output.trees")
 
   if (is.logical(ts) && ts == FALSE) {
     output_path <- ""
@@ -209,11 +200,6 @@ slim <- function(
       gsub("required_arg\\(\"RECOMBINATION_RATE\"\\)", sprintf("defineConstant(\"RECOMBINATION_RATE\", %s)", recombination_rate), .) %>%
       gsub("optional_arg\\(\"BURNIN_LENGTH\", 0\\)", sprintf("defineConstant(\"BURNIN_LENGTH\", %s)", burnin), .)
 
-    if (!is.null(output_dir)) {
-      script_contents <- script_contents %>%
-        gsub("optional_arg\\(\"OUTPUT_DIR\", \"\"\\)", sprintf("defineConstant(\"OUTPUT_DIR\", \"%s\")", output_dir), .)
-    }
-
     cat(script_contents, file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
@@ -222,7 +208,6 @@ slim <- function(
                           samples,
                           paste0("-d \"MODEL_PATH='", model_dir, "'\""),
                           paste0("-d \"TS_PATH='", output_path, "'\""),
-                          paste0("-d \"OUTPUT_DIR='", output_dir, "'\""),
                           paste0("-d SPATIAL=", spatial),
                           paste0("-d SEQUENCE_LENGTH=", sequence_length),
                           paste0("-d RECOMBINATION_RATE=", recombination_rate),
@@ -271,9 +256,7 @@ slim <- function(
   if (method == "gui" && output_path != "")
     readline("Please confirm that the SLiMgui simulation is finished [press ENTER]")
 
-  if (!is.null(output_dir))
-    return(invisible(output_dir))
-  else if (load && output_path != "") {
+  if (load && output_path != "") {
     if (!file.exists(output_path))
       stop("Tree sequence was not found at the expected location:\n", output_path, call. = FALSE)
 
