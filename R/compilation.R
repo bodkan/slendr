@@ -187,7 +187,6 @@ setting `direction = 'backward'.`", call. = FALSE)
 
   simulation_length <- if (is.null(simulation_length)) end_time else simulation_length
 
-
   slim_script <- system.file("scripts", "script.slim", package = "slendr")
 
   if (!is.null(extension)) {
