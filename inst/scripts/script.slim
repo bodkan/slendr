@@ -142,7 +142,7 @@ initialize() {
         community.deregisterScriptBlock(s8);
 
     // remember individuals for tree sequence recording
-    if (SAMPLES_PATH != "")
+    if (SIMULATE_TS)
       community.rescheduleScriptBlock(s9, start = SIMULATION_START, end = SIMULATION_END);
     else
       community.deregisterScriptBlock(s9);
