@@ -14,9 +14,6 @@
 #'   recorded in the tree-sequence output file.
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
 #'   0 and the maximum integer number available)
-#' @param load Should the final tree sequence be immediately loaded and returned?
-#'   Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
-#'   file is written to a custom location to be loaded at a later point.
 #' @param verbose Write the output log to the console (default \code{FALSE})?
 #' @param debug Write msprime's debug log to the console (default \code{FALSE})?
 #' @param run Should the msprime engine be run? If \code{FALSE}, the command line msprime

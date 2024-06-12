@@ -38,10 +38,6 @@ recorded in the tree-sequence output file.}
 
 \item{run}{Should the msprime engine be run? If \code{FALSE}, the command line msprime
 command will be printed (and returned invisibly as a character vector) but not executed.}
-
-\item{load}{Should the final tree sequence be immediately loaded and returned?
-Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
-file is written to a custom location to be loaded at a later point.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
