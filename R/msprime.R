@@ -116,7 +116,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
       )
       cat(msprime_command, "\n")
     } else {
-      script <- reticulate::import_from_path("script", path = script_path)
+      script <- reticulate::import_from_path("script", path = dirname(script_path))
 
       resizes <- if (is.null(model$resizes)) data.frame() else model$resizes
       geneflows <- if (is.null(model$geneflow)) data.frame() else model$geneflow
