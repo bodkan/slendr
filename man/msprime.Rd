@@ -9,9 +9,7 @@ msprime(
   sequence_length,
   recombination_rate,
   samples = NULL,
-  ts = NULL,
   random_seed = NULL,
-  load = TRUE,
   verbose = FALSE,
   debug = FALSE,
   run = TRUE
@@ -31,15 +29,8 @@ function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
-\item{ts}{Path to the output tree-sequence file. If \code{NULL} (the default),
-tree sequence will be saved to a temporary file.}
-
 \item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
 0 and the maximum integer number available)}
-
-\item{load}{Should the final tree sequence be immediately loaded and returned?
-Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
-file is written to a custom location to be loaded at a later point.}
 
 \item{verbose}{Write the output log to the console (default \code{FALSE})?}
 
@@ -47,6 +38,10 @@ file is written to a custom location to be loaded at a later point.}
 
 \item{run}{Should the msprime engine be run? If \code{FALSE}, the command line msprime
 command will be printed (and returned invisibly as a character vector) but not executed.}
+
+\item{load}{Should the final tree sequence be immediately loaded and returned?
+Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
+file is written to a custom location to be loaded at a later point.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}

@@ -96,9 +96,7 @@ slendr demographic model.</p>
 <span>  <span class="va">sequence_length</span>,</span>
 <span>  <span class="va">recombination_rate</span>,</span>
 <span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  run <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -128,20 +126,9 @@ missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
 
 
-<dt>ts</dt>
-<dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
-tree sequence will be saved to a temporary file.</p></dd>
-
-
 <dt>random_seed</dt>
 <dd><p>Random seed (if <code>NULL</code>, a seed will be generated between
 0 and the maximum integer number available)</p></dd>
-
-
-<dt>load</dt>
-<dd><p>Should the final tree sequence be immediately loaded and returned?
-Default is <code>TRUE</code>. The alternative (<code>FALSE</code>) is useful when a tree-sequence
-file is written to a custom location to be loaded at a later point.</p></dd>
 
 
 <dt>verbose</dt>
@@ -155,6 +142,12 @@ file is written to a custom location to be loaded at a later point.</p></dd>
 <dt>run</dt>
 <dd><p>Should the msprime engine be run? If <code>FALSE</code>, the command line msprime
 command will be printed (and returned invisibly as a character vector) but not executed.</p></dd>
+
+
+<dt>load</dt>
+<dd><p>Should the final tree sequence be immediately loaded and returned?
+Default is <code>TRUE</code>. The alternative (<code>FALSE</code>) is useful when a tree-sequence
+file is written to a custom location to be loaded at a later point.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -196,49 +189,22 @@ vector, respectively.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># run a simulation using the msprime back end from a compiled slendr model object</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_module_import(module, convert = convert):</span> ModuleNotFoundError: No module named 'script'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># automatic loading of a simulated output can be prevented by `load = FALSE`, which can be</span></span></span>
 <span class="r-in"><span><span class="co"># useful when a custom path to a tree-sequence output is given for later downstream analyses</span></span></span>
 <span class="r-in"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>, winslash <span class="op">=</span> <span class="st">"/"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span>,</span></span>
 <span class="r-in"><span>        ts <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in msprime(model, sequence_length = 1e+05, recombination_rate = 0,     samples = samples, ts = output_file, load = FALSE, random_seed = 42):</span> unused arguments (ts = output_file, load = FALSE)</span>
 <span class="r-in"><span><span class="co"># ... at a later stage:</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in py_call_impl(callable, call_args$unnamed, call_args$named):</span> FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpZ5lTJ6/file9d6220f7b2d6.trees'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Run `reticulate::py_last_error()` for details.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════════════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence               ║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═══════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │          1║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│     100000║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │generations║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │        230║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │   39.4 KiB║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════════╝</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤═════════╤════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size     │Has Metadata║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 471│ 14.7 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│ 115│  3.2 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │   0│  8 Bytes│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│ 16 Bytes│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │ 472│ 12.9 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│338 Bytes│         Yes║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│  2.9 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│ 16 Bytes│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧═════════╧════════════╝</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in object[[i]]:</span> object of type 'closure' is not subsettable</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
