@@ -9,12 +9,12 @@ slim(
   sequence_length,
   recombination_rate,
   samples = NULL,
-  ts = NULL,
-  output_dir = NULL,
+  ts = TRUE,
+  path = NULL,
   random_seed = NULL,
   method = c("batch", "gui"),
+  force = FALSE,
   verbose = FALSE,
-  load = TRUE,
   run = TRUE,
   slim_path = NULL,
   burnin = 0,
@@ -38,16 +38,12 @@ function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.}
 
-\item{ts}{Path to the output tree-sequence file. If \code{NULL} (the default),
-tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
-file will be generated (this is only useful for running customized slendr SLiM
-scripts). This argument cannot be set when \code{output_dir} is set.}
+\item{ts}{Should a tree sequence be simulated from the model?}
 
-\item{output_dir}{Path to a directory where various output files can be saved.
-This argument cannot be set when \code{output} is set. This is predominately
-intended to provide easier means to save outputs of slim simulations utilizing
-user-defined extension scripts. For tree-sequence only simulations, use
-\code{output} to set the path to the output tree sequence file instead.}
+\item{path}{Path to output files. If \code{NULL}, directory for the results will be
+automatically created. Any other value is assumed to be a path to where simulation
+output files should be saved. In this case, the function will return this path
+invisibly.}
 
 \item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
 0 and the maximum integer number available)}
@@ -55,12 +51,11 @@ user-defined extension scripts. For tree-sequence only simulations, use
 \item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
 on the command line)}
 
+\item{force}{If the directory given in \code{path} already exists, should it be
+deleted first?}
+
 \item{verbose}{Write the SLiM output log to the console (default
 \code{FALSE})?}
-
-\item{load}{Should the final tree sequence be immediately loaded and returned?
-Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
-file is written to a custom location to be loaded at a later point.}
 
 \item{run}{Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
 command will be printed (and returned invisibly as a character vector) but not executed.}
@@ -104,6 +99,15 @@ architecture. In such cases, users may either provide hard-coded values
 directly through SLiM's \code{initializeGenomicElement()} and
 \code{initializeRecombinationRate()} functions or utilize slendr's
 templating functionality provided by its \code{substitute()} function.
+When \code{ts = TRUE}, the returning value of this function depends on whether
+or not the \code{path} argument was set. If the user did provide the \code{path}
+where output files should be saved, the path is returned (invisibly). This is
+mostly intended to support simulations of customized user outputs. If \code{path}
+is not set by the user, it is assumed that a tree-sequence object is desired as
+a sole output of the function (when \code{ts = TRUE}) and so it is automatically
+loaded when simulation finishes, or (when \code{ts = FALSE}) that only customized
+output files are desired, in which the user will be loading such outputs by
+themselves (and only the path is needed).
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, slim = TRUE, quit = TRUE) # dependencies must be present

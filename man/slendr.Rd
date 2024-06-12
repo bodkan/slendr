@@ -2,8 +2,8 @@
 % Please edit documentation in R/slendr-package.R
 \docType{package}
 \name{slendr}
-\alias{slendr-package}
 \alias{slendr}
+\alias{slendr-package}
 \title{A Simulation Framework for Spatiotemporal Population Genetics}
 \description{
 A framework for simulating spatially explicit genomic data which
