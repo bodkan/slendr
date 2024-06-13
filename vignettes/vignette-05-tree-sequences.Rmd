@@ -159,7 +159,7 @@ Of course, if you are a proficient Python user, it needs to be said that once yo
 
 ## Loading and processing tree-sequence output files
 
-By default, any `msprime()` or `slim()` run will produce a tree-sequence object (saved to a temporary file) and immediately load it. Thus, in most use-cases, explicit loading of a simulated tree sequence is not needed. That said, for the sake of completeness, let's run the simulation again but specify a custom path to the tree-sequence file ourselves.
+By default, any `msprime()` or `slim()` run will produce a tree-sequence object (saved to a temporary file) and immediately load it. Thus, in most use-cases, explicit loading of a simulated tree sequence is not needed. That said, for the sake of completeness, let's run the simulation again but save the tree-sequence file ourselves.
 
 ```{r}
 output_file <- tempfile()
@@ -167,8 +167,10 @@ output_file <- tempfile()
 ts <- msprime(
   model, sequence_length = 100e6, recombination_rate = 1e-8,
   samples = rbind(nea_samples, present_samples, emh_samples),
-  ts = output_file, random_seed = 314159
+  random_seed = 314159
 )
+
+ts_save(ts, output_file)
 
 output_file
 ```
