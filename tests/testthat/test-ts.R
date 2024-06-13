@@ -37,7 +37,7 @@ slim(model, sequence_length = 100000, recombination_rate = 0,
      samples = samples, verbose = FALSE) %>% ts_save(slim_ts)
 
 msprime(model, sequence_length = 100000, recombination_rate = 0,
-        random_seed = 314159, samples = samples, verbose = FALSE) %>% ts_save(slim_ts)
+        random_seed = 314159, samples = samples, verbose = FALSE) %>% ts_save(msprime_ts)
 
 test_that("ts_load generates an object of the correct type (SLiM)", {
   ts <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>% ts_simplify()
