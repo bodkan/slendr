@@ -91,12 +91,10 @@
 #' # a tree-sequence output
 #' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
 #'
-#' # automatic loading of a simulated output can be prevented by `load = FALSE`, which can be
-#' # useful when a custom path to a tree-sequence output is given for later downstream analyses
+#' # simulated tree-sequence object can be saved to a file using ts_save()...
 #' output_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
-#' slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
-#'      ts = output_file, load = FALSE)
-#' # ... at a later stage:
+#' ts_save(ts, output_file)
+#' # ... and, at a later point, loaded by ts_load()
 #' ts <- ts_load(output_file, model)
 #'
 #' ts
