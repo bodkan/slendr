@@ -13,7 +13,6 @@ slim(
   path = NULL,
   random_seed = NULL,
   method = c("batch", "gui"),
-  force = FALSE,
   verbose = FALSE,
   run = TRUE,
   slim_path = NULL,
@@ -50,9 +49,6 @@ invisibly.}
 
 \item{method}{How to run the script? ("gui" - open in SLiMgui, "batch" - run
 on the command line)}
-
-\item{force}{If the directory given in \code{path} already exists, should it be
-deleted first?}
 
 \item{verbose}{Write the SLiM output log to the console (default
 \code{FALSE})?}
