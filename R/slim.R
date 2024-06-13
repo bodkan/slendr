@@ -40,8 +40,6 @@
 #'   on the command line)
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
-#' @param force If the directory given in \code{path} already exists, should it be
-#'   deleted first?
 #' @param run Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
 #'   command will be printed (and returned invisibly as a character vector) but not executed.
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
@@ -105,7 +103,7 @@
 #' @export
 slim <- function(
     model, sequence_length, recombination_rate, samples = NULL, ts = TRUE, path = NULL,
-    random_seed = NULL, method = c("batch", "gui"), force = FALSE,
+    random_seed = NULL, method = c("batch", "gui"),
     verbose = FALSE, run = TRUE, slim_path = NULL, burnin = 0,
     max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
     locations = NULL
@@ -119,14 +117,7 @@ slim <- function(
 
   results_path <- if (is.null(path)) file.path(tempdir(), "slendr_results", paste0("seed_", random_seed)) else path
   results_path <- normalizePath(results_path, winslash = "/", mustWork = FALSE)
-  if (dir.exists(results_path)) {
-    if (force)
-      unlink(results_path, recursive = TRUE)
-    else
-      stop("Directory '", results_path, "' already exists.\n",
-           "Either choose a different path or set `force = TRUE` to *DELETE IT* first.", call. = FALSE)
-  }
-  dir.create(results_path, recursive = TRUE)
+  dir.create(results_path, recursive = TRUE, showWarnings = FALSE)
 
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
