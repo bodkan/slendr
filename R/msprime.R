@@ -89,7 +89,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
     if (!run)
       stop("Impossible to run a non-serialized slendr model on the command line", call. = FALSE)
 
-    script <- reticulate::import_from_path("script", path = model$path)
+    script <- reticulate::import_from_path("script", path = system.file("scripts", package = "slendr"))
   } else {
     # verify checksums of serialized model configuration files
     checksums <- readr::read_tsv(file.path(model$path, "checksums.tsv"), progress = FALSE,
@@ -112,30 +112,31 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
         "<path to a .trees file>"
       )
       cat(msprime_command, "\n")
+      return()
     } else {
       script <- reticulate::import_from_path("script", path = dirname(script_path))
-
-      resizes <- if (is.null(model$resizes)) data.frame() else model$resizes
-      geneflows <- if (is.null(model$geneflow)) data.frame() else model$geneflow
-      if (is.null(samples)) samples <- data.frame()
-
-      ts_msprime <- script$simulate(
-        sequence_length = sequence_length,
-        recombination_rate = recombination_rate,
-        seed = random_seed,
-        populations = reticulate::r_to_py(model$splits),
-        resizes = reticulate::r_to_py(resizes),
-        geneflows = reticulate::r_to_py(geneflows),
-        length = as.integer(model$length),
-        orig_length = as.integer(model$orig_length),
-        direction = model$direction,
-        description = model$description,
-        samples = reticulate::r_to_py(samples),
-        debug = debug
-      )
-      ts_object <- ts_load(ts_msprime, model = model)
-
-      return(ts_object)
     }
   }
+
+  resizes <- if (is.null(model$resizes)) data.frame() else model$resizes
+  geneflows <- if (is.null(model$geneflow)) data.frame() else model$geneflow
+  if (is.null(samples)) samples <- data.frame()
+
+  ts_msprime <- script$simulate(
+    sequence_length = sequence_length,
+    recombination_rate = recombination_rate,
+    seed = random_seed,
+    populations = reticulate::r_to_py(model$splits),
+    resizes = reticulate::r_to_py(resizes),
+    geneflows = reticulate::r_to_py(geneflows),
+    length = as.integer(model$length),
+    orig_length = as.integer(model$orig_length),
+    direction = model$direction,
+    description = model$description,
+    samples = reticulate::r_to_py(samples),
+    debug = debug
+  )
+  ts_object <- ts_load(ts_msprime, model = model)
+
+  ts_object
 }
