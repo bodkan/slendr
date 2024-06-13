@@ -256,7 +256,7 @@ test_that("output file and tree sequence are both there", {
 
 test_that("output file is there but tree sequence is not returned", {
   result <- slim(model, ts = FALSE)
-  expect_true(result == "")
+  expect_true(length(dir(result)) == 0)
   expect_true(file.exists(output_file))
   expect_true(readLines(output_file) == "asdf")
 })
@@ -274,7 +274,7 @@ test_that("output directory can be set and files and tree sequence are saved the
   }
 
   SIMULATION_LENGTH late() {
-    path = OUTPUT_DIR + "/" + "output_file";
+    path = PATH + "/" + "output_file";
     writeFile(path, "asdf");
   }
   )"
@@ -283,14 +283,14 @@ test_that("output directory can be set and files and tree sequence are saved the
 
   output_dir <- normalizePath(file.path(tempdir(), "testing_dir1"), winslash = "/", mustWork = FALSE)
   output_file <- file.path(output_dir, "output_file")
-  result <- slim(model, output_dir = output_dir)
+  result <- slim(model, path = output_dir)
 
   # slim(..., output_dir = ...) returns the directory path
   expect_true(result == output_dir)
-  expect_equal(sort(list.files(output_dir)), sort(c("output_file", "output.trees")))
+  expect_equal(sort(list.files(output_dir)), sort(c("output_file", "slim.trees")))
   expect_true(file.exists(output_file))
   expect_true(readLines(output_file) == "asdf")
-  expect_s3_class(ts_load(file.path(output_dir, "output.trees"), model), "slendr_ts")
+  expect_s3_class(ts_load(file.path(output_dir, "slim.trees"), model), "slendr_ts")
 })
 
 test_that("output directory can be set and files (but no tree sequence) are saved there", {
@@ -306,7 +306,7 @@ test_that("output directory can be set and files (but no tree sequence) are save
   }
 
   SIMULATION_LENGTH late() {
-    path = OUTPUT_DIR + "/" + "output_file";
+    path = PATH + "/" + "output_file";
     writeFile(path, "asdf");
   }
   )"
@@ -315,7 +315,7 @@ test_that("output directory can be set and files (but no tree sequence) are save
 
   output_dir <- normalizePath(file.path(tempdir(), "testing_dir2"), winslash = "/", mustWork = FALSE)
   output_file <- file.path(output_dir, "output_file")
-  result <- slim(model, output_dir = output_dir, ts = FALSE)
+  result <- slim(model, path = output_dir, ts = FALSE)
 
   # slim(..., output_dir = ...) returns the directory path
   expect_true(result == output_dir)
