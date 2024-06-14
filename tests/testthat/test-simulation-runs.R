@@ -344,6 +344,6 @@ test_that("SLiM runner finishes correctly even without a tree-sequence output", 
   model <- compile_model(p, direction = "forward", simulation_length = 100,
                          generation_time = 1)
   expect_silent(
-    capture.output(suppressWarnings(slim(model, sequence_length = 100, recombination_rate = 0, load = FALSE)))
+    capture.output(suppressWarnings(slim(model, sequence_length = 100, recombination_rate = 0)))
   )
 })

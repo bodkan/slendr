@@ -10,7 +10,8 @@ initialize() {
     setSeed(SEED); catn("SEED: " + getSeed());
 
     optional_arg("MODEL_PATH", "."); // directory with model definition files
-    optional_arg("TS_PATH", ""); // user-defined path to the output tree sequence
+    optional_arg("SIMULATE_TS", T); // should a tree sequence be simulated
+    required_arg("PATH"); // user-defined path to all output files
     optional_arg("LOCATIONS_PATH", ""); // wheere should locations of individuals be saved?
     optional_arg("SAMPLES_PATH", ""); // path to a table with the sampling schedule
 
@@ -24,6 +25,8 @@ initialize() {
     defineConstant("ORIGINAL_LENGTH", asInteger(readFile(config_path("orig_length.txt"))));
     defineConstant("DESCRIPTION", readFile(config_path("description.txt")));
 
+    defineConstant("TS_PATH", PATH + "/" + "slim.trees");
+
     // prefix path of slendr simulation state files
     defineConstant("STATE_PATH", tempdir() + "state_" + SEED + "_");
 
@@ -31,7 +34,6 @@ initialize() {
     optional_arg("SIMULATION_LENGTH", // total length of the simulation in generations
                  asInteger(readFile(config_path("length.txt"))));
 
-    defineConstant("SIMULATE_TS", TS_PATH != "");
     optional_arg("COALESCENT_ONLY", T); // only keep coalescent nodes?
 
     optional_arg("SPATIAL", fileExists(config_path("maps.tsv"))); // is the model spatial?
@@ -453,12 +455,7 @@ s10 late() /* Schedule removal of populations */ {
 }
 
 s11 late() /* Save the tree sequence */ {
-    if (TS_PATH != "")
-        defineConstant("OUTPUT_TS", TS_PATH);
-    else // this should never happen because the block would be deregistered
-        stop("No tree-sequence output path has been set\n");
-
-    save_ts(OUTPUT_TS);
+    save_ts(TS_PATH);
 }
 
 s12 late() /* End of simulation */ {

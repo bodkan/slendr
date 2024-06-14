@@ -7,9 +7,8 @@ test_that("only serialized models can be run on the command line", {
 
   model <- compile_model(list(pop1, pop2), generation_time = 1, direction = "forward", simulation_length = 1000, serialize = FALSE)
 
-  out <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   expect_error(
-    msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = out, run = FALSE),
+    msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, run = FALSE),
     "Impossible to run a non-serialized slendr model on the command line"
   )
 })
@@ -24,17 +23,16 @@ test_that("msprime command run manually on the command line give the correct out
   # model is run on the CLI
   out <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   out_cmd <- capture.output(
-    cmd <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = out, run = FALSE, random_seed = 42))
-  system(cmd, ignore.stdout = TRUE)
+    msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, run = FALSE, random_seed = 42)
+  )
+  out_cmd <- gsub("<path to a .trees file>", out, out_cmd)
+  system(out_cmd, ignore.stdout = TRUE)
   ts_manual <- ts_load(out, model = model)
   expect_s3_class(ts_manual, "slendr_ts")
 
   # check that the manually simulated tree-sequence matches what comes from running inside slendr
   ts_r <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)
   expect_equal(ts_nodes(ts_manual), ts_nodes(ts_r))
-
-  # and check that the command itself matches
-  expect_equal(gsub(" *$", "", out_cmd[4]), gsub(" *$", "", cmd))
 })
 
 test_that("slim command run manually on the command line give the correct output", {
@@ -45,22 +43,15 @@ test_that("slim command run manually on the command line give the correct output
 
   # check that a simulated tree-sequence file is where it's supposed to be if the
   # model is run on the CLI
-  out <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-  out_cmd <- capture.output(
-    cmd <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = out, run = FALSE, random_seed = 42))
-  system(cmd, ignore.stdout = TRUE)
-  ts_manual <- ts_load(out, model = model)
+  out <- normalizePath(paste0(tempfile(), "slim_test"), winslash = "/", mustWork = FALSE)
+  cmd <- capture.output(slim(model, sequence_length = 1e6, recombination_rate = 1e-8, run = FALSE, random_seed = 42, path = out))
+  system(cmd[-(1:3)] %>% .[-(2:3)], ignore.stdout = TRUE)
+  ts_manual <- ts_load(file.path(out, "slim.trees"), model = model)
   expect_s3_class(ts_manual, "slendr_ts")
 
   # check that the manually simulated tree-sequence matches what comes from running inside slendr
   ts_r <- slim(model, sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 42)
   expect_equal(ts_nodes(ts_manual), ts_nodes(ts_r))
-
-  # and check that the command itself matches
-  expect_equal(
-    gsub(" *$", "", out_cmd[-c(1:3, length(out_cmd) - 1, length(out_cmd))]),
-    strsplit(cmd, "\n")[[1]]
-  )
 })
 
 test_that("ensure that a model reaches full coalescence", {

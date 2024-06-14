@@ -496,7 +496,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       output_dir = output_dir, ts = FALSE, random_seed = 42)
+       path = output_dir, ts = FALSE, random_seed = 42)
 }
 
 run_model(origin_pop = "EUR", onset_time = 15000)
@@ -635,7 +635,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       output_dir = output_dir, ts = FALSE, random_seed = 42)
+       path = output_dir, ts = FALSE, random_seed = 42)
 }
 
 run_model("EUR", onset_time = 15000)
