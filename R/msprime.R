@@ -111,7 +111,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
         "<path to a .trees file>"
       )
       cat(msprime_command, "\n")
-      return()
+      return(invisible())
     } else {
       script <- reticulate::import_from_path("script", path = dirname(script_path))
     }
