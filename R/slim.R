@@ -60,9 +60,8 @@
 #'   be specified if the function is being run on Windows.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
-#'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). Optionally,
-#'   depending on the value of the arguments \code{load =} or \code{run =}, nothing or a character
-#'   vector, respectively.
+#'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the
+#'   \code{path} argument was set, it will return the path as a single-element character vector.
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE, slim = TRUE, quit = TRUE) # dependencies must be present
