@@ -18,6 +18,14 @@
 #' @param debug Write msprime's debug log to the console (default \code{FALSE})?
 #' @param run Should the msprime engine be run? If \code{FALSE}, the command line msprime
 #'   command will be printed (and returned invisibly as a character vector) but not executed.
+#' @param path Path to the output tree sequence. If \code{NULL} (the default), the tree
+#'   sequence will not be saved to a file, and will be returned as an in-memory object. If
+#'   a path is given, it is interpreted as a path to a directory, in which the function will
+#'   save the tree sequence as a \code{msprime.trees} file and the function will return the
+#'   path to the directory back. Note that this argument exists mostly to retain parity
+#'   with the corresponding \code{slim()} function. In most circumstances, setting this
+#'   argument is not necessary and users are better served by using the \code{ts_save()}
+#'   function on the resulting tree-sequence object directly.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the
@@ -58,7 +66,7 @@
 #' summary(ts)
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL, random_seed = NULL,
-                    verbose = FALSE, debug = FALSE, run = TRUE) {
+                    verbose = FALSE, debug = FALSE, run = TRUE, path = NULL) {
   if (sequence_length %% 1 != 0 | sequence_length <= 0)
     stop("Sequence length must be a non-negative integer number", call. = FALSE)
 
@@ -137,5 +145,11 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
   )
   ts_object <- ts_load(ts_msprime, model = model)
 
-  ts_object
+  if (is.null(path))
+    return(ts_object)
+  else {
+    dir.create(path, recursive = TRUE, showWarnings = FALSE)
+    ts_save(ts_object, normalizePath(file.path(path, "msprime.trees"), winslash = "/", mustWork = FALSE))
+    return(path)
+  }
 }
