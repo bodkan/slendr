@@ -68,6 +68,9 @@
 #' ts
 #' @export
 ts_load <- function(file, model = NULL) {
+  if (is.character(file) && !file.exists(file))
+    stop("File not found: '", file, "'", call. = FALSE)
+
   # load the tree sequence, converting it to a SLiM tree sequence if necessary
   ts <- if (is.character(file)) tskit$load(path.expand(file)) else file
 
