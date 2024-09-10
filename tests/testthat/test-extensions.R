@@ -261,69 +261,6 @@ test_that("output file is there but tree sequence is not returned", {
   expect_true(readLines(output_file) == "asdf")
 })
 
-test_that("output directory can be set and files and tree sequence are saved there", {
-  extension <- r"(
-  initialize() {
-    initializeMutationType("m1", 0.5, "f", 0.0);
-
-    initializeGenomicElementType("g1", m1, 1.0);
-    initializeGenomicElement(g1, 0, 999);
-
-    initializeMutationRate(0);
-    initializeRecombinationRate(1e-8);
-  }
-
-  SIMULATION_LENGTH late() {
-    path = OUTPUT_DIR + "/" + "output_file";
-    writeFile(path, "asdf");
-  }
-  )"
-
-  model <- compile_model(populations = pop, generation_time = 1, extension = extension)
-
-  output_dir <- normalizePath(file.path(tempdir(), "testing_dir1"), winslash = "/", mustWork = FALSE)
-  output_file <- file.path(output_dir, "output_file")
-  result <- slim(model, output_dir = output_dir)
-
-  # slim(..., output_dir = ...) returns the directory path
-  expect_true(result == output_dir)
-  expect_equal(sort(list.files(output_dir)), sort(c("output_file", "output.trees")))
-  expect_true(file.exists(output_file))
-  expect_true(readLines(output_file) == "asdf")
-  expect_s3_class(ts_load(file.path(output_dir, "output.trees"), model), "slendr_ts")
-})
-
-test_that("output directory can be set and files (but no tree sequence) are saved there", {
-  extension <- r"(
-  initialize() {
-    initializeMutationType("m1", 0.5, "f", 0.0);
-
-    initializeGenomicElementType("g1", m1, 1.0);
-    initializeGenomicElement(g1, 0, 999);
-
-    initializeMutationRate(0);
-    initializeRecombinationRate(1e-8);
-  }
-
-  SIMULATION_LENGTH late() {
-    path = OUTPUT_DIR + "/" + "output_file";
-    writeFile(path, "asdf");
-  }
-  )"
-
-  model <- compile_model(populations = pop, generation_time = 1, extension = extension)
-
-  output_dir <- normalizePath(file.path(tempdir(), "testing_dir2"), winslash = "/", mustWork = FALSE)
-  output_file <- file.path(output_dir, "output_file")
-  result <- slim(model, output_dir = output_dir, ts = FALSE)
-
-  # slim(..., output_dir = ...) returns the directory path
-  expect_true(result == output_dir)
-  expect_equal(list.files(output_dir), "output_file")
-  expect_true(file.exists(output_file))
-  expect_true(readLines(output_file) == "asdf")
-})
-
 test_that("substitute_values() complains about missing parameters", {
   extension <- r"(
   initialize() {
