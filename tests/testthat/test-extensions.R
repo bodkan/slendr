@@ -482,12 +482,17 @@ test_that("basic and extended models return a path if no tree sequence is reques
   expect_type(slim(extended_model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE), "character")
 })
 
-test_that("basic and extended models return a specified path if requested", {
-  path <- normalizePath(paste0(tempdir(), "_hello_there"), winslash = "/", mustWork = FALSE)
-  path <- dirname(dir(path, full.names = TRUE)[1])
+test_that("basic models return a specified path if requested", {
+  path <- normalizePath(paste0(tempdir(), "_basic_hello_there"), winslash = "/", mustWork = FALSE)
+  basic_res <- slim(base_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = path)
+  expect_true(basic_res == path)
+})
 
-  expect_true(slim(base_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = path) == path)
-  expect_true(slim(extended_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = path) == path)
+
+test_that("extended models return a specified path if requested", {
+  path <- normalizePath(paste0(tempdir(), "_extended_hello_there"), winslash = "/", mustWork = FALSE)
+  extended_res <- slim(extended_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = path)
+  expect_true(extended_res == path)
 })
 
 test_that("basic and extended models return expected files at a defined location", {
