@@ -57,7 +57,7 @@ Below we will describe the following slendr / SLiM "API" functions and constants
 
 - `SIMULATION_START` and `SIMULATION_END`
 - `SEQUENCE_LENGTH`
-- `OUTPUT_DIR`
+- `PATH`
 
 Let's first load all required R libraries before we dive in:
 
@@ -229,7 +229,7 @@ Below we'll see that thanks to the possibility of using arbitrary integer expres
 
 This function is an inverse to the `tick()` function. For instance, if we want to write out an output with a time stamp using times of the _slendr_ model (like years before present) and not tick numbers.
 
-As an example, this gives us the model time (in years ago) corresponding to the first tick:
+As an example, this gives us the model time (in years ago) corresponding to the first tick in the EUR-AFR model above:
 
 ```
 > model_time(1)
@@ -470,19 +470,20 @@ model <- compile_model(
 
 ```{r, echo = FALSE}
 output_dir <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, output_dir = output_dir)
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, path = output_dir)
 ```
 
 ```{r, eval = FALSE}
-output_dir <- tempdir()
-slim(model, sequence_length = 1e6, recombination_rate = 0, output_dir = output_dir,
-     ts = FALSE, random_seed = 42)
+directory <- tempdir()
+slim(model, sequence_length = 1e6, recombination_rate = 0, path = directory, ts = FALSE, random_seed = 42)
 ```
 
 We can leverage the flexibility of this solution to run another version of this model, this time adding the mutation to a different population. In fact, let's check what happens when the beneficial allele appears in EHG, ANA, and YAM populations. Note that this uses the same extension snippet, and just substitutes different values to the placeholder parameters:
 
 ```{r}
-run_model <- function(origin_pop, onset_time) {
+directory <- tempdir()
+
+run_model <- function(origin_pop, onset_time, directory) {
   extension <- substitute_values(
     extension_path,
     s = 0.1, onset_time = onset_time,
@@ -496,7 +497,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       path = output_dir, ts = FALSE, random_seed = 42)
+       path = directory, ts = FALSE, random_seed = 42)
 }
 
 run_model(origin_pop = "EUR", onset_time = 15000)
@@ -509,7 +510,7 @@ We can visualize the different trajectories like this. Not that the different al
 
 ```{r trajectories}
 load_traj <- function(origin_pop) {
-  df <- read.table(file.path(output_dir, paste0("traj_EUR_", origin_pop, ".tsv")), header = TRUE)
+  df <- read.table(file.path(directory, paste0("traj_EUR_", origin_pop, ".tsv")), header = TRUE)
   df$origin <- origin_pop
   df$target <- "EUR"
   df
@@ -565,7 +566,7 @@ initialize() {
     defineConstant("origin_pop", "{{origin_pop}}");
 
     // compose an output file based on given parameters
-    defineConstant("output_file", OUTPUT_DIR + "/" +
+    defineConstant("output_file", PATH + "/" +
                                   "traj_" + target_pop + "_" + origin_pop + ".tsv");
 }
 
@@ -635,7 +636,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       path = output_dir, ts = FALSE, random_seed = 42)
+       path = directory, ts = FALSE, random_seed = 42)
 }
 
 run_model("EUR", onset_time = 15000)
@@ -722,7 +723,7 @@ initialize() {
   defineConstant("n_genes", {{n_genes}});
   defineConstant("n_markers", {{n_markers}});
   defineConstant("introgression_time", {{introgression_time}});
-  defineConstant("output_file", OUTPUT_DIR + "/{{output_file}}");
+  defineConstant("freq_file", PATH + "/{{freq_file}}");
 
   // total length of the genome to be simulated
   defineConstant("total_length", n_genes * gene_length);
@@ -801,13 +802,13 @@ SIMULATION_END late() {
     "pos", MARKERS.position,
     "freq", sim.mutationFrequencies(population("EUR"), MARKERS)
   );
-  writeFile(output_file, df.serialize(format = "tsv"));
+  writeFile(freq_file, df.serialize(format = "tsv"));
 }
 )" %>%
   substitute_values(
     introgression_time = 55000, s = -0.001,
     gene_length = 5e6, n_genes = 200, n_markers = 100,
-    output_file = "output_frequencies.tsv"
+    freq_file = "frequencies.tsv"
   )
 ```
 
@@ -835,16 +836,16 @@ samples <- rbind(nea_samples, modern_samples)
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
 ```{r, eval = RERUN}
-output_dir <- tempdir()
-slim(model, recombination_rate = 1e-8, samples = samples, output_dir = output_dir)
+data_dir <- "~/Projects/introgression_data/"
+slim(model, recombination_rate = 1e-8, samples = samples, path = data_dir)
 ```
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
 
 The above implies that if we compute the proportion of Neanderthal ancestry along a sample of European genomes, we should see a clear dip in the amount of surviving Neanderthal DNA as a function of distance from a locus under selection. Because our customized SLiM snippet saved the allele frequency of each Neanderthal marker in Europeans, we can just load this data and directly visualize it:
 
-```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/output_frequencies.tsv")}
-freqs <- read_tsv("~/Projects/introgression_data/output_frequencies.tsv") %>% mutate(pos = pos %% 5e6)
+```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/frequencies.tsv")}
+freqs <- read_tsv("~/Projects/introgression_data/frequencies.tsv") %>% mutate(pos = pos %% 5e6)
 
 group_by(freqs, pos) %>%
 summarise(freq = 100 * mean(freq)) %>%
@@ -863,15 +864,15 @@ We shouldn't forget that the core output data structure of _slendr_ is a tree se
 
 For instance, as an alternative to the direct computation of allele frequencies during the SLiM run (saved in `output_frequencies.tsv`), we could use the simulated tree sequence to quickly calculate the genetic divergence between Europeans and a Neanderthal in windows along the simulated genome.
 
-```{r, eval = file.exists("~/Projects/introgression_data/output.trees")}
+```{r, eval = file.exists("~/Projects/introgression_data/slim.trees")}
 n_genes <- 200
 gene_length <- 5e6
 window_length <- 100e3
 ```
 
-```{r, eval = file.exists("~/Projects/introgression_data/output.trees")}
+```{r, eval = file.exists("~/Projects/introgression_data/slim.trees")}
 # load a tree sequence and extract the names of recorded individuals
-ts <- ts_load(file = "~/Projects/introgression_data/output.trees", model)
+ts <- ts_load(file = "~/Projects/introgression_data/slim.trees", model)
 samples <- ts_names(ts, split = "pop")
 
 samples
@@ -901,7 +902,7 @@ div_df <- tibble(
   ) 
 ```
 
-```{r introgression_divergence, eval = file.exists("~/Projects/introgression_data/output.trees")}
+```{r introgression_divergence, eval = file.exists("~/Projects/introgression_data/slim.trees")}
 ggplot(div_df) +
   geom_ribbon(aes(pos, ymin = ci_low, ymax = ci_up), fill = "grey70") +
   geom_line(aes(pos, mean)) +
