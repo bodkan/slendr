@@ -256,19 +256,22 @@ slim <- function(
   if (method == "gui" && ts)
     readline("Please confirm that the SLiMgui simulation is finished [press ENTER]")
 
-  if (is.null(path) && ts) {
-    ts_path <- file.path(results_path, "slim.trees")
-    if (!file.exists(ts_path))
-      stop("Tree sequence was not found at the expected location:\n", ts_path, call. = FALSE)
+  if (is.null(path)) {
+    if (ts) {
+      ts_path <- file.path(results_path, "slim.trees")
+      if (!file.exists(ts_path))
+        stop("Tree sequence was not found at the expected location:\n", ts_path, call. = FALSE)
 
-    if (verbose) {
-      cat("Tree sequence was saved to:\n", ts_path, "\n")
-      cat("Loading the tree-sequence file...\n")
+      if (verbose) {
+        cat("Tree sequence was saved to:\n", ts_path, "\n")
+        cat("Loading the tree-sequence file...\n")
 
-    }
+      }
 
-    ts_object <- ts_load(model, file = ts_path)
-    return(ts_object)
+      ts_object <- ts_load(model, file = ts_path)
+      return(ts_object)
+    } else
+      return(results_path)
   } else
-    return(results_path)
+    invisible(results_path)
 }
