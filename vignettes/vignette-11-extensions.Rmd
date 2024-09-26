@@ -887,7 +887,7 @@ tail(windows)
 divergence <- ts_divergence(ts, samples, windows = windows, mode = "branch")$divergence[[1]]
 ```
 
-```{r, eval = file.exists("~/Projects/introgression_data/output.trees")}
+```{r, eval = file.exists("~/Projects/introgression_data/slim.trees")}
 # compute average divergence at each position in a gene, and a 95% C.I.
 div_df <- tibble(
   pop = "eur",
