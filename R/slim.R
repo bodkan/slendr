@@ -199,10 +199,6 @@ slim <- function(
       gsub("required_arg\\(\"PATH\"\\)", sprintf("defineConstant(\"PATH\", \"%s\")", results_path), .) %>%
       gsub("optional_arg\\(\"BURNIN_LENGTH\", 0\\)", sprintf("defineConstant(\"BURNIN_LENGTH\", %s)", burnin), .)
 
-    if (model$customized) {
-      script_contents <- c(script_contents, sprintf("initialize() { defineConstant(\"PATH\", \"%s\"); }", results_dir))
-    }
-
     cat(script_contents, file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
