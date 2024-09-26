@@ -891,7 +891,7 @@ function (i) tick(i model_time) {
         stop("Some of the times fall outside of the range of the slendr model:\n" +
              "  - oldest possible event: " + oldest_event + "\n" +
              "  - youngest possible event: " +  youngest_event + "\n\n" +
-             "The offending times were: " + paste(time[invalid_time], sep = ", "));
+             "The offending times were: " + paste(model_time[invalid_time], sep = ", "));
     }
 
     return(tick_time);
