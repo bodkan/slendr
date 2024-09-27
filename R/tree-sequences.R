@@ -670,7 +670,7 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
          "a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
          call. = FALSE)
 
-  if (!attr(ts, "mutated"))
+  if (ts$num_mutations == 0)
     stop("Attempting to extract genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
 
