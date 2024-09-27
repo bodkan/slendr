@@ -483,7 +483,7 @@ We can leverage the flexibility of this solution to run another version of this 
 ```{r}
 directory <- tempdir()
 
-run_model <- function(origin_pop, onset_time, directory) {
+run_model <- function(origin_pop, onset_time) {
   extension <- substitute_values(
     extension_path,
     s = 0.1, onset_time = onset_time,
@@ -835,19 +835,25 @@ samples <- rbind(nea_samples, modern_samples)
 
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
-```{r, eval = RERUN}
+```{r, eval = RERUN | !file.exists("~/Projects/introgression_data/frequencies.tsv")}
 x = Sys.time()
 data_dir <- "~/Projects/introgression_data/"
 slim(model, recombination_rate = 1e-8, samples = samples, path = data_dir)
 y = Sys.time()
-y - x
+y - x # Time difference of 45.62365 mins
 ```
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
 
 The above implies that if we compute the proportion of Neanderthal ancestry along a sample of European genomes, we should see a clear dip in the amount of surviving Neanderthal DNA as a function of distance from a locus under selection. Because our customized SLiM snippet saved the allele frequency of each Neanderthal marker in Europeans, we can just load this data and directly visualize it:
 
-```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/frequencies.tsv")}
+```{r}
+n_genes <- 200
+gene_length <- 5e6
+window_length <- 100e3
+```
+
+```{r, eval = file.exists("~/Projects/introgression_data/frequencies.tsv")}
 freqs <- read_tsv("~/Projects/introgression_data/frequencies.tsv")
 ```
 
@@ -858,11 +864,11 @@ group_by(pos) %>%
 summarise(freq = 100 * mean(freq)) %>%
 ggplot() +
   geom_line(aes(pos, freq)) +
-  geom_vline(xintercept = 5e6 / 2, linetype = 2) +
+  geom_vline(xintercept = gene_length / 2, linetype = 2) +
   labs(x = "coordinate along a gene", y = "Neanderthal ancestry proportion [%]",
        title = "Proportion of Neanderthal ancestry in Europeans along 5Mb independent genes",
        subtitle = "(dashed line indicates introgressed deleterious Neanderthal allele)") +
-  coord_cartesian(ylim = c(0, 5))
+  coord_cartesian(ylim = c(0, 3))
 ```
 
 The hypothesis clearly stands against the data!
@@ -870,12 +876,6 @@ The hypothesis clearly stands against the data!
 We shouldn't forget that the core output data structure of _slendr_ is a tree sequence. This gives us much more flexibility in terms of which statistics can we compute, and how effectively can they be computed because we don't need any mutations or genotype files to calculate them.
 
 For instance, as an alternative to the direct computation of allele frequencies during the SLiM run (saved in `output_frequencies.tsv`), we could use the simulated tree sequence to quickly calculate the genetic divergence between Europeans and a Neanderthal in windows along the simulated genome.
-
-```{r, eval = file.exists("~/Projects/introgression_data/slim.trees")}
-n_genes <- 200
-gene_length <- 5e6
-window_length <- 100e3
-```
 
 ```{r, eval = file.exists("~/Projects/introgression_data/slim.trees")}
 # load a tree sequence and extract the names of recorded individuals
@@ -913,7 +913,7 @@ div_df <- tibble(
 ggplot(div_df) +
   geom_ribbon(aes(pos, ymin = ci_low, ymax = ci_up), fill = "grey70") +
   geom_line(aes(pos, mean)) +
-  geom_vline(aes(xintercept = median(pos) - window_length / 2), linetype = 2) +
+  geom_vline(aes(xintercept = gene_length / 2), linetype = 2) +
   labs(x = "coordinate along a gene", y = "divergence to Neanderthal",
        title = "Divergence of Europeans to a Neanderthal genome along 5Mb independent genes",
        subtitle = "(dashed line indicates introgressed deleterious Neanderthal allele)")
