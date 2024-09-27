@@ -806,7 +806,7 @@ SIMULATION_END late() {
 }
 )" %>%
   substitute_values(
-    introgression_time = 55000, s = -0.001,
+    introgression_time = 55000, s = -0.003,
     gene_length = 5e6, n_genes = 200, n_markers = 100,
     freq_file = "frequencies.tsv"
   )
@@ -836,8 +836,11 @@ samples <- rbind(nea_samples, modern_samples)
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
 ```{r, eval = RERUN}
+x = Sys.time()
 data_dir <- "~/Projects/introgression_data/"
 slim(model, recombination_rate = 1e-8, samples = samples, path = data_dir)
+y = Sys.time()
+y - x
 ```
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
@@ -845,9 +848,13 @@ It's been suggested that Neanderthals had a significantly lower $N_e$ compared t
 The above implies that if we compute the proportion of Neanderthal ancestry along a sample of European genomes, we should see a clear dip in the amount of surviving Neanderthal DNA as a function of distance from a locus under selection. Because our customized SLiM snippet saved the allele frequency of each Neanderthal marker in Europeans, we can just load this data and directly visualize it:
 
 ```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/frequencies.tsv")}
-freqs <- read_tsv("~/Projects/introgression_data/frequencies.tsv") %>% mutate(pos = pos %% 5e6)
+freqs <- read_tsv("~/Projects/introgression_data/frequencies.tsv")
+```
 
-group_by(freqs, pos) %>%
+```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/frequencies.tsv")}
+freqs %>%
+mutate(pos = pos %% 5e6) %>%
+group_by(pos) %>%
 summarise(freq = 100 * mean(freq)) %>%
 ggplot() +
   geom_line(aes(pos, freq)) +
