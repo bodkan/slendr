@@ -89,7 +89,7 @@ test_that("recombination rate can only be an integer number (SLiM)", {
   error_msg <- "Recombination rate must be a numeric value"
   expect_error(slim(model, sequence_length = 100, recombination_rate = "asdf"), error_msg)
   expect_error(slim(model, sequence_length = 100, recombination_rate = -1), error_msg)
-  expect_silent(slim(model, sequence_length = 100, recombination_rate = 1e-8))
+  expect_s3_class(slim(model, sequence_length = 100, recombination_rate = 1e-8), "slendr_ts")
 })
 
 test_that("recombination rate can only be an integer number (msprime)", {
@@ -232,3 +232,4 @@ test_that("extract_parameters fails gracefully when non-slendr tree sequence is 
   ts <- ts_load(output)
   expect_error(extract_parameters(ts), "No slendr model configuration present in the tree sequence.")
 })
+
