@@ -139,10 +139,13 @@ recorded in the tree-sequence output file.</p></dd>
 
 
 <dt>path</dt>
-<dd><p>Path to the directory where simulation files will be saved.
-If <code>NULL</code>, directory for the results will be automatically created. Any
-other value is assumed to be a path to where files should be saved. In this
-case, the function will return this path invisibly.</p></dd>
+<dd><p>Path to the directory where simulation result files will be saved.
+If <code>NULL</code>, this directory will be automatically created as a temporary
+directory. Any other value is assumed to be a path to a directory where these files
+should be saved. In this case, the function will return this path invisibly. Note
+that if a tree-sequence file should be simulated (along with other files, potentially),
+that tree-sequence file (named 'slim.trees' by default) will have to be explicitly
+loaded using <code><a href="ts_load.html">ts_load()</a></code>.</p></dd>
 
 
 <dt>random_seed</dt>
@@ -207,7 +210,8 @@ will be saved (most likely for use with <code>animate_model</code>).</p></dd>
 
 
 <p>(internally represented by the Python object <code>tskit.trees.TreeSequence</code>). If the
-<code>path</code> argument was set, it will return the path as a single-element character vector.</p>
+<code>path</code> argument was set, specifying the directory where results should be saved,
+the function will return this path as a single-element character vector.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -280,15 +284,15 @@ themselves (and only the path is needed).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤═════╤═════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows │Size     │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪═════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │18317│572.4 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │18347│573.4 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│12783│  1.2 MiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│12835│  1.2 MiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │    0│  8 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │    0│  1.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │18318│680.4 KiB│         Yes║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │18348│681.6 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│    4│  2.5 KiB│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼─────┼─────────┼────────────╢</span>

@@ -30,10 +30,13 @@
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
 #' @param ts Should a tree sequence be simulated from the model?
-#' @param path Path to the directory where simulation files will be saved.
-#'   If \code{NULL}, directory for the results will be automatically created. Any
-#'   other value is assumed to be a path to where files should be saved. In this
-#'   case, the function will return this path invisibly.
+#' @param path Path to the directory where simulation result files will be saved.
+#'   If \code{NULL}, this directory will be automatically created as a temporary
+#'   directory. Any other value is assumed to be a path to a directory where these files
+#'   should be saved. In this case, the function will return this path invisibly. Note
+#'   that if a tree-sequence file should be simulated (along with other files, potentially),
+#'   that tree-sequence file (named 'slim.trees' by default) will have to be explicitly
+#'   loaded using \code{ts_load()}.
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
 #'   0 and the maximum integer number available)
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
@@ -61,7 +64,8 @@
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the
-#'   \code{path} argument was set, it will return the path as a single-element character vector.
+#'   \code{path} argument was set, specifying the directory where results should be saved,
+#'   the function will return this path as a single-element character vector.
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE, slim = TRUE, quit = TRUE) # dependencies must be present
