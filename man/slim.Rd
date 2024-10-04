@@ -39,10 +39,10 @@ recorded in the tree-sequence output file.}
 
 \item{ts}{Should a tree sequence be simulated from the model?}
 
-\item{path}{Path to output files. If \code{NULL}, directory for the results will be
-automatically created. Any other value is assumed to be a path to where simulation
-output files should be saved. In this case, the function will return this path
-invisibly.}
+\item{path}{Path to the directory where simulation files will be saved.
+If \code{NULL}, directory for the results will be automatically created. Any
+other value is assumed to be a path to where files should be saved. In this
+case, the function will return this path invisibly.}
 
 \item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
 0 and the maximum integer number available)}

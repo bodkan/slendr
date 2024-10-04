@@ -30,10 +30,10 @@
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
 #' @param ts Should a tree sequence be simulated from the model?
-#' @param path Path to output files. If \code{NULL}, directory for the results will be
-#'   automatically created. Any other value is assumed to be a path to where simulation
-#'   output files should be saved. In this case, the function will return this path
-#'   invisibly.
+#' @param path Path to the directory where simulation files will be saved.
+#'   If \code{NULL}, directory for the results will be automatically created. Any
+#'   other value is assumed to be a path to where files should be saved. In this
+#'   case, the function will return this path invisibly.
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
 #'   0 and the maximum integer number available)
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run

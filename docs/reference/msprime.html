@@ -99,7 +99,8 @@ slendr demographic model.</p>
 <span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  run <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  run <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  path <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -142,6 +143,17 @@ recorded in the tree-sequence output file.</p></dd>
 <dt>run</dt>
 <dd><p>Should the msprime engine be run? If <code>FALSE</code>, the command line msprime
 command will be printed (and returned invisibly as a character vector) but not executed.</p></dd>
+
+
+<dt>path</dt>
+<dd><p>Path to the generated tree-sequence file. If <code>NULL</code> (the default), the tree
+sequence will not be saved to a file but will be returned as an in-memory object instead. If
+a path is given, it is interpreted as a path to a directory in which the function will
+save the tree sequence as a <code>msprime.trees</code> file and the function will return the
+path to the directory back. Note that this argument exists mostly to retain parity
+with the corresponding <code><a href="slim.html">slim()</a></code> function. In most circumstances, setting this
+argument is not necessary and users are better served by using the <code><a href="ts_save.html">ts_save()</a></code>
+function on the resulting tree-sequence object directly.</p></dd>
 
 </dl></div>
     <div class="section level2">
