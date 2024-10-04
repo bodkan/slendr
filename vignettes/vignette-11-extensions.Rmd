@@ -8,13 +8,15 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+run_vignette <- Sys.getenv("RUNNER_OS") == "" && slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
+
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   fig.width = 8,
   fig.height = 6,
   dpi = 60,
-  eval = Sys.getenv("RUNNER_OS") == "" && slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
+  eval = run_vignette
 )
 
 RERUN <- FALSE
@@ -815,7 +817,7 @@ SIMULATION_END late() {
 
 And put everything together by compiling a _slendr_ model (which now swaps _slendr_'s default neutrality for a non-neutral genomic architecture, including deleterious mutations):
 
-```{r, echo=FALSE}
+```{r}
 model <- compile_model(
   populations = list(nea, eur), gene_flow = gf,
   generation_time = 30,
@@ -835,7 +837,7 @@ samples <- rbind(nea_samples, modern_samples)
 
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard _slendr_ workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
-```{r, eval = RERUN | !file.exists("~/Projects/introgression_data/frequencies.tsv")}
+```{r, eval = RERUN & run_vignette}
 x = Sys.time()
 data_dir <- "~/Projects/introgression_data/"
 slim(model, recombination_rate = 1e-8, samples = samples, path = data_dir)
@@ -853,11 +855,11 @@ gene_length <- 5e6
 window_length <- 100e3
 ```
 
-```{r, eval = file.exists("~/Projects/introgression_data/frequencies.tsv")}
+```{r, eval = run_vignette & file.exists("~/Projects/introgression_data/frequencies.tsv")}
 freqs <- read_tsv("~/Projects/introgression_data/frequencies.tsv")
 ```
 
-```{r introgression_freqs, eval = file.exists("~/Projects/introgression_data/frequencies.tsv")}
+```{r introgression_freqs, eval = run_vignette & file.exists("~/Projects/introgression_data/frequencies.tsv")}
 freqs %>%
 mutate(pos = pos %% 5e6) %>%
 group_by(pos) %>%
@@ -877,7 +879,7 @@ We shouldn't forget that the core output data structure of _slendr_ is a tree se
 
 For instance, as an alternative to the direct computation of allele frequencies during the SLiM run (saved in `output_frequencies.tsv`), we could use the simulated tree sequence to quickly calculate the genetic divergence between Europeans and a Neanderthal in windows along the simulated genome.
 
-```{r, eval = file.exists("~/Projects/introgression_data/slim.trees")}
+```{r, eval = run_vignette & file.exists("~/Projects/introgression_data/slim.trees")}
 # load a tree sequence and extract the names of recorded individuals
 ts <- ts_load(file = "~/Projects/introgression_data/slim.trees", model)
 samples <- ts_names(ts, split = "pop")
@@ -894,7 +896,7 @@ tail(windows)
 divergence <- ts_divergence(ts, samples, windows = windows, mode = "branch")$divergence[[1]]
 ```
 
-```{r, eval = file.exists("~/Projects/introgression_data/slim.trees")}
+```{r, eval = run_vignette & file.exists("~/Projects/introgression_data/slim.trees")}
 # compute average divergence at each position in a gene, and a 95% C.I.
 div_df <- tibble(
   pop = "eur",
@@ -909,7 +911,7 @@ div_df <- tibble(
   ) 
 ```
 
-```{r introgression_divergence, eval = file.exists("~/Projects/introgression_data/slim.trees")}
+```{r introgression_divergence, eval = run_vignette & file.exists("~/Projects/introgression_data/slim.trees")}
 ggplot(div_df) +
   geom_ribbon(aes(pos, ymin = ci_low, ymax = ci_up), fill = "grey70") +
   geom_line(aes(pos, mean)) +
