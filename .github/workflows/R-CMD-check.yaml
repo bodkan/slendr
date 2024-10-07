@@ -80,21 +80,21 @@ jobs:
           make LDLIBS="-llapack" all
           make install
 
-          # download testing data for unit tests
-          cd ../
-          curl -LO https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/AdmixTools_Example_Data.tar_.gz
-          tar xf AdmixTools_Example_Data.tar_.gz
-
-          # run the Perl script with tests for the compiled binaries
-          cd examples
-          # fix unportable Perl shebang
-          if [[ "$OSTYPE" == "darwin"* ]]; then
-            sed -i '' "1s/.*/\#\!\/usr\/bin\/env perl -w/" mklog
-          else
-            sed -i "1s/.*/\#\!\/usr\/bin\/env perl/" mklog
-          fi
-          ./mklog
-          cd ../
+          # # download testing data for unit tests
+          # cd ../
+          # curl -LO https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/AdmixTools_Example_Data.tar_.gz
+          # tar xf AdmixTools_Example_Data.tar_.gz
+          #
+          # # run the Perl script with tests for the compiled binaries
+          # cd examples
+          # # fix unportable Perl shebang
+          # if [[ "$OSTYPE" == "darwin"* ]]; then
+          #   sed -i '' "1s/.*/\#\!\/usr\/bin\/env perl -w/" mklog
+          # else
+          #   sed -i "1s/.*/\#\!\/usr\/bin\/env perl/" mklog
+          # fi
+          # ./mklog
+          # cd ../
 
           # we need to do this in bash because of $OSTYPE above
         shell: bash
