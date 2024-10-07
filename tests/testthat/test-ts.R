@@ -39,6 +39,10 @@ slim(model, sequence_length = 100000, recombination_rate = 0,
 msprime(model, sequence_length = 100000, recombination_rate = 0,
         random_seed = 314159, samples = samples, verbose = FALSE) %>% ts_save(msprime_ts)
 
+test_that("ts_load fails gracefully on incorrect filename", {
+  expect_error(ts <- ts_load(model, file = paste0(msprime_ts, "blah")), "File not found")
+})
+
 test_that("ts_load generates an object of the correct type (SLiM)", {
   ts <- ts_load(model, file = slim_ts) %>% ts_recapitate(Ne = 1, recombination_rate = 0) %>% ts_simplify()
   expect_true(inherits(ts, "tskit.trees.TreeSequence"))
