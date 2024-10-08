@@ -209,8 +209,8 @@ setting `direction = 'backward'.`", call. = FALSE)
 
     # if it does, swap it out for the default slendr initialization code
     if (custom_init) {
-      init_start <- grep("default slendr neutral initialization -- start", script_contents)
-      init_end <- grep("default slendr neutral initialization -- end", script_contents)
+      init_start <- grep("default slendr neutral initialization -- start", script_contents) + 1
+      init_end <- grep("default slendr neutral initialization -- end", script_contents) - 1
       script_contents <- script_contents[-(init_start:init_end)]
     }
 
