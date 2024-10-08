@@ -118,6 +118,7 @@ slim <- function(
 
   results_path <- if (is.null(path)) file.path(tempdir(), "slendr_results", paste0("seed_", random_seed)) else path
   results_path <- normalizePath(results_path, winslash = "/", mustWork = FALSE)
+  results_path <- paste0(path, "/")
   dir.create(results_path, recursive = TRUE, showWarnings = FALSE)
 
   if (method == "gui" & !interactive())
