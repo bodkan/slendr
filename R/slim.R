@@ -203,6 +203,19 @@ slim <- function(
       gsub("required_arg\\(\"PATH\"\\)", sprintf("defineConstant(\"PATH\", \"%s\")", results_path), .) %>%
       gsub("optional_arg\\(\"BURNIN_LENGTH\", 0\\)", sprintf("defineConstant(\"BURNIN_LENGTH\", %s)", burnin), .)
 
+    # check if the SLiM code was customized by the user
+    init_start <- grep("default slendr neutral initialization -- start", script_contents)
+    init_end <- grep("default slendr neutral initialization -- end", script_contents)
+    if (init_start == init_end - 1) {
+      script_contents[init_start] <- paste0(
+        script_contents[init_start], "\n",
+        "initialize() {\n",
+        sprintf("    defineConstant(\"SEQUENCE_LENGTH\", %s);", sequence_length), "\n",
+        sprintf("    defineConstant(\"RECOMBINATION_RATE\", %s);", recombination_rate), "\n",
+        "}"
+      )
+    }
+
     cat(script_contents, file = modif_path, sep = "\n")
     system(sprintf("%s %s", binary, modif_path))
   } else {
