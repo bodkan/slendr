@@ -96,12 +96,11 @@ slendr demographic model.</p>
 <span>  <span class="va">sequence_length</span>,</span>
 <span>  <span class="va">recombination_rate</span>,</span>
 <span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  random_seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  load <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  run <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  run <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  path <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -128,20 +127,9 @@ missing, only individuals present at the end of the simulation will be
 recorded in the tree-sequence output file.</p></dd>
 
 
-<dt>ts</dt>
-<dd><p>Path to the output tree-sequence file. If <code>NULL</code> (the default),
-tree sequence will be saved to a temporary file.</p></dd>
-
-
 <dt>random_seed</dt>
 <dd><p>Random seed (if <code>NULL</code>, a seed will be generated between
 0 and the maximum integer number available)</p></dd>
-
-
-<dt>load</dt>
-<dd><p>Should the final tree sequence be immediately loaded and returned?
-Default is <code>TRUE</code>. The alternative (<code>FALSE</code>) is useful when a tree-sequence
-file is written to a custom location to be loaded at a later point.</p></dd>
 
 
 <dt>verbose</dt>
@@ -156,6 +144,17 @@ file is written to a custom location to be loaded at a later point.</p></dd>
 <dd><p>Should the msprime engine be run? If <code>FALSE</code>, the command line msprime
 command will be printed (and returned invisibly as a character vector) but not executed.</p></dd>
 
+
+<dt>path</dt>
+<dd><p>Path to the generated tree-sequence file. If <code>NULL</code> (the default), the tree
+sequence will not be saved to a file but will be returned as an in-memory object instead. If
+a path is given, it is interpreted as a path to a directory in which the function will
+save the tree sequence as a <code>msprime.trees</code> file and the function will return the
+path to the directory back. Note that this argument exists mostly to retain parity
+with the corresponding <code><a href="slim.html">slim()</a></code> function. In most circumstances, setting this
+argument is not necessary and users are better served by using the <code><a href="ts_save.html">ts_save()</a></code>
+function on the resulting tree-sequence object directly.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -164,9 +163,8 @@ command will be printed (and returned invisibly as a character vector) but not e
 <p>A tree-sequence object loaded via Python-R reticulate interface function <code>ts_load</code></p>
 
 
-<p>(internally represented by the Python object <code>tskit.trees.TreeSequence</code>). Optionally,
-depending on the value of the arguments <code>load =</code> or <code>run =</code>, nothing or a character
-vector, respectively.</p>
+<p>(internally represented by the Python object <code>tskit.trees.TreeSequence</code>). If the
+<code>path</code> argument was set, it will return the path as a single-element character vector.</p>
     </div>
 
     <div class="section level2">
@@ -197,12 +195,10 @@ vector, respectively.</p>
 <span class="r-in"><span><span class="co"># run a simulation using the msprime back end from a compiled slendr model object</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># automatic loading of a simulated output can be prevented by `load = FALSE`, which can be</span></span></span>
-<span class="r-in"><span><span class="co"># useful when a custom path to a tree-sequence output is given for later downstream analyses</span></span></span>
+<span class="r-in"><span><span class="co"># simulated tree-sequence object can be saved to a file using ts_save()...</span></span></span>
 <span class="r-in"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>, winslash <span class="op">=</span> <span class="st">"/"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span>,</span></span>
-<span class="r-in"><span>        ts <span class="op">=</span> <span class="va">output_file</span>, load <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># ... at a later stage:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ts_save.html">ts_save</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># ... and, at a later point, loaded by ts_load()</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></span>
@@ -217,12 +213,12 @@ vector, respectively.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │        230║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │   39.4 KiB║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │   39.2 KiB║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════════╝</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤════╤═════════╤════════════╗</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows│Size     │Has Metadata║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 471│ 14.7 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │ 468│ 14.6 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│ 115│  3.2 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
@@ -230,11 +226,11 @@ vector, respectively.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │   0│ 16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │ 472│ 12.9 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │ 469│ 12.8 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│   4│338 Bytes│         Yes║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│  2.9 KiB│          No║</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│   1│  3.0 KiB│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼────┼─────────┼────────────╢</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │   0│ 16 Bytes│          No║</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧════╧═════════╧════════════╝</span>

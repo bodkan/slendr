@@ -256,7 +256,70 @@ test_that("output file and tree sequence are both there", {
 
 test_that("output file is there but tree sequence is not returned", {
   result <- slim(model, ts = FALSE)
-  expect_true(result == "")
+  expect_true(length(dir(result)) == 0)
+  expect_true(file.exists(output_file))
+  expect_true(readLines(output_file) == "asdf")
+})
+
+test_that("output directory can be set and files and tree sequence are saved there", {
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 999);
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(1e-8);
+  }
+
+  SIMULATION_LENGTH late() {
+    path = PATH + "/" + "output_file";
+    writeFile(path, "asdf");
+  }
+  )"
+
+  model <- compile_model(populations = pop, generation_time = 1, extension = extension)
+
+  output_dir <- normalizePath(file.path(tempdir(), "testing_dir1"), winslash = "/", mustWork = FALSE)
+  output_file <- file.path(output_dir, "output_file")
+  result <- slim(model, path = output_dir)
+
+  # slim(..., output_dir = ...) returns the directory path
+  expect_true(result == output_dir)
+  expect_equal(sort(list.files(output_dir)), sort(c("output_file", "slim.trees")))
+  expect_true(file.exists(output_file))
+  expect_true(readLines(output_file) == "asdf")
+  expect_s3_class(ts_load(file.path(output_dir, "slim.trees"), model), "slendr_ts")
+})
+
+test_that("output directory can be set and files (but no tree sequence) are saved there", {
+  extension <- r"(
+  initialize() {
+    initializeMutationType("m1", 0.5, "f", 0.0);
+
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 999);
+
+    initializeMutationRate(0);
+    initializeRecombinationRate(1e-8);
+  }
+
+  SIMULATION_LENGTH late() {
+    path = PATH + "/" + "output_file";
+    writeFile(path, "asdf");
+  }
+  )"
+
+  model <- compile_model(populations = pop, generation_time = 1, extension = extension)
+
+  output_dir <- normalizePath(file.path(tempdir(), "testing_dir2"), winslash = "/", mustWork = FALSE)
+  output_file <- file.path(output_dir, "output_file")
+  result <- slim(model, path = output_dir, ts = FALSE)
+
+  # slim(..., output_dir = ...) returns the directory path
+  expect_true(result == output_dir)
+  expect_equal(list.files(output_dir), "output_file")
   expect_true(file.exists(output_file))
   expect_true(readLines(output_file) == "asdf")
 })
@@ -394,4 +457,52 @@ test_that("substitute_values() correctly instantiates parameters (file)", {
   extension_code <- readLines(extension)
   expect_true(sum(grepl("424242", extension_code)) == 1)
   expect_true(sum(grepl("0.123456789", extension_code)) == 1)
+})
+
+
+# test ts vs custom-files outputs -------------------------------------------------------------
+
+base_model <- population("asdf", time = 100, N = 100) %>%
+  compile_model(simulation_length = 100, direction = "forward", generation_time = 1)
+
+extended_model <- extension <- r"(
+    initialize() { catn("HULLO!"); writeFile(PATH + "/" + "test.txt", "ahojek");}
+    //SIMULATION_END late() { save_ts(PATH + "/" + "slim.trees"); }
+  )" %>%
+  compile_model(populations = population("asdf", time = 100, N = 100),
+                simulation_length = 100, direction = "forward", generation_time = 1, extension = .)
+
+test_that("basic and extended models return a tree-sequence by default", {
+  expect_s3_class(slim(base_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE), "slendr_ts")
+  expect_s3_class(slim(extended_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE), "slendr_ts")
+})
+
+test_that("basic and extended models return a path if no tree sequence is requested", {
+  expect_type(slim(base_model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE), "character")
+  expect_type(slim(extended_model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE), "character")
+})
+
+test_that("basic models return a specified path if requested", {
+  path <- normalizePath(paste0(tempdir(), "_basic_hello_there"), winslash = "/", mustWork = FALSE)
+  basic_res <- slim(base_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = path)
+  expect_true(basic_res == path)
+})
+
+
+test_that("extended models return a specified path if requested", {
+  path <- normalizePath(paste0(tempdir(), "_extended_hello_there"), winslash = "/", mustWork = FALSE)
+  extended_res <- slim(extended_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = path)
+  expect_true(extended_res == path)
+})
+
+test_that("basic and extended models return expected files at a defined location", {
+  basic_path <- normalizePath(paste0(tempdir(), "basic_path"), winslash = "/", mustWork = FALSE) %>%
+    { slim(base_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = .) } %>%
+    { dirname(dir(., full.names = TRUE)[1]) }
+  expect_equal(list.files(basic_path), "slim.trees")
+
+  extended_path <- normalizePath(paste0(tempdir(), "extended_path"), winslash = "/", mustWork = FALSE) %>%
+    { slim(extended_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = .) } %>%
+    { dirname(dir(., full.names = TRUE)[1]) }
+  expect_equal(sort(list.files(extended_path)), c("slim.trees", "test.txt"))
 })

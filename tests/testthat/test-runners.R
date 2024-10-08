@@ -11,22 +11,18 @@ test_that("slim() returns a tree-sequence object by default", {
 })
 
 test_that("msprime() returns a tree-sequence object by default", {
-  result <- msprime(model, sequence_length = 1, recombination_rate = 0)
+  result <- msprime(model, sequence_length = 1, recombination_rate = 0, random_seed = 123)
   expect_s3_class(result, "slendr_ts")
   expect_s3_class(result, "tskit.trees.TreeSequence")
 })
 
-test_that("slim() does not return a tree sequence when this is not requested", {
-  ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-  expect_silent(slim(model, ts = ts_file, sequence_length = 1, recombination_rate = 0, load = FALSE))
-})
+test_that("if `path =` is given, msprime returns it back and saves a tree-sequence file", {
+  path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  result1 <- msprime(model, sequence_length = 1, recombination_rate = 0, path = path, random_seed = 123)
+  ts_path <- file.path(path, "msprime.trees")
+  expect_true(file.exists(ts_path))
 
-test_that("msprime() does not return a tree sequence when this is not requested", {
-  ts_file <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-  expect_silent(msprime(model, ts = ts_file, sequence_length = 1, recombination_rate = 0, load = FALSE))
-})
-
-test_that("msprime() gives a warning when no output path is given and no tree sequence is to be loaded", {
-  expect_warning(msprime(model, sequence_length = 1, recombination_rate = 0, load = FALSE),
-                 "No custom tree-sequence output path is given")
+  result2 <- msprime(model, sequence_length = 1, recombination_rate = 0, random_seed = 123)
+  ts <- ts_load(file = ts_path, model)
+  expect_equal(ts_nodes(ts), ts_nodes(result2))
 })

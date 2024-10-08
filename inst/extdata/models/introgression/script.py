@@ -237,8 +237,8 @@ if __name__ == "__main__":
   )
   parser.add_argument("--model", metavar="DIRECTORY", default=".",
                      help="Path to a slendr model directory")
-  parser.add_argument("--output", metavar="FILE",
-                      help="Path to a tree sequence output file")
+  parser.add_argument("--path", metavar="FILE",
+                      help="Path to a tree-sequence file")
   parser.add_argument("--sequence-length", required=True, type=int,
                       help="The length of a sequence to simulate")
   parser.add_argument("--recombination-rate", required=True, type=float,
@@ -262,8 +262,8 @@ if __name__ == "__main__":
 
   logging.info(f"Loading slendr model configuration files from {model_dir}")
 
-  if not args.output:
-      args.output = pathlib.Path(model_dir, "output_msprime_ts.trees")
+  if not args.path:
+      args.path = pathlib.Path(model_dir, "msprime.trees")
 
   if not os.path.exists(model_dir):
       sys.exit(f"Model directory {model_dir} does not exist")
@@ -308,8 +308,8 @@ if __name__ == "__main__":
                 populations, resizes, geneflows, length, orig_length, direction, description,
                 samples, args.debug)
 
-  output_path = os.path.expanduser(args.output)
+  path = os.path.expanduser(args.path)
 
-  logging.info(f"Saving tree sequence output to {output_path}")
+  logging.info(f"Saving tree sequence to {path}")
 
-  ts.dump(output_path)
+  ts.dump(path)

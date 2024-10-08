@@ -7,9 +7,9 @@ initialize() {
     defineConstant("target_pop", "{{target_pop}}");
     defineConstant("origin_pop", "{{origin_pop}}");
 
-    // compose an output file based on given parameters
-    defineConstant("output_file", OUTPUT_DIR + "/" +
-                                  "traj_" + target_pop + "_" + origin_pop + ".tsv");
+    // compose a trajectory file based on given parameters
+    defineConstant("traj_file", PATH + "/" +
+                                "traj_" + target_pop + "_" + origin_pop + ".tsv");
 }
 // Because we want to simulate non-neutral evolution, we have to provide a
 // custom initialization callback -- slendr will use it to replace its default
@@ -38,7 +38,7 @@ function (void) add_mutation(void) {
 
     write_log("adding beneficial mutation to population " + target_pop);
 
-    writeFile(output_file, "time\tfreq_origin\tfreq_target");
+    writeFile(traj_file, "time\tfreq_origin\tfreq_target");
 }
 
 tick(onset_time) late() {
@@ -67,7 +67,7 @@ tick(onset_time):SIMULATION_END late() {
     if (population(target_pop, check = T))
       freq_target = population(target_pop).genomes.mutationFrequenciesInGenomes();
 
-    writeFile(output_file,
+    writeFile(traj_file,
               model_time(community.tick) + "\t" +
               freq_origin + "\t" +
               freq_target, append = T);

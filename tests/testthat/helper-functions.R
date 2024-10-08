@@ -34,21 +34,21 @@ run_slim_msprime <- function(forward_model, backward_model,
   ts_slim_forward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_msprime_forward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-  slim(forward_model, ts = ts_slim_forward, sequence_length = seq_len, recombination_rate = rec_rate,
-       samples = forward_samples, random_seed = seed, verbose = verbose)
+  slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+       samples = forward_samples, random_seed = seed, verbose = verbose) %>% ts_save(ts_slim_forward)
   suppressWarnings({
-    msprime(forward_model, ts = ts_msprime_forward, sequence_length = seq_len, recombination_rate = rec_rate,
-          samples = forward_samples, random_seed = seed, verbose = verbose)
+    msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+          samples = forward_samples, random_seed = seed, verbose = verbose) %>% ts_save(ts_msprime_forward)
   })
 
   ts_slim_backward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_msprime_backward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
-  slim(backward_model, ts = ts_slim_backward, sequence_length = seq_len, recombination_rate = rec_rate,
-       samples = backward_samples, random_seed = seed, verbose = verbose)
+  slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+       samples = backward_samples, random_seed = seed, verbose = verbose) %>% ts_save(ts_slim_backward)
   suppressWarnings({
-  msprime(backward_model, ts = ts_msprime_backward, sequence_length = seq_len, recombination_rate = rec_rate,
-          samples = backward_samples, random_seed = seed, verbose = verbose)
+  msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
+          samples = backward_samples, random_seed = seed, verbose = verbose) %>% ts_save(ts_msprime_backward)
   })
 
   list(

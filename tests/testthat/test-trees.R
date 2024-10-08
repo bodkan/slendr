@@ -19,17 +19,17 @@ slim_ts <- normalizePath(tempfile(fileext = ".slim.trees"), winslash = "/", must
 msprime_ts <- normalizePath(tempfile(fileext = ".msprime.trees"), winslash = "/", mustWork = FALSE)
 
 slim(
-  model, samples = samples, ts = slim_ts,
+  model, samples = samples,
   sequence_length = 100000, recombination_rate = 1e-8,
   method = "batch",
   random_seed = 42
-)
+) %>% ts_save(slim_ts)
 
 msprime(
-  model, samples = samples, ts = msprime_ts,
+  model, samples = samples,
   sequence_length = 100000, recombination_rate = 1e-8,
   random_seed = 42
-)
+) %>% ts_save(msprime_ts)
 
 
 test_that("ape phylo conversion only works on simplified, coalesced trees (SLiM)", {

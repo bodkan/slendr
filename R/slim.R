@@ -9,6 +9,16 @@
 #' directly through SLiM's \code{initializeGenomicElement()} and
 #' \code{initializeRecombinationRate()} functions or utilize slendr's
 #' templating functionality provided by its \code{substitute()} function.
+#
+#' When \code{ts = TRUE}, the returning value of this function depends on whether
+#' or not the \code{path} argument was set. If the user did provide the \code{path}
+#' where output files should be saved, the path is returned (invisibly). This is
+#' mostly intended to support simulations of customized user outputs. If \code{path}
+#' is not set by the user, it is assumed that a tree-sequence object is desired as
+#' a sole output of the function (when \code{ts = TRUE}) and so it is automatically
+#' loaded when simulation finishes, or (when \code{ts = FALSE}) that only customized
+#' output files are desired, in which the user will be loading such outputs by
+#' themselves (and only the path is needed).
 #'
 #' @param model Model object created by the \code{compile} function
 #' @param sequence_length Total length of the simulated sequence (in base-pairs)
@@ -19,17 +29,18 @@
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
 #'   recorded in the tree-sequence output file.
-#' @param ts Path to the output tree-sequence file. If \code{NULL} (the default),
-#'   tree sequence will be saved to a temporary file. If \code{FALSE}, no tree-sequence
-#'   file will be generated (this is only useful for running customized slendr SLiM
-#'   scripts).
+#' @param ts Should a tree sequence be simulated from the model?
+#' @param path Path to the directory where simulation result files will be saved.
+#'   If \code{NULL}, this directory will be automatically created as a temporary
+#'   directory. Any other value is assumed to be a path to a directory where these files
+#'   should be saved. In this case, the function will return this path invisibly. Note
+#'   that if a tree-sequence file should be simulated (along with other files, potentially),
+#'   that tree-sequence file (named 'slim.trees' by default) will have to be explicitly
+#'   loaded using \code{ts_load()}.
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
 #'   0 and the maximum integer number available)
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
 #'   on the command line)
-#' @param load Should the final tree sequence be immediately loaded and returned?
-#'   Default is \code{TRUE}. The alternative (\code{FALSE}) is useful when a tree-sequence
-#'   file is written to a custom location to be loaded at a later point.
 #' @param verbose Write the SLiM output log to the console (default
 #'   \code{FALSE})?
 #' @param run Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
@@ -52,9 +63,9 @@
 #'   be specified if the function is being run on Windows.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
-#'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). Optionally,
-#'   depending on the value of the arguments \code{load =} or \code{run =}, nothing or a character
-#'   vector, respectively.
+#'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the
+#'   \code{path} argument was set, specifying the directory where results should be saved,
+#'   the function will return this path as a single-element character vector.
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE, slim = TRUE, quit = TRUE) # dependencies must be present
@@ -83,41 +94,31 @@
 #' # a tree-sequence output
 #' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
 #'
-#' # automatic loading of a simulated output can be prevented by `load = FALSE`, which can be
-#' # useful when a custom path to a tree-sequence output is given for later downstream analyses
+#' # simulated tree-sequence object can be saved to a file using ts_save()...
 #' output_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
-#' slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples,
-#'      ts = output_file, load = FALSE)
-#' # ... at a later stage:
+#' ts_save(ts, output_file)
+#' # ... and, at a later point, loaded by ts_load()
 #' ts <- ts_load(output_file, model)
 #'
 #' ts
 #' @export
 slim <- function(
-    model, sequence_length, recombination_rate, samples = NULL, ts = NULL,
+    model, sequence_length, recombination_rate, samples = NULL, ts = TRUE, path = NULL,
     random_seed = NULL, method = c("batch", "gui"),
-    verbose = FALSE, load = TRUE, run = TRUE,
-    slim_path = NULL, burnin = 0,
+    verbose = FALSE, run = TRUE, slim_path = NULL, burnin = 0,
     max_attempts = 1, spatial = !is.null(model$world), coalescent_only = TRUE,
     locations = NULL
 ) {
   method <- match.arg(method)
 
+  random_seed <- set_random_seed(random_seed)
+
   if (is.null(model$path))
     stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
 
-  if (is.logical(ts) && ts == FALSE) {
-    output_path <- ""
-  } else if (!is.null(ts) && !is.character(ts)) {
-    stop("Invalid path to the output tree sequence. The `output =` argument\n",
-         "must be either NULL (the default when a temporary path will be created),\n",
-         "a proper file path,or `FALSE` if no output tree sequence ",
-         "should be created.", call. = FALSE)
-  } else if (is.null(ts)) {
-    output_path <- tempfile(fileext = ".trees")
-    output_path <- normalizePath(output_path, winslash = "/", mustWork = FALSE)
-  } else
-    output_path <- ts
+  results_path <- if (is.null(path)) file.path(tempdir(), "slendr_results", paste0("seed_", random_seed)) else path
+  results_path <- normalizePath(results_path, winslash = "/", mustWork = FALSE)
+  dir.create(results_path, recursive = TRUE, showWarnings = FALSE)
 
   if (method == "gui" & !interactive())
     stop("SLiMgui can only be run from an interactive R session", call. = FALSE)
@@ -167,13 +168,15 @@ slim <- function(
   spatial <- if (spatial) "T" else "F"
   locations <- if (is.character(locations)) normalizePath(locations, winslash = "/", mustWork = FALSE) else ""
   coalescent_only <- if (coalescent_only) "T" else "F"
+  simulate_ts <- if (ts) "T" else "F"
   burnin <- round(burnin / model$generation_time)
 
-  sampling_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-  if (output_path != "") {
+  if (ts) {
+    sampling_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
     sampling_df <- process_sampling(samples, model, verbose)
     readr::write_tsv(sampling_df, sampling_path)
-  }
+  } else
+    sampling_path <- ""
 
   binary <- if (!is.null(slim_path)) slim_path else get_binary(method)
   if (binary != "open -a SLiMgui" && Sys.which(binary) == "")
@@ -181,10 +184,9 @@ slim <- function(
   specify the path manually by setting the 'binary_path' argument.", binary),
   call. = FALSE)
 
-  random_seed <- set_random_seed(random_seed)
   seed <- paste0(" -d SEED=", random_seed)
 
-  samples <- if (is.null(sampling_path)) "" else paste0(" -d \"SAMPLES_PATH='", sampling_path, "'\"")
+  samples_arg <- if (sampling_path == "") "" else paste0(" -d \"SAMPLES_PATH='", sampling_path, "'\"")
 
   script_path <- path.expand(file.path(model_dir, "script.slim"))
 
@@ -193,11 +195,12 @@ slim <- function(
     # the path to the model configuration directory
     modif_path <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
     script_contents <- readLines(script_path) %>%
-      gsub("\"MODEL_PATH\", \".\"", paste0("\"MODEL_PATH\", \"", normalizePath(model$path, winslash = "/"), "\""), .) %>%
-      gsub("\"SAMPLES_PATH\", \"\"", paste0("\"SAMPLES_PATH\", \"", normalizePath(sampling_path, winslash = "/"), "\""), .) %>%
-      gsub("optional_arg\\(\"TS_PATH\", \"\"\\)", sprintf("defineConstant(\"TS_PATH\", \"%s\")", output_path), .) %>%
+      gsub("\"MODEL_PATH\", \".\"", paste0("\"MODEL_PATH\", \"", model$path, "\""), .) %>%
+      gsub("\"SAMPLES_PATH\", \"\"", paste0("\"SAMPLES_PATH\", \"", sampling_path, "\""), .) %>%
+      gsub("optional_arg\\(\"TS\", \"\"\\)", sprintf("defineConstant(\"TS\", %s)", simulate_ts), .) %>%
       gsub("required_arg\\(\"SEQUENCE_LENGTH\"\\)", sprintf("defineConstant(\"SEQUENCE_LENGTH\", %s)", sequence_length), .) %>%
       gsub("required_arg\\(\"RECOMBINATION_RATE\"\\)", sprintf("defineConstant(\"RECOMBINATION_RATE\", %s)", recombination_rate), .) %>%
+      gsub("required_arg\\(\"PATH\"\\)", sprintf("defineConstant(\"PATH\", \"%s\")", results_path), .) %>%
       gsub("optional_arg\\(\"BURNIN_LENGTH\", 0\\)", sprintf("defineConstant(\"BURNIN_LENGTH\", %s)", burnin), .)
 
     cat(script_contents, file = modif_path, sep = "\n")
@@ -205,9 +208,10 @@ slim <- function(
   } else {
     slim_command <- paste(binary,
                           seed,
-                          samples,
+                          samples_arg,
                           paste0("-d \"MODEL_PATH='", model_dir, "'\""),
-                          paste0("-d \"TS_PATH='", output_path, "'\""),
+                          paste0("-d \"PATH='", results_path, "'\""),
+                          paste0("-d SIMULATE_TS=", simulate_ts),
                           paste0("-d SPATIAL=", spatial),
                           paste0("-d SEQUENCE_LENGTH=", sequence_length),
                           paste0("-d RECOMBINATION_RATE=", recombination_rate),
@@ -253,21 +257,25 @@ slim <- function(
 
   # if the simulation was run in GUI mode, wait for the confirmation from the user that it
   # finished before loading the tree-sequence output file
-  if (method == "gui" && output_path != "")
+  if (method == "gui" && ts)
     readline("Please confirm that the SLiMgui simulation is finished [press ENTER]")
 
-  if (load && output_path != "") {
-    if (!file.exists(output_path))
-      stop("Tree sequence was not found at the expected location:\n", output_path, call. = FALSE)
+  if (is.null(path)) {
+    if (ts) {
+      ts_path <- file.path(results_path, "slim.trees")
+      if (!file.exists(ts_path))
+        stop("Tree sequence was not found at the expected location:\n", ts_path, call. = FALSE)
 
-    if (verbose) {
-      cat("Tree sequence was saved to:\n", output_path, "\n")
-      cat("Loading the tree-sequence file...\n")
+      if (verbose) {
+        cat("Tree sequence was saved to:\n", ts_path, "\n")
+        cat("Loading the tree-sequence file...\n")
 
-    }
+      }
 
-    ts_object <- ts_load(model, file = output_path)
-    return(ts_object)
+      ts_object <- ts_load(model, file = ts_path)
+      return(ts_object)
+    } else
+      return(results_path)
   } else
-    return(invisible(output_path))
+    invisible(results_path)
 }
