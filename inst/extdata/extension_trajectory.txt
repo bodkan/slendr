@@ -18,7 +18,7 @@ initialize() {
     initializeMutationRate(0);
     initializeRecombinationRate(RECOMBINATION_RATE);
 
-    defineConstant("output_file", "~/Desktop/output.tsv");
+    defineConstant("traj_file", paste0(PATH, "trajectory.tsv"));
 }
 
 function (void) add_mutation(void) {
@@ -33,7 +33,7 @@ function (void) add_mutation(void) {
     write_log("adding beneficial mutation to population " + target_pop);
 
     // write the header of the output file
-    writeFile(output_file, "time\tfrequency");
+    writeFile(traj_file, "time\tfrequency");
 }
 
 tick(onset_time) late() {
@@ -60,7 +60,7 @@ tick(onset_time):SIMULATION_END late() {
     frequency = population("EUR").genomes.mutationFrequenciesInGenomes();
 
     // save the current frequency to the output file
-    writeFile(output_file,
+    writeFile(traj_file,
               model_time(community.tick) + "\t" +
               frequency, append = T);
 }

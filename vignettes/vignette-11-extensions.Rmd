@@ -50,7 +50,7 @@ If you want to use the *slendr*/SLiM extension functionality described in this v
 
 ## *slendr* / SLiM "API"
 
-Below we will describe the following slendr / SLiM "API" functions and constants you can use to customize the default, SLiM back-end script that comes bundled with *slendr*:
+Below we will describe the following slendr / SLiM "API" functions and constants you can use to customize the default SLiM script that comes bundled with *slendr*:
 
 -   `population()`
 
@@ -82,7 +82,7 @@ set.seed(seed)
 
 ### Referring to populations: `population()` Eidos function
 
-As a recap, when we program a *slendr* model, we can refer to populations using symbolic names such as "AFR", "EUR", etc. in our R scripts in the following way:
+As a recap, when we program a *slendr* model, we can refer to populations using symbolic names such as "AFR" or "EUR" in a *slendr* R script in the following way:
 
 ```{r, eval=FALSE}
 afr <- population("AFR", time = 100000, N = 20000)
@@ -91,7 +91,7 @@ eur <- population("EUR", time = 60000, N = 2000, parent = afr)
 # <... compile model and simulate a tree sequence `ts` ...>
 ```
 
-When we then want to analyze the tree-sequence output of *slendr* models, we can refer to populations (or individuals sampled from those populations) using the same symbolic names like this (not with integer node IDs internally used by *tskit*):
+Similarly, after a simulation is finished and we need to analyze the tree-sequence output of *slendr* models, we can refer to populations (or individuals sampled from those populations) using the same symbolic names like this:
 
 ```{r, eval=FALSE}
 # compute heterozygosity in the individual "EUR"
@@ -103,7 +103,7 @@ eur_samples <- c("EUR_1", "EUR_2", "EUR_3")
 ts_divergence(ts, list(afr = afr_samples, eur = eur_samples))
 ```
 
-Along the same lines, when you're customizing a *slendr*/SLiM simulation, you can get a `Subpopulation` SLiM object corresponding to a symbolic name of a *slendr* population (as used by the R side of things) using the Eidos function `population()`. For instance, let's assume we compiled a toy model of human demography from the [vignette #4]() and ran it in the SLiMgui using `slim(..., method = "gui")`. We can then open an Eidos console in the GUI and type the following:
+Along the same lines, when you're customizing a *slendr*/SLiM simulation, you can get a `Subpopulation` SLiM object corresponding to a symbolic name of a *slendr* population (as used on the R side of things) using the Eidos function `population()` provided by the built-in SLiM script of *slendr.* For instance, let's assume we compiled a toy model of human demography from the [vignette #4]() and ran it in the SLiMgui using `slim(..., method = "gui")`. We can then open an Eidos console in the GUI and type the following:
 
 ```         
 > // get a SLiM object corresponding to the "AFR" population
@@ -119,7 +119,7 @@ Subpopulation<p0>
 Subpopulation<p0> Subpopulation<p1>
 ```
 
-This way, if our population is named "AFR" or "OOA", when we write a SLiM extension code for *slendr* we don't have to know whether this or that population is called `p0` or `p2` on the SLiM side, etc. We can use the names of populations as programmed on the R side of slendr.
+This way, if we name our populations with symbolic names such as "AFR" or "OOA", we can refer to those population in a SLiM extension code using these symbolic names (*i.e.*, we don't have to know whether this or that population is called `p0` or `p2` on the SLiM side of things). The symbolic names are the same for R and SLiM parts of *slendr.*
 
 Additionally, the `population()` Eidos function provides some helpful error checking. For instance, if we try to get a SLiM `Subpopulation` object corresponding to a *slendr* population which will exist at some point but doesn't yet exist in a running SLiM simulation at a particular time, we will get an informative error:
 
@@ -136,13 +136,15 @@ Not all provided population identifiers are present in the model.
 Check your code to make sure that all of these are defined: asdf
 ```
 
-**How is this function useful in practice, though?** Because the purpose of this vignette is to show how to extend *slendr* to non-neutral scenarios, we could for instance select a random chromosome from a given population using the `population()` function like this (maybe to add a beneficial mutation). We use this bit of code in the more elaborate complete examples below.
+**How is this function useful in practice, though?** Because the purpose of this vignette is to show how to extend *slendr* to non-neutral scenarios, we could, as an example, select a random chromosome from a given population using the `population()` function like this (maybe to add a beneficial mutation). We use this bit of code in the more elaborate complete examples below.
 
 ```         
 target_genome = sample(population("AFR").genomes, 1);
 
 target_genome.addNewMutation(m0, selectionCoeff = 0.05, position = 1000000);
 ```
+
+Again, the point of the `population()` Eidos function provided by *slendr* in its SLiM codebase is to make it easier to refer to the components of a *slendr* model defined in your SLiM extension code.
 
 ### Referring to times: `tick()` Eidos function
 
@@ -153,7 +155,7 @@ afr <- population("AFR", time = 90000, N = 20000)
 eur <- population("EUR", time = 60000, N = 2000, parent = afr)
 ```
 
-The numbers 100000 and 60000 in the split time are not meaningful by themselves, but if we compile and run the *slendr* model like this (we run it in SLiMgui here to be able to demonstrate various Eidos functions):
+The numbers 100000 and 60000 in the split time are not meaningful by themselves, but if we compile and run the *slendr* model like this (we run it in SLiMgui here to be able to demonstrate various Eidos functions)
 
 ```{r, eval=FALSE}
 model <- compile_model(populations = list(afr, eur), generation_time = 30)
@@ -161,16 +163,20 @@ model <- compile_model(populations = list(afr, eur), generation_time = 30)
 slim(model, sequence_length = 100000, recombination_rate = 1e-8, method = "gui")
 ```
 
-We can then interpret 90000 and 60000 as "years before present", which can be quite convenient when we're building models using radiocarbon-dated or fossil-dated ages, rather than using traditional units of generations (forward in time as in SLiM, backwards in time as in \_msprime). Any time we later refer to a particular time, either in a model visualization or during tree-sequence, we can use these "natural units" without having to convert years before present into generations forward in time.
+we can then interpret 90000 and 60000 as "years before present", which can be quite convenient when we're building models using radiocarbon-dated or fossil-dated ages, rather than using traditional units of generations (forward in time as in SLiM, backwards in time as in \_msprime).
 
-Similarly to referring to *slendr* population symbolic names in a consistent way between R and SLiM itself, we can also refer to times of events using *slendr*-specific time units using the function `tick()`. This function takes in a time in *slendr* time units -- years before present, generations backwards in time, whatever you used in your *slendr* R script, and translates those to SLiM's "ticks". For instance, in our example model of modern human history, we could get the tick number corresponding to the time of 40 thousand years ago by calling:
+However, any time we would want to refer to these "absolute time units" in a SLiM code, we would have to do a bit of numerical conversion to translate times from "years before present" to SLiM's "generations going forward". Depending on a complexity of a model, this can get tricky particularly with burn-in times, etc.
+
+The `tick()` Eidos function makes it possible to use *slendr* model "natural time units" even on the SLiM side, without having to convert years before present into generations forward in time, similarly to how `population()` function in Eidos allows us to refer to *slendr* population symbolic names in a consistent way between R and SLiM itself.
+
+This function takes in a time in *slendr* time units – years before present, generations backwards in time, whatever you used in your *slendr* R script – and translates those to SLiM's "ticks". For instance, in our example model of modern human history, we could get the tick number corresponding to the time of 40 thousand years ago by calling:
 
 ```         
-> tick(40000)
+> tick(40000) # what does time 40000 in a slendr model correspond to in SLiM ticks?
 1668
 ```
 
-Similarly to the consistency check performed by the `population()` Eidos function, `tick()` also makes sure that the time given lies within the time window expected for the running simulation. For instance, our example model only starts at 100 thousand years ago, so if we try to get the tick number corresponding to a million years ago, we get this:
+Similarly to the consistency check performed by the `population()` Eidos function, `tick()` also makes sure that the time given lies within the time window expected for the running simulation. For instance, our AFR-EUR toy model above only starts at 90 thousand years ago, so if we try to get the tick number corresponding to a million years ago, we get this:
 
 ```         
 > tick(1e6)
@@ -199,22 +205,26 @@ As with `population()`, we can also perform the *slendr*-time-to-tick conversion
 1 3001
 ```
 
-Naturally, if our model does not use any special time units (for instance, if all times are encoded in generations, even forward in time), the `tick()` function becomes an identity function:
+Naturally, if our model does not use any special time units (for instance, if all times are encoded in generations, even forward in time), the `tick()` function becomes effectively an identity function:
 
 ```{r, eval=FALSE}
 pop <- population("pop", time = 1, N = 1000)
 simple_model <- compile_model(pop, generation_time = 1, simulation_length = 1000)
 
-slim(simple_model, sequence_length = 1e6, recombination_rate = 1e-8, method = "gui")
+slim(simple_model, sequence_length = 1000, recombination_rate = 0, method = "gui")
 ```
 
 Indeed, if we pop up the Eidos console in SLiMgui for this model, we can verify this:
 
 ```         
-> // no conversion needed for models using times of generations
-> tick(c(1, 1001))
-1 1001
+> // no conversion needed for forward-time models expressed in units of generations
+> tick(1)
+1
+> tick(1001)
+1001
 ```
+
+Our model starts with the population "pop" being created at time point 1 and it's programmed to run for 1000 generations, meaning that the last generation of the simulation will be 1001.
 
 Still, the `tick()` function can be useful even for *slendr* models which use the same time units as SLiM itself (generations forward in time) because it provides useful boundary checking. For instance, this is what happens if we try to get the tick number in a model above (which only runs from generation 1 to generation 1 + 1000):
 
@@ -227,13 +237,29 @@ Some of the times fall outside of the range of the slendr model:
 The offending times were: 0, 1000000
 ```
 
-Additionally, **the `tick()` function automatically takes care of offsetting the tick count when a burn-in period was specified for the simulation.**
+In this case, time point 0 is invalid because it would "predate" the first generation of our toy model (which is 1) and time point 1000000 is invalid because it would "postdate" the last generation of our model (1001).
+
+Additionally, **the `tick()` function automatically takes care of offsetting the tick count when a burn-in period was specified for the simulation:**
+
+```{r, eval=FALSE}
+pop <- population("pop", time = 1, N = 1000)
+simple_model <- compile_model(pop, generation_time = 1, simulation_length = 1000)
+
+slim(simple_model, sequence_length = 1000, recombination_rate = 0, burnin = 100, method = "gui")
+```
+
+```         
+> tick(1) // model time at 1 generation is shifted by 100 burnin
+101
+> tick(1001) // same for the final time point of 1001 generations
+1101
+```
 
 Below we'll see that thanks to the possibility of using arbitrary integer expressions in SLiM 4.2, we can use the `tick()` Eidos function for easy and straightforward scheduling of custom callbacks.
 
 ### Referring to model times: `model_time()` Eidos function
 
-This function is an inverse to the `tick()` function. For instance, if we want to write out an output with a time stamp using times of the *slendr* model (like years before present) and not tick numbers.
+This function is an inverse to the `tick()` function. For instance, if we want to write out an output with a time stamp using times of a *slendr* model (like "years before present" demonstrated above) and not tick numbers.
 
 As an example, this gives us the model time (in years ago) corresponding to the first tick in the EUR-AFR model above:
 
@@ -255,21 +281,22 @@ This gives us model time corresponding to the very last tick of the simulation (
 
 ```         
 > write_log("hello from the current event")
-tick 696: hello from the current event
+tick 18 (model time 89490):
+  - hello from the current event
 ```
 
 ### Saving and re-starting simulation state: `save_state()` and `reset_state()`
 
-Whenever we're dealing with simulations of, say, trajectories of beneficial alleles, we usually have to take care of situations in which the allele of interest gets lost before the simulation finishes running. In such cases, we often need to reset the simulation to a state just before the mutation was added and try again. Section 9.2 of the venerable SLiM manual ("Making sweeps conditional on fixation") is a great example on how to solve this with base SLiM.
+Whenever we're dealing with simulations of, say, trajectories of beneficial alleles, we usually have to take care of situations in which the allele of interest gets lost before the simulation finishes running. In such cases, we usually need to reset the simulation to a state just before the mutation was added and try again. Section 9.2 of the venerable SLiM manual ("Making sweeps conditional on fixation") is a great example on how to solve this with base SLiM.
 
-Although it would be quite easy to use the same approach in the *slendr*/SLiM extension snippets described here, there's one issue with this approach: `sim.outputFull()` and `sim.readFromPopulationFile()` do not preserve some important *slendr* tags which are assigned using `<Subpopulation>.{set,get}Value()` methods. Doing so would require poking into *slendr*'s SLiM codebase, which would be confusing for any user.
+Although it would be quite easy to use the same approach in the *slendr*/SLiM extension snippets described here, there's one issue with this approach: SLiM's own `sim.outputFull()` and `sim.readFromPopulationFile()` methods do not preserve some important internal *slendr* tags which are assigned using `<Subpopulation>.{set,get}Value()` methods. Doing so would require poking into *slendr*'s SLiM codebase, which would be confusing for any user.
 
 To circumvent the problem, *slendr*'s SLiM back-end script provides the following functions:
 
 -   `save_state()`: saves the full state of the SLiM simulation (just as `sim.outputFull()` does), while also saving those few *slendr*-specific values;
--   `reset_state()`: restores the full SLiM simulation state (including *slendr* specific tags and values), and **chooses a new random seed**. The latter is performed because restarting a simulation using the `save_state()` - `reset_state()` tandem is practically always done in order to change the outcome of a simulation.
+-   `reset_state()`: restores the full SLiM simulation state (including *slendr* specific tags and values), and chooses a new random seed. The latter is performed because restarting a simulation using the `save_state()` - `reset_state()` tandem is practically always done in order to change the outcome of a simulation.
 
-To demonstrate how these two functions might be used in practice, let's say we wanted to build on the (by default purely neutral!) model of African and Eurasian history from [this vignette]() discussed above, and say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far to define the following *slendr* extension snippet (for now let's ignore the question of how to actually plug this into a *slendr* simulation):
+To demonstrate how these two functions might be used in practice, let's say we wanted to build on the (by default purely neutral!) model of African and Eurasian history from [this vignette]() discussed above, and say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far to define the following *slendr* extension snippet (for now let's ignore the question of how to actually add this to a *slendr* simulation and focus on the SLiM extension code in isolation):
 
 ```         
 function (void) add_mutation(s pop_name, f selection_coef) {
@@ -306,7 +333,7 @@ tick(15000):SIMULATION_END late() {
 }
 ```
 
-**Note that for simplicity we don't define our own mutation types, and simply re-use the `m0` mutation type used by *slendr* by default. This is unlikely to be very useful for more complex simulations and we will look at a more general solution below.** The point of this example is to show the use of `save_state()` and `reset_state()` in practice.
+**Note that for simplicity we don't define our own mutation types, and simply re-use the `m0` mutation type used by *slendr* by default. This is unlikely to be very useful for more complex simulations and below we will look at a more general solution which defines a custom mutation type for this purpose.** The point of this example is to show the use of `save_state()` and `reset_state()` in practice.
 
 ### Global constants
 
@@ -314,15 +341,17 @@ By inspecting the built-in SLiM simulation script of *slendr*, you will find tha
 
 Of course, specifying your own `initialize() {...}` callback with your own genomic elements will give you more flexibility and you might want to skip specifying `sequence_length =` entirely, as we also show below.
 
-Another very useful pair of *slendr* constants are `SIMULATION_START` and `SIMULATION_END`, which specify at which time points (in ticks!) does a given *slendr* model start and end. The latter can be particularly helpful for customized output callbacks.
+Another very useful pair of *slendr* constants are `SIMULATION_START` and `SIMULATION_END`, which specify at which time points (in ticks!) does a given *slendr* model start and end.
 
-Even more relevant to writing customized SLiM extension scripts for *slendr* are constants `TS_PATH` (the location to where an output tree sequence will be written by *slendr*, if needed) and `OUTPUT_DIR`, which is the path to the output directory which can be specified via the `output_dir =` argument of the `slim()` function. The latter is useful for specifying where should all user-output files be saved, making it possible to pick them up in downstream analyses.
+Even more relevant to writing customized SLiM extension scripts for *slendr* is the constant `PATH`, which contains the path to a directory where all files with SLiM simulation results (such as a tree-sequence file) will be saved. This can be specified by setting the parameter `path` in calls to the `slim()` function like `slim(..., path = <directory>)`. This means that if you want to save custom output files (various tables of allele frequencies, etc. etc.), you don't have to organize the plumbing between a *slendr* R script and your own SLiM extension code yourself – you can specify `path =` in R and then use it inside the SLiM code as the `PATH` constant.
 
 # Practical examples
 
 ## Putting it all together: running a customized *slendr* simulation
 
-The above examples show how you can refer to a *slendr* population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the *slendr* built-in SLiM script, and how you can convert *slendr*-specific time units into SLiM's internal ticks using the `tick()` function. You've also learned how to save and reset SLiM state using provided functions `save_state()` and `reset_state()` and how to log outputs using the function `write_log()`. We demonstrated all this by defining a customized snippet of SLiM code which we now want to use in a full *slendr* simulation run. Of course, the example we've chosen is extremely trivial -- you could, in principle, use any feature available for SLiM (as long as it's compatible with Wright-Fisher models, which *slendr* currently assumes as a basis for its models).
+The above examples show how you can refer to a *slendr* population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the *slendr* built-in SLiM script, and how you can convert between *slendr*-specific time units and SLiM's internal ticks using the functions `tick()` and `model_time()`. You've also learned how to save and reset the SLiM state of a *slendr* simulation using functions `save_state()` and `reset_state()` and how to log outputs using the function `write_log()`.
+
+We will now demonstrate all of this by defining a snippet of SLiM code which will be used to customize a complete *slendr* simulation. Of course, the example we've chosen is extremely trivial -- you can, in principle, use any feature available for SLiM (as long as it's compatible with Wright-Fisher models, which *slendr* assumes as a basis for its models).
 
 How do we use this customization in practice? One way to do this would be to edit the built-in *slendr* SLiM script and manually add your own SLiM code, but that would be brittle and not reproducible. There's a much better way to do this that's directly supported by *slendr*'s R interface.
 
@@ -368,7 +397,7 @@ model_for_plot <- compile_model(
 plot_model(model_for_plot, order = c("EUR", "EHG", "YAM", "ANA", "OOA", "AFR"), proportions = TRUE)
 ```
 
-Let's also assume we have the following "SLiM snippet file":
+Let's also assume we have the following "SLiM snippet file" (this line gets the path to an example SLiM extension packaged with *slendr*):
 
 ```{r}
 extension_path <- system.file("extdata", "extension_trajectory.txt", package = "slendr")
@@ -399,15 +428,15 @@ slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, method = 
 ```
 
 ```{r, echo=FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE)
+slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, path = "~/Desktop")
 ```
 
-Note that we set `ts = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `~/Desktop/output.tsv`.
+Note that we set `ts = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `~/Desktop/trajectory.tsv`.
 
-Checking the output file shows that the frequency trajectories were indeed saved:
+Checking the file produced by the customized `slim()` simulation shows that the frequency trajectories were indeed saved correctly:
 
 ```         
-$ head ~/Desktop/output.tsv 
+$ head ~/Desktop/trajectory.tsv 
 time    frequency
 15000   0.0001
 14970   0.0005
@@ -424,9 +453,9 @@ Speaking of which: one thing that's a little annoying about the [extension snipp
 
 ## Putting it all together: parametrizing a customized *slendr* simulation
 
-For easy parametrization of customized *slendr* / SLiM models, slendr provides a function `substitute_values()`. Simply speaking, rather than having to hard code values of parameters in your extension SLiM snippet files, you can indicate that a parameter value should be substituted in the file using a simple syntax `{{parameter_name}}`.
+For easy parametrization of customized *slendr* / SLiM models, slendr provides a function `substitute_values()`. Simply speaking, rather than having to hardcode values of parameters in your extension SLiM snippet files, you can indicate that a parameter value should be substituted in the file using a simple syntax `{{parameter_name}}`.
 
-Take a look at a [new, flexible version](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory_params.txt) of the snippet we used above and look for the `{{...}}` template placeholders. This version has been expanded to study the trajectory of the focal selected allele depending on in which population it originated.
+Take a look at a [new, flexible version](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory_params.txt) of the snippet we used above and look for the `{{...}}` template placeholders. This version has been expanded to study the trajectory of the focal selected allele depending on in which population it originated and at which time (rather than hardcoding the target population and onset time directly in the customization script as we did above).
 
 ```{r}
 extension_path <- system.file("extdata", "extension_trajectory_params.txt", package = "slendr")
@@ -473,20 +502,16 @@ model <- compile_model(
 ```
 
 ```{r, echo = FALSE}
-output_dir <- normalizePath(tempdir(), winslash = "/", mustWork = FALSE)
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, path = output_dir)
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = FALSE, path = "~/Desktop")
 ```
 
 ```{r, eval = FALSE}
-directory <- tempdir()
-slim(model, sequence_length = 1e6, recombination_rate = 0, path = directory, ts = FALSE, random_seed = 42)
+slim(model, sequence_length = 1e6, recombination_rate = 0, path = "~/Desktop", ts = FALSE, random_seed = 42)
 ```
 
 We can leverage the flexibility of this solution to run another version of this model, this time adding the mutation to a different population. In fact, let's check what happens when the beneficial allele appears in EHG, ANA, and YAM populations. Note that this uses the same extension snippet, and just substitutes different values to the placeholder parameters:
 
 ```{r}
-directory <- tempdir()
-
 run_model <- function(origin_pop, onset_time) {
   extension <- substitute_values(
     extension_path,
@@ -501,7 +526,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       path = directory, ts = FALSE, random_seed = 42)
+       path = "~/Desktop", ts = FALSE, random_seed = 42)
 }
 
 run_model(origin_pop = "EUR", onset_time = 15000)
@@ -514,7 +539,7 @@ We can visualize the different trajectories like this. Not that the different al
 
 ```{r trajectories}
 load_traj <- function(origin_pop) {
-  df <- read.table(file.path(directory, paste0("traj_EUR_", origin_pop, ".tsv")), header = TRUE)
+  df <- read.table(paste0("~/Desktop/traj_EUR_", origin_pop, ".tsv"), header = TRUE)
   df$origin <- origin_pop
   df$target <- "EUR"
   df
@@ -538,7 +563,7 @@ ggplot(traj) +
 
 ## Programming *slendr*/SLiM extension snippets directly in R scripts
 
-Thanks to the multiline string support implemented in R 4.2, we can specify the SLiM extension code directly as an R string inside our R script, instead of having to plug it in from an external file like we did in the previous example. Including the SLiM code directly in this way makes it a little easier to iterate during development.
+Thanks to the multiline string support implemented in R 4.2, we can specify the SLiM extension code directly as an R string inside our R script, instead of having to include it from an external file like we did in the previous examples. Including the SLiM code directly in this way makes it a little easier to iterate during development because we can put everything into a single reproducible R script.
 
 ```{r}
 # extension "template" provided as a single string (this contains the same code
@@ -569,9 +594,9 @@ initialize() {
     defineConstant("target_pop", "{{target_pop}}");
     defineConstant("origin_pop", "{{origin_pop}}");
 
-    // compose an output file based on given parameters
-    defineConstant("output_file", PATH + "/" +
-                                  "traj_" + target_pop + "_" + origin_pop + ".tsv");
+    // compose the path to a trajectory file based on given parameters
+    defineConstant("traj_file",
+                   PATH + "/" + "traj_" + target_pop + "_" + origin_pop + ".tsv");
 }
 
 function (void) add_mutation(void) {
@@ -585,7 +610,7 @@ function (void) add_mutation(void) {
 
     write_log("adding beneficial mutation to population " + origin_pop);
 
-    writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");
+    writeFile(traj_file, "tick\ttime\tfreq_origin\tfreq_target");
 }
 
 tick(onset_time) late() {
@@ -614,7 +639,7 @@ tick(onset_time):SIMULATION_END late() {
     if (population(target_pop, check = T))
       freq_target = population(target_pop).genomes.mutationFrequenciesInGenomes();
 
-    writeFile(output_file,
+    writeFile(traj_file,
               community.tick + "\t" +
               model_time(community.tick) + "\t" +
               freq_origin + "\t" +
@@ -640,7 +665,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       path = directory, ts = FALSE, random_seed = 42)
+       path = "~/Desktop", ts = FALSE, random_seed = 42)
 }
 
 run_model("EUR", onset_time = 15000)
