@@ -318,7 +318,7 @@ test_that("output directory can be set and files (but no tree sequence) are save
   result <- slim(model, path = output_dir, ts = FALSE)
 
   # slim(..., output_dir = ...) returns the directory path
-  expect_true(result == output_dir)
+  expect_true(result == paste0(output_dir, "/"))
   expect_equal(list.files(output_dir), "output_file")
   expect_true(file.exists(output_file))
   expect_true(readLines(output_file) == "asdf")
@@ -485,14 +485,13 @@ test_that("basic and extended models return a path if no tree sequence is reques
 test_that("basic models return a specified path if requested", {
   path <- normalizePath(paste0(tempdir(), "_basic_hello_there"), winslash = "/", mustWork = FALSE)
   basic_res <- slim(base_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = path)
-  expect_true(basic_res == path)
+  expect_true(basic_res == paste0(path, "/"))
 })
-
 
 test_that("extended models return a specified path if requested", {
   path <- normalizePath(paste0(tempdir(), "_extended_hello_there"), winslash = "/", mustWork = FALSE)
   extended_res <- slim(extended_model, sequence_length = 1e6, recombination_rate = 0, ts = TRUE, path = path)
-  expect_true(extended_res == path)
+  expect_true(extended_res == paste0(path, "/"))
 })
 
 test_that("basic and extended models return expected files at a defined location", {
