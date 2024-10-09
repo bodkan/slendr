@@ -286,7 +286,7 @@ test_that("output directory can be set and files and tree sequence are saved the
   result <- slim(model, path = output_dir)
 
   # slim(..., output_dir = ...) returns the directory path
-  expect_true(result == output_dir)
+  expect_true(result == paste0(output_dir, "/"))
   expect_equal(sort(list.files(output_dir)), sort(c("output_file", "slim.trees")))
   expect_true(file.exists(output_file))
   expect_true(readLines(output_file) == "asdf")
