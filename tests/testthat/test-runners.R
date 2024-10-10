@@ -26,3 +26,24 @@ test_that("if `path =` is given, msprime returns it back and saves a tree-sequen
   ts <- ts_load(file = ts_path, model)
   expect_equal(ts_nodes(ts), ts_nodes(result2))
 })
+
+test_that("SLiMgui does not start in an interactive session", {
+  skip_if(interactive())
+  expect_error(slim(model, sequence_length = 1, recombination_rate = 0),
+               "SLiMgui can only be run from an interactive R session")
+})
+
+test_that("slendr model directory must be present", {
+  broken_model <- model
+  broken_model$path <- "nope"
+  expect_error(slim(broken_model, sequence_length = 1, recombination_rate = 0),
+               "Model directory 'nope' does not exist")
+})
+
+test_that("slendr model directory must be present", {
+  broken_path <- "nope"
+  expect_error(
+    slim(model, sequence_length = 1, recombination_rate = 0, slim_path = broken_path),
+    paste0("SLiM binary not found at ", broken_path)
+  )
+})
