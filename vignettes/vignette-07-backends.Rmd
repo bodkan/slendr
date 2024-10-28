@@ -144,7 +144,7 @@ msprime_nogf <- ts_mutate(msprime_nogf, mut_rate, random_seed = seed)
 msprime_gf <- ts_mutate(msprime_gf, mut_rate, random_seed = seed)
 ```
 
-As we can see below, the tree sequence summary of the data loaded and processed by *slendr*'s `ts_load()` function (data produced by the SLiM backend) is very similar to what we got "manually" for the msprime-produced tree sequence using the custom defined functions. This is somehow obvious but it is a nice and cheap sanity check indicating that the tree sequence data structure produced by the two backends from the same demographic model is almost the same.
+As we can see below, the tree sequence summary of the data loaded and processed by *slendr*'s `ts_read()` function (data produced by the SLiM backend) is very similar to what we got "manually" for the msprime-produced tree sequence using the custom defined functions. This is somehow obvious but it is a nice and cheap sanity check indicating that the tree sequence data structure produced by the two backends from the same demographic model is almost the same.
 
 ```{r}
 slim_nogf

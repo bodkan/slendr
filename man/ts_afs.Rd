@@ -60,7 +60,7 @@ slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "s
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(slendr_ts, model) \%>\% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
+ts <- ts_read(slendr_ts, model) \%>\% ts_mutate(mutation_rate = 1e-8, random_seed = 42)
 
 samples <- ts_samples(ts) \%>\% .[.$pop \%in\% c("AFR", "EUR"), ]
 

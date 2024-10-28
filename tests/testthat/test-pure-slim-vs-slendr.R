@@ -61,7 +61,7 @@ simulate_slim_ts <- function(N, T, output, script_file , verbose = FALSE) {
   out <- system2(binary, script_file, stdout = TRUE)
   if (verbose) cat(paste(out, collapse = "\n"))
 
-  ts_load(output)
+  ts_read(output)
 }
 
 ts2 <- simulate_slim_ts(N, T, verbose = FALSE)
@@ -94,8 +94,8 @@ test_that("pure SLiM and slendr versions of the same model give the same phylo o
 test_that("simplification on pure SLiM tree sequence retains the correct data", {
   tmp_small <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_small <- ts_simplify(ts2, simplify_to = c(0, 42, 100, 256)))
-  ts_save(ts_small, tmp_small)
-  ts_small_loaded <- ts_load(tmp_small)
+  ts_write(ts_small, tmp_small)
+  ts_small_loaded <- ts_read(tmp_small)
   expect_equal(ts_nodes(ts_small_loaded) %>% dplyr::filter(sampled) %>% nrow, 4)
 
   # for a mysterious reason not worth investigating right now, the last two

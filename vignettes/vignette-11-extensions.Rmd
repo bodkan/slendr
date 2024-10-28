@@ -910,7 +910,7 @@ For instance, as an alternative to the direct computation of allele frequencies 
 
 ```{r, eval = run_vignette & file.exists("~/Projects/introgression_data/slim.trees")}
 # load a tree sequence and extract the names of recorded individuals
-ts <- ts_load(file = "~/Projects/introgression_data/slim.trees", model)
+ts <- ts_read(file = "~/Projects/introgression_data/slim.trees", model)
 samples <- ts_names(ts, split = "pop")
 
 samples

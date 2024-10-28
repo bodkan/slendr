@@ -23,7 +23,7 @@ test_that("if `path =` is given, msprime returns it back and saves a tree-sequen
   expect_true(file.exists(ts_path))
 
   result2 <- msprime(model, sequence_length = 1, recombination_rate = 0, random_seed = 123)
-  ts <- ts_load(file = ts_path, model)
+  ts <- ts_read(file = ts_path, model)
   expect_equal(ts_nodes(ts), ts_nodes(result2))
 })
 

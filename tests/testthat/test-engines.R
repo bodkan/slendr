@@ -27,7 +27,7 @@ test_that("msprime command run manually on the command line give the correct out
   )
   out_cmd <- gsub("<path to a .trees file>", out, out_cmd)
   system(out_cmd, ignore.stdout = TRUE)
-  ts_manual <- ts_load(out, model = model)
+  ts_manual <- ts_read(out, model = model)
   expect_s3_class(ts_manual, "slendr_ts")
 
   # check that the manually simulated tree-sequence matches what comes from running inside slendr
@@ -46,7 +46,7 @@ test_that("slim command run manually on the command line give the correct output
   out <- normalizePath(paste0(tempfile(), "slim_test"), winslash = "/", mustWork = FALSE)
   cmd <- capture.output(slim(model, sequence_length = 1e6, recombination_rate = 1e-8, run = FALSE, random_seed = 42, path = out))
   system(cmd[-(1:3)] %>% .[-(2:3)], ignore.stdout = TRUE)
-  ts_manual <- ts_load(file.path(out, "slim.trees"), model = model)
+  ts_manual <- ts_read(file.path(out, "slim.trees"), model = model)
   expect_s3_class(ts_manual, "slendr_ts")
 
   # check that the manually simulated tree-sequence matches what comes from running inside slendr

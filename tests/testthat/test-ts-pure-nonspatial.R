@@ -86,14 +86,14 @@ compare_ts_phylo <- function(ts, N) {
 test_that("non-slendr SLiM ts_nodes corresponds to the expected outcome", {
   N <- 5
   ts_file <- simulate_slim_ts(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   compare_ts_nodes(ts, N)
 })
 
 test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome", {
   N <- 500
   ts_file <- simulate_slim_ts(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   expect_warning(ts2 <- ts_simplify(ts, simplify_to = simplify_to),
                  "Simplifying a non-recapitated tree sequence")
@@ -110,20 +110,20 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
 test_that("non-slendr SLiM ts_phylo corresponds to the expected outcome", {
   N <- 500
   ts_file <- simulate_slim_ts(N)
-  suppressMessages(ts <- ts_load(ts_file) %>% ts_recapitate(recombination_rate = 1e-8, Ne = 100))
+  suppressMessages(ts <- ts_read(ts_file) %>% ts_recapitate(recombination_rate = 1e-8, Ne = 100))
   compare_ts_phylo(ts, N)
 })
 
 test_that("non-slendr SLiM ts_nodes can be recapitated", {
   N <- 10000
   ts_file <- simulate_slim_ts(N)
-  suppressMessages(ts <- ts_load(ts_file) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8))
+  suppressMessages(ts <- ts_read(ts_file) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8))
   expect_silent(compare_ts_nodes(ts, N))
 })
 
 test_that("non-slendr SLiM ts_nodes carries correct population names", {
   ts_file <- simulate_slim_ts(50)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   expect_true(unique(ts_nodes(ts)$pop) == "p0")
 })
 
@@ -132,14 +132,14 @@ test_that("non-slendr SLiM ts_nodes carries correct population names", {
 test_that("non-slendr msprime simplification on its own gives warning", {
   N <- 5
   ts_file <- msprime_ts_sim_ancestry(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   compare_ts_nodes(ts, N)
 })
 
 test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome", {
   N <- 5
   ts_file <- msprime_ts_sim_ancestry(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
 
@@ -151,14 +151,14 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
 test_that("non-slendr msprime ts_phylo corresponds to the expected outcome", {
   N <- 5
   ts_file <- msprime_ts_sim_ancestry(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   compare_ts_phylo(ts, N)
 })
 
 test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected outcome", {
   N <- 5
   ts_file <- msprime_ts_sim_ancestry(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
   compare_ts_phylo(ts2, N)
@@ -166,7 +166,7 @@ test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected 
 
 test_that("non-slendr msprime ts_nodes carries correct population names", {
   ts_file <- msprime_ts_sim_ancestry(50)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   expect_true(unique(ts_nodes(ts)$pop) == "pop_0")
 })
 
@@ -175,14 +175,14 @@ test_that("non-slendr msprime ts_nodes carries correct population names", {
 test_that("non-slendr msprime simplification on its own gives warning (simulate)", {
   N <- 5
   ts_file <- msprime_ts_simulate(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   compare_ts_nodes(ts, N)
 })
 
 test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outcome (simulate)", {
   N <- 5
   ts_file <- msprime_ts_simulate(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
 
@@ -194,14 +194,14 @@ test_that("non-slendr SLiM simplified ts_nodes corresponds to the expected outco
 test_that("non-slendr msprime ts_phylo corresponds to the expected outcome (simulate)", {
   N <- 5
   ts_file <- msprime_ts_simulate(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   compare_ts_phylo(ts, N)
 })
 
 test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected outcome (simulate)", {
   N <- 5
   ts_file <- msprime_ts_simulate(N)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   simplify_to <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::pull(node_id) %>% sample(3)
   ts2 <- ts_simplify(ts, simplify_to = simplify_to)
   compare_ts_phylo(ts2, N)
@@ -209,7 +209,7 @@ test_that("non-slendr msprime ts_phylo (simplified) corresponds to the expected 
 
 test_that("non-slendr msprime ts_nodes carries correct population names (simulate)", {
   ts_file <- msprime_ts_simulate(50)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
   expect_true(unique(ts_nodes(ts)$pop) == "0")
 })
 
@@ -249,7 +249,7 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
   system2(binary, script_file, stdout = FALSE)
 
   suppressMessages(
-    ts <- ts_load(ts_file) %>%
+    ts <- ts_read(ts_file) %>%
       ts_recapitate(Ne = 10, recombination_rate = 1e-8) %>%
       ts_simplify() %>%
       ts_mutate(mutation_rate = 1e-7)
@@ -272,7 +272,7 @@ test_that("tskit statistics interface works on non-slendr SLiM outputs", {
 
 test_that("ts_ibd() on nonspatial SLiM tree sequences works with coordinates = (T|F)", {
   ts_file <- simulate_slim_ts(1000)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
 
   suppressWarnings(ibd_totals <- ts_ibd(ts, coordinates = FALSE))
   suppressWarnings(ibd_fragments <- ts_ibd(ts, coordinates = TRUE))
@@ -289,7 +289,7 @@ test_that("ts_ibd() on nonspatial SLiM tree sequences works with coordinates = (
 
 test_that("ts_ibd() on nonspatial msprime tree sequences works with coordinates = (T|F)", {
   ts_file <- msprime_ts_sim_ancestry(100)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
 
   suppressWarnings(ibd_totals <- ts_ibd(ts, coordinates = FALSE))
   suppressWarnings(ibd_fragments <- ts_ibd(ts, coordinates = TRUE))
@@ -306,7 +306,7 @@ test_that("ts_ibd() on nonspatial msprime tree sequences works with coordinates 
 
 test_that("ts_ibd() on non-spatial msprime tree sequences gives a correct object", {
   ts_file <- msprime_ts_sim_ancestry(100)
-  suppressMessages(ts <- ts_load(ts_file))
+  suppressMessages(ts <- ts_read(ts_file))
 
   ibd_sf <- ts_ibd(ts, coordinates = FALSE, minimum_length = 0)
   ibd_nosf <- ts_ibd(ts, coordinates = FALSE, minimum_length = 0, sf = FALSE)

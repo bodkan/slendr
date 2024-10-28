@@ -23,19 +23,19 @@ slim(
   sequence_length = 100000, recombination_rate = 1e-8,
   method = "batch",
   random_seed = 42
-) %>% ts_save(slim_ts)
+) %>% ts_write(slim_ts)
 
 msprime(
   model, samples = samples,
   sequence_length = 100000, recombination_rate = 1e-8,
   random_seed = 42
-) %>% ts_save(msprime_ts)
+) %>% ts_write(msprime_ts)
 
 
 test_that("ape phylo conversion only works on simplified, coalesced trees (SLiM)", {
-  ts1 <- ts_load(model = model, file = slim_ts)
-  suppressWarnings(ts2 <- ts_load(model = model, file = slim_ts))
-  ts3 <- ts_load(model = model, file = slim_ts) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8)
+  ts1 <- ts_read(model = model, file = slim_ts)
+  suppressWarnings(ts2 <- ts_read(model = model, file = slim_ts))
+  ts3 <- ts_read(model = model, file = slim_ts) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8)
 
   expect_error(
     ts_phylo(ts1, 0, mode = "index", quiet = TRUE),
@@ -52,20 +52,20 @@ test_that("ape phylo conversion only works on simplified, coalesced trees (SLiM)
 })
 
 test_that("ape phylo conversion only works on simplified, coalesced trees (msprime)", {
-  ts1 <- ts_load(model = model, file = msprime_ts)
-  suppressWarnings(ts2 <- ts_load(model = model, file = msprime_ts) %>% ts_simplify())
-  suppressWarnings(ts3 <- ts_load(model = model, file = msprime_ts) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8))
+  ts1 <- ts_read(model = model, file = msprime_ts)
+  suppressWarnings(ts2 <- ts_read(model = model, file = msprime_ts) %>% ts_simplify())
+  suppressWarnings(ts3 <- ts_read(model = model, file = msprime_ts) %>% ts_recapitate(Ne = 100, recombination_rate = 1e-8))
 
   expect_s3_class(ts_phylo(ts1, 0, mode = "index", quiet = TRUE), "slendr_phylo")
   expect_s3_class(ts_phylo(ts2, 0, mode = "index", quiet = TRUE), "slendr_phylo")
   expect_s3_class(ts_phylo(ts3, 0, mode = "index", quiet = TRUE), "slendr_phylo")
 })
 
-ts1 <- ts_load(model = model, file = slim_ts) %>%
+ts1 <- ts_read(model = model, file = slim_ts) %>%
   ts_recapitate(Ne = 1000, recombination_rate = 1e-8) %>%
   ts_simplify() %>%
   ts_mutate(mutation_rate = 0.0000001)
-ts2 <- ts_load(model = model, file = msprime_ts) %>%
+ts2 <- ts_read(model = model, file = msprime_ts) %>%
   ts_mutate(mutation_rate = 0.0000001)
 
 test_that("ape phylo and tskit.Tree objects are created by ts_tree/ts_phylo (SLiM)", {
@@ -194,19 +194,19 @@ test_that("ts_nodes output contains the correct information for a given phylo tr
 })
 
 test_that("ts_phylo refuses a non-coalesced tree sequence", {
-  ts <- ts_load(model = model, file = slim_ts)
+  ts <- ts_read(model = model, file = slim_ts)
   expect_error(ts_phylo(ts, 0), "A tree sequence tree which is not fully coalesced")
 })
 
 test_that("ts_phylo errors on a not-yet-simplified tree sequence", {
-  ts <- ts_load(model = model, file = slim_ts) %>% ts_recapitate(Ne = 10, recombination_rate = 0)
+  ts <- ts_read(model = model, file = slim_ts) %>% ts_recapitate(Ne = 10, recombination_rate = 0)
   expect_error(ts_phylo(ts, 0, quiet = TRUE), "Please simplify your tree sequence")
-  ts <- ts_load(model = model, file = slim_ts) %>% ts_recapitate(Ne = 10, recombination_rate = 0) %>% ts_simplify()
+  ts <- ts_read(model = model, file = slim_ts) %>% ts_recapitate(Ne = 10, recombination_rate = 0) %>% ts_simplify()
   expect_s3_class(suppressWarnings(ts_phylo(ts, 0, quiet = TRUE)), "slendr_phylo")
 })
 
 test_that("ts_phylo gives a warning when a tree sequence is not fully spatial", {
-  ts <- ts_load(model = model, file = slim_ts) %>% ts_recapitate(Ne = 10, recombination_rate = 0) %>% ts_simplify()
+  ts <- ts_read(model = model, file = slim_ts) %>% ts_recapitate(Ne = 10, recombination_rate = 0) %>% ts_simplify()
   expect_warning(ts_phylo(ts, 0, quiet = TRUE),
                  "Not all nodes have a known spatial location.")
 

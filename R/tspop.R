@@ -67,7 +67,7 @@
 #' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 #'
 #' # load the tree-sequence object from disk
-#' ts <- ts_load(file = slendr_ts, model = model)
+#' ts <- ts_read(file = slendr_ts, model = model)
 #'
 #' # extract Neanderthal ancestry tracts (i.e. those corresponding to the
 #' # census event at the gene-flow time at 55000 kya as scheduled by

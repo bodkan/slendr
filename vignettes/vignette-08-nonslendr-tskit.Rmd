@@ -110,10 +110,10 @@ less ${NONSPATIAL_SLIM}
 slim ${NONSPATIAL_SLIM}
 ```
 
-After we run this script in SLiM, we can use *slendr* to load the output tree sequence (saved to `/tmp/nonspatial-slim.trees`), simplify it, and overlay mutations on it using the [standard functionality](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files) originally developed for *slendr* tree sequences. Note that this is the same command we would use for loading *slendr* tree sequences, except we direct the `ts_load()` function straight to the tree-sequence output file rather than using the `ts_load(<model-object>)` format used when working with standard *slendr* simulations. This way, *slendr*
+After we run this script in SLiM, we can use *slendr* to load the output tree sequence (saved to `/tmp/nonspatial-slim.trees`), simplify it, and overlay mutations on it using the [standard functionality](vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files) originally developed for *slendr* tree sequences. Note that this is the same command we would use for loading *slendr* tree sequences, except we direct the `ts_read()` function straight to the tree-sequence output file rather than using the `ts_read(<model-object>)` format used when working with standard *slendr* simulations. This way, *slendr*
 
 ```{r}
-ts <- ts_load(nonspatial_trees_file) %>%
+ts <- ts_read(nonspatial_trees_file) %>%
   ts_simplify() %>%
   ts_mutate(mutation_rate = 1e-7, random_seed = SEED)
 ```
@@ -183,7 +183,7 @@ reticulate::py_run_string(sprintf("import msprime; msprime.simulate(100).dump('%
 And then we can proceed with loading the msprime tree sequence into R and analyze it with the slendr functionality:
 
 ```{r}
-ts <- ts_load(msprime_trees_file)
+ts <- ts_read(msprime_trees_file)
 
 ts_nodes(ts)
 ```
@@ -244,7 +244,7 @@ slim ${SPATIAL_SLIM}
 We can then load and simplify the output tree sequence in just as we did above in this vignette (or anywhere in the *slendr* documentation):
 
 ```{r}
-ts <- ts_load(spatial_trees_file) %>% ts_simplify()
+ts <- ts_read(spatial_trees_file) %>% ts_simplify()
 ```
 
 Finally, we can access the spatio-temporal data embedded in the output tree sequence in the standard *slendr* way (note the spatial [*sf*](https://r-spatial.github.io/sf/) column `location` with the `POINT` data type):

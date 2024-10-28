@@ -37,7 +37,7 @@ slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "s
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(slendr_ts, model)
+ts <- ts_read(slendr_ts, model)
 
 # find the complete descendancy information for a given individual
 ts_descendants(ts, x = 62, verbose = TRUE)

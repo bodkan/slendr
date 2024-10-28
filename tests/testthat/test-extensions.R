@@ -290,7 +290,7 @@ test_that("output directory can be set and files and tree sequence are saved the
   expect_equal(sort(list.files(output_dir)), sort(c("output_file", "slim.trees")))
   expect_true(file.exists(output_file))
   expect_true(readLines(output_file) == "asdf")
-  expect_s3_class(ts_load(file.path(output_dir, "slim.trees"), model), "slendr_ts")
+  expect_s3_class(ts_read(file.path(output_dir, "slim.trees"), model), "slendr_ts")
 })
 
 test_that("output directory can be set and files (but no tree sequence) are saved there", {

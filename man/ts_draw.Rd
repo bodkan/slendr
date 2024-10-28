@@ -48,7 +48,7 @@ slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "s
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(slendr_ts, model)
+ts <- ts_read(slendr_ts, model)
 
 # extract the first tree in the tree sequence and draw it
 tree <- ts_tree(ts, i = 1)

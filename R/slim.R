@@ -36,7 +36,7 @@
 #'   should be saved. In this case, the function will return this path invisibly. Note
 #'   that if a tree-sequence file should be simulated (along with other files, potentially),
 #'   that tree-sequence file (named 'slim.trees' by default) will have to be explicitly
-#'   loaded using \code{ts_load()}.
+#'   loaded using \code{ts_read()}.
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
 #'   0 and the maximum integer number available)
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
@@ -62,7 +62,7 @@
 #'   \code{slim} binary is not on the \code{$PATH}). Note that this argument must
 #'   be specified if the function is being run on Windows.
 #'
-#' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
+#' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the
 #'   \code{path} argument was set, specifying the directory where results should be saved,
 #'   the function will return this path as a single-element character vector.
@@ -94,11 +94,11 @@
 #' # a tree-sequence object as a result
 #' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
 #'
-#' # simulated tree-sequence object can be saved to a file using ts_save()...
+#' # simulated tree-sequence object can be saved to a file using ts_write()...
 #' ts_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
-#' ts_save(ts, ts_file)
-#' # ... and, at a later point, loaded by ts_load()
-#' ts <- ts_load(ts_file, model)
+#' ts_write(ts, ts_file)
+#' # ... and, at a later point, loaded by ts_read()
+#' ts <- ts_read(ts_file, model)
 #'
 #' ts
 #' @export
@@ -286,7 +286,7 @@ slim <- function(
 
       }
 
-      ts_object <- ts_load(model, file = ts_path)
+      ts_object <- ts_read(model, file = ts_path)
       return(ts_object)
     } else
       return(results_path)

@@ -4,7 +4,7 @@ test_that("minimal tree sequence (nodes+edges) is correctly loaded", {
   reticulate::py_run_file("manual_ts_nodes+edges.py")
 
   path <- reticulate::py$filename
-  ts <- ts_load(path)
+  ts <- ts_read(path)
 
   # ts_tree(ts, 0) %>% ts_draw()
 
@@ -31,7 +31,7 @@ test_that("minimal tree sequence (nodes+edges+inds) is correctly loaded", {
   reticulate::py_run_file("manual_ts_nodes+edges+inds.py")
 
   path <- reticulate::py$filename
-  ts <- ts_load(path)
+  ts <- ts_read(path)
 
   # ts_tree(ts, 0) %>% ts_draw()
 
@@ -58,7 +58,7 @@ test_that("minimal tree sequence (nodes+edges+inds+pops) is correctly loaded", {
   reticulate::py_run_file("manual_ts_nodes+edges+inds+pops.py")
 
   path <- reticulate::py$filename
-  ts <- ts_load(path)
+  ts <- ts_read(path)
 
   # ts_tree(ts, 0) %>% ts_draw()
 
@@ -85,7 +85,7 @@ test_that("minimal tree sequence (nodes+edges+inds+pops+muts) is correctly loade
   reticulate::py_run_file("manual_ts_nodes+edges+inds+pops+muts.py")
 
   path <- reticulate::py$filename
-  ts <- ts_load(path)
+  ts <- ts_read(path)
 
   # ts_tree(ts, 0) %>% ts_draw()
 

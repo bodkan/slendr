@@ -2,34 +2,10 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_save}
 \alias{ts_save}
-\title{Save a tree sequence to a file}
+\title{Write a tree sequence to a file}
 \usage{
-ts_save(ts, file)
-}
-\arguments{
-\item{ts}{Tree sequence object loaded by \code{ts_load}}
-
-\item{file}{File to which the tree sequence should be saved}
-}
-\value{
-No return value, called for side effects
+ts_save(file, model = NULL)
 }
 \description{
-Save a tree sequence to a file
-}
-\examples{
-\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
-}
-init_env()
-
-# load an example model with an already simulated tree sequence
-slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "slendr")
-model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
-
-# load the tree sequence
-ts <- ts_load(slendr_ts, model)
-
-# save the tree-sequence object to a different location
-another_file <- paste(tempfile(), ".trees")
-ts_save(ts, another_file)
+Write a tree sequence to a file
 }

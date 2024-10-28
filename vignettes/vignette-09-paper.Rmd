@@ -114,7 +114,7 @@ f4ratio <- ts_f4ratio(
 
 ```{r, echo = FALSE, eval = eval_chunk && record_snapshot}
 system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex1"))
-ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex1.trees")
+ts_write(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex1.trees")
 ```
 
 ### Plotting code
@@ -214,7 +214,7 @@ heterozygosity <- ts_samples(ts) %>%
 
 ```{r, echo = FALSE, eval = eval_chunk && record_snapshot}
 system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex2"))
-ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex2.trees")
+ts_write(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex2.trees")
 ```
 
 ### Plotting code
@@ -359,7 +359,7 @@ ts <- slim(
 
 ```{r, echo = FALSE, eval = eval_chunk && record_snapshot}
 system(sprintf("cp -r %s %s", model$path, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3"))
-ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.trees")
+ts_write(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.trees")
 ```
 
 
@@ -367,7 +367,7 @@ ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.t
 devtools::load_all()
 init_env()
 model <- read_model("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3")
-ts <- ts_load("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.trees", model = model)
+ts <- ts_read("/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3.trees", model = model)
 
 library(dplyr)
 library(ggplot2)
@@ -514,7 +514,7 @@ ancestors <- ts_ancestors(ts, "EUR_578")
 ```
 
 ```{r, echo = FALSE, eval = eval_chunk && record_snapshot}
-ts_save(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3_small.trees")
+ts_write(ts, "/Users/mp/Documents/postdoc/slendr-paper/preprint_models_v0.5/ex3_small.trees")
 ```
 
 ### Plotting code

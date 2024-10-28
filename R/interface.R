@@ -1367,7 +1367,7 @@ init_env <- function(quiet = FALSE) {
     # at least it prevents having to do things like:
     # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
     #                                                              for ind in ts.individuals()]")
-    # (moved from ts_load() here because this is a better place for loading our Python functions)
+    # (moved from ts_read() here because this is a better place for loading our Python functions)
     reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
     if (!reticulate::py_module_available("msprime") ||

@@ -35,20 +35,20 @@ run_slim_msprime <- function(forward_model, backward_model,
   ts_msprime_forward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   slim(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
-       samples = forward_samples, random_seed = seed, verbose = verbose) %>% ts_save(ts_slim_forward)
+       samples = forward_samples, random_seed = seed, verbose = verbose) %>% ts_write(ts_slim_forward)
   suppressWarnings({
     msprime(forward_model, sequence_length = seq_len, recombination_rate = rec_rate,
-          samples = forward_samples, random_seed = seed, verbose = verbose) %>% ts_save(ts_msprime_forward)
+          samples = forward_samples, random_seed = seed, verbose = verbose) %>% ts_write(ts_msprime_forward)
   })
 
   ts_slim_backward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   ts_msprime_backward <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
 
   slim(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
-       samples = backward_samples, random_seed = seed, verbose = verbose) %>% ts_save(ts_slim_backward)
+       samples = backward_samples, random_seed = seed, verbose = verbose) %>% ts_write(ts_slim_backward)
   suppressWarnings({
   msprime(backward_model, sequence_length = seq_len, recombination_rate = rec_rate,
-          samples = backward_samples, random_seed = seed, verbose = verbose) %>% ts_save(ts_msprime_backward)
+          samples = backward_samples, random_seed = seed, verbose = verbose) %>% ts_write(ts_msprime_backward)
   })
 
   list(
@@ -62,11 +62,11 @@ run_slim_msprime <- function(forward_model, backward_model,
 load_tree_sequence <- function(backend, direction, ts_list, model, N, rec_rate, mut_rate, seed) {
   ts_file <- ts_list[[paste(tolower(backend), direction, sep = "_")]]
   if (backend == tolower("SLiM"))
-    ts_load(model = model, file = ts_file) %>%
+    ts_read(model = model, file = ts_file) %>%
       ts_recapitate(Ne = N, recombination_rate = rec_rate, random_seed = seed) %>%
       ts_simplify() %>%
       ts_mutate(mutation_rate = mut_rate, random_seed = seed)
   else
-    ts_load(model = model, file = ts_file) %>%
+    ts_read(model = model, file = ts_file) %>%
       ts_mutate(mutation_rate = mut_rate, random_seed = seed)
 }

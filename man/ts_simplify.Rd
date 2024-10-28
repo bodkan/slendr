@@ -69,7 +69,7 @@ init_env()
 slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
-ts <- ts_load(slendr_ts, model)
+ts <- ts_read(slendr_ts, model)
 ts
 
 # simplify tree sequence to sampled individuals

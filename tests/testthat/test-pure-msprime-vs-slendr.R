@@ -19,7 +19,7 @@ simulate_msprime_ts <- function(N) {
   output <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   py_cmd <- sprintf("import msprime; msprime.sim_ancestry(%d, random_seed=42, population_size=%d).dump('%s')", N, N, output)
   reticulate::py_run_string(py_cmd)
-  ts_load(output)
+  ts_read(output)
 }
 
 # load tree sequences, extract tables -------------------------------------
@@ -49,8 +49,8 @@ test_that("pure msprime and slendr versions of the same model give the same phyl
 test_that("simplification on pure msprime tree sequence retains the correct data", {
   tmp_small <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   suppressWarnings(ts_small <- ts_simplify(ts2, simplify_to = c(0, 42, 100, 256)))
-  ts_save(ts_small, tmp_small)
-  ts_small_loaded <- ts_load(tmp_small)
+  ts_write(ts_small, tmp_small)
+  ts_small_loaded <- ts_read(tmp_small)
   expect_equal(ts_nodes(ts_small_loaded) %>% dplyr::filter(sampled) %>% nrow, 4)
 
   expect_equal(ts_nodes(ts_small), ts_nodes(ts_small_loaded))

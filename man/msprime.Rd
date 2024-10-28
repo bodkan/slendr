@@ -47,11 +47,11 @@ a path is given, it is interpreted as a path to a directory in which the functio
 save the tree sequence as a \code{msprime.trees} file and the function will return the
 path to the directory back. Note that this argument exists mostly to retain parity
 with the corresponding \code{slim()} function. In most circumstances, setting this
-argument is not necessary and users are better served by using the \code{ts_save()}
+argument is not necessary and users are better served by using the \code{ts_write()}
 function on the resulting tree-sequence object directly.}
 }
 \value{
-A tree-sequence object loaded via Python-R reticulate interface function \code{ts_load}
+A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
 (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the
 \code{path} argument was set, it will return the path as a single-element character vector.
 }
@@ -85,11 +85,11 @@ samples <- rbind(modern_samples, ancient_samples)
 # run a simulation using the msprime back end from a compiled slendr model object
 ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
 
-# simulated tree-sequence object can be saved to a file using ts_save()...
+# simulated tree-sequence object can be saved to a file using ts_write()...
 ts_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
-ts_save(ts, ts_file)
-# ... and, at a later point, loaded by ts_load()
-ts <- ts_load(ts_file, model)
+ts_write(ts, ts_file)
+# ... and, at a later point, loaded by ts_read()
+ts <- ts_read(ts_file, model)
 
 summary(ts)
 }

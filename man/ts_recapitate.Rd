@@ -13,7 +13,7 @@ ts_recapitate(
 )
 }
 \arguments{
-\item{ts}{Tree sequence object loaded by \code{ts_load}}
+\item{ts}{Tree sequence object loaded by \code{ts_read}}
 
 \item{recombination_rate}{A constant value of the recombination rate}
 
@@ -43,7 +43,7 @@ init_env()
 slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "slendr")
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
-ts <- ts_load(slendr_ts, model) \%>\%
+ts <- ts_read(slendr_ts, model) \%>\%
   ts_recapitate(recombination_rate = 1e-8, Ne = 10000, random_seed = 42)
 
 ts

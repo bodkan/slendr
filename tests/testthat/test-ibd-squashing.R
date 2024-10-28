@@ -63,7 +63,7 @@ manual_squash <- function(df) {
   dplyr::distinct()
 }
 
-ts_full <- ts_load(tmp)
+ts_full <- ts_read(tmp)
 
 # ts_draw(ts_full)
 

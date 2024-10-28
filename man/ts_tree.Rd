@@ -38,7 +38,7 @@ slendr_ts <- system.file("extdata/models/introgression_slim.trees", package = "s
 model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
 
 # load the tree-sequence object from disk
-ts <- ts_load(slendr_ts, model)
+ts <- ts_read(slendr_ts, model)
 
 # extract the zero-th tree in the tree sequence
 tree <- ts_tree(ts, i = 0)

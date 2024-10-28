@@ -229,7 +229,7 @@ test_that("extract_parameters fails gracefully when non-slendr tree sequence is 
   output <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
   py_cmd <- sprintf("import msprime; msprime.sim_ancestry(%d, random_seed=42, population_size=%d).dump('%s')", 10, 10, output)
   reticulate::py_run_string(py_cmd)
-  ts <- ts_load(output)
+  ts <- ts_read(output)
   expect_error(extract_parameters(ts), "No slendr model configuration present in the tree sequence.")
 })
 

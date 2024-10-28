@@ -252,7 +252,7 @@ ts.dump(path)
 Now let's move to R again, load the tree sequence into _slendr_ and extract ancestry tracts from it using `ts_tracts()`:
 
 ```{r}
-sim_ts <- ts_load(reticulate::py$path)
+sim_ts <- ts_read(reticulate::py$path)
 
 squashed_tracts <- ts_tracts(sim_ts, census = 100.01, squashed = TRUE)
 
