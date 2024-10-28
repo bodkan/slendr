@@ -291,7 +291,7 @@ their contents (hoping they will be the same!).</p>
 <span><span class="va">msprime_nogf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span><span class="va">msprime_nogf</span>, <span class="va">mut_rate</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span>
 <span><span class="va">msprime_gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span><span class="va">msprime_gf</span>, <span class="va">mut_rate</span>, random_seed <span class="op">=</span> <span class="va">seed</span><span class="op">)</span></span></code></pre></div>
 <p>As we can see below, the tree sequence summary of the data loaded and
-processed by <em>slendr</em>’s <code><a href="../reference/ts_load.html">ts_load()</a></code> function (data
+processed by <em>slendr</em>’s <code><a href="../reference/ts_read.html">ts_read()</a></code> function (data
 produced by the SLiM backend) is very similar to what we got “manually”
 for the msprime-produced tree sequence using the custom defined
 functions. This is somehow obvious but it is a nice and cheap sanity
@@ -327,7 +327,7 @@ two backends from the same demographic model is almost the same.</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     7│ 2.8 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     3│45.0 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│     3│45.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │257040│ 6.1 MiB│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧══════╧════════╧════════════╝</span></span></code></pre>

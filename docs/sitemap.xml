@@ -235,6 +235,9 @@
     <loc>https://www.slendr.net/reference/ts_phylo.html</loc>
   </url>
   <url>
+    <loc>https://www.slendr.net/reference/ts_read.html</loc>
+  </url>
+  <url>
     <loc>https://www.slendr.net/reference/ts_recapitate.html</loc>
   </url>
   <url>
@@ -263,6 +266,9 @@
   </url>
   <url>
     <loc>https://www.slendr.net/reference/ts_vcf.html</loc>
+  </url>
+  <url>
+    <loc>https://www.slendr.net/reference/ts_write.html</loc>
   </url>
   <url>
     <loc>https://www.slendr.net/reference/world.html</loc>

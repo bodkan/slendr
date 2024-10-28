@@ -205,8 +205,8 @@ below.</p></li>
 <em>slendr</em> / SLiM “API”<a class="anchor" aria-label="anchor" href="#slendr-slim-api"></a>
 </h3>
 <p>Below we will describe the following slendr / SLiM “API” functions
-and constants you can use to customize the default, SLiM back-end script
-that comes bundled with <em>slendr</em>:</p>
+and constants you can use to customize the default SLiM script that
+comes bundled with <em>slendr</em>:</p>
 <ul>
 <li><p><code><a href="../reference/population.html">population()</a></code></p></li>
 <li><p><code>tick()</code> and <code>model_time()</code></p></li>
@@ -215,7 +215,7 @@ that comes bundled with <em>slendr</em>:</p>
 <li><p><code>SIMULATION_START</code> and
 <code>SIMULATION_END</code></p></li>
 <li><p><code>SEQUENCE_LENGTH</code></p></li>
-<li><p><code>OUTPUT_DIR</code></p></li>
+<li><p><code>PATH</code></p></li>
 </ul>
 <p>Let’s first load all required R libraries before we dive in:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -233,17 +233,17 @@ that comes bundled with <em>slendr</em>:</p>
 function<a class="anchor" aria-label="anchor" href="#referring-to-populations-population-eidos-function"></a>
 </h4>
 <p>As a recap, when we program a <em>slendr</em> model, we can refer to
-populations using symbolic names such as “AFR”, “EUR”, etc. in our R
-scripts in the following way:</p>
+populations using symbolic names such as “AFR” or “EUR” in a
+<em>slendr</em> R script in the following way:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">100000</span>, N <span class="op">=</span> <span class="fl">20000</span><span class="op">)</span></span>
 <span><span class="va">eur</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"EUR"</span>, time <span class="op">=</span> <span class="fl">60000</span>, N <span class="op">=</span> <span class="fl">2000</span>, parent <span class="op">=</span> <span class="va">afr</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># &lt;... compile model and simulate a tree sequence `ts` ...&gt;</span></span></code></pre></div>
-<p>When we then want to analyze the tree-sequence output of
-<em>slendr</em> models, we can refer to populations (or individuals
-sampled from those populations) using the same symbolic names like this
-(not with integer node IDs internally used by <em>tskit</em>):</p>
+<p>Similarly, after a simulation is finished and we need to analyze the
+tree-sequence produced by a <em>slendr</em> model, we can refer to
+populations (or individuals sampled from those populations) using the
+same symbolic names like this:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute heterozygosity in the individual "EUR"</span></span>
 <span><span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="st">"EUR_1"</span><span class="op">)</span></span>
@@ -255,11 +255,12 @@ sampled from those populations) using the same symbolic names like this
 <p>Along the same lines, when you’re customizing a <em>slendr</em>/SLiM
 simulation, you can get a <code>Subpopulation</code> SLiM object
 corresponding to a symbolic name of a <em>slendr</em> population (as
-used by the R side of things) using the Eidos function
-<code><a href="../reference/population.html">population()</a></code>. For instance, let’s assume we compiled a toy
-model of human demography from the <a href="">vignette #4</a> and ran it
-in the SLiMgui using <code>slim(..., method = "gui")</code>. We can then
-open an Eidos console in the GUI and type the following:</p>
+used on the R side of things) using the Eidos function
+<code><a href="../reference/population.html">population()</a></code> provided by the built-in SLiM script of
+<em>slendr.</em> For instance, let’s assume we compiled a toy model of
+human demography from the <a href="">vignette #4</a> and ran it in the
+SLiMgui using <code>slim(..., method = "gui")</code>. We can then open
+an Eidos console in the GUI and type the following:</p>
 <pre><code>&gt; // get a SLiM object corresponding to the "AFR" population
 &gt; population("AFR")
 Subpopulation&lt;p0&gt;
@@ -271,11 +272,12 @@ Subpopulation&lt;p0&gt;
 &gt; // get both "AFR" and "OOA" subpopulation objects
 &gt; population(c("AFR", "OOA"))
 Subpopulation&lt;p0&gt; Subpopulation&lt;p1&gt;</code></pre>
-<p>This way, if our population is named “AFR” or “OOA”, when we write a
-SLiM extension code for <em>slendr</em> we don’t have to know whether
-this or that population is called <code>p0</code> or <code>p2</code> on
-the SLiM side, etc. We can use the names of populations as programmed on
-the R side of slendr.</p>
+<p>This way, if we name our populations with symbolic names such as
+“AFR” or “OOA”, we can refer to those population in a SLiM extension
+code using these symbolic names (<em>i.e.</em>, we don’t have to know
+whether this or that population is called <code>p0</code> or
+<code>p2</code> on the SLiM side of things). The symbolic names are the
+same for R and SLiM parts of <em>slendr.</em></p>
 <p>Additionally, the <code><a href="../reference/population.html">population()</a></code> Eidos function provides
 some helpful error checking. For instance, if we try to get a SLiM
 <code>Subpopulation</code> object corresponding to a <em>slendr</em>
@@ -292,14 +294,18 @@ Not all provided population identifiers are present in the model.
 Check your code to make sure that all of these are defined: asdf</code></pre>
 <p><strong>How is this function useful in practice, though?</strong>
 Because the purpose of this vignette is to show how to extend
-<em>slendr</em> to non-neutral scenarios, we could for instance select a
-random chromosome from a given population using the
+<em>slendr</em> to non-neutral scenarios, we could, as an example,
+select a random chromosome from a given population using the
 <code><a href="../reference/population.html">population()</a></code> function like this (maybe to add a beneficial
 mutation). We use this bit of code in the more elaborate complete
 examples below.</p>
 <pre><code>target_genome = sample(population("AFR").genomes, 1);
 
 target_genome.addNewMutation(m0, selectionCoeff = 0.05, position = 1000000);</code></pre>
+<p>Again, the point of the <code><a href="../reference/population.html">population()</a></code> Eidos function
+provided by <em>slendr</em> in its SLiM codebase is to make it easier to
+refer to the components of a <em>slendr</em> model defined in your SLiM
+extension code.</p>
 </div>
 <div class="section level4">
 <h4 id="referring-to-times-tick-eidos-function">Referring to times: <code>tick()</code> Eidos function<a class="anchor" aria-label="anchor" href="#referring-to-times-tick-eidos-function"></a>
@@ -313,36 +319,41 @@ arbitrary time units in model definition. For instance, when creating a
 <p>The numbers 100000 and 60000 in the split time are not meaningful by
 themselves, but if we compile and run the <em>slendr</em> model like
 this (we run it in SLiMgui here to be able to demonstrate various Eidos
-functions):</p>
+functions)</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span>populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">eur</span><span class="op">)</span>, generation_time <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100000</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, method <span class="op">=</span> <span class="st">"gui"</span><span class="op">)</span></span></code></pre></div>
-<p>We can then interpret 90000 and 60000 as “years before present”,
+<p>we can then interpret 90000 and 60000 as “years before present”,
 which can be quite convenient when we’re building models using
 radiocarbon-dated or fossil-dated ages, rather than using traditional
 units of generations (forward in time as in SLiM, backwards in time as
-in _msprime). Any time we later refer to a particular time, either in a
-model visualization or during tree-sequence, we can use these “natural
-units” without having to convert years before present into generations
-forward in time.</p>
-<p>Similarly to referring to <em>slendr</em> population symbolic names
-in a consistent way between R and SLiM itself, we can also refer to
-times of events using <em>slendr</em>-specific time units using the
-function <code>tick()</code>. This function takes in a time in
-<em>slendr</em> time units – years before present, generations backwards
-in time, whatever you used in your <em>slendr</em> R script, and
-translates those to SLiM’s “ticks”. For instance, in our example model
-of modern human history, we could get the tick number corresponding to
-the time of 40 thousand years ago by calling:</p>
-<pre><code>&gt; tick(40000)
+in _msprime).</p>
+<p>However, any time we would want to refer to these “absolute time
+units” in a SLiM code, we would have to do a bit of numerical conversion
+to translate times from “years before present” to SLiM’s “generations
+going forward”. Depending on a complexity of a model, this can get
+tricky particularly with burn-in times, etc.</p>
+<p>The <code>tick()</code> Eidos function makes it possible to use
+<em>slendr</em> model “natural time units” even on the SLiM side,
+without having to convert years before present into generations forward
+in time, similarly to how <code><a href="../reference/population.html">population()</a></code> function in Eidos
+allows us to refer to <em>slendr</em> population symbolic names in a
+consistent way between R and SLiM itself.</p>
+<p>This function takes in a time in <em>slendr</em> time units – years
+before present, generations backwards in time, whatever you used in your
+<em>slendr</em> R script – and translates those to SLiM’s “ticks”. For
+instance, in our example model of modern human history, we could get the
+tick number corresponding to the time of 40 thousand years ago by
+calling:</p>
+<pre><code>&gt; tick(40000) # what does time 40000 in a slendr model correspond to in SLiM ticks?
 1668</code></pre>
 <p>Similarly to the consistency check performed by the
 <code><a href="../reference/population.html">population()</a></code> Eidos function, <code>tick()</code> also makes
 sure that the time given lies within the time window expected for the
-running simulation. For instance, our example model only starts at 100
-thousand years ago, so if we try to get the tick number corresponding to
-a million years ago, we get this:</p>
+running simulation. For instance, our AFR-EUR toy model above only
+starts at 90 thousand years ago, so if we try to get the tick number
+corresponding to a million years ago, we get this:</p>
 <pre><code>&gt; tick(1e6)
 Some of the times fall outside of the range of the slendr model:
   - oldest possible event: 90000
@@ -362,18 +373,23 @@ The offending times were: 1000000</code></pre>
 1 3001</code></pre>
 <p>Naturally, if our model does not use any special time units (for
 instance, if all times are encoded in generations, even forward in
-time), the <code>tick()</code> function becomes an identity
+time), the <code>tick()</code> function becomes effectively an identity
 function:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"pop"</span>, time <span class="op">=</span> <span class="fl">1</span>, N <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="va">simple_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span><span class="va">pop</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, simulation_length <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">simple_model</span>, sequence_length <span class="op">=</span> <span class="fl">1e6</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, method <span class="op">=</span> <span class="st">"gui"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">simple_model</span>, sequence_length <span class="op">=</span> <span class="fl">1000</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, method <span class="op">=</span> <span class="st">"gui"</span><span class="op">)</span></span></code></pre></div>
 <p>Indeed, if we pop up the Eidos console in SLiMgui for this model, we
 can verify this:</p>
-<pre><code>&gt; // no conversion needed for models using times of generations
-&gt; tick(c(1, 1001))
-1 1001</code></pre>
+<pre><code>&gt; // no conversion needed for forward-time models expressed in units of generations
+&gt; tick(1)
+1
+&gt; tick(1001)
+1001</code></pre>
+<p>Our model starts with the population “pop” being created at time
+point 1 and it’s programmed to run for 1000 generations, meaning that
+the last generation of the simulation will be 1001.</p>
 <p>Still, the <code>tick()</code> function can be useful even for
 <em>slendr</em> models which use the same time units as SLiM itself
 (generations forward in time) because it provides useful boundary
@@ -386,9 +402,22 @@ Some of the times fall outside of the range of the slendr model:
   - youngest possible event: 1001
 
 The offending times were: 0, 1000000</code></pre>
+<p>In this case, time point 0 is invalid because it would “predate” the
+first generation of our toy model (which is 1) and time point 1000000 is
+invalid because it would “postdate” the last generation of our model
+(1001).</p>
 <p>Additionally, <strong>the <code>tick()</code> function automatically
 takes care of offsetting the tick count when a burn-in period was
-specified for the simulation.</strong></p>
+specified for the simulation:</strong></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"pop"</span>, time <span class="op">=</span> <span class="fl">1</span>, N <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">simple_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span><span class="va">pop</span>, generation_time <span class="op">=</span> <span class="fl">1</span>, simulation_length <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">simple_model</span>, sequence_length <span class="op">=</span> <span class="fl">1000</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, burnin <span class="op">=</span> <span class="fl">100</span>, method <span class="op">=</span> <span class="st">"gui"</span><span class="op">)</span></span></code></pre></div>
+<pre><code>&gt; tick(1) // model time at 1 generation is shifted by 100 burnin
+101
+&gt; tick(1001) // same for the final time point of 1001 generations
+1101</code></pre>
 <p>Below we’ll see that thanks to the possibility of using arbitrary
 integer expressions in SLiM 4.2, we can use the <code>tick()</code>
 Eidos function for easy and straightforward scheduling of custom
@@ -399,11 +428,11 @@ callbacks.</p>
 function<a class="anchor" aria-label="anchor" href="#referring-to-model-times-model_time-eidos-function"></a>
 </h4>
 <p>This function is an inverse to the <code>tick()</code> function. For
-instance, if we want to write out an output with a time stamp using
-times of the <em>slendr</em> model (like years before present) and not
-tick numbers.</p>
+instance, if we want to write out information associated with a time
+stamp using a time context of a <em>slendr</em> model (like “years
+before present” demonstrated above) and not tick numbers.</p>
 <p>As an example, this gives us the model time (in years ago)
-corresponding to the first tick:</p>
+corresponding to the first tick in the EUR-AFR model above:</p>
 <pre><code>&gt; model_time(1)
 90000</code></pre>
 <p>This gives us model time corresponding to the very last tick of the
@@ -417,9 +446,10 @@ simulation (i.e. the present-day at “0 years before present”):</p>
 <p><code>write_log()</code> is a tiny helper function provided by
 <em>slendr</em>’s SLiM back-end script which serves to print out a given
 string to the SLiM log output together with the appropriate tick number
-at that time. This produces output of the following kind:</p>
+at that time. This produces result of the following kind:</p>
 <pre><code>&gt; write_log("hello from the current event")
-tick 696: hello from the current event</code></pre>
+tick 18 (model time 89490):
+  - hello from the current event</code></pre>
 </div>
 <div class="section level4">
 <h4 id="saving-and-re-starting-simulation-state-save_state-and-reset_state">Saving and re-starting simulation state: <code>save_state()</code>
@@ -428,15 +458,15 @@ and <code>reset_state()</code><a class="anchor" aria-label="anchor" href="#savin
 <p>Whenever we’re dealing with simulations of, say, trajectories of
 beneficial alleles, we usually have to take care of situations in which
 the allele of interest gets lost before the simulation finishes running.
-In such cases, we often need to reset the simulation to a state just
+In such cases, we usually need to reset the simulation to a state just
 before the mutation was added and try again. Section 9.2 of the
 venerable SLiM manual (“Making sweeps conditional on fixation”) is a
 great example on how to solve this with base SLiM.</p>
 <p>Although it would be quite easy to use the same approach in the
 <em>slendr</em>/SLiM extension snippets described here, there’s one
-issue with this approach: <code>sim.outputFull()</code> and
-<code>sim.readFromPopulationFile()</code> do not preserve some important
-<em>slendr</em> tags which are assigned using
+issue with this approach: SLiM’s own <code>sim.outputFull()</code> and
+<code>sim.readFromPopulationFile()</code> methods do not preserve some
+important internal <em>slendr</em> tags which are assigned using
 <code>&lt;Subpopulation&gt;.{set,get}Value()</code> methods. Doing so
 would require poking into <em>slendr</em>’s SLiM codebase, which would
 be confusing for any user.</p>
@@ -449,11 +479,11 @@ simulation (just as <code>sim.outputFull()</code> does), while also
 saving those few <em>slendr</em>-specific values;</li>
 <li>
 <code>reset_state()</code>: restores the full SLiM simulation state
-(including <em>slendr</em> specific tags and values), and
-<strong>chooses a new random seed</strong>. The latter is performed
-because restarting a simulation using the <code>save_state()</code> -
-<code>reset_state()</code> tandem is practically always done in order to
-change the outcome of a simulation.</li>
+(including <em>slendr</em> specific tags and values), and chooses a new
+random seed. The latter is performed because restarting a simulation
+using the <code>save_state()</code> - <code>reset_state()</code> tandem
+is practically always done in order to change the outcome of a
+simulation.</li>
 </ul>
 <p>To demonstrate how these two functions might be used in practice,
 let’s say we wanted to build on the (by default purely neutral!) model
@@ -462,7 +492,8 @@ discussed above, and say that we want to add a beneficial mutation to
 the “EUR” population at time 15 ky ago. We could utilize the few bits of
 Eidos code introduced so far to define the following <em>slendr</em>
 extension snippet (for now let’s ignore the question of how to actually
-plug this into a <em>slendr</em> simulation):</p>
+add this to a <em>slendr</em> simulation and focus on the SLiM extension
+code in isolation):</p>
 <pre><code>function (void) add_mutation(s pop_name, f selection_coef) {
   // sample the first target carrier chromosome of the new mutation...
   target = sample(population(pop_name).genomes, 1);
@@ -498,10 +529,10 @@ tick(15000):SIMULATION_END late() {
 <p><strong>Note that for simplicity we don’t define our own mutation
 types, and simply re-use the <code>m0</code> mutation type used by
 <em>slendr</em> by default. This is unlikely to be very useful for more
-complex simulations and we will look at a more general solution
-below.</strong> The point of this example is to show the use of
-<code>save_state()</code> and <code>reset_state()</code> in
-practice.</p>
+complex simulations and below we will look at a more general solution
+which defines a custom mutation type for this purpose.</strong> The
+point of this example is to show the use of <code>save_state()</code>
+and <code>reset_state()</code> in practice.</p>
 </div>
 <div class="section level4">
 <h4 id="global-constants">Global constants<a class="anchor" aria-label="anchor" href="#global-constants"></a>
@@ -521,16 +552,19 @@ entirely, as we also show below.</p>
 <p>Another very useful pair of <em>slendr</em> constants are
 <code>SIMULATION_START</code> and <code>SIMULATION_END</code>, which
 specify at which time points (in ticks!) does a given <em>slendr</em>
-model start and end. The latter can be particularly helpful for
-customized output callbacks.</p>
+model start and end.</p>
 <p>Even more relevant to writing customized SLiM extension scripts for
-<em>slendr</em> are constants <code>TS_PATH</code> (the location to
-where an output tree sequence will be written by <em>slendr</em>, if
-needed) and <code>OUTPUT_DIR</code>, which is the path to the output
-directory which can be specified via the <code>output_dir =</code>
-argument of the <code><a href="../reference/slim.html">slim()</a></code> function. The latter is useful for
-specifying where should all user-output files be saved, making it
-possible to pick them up in downstream analyses.</p>
+<em>slendr</em> is the constant <code>PATH</code>, which contains the
+path to a directory where all files with SLiM simulation results (such
+as a tree-sequence file) will be saved. This can be specified by setting
+the parameter <code>path</code> in calls to the <code><a href="../reference/slim.html">slim()</a></code>
+function like <code>slim(..., path = &lt;directory&gt;)</code>. This
+means that if you want to save custom files (various tables of allele
+frequencies, <em>etc.</em>, <em>i.e.</em> not just a tree-sequence
+file), you don’t have to organize the plumbing between a <em>slendr</em>
+R script and your own SLiM extension code yourself – you can specify
+<code>path =</code> in R and then use it inside the SLiM code as the
+<code>PATH</code> constant.</p>
 </div>
 </div>
 <div class="section level2">
@@ -543,17 +577,19 @@ simulation<a class="anchor" aria-label="anchor" href="#putting-it-all-together-r
 <p>The above examples show how you can refer to a <em>slendr</em>
 population with its symbolic name on the SLiM side using the
 <code><a href="../reference/population.html">population()</a></code> Eidos function provided by the <em>slendr</em>
-built-in SLiM script, and how you can convert <em>slendr</em>-specific
-time units into SLiM’s internal ticks using the <code>tick()</code>
-function. You’ve also learned how to save and reset SLiM state using
-provided functions <code>save_state()</code> and
-<code>reset_state()</code> and how to log outputs using the function
-<code>write_log()</code>. We demonstrated all this by defining a
-customized snippet of SLiM code which we now want to use in a full
-<em>slendr</em> simulation run. Of course, the example we’ve chosen is
-extremely trivial – you could, in principle, use any feature available
-for SLiM (as long as it’s compatible with Wright-Fisher models, which
-<em>slendr</em> currently assumes as a basis for its models).</p>
+built-in SLiM script, and how you can convert between
+<em>slendr</em>-specific time units and SLiM’s internal ticks using the
+functions <code>tick()</code> and <code>model_time()</code>. You’ve also
+learned how to save and reset the SLiM state of a <em>slendr</em>
+simulation using functions <code>save_state()</code> and
+<code>reset_state()</code> and how to write out logging information
+using the function <code>write_log()</code>.</p>
+<p>We will now demonstrate all of this by defining a snippet of SLiM
+code which will be used to customize a complete <em>slendr</em>
+simulation. Of course, the example we’ve chosen is extremely trivial –
+you can, in principle, use any feature available for SLiM (as long as
+it’s compatible with Wright-Fisher models, which <em>slendr</em> assumes
+as a basis for its models).</p>
 <p>How do we use this customization in practice? One way to do this
 would be to edit the built-in <em>slendr</em> SLiM script and manually
 add your own SLiM code, but that would be brittle and not reproducible.
@@ -562,11 +598,11 @@ There’s a much better way to do this that’s directly supported by
 <p>Let’s say that we defined the following model of modern human
 demographic history in slendr. This is exactly the same example as the
 one we show in <a href="">vignette #4</a>:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/init_env.html">init_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; The interface to all required Python modules has been activated.</span></span></code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># African ancestral population</span></span>
 <span><span class="va">afr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"AFR"</span>, time <span class="op">=</span> <span class="fl">90000</span>, N <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
 <span></span>
@@ -593,8 +629,10 @@ one we show in <a href="">vignette #4</a>:</p>
 <span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.65</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3500</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-11-extensions_files/figure-html/model_plot-1.png" width="480"></p>
-<p>Let’s also assume we have the following “SLiM snippet file”:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<p>Let’s also assume we have the following “SLiM snippet file” (this
+line gets the path to an example SLiM extension packaged with
+<em>slendr</em>):</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extension_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"extension_trajectory.txt"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>// Because we want to simulate non-neutral evolution, we have to provide a
 // custom initialization callback -- slendr will use it to replace its default
@@ -616,7 +654,7 @@ initialize() {
     initializeMutationRate(0);
     initializeRecombinationRate(RECOMBINATION_RATE);
 
-    defineConstant("output_file", "~/Desktop/output.tsv");
+    defineConstant("traj_file", paste0(PATH, "trajectory.tsv"));
 }
 
 function (void) add_mutation(void) {
@@ -631,7 +669,7 @@ function (void) add_mutation(void) {
     write_log("adding beneficial mutation to population " + target_pop);
 
     // write the header of the output file
-    writeFile(output_file, "time\tfrequency");
+    writeFile(traj_file, "time\tfrequency");
 }
 
 tick(onset_time) late() {
@@ -658,14 +696,14 @@ tick(onset_time):SIMULATION_END late() {
     frequency = population("EUR").genomes.mutationFrequenciesInGenomes();
 
     // save the current frequency to the output file
-    writeFile(output_file,
+    writeFile(traj_file,
               model_time(community.tick) + "\t" +
               frequency, append = T);
 }</code></pre>
 <p>We can include the extension snippet into the standard
 <em>slendr</em> engine SLiM script by providing a path to it in
 <code><a href="../reference/compile_model.html">compile_model()</a></code>:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>,</span>
 <span>  gene_flow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -675,16 +713,17 @@ tick(onset_time):SIMULATION_END late() {
 built-in SLiM engine script by running <code><a href="../reference/slim.html">slim()</a></code> function and
 setting <code>method = "gui"</code> (look towards the end of the
 script!):</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e6</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, ts <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gui"</span><span class="op">)</span></span></code></pre></div>
 <p>Note that we set <code>ts = FALSE</code> in the <code><a href="../reference/slim.html">slim()</a></code>
 call. This way we can switch off generating of a tree sequence because
 we don’t care about it in this example. We only want to save the
 frequency trajectory of the beneficial allele as saved in
-<code>~/Desktop/output.tsv</code>.</p>
-<p>Checking the output file shows that the frequency trajectories were
-indeed saved:</p>
-<pre><code>$ head ~/Desktop/output.tsv 
+<code>~/Desktop/trajectory.tsv</code>.</p>
+<p>Checking the file produced by the customized <code><a href="../reference/slim.html">slim()</a></code>
+simulation shows that the frequency trajectories were indeed saved
+correctly:</p>
+<pre><code>$ head ~/Desktop/trajectory.tsv 
 time    frequency
 15000   0.0001
 14970   0.0005
@@ -697,13 +736,13 @@ time    frequency
 14760   0.0013</code></pre>
 <p>Speaking of which: one thing that’s a little annoying about the <a href="https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory.txt" class="external-link">extension
 snippet</a> used in this example is that all the parameters are
-hard-coded (selection coefficient, target population, and even the
-output file path). If we wanted to run the <em>slendr</em> script for
-different values of selection coefficient, or examining the behavior of
-the model depending on in which population does the beneficial allele
-arise, we’d have to create multiple copies of the extension script. We
-can do better using <em>slendr</em>’s support for substitution or
-“templating”.</p>
+hard-coded (selection coefficient, target population, and even the path
+to the frequency trajectory file). If we wanted to run the
+<em>slendr</em> script for different values of selection coefficient, or
+examining the behavior of the model depending on in which population
+does the beneficial allele arise, we’d have to create multiple copies of
+the extension script. We can do better using <em>slendr</em>’s support
+for substitution or “templating”.</p>
 </div>
 <div class="section level3">
 <h3 id="putting-it-all-together-parametrizing-a-customized-slendr-simulation">Putting it all together: parametrizing a customized <em>slendr</em>
@@ -711,7 +750,7 @@ simulation<a class="anchor" aria-label="anchor" href="#putting-it-all-together-p
 </h3>
 <p>For easy parametrization of customized <em>slendr</em> / SLiM models,
 slendr provides a function <code><a href="../reference/substitute_values.html">substitute_values()</a></code>. Simply
-speaking, rather than having to hard code values of parameters in your
+speaking, rather than having to hardcode values of parameters in your
 extension SLiM snippet files, you can indicate that a parameter value
 should be substituted in the file using a simple syntax
 <code>{{parameter_name}}</code>.</p>
@@ -719,8 +758,10 @@ should be substituted in the file using a simple syntax
 flexible version</a> of the snippet we used above and look for the
 <code>{{...}}</code> template placeholders. This version has been
 expanded to study the trajectory of the focal selected allele depending
-on in which population it originated.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+on in which population it originated and at which time (rather than
+hardcoding the target population and onset time directly in the
+customization script as we did above).</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extension_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"extension_trajectory_params.txt"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>// Define model constants (to be substituted) all in one place
 // (each {{placeholder}} will be replaced by a value passed from R).
@@ -731,9 +772,9 @@ initialize() {
     defineConstant("target_pop", "{{target_pop}}");
     defineConstant("origin_pop", "{{origin_pop}}");
 
-    // compose an output file based on given parameters
-    defineConstant("output_file", OUTPUT_DIR + "/" +
-                                  "traj_" + target_pop + "_" + origin_pop + ".tsv");
+    // compose a trajectory file based on given parameters
+    defineConstant("traj_file", PATH + "/" +
+                                "traj_" + target_pop + "_" + origin_pop + ".tsv");
 }
 // Because we want to simulate non-neutral evolution, we have to provide a
 // custom initialization callback -- slendr will use it to replace its default
@@ -762,7 +803,7 @@ function (void) add_mutation(void) {
 
     write_log("adding beneficial mutation to population " + target_pop);
 
-    writeFile(output_file, "time\tfreq_origin\tfreq_target");
+    writeFile(traj_file, "time\tfreq_origin\tfreq_target");
 }
 
 tick(onset_time) late() {
@@ -791,21 +832,21 @@ tick(onset_time):SIMULATION_END late() {
     if (population(target_pop, check = T))
       freq_target = population(target_pop).genomes.mutationFrequenciesInGenomes();
 
-    writeFile(output_file,
+    writeFile(traj_file,
               model_time(community.tick) + "\t" +
               freq_origin + "\t" +
               freq_target, append = T);
 }</code></pre>
 <p>Substitute values of parameters in a customization SLiM extension
 script:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extension</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/substitute_values.html">substitute_values</a></span><span class="op">(</span></span>
 <span>  <span class="va">extension_path</span>,</span>
 <span>  s <span class="op">=</span> <span class="fl">0.1</span>, onset_time <span class="op">=</span> <span class="fl">15000</span>,</span>
 <span>  origin_pop <span class="op">=</span> <span class="st">"EUR"</span>, target_pop <span class="op">=</span> <span class="st">"EUR"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Missing a parameter gives an error immediately:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extension</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/substitute_values.html">substitute_values</a></span><span class="op">(</span></span>
 <span>  <span class="va">extension_path</span>,</span>
 <span>  onset_time <span class="op">=</span> <span class="fl">15000</span>,</span>
@@ -815,23 +856,21 @@ script:</p>
 <span><span class="co"># Error: The extension script contains the following unsubstituted patterns: {{s}}</span></span></code></pre></div>
 <p>Then plug the parametrized script into <code><a href="../reference/compile_model.html">compile_model()</a></code>
 just as we did above:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>,</span>
 <span>  gene_flow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  extension <span class="op">=</span> <span class="va">extension</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e6</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, output_dir <span class="op">=</span> <span class="va">output_dir</span>,</span>
-<span>     ts <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e6</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, path <span class="op">=</span> <span class="st">"~/Desktop"</span>, ts <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></code></pre></div>
 <p>We can leverage the flexibility of this solution to run another
 version of this model, this time adding the mutation to a different
 population. In fact, let’s check what happens when the beneficial allele
 appears in EHG, ANA, and YAM populations. Note that this uses the same
 extension snippet, and just substitutes different values to the
 placeholder parameters:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">origin_pop</span>, <span class="va">onset_time</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">extension</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/substitute_values.html">substitute_values</a></span><span class="op">(</span></span>
 <span>    <span class="va">extension_path</span>,</span>
@@ -846,7 +885,7 @@ placeholder parameters:</p>
 <span>  <span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e6</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>       output_dir <span class="op">=</span> <span class="va">output_dir</span>, ts <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span>       path <span class="op">=</span> <span class="st">"~/Desktop"</span>, ts <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">run_model</span><span class="op">(</span>origin_pop <span class="op">=</span> <span class="st">"EUR"</span>, onset_time <span class="op">=</span> <span class="fl">15000</span><span class="op">)</span></span>
@@ -865,9 +904,9 @@ depending on when a particular gene flow happened. Still, because it’s
 been under such a strong selection in all of them that it reached
 fixation even prior to a gene flow and because the gene flow happened in
 such a strong proportion, it reaches fixation much faster.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">load_traj</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">origin_pop</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">output_dir</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"traj_EUR_"</span>, <span class="va">origin_pop</span>, <span class="st">".tsv"</span><span class="op">)</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"~/Desktop/traj_EUR_"</span>, <span class="va">origin_pop</span>, <span class="st">".tsv"</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="va">df</span><span class="op">$</span><span class="va">origin</span> <span class="op">&lt;-</span> <span class="va">origin_pop</span></span>
 <span>  <span class="va">df</span><span class="op">$</span><span class="va">target</span> <span class="op">&lt;-</span> <span class="st">"EUR"</span></span>
 <span>  <span class="va">df</span></span>
@@ -897,10 +936,11 @@ scripts<a class="anchor" aria-label="anchor" href="#programming-slendrslim-exten
 </h3>
 <p>Thanks to the multiline string support implemented in R 4.2, we can
 specify the SLiM extension code directly as an R string inside our R
-script, instead of having to plug it in from an external file like we
-did in the previous example. Including the SLiM code directly in this
-way makes it a little easier to iterate during development.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+script, instead of having to include it from an external file like we
+did in the previous examples. Including the SLiM code directly in this
+way makes it a little easier to iterate during development because we
+can put everything into a single reproducible R script.</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># extension "template" provided as a single string (this contains the same code</span></span>
 <span><span class="co"># as the script used just above, except specified directly in R)</span></span>
 <span><span class="va">extension_template</span> <span class="op">&lt;-</span> <span class="st">r"(</span></span>
@@ -929,9 +969,9 @@ way makes it a little easier to iterate during development.</p>
 <span><span class="st">    defineConstant("target_pop", "{{target_pop}}");</span></span>
 <span><span class="st">    defineConstant("origin_pop", "{{origin_pop}}");</span></span>
 <span><span class="st"></span></span>
-<span><span class="st">    // compose an output file based on given parameters</span></span>
-<span><span class="st">    defineConstant("output_file", OUTPUT_DIR + "/" +</span></span>
-<span><span class="st">                                  "traj_" + target_pop + "_" + origin_pop + ".tsv");</span></span>
+<span><span class="st">    // compose the path to a trajectory file based on given parameters</span></span>
+<span><span class="st">    defineConstant("traj_file",</span></span>
+<span><span class="st">                   PATH + "/" + "traj_" + target_pop + "_" + origin_pop + ".tsv");</span></span>
 <span><span class="st">}</span></span>
 <span><span class="st"></span></span>
 <span><span class="st">function (void) add_mutation(void) {</span></span>
@@ -945,7 +985,7 @@ way makes it a little easier to iterate during development.</p>
 <span><span class="st"></span></span>
 <span><span class="st">    write_log("adding beneficial mutation to population " + origin_pop);</span></span>
 <span><span class="st"></span></span>
-<span><span class="st">    writeFile(output_file, "tick\ttime\tfreq_origin\tfreq_target");</span></span>
+<span><span class="st">    writeFile(traj_file, "tick\ttime\tfreq_origin\tfreq_target");</span></span>
 <span><span class="st">}</span></span>
 <span><span class="st"></span></span>
 <span><span class="st">tick(onset_time) late() {</span></span>
@@ -974,7 +1014,7 @@ way makes it a little easier to iterate during development.</p>
 <span><span class="st">    if (population(target_pop, check = T))</span></span>
 <span><span class="st">      freq_target = population(target_pop).genomes.mutationFrequenciesInGenomes();</span></span>
 <span><span class="st"></span></span>
-<span><span class="st">    writeFile(output_file,</span></span>
+<span><span class="st">    writeFile(traj_file,</span></span>
 <span><span class="st">              community.tick + "\t" +</span></span>
 <span><span class="st">              model_time(community.tick) + "\t" +</span></span>
 <span><span class="st">              freq_origin + "\t" +</span></span>
@@ -985,7 +1025,7 @@ way makes it a little easier to iterate during development.</p>
 will work in exactly the same way as in the example just above (the only
 thing that we changed in the code below is providing the SLiM extension
 string directly instead of providing a path to a file):</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">origin_pop</span>, <span class="va">onset_time</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">extension</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/substitute_values.html">substitute_values</a></span><span class="op">(</span></span>
 <span>    <span class="va">extension_template</span>, <span class="co"># &lt;--- template SLiM code string directly (not as a file!)</span></span>
@@ -1000,7 +1040,7 @@ string directly instead of providing a path to a file):</p>
 <span>  <span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e6</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>       output_dir <span class="op">=</span> <span class="va">output_dir</span>, ts <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span>       path <span class="op">=</span> <span class="st">"~/Desktop"</span>, ts <span class="op">=</span> <span class="cn">FALSE</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">run_model</span><span class="op">(</span><span class="st">"EUR"</span>, onset_time <span class="op">=</span> <span class="fl">15000</span><span class="op">)</span></span>
@@ -1044,7 +1084,7 @@ introgression:</p>
 <!-- # 3% Neanderthal introgression into Europeans between 55-50 ky ago -->
 <!-- gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 54500) -->
 <!-- ``` -->
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create the ancestor of everyone and a chimpanzee outgroup</span></span>
 <span><span class="co"># (we set both N = 1 to reduce the computational time for this model)</span></span>
 <span><span class="va">chimp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/population.html">population</a></span><span class="op">(</span><span class="st">"CH"</span>, time <span class="op">=</span> <span class="fl">6.5e6</span>, N <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
@@ -1067,7 +1107,7 @@ introgression:</p>
 <p><img src="vignette-11-extensions_files/figure-html/introgression_model-1.png" width="360"></p>
 <p>Now we put together SLiM extension code to set up a non-neutral
 <em>slendr</em> simulation:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extension</span> <span class="op">&lt;-</span> <span class="st">r"(</span></span>
 <span><span class="st">initialize() {</span></span>
 <span><span class="st">  // model parameters to be substitute_values()'d from R below</span></span>
@@ -1075,7 +1115,7 @@ introgression:</p>
 <span><span class="st">  defineConstant("n_genes", {{n_genes}});</span></span>
 <span><span class="st">  defineConstant("n_markers", {{n_markers}});</span></span>
 <span><span class="st">  defineConstant("introgression_time", {{introgression_time}});</span></span>
-<span><span class="st">  defineConstant("output_file", OUTPUT_DIR + "/{{output_file}}");</span></span>
+<span><span class="st">  defineConstant("freq_file", PATH + "/{{freq_file}}");</span></span>
 <span><span class="st"></span></span>
 <span><span class="st">  // total length of the genome to be simulated</span></span>
 <span><span class="st">  defineConstant("total_length", n_genes * gene_length);</span></span>
@@ -1145,7 +1185,7 @@ introgression:</p>
 <span><span class="st">  target.addNewDrawnMutation(m1, position = asInteger(selected_pos));</span></span>
 <span><span class="st">}</span></span>
 <span><span class="st"></span></span>
-<span><span class="st">// At the end, output Neanderthal ancestry proportions along the genome to a file</span></span>
+<span><span class="st">// At the end, write Neanderthal ancestry proportions along the genome to a file</span></span>
 <span><span class="st">// (in our R analysis code we will compare the results of this with the</span></span>
 <span><span class="st">// equivalent computation using a tree sequence)</span></span>
 <span><span class="st">SIMULATION_END late() {</span></span>
@@ -1154,20 +1194,26 @@ introgression:</p>
 <span><span class="st">    "pos", MARKERS.position,</span></span>
 <span><span class="st">    "freq", sim.mutationFrequencies(population("EUR"), MARKERS)</span></span>
 <span><span class="st">  );</span></span>
-<span><span class="st">  writeFile(output_file, df.serialize(format = "tsv"));</span></span>
+<span><span class="st">  writeFile(freq_file, df.serialize(format = "tsv"));</span></span>
 <span><span class="st">}</span></span>
 <span><span class="st">)"</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/substitute_values.html">substitute_values</a></span><span class="op">(</span></span>
-<span>    introgression_time <span class="op">=</span> <span class="fl">55000</span>, s <span class="op">=</span> <span class="op">-</span><span class="fl">0.001</span>,</span>
+<span>    introgression_time <span class="op">=</span> <span class="fl">55000</span>, s <span class="op">=</span> <span class="op">-</span><span class="fl">0.003</span>,</span>
 <span>    gene_length <span class="op">=</span> <span class="fl">5e6</span>, n_genes <span class="op">=</span> <span class="fl">200</span>, n_markers <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>    output_file <span class="op">=</span> <span class="st">"output_frequencies.tsv"</span></span>
+<span>    freq_file <span class="op">=</span> <span class="st">"frequencies.tsv"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p>And put everything together by compiling a <em>slendr</em> model
 (which now swaps <em>slendr</em>’s default neutrality for a non-neutral
 genomic architecture, including deleterious mutations):</p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
+<span>  populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="va">eur</span><span class="op">)</span>, gene_flow <span class="op">=</span> <span class="va">gf</span>,</span>
+<span>  generation_time <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  extension <span class="op">=</span> <span class="va">extension</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>We will also record 10 Neanderthals and 100 Africans and Europeans
 each in a tree sequence:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nea_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">50000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">modern_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -1179,9 +1225,12 @@ workflow. However, note that we were able to skip
 arguments! This is because our non-neutral extension snippet already
 customizes though, so there’s no reason for us to instruct
 <code><a href="../reference/slim.html">slim()</a></code> on that front in any way:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, output_dir <span class="op">=</span> <span class="va">output_dir</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="st">"~/Projects/introgression_data/"</span></span>
+<span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, path <span class="op">=</span> <span class="va">data_dir</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">-</span> <span class="va">x</span> <span class="co"># Time difference of 45.62365 mins</span></span></code></pre></div>
 <p>It’s been suggested that Neanderthals had a significantly lower <span class="math inline">\(N_e\)</span> compared to anatomically modern
 humans (AMH), which might have decreased efficacy of negative selection
 against deleterious variants compared to AMH. Consequently, following
@@ -1194,8 +1243,12 @@ in the amount of surviving Neanderthal DNA as a function of distance
 from a locus under selection. Because our customized SLiM snippet saved
 the allele frequency of each Neanderthal marker in Europeans, we can
 just load this data and directly visualize it:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">freqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_tsv</a></span><span class="op">(</span><span class="st">"~/Projects/introgression_data/output_frequencies.tsv"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="va">pos</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">5e6</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">n_genes</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
+<span><span class="va">gene_length</span> <span class="op">&lt;-</span> <span class="fl">5e6</span></span>
+<span><span class="va">window_length</span> <span class="op">&lt;-</span> <span class="fl">100e3</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">freqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_tsv</a></span><span class="op">(</span><span class="st">"~/Projects/introgression_data/frequencies.tsv"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">40000000</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">3</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> "\t"</span></span>
@@ -1203,35 +1256,33 @@ just load this data and directly visualize it:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">freqs</span>, <span class="va">pos</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">freqs</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="va">pos</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">5e6</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pos</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>freq <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">freq</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">pos</span>, <span class="va">freq</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">5e6</span> <span class="op">/</span> <span class="fl">2</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">gene_length</span> <span class="op">/</span> <span class="fl">2</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"coordinate along a gene"</span>, y <span class="op">=</span> <span class="st">"Neanderthal ancestry proportion [%]"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Proportion of Neanderthal ancestry in Europeans along 5Mb independent genes"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"(dashed line indicates introgressed deleterious Neanderthal allele)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-11-extensions_files/figure-html/introgression_freqs-1.png" width="480"></p>
 <p>The hypothesis clearly stands against the data!</p>
-<p>We shouldn’t forget that the core output data structure of
+<p>We shouldn’t forget that the default data structure of
 <em>slendr</em> is a tree sequence. This gives us much more flexibility
 in terms of which statistics can we compute, and how effectively can
 they be computed because we don’t need any mutations or genotype files
 to calculate them.</p>
 <p>For instance, as an alternative to the direct computation of allele
-frequencies during the SLiM run (saved in
-<code>output_frequencies.tsv</code>), we could use the simulated tree
-sequence to quickly calculate the genetic divergence between Europeans
-and a Neanderthal in windows along the simulated genome.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n_genes</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
-<span><span class="va">gene_length</span> <span class="op">&lt;-</span> <span class="fl">5e6</span></span>
-<span><span class="va">window_length</span> <span class="op">&lt;-</span> <span class="fl">100e3</span></span></code></pre></div>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+frequencies during the SLiM run (saved in <code>frequencies.tsv</code>),
+we could use the simulated tree sequence to quickly calculate the
+genetic divergence between Europeans and a Neanderthal in windows along
+the simulated genome.</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load a tree sequence and extract the names of recorded individuals</span></span>
-<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"~/Projects/introgression_data/output.trees"</span>, <span class="va">model</span><span class="op">)</span></span>
+<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"~/Projects/introgression_data/slim.trees"</span>, <span class="va">model</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_names.html">ts_names</a></span><span class="op">(</span><span class="va">ts</span>, split <span class="op">=</span> <span class="st">"pop"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">samples</span></span></code></pre></div>
@@ -1254,19 +1305,19 @@ and a Neanderthal in windows along the simulated genome.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $NEA</span></span>
 <span><span class="co">#&gt; [1] "NEA_1"</span></span></code></pre>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute coordinates of sliding windows along the genome</span></span>
 <span><span class="va">windows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="va">n_genes</span> <span class="op">*</span> <span class="va">gene_length</span> <span class="op">-</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="va">window_length</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] 0e+00 1e+05 2e+05 3e+05 4e+05 5e+05</span></span></code></pre>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">windows</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; [1] 999400000 999500000 999600000 999700000 999800000 999900000</span></span></code></pre>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute divergence from the tree sequence in each window separately</span></span>
 <span><span class="va">divergence</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_divergence.html">ts_divergence</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">samples</span>, windows <span class="op">=</span> <span class="va">windows</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span><span class="op">$</span><span class="va">divergence</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute average divergence at each position in a gene, and a 95% C.I.</span></span>
 <span><span class="va">div_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  pop <span class="op">=</span> <span class="st">"eur"</span>,</span>
@@ -1281,11 +1332,11 @@ and a Neanderthal in windows along the simulated genome.</p>
 <span>  <span class="op">)</span> </span></code></pre></div>
 <pre><code><span><span class="co">#&gt; `summarise()` has grouped output by 'pop'. You can override using the `.groups`</span></span>
 <span><span class="co">#&gt; argument.</span></span></code></pre>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">div_df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">pos</span>, ymin <span class="op">=</span> <span class="va">ci_low</span>, ymax <span class="op">=</span> <span class="va">ci_up</span><span class="op">)</span>, fill <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">pos</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">pos</span><span class="op">)</span> <span class="op">-</span> <span class="va">window_length</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">gene_length</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"coordinate along a gene"</span>, y <span class="op">=</span> <span class="st">"divergence to Neanderthal"</span>,</span>
 <span>       title <span class="op">=</span> <span class="st">"Divergence of Europeans to a Neanderthal genome along 5Mb independent genes"</span>,</span>
 <span>       subtitle <span class="op">=</span> <span class="st">"(dashed line indicates introgressed deleterious Neanderthal allele)"</span><span class="op">)</span></span></code></pre></div>

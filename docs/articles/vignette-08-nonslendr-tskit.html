@@ -190,7 +190,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp4QPrNQ/fileffc17e7de270");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp59Fpts/file7491c676a3e");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -199,12 +199,12 @@ mutations on it using the <a href="vignette-05-tree-sequences.html#loading-and-p
 functionality</a> originally developed for <em>slendr</em> tree
 sequences. Note that this is the same command we would use for loading
 <em>slendr</em> tree sequences, except we direct the
-<code><a href="../reference/ts_load.html">ts_load()</a></code> function straight to the tree-sequence output
-file rather than using the <code>ts_load(&lt;model-object&gt;)</code>
+<code><a href="../reference/ts_read.html">ts_read()</a></code> function straight to the tree-sequence output
+file rather than using the <code>ts_read(&lt;model-object&gt;)</code>
 format used when working with standard <em>slendr</em> simulations. This
 way, <em>slendr</em></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">nonspatial_trees_file</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span><span class="va">nonspatial_trees_file</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/ts_mutate.html">ts_mutate</a></span><span class="op">(</span>mutation_rate <span class="op">=</span> <span class="fl">1e-7</span>, random_seed <span class="op">=</span> <span class="va">SEED</span><span class="op">)</span></span></code></pre></div>
 <p>We can extract information about individual’s names, nodes,
@@ -318,7 +318,7 @@ tree.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_label</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">tskit_id</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="vignette-08-nonslendr-tskit_files/figure-html/nonslendr_tree-1.png" width="360"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ape-package.ird.fr/" class="external-link">ape</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/emmanuelparadis/ape" class="external-link">ape</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span>, show.tip.label <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html" class="external-link">nodelabels</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html" class="external-link">tiplabels</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -336,7 +336,7 @@ hood).</p>
 <p>And then we can proceed with loading the msprime tree sequence into R
 and analyze it with the slendr functionality:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">msprime_trees_file</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span><span class="va">msprime_trees_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/ts_nodes.html">ts_nodes</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 199 × 7</span></span></span>
@@ -395,13 +395,13 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp4QPrNQ/fileffc17412fc73");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp59Fpts/file74914ce2c041");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
 documentation):</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">spatial_trees_file</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span><span class="va">spatial_trees_file</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we can access the spatio-temporal data embedded in the
 output tree sequence in the standard <em>slendr</em> way (note the
 spatial <a href="https://r-spatial.github.io/sf/" class="external-link"><em>sf</em></a> column

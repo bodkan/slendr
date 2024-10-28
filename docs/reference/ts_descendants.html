@@ -134,7 +134,7 @@ way down to the leaves of the tree sequence</p>
 <span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_model.html">read_model</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/models/introgression"</span>, package <span class="op">=</span> <span class="st">"slendr"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load the tree-sequence object from disk</span></span></span>
-<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_read.html">ts_read</a></span><span class="op">(</span><span class="va">slendr_ts</span>, <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># find the complete descendancy information for a given individual</span></span></span>
 <span class="r-in"><span><span class="fu">ts_descendants</span><span class="op">(</span><span class="va">ts</span>, x <span class="op">=</span> <span class="fl">62</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>

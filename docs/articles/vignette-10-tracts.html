@@ -432,7 +432,7 @@ simulation first):</p>
 <em>slendr</em> and extract ancestry tracts from it using
 <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_load.html">ts_load</a></span><span class="op">(</span><span class="fu">reticulate</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/reticulate/reference/py.html" class="external-link">py</a></span><span class="op">$</span><span class="va">path</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span><span class="fu">reticulate</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/reticulate/reference/py.html" class="external-link">py</a></span><span class="op">$</span><span class="va">path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">squashed_tracts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_tracts.html">ts_tracts</a></span><span class="op">(</span><span class="va">sim_ts</span>, census <span class="op">=</span> <span class="fl">100.01</span>, squashed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
