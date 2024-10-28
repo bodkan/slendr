@@ -115,7 +115,10 @@ ts_read <- function(file, model = NULL) {
 #' Read a tree sequence from a file
 #' @export
 ts_load <- function(file, model = NULL) {
-  .Deprecated("ts_read")
+  .Deprecated(
+    "ts_read",
+     msg = "Starting with slendr v1.0, please use `ts_read()` to read tree sequences from disk.\n(This is just a heads-up for future reference -- no action needed now!)"
+  )
   ts_read(file, model)
 }
 
@@ -170,9 +173,12 @@ ts_write <- function(ts, file) {
 
 #' Write a tree sequence to a file
 #' @export
-ts_save <- function(file, model = NULL) {
-  .Deprecated("ts_read")
-  ts_read(file, model)
+ts_save <- function(ts, file) {
+  .Deprecated(
+    "ts_write",
+     msg = "Starting with slendr v1.0, please use `ts_write()` to write tree sequences to disk.\n(This is just a heads-up for future reference -- no action needed now!)"
+  )
+  ts_write(ts, file)
 }
 
 
