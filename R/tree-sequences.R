@@ -114,6 +114,7 @@ ts_read <- function(file, model = NULL) {
 
 #' Read a tree sequence from a file
 #' @export
+#' @noRd
 ts_load <- function(file, model = NULL) {
   .Deprecated(
     "ts_read",
@@ -173,6 +174,7 @@ ts_write <- function(ts, file) {
 
 #' Write a tree sequence to a file
 #' @export
+#' @noRd
 ts_save <- function(ts, file) {
   .Deprecated(
     "ts_write",
