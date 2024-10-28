@@ -116,7 +116,7 @@ slim <- function(
   if (is.null(model$path))
     stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
 
-  results_path <- if (is.null(path)) file.path(tempdir(), "slendr_results", paste0("seed_", random_seed)) else path
+  results_path <- if (is.null(path)) file.path(tempdir(), paste0("slendr_results_", random_seed)) else path
   results_path <- normalizePath(results_path, winslash = "/", mustWork = FALSE)
   results_path <- paste0(results_path, "/")
   dir.create(results_path, recursive = TRUE, showWarnings = FALSE)
