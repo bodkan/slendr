@@ -1,4 +1,14 @@
-#' Substitute values of parameters in a given slendr/SLiM extension
+#' Substitute values of parameters in a SLiM extension template
+#'
+#' Substitute values of templated {{parameters}} in a given SLiM extension template
+#'
+#' If a file or a multi-line string given as \code{template} contains parameters
+#' specified as \\code{{param}} where "param" can be arbitrary variable name, this
+#' function substitutes such templated {{parameters}} for concrete values. Such
+#' modified template is then used to extend a built-in slendr SLiM script, allowing
+#' for a customization of its default behavior (most commonly replacing its
+#' assumption of neutrality for non-neutral scenarios, such as simulations of
+#' natural selection).
 #'
 #' @param template Either a path to an extension script file, or a string
 #'   containing the entire SLiM extension code
@@ -35,10 +45,10 @@ substitute_values <- function(template, ...) {
          paste(matched_groups, collapse = ", "), call. = FALSE)
   }
 
-  output <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
-  writeLines(extension_code, output)
+  substituted_code <- normalizePath(tempfile(), winslash = "/", mustWork = FALSE)
+  writeLines(extension_code, substituted_code)
 
-  output
+  substituted_code
 }
 
 check_initialization <- function(code) {

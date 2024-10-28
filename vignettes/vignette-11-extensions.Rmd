@@ -91,7 +91,7 @@ eur <- population("EUR", time = 60000, N = 2000, parent = afr)
 # <... compile model and simulate a tree sequence `ts` ...>
 ```
 
-Similarly, after a simulation is finished and we need to analyze the tree-sequence output of *slendr* models, we can refer to populations (or individuals sampled from those populations) using the same symbolic names like this:
+Similarly, after a simulation is finished and we need to analyze the tree-sequence produced by a *slendr* model, we can refer to populations (or individuals sampled from those populations) using the same symbolic names like this:
 
 ```{r, eval=FALSE}
 # compute heterozygosity in the individual "EUR"
@@ -259,7 +259,7 @@ Below we'll see that thanks to the possibility of using arbitrary integer expres
 
 ### Referring to model times: `model_time()` Eidos function
 
-This function is an inverse to the `tick()` function. For instance, if we want to write out an output with a time stamp using times of a *slendr* model (like "years before present" demonstrated above) and not tick numbers.
+This function is an inverse to the `tick()` function. For instance, if we want to write out information associated with a time stamp using a time context of a *slendr* model (like "years before present" demonstrated above) and not tick numbers.
 
 As an example, this gives us the model time (in years ago) corresponding to the first tick in the EUR-AFR model above:
 
@@ -277,7 +277,7 @@ This gives us model time corresponding to the very last tick of the simulation (
 
 ### Logging: `write_log()` Eidos function
 
-`write_log()` is a tiny helper function provided by *slendr*'s SLiM back-end script which serves to print out a given string to the SLiM log output together with the appropriate tick number at that time. This produces output of the following kind:
+`write_log()` is a tiny helper function provided by *slendr*'s SLiM back-end script which serves to print out a given string to the SLiM log output together with the appropriate tick number at that time. This produces result of the following kind:
 
 ```         
 > write_log("hello from the current event")
@@ -343,13 +343,13 @@ Of course, specifying your own `initialize() {...}` callback with your own genom
 
 Another very useful pair of *slendr* constants are `SIMULATION_START` and `SIMULATION_END`, which specify at which time points (in ticks!) does a given *slendr* model start and end.
 
-Even more relevant to writing customized SLiM extension scripts for *slendr* is the constant `PATH`, which contains the path to a directory where all files with SLiM simulation results (such as a tree-sequence file) will be saved. This can be specified by setting the parameter `path` in calls to the `slim()` function like `slim(..., path = <directory>)`. This means that if you want to save custom output files (various tables of allele frequencies, etc. etc.), you don't have to organize the plumbing between a *slendr* R script and your own SLiM extension code yourself – you can specify `path =` in R and then use it inside the SLiM code as the `PATH` constant.
+Even more relevant to writing customized SLiM extension scripts for *slendr* is the constant `PATH`, which contains the path to a directory where all files with SLiM simulation results (such as a tree-sequence file) will be saved. This can be specified by setting the parameter `path` in calls to the `slim()` function like `slim(..., path = <directory>)`. This means that if you want to save custom files (various tables of allele frequencies, *etc.*, *i.e.* not just a tree-sequence file), you don't have to organize the plumbing between a *slendr* R script and your own SLiM extension code yourself – you can specify `path =` in R and then use it inside the SLiM code as the `PATH` constant.
 
 # Practical examples
 
 ## Putting it all together: running a customized *slendr* simulation
 
-The above examples show how you can refer to a *slendr* population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the *slendr* built-in SLiM script, and how you can convert between *slendr*-specific time units and SLiM's internal ticks using the functions `tick()` and `model_time()`. You've also learned how to save and reset the SLiM state of a *slendr* simulation using functions `save_state()` and `reset_state()` and how to log outputs using the function `write_log()`.
+The above examples show how you can refer to a *slendr* population with its symbolic name on the SLiM side using the `population()` Eidos function provided by the *slendr* built-in SLiM script, and how you can convert between *slendr*-specific time units and SLiM's internal ticks using the functions `tick()` and `model_time()`. You've also learned how to save and reset the SLiM state of a *slendr* simulation using functions `save_state()` and `reset_state()` and how to write out logging information using the function `write_log()`.
 
 We will now demonstrate all of this by defining a snippet of SLiM code which will be used to customize a complete *slendr* simulation. Of course, the example we've chosen is extremely trivial -- you can, in principle, use any feature available for SLiM (as long as it's compatible with Wright-Fisher models, which *slendr* assumes as a basis for its models).
 
@@ -449,7 +449,7 @@ time    frequency
 14760   0.0013
 ```
 
-Speaking of which: one thing that's a little annoying about the [extension snippet](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory.txt) used in this example is that all the parameters are hard-coded (selection coefficient, target population, and even the output file path). If we wanted to run the *slendr* script for different values of selection coefficient, or examining the behavior of the model depending on in which population does the beneficial allele arise, we'd have to create multiple copies of the extension script. We can do better using *slendr*'s support for substitution or "templating".
+Speaking of which: one thing that's a little annoying about the [extension snippet](https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory.txt) used in this example is that all the parameters are hard-coded (selection coefficient, target population, and even the path to the frequency trajectory file). If we wanted to run the *slendr* script for different values of selection coefficient, or examining the behavior of the model depending on in which population does the beneficial allele arise, we'd have to create multiple copies of the extension script. We can do better using *slendr*'s support for substitution or "templating".
 
 ## Putting it all together: parametrizing a customized *slendr* simulation
 
@@ -826,7 +826,7 @@ tick(introgression_time) - 1 late() {
   target.addNewDrawnMutation(m1, position = asInteger(selected_pos));
 }
 
-// At the end, output Neanderthal ancestry proportions along the genome to a file
+// At the end, write Neanderthal ancestry proportions along the genome to a file
 // (in our R analysis code we will compare the results of this with the
 // equivalent computation using a tree sequence)
 SIMULATION_END late() {
@@ -904,9 +904,9 @@ ggplot() +
 
 The hypothesis clearly stands against the data!
 
-We shouldn't forget that the core output data structure of *slendr* is a tree sequence. This gives us much more flexibility in terms of which statistics can we compute, and how effectively can they be computed because we don't need any mutations or genotype files to calculate them.
+We shouldn't forget that the default data structure of *slendr* is a tree sequence. This gives us much more flexibility in terms of which statistics can we compute, and how effectively can they be computed because we don't need any mutations or genotype files to calculate them.
 
-For instance, as an alternative to the direct computation of allele frequencies during the SLiM run (saved in `output_frequencies.tsv`), we could use the simulated tree sequence to quickly calculate the genetic divergence between Europeans and a Neanderthal in windows along the simulated genome.
+For instance, as an alternative to the direct computation of allele frequencies during the SLiM run (saved in `frequencies.tsv`), we could use the simulated tree sequence to quickly calculate the genetic divergence between Europeans and a Neanderthal in windows along the simulated genome.
 
 ```{r, eval = run_vignette & file.exists("~/Projects/introgression_data/slim.trees")}
 # load a tree sequence and extract the names of recorded individuals

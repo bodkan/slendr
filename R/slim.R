@@ -13,12 +13,12 @@
 #' When \code{ts = TRUE}, the returning value of this function depends on whether
 #' or not the \code{path} argument was set. If the user did provide the \code{path}
 #' where output files should be saved, the path is returned (invisibly). This is
-#' mostly intended to support simulations of customized user outputs. If \code{path}
+#' mostly intended to support simulations of customized user models. If \code{path}
 #' is not set by the user, it is assumed that a tree-sequence object is desired as
-#' a sole output of the function (when \code{ts = TRUE}) and so it is automatically
+#' a sole return value of the function (when \code{ts = TRUE}) and so it is automatically
 #' loaded when simulation finishes, or (when \code{ts = FALSE}) that only customized
-#' output files are desired, in which the user will be loading such outputs by
-#' themselves (and only the path is needed).
+#' files are to be produced by the simulation, in which the user will be loading such
+#' files by themselves (and only the path is needed).
 #'
 #' @param model Model object created by the \code{compile} function
 #' @param sequence_length Total length of the simulated sequence (in base-pairs)
@@ -28,7 +28,7 @@
 #'   should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 #'   function that can generate the sampling schedule in the correct format). If
 #'   missing, only individuals present at the end of the simulation will be
-#'   recorded in the tree-sequence output file.
+#'   recorded in the final tree-sequence file.
 #' @param ts Should a tree sequence be simulated from the model?
 #' @param path Path to the directory where simulation result files will be saved.
 #'   If \code{NULL}, this directory will be automatically created as a temporary
@@ -41,8 +41,8 @@
 #'   0 and the maximum integer number available)
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
 #'   on the command line)
-#' @param verbose Write the SLiM output log to the console (default
-#'   \code{FALSE})?
+#' @param verbose Write the log information from the SLiM run to the console
+#'   (default \code{FALSE})?
 #' @param run Should the SLiM engine be run? If \code{FALSE}, the command line SLiM
 #'   command will be printed (and returned invisibly as a character vector) but not executed.
 #' @param burnin Length of the burnin (in model's time units, i.e. years)
@@ -91,14 +91,14 @@
 #' samples <- rbind(modern_samples, ancient_samples)
 #'
 #' # run a simulation using the SLiM back end from a compiled slendr model object and return
-#' # a tree-sequence output
+#' # a tree-sequence object as a result
 #' ts <- slim(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
 #'
 #' # simulated tree-sequence object can be saved to a file using ts_save()...
-#' output_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
-#' ts_save(ts, output_file)
+#' ts_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
+#' ts_save(ts, ts_file)
 #' # ... and, at a later point, loaded by ts_load()
-#' ts <- ts_load(output_file, model)
+#' ts <- ts_load(ts_file, model)
 #'
 #' ts
 #' @export

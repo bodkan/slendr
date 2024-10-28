@@ -124,7 +124,7 @@ recombinations per basepair per generation)</p></dd>
 should be remembered in the tree-sequence (see <code>schedule_sampling</code> for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
-recorded in the tree-sequence output file.</p></dd>
+recorded in the final tree-sequence file.</p></dd>
 
 
 <dt>random_seed</dt>
@@ -133,7 +133,8 @@ recorded in the tree-sequence output file.</p></dd>
 
 
 <dt>verbose</dt>
-<dd><p>Write the output log to the console (default <code>FALSE</code>)?</p></dd>
+<dd><p>Write the log information from the SLiM run to the console
+(default <code>FALSE</code>)?</p></dd>
 
 
 <dt>debug</dt>
@@ -196,10 +197,10 @@ function on the resulting tree-sequence object directly.</p></dd>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">msprime</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># simulated tree-sequence object can be saved to a file using ts_save()...</span></span></span>
-<span class="r-in"><span><span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>, winslash <span class="op">=</span> <span class="st">"/"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="ts_save.html">ts_save</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>, winslash <span class="op">=</span> <span class="st">"/"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ts_save.html">ts_save</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">ts_file</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># ... and, at a later point, loaded by ts_load()</span></span></span>
-<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">output_file</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_load.html">ts_load</a></span><span class="op">(</span><span class="va">ts_file</span>, <span class="va">model</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════════════════════╗</span>

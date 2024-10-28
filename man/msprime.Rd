@@ -28,12 +28,13 @@ recombinations per basepair per generation)}
 should be remembered in the tree-sequence (see \code{schedule_sampling} for a
 function that can generate the sampling schedule in the correct format). If
 missing, only individuals present at the end of the simulation will be
-recorded in the tree-sequence output file.}
+recorded in the final tree-sequence file.}
 
 \item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
 0 and the maximum integer number available)}
 
-\item{verbose}{Write the output log to the console (default \code{FALSE})?}
+\item{verbose}{Write the log information from the SLiM run to the console
+(default \code{FALSE})?}
 
 \item{debug}{Write msprime's debug log to the console (default \code{FALSE})?}
 
@@ -85,10 +86,10 @@ samples <- rbind(modern_samples, ancient_samples)
 ts <- msprime(model, sequence_length = 1e5, recombination_rate = 0, samples = samples)
 
 # simulated tree-sequence object can be saved to a file using ts_save()...
-output_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
-ts_save(ts, output_file)
+ts_file <- normalizePath(tempfile(fileext = ".trees"), winslash = "/", mustWork = FALSE)
+ts_save(ts, ts_file)
 # ... and, at a later point, loaded by ts_load()
-ts <- ts_load(output_file, model)
+ts <- ts_load(ts_file, model)
 
 summary(ts)
 }
