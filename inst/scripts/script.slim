@@ -161,9 +161,6 @@ initialize() {
       community.rescheduleScriptBlock(s11, ticks = SIMULATION_END);
     else
       community.deregisterScriptBlock(s11);
-
-    // stop the simulation
-    community.rescheduleScriptBlock(s12, ticks = SIMULATION_END);
 }
 
 ///
@@ -458,8 +455,8 @@ s11 late() /* Save the tree sequence */ {
     save_ts(TS_PATH);
 }
 
-s12 late() /* End of simulation */ {
-    write_log("simulation finished");
+SIMULATION_END + 1 first() /* End of simulation */ {
+    catn("====================\nSimulation finished!\n====================");
     sim.simulationFinished();
 }
 
