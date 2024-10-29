@@ -19,14 +19,14 @@
 #' @param debug Write msprime's debug log to the console (default \code{FALSE})?
 #' @param run Should the msprime engine be run? If \code{FALSE}, the command line msprime
 #'   command will be printed (and returned invisibly as a character vector) but not executed.
-#' @param path Path to the generated tree-sequence file. If \code{NULL} (the default), the tree
-#'   sequence will not be saved to a file but will be returned as an in-memory object instead. If
-#'   a path is given, it is interpreted as a path to a directory in which the function will
-#'   save the tree sequence as a \code{msprime.trees} file and the function will return the
-#'   path to the directory back. Note that this argument exists mostly to retain parity
-#'   with the corresponding \code{slim()} function. In most circumstances, setting this
-#'   argument is not necessary and users are better served by using the \code{ts_write()}
-#'   function on the resulting tree-sequence object directly.
+#' @param path Path to the directory where simulation result files will be saved.
+#'   If \code{NULL}, this directory will be automatically created as a temporary
+#'   directory. If \code{TRUE}, this path will be also returned by the function.
+#'   If a string is given, it is assumed to be a path to a directory where simulation
+#'   results will be saved. In this case, the function will return this path invisibly.
+#'   Note that if a tree-sequence file should be simulated (along with other files,
+#'   potentially), that tree-sequence file (named 'msprime.trees' by default) will
+#'   have to be explicitly loaded using \code{ts_read()}.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the
@@ -146,11 +146,23 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
   )
   ts_object <- ts_read(ts_msprime, model = model)
 
-  if (is.null(path))
+  if (is.null(path)) {
     return(ts_object)
-  else {
-    dir.create(path, recursive = TRUE, showWarnings = FALSE)
-    ts_write(ts_object, normalizePath(file.path(path, "msprime.trees"), winslash = "/", mustWork = FALSE))
-    return(path)
+  } else {
+    if (!is.character(path))
+      results_path <- file.path(tempdir(), paste0("slendr_results_", random_seed))
+    else
+      results_path <- path
+
+    results_path <- normalizePath(results_path, winslash = "/", mustWork = FALSE)
+    results_path <- paste0(results_path, "/")
+    dir.create(results_path, recursive = TRUE, showWarnings = FALSE)
+
+    ts_write(ts_object, normalizePath(file.path(results_path, "msprime.trees"), winslash = "/", mustWork = FALSE))
+
+    if (is.logical(path) && path == TRUE)
+      return(path)
+    else
+      return(invisible(path))
   }
 }
