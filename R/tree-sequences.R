@@ -113,8 +113,16 @@ ts_read <- function(file, model = NULL) {
 }
 
 #' Read a tree sequence from a file
+#'
+#' Deprecated function. Please use \code{ts_read} instead.
+#'
+#' @param file A path to the tree-sequence file (either originating from a
+#'   slendr model or a standard non-slendr tree sequence).
+#' @param model Optional \code{slendr_model} object which produced the
+#'   tree-sequence \code{file}. Used for adding various annotation data and
+#'   metadata to the standard tskit tree-sequence object.
+#'
 #' @export
-#' @noRd
 ts_load <- function(file, model = NULL) {
   .Deprecated(
     "ts_read",
@@ -173,8 +181,16 @@ ts_write <- function(ts, file) {
 }
 
 #' Write a tree sequence to a file
+#'
+#' Deprecated function. Please use \code{ts_write} instead.
+#'
+#' @param file A path to the tree-sequence file (either originating from a
+#'   slendr model or a standard non-slendr tree sequence).
+#' @param model Optional \code{slendr_model} object which produced the
+#'   tree-sequence \code{file}. Used for adding various annotation data and
+#'   metadata to the standard tskit tree-sequence object.
+#'
 #' @export
-#' @noRd
 ts_save <- function(ts, file) {
   .Deprecated(
     "ts_write",
