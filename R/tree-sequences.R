@@ -2499,7 +2499,7 @@ get_ts_raw_mutations <- function(ts) {
   )
 }
 
-# Extract information from the muations table
+# Extract information from the mutations table
 get_ts_raw_sites <- function(ts) {
   model <- attr(ts, "model")
   table <- ts$tables$sites
@@ -2507,7 +2507,7 @@ get_ts_raw_sites <- function(ts) {
     id = seq_len(table$num_rows) - 1,
     position = as.vector(table[["position"]])
   )
-  ancestral_state <- as.vector(table[["ancestral_state"]])
+  ancestral_state <- reticulate::py[["__slendr_get_ancestral_states"]](ts)
   if (length(ancestral_state))
     result$ancestral_state <- ancestral_state
   result
