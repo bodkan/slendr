@@ -41,14 +41,14 @@ recorded in the final tree-sequence file.}
 \item{run}{Should the msprime engine be run? If \code{FALSE}, the command line msprime
 command will be printed (and returned invisibly as a character vector) but not executed.}
 
-\item{path}{Path to the generated tree-sequence file. If \code{NULL} (the default), the tree
-sequence will not be saved to a file but will be returned as an in-memory object instead. If
-a path is given, it is interpreted as a path to a directory in which the function will
-save the tree sequence as a \code{msprime.trees} file and the function will return the
-path to the directory back. Note that this argument exists mostly to retain parity
-with the corresponding \code{slim()} function. In most circumstances, setting this
-argument is not necessary and users are better served by using the \code{ts_write()}
-function on the resulting tree-sequence object directly.}
+\item{path}{Path to the directory where simulation result files will be saved.
+If \code{NULL}, this directory will be automatically created as a temporary
+directory. If \code{TRUE}, this path will be also returned by the function.
+If a string is given, it is assumed to be a path to a directory where simulation
+results will be saved. In this case, the function will return this path invisibly.
+Note that if a tree-sequence file should be simulated (along with other files,
+potentially), that tree-sequence file (named 'msprime.trees' by default) will
+have to be explicitly loaded using \code{ts_read()}.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}

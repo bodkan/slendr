@@ -41,11 +41,12 @@ recorded in the final tree-sequence file.}
 
 \item{path}{Path to the directory where simulation result files will be saved.
 If \code{NULL}, this directory will be automatically created as a temporary
-directory. Any other value is assumed to be a path to a directory where these files
-should be saved. In this case, the function will return this path invisibly. Note
-that if a tree-sequence file should be simulated (along with other files, potentially),
-that tree-sequence file (named 'slim.trees' by default) will have to be explicitly
-loaded using \code{ts_read()}.}
+directory. If \code{TRUE}, this path will be also returned by the function.
+If a string is given, it is assumed to be a path to a directory where simulation
+results will be saved. In this case, the function will return this path invisibly.
+Note that if a tree-sequence file should be simulated (along with other files,
+potentially), that tree-sequence file (named 'slim.trees' by default) will
+have to be explicitly loaded using \code{ts_read()}.}
 
 \item{random_seed}{Random seed (if \code{NULL}, a seed will be generated between
 0 and the maximum integer number available)}

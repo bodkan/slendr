@@ -1,10 +1,10 @@
 #' Substitute values of parameters in a SLiM extension template
 #'
-#' Substitute values of templated {{parameters}} in a given SLiM extension template
+#' Substitute values of templated \{\{parameters\}\} in a given SLiM extension template
 #'
 #' If a file or a multi-line string given as \code{template} contains parameters
-#' specified as \\code{{param}} where "param" can be arbitrary variable name, this
-#' function substitutes such templated {{parameters}} for concrete values. Such
+#' specified as \{\{param\}\} where "param" can be arbitrary variable name, this
+#' function substitutes each templated \{\{parameter\}\} for a given values. Such
 #' modified template is then used to extend a built-in slendr SLiM script, allowing
 #' for a customization of its default behavior (most commonly replacing its
 #' assumption of neutrality for non-neutral scenarios, such as simulations of
