@@ -32,11 +32,12 @@
 #' @param ts Should a tree sequence be simulated from the model?
 #' @param path Path to the directory where simulation result files will be saved.
 #'   If \code{NULL}, this directory will be automatically created as a temporary
-#'   directory. Any other value is assumed to be a path to a directory where these files
-#'   should be saved. In this case, the function will return this path invisibly. Note
-#'   that if a tree-sequence file should be simulated (along with other files, potentially),
-#'   that tree-sequence file (named 'slim.trees' by default) will have to be explicitly
-#'   loaded using \code{ts_read()}.
+#'   directory. If \code{TRUE}, this path will be also returned by the function.
+#'   If a string is given, it is assumed to be a path to a directory where simulation
+#'   results will be saved. In this case, the function will return this path invisibly.
+#'   Note that if a tree-sequence file should be simulated (along with other files,
+#'   potentially), that tree-sequence file (named 'slim.trees' by default) will
+#'   have to be explicitly loaded using \code{ts_read()}.
 #' @param random_seed Random seed (if \code{NULL}, a seed will be generated between
 #'   0 and the maximum integer number available)
 #' @param method How to run the script? ("gui" - open in SLiMgui, "batch" - run
@@ -116,7 +117,7 @@ slim <- function(
   if (is.null(model$path))
     stop("It is not possible to simulate non-serialized models in SLiM", call. = FALSE)
 
-  results_path <- if (is.null(path)) file.path(tempdir(), paste0("slendr_results_", random_seed)) else path
+  results_path <- if (is.logical(path) || is.null(path)) file.path(tempdir(), paste0("slendr_results_", random_seed)) else path
   results_path <- normalizePath(results_path, winslash = "/", mustWork = FALSE)
   results_path <- paste0(results_path, "/")
   dir.create(results_path, recursive = TRUE, showWarnings = FALSE)
@@ -256,7 +257,7 @@ slim <- function(
               paste(log_warnings, collapse = "\n"), call. = FALSE)
     }
 
-    if (!any(grepl("simulation finished", log_output))) {
+    if (!any(grepl("Simulation finished", log_output))) {
       if (!verbose) cat(log_output, sep = "\n")
       stop("Unfortunately SLiM terminated before a tree sequence was saved.\n",
            "See the above for an indication of where things ",
@@ -274,14 +275,14 @@ slim <- function(
   if (method == "gui" && ts)
     readline("Please confirm that the SLiMgui simulation is finished [press ENTER]")
 
-  if (is.null(path)) {
+  if (!is.logical(path) && is.null(path)) {
     if (ts) {
       ts_path <- file.path(results_path, "slim.trees")
       if (!file.exists(ts_path))
         stop("Tree sequence was not found at the expected location:\n", ts_path, call. = FALSE)
 
       if (verbose) {
-        cat("Tree sequence was saved to:\n", ts_path, "\n")
+        cat("Tree sequence was saved to: ", ts_path, "\n")
         cat("Loading the tree-sequence file...\n")
 
       }
@@ -291,5 +292,5 @@ slim <- function(
     } else
       return(results_path)
   } else
-    invisible(results_path)
+    return(invisible(results_path))
 }
