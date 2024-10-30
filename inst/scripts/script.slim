@@ -963,6 +963,9 @@ function (void) write_log(s$ str) {
 }
 
 function (void) save_ts(s$ path) {
+    if (!SIMULATE_TS)
+        stop("Can't save a tree sequence when tree-sequence recording is turned off");
+
     // add slendr-specific metadata to its own Dictionary key
     metadata = collect_metadata();
 
