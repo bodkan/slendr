@@ -248,7 +248,7 @@ slim <- function(
 
     # execute the command, capture all log output and decide whether to print
     # any of the log information to the console
-    log_output <- suppressWarnings(system(slim_command, intern = TRUE, ignore.stderr = TRUE))
+    log_output <- suppressWarnings(system(slim_command, intern = TRUE))
     log_warnings <- grep("WARNING", log_output, value = TRUE)
     if (verbose)
       cat(log_output, sep = "\n")
