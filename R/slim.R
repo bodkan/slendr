@@ -248,8 +248,9 @@ slim <- function(
 
     # execute the command, capture all log output and decide whether to print
     # any of the log information to the console
-    log_output <- suppressWarnings(system(slim_command, intern = TRUE))
-    log_warnings <- grep("WARNING", log_output, value = TRUE)
+    log_output <- suppressWarnings(system(paste(slim_command, "2>&1"), intern = TRUE))
+    log_warnings <- grep("#WARNING", log_output, value = TRUE) %>%
+      grep("Species::InitializePopulationFromFile", ., invert = TRUE, value = TRUE)
     if (verbose)
       cat(log_output, sep = "\n")
     else if (length(log_warnings)) {
