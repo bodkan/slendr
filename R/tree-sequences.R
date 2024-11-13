@@ -123,6 +123,7 @@ ts_read <- function(file, model = NULL) {
 #'   metadata to the standard tskit tree-sequence object.
 #'
 #' @export
+#' @noRd
 ts_load <- function(file, model = NULL) {
   .Deprecated(
     "ts_read",
@@ -191,6 +192,7 @@ ts_write <- function(ts, file) {
 #'   metadata to the standard tskit tree-sequence object.
 #'
 #' @export
+#' @noRd
 ts_save <- function(ts, file) {
   .Deprecated(
     "ts_write",

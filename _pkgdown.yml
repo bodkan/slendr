@@ -116,7 +116,7 @@ reference:
     - summary.slendr_nodes
     - extract_parameters
 
-  - title: Tree sequence loading and processing
+  - title: Processing tree sequences
     contents:
     - ts_read
     - ts_write

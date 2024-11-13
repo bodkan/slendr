@@ -10,7 +10,7 @@ docs:
 	R -e 'pkgdown::build_reference()'
 	R -e 'pkgdown::build_reference_index()'
 	R -e 'pkgdown::build_news()'
-	rm docs/reference/Rplot001.png 
+	#rm docs/reference/Rplot001.png
 	#git restore docs/reference/join.html
 	#git restore docs/reference/msprime.html
 	#git restore docs/reference/region.html
@@ -25,7 +25,7 @@ website: $(logo) README.md
 	R -e 'pkgdown::build_reference_index()'
 	R -e 'pkgdown::build_news()'
 	R -e 'pkgdown::build_site()'
-	rm docs/reference/Rplot001.png 
+	rm docs/reference/Rplot001.png
 	# discard useless updates of temporary paths, random seed values, etc.
 	#git restore docs/pkgdown.yml
 	#git restore docs/reference/join.html
