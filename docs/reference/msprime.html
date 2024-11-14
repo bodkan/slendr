@@ -147,14 +147,14 @@ command will be printed (and returned invisibly as a character vector) but not e
 
 
 <dt>path</dt>
-<dd><p>Path to the generated tree-sequence file. If <code>NULL</code> (the default), the tree
-sequence will not be saved to a file but will be returned as an in-memory object instead. If
-a path is given, it is interpreted as a path to a directory in which the function will
-save the tree sequence as a <code>msprime.trees</code> file and the function will return the
-path to the directory back. Note that this argument exists mostly to retain parity
-with the corresponding <code><a href="slim.html">slim()</a></code> function. In most circumstances, setting this
-argument is not necessary and users are better served by using the <code><a href="ts_write.html">ts_write()</a></code>
-function on the resulting tree-sequence object directly.</p></dd>
+<dd><p>Path to the directory where simulation result files will be saved.
+If <code>NULL</code>, this directory will be automatically created as a temporary
+directory. If <code>TRUE</code>, this path will be also returned by the function.
+If a string is given, it is assumed to be a path to a directory where simulation
+results will be saved. In this case, the function will return this path invisibly.
+Note that if a tree-sequence file should be simulated (along with other files,
+potentially), that tree-sequence file (named 'msprime.trees' by default) will
+have to be explicitly loaded using <code><a href="ts_read.html">ts_read()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
