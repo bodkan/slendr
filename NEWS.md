@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 1.0.0
 
 - **A massive update introducing the possibility of simulating non-neutral models with `slim()` has been introduced. This update is too big to describe in the changelog -- for more information and motivation, see the [description in the associated PR](https://github.com/bodkan/slendr/pull/155), or [the new extensive vignette](http://slendr.net/articles/vignette-11-extensions.html) on the topic. Feedback on this functionality, missing features, and bug reports are highly appreciated!** ([PR #155](https://github.com/bodkan/slendr/pull/155))
 
