@@ -10,11 +10,11 @@
 
 <!-- badges: end -->
 
-### *Overview* <a href='https://www.slendr.net'></a>
+### *Overview* <a href='https://www.slendr.net'><img src="https://www.slendr.net/logo.png" width="20%"/></a>
 
-*slendr* is an R package toolbox for defining population genetic models and simulating genomic data from them entirely in R. It has been originally conceived as a framework for [simulating spatially-explicit genomic data](https://www.slendr.net/articles/vignette-01-tutorial.html) on real geographic landscapes but it has grown to be much more than that: *slendr* can now simulate data from [traditional, non-spatial demographic models](https://www.slendr.net/articles/vignette-04-nonspatial-models.html) using SLiM and *msprime*, and even supports [selection](https://www.slendr.net/articles/vignette-11-extensions.html) scenarios. In addition to model definition and simulation, *slendr* also provides a set of function for efficient [analysis of tree-sequence genomic data](https://www.slendr.net/articles/vignette-05-tree-sequences.html), utilizing the [*tskit*](https://tskit.dev) module for underlying computation.
+*slendr* is a toolbox for running population genomic simulations entirely in R. Our original motivation for developing it was to provide a framework for [simulating spatially-explicit genomic data](https://www.slendr.net/articles/vignette-01-tutorial.html) on real geographic landscapes, however, it has grown to be much more than that since then: *slendr* can now simulate data from [traditional, non-spatial demographic models](https://www.slendr.net/articles/vignette-04-nonspatial-models.html) using *msprime* as a simulation engine, and it even supports selection scenarios via [user-defined SLiM estension snippets](https://www.slendr.net/articles/vignette-11-extensions.html). In addition to model definition and simulation, *slendr* also provides a set of function for efficient [analysis of tree-sequence genomic data](https://www.slendr.net/articles/vignette-05-tree-sequences.html), utilizing the [*tskit*](https://tskit.dev) module for underlying computation.
 
-This page briefly summarizes *slendr*'s most important features. A much detailed description of the *slendr* architecture and an extensive set of practical code examples can be found in our [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/) in the PCI journal and on our [website](https://www.slendr.net).
+This page briefly summarizes *slendr*'s most important features. A more detailed description of the *slendr* architecture and an extensive set of practical code examples can be found in our [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/) in the PCI journal and on our [website](https://www.slendr.net).
 
 ------------------------------------------------------------------------
 
@@ -310,7 +310,7 @@ Here is a very quick overview of the SLiM simulation run summarised as a GIF ani
 
 ```r
 animate_model(model = model, file = locations_file, steps = 50, width = 500, height = 300)
-#> Error in eval(expr, envir, enclos): R: UnableToWritePixelCache `/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpZcOlaH/magick-UZO70tfYeql4k8CVtniDvqNQQ_MnRv5f': No space left on device @ error/cache.c/WritePixelCachePixels/6023
+#> Error in eval(expr, envir, enclos): R: UnableToWritePixelCache `/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpFQdvY6/magick-JHvd4nc5vdcIKHW8YCloFjl0aib80pHG': No space left on device @ error/cache.c/WritePixelCachePixels/6023
 ```
 
 At this point, you could either compute some [population genetic statistics of interest](https://www.slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics) or perhaps analyse the [spatial features of the genealogies](https://www.slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships) simulated by your model.
