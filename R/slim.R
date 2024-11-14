@@ -248,7 +248,8 @@ slim <- function(
 
     # execute the command, capture all log output and decide whether to print
     # any of the log information to the console
-    log_output <- suppressWarnings(system(paste(slim_command, "2>&1"), intern = TRUE))
+    execute_fun <- if (Sys.info()["sysname"] == "Windows") shell else system
+    log_output <- suppressWarnings(execute_fun(paste(slim_command, "2>&1"), intern = TRUE))
     log_warnings <- grep("#WARNING", log_output, value = TRUE) %>%
       grep("Species::InitializePopulationFromFile", ., invert = TRUE, value = TRUE)
     if (verbose)
