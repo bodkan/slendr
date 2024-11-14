@@ -24,7 +24,7 @@ set.seed(314159)
 
 <!-- badges: end -->
 
-### *Overview* <a href='https://www.slendr.net'><img src="https://www.slendr.net/logo.png" width="20%"/></a>
+### *Overview* <a href='https://www.slendr.net'></a>
 
 *slendr* is a toolbox for running population genomic simulations entirely in R. Our original motivation for developing it was to provide a framework for [simulating spatially-explicit genomic data](https://www.slendr.net/articles/vignette-01-tutorial.html) on real geographic landscapes, however, it has grown to be much more than that since then: *slendr* can now simulate data from [traditional, non-spatial demographic models](https://www.slendr.net/articles/vignette-04-nonspatial-models.html) using *msprime* as a simulation engine, and it even supports selection scenarios via [user-defined SLiM estension snippets](https://www.slendr.net/articles/vignette-11-extensions.html). In addition to model definition and simulation, *slendr* also provides a set of function for efficient [analysis of tree-sequence genomic data](https://www.slendr.net/articles/vignette-05-tree-sequences.html), utilizing the [*tskit*](https://tskit.dev) module for underlying computation.
 
