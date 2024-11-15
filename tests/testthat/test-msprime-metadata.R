@@ -1,5 +1,7 @@
 skip_if(!is_slendr_env_present())
 
+init_env(quiet = TRUE)
+
 seed <- 42 # random seed
 seq_len <- 2e5 # amount of sequence to simulate
 rec_rate <- 1e-8 # uniform recombination rate
