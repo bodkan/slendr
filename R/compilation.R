@@ -238,7 +238,7 @@ setting `direction = 'backward'.`", call. = FALSE)
   }
 
   if (serialize)
-    checksums <- write_model(
+    checksums <- write_model_files(
       path, populations, admix_table, map_table, split_table, resize_table,
       dispersal_table, generation_time, resolution, simulation_length, time_dir, slim_script,
       description, time_units, map
@@ -410,7 +410,7 @@ verify_checksums <- function(files, hashes) {
 }
 
 # Write a compiled slendr model to disk and return a table of checksums
-write_model <- function(path, populations, admix_table, map_table, split_table,
+write_model_files <- function(path, populations, admix_table, map_table, split_table,
                         resize_table, dispersal_table,
                         generation_time, resolution, length, direction,
                         script_source, description, time_units, map) {
