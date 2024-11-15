@@ -126,6 +126,8 @@ reference:
     - ts_samples
     - ts_names
     - ts_coalesced
+    - ts_save
+    - ts_load
 
   - title: Tree sequence format conversion
     contents:
