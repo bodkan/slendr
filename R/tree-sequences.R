@@ -184,11 +184,8 @@ ts_write <- function(ts, file) {
 #'
 #' Deprecated function. Please use \code{ts_write} instead.
 #'
-#' @param file A path to the tree-sequence file (either originating from a
-#'   slendr model or a standard non-slendr tree sequence).
-#' @param model Optional \code{slendr_model} object which produced the
-#'   tree-sequence \code{file}. Used for adding various annotation data and
-#'   metadata to the standard tskit tree-sequence object.
+#' @param ts Tree sequence object loaded by \code{ts_read}
+#' @param file File to which the tree sequence should be saved
 #'
 #' @export
 ts_save <- function(ts, file) {

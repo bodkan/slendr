@@ -7,12 +7,9 @@
 ts_save(ts, file)
 }
 \arguments{
-\item{file}{A path to the tree-sequence file (either originating from a
-slendr model or a standard non-slendr tree sequence).}
+\item{ts}{Tree sequence object loaded by \code{ts_read}}
 
-\item{model}{Optional \code{slendr_model} object which produced the
-tree-sequence \code{file}. Used for adding various annotation data and
-metadata to the standard tskit tree-sequence object.}
+\item{file}{File to which the tree sequence should be saved}
 }
 \description{
 Deprecated function. Please use \code{ts_write} instead.
