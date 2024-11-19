@@ -1,4 +1,4 @@
-pandoc: '3.2'
+pandoc: 3.1.12.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -14,7 +14,7 @@ articles:
   vignette-09-paper: vignette-09-paper.html
   vignette-10-tracts: vignette-10-tracts.html
   vignette-11-extensions: vignette-11-extensions.html
-last_built: 2024-11-14T17:00Z
+last_built: 2024-11-19T10:45Z
 urls:
   reference: https://www.slendr.net/reference
   article: https://www.slendr.net/articles

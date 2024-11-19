@@ -127,19 +127,20 @@ of spatio-temporal demographic histories using SLiM. Our primary goal
 was to have the means to simulate arbitrarily complex spatial scenarios
 and simulate data which could be used for development of new spatial
 inference population genetic methods (and benchmarking of current
-methods). This functionality is briefly described in <a href="">vignette
-#1</a> and in more detail in <a href="">vignette #6</a>.</p>
+methods). This functionality is briefly described in <a href="https://www.slendr.net/articles/vignette-01-tutorial.html">vignette
+#1</a> and in more detail in <a href="https://www.slendr.net/articles/vignette-06-locations.html">vignette
+#6</a>.</p>
 <p>After the spatial simulation features have been implemented, it
 turned out to be trivial to support also “traditional”, non-spatial
-demographic models, such as those described in <a href="">vignette
-#4</a> and <a href="">vignette #5</a> – tree-like models with population
-divergences, gene-flow events, and popularion resize events, like you
-can see in any evolutionary biology textbook. Because non-spatial models
-can be often implemented (and executed) more efficient in a coalescent
-setting, we added the possibility to run any compiled <em>slendr</em>
-model not through SLiM but through a back-end script implemented in
-<em>msprime</em>, hidden behind the <em>slendr</em> function
-<code><a href="../reference/msprime.html">msprime()</a></code>.</p>
+demographic models, such as those described in <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">vignette
+#4</a> and <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html">vignette
+#5</a> – tree-like models with population divergences, gene-flow events,
+and popularion resize events, like you can see in any evolutionary
+biology textbook. Because non-spatial models can be often implemented
+(and executed) more efficient in a coalescent setting, we added the
+possibility to run any compiled <em>slendr</em> model not through SLiM
+but through a back-end script implemented in <em>msprime</em>, hidden
+behind the <em>slendr</em> function <code><a href="../reference/msprime.html">msprime()</a></code>.</p>
 <p>Throughout all this time, <em>slendr</em> models were purely neutral,
 without much planning to extend simulations toward non-neutral
 scenarios. However, <strong>with the easy specification of non-spatial
@@ -734,7 +735,7 @@ time    frequency
 14820   0.0009
 14790   0.001
 14760   0.0013</code></pre>
-<p>Speaking of which: one thing that’s a little annoying about the <a href="https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory.txt" class="external-link">extension
+<p>Speaking of which: one thing that’s a little annoying about the <a href="https://github.com/bodkan/slendr/blob/main/inst/extdata/extension_trajectory.txt" class="external-link">extension
 snippet</a> used in this example is that all the parameters are
 hard-coded (selection coefficient, target population, and even the path
 to the frequency trajectory file). If we wanted to run the
@@ -754,7 +755,7 @@ speaking, rather than having to hardcode values of parameters in your
 extension SLiM snippet files, you can indicate that a parameter value
 should be substituted in the file using a simple syntax
 <code>{{parameter_name}}</code>.</p>
-<p>Take a look at a <a href="https://github.com/bodkan/slendr/blob/selection-extension/inst/extdata/extension_trajectory_params.txt" class="external-link">new,
+<p>Take a look at a <a href="https://github.com/bodkan/slendr/blob/main/inst/extdata/extension_trajectory_params.txt" class="external-link">new,
 flexible version</a> of the snippet we used above and look for the
 <code>{{...}}</code> template placeholders. This version has been
 expanded to study the trajectory of the focal selected allele depending
