@@ -327,7 +327,8 @@ in previous vignettes, in this case we will run the simulation with the
 <code><a href="../reference/msprime.html">msprime()</a></code> coalescent back end. After all, our model is
 non-spatial and using a coalescent simulator will be much more efficient
 than the forward simulation. Switching between the msprime and SLiM back
-ends of slendr is demonstrated in much more detail in a <a href="vignette-07-backends.html">dedicated vignette</a>.</p>
+ends of slendr is demonstrated in much more detail in a <a href="https://www.slendr.net/articles/vignette-07-backends.html">dedicated
+vignette</a>.</p>
 <p>The simulation back end utilized by the <code><a href="../reference/msprime.html">msprime()</a></code>
 function (as well as the <code><a href="../reference/slim.html">slim()</a></code> function) produces a
 tree-sequence output which is immediately loaded and ready for a
@@ -368,7 +369,7 @@ downstream analysis.</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     1│  7.2 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│     1│  7.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │     0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>
@@ -425,7 +426,7 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmpvid5yL/file22c71c88b37b"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpvRMSxa/file7f3860f662fe"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
@@ -468,7 +469,7 @@ only once, and only during loading):</p>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     1│  7.2 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Provenances│     1│  7.1 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Sites      │     0│ 16 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>

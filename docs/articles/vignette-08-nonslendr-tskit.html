@@ -190,7 +190,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpuBa4xn/file24b438ab8240");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpcK4sxb/file81582253d43d");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -254,11 +254,11 @@ function, by first creating a list of lists with node IDs
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> p3    0.000<span style="text-decoration: underline;">463</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> p4    0.000<span style="text-decoration: underline;">201</span></span></span></code></pre></div>
 <p>Just as with <em>slendr</em> tree sequences (as demonstrated in our
-<a href="vignette-09-paper.html#example-4-figure-5">paper</a>) we can
-get a individual trees too, extracted in the in the phylogenetic format
-provided by the <a href="https://CRAN.R-project.org/package=ape" class="external-link">ape</a>
-R package. Here we first simplify the tree sequence even further to just
-10 nodes to make things manageable:</p>
+<a href="https://www.slendr.net/articles/vignette-09-paper.html#example-4-figure-5">paper</a>)
+we can get a individual trees too, extracted in the in the phylogenetic
+format provided by the <a href="https://CRAN.R-project.org/package=ape" class="external-link">ape</a> R package. Here we
+first simplify the tree sequence even further to just 10 nodes to make
+things manageable:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">node_id</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">ts_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_simplify.html">ts_simplify</a></span><span class="op">(</span><span class="va">ts</span>, simplify_to <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span>
@@ -395,7 +395,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpuBa4xn/file24b41dec675e");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpcK4sxb/file8158e828dea");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>

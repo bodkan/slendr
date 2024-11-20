@@ -724,8 +724,8 @@ the simulation starts just from the code alone.</p>
 <code><a href="../reference/plot_model.html">plot_model()</a></code> which takes in all the information about the
 relationships between populations (i.e., the population and gene flow
 objects we defined above) and plots it all in the form of a so-called
-<em>admixture graph</em> (see <a href="https://academic.oup.com/genetics/article/192/3/1065/5935193" class="external-link">here</a>
-for a discussion of the admixture graph concept).</p>
+<em>admixture graph</em> (see <a href="https://doi.org/10.1534/genetics.112.145037" class="external-link">here</a> for a
+discussion of the admixture graph concept).</p>
 <p>One important thing to note here is that unlike traditional admixture
 graphs where each node/population is present only once, in the full
 <em>slendr</em> graph a single population can participate in many gene
@@ -776,7 +776,7 @@ user:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence           ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │    126║</span></span>
+<span><span class="co">#&gt; ║Trees          │    116║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
 <span><span class="co">#&gt; ║Sequence Length│ 100000║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────╢</span></span>
@@ -789,15 +789,15 @@ user:</p>
 <span><span class="co">#&gt; ╔═══════════╤═════╤═════════╤════════════╗</span></span>
 <span><span class="co">#&gt; ║Table      │Rows │Size     │Has Metadata║</span></span>
 <span><span class="co">#&gt; ╠═══════════╪═════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │18746│585.8 KiB│          No║</span></span>
+<span><span class="co">#&gt; ║Edges      │18678│583.7 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│12909│  1.2 MiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Individuals│12832│  1.2 MiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Migrations │    0│  8 Bytes│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Mutations  │    0│  1.2 KiB│          No║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │18402│683.6 KiB│         Yes║</span></span>
+<span><span class="co">#&gt; ║Nodes      │18374│682.5 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
 <span><span class="co">#&gt; ║Populations│    6│  2.6 KiB│         Yes║</span></span>
 <span><span class="co">#&gt; ╟───────────┼─────┼─────────┼────────────╢</span></span>
@@ -819,26 +819,27 @@ to <em>slendr</em> than what we demonstrated here. For instance:</p>
 <ul>
 <li><p>You can tweak parameters influencing dispersal dynamics (how
 “clumpy” populations are, how far offspring can migrate from their
-parents, etc.) and change how those dynamics evolve over time. See <a href="vignette-03-interactions.html">this vignette</a> for more
-information.</p></li>
+parents, etc.) and change how those dynamics evolve over time. See <a href="https://www.slendr.net/articles/vignette-03-interactions.html">this
+vignette</a> for more information.</p></li>
 <li><p>You can use <em>slendr</em> to program non-spatial models, which
 means that any standard, Wright-Fisher demographic model can be
 simulated with only a few lines of R code and, for instance, plugged
 into an <a href="https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation" class="external-link">Approximate
 Bayesian Computation</a> pipeline or other analyses leveraging readily
-available R packages. You can find more in <a href="vignette-04-nonspatial-models.html">this vignette</a> and a much
-more detailed example in a vignette about <a href="vignette-07-backends.html">SLiM and <em>msprime</em> back
-ends</a>.</p></li>
+available R packages. You can find more in <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">this
+vignette</a> and a much more detailed example in a vignette about <a href="https://www.slendr.net/articles/vignette-07-backends.html">SLiM
+and <em>msprime</em> back ends</a>.</p></li>
 <li><p>You can build complex spatial models which are still abstract
 (not assuming any real geographic location), including traditional
 simulations of demes in a lattice structure. A complete example is shown
-<a href="vignette-02-grid-model.html">in this vignette</a>.</p></li>
+<a href="https://www.slendr.net/articles/vignette-02-grid-model.html">in
+this vignette</a>.</p></li>
 <li><p>Because SLiM saves data in the <code>.trees</code> tree-sequence
 file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>
 for interfacing with Python code you have the incredible power of <a href="https://tskit.dev/" class="external-link"><em>tskit</em></a> and <a href="https://tskit.dev/pyslim/docs/latest/introduction.html" class="external-link"><em>pyslim</em></a>
 to process simulated data at a massive scale right at your fingertips,
 all within the convenient environment of R. See a much more detailed
-example in a vignette about <a href="vignette-07-backends.html">this
+example in a vignette about <a href="https://www.slendr.net/articles/vignette-07-backends.html">this
 vignette</a> for an extensive tutorial of this feature.</p></li>
 </ul>
 </div>

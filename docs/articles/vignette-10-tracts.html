@@ -126,9 +126,9 @@ major version of <em>slendr</em> (which should include a more developed
 <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code>) before you use this in your own
 work.</strong></p>
 <p><em>slendr</em> now includes an experimental, use-it-at-your-own-risk
-interface to an exciting <a href="https://academic.oup.com/bioinformaticsadvances/advance-article/doi/10.1093/bioadv/vbad163/7429395" class="external-link">new
-algorithm</a> for extracting true tracts of ancestry as implemented in
-the Python module <a href="https://tspop.readthedocs.io/en/latest/index.html" class="external-link"><em>tspop</em></a>.</p>
+interface to an exciting <a href="https://doi.org/10.1093/bioadv/vbad163" class="external-link">new algorithm</a> for
+extracting true tracts of ancestry as implemented in the Python module
+<a href="https://tspop.readthedocs.io/en/latest/index.html" class="external-link"><em>tspop</em></a>.</p>
 <p>The interface is implemented in an R function
 <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> and this vignette describes its use on a simple
 toy model of Neanderthal and Denisovan introgression into modern
@@ -247,8 +247,7 @@ population name of the source of each ancestry tract:</p>
 populations, we see that the EUR population only carries about ~3% of
 Neanderthal ancestry and that this is also true for the PAP population.
 However, we also see that Papuans carry about 7% of Denisovan ancestry.
-This is consistent with our model, but also with the expectation from <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5772775/" class="external-link">empirical
-data</a>.</p>
+This is consistent with our model, but also with the expectation from <a href="https://doi.org/10.1038/nature21347" class="external-link">empirical data</a>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="va">tracts</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">node_id</span>, <span class="va">pop</span>, <span class="va">source_pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
