@@ -75,7 +75,7 @@ in tskit.
 Note that the order of populations f3 statistic implemented in tskit
 (\url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.f3}) is
 different from what you might expect from ADMIXTOOLS, as defined in
-Patterson 2012 (see \url{https://academic.oup.com/genetics/article/192/3/1065/5935193}
+Patterson 2012 (see \url{https://doi.org/10.1534/genetics.112.145037}
 under heading "The three-population test and introduction of f-statistics",
 as well as ADMIXTOOLS documentation at
 \url{https://github.com/DReichLab/AdmixTools/blob/master/README.3PopTest#L5}).
