@@ -428,15 +428,14 @@ slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, method = 
 ```
 
 ```{r, echo=FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, path = "~/Desktop")
+slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, path = tempdir())
 ```
 
-Note that we set `ts = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `~/Desktop/trajectory.tsv`.
+Note that we set `ts = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `<tempdir()>/trajectory.tsv`.
 
 Checking the file produced by the customized `slim()` simulation shows that the frequency trajectories were indeed saved correctly:
 
 ```         
-$ head ~/Desktop/trajectory.tsv 
 time    frequency
 15000   0.0001
 14970   0.0005
@@ -502,11 +501,11 @@ model <- compile_model(
 ```
 
 ```{r, echo = FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = FALSE, path = "~/Desktop")
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = FALSE, path = tempdir())
 ```
 
 ```{r, eval = FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, path = "~/Desktop", ts = FALSE, random_seed = 42)
+slim(model, sequence_length = 1e6, recombination_rate = 0, path = tempdir(), ts = FALSE, random_seed = 42)
 ```
 
 We can leverage the flexibility of this solution to run another version of this model, this time adding the mutation to a different population. In fact, let's check what happens when the beneficial allele appears in EHG, ANA, and YAM populations. Note that this uses the same extension snippet, and just substitutes different values to the placeholder parameters:
@@ -526,7 +525,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       path = "~/Desktop", ts = FALSE, random_seed = 42)
+       path = tempdir(), ts = FALSE, random_seed = 42)
 }
 
 run_model(origin_pop = "EUR", onset_time = 15000)
@@ -539,7 +538,7 @@ We can visualize the different trajectories like this. Not that the different al
 
 ```{r trajectories}
 load_traj <- function(origin_pop) {
-  df <- read.table(paste0("~/Desktop/traj_EUR_", origin_pop, ".tsv"), header = TRUE)
+  df <- read.table(paste0(tempdir(), "/traj_EUR_", origin_pop, ".tsv"), header = TRUE)
   df$origin <- origin_pop
   df$target <- "EUR"
   df
@@ -665,7 +664,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       path = "~/Desktop", ts = FALSE, random_seed = 42)
+       path = tempdir(), ts = FALSE, random_seed = 42)
 }
 
 run_model("EUR", onset_time = 15000)
@@ -866,12 +865,16 @@ samples <- rbind(nea_samples, modern_samples)
 
 Using the compiled model, we can simulate a tree sequence using the `slim()` function like in any standard *slendr* workflow. However, note that we were able to skip `sequence_length =` and `recombination_rate =` arguments! This is because our non-neutral extension snippet already customizes though, so there's no reason for us to instruct `slim()` on that front in any way:
 
-```{r, eval = RERUN & run_vignette}
+```{r, echo=FALSE, eval = RERUN & run_vignette}
 x = Sys.time()
 data_dir <- "~/Projects/introgression_data/"
 slim(model, recombination_rate = 1e-8, samples = samples, path = data_dir)
 y = Sys.time()
 y - x # Time difference of 45.62365 mins
+```
+
+```{r, eval=FALSE}
+slim(model, recombination_rate = 1e-8, samples = samples, path = "~/Projects/introgression_data/")
 ```
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
