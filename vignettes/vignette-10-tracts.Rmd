@@ -25,7 +25,7 @@ set.seed(42)
 
 **Please note that the _tspop_ support in _slendr_ implemented in the `ts_tracts()` function is extremely experimental, only minimally tested, and its functionality is expected to change quite a bit. Please wait for the release of the next major version of _slendr_ (which should include a more developed `ts_tracts()`) before you use this in your own work.**
 
-_slendr_ now includes an experimental, use-it-at-your-own-risk interface to an exciting [new algorithm](https://academic.oup.com/bioinformaticsadvances/advance-article/doi/10.1093/bioadv/vbad163/7429395) for extracting true tracts of ancestry as implemented in the Python module [_tspop_](https://tspop.readthedocs.io/en/latest/index.html).
+_slendr_ now includes an experimental, use-it-at-your-own-risk interface to an exciting [new algorithm](https://doi.org/10.1093/bioadv/vbad163) for extracting true tracts of ancestry as implemented in the Python module [_tspop_](https://tspop.readthedocs.io/en/latest/index.html).
 
 The interface is implemented in an R function `ts_tracts()` and this vignette describes its use on a simple toy model of Neanderthal and Denisovan introgression into modern humans.
 
@@ -100,7 +100,7 @@ tracts
 
 ### Summaries of ancestral proportions
 
-When we summarise the ancestry proportions in target EUR and PAP populations, we see that the EUR population only carries about ~3% of Neanderthal ancestry and that this is also true for the PAP population. However, we also see that Papuans carry about 7% of Denisovan ancestry. This is consistent with our model, but also with the expectation from [empirical data](https://pmc.ncbi.nlm.nih.gov/articles/PMC5772775/).
+When we summarise the ancestry proportions in target EUR and PAP populations, we see that the EUR population only carries about ~3% of Neanderthal ancestry and that this is also true for the PAP population. However, we also see that Papuans carry about 7% of Denisovan ancestry. This is consistent with our model, but also with the expectation from [empirical data](https://doi.org/10.1038/nature21347).
 
 ```{r}
 summary <- tracts %>%

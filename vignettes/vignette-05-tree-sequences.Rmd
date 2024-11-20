@@ -133,7 +133,7 @@ schedule_sampling(model, times = 10000, list(nea, 1), strict = TRUE)
 
     Error: Cannot schedule sampling for 'NEA' at time 10000 because the population will not be present in the simulation at that point. Consider running this function with `strict = FALSE` which will automatically retain only valid sampling events.
 
-Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. Although we could use the `slim()` function shown in previous vignettes, in this case we will run the simulation with the `msprime()` coalescent back end. After all, our model is non-spatial and using a coalescent simulator will be much more efficient than the forward simulation. Switching between the msprime and SLiM back ends of slendr is demonstrated in much more detail in a [dedicated vignette](vignette-07-backends.html).
+Now that we already have the `model` object ready, we can simulate data from it, sampling individuals according to our sampling schedule. Although we could use the `slim()` function shown in previous vignettes, in this case we will run the simulation with the `msprime()` coalescent back end. After all, our model is non-spatial and using a coalescent simulator will be much more efficient than the forward simulation. Switching between the msprime and SLiM back ends of slendr is demonstrated in much more detail in a [dedicated vignette](https://www.slendr.net/articles/vignette-07-backends.html).
 
 The simulation back end utilized by the `msprime()` function (as well as the `slim()` function) produces a tree-sequence output which is immediately loaded and ready for a downstream analysis.
 

@@ -106,7 +106,7 @@ Given that we are running a non-spatial simulation, you might wonder if it would
 ts_msprime <- msprime(model, sequence_length = 100000, recombination_rate = 0)
 ```
 
-In fact, because both SLiM and *msprime* back ends save outputs in a tree sequence format, we can analyse them using the same tools. See [this vignette](vignette-05-tree-sequences.html) for more information about tree sequence analysis with *slendr*, and for more discussion on alternative simulation back ends and more extensive examples of data analysis with tree sequences you can read [this tutorial](vignette-07-backends.html).
+In fact, because both SLiM and *msprime* back ends save outputs in a tree sequence format, we can analyse them using the same tools. See [this vignette](https://www.slendr.net/articles/vignette-05-tree-sequences.html) for more information about tree sequence analysis with *slendr*, and for more discussion on alternative simulation back ends and more extensive examples of data analysis with tree sequences you can read [this tutorial](https://www.slendr.net/articles/vignette-07-backends.html).
 
 ## Extracting parameters from a model or tree sequences
 
