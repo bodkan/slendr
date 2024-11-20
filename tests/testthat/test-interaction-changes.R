@@ -1,5 +1,7 @@
 RERUN <- FALSE
 
+skip_if(!is_slendr_env_present())
+
 init_env(quiet = TRUE)
 
 map <- readRDS("map.rds")
