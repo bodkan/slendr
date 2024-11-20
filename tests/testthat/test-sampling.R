@@ -1,5 +1,7 @@
 msg <- "Cannot schedule sampling"
 
+skip_if(!is_slendr_env_present())
+
 init_env(quiet = TRUE)
 
 test_that("sampling from a population which is not present is prevented (forward)", {
