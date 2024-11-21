@@ -1887,7 +1887,7 @@ ts_f4 <- function(ts, W, X, Y, Z, mode = c("site", "branch", "node"),
 #' Note that the order of populations f3 statistic implemented in tskit
 #' (<https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.f3>) is
 #' different from what you might expect from ADMIXTOOLS, as defined in
-#' Patterson 2012 (see <https://doi.org/10.1534/genetics.112.145037>
+#' Patterson 2012 (see \doi{10.1534/genetics.112.145037}
 #' under heading "The three-population test and introduction of f-statistics",
 #' as well as ADMIXTOOLS documentation at
 #' <https://github.com/DReichLab/AdmixTools/blob/master/README.3PopTest#L5>).

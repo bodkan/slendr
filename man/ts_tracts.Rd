@@ -50,7 +50,7 @@ This function implements an R-friendly interface to an algorithm for
 extracting ancestry tracts provided by the Python module tspop
 \url{https://tspop.readthedocs.io/en/latest/} and developed by Georgia Tsambos.
 Please make sure to cite the paper which describes the algorithm in
-detail: \url{https://doi.org/10.1093/bioadv/vbad163}.
+detail: \doi{10.1093/bioadv/vbad163}.
 For more technical details, see also the tutorial at:
 \url{https://tspop.readthedocs.io/en/latest/basicusage.html}.
 

@@ -6,7 +6,7 @@
 #' extracting ancestry tracts provided by the Python module tspop
 #' <https://tspop.readthedocs.io/en/latest/> and developed by Georgia Tsambos.
 #' Please make sure to cite the paper which describes the algorithm in
-#' detail: <https://doi.org/10.1093/bioadv/vbad163>.
+#' detail: \doi{10.1093/bioadv/vbad163}.
 #' For more technical details, see also the tutorial at:
 #' <https://tspop.readthedocs.io/en/latest/basicusage.html>.
 #'

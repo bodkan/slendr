@@ -190,7 +190,7 @@ ts_nodes(ts)
 
 #### Spatial SLiM (non-slendr) tree sequences
 
-Furthermore, the generalized interface also supports *slendr*'s [spatial tree-sequence features](vignette-06-locations.html), with all the [bells and whistles](vignette-09-paper.html#example-4-figure-5).
+Furthermore, the generalized interface also supports *slendr*'s [spatial tree-sequence features](https://www.slendr.net/articles/vignette-06-locations.html), with all the [bells and whistles](https://www.slendr.net/articles/vignette-09-paper.html#example-4-figure-5).
 
 For instance, lets take the following spatial SLiM script (modified from the SLiM manual) and execute it with SLiM the usual way:
 
@@ -262,7 +262,7 @@ To briefly demonstrate what this means, we can trivially plot the location of ea
 ggplot() + geom_sf(data = data, aes(color = time), alpha = 0.5)
 ```
 
-We can also collect spatio-temporal ancestry information of a particular node (i.e. the times and locations of all of its ancestors all the way to the root, with each "link" in the plot signifying parent-child edge somewhere along the tree sequence) and plot it on a 2D surface (x and y dimensions [0, 1]). The plot is a little chaotic, but hopefully conveys the idea (the "focal node" 0 is highlighted in red). This is essentially the same plot we have in [the last figure of our paper](vignette-09-paper.html#example-4-figure-5).
+We can also collect spatio-temporal ancestry information of a particular node (i.e. the times and locations of all of its ancestors all the way to the root, with each "link" in the plot signifying parent-child edge somewhere along the tree sequence) and plot it on a 2D surface (x and y dimensions [0, 1]). The plot is a little chaotic, but hopefully conveys the idea (the "focal node" 0 is highlighted in red). This is essentially the same plot we have in [the last figure of our paper](https://www.slendr.net/articles/vignette-09-paper.html#example-4-figure-5).
 
 ```{r, nonslendr_ancestries}
 ancestral_links <- ts_ancestors(ts, 0)
