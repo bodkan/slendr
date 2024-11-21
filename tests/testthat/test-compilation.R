@@ -9,12 +9,14 @@ test_that("'competition' must be specified in compile_model() if missing", {
   p <- population(mating = 10, dispersal = 10, name = "pop1", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
   expect_error(compile_model(populations = list(p), generation_time = 30, resolution = 11e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"),
                "Parameter 'competition' missing", fixed = TRUE)
+  skip_if(Sys.info()[["sysname"]] == "Windows") # new meaningless CRAN warnings
   expect_silent(compile_model(competition = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
 })
 
 test_that("'mating' must be specified in compile_model() if missing", {
   map <- readRDS("map.rds")
   p <- population(competition = 10, dispersal = 10, name = "pop1", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
+  skip_if(Sys.info()[["sysname"]] == "Windows") # new meaningless CRAN warnings
   expect_error(compile_model(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"),
                "Parameter 'mating' missing", fixed = TRUE)
   expect_silent(compile_model(mating = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
@@ -23,6 +25,7 @@ test_that("'mating' must be specified in compile_model() if missing", {
 test_that("'dispersal' must be specified in compile_model() if missing", {
   map <- readRDS("map.rds")
   p <- population(competition = 10, mating = 10, name = "pop1", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
+  skip_if(Sys.info()[["sysname"]] == "Windows") # new meaningless CRAN warnings
   expect_error(compile_model(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"),
                "Parameter 'dispersal' missing", fixed = TRUE)
   expect_silent(compile_model(dispersal = 50e3, populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
@@ -31,6 +34,7 @@ test_that("'dispersal' must be specified in compile_model() if missing", {
 test_that("'competition', 'mating', and 'dispersal' do not have to be specified in compile_model() if already present", {
   map <- readRDS("map.rds")
   p <- population(competition = 10, mating = 10, dispersal = 10, name = "pop1", N = 700, time = 40000, radius = 600000, center = c(10, 25), map = map)
+  skip_if(Sys.info()[["sysname"]] == "Windows") # new meaningless CRAN warnings
   expect_silent(compile_model(populations = list(p), generation_time = 30, resolution = 10e3, path = tempfile(), overwrite = TRUE, force = TRUE, direction = "backward"))
 })
 

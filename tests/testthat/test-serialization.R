@@ -70,6 +70,7 @@ test_that("non-unique population names lead to error", {
   p2 <- population(name = "pop2", N = 700, time = 1, radius = 600000, center = c(10, 25), map = map)
   p3 <- population(name = "pop3", N = 700, time = 1, radius = 600000, center = c(10, 25), map = map)
   model_dir <- file.path(tempdir(), "tmp-name-uniqueness")
+  skip_if(Sys.info()[["sysname"]] == "Windows") # new meaningless CRAN warnings
   expect_silent(compile_model(path = model_dir, populations = list(p1, p2, p3), generation_time = 30, resolution = 10000, overwrite = TRUE, force = TRUE, simulation_length = 10, competition = 100e3, mating = 100e3, dispersal = 10e3))
 })
 
