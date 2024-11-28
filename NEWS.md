@@ -1,6 +1,12 @@
+# slendr (development version)
+
 # slendr 1.0.0
 
-- **A massive update introducing the possibility of simulating non-neutral models with `slim()` has been introduced. This update is too big to describe in the changelog -- for more information and motivation, see the [description in the associated PR](https://github.com/bodkan/slendr/pull/155), or [the new extensive vignette](https://www.slendr.net/articles/vignette-11-extensions.html) on the topic. Feedback on this functionality, missing features, and bug reports are highly appreciated!** ([PR #155](https://github.com/bodkan/slendr/pull/155))
+- **A massive update introducing the possibility of simulating non-neutral _slendr_ models with `slim()` has been introduced. This update is too big to describe in the changelog -- for more information and motivation, see the [description in the associated PR](https://github.com/bodkan/slendr/pull/155), or [the new extensive vignette](https://www.slendr.net/articles/vignette-11-extensions.html) on the topic. ([PR #155](https://github.com/bodkan/slendr/pull/155))**
+
+**Implementing changes for the v1.0 release (particularly the support for non-neutral models) required changing *slendr* internals at a very low level across the whole codebase. Feedback on this functionality, missing features, and bug reports are highly appreciated!**
+
+Other changes:
 
 - The behavior previously implemented via the `output =` and `ts =` arguments of `slim()` (and `msprime()`) has been changed to facilitate more straightforward handling of output paths in user-defined SLiM extensions and other packages leveraging _slendr_ for inference. The `slim()` and `msprime()` function interfaces are now simplified in the following way:
 

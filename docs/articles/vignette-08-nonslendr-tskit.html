@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -190,7 +190,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpcK4sxb/file81582253d43d");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpZD4iG3/filec5727885516c");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -358,9 +358,9 @@ and analyze it with the slendr functionality:</p>
 <h4 id="spatial-slim-non-slendr-tree-sequences">Spatial SLiM (non-slendr) tree sequences<a class="anchor" aria-label="anchor" href="#spatial-slim-non-slendr-tree-sequences"></a>
 </h4>
 <p>Furthermore, the generalized interface also supports
-<em>slendr</em>’s <a href="vignette-06-locations.html">spatial
-tree-sequence features</a>, with all the <a href="vignette-09-paper.html#example-4-figure-5">bells and
-whistles</a>.</p>
+<em>slendr</em>’s <a href="https://www.slendr.net/articles/vignette-06-locations.html">spatial
+tree-sequence features</a>, with all the <a href="https://www.slendr.net/articles/vignette-09-paper.html#example-4-figure-5">bells
+and whistles</a>.</p>
 <p>For instance, lets take the following spatial SLiM script (modified
 from the SLiM manual) and execute it with SLiM the usual way:</p>
 <pre><code>initialize() {
@@ -395,7 +395,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpcK4sxb/file8158e828dea");
+    sim.treeSeqOutput("/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpZD4iG3/filec572a167f3d");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
@@ -444,8 +444,8 @@ all the way to the root, with each “link” in the plot signifying
 parent-child edge somewhere along the tree sequence) and plot it on a 2D
 surface (x and y dimensions [0, 1]). The plot is a little chaotic, but
 hopefully conveys the idea (the “focal node” 0 is highlighted in red).
-This is essentially the same plot we have in <a href="vignette-09-paper.html#example-4-figure-5">the last figure of our
-paper</a>.</p>
+This is essentially the same plot we have in <a href="https://www.slendr.net/articles/vignette-09-paper.html#example-4-figure-5">the
+last figure of our paper</a>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ancestral_links</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
