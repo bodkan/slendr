@@ -1257,6 +1257,13 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   sample_pops <- purrr::map(samples, 1)
   sample_counts <- purrr::map(samples, 2)
 
+  model_names <- vapply(model$populations, function(pop) pop$pop[1], FUN.VALUE = "character")
+  sample_names <- vapply(sample_pops, function(pop) pop$pop[1], FUN.VALUE = "character")
+  missing_names <- setdiff(sample_names, model_names)
+  if (length(missing_names))
+    stop("The following sampled populations are not part of the model: ",
+         paste(missing_names, collapse = ", "), call. = FALSE)
+
   if (is.null(model$world) && !is.null(locations))
     stop("Sampling locations may only be specified for a spatial model", call. = FALSE)
 
