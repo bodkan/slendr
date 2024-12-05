@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- `schedule_sampling()` now checks that all sampled populations are actually present in the compiled model ([#97abf75](https://github.com/bodkan/slendr/commit/97abf75))
+
 # slendr 1.0.0
 
 - **A massive update introducing the possibility of simulating non-neutral _slendr_ models with `slim()` has been introduced. This update is too big to describe in the changelog -- for more information and motivation, see the [description in the associated PR](https://github.com/bodkan/slendr/pull/155), or [the new extensive vignette](https://www.slendr.net/articles/vignette-11-extensions.html) on the topic. ([PR #155](https://github.com/bodkan/slendr/pull/155))**
