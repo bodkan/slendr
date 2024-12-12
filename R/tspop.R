@@ -138,7 +138,8 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL,
   if (from_slendr) {
     # add symbolic names of individuals and their populations to each tract by
     # joining with the annotated nodes table based on the node ID
-    samples <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::select(name, node_id, pop)
+    nodes <- ts_nodes(ts) %>% dplyr::filter(sampled) %>% dplyr::select(name, node_id, pop)
+    samples <- ts_samples(ts) %>% dplyr::inner_join(nodes, by = c("name", "pop"))
     tracts <- dplyr::inner_join(tracts, samples, by = c("sample" = "node_id"))
 
     # add symbolic names of the source populations
@@ -160,7 +161,7 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL,
     } else
       ancestor_col <- NULL
 
-    columns <- c("name", "node_id", "pop", "source_pop", "left", "right", "length",
+    columns <- c("name", "node_id", "time", "pop", "source_pop", "left", "right", "length",
                  ancestor_col, "source_pop_id")
 
     # filter for target and source populations of interest
