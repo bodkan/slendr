@@ -153,6 +153,9 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL,
     tracts$population <- NULL
     tracts$sample <- NULL
 
+    # add a haplotype number for each individual, for convenience
+    tracts <- tracts %>% group_by(name) %>% mutate(haplotype = dense_rank(node_id))
+
     # non-squashed tract table contains an extra column, so take care of it
     if (!squashed) {
       tracts$ancestor_id <- tracts$ancestor
@@ -161,8 +164,8 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL,
     } else
       ancestor_col <- NULL
 
-    columns <- c("name", "node_id", "time", "pop", "source_pop", "left", "right", "length",
-                 ancestor_col, "source_pop_id")
+    columns <- c("name", "haplotype", "time", "pop", "source_pop", "left", "right", "length",
+                 ancestor_col, "source_pop_id", "node_id")
 
     # filter for target and source populations of interest
     tracts <- tracts[tracts$pop %in% target & tracts$source_pop %in% source, ]
