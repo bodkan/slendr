@@ -7,10 +7,12 @@
 #'   \code{slendr_pop}
 #' @param time Plot a concrete time point
 #' @param gene_flow Indicate geneflow events with an arrow
+#' @param labels Should the (starting) polygons of each populations be labeled with
+#'   a respective population label (default \code{FALSE})?
 #' @param graticules Plot graticules in the original Coordinate Reference System
 #'   (such as longitude-latitude), or in the internal CRS (such as meters)?
 #' @param intersect Intersect the population boundaries against landscape and
-#'   other geographic boundaries (default TRUE)?
+#'   other geographic boundaries (default \code{TRUE})?
 #' @param show_map Show the underlying world map
 #' @param title Title of the plot
 #' @param interpolated_maps Interpolated spatial boundaries for all populations
@@ -22,6 +24,7 @@
 #' @export
 #'
 plot_map <- function(..., time = NULL, gene_flow = FALSE,
+                     labels = FALSE,
                      graticules = "original",
                      intersect = TRUE, show_map = TRUE,
                      title = NULL, interpolated_maps = NULL) {
@@ -167,6 +170,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
         geom_sf(data = pop_maps, aes(fill = pop), color = NA, alpha = 0.4) +
         geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
     }
+
     p <- p + scale_fill_discrete(drop = FALSE, name = "") +
       guides(alpha = guide_legend("time"))
 
@@ -185,6 +189,12 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
           ) +
           scale_color_discrete(drop = FALSE) +
           guides(color = "none")
+    }
+
+    if (labels) {
+      p <- p +
+        geom_label_repel(data = dplyr::group_by(pop_maps, pop, time) %>% dplyr::arrange(time) %>% dplyr::slice(1),
+                      aes(label = pop, color = pop, geometry = geometry), stat = "sf_coordinates", color = "black")
     }
   }
 
