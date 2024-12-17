@@ -8,6 +8,7 @@ plot_map(
   ...,
   time = NULL,
   gene_flow = FALSE,
+  labels = FALSE,
   graticules = "original",
   intersect = TRUE,
   show_map = TRUE,
@@ -23,11 +24,14 @@ plot_map(
 
 \item{gene_flow}{Indicate geneflow events with an arrow}
 
+\item{labels}{Should the (starting) polygons of each populations be labeled with
+a respective population label (default \code{FALSE})?}
+
 \item{graticules}{Plot graticules in the original Coordinate Reference System
 (such as longitude-latitude), or in the internal CRS (such as meters)?}
 
 \item{intersect}{Intersect the population boundaries against landscape and
-other geographic boundaries (default TRUE)?}
+other geographic boundaries (default \code{TRUE})?}
 
 \item{show_map}{Show the underlying world map}
 
