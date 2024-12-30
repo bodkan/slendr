@@ -3051,7 +3051,7 @@ convert_to_sf <- function(df, model) {
 }
 
 define_windows <- function(ts, breakpoints) {
-  unique(c(0, breakpoints, ts$sequence_length))
+  as.integer(round(unique(c(0, breakpoints, ts$sequence_length))))
 }
 
 concat <- function(x) {
