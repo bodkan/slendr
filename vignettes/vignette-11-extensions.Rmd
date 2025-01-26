@@ -424,14 +424,14 @@ model <- compile_model(
 You can check that the extension snippet was really appended to the built-in SLiM engine script by running `slim()` function and setting `method = "gui"` (look towards the end of the script!):
 
 ```{r, eval=FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, method = "gui")
+slim(model, sequence_length = 1e6, recombination_rate = 0, method = "gui")
 ```
 
 ```{r, echo=FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, ts = FALSE, path = tempdir())
+slim(model, sequence_length = 1e6, recombination_rate = 0, path = tempdir())
 ```
 
-Note that we set `ts = FALSE` in the `slim()` call. This way we can switch off generating of a tree sequence because we don't care about it in this example. We only want to save the frequency trajectory of the beneficial allele as saved in `<tempdir()>/trajectory.tsv`.
+So far we're primarily interested in saving the frequency trajectory of the beneficial allele to `<tempdir()>/trajectory.tsv`.
 
 Checking the file produced by the customized `slim()` simulation shows that the frequency trajectories were indeed saved correctly:
 
@@ -501,11 +501,11 @@ model <- compile_model(
 ```
 
 ```{r, echo = FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 1e-8, ts = FALSE, path = tempdir())
+slim(model, sequence_length = 1e6, recombination_rate = 1e-8, path = tempdir())
 ```
 
 ```{r, eval = FALSE}
-slim(model, sequence_length = 1e6, recombination_rate = 0, path = tempdir(), ts = FALSE, random_seed = 42)
+slim(model, sequence_length = 1e6, recombination_rate = 0, path = tempdir(), random_seed = 42)
 ```
 
 We can leverage the flexibility of this solution to run another version of this model, this time adding the mutation to a different population. In fact, let's check what happens when the beneficial allele appears in EHG, ANA, and YAM populations. Note that this uses the same extension snippet, and just substitutes different values to the placeholder parameters:
@@ -525,7 +525,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       path = tempdir(), ts = FALSE, random_seed = 42)
+       path = tempdir(), random_seed = 42)
 }
 
 run_model(origin_pop = "EUR", onset_time = 15000)
@@ -664,7 +664,7 @@ run_model <- function(origin_pop, onset_time) {
   )
   
   slim(model, sequence_length = 1e6, recombination_rate = 0,
-       path = tempdir(), ts = FALSE, random_seed = 42)
+       path = tempdir(), random_seed = 42)
 }
 
 run_model("EUR", onset_time = 15000)
