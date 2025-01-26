@@ -48,6 +48,10 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install gdal
 
+      - name: Install R dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install libpng-dev
+
       - name: Install ADMIXTOOLS dependencies (Linux)
         if: runner.os == 'Linux'
         run: sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
