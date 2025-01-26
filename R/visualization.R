@@ -193,7 +193,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
 
     if (labels) {
       p <- p +
-        geom_label_repel(data = dplyr::group_by(pop_maps, pop, time) %>% dplyr::arrange(time) %>% dplyr::slice(1),
+        ggrepel::geom_label_repel(data = dplyr::group_by(pop_maps, pop, time) %>% dplyr::arrange(time) %>% dplyr::slice(1),
                       aes(label = pop, color = pop, geometry = geometry), stat = "sf_coordinates")
     }
   }
