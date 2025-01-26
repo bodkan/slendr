@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 1.0.1
 
 - `schedule_sampling()` now checks that all sampled populations are actually present in the compiled model ([#97abf75](https://github.com/bodkan/slendr/commit/97abf75))
 
