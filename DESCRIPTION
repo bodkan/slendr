@@ -45,7 +45,8 @@ Imports:
     shinyWidgets,
     shiny,
     scales,
-    digest
+    digest,
+    ggrepel
 Suggests:
     testthat (>= 3.0.0),
     sf,
