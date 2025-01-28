@@ -49,7 +49,7 @@ navbar:
           href: articles/vignette-09-paper.html
         - text: Extracting true ancestry tracts
           href: articles/vignette-10-tracts.html
-        - text: Selection simulations using slendr
+        - text: Extending models with custom SLiM code
           href: articles/vignette-11-extensions.html
     twitter:
       icon: fa-twitter
