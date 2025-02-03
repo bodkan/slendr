@@ -1258,8 +1258,8 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   sample_counts <- purrr::map(samples, 2)
 
   model_names <- vapply(model$populations, function(pop) pop$pop[1], FUN.VALUE = "character")
-  sample_names <- vapply(sample_pops, function(pop) pop$pop[1], FUN.VALUE = "character")
-  missing_names <- setdiff(sample_names, model_names)
+  pop_names <- vapply(sample_pops, function(pop) pop$pop[1], FUN.VALUE = "character")
+  missing_names <- setdiff(pop_names, model_names)
   if (length(missing_names))
     stop("The following sampled populations are not part of the model: ",
          paste(missing_names, collapse = ", "), call. = FALSE)
@@ -1295,12 +1295,14 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
     lapply(samples, function(s) {
       pop <- s[[1]]
       n <- s[[2]]
+      name <- if (length(s) == 3) s[[3]] else NA
+
       tryCatch(
         {
           check_removal_time(t, pop, direction = model$direction)
           check_present_time(t, pop, direction = model$direction, offset = model$generation_time)
           if (!is.infinite(n)) n <- as.integer(n)
-          dplyr::tibble(time = t, pop = pop$pop[1], n = n)
+          dplyr::tibble(time = t, pop = pop$pop[1], n = n, name = name)
         },
         error = function(cond) {
           if (!strict)
