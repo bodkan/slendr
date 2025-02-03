@@ -595,7 +595,7 @@ process_sampling <- function(samples, model, verbose = FALSE) {
 
   # sum up all individual `n` counts for each pop/time/location in case of
   # multiples
-  df <- dplyr::group_by(samples, time, pop, x, y, x_orig, y_orig) %>%
+  df <- dplyr::group_by(samples, time, pop, name, x, y, x_orig, y_orig) %>%
     dplyr::summarise(n = sum(n), .groups = "drop") %>%
     dplyr::arrange(time)
 
@@ -636,7 +636,7 @@ process_sampling <- function(samples, model, verbose = FALSE) {
       end_time = end_time
     ) %>%
     dplyr::arrange(time_gen) %>%
-    dplyr::select(pop, n, time_gen, x, y, time_orig, x_orig, y_orig)
+    dplyr::select(name, pop, n, time_gen, x, y, time_orig, x_orig, y_orig)
 
   # if the original times should be replaced, do it
   if (model$direction == "forward" && oldest_time > 1)
