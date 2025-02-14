@@ -643,7 +643,12 @@ process_sampling <- function(samples, model, verbose = FALSE) {
     processed_schedule$time_orig <- time_orig
 
   # if locations are missing, replace NA with -1 values for SLiM to understand
-  processed_schedule <- replace(processed_schedule, is.na(processed_schedule), -1)
+  processed_schedule[2:ncol(processed_schedule)] <-
+    processed_schedule[2:ncol(processed_schedule)] %>% { replace(., is.na(.), -1) }
+
+  # replace named samples' populations with those customized names
+  processed_schedule$pop[!is.na(processed_schedule$name)] <-
+    processed_schedule$name[!is.na(processed_schedule$name)]
 
   processed_schedule %>% dplyr::mutate(n = ifelse(is.infinite(n), "INF", n))
 }
