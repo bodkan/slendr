@@ -86,6 +86,14 @@ samples <- schedule_sampling(
 )
 ```
 
+```{r}
+schedule <- schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, 1, "Ust_Ishim"))
+schedule <- schedule_sampling(model, times = 15000, list(eur, 1), list(ehg, 10))
+schedule <- schedule_sampling(model, times = 45000, list(ooa, 1, "Ust_Ishim"))
+ts_msprime <- msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule)
+ts_msprime <- msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule, run = FALSE)
+```
+
 Because it's not just the model itself that's useful to visually verify (which is the main purpose of `plot_model()`) but also the sampling scheme, _slendr_ makes it possible to overlay the numbers of individuals scheduled for tree-sequence recording from each lineage at each timepoint:
 
 ```{r, non-spatial-graph_sampling, fig.width=6, fig.height=4}
