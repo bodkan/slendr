@@ -1,4 +1,4 @@
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 
 test_that("minimal tree sequence (nodes+edges) is correctly loaded", {
   reticulate::py_run_file("manual_ts_nodes+edges.py")

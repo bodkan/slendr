@@ -1358,7 +1358,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
 #'
 #' @export
 init_env <- function(quiet = FALSE) {
-  if (!is_slendr_env_present())
+  if (!check_dependencies(python = TRUE))
     stop("Could not activate slendr's Python environment because it is not\npresent ",
          "on your system ('", PYTHON_ENV, "').\n\n",
          "To set up a dedicated Python environment you first need to run setup_env().", call. = FALSE)
@@ -1414,7 +1414,7 @@ init_env <- function(quiet = FALSE) {
 #'
 #' @export
 setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
-  if (is_slendr_env_present()) {
+  if (check_dependencies(python = TRUE)) {
     message("A required slendr Python environment is already present. You can activate\n",
             "it by calling init_env().")
   } else {

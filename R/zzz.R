@@ -55,7 +55,7 @@ PYTHON_ENV <-
 
   check_spatial_pkgs(error = FALSE)
 
-  if (!is_slendr_env_present()) {
+  if (!check_dependencies(python = TRUE)) {
     if (!getOption("slendr.custom_env")) {
       version <- strsplit(PYTHON_ENV, "_")[[1]] %>% gsub(".*-", "", .)
       packageStartupMessage(

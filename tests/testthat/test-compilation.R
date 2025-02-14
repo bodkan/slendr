@@ -66,7 +66,7 @@ test_that("deletion in non-interactive mode must be forced", {
   expect_true(grepl("dir-forced$", model$path))
 })
 
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
 
 test_that("sequence length can only be an integer number (SLiM)", {
@@ -197,7 +197,7 @@ test_that("parameters of the base model are extracted properly (from model)", {
   expect_equal(names(pars), "splits")
 })
 
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
 
 ts <- msprime(model, sequence_length = 1, recombination_rate = 0)

@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- slendr:::is_slendr_env_present()
+env_present <- check_dependencies(python = TRUE)
 
 #if (Sys.getenv("RUNNER_OS") == "Windows") {
 #  bash_path <- "D:/a/_temp/msys64/usr/bin/bash.exe"
