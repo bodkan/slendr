@@ -755,45 +755,75 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 
 #' Save genotypes from the tree sequence as a VCF file
 #'
+#' This function writes a VCF file with diploid genotypes from a given tree sequence.
+#'
+#' Users should note that, as with many other tskit-based slendr functions,
+#' \code{ts_vcf} is intended to provide some convenient defaults. For instance,
+#' even for non-slendr tree sequences, it will name each individual in the
+#' genotype columns after their integer IDs. In other words, if the
+#' \code{individuals} function argument is given as \code{c(1, 42, 123)}, the
+#' individuals will be named as "ind_1", "ind_42", and "ind_123", instead of
+#' "tsk_0", "tsk_1", and "tsk_2". That said, the reticulate-based Python
+#' interface of slendr allows calling the \code{write_vcf} function of tskit
+#' directly!
+#'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param path Path to a VCF file
 #' @param chrom Chromosome name to be written in the CHROM column of the VCF
-#' @param individuals A character vector of individuals in the tree sequence. If
-#'   missing, all individuals present in the tree sequence will be saved.
+#'   (default value will be "chr1").
+#' @param individuals A vector of individuals in the tree sequence to extract
+#'   genotypes from. If missing, all individuals present in the tree sequence
+#'   will be saved. For a slendr-based tree sequence a character vector of
+#'   individual names is expected. For non-slendr tree sequences, a numeric
+#'   vector of IDs of individuals is expected.
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
-  if (!attr(ts, "recapitated") && !ts_coalesced(ts))
-    stop("Tree sequence was not recapitated and some nodes do not ",
-         "have parents over some portion of their genome. This is interpreted as ",
-         "missing data, which is not currently supported by tskit. For more context, ",
-         "take a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
-         call. = FALSE)
+ts_vcf <- function(ts, path, chrom = "chr1", individuals = NULL) {
+  if (ts$num_mutations == 0)
+    warning("Attempting to extract genotypes from a tree sequence without mutations",
+            call. = FALSE)
 
-  if (!attr(ts, "mutated"))
-    stop("Attempting to extract genotypes from a tree sequence which has not been mutated",
-         call. = FALSE)
+  from_slendr <- !is.null(attr(ts, "model"))
+  if (from_slendr) {
+    if (!attr(ts, "recapitated") && !ts_coalesced(ts))
+      stop("Tree sequence was not recapitated and some nodes do not ",
+           "have parents over some portion of their genome. This is interpreted as ",
+           "missing data, which is not currently supported by tskit. For more context, ",
+           "take a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
+           call. = FALSE)
 
-  data <- ts_nodes(ts) %>%
-    dplyr::filter(!is.na(name)) %>%
-    dplyr::as_tibble() %>%
-    dplyr::distinct(name, ind_id)
+    data <- ts_nodes(ts) %>%
+      dplyr::filter(!is.na(name)) %>%
+      dplyr::as_tibble() %>%
+      dplyr::distinct(name, ind_id)
 
-  if (is.null(individuals)) individuals <- data$name
+    if (is.null(individuals)) individuals <- data$name
+    present <- individuals %in% unique(data$name)
+    individual_ids <- dplyr::filter(data, name %in% individuals)$ind_id
+    individual_names <- individuals
+  } else {
+    if (!is.null(individuals) && !all(is.numeric(individuals)))
+      stop("For non-slendr tree sequences, all individual identifiers must be numeric",
+           call. = FALSE)
 
-  present <- individuals %in% unique(data$name)
+    if (is.null(individuals)) individuals <- seq(0, ts$num_individuals - 1)
+    present <- individuals %in% seq(0, ts$num_individuals - 1)
+    individual_ids <- individuals
+    individual_names <- paste0("ind_", individual_ids)
+  }
+
   if (!all(present))
-    stop("", paste(individuals[!present], collapse = ", "),
-         " not present in the tree sequence", call. = FALSE)
+    stop("The following individuals are not present in the tree sequence: ",
+         paste(individuals[!present], collapse = ", "), call. = FALSE)
 
   gzip <- reticulate::import("gzip")
   with(reticulate::`%as%`(gzip$open(path.expand(path), "wt"), vcf_file), {
     ts$write_vcf(vcf_file,
                  contig_id = chrom,
-                 individuals = as.integer(data$ind_id),
-                 individual_names = data$name)
+                 individuals = as.integer(individual_ids),
+                 individual_names = individual_names)
   })
 }
 

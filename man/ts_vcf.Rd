@@ -4,21 +4,36 @@
 \alias{ts_vcf}
 \title{Save genotypes from the tree sequence as a VCF file}
 \usage{
-ts_vcf(ts, path, chrom = NULL, individuals = NULL)
+ts_vcf(ts, path, chrom = "chr1", individuals = NULL)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
 
 \item{path}{Path to a VCF file}
 
-\item{chrom}{Chromosome name to be written in the CHROM column of the VCF}
+\item{chrom}{Chromosome name to be written in the CHROM column of the VCF
+(default value will be "chr1").}
 
-\item{individuals}{A character vector of individuals in the tree sequence. If
-missing, all individuals present in the tree sequence will be saved.}
+\item{individuals}{A vector of individuals in the tree sequence to extract
+genotypes from. If missing, all individuals present in the tree sequence
+will be saved. For a slendr-based tree sequence a character vector of
+individual names is expected. For non-slendr tree sequences, a numeric
+vector of IDs of individuals is expected.}
 }
 \value{
 No return value, called for side effects
 }
 \description{
-Save genotypes from the tree sequence as a VCF file
+This function writes a VCF file with diploid genotypes from a given tree sequence.
+}
+\details{
+Users should note that, as with many other tskit-based slendr functions,
+\code{ts_vcf} is intended to provide some convenient defaults. For instance,
+even for non-slendr tree sequences, it will name each individual in the
+genotype columns after their integer IDs. In other words, if the
+\code{individuals} function argument is given as \code{c(1, 42, 123)}, the
+individuals will be named as "ind_1", "ind_42", and "ind_123", instead of
+"tsk_0", "tsk_1", and "tsk_2". That said, the reticulate-based Python
+interface of slendr allows calling the \code{write_vcf} function of tskit
+directly!
 }
