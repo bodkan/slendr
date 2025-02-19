@@ -13,7 +13,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- check_dependencies(python = TRUE)
+env_present <- slendr::check_dependencies(python = TRUE)
 
 knitr::opts_chunk$set(
   collapse = FALSE,
