@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- check_dependencies(python = TRUE, slim = TRUE)
+env_present <- slendr::check_dependencies(python = TRUE, slim = TRUE)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
