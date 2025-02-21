@@ -767,6 +767,17 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 #' interface of slendr allows calling the \code{write_vcf} function of tskit
 #' directly!
 #'
+#' By default, simulating a tree sequence with msprime and exporting the
+#' genotypes into VCF can cause issues with some downstream software because
+#' the VCF specification does not allow sites with the position 0. By default
+#' \code{ts_vcf} automatically transforms a site with a zero coordinate to
+#' a coordinate 1. Setting \code{position_transform} to NULL will disable
+#' this, and \code{tsv_vcf} will save coordinates in their original form.
+#' See this discussion for more detail:
+#' \url{https://github.com/tskit-dev/tskit/issues/2838#issuecomment-1931796988},
+#' as well as relevant topics in the tskit documentation on this issue, like
+#' here: \url{https://tskit.dev/tskit/docs/latest/export.html#modifying-coordinates}.
+#'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param path Path to a VCF file
 #' @param chrom Chromosome name to be written in the CHROM column of the VCF
@@ -776,11 +787,17 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 #'   will be saved. For a slendr-based tree sequence a character vector of
 #'   individual names is expected. For non-slendr tree sequences, a numeric
 #'   vector of IDs of individuals is expected.
+#' @param position_transform How to transform coordinates in a tree sequence
+#'   to coordinates in a VCF file? By default, any site with coordinate 0
+#'   is converted to a position 1 to ensure that the resulting VCF file adheres
+#'   to the VCF specification. Setting this to \code{NULL} will disable this
+#    transformation. See details for more information.
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-ts_vcf <- function(ts, path, chrom = "chr1", individuals = NULL) {
+ts_vcf <- function(ts, path, chrom = "chr1", individuals = NULL,
+                   position_transform = "lambda x: np.fmax(1, x)") {
   if (ts$num_mutations == 0)
     warning("Attempting to extract genotypes from a tree sequence without mutations",
             call. = FALSE)
@@ -819,11 +836,13 @@ ts_vcf <- function(ts, path, chrom = "chr1", individuals = NULL) {
          paste(individuals[!present], collapse = ", "), call. = FALSE)
 
   gzip <- reticulate::import("gzip")
+  numpy <- reticulate::import("numpy")
   with(reticulate::`%as%`(gzip$open(path.expand(path), "wt"), vcf_file), {
     ts$write_vcf(vcf_file,
                  contig_id = chrom,
                  individuals = as.integer(individual_ids),
-                 individual_names = individual_names)
+                 individual_names = individual_names,
+                 position_transform = reticulate::py_eval(position_transform, convert = FALSE))
   })
 }
 

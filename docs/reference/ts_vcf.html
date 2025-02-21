@@ -53,7 +53,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_vcf</span><span class="op">(</span><span class="va">ts</span>, <span class="va">path</span>, chrom <span class="op">=</span> <span class="st">"chr1"</span>, individuals <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ts_vcf</span><span class="op">(</span></span>
+<span>  <span class="va">ts</span>,</span>
+<span>  <span class="va">path</span>,</span>
+<span>  chrom <span class="op">=</span> <span class="st">"chr1"</span>,</span>
+<span>  individuals <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  position_transform <span class="op">=</span> <span class="st">"lambda x: np.fmax(1, x)"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,6 +86,13 @@ will be saved. For a slendr-based tree sequence a character vector of
 individual names is expected. For non-slendr tree sequences, a numeric
 vector of IDs of individuals is expected.</p></dd>
 
+
+<dt id="arg-position-transform">position_transform<a class="anchor" aria-label="anchor" href="#arg-position-transform"></a></dt>
+<dd><p>How to transform coordinates in a tree sequence
+to coordinates in a VCF file? By default, any site with coordinate 0
+is converted to a position 1 to ensure that the resulting VCF file adheres
+to the VCF specification. Setting this to <code>NULL</code> will disable this</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -96,6 +109,16 @@ individuals will be named as "ind_1", "ind_42", and "ind_123", instead of
 "tsk_0", "tsk_1", and "tsk_2". That said, the reticulate-based Python
 interface of slendr allows calling the <code>write_vcf</code> function of tskit
 directly!</p>
+<p>By default, simulating a tree sequence with msprime and exporting the
+genotypes into VCF can cause issues with some downstream software because
+the VCF specification does not allow sites with the position 0. By default
+<code>ts_vcf</code> automatically transforms a site with a zero coordinate to
+a coordinate 1. Setting <code>position_transform</code> to NULL will disable
+this, and <code>tsv_vcf</code> will save coordinates in their original form.
+See this discussion for more detail:
+<a href="https://github.com/tskit-dev/tskit/issues/2838#issuecomment-1931796988" class="external-link">https://github.com/tskit-dev/tskit/issues/2838#issuecomment-1931796988</a>,
+as well as relevant topics in the tskit documentation on this issue, like
+here: <a href="https://tskit.dev/tskit/docs/latest/export.html#modifying-coordinates" class="external-link">https://tskit.dev/tskit/docs/latest/export.html#modifying-coordinates</a>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
