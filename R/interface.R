@@ -1538,6 +1538,7 @@ clear_env <- function(force = FALSE, all = FALSE) {
 #' Get the name of the current slendr Python environment
 #'
 #' @return Name of the slendr Python environment
+#' @export
 get_env <- function() {
   PYTHON_ENV
 }
