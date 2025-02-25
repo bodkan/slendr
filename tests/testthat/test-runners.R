@@ -29,7 +29,7 @@ test_that("if `path =` is given, msprime returns it back and saves a tree-sequen
 
 test_that("SLiMgui does not start in an interactive session", {
   skip_if(!interactive())
-  expect_error(slim(model, sequence_length = 1, recombination_rate = 0),
+  expect_error(slim(model, sequence_length = 1, recombination_rate = 0, method = "gui"),
                "SLiMgui can only be run from an interactive R session")
 })
 
