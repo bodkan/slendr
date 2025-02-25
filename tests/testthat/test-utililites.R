@@ -20,3 +20,9 @@ test_that("concat() function correctly collapses sample identifiers", {
   expect_equal(concat(list(c("A", "B"))), "A+B")
   expect_equal(concat(list(xyz=c("A", "B"))), "xyz")
 })
+
+test_that("get_env() returns the correct environment name", {
+  skip_if_not(check_dependencies(python = TRUE))
+  get_env() == PYTHON_ENV
+})
+
