@@ -9,6 +9,9 @@
 
 - By default, `ts_vcf()` now automatically transforms a site with coordinate 0 to 1. This is done to make sure that the produced VCF file adheres to the VCF specification. See [relevant discussion](https://github.com/tskit-dev/tskit/issues/2838) in the _tskit_ repository for more information. ([#3a8c7a](https://github.com/bodkan/slendr/commit/3a8c7a))
 
+- `get_env()` was missing the `@export` tag in the _slendr_ codebase and, as such, has not been easily reachable. ([#13cd6b](https://github.com/bodkan/slendr/commit/13cd6b))
+
+
 # slendr 1.0.0
 
 - **A massive update introducing the possibility of simulating non-neutral _slendr_ models with `slim()` has been introduced. This update is too big to describe in the changelog -- for more information and motivation, see the [description in the associated PR](https://github.com/bodkan/slendr/pull/155), or [the new extensive vignette](https://www.slendr.net/articles/vignette-11-extensions.html) on the topic. ([PR #155](https://github.com/bodkan/slendr/pull/155))**
