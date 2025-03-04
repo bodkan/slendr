@@ -608,6 +608,8 @@ ts_metadata <- function(ts) {
 #' Extract genotype table from the tree sequence
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
+#' @param quiet Should messages about multiallelic sites be silenced? Default
+#'   is \code{FALSE}.
 #'
 #' @return Data frame object of the class \code{tibble} containing genotypes
 #'   of simulated individuals in columns
@@ -631,7 +633,7 @@ ts_metadata <- function(ts) {
 #' # of memory!)
 #' gts <- ts_genotypes(ts)
 #' @export
-ts_genotypes <- function(ts) {
+ts_genotypes <- function(ts, quiet = FALSE) {
   if (ts$num_mutations == 0)
     stop("Extracting genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
@@ -647,9 +649,10 @@ ts_genotypes <- function(ts) {
   n_multiallelic <- sum(!biallelic_pos)
 
   if (n_multiallelic > 0) {
-    message(sprintf("%i multiallelic sites (%.3f%% out of %i total) detected and removed",
-                    n_multiallelic, n_multiallelic / length(positions) * 100,
-                    length(positions)))
+    if (!quiet)
+      message(sprintf("%i multiallelic sites (%.3f%% out of %i total) detected and removed",
+                      n_multiallelic, n_multiallelic / length(positions) * 100,
+                      length(positions)))
     gts <- gts[biallelic_pos, ]
     positions <- positions[biallelic_pos]
   }

@@ -4,10 +4,13 @@
 \alias{ts_genotypes}
 \title{Extract genotype table from the tree sequence}
 \usage{
-ts_genotypes(ts)
+ts_genotypes(ts, quiet = FALSE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
+
+\item{quiet}{Should messages about multiallelic sites be silenced? Default
+is \code{FALSE}.}
 }
 \value{
 Data frame object of the class \code{tibble} containing genotypes
