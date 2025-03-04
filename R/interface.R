@@ -1414,7 +1414,7 @@ init_env <- function(quiet = FALSE) {
 #'
 #' @export
 setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
-  if (check_dependencies(python = TRUE)) {
+  if (is_slendr_env_present()) {
     message("A required slendr Python environment is already present. You can activate\n",
             "it by calling init_env().")
   } else {
