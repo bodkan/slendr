@@ -11,6 +11,8 @@
 
 - `get_env()` was missing the `@export` tag in the _slendr_ codebase and, as such, has not been easily reachable. ([#13cd6b](https://github.com/bodkan/slendr/commit/13cd6b))
 
+- A new option `quiet =` now controls whether or not should `ts_genotypes()` write a message if any multiallelic sites are encountered during conversion from a tree-sequence object. ([#9260c6](https://github.com/bodkan/slendr/commit/9260c6))
+
 
 # slendr 1.0.0
 
