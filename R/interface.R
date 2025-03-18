@@ -1398,6 +1398,20 @@ init_env <- function(quiet = FALSE) {
   }
 }
 
+#' Get a path to internal Python interpreter of slendr
+#'
+#' @return A character scalar path to slendr's Python binary
+#'
+#' @export
+get_python <- function() {
+  env_path <- file.path(reticulate::miniconda_path(), "envs", PYTHON_ENV)
+  if (Sys.info()["sysname"] == "Windows")
+    python_path <- normalizePath(file.path(env_path, "python.exe"), winslash = "/", mustWork = FALSE)
+  else
+    python_path <- file.path(env_path, "bin", "python")
+  python_path
+}
+
 #' Setup a dedicated Python virtual environment for slendr
 #'
 #' This function will automatically download a Python miniconda distribution
@@ -1535,13 +1549,6 @@ clear_env <- function(force = FALSE, all = FALSE) {
   }
 }
 
-#' Get the name of the current slendr Python environment
-#'
-#' @return Name of the slendr Python environment
-#' @export
-get_env <- function() {
-  PYTHON_ENV
-}
 
 #' Check that the active Python environment is setup for slendr
 #'
