@@ -1,7 +1,7 @@
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
 ```{r, include = FALSE}
-env_present <- check_dependencies(python = TRUE)
+env_present <- slendr::check_dependencies(python = TRUE)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
