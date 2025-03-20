@@ -154,7 +154,7 @@ ts_tracts <- function(ts, census, squashed = TRUE, source = NULL, target = NULL,
     tracts$sample <- NULL
 
     # add a haplotype number for each individual, for convenience
-    tracts <- tracts %>% dplyr::group_by(name) %>% dplyr::mutate(haplotype = dplyr::dense_rank(node_id)) %>% dplyr::ungroup
+    tracts <- tracts %>% dplyr::group_by(name) %>% dplyr::mutate(haplotype = dplyr::dense_rank(node_id)) %>% dplyr::ungroup()
 
     # non-squashed tract table contains an extra column, so take care of it
     if (!squashed) {
