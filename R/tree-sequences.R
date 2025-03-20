@@ -2321,7 +2321,7 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' please see the tskit manual at
 #' <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum>
 #' and the example section dedicated to AFS at
-#' <https://tskit.dev/tutorials/analysing_tree_sequences.html#allele-frequency-spectra>.
+#' <https://tskit.dev/tutorials/analysing_tree_sequences.html#zeroth-and-final-entries-in-the-afs>.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param sample_sets A list (optionally a named list) of character vectors with

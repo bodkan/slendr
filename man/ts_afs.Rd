@@ -48,7 +48,7 @@ particular the interpretation of the first and the last element of the AFS,
 please see the tskit manual at
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum}
 and the example section dedicated to AFS at
-\url{https://tskit.dev/tutorials/analysing_tree_sequences.html#allele-frequency-spectra}.
+\url{https://tskit.dev/tutorials/analysing_tree_sequences.html#zeroth-and-final-entries-in-the-afs}.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
