@@ -2317,10 +2317,10 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' or nodes.
 #'
 #' For more information on the format of the result and dimensions, in
-#' particular the interpretation of the first and the last element of the AFS
-#' (when \code{complete = TRUE}), please see the tskit manual at
-#' <https://tskit.dev/tskit/docs/stable/python-api.html> and the example
-#' section dedicated to AFS at
+#' particular the interpretation of the first and the last element of the AFS,
+#' please see the tskit manual at
+#' <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum>
+#' and the example section dedicated to AFS at
 #' <https://tskit.dev/tutorials/analysing_tree_sequences.html#allele-frequency-spectra>.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
