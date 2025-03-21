@@ -72,7 +72,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
     stop("Sequence length must be a non-negative integer number", call. = FALSE)
 
   if (!is.numeric(recombination_rate) || recombination_rate < 0)
-    stop("Recombination rate must be a numeric value", call. = FALSE)
+    stop("Recombination rate must be a non-negative numeric value", call. = FALSE)
 
   if (sum(model$splits$parent == "__pop_is_ancestor") > 1)
     stop("Multiple ancestral populations without a common ancestor would lead to\n",
