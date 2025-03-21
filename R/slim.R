@@ -154,7 +154,7 @@ slim <- function(
     stop("Sequence length must be a non-negative integer number", call. = FALSE)
   if (!missing(sequence_length) && recrate_required &&
       (!is.numeric(recombination_rate) || recombination_rate < 0))
-    stop("Recombination rate must be a numeric value", call. = FALSE)
+    stop("Recombination rate must be a non-negative numeric value", call. = FALSE)
 
   if (missing(sequence_length)) sequence_length <- -1
   if (missing(recombination_rate)) recombination_rate <- -1

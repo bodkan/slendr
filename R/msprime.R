@@ -68,10 +68,10 @@
 #' @export
 msprime <- function(model, sequence_length, recombination_rate, samples = NULL, random_seed = NULL,
                     verbose = FALSE, debug = FALSE, run = TRUE, path = NULL) {
-  if (sequence_length %% 1 != 0 | sequence_length <= 0)
+  if (sequence_length %% 1 != 0 || sequence_length <= 0)
     stop("Sequence length must be a non-negative integer number", call. = FALSE)
 
-  if (!is.numeric(recombination_rate) | recombination_rate < 0)
+  if (!is.numeric(recombination_rate) || recombination_rate < 0)
     stop("Recombination rate must be a numeric value", call. = FALSE)
 
   if (sum(model$splits$parent == "__pop_is_ancestor") > 1)
