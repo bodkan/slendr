@@ -137,8 +137,7 @@ compile_model <- function(
   if (is.data.frame(gene_flow)) gene_flow <- list(gene_flow)
 
   # gene-flow events cannot span shorter amount of time than the generation time
-  valid_gf <- vapply(gene_flow, function(gf) abs(gf$tend - gf$tstart) >= generation_time,
-                     FUN.VALUE = logical(1))
+  valid_gf <- sapply(gene_flow, function(gf) abs(gf$tend - gf$tstart) >= generation_time)
   if (!all(valid_gf)) {
     gf_str <- paste0(
       sapply(gene_flow[!valid_gf],
