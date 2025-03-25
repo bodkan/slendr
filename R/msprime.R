@@ -122,7 +122,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
     script_path <- path.expand(file.path(model$path, "script.py"))
     if (!run) {
       msprime_command <- sprintf(
-        "%s %s %s --model %s --sequence-length %d --recombination-rate %s %s %s %s --path %s",
+        "%s %s %s --model %s --sequence-length %d --recombination-rate %s %s %s %s %s --path %s",
         reticulate::py_exe(),
         script_path,
         paste("--seed", random_seed),
