@@ -85,13 +85,15 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
     locations
   }
 
-  normal <- slim_sim("normal", 10, seed)
-  uniform <- slim_sim("uniform", 10, seed)
-  cauchy <- slim_sim("cauchy", 10, seed)
-  exp <- slim_sim("exponential", 10, seed)
-  brownian <- slim_sim("brownian", 10, seed)
+  models <- c("normal", "uniform", "cauchy", "exponential", "brownian")
+  results <- parallel::mclapply(models, function(m) slim_sim(m, 10, seed), mc.cores = length(models))
+  # normal <- slim_sim("normal", 10, seed)
+  # uniform <- slim_sim("uniform", 10, seed)
+  # cauchy <- slim_sim("cauchy", 10, seed)
+  # exp <- slim_sim("exponential", 10, seed)
+  # brownian <- slim_sim("brownian", 10, seed)
 
-  slim_distances <- rbind(normal, uniform, cauchy, exp, brownian) %>%
+  slim_distances <- do.call(rbind, results) %>%
     dplyr::select(distance, fun) %>%
     dplyr::mutate(source = "SLiM")
 
