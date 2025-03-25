@@ -136,6 +136,23 @@ compile_model <- function(
 
   if (is.data.frame(gene_flow)) gene_flow <- list(gene_flow)
 
+  # gene-flow events cannot span shorter amount of time than the generation time
+  valid_gf <- vapply(gene_flow, function(gf) abs(gf$tend - gf$tstart) >= generation_time,
+                     FUN.VALUE = logical(1))
+  if (!all(valid_gf)) {
+    gf_str <- paste0(
+      sapply(gene_flow[!valid_gf],
+             function(gf) {
+               sprintf("  from %s to %s, start = %s, end = %s (implied length %d)",
+                       gf$from_name, gf$to_name, gf$tstart, gf$tend, abs(gf$tend - gf$tstart))
+             }),
+      collapse = "\n"
+    )
+    stop(paste0("Gene flows cannot be shorter than the generation time of ",
+                generation_time, ".\n",
+               "The following gene-flow events are shorter than this:\n", gf_str), call. = FALSE)
+  }
+
   # make sure all populations share the same direction of time
   time_dir <- setdiff(unique(sapply(populations, time_direction)), "unknown")
 
