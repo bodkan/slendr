@@ -3,6 +3,12 @@
 #' This function will execute a built-in msprime script and run a compiled
 #' slendr demographic model.
 #'
+#' For more information about the \code{coalescent_only} argument, please see
+#' msprime documentation, particularly the section on "Recording more information"
+#' and the \code{coalescing_segments_only} argument of the method \code{sim_ancestry()}
+#' here \url{https://tskit.dev/msprime/docs/stable/ancestry.html#recording-more-information}.
+#' and \url{https://tskit.dev/msprime/docs/stable/api.html#msprime.sim_ancestry}.
+#'
 #' @param model Model object created by the \code{compile} function
 #' @param sequence_length Total length of the simulated sequence (in base-pairs)
 #' @param recombination_rate Recombination rate of the simulated sequence (in
@@ -27,6 +33,14 @@
 #'   Note that if a tree-sequence file should be simulated (along with other files,
 #'   potentially), that tree-sequence file (named 'msprime.trees' by default) will
 #'   have to be explicitly loaded using \code{ts_read()}.
+#' @param coalescent_only Default is \code{TRUE}, which will only record the
+#'   minimum amount of information necessary to represent the genealogical
+#'   history of the simulated samples (i.e., only nodes which are MRCA of some
+#'   pair of samples at some locus in the genome). Setting to \code{FALSE} will
+#'   record much more information, resulting in unary nodes in the tree sequence.
+#'   This parameter translates to the \code{coalescing_segments_only} argument
+#'   of the underlying msprime method \code{sim_ancestry}. See Details for
+#'   additional information.
 #'
 #' @return A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
 #'   (internally represented by the Python object \code{tskit.trees.TreeSequence}). If the
@@ -66,8 +80,9 @@
 #'
 #' summary(ts)
 #' @export
-msprime <- function(model, sequence_length, recombination_rate, samples = NULL, random_seed = NULL,
-                    verbose = FALSE, debug = FALSE, run = TRUE, path = NULL) {
+msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
+                    random_seed = NULL, verbose = FALSE, debug = FALSE, run = TRUE,
+                    path = NULL, coalescent_only = TRUE) {
   if (sequence_length %% 1 != 0 || sequence_length <= 0)
     stop("Sequence length must be a non-negative integer number", call. = FALSE)
 
@@ -117,6 +132,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
         sampling,
         ifelse(verbose, "--verbose", ""),
         ifelse(debug, "--debug", ""),
+        ifelse(coalescent_only, "--coalescent_only", ""),
         "<path to a .trees file>"
       )
       cat(msprime_command, "\n")
@@ -142,7 +158,8 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL, 
     direction = model$direction,
     description = model$description,
     samples = reticulate::r_to_py(samples),
-    debug = debug
+    debug = debug,
+    coalescent_only = coalescent_only
   )
   ts_object <- ts_read(ts_msprime, model = model)
 

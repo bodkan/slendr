@@ -26,7 +26,7 @@ VERSION = "__VERSION__"
 def simulate(
   sequence_length, recombination_rate, seed,
   populations, resizes, geneflows, length, orig_length,
-  direction, description, samples, debug
+  direction, description, samples, debug, coalescent_only
 ):
   """Run a slendr simulation and return a tree sequence."""
 
@@ -175,7 +175,8 @@ def simulate(
       demography=demography,
       sequence_length=sequence_length,
       recombination_rate=recombination_rate,
-      random_seed=seed
+      random_seed=seed,
+      coalescing_segments_only=coalescent_only
   )
 
   # symbolic names of individuals that have been recorded in the tree sequence
@@ -204,10 +205,11 @@ def simulate(
           },
           "sample_names": sample_names,
           "arguments": {
-            "SEQUENCE_LENGTH"   : sequence_length,
-            "RECOMBINATION_RATE"       : recombination_rate,
-            "SEED"              : seed,
-            "SIMULATION_LENGTH" : length
+            "SEQUENCE_LENGTH"    : sequence_length,
+            "RECOMBINATION_RATE" : recombination_rate,
+            "SEED"               : seed,
+            "SIMULATION_LENGTH"  : length,
+            "COALESCENT_ONLY"    : coalescent_only
           }
       }
   }
@@ -247,6 +249,8 @@ if __name__ == "__main__":
                       help="Path to the slendr sampling schedule table "
                            "(see the manpage of the `sampling()` function for "
                            "more details)")
+  parser.add_argument("--coalescent_only", action="store_true", default=True,
+                      help="Record more information than just coalescent nodes?")
   parser.add_argument("--seed", type=int, help="Random seed value")
   parser.add_argument("--verbose", action="store_true", default=False,
                       help="Print detailed logging information?")
@@ -306,7 +310,7 @@ if __name__ == "__main__":
 
   ts = simulate(args.sequence_length, args.recombination_rate, args.seed,
                 populations, resizes, geneflows, length, orig_length, direction, description,
-                samples, args.debug)
+                samples, args.debug, args.coalescent_only)
 
   path = os.path.expanduser(args.path)
 
