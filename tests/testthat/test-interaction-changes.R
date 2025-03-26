@@ -86,7 +86,8 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
   }
 
   models <- c("normal", "uniform", "cauchy", "exponential", "brownian")
-  results <- parallel::mclapply(models, function(m) slim_sim(m, 10, seed), mc.cores = length(models))
+  n_cores <- ifelse(Sys.getenv("RUNNER_OS") != "", 1, length(models))
+  results <- parallel::mclapply(models, function(m) slim_sim(m, 10, seed), mc.cores = n_cores)
   # normal <- slim_sim("normal", 10, seed)
   # uniform <- slim_sim("uniform", 10, seed)
   # cauchy <- slim_sim("cauchy", 10, seed)
