@@ -788,14 +788,12 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
     # the small scale Natural Earth data is bundled with slendr
     ne_dir <- file.path(tempdir(), "naturalearth")
     if (scale == "small") {
-      utils::unzip(system.file("naturalearth/ne_110m_land.zip", package = "slendr"),
-                   exdir = ne_dir)
+      utils::unzip(system.file("naturalearth/ne_110m_land.zip", package = "slendr"), exdir = ne_dir)
     } else {
-      size <- ifelse(scale == "large", 10, 50)
-      rnaturalearth::ne_download(scale = size, type = "land", category = "physical", destdir = ne_dir, load = FALSE)
+      rnaturalearth::ne_download(scale = scale, type = "land", category = "physical", destdir = ne_dir, load = FALSE)
     }
 
-    map_raw <- rnaturalearth::ne_load(scale = size, type = "land", category = "physical", destdir = ne_dir)
+    map_raw <- rnaturalearth::ne_load(scale = scale, type = "land", category = "physical", destdir = ne_dir)
     sf::st_agr(map_raw) <- "constant"
 
     # define boundary coordinates in the target CRS
