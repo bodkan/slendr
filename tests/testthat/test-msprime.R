@@ -23,7 +23,7 @@
 skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
 
-RERUN <- FALSE
+RERUN <- TRUE
 
 seed <- 42
 N <- 1000

@@ -1,4 +1,4 @@
-RERUN <- FALSE
+RERUN <- TRUE
 
 skip_if(!check_dependencies(python = TRUE))
 
