@@ -42,7 +42,7 @@ PYTHON_ENV <-
       "Alternatively, use the `slim_path` argument",
       " of the `slim()` function.\n--------------------")
   } else {
-    required_version <- "4.2"
+    required_version <- "5.0"
     slim_version <- system(paste(slim_binary, "-v"), intern = TRUE) %>%
       gsub("SLiM version (.*),.*$", "\\1", .) %>% .[1]
     if (utils::compareVersion(slim_version, required_version) < 0)
