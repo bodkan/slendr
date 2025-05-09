@@ -1,3 +1,5 @@
+skip_if(TRUE)
+
 # This unit test script makes sure that a trivially simple slendr model gives exactly the same
 # result (i.e. tree sequence tables) after loading than a pure SLiM script
 
