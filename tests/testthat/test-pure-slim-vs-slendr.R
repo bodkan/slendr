@@ -1,5 +1,3 @@
-# skip_if(TRUE)
-
 # This unit test script makes sure that a trivially simple slendr model gives exactly the same
 # result (i.e. tree sequence tables) after loading than a pure SLiM script
 
@@ -105,7 +103,7 @@ test_that("simplification on pure SLiM tree sequence retains the correct data", 
   # so let's compare the ts_nodes contents by explicitly ordered columns
   cols <- c("pop", "node_id", "time", "time_tskit", "sampled", "remembered",
             "retained", "alive", "pedigree_id", "ind_id", "pop_id")
-  abc <- ts_nodes(ts_small)[, cols]
-  xyz <- ts_nodes(ts_small_loaded)[, cols]
+  abc <- ts_nodes(ts_small)[, cols] %>% dplyr::arrange(pedigree_id)
+  xyz <- ts_nodes(ts_small_loaded)[, cols] %>% dplyr::arrange(pedigree_id)
   expect_equal(abc, xyz)
 })
