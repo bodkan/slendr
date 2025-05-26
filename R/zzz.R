@@ -10,7 +10,7 @@ tspop <- NULL
 # define slendr's required Python dependencies and compose an environment name
 # that will be used specifically for them
 PYTHON_ENV <-
-  c("msprime==1.3.4", "tskit==0.6.3", "pyslim==1.0.4", "tspop==0.0.2") %>%
+  c("msprime==1.3.4", "tskit==0.6.4", "pyslim==1.0.4", "tspop==0.0.2") %>%
   gsub("==", "-", .) %>%
   paste(collapse = "_") %>%
   paste0("Python-3.12_", .)
