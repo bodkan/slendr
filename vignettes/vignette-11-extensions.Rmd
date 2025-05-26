@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
   eval = run_vignette
 )
 
-RERUN <- TRUE
+RERUN <- FALSE
 ```
 
 ## Introduction
