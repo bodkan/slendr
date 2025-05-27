@@ -27,7 +27,7 @@ initialize() {
 
 tick(introgression_time) - 1 late() {
   // get all Neanderthal chromosomes just prior to the introgression
-  target = population("NEA").genomes;
+  target = population("NEA").haplosomes;
 
   write_log("adding neutral Neanderthal markers");
 

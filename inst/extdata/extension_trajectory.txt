@@ -23,7 +23,7 @@ initialize() {
 
 function (void) add_mutation(void) {
     // sample one target carrier of the new mutation...
-    target = sample(population(target_pop).genomes, 1);
+    target = sample(population(target_pop).haplosomes, 1);
     // ... and add the mutation in the middle of it
     mut = target.addNewDrawnMutation(m1, position = asInteger(SEQUENCE_LENGTH / 2));
 
@@ -57,7 +57,7 @@ tick(onset_time):SIMULATION_END late() {
     }
 
     // compute the frequency of the mutation of interest
-    frequency = population("EUR").genomes.mutationFrequenciesInGenomes();
+    frequency = population("EUR").haplosomes.mutationFrequenciesInHaplosomes();
 
     // save the current frequency to the output file
     writeFile(traj_file,

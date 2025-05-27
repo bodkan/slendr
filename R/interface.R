@@ -788,30 +788,12 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
     # the small scale Natural Earth data is bundled with slendr
     ne_dir <- file.path(tempdir(), "naturalearth")
     if (scale == "small") {
-      utils::unzip(system.file("naturalearth/ne_110m_land.zip", package = "slendr"),
-                   exdir = ne_dir)
+      utils::unzip(system.file("naturalearth/ne_110m_land.zip", package = "slendr"), exdir = ne_dir)
     } else {
-      size <- ifelse(scale == "large", 10, 50)
-      file <- sprintf("ne_%sm_land.zip", size)
-      if (!dir.exists(ne_dir)) dir.create(ne_dir)
-      path <- file.path(ne_dir, file)
-      utils::download.file(
-        url = sprintf("https://naturalearth.s3.amazonaws.com/%sm_physical/%s", size, file),
-        destfile = path, quiet = TRUE
-      )
-      utils::unzip(path, exdir = ne_dir)
+      rnaturalearth::ne_download(scale = scale, type = "land", category = "physical", destdir = ne_dir, load = FALSE)
     }
 
-    # TODO: this function uses internally rgdal, which is to be retired by 2023
-    # silence the deprecation warning for now, as it would only confuse the user
-    # and figure out a way to deal with this (either by providing a PR to the devs
-    # or hacking our own alternative)
-    suppressWarnings(
-      map_raw <- rnaturalearth::ne_load(
-        scale = scale, type = "land", category = "physical",
-        returnclass = "sf", destdir = ne_dir
-      )
-    )
+    map_raw <- rnaturalearth::ne_load(scale = scale, type = "land", category = "physical", destdir = ne_dir)
     sf::st_agr(map_raw) <- "constant"
 
     # define boundary coordinates in the target CRS

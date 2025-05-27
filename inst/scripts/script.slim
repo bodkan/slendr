@@ -494,7 +494,7 @@ modifyChild() /* Place offspring within its population's boundary */ {
                  (community.tick - BURNIN_LENGTH <= GENE_FLOWS.getValue("tend_gen"));
 
         // get population of the offspring's parents
-        source = sourceSubpop.id == GENE_FLOWS.getValue("from_id");
+        source = parent1.subpopulation.id == GENE_FLOWS.getValue("from_id");
 
         // get the offspring's new population
         target = subpop.id == GENE_FLOWS.getValue("to_id");

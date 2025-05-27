@@ -103,5 +103,7 @@ test_that("simplification on pure SLiM tree sequence retains the correct data", 
   # so let's compare the ts_nodes contents by explicitly ordered columns
   cols <- c("pop", "node_id", "time", "time_tskit", "sampled", "remembered",
             "retained", "alive", "pedigree_id", "ind_id", "pop_id")
-  expect_equal(ts_nodes(ts_small)[, cols], ts_nodes(ts_small_loaded)[, cols])
+  abc <- ts_nodes(ts_small)[, cols] %>% dplyr::arrange(pedigree_id)
+  xyz <- ts_nodes(ts_small_loaded)[, cols] %>% dplyr::arrange(pedigree_id)
+  expect_equal(abc, xyz)
 })

@@ -5,7 +5,7 @@
 skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
 
-RERUN <- FALSE
+RERUN <- TRUE
 
 # Let's start by defining a couple of parameters for our simulations
 seed <- 42 # random seed
