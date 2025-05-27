@@ -1,4 +1,6 @@
-# slendr 1.0.1
+# slendr 1.1.0
+
+- SLiM 5 is now required to run `slim()` simulations with _slendr_. Similarly, _tskit_ and _msprime_ have been upgraded to versions 0.6.4 and 1.3.4, respectively. ([PR #183](https://github.com/bodkan/slendr/pull/173))
 
 - `schedule_sampling()` now checks that all sampled populations are actually present in the compiled model ([#97abf75](https://github.com/bodkan/slendr/commit/97abf75))
 
