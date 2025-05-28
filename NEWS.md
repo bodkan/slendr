@@ -6,8 +6,7 @@
 
 - Data frames produced by `ts_tracts()` on _slendr_-produced tree sequences now include a time of a recorded sample carrying a given tract ([#a28b264](https://github.com/bodkan/slendr/commit/a28b264)) and a user-friendly haplotype number ([#9c4724](https://github.com/bodkan/slendr/commit/9c4724)) to which the tract belongs (i.e., either number 1 or 2, depending on the respective chromosome of a simulated individual). 
 
-- `ts_vcf()` is now more robust (and more useful) in handling both _slendr_ and non-_slendr_ tree sequences.
-([#c26907](https://github.com/bodkan/slendr/commit/c26907))
+- `ts_vcf()` is now more robust (and more useful) in handling both _slendr_ and non-_slendr_ tree sequences. However, please take note of some potentially problematic situations involved in the _tskit_ VCF conversion method, and solutions discussed [here](https://github.com/bodkan/slendr/issues/167). ([#c26907](https://github.com/bodkan/slendr/commit/c26907))
 
 - By default, `ts_vcf()` now automatically transforms a site with coordinate 0 to 1. This is done to make sure that the produced VCF file adheres to the VCF specification. See [relevant discussion](https://github.com/tskit-dev/tskit/issues/2838) in the _tskit_ repository for more information. ([#3a8c7a](https://github.com/bodkan/slendr/commit/3a8c7a))
 
