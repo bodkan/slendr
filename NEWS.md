@@ -10,7 +10,7 @@
 
 - By default, `ts_vcf()` now automatically transforms a site with coordinate 0 to 1. This is done to make sure that the produced VCF file adheres to the VCF specification. See [relevant discussion](https://github.com/tskit-dev/tskit/issues/2838) in the _tskit_ repository for more information. ([#3a8c7a](https://github.com/bodkan/slendr/commit/3a8c7a))
 
-- `get_python()` now replaces a `get_env()` function introduced in an earlier release. This function returns the full path to a Python binary which is part of the _slendr_ virtual Python environment. As such, it can be directly ran on the command line, and the resulting Python session will have all of the _slendr_ Python dependencies (_tskit_, _msprime_, etc.) available for import. ([#69f078](https://github.com/bodkan/slendr/commit/69f078))
+- `get_python()` now replaces a `get_env()` function introduced in an earlier release. This function returns the full path to a Python binary which is part of the _slendr_ virtual Python environment. As such, it can be directly ran on the command line, and the resulting Python session will have all of the _slendr_ Python dependencies (_tskit_, _msprime_, etc.) available for import. ([#a76d3f](https://github.com/bodkan/slendr/commit/a76d3f))
 
 - A new option `quiet =` now controls whether or not should `ts_genotypes()` write a message if any multiallelic sites are encountered during conversion from a tree-sequence object. ([#9260c6](https://github.com/bodkan/slendr/commit/9260c6))
 
