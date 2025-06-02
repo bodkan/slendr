@@ -24,9 +24,9 @@ RERUN <- FALSE
 
 ## Introduction
 
-*slendr* has been designed specifically for the purpose of making it as easy as possible to program population genetic simulations of spatio-temporal demographic histories using SLiM. Our primary goal was to have the means to simulate arbitrarily complex spatial scenarios and simulate data which could be used for development of new spatial inference population genetic methods (and benchmarking of current methods). This functionality is briefly described in [vignette #1](https://www.slendr.net/articles/vignette-01-tutorial.html) and in more detail in [vignette #6](https://www.slendr.net/articles/vignette-06-locations.html).
+*slendr* has been designed specifically for the purpose of making it as easy as possible to program population genetic simulations of spatio-temporal demographic histories using SLiM. Our primary goal was to have the means to simulate arbitrarily complex spatial scenarios and simulate data which could be used for development of new spatial inference population genetic methods (and benchmarking of current methods). This functionality is briefly described in [vignette #1](https://slendr.net/articles/vignette-01-tutorial.html) and in more detail in [vignette #6](https://slendr.net/articles/vignette-06-locations.html).
 
-After the spatial simulation features have been implemented, it turned out to be trivial to support also "traditional", non-spatial demographic models, such as those described in [vignette #4](https://www.slendr.net/articles/vignette-04-nonspatial-models.html) and [vignette #5](https://www.slendr.net/articles/vignette-05-tree-sequences.html) -- tree-like models with population divergences, gene-flow events, and popularion resize events, like you can see in any evolutionary biology textbook. Because non-spatial models can be often implemented (and executed) more efficient in a coalescent setting, we added the possibility to run any compiled *slendr* model not through SLiM but through a back-end script implemented in *msprime*, hidden behind the *slendr* function `msprime()`.
+After the spatial simulation features have been implemented, it turned out to be trivial to support also "traditional", non-spatial demographic models, such as those described in [vignette #4](https://slendr.net/articles/vignette-04-nonspatial-models.html) and [vignette #5](https://slendr.net/articles/vignette-05-tree-sequences.html) -- tree-like models with population divergences, gene-flow events, and popularion resize events, like you can see in any evolutionary biology textbook. Because non-spatial models can be often implemented (and executed) more efficient in a coalescent setting, we added the possibility to run any compiled *slendr* model not through SLiM but through a back-end script implemented in *msprime*, hidden behind the *slendr* function `msprime()`.
 
 Throughout all this time, *slendr* models were purely neutral, without much planning to extend simulations toward non-neutral scenarios. However, **with the easy specification of non-spatial demographic models and their simulation with the *slendr*/SLiM engine, many users have been asking about the possibility to simulate non-neutral scenarios or, more generally, customization of the simplified genome architecture assumed by *slendr* by default (a single chromosome with uniform recombination and purely neutral mutations).**
 
@@ -103,7 +103,7 @@ eur_samples <- c("EUR_1", "EUR_2", "EUR_3")
 ts_divergence(ts, list(afr = afr_samples, eur = eur_samples))
 ```
 
-Along the same lines, when you're customizing a *slendr*/SLiM simulation, you can get a `Subpopulation` SLiM object corresponding to a symbolic name of a *slendr* population (as used on the R side of things) using the Eidos function `population()` provided by the built-in SLiM script of *slendr.* For instance, let's assume we compiled a toy model of human demography from the [vignette #4](https://www.slendr.net/articles/vignette-04-nonspatial-models.html) and ran it in the SLiMgui using `slim(..., method = "gui")`. We can then open an Eidos console in the GUI and type the following:
+Along the same lines, when you're customizing a *slendr*/SLiM simulation, you can get a `Subpopulation` SLiM object corresponding to a symbolic name of a *slendr* population (as used on the R side of things) using the Eidos function `population()` provided by the built-in SLiM script of *slendr.* For instance, let's assume we compiled a toy model of human demography from the [vignette #4](https://slendr.net/articles/vignette-04-nonspatial-models.html) and ran it in the SLiMgui using `slim(..., method = "gui")`. We can then open an Eidos console in the GUI and type the following:
 
 ```         
 > // get a SLiM object corresponding to the "AFR" population
@@ -296,7 +296,7 @@ To circumvent the problem, *slendr*'s SLiM back-end script provides the followin
 -   `save_state()`: saves the full state of the SLiM simulation (just as `sim.outputFull()` does), while also saving those few *slendr*-specific values;
 -   `reset_state()`: restores the full SLiM simulation state (including *slendr* specific tags and values), and chooses a new random seed. The latter is performed because restarting a simulation using the `save_state()` - `reset_state()` tandem is practically always done in order to change the outcome of a simulation.
 
-To demonstrate how these two functions might be used in practice, let's say we wanted to build on the (by default purely neutral!) model of African and Eurasian history from [this vignette](https://www.slendr.net/articles/vignette-04-nonspatial-models.html) discussed above, and say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far to define the following *slendr* extension snippet (for now let's ignore the question of how to actually add this to a *slendr* simulation and focus on the SLiM extension code in isolation):
+To demonstrate how these two functions might be used in practice, let's say we wanted to build on the (by default purely neutral!) model of African and Eurasian history from [this vignette](https://slendr.net/articles/vignette-04-nonspatial-models.html) discussed above, and say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far to define the following *slendr* extension snippet (for now let's ignore the question of how to actually add this to a *slendr* simulation and focus on the SLiM extension code in isolation):
 
 ```         
 function (void) add_mutation(s pop_name, f selection_coef) {
@@ -355,7 +355,7 @@ We will now demonstrate all of this by defining a snippet of SLiM code which wil
 
 How do we use this customization in practice? One way to do this would be to edit the built-in *slendr* SLiM script and manually add your own SLiM code, but that would be brittle and not reproducible. There's a much better way to do this that's directly supported by *slendr*'s R interface.
 
-Let's say that we defined the following model of modern human demographic history in slendr. This is exactly the same example as the one we show in [vignette #4](https://www.slendr.net/articles/vignette-04-nonspatial-models.html):
+Let's say that we defined the following model of modern human demographic history in slendr. This is exactly the same example as the one we show in [vignette #4](https://slendr.net/articles/vignette-04-nonspatial-models.html):
 
 ```{r}
 library(slendr)
