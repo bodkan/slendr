@@ -100,8 +100,6 @@ test_that("gene_flow() behaves as expected in some concrete situations", {
 })
 
 test_that("gene flow must take longer than a generation (forward models)", {
-  init_env(quiet = TRUE)
-
   p1 <- population("p1", time = 1, N = 100)
   p2 <- population("p2", time = 100, N = 100, parent = p1)
   p3 <- population("p3", time = 200, N = 100, parent = p2)
@@ -169,8 +167,6 @@ test_that("gene flow must take longer than a generation (forward models)", {
 })
 
 test_that("gene flow must take longer than a generation (backward models)", {
-  init_env(quiet = TRUE)
-
   p1 <- population("p1", time = 1000, N = 100)
   p2 <- population("p2", time = 800, N = 100, parent = p1)
   p3 <- population("p3", time = 600, N = 100, parent = p2)
