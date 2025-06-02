@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-The biggest selling point of the *slendr* package is that you can program spatiotemporal population genetics models in R and have them execute automatically in SLiM. However, there are several reasons why you might be interested in using *slendr* even for non-spatial models. First, R is a language that many scientists already know, and being able to simulate data from the comfort of an R interface significantly lowers the barrier of entry. Second, because *slendr* makes SLiM appear almost as if it were just another R library, running simulations (spatial *and* non-spatial), fitting models, exploring parameter grids, calculating statistics, and visualization of results can be all be performed without leaving the R interface.
+The biggest selling point of the _slendr_ package is that you can program spatiotemporal population genetics models in R and have them execute automatically in SLiM. However, there are several reasons why you might be interested in using _slendr_ even for non-spatial models. First, R is a language that many scientists already know, and being able to simulate data from the comfort of an R interface significantly lowers the barrier of entry. Second, because _slendr_ makes SLiM appear almost as if it were just another R library, running simulations (spatial *and* non-spatial), fitting models, exploring parameter grids, calculating statistics, and visualization of results can be all be performed without leaving the R interface.
 
-In this vignette, we will demonstrate how to program non-spatial models in *slendr*. However, we should start by noting that there is almost no difference between code for non-spatial and spatial models in *slendr*. The only visible difference is that spatial models include a `map =` argument in the `population()` constructor function of ancestral population(s), and non-spatial models do not. That's it, that's the difference. Switching between spatial and non-spatial models is performed internally by the package, without any user intervention.
+In this vignette, we will demonstrate how to program non-spatial models in _slendr_. However, we should start by noting that there is almost no difference between code for non-spatial and spatial models in _slendr_. The only visible difference is that spatial models include a `map =` argument in the `population()` constructor function of ancestral population(s), and non-spatial models do not. That's it, that's the difference. Switching between spatial and non-spatial models is performed internally by the package, without any user intervention.
 
-To make the comparison clearer, we will use the example from the *slendr* [landing page](https://github.com/bodkan/slendr), but we will implement it in a non-spatial context (i.e., as a traditional random mating simulation).
+To make the comparison clearer, we will use the example from the _slendr_ [landing page](https://github.com/bodkan/slendr), but we will implement it in a non-spatial context (i.e., as a traditional random mating simulation).
 
 First, let's define population objects, splits, and other demographic events (note the missing `map` argument, which is set to `FALSE` by default):
 
@@ -100,13 +100,13 @@ ts_slim <- slim(model, sequence_length = 100000, recombination_rate = 0)
 
 Even for non-spatial models, this function still uses the same SLiM back end script used for spatial models. The only difference is that all spatial features are switched off, making the model run as a simple random-mating simulation.
 
-Given that we are running a non-spatial simulation, you might wonder if it wouldn't be more efficient to use a coalescent simulator. Indeed, *slendr* also provides an alternative *msprime* back end just for this purpose. We could run the exact same simulation with *msprime* like this:
+Given that we are running a non-spatial simulation, you might wonder if it wouldn't be more efficient to use a coalescent simulator. Indeed, _slendr_ also provides an alternative *msprime* back end just for this purpose. We could run the exact same simulation with *msprime* like this:
 
 ```{r}
 ts_msprime <- msprime(model, sequence_length = 100000, recombination_rate = 0)
 ```
 
-In fact, because both SLiM and *msprime* back ends save outputs in a tree sequence format, we can analyse them using the same tools. See [this vignette](https://slendr.net/articles/vignette-05-tree-sequences.html) for more information about tree sequence analysis with *slendr*, and for more discussion on alternative simulation back ends and more extensive examples of data analysis with tree sequences you can read [this tutorial](https://slendr.net/articles/vignette-07-backends.html).
+In fact, because both SLiM and *msprime* back ends save outputs in a tree sequence format, we can analyse them using the same tools. See [this vignette](https://slendr.net/articles/vignette-05-tree-sequences.html) for more information about tree sequence analysis with _slendr_, and for more discussion on alternative simulation back ends and more extensive examples of data analysis with tree sequences you can read [this tutorial](https://slendr.net/articles/vignette-07-backends.html).
 
 ## Extracting parameters from a model or tree sequences
 

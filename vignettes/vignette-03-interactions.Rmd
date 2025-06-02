@@ -20,17 +20,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-In addition to building models that capture movement or expansion using a set of [simple R functions](../reference/index.html#section-population-dynamics), *slendr* makes it possible to program more subtle parameters of spatial population dynamics.
+In addition to building models that capture movement or expansion using a set of [simple R functions](../reference/index.html#section-population-dynamics), _slendr_ makes it possible to program more subtle parameters of spatial population dynamics.
 
-Among such parameters are those governing so-called spatial interactions, described in detail in chapter 15 of SLiM's [extensive manual](http://benhaller.com/slim/SLiM_Manual.pdf). Describing this functionality is beyond the scope of *slendr*'s tutorial vignettes such as this one, but broadly speaking, *slendr* implements three different kinds of parameters influencing spatial interactions and dispersal:
+Among such parameters are those governing so-called spatial interactions, described in detail in chapter 15 of SLiM's [extensive manual](http://benhaller.com/slim/SLiM_Manual.pdf). Describing this functionality is beyond the scope of _slendr_'s tutorial vignettes such as this one, but broadly speaking, _slendr_ implements three different kinds of parameters influencing spatial interactions and dispersal:
 
-1.  *Spatial competition distance* - governed by *slendr* parameter `competition,` which signifies the maximum distance at which two individuals can influence each other's fitness via competition.
+1.  *Spatial competition distance* - governed by _slendr_ parameter `competition,` which signifies the maximum distance at which two individuals can influence each other's fitness via competition.
 2.  *Mate choice* *distance* - governed by the parameter `mating`, which determines how the maximum distance over which an individual will find a potential mate.
 3.  *Dispersal distance* - determined by the parameter `dispersal`, which establishes how far from a parent offspring can migrate before the next generation (when the offspring potentially becomes a parent itself). More accurately, this parameter determines the standard deviation of a normal distribution of such dispersal distances.
 
 All three parameters can be specified for each simulated population individually in the `population()` call. Alternatively, default values for these parameters can be given in a `compile_model()` call and are then used for all populations in the model. Importantly, each population must be given values for all three of these parameters, whether as specific values for that particular population or as default values passed to `compile_model()`.
 
-Finally, as with other functions for programming model spatial dynamics, the *slendr* package provides a simple way to change the spatial interaction dynamics throughout the course of the simulation. Even complex models can be programmed using only a couple of lines of extremely simple R code, resulting in a robust SLiM simulation script being generated under the hood.
+Finally, as with other functions for programming model spatial dynamics, the _slendr_ package provides a simple way to change the spatial interaction dynamics throughout the course of the simulation. Even complex models can be programmed using only a couple of lines of extremely simple R code, resulting in a robust SLiM simulation script being generated under the hood.
 
 ```{r}
 library(slendr)
@@ -114,4 +114,4 @@ Fun animation, isn't it? If you compare the result to the model dynamics we prog
 
 Depending on a species or population under study, these abstract parameters (and the spatial clustering or "clumpiness" they represent) could mean all sorts of things and could be used to model various phenomena in nature (competition for resources, shifting metapopulation dynamics, formation of "tribes", etc.).
 
-It needs to be said that unlike the spatial population dynamics functionality described in the main [tutorial](vignette-01-tutorial.html), which is a unique feature of *slendr*, the example in this vignette could be reproduced in pure SLiM using vanilla Eidos code. However, I think it is fair to say that the *slendr* R code is much more flexible and easier to tweak and extend towards much more complex scenarios. Again, as mentioned several times throughout the documentation, this is another good example of how the simple *slendr* R interface lets you focus on the difficult part of modeling (specifying spatiotemporal model dynamics), get immediate visual feedback during model building, and leverage the powerful SLiM simulation framework as a low-level computational engine.
+It needs to be said that unlike the spatial population dynamics functionality described in the main [tutorial](vignette-01-tutorial.html), which is a unique feature of _slendr_, the example in this vignette could be reproduced in pure SLiM using vanilla Eidos code. However, I think it is fair to say that the _slendr_ R code is much more flexible and easier to tweak and extend towards much more complex scenarios. Again, as mentioned several times throughout the documentation, this is another good example of how the simple _slendr_ R interface lets you focus on the difficult part of modeling (specifying spatiotemporal model dynamics), get immediate visual feedback during model building, and leverage the powerful SLiM simulation framework as a low-level computational engine.
