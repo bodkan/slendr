@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Extending models with custom SLiM code • slendr</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -89,13 +88,13 @@ of spatio-temporal demographic histories using SLiM. Our primary goal
 was to have the means to simulate arbitrarily complex spatial scenarios
 and simulate data which could be used for development of new spatial
 inference population genetic methods (and benchmarking of current
-methods). This functionality is briefly described in <a href="https://www.slendr.net/articles/vignette-01-tutorial.html">vignette
-#1</a> and in more detail in <a href="https://www.slendr.net/articles/vignette-06-locations.html">vignette
+methods). This functionality is briefly described in <a href="https://slendr.net/articles/vignette-01-tutorial.html">vignette
+#1</a> and in more detail in <a href="https://slendr.net/articles/vignette-06-locations.html">vignette
 #6</a>.</p>
 <p>After the spatial simulation features have been implemented, it
 turned out to be trivial to support also “traditional”, non-spatial
-demographic models, such as those described in <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">vignette
-#4</a> and <a href="https://www.slendr.net/articles/vignette-05-tree-sequences.html">vignette
+demographic models, such as those described in <a href="https://slendr.net/articles/vignette-04-nonspatial-models.html">vignette
+#4</a> and <a href="https://slendr.net/articles/vignette-05-tree-sequences.html">vignette
 #5</a> – tree-like models with population divergences, gene-flow events,
 and popularion resize events, like you can see in any evolutionary
 biology textbook. Because non-spatial models can be often implemented
@@ -221,7 +220,7 @@ corresponding to a symbolic name of a <em>slendr</em> population (as
 used on the R side of things) using the Eidos function
 <code><a href="../reference/population.html">population()</a></code> provided by the built-in SLiM script of
 <em>slendr.</em> For instance, let’s assume we compiled a toy model of
-human demography from the <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">vignette
+human demography from the <a href="https://slendr.net/articles/vignette-04-nonspatial-models.html">vignette
 #4</a> and ran it in the SLiMgui using
 <code>slim(..., method = "gui")</code>. We can then open an Eidos
 console in the GUI and type the following:</p>
@@ -230,7 +229,7 @@ console in the GUI and type the following:</p>
 Subpopulation&lt;p0&gt;
 &gt; 
 &gt; // get the number of genomes in the population
-&gt; length(population("AFR").genomes)
+&gt; length(population("AFR").haplosomes)
 6000
 &gt; 
 &gt; // get both "AFR" and "OOA" subpopulation objects
@@ -263,7 +262,7 @@ select a random chromosome from a given population using the
 <code><a href="../reference/population.html">population()</a></code> function like this (maybe to add a beneficial
 mutation). We use this bit of code in the more elaborate complete
 examples below.</p>
-<pre><code>target_genome = sample(population("AFR").genomes, 1);
+<pre><code>target_genome = sample(population("AFR").haplosomes, 1);
 
 target_genome.addNewMutation(m0, selectionCoeff = 0.05, position = 1000000);</code></pre>
 <p>Again, the point of the <code><a href="../reference/population.html">population()</a></code> Eidos function
@@ -451,7 +450,7 @@ simulation.</li>
 </ul>
 <p>To demonstrate how these two functions might be used in practice,
 let’s say we wanted to build on the (by default purely neutral!) model
-of African and Eurasian history from <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">this
+of African and Eurasian history from <a href="https://slendr.net/articles/vignette-04-nonspatial-models.html">this
 vignette</a> discussed above, and say that we want to add a beneficial
 mutation to the “EUR” population at time 15 ky ago. We could utilize the
 few bits of Eidos code introduced so far to define the following
@@ -460,7 +459,7 @@ how to actually add this to a <em>slendr</em> simulation and focus on
 the SLiM extension code in isolation):</p>
 <pre><code>function (void) add_mutation(s pop_name, f selection_coef) {
   // sample the first target carrier chromosome of the new mutation...
-  target = sample(population(pop_name).genomes, 1);
+  target = sample(population(pop_name).haplosomes, 1);
   // ... and add the mutation to it
   mutation = target.addNewDrawnMutation(m0, position = 1);
 
@@ -561,7 +560,7 @@ There’s a much better way to do this that’s directly supported by
 <em>slendr</em>’s R interface.</p>
 <p>Let’s say that we defined the following model of modern human
 demographic history in slendr. This is exactly the same example as the
-one we show in <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">vignette
+one we show in <a href="https://slendr.net/articles/vignette-04-nonspatial-models.html">vignette
 #4</a>:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span>
@@ -1135,7 +1134,7 @@ introgression:</p>
 <span><span class="st">// Add Neanderthal-specific mutations one tick prior to the introgression</span></span>
 <span><span class="st">tick(introgression_time) - 1 late() {</span></span>
 <span><span class="st">  // get all Neanderthal chromosomes just prior to the introgression</span></span>
-<span><span class="st">  target = population("NEA").genomes;</span></span>
+<span><span class="st">  target = population("NEA").haplosomes;</span></span>
 <span><span class="st"></span></span>
 <span><span class="st">  write_log("adding neutral Neanderthal markers");</span></span>
 <span><span class="st"></span></span>
@@ -1320,7 +1319,7 @@ from regions under selective constraint.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Introduction and basic tutorial • slendr</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -87,7 +86,7 @@
 simulation framework which would add an explicit spatial dimension to
 population genetics models. Specifically, the original idea was to be
 able to take models such as the one here—</p>
-<p><img src="images%2Fgeneflow_graph.jpg" style="width:80.0%"></p>
+<p><img src="images/geneflow_graph.jpg" style="width:80.0%"></p>
 <p>representing a very simplified view of the history of anatomically
 modern humans (AMH) in West Eurasia over the last ~50 thousand years (a
 comprehensive overview can be found in a review by <a href="https://arxiv.org/abs/1805.01579" class="external-link">Lazaridis</a>)—and design a tool
@@ -95,7 +94,7 @@ which makes it possible to simulate such models in an explicit
 geographical context to capture processes similar to those in the
 following figure (taken from a study by <a href="https://www.nature.com/articles/nature14317" class="external-link">Haak et
 al. 2015</a>):</p>
-<p><img src="images%2Fhaak_map.jpg" style="width:80.0%"></p>
+<p><img src="images/haak_map.jpg" style="width:80.0%"></p>
 <p>The reason for doing this is probably clear. A lot of what we do in
 studying the history of humans and other species is focused on
 reconstructing population movements, expansions and gene flow events,
@@ -132,7 +131,7 @@ and tailor the simulation run to the user-defined model. Alternatively,
 <em>slendr</em> also supports executing standard population genetics
 models in a random-mating setting. This means that models do not need an
 explicit geographic map and can be simulated either with the same
-built-in SLiM back end script, or with a more efficient <a href="https://www.slendr.net/articles/vignette-07-backends.html"><em>msprime</em>
+built-in SLiM back end script, or with a more efficient <a href="https://slendr.net/articles/vignette-07-backends.html"><em>msprime</em>
 back end</a> which is also provided with the package.</p></li>
 </ol>
 <p>The most important design objective was to make the integration of
@@ -711,11 +710,11 @@ visualize the spatial maps in each time point.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/explore_model.html">explore_model</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="images%2Fshiny_graph.jpg" style="width:80.0%" alt="Graph of demographic history (sometimes called “admixture graph”)"><div class="figcaption">Graph of demographic history (sometimes called
+<img src="images/shiny_graph.jpg" style="width:80.0%" alt="Graph of demographic history (sometimes called “admixture graph”)"><div class="figcaption">Graph of demographic history (sometimes called
 “admixture graph”)</div>
 </div>
 <div class="float">
-<img src="images%2Fshiny_maps.jpg" style="width:80.0%" alt="Interactive explorer of the spatial dynamics"><div class="figcaption">Interactive explorer of the spatial
+<img src="images/shiny_maps.jpg" style="width:80.0%" alt="Interactive explorer of the spatial dynamics"><div class="figcaption">Interactive explorer of the spatial
 dynamics</div>
 </div>
 </div>
@@ -782,27 +781,27 @@ to <em>slendr</em> than what we demonstrated here. For instance:</p>
 <ul>
 <li><p>You can tweak parameters influencing dispersal dynamics (how
 “clumpy” populations are, how far offspring can migrate from their
-parents, etc.) and change how those dynamics evolve over time. See <a href="https://www.slendr.net/articles/vignette-03-interactions.html">this
+parents, etc.) and change how those dynamics evolve over time. See <a href="https://slendr.net/articles/vignette-03-interactions.html">this
 vignette</a> for more information.</p></li>
 <li><p>You can use <em>slendr</em> to program non-spatial models, which
 means that any standard, Wright-Fisher demographic model can be
 simulated with only a few lines of R code and, for instance, plugged
 into an <a href="https://en.m.wikipedia.org/wiki/Approximate_Bayesian_computation" class="external-link">Approximate
 Bayesian Computation</a> pipeline or other analyses leveraging readily
-available R packages. You can find more in <a href="https://www.slendr.net/articles/vignette-04-nonspatial-models.html">this
-vignette</a> and a much more detailed example in a vignette about <a href="https://www.slendr.net/articles/vignette-07-backends.html">SLiM
-and <em>msprime</em> back ends</a>.</p></li>
+available R packages. You can find more in <a href="https://slendr.net/articles/vignette-04-nonspatial-models.html">this
+vignette</a> and a much more detailed example in a vignette about <a href="https://slendr.net/articles/vignette-07-backends.html">SLiM and
+<em>msprime</em> back ends</a>.</p></li>
 <li><p>You can build complex spatial models which are still abstract
 (not assuming any real geographic location), including traditional
 simulations of demes in a lattice structure. A complete example is shown
-<a href="https://www.slendr.net/articles/vignette-02-grid-model.html">in
+<a href="https://slendr.net/articles/vignette-02-grid-model.html">in
 this vignette</a>.</p></li>
 <li><p>Because SLiM saves data in the <code>.trees</code> tree-sequence
 file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>
 for interfacing with Python code you have the incredible power of <a href="https://tskit.dev/" class="external-link"><em>tskit</em></a> and <a href="https://tskit.dev/pyslim/docs/latest/introduction.html" class="external-link"><em>pyslim</em></a>
 to process simulated data at a massive scale right at your fingertips,
 all within the convenient environment of R. See a much more detailed
-example in a vignette about <a href="https://www.slendr.net/articles/vignette-07-backends.html">this
+example in a vignette about <a href="https://slendr.net/articles/vignette-07-backends.html">this
 vignette</a> for an extensive tutorial of this feature.</p></li>
 </ul>
 </div>
@@ -817,7 +816,7 @@ vignette</a> for an extensive tutorial of this feature.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

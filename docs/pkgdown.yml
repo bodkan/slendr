@@ -1,5 +1,5 @@
 pandoc: 3.7.0.1
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   vignette-00-installation: vignette-00-installation.html
@@ -14,7 +14,7 @@ articles:
   vignette-09-paper: vignette-09-paper.html
   vignette-10-tracts: vignette-10-tracts.html
   vignette-11-extensions: vignette-11-extensions.html
-last_built: 2025-05-28T11:11Z
+last_built: 2025-06-03T10:47Z
 urls:
   reference: https://slendr.net/reference
   article: https://slendr.net/articles

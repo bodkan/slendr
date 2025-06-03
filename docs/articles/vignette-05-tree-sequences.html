@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Tree-sequence processing and statistics • slendr</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -292,7 +291,7 @@ in previous vignettes, in this case we will run the simulation with the
 <code><a href="../reference/msprime.html">msprime()</a></code> coalescent back end. After all, our model is
 non-spatial and using a coalescent simulator will be much more efficient
 than the forward simulation. Switching between the msprime and SLiM back
-ends of slendr is demonstrated in much more detail in a <a href="https://www.slendr.net/articles/vignette-07-backends.html">dedicated
+ends of slendr is demonstrated in much more detail in a <a href="https://slendr.net/articles/vignette-07-backends.html">dedicated
 vignette</a>.</p>
 <p>The simulation back end utilized by the <code><a href="../reference/msprime.html">msprime()</a></code>
 function (as well as the <code><a href="../reference/slim.html">slim()</a></code> function) produces a
@@ -391,7 +390,7 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/h2/qs0z_44x2vn2sskqc0cct7540000gn/T//RtmpCeC8X6/file550a74bb1cb7"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/h2/qs0z_44x2vn2sskqc0cct7540000gn/T//RtmpPsBAa1/file15f454088cc5b"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
@@ -626,7 +625,7 @@ disposal to analyze such trees. For instance we can use the powerful
 package <em>ggtree</em> to plot the tree we have just extracted:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.amazon.com/Integration-Manipulation-Visualization-Phylogenetic-Computational-ebook/dp/B0B5NLZR1Z/" class="external-link">ggtree</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; ggtree v3.14.0 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
+<pre><code><span><span class="co">#&gt; ggtree v3.16.0 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Please cite:</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -916,7 +915,7 @@ to a file format called EIGENSTRAT using the
 <code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code> function. The file conversion is internally
 handled by the R package <a href="https://bodkan.net/admixr/" class="external-link"><em>admixr</em></a> and returns an
 <code>EIGENSTRAT</code> object which ties all individual
-<code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/01-tutorial.html" class="external-link">tutorial</a>
+<code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/vignette-01-tutorial.html" class="external-link">tutorial</a>
 to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R
 package for running automated ADMIXTOOLS analyses entirely from R and
 makes these types of analyses very convenient.</p>
@@ -1204,7 +1203,7 @@ future. If there is some functionality that you would like to use in
 your project missing in <em>slendr</em>, please don’t hesitate to let us
 now by creating an issue on our <a href="https://github.com/bodkan/slendr/issues" class="external-link">GitHub page</a>.</p>
 <p>Finally, if you would like to see more examples of <em>tskit</em>
-interface in action, take a look at the vignette which describes <a href="https://www.slendr.net/articles/vignette-07-backends.html">switching
+interface in action, take a look at the vignette which describes <a href="https://slendr.net/articles/vignette-07-backends.html">switching
 between the SLiM and <em>msprime</em> back ends</a> of the
 <em>slendr</em> package.</p>
 </div>
@@ -1219,7 +1218,7 @@ between the SLiM and <em>msprime</em> back ends</a> of the
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
