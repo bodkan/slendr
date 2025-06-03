@@ -111,7 +111,7 @@ Along the same lines, when you're customizing a _slendr_/SLiM simulation, you ca
 Subpopulation<p0>
 > 
 > // get the number of genomes in the population
-> length(population("AFR").genomes)
+> length(population("AFR").haplosomes)
 6000
 > 
 > // get both "AFR" and "OOA" subpopulation objects
@@ -139,7 +139,7 @@ Check your code to make sure that all of these are defined: asdf
 **How is this function useful in practice, though?** Because the purpose of this vignette is to show how to extend _slendr_ to non-neutral scenarios, we could, as an example, select a random chromosome from a given population using the `population()` function like this (maybe to add a beneficial mutation). We use this bit of code in the more elaborate complete examples below.
 
 ```         
-target_genome = sample(population("AFR").genomes, 1);
+target_genome = sample(population("AFR").haplosomes, 1);
 
 target_genome.addNewMutation(m0, selectionCoeff = 0.05, position = 1000000);
 ```
@@ -301,7 +301,7 @@ To demonstrate how these two functions might be used in practice, let's say we w
 ```         
 function (void) add_mutation(s pop_name, f selection_coef) {
   // sample the first target carrier chromosome of the new mutation...
-  target = sample(population(pop_name).genomes, 1);
+  target = sample(population(pop_name).haplosomes, 1);
   // ... and add the mutation to it
   mutation = target.addNewDrawnMutation(m0, position = 1);
 
@@ -813,7 +813,7 @@ initialize() {
 // Add Neanderthal-specific mutations one tick prior to the introgression
 tick(introgression_time) - 1 late() {
   // get all Neanderthal chromosomes just prior to the introgression
-  target = population("NEA").genomes;
+  target = population("NEA").haplosomes;
 
   write_log("adding neutral Neanderthal markers");
 
