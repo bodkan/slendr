@@ -1,6 +1,6 @@
 # slendr 1.1.0
 
-A relatively modest release, mostly pushed out to keep slendr in step with the recent release of SLiM 5.0 and new releases of its Python dependencies, namely msprime and tskit.
+A relatively modest release, mostly pushed out to keep _slendr_ in step with the recent release of SLiM 5.0 and new releases of  _msprime_ and _tskit_. As a result, _slendr_'s SLiM-based functionality (and particularly its new "SLiM extension" mechanism) requires SLiM 5.0
 
 - SLiM 5 is now required to run `slim()` simulations with _slendr_. Similarly, _tskit_ and _msprime_ have been upgraded to versions 0.6.4 and 1.3.4, respectively. ([PR #183](https://github.com/bodkan/slendr/pull/173))
 
@@ -15,7 +15,6 @@ A relatively modest release, mostly pushed out to keep slendr in step with the r
 - `get_python()` now replaces a `get_env()` function introduced in an earlier release. This function returns the full path to a Python binary which is part of the _slendr_ virtual Python environment. As such, it can be directly ran on the command line, and the resulting Python session will have all of the _slendr_ Python dependencies (_tskit_, _msprime_, etc.) available for import. ([#a76d3f](https://github.com/bodkan/slendr/commit/a76d3f))
 
 - A new option `quiet =` now controls whether or not should `ts_genotypes()` write a message if any multiallelic sites are encountered during conversion from a tree-sequence object. ([#9260c6](https://github.com/bodkan/slendr/commit/9260c6))
-
 
 # slendr 1.0.0
 
