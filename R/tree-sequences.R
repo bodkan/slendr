@@ -414,6 +414,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
   ts_new <- ts$simplify(as.integer(samples),
                         filter_populations = FALSE,
                         filter_nodes = filter_nodes,
+                        filter_individuals = filter_nodes,
                         keep_input_roots = keep_input_roots,
                         keep_unary = keep_unary,
                         keep_unary_in_individuals = keep_unary_in_individuals)
@@ -2478,7 +2479,8 @@ get_ts_raw_individuals <- function(ts) {
   # create a data frame which will form the output table with individuals in the tree sequence
   # (unlike the raw tree-sequence tables, IDs are explicitly stored as 0-based columns)
   ind_table <- dplyr::tibble(
-    ind_id = seq_len(ts$num_individuals) - 1
+    # ind_id = seq_len(ts$num_individuals) - 1
+    ind_id = reticulate::iterate(ts$individuals(), function(ind) ind$id, simplify = TRUE)
   )
 
   if (attr(ts, "type") == "SLiM") {
@@ -2503,6 +2505,8 @@ get_ts_raw_individuals <- function(ts) {
     } else {
       ind_table$time <- ts$individual_times
       # for pure SLiM tree sequences, simply use the sampling information encoded in the data
+      # TODO: Check that this `seq(ts$num_nodes) - 1` doesn't break when filter_nodes = FALSE
+      #       during simplification.
       ind_table$sampled <- ind_table$ind_id %in% unique(nodes[(seq(ts$num_nodes) - 1) %in% as.integer(ts$samples())]$individual)
       # ind_table$sampled <- ifelse(is.na(ind_table$sampled), FALSE, TRUE)
     }
@@ -2510,7 +2514,9 @@ get_ts_raw_individuals <- function(ts) {
   } else { # msprime tree-sequence table
     nodes_table <- dplyr::tibble(
       ind_id = nodes$individual,
-      pop_id = nodes$population
+      pop_id = nodes$population,
+      # sampled = reticulate::iterate(ts$nodes(), function(node) node$is_sample() == 1, simplify = TRUE)
+      sampled = nodes[["flags"]] == tskit$NODE_IS_SAMPLE
     )
 
     if (from_slendr)
@@ -2523,8 +2529,9 @@ get_ts_raw_individuals <- function(ts) {
 
     ind_table <- dplyr::inner_join(ind_table, nodes_table, by = "ind_id")
 
-    # in a non-SLiM tree sequence, genomes/nodes of all individuals are "samples"
-    ind_table$sampled <- TRUE
+    # # in a non-SLiM tree sequence, genomes/nodes of all individuals are "samples"
+    # # (FIXED: untrue because of simplification! `sampled` is now joined in from the nodes table)
+    # ind_table$sampled <- TRUE
   }
 
   if (attr(ts, "spatial")) {
@@ -2723,7 +2730,10 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
     samples <- dplyr::arrange(samples, -time, pop)
-    individuals <- dplyr::mutate(individuals, name = samples$name)
+    # this was originally broken for simplification
+    # individuals <- dplyr::mutate(individuals, name = samples$name)
+    individuals$name <- NA
+    individuals$name[individuals$sampled] <- samples$name
   }
 
   # some tree sequence don't have any information about individuals -- for those cases,
