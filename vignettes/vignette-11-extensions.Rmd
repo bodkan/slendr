@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-run_vignette <- Sys.getenv("RUNNER_OS") == "" && slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE) 
+run_vignette <- Sys.getenv("RUNNER_OS") == "" && slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE)
 
 knitr::opts_chunk$set(
   collapse = FALSE,
@@ -105,15 +105,15 @@ ts_divergence(ts, list(afr = afr_samples, eur = eur_samples))
 
 Along the same lines, when you're customizing a _slendr_/SLiM simulation, you can get a `Subpopulation` SLiM object corresponding to a symbolic name of a _slendr_ population (as used on the R side of things) using the Eidos function `population()` provided by the built-in SLiM script of *slendr.* For instance, let's assume we compiled a toy model of human demography from the [vignette #4](https://slendr.net/articles/vignette-04-nonspatial-models.html) and ran it in the SLiMgui using `slim(..., method = "gui")`. We can then open an Eidos console in the GUI and type the following:
 
-```         
+```
 > // get a SLiM object corresponding to the "AFR" population
 > population("AFR")
 Subpopulation<p0>
-> 
+>
 > // get the number of genomes in the population
 > length(population("AFR").haplosomes)
 6000
-> 
+>
 > // get both "AFR" and "OOA" subpopulation objects
 > population(c("AFR", "OOA"))
 Subpopulation<p0> Subpopulation<p1>
@@ -123,14 +123,14 @@ This way, if we name our populations with symbolic names such as "AFR" or "OOA",
 
 Additionally, the `population()` Eidos function provides some helpful error checking. For instance, if we try to get a SLiM `Subpopulation` object corresponding to a _slendr_ population which will exist at some point but doesn't yet exist in a running SLiM simulation at a particular time, we will get an informative error:
 
-```         
+```
 > population("YAM")
 The following populations not present in tick 81 (slendr model time 97600): YAM
 ```
 
 If we make a typo and try to access a population which doesn't exist in a _slendr_ model at all, we get another informative error message:
 
-```         
+```
 > population("asdf")
 Not all provided population identifiers are present in the model.
 Check your code to make sure that all of these are defined: asdf
@@ -138,7 +138,7 @@ Check your code to make sure that all of these are defined: asdf
 
 **How is this function useful in practice, though?** Because the purpose of this vignette is to show how to extend _slendr_ to non-neutral scenarios, we could, as an example, select a random chromosome from a given population using the `population()` function like this (maybe to add a beneficial mutation). We use this bit of code in the more elaborate complete examples below.
 
-```         
+```
 target_genome = sample(population("AFR").haplosomes, 1);
 
 target_genome.addNewMutation(m0, selectionCoeff = 0.05, position = 1000000);
@@ -171,14 +171,14 @@ The `tick()` Eidos function makes it possible to use _slendr_ model "natural tim
 
 This function takes in a time in _slendr_ time units – years before present, generations backwards in time, whatever you used in your _slendr_ R script – and translates those to SLiM's "ticks". For instance, in our example model of modern human history, we could get the tick number corresponding to the time of 40 thousand years ago by calling:
 
-```         
+```
 > tick(40000) # what does time 40000 in a slendr model correspond to in SLiM ticks?
 1668
 ```
 
 Similarly to the consistency check performed by the `population()` Eidos function, `tick()` also makes sure that the time given lies within the time window expected for the running simulation. For instance, our AFR-EUR toy model above only starts at 90 thousand years ago, so if we try to get the tick number corresponding to a million years ago, we get this:
 
-```         
+```
 > tick(1e6)
 Some of the times fall outside of the range of the slendr model:
   - oldest possible event: 90000
@@ -189,7 +189,7 @@ The offending times were: 1000000
 
 Indeed, the tick-based time boundaries of the model are:
 
-```         
+```
 > // the very first time point of the simulation
 > tick(90e3)
 1
@@ -200,7 +200,7 @@ Indeed, the tick-based time boundaries of the model are:
 
 As with `population()`, we can also perform the _slendr_-time-to-tick conversion in a vectorized manner:
 
-```         
+```
 > tick(c(90000, 0))
 1 3001
 ```
@@ -216,7 +216,7 @@ slim(simple_model, sequence_length = 1000, recombination_rate = 0, method = "gui
 
 Indeed, if we pop up the Eidos console in SLiMgui for this model, we can verify this:
 
-```         
+```
 > // no conversion needed for forward-time models expressed in units of generations
 > tick(1)
 1
@@ -228,7 +228,7 @@ Our model starts with the population "pop" being created at time point 1 and it'
 
 Still, the `tick()` function can be useful even for _slendr_ models which use the same time units as SLiM itself (generations forward in time) because it provides useful boundary checking. For instance, this is what happens if we try to get the tick number in a model above (which only runs from generation 1 to generation 1 + 1000):
 
-```         
+```
 > tick(c(0, 1e6))
 Some of the times fall outside of the range of the slendr model:
   - oldest possible event: 1
@@ -248,7 +248,7 @@ simple_model <- compile_model(pop, generation_time = 1, simulation_length = 1000
 slim(simple_model, sequence_length = 1000, recombination_rate = 0, burnin = 100, method = "gui")
 ```
 
-```         
+```
 > tick(1) // model time at 1 generation is shifted by 100 burnin
 101
 > tick(1001) // same for the final time point of 1001 generations
@@ -263,14 +263,14 @@ This function is an inverse to the `tick()` function. For instance, if we want t
 
 As an example, this gives us the model time (in years ago) corresponding to the first tick in the EUR-AFR model above:
 
-```         
+```
 > model_time(1)
 90000
 ```
 
 This gives us model time corresponding to the very last tick of the simulation (i.e. the present-day at "0 years before present"):
 
-```         
+```
 > model_time(3001)
 0
 ```
@@ -279,7 +279,7 @@ This gives us model time corresponding to the very last tick of the simulation (
 
 `write_log()` is a tiny helper function provided by _slendr_'s SLiM back-end script which serves to print out a given string to the SLiM log output together with the appropriate tick number at that time. This produces result of the following kind:
 
-```         
+```
 > write_log("hello from the current event")
 tick 18 (model time 89490):
   - hello from the current event
@@ -298,7 +298,7 @@ To circumvent the problem, _slendr_'s SLiM back-end script provides the followin
 
 To demonstrate how these two functions might be used in practice, let's say we wanted to build on the (by default purely neutral!) model of African and Eurasian history from [this vignette](https://slendr.net/articles/vignette-04-nonspatial-models.html) discussed above, and say that we want to add a beneficial mutation to the "EUR" population at time 15 ky ago. We could utilize the few bits of Eidos code introduced so far to define the following _slendr_ extension snippet (for now let's ignore the question of how to actually add this to a _slendr_ simulation and focus on the SLiM extension code in isolation):
 
-```         
+```
 function (void) add_mutation(s pop_name, f selection_coef) {
   // sample the first target carrier chromosome of the new mutation...
   target = sample(population(pop_name).haplosomes, 1);
@@ -321,13 +321,13 @@ tick(15000) late() {
 tick(15000):SIMULATION_END late() {
   segregating = sim.countOfMutationsOfType(m0) > 0;
   fixed = sum(sim.substitutions.mutationType == m0) == 1;
-  
+
   // the mutation is not segregating and is not fixed either -- we must restart
   if (!segregating & !fixed) {
     write_log("mutation lost -- restarting");
-    
+
     reset_state();
-    
+
     add_mutation("EUR");
   }
 }
@@ -435,7 +435,7 @@ So far we're primarily interested in saving the frequency trajectory of the bene
 
 Checking the file produced by the customized `slim()` simulation shows that the frequency trajectories were indeed saved correctly:
 
-```         
+```
 time    frequency
 15000   0.0001
 14970   0.0005
@@ -517,13 +517,13 @@ run_model <- function(origin_pop, onset_time) {
     s = 0.1, onset_time = onset_time,
     origin_pop = origin_pop, target_pop = "EUR"
   )
-  
+
   model <- compile_model(
     populations = list(afr, ooa, ehg, eur, ana, yam),
     gene_flow = gf, generation_time = 30,
     extension = extension
   )
-  
+
   slim(model, sequence_length = 1e6, recombination_rate = 0,
        path = tempdir(), random_seed = 42)
 }
@@ -656,13 +656,13 @@ run_model <- function(origin_pop, onset_time) {
     s = 0.1, onset_time = onset_time,
     origin_pop = origin_pop, target_pop = "EUR"
   )
-  
+
   model <- compile_model(
     populations = list(afr, ooa, ehg, eur, ana, yam),
     gene_flow = gf, generation_time = 30,
     extension = extension
   )
-  
+
   slim(model, sequence_length = 1e6, recombination_rate = 0,
        path = tempdir(), random_seed = 42)
 }
@@ -867,14 +867,14 @@ Using the compiled model, we can simulate a tree sequence using the `slim()` fun
 
 ```{r, echo=FALSE, eval = RERUN & run_vignette}
 x = Sys.time()
-data_dir <- "~/Projects/introgression_data/"
+data_dir <- "~/Code/__archive/introgression_data/"
 slim(model, recombination_rate = 1e-8, samples = samples, path = data_dir)
 y = Sys.time()
 y - x # Time difference of 45.62365 mins
 ```
 
 ```{r, eval=FALSE}
-slim(model, recombination_rate = 1e-8, samples = samples, path = "~/Projects/introgression_data/")
+slim(model, recombination_rate = 1e-8, samples = samples, path = "~/Code/__archive/introgression_data/")
 ```
 
 It's been suggested that Neanderthals had a significantly lower $N_e$ compared to anatomically modern humans (AMH), which might have decreased efficacy of negative selection against deleterious variants compared to AMH. Consequently, following Neanderthal admixture into AMH, introgressed Neanderthal DNA in AMH would have been under negative selection, particularly in regions of the genome under stronger selective constraints.
@@ -887,11 +887,11 @@ gene_length <- 5e6
 window_length <- 100e3
 ```
 
-```{r, eval = run_vignette & file.exists("~/Projects/introgression_data/frequencies.tsv")}
-freqs <- read_tsv("~/Projects/introgression_data/frequencies.tsv")
+```{r, eval = run_vignette & file.exists("~/Code/__archive/introgression_data/frequencies.tsv")}
+freqs <- read_tsv("~/Code/__archive/introgression_data/frequencies.tsv")
 ```
 
-```{r introgression_freqs, eval = run_vignette & file.exists("~/Projects/introgression_data/frequencies.tsv")}
+```{r introgression_freqs, eval = run_vignette & file.exists("~/Code/__archive/introgression_data/frequencies.tsv")}
 freqs %>%
 mutate(pos = pos %% 5e6) %>%
 group_by(pos) %>%
@@ -911,9 +911,9 @@ We shouldn't forget that the default data structure of _slendr_ is a tree sequen
 
 For instance, as an alternative to the direct computation of allele frequencies during the SLiM run (saved in `frequencies.tsv`), we could use the simulated tree sequence to quickly calculate the genetic divergence between Europeans and a Neanderthal in windows along the simulated genome.
 
-```{r, eval = run_vignette & file.exists("~/Projects/introgression_data/slim.trees")}
+```{r, eval = run_vignette & file.exists("~/Code/__archive/introgression_data/slim.trees")}
 # load a tree sequence and extract the names of recorded individuals
-ts <- ts_read(file = "~/Projects/introgression_data/slim.trees", model)
+ts <- ts_read(file = "~/Code/__archive/introgression_data/slim.trees", model)
 samples <- ts_names(ts, split = "pop")
 
 samples
@@ -928,7 +928,7 @@ tail(windows)
 divergence <- ts_divergence(ts, samples, windows = windows, mode = "branch")$divergence[[1]]
 ```
 
-```{r, eval = run_vignette & file.exists("~/Projects/introgression_data/slim.trees")}
+```{r, eval = run_vignette & file.exists("~/Code/__archive/introgression_data/slim.trees")}
 # compute average divergence at each position in a gene, and a 95% C.I.
 div_df <- tibble(
   pop = "eur",
@@ -940,10 +940,10 @@ div_df <- tibble(
     mean = mean(div), n = n(), std = sd(div),
     ci_low = mean - 2 * std / sqrt(n),
     ci_up = mean + 2 * std / sqrt(n)
-  ) 
+  )
 ```
 
-```{r introgression_divergence, eval = run_vignette & file.exists("~/Projects/introgression_data/slim.trees")}
+```{r introgression_divergence, eval = run_vignette & file.exists("~/Code/__archive/introgression_data/slim.trees")}
 ggplot(div_df) +
   geom_ribbon(aes(pos, ymin = ci_low, ymax = ci_up), fill = "grey70") +
   geom_line(aes(pos, mean)) +
