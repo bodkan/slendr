@@ -578,7 +578,9 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
   }
   ylim[ylim == 0] <- log10_ydelta
 
-  p <- p + scale_y_continuous(limits = ylim, trans = trans)
+  p <- p + scale_y_continuous(limits = ylim, trans = trans,
+                              labels = ifelse(max(abs(c(ylim_low, ylim_high))) < 10e6,
+                                              scales::label_comma(), NULL))
 
   # if specified, overlay sampling points over the model
   if (!is.null(samples)) {
