@@ -4,6 +4,8 @@
 
 - `plot_model()` now uses the same color for population ranges and population labels.  ([#c54632e5](https://github.com/bodkan/slendr/commit/c54632e5))
 
+- `plot_map()` can now optionally visualize splits in a spatial setting ([#4664388c](https://github.com/bodkan/slendr/commit/4664388c))
+
 # slendr 1.1.0
 
 A relatively modest release, mostly pushed out to keep _slendr_ in step with the recent release of SLiM 5.0 and new releases of  _msprime_ and _tskit_. As a result, _slendr_'s SLiM-based functionality (and particularly its new "SLiM extension" mechanism) requires SLiM 5.0
