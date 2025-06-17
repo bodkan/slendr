@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- If a non-spatial population is created which has a spatial parent population, _slendr_ gives an informative error message. ([#6bb646](https://github.com/bodkan/slendr/commit/6bb646))
+
 # slendr 1.1.0
 
 A relatively modest release, mostly pushed out to keep _slendr_ in step with the recent release of SLiM 5.0 and new releases of  _msprime_ and _tskit_. As a result, _slendr_'s SLiM-based functionality (and particularly its new "SLiM extension" mechanism) requires SLiM 5.0
