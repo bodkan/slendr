@@ -6,7 +6,8 @@
 #' @param ... Objects of classes \code{slendr_map}, \code{slendr_region}, or
 #'   \code{slendr_pop}
 #' @param time Plot a concrete time point
-#' @param gene_flow Indicate geneflow events with an arrow
+#' @param gene_flow Indicate gene-flow events with an arrow
+#' @param splits Indicate split events with lines
 #' @param labels Should the (starting) polygons of each populations be labeled with
 #'   a respective population label (default \code{FALSE})?
 #' @param graticules Plot graticules in the original Coordinate Reference System
@@ -23,7 +24,7 @@
 #' @importFrom ggplot2 coord_sf geom_sf guides guide_legend theme_bw geom_sf_label
 #' @export
 #'
-plot_map <- function(..., time = NULL, gene_flow = FALSE,
+plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
                      labels = FALSE,
                      graticules = "original",
                      intersect = TRUE, show_map = TRUE,
@@ -48,7 +49,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
   if (length(intersect(c("slendr_region", "slendr_pop"), classes)) > 1)
     stop("'slendr_region' and 'slendr_pops' object cannot be plotted at once", call. = FALSE)
 
-  if (gene_flow & (is.null(time) | !inherits(args[[1]], "slendr_model")))
+  if (gene_flow && (is.null(time) || !inherits(args[[1]], "slendr_model")))
     warning("All gene-flow event will be visualized at once. If you wish to visualize\n",
             "gene flows at a particular point in time, use the `time` argument.", call. = FALSE)
 
@@ -119,7 +120,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
     # if the user specified a time point, "interpolate" all maps at that
     # time and return just those that match that time point (unless this
     # was already pre-computed)
-    if (!is.null(time)) {
+    if (!is.null(time) && is.numeric(time)) {
       if (is.null(interpolated_maps))
         interpolated_maps <- fill_maps(pops, time)
 
@@ -160,20 +161,47 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
     pop_maps <- do.call(rbind, pop_maps)
     pop_maps$pop <- factor(pop_maps$pop, levels = pop_names)
 
-    if (length(unique(pop_maps$time)) > 1) {
+    # get the first range of each population (used for plotting split lines and
+    # gene-flow arrows)
+    first_ranges <- dplyr::group_by(pop_maps, pop, time) %>% dplyr::arrange(time) %>% dplyr::slice(1)
+
+    if (splits) {
+      # make a copy of a the sf object with initial population ranges
+      # TODO: Instead find the temporally closest range for each given split event
+      split_lines <- first_ranges
+      centroids <- sf::st_centroid(split_lines$geometry)
+      # add end point
+      split_lines$to <- centroids
+      # add starting point
+      split_lines$parent_pop <- model$splits$parent[model$splits$pop %in% split_lines$pop]
+      split_lines <- split_lines[split_lines$parent_pop != "ancestor", ]
+      split_lines$from <- centroids[split_lines$pop %in% split_lines$parent_pop]
+      # form a line
+      split_lines$geometry <- Map(sf::st_union, split_lines$from, split_lines$to) %>%
+        sf::st_as_sfc(.) %>% sf::st_cast("LINESTRING")
+
+      p <- p + geom_sf(data = split_lines, aes(color = pop), linewidth = 3)
+    }
+
+    if (length(unique(pop_maps$time)) > 1 && !is.logical(time)) {
       # build a base map with geographic features
       p <- p +
         geom_sf(data = pop_maps, aes(fill = pop, alpha = time), color = NA) +
         geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
     } else {
+      a <- if (is.logical(time)) 1.0 else 0.4
       p <- p +
-        geom_sf(data = pop_maps, aes(fill = pop), color = NA, alpha = 0.4) +
+        geom_sf(data = pop_maps, aes(fill = pop), color = NA, alpha = a) +
         geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
     }
 
     # add geneflow arrows, if requested
     if (gene_flow) {
-      migr_df <- get_geneflows(model, time)
+      if (is.null(time) || is.numeric(time))
+        migr_df <- get_geneflows(model, time)
+      else
+        migr_df <- get_geneflows(model, time = NULL)
+
       if (nrow(migr_df))
         p <- p +
           geom_point(data = migr_df, aes(x = from_x, y = from_y, color = from), size = 7) +
@@ -184,13 +212,12 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
             arrow = arrow(length = unit(2, "mm"), type = "closed"),
             lineend = "round", linewidth = 0.5, arrow.fill = "black"
           ) +
-          scale_color_discrete(drop = FALSE) +
           guides(color = "none")
     }
 
     if (labels) {
       p <- p +
-        ggrepel::geom_label_repel(data = dplyr::group_by(pop_maps, pop, time) %>% dplyr::arrange(time) %>% dplyr::slice(1),
+        ggrepel::geom_label_repel(data = first_ranges,
                       aes(label = pop, color = pop, geometry = geometry), stat = "sf_coordinates",
                       show.legend = FALSE)
     }

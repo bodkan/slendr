@@ -8,6 +8,7 @@ plot_map(
   ...,
   time = NULL,
   gene_flow = FALSE,
+  splits = FALSE,
   labels = FALSE,
   graticules = "original",
   intersect = TRUE,
@@ -22,7 +23,9 @@ plot_map(
 
 \item{time}{Plot a concrete time point}
 
-\item{gene_flow}{Indicate geneflow events with an arrow}
+\item{gene_flow}{Indicate gene-flow events with an arrow}
+
+\item{splits}{Indicate split events with lines}
 
 \item{labels}{Should the (starting) polygons of each populations be labeled with
 a respective population label (default \code{FALSE})?}
