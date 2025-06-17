@@ -2480,7 +2480,7 @@ get_ts_raw_individuals <- function(ts) {
   # (unlike the raw tree-sequence tables, IDs are explicitly stored as 0-based columns)
   ind_table <- dplyr::tibble(
     # ind_id = seq_len(ts$num_individuals) - 1
-    ind_id = reticulate::iterate(ts$individuals(), function(ind) ind$id, simplify = TRUE)
+    ind_id = as.numeric(reticulate::iterate(ts$individuals(), function(ind) ind$id, simplify = TRUE))
   )
 
   if (attr(ts, "type") == "SLiM") {
