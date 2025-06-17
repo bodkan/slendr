@@ -92,10 +92,10 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
     stop("A simulation landscape must be an object of the class slendr_map", call. = FALSE)
 
   if (!is.null(parent) && is.logical(map) && map == FALSE) {
-    if (is.null(polygon) && (is.null(center) || is.null(radius)))
-      stop("A descendant of a spatial population cannot be nonspatial", call. = FALSE)
-
     map <- attr(parent, "map")
+
+    if (!is.logical(map) && is.null(polygon) && (is.null(center) || is.null(radius)))
+      stop("A descendant of a spatial population cannot be nonspatial", call. = FALSE)
   }
 
   if (inherits(map, "slendr_map")) {
