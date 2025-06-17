@@ -91,8 +91,12 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
   if (!is.logical(map) && !inherits(map, "slendr_map"))
     stop("A simulation landscape must be an object of the class slendr_map", call. = FALSE)
 
-  if (!is.null(parent) && is.logical(map) && map == FALSE)
+  if (!is.null(parent) && is.logical(map) && map == FALSE) {
+    if (is.null(polygon) && (is.null(center) || is.null(radius)))
+      stop("A descendant of a spatial population cannot be nonspatial", call. = FALSE)
+
     map <- attr(parent, "map")
+  }
 
   if (inherits(map, "slendr_map")) {
     check_spatial_pkgs()
