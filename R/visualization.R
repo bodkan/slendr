@@ -171,9 +171,6 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
         geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
     }
 
-    p <- p + scale_fill_discrete(drop = FALSE, name = "") +
-      guides(alpha = guide_legend("time"))
-
     # add geneflow arrows, if requested
     if (gene_flow) {
       migr_df <- get_geneflows(model, time)
@@ -194,7 +191,8 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
     if (labels) {
       p <- p +
         ggrepel::geom_label_repel(data = dplyr::group_by(pop_maps, pop, time) %>% dplyr::arrange(time) %>% dplyr::slice(1),
-                      aes(label = pop, color = pop, geometry = geometry), stat = "sf_coordinates")
+                      aes(label = pop, color = pop, geometry = geometry), stat = "sf_coordinates",
+                      show.legend = FALSE)
     }
   }
 
@@ -205,6 +203,10 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE,
       geom_sf_label(data = region_maps, aes(label = region, color = region)) +
       guides(color = "none", fill = "none")
   }
+
+  p <- p + scale_fill_discrete(drop = FALSE, name = "") +
+    scale_color_discrete(drop = FALSE, name = "") +
+    guides(alpha = guide_legend("time"))
 
   if (!is.null(title)) p <- p + ggtitle(title)
 
