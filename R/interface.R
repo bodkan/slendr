@@ -462,7 +462,10 @@ set_range <- function(pop, time, center = NULL, radius = NULL,
   if (lock) {
     areas <- slendr::area(result)$area
     area_change <- areas[length(areas)] / areas[length(areas) - 1]
-    prev_N <- utils::tail(sapply(attributes(pop)$history, function(event) event$N), 1)
+    # get all events featuring population size and extract the size of the last one
+    prev_N <- Filter(function(x) "N" %in% colnames(x), attributes(pop)$history) %>%
+      sapply(`[[`, "N") %>%
+      utils::tail(1)
     new_N <- round(area_change * prev_N)
     result <- resize(result, N = new_N, time = time, how = "step")
   }
