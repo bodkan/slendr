@@ -1,5 +1,7 @@
 # slendr (development version)
 
+- Fixed an issue with setting `lock = TRUE` in the `set_range()` function (issue #176 reported by @Sgornard -- thank you!). ([#6d01e407](https://github.com/bodkan/slendr/commit/6d01e407))
+
 - If a non-spatial population is created which has a spatial parent population, _slendr_ gives an informative error message. ([#6bb646](https://github.com/bodkan/slendr/commit/6bb646))
 
 - `plot_model()` now uses the same color for population ranges and population labels.  ([#c54632e5](https://github.com/bodkan/slendr/commit/c54632e5))
