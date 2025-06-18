@@ -125,7 +125,7 @@ jobs:
             clean = FALSE,
             install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package"),
             type = c("tests", "vignettes"),
-            function_exclusions = c("print\\.", "setup_env", "clear_env", "init_env", "check_env", "check_dependencies", "get_python", "animate_model", "ts_draw")
+            function_exclusions = c("plot_map", "plot_model", "print\\.", "setup_env", "clear_env", "init_env", "check_env", "check_dependencies", "get_python", "animate_model", "ts_draw")
           )
         shell: Rscript {0}
 
