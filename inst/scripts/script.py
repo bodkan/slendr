@@ -10,11 +10,9 @@ import argparse
 import os
 import sys
 import pathlib
-import hashlib
 import logging
 
 import tskit
-import pyslim
 import msprime
 import pandas
 import numpy
