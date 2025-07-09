@@ -1286,6 +1286,10 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
       n <- s[[2]]
       name <- if (length(s) == 3) s[[3]] else NA
 
+      if (!is.na(name) && n != 1)
+        stop(paste0("A named sample must represent only a single individual, i.e. sampling of n = 1\n",
+                    sprintf("(n = %s was given for individual %s)", n, name)), call. = FALSE)
+
       tryCatch(
         {
           check_removal_time(t, pop, direction = model$direction)
