@@ -13,7 +13,8 @@ msprime(
   verbose = FALSE,
   debug = FALSE,
   run = TRUE,
-  path = NULL
+  path = NULL,
+  coalescent_only = TRUE
 )
 }
 \arguments{
@@ -49,6 +50,15 @@ results will be saved. In this case, the function will return this path invisibl
 Note that if a tree-sequence file should be simulated (along with other files,
 potentially), that tree-sequence file (named 'msprime.trees' by default) will
 have to be explicitly loaded using \code{ts_read()}.}
+
+\item{coalescent_only}{Default is \code{TRUE}, which will only record the
+minimum amount of information necessary to represent the genealogical
+history of the simulated samples (i.e., only nodes which are MRCA of some
+pair of samples at some locus in the genome). Setting to \code{FALSE} will
+record much more information, resulting in unary nodes in the tree sequence.
+This parameter translates to the \code{coalescing_segments_only} argument
+of the underlying msprime method \code{sim_ancestry}. See Details for
+additional information.}
 }
 \value{
 A tree-sequence object loaded via Python-R reticulate interface function \code{ts_read}
@@ -58,6 +68,13 @@ A tree-sequence object loaded via Python-R reticulate interface function \code{t
 \description{
 This function will execute a built-in msprime script and run a compiled
 slendr demographic model.
+}
+\details{
+For more information about the \code{coalescent_only} argument, please see
+msprime documentation, particularly the section on "Recording more information"
+and the \code{coalescing_segments_only} argument of the method \code{sim_ancestry()}
+here \url{https://tskit.dev/msprime/docs/stable/ancestry.html#recording-more-information}.
+and \url{https://tskit.dev/msprime/docs/stable/api.html#msprime.sim_ancestry}.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present

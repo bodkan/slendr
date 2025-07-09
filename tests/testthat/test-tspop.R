@@ -1,4 +1,4 @@
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
 
 anc_all <- population("ancestor_all", time = 700e3, N = 10000)

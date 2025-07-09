@@ -11,7 +11,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- slendr:::is_slendr_env_present()
+env_present <- slendr::check_dependencies(python = TRUE)
 
 knitr::opts_chunk$set(
   collapse = FALSE,
@@ -23,15 +23,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-Even though the most distinguishing feature of the *slendr* R package is programming spatial population genetic models across real and abstract geographic landscapes, having the ability to run "standard", non-spatial models directly from an R environment could be often quite useful. This is why *slendr* supports also non-spatial SLiM models, which can be executed by *slendr* simply by excluding the map component from a SLiM simulation (briefly discussed in [this vignette](vignette-04-nonspatial-models.html)).
+Even though the most distinguishing feature of the _slendr_ R package is programming spatial population genetic models across real and abstract geographic landscapes, having the ability to run "standard", non-spatial models directly from an R environment could be often quite useful. This is why _slendr_ supports also non-spatial SLiM models, which can be executed by _slendr_ simply by excluding the map component from a SLiM simulation (briefly discussed in [this vignette](vignette-04-nonspatial-models.html)).
 
 In some cases, the forward nature of a SLiM simulation (meaning that many individuals need to be tracked in each generation) makes the simulations too slow. For instance, running an [Approximate Bayesian Computation (ABC)](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation) analysis often requires running thousands or even millions of simulations. In cases like this, the faster the simulations the better.
 
-For these situations, the *slendr* R package provides an alternative back end for simulating non-spatial population models using the Python coalescent simulation framework [*msprime*](https://tskit.dev/msprime/docs/stable/intro.html). Unlike forward time simulators, coalescent simulations only reconstruct the genealogical history of a sample of individuals of interest backwards in time, which makes it much more computational efficient.
+For these situations, the _slendr_ R package provides an alternative back end for simulating non-spatial population models using the Python coalescent simulation framework [*msprime*](https://tskit.dev/msprime/docs/stable/intro.html). Unlike forward time simulators, coalescent simulations only reconstruct the genealogical history of a sample of individuals of interest backwards in time, which makes it much more computational efficient.
 
-The goal of this vignette is to demonstrate that a single *slendr* model configuration can be run using the built-in SLiM and msprime backend engines _without any changes_!
+The goal of this vignette is to demonstrate that a single _slendr_ model configuration can be run using the built-in SLiM and msprime backend engines _without any changes_!
 
-To start off, let's load the *slendr* package together with some standard R data analysis packages, and instruct *reticulate* where to look for a Python environment with all necessary Python dependencies (see [this](vignette-05-tree-sequences.html#r-interface-for-tskit-and-pyslim-1) section of another vignette for instructions how to setup the Python environment the easiest way possible):
+To start off, let's load the _slendr_ package together with some standard R data analysis packages, and instruct *reticulate* where to look for a Python environment with all necessary Python dependencies (see [this](vignette-05-tree-sequences.html#r-interface-for-tskit-and-pyslim-1) section of another vignette for instructions how to setup the Python environment the easiest way possible):
 
 ```{r, message = FALSE}
 library(slendr)
@@ -51,9 +51,9 @@ set.seed(seed)
 
 ### Defining a model
 
-We now define up a simple *non-spatial* model of gene flow between populations (also known as population admixture or introgression). This will involve essentially the same procedure which we have shown in another vignette introducing [non-spatial *slendr* models](vignette-04-nonspatial-models.html). Note that this is no different from how we would normally specify a spatial model, except that we left out the `map` argument in making the `population()` calls.
+We now define up a simple *non-spatial* model of gene flow between populations (also known as population admixture or introgression). This will involve essentially the same procedure which we have shown in another vignette introducing [non-spatial _slendr_ models](vignette-04-nonspatial-models.html). Note that this is no different from how we would normally specify a spatial model, except that we left out the `map` argument in making the `population()` calls.
 
-To demonstrate additional features of the *slendr* interface to the [*tskit*](https://tskit.dev/tskit/docs/stable/introduction.html) Python library, we will perform gene flow detection test using the so-called $f_4$ and $f_4$-ratio statistics (very briefly introduces in [this vignette](vignette-05-tree-sequences.html)). To make things a little more interesting, we will define two population models: one model without any gene flow, and another which includes gene flow. In defining this model and expressing the $f$-statistics we will use the same nomenclature used in the first study by [Patterson _et al._](https://doi.org/10.1534/genetics.112.145037) that described $f_4-ratio$ statistic in the first place. if you're not familiar with these statistical tests of gene flow, we recommend that you take a look at the relevant sections of the linked paper.
+To demonstrate additional features of the _slendr_ interface to the [*tskit*](https://tskit.dev/tskit/docs/stable/introduction.html) Python library, we will perform gene flow detection test using the so-called $f_4$ and $f_4$-ratio statistics (very briefly introduces in [this vignette](vignette-05-tree-sequences.html)). To make things a little more interesting, we will define two population models: one model without any gene flow, and another which includes gene flow. In defining this model and expressing the $f$-statistics we will use the same nomenclature used in the first study by [Patterson _et al._](https://doi.org/10.1534/genetics.112.145037) that described $f_4-ratio$ statistic in the first place. if you're not familiar with these statistical tests of gene flow, we recommend that you take a look at the relevant sections of the linked paper.
 shiny_graph
 ![](images/f4_tree.jpg){width="90%"}
 
@@ -107,7 +107,7 @@ plot_model(model_nogf, sizes = FALSE)
 plot_model(model_gf, sizes = FALSE, proportions = TRUE)
 ```
 
-Now we will run both models (with and without gene flow) in the two *slendr* backends, SLiM and msprime:
+Now we will run both models (with and without gene flow) in the two _slendr_ backends, SLiM and msprime:
 
 ```{r}
 # model without gene flow
@@ -119,9 +119,9 @@ slim_gf <- slim(model_gf, sequence_length = seq_len, recombination_rate = rec_ra
 msprime_gf <- msprime(model_gf, sequence_length = seq_len, recombination_rate = rec_rate, samples = samples, random_seed = seed)
 ```
 
-Note that we are using exactly the same model configuration object in both simulation runs! In fact, even the function interface looks nearly exactly the same. It doesn't matter what the specific details of your demographic models are, *slendr* will interpret them correctly regardless of which back end simulation engine you choose to use.
+Note that we are using exactly the same model configuration object in both simulation runs! In fact, even the function interface looks nearly exactly the same. It doesn't matter what the specific details of your demographic models are, _slendr_ will interpret them correctly regardless of which back end simulation engine you choose to use.
 
-### Comparing the outputs of msprime and SLiM runs of a *slendr* model
+### Comparing the outputs of msprime and SLiM runs of a _slendr_ model
 
 Having run our introgression models with the two simulation back ends, let's load both SLiM and msprime tree sequence outputs and compare their contents (hoping they will be the same!).
 
@@ -144,7 +144,7 @@ msprime_nogf <- ts_mutate(msprime_nogf, mut_rate, random_seed = seed)
 msprime_gf <- ts_mutate(msprime_gf, mut_rate, random_seed = seed)
 ```
 
-As we can see below, the tree sequence summary of the data loaded and processed by *slendr*'s `ts_read()` function (data produced by the SLiM backend) is very similar to what we got "manually" for the msprime-produced tree sequence using the custom defined functions. This is somehow obvious but it is a nice and cheap sanity check indicating that the tree sequence data structure produced by the two backends from the same demographic model is almost the same.
+As we can see below, the tree sequence summary of the data loaded and processed by _slendr_'s `ts_read()` function (data produced by the SLiM backend) is very similar to what we got "manually" for the msprime-produced tree sequence using the custom defined functions. This is somehow obvious but it is a nice and cheap sanity check indicating that the tree sequence data structure produced by the two backends from the same demographic model is almost the same.
 
 ```{r}
 slim_nogf
@@ -185,7 +185,7 @@ df_slim_f4ratio <- rbind(
   mutate(simulator = "SLiM backend")
 ```
 
-Now, let's repeat the same analysis on tree sequences produced by the *msprime* backend from the same two *slendr* demographic models:
+Now, let's repeat the same analysis on tree sequences produced by the *msprime* backend from the same two _slendr_ demographic models:
 
 ```{r}
 df_msprime_f4 <- rbind(
@@ -257,9 +257,9 @@ These models and the population size change events could be, depending on the sp
 
 On the other hand, if you were interested in modelling some theoretical population, you might not want to concern yourselves with this and would be quite happy starting our simulation at "generation 1" and continue until some specified "generation X".
 
-The *slendr* package makes all of this extremely easy, because you can specify times in whatever direction and units you want, as long as they are kept consistent for all populations and events in your model. This is a rather unique feature among popgen simulation software as most programs either make you express your model in "generations in forward direction", or you have to explicitly convert time in generations going backwards.
+The _slendr_ package makes all of this extremely easy, because you can specify times in whatever direction and units you want, as long as they are kept consistent for all populations and events in your model. This is a rather unique feature among popgen simulation software as most programs either make you express your model in "generations in forward direction", or you have to explicitly convert time in generations going backwards.
 
-In the previous section of the vignette we have shown that SLiM and msprime can be both used as simulation backend. In the remainder of this vignette we will present additional analysis, demonstrating the fact that you can express time of your models in a forward or backward direction and still run those models in *slendr*'s SLiM (forward simulator) or *msprime* (backward simulator).
+In the previous section of the vignette we have shown that SLiM and msprime can be both used as simulation backend. In the remainder of this vignette we will present additional analysis, demonstrating the fact that you can express time of your models in a forward or backward direction and still run those models in _slendr_'s SLiM (forward simulator) or *msprime* (backward simulator).
 
 Specifically, we will define all five demographic models from the figure above twice, in different orientations of time -- forward or backward. We will then compute allele frequency spectrum from each simulation (five models, each forward or backward) and verify that both forward and backward pairs give the same result regardless of whether we use the SLiM back end or the *msprime* backend.
 
@@ -320,7 +320,7 @@ backward_exp_decr <- population("exp_decr", time = 5000, N = N) %>%
   resize(time = 3000, end = 2000, N = N / N_factor, how = "exponential")
 ```
 
-For convenience, we will write a helper function which will, for a given population history object (ten objects just above), compile a *slendr* model, run it in both SLiM and *msprime* back ends, load the tree sequence, and compute allele frequency spectrum (AFS) from it. This will save us lots of code repetition (always a good thing), minimize the chance of copy-pasting bugs (definitely a good thing!) and compare the AFS patterns across different models and the two *slendr* simulation back ends (they should be the same according to population genetics theory).
+For convenience, we will write a helper function which will, for a given population history object (ten objects just above), compile a _slendr_ model, run it in both SLiM and *msprime* back ends, load the tree sequence, and compute allele frequency spectrum (AFS) from it. This will save us lots of code repetition (always a good thing), minimize the chance of copy-pasting bugs (definitely a good thing!) and compare the AFS patterns across different models and the two _slendr_ simulation back ends (they should be the same according to population genetics theory).
 
 ```{r}
 compile_run_afs <- function(model_name, pop, seed = 42) {
@@ -372,7 +372,7 @@ compile_run_afs <- function(model_name, pop, seed = 42) {
 }
 ```
 
-Now that this function doesn't do anything special. It simply wraps a standard *slendr* simulation pipeline (1. create population(s); 2. compile a model object; 3. simulate the model; 4. load the results; 5. analyse the data) into a single function.
+Now that this function doesn't do anything special. It simply wraps a standard _slendr_ simulation pipeline (1. create population(s); 2. compile a model object; 3. simulate the model; 4. load the results; 5. analyse the data) into a single function.
 
 Now that we have the whole pipeline, we can generate all of our simulated data and bind all the result into a single data frame:
 
@@ -416,10 +416,10 @@ Again, a couple of things to note:
 
 - The two models that involve population contraction (be it in a single step or an exponential collapse), we see a decrease in low frequency variants. On the other hand, models with population expansion show a high proportion of low frequency variants. The model with constant population size shows intermediate pattern. This is a nice validation that the simulation works as expected as it is exactly what is predicted by population genetics theory.
 
-- Both forward and backward time models give exactly the same result. This is not unexpected as anything else would be a bug in *slendr*. However, although unsurprising, we hope that it makes it clear that you are free to use whatever time unit specification you want to encode *slendr* models.
+- Both forward and backward time models give exactly the same result. This is not unexpected as anything else would be a bug in _slendr_. However, although unsurprising, we hope that it makes it clear that you are free to use whatever time unit specification you want to encode _slendr_ models.
 
-- For non-spatial models, results obtained from *msprime* and SLiM back ends are consistent with one another. Again, this makes sense because although they are completely different software, population genetic theory governing the shape of allele frequency spectra applies equally to both. In fact, the same example as we have just implemented is an important part of *slendr* unit test suite which verifies that the simulations created with *slendr* are correct.
+- For non-spatial models, results obtained from *msprime* and SLiM back ends are consistent with one another. Again, this makes sense because although they are completely different software, population genetic theory governing the shape of allele frequency spectra applies equally to both. In fact, the same example as we have just implemented is an important part of _slendr_ unit test suite which verifies that the simulations created with _slendr_ are correct.
 
 ## Conclusion
 
-This example shows that if you have a standard, non-spatial demographic model and would like to implement and simulate it in R, *slendr* gives you a way to do so efficiently using it's *msprime* back end in addition to the SLiM back end used throughout most of the documentation.
+This example shows that if you have a standard, non-spatial demographic model and would like to implement and simulate it in R, _slendr_ gives you a way to do so efficiently using it's *msprime* back end in addition to the SLiM back end used throughout most of the documentation.

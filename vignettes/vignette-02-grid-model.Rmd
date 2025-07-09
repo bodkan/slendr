@@ -8,7 +8,7 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- slendr:::is_slendr_env_present()
+env_present <- slendr::check_dependencies(python = TRUE)
 
 knitr::opts_chunk$set(
   collapse = FALSE,
@@ -22,13 +22,13 @@ knitr::opts_chunk$set(
 
 In this vignette, we will build a simple model of isolated populations laid out on a two-dimensional grid, each exchanging migrants with its immediate neighbors.
 
-The purpose of the vignette is to demonstrate the power of R as a foundation for building complex *slendr* models from simpler components. Although there is no built-in functionality for such classic "demes on a regular grid" models in the *slendr* package, the fact that we have the complete functionality of R at our disposal makes it possible to easily program relatively complex models from the convenient environment of R using a couple of simple model-building primitives and automatically execute such models in SLiM.
+The purpose of the vignette is to demonstrate the power of R as a foundation for building complex _slendr_ models from simpler components. Although there is no built-in functionality for such classic "demes on a regular grid" models in the _slendr_ package, the fact that we have the complete functionality of R at our disposal makes it possible to easily program relatively complex models from the convenient environment of R using a couple of simple model-building primitives and automatically execute such models in SLiM.
 
 If you have worked with SLiM before, you will recognize that a nearly identical idea is implemented in SLiM's Eidos language in section 5.3.3 of the SLiM manual. One difference in this example is that our model is explicitly spatial, unlike the example from the manual where spatiality is only approximated using a random-mating model.
 
 ## Simple two-dimensional grid model
 
-First, let's load the *slendr* R package and create a two-dimensional abstract world map:
+First, let's load the _slendr_ R package and create a two-dimensional abstract world map:
 
 ```{r}
 library(slendr)
@@ -44,7 +44,7 @@ map <- world(
 )
 ```
 
-Next, we define a helper function which will a) create a single *slendr* population object, b) place that population at an appropriate coordinate on the lattice on the world map based on the numeric identifier of the population *i* (where *i* runs from 1 to $n \times n$ , *n* being the total number of demes along one side of the regular grid):
+Next, we define a helper function which will a) create a single _slendr_ population object, b) place that population at an appropriate coordinate on the lattice on the world map based on the numeric identifier of the population *i* (where *i* runs from 1 to $n \times n$ , *n* being the total number of demes along one side of the regular grid):
 
 ```{r}
 create_pop <- function(i, n_side, map, N, radius) {
@@ -86,7 +86,7 @@ Let's plot the whole spatial population configuration, to make sure we set up th
 do.call(plot_map, populations) + ggplot2::theme(legend.position = "none")
 ```
 
-So far, the way the model is specified, each population would be stuck on its own circular "island". We can change that by programming gene flow events using the *slendr* function `gene_flow()`. Again, let's first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index *i*).
+So far, the way the model is specified, each population would be stuck on its own circular "island". We can change that by programming gene flow events using the _slendr_ function `gene_flow()`. Again, let's first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index *i*).
 
 ```{r}
 set_geneflow <- function(i, n_side, rate, start, end, populations) {

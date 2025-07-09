@@ -4,7 +4,7 @@ There were no ERRORs, no WARNINGs, no NOTEs.
 
 # Checked environments
 
-* Local macOS install: R 4.3.2
+* Local macOS install: R 4.5.0
 
 * Win-Builder: R-devel, R-release, R-oldrelease
 

@@ -1,4 +1,4 @@
-.PHONY: build docs website test
+.PHONY: website docs build check windev winrel winold clean
 
 version := $(shell less DESCRIPTION | grep 'Version' | sed 's/Version: \(.*\)$$/\1/')
 pkg := build/slendr_$(version).tar.gz
@@ -25,7 +25,7 @@ website: $(logo) README.md
 	R -e 'pkgdown::build_reference_index()'
 	R -e 'pkgdown::build_news()'
 	R -e 'pkgdown::build_site()'
-	rm docs/reference/Rplot001.png
+	#rm docs/reference/Rplot001.png
 	# discard useless updates of temporary paths, random seed values, etc.
 	#git restore docs/pkgdown.yml
 	#git restore docs/reference/join.html
@@ -53,8 +53,8 @@ windev: README.md
 winold: README.md
 	unset R_HAS_GGTREE; R -e 'devtools::check_win_oldrelease()'
 
-rhub: README.md
-	unset R_HAS_GGTREE; R -e 'rhub::check_for_cran(platforms = c("macos-highsierra-release", "macos-highsierra-release-cran", "macos-m1-bigsur-release"))'
+clean:
+	rm -rf build
 
 $(pkg): README.md
 	R -e 'devtools::document()'
@@ -71,5 +71,3 @@ example_data:
 	rm -rf inst/extdata/models/; mkdir -p inst/extdata/models/
 	Rscript generate_examples.R
 
-clean:
-	rm -rf build

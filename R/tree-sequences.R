@@ -414,6 +414,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
   ts_new <- ts$simplify(as.integer(samples),
                         filter_populations = FALSE,
                         filter_nodes = filter_nodes,
+                        filter_individuals = filter_nodes,
                         keep_input_roots = keep_input_roots,
                         keep_unary = keep_unary,
                         keep_unary_in_individuals = keep_unary_in_individuals)
@@ -608,6 +609,8 @@ ts_metadata <- function(ts) {
 #' Extract genotype table from the tree sequence
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
+#' @param quiet Should messages about multiallelic sites be silenced? Default
+#'   is \code{FALSE}.
 #'
 #' @return Data frame object of the class \code{tibble} containing genotypes
 #'   of simulated individuals in columns
@@ -631,7 +634,7 @@ ts_metadata <- function(ts) {
 #' # of memory!)
 #' gts <- ts_genotypes(ts)
 #' @export
-ts_genotypes <- function(ts) {
+ts_genotypes <- function(ts, quiet = FALSE) {
   if (ts$num_mutations == 0)
     stop("Extracting genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
@@ -647,9 +650,10 @@ ts_genotypes <- function(ts) {
   n_multiallelic <- sum(!biallelic_pos)
 
   if (n_multiallelic > 0) {
-    message(sprintf("%i multiallelic sites (%.3f%% out of %i total) detected and removed",
-                    n_multiallelic, n_multiallelic / length(positions) * 100,
-                    length(positions)))
+    if (!quiet)
+      message(sprintf("%i multiallelic sites (%.3f%% out of %i total) detected and removed",
+                      n_multiallelic, n_multiallelic / length(positions) * 100,
+                      length(positions)))
     gts <- gts[biallelic_pos, ]
     positions <- positions[biallelic_pos]
   }
@@ -755,45 +759,94 @@ ts_eigenstrat <- function(ts, prefix, chrom = "chr1", outgroup = NULL) {
 
 #' Save genotypes from the tree sequence as a VCF file
 #'
+#' This function writes a VCF file with diploid genotypes from a given tree sequence.
+#'
+#' Users should note that, as with many other tskit-based slendr functions,
+#' \code{ts_vcf} is intended to provide some convenient defaults. For instance,
+#' even for non-slendr tree sequences, it will name each individual in the
+#' genotype columns after their integer IDs. In other words, if the
+#' \code{individuals} function argument is given as \code{c(1, 42, 123)}, the
+#' individuals will be named as "ind_1", "ind_42", and "ind_123", instead of
+#' "tsk_0", "tsk_1", and "tsk_2". That said, the reticulate-based Python
+#' interface of slendr allows calling the \code{write_vcf} function of tskit
+#' directly!
+#'
+#' By default, simulating a tree sequence with msprime and exporting the
+#' genotypes into VCF can cause issues with some downstream software because
+#' the VCF specification does not allow sites with the position 0. By default
+#' \code{ts_vcf} automatically transforms a site with a zero coordinate to
+#' a coordinate 1. Setting \code{position_transform} to NULL will disable
+#' this, and \code{tsv_vcf} will save coordinates in their original form.
+#' See this discussion for more detail:
+#' \url{https://github.com/tskit-dev/tskit/issues/2838#issuecomment-1931796988},
+#' as well as relevant topics in the tskit documentation on this issue, like
+#' here: \url{https://tskit.dev/tskit/docs/latest/export.html#modifying-coordinates}.
+#'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param path Path to a VCF file
 #' @param chrom Chromosome name to be written in the CHROM column of the VCF
-#' @param individuals A character vector of individuals in the tree sequence. If
-#'   missing, all individuals present in the tree sequence will be saved.
+#'   (default value will be "chr1").
+#' @param individuals A vector of individuals in the tree sequence to extract
+#'   genotypes from. If missing, all individuals present in the tree sequence
+#'   will be saved. For a slendr-based tree sequence a character vector of
+#'   individual names is expected. For non-slendr tree sequences, a numeric
+#'   vector of IDs of individuals is expected.
+#' @param position_transform How to transform coordinates in a tree sequence
+#'   to coordinates in a VCF file? By default, any site with coordinate 0
+#'   is converted to a position 1 to ensure that the resulting VCF file adheres
+#'   to the VCF specification. Setting this to \code{NULL} will disable this
+#    transformation. See details for more information.
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-ts_vcf <- function(ts, path, chrom = NULL, individuals = NULL) {
-  if (!attr(ts, "recapitated") && !ts_coalesced(ts))
-    stop("Tree sequence was not recapitated and some nodes do not ",
-         "have parents over some portion of their genome. This is interpreted as ",
-         "missing data, which is not currently supported by tskit. For more context, ",
-         "take a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
-         call. = FALSE)
+ts_vcf <- function(ts, path, chrom = "chr1", individuals = NULL,
+                   position_transform = "lambda x: np.fmax(1, x)") {
+  if (ts$num_mutations == 0)
+    warning("Attempting to extract genotypes from a tree sequence without mutations",
+            call. = FALSE)
 
-  if (!attr(ts, "mutated"))
-    stop("Attempting to extract genotypes from a tree sequence which has not been mutated",
-         call. = FALSE)
+  from_slendr <- !is.null(attr(ts, "model"))
+  if (from_slendr) {
+    if (!attr(ts, "recapitated") && !ts_coalesced(ts))
+      stop("Tree sequence was not recapitated and some nodes do not ",
+           "have parents over some portion of their genome. This is interpreted as ",
+           "missing data, which is not currently supported by tskit. For more context, ",
+           "take a look at <https://github.com/tskit-dev/tskit/issues/301#issuecomment-520990038>.",
+           call. = FALSE)
 
-  data <- ts_nodes(ts) %>%
-    dplyr::filter(!is.na(name)) %>%
-    dplyr::as_tibble() %>%
-    dplyr::distinct(name, ind_id)
+    data <- ts_nodes(ts) %>%
+      dplyr::filter(!is.na(name)) %>%
+      dplyr::as_tibble() %>%
+      dplyr::distinct(name, ind_id)
 
-  if (is.null(individuals)) individuals <- data$name
+    if (is.null(individuals)) individuals <- data$name
+    present <- individuals %in% unique(data$name)
+    individual_ids <- dplyr::filter(data, name %in% individuals)$ind_id
+    individual_names <- individuals
+  } else {
+    if (!is.null(individuals) && !all(is.numeric(individuals)))
+      stop("For non-slendr tree sequences, all individual identifiers must be numeric",
+           call. = FALSE)
 
-  present <- individuals %in% unique(data$name)
+    if (is.null(individuals)) individuals <- seq(0, ts$num_individuals - 1)
+    present <- individuals %in% seq(0, ts$num_individuals - 1)
+    individual_ids <- individuals
+    individual_names <- paste0("ind_", individual_ids)
+  }
+
   if (!all(present))
-    stop("", paste(individuals[!present], collapse = ", "),
-         " not present in the tree sequence", call. = FALSE)
+    stop("The following individuals are not present in the tree sequence: ",
+         paste(individuals[!present], collapse = ", "), call. = FALSE)
 
   gzip <- reticulate::import("gzip")
+  numpy <- reticulate::import("numpy")
   with(reticulate::`%as%`(gzip$open(path.expand(path), "wt"), vcf_file), {
     ts$write_vcf(vcf_file,
                  contig_id = chrom,
-                 individuals = as.integer(data$ind_id),
-                 individual_names = data$name)
+                 individuals = as.integer(individual_ids),
+                 individual_names = individual_names,
+                 position_transform = reticulate::py_eval(position_transform, convert = FALSE))
   })
 }
 
@@ -2265,11 +2318,11 @@ ts_tajima <- function(ts, sample_sets, mode = c("site", "branch", "node"),
 #' or nodes.
 #'
 #' For more information on the format of the result and dimensions, in
-#' particular the interpretation of the first and the last element of the AFS
-#' (when \code{complete = TRUE}), please see the tskit manual at
-#' <https://tskit.dev/tskit/docs/stable/python-api.html> and the example
-#' section dedicated to AFS at
-#' <https://tskit.dev/tutorials/analysing_tree_sequences.html#allele-frequency-spectra>.
+#' particular the interpretation of the first and the last element of the AFS,
+#' please see the tskit manual at
+#' <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.allele_frequency_spectrum>
+#' and the example section dedicated to AFS at
+#' <https://tskit.dev/tutorials/analysing_tree_sequences.html#zeroth-and-final-entries-in-the-afs>.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
 #' @param sample_sets A list (optionally a named list) of character vectors with
@@ -2426,7 +2479,8 @@ get_ts_raw_individuals <- function(ts) {
   # create a data frame which will form the output table with individuals in the tree sequence
   # (unlike the raw tree-sequence tables, IDs are explicitly stored as 0-based columns)
   ind_table <- dplyr::tibble(
-    ind_id = seq_len(ts$num_individuals) - 1
+    # ind_id = seq_len(ts$num_individuals) - 1
+    ind_id = as.numeric(reticulate::iterate(ts$individuals(), function(ind) ind$id, simplify = TRUE))
   )
 
   if (attr(ts, "type") == "SLiM") {
@@ -2451,6 +2505,8 @@ get_ts_raw_individuals <- function(ts) {
     } else {
       ind_table$time <- ts$individual_times
       # for pure SLiM tree sequences, simply use the sampling information encoded in the data
+      # TODO: Check that this `seq(ts$num_nodes) - 1` doesn't break when filter_nodes = FALSE
+      #       during simplification.
       ind_table$sampled <- ind_table$ind_id %in% unique(nodes[(seq(ts$num_nodes) - 1) %in% as.integer(ts$samples())]$individual)
       # ind_table$sampled <- ifelse(is.na(ind_table$sampled), FALSE, TRUE)
     }
@@ -2458,7 +2514,9 @@ get_ts_raw_individuals <- function(ts) {
   } else { # msprime tree-sequence table
     nodes_table <- dplyr::tibble(
       ind_id = nodes$individual,
-      pop_id = nodes$population
+      pop_id = nodes$population,
+      # sampled = reticulate::iterate(ts$nodes(), function(node) node$is_sample() == 1, simplify = TRUE)
+      sampled = nodes[["flags"]] == tskit$NODE_IS_SAMPLE
     )
 
     if (from_slendr)
@@ -2471,8 +2529,9 @@ get_ts_raw_individuals <- function(ts) {
 
     ind_table <- dplyr::inner_join(ind_table, nodes_table, by = "ind_id")
 
-    # in a non-SLiM tree sequence, genomes/nodes of all individuals are "samples"
-    ind_table$sampled <- TRUE
+    # # in a non-SLiM tree sequence, genomes/nodes of all individuals are "samples"
+    # # (FIXED: untrue because of simplification! `sampled` is now joined in from the nodes table)
+    # ind_table$sampled <- TRUE
   }
 
   if (attr(ts, "spatial")) {
@@ -2671,7 +2730,10 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
     samples <- dplyr::arrange(samples, -time, pop)
-    individuals <- dplyr::mutate(individuals, name = samples$name)
+    # this was originally broken for simplification
+    # individuals <- dplyr::mutate(individuals, name = samples$name)
+    individuals$name <- NA
+    individuals$name[individuals$sampled] <- samples$name
   }
 
   # some tree sequence don't have any information about individuals -- for those cases,

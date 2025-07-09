@@ -25,7 +25,7 @@ tools for population genetic simulations and data analysis.
 }
 \details{
 You can find installation instructions, reference manual, and tutorials at
-\url{https://www.slendr.net}.
+\url{https://slendr.net}.
 }
 \seealso{
 Useful links:

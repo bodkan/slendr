@@ -651,7 +651,7 @@ function (object<Dictionary>) collect_metadata(void) {
     metadata = Dictionary();
 
     // slendr version and commit hash that generated this script
-    metadata.setValue("version", "slendr_0.9.1.9000");
+    metadata.setValue("version", "slendr_1.0.1");
     metadata.setValue("backend", "SLiM");
 
     metadata.setValue("description", DESCRIPTION);
@@ -921,8 +921,10 @@ function(i) model_time (i tick) {
 // Save the complete state of the simulation, including slendr-specific
 // population tags and values.
 function (void) save_state (void) {
+  write_log("saving simulation state to a tree sequence");
+
   // save the full genomic state of the simulation to a file
-  sim.outputFull(STATE_PATH + "population.txt");
+  sim.treeSeqOutput(STATE_PATH + "population.trees");
 
   // extract slendr-specific metadata and save it to a file too
   pop_data = Dictionary(
@@ -937,15 +939,17 @@ function (void) save_state (void) {
 // Load the complete state of the simulation, including slendr-specific
 // population tags and values, and choose a new random seed.
 function (void) reset_state (void) {
+  write_log("reading simulation state from a tree sequence");
+
   // read the genomic state of the simulation
-  sim.readFromPopulationFile(STATE_PATH + "population.txt");
+  sim.readFromPopulationFile(STATE_PATH + "population.trees");
 
   // increment the random seed after loading the simulation state
   setSeed(rdunif(1, 0, asInteger(2^31) - 1));
 
   // read the slendr metadata and assign appropriate tag values to each
   // loaded population to reset the proper slendr state (these tags are
-  // not saved by sim.outputFull)
+  // not saved by sim.treeSeqOutput or sim.outputFull)
   pop_data = Dictionary(readFile(STATE_PATH + "slendr.txt"));
   for (pop_id in pop_data.getValue("pop_id")) {
       pop = population(pop_id);

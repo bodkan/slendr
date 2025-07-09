@@ -18,7 +18,7 @@
 #' tools for population genetic simulations and data analysis.
 #'
 #' You can find installation instructions, reference manual, and tutorials at
-#' <https://www.slendr.net>.
+#' <https://slendr.net>.
 #' @docType package
 #' @name slendr
 #' @keywords internal

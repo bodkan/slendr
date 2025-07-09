@@ -1,4 +1,4 @@
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
 
 pop <- population("pop", time = 1, N = 10)
@@ -25,12 +25,6 @@ test_that("if `path =` is given, msprime returns it back and saves a tree-sequen
   result2 <- msprime(model, sequence_length = 1, recombination_rate = 0, random_seed = 123)
   ts <- ts_read(file = ts_path, model)
   expect_equal(ts_nodes(ts), ts_nodes(result2))
-})
-
-test_that("SLiMgui does not start in an interactive session", {
-  skip_if(!interactive())
-  expect_error(slim(model, sequence_length = 1, recombination_rate = 0),
-               "SLiMgui can only be run from an interactive R session")
 })
 
 test_that("slendr model directory must be present", {

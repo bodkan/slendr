@@ -1,5 +1,5 @@
 title: slendr
-url: https://www.slendr.net
+url: https://slendr.net
 
 template:
   bootstrap: 5
@@ -71,7 +71,7 @@ reference:
     - init_env
     - check_env
     - clear_env
-    - get_env
+    - get_python
     - check_dependencies
 
   - title: Model components

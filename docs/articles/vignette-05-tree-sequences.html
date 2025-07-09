@@ -5,102 +5,63 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="slendr">
 <title>Tree-sequence processing and statistics • slendr</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tree-sequence processing and statistics">
-<meta property="og:description" content="slendr">
-<meta property="og:image" content="https://www.slendr.net/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tree-sequence processing and statistics">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../index.html">
-    <span class="fa fa-home"></span>
-     
-  </a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">
-    <span class="fa fa-question-circle"></span>
-     
-    Reference
-  </a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../index.html"><span class="fa fa-home"></span></a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html"><span class="fa fa-question-circle"></span> Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown--articles">
-    <span class="fa fa-book"></span>
-     
-    Articles
-  </a>
-  <div class="dropdown-menu" aria-labelledby="dropdown--articles">
-    <a class="dropdown-item" href="../articles/vignette-00-installation.html">Installation instructions</a>
-    <a class="dropdown-item" href="../articles/vignette-01-tutorial.html">Introduction and basic tutorial</a>
-    <a class="dropdown-item" href="../articles/vignette-02-grid-model.html">Demes on a regular spatial grid</a>
-    <a class="dropdown-item" href="../articles/vignette-03-interactions.html">Programming dispersion dynamics</a>
-    <a class="dropdown-item" href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a>
-    <a class="dropdown-item" href="../articles/vignette-05-tree-sequences.html">Tree sequence processing and statistics</a>
-    <a class="dropdown-item" href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a>
-    <a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a>
-    <a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a>
-    <a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a>
-    <a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a>
-    <a class="dropdown-item" href="../articles/vignette-11-extensions.html">Selection simulations using slendr</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true"><span class="fa fa-book"></span> Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/vignette-00-installation.html">Installation instructions</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-01-tutorial.html">Introduction and basic tutorial</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-02-grid-model.html">Demes on a regular spatial grid</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-03-interactions.html">Programming dispersion dynamics</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-04-nonspatial-models.html">Traditional non-spatial models</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-05-tree-sequences.html">Tree sequence processing and statistics</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-11-extensions.html">Extending models with custom SLiM code</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/bodkan/slendr/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://twitter.com/fleventy5">
-    <span class="fa fa-twitter"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/bodkan/slendr/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://twitter.com/fleventy5"><span class="fa fa-twitter"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -124,9 +85,10 @@ is called “remembering” of individuals in the SLiM context) and how to
 perform simple analyses using <em>slendr</em>’s interface to the <a href="https://tskit.dev" class="external-link"><em>tskit</em></a> Python library. We will
 demonstrate these features on a simulation of Neanderthal introgression
 into anatomically modern humans. Specifically, we will show how to
-estimate the amount of Neanderthal ancestry using <span class="math inline">\(f\)</span>-statistics calculated directly on the
-tree-sequence data structure generated by a <em>slendr</em> model, all
-entirely from R.</p>
+estimate the amount of Neanderthal ancestry using
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>-statistics
+calculated directly on the tree-sequence data structure generated by a
+<em>slendr</em> model, all entirely from R.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/slendr" class="external-link">slendr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
@@ -163,12 +125,12 @@ environment for us:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the currently active Python environment:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.3.3_tskit-0.5.8_pyslim-1.0.4_tspop-0.0.2/bin/python </span></span>
-<span><span class="co">#&gt; Python version: 3.12.7 | packaged by conda-forge | (main, Oct  4 2024, 15:57:01) [Clang 17.0.6 ] </span></span>
+<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.3.4_tskit-0.6.4_pyslim-1.0.4_tspop-0.0.2/bin/python </span></span>
+<span><span class="co">#&gt; Python version: 3.12.10 | packaged by conda-forge | (main, Apr 10 2025, 22:19:24) [Clang 18.1.8 ] </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; slendr requirements:</span></span>
-<span><span class="co">#&gt;  - tskit: version  ✓ </span></span>
-<span><span class="co">#&gt;  - msprime: version  ✓ </span></span>
+<span><span class="co">#&gt;  - tskit: version 0.6.4 ✓ </span></span>
+<span><span class="co">#&gt;  - msprime: version 1.3.4 ✓ </span></span>
 <span><span class="co">#&gt;  - pyslim: version 1.0.4 ✓ </span></span>
 <span><span class="co">#&gt;  - tspop: present ✓</span></span></code></pre>
 <p>Now we’re good to go and ready to simulate and analyse tree sequence
@@ -247,8 +209,10 @@ they are removed from the simulation) present will be sampled from.</p>
 older one being the Altai Neanderthal published by Pruefer <em>et
 al.</em> 2014, the younger one Vindija Neanderthal published by Pruefer
 <em>et al.</em>, 2017). These two genomes are what we need to estimate
-Neanderthal ancestry proportion using a so-called <span class="math inline">\(f_4\)</span>-ratio statistic (more on that below,
-but also see Petr <em>et al.</em>, PNAS 2019):</p>
+Neanderthal ancestry proportion using a so-called
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mn>4</mn></msub><annotation encoding="application/x-tex">f_4</annotation></semantics></math>-ratio
+statistic (more on that below, but also see Petr <em>et al.</em>, PNAS
+2019):</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nea_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">70000</span>, <span class="fl">40000</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">nea</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">nea_samples</span></span></code></pre></div>
@@ -327,7 +291,7 @@ in previous vignettes, in this case we will run the simulation with the
 <code><a href="../reference/msprime.html">msprime()</a></code> coalescent back end. After all, our model is
 non-spatial and using a coalescent simulator will be much more efficient
 than the forward simulation. Switching between the msprime and SLiM back
-ends of slendr is demonstrated in much more detail in a <a href="https://www.slendr.net/articles/vignette-07-backends.html">dedicated
+ends of slendr is demonstrated in much more detail in a <a href="https://slendr.net/articles/vignette-07-backends.html">dedicated
 vignette</a>.</p>
 <p>The simulation back end utilized by the <code><a href="../reference/msprime.html">msprime()</a></code>
 function (as well as the <code><a href="../reference/slim.html">slim()</a></code> function) produces a
@@ -344,9 +308,9 @@ downstream analysis.</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     240041║</span></span>
+<span><span class="co">#&gt; ║Trees          │    240,041║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
+<span><span class="co">#&gt; ║Sequence Length│      1e+08║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Time Units     │generations║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -354,25 +318,25 @@ downstream analysis.</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Total Size     │   40.0 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
-<span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
-<span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
-<span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │916588│ 28.0 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│    58│  1.6 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Migrations │     0│  8 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │189654│  5.1 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     1│  7.1 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Sites      │     0│ 16 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>
+<span><span class="co">#&gt; ╔═══════════╤═══════╤═════════╤════════════╗</span></span>
+<span><span class="co">#&gt; ║Table      │Rows   │Size     │Has Metadata║</span></span>
+<span><span class="co">#&gt; ╠═══════════╪═══════╪═════════╪════════════╣</span></span>
+<span><span class="co">#&gt; ║Edges      │916,588│ 28.0 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Individuals│     58│  1.6 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Migrations │      0│  8 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Mutations  │      0│ 16 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Nodes      │189,654│  5.1 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Provenances│      1│  7.1 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
 <p>Note that we bind the individual sampling schedule data frames using
 the <code>rbind</code> function provided by base R (as we show above,
 the sampling schedule really is just a data frame and we can manipulate
@@ -426,7 +390,7 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//Rtmp4cCn0u/filec35a592d5f76"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/h2/qs0z_44x2vn2sskqc0cct7540000gn/T//RtmpPsBAa1/file15f454088cc5b"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
@@ -444,9 +408,9 @@ only once, and only during loading):</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     240041║</span></span>
+<span><span class="co">#&gt; ║Trees          │    240,041║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
+<span><span class="co">#&gt; ║Sequence Length│      1e+08║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Time Units     │generations║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -454,25 +418,25 @@ only once, and only during loading):</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Total Size     │   40.0 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
-<span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
-<span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
-<span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │916588│ 28.0 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│    58│  1.6 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Migrations │     0│  8 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │189654│  5.1 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     1│  7.1 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Sites      │     0│ 16 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>
+<span><span class="co">#&gt; ╔═══════════╤═══════╤═════════╤════════════╗</span></span>
+<span><span class="co">#&gt; ║Table      │Rows   │Size     │Has Metadata║</span></span>
+<span><span class="co">#&gt; ╠═══════════╪═══════╪═════════╪════════════╣</span></span>
+<span><span class="co">#&gt; ║Edges      │916,588│ 28.0 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Individuals│     58│  1.6 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Migrations │      0│  8 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Mutations  │      0│ 16 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Nodes      │189,654│  5.1 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Provenances│      1│  7.1 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
 <p>Not surprisingly, we get the same output which we got above when we
 printed the tree sequence returned by the <code><a href="../reference/msprime.html">msprime()</a></code>
 function. This shows that under normal circumstances, loading the output
@@ -485,9 +449,9 @@ simplified form, by definition coming from a coalescent simulator.</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     238681║</span></span>
+<span><span class="co">#&gt; ║Trees          │    238,681║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
+<span><span class="co">#&gt; ║Sequence Length│      1e+08║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Time Units     │generations║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -495,25 +459,25 @@ simplified form, by definition coming from a coalescent simulator.</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Total Size     │   36.7 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
-<span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
-<span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
-<span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │864772│ 26.4 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│    58│  1.6 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Migrations │     0│  8 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │139203│  3.7 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     2│  7.7 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Sites      │     0│ 16 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>
+<span><span class="co">#&gt; ╔═══════════╤═══════╤═════════╤════════════╗</span></span>
+<span><span class="co">#&gt; ║Table      │Rows   │Size     │Has Metadata║</span></span>
+<span><span class="co">#&gt; ╠═══════════╪═══════╪═════════╪════════════╣</span></span>
+<span><span class="co">#&gt; ║Edges      │864,772│ 26.4 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Individuals│     58│  1.6 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Migrations │      0│  8 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Mutations  │      0│ 16 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Nodes      │139,203│  3.7 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Provenances│      2│  7.7 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
 <p>By default, simplification trims the tree sequence down to only
 remembered individuals (i.e. those we explicitly scheduled for
 sampling), which is true for every <em>msprime</em> tree sequence.
@@ -528,9 +492,9 @@ this:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     132496║</span></span>
+<span><span class="co">#&gt; ║Trees          │    132,496║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
+<span><span class="co">#&gt; ║Sequence Length│      1e+08║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Time Units     │generations║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -538,25 +502,25 @@ this:</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Total Size     │   19.0 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
-<span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
-<span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
-<span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │441206│ 13.5 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│     7│220 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Migrations │     0│  8 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Mutations  │     0│ 16 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │ 79249│  2.1 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     2│  7.7 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Sites      │     0│ 16 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>
+<span><span class="co">#&gt; ╔═══════════╤═══════╤═════════╤════════════╗</span></span>
+<span><span class="co">#&gt; ║Table      │Rows   │Size     │Has Metadata║</span></span>
+<span><span class="co">#&gt; ╠═══════════╪═══════╪═════════╪════════════╣</span></span>
+<span><span class="co">#&gt; ║Edges      │441,206│ 13.5 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Individuals│      7│220 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Migrations │      0│  8 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Mutations  │      0│ 16 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Nodes      │ 79,249│  2.1 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Provenances│      2│  7.7 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Sites      │      0│ 16 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
 <p>Similarly, <em>slendr</em> provides a function
 <code><a href="../reference/ts_recapitate.html">ts_recapitate()</a></code> which performs [recapitation]<a href="https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation" class="external-link uri">https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation</a>).
 Again, this is not needed for an <em>msprime</em> tree sequence, which
@@ -584,9 +548,9 @@ running:</p>
 <pre><code><span><span class="co">#&gt; ╔═══════════════════════════╗</span></span>
 <span><span class="co">#&gt; ║TreeSequence               ║</span></span>
 <span><span class="co">#&gt; ╠═══════════════╤═══════════╣</span></span>
-<span><span class="co">#&gt; ║Trees          │     240041║</span></span>
+<span><span class="co">#&gt; ║Trees          │    240,041║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
-<span><span class="co">#&gt; ║Sequence Length│  100000000║</span></span>
+<span><span class="co">#&gt; ║Sequence Length│      1e+08║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Time Units     │generations║</span></span>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
@@ -594,25 +558,25 @@ running:</p>
 <span><span class="co">#&gt; ╟───────────────┼───────────╢</span></span>
 <span><span class="co">#&gt; ║Total Size     │   76.8 MiB║</span></span>
 <span><span class="co">#&gt; ╚═══════════════╧═══════════╝</span></span>
-<span><span class="co">#&gt; ╔═══════════╤══════╤═════════╤════════════╗</span></span>
-<span><span class="co">#&gt; ║Table      │Rows  │Size     │Has Metadata║</span></span>
-<span><span class="co">#&gt; ╠═══════════╪══════╪═════════╪════════════╣</span></span>
-<span><span class="co">#&gt; ║Edges      │916588│ 28.0 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Individuals│    58│  1.6 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Migrations │     0│  8 Bytes│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Mutations  │623249│ 22.0 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Nodes      │189654│  5.1 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Populations│     4│338 Bytes│         Yes║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Provenances│     2│  7.9 KiB│          No║</span></span>
-<span><span class="co">#&gt; ╟───────────┼──────┼─────────┼────────────╢</span></span>
-<span><span class="co">#&gt; ║Sites      │621331│ 14.8 MiB│          No║</span></span>
-<span><span class="co">#&gt; ╚═══════════╧══════╧═════════╧════════════╝</span></span></code></pre>
+<span><span class="co">#&gt; ╔═══════════╤═══════╤═════════╤════════════╗</span></span>
+<span><span class="co">#&gt; ║Table      │Rows   │Size     │Has Metadata║</span></span>
+<span><span class="co">#&gt; ╠═══════════╪═══════╪═════════╪════════════╣</span></span>
+<span><span class="co">#&gt; ║Edges      │916,588│ 28.0 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Individuals│     58│  1.6 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Migrations │      0│  8 Bytes│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Mutations  │623,249│ 22.0 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Nodes      │189,654│  5.1 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Populations│      4│338 Bytes│         Yes║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Provenances│      2│  7.9 KiB│          No║</span></span>
+<span><span class="co">#&gt; ╟───────────┼───────┼─────────┼────────────╢</span></span>
+<span><span class="co">#&gt; ║Sites      │621,331│ 14.8 MiB│          No║</span></span>
+<span><span class="co">#&gt; ╚═══════════╧═══════╧═════════╧════════════╝</span></span></code></pre>
 <p>Having processed the simulated tree sequence, we can calculate some
 basic statistics on our simulated data.</p>
 <p>However, before we do that, we would first like to note that
@@ -655,28 +619,19 @@ got an ordinary <code>phylo</code> object:</p>
 <span><span class="co">#&gt; Node labels:</span></span>
 <span><span class="co">#&gt;   77386, 70, 2699, 5175, 5199, 6642, ...</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Rooted; includes branch lengths.</span></span></code></pre>
+<span><span class="co">#&gt; Rooted; includes branch length(s).</span></span></code></pre>
 <p>This means that we have the whole R phylogenetic ecosystem at our
 disposal to analyze such trees. For instance we can use the powerful
 package <em>ggtree</em> to plot the tree we have just extracted:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.amazon.com/Integration-Manipulation-Visualization-Phylogenetic-Computational-ebook/dp/B0B5NLZR1Z/" class="external-link">ggtree</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="color: #949494;">ggtree v3.10.1 For help: https://yulab-smu.top/treedata-book/</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; </span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; If you use the ggtree package suite in published research, please cite</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; the appropriate paper(s):</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; </span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; Guangchuang Yu, David Smith, Huachen Zhu, Yi Guan, Tommy Tsan-Yuk Lam.</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; ggtree: an R package for visualization and annotation of phylogenetic</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; trees with their covariates and other associated data. Methods in</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; Ecology and Evolution. 2017, 8(1):28-36. doi:10.1111/2041-210X.12628</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; </span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; Guangchuang Yu.  Data Integration, Manipulation and Visualization of</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; Phylogenetic Trees (1st edition). Chapman and Hall/CRC. 2022,</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; doi:10.1201/9781003279242</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; </span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; G Yu. Data Integration, Manipulation and Visualization of Phylogenetic</span></span></span>
-<span><span class="co"><span style="color: #949494;">#&gt; Trees (1st ed.). Chapman and Hall/CRC. 2022. ISBN: 9781032233574 </span></span></span></code></pre>
+<pre><code><span><span class="co">#&gt; ggtree v3.16.0 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Please cite:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Guangchuang Yu.  Data Integration, Manipulation and Visualization of</span></span>
+<span><span class="co">#&gt; Phylogenetic Trees (1st edition). Chapman and Hall/CRC. 2022,</span></span>
+<span><span class="co">#&gt; doi:10.1201/9781003279242, ISBN: 9781032233574</span></span></code></pre>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/ggtree.html" class="external-link">ggtree</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/geom_point2.html" class="external-link">geom_point2</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>subset <span class="op">=</span> <span class="op">!</span><span class="va">isTip</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># points for internal nodes</span></span>
@@ -725,7 +680,7 @@ in R:</p>
 <span><span class="co">#&gt;   [5] "as_vcf"                          "aslist"                         </span></span>
 <span><span class="co">#&gt;   [7] "at"                              "at_index"                       </span></span>
 <span><span class="co">#&gt;   [9] "breakpoints"                     "check_index"                    </span></span>
-<span><span class="co">#&gt;  [11] "coalescence_time_distribution"   "coiterate"                      </span></span>
+<span><span class="co">#&gt;  [11] "coiterate"                       "concatenate"                    </span></span>
 <span><span class="co">#&gt;  [13] "count_topologies"                "decapitate"                     </span></span>
 <span><span class="co">#&gt;  [15] "delete_intervals"                "delete_sites"                   </span></span>
 <span><span class="co">#&gt;  [17] "diffs"                           "discrete_genome"                </span></span>
@@ -736,70 +691,81 @@ in R:</p>
 <span><span class="co">#&gt;  [27] "dump_text"                       "edge"                           </span></span>
 <span><span class="co">#&gt;  [29] "edge_diffs"                      "edges"                          </span></span>
 <span><span class="co">#&gt;  [31] "edges_child"                     "edges_left"                     </span></span>
-<span><span class="co">#&gt;  [33] "edges_parent"                    "edges_right"                    </span></span>
-<span><span class="co">#&gt;  [35] "edgesets"                        "equals"                         </span></span>
-<span><span class="co">#&gt;  [37] "f2"                              "f3"                             </span></span>
-<span><span class="co">#&gt;  [39] "f4"                              "file_uuid"                      </span></span>
-<span><span class="co">#&gt;  [41] "first"                           "Fst"                            </span></span>
-<span><span class="co">#&gt;  [43] "genealogical_nearest_neighbours" "general_stat"                   </span></span>
-<span><span class="co">#&gt;  [45] "genetic_relatedness"             "genetic_relatedness_weighted"   </span></span>
-<span><span class="co">#&gt;  [47] "genotype_matrix"                 "get_ll_tree_sequence"           </span></span>
-<span><span class="co">#&gt;  [49] "get_num_mutations"               "get_num_nodes"                  </span></span>
-<span><span class="co">#&gt;  [51] "get_num_records"                 "get_num_sites"                  </span></span>
-<span><span class="co">#&gt;  [53] "get_num_trees"                   "get_pairwise_diversity"         </span></span>
-<span><span class="co">#&gt;  [55] "get_population"                  "get_sample_size"                </span></span>
-<span><span class="co">#&gt;  [57] "get_samples"                     "get_sequence_length"            </span></span>
-<span><span class="co">#&gt;  [59] "get_time"                        "haplotypes"                     </span></span>
-<span><span class="co">#&gt;  [61] "has_reference_sequence"          "ibd_segments"                   </span></span>
-<span><span class="co">#&gt;  [63] "impute_unknown_mutations_time"   "indexes_edge_insertion_order"   </span></span>
-<span><span class="co">#&gt;  [65] "indexes_edge_removal_order"      "individual"                     </span></span>
-<span><span class="co">#&gt;  [67] "individual_locations"            "individual_populations"         </span></span>
-<span><span class="co">#&gt;  [69] "individual_times"                "individuals"                    </span></span>
-<span><span class="co">#&gt;  [71] "individuals_flags"               "individuals_location"           </span></span>
-<span><span class="co">#&gt;  [73] "individuals_population"          "individuals_time"               </span></span>
-<span><span class="co">#&gt;  [75] "kc_distance"                     "keep_intervals"                 </span></span>
-<span><span class="co">#&gt;  [77] "last"                            "ll_tree_sequence"               </span></span>
-<span><span class="co">#&gt;  [79] "load"                            "load_tables"                    </span></span>
-<span><span class="co">#&gt;  [81] "ltrim"                           "max_root_time"                  </span></span>
-<span><span class="co">#&gt;  [83] "max_time"                        "mean_descendants"               </span></span>
-<span><span class="co">#&gt;  [85] "metadata"                        "metadata_schema"                </span></span>
-<span><span class="co">#&gt;  [87] "migration"                       "migrations"                     </span></span>
-<span><span class="co">#&gt;  [89] "migrations_dest"                 "migrations_left"                </span></span>
-<span><span class="co">#&gt;  [91] "migrations_node"                 "migrations_right"               </span></span>
-<span><span class="co">#&gt;  [93] "migrations_source"               "migrations_time"                </span></span>
-<span><span class="co">#&gt;  [95] "min_time"                        "mutation"                       </span></span>
-<span><span class="co">#&gt;  [97] "mutations"                       "mutations_node"                 </span></span>
-<span><span class="co">#&gt;  [99] "mutations_parent"                "mutations_site"                 </span></span>
-<span><span class="co">#&gt; [101] "mutations_time"                  "nbytes"                         </span></span>
-<span><span class="co">#&gt; [103] "newick_trees"                    "node"                           </span></span>
-<span><span class="co">#&gt; [105] "nodes"                           "nodes_flags"                    </span></span>
-<span><span class="co">#&gt; [107] "nodes_individual"                "nodes_population"               </span></span>
-<span><span class="co">#&gt; [109] "nodes_time"                      "num_edges"                      </span></span>
-<span><span class="co">#&gt; [111] "num_individuals"                 "num_migrations"                 </span></span>
-<span><span class="co">#&gt; [113] "num_mutations"                   "num_nodes"                      </span></span>
-<span><span class="co">#&gt; [115] "num_populations"                 "num_provenances"                </span></span>
-<span><span class="co">#&gt; [117] "num_samples"                     "num_sites"                      </span></span>
-<span><span class="co">#&gt; [119] "num_trees"                       "pairwise_diversity"             </span></span>
-<span><span class="co">#&gt; [121] "parse_windows"                   "population"                     </span></span>
-<span><span class="co">#&gt; [123] "populations"                     "provenance"                     </span></span>
-<span><span class="co">#&gt; [125] "provenances"                     "records"                        </span></span>
-<span><span class="co">#&gt; [127] "reference_sequence"              "rtrim"                          </span></span>
-<span><span class="co">#&gt; [129] "sample_count_stat"               "sample_size"                    </span></span>
-<span><span class="co">#&gt; [131] "samples"                         "segregating_sites"              </span></span>
-<span><span class="co">#&gt; [133] "sequence_length"                 "simplify"                       </span></span>
-<span><span class="co">#&gt; [135] "site"                            "sites"                          </span></span>
-<span><span class="co">#&gt; [137] "sites_position"                  "split_edges"                    </span></span>
-<span><span class="co">#&gt; [139] "subset"                          "table_metadata_schemas"         </span></span>
-<span><span class="co">#&gt; [141] "tables"                          "tables_dict"                    </span></span>
-<span><span class="co">#&gt; [143] "Tajimas_D"                       "time_units"                     </span></span>
-<span><span class="co">#&gt; [145] "to_macs"                         "to_nexus"                       </span></span>
-<span><span class="co">#&gt; [147] "trait_correlation"               "trait_covariance"               </span></span>
-<span><span class="co">#&gt; [149] "trait_linear_model"              "trait_regression"               </span></span>
-<span><span class="co">#&gt; [151] "trees"                           "trim"                           </span></span>
-<span><span class="co">#&gt; [153] "union"                           "variants"                       </span></span>
-<span><span class="co">#&gt; [155] "write_fasta"                     "write_nexus"                    </span></span>
-<span><span class="co">#&gt; [157] "write_vcf"                       "Y1"                             </span></span>
-<span><span class="co">#&gt; [159] "Y2"                              "Y3"</span></span></code></pre>
+<span><span class="co">#&gt;  [33] "edges_metadata"                  "edges_parent"                   </span></span>
+<span><span class="co">#&gt;  [35] "edges_right"                     "edgesets"                       </span></span>
+<span><span class="co">#&gt;  [37] "equals"                          "extend_haplotypes"              </span></span>
+<span><span class="co">#&gt;  [39] "f2"                              "f3"                             </span></span>
+<span><span class="co">#&gt;  [41] "f4"                              "file_uuid"                      </span></span>
+<span><span class="co">#&gt;  [43] "first"                           "Fst"                            </span></span>
+<span><span class="co">#&gt;  [45] "genealogical_nearest_neighbours" "general_stat"                   </span></span>
+<span><span class="co">#&gt;  [47] "genetic_relatedness"             "genetic_relatedness_matrix"     </span></span>
+<span><span class="co">#&gt;  [49] "genetic_relatedness_vector"      "genetic_relatedness_weighted"   </span></span>
+<span><span class="co">#&gt;  [51] "genotype_matrix"                 "get_ll_tree_sequence"           </span></span>
+<span><span class="co">#&gt;  [53] "get_num_mutations"               "get_num_nodes"                  </span></span>
+<span><span class="co">#&gt;  [55] "get_num_records"                 "get_num_sites"                  </span></span>
+<span><span class="co">#&gt;  [57] "get_num_trees"                   "get_pairwise_diversity"         </span></span>
+<span><span class="co">#&gt;  [59] "get_population"                  "get_sample_size"                </span></span>
+<span><span class="co">#&gt;  [61] "get_samples"                     "get_sequence_length"            </span></span>
+<span><span class="co">#&gt;  [63] "get_time"                        "haplotypes"                     </span></span>
+<span><span class="co">#&gt;  [65] "has_reference_sequence"          "ibd_segments"                   </span></span>
+<span><span class="co">#&gt;  [67] "impute_unknown_mutations_time"   "indexes_edge_insertion_order"   </span></span>
+<span><span class="co">#&gt;  [69] "indexes_edge_removal_order"      "individual"                     </span></span>
+<span><span class="co">#&gt;  [71] "individual_locations"            "individual_populations"         </span></span>
+<span><span class="co">#&gt;  [73] "individual_times"                "individuals"                    </span></span>
+<span><span class="co">#&gt;  [75] "individuals_flags"               "individuals_location"           </span></span>
+<span><span class="co">#&gt;  [77] "individuals_metadata"            "individuals_nodes"              </span></span>
+<span><span class="co">#&gt;  [79] "individuals_population"          "individuals_time"               </span></span>
+<span><span class="co">#&gt;  [81] "kc_distance"                     "keep_intervals"                 </span></span>
+<span><span class="co">#&gt;  [83] "last"                            "ld_matrix"                      </span></span>
+<span><span class="co">#&gt;  [85] "ll_tree_sequence"                "load"                           </span></span>
+<span><span class="co">#&gt;  [87] "load_tables"                     "ltrim"                          </span></span>
+<span><span class="co">#&gt;  [89] "map_to_vcf_model"                "max_root_time"                  </span></span>
+<span><span class="co">#&gt;  [91] "max_time"                        "mean_descendants"               </span></span>
+<span><span class="co">#&gt;  [93] "metadata"                        "metadata_schema"                </span></span>
+<span><span class="co">#&gt;  [95] "migration"                       "migrations"                     </span></span>
+<span><span class="co">#&gt;  [97] "migrations_dest"                 "migrations_left"                </span></span>
+<span><span class="co">#&gt;  [99] "migrations_metadata"             "migrations_node"                </span></span>
+<span><span class="co">#&gt; [101] "migrations_right"                "migrations_source"              </span></span>
+<span><span class="co">#&gt; [103] "migrations_time"                 "min_time"                       </span></span>
+<span><span class="co">#&gt; [105] "mutation"                        "mutations"                      </span></span>
+<span><span class="co">#&gt; [107] "mutations_metadata"              "mutations_node"                 </span></span>
+<span><span class="co">#&gt; [109] "mutations_parent"                "mutations_site"                 </span></span>
+<span><span class="co">#&gt; [111] "mutations_time"                  "nbytes"                         </span></span>
+<span><span class="co">#&gt; [113] "newick_trees"                    "node"                           </span></span>
+<span><span class="co">#&gt; [115] "nodes"                           "nodes_flags"                    </span></span>
+<span><span class="co">#&gt; [117] "nodes_individual"                "nodes_metadata"                 </span></span>
+<span><span class="co">#&gt; [119] "nodes_population"                "nodes_time"                     </span></span>
+<span><span class="co">#&gt; [121] "num_edges"                       "num_individuals"                </span></span>
+<span><span class="co">#&gt; [123] "num_migrations"                  "num_mutations"                  </span></span>
+<span><span class="co">#&gt; [125] "num_nodes"                       "num_populations"                </span></span>
+<span><span class="co">#&gt; [127] "num_provenances"                 "num_samples"                    </span></span>
+<span><span class="co">#&gt; [129] "num_sites"                       "num_trees"                      </span></span>
+<span><span class="co">#&gt; [131] "pair_coalescence_counts"         "pair_coalescence_quantiles"     </span></span>
+<span><span class="co">#&gt; [133] "pair_coalescence_rates"          "pairwise_diversity"             </span></span>
+<span><span class="co">#&gt; [135] "parse_positions"                 "parse_sites"                    </span></span>
+<span><span class="co">#&gt; [137] "parse_windows"                   "pca"                            </span></span>
+<span><span class="co">#&gt; [139] "population"                      "populations"                    </span></span>
+<span><span class="co">#&gt; [141] "populations_metadata"            "provenance"                     </span></span>
+<span><span class="co">#&gt; [143] "provenances"                     "records"                        </span></span>
+<span><span class="co">#&gt; [145] "reference_sequence"              "rtrim"                          </span></span>
+<span><span class="co">#&gt; [147] "sample_count_stat"               "sample_nodes_by_ploidy"         </span></span>
+<span><span class="co">#&gt; [149] "sample_size"                     "samples"                        </span></span>
+<span><span class="co">#&gt; [151] "segregating_sites"               "sequence_length"                </span></span>
+<span><span class="co">#&gt; [153] "shift"                           "simplify"                       </span></span>
+<span><span class="co">#&gt; [155] "site"                            "sites"                          </span></span>
+<span><span class="co">#&gt; [157] "sites_metadata"                  "sites_position"                 </span></span>
+<span><span class="co">#&gt; [159] "split_edges"                     "subset"                         </span></span>
+<span><span class="co">#&gt; [161] "table_metadata_schemas"          "tables"                         </span></span>
+<span><span class="co">#&gt; [163] "tables_dict"                     "Tajimas_D"                      </span></span>
+<span><span class="co">#&gt; [165] "time_units"                      "to_macs"                        </span></span>
+<span><span class="co">#&gt; [167] "to_nexus"                        "trait_correlation"              </span></span>
+<span><span class="co">#&gt; [169] "trait_covariance"                "trait_linear_model"             </span></span>
+<span><span class="co">#&gt; [171] "trait_regression"                "trees"                          </span></span>
+<span><span class="co">#&gt; [173] "trim"                            "union"                          </span></span>
+<span><span class="co">#&gt; [175] "variants"                        "write_fasta"                    </span></span>
+<span><span class="co">#&gt; [177] "write_nexus"                     "write_vcf"                      </span></span>
+<span><span class="co">#&gt; [179] "Y1"                              "Y2"                             </span></span>
+<span><span class="co">#&gt; [181] "Y3"</span></span></code></pre>
 <p>In fact, you will recognize some of the elements in the output above
 from examples involving <code>ts_</code> functions in this vignette! In
 short, there is no blackbox—<em>slendr</em> only provides a slightly
@@ -819,7 +785,8 @@ branch lengths and the traditional summaries based on samples of genetic
 variation.</p>
 <p>For instance, we have functions such as <code><a href="../reference/ts_f4ratio.html">ts_f2()</a></code>,
 <code><a href="../reference/ts_f4ratio.html">ts_f3()</a></code>, <code><a href="../reference/ts_f4ratio.html">ts_f4()</a></code> and <code><a href="../reference/ts_f4ratio.html">ts_f4ratio()</a></code>
-which calculate the well-known set of Patterson’s <span class="math inline">\(f\)</span>-statistics:</p>
+which calculate the well-known set of Patterson’s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>-statistics:</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># f2 is a measure of the branch length connecting A and B</span></span>
 <span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f2</a></span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"EUR_1"</span>, B <span class="op">=</span> <span class="st">"AFR_1"</span><span class="op">)</span></span></code></pre></div>
@@ -891,10 +858,11 @@ of character names in each function’s interface.</p>
 </h2>
 <p>Let’s try to put these new tools to practice and estimate the
 proportion of Neanderthal ancestry in Africans and Europeans in our
-simulated data. We can do this using the Patterson’s <span class="math inline">\(f_4\)</span>-ratio statistic implemented in the
-<code><a href="../reference/ts_f4ratio.html">ts_f4ratio()</a></code> function in <em>slendr</em> (you can find more
-information about this particular version of the statistic in Petr
-<em>et al.</em>, PNAS 2019):</p>
+simulated data. We can do this using the Patterson’s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mn>4</mn></msub><annotation encoding="application/x-tex">f_4</annotation></semantics></math>-ratio
+statistic implemented in the <code><a href="../reference/ts_f4ratio.html">ts_f4ratio()</a></code> function in
+<em>slendr</em> (you can find more information about this particular
+version of the statistic in Petr <em>et al.</em>, PNAS 2019):</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># first get a table of simulated African and European individuals in the tree-sequence</span></span>
 <span><span class="va">inds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pop</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR"</span>, <span class="st">"EUR"</span><span class="op">)</span><span class="op">)</span></span>
@@ -947,7 +915,7 @@ to a file format called EIGENSTRAT using the
 <code><a href="../reference/ts_eigenstrat.html">ts_eigenstrat()</a></code> function. The file conversion is internally
 handled by the R package <a href="https://bodkan.net/admixr/" class="external-link"><em>admixr</em></a> and returns an
 <code>EIGENSTRAT</code> object which ties all individual
-<code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/01-tutorial.html" class="external-link">tutorial</a>
+<code>EIGENSTRAT</code> file components together (see the <a href="https://bodkan.net/admixr/articles/vignette-01-tutorial.html" class="external-link">tutorial</a>
 to <em>admixr</em> for an extensive overview). <em>admixr</em> is an R
 package for running automated ADMIXTOOLS analyses entirely from R and
 makes these types of analyses very convenient.</p>
@@ -956,13 +924,23 @@ makes these types of analyses very convenient.</p>
 <pre><code><span><span class="co">#&gt; 1282 multiallelic sites (0.206% out of 621331 total) detected and removed</span></span></code></pre>
 <p>Running an <em>admixr</em> analysis is then as easy as plugging the
 object into an <em>admixr</em> function. For instance, we can estimate
-the proportion of Neanderthal ancestry in a couple of individuals <span class="math inline">\(X\)</span> like this (<em>admixr</em> calls this
-proportion <code>alpha</code>):</p>
+the proportion of Neanderthal ancestry in a couple of individuals
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+like this (<em>admixr</em> calls this proportion
+<code>alpha</code>):</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bodkan/admixr" class="external-link">admixr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">snps</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>,</span>
 <span>        A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">3</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">12</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> " "</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">chr</span> (8): X1, X2, X3, X4, X5, X6, X7, X8</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (4): X9, X10, X11, X12</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
 <span><span class="co">#&gt;   A     B     X     C     O       alpha  stderr Zscore</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -971,16 +949,24 @@ proportion <code>alpha</code>):</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> NEA_1 NEA_2 AFR_2 AFR_1 CH_1  0.004<span style="text-decoration: underline;">08</span> 0.002<span style="text-decoration: underline;">08</span>   1.96</span></span></code></pre>
 <p>In fact, lets compare the values obtained by both <em>tskit</em> and
 <em>admixr</em>/ADMIXTOOLS for all individuals:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">europeans</span> <span class="op">&lt;-</span> <span class="va">inds</span><span class="op">[</span><span class="va">inds</span><span class="op">$</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"EUR"</span>, <span class="op">]</span><span class="op">$</span><span class="va">name</span></span>
 <span></span>
 <span><span class="co"># tskit result</span></span>
 <span><span class="va">result_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4ratio</a></span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_ts <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># result obtained by admixr/ADMIXTOOLS</span></span>
-<span><span class="va">result_admixr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span><span class="va">snps</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_admixr <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">result_admixr</span>, <span class="va">result_ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">result_admixr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span><span class="va">snps</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_admixr <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">50</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">12</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> " "</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">chr</span> (8): X1, X2, X3, X4, X5, X6, X7, X8</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (4): X9, X10, X11, X12</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">result_admixr</span>, <span class="va">result_ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">alpha_ts</span>, <span class="va">alpha_admixr</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"red"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -997,11 +983,11 @@ due to an extremely small amount of sequence data simulated here.</p>
 <p>In case you need to process simulated data in some other software,
 you can use the function <code><a href="../reference/ts_vcf.html">ts_vcf()</a></code> to save the simulated
 genotypes in a VCF format:</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_vcf.html">ts_vcf</a></span><span class="op">(</span><span class="va">ts</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output.vcf.gz"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You can also specify only a subset of individuals to be saved in the
 VCF:</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_vcf.html">ts_vcf</a></span><span class="op">(</span><span class="va">ts</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output_subset.vcf.gz"</span><span class="op">)</span>,</span>
 <span>       individuals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"EUR_1"</span>, <span class="st">"AFR_1"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -1018,14 +1004,16 @@ data right in the R console.</p>
 tree-sequence data for these examples.</p>
 <div class="section level3">
 <h3 id="f_st">
-<span class="math inline">\(F_{st}\)</span><a class="anchor" aria-label="anchor" href="#f_st"></a>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>s</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">F_{st}</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#f_st"></a>
 </h3>
-<p>The <span class="math inline">\(F_{st}\)</span> statistic is
-implemented by the function <code><a href="../reference/ts_fst.html">ts_fst()</a></code>.</p>
-<p>If a single genome-wide <span class="math inline">\(F_{st}\)</span>
+<p>The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>s</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">F_{st}</annotation></semantics></math>
+statistic is implemented by the function <code><a href="../reference/ts_fst.html">ts_fst()</a></code>.</p>
+<p>If a single genome-wide
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>s</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">F_{st}</annotation></semantics></math>
 is to be calculated (i.e. not a window-based calculation), the
 <code><a href="../reference/ts_fst.html">ts_fst()</a></code> returns a simple three-column data frame</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
@@ -1033,7 +1021,7 @@ is to be calculated (i.e. not a window-based calculation), the
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   0.049<span style="text-decoration: underline;">5</span></span></span></code></pre>
 <p>In case a non-named list of sample sets was provided, set names are
 generated automatically:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
@@ -1043,7 +1031,7 @@ generated automatically:</p>
 the sample sets appropriately.</p>
 <p>In case more than two sample sets are specified, all pairwise
 statistics are computed:</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>,</span>
 <span>                              eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span>
 <span>                              nea <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -1057,13 +1045,14 @@ statistics are computed:</p>
 <code><a href="../reference/ts_fst.html">ts_fst()</a></code> accepts a <code>windows</code> argument,
 specifying the breakpoints between windows. In this case, the
 <code>Fst</code> column in the resulting data frame is a so called
-“list-column”, with each item in the column being a vector of <span class="math inline">\(F_{st}\)</span> values, one per each window.
-List-columns can be a little confusing for new R users, but we highly
-encourage you to get used to them as they allow extremely concise and
-elegant handling of structured data within normal data frames (you can
-start with <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html" class="external-link">this</a>
+“list-column”, with each item in the column being a vector of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>s</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">F_{st}</annotation></semantics></math>
+values, one per each window. List-columns can be a little confusing for
+new R users, but we highly encourage you to get used to them as they
+allow extremely concise and elegant handling of structured data within
+normal data frames (you can start with <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html" class="external-link">this</a>
 introduction).</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define breakpoints between 20 windows</span></span>
 <span><span class="va">breakpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ts</span><span class="op">$</span><span class="va">sequence_length</span>, length.out <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></span>
 <span></span>
@@ -1083,9 +1072,11 @@ introduction).</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   <span style="color: #949494;">&lt;dbl [20]&gt;</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> afr   nea   <span style="color: #949494;">&lt;dbl [20]&gt;</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> eur   nea   <span style="color: #949494;">&lt;dbl [20]&gt;</span></span></span></code></pre>
-<p>For instance, here are window-based <span class="math inline">\(F_st\)</span> values for the
-<code>afr-vs-eur</code> calculation (first row of the table above):</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<p>For instance, here are window-based
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>s</mi></msub><mi>t</mi></mrow><annotation encoding="application/x-tex">F_st</annotation></semantics></math>
+values for the <code>afr-vs-eur</code> calculation (first row of the
+table above):</p>
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">win_fst</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">Fst</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $`1`</span></span>
 <span><span class="co">#&gt;  [1] 0.04241163 0.06803338 0.04129167 0.06031210 0.05516414 0.03059425</span></span>
@@ -1094,14 +1085,15 @@ introduction).</p>
 <span><span class="co">#&gt; [19] 0.03929837 0.06373172</span></span></code></pre>
 </div>
 <div class="section level3">
-<h3 id="tajimas-d">Tajima’s <span class="math inline">\(D\)</span><a class="anchor" aria-label="anchor" href="#tajimas-d"></a>
+<h3 id="tajimas-d">Tajima’s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#tajimas-d"></a>
 </h3>
 <p>The function <code><a href="../reference/ts_tajima.html">ts_tajima()</a></code> has nearly the same interface
 as <code><a href="../reference/ts_fst.html">ts_fst()</a></code> shown above.</p>
 <p>If a non-window version is to be calculated, we get a single
 genome-wide values for each sample set (named or non-named list of
 character vectors with individual names):</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
 <span><span class="co">#&gt;   set           D</span></span>
@@ -1109,9 +1101,12 @@ character vectors with individual names):</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">701</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> eur   -<span style="color: #BB0000;">0.014</span><span style="color: #BB0000; text-decoration: underline;">0</span></span></span></code></pre>
 <p>For window-based version, the function returns the <code>D</code>
-column as a list column of vectors with <span class="math inline">\(i\)</span>-th element being the Tajima’s D value
-for the <span class="math inline">\(i\)</span>-th window:</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+column as a list column of vectors with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
+element being the Tajima’s D value for the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
+window:</p>
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span>, windows <span class="op">=</span> <span class="va">breakpoints</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
 <span><span class="co">#&gt;   set   D           </span></span>
@@ -1131,7 +1126,7 @@ Let’s find out.</p>
 <p>First we extract individuals from all populations, creating a list of
 character vectors for each group (which is what functions such as
 <code><a href="../reference/ts_diversity.html">ts_diversity()</a></code> expects as an input):</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get sampled individuals from all populations</span></span>
 <span><span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1157,7 +1152,7 @@ character vectors for each group (which is what functions such as
 <span><span class="co">#&gt; [1] "NEA_1" "NEA_2"</span></span></code></pre>
 <p>Now we can calculate diversity in each population and sort the
 results in an increasing order of diversity:</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">diversity</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
 <span><span class="co">#&gt;   set   diversity</span></span>
@@ -1180,7 +1175,7 @@ would expect the lowest divergence between the two modern human groups
 two modern humans, and all three groups (<code>AFR</code>,
 <code>EUR</code> and <code>NEA</code>) should have equal, much deeper
 divergence from the outgroup chimpanzee <code>CH</code>.</p>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_divergence.html">ts_divergence</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">divergence</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y     divergence</span></span>
@@ -1208,32 +1203,30 @@ future. If there is some functionality that you would like to use in
 your project missing in <em>slendr</em>, please don’t hesitate to let us
 now by creating an issue on our <a href="https://github.com/bodkan/slendr/issues" class="external-link">GitHub page</a>.</p>
 <p>Finally, if you would like to see more examples of <em>tskit</em>
-interface in action, take a look at the vignette which describes <a href="https://www.slendr.net/articles/vignette-07-backends.html">switching
+interface in action, take a look at the vignette which describes <a href="https://slendr.net/articles/vignette-07-backends.html">switching
 between the SLiM and <em>msprime</em> back ends</a> of the
 <em>slendr</em> package.</p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Martin Petr.</p>
+  <p>Developed by Martin Petr.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

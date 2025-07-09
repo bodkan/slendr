@@ -91,8 +91,12 @@ population <- function(name, time, N, parent = NULL, map = FALSE,
   if (!is.logical(map) && !inherits(map, "slendr_map"))
     stop("A simulation landscape must be an object of the class slendr_map", call. = FALSE)
 
-  if (!is.null(parent) && is.logical(map) && map == FALSE)
+  if (!is.null(parent) && is.logical(map) && map == FALSE) {
     map <- attr(parent, "map")
+
+    if (!is.logical(map) && is.null(polygon) && (is.null(center) || is.null(radius)))
+      stop("A descendant of a spatial population cannot be nonspatial", call. = FALSE)
+  }
 
   if (inherits(map, "slendr_map")) {
     check_spatial_pkgs()
@@ -458,7 +462,10 @@ set_range <- function(pop, time, center = NULL, radius = NULL,
   if (lock) {
     areas <- slendr::area(result)$area
     area_change <- areas[length(areas)] / areas[length(areas) - 1]
-    prev_N <- utils::tail(sapply(attributes(pop)$history, function(event) event$N), 1)
+    # get all events featuring population size and extract the size of the last one
+    prev_N <- Filter(function(x) "N" %in% colnames(x), attributes(pop)$history) %>%
+      sapply(`[[`, "N") %>%
+      utils::tail(1)
     new_N <- round(area_change * prev_N)
     result <- resize(result, N = new_N, time = time, how = "step")
   }
@@ -788,30 +795,12 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
     # the small scale Natural Earth data is bundled with slendr
     ne_dir <- file.path(tempdir(), "naturalearth")
     if (scale == "small") {
-      utils::unzip(system.file("naturalearth/ne_110m_land.zip", package = "slendr"),
-                   exdir = ne_dir)
+      utils::unzip(system.file("naturalearth/ne_110m_land.zip", package = "slendr"), exdir = ne_dir)
     } else {
-      size <- ifelse(scale == "large", 10, 50)
-      file <- sprintf("ne_%sm_land.zip", size)
-      if (!dir.exists(ne_dir)) dir.create(ne_dir)
-      path <- file.path(ne_dir, file)
-      utils::download.file(
-        url = sprintf("https://naturalearth.s3.amazonaws.com/%sm_physical/%s", size, file),
-        destfile = path, quiet = TRUE
-      )
-      utils::unzip(path, exdir = ne_dir)
+      rnaturalearth::ne_download(scale = scale, type = "land", category = "physical", destdir = ne_dir, load = FALSE)
     }
 
-    # TODO: this function uses internally rgdal, which is to be retired by 2023
-    # silence the deprecation warning for now, as it would only confuse the user
-    # and figure out a way to deal with this (either by providing a PR to the devs
-    # or hacking our own alternative)
-    suppressWarnings(
-      map_raw <- rnaturalearth::ne_load(
-        scale = scale, type = "land", category = "physical",
-        returnclass = "sf", destdir = ne_dir
-      )
-    )
+    map_raw <- rnaturalearth::ne_load(scale = scale, type = "land", category = "physical", destdir = ne_dir)
     sf::st_agr(map_raw) <- "constant"
 
     # define boundary coordinates in the target CRS
@@ -1360,12 +1349,14 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
 #'
 #' @export
 init_env <- function(quiet = FALSE) {
-  if (!is_slendr_env_present())
+  if (!check_dependencies(python = TRUE))
     stop("Could not activate slendr's Python environment because it is not\npresent ",
          "on your system ('", PYTHON_ENV, "').\n\n",
          "To set up a dedicated Python environment you first need to run setup_env().", call. = FALSE)
   else {
-    reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
+    # reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
+    python_path <- slendr::get_python()
+    reticulate::use_python(python_path, required = TRUE)
 
     # this is an awful workaround around the reticulate/Python bug which prevents
     # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
@@ -1398,6 +1389,20 @@ init_env <- function(quiet = FALSE) {
         message("The interface to all required Python modules has been activated.")
     }
   }
+}
+
+#' Get a path to internal Python interpreter of slendr
+#'
+#' @return A character scalar path to slendr's Python binary
+#'
+#' @export
+get_python <- function() {
+  env_path <- file.path(reticulate::miniconda_path(), "envs", PYTHON_ENV)
+  if (Sys.info()["sysname"] == "Windows")
+    python_path <- normalizePath(file.path(env_path, "python.exe"), winslash = "/", mustWork = FALSE)
+  else
+    python_path <- file.path(env_path, "bin", "python")
+  python_path
 }
 
 #' Setup a dedicated Python virtual environment for slendr
@@ -1537,12 +1542,6 @@ clear_env <- function(force = FALSE, all = FALSE) {
   }
 }
 
-#' Get the name of the current slendr Python environment
-#'
-#' @return Name of the slendr Python environment
-get_env <- function() {
-  PYTHON_ENV
-}
 
 #' Check that the active Python environment is setup for slendr
 #'

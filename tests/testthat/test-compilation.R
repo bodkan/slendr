@@ -66,7 +66,7 @@ test_that("deletion in non-interactive mode must be forced", {
   expect_true(grepl("dir-forced$", model$path))
 })
 
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
 
 test_that("sequence length can only be an integer number (SLiM)", {
@@ -90,7 +90,7 @@ test_that("sequence length can only be an integer number (msprime)", {
 test_that("recombination rate can only be an integer number (SLiM)", {
   p <- population(name = "pop1", N = 700, time = 1)
   model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
-  error_msg <- "Recombination rate must be a numeric value"
+  error_msg <- "Recombination rate must be a non-negative numeric value"
   expect_error(slim(model, sequence_length = 100, recombination_rate = "asdf"), error_msg)
   expect_error(slim(model, sequence_length = 100, recombination_rate = -1), error_msg)
   expect_s3_class(slim(model, sequence_length = 100, recombination_rate = 1e-8), "slendr_ts")
@@ -99,7 +99,7 @@ test_that("recombination rate can only be an integer number (SLiM)", {
 test_that("recombination rate can only be an integer number (msprime)", {
   p <- population(name = "pop1", N = 700, time = 1)
   model <- compile_model(populations = p, generation_time = 30, simulation_length = 1000)
-  error_msg <- "Recombination rate must be a numeric value"
+  error_msg <- "Recombination rate must be a non-negative numeric value"
   expect_error(msprime(model, sequence_length = 100, recombination_rate = "asdf", random_seed = 42), error_msg)
   expect_error(msprime(model, sequence_length = 100, recombination_rate = -1, random_seed = 42), error_msg)
   expect_silent(msprime(model, sequence_length = 100, recombination_rate = 1e-8, random_seed = 42))
@@ -197,7 +197,7 @@ test_that("parameters of the base model are extracted properly (from model)", {
   expect_equal(names(pars), "splits")
 })
 
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
 
 ts <- msprime(model, sequence_length = 1, recombination_rate = 0)

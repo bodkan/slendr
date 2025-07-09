@@ -1,4 +1,4 @@
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 
 init_env(quiet = TRUE)
 
@@ -342,10 +342,10 @@ test_that("ts_eigenstrat requires recapitated and mutated data (SLiM)", {
   suppressMessages(expect_s3_class(ts_eigenstrat(ts6, prefix), "EIGENSTRAT"))
 
   path <- file.path(tempdir(), "gt.vcf.gz")
-  expect_error(ts_vcf(ts1, path), "Tree sequence was not recapitated")
-  expect_error(ts_vcf(ts2, path), "Attempting to extract genotypes")
-  expect_error(ts_vcf(ts3, path), "Attempting to extract genotypes")
-  expect_error(ts_vcf(ts4, path), "Attempting to extract genotypes")
+  expect_error(
+    expect_warning(ts_vcf(ts1, path), "Attempting to extract genotypes"),
+    "Tree sequence was not recapitated"
+  )
   expect_silent(suppressMessages(ts_vcf(ts5, path)))
   expect_silent(suppressMessages(ts_vcf(ts6, path)))
 })
@@ -368,9 +368,6 @@ test_that("ts_eigenstrat requires recapitated and mutated data (msprime)", {
   expect_s3_class(ts_eigenstrat(ts6, prefix), "EIGENSTRAT")
 
   path <- file.path(tempdir(), "gt.vcf.gz")
-  expect_error(ts_vcf(ts1, path), "Attempting to extract genotypes")
-  expect_error(ts_vcf(ts3, path), "Attempting to extract genotypes")
-  expect_error(ts_vcf(ts4, path), "Attempting to extract genotypes")
   expect_silent(suppressMessages(ts_vcf(ts5, path)))
   expect_silent(suppressMessages(ts_vcf(ts6, path)))
 })

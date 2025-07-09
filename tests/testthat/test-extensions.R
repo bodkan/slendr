@@ -1,4 +1,4 @@
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE, slim = TRUE))
 
 init_env(quiet = TRUE)
 

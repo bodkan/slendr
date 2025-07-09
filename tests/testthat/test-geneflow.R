@@ -47,7 +47,7 @@ test_that("gene-flow rate must be a value between 0 and 1", {
 })
 
 test_that("populations must be already created for a gene flow to happen (forward model)", {
-  skip_if(!is_slendr_env_present())
+  skip_if(!check_dependencies(python = TRUE))
   init_env(quiet = TRUE)
 
   pop1 <- population("pop1", N = 100, time = 100)
@@ -96,5 +96,137 @@ test_that("gene_flow() behaves as expected in some concrete situations", {
   expect_error(
     gene_flow(from = popA, to = popB, start = 8e6, end = (8e6-5), rate = 0.3),
     "Both A and B must be already present within the gene-flow window .*-.*"
+  )
+})
+
+test_that("gene flow must take longer than a generation (forward models)", {
+  p1 <- population("p1", time = 1, N = 100)
+  p2 <- population("p2", time = 100, N = 100, parent = p1)
+  p3 <- population("p3", time = 200, N = 100, parent = p2)
+
+  # gene flow before the existence of either population
+  expect_error(
+    gf <- gene_flow(from = p2, to = p3, rate = 0.5, start = 10, end = 80),
+    "Both p2 and p3 must be already present within the gene-flow window 10-80"
+  )
+  # gene flow before the existence of the target population (off by 1 "year")
+  expect_error(
+    gf <- gene_flow(from = p2, to = p3, rate = 0.5, start = 200, end = 250),
+    "Both p2 and p3 must be already present within the gene-flow window 200-250"
+  )
+  # shifting the start by 1 "year" fixes the error
+  expect_s3_class(
+    gf <- gene_flow(from = p2, to = p3, rate = 0.5, start = 201, end = 250),
+    "data.frame"
+  )
+
+  # problem: gene flow can be shorter than the span of a generation
+
+  # single invalid gene flow
+  gf <- gene_flow(from = p3, to = p1, rate = 0.5, start = 221, end = 230)
+  expect_error(
+    model <- compile_model(list(p1, p2, p3), generation_time = 20, gene_flow = gf, simulation_length = 1000),
+    "Gene flows cannot be shorter than the generation time of 20"
+  )
+
+  # multiple invalid gene flows
+  gf <- list(
+    gene_flow(from = p2, to = p3, rate = 0.5, start = 201, end = 210),
+    gene_flow(from = p3, to = p1, rate = 0.5, start = 221, end = 230)
+  )
+
+  expect_error(
+    model <- compile_model(list(p1, p2, p3), generation_time = 20,
+                           gene_flow = gf, simulation_length = 1000),
+    "Gene flows cannot be shorter than the generation time of 20"
+  )
+
+  # single invalid gene flows among multiple
+  gf <- list(
+    gene_flow(from = p2, to = p3, rate = 0.5, start = 201, end = 250),
+    gene_flow(from = p3, to = p1, rate = 0.5, start = 221, end = 230)
+  )
+
+  expect_error(
+    model <- compile_model(list(p1, p2, p3), generation_time = 20,
+                           gene_flow = gf, simulation_length = 1000),
+    "Gene flows cannot be shorter than the generation time of 20"
+  )
+
+  # properly timed gene flows work OK
+  t <- 20
+  gf <- list(
+    gene_flow(from = p2, to = p3, rate = 0.5, start = 300, end = 300 + t),
+    gene_flow(from = p3, to = p1, rate = 0.5, start = 500, end = 500 + t)
+  )
+  expect_s3_class(
+    model <- compile_model(list(p1, p2, p3), generation_time = t,
+                           gene_flow = gf, simulation_length = 1000),
+    "slendr_model"
+  )
+})
+
+test_that("gene flow must take longer than a generation (backward models)", {
+  p1 <- population("p1", time = 1000, N = 100)
+  p2 <- population("p2", time = 800, N = 100, parent = p1)
+  p3 <- population("p3", time = 600, N = 100, parent = p2)
+
+  # gene flow before the existence of either population
+  expect_error(
+    gf <- gene_flow(from = p2, to = p3, rate = 0.5, start = 1000, end = 900),
+    "Both p2 and p3 must be already present within the gene-flow window 1000-900",
+  )
+  # gene flow before the existence of the target population (off by 1 "year")
+  expect_error(
+    gf <- gene_flow(from = p2, to = p3, rate = 0.5, start = 600, end = 500),
+    "Both p2 and p3 must be already present within the gene-flow window 600-500"
+  )
+  # shifting the start by 1 "year" fixes the error
+  expect_s3_class(
+    gf <- gene_flow(from = p2, to = p3, rate = 0.5, start = 599, end = 500),
+    "data.frame"
+  )
+
+  # problem: gene flow can be shorter than the span of a generation
+
+  # single invalid gene flow
+  gf <- gene_flow(from = p3, to = p1, rate = 0.5, start = 500, end = 490)
+  expect_error(
+    model <- compile_model(list(p1, p2, p3), generation_time = 20, gene_flow = gf, simulation_length = 1000),
+    "Gene flows cannot be shorter than the generation time of 20"
+  )
+
+  # multiple invalid gene flows
+  gf <- list(
+    gene_flow(from = p2, to = p3, rate = 0.5, start = 500, end = 490),
+    gene_flow(from = p3, to = p1, rate = 0.5, start = 100, end = 90)
+  )
+  expect_error(
+    model <- compile_model(list(p1, p2, p3), generation_time = 20,
+                           gene_flow = gf, simulation_length = 1000),
+    "Gene flows cannot be shorter than the generation time of 20"
+  )
+
+  # single invalid gene flows among multiple
+  gf <- list(
+    gene_flow(from = p2, to = p3, rate = 0.5, start = 500, end = 490),
+    gene_flow(from = p3, to = p1, rate = 0.5, start = 100, end = 90)
+  )
+  expect_error(
+    model <- compile_model(list(p1, p2, p3), generation_time = 20,
+                           gene_flow = gf, simulation_length = 1000),
+    "Gene flows cannot be shorter than the generation time of 20"
+  )
+
+  # properly timed gene flows work OK
+  t <- 20
+  gf <- list(
+    gene_flow(from = p2, to = p3, rate = 0.5, start = 500, end = 500 - t),
+    gene_flow(from = p3, to = p1, rate = 0.5, start = 100, end = 100 - t)
+  )
+  expect_s3_class(
+    model <- compile_model(list(p1, p2, p3), generation_time = t,
+                           gene_flow = gf, simulation_length = 1000),
+    "slendr_model"
   )
 })

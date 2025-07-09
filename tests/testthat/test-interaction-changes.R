@@ -1,6 +1,6 @@
-RERUN <- FALSE
+RERUN <- TRUE
 
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 
 init_env(quiet = TRUE)
 
@@ -52,7 +52,7 @@ test_that("interaction parameter change is correctly recorded", {
 })
 
 test_that("SLiM dispersals match expectations laid by R distributions", {
-  skip_if(!is_slendr_env_present())
+  skip_if(!check_dependencies(python = TRUE))
 
   seed <- 42
   set.seed(seed)
@@ -85,13 +85,23 @@ test_that("SLiM dispersals match expectations laid by R distributions", {
     locations
   }
 
-  normal <- slim_sim("normal", 10, seed)
-  uniform <- slim_sim("uniform", 10, seed)
-  cauchy <- slim_sim("cauchy", 10, seed)
-  exp <- slim_sim("exponential", 10, seed)
-  brownian <- slim_sim("brownian", 10, seed)
+  models <- c("normal", "uniform", "cauchy", "exponential", "brownian")
 
-  slim_distances <- rbind(normal, uniform, cauchy, exp, brownian) %>%
+  skip_if(Sys.info()["sysname"] == "Windows")
+  skip_on_cran()
+  if (Sys.getenv("RUNNER_OS") != "" || Sys.getenv("NOT_CRAN") == "TRUE")
+    n_cores <- 2
+  else
+    n_cores <- length(models)
+
+  results <- parallel::mclapply(models, function(m) slim_sim(m, 10, seed), mc.cores = n_cores)
+  # normal <- slim_sim("normal", 10, seed)
+  # uniform <- slim_sim("uniform", 10, seed)
+  # cauchy <- slim_sim("cauchy", 10, seed)
+  # exp <- slim_sim("exponential", 10, seed)
+  # brownian <- slim_sim("brownian", 10, seed)
+
+  slim_distances <- do.call(rbind, results) %>%
     dplyr::select(distance, fun) %>%
     dplyr::mutate(source = "SLiM")
 

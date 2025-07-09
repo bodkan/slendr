@@ -1,4 +1,4 @@
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 
 map <- world(xrange = c(1, 100), yrange = c(1, 100), landscape = "blank")
 

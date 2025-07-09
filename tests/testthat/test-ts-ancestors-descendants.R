@@ -1,4 +1,4 @@
-skip_if(!is_slendr_env_present())
+skip_if(!check_dependencies(python = TRUE))
 
 pop <- population("POP", time = 1, N = 100)
 
