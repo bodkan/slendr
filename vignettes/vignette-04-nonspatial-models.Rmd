@@ -87,9 +87,34 @@ samples <- schedule_sampling(
 ```
 
 ```{r}
+debugonce(schedule_sampling)
+
+expect_error(schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, 3, "Ust_Ishim")),
+             "A named sample must represent only a single individual, i.e. sampling of n = 1")
+
 schedule <- schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, 1, "Ust_Ishim"))
+ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
+
 schedule <- schedule_sampling(model, times = 15000, list(eur, 1), list(ehg, 10))
+ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
+
 schedule <- schedule_sampling(model, times = 45000, list(ooa, 1, "Ust_Ishim"))
+ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
+
+schedule <- schedule_sampling(
+  model,
+  times = c(0, 5000, 12000, 20000, 35000, 39000, 43000),
+  list(eur, 3), list(ehg, 1), list(yam, 1), list(ana, 3), list(ooa, 1), list(afr, 1)
+)
+ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
+
+schedule <- schedule_sampling(
+  model,
+  times = c(0, 5000, 12000, 20000, 35000, 39000, 43000),
+  list(eur, 3), list(ehg, 1), list(yam, 1), list(ana, 3), list(ooa, 1), list(afr, 1)
+) %>% rbind(schedule_sampling(model, times = 45000, list(ooa, 1, "Ust_Ishim")))
+ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
+
 ts_msprime <- msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule)
 ts_msprime <- msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule, run = FALSE)
 ```

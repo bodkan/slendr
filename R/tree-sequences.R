@@ -3033,10 +3033,8 @@ get_sampling <- function(metadata) {
         dplyr::filter(., n > 1) %>% .[rep(seq_len(nrow(.)), .$n), ]
       )
     } %>%
-    dplyr::group_by(pop) %>%
-    dplyr::mutate(name = paste0(pop, "_", 1:dplyr::n())) %>%
-    dplyr::ungroup() %>%
     dplyr::arrange(-time_orig, pop) %>%
+    dplyr::mutate(name = metadata$sample_names) %>%
     dplyr::rename(time = time_orig) %>%
     dplyr::select(name, time, pop)
 

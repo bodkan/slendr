@@ -1262,8 +1262,8 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   if (!all(purrr::map_lgl(sample_pops, ~ inherits(.x, "slendr_pop"))))
     stop("Objects to sample from must be of the class 'slendr_pop'", call. = FALSE)
 
-  if (!all(purrr::map_lgl(sample_counts, ~ .x == round(.x))))
-    stop("Sample counts must be integer numbers", call. = FALSE)
+  if (!all(purrr::map_lgl(sample_counts, ~ .x > 0 &&.x == round(.x))))
+    stop("Sample counts must be non-negative, non-zero integer numbers", call. = FALSE)
 
   # make sure that all sampling times fall in the time window of the simulation itself
   oldest_time <- get_oldest_time(model$populations, model$direction)
@@ -1285,10 +1285,6 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
       pop <- s[[1]]
       n <- s[[2]]
       name <- if (length(s) == 3) s[[3]] else NA
-
-      if (!is.na(name) && n != 1)
-        stop(paste0("A named sample must represent only a single individual, i.e. sampling of n = 1\n",
-                    sprintf("(n = %s was given for individual %s)", n, name)), call. = FALSE)
 
       tryCatch(
         {

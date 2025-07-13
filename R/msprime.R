@@ -133,7 +133,7 @@ msprime <- function(model, sequence_length, recombination_rate, samples = NULL,
         ifelse(verbose, "--verbose", ""),
         ifelse(debug, "--debug", ""),
         ifelse(coalescent_only, "--coalescent_only", ""),
-        "<path to a .trees file>"
+        "path_to_a_trees_file.trees"
       )
       cat(msprime_command, "\n")
       return(invisible())
