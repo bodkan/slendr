@@ -2,12 +2,12 @@ skip_if(!check_dependencies(python = TRUE))
 
 init_env(quiet = TRUE)
 
-afr <- population("AFR", time = 100000, N = 3000)
-ooa <- population("OOA", parent = afr, time = 60000, N = 500, remove = 23000)
-ehg <- population("EHG", parent = ooa, time = 28000, N = 1000, remove = 6000)
-eur <- population("EUR", parent = ehg, time = 25000, N = 2000)
-ana <- population("ANA", time = 28000, N = 3000, parent = ooa, remove = 4000)
-yam <- population("YAM", time = 7000, N = 500, parent = ehg, remove = 2500)
+afr <- population("AFR", time = 100000, N = 30)
+ooa <- population("OOA", parent = afr, time = 60000, N = 5, remove = 23000)
+ehg <- population("EHG", parent = ooa, time = 28000, N = 10, remove = 6000)
+eur <- population("EUR", parent = ehg, time = 25000, N = 20)
+ana <- population("ANA", time = 28000, N = 30, parent = ooa, remove = 4000)
+yam <- population("YAM", time = 7000, N = 5, parent = ehg, remove = 2500)
 model <- compile_model(populations = list(afr, ooa, ehg, eur, ana, yam), generation_time = 30)
 
 test_that("number of samples must be a non-zero integer larger than one", {
