@@ -42,7 +42,7 @@ check_ordering <- function(samples, direction) {
     do.call(rbind, .)
 }
 
-test_that("temporal ordering of samples remains consistent with the schedule", {
+test_that("temporal ordering of samples remains consistent with the schedule (msprime)", {
   schedule <- schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, 1, "Ust_Ishim"))
   samples <- ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
   expect_true(all(check_ordering(samples, "backward")$ordered))
@@ -89,6 +89,59 @@ test_that("temporal ordering of samples remains consistent with the schedule", {
     schedule_sampling(model, times = 9000, list(ehg, 1)),
   )
   samples <- ts_samples(msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
+  schedule_ids <- dplyr::arrange(schedule, time) %>% dplyr::group_by(pop) %>% dplyr::mutate(id = paste0(pop, "-", time, "-", 1:dplyr::n())) %>% .$id
+  samples_ids <- dplyr::arrange(samples, time) %>% dplyr::group_by(pop) %>% dplyr::mutate(id = paste0(pop, "-", time, "-", 1:dplyr::n())) %>% .$id
+  expect_equal(schedule_ids, samples_ids)
+})
+
+test_that("temporal ordering of samples remains consistent with the schedule (SLiM)", {
+  schedule <- schedule_sampling(model, times = 45000, list(afr, 10), list(ooa, 1, "Ust_Ishim"))
+  ts <- slim(model, sequence_length = 100000, recombination_rate = 0, samples = schedule)
+  samples <- ts_samples(ts)
+  expect_true(all(check_ordering(samples, "backward")$ordered))
+
+  schedule <- rbind(
+    schedule_sampling(model, times = c(45000, 30000), list(afr, 10), list(ooa, 1)),
+    schedule_sampling(model, times = 40000, list(ooa, 1, "Ust_Ishim"))
+  )
+  samples <- ts_samples(slim(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
+  expect_true(all(check_ordering(samples, "backward")$ordered))
+
+  schedule <- dplyr::bind_rows(
+    schedule_sampling(model, times = 10000, list(afr, 10)),
+    schedule_sampling(model, times = 30000, list(afr, 30)),
+    schedule_sampling(model, times = 40000, list(afr, 40)),
+    schedule_sampling(model, times = 5000, list(afr, 5)),
+    schedule_sampling(model, times = 5000, list(eur, 5)),
+    schedule_sampling(model, times = 1000, list(eur, 1)),
+    schedule_sampling(model, times = 3000, list(eur, 3)),
+    schedule_sampling(model, times = 2000, list(eur, 2))
+  )
+  samples <- ts_samples(slim(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
+  expect_true(all(check_ordering(samples, "backward")$ordered))
+
+  # the above tests were testing consistency of times -- here let's check 1-to-1 correspondence
+  schedule <- dplyr::bind_rows(
+    schedule_sampling(model, times = 10000, list(afr, 1)),
+    schedule_sampling(model, times = 30000, list(afr, 1)),
+    schedule_sampling(model, times = 40000, list(afr, 1)),
+    schedule_sampling(model, times = 5000, list(afr, 1)),
+
+    schedule_sampling(model, times = 35000, list(ooa, 1)),
+    schedule_sampling(model, times = 41000, list(ooa, 1)),
+    schedule_sampling(model, times = 40000, list(ooa, 1)),
+
+    schedule_sampling(model, times = 5000, list(eur, 1)),
+    schedule_sampling(model, times = 1000, list(eur, 1)),
+    schedule_sampling(model, times = 3000, list(eur, 1)),
+    schedule_sampling(model, times = 2000, list(eur, 1)),
+
+    schedule_sampling(model, times = 10000, list(ehg, 1)),
+    schedule_sampling(model, times = 18000, list(ehg, 1)),
+    schedule_sampling(model, times = 17000, list(ehg, 1)),
+    schedule_sampling(model, times = 9000, list(ehg, 1)),
+  )
+  samples <- ts_samples(slim(model, sequence_length = 100000, recombination_rate = 0, samples = schedule))
   schedule_ids <- dplyr::arrange(schedule, time) %>% dplyr::group_by(pop) %>% dplyr::mutate(id = paste0(pop, "-", time, "-", 1:dplyr::n())) %>% .$id
   samples_ids <- dplyr::arrange(samples, time) %>% dplyr::group_by(pop) %>% dplyr::mutate(id = paste0(pop, "-", time, "-", 1:dplyr::n())) %>% .$id
   expect_equal(schedule_ids, samples_ids)
