@@ -183,15 +183,13 @@ def simulate(
   # were kept during the process of ts_simplify() etc.)
   pop_counts = collections.defaultdict(int)
   sample_names = []
-  samples.sort_values(by=["time_orig", "pop"], inplace=True, ascending=[False, True])
-#   breakpoint()
   for row in samples.itertuples(index=False):
       if row.name == "-":
           sample_names += [f"{row.pop}_{i + 1}" for i in range(pop_counts[row.pop], pop_counts[row.pop] + row.n)]
           pop_counts[row.pop] += row.n
       else:
           sample_names += [row.name]
-#   breakpoint()
+
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
       "slendr": {
