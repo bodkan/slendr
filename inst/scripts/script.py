@@ -79,10 +79,10 @@ def simulate(
           end_time = oldest_time - orig_length
       samples = pandas.DataFrame(
           [
-            (pop.initial_size, pop.name, length + 1, -1, -1, end_time, -1, -1)
+            (pop.initial_size, pop.name, "-", length + 1, -1, -1, end_time, -1, -1)
             for pop in demography.populations
           ],
-          columns=["n", "pop", "time_gen", "x", "y", "time_orig", "x_orig", "y_orig"]
+          columns=["n", "pop", "name", "time_gen", "x", "y", "time_orig", "x_orig", "y_orig"]
       )
 
   logging.info("Loading the sampling schedule")
