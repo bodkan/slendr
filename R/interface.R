@@ -791,16 +791,30 @@ world <- function(xrange, yrange, landscape = "naturalearth", crs = NULL,
     map <- sf::st_sf(geometry = sf::st_sfc()) %>%
       set_bbox(xmin = xrange[1], xmax = xrange[2], ymin = yrange[1], ymax = yrange[2])
   } else if (landscape == "naturalearth") {  # Natural Earth data vector landscape
+  scale <- match.arg(scale)
     scale <- match.arg(scale)
-    # the small scale Natural Earth data is bundled with slendr
-    ne_dir <- file.path(tempdir(), "naturalearth")
+
     if (scale == "small") {
-      utils::unzip(system.file("naturalearth/ne_110m_land.zip", package = "slendr"), exdir = ne_dir)
+      map_raw <- sf::read_sf(
+        system.file("naturalearth/ne_110m_land.gpkg", package = "slendr")
+      )
     } else {
-      rnaturalearth::ne_download(scale = scale, type = "land", category = "physical", destdir = ne_dir, load = FALSE)
+      ne_dir <- tempdir()
+      rnaturalearth::ne_download(
+        scale = scale,
+        type = "land",
+        category = "physical",
+        destdir = ne_dir,
+        load = FALSE
+      )
+      map_raw <- rnaturalearth::ne_load(
+        scale = scale,
+        type = "land",
+        category = "physical",
+        destdir = ne_dir
+      )
     }
 
-    map_raw <- rnaturalearth::ne_load(scale = scale, type = "land", category = "physical", destdir = ne_dir)
     sf::st_agr(map_raw) <- "constant"
 
     # define boundary coordinates in the target CRS
