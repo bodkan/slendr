@@ -43,30 +43,8 @@ slendr will simply instruct its SLiM backend script to sample individuals as
 close to the sampling points given as possible, regardless of whether those
 points lie within a population spatial boundary at that particular moment of
 time.
-}
-\examples{
-\dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
-}
-init_env()
 
-# load an example model with an already simulated tree sequence
-path <- system.file("extdata/models/introgression", package = "slendr")
-model <- read_model(path)
-
-# afr and eur objects would normally be created before slendr model compilation,
-# but here we take them out of the model object already compiled for this
-# example (in a standard slendr simulation pipeline, this wouldn't be necessary)
-afr <- model$populations[["AFR"]]
-eur <- model$populations[["EUR"]]
-
-# schedule the recording of 10 African and 100 European individuals from a
-# given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-schedule <- schedule_sampling(
-  model, times = c(20000, 10000, 5000, 0),
-  list(afr, 10), list(eur, 100)
-)
-
-# the result of `schedule_sampling` is a simple data frame (note that the locations
-# of sampling locations have `NA` values because the model is non-spatial)
-schedule
+Optionally, a name of a single sample from a population can be given, which
+will then replace the generic format of "\if{html}{\out{<population>}}_\if{html}{\out{<number>}}" name. See
+example for more detail.
 }
