@@ -1348,6 +1348,11 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
     schedule$x <- schedule$y <- schedule$x_orig <- schedule$y_orig <- NA
   }
 
+  named_counts <- table(schedule$name)
+  if (length(named_counts) > 0 && any(named_counts > 1))
+    stop(paste0("Named samples must be unique. The following sample names are duplicated:\n",
+                paste(names(named_counts)[named_counts > 1], sep = " ,")), call. = FALSE)
+
   schedule
 }
 
