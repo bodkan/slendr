@@ -1238,8 +1238,8 @@ area <- function(x) {
 #' model <- read_model(path)
 #'
 #' # afr, eur, and nea objects would normally be created before slendr model
-#' compilation, but here we take them out of the model object already compiled for
-#' this example (in a standard slendr simulation pipeline, this wouldn't be necessary)
+#' # compilation, but here we take them out of the model object already compiled for
+#' # this example (in a standard slendr simulation pipeline, this wouldn't be necessary)
 #' afr <- model$populations[["AFR"]]
 #' eur <- model$populations[["EUR"]]
 #' nea <- model$populations[["NEA"]]
@@ -1258,7 +1258,7 @@ area <- function(x) {
 #' schedule <- rbind(schedule_amh, schedule_nea)
 #' schedule
 #'
-#  # simulate a tree sequence
+#' # simulate a tree sequence
 #' ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = schedule)
 #'
 #' # inspect the recorded table of samples
