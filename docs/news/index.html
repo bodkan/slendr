@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0" id="slendr-110">slendr 1.1.0<a class="anchor" aria-label="anchor" href="#slendr-110"></a></h2>
+<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li><p>Fixed an issue with setting <code>lock = TRUE</code> in the <code><a href="../reference/set_range.html">set_range()</a></code> function (issue <a href="https://github.com/bodkan/slendr/issues/176" class="external-link">#176</a> reported by <a href="https://github.com/Sgornard" class="external-link">@Sgornard</a> – thank you!). (<a href="https://github.com/bodkan/slendr/commit/6d01e407" class="external-link">#6d01e407</a>)</p></li>
+<li><p>If a non-spatial population is created which has a spatial parent population, <em>slendr</em> gives an informative error message. (<a href="https://github.com/bodkan/slendr/commit/6bb646" class="external-link">#6bb646</a>)</p></li>
+<li><p><code><a href="../reference/plot_model.html">plot_model()</a></code> now uses the same color for population ranges and population labels. (<a href="https://github.com/bodkan/slendr/commit/c54632e5" class="external-link">#c54632e5</a>)</p></li>
+<li><p><code><a href="../reference/plot_map.html">plot_map()</a></code> can now optionally visualize splits in a spatial setting (<a href="https://github.com/bodkan/slendr/commit/4664388c" class="external-link">#4664388c</a>)</p></li>
+<li><p><code><a href="../reference/plot_model.html">plot_model()</a></code> now plots y-axis time using a more readable integer scale. (<a href="https://github.com/bodkan/slendr/commit/6b0e7fcc" class="external-link">#6b0e7fcc</a>)</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="slendr-110">slendr 1.1.0<a class="anchor" aria-label="anchor" href="#slendr-110"></a></h2><p class="text-muted">CRAN release: 2025-06-03</p>
+<p>A relatively modest release, mostly pushed out to keep <em>slendr</em> in step with the recent release of SLiM 5.0 and new releases of <em>msprime</em> and <em>tskit</em>. As a result, <em>slendr</em>’s SLiM-based functionality (and particularly its new “SLiM extension” mechanism) requires SLiM 5.0</p>
 <ul><li><p>SLiM 5 is now required to run <code><a href="../reference/slim.html">slim()</a></code> simulations with <em>slendr</em>. Similarly, <em>tskit</em> and <em>msprime</em> have been upgraded to versions 0.6.4 and 1.3.4, respectively. (<a href="https://github.com/bodkan/slendr/pull/173" class="external-link">PR </a><a href="https://github.com/bodkan/slendr/issues/183" class="external-link">#183</a>)</p></li>
 <li><p><code><a href="../reference/schedule_sampling.html">schedule_sampling()</a></code> now checks that all sampled populations are actually present in the compiled model (<a href="https://github.com/bodkan/slendr/commit/97abf75" class="external-link">#97abf75</a>)</p></li>
 <li><p>Data frames produced by <code><a href="../reference/ts_tracts.html">ts_tracts()</a></code> on <em>slendr</em>-produced tree sequences now include a time of a recorded sample carrying a given tract (<a href="https://github.com/bodkan/slendr/commit/a28b264" class="external-link">#a28b264</a>) and a user-friendly haplotype number (<a href="https://github.com/bodkan/slendr/commit/9c4724" class="external-link">#9c4724</a>) to which the tract belongs (i.e., either number 1 or 2, depending on the respective chromosome of a simulated individual).</p></li>
