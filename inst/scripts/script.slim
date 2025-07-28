@@ -659,17 +659,42 @@ function (object<Dictionary>) collect_metadata(void) {
     // sampling schedule table
     metadata.setValue("sampling", SAMPLING);
 
-    // sumbolic names of individuals that have been recorded in the tree sequence
+    // generate symbolic names of individuals that have been recorded in the tree sequence
     // (this vector is used in downstream analyses to keep track of which individuals
     // were kept during the process of ts_simplify() etc.)
-  	sample_names = c();
-  	for (pop in unique(SAMPLING.getValue("pop"))) {
-          n = asInteger(sum(filter(SAMPLING, "pop", pop).getValue("n")));
-          sample_names = c(
-              sample_names,
-              sapply(seq(1, n), "paste0(pop, '_', applyValue);")
-          );
-      }
+
+    // initialize sample counter for each population to zero
+    pop_counts = Dictionary();
+    for (pop in unique(SAMPLING.getValue("pop")))
+        pop_counts.setValue(pop, 0);
+
+    // create the vector of sample names
+    sample_names = c();
+    for (i in seqLen(num_rows(SAMPLING))) {
+        row = SAMPLING.getRowValues(i);
+        name = row.getValue("name");
+        pop = row.getValue("pop");
+        n = row.getValue("n");
+        if (name == "-") {
+            n = asInteger(row.getValue("n"));
+            sample_names = c(
+                sample_names,
+                sapply(seq(pop_counts.getValue(pop), pop_counts.getValue(pop) + n - 1), "paste0(pop, '_', applyValue + 1);")
+            );
+            pop_counts.setValue(pop, pop_counts.getValue(pop) + n);
+        } else {
+            sample_names = c(sample_names, name);
+        }
+    }
+    // the code above is an Eidos port of the following Python code from the Python engine:
+    // pop_counts = collections.defaultdict(int)
+    // sample_names = []
+    // for row in samples.itertuples(index=False):
+    //     if row.name == "-":
+    //         sample_names += [f"{row.pop}_{i + 1}" for i in range(pop_counts[row.pop], pop_counts[row.pop] + row.n)]
+    //         pop_counts[row.pop] += row.n
+    //     else:
+    //         sample_names += [row.name]
   	metadata.setValue("sample_names", sample_names);
 
     if (SPATIAL) {
