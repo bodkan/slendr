@@ -796,7 +796,7 @@ function (void) print_table(object<Dictionary> d) {
 // for every column among all slendr-generated TSV files)
 function (ifsl) convert_type(s$ column_name, s string_values) {
     // vectors of all possible column names in tables defined by slendr `compile()`
-    string = c("pop", "parent", "how", "path", "from", "to", "how", "dispersal_fun");
+    string = c("pop", "name", "parent", "how", "path", "from", "to", "how", "dispersal_fun");
     integer = c("pop_id", "parent_id", "from_id", "to_id", "N", "prev_N",
                 "time_orig", "time_gen",
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
