@@ -161,7 +161,7 @@ ts_write <- function(ts, file) {
 
   # overwrite the original list of sample names (if the tree sequence was simplified
   # down to a smaller number of individuals than originally sampled)
-  if (from_slendr && nrow(ts_samples(ts)) != length(attr(ts, "metadata")$subset_names)) {
+  if (from_slendr && length(attr(ts, "metadata")$sample_names) != length(attr(ts, "metadata")$subset_names)) {
     tables <- ts$dump_tables()
     tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
 
