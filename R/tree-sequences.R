@@ -3073,6 +3073,7 @@ get_slendr_metadata <- function(ts) {
     description = metadata$description,
     sampling = get_sampling(metadata),
     sample_names = metadata$sample_names,
+    subset_names = metadata$subset_names,
     sample_ids = metadata$sample_ids,
     map = metadata$map[[1]],
     arguments = arguments
