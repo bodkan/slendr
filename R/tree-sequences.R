@@ -1270,6 +1270,11 @@ ts_samples <- function(ts) {
          "function ts_nodes().\n", call. = FALSE)
 
   samples <- attr(ts, "metadata")$sampling
+  metadata <- attr(ts, "metadata")
+
+  if (length(metadata$sample_names) != length(metadata$subset_names))
+    samples <- dplyr::filter(samples, name %in% metadata$subset_names)
+
   samples
 }
 
