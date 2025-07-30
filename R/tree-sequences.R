@@ -2637,7 +2637,7 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
     # (this is achieved by the filter() step right below)
     samples <- attr(ts, "metadata")$sampling %>%
       dplyr::arrange(-time, pop) %>%
-      dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
+      dplyr::filter(name %in% attr(ts, "metadata")$subset_names)
     if (!is.null(simplify_to))
       samples <- samples %>% dplyr::filter(name %in% simplify_to)
   } else
