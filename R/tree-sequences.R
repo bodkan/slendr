@@ -469,7 +469,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
     # get other data about individuals in the simplified tree sequence, sort them
     # also by their IDs and times, and add their node IDs extracted above
     # (this works because we sorted both in the same way)
-    data_new <- get_pyslim_table_data(ts_new, simplify_to) %>%
+    data_new <- get_pyslim_table_data(ts_new) %>%
       as.data.frame() %>%
       dplyr::arrange(ind_id, time) %>%
       dplyr::select(pop_id, ind_id, pedigree_id, time, time_tskit, sampled, remembered, retained, alive) %>%
@@ -485,7 +485,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
                                          "time", "time_tskit", location_col, "sampled", "remembered",
                                          "retained", "alive", "pedigree_id", "ind_id", "pop_id")]
   } else
-    attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
+    attr(ts_new, "nodes") <- get_tskit_table_data(ts_new)
 
   attr(ts_new, "path") <- attr(ts, "path")
 
@@ -2600,7 +2600,7 @@ time_fun <- function(ts) {
     convert_msprime_time
 }
 
-get_pyslim_table_data <- function(ts, simplify_to = NULL) {
+get_pyslim_table_data <- function(ts) {
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
   from_slendr <- !is.null(model)
@@ -2638,8 +2638,6 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
     samples <- attr(ts, "metadata")$sampling %>%
       dplyr::arrange(-time, pop) %>%
       dplyr::filter(name %in% attr(ts, "metadata")$subset_names)
-    if (!is.null(simplify_to))
-      samples <- samples %>% dplyr::filter(name %in% simplify_to)
   } else
     samples <- dplyr::filter(individuals, sampled) %>% dplyr::select(time, pop)
 
@@ -2685,7 +2683,7 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
     dplyr::as_tibble(combined)
 }
 
-get_tskit_table_data <- function(ts, simplify_to = NULL) {
+get_tskit_table_data <- function(ts) {
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
   from_slendr <- !is.null(model)
@@ -2736,8 +2734,6 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     samples <- attr(ts, "metadata")$sampling %>%
       dplyr::arrange(-time, pop) %>%
       dplyr::filter(name %in% attr(ts, "metadata")$subset_names)
-    if (!is.null(simplify_to))
-      samples <- dplyr::filter(samples, name %in% simplify_to)
     # this was originally broken for simplification
     # individuals <- dplyr::mutate(individuals, name = samples$name)
     individuals$name <- NA
