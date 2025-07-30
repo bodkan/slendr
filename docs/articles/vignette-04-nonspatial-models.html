@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -247,7 +247,83 @@ built-in <em>slendr</em> introgression model by running:</p>
 data frames, one data frame for each aspect of a demographic model
 (where applicable).</p>
 </div>
-  </main>
+<div class="section level2">
+<h2 id="named-samples">Named samples<a class="anchor" aria-label="anchor" href="#named-samples"></a>
+</h2>
+<p>As an addendum, it is worth mentioning that in addition to
+automatically naming recorded samples according to the format of
+<code>"&lt;population&gt;_&lt;number&gt;"</code>, <em>slendr</em>
+supports uniquely named samples. For instance, imagine that we want to
+record an ancient individual representing a 45.000 years old hunter
+gatherer known as Ust’-Ishim (Fu, _et al., Nature, 2014). We could
+include this sample among our other, generically named, samples like
+this:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">schedule_amh</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span></span>
+<span>  <span class="va">model</span>,</span>
+<span>  times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5000</span>, <span class="fl">12000</span>, <span class="fl">20000</span>, <span class="fl">35000</span>, <span class="fl">39000</span>, <span class="fl">43000</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">eur</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ehg</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">yam</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ana</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">schedule_ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/schedule_sampling.html">schedule_sampling</a></span><span class="op">(</span><span class="va">model</span>, times <span class="op">=</span> <span class="fl">45000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ooa</span>, <span class="fl">1</span>, <span class="st">"Ust_Ishim"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># bind the two tables together into a single schedule</span></span>
+<span><span class="va">schedule</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">schedule_amh</span>, <span class="va">schedule_ui</span><span class="op">)</span></span></code></pre></div>
+<p>Then we would simulate just like before:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/msprime.html">msprime</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">100000</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">schedule</span><span class="op">)</span></span></code></pre></div>
+<p>When we inspect the table of all recorded individuals, we can see
+that the Ust’-Ishim individual is stored under its proper symbolic
+name:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt;         name  time pop</span></span>
+<span><span class="co">#&gt; 1  Ust_Ishim 45000 OOA</span></span>
+<span><span class="co">#&gt; 2      AFR_1 43000 AFR</span></span>
+<span><span class="co">#&gt; 3      OOA_1 43000 OOA</span></span>
+<span><span class="co">#&gt; 4      AFR_2 39000 AFR</span></span>
+<span><span class="co">#&gt; 5      OOA_2 39000 OOA</span></span>
+<span><span class="co">#&gt; 6      AFR_3 35000 AFR</span></span>
+<span><span class="co">#&gt; 7      OOA_3 35000 OOA</span></span>
+<span><span class="co">#&gt; 8      AFR_4 20000 AFR</span></span>
+<span><span class="co">#&gt; 9      ANA_1 20000 ANA</span></span>
+<span><span class="co">#&gt; 10     ANA_2 20000 ANA</span></span>
+<span><span class="co">#&gt; 11     ANA_3 20000 ANA</span></span>
+<span><span class="co">#&gt; 12     EHG_1 20000 EHG</span></span>
+<span><span class="co">#&gt; 13     EUR_1 20000 EUR</span></span>
+<span><span class="co">#&gt; 14     EUR_2 20000 EUR</span></span>
+<span><span class="co">#&gt; 15     EUR_3 20000 EUR</span></span>
+<span><span class="co">#&gt; 16     AFR_5 12000 AFR</span></span>
+<span><span class="co">#&gt; 17     ANA_4 12000 ANA</span></span>
+<span><span class="co">#&gt; 18     ANA_5 12000 ANA</span></span>
+<span><span class="co">#&gt; 19     ANA_6 12000 ANA</span></span>
+<span><span class="co">#&gt; 20     EHG_2 12000 EHG</span></span>
+<span><span class="co">#&gt; 21     EUR_4 12000 EUR</span></span>
+<span><span class="co">#&gt; 22     EUR_5 12000 EUR</span></span>
+<span><span class="co">#&gt; 23     EUR_6 12000 EUR</span></span>
+<span><span class="co">#&gt; 24     AFR_6  5000 AFR</span></span>
+<span><span class="co">#&gt; 25     ANA_7  5000 ANA</span></span>
+<span><span class="co">#&gt; 26     ANA_8  5000 ANA</span></span>
+<span><span class="co">#&gt; 27     ANA_9  5000 ANA</span></span>
+<span><span class="co">#&gt; 28     EUR_7  5000 EUR</span></span>
+<span><span class="co">#&gt; 29     EUR_8  5000 EUR</span></span>
+<span><span class="co">#&gt; 30     EUR_9  5000 EUR</span></span>
+<span><span class="co">#&gt; 31     YAM_1  5000 YAM</span></span>
+<span><span class="co">#&gt; 32     AFR_7     0 AFR</span></span>
+<span><span class="co">#&gt; 33    EUR_10     0 EUR</span></span>
+<span><span class="co">#&gt; 34    EUR_11     0 EUR</span></span>
+<span><span class="co">#&gt; 35    EUR_12     0 EUR</span></span></code></pre>
+<p>When we later compute summary statistics on tree sequences, this
+makes referring to specific individuals even more convenient:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_f4ratio.html">ts_f3</a></span><span class="op">(</span><span class="va">ts</span>, A <span class="op">=</span> <span class="st">"AFR_1"</span>, B <span class="op">=</span> <span class="st">"EUR_1"</span>, C <span class="op">=</span> <span class="st">"Ust_Ishim"</span>, mode <span class="op">=</span> <span class="st">"branch"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   A     B     C            f3</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> AFR_1 EUR_1 Ust_Ishim <span style="text-decoration: underline;">1</span>210.</span></span></code></pre>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

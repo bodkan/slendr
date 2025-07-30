@@ -9,7 +9,7 @@ function during the compilation of a slendr demographic model."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -222,47 +222,100 @@ files by themselves (and only the path is needed).</p>
 <span class="r-in"><span><span class="co"># run a simulation using the SLiM back end from a compiled slendr model object and return</span></span></span>
 <span class="r-in"><span><span class="co"># a tree-sequence object as a result</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu">slim</span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e5</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // Initial random seed:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4060123875713263977</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> // RunInitializeCallbacks():</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SEED: 2020893602</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Unknown column 'name' in a dataframe</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ERROR (Eidos_ExecuteFunction_stop): stop() called with error message:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Unknown column 'name' in a dataframe</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error on script line 818, character 8:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("Unknown column '" + column_name + "' in a dataframe");</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ^^^^</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Unfortunately SLiM terminated before a tree sequence was saved.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> See the above for an indication of where things could have gone wrong.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> SLiM exit status: 1</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> Message: </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># simulated tree-sequence object can be saved to a file using ts_write()...</span></span></span>
 <span class="r-in"><span><span class="va">ts_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html" class="external-link">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".trees"</span><span class="op">)</span>, winslash <span class="op">=</span> <span class="st">"/"</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">ts_file</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Not a tree sequence object created by ts_read, ts_simplify, ts_recapitate or ts_mutate</span>
 <span class="r-in"><span><span class="co"># ... and, at a later point, loaded by ts_read()</span></span></span>
 <span class="r-in"><span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="ts_read.html">ts_read</a></span><span class="op">(</span><span class="va">ts_file</span>, <span class="va">model</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> File not found: '/var/folders/h2/qs0z_44x2vn2sskqc0cct7540000gn/T//Rtmpupzarc/filec28d47e84d94.trees'</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ts</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║TreeSequence           ║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════════╤═══════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Trees          │      1║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sequence Length│100,000║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Time Units     │  ticks║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sample Nodes   │ 10,046║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────────┼───────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Total Size     │2.6 MiB║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════════╧═══════╝</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╔═══════════╤══════╤═════════╤════════════╗</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Table      │Rows  │Size     │Has Metadata║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╠═══════════╪══════╪═════════╪════════════╣</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Edges      │18,361│573.8 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Individuals│12,858│  1.2 MiB│         Yes║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Migrations │     0│  8 Bytes│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Mutations  │     0│  1.2 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Nodes      │18,362│665.1 KiB│         Yes║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Populations│     4│  2.5 KiB│         Yes║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Provenances│     1│ 42.1 KiB│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╟───────────┼──────┼─────────┼────────────╢</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ║Sites      │     0│ 16 Bytes│          No║</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ╚═══════════╧══════╧═════════╧════════════╝</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (data = NA, start = 1, end = numeric(), frequency = 1, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     deltat = 1, ts.eps = getOption("ts.eps"), class = if (nseries &gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1) c("mts", "ts", "matrix", "array") else "ts", names = if (!is.null(dimnames(data))) colnames(data) else paste("Series", </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         seq(nseries))) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.data.frame(data)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         data &lt;- data.matrix(data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (is.matrix(data)) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         nseries &lt;- ncol(data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ndata &lt;- nrow(data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         dimnames(data) &lt;- list(NULL, names)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     else {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         nseries &lt;- 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         ndata &lt;- length(data)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (ndata == 0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'ts' object must have one or more observations")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (missing(frequency)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         frequency &lt;- 1/deltat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     else if (missing(deltat)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         deltat &lt;- 1/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (frequency &gt; 1 &amp;&amp; 0 &lt; (d &lt;- abs(frequency - round(frequency))) &amp;&amp; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         d &lt; ts.eps) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         frequency &lt;- round(frequency)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!missing(start)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- as.numeric(start)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(start) &gt; 1L) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- start[1L] + (start[2L] - 1)/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!missing(end)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- as.numeric(end)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (length(end) &gt; 1L) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- end[1L] + (end[2L] - 1)/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (missing(end)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         end &lt;- start + (ndata - 1)/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     else if (missing(start)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         start &lt;- end - (ndata - 1)/frequency</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (start &gt; end) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'start' cannot be after 'end'")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cycles &lt;- as.numeric((end - start) * frequency)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (abs(round(cycles) - cycles) &gt; ts.eps * max(cycles, 1)) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'end' must be a whole number of cycles after 'start'")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     nobs &lt;- floor(cycles + 1.01)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (nobs != ndata) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         data &lt;- if (NCOL(data) == 1) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ndata &lt; nobs) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 rep_len(data, nobs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             else if (ndata &gt; nobs) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[1L:nobs]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         else {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             if (ndata &lt; nobs) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[rep_len(1L:ndata, nobs), ]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             else if (ndata &gt; nobs) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 data[1L:nobs, ]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     attr(data, "tsp") &lt;- c(start, end, frequency)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     if (!is.null(class) &amp;&amp; class[[1]] != "none") </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         attr(data, "class") &lt;- class</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x1634ba000&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:stats&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
