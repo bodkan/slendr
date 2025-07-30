@@ -2729,10 +2729,10 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     # subset of sampled nodes -- in these situations, subset the original sampling table
     # using the names of sampled individuals that are propagated through serialization
     samples <- attr(ts, "metadata")$sampling %>%
-      dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
+      dplyr::arrange(-time, pop) %>%
+      dplyr::filter(name %in% attr(ts, "metadata")$subset_names)
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
-    samples <- dplyr::arrange(samples, -time, pop)
     # this was originally broken for simplification
     # individuals <- dplyr::mutate(individuals, name = samples$name)
     individuals$name <- NA
