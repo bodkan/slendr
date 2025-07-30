@@ -3042,7 +3042,7 @@ get_sampling <- function(metadata) {
       )
     } %>%
     dplyr::arrange(-time_orig, pop) %>%
-    dplyr::mutate(name = metadata$sample_names) %>%
+    dplyr::mutate(name = metadata$sample_names) %>% # we can no longer rely on automated symbolic names
     dplyr::rename(time = time_orig) %>%
     dplyr::select(name, time, pop)
 
