@@ -149,6 +149,10 @@ ts
 
 Note that we bind the individual sampling schedule data frames using the `rbind` function provided by base R (as we show above, the sampling schedule really is just a data frame and we can manipulate it as such).
 
+## Named samples
+
+In addition to automatically named symbolic names, _slendr_ also supports fully customized sample names (see [here](https://slendr.net/articles/vignette-04-nonspatial-models.html) and [here](https://slendr.net/reference/schedule_sampling.html) for a bit more detail). This is particularly convenient for referring to simulated individuals by their "real-world names".
+
 ## R interface for *tskit* and *pyslim*
 
 Tree-sequences are one of the most revolutionary developments in population genetics in the last couple of decades for a number of reasons. One of them is the possibility to store extremely large data sets succinctly by encoding the entire evolutionary history of a sample of individuals as a series of correlated tree genealogies along the genome.

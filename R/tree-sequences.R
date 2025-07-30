@@ -161,17 +161,21 @@ ts_write <- function(ts, file) {
 
   # overwrite the original list of sample names (if the tree sequence was simplified
   # down to a smaller number of individuals than originally sampled)
-  if (from_slendr && nrow(ts_samples(ts)) != nrow(attr(ts, "metadata")$sampling)) {
+  if (from_slendr && length(attr(ts, "metadata")$sample_names) != length(attr(ts, "metadata")$subset_names)) {
     tables <- ts$dump_tables()
     tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
 
     sample_names <- attr(ts, "metadata")$sample_names
+    subset_names <- attr(ts, "metadata")$subset_names
     pedigree_ids <- attr(ts, "metadata")$sample_ids
     if (type == "SLiM") {
       tables$metadata$SLiM$user_metadata$slendr[[1]]$sample_names <- sample_names
+      tables$metadata$SLiM$user_metadata$slendr[[1]]$subset_names <- subset_names
       tables$metadata$SLiM$user_metadata$slendr[[1]]$sample_ids <- pedigree_ids
-    } else
+    } else {
       tables$metadata$slendr$sample_names <- sample_names
+      tables$metadata$slendr$subset_names <- subset_names
+    }
 
     # put the tree sequence object back together
     ts <- tables$tree_sequence()
@@ -488,7 +492,7 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
   # replace the names of sampled individuals (if simplification led to subsetting)
   if (from_slendr) {
     sampled_nodes <- attr(ts_new, "nodes") %>% dplyr::filter(sampled)
-    attr(ts_new, "metadata")$sample_names <-  unique(sampled_nodes$name)
+    attr(ts_new, "metadata")$subset_names <-  unique(sampled_nodes$name)
     if (type == "SLiM")
       attr(ts_new, "metadata")$sample_ids <- unique(sampled_nodes$pedigree_id)
   }
@@ -1264,8 +1268,12 @@ ts_samples <- function(ts) {
          "from a slendr model. To access information about times and\nlocations ",
          "of nodes and individuals from non-slendr tree sequences,\nuse the ",
          "function ts_nodes().\n", call. = FALSE)
-  samples <- attr(ts, "metadata")$sampling %>%
-    dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
+
+  samples <- attr(ts, "metadata")$sampling
+  metadata <- attr(ts, "metadata")
+
+  if (length(metadata$sample_names) != length(metadata$subset_names))
+    samples <- dplyr::filter(samples, name %in% metadata$subset_names)
 
   samples
 }
@@ -2629,7 +2637,7 @@ get_pyslim_table_data <- function(ts, simplify_to = NULL) {
     # (this is achieved by the filter() step right below)
     samples <- attr(ts, "metadata")$sampling %>%
       dplyr::arrange(-time, pop) %>%
-      dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
+      dplyr::filter(name %in% attr(ts, "metadata")$subset_names)
     if (!is.null(simplify_to))
       samples <- samples %>% dplyr::filter(name %in% simplify_to)
   } else
@@ -2726,10 +2734,10 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     # subset of sampled nodes -- in these situations, subset the original sampling table
     # using the names of sampled individuals that are propagated through serialization
     samples <- attr(ts, "metadata")$sampling %>%
-      dplyr::filter(name %in% attr(ts, "metadata")$sample_names)
+      dplyr::arrange(-time, pop) %>%
+      dplyr::filter(name %in% attr(ts, "metadata")$subset_names)
     if (!is.null(simplify_to))
       samples <- dplyr::filter(samples, name %in% simplify_to)
-    samples <- dplyr::arrange(samples, -time, pop)
     # this was originally broken for simplification
     # individuals <- dplyr::mutate(individuals, name = samples$name)
     individuals$name <- NA
@@ -3033,16 +3041,14 @@ get_sampling <- function(metadata) {
         dplyr::filter(., n > 1) %>% .[rep(seq_len(nrow(.)), .$n), ]
       )
     } %>%
-    dplyr::group_by(pop) %>%
-    dplyr::mutate(name = paste0(pop, "_", 1:dplyr::n())) %>%
-    dplyr::ungroup() %>%
     dplyr::arrange(-time_orig, pop) %>%
+    dplyr::mutate(name = metadata$sample_names) %>% # we can no longer rely on automated symbolic names
     dplyr::rename(time = time_orig) %>%
     dplyr::select(name, time, pop)
 
   # if needed (i.e. after simplification to a smaller set of sampled individuals), subset
   # the full original sampling schedule table to only individuals of interest
-  df %>% dplyr::filter(name %in% metadata$sample_names)
+  df %>% dplyr::filter(name %in% metadata$subset_names)
 }
 
 # Extract list with slendr metadata (created as Eidos Dictionaries by SLiM and Python
@@ -3061,11 +3067,18 @@ get_slendr_metadata <- function(ts) {
     arguments <- metadata$arguments
   }
 
+  if (is.null(metadata$subset_names)) {
+    metadata$subset_names <- metadata$sample_names
+  } else {
+    metadata$subset_names <- metadata$subset_names
+  }
+
   list(
     version = metadata$version,
     description = metadata$description,
     sampling = get_sampling(metadata),
     sample_names = metadata$sample_names,
+    subset_names = metadata$subset_names,
     sample_ids = metadata$sample_ids,
     map = metadata$map[[1]],
     arguments = arguments

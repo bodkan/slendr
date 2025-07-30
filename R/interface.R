@@ -1207,6 +1207,10 @@ area <- function(x) {
 #' points lie within a population spatial boundary at that particular moment of
 #' time.
 #'
+#' Optionally, a name of a single sample from a population can be given, which
+#' will then replace the generic format of "<population>_<number>" name. See
+#' example for more detail.
+#'
 #' @param model Object of the class \code{slendr_model}
 #' @param times Integer vector of times (in model time units) at which to
 #'   schedule remembering of individuals in the tree-sequence
@@ -1233,22 +1237,33 @@ area <- function(x) {
 #' path <- system.file("extdata/models/introgression", package = "slendr")
 #' model <- read_model(path)
 #'
-#' # afr and eur objects would normally be created before slendr model compilation,
-#' # but here we take them out of the model object already compiled for this
-#' # example (in a standard slendr simulation pipeline, this wouldn't be necessary)
+#' # afr, eur, and nea objects would normally be created before slendr model
+#' # compilation, but here we take them out of the model object already compiled for
+#' # this example (in a standard slendr simulation pipeline, this wouldn't be necessary)
 #' afr <- model$populations[["AFR"]]
 #' eur <- model$populations[["EUR"]]
+#' nea <- model$populations[["NEA"]]
 #'
 #' # schedule the recording of 10 African and 100 European individuals from a
 #' # given model at 20 ky, 10 ky, 5ky ago and at present-day (time 0)
-#' schedule <- schedule_sampling(
+#' schedule_amh <- schedule_sampling(
 #'   model, times = c(20000, 10000, 5000, 0),
 #'   list(afr, 10), list(eur, 100)
 #' )
+#' # schedule the recording of the Vindija Neanderthal genome
+#' schedule_nea <- schedule_sampling(model, times = 40000, list(nea, 1, "Vindija"))
 #'
 #' # the result of `schedule_sampling` is a simple data frame (note that the locations
 #' # of sampling locations have `NA` values because the model is non-spatial)
+#' schedule <- rbind(schedule_amh, schedule_nea)
 #' schedule
+#'
+#' # simulate a tree sequence
+#' ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, samples = schedule)
+#'
+#' # inspect the recorded table of samples
+#' ts_samples(ts)
+#'
 #' @export
 schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALSE) {
   if (!inherits(model, "slendr_model"))
@@ -1261,8 +1276,8 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   sample_counts <- purrr::map(samples, 2)
 
   model_names <- vapply(model$populations, function(pop) pop$pop[1], FUN.VALUE = "character")
-  sample_names <- vapply(sample_pops, function(pop) pop$pop[1], FUN.VALUE = "character")
-  missing_names <- setdiff(sample_names, model_names)
+  pop_names <- vapply(sample_pops, function(pop) pop$pop[1], FUN.VALUE = "character")
+  missing_names <- setdiff(pop_names, model_names)
   if (length(missing_names))
     stop("The following sampled populations are not part of the model: ",
          paste(missing_names, collapse = ", "), call. = FALSE)
@@ -1276,8 +1291,8 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   if (!all(purrr::map_lgl(sample_pops, ~ inherits(.x, "slendr_pop"))))
     stop("Objects to sample from must be of the class 'slendr_pop'", call. = FALSE)
 
-  if (!all(purrr::map_lgl(sample_counts, ~ .x == round(.x))))
-    stop("Sample counts must be integer numbers", call. = FALSE)
+  if (!all(purrr::map_lgl(sample_counts, ~ .x > 0 &&.x == round(.x))))
+    stop("Sample counts must be non-negative, non-zero integer numbers", call. = FALSE)
 
   # make sure that all sampling times fall in the time window of the simulation itself
   oldest_time <- get_oldest_time(model$populations, model$direction)
@@ -1298,12 +1313,14 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
     lapply(samples, function(s) {
       pop <- s[[1]]
       n <- s[[2]]
+      name <- if (length(s) == 3) s[[3]] else NA
+
       tryCatch(
         {
           check_removal_time(t, pop, direction = model$direction)
           check_present_time(t, pop, direction = model$direction, offset = model$generation_time)
           if (!is.infinite(n)) n <- as.integer(n)
-          dplyr::tibble(time = t, pop = pop$pop[1], n = n)
+          dplyr::tibble(time = t, pop = pop$pop[1], n = n, name = name)
         },
         error = function(cond) {
           if (!strict)
@@ -1345,6 +1362,11 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   } else {
     schedule$x <- schedule$y <- schedule$x_orig <- schedule$y_orig <- NA
   }
+
+  named_counts <- table(schedule$name)
+  if (length(named_counts) > 0 && any(named_counts > 1))
+    stop(paste0("Named samples must be unique. The following sample names are duplicated:\n",
+                paste(names(named_counts)[named_counts > 1], sep = " ,")), call. = FALSE)
 
   schedule
 }

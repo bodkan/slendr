@@ -1,4 +1,4 @@
-path <- "~/Projects/slendr"
+path <- "~/Code/slendr"
 
 devtools::load_all(path)
 

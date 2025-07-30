@@ -125,3 +125,42 @@ extract_parameters(introgression_model)
 ```
 
 As we can see, `extract_parameters()` returns a list of data frames, one data frame for each aspect of a demographic model (where applicable).
+
+## Named samples
+
+As an addendum, it is worth mentioning that in addition to automatically naming recorded samples according to the format of `"<population>_<number>"`, _slendr_ supports uniquely named samples. For instance, imagine that we want to record an ancient individual representing a 45.000 years old hunter gatherer known as Ust'-Ishim (Fu, _et al., Nature, 2014). We could include this sample among our other, generically named, samples like this:
+
+```{r}
+schedule_amh <- schedule_sampling(
+  model,
+  times = c(0, 5000, 12000, 20000, 35000, 39000, 43000),
+  list(eur, 3), list(ehg, 1), list(yam, 1), list(ana, 3), list(ooa, 1), list(afr, 1)
+)
+
+schedule_ui <- schedule_sampling(model, times = 45000, list(ooa, 1, "Ust_Ishim"))
+
+# bind the two tables together into a single schedule
+schedule <- rbind(schedule_amh, schedule_ui)
+```
+
+Then we would simulate just like before:
+
+```{r}
+ts <- msprime(model, sequence_length = 100000, recombination_rate = 0, samples = schedule)
+```
+
+When we inspect the table of all recorded individuals, we can see that the Ust'-Ishim individual is stored under its proper symbolic name:
+
+```{r, eval=FALSE}
+ts_samples(ts)
+```
+
+```{r, echo=FALSE}
+ts_samples(ts) %>% as.data.frame()
+```
+
+When we later compute summary statistics on tree sequences, this makes referring to specific individuals even more convenient:
+
+```{r}
+ts_f3(ts, A = "AFR_1", B = "EUR_1", C = "Ust_Ishim", mode = "branch")
+```

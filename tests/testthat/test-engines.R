@@ -25,7 +25,7 @@ test_that("msprime command run manually on the command line give the correct out
   out_cmd <- capture.output(
     msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, run = FALSE, random_seed = 42)
   )
-  out_cmd <- gsub("<path to a .trees file>", out, out_cmd)
+  out_cmd <- gsub("path_to_a_trees_file.trees", out, out_cmd)
   system(out_cmd, ignore.stdout = TRUE)
   ts_manual <- ts_read(out, model = model)
   expect_s3_class(ts_manual, "slendr_ts")

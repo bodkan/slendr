@@ -7,18 +7,17 @@
 #  2. as a library called directly from R without serializing models first
 
 import argparse
-import os
-import sys
-import pathlib
-import hashlib
+import collections
 import logging
+import os
+import pathlib
+import sys
 
-import tskit
-import pyslim
-import msprime
-import pandas
-import numpy
 import math
+import msprime
+import numpy
+import pandas
+import tskit
 
 VERSION = "__VERSION__"
 
@@ -80,10 +79,10 @@ def simulate(
           end_time = oldest_time - orig_length
       samples = pandas.DataFrame(
           [
-            (pop.initial_size, pop.name, length + 1, -1, -1, end_time, -1, -1)
+            (pop.initial_size, pop.name, "-", length + 1, -1, -1, end_time, -1, -1)
             for pop in demography.populations
           ],
-          columns=["n", "pop", "time_gen", "x", "y", "time_orig", "x_orig", "y_orig"]
+          columns=["n", "pop", "name", "time_gen", "x", "y", "time_orig", "x_orig", "y_orig"]
       )
 
   logging.info("Loading the sampling schedule")
@@ -182,10 +181,14 @@ def simulate(
   # symbolic names of individuals that have been recorded in the tree sequence
   # (this vector is used in downstream analyses to keep track of which individuals
   # were kept during the process of ts_simplify() etc.)
+  pop_counts = collections.defaultdict(int)
   sample_names = []
-  for pop in samples["pop"].unique():
-      n = sum(samples[samples["pop"] == pop]["n"])
-      sample_names += [f"{pop}_{i}" for i in range(1, n + 1)]
+  for row in samples.itertuples(index=False):
+      if row.name == "-":
+          sample_names += [f"{row.pop}_{i + 1}" for i in range(pop_counts[row.pop], pop_counts[row.pop] + row.n)]
+          pop_counts[row.pop] += row.n
+      else:
+          sample_names += [row.name]
 
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {

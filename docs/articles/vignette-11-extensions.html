@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -227,11 +227,11 @@ console in the GUI and type the following:</p>
 <pre><code>&gt; // get a SLiM object corresponding to the "AFR" population
 &gt; population("AFR")
 Subpopulation&lt;p0&gt;
-&gt; 
+&gt;
 &gt; // get the number of genomes in the population
 &gt; length(population("AFR").haplosomes)
 6000
-&gt; 
+&gt;
 &gt; // get both "AFR" and "OOA" subpopulation objects
 &gt; population(c("AFR", "OOA"))
 Subpopulation&lt;p0&gt; Subpopulation&lt;p1&gt;</code></pre>
@@ -479,13 +479,13 @@ tick(15000) late() {
 tick(15000):SIMULATION_END late() {
   segregating = sim.countOfMutationsOfType(m0) &gt; 0;
   fixed = sum(sim.substitutions.mutationType == m0) == 1;
-  
+
   // the mutation is not segregating and is not fixed either -- we must restart
   if (!segregating &amp; !fixed) {
     write_log("mutation lost -- restarting");
-    
+
     reset_state();
-    
+
     add_mutation("EUR");
   }
 }</code></pre>
@@ -838,13 +838,13 @@ placeholder parameters:</p>
 <span>    s <span class="op">=</span> <span class="fl">0.1</span>, onset_time <span class="op">=</span> <span class="va">onset_time</span>,</span>
 <span>    origin_pop <span class="op">=</span> <span class="va">origin_pop</span>, target_pop <span class="op">=</span> <span class="st">"EUR"</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>    populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>,</span>
 <span>    gene_flow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>    extension <span class="op">=</span> <span class="va">extension</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e6</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>       path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -993,13 +993,13 @@ string directly instead of providing a path to a file):</p>
 <span>    s <span class="op">=</span> <span class="fl">0.1</span>, onset_time <span class="op">=</span> <span class="va">onset_time</span>,</span>
 <span>    origin_pop <span class="op">=</span> <span class="va">origin_pop</span>, target_pop <span class="op">=</span> <span class="st">"EUR"</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
 <span>    populations <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">afr</span>, <span class="va">ooa</span>, <span class="va">ehg</span>, <span class="va">eur</span>, <span class="va">ana</span>, <span class="va">yam</span><span class="op">)</span>,</span>
 <span>    gene_flow <span class="op">=</span> <span class="va">gf</span>, generation_time <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>    extension <span class="op">=</span> <span class="va">extension</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, sequence_length <span class="op">=</span> <span class="fl">1e6</span>, recombination_rate <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>       path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, random_seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -1187,7 +1187,7 @@ arguments! This is because our non-neutral extension snippet already
 customizes though, so there’s no reason for us to instruct
 <code><a href="../reference/slim.html">slim()</a></code> on that front in any way:</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, path <span class="op">=</span> <span class="st">"~/Projects/introgression_data/"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/slim.html">slim</a></span><span class="op">(</span><span class="va">model</span>, recombination_rate <span class="op">=</span> <span class="fl">1e-8</span>, samples <span class="op">=</span> <span class="va">samples</span>, path <span class="op">=</span> <span class="st">"~/Code/__archive/introgression_data/"</span><span class="op">)</span></span></code></pre></div>
 <p>It’s been suggested that Neanderthals had a significantly lower
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>e</mi></msub><annotation encoding="application/x-tex">N_e</annotation></semantics></math>
 compared to anatomically modern humans (AMH), which might have decreased
@@ -1207,7 +1207,7 @@ just load this data and directly visualize it:</p>
 <span><span class="va">gene_length</span> <span class="op">&lt;-</span> <span class="fl">5e6</span></span>
 <span><span class="va">window_length</span> <span class="op">&lt;-</span> <span class="fl">100e3</span></span></code></pre></div>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">freqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_tsv</a></span><span class="op">(</span><span class="st">"~/Projects/introgression_data/frequencies.tsv"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">freqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_tsv</a></span><span class="op">(</span><span class="st">"~/Code/__archive/introgression_data/frequencies.tsv"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">40000000</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">3</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> "\t"</span></span>
@@ -1241,7 +1241,7 @@ genetic divergence between Europeans and a Neanderthal in windows along
 the simulated genome.</p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load a tree sequence and extract the names of recorded individuals</span></span>
-<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"~/Projects/introgression_data/slim.trees"</span>, <span class="va">model</span><span class="op">)</span></span>
+<span><span class="va">ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_read.html">ts_read</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">"~/Code/__archive/introgression_data/slim.trees"</span>, <span class="va">model</span><span class="op">)</span></span>
 <span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_names.html">ts_names</a></span><span class="op">(</span><span class="va">ts</span>, split <span class="op">=</span> <span class="st">"pop"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">samples</span></span></code></pre></div>
@@ -1288,7 +1288,7 @@ the simulated genome.</p>
 <span>    mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">div</span><span class="op">)</span>, n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, std <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">div</span><span class="op">)</span>,</span>
 <span>    ci_low <span class="op">=</span> <span class="va">mean</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">std</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>,</span>
 <span>    ci_up <span class="op">=</span> <span class="va">mean</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">std</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> </span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; `summarise()` has grouped output by 'pop'. You can override using the `.groups`</span></span>
 <span><span class="co">#&gt; argument.</span></span></code></pre>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">

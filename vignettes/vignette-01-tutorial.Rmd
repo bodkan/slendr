@@ -366,7 +366,7 @@ What do the files in the model directory look like? Ideally, you as a user shoul
 First of all, we can inspect the contents of the directory and see that it does, indeed, contain all defined spatial maps (now PNG files, which is what SLiM requires).
 
 ```{r}
-list.files(model_dir, pattern = "*.jpg")
+list.files(model_dir, pattern = "*.png")
 ```
 
 It also contains a series of tab-delimited configuration tables. These tables contain summaries of the model parameters that we defined graphically above, namely:
