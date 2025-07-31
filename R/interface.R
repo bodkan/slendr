@@ -1208,8 +1208,8 @@ area <- function(x) {
 #' time.
 #'
 #' Optionally, a name of a single sample from a population can be given, which
-#' will then replace the generic format of "<population>_<number>" name. See
-#' example for more detail.
+#' will then replace the generic format of \code{"\{population\}_\{number\}"} name.
+#' See example for more detail.
 #'
 #' @param model Object of the class \code{slendr_model}
 #' @param times Integer vector of times (in model time units) at which to

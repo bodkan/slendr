@@ -168,14 +168,14 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
     if (splits) {
       # make a copy of a the sf object with initial population ranges
       # TODO: Instead find the temporally closest range for each given split event
-      split_lines <- st_set_agr(first_ranges, "constant")
-      centroids <- st_centroid(split_lines)
+      split_lines <- sf::st_set_agr(first_ranges, "constant")
+      centroids <- sf::st_centroid(split_lines)
       # add end point
       split_lines$to <- centroids$geometry
       # add starting point
       split_lines$parent_pop <- model$splits$parent[model$splits$pop %in% split_lines$pop]
       split_lines <- split_lines[split_lines$parent_pop != "ancestor", ]
-      split_lines$from <- do.call(rbind, lapply(split_lines$parent_pop, function(x) st_as_sf(centroids[centroids$pop == x, ])))$geometry
+      split_lines$from <- do.call(rbind, lapply(split_lines$parent_pop, function(x) sf::st_as_sf(centroids[centroids$pop == x, ])))$geometry
       # form a line
       split_lines$geometry <- Map(sf::st_union, split_lines$from, split_lines$to) %>%
         sf::st_as_sfc(.) %>% sf::st_cast("LINESTRING")

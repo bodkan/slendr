@@ -45,8 +45,8 @@ points lie within a population spatial boundary at that particular moment of
 time.
 
 Optionally, a name of a single sample from a population can be given, which
-will then replace the generic format of "\if{html}{\out{<population>}}_\if{html}{\out{<number>}}" name. See
-example for more detail.
+will then replace the generic format of \code{"\{population\}_\{number\}"} name.
+See example for more detail.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
