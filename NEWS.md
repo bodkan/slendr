@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 1.2.0
 
 - Due to new kind of issues related to conda activating environments in an incorrect path which [started to pop up](https://github.com/bodkan/slendr/issues/179) (possibly due to a misfeature in the reticulate package), activating procedure in _slendr_ was reverted to a slow, but apparently [more robust approach](https://github.com/bodkan/slendr/pull/182/commits/de868c160fb8eafd278676b98fd99edc90373c61). This will unfortunately make running massively parallelized simulations on Windows problematic due to a hard-to-detect race condition in conda. Users are advised to execute parallelized simulations on unix systems. ([PR #182](https://github.com/bodkan/slendr/pull/182))
 
