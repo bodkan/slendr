@@ -74,7 +74,7 @@ edges_df <- tribble(
 
 p <- ggplot() +
   geom_sf(data = map, color = NA) +
-#  geom_label(data = points_df, aes(lon, lat, label = id)) +
+  #  geom_label(data = points_df, aes(lon, lat, label = id)) +
   geom_segment(data = edges_df, aes(x = x, y = y, xend = xend, yend = yend, color = from)) +
   geom_point(data = points_df, aes(lon, lat, color = id), size = 1.5) +
   guides(color = "none", fill = "none") +
