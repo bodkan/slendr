@@ -1,5 +1,8 @@
 # slendr (development version)
 
+- In order to minimize the dependency burden for users even further, packages _shiny_ and _shinyWidgets_ are now not installed by default. The function `explore_model()` function now checks if those packages are present upon calling it. If not, the user is informed that they should install those packages first. ([#60fbdf](https://github.com/bodkan/slendr/commit/60fbdf))
+
+
 # slendr 1.2.0
 
 - Due to new issues related to conda activating environments in an incorrect path which [started to pop up](https://github.com/bodkan/slendr/issues/179) (possibly due to a misfeature in the _reticulate_ package), activating procedure in _slendr_ was reverted to a slower, but apparently [more robust approach](https://github.com/bodkan/slendr/pull/182/commits/de868c160fb8eafd278676b98fd99edc90373c61). This will unfortunately make running massively parallelized simulations on Windows problematic due to a suspected-but-hard-to-detect race condition in conda on Windows, which manifested when executing many parallel environment activations (one for each simulation process) on this platform. For the time being, users are advised to execute big parallelized simulations (we're talking thousands of simulations in an ABC setting) on unix systems. ([PR #182](https://github.com/bodkan/slendr/pull/182))

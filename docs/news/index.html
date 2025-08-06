@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,6 +46,10 @@
       <small>Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li>In order to minimize the dependency burden for users even further, packages <em>shiny</em> and <em>shinyWidgets</em> are now not installed by default. The function <code><a href="../reference/explore_model.html">explore_model()</a></code> function now checks if those packages are present upon calling it. If not, the user is informed that they should install those packages first. (<a href="https://github.com/bodkan/slendr/commit/60fbdf" class="external-link">#60fbdf</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.0" id="slendr-120">slendr 1.2.0<a class="anchor" aria-label="anchor" href="#slendr-120"></a></h2><p class="text-muted">CRAN release: 2025-07-31</p>
 <ul><li><p>Due to new issues related to conda activating environments in an incorrect path which <a href="https://github.com/bodkan/slendr/issues/179" class="external-link">started to pop up</a> (possibly due to a misfeature in the <em>reticulate</em> package), activating procedure in <em>slendr</em> was reverted to a slower, but apparently <a href="https://github.com/bodkan/slendr/pull/182/commits/de868c160fb8eafd278676b98fd99edc90373c61" class="external-link">more robust approach</a>. This will unfortunately make running massively parallelized simulations on Windows problematic due to a suspected-but-hard-to-detect race condition in conda on Windows, which manifested when executing many parallel environment activations (one for each simulation process) on this platform. For the time being, users are advised to execute big parallelized simulations (we’re talking thousands of simulations in an ABC setting) on unix systems. (<a href="https://github.com/bodkan/slendr/pull/182" class="external-link">PR </a><a href="https://github.com/bodkan/slendr/issues/182" class="external-link">#182</a>)</p></li>
