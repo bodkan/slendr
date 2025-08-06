@@ -42,8 +42,6 @@ Imports:
     png,
     ijtiff,
     ape,
-    shinyWidgets,
-    shiny,
     scales,
     digest,
     ggrepel
@@ -60,6 +58,8 @@ Suggests:
     magick,
     cowplot,
     forcats,
+    shinyWidgets,
+    shiny,
     rsvg
 VignetteBuilder: knitr
 URL: https://github.com/bodkan/slendr

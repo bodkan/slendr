@@ -5,10 +5,13 @@
 #' @return No return value, called in order to start an interactive browser-based
 #'   interface to explore the dynamics of a slendr model
 #'
-#' @import shiny
 #' @export
 explore_model <- function(model) {
   check_spatial_pkgs()
+
+  if (!requireNamespace("shiny", quietly = TRUE) || !requireNamespace("shinyWidgets", quietly = TRUE))
+    message("For interactive model visualization, please install the R packages ",
+            "shiny and shinyWidgets\nby calling `install.packages(c(\"shiny\", \"shinyWidgets\"))`")
 
   if (!has_map(model$populations[[1]]))
     stop("Cannot plot spatial map dynamics for non-spatial models.
