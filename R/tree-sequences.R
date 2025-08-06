@@ -126,7 +126,10 @@ ts_read <- function(file, model = NULL) {
 ts_load <- function(file, model = NULL) {
   .Deprecated(
     "ts_read",
-     msg = "Starting with slendr v1.0, please use `ts_read()` to read tree sequences from disk.\n(This is just a heads-up for future reference -- no action needed now!)"
+    msg = paste0(
+      "Starting with slendr v1.0, please use `ts_read()` to read tree sequences from disk.\n",
+      "(This is just a heads-up for future reference -- no action needed now!)"
+    )
   )
   ts_read(file, model)
 }
@@ -163,7 +166,7 @@ ts_write <- function(ts, file) {
   # down to a smaller number of individuals than originally sampled)
   if (from_slendr && length(attr(ts, "metadata")$sample_names) != length(attr(ts, "metadata")$subset_names)) {
     tables <- ts$dump_tables()
-    tables$metadata_schema = tskit$MetadataSchema(list("codec" = "json"))
+    tables$metadata_schema <- tskit$MetadataSchema(list("codec" = "json"))
 
     sample_names <- attr(ts, "metadata")$sample_names
     subset_names <- attr(ts, "metadata")$subset_names
@@ -195,7 +198,10 @@ ts_write <- function(ts, file) {
 ts_save <- function(ts, file) {
   .Deprecated(
     "ts_write",
-     msg = "Starting with slendr v1.0, please use `ts_write()` to write tree sequences to disk.\n(This is just a heads-up for future reference -- no action needed now!)"
+    msg = paste0(
+      "Starting with slendr v1.0, please use `ts_write()` to write tree sequences to disk.\n",
+      "(This is just a heads-up for future reference -- no action needed now!)"
+    )
   )
   ts_write(ts, file)
 }
@@ -237,7 +243,7 @@ ts_save <- function(ts, file) {
 ts_recapitate <- function(ts, recombination_rate, Ne = NULL, demography = NULL, random_seed = NULL) {
   check_ts_class(ts)
 
-  if ((is.null(Ne) & is.null(demography)) | !is.null(Ne) & !is.null(demography))
+  if ((is.null(Ne) && is.null(demography)) || !is.null(Ne) && !is.null(demography))
     stop("Either ancestral Ne or demography (but not both) must be specified for\n",
          "recapitation. See documentation of pyslim.recapitate for more detail.", call. = FALSE)
 
@@ -403,8 +409,8 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
            "tree sequences", call. = FALSE)
     if (!all(simplify_to %in% data$name))
       stop("The following individuals are not present in the tree sequence: ",
-          paste0(simplify_to[!simplify_to %in% data$name], collapse = ", "),
-          call. = FALSE)
+           paste0(simplify_to[!simplify_to %in% data$name], collapse = ", "),
+           call. = FALSE)
     samples <- dplyr::filter(data, name %in% simplify_to)$node_id
   } else if (is.numeric(simplify_to)) {
     if (!all(simplify_to %in% data$node_id))
@@ -484,8 +490,9 @@ ts_simplify <- function(ts, simplify_to = NULL, keep_input_roots = FALSE,
     attr(ts_new, "nodes") <- data_new[, c(name_col, "pop", "node_id",
                                          "time", "time_tskit", location_col, "sampled", "remembered",
                                          "retained", "alive", "pedigree_id", "ind_id", "pop_id")]
-  } else
+  } else {
     attr(ts_new, "nodes") <- get_tskit_table_data(ts_new, simplify_to)
+  }
 
   attr(ts_new, "path") <- attr(ts, "path")
 
@@ -642,8 +649,6 @@ ts_genotypes <- function(ts, quiet = FALSE) {
   if (ts$num_mutations == 0)
     stop("Extracting genotypes from a tree sequence which has not been mutated",
          call. = FALSE)
-
-  type <- attr(ts, "type")
 
   data <- ts_nodes(ts)
 
@@ -2779,8 +2784,9 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
   if (spatial) {
     combined <- convert_to_sf(combined, model)
     location_cols <- "location"
-  } else
+  } else {
     location_cols <- NULL
+  }
 
   if (from_slendr) {
     combined$pop <- factor(combined$pop, levels = order_pops(model$populations, model$direction))
@@ -2789,7 +2795,7 @@ get_tskit_table_data <- function(ts, simplify_to = NULL) {
     name_col <- NULL
 
   combined %>%
-    dplyr::select(!!name_col, pop, ind_id, node_id, time, time_tskit, sampled, pop_id)
+    dplyr::select(!!name_col, pop, ind_id, node_id, time, time_tskit, sampled, pop_id, !!location_cols)
 }
 
 get_annotated_edges <- function(x) {
