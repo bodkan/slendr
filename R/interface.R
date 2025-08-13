@@ -1457,6 +1457,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
     message("A required slendr Python environment is already present. You can activate\n",
             "it by calling init_env().")
   } else {
+    Sys.setenv(CONDA_PLUGINS_AUTO_ACCEPT_TOS = "yes")
     if (agree)
       answer <- 2
     else
