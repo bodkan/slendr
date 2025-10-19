@@ -6,10 +6,11 @@
 #' @param ... Objects of classes \code{slendr_map}, \code{slendr_region}, or
 #'   \code{slendr_pop}
 #' @param time Plot a concrete time point
-#' @param gene_flow Indicate gene-flow events with an arrow
+#' @param gene_flow Indicate gene-flow events by linking demes with a line
 #' @param splits Indicate split events with lines
 #' @param labels Should the (starting) polygons of each populations be labeled with
 #'   a respective population label (default \code{FALSE})?
+#' @param arrows Should gene-flow links be also indicated with an arrow?
 #' @param graticules Plot graticules in the original Coordinate Reference System
 #'   (such as longitude-latitude), or in the internal CRS (such as meters)?
 #' @param intersect Intersect the population boundaries against landscape and
@@ -25,7 +26,7 @@
 #' @export
 #'
 plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
-                     labels = FALSE,
+                     labels = FALSE, arrows = TRUE,
                      graticules = "original",
                      intersect = TRUE, show_map = TRUE,
                      title = NULL, interpolated_maps = NULL) {
@@ -37,15 +38,17 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
   if (is.null(show_map)) show_map <- FALSE
 
   args <- list(...)
-
   if (!all(sapply(args, inherits, "slendr")))
     stop("Only objects of the class 'slendr' can be visualized using plot_map", call. = FALSE)
 
   classes <- grep("slendr_", unique(unlist(sapply(args, class))), value = TRUE)
+
   if (length(classes) > 1 & "slendr_model" %in% classes)
     stop("If a 'slendr_model' object is to be plotted, it must be a single argument", call. = FALSE)
+
   if (length(classes) > 1 & "slendr_map" %in% classes)
     stop("If a 'slendr_map' object is to be plotted, it must be a single argument", call. = FALSE)
+
   if (length(intersect(c("slendr_region", "slendr_pop"), classes)) > 1)
     stop("'slendr_region' and 'slendr_pops' object cannot be plotted at once", call. = FALSE)
 
@@ -74,7 +77,6 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
       stop("Objects do not share the same map component", call. = FALSE)
     }
     map <- maps[[1]]
-
     regions <- lapply(args, function(i) if (!is.null(i$region)) i) %>% Filter(Negate(is.null), .)
     pops <- lapply(args, function(i) if (!is.null(i$pop)) i) %>% Filter(Negate(is.null), .)
 
@@ -82,6 +84,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
       stop("Cannot plot spatial maps for non-spatial models", call. = FALSE)
 
     direction <- setdiff(unique(sapply(pops, time_direction)), "unknown")
+
     if (!length(direction)) direction <- "forward"
   }
 
@@ -114,6 +117,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
 
   if (length(pops)) {
     pop_names <- order_pops(pops, direction)
+
     if (any(duplicated(pop_names)))
       stop("Duplicated population names within a single model are not allowed", call. = FALSE)
 
@@ -131,8 +135,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
       split_times <- sapply(pops, function(p) { attr(p, "history")[[1]]$time })
       removal_times <- sapply(pops, attr, "remove")
 
-      # get only those populations already/still present at the
-      # specified time...
+      # get only those populations already/still present at the specified time...
       if (direction == "forward") {
         previous_time <- max(all_times[all_times <= time])
         present_pops <- interpolated_maps[split_times <= time & (removal_times == -1 | removal_times >= time)]
@@ -140,7 +143,6 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
         previous_time <- min(all_times[all_times >= time])
         present_pops <- interpolated_maps[split_times >= time & (removal_times == -1 | removal_times <= time)]
       }
-
       # ... and extract their spatial maps
       pop_maps <- lapply(present_pops, function(pop) {
         snapshot <- pop[pop$time == previous_time, ]
@@ -150,21 +152,18 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
     } else {
       pop_maps <- pops
     }
-
     if (intersect) {
       intersected_maps <- pop_maps %>% Filter(has_map, .) %>% lapply(intersect_features)
       if (length(intersected_maps) != length(pop_maps))
         warning("Non-spatial populations in your model won't be visualized", call. = FALSE)
       pop_maps <- intersected_maps
     }
-
     pop_maps <- do.call(rbind, pop_maps)
     pop_maps$pop <- factor(pop_maps$pop, levels = pop_names)
 
     # get the first range of each population (used for plotting split lines and
     # gene-flow arrows)
     first_ranges <- dplyr::group_by(pop_maps, pop, time) %>% dplyr::arrange(time) %>% dplyr::slice(1)
-
     if (splits) {
       # make a copy of a the sf object with initial population ranges
       # TODO: Instead find the temporally closest range for each given split event
@@ -179,10 +178,8 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
       # form a line
       split_lines$geometry <- Map(sf::st_union, split_lines$from, split_lines$to) %>%
         sf::st_as_sfc(.) %>% sf::st_cast("LINESTRING")
-
       p <- p + geom_sf(data = split_lines, aes(color = pop), linewidth = 3)
     }
-
     if (length(unique(pop_maps$time)) > 1 && !is.logical(time)) {
       # build a base map with geographic features
       p <- p +
@@ -194,7 +191,6 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
         geom_sf(data = pop_maps, aes(fill = pop), color = NA, alpha = a) +
         geom_sf(data = pop_maps, fill = NA, color = "black", size = 0.1)
     }
-
     # add geneflow arrows, if requested
     if (gene_flow) {
       if (is.null(time) || is.numeric(time))
@@ -202,19 +198,21 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
       else
         migr_df <- get_geneflows(model, time = NULL)
 
-      if (nrow(migr_df))
+      if (nrow(migr_df)) {
+        if (arrows) {
+          arrow_object <- arrow(length = unit(2, "mm"), type = "closed")
+        } else {
+          arrow_object <- NULL
+        }
         p <- p +
-          geom_point(data = migr_df, aes(x = from_x, y = from_y, color = from), size = 7) +
-          geom_point(data = migr_df, aes(x = to_x, y = to_y, color = to), size = 7) +
-          geom_segment(
-            data = migr_df,
-            aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
-            arrow = arrow(length = unit(2, "mm"), type = "closed"),
-            lineend = "round", linewidth = 0.5, arrow.fill = "black"
-          ) +
+          geom_segment(data = migr_df, aes(x = from_x, y = from_y, xend = to_x, yend = to_y),
+                       arrow = arrow_object,
+                       lineend = "butt", linejoin = "mitre", linewidth = 0.1, arrow.fill = "black") +
+          geom_point(data = migr_df, aes(x = from_x, y = from_y), color = "black", size = 0.7) +
+          geom_point(data = migr_df, aes(x = to_x, y = to_y), color = "black", size = 0.7) +
           guides(color = "none")
+      }
     }
-
     if (labels) {
       p <- p +
         ggrepel::geom_label_repel(data = first_ranges,
@@ -222,7 +220,6 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
                       show.legend = FALSE)
     }
   }
-
   if (length(regions)) {
     region_maps <- do.call(rbind, regions)
     p <- p +
@@ -241,6 +238,7 @@ plot_map <- function(..., time = NULL, gene_flow = FALSE, splits = FALSE,
     theme_bw() +
     p_coord
 }
+
 
 # Traverse the tree topology encoded by population splits in an in-order recursive fashion,
 # return encountered populations sorted in this way
