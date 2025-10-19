@@ -2,6 +2,8 @@
 
 - In order to minimize the dependency burden for users even further, packages _shiny_ and _shinyWidgets_ are now not installed by default. The function `explore_model()` function now checks if those packages are present upon calling it. If not, the user is informed that they should install those packages first. ([#60fbdf](https://github.com/bodkan/slendr/commit/60fbdf))
 
+- `plot_map()` now has an option `arrows` which instructs the function whether (`arrows = TRUE`) or not (`arrows = FALSE`) should "spatial gene-flow links" between demes feature arrowheads. This is intended to help with visualizations of many spatial demes, such as in models with very dense spatial deme lattices. To this end, the _sf_ / _ggplot2_ layout produced by `plot_map()` has been also tweaked accordingly.  ([#ebbaad](https://github.com/bodkan/slendr/commit/ebbaad)) 
+
 
 # slendr 1.2.0
 
