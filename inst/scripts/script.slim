@@ -54,8 +54,8 @@ initialize() {
 
         // generate interaction types (two for each population - competition and mating)
         for (i in POPULATIONS.getValue("pop_id")) {
-            competition = filter(INTERACTIONS, "pop_id", i).getValue("competition")[0];
-            mating = filter(INTERACTIONS, "pop_id", i).getValue("mating")[0];
+            competition = filter_rows(INTERACTIONS, "pop_id", i).getValue("competition")[0];
+            mating = filter_rows(INTERACTIONS, "pop_id", i).getValue("mating")[0];
 
             initializeInteractionType(2 * i, "xy", reciprocal = T, maxDistance = competition);
             initializeInteractionType(2 * i + 1, "xy", reciprocal = T, maxDistance = mating);
@@ -111,14 +111,14 @@ initialize() {
          community.deregisterScriptBlock(s4);
 
     // step population size changes
-    step_changes = filter(RESIZES, "how", "step");
+    step_changes = filter_rows(RESIZES, "how", "step");
     if (num_rows(step_changes))
         community.rescheduleScriptBlock(s5, ticks = BURNIN_LENGTH + unique(step_changes.getValue("tresize_gen")));
     else
         community.deregisterScriptBlock(s5);
 
     // exponential population size changes
-    exp_changes = filter(RESIZES, "how", "exponential");
+    exp_changes = filter_rows(RESIZES, "how", "exponential");
     if (num_rows(exp_changes)) {
         // extract times of all scheduled exponential size changes
         times = c();
@@ -150,7 +150,7 @@ initialize() {
       community.deregisterScriptBlock(s9);
 
     // remove populations from the simulation
-    cleanups = filter(POPULATIONS, "tremove_gen", -1, negate = T);
+    cleanups = filter_rows(POPULATIONS, "tremove_gen", -1, negate = T);
     if (num_rows(cleanups))
          community.rescheduleScriptBlock(s10, ticks = BURNIN_LENGTH + unique(cleanups.getValue("tremove_gen")));
     else
@@ -175,7 +175,7 @@ s0 late() /* Log the start of the simulation */ {
 }
 
 s1 late() /* Population splits */ {
-    pops = filter(POPULATIONS, "tsplit_gen", c(1, community.tick - BURNIN_LENGTH));
+    pops = filter_rows(POPULATIONS, "tsplit_gen", c(1, community.tick - BURNIN_LENGTH));
 
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
@@ -188,7 +188,7 @@ s1 late() /* Population splits */ {
 }
 
 s2 late() /* Geneflow events */ {
-    events = filter(GENE_FLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
+    events = filter_rows(GENE_FLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, event.getValue("rate"));
@@ -196,7 +196,7 @@ s2 late() /* Geneflow events */ {
 }
 
 s3 late() /* Stopping geneflow */ {
-    events = filter(GENE_FLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
+    events = filter_rows(GENE_FLOWS, "tend_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
         set_geneflow(event, 0.0);
@@ -204,7 +204,7 @@ s3 late() /* Stopping geneflow */ {
 }
 
 s4 late() /* Update spatial population boundaries */ {
-    maps = filter(MAPS, "time_gen", c(1, community.tick - BURNIN_LENGTH));
+    maps = filter_rows(MAPS, "time_gen", c(1, community.tick - BURNIN_LENGTH));
 
     for (i in seqLen(num_rows(maps))) {
         map = maps.getRowValues(i);
@@ -235,7 +235,7 @@ s4 late() /* Update spatial population boundaries */ {
 
         // uniformly distribute individuals if this is the very first boundary
         // of the population
-        tsplit = filter(POPULATIONS, "pop_id", id).getValue("tsplit_gen");
+        tsplit = filter_rows(POPULATIONS, "pop_id", id).getValue("tsplit_gen");
         if (tsplit == community.tick | tsplit == community.tick - BURNIN_LENGTH)
             set_coordinates(population(id).individuals, id);
     }
@@ -243,8 +243,8 @@ s4 late() /* Update spatial population boundaries */ {
 
 s5 /* Step population size changes */ early() {
     // get all step resize events active in this generation
-    all_events = filter(RESIZES, "tresize_gen", community.tick - BURNIN_LENGTH);
-    events = filter(all_events, "how", "step");
+    all_events = filter_rows(RESIZES, "tresize_gen", community.tick - BURNIN_LENGTH);
+    events = filter_rows(all_events, "how", "step");
 
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
@@ -295,7 +295,7 @@ s6 /* Exponential population size changes */ early() {
 }
 
 s7 late() /* Changing interaction distances and dispersals */ {
-    events = filter(INTERACTIONS, "tdispersal_gen", c(1, community.tick - BURNIN_LENGTH));
+    events = filter_rows(INTERACTIONS, "tdispersal_gen", c(1, community.tick - BURNIN_LENGTH));
 
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
@@ -353,7 +353,7 @@ s8 late() /* Save locations of all individuals */ {
         ind_str = paste(
             SIMULATION_END - community.tick,
             ind.subpopulation.id,
-            filter(POPULATIONS, "pop_id", ind.subpopulation.id).getValue("pop"),
+            filter_rows(POPULATIONS, "pop_id", ind.subpopulation.id).getValue("pop"),
             ind.pedigreeID,
             ind.spatialPosition,
             sep = "\t"
@@ -363,7 +363,7 @@ s8 late() /* Save locations of all individuals */ {
 }
 
 s9 late() /* Remember individuals for tree sequence recording */ {
-    events = filter(SAMPLING, "time_gen", community.tick - BURNIN_LENGTH);
+    events = filter_rows(SAMPLING, "time_gen", community.tick - BURNIN_LENGTH);
 
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
@@ -442,7 +442,7 @@ s9 late() /* Remember individuals for tree sequence recording */ {
 }
 
 s10 late() /* Schedule removal of populations */ {
-    pops = filter(POPULATIONS, "tremove_gen", community.tick - BURNIN_LENGTH);
+    pops = filter_rows(POPULATIONS, "tremove_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(pops))) {
         pop = pops.getRowValues(i);
         write_log("cleanup of " + pop.getValue("pop") +
@@ -607,7 +607,7 @@ function (void) set_geneflow(object<Dictionary> event, f$ rate) {
 // Distribute individuals uniformly within the boundary of the given population
 function (void) set_coordinates(lifso<Individual> inds, i$ id, [l$ log = T]) {
     if (log) write_log("distributing individuals of " +
-                        filter(POPULATIONS, "pop_id", id).getValue("pop") +
+                        filter_rows(POPULATIONS, "pop_id", id).getValue("pop") +
                         "(p" + id + ")");
     for (ind in inds) {
         do pos = c(runif(1, 0, WIDTH), runif(1, 0, HEIGHT));
@@ -774,7 +774,7 @@ function (object<Dictionary>) read_table(s$ path) {
 
 // Filter the data frame `d` to rows where the `col` is equal to `val`
 // (or not equal if `negate` is TRUE)
-function (object<Dictionary>) filter(No<Dictionary> d, s$ col, ifsl val, [l$ negate = F]) {
+function (object<Dictionary>) filter_rows(No<Dictionary> d, s$ col, ifsl val, [l$ negate = F]) {
     if (isNULL(d) | num_rows(d) == 0) return(NULL);
 
     if (!any(col == d.allKeys))
@@ -855,11 +855,11 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
 function (lifso<Subpopulation>) population(si id, [l$ check = F]) {
     // if a string name was given, extract the corresponding population index
     if (isString(id)) {
-      index = filter(POPULATIONS, "pop", id).getValue("pop_id");
+      index = filter_rows(POPULATIONS, "pop", id).getValue("pop_id");
       names = id;
     } else { // slendr internally uses also numerical identifiers (non-public)
       index = id;
-      names = filter(POPULATIONS, "pop_id", id).getValue("pop");
+      names = filter_rows(POPULATIONS, "pop_id", id).getValue("pop");
     }
 
     // check that all identifiers correspond to populations in the slendr model
@@ -978,7 +978,7 @@ function (void) reset_state (void) {
   pop_data = Dictionary(readFile(STATE_PATH + "slendr.txt"));
   for (pop_id in pop_data.getValue("pop_id")) {
       pop = population(pop_id);
-      pop_values = filter(pop_data, "pop_id", pop_id);
+      pop_values = filter_rows(pop_data, "pop_id", pop_id);
       pop.setValue("dispersal", pop_values.getValue("dispersal"));
       pop.setValue("dispersal_fun", pop_values.getValue("dispersal_fun"));
       pop.setValue("spatial", pop_values.getValue("spatial"));
