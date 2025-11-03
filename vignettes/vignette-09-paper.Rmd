@@ -14,13 +14,11 @@ vignette: >
 Since the publication of the [_slendr_ paper](https://evolbiol.peercommunityin.org/articles/rec?id=630), new versions of SLiM and _slendr_ have been released. Specifically, the results in the paper are based on SLiM version 4.0.1 and slendr version 0.5. Whenever a new version of SLiM is released, there's always a chance that some aspect of randomness in a simulation changes slightly, which affects the results even though the random seed is kept at the same value. As such, the figures in this paper (specifically the figure for _Example 4_ in our paper) will look slightly different. However, the results are still relevant and applicable, its just the presentation which has changed.
 
 ```{r, include = FALSE}
-env_present <- slendr::check_dependencies(python = TRUE, slim = TRUE)
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   dpi = 60,
-  eval = env_present
+  eval = slendr::check_dependencies(python = TRUE, slim = TRUE)
 )
 
 record_snapshot <- FALSE # only save PDFs on a local machine

@@ -8,15 +8,13 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- slendr::check_dependencies(python = TRUE, slim = TRUE)
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   dpi = 60,
   fig.width = 6,
   fig.height = 4,
-  eval = env_present
+  eval = slendr::check_dependencies(python = TRUE, slim = TRUE)
 )
 
 set.seed(42)

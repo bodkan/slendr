@@ -8,15 +8,13 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-run_vignette <- Sys.getenv("RUNNER_OS") == "" && slendr::check_dependencies(python = TRUE, slim = TRUE, quit = FALSE)
-
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
   fig.width = 8,
   fig.height = 6,
   dpi = 60,
-  eval = run_vignette
+  eval = Sys.getenv("RUNNER_OS") == "" && slendr::check_dependencies(python = TRUE, slim = TRUE)
 )
 
 RERUN <- FALSE

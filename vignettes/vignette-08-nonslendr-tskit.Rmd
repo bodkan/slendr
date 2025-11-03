@@ -8,8 +8,6 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-env_present <- slendr::check_dependencies(python = TRUE)
-
 #if (Sys.getenv("RUNNER_OS") == "Windows") {
 #  bash_path <- "D:/a/_temp/msys64/usr/bin/bash.exe"
 #} else {
@@ -22,7 +20,7 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 5,
   dpi = 60,
-  eval = slendr:::is_slim_present() && env_present && Sys.getenv("RUNNER_OS") != "Windows"#,
+  eval = Sys.getenv("RUNNER_OS") != "Windows" && slendr::check_dependencies(python = TRUE, slim = TRUE)
   #engine.path = list(bash = bash_path)
 )
 
