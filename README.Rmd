@@ -1,8 +1,6 @@
 <!-- README.md is generated from README.Rmd. Edit that file instead. -->
 
 ```{r, include = FALSE}
-env_present <- slendr::check_dependencies(python = TRUE)
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -11,7 +9,7 @@ knitr::opts_chunk$set(
   fig.height = 4,
   fig.cap = "",
   dpi = 80,
-  eval = Sys.which("slim") != "" && env_present
+  eval = slendr::check_dependencies(python = TRUE, slim = TRUE)
 )
 set.seed(314159)
 ```
