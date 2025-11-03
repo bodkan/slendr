@@ -101,7 +101,7 @@ animate_model(model, locations_file, steps = 80, width = 500, height = 200)
 
 Alternatively, we can use tree sequence processing features of slendr to just capture the last spatial snapshot of the simulated populations, which will be even faster:
 
-```{r plot_interactions, eval = Sys.which("slim") != "" && env_present}
+```{r plot_interactions, eval = slendr::check_dependencies(python = TRUE, slim = TRUE)}
 library(ggplot2)
 
 locations <- ts_nodes(ts) %>% dplyr::filter()
