@@ -304,12 +304,6 @@ Note that although we defined a spatial model, we could have just as easily simu
 ts_msprime <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
 ```
 
-Here is a very quick overview of the SLiM simulation run summarised as a GIF animation. Again, please note that the simulation is extremely simplified. We only simulated a very small number of individuals in each population, and we also didn't specify any [dispersal dynamics](https://slendr.net/articles/vignette-03-interactions.html) which is why the populations look so clumped.
-
-```{r, plot_gif, message = FALSE}
-animate_model(model = model, file = locations_file, steps = 50, width = 500, height = 300)
-```
-
 At this point, you could either compute some [population genetic statistics of interest](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics) or perhaps analyse the [spatial features of the genealogies](https://slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships) simulated by your model.
 
 ## Further information
