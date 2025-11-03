@@ -292,7 +292,7 @@ ts_slim <- slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
 
 ```{r, echo = FALSE}
 locations_file <- paste0(tempfile(), ".gz")
-ts_slim <- slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
+ts_slim <- slim(model, sequence_length = 1e6, recombination_rate = 0,
                 locations = locations_file, method = "batch", random_seed = 314159)
 ```
 
