@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 1.3.0
 
 - In order to minimize the dependency burden for users even further, packages _shiny_ and _shinyWidgets_ are now not installed by default. The function `explore_model()` function now checks if those packages are present upon calling it. If not, the user is informed that they should install those packages first. ([#60fbdf](https://github.com/bodkan/slendr/commit/60fbdf))
 
