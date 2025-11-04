@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,13 +125,13 @@ environment for us:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_env.html">check_env</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; Summary of the currently active Python environment:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.12_msprime-1.3.4_tskit-0.6.4_pyslim-1.0.4_tspop-0.0.2/bin/python </span></span>
-<span><span class="co">#&gt; Python version: 3.12.11 | packaged by conda-forge | (main, Jun  4 2025, 14:38:53) [Clang 18.1.8 ] </span></span>
+<span><span class="co">#&gt; Python binary: /Users/mp/Library/r-miniconda-arm64/envs/Python-3.13_msprime-1.3.4_tskit-0.6.4_pyslim-1.1.0_tspop-0.0.2/bin/python </span></span>
+<span><span class="co">#&gt; Python version: 3.13.9 | packaged by conda-forge | (main, Oct 22 2025, 23:38:18) [Clang 19.1.7 ] </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; slendr requirements:</span></span>
 <span><span class="co">#&gt;  - tskit: version 0.6.4 ✓ </span></span>
 <span><span class="co">#&gt;  - msprime: version 1.3.4 ✓ </span></span>
-<span><span class="co">#&gt;  - pyslim: version 1.0.4 ✓ </span></span>
+<span><span class="co">#&gt;  - pyslim: version 1.1.0 ✓ </span></span>
 <span><span class="co">#&gt;  - tspop: present ✓</span></span></code></pre>
 <p>Now we’re good to go and ready to simulate and analyse tree sequence
 outputs in R!</p>
@@ -399,7 +399,7 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/h2/qs0z_44x2vn2sskqc0cct7540000gn/T//RtmpOLurE2/file139402450edd9"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//Rtmp9tgFO9/filedb82609153e9"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
@@ -634,7 +634,7 @@ disposal to analyze such trees. For instance we can use the powerful
 package <em>ggtree</em> to plot the tree we have just extracted:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.amazon.com/Integration-Manipulation-Visualization-Phylogenetic-Computational-ebook/dp/B0B5NLZR1Z/" class="external-link">ggtree</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; ggtree v3.16.0 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
+<pre><code><span><span class="co">#&gt; ggtree v4.0.1 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Please cite:</span></span>
 <span><span class="co">#&gt; </span></span>

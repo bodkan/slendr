@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -450,7 +450,7 @@ applicable, its just the presentation which has changed.</p>
 </h3>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.amazon.com/Integration-Manipulation-Visualization-Phylogenetic-Computational-ebook/dp/B0B5NLZR1Z/" class="external-link">ggtree</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; ggtree v3.16.0 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
+<span><span class="co">#&gt; ggtree v4.0.1 Learn more at https://yulab-smu.top/contribution-tree-data/</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Please cite:</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -485,6 +485,10 @@ applicable, its just the presentation which has changed.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"time before present [thousand years ago]"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">80000</span>, <span class="fl">31000</span><span class="op">)</span>, labels <span class="op">=</span> <span class="va">abs_comma</span>,</span>
 <span>                     breaks <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">80</span>, <span class="fl">60</span>, <span class="fl">40</span>, <span class="fl">20</span>, <span class="fl">0</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in (function (mapping = NULL, data = NULL, ..., stat = "identity", :</span></span>
+<span><span class="co">#&gt; Ignoring unknown parameters: `label.size`</span></span>
+<span><span class="co">#&gt; Warning in geom_label2(aes(label = label, subset = !isTip), color = "black", :</span></span>
+<span><span class="co">#&gt; Ignoring unknown parameters: `label.size`</span></span>
 <span><span class="va">p_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggtree/man/revts.html" class="external-link">revts</a></span><span class="op">(</span><span class="va">p_tree</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># nodes$label &lt;- ifelse(is.na(nodes$name), nodes$node_id, nodes$name)</span></span>
@@ -574,22 +578,22 @@ Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version
 <tbody>
 <tr class="odd">
 <td align="left">ex1</td>
-<td align="right">5.7982747</td>
+<td align="right">5.987306</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex2</td>
-<td align="right">12.2156357</td>
+<td align="right">11.666349</td>
 <td align="left">mins</td>
 </tr>
 <tr class="odd">
 <td align="left">ex3</td>
-<td align="right">2.4240295</td>
+<td align="right">2.358436</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex4</td>
-<td align="right">0.3707469</td>
+<td align="right">0.377671</td>
 <td align="left">secs</td>
 </tr>
 </tbody>
