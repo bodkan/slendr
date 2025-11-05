@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 6,
   fig.height = 4,
-  dpi = 70,
+  dpi = 60,
   eval = slendr::check_dependencies(python = TRUE)
 )
 ```
