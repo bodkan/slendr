@@ -58,6 +58,7 @@ Suggests:
     magick,
     cowplot,
     forcats,
+    ggtree,
     shinyWidgets,
     shiny,
     rsvg
