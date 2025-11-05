@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  dpi = 80,
+  dpi = 70,
   eval = slendr::check_dependencies(python = TRUE, slim = TRUE)
 )
 ```
@@ -238,7 +238,7 @@ ggplot() +
   theme_bw()
 ```
 
-Because `sf` *simple features* objects (and, by extension, even `slendr_spatial` objects) are internally stored as [normal data frames](https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized) with couple more bells and whistles on top of them, we have all the [powerful tools](https://www.tidyverse.org) for manipulating tabular data at our disposal.
+Because `sf` *simple features* objects (and, by extension, even `slendr_spatial` objects) are internally stored as [normal data frames](https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-are-organized) with couple more bells and whistles on top of them, we have all the [powerful tools](https://tidyverse.org) for manipulating tabular data at our disposal.
 
 As an example, let's say we wanted to split the sampled individuals in the tree sequence into epochs and plot those individually using standard *ggplot2* features. We could simply first do this, adding a new column specifying to which epoch does each simulated individual belong:
 

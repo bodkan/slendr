@@ -25,3 +25,4 @@
 .codecov.yml
 ubuntu_deps.txt
 ^vignettes/vignette-09-paper\.Rmd$
+TAGS
