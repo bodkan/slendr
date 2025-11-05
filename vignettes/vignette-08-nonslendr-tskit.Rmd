@@ -155,7 +155,7 @@ ggtree(tree, branch.length = "none") %<+% labels +
   geom_label(aes(label = tskit_id))
 ```
 
-```{r, eval = slendr::check_dependencies(python = TRUE, slim = TRUE) && requireNamespace("ggtree", quietly = TRUE) && Sys.getenv("RUNNER_OS") != "Windows"}
+```{r, ape_tree, eval = slendr::check_dependencies(python = TRUE, slim = TRUE) && requireNamespace("ggtree", quietly = TRUE) && Sys.getenv("RUNNER_OS") != "Windows"}
 library(ape)
 plot(tree, show.tip.label = FALSE)
 nodelabels()
