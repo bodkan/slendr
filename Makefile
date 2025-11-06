@@ -25,23 +25,23 @@ test:
 build: $(pkg)
 
 check: $(pkg)
-	cd build; R CMD check --as-cran $(notdir $<)
+	unset R_HAS_GGTREE; cd build; R CMD check --as-cran $(notdir $<)
 
 winrel: README.md
-	R -e 'devtools::check_win_release()'
+	unset R_HAS_GGTREE; R -e 'devtools::check_win_release()'
 
 windev: README.md
-	R -e 'devtools::check_win_devel()'
+	unset R_HAS_GGTREE; R -e 'devtools::check_win_devel()'
 
 winold: README.md
-	R -e 'devtools::check_win_oldrelease()'
+	unset R_HAS_GGTREE; R -e 'devtools::check_win_oldrelease()'
 
 clean:
 	rm -rf build
 
 $(pkg): README.md
 	R -e 'devtools::document()'
-	mkdir -p build; cd build; R CMD build --log ../../slendr
+	unset R_HAS_GGTREE; mkdir -p build; cd build; R CMD build --log ../../slendr
 
 README.md: README.Rmd $(logo)
 	R -e 'devtools::install(upgrade = "never")'
