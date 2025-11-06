@@ -152,7 +152,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpC9Rp0v/file16f7948417a91");
+    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpxRBD6X/filed081f94191a");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -269,18 +269,9 @@ tree.</p>
 <p><img src="vignette-08-nonslendr-tskit_files/figure-html/nonslendr_tree-1.png" width="360"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/emmanuelparadis/ape" class="external-link">ape</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'ape'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:ggtree':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     rotate</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:dplyr':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     where</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tree</span>, show.tip.label <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html" class="external-link">nodelabels</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html" class="external-link">tiplabels</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="vignette-08-nonslendr-tskit_files/figure-html/ape_tree-1.png" width="360"></p>
 </div>
 <div class="section level4">
 <h4 id="msprime-non-slendr-tree-sequences">msprime (non-slendr) tree sequences<a class="anchor" aria-label="anchor" href="#msprime-non-slendr-tree-sequences"></a>
@@ -354,7 +345,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpC9Rp0v/file16f796a205a91");
+    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpxRBD6X/filed08155e41b63");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
