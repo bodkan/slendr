@@ -237,9 +237,9 @@ When we type the tree object to an R console, we can verify that we got an ordin
 tree
 ```
 
-This means that we have the whole R phylogenetic ecosystem at our disposal to analyze such trees. For instance we can use the powerful package _ggtree_ to plot the tree we have just extracted:
+This means that we have the whole R phylogenetic ecosystem at our disposal to analyze such trees. For instance we can use the powerful package *ggtree* to plot the tree we have just extracted:
 
-```{r, plot_ggtree, eval = slendr::check_dependencies(python = TRUE, slim = TRUE) && requireNamespace("ggtree", quietly = TRUE) && Sys.which("qpDstat") != ""}
+```{r, plot_ggtree, eval = slendr::check_dependencies(python = TRUE, slim = TRUE) && Sys.getenv("R_HAS_GGTREE") == TRUE && Sys.which("qpDstat") != ""}
 library(ggtree)
 
 ggtree(tree) +
@@ -249,7 +249,7 @@ ggtree(tree) +
 ```
 
 
-```{r, plot_apetree, eval = slendr::check_dependencies(python = TRUE, slim = TRUE) && requireNamespace("ggtree", quietly = TRUE) && Sys.which("qpDstat") != ""}
+```{r, plot_apetree, eval = slendr::check_dependencies(python = TRUE, slim = TRUE) && Sys.getenv("R_HAS_GGTREE") != TRUE && Sys.which("qpDstat") != ""}
 library(ape)
 plot(tree)
 nodelabels()
@@ -357,7 +357,7 @@ snps <- ts_eigenstrat(ts, prefix = file.path(tempdir(), "eigenstrat", "data"))
 
 Running an *admixr* analysis is then as easy as plugging the object into an *admixr* function. For instance, we can estimate the proportion of Neanderthal ancestry in a couple of individuals $X$ like this (*admixr* calls this proportion `alpha`):
 
-```{r, eval = Sys.which("qpDstat") != "" && slendr::check_dependencies(python = TRUE) && requireNamespace("ggtree", quietly = TRUE) }
+```{r, eval = Sys.which("qpDstat") != "" && slendr::check_dependencies(python = TRUE) && Sys.getenv("R_HAS_GGTREE") == TRUE }
 library(admixr)
 
 f4ratio(data = snps, X = c("EUR_1", "EUR_2", "AFR_2"),
@@ -366,7 +366,7 @@ f4ratio(data = snps, X = c("EUR_1", "EUR_2", "AFR_2"),
 
 In fact, lets compare the values obtained by both *tskit* and *admixr*/ADMIXTOOLS for all individuals:
 
-```{r, ts_vs_admixr, eval = Sys.which("qpDstat") != "" && slendr::check_dependencies(python = TRUE) && requireNamespace("ggtree", quietly = TRUE) }
+```{r, ts_vs_admixr, eval = Sys.which("qpDstat") != "" && slendr::check_dependencies(python = TRUE) && Sys.getenv("R_HAS_GGTREE") == TRUE }
 europeans <- inds[inds$pop == "EUR", ]$name
 
 # tskit result

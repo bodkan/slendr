@@ -518,7 +518,7 @@ ts_write(ts, "/Users/mp/Documents/KU/archive/slendr-paper/preprint_models_v0.5/e
 
 ### Plotting code
 
-```{r, figure_ex4, eval = requireNamespace("ggtree", quietly = TRUE) && env_present, fig.height=9, fig.width=8.5, class.source = "fold-hide"}
+```{r, figure_ex4, eval = Sys.getenv("R_HAS_GGTREE") == TRUE && env_present, fig.height=9, fig.width=8.5, class.source = "fold-hide"}
 library(ggtree)
 
 # prepare annotation table for ggtree linking R phylo node ID (not tskit integer
