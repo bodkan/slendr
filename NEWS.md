@@ -4,7 +4,7 @@
 
 - `plot_map()` now has an option `arrows` which instructs the function whether (`arrows = TRUE`) or not (`arrows = FALSE`) should "spatial gene-flow links" between demes feature arrowheads. This is intended to help with visualizations of many spatial demes, such as in models with very dense spatial deme lattices. To this end, the _sf_ / _ggplot2_ layout produced by `plot_map()` has been also tweaked accordingly.  ([#ebbaad](https://github.com/bodkan/slendr/commit/ebbaad)) 
 
-- The internal dependencies of _slendr_ have been upgraded. SLiM v5.1 is now required; and `init_env()` will instruct users that a new Python environment needs to be created with `setup_env()` to update _pyslim_ to v1.1.0. Additionally, (though inconsequential for _slendr_ users), the Python environment now utilizes Python 3.13. ([issue #186](https://github.com/bodkan/slendr/issues/186)).
+- The internal dependencies of _slendr_ have been upgraded. SLiM v5.1 is now required; and `init_env()` will instruct users that a new Python environment needs to be created with `setup_env()` to update _pyslim_ to v1.1.0. Additionally, (though rather inconsequential for _slendr_ users), the Python environment now utilizes Python 3.13. ([issue #186](https://github.com/bodkan/slendr/issues/186)).
 
 # slendr 1.2.0
 
