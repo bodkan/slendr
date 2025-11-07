@@ -4,9 +4,6 @@ url: https://slendr.net
 template:
   bootstrap: 5
   params:
-  docsearch:
-    api_key: a895c93f0e9eda05eb10b29a9921d586
-    index_name: slendr
 
 news:
   one_page: true
@@ -14,7 +11,7 @@ news:
 navbar:
   structure:
     left:  [home, reference, articles, news]
-    right: [github, twitter]
+    right: [github]
   components:
     home:
       icon: fa-home
@@ -51,9 +48,6 @@ navbar:
           href: articles/vignette-10-tracts.html
         - text: Extending models with custom SLiM code
           href: articles/vignette-11-extensions.html
-    twitter:
-      icon: fa-twitter
-      href: https://twitter.com/fleventy5
 
 reference:
   - title: Compiling and running population genetic models
