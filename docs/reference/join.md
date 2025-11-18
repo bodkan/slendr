@@ -1,0 +1,51 @@
+# Merge two spatial `slendr` objects into one
+
+Merge two spatial `slendr` objects into one
+
+## Usage
+
+``` r
+join(x, y, name = NULL)
+```
+
+## Arguments
+
+- x:
+
+  Object of the class `slendr`
+
+- y:
+
+  Object of the class `slendr`
+
+- name:
+
+  Optional name of the resulting geographic region. If missing, name
+  will be constructed from the function arguments.
+
+## Value
+
+Object of the class `slendr_region` which encodes a standard spatial
+object of the class `sf` with several additional attributes (most
+importantly a corresponding `slendr_map` object, if applicable).
+
+## Examples
+
+``` r
+# create a blank abstract world 1000x1000 distance units in size
+blank_map <- world(xrange = c(0, 1000), yrange = c(0, 1000), landscape = "blank")
+
+# it is possible to construct custom landscapes (islands, corridors, etc.)
+island1 <- region("island1", polygon = list(c(10, 30), c(50, 30), c(40, 50), c(0, 40)))
+island2 <- region("island2", polygon = list(c(60, 60), c(80, 40), c(100, 60), c(80, 80)))
+island3 <- region("island3", center = c(20, 80), radius = 10)
+archipelago <- island1 %>% join(island2) %>% join(island3)
+
+custom_map <- world(xrange = c(1, 100), c(1, 100), landscape = archipelago)
+
+# real Earth landscapes can be defined using freely-available Natural Earth
+# project data and with the possibility to specify an appropriate Coordinate
+# Reference System, such as this example of a map of Europe
+
+real_map <- world(xrange = c(-15, 40), yrange = c(30, 60), crs = "EPSG:3035")
+```
