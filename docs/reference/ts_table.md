@@ -28,17 +28,17 @@ be either a table of individuals, edges, nodes, or mutations).
 ## Details
 
 For further processing and analyses, the output of the function
-[`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) might be more
-useful, as it merges the information in node and individual tables into
-one table and further annotates it with useful information from the
+[`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) might be
+more useful, as it merges the information in node and individual tables
+into one table and further annotates it with useful information from the
 model configuration data.
 
 ## See also
 
 [`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) and
-[`ts_edges`](https://bodkan.net/slendr/reference/ts_edges.md) for accessing an
-annotated, more user-friendly and analysis-friendly tree-sequence table
-data
+[`ts_edges`](https://bodkan.net/slendr/reference/ts_edges.md) for
+accessing an annotated, more user-friendly and analysis-friendly
+tree-sequence table data
 
 ## Examples
 

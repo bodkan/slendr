@@ -76,9 +76,9 @@ individuals (i.e. ancient DNA samples) is in the pyslim documentation at
 
 ## See also
 
-[`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) for extracting
-useful information about individuals, nodes, coalescent times and
-geospatial locations of nodes on a map
+[`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) for
+extracting useful information about individuals, nodes, coalescent times
+and geospatial locations of nodes on a map
 
 ## Examples
 

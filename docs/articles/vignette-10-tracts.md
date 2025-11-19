@@ -1,12 +1,13 @@
 # Extracting true ancestry tracts
 
 **Please note that the *tspop* support in *slendr* implemented in the
-[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) function is
-extremely experimental, only minimally tested, and its functionality is
-expected to change quite a bit. Please wait for the release of the next
-major version of *slendr* (which should include a more developed
-[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md)) before you
-use this in your own work.**
+[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md)
+function is extremely experimental, only minimally tested, and its
+functionality is expected to change quite a bit. Please wait for the
+release of the next major version of *slendr* (which should include a
+more developed
+[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md))
+before you use this in your own work.**
 
 *slendr* now includes an experimental, use-it-at-your-own-risk interface
 to an exciting [new algorithm](https://doi.org/10.1093/bioadv/vbad163)
@@ -14,8 +15,8 @@ for extracting true tracts of ancestry as implemented in the Python
 module [*tspop*](https://tspop.readthedocs.io/en/latest/index.html).
 
 The interface is implemented in an R function
-[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) and this
-vignette describes its use on a simple toy model of Neanderthal and
+[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) and
+this vignette describes its use on a simple toy model of Neanderthal and
 Denisovan introgression into modern humans.
 
 ``` r
@@ -82,8 +83,8 @@ ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8, samples
 
 In order to extract tracts of Neanderthal and Denisovan ancestry, we can
 use *slendr*’s new function
-[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) which serves
-as a simplified R-friendly interface to the Python method
+[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) which
+serves as a simplified R-friendly interface to the Python method
 [`tspop.get_pop_ancestry()`](https://tspop.readthedocs.io/en/latest/tspop.html#tspop.get_pop_ancestry).
 An important piece of information used by the function is a so-called
 “census time”, which records the time of recording of the “ancestral
@@ -306,7 +307,8 @@ cowplot::plot_grid(p_densities, p_densities + scale_x_log10(), nrow = 2)
 Finally, as a sanity check, let’s use the pure *msprime* simulation
 example from the [official *tspop*
 documentation](https://tspop.readthedocs.io/en/latest/basicusage.html)
-to test that [`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md)
+to test that
+[`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md)
 behaves as expected even on a standard *msprime* tree-sequence object.
 
 First, let’s run the simulation code exactly as it is:
@@ -352,8 +354,8 @@ ts = msprime.sim_ancestry(
 
 Let’s save the *msprime* tree sequence to disk so that we can load it
 into R (i.e., approximating what you might want to do should you want to
-use [`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) without
-running a *slendr* simulation first):
+use [`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md)
+without running a *slendr* simulation first):
 
 ``` python
 import tempfile

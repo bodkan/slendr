@@ -10,9 +10,9 @@ simulations. In the previous vignettes, we described how you can specify
 spatial population dynamics and how you can access tree sequence data
 and calculate population genetic statistics on it (focusing on
 [non-spatial
-models](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.md) for
-simplicity). Now it’s time to show you how to work with simulated tree
-sequence in a spatial context.
+models](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.md)
+for simplicity). Now it’s time to show you how to work with simulated
+tree sequence in a spatial context.
 
 ## Model specification
 
@@ -34,9 +34,9 @@ set.seed(seed)
 We begin by specifying our spatial model. We will use the same
 demographic model of modern human history in West Eurasia, which we
 extensively discussed in the [introductory
-tutorial](https://bodkan.net/slendr/articles/vignette-01-tutorial.md) and on
-the main [landing page](https://bodkan.net/slendr/index.md). Here is a complete
-model definition script, without further comments:
+tutorial](https://bodkan.net/slendr/articles/vignette-01-tutorial.md)
+and on the main [landing page](https://bodkan.net/slendr/index.md). Here
+is a complete model definition script, without further comments:
 
 ``` r
 
@@ -215,7 +215,7 @@ ts
     #> ╟───────────┼─────┼────────┼────────────╢
     #> ║Populations│    7│ 2.7 KiB│         Yes║
     #> ╟───────────┼─────┼────────┼────────────╢
-    #> ║Provenances│    3│46.7 KiB│          No║
+    #> ║Provenances│    3│46.8 KiB│          No║
     #> ╟───────────┼─────┼────────┼────────────╢
     #> ║Sites      │    0│16 Bytes│          No║
     #> ╚═══════════╧═════╧════════╧════════════╝
@@ -225,9 +225,9 @@ ts
 As we showed in the [basic
 tutorial](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.md),
 the most important function for data exploration is
-[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md). This function
-extracts all information about individuals and nodes recorded in a tree
-sequence object loaded and annotated by *slendr* :
+[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md). This
+function extracts all information about individuals and nodes recorded
+in a tree sequence object loaded and annotated by *slendr* :
 
 ``` r
 
@@ -236,19 +236,19 @@ data <- ts_nodes(ts)
 
 For completeness, we have also functions such as `ts_individuals()`,
 [`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) and
-[`ts_edges()`](https://bodkan.net/slendr/reference/ts_edges.md) which extract
-[tree sequence
+[`ts_edges()`](https://bodkan.net/slendr/reference/ts_edges.md) which
+extract [tree sequence
 tables](https://tskit.dev/tskit/docs/stable/data-model.html#table-definitions)
 in their “raw” unprocessed form, but
-[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) is much more
-convenient for data exploration and analyses. First, it combined
+[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) is much
+more convenient for data exploration and analyses. First, it combined
 information in the low-level tables of individuals and nodes into a
 single table but more importantly, if the model which generated this
 data was a spatial model,
-[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) automatically
-annotates the node/individual tables with the position of each node in
-space (in real projected coordinates) and time. This means that we can
-do spatial data analysis directly on the table returned by
+[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md)
+automatically annotates the node/individual tables with the position of
+each node in space (in real projected coordinates) and time. This means
+that we can do spatial data analysis directly on the table returned by
 [`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md).
 
 Even better, although we can see below that the returned object belongs
@@ -304,12 +304,12 @@ data](https://r-spatial.github.io/sf/articles/sf1.html#how-simple-features-in-r-
 directly\*.
 
 Because the data returned by
-[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) is internally
-transformed to the projected CRS used by the model, we can use the
-returned object as any other data of the class `sf`. For instance, at
-the beginning of this vignette, we specified the world map of the model
-to be represented in projected CRS (EPSG 3035) which we can verify by
-typing:
+[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) is
+internally transformed to the projected CRS used by the model, we can
+use the returned object as any other data of the class `sf`. For
+instance, at the beginning of this vignette, we specified the world map
+of the model to be represented in projected CRS (EPSG 3035) which we can
+verify by typing:
 
 ``` r
 
@@ -324,9 +324,9 @@ map
     #>   - horizontal 18 ... 65
 
 The fact that the
-[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) result is just
-another `sf` object makes it easy to visualize overlay contents on this
-map, as we will see below.
+[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) result
+is just another `sf` object makes it easy to visualize overlay contents
+on this map, as we will see below.
 
 ## Using the *simple features* interface
 
@@ -359,8 +359,8 @@ Every spatial object in *slendr* is internally of the class `sf`. The
 flexibility of of [*ggplot2*](https://ggplot2.tidyverse.org) and
 [*sf*](https://r-spatial.github.io/sf/) packages means that we can
 overlay the locations of sampled individuals (saved in a `sf` format by
-[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md)) on top of our
-world map (also an `sf` object):
+[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md)) on top
+of our world map (also an `sf` object):
 
 ``` r
 
@@ -580,12 +580,12 @@ as_tibble(level1_branches)[, c("name", "node_id", "child_id", "parent_id", "left
     #> 2 EUR_67     407      407       503        0    100000
 
 A more convenient way to do this analysis is a companion function to
-[`ts_ancestors()`](https://bodkan.net/slendr/reference/ts_ancestors.md) called
-`plot_ancestors()`. This function accepts an `sf` object with the
+[`ts_ancestors()`](https://bodkan.net/slendr/reference/ts_ancestors.md)
+called `plot_ancestors()`. This function accepts an `sf` object with the
 spatial branching data created by
-[`ts_ancestors()`](https://bodkan.net/slendr/reference/ts_ancestors.md) and
-plots the paths between nodes on a map leading from a focal node up to
-the root(s) of the tree sequence (instead of just paths to immediate
+[`ts_ancestors()`](https://bodkan.net/slendr/reference/ts_ancestors.md)
+and plots the paths between nodes on a map leading from a focal node up
+to the root(s) of the tree sequence (instead of just paths to immediate
 parents shown in the previous figure). In this case, because we are
 working with a single diploid individual, we get two sets of paths for
 each of its nodes (chromosomes) and plot them in two facets:

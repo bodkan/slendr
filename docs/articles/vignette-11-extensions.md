@@ -9,17 +9,17 @@ to have the means to simulate arbitrarily complex spatial scenarios and
 simulate data which could be used for development of new spatial
 inference population genetic methods (and benchmarking of current
 methods). This functionality is briefly described in [vignette
-\#1](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) and in more
-detail in [vignette
+\#1](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) and
+in more detail in [vignette
 \#6](https://bodkan.net/slendr/articles/vignette-06-locations.html).
 
 After the spatial simulation features have been implemented, it turned
 out to be trivial to support also “traditional”, non-spatial demographic
 models, such as those described in [vignette
-\#4](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html) and
-[vignette
-\#5](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html) –
-tree-like models with population divergences, gene-flow events, and
+\#4](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
+and [vignette
+\#5](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html)
+– tree-like models with population divergences, gene-flow events, and
 popularion resize events, like you can see in any evolutionary biology
 textbook. Because non-spatial models can be often implemented (and
 executed) more efficient in a coalescent setting, we added the
@@ -62,10 +62,11 @@ guidelines:
   (population splits, resizes, gene flows, etc.). Because the handling
   of these demographic events remains unchanged even for
   [`slim()`](https://bodkan.net/slendr/reference/slim.md) models, the
-  coalescent [`msprime()`](https://bodkan.net/slendr/reference/msprime.md)
-  engine of *slendr* (which implements the coalescent, neutral
-  counterpart of *slendr* models) has not changed and there is no means
-  to customize it.
+  coalescent
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) engine
+  of *slendr* (which implements the coalescent, neutral counterpart of
+  *slendr* models) has not changed and there is no means to customize
+  it.
 
 - It is assumed that the [SLiM script bundled with
   *slendr*](https://github.com/bodkan/slendr/blob/main/inst/scripts/script.slim)
@@ -158,11 +159,11 @@ Along the same lines, when you’re customizing a *slendr*/SLiM
 simulation, you can get a `Subpopulation` SLiM object corresponding to a
 symbolic name of a *slendr* population (as used on the R side of things)
 using the Eidos function
-[`population()`](https://bodkan.net/slendr/reference/population.md) provided by
-the built-in SLiM script of *slendr.* For instance, let’s assume we
-compiled a toy model of human demography from the [vignette
-\#4](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html) and
-ran it in the SLiMgui using `slim(..., method = "gui")`. We can then
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+provided by the built-in SLiM script of *slendr.* For instance, let’s
+assume we compiled a toy model of human demography from the [vignette
+\#4](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
+and ran it in the SLiMgui using `slim(..., method = "gui")`. We can then
 open an Eidos console in the GUI and type the following:
 
     > // get a SLiM object corresponding to the "AFR" population
@@ -184,9 +185,9 @@ or that population is called `p0` or `p2` on the SLiM side of things).
 The symbolic names are the same for R and SLiM parts of *slendr.*
 
 Additionally, the
-[`population()`](https://bodkan.net/slendr/reference/population.md) Eidos
-function provides some helpful error checking. For instance, if we try
-to get a SLiM `Subpopulation` object corresponding to a *slendr*
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+Eidos function provides some helpful error checking. For instance, if we
+try to get a SLiM `Subpopulation` object corresponding to a *slendr*
 population which will exist at some point but doesn’t yet exist in a
 running SLiM simulation at a particular time, we will get an informative
 error:
@@ -205,19 +206,19 @@ a *slendr* model at all, we get another informative error message:
 of this vignette is to show how to extend *slendr* to non-neutral
 scenarios, we could, as an example, select a random chromosome from a
 given population using the
-[`population()`](https://bodkan.net/slendr/reference/population.md) function
-like this (maybe to add a beneficial mutation). We use this bit of code
-in the more elaborate complete examples below.
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+function like this (maybe to add a beneficial mutation). We use this bit
+of code in the more elaborate complete examples below.
 
     target_genome = sample(population("AFR").haplosomes, 1);
 
     target_genome.addNewMutation(m0, selectionCoeff = 0.05, position = 1000000);
 
 Again, the point of the
-[`population()`](https://bodkan.net/slendr/reference/population.md) Eidos
-function provided by *slendr* in its SLiM codebase is to make it easier
-to refer to the components of a *slendr* model defined in your SLiM
-extension code.
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+Eidos function provided by *slendr* in its SLiM codebase is to make it
+easier to refer to the components of a *slendr* model defined in your
+SLiM extension code.
 
 #### Referring to times: `tick()` Eidos function
 
@@ -258,9 +259,9 @@ particularly with burn-in times, etc.
 The `tick()` Eidos function makes it possible to use *slendr* model
 “natural time units” even on the SLiM side, without having to convert
 years before present into generations forward in time, similarly to how
-[`population()`](https://bodkan.net/slendr/reference/population.md) function in
-Eidos allows us to refer to *slendr* population symbolic names in a
-consistent way between R and SLiM itself.
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+function in Eidos allows us to refer to *slendr* population symbolic
+names in a consistent way between R and SLiM itself.
 
 This function takes in a time in *slendr* time units – years before
 present, generations backwards in time, whatever you used in your
@@ -273,9 +274,9 @@ calling:
     1668
 
 Similarly to the consistency check performed by the
-[`population()`](https://bodkan.net/slendr/reference/population.md) Eidos
-function, `tick()` also makes sure that the time given lies within the
-time window expected for the running simulation. For instance, our
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+Eidos function, `tick()` also makes sure that the time given lies within
+the time window expected for the running simulation. For instance, our
 AFR-EUR toy model above only starts at 90 thousand years ago, so if we
 try to get the tick number corresponding to a million years ago, we get
 this:
@@ -296,7 +297,8 @@ Indeed, the tick-based time boundaries of the model are:
     > tick(0)
     3001
 
-As with [`population()`](https://bodkan.net/slendr/reference/population.md), we
+As with
+[`population()`](https://bodkan.net/slendr/reference/population.md), we
 can also perform the *slendr*-time-to-tick conversion in a vectorized
 manner:
 
@@ -502,13 +504,14 @@ Even more relevant to writing customized SLiM extension scripts for
 *slendr* is the constant `PATH`, which contains the path to a directory
 where all files with SLiM simulation results (such as a tree-sequence
 file) will be saved. This can be specified by setting the parameter
-`path` in calls to the [`slim()`](https://bodkan.net/slendr/reference/slim.md)
-function like `slim(..., path = <directory>)`. This means that if you
-want to save custom files (various tables of allele frequencies, *etc.*,
-*i.e.* not just a tree-sequence file), you don’t have to organize the
-plumbing between a *slendr* R script and your own SLiM extension code
-yourself – you can specify `path =` in R and then use it inside the SLiM
-code as the `PATH` constant.
+`path` in calls to the
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) function like
+`slim(..., path = <directory>)`. This means that if you want to save
+custom files (various tables of allele frequencies, *etc.*, *i.e.* not
+just a tree-sequence file), you don’t have to organize the plumbing
+between a *slendr* R script and your own SLiM extension code yourself –
+you can specify `path =` in R and then use it inside the SLiM code as
+the `PATH` constant.
 
 ## Practical examples
 
@@ -516,12 +519,12 @@ code as the `PATH` constant.
 
 The above examples show how you can refer to a *slendr* population with
 its symbolic name on the SLiM side using the
-[`population()`](https://bodkan.net/slendr/reference/population.md) Eidos
-function provided by the *slendr* built-in SLiM script, and how you can
-convert between *slendr*-specific time units and SLiM’s internal ticks
-using the functions `tick()` and `model_time()`. You’ve also learned how
-to save and reset the SLiM state of a *slendr* simulation using
-functions `save_state()` and `reset_state()` and how to write out
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+Eidos function provided by the *slendr* built-in SLiM script, and how
+you can convert between *slendr*-specific time units and SLiM’s internal
+ticks using the functions `tick()` and `model_time()`. You’ve also
+learned how to save and reset the SLiM state of a *slendr* simulation
+using functions `save_state()` and `reset_state()` and how to write out
 logging information using the function `write_log()`.
 
 We will now demonstrate all of this by defining a snippet of SLiM code
@@ -671,8 +674,8 @@ model <- compile_model(
 
 You can check that the extension snippet was really appended to the
 built-in SLiM engine script by running
-[`slim()`](https://bodkan.net/slendr/reference/slim.md) function and setting
-`method = "gui"` (look towards the end of the script!):
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) function and
+setting `method = "gui"` (look towards the end of the script!):
 
 ``` r
 
@@ -683,8 +686,8 @@ So far we’re primarily interested in saving the frequency trajectory of
 the beneficial allele to `<tempdir()>/trajectory.tsv`.
 
 Checking the file produced by the customized
-[`slim()`](https://bodkan.net/slendr/reference/slim.md) simulation shows that
-the frequency trajectories were indeed saved correctly:
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) simulation shows
+that the frequency trajectories were indeed saved correctly:
 
     time    frequency
     15000   0.0001
@@ -832,8 +835,8 @@ extension <- substitute_values(
 ```
 
 Then plug the parametrized script into
-[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md) just
-as we did above:
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
+just as we did above:
 
 ``` r
 
@@ -1220,13 +1223,13 @@ samples <- rbind(nea_samples, modern_samples)
 ```
 
 Using the compiled model, we can simulate a tree sequence using the
-[`slim()`](https://bodkan.net/slendr/reference/slim.md) function like in any
-standard *slendr* workflow. However, note that we were able to skip
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) function like in
+any standard *slendr* workflow. However, note that we were able to skip
 `sequence_length =` and `recombination_rate =` arguments! This is
 because our non-neutral extension snippet already customizes though, so
 there’s no reason for us to instruct
-[`slim()`](https://bodkan.net/slendr/reference/slim.md) on that front in any
-way:
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) on that front in
+any way:
 
 ``` r
 

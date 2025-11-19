@@ -503,10 +503,10 @@ M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version 13.1.
 
 | example |      time | units |
 |:--------|----------:|:------|
-| ex1     |  5.589327 | mins  |
-| ex2     | 12.260144 | mins  |
-| ex3     |  2.186479 | mins  |
-| ex4     |  0.387769 | secs  |
+| ex1     |  6.912640 | mins  |
+| ex2     | 11.493862 | mins  |
+| ex3     |  2.181562 | mins  |
+| ex4     |  0.368562 | secs  |
 
 In the table above, `ex1`, `ex2`, `ex3`, and `ex4` correspond to
 runtimes of code shown in one of the four example figures in the

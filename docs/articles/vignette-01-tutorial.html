@@ -130,7 +130,7 @@ and tailor the simulation run to the user-defined model. Alternatively,
 <em>slendr</em> also supports executing standard population genetics
 models in a random-mating setting. This means that models do not need an
 explicit geographic map and can be simulated either with the same
-built-in SLiM back end script, or with a more efficient <a href="https://slendr.net/articles/vignette-07-backends.html"><em>msprime</em>
+built-in SLiM back end script, or with a more efficient <a href="https://bodkan.net/slendr/articles/vignette-07-backends.html"><em>msprime</em>
 back end</a> which is also provided with the package.</p></li>
 </ol>
 <p>The most important design objective was to make the integration of
@@ -787,27 +787,27 @@ to <em>slendr</em> than what we demonstrated here. For instance:</p>
 <ul>
 <li><p>You can tweak parameters influencing dispersal dynamics (how
 “clumpy” populations are, how far offspring can migrate from their
-parents, etc.) and change how those dynamics evolve over time. See <a href="https://slendr.net/articles/vignette-03-interactions.html">this
+parents, etc.) and change how those dynamics evolve over time. See <a href="https://bodkan.net/slendr/articles/vignette-03-interactions.html">this
 vignette</a> for more information.</p></li>
 <li><p>You can use <em>slendr</em> to program non-spatial models, which
 means that any standard, Wright-Fisher demographic model can be
 simulated with only a few lines of R code and, for instance, plugged
 into an <a href="https://en.wikipedia.org/wiki/Approximate_Bayesian_computation" class="external-link">Approximate
 Bayesian Computation</a> pipeline or other analyses leveraging readily
-available R packages. You can find more in <a href="https://slendr.net/articles/vignette-04-nonspatial-models.html">this
-vignette</a> and a much more detailed example in a vignette about <a href="https://slendr.net/articles/vignette-07-backends.html">SLiM and
-<em>msprime</em> back ends</a>.</p></li>
+available R packages. You can find more in <a href="https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html">this
+vignette</a> and a much more detailed example in a vignette about <a href="https://bodkan.net/slendr/articles/vignette-07-backends.html">SLiM
+and <em>msprime</em> back ends</a>.</p></li>
 <li><p>You can build complex spatial models which are still abstract
 (not assuming any real geographic location), including traditional
 simulations of demes in a lattice structure. A complete example is shown
-<a href="https://slendr.net/articles/vignette-02-grid-model.html">in
+<a href="https://bodkan.net/slendr/articles/vignette-02-grid-model.html">in
 this vignette</a>.</p></li>
 <li><p>Because SLiM saves data in the <code>.trees</code> tree-sequence
 file format, thanks to the R package <a href="https://rstudio.github.io/reticulate/index.html" class="external-link"><em>reticulate</em></a>
 for interfacing with Python code you have the incredible power of <a href="https://tskit.dev/" class="external-link"><em>tskit</em></a> and <a href="https://tskit.dev/pyslim/docs/latest/introduction.html" class="external-link"><em>pyslim</em></a>
 to process simulated data at a massive scale right at your fingertips,
 all within the convenient environment of R. See a much more detailed
-example in a vignette about <a href="https://slendr.net/articles/vignette-07-backends.html">this
+example in a vignette about <a href="https://bodkan.net/slendr/articles/vignette-07-backends.html">this
 vignette</a> for an extensive tutorial of this feature.</p></li>
 </ul>
 </div>

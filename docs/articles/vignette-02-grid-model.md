@@ -99,12 +99,13 @@ do.call(plot_map, populations) + ggplot2::theme(legend.position = "none")
 So far, the way the model is specified, each population would be stuck
 on its own circular “island”. We can change that by programming gene
 flow events using the *slendr* function
-[`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md). Again, let’s
-first program a simple helper function which will generate gene flow
-events according to neighborhood relationships on the two-dimensional
-grid, allowing each population to exchange migrants with each of its
-neighbors (making sure the coordinates of each population stay within
-the grid using simple modulo arithmetic on the population index *i*).
+[`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md).
+Again, let’s first program a simple helper function which will generate
+gene flow events according to neighborhood relationships on the
+two-dimensional grid, allowing each population to exchange migrants with
+each of its neighbors (making sure the coordinates of each population
+stay within the grid using simple modulo arithmetic on the population
+index *i*).
 
 ``` r
 
@@ -310,11 +311,11 @@ subpopulations; perhaps we would be interested in studying how a
 selected allele spreads through the continent based on some factors of
 interest. Then, to simulate data from this spatial model, we would first
 have to
-[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md) it
-and then run it in SLiM via the
-[`slim()`](https://bodkan.net/slendr/reference/slim.md) function. Given that
-this is the same process we described in the example above, we won’t be
-repeating it here.
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
+it and then run it in SLiM via the
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) function. Given
+that this is the same process we described in the example above, we
+won’t be repeating it here.
 
 ## More customized spatial model
 
@@ -343,11 +344,11 @@ have an associated location on a world map! Because we want to simulate
 data with a coalescent backend, we *have* to formally encode a
 population in which all genealogies eventually coalesce. In other words,
 the models we have specified above would not run with the
-[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) back end because
-they contain isolated demes which do not formally descend from a single
-ancestor had we run these models with msprime, we would get an error
-about infinite coalescent times. This is why we formally introduce an
-ancestral population here:
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) back end
+because they contain isolated demes which do not formally descend from a
+single ancestor had we run these models with msprime, we would get an
+error about infinite coalescent times. This is why we formally introduce
+an ancestral population here:
 
 ``` r
 

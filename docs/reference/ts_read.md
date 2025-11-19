@@ -39,14 +39,14 @@ tutorial and documentation available at:
 
 The recapitation and simplification steps can also be performed
 individually using the functions
-[`ts_recapitate`](https://bodkan.net/slendr/reference/ts_recapitate.md) and
-[`ts_simplify`](https://bodkan.net/slendr/reference/ts_simplify.md).
+[`ts_recapitate`](https://bodkan.net/slendr/reference/ts_recapitate.md)
+and [`ts_simplify`](https://bodkan.net/slendr/reference/ts_simplify.md).
 
 ## See also
 
-[`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) for extracting
-useful information about individuals, nodes, coalescent times and
-geospatial locations of nodes on a map
+[`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) for
+extracting useful information about individuals, nodes, coalescent times
+and geospatial locations of nodes on a map
 
 ## Examples
 

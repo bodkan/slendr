@@ -17,9 +17,9 @@ in *slendr*. However, we should start by noting that there is almost no
 difference between code for non-spatial and spatial models in *slendr*.
 The only visible difference is that spatial models include a `map =`
 argument in the
-[`population()`](https://bodkan.net/slendr/reference/population.md) constructor
-function of ancestral population(s), and non-spatial models do not.
-That’s it, that’s the difference. Switching between spatial and
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+constructor function of ancestral population(s), and non-spatial models
+do not. That’s it, that’s the difference. Switching between spatial and
 non-spatial models is performed internally by the package, without any
 user intervention.
 
@@ -89,12 +89,13 @@ model <- compile_model(
 )
 ```
 
-Using the [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md)
-function doesn’t make sense, as there are no spatial maps to plot.
-However, we can still plot the demographic graph, verifying that the
-model has been specified correctly using the function
-[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) as shown
-below.
+Using the
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function
+doesn’t make sense, as there are no spatial maps to plot. However, we
+can still plot the demographic graph, verifying that the model has been
+specified correctly using the function
+[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) as
+shown below.
 
 Let’s say we also want to schedule specific sampling events at specific
 times (which record only specified individuals in a tree sequence). We
@@ -113,10 +114,10 @@ samples <- schedule_sampling(
 
 Because it’s not just the model itself that’s useful to visually verify
 (which is the main purpose of
-[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md)) but also
-the sampling scheme, *slendr* makes it possible to overlay the numbers
-of individuals scheduled for tree-sequence recording from each lineage
-at each timepoint:
+[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md)) but
+also the sampling scheme, *slendr* makes it possible to overlay the
+numbers of individuals scheduled for tree-sequence recording from each
+lineage at each timepoint:
 
 ``` r
 
@@ -126,7 +127,8 @@ plot_model(model, samples = samples)
 ![](vignette-04-nonspatial-models_files/figure-html/non-spatial-graph_sampling-1.png)
 
 Even the final step—execution of the model in SLiM—is the same, using
-the built-in [`slim()`](https://bodkan.net/slendr/reference/slim.md) function:
+the built-in [`slim()`](https://bodkan.net/slendr/reference/slim.md)
+function:
 
 ``` r
 

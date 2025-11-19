@@ -60,8 +60,8 @@ interconnected units:
     do not need an explicit geographic map and can be simulated either
     with the same built-in SLiM back end script, or with a more
     efficient [*msprime* back
-    end](https://bodkan.net/slendr/articles/vignette-07-backends.html) which is
-    also provided with the package.
+    end](https://bodkan.net/slendr/articles/vignette-07-backends.html)
+    which is also provided with the package.
 
 The most important design objective was to make the integration of
 parts 1. and 2. appear completely seamless. Even for extremely complex
@@ -200,8 +200,8 @@ build more complex models. The function can intelligently decide (based
 on given input arguments) the right way to present the data to the user,
 which helps to define models more quickly without relying on the
 lower-level mechanisms of the `sf` package. You will see some examples
-of [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) in action
-below.
+of [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) in
+action below.
 
 ## Defining smaller geographic regions
 
@@ -264,15 +264,16 @@ class(anatolia)
     #> [1] "slendr"        "slendr_region" "sf"            "data.frame"
 
 Furthermore, note that in all
-[`region()`](https://bodkan.net/slendr/reference/region.md) calls we specified
-the `map` object that we defined at the very beginning. This object is
-added as a hidden attribute to each `slendr` object and represents the
-context for all geospatial transformations, expansions, and plots.
+[`region()`](https://bodkan.net/slendr/reference/region.md) calls we
+specified the `map` object that we defined at the very beginning. This
+object is added as a hidden attribute to each `slendr` object and
+represents the context for all geospatial transformations, expansions,
+and plots.
 
 We can use the generic
-[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function to
-plot these geographic regions in the context of the defined section of
-the world map:
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function
+to plot these geographic regions in the context of the defined section
+of the world map:
 
 ``` r
 
@@ -283,9 +284,9 @@ plot_map(africa, europe, anatolia, title = "Geographic regions")
 
 Note that the `map` object is no longer explicitly specified. It is not
 needed, because each other class of objects provided to the
-[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function must
-carry it as a “map” attribute. In fact, each such object must carry the
-same map context — *slendr* complains whenever this is not the case.
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function
+must carry it as a “map” attribute. In fact, each such object must carry
+the same map context — *slendr* complains whenever this is not the case.
 
 We can check that the component is really there, although hidden, using
 the built-in `attr` function and verify that it is the same as the map
@@ -310,23 +311,23 @@ all(attr(anatolia, "map") == map)
 One of the aims of the *slendr* package is to formalize the
 specification of spatial population boundaries and their changes over
 time. The core function for this is
-[`population()`](https://bodkan.net/slendr/reference/population.md), which
-takes a population `name`, the `time` at which we want to enforce that
-population’s boundary, the effective population size of the population
-at that time, and the `map` object described above. We also have to
-specify which existing population the specified population split from
-(or explicitly say that it’s an ancestral population). As for specifying
-the actual spatial boundaries, we have several options.
+[`population()`](https://bodkan.net/slendr/reference/population.md),
+which takes a population `name`, the `time` at which we want to enforce
+that population’s boundary, the effective population size of the
+population at that time, and the `map` object described above. We also
+have to specify which existing population the specified population split
+from (or explicitly say that it’s an ancestral population). As for
+specifying the actual spatial boundaries, we have several options.
 
 ### Polygon population ranges
 
 We can define detailed population boundaries using a polygon geometry
 object or a region object created by the
-[`region()`](https://bodkan.net/slendr/reference/region.md) function above,
-using a `polygon =` argument to
-[`population()`](https://bodkan.net/slendr/reference/population.md). Again, as
-a reminder, note that all coordinates are described in the context of
-the geographic CRS.
+[`region()`](https://bodkan.net/slendr/reference/region.md) function
+above, using a `polygon =` argument to
+[`population()`](https://bodkan.net/slendr/reference/population.md).
+Again, as a reminder, note that all coordinates are described in the
+context of the geographic CRS.
 
 First, let’s create the African ancestors of modern humans. We restrict
 the spatial boundary of the African population to the `africa` region
@@ -361,16 +362,17 @@ ooa <- population(
 )
 ```
 
-If we call the [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md)
-function on the returned object, we have the option to either plot the
-population range in its “raw” form or in its “intersected” form, in
-which case the raw boundary is intersected with the “background”
-landscape (removing large bodies of water, etc.).
+If we call the
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function
+on the returned object, we have the option to either plot the population
+range in its “raw” form or in its “intersected” form, in which case the
+raw boundary is intersected with the “background” landscape (removing
+large bodies of water, etc.).
 
 The intersected form is what is ultimately exported in a serialized
 format (see below) to be loaded as a spatial map into SLiM. This is why
-the [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function
-renders intersected population ranges by default.
+the [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md)
+function renders intersected population ranges by default.
 
 ``` r
 
@@ -382,12 +384,12 @@ plot_map(ooa, intersect = TRUE, title = "'Intersected' population range")
 ## Population movement across a landscape
 
 To describe a directional population movement, we can use the function
-[`move()`](https://bodkan.net/slendr/reference/move.md). This accepts the
-coordinates of the destination points along the way (`trajectory`) and
-the `duration` of the migration, and automatically generates a number of
-intermediate spatial maps along the trajectory of movement to produce a
-reasonable degree of spatial continuity (this number can be also
-specified manually).
+[`move()`](https://bodkan.net/slendr/reference/move.md). This accepts
+the coordinates of the destination points along the way (`trajectory`)
+and the `duration` of the migration, and automatically generates a
+number of intermediate spatial maps along the trajectory of movement to
+produce a reasonable degree of spatial continuity (this number can be
+also specified manually).
 
 ``` r
 
@@ -398,9 +400,9 @@ ooa <- ooa %>% move(
 ```
 
 We can inspect the object returned by the
-[`move()`](https://bodkan.net/slendr/reference/move.md) function and see that
-it now contains not just the first YAM population range at 7000 years
-ago, but also the ranges of the intermediate locations:
+[`move()`](https://bodkan.net/slendr/reference/move.md) function and see
+that it now contains not just the first YAM population range at 7000
+years ago, but also the ranges of the intermediate locations:
 
 ``` r
 
@@ -459,12 +461,12 @@ eur <- population( # European population
 ## Spatial population expansion
 
 We can simulate the expanding range of a population using the function
-[`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md), which
-accepts parameters specifying how many kilometers the boundary should
-expand by (the `by` argument), how long should the expansion should take
-(the `duration` argument) and how many intermediate spatial map
-snapshots should be exported representing the expansion (the `snapshots`
-argument).
+[`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md),
+which accepts parameters specifying how many kilometers the boundary
+should expand by (the `by` argument), how long should the expansion
+should take (the `duration` argument) and how many intermediate spatial
+map snapshots should be exported representing the expansion (the
+`snapshots` argument).
 
 For instance, let’s represent the expansion of Anatolian farmers, who
 also split from the OOA population at 28000 years ago at the time of the
@@ -559,9 +561,9 @@ plot_map(yam)
 ## Plotting multiple *slendr* objects
 
 In addition to plotting individual population ranges, the generic
-function [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) can
-handle a combination of population ranges, and can also partition them
-into individual facets. This is useful for visual inspection of the
+function [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md)
+can handle a combination of population ranges, and can also partition
+them into individual facets. This is useful for visual inspection of the
 specified model, and for looking for potential issues before the export
 of individual spatio-temporal maps. Obviously, this is a lot of
 multi-dimensional information:
@@ -579,8 +581,9 @@ interactively.
 ## Defining gene flow events
 
 The way *slendr* implements gene flow events is by calling the
-[`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md) function.
-This function has a very straightforward interface, shown below.
+[`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md)
+function. This function has a very straightforward interface, shown
+below.
 
 One thing to note is that by default, the `from` and `to` populations
 for gene flow events must have overlapping spatial ranges in order to
@@ -608,8 +611,8 @@ gf <- gene_flow(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
 
 The error message instructs us to visually verify that this is the case,
 which can be done by *slendr*’s
-[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function and
-the optional parameter `pop_facets = F` (which is set to `TRUE` by
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function
+and the optional parameter `pop_facets = F` (which is set to `TRUE` by
 default).
 
 Many models will include multiple gene flow events, which we can collect
@@ -624,9 +627,10 @@ gf <- list(
 )
 ```
 
-The [`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md) function
-simply returns a data frame collecting all the geneflow parameters for
-the [`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
+The [`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md)
+function simply returns a data frame collecting all the geneflow
+parameters for the
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
 step below:
 
 ``` r
@@ -649,15 +653,15 @@ gf
 ## Compile the whole model and load it in SLiM
 
 The most crucial function of *slendr* is
-[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md). It
-takes all population ranges defined across space and time, together with
-a list of gene flow events (optional, since some models won’t include
-gene flow), and then proceeds by converting all vectorized spatial
-ranges into raster bitmaps. Furthermore, it compiles all information
-about split times, $`N_e`$ values, gene flow directions, times, and
-rates into a series of tables. All of that will be saved automatically
-in a dedicated directory in a format that is understood by the back end
-SLiM script provided by *slendr* (more on that below).
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md).
+It takes all population ranges defined across space and time, together
+with a list of gene flow events (optional, since some models won’t
+include gene flow), and then proceeds by converting all vectorized
+spatial ranges into raster bitmaps. Furthermore, it compiles all
+information about split times, $`N_e`$ values, gene flow directions,
+times, and rates into a series of tables. All of that will be saved
+automatically in a dedicated directory in a format that is understood by
+the back end SLiM script provided by *slendr* (more on that below).
 
 ``` r
 
@@ -750,8 +754,8 @@ etc.
 
 In case you’d want to separate model specification and running into
 different scripts, *slendr* includes a function
-[`read_model()`](https://bodkan.net/slendr/reference/read_model.md) just for
-this purpose:
+[`read_model()`](https://bodkan.net/slendr/reference/read_model.md) just
+for this purpose:
 
 ``` r
 
@@ -769,12 +773,12 @@ to really visualize everything that will happen on the SLiM side after
 the simulation starts just from the code alone.
 
 For this purpose, the package includes a function named
-[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) which takes
-in all the information about the relationships between populations
-(i.e., the population and gene flow objects we defined above) and plots
-it all in the form of a so-called *admixture graph* (see
-[here](https://doi.org/10.1534/genetics.112.145037) for a discussion of
-the admixture graph concept).
+[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md)
+which takes in all the information about the relationships between
+populations (i.e., the population and gene flow objects we defined
+above) and plots it all in the form of a so-called *admixture graph*
+(see [here](https://doi.org/10.1534/genetics.112.145037) for a
+discussion of the admixture graph concept).
 
 One important thing to note here is that unlike traditional admixture
 graphs where each node/population is present only once, in the full
@@ -795,9 +799,9 @@ plot_model(model, proportions = TRUE)
 
 A slightly fancier way to visualize models is implemented in the
 function
-[`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md). This
-function accepts a compiled model as its only parameter and spawns an [R
-shiny](https://shiny.posit.co/)-based browser app which makes it
+[`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md).
+This function accepts a compiled model as its only parameter and spawns
+an [R shiny](https://shiny.posit.co/)-based browser app which makes it
 possible to click through the time snapshots interactively and visualize
 the spatial maps in each time point.
 
@@ -913,5 +917,5 @@ than what we demonstrated here. For instance:
   process simulated data at a massive scale right at your fingertips,
   all within the convenient environment of R. See a much more detailed
   example in a vignette about [this
-  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html) for
-  an extensive tutorial of this feature.
+  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html)
+  for an extensive tutorial of this feature.

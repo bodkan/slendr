@@ -63,7 +63,8 @@ another vignette introducing [non-spatial *slendr*
 models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.md).
 Note that this is no different from how we would normally specify a
 spatial model, except that we left out the `map` argument in making the
-[`population()`](https://bodkan.net/slendr/reference/population.md) calls.
+[`population()`](https://bodkan.net/slendr/reference/population.md)
+calls.
 
 To demonstrate additional features of the *slendr* interface to the
 [*tskit*](https://tskit.dev/tskit/docs/stable/introduction.html) Python
@@ -209,12 +210,12 @@ msprime_gf <- ts_mutate(msprime_gf, mut_rate, random_seed = seed)
 
 As we can see below, the tree sequence summary of the data loaded and
 processed by *slendr*’s
-[`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md) function (data
-produced by the SLiM backend) is very similar to what we got “manually”
-for the msprime-produced tree sequence using the custom defined
-functions. This is somehow obvious but it is a nice and cheap sanity
-check indicating that the tree sequence data structure produced by the
-two backends from the same demographic model is almost the same.
+[`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md) function
+(data produced by the SLiM backend) is very similar to what we got
+“manually” for the msprime-produced tree sequence using the custom
+defined functions. This is somehow obvious but it is a nice and cheap
+sanity check indicating that the tree sequence data structure produced
+by the two backends from the same demographic model is almost the same.
 
 ``` r
 

@@ -78,7 +78,7 @@ population `p1` (lets save it to `/tmp/nonspatial.slim`):
     }
 
     6000 late() {
-        sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpMH77Q5/filee81225dbf6f9");
+        sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//Rtmp6Er0QG/file157739844d09");
     }
 
 After we run this script in SLiM, we can use *slendr* to load the output
@@ -101,8 +101,9 @@ ts <- ts_read(nonspatial_trees_file) %>%
 
 We can extract information about individual’s names, nodes, population
 assignments, etc. just as with any *slendr* tree sequence with the
-function [`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md). As
-with standard *slendr* models, this function loads the “raw” node and
+function
+[`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md). As with
+standard *slendr* models, this function loads the “raw” node and
 individual [tree-sequences
 tables](https://tskit.dev/tutorials/tables_and_editing.html), performs a
 couple of join operations, and presents the whole thing in a nice
@@ -265,8 +266,8 @@ ts_nodes(ts)
 
 Furthermore, the generalized interface also supports *slendr*’s [spatial
 tree-sequence
-features](https://bodkan.net/slendr/articles/vignette-06-locations.html), with
-all the [bells and
+features](https://bodkan.net/slendr/articles/vignette-06-locations.html),
+with all the [bells and
 whistles](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5).
 
 For instance, lets take the following spatial SLiM script (modified from
@@ -304,7 +305,7 @@ the SLiM manual) and execute it with SLiM the usual way:
     }
 
     10000 late() {
-        sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpMH77Q5/filee812328c678");
+        sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//Rtmp6Er0QG/file15771c175cc7");
     }
 
 We can then load and simplify the output tree sequence in just as we did

@@ -43,12 +43,13 @@ analysed, and visualised.
 
 ## See also
 
-[`ts_table`](https://bodkan.net/slendr/reference/ts_table.md) for accessing raw
-tree sequence tables without added metadata annotation. See also
-[`ts_ancestors`](https://bodkan.net/slendr/reference/ts_ancestors.md) to learn
-how to extract information about relationship beteween nodes in the tree
-sequence, and how to analysed data about distances between nodes in the
-spatial context.
+[`ts_table`](https://bodkan.net/slendr/reference/ts_table.md) for
+accessing raw tree sequence tables without added metadata annotation.
+See also
+[`ts_ancestors`](https://bodkan.net/slendr/reference/ts_ancestors.md) to
+learn how to extract information about relationship beteween nodes in
+the tree sequence, and how to analysed data about distances between
+nodes in the spatial context.
 
 ## Examples
 

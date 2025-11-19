@@ -1,21 +1,21 @@
 # *slendr*: Population Genetic Simulations in R
 
-### *Overview* [](https://slendr.net)
+### *Overview* [](https://bodkan.net/slendr)
 
 *slendr* is a toolbox for running population genomic simulations
 entirely in R. Our original motivation for developing it was to provide
 a framework for [simulating spatially-explicit genomic
-data](https://slendr.net/articles/vignette-01-tutorial.html) on real
-geographic landscapes, however, it has grown to be much more than that
-since then: *slendr* can now simulate data from [traditional,
+data](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) on
+real geographic landscapes, however, it has grown to be much more than
+that since then: *slendr* can now simulate data from [traditional,
 non-spatial demographic
-models](https://slendr.net/articles/vignette-04-nonspatial-models.html)
+models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
 using *msprime* as a simulation engine, and it even supports selection
 scenarios via [user-defined SLiM estension
-snippets](https://slendr.net/articles/vignette-11-extensions.html). In
-addition to model definition and simulation, *slendr* also provides a
+snippets](https://bodkan.net/slendr/articles/vignette-11-extensions.html).
+In addition to model definition and simulation, *slendr* also provides a
 set of function for efficient [analysis of tree-sequence genomic
-data](https://slendr.net/articles/vignette-05-tree-sequences.html),
+data](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html),
 utilizing the [*tskit*](https://tskit.dev) module for underlying
 computation.
 
@@ -23,7 +23,7 @@ This page briefly summarizes *slendr*’s most important features. A more
 detailed description of the *slendr* architecture and an extensive set
 of practical code examples can be found in our
 [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/)
-in the PCI journal and on our [website](https://slendr.net).
+in the PCI journal and on our [website](https://bodkan.net/slendr).
 
 ------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ package allows you to:
 - **Program demographic models**, including population splits,
   population size changes, and gene-flow events **using an extremely
   simple declarative language entirely in R** ([see this
-  vignette](https://slendr.net/articles/vignette-04-nonspatial-models.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
   for an example of the model-definition interface). Even complex models
   can be written with only a very little code and require only a bare
   minimum of R programming knowledge (the only thing the user needs to
@@ -69,22 +69,22 @@ package allows you to:
   built-in R interface to the tree-sequence library
   [*tskit*](https://tskit.dev/tskit/docs/)*.* You can compute many
   [population genetic
-  statistics](https://slendr.net/reference/index.html#tree-sequence-statistics)
+  statistics](https://bodkan.net/slendr/reference/index.html#tree-sequence-statistics)
   in R immediately after the simulation finishes [directly on the output
   tree
-  sequences](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics),
+  sequences](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics),
   without having to convert files to other formats (VCF, EIGENSTRAT) for
   analysis in different software.
 
 - Although it originally assumed neutrality of simulated models,
   *slendr* now provides a simple extension mechanism for [customization
   of SLiM-based models using user-defined SLiM
-  code](https://slendr.net/articles/vignette-11-extensions.html).
+  code](https://bodkan.net/slendr/articles/vignette-11-extensions.html).
   Simulations of selection models of arbitrary complexity is now
   entirely possible.
 
 - [**Schedule sampling
-  events**](https://slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events)
+  events**](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events)
   which specify how many individuals’ genomes, from which populations,
   and at which times (optionally, at which locations) should be recorded
   by the simulation engine (SLiM or *msprime*) in the output
@@ -92,22 +92,23 @@ package allows you to:
 
 - **Encode complex models of population movements on a landscape** (see
   a brief example of such model
-  [here](https://slendr.net/articles/vignette-06-locations.html#model-specification),
+  [here](https://bodkan.net/slendr/articles/vignette-06-locations.html#model-specification),
   and a more extended explanation in [this
-  tutorial](https://slendr.net/articles/vignette-01-tutorial.html)). No
-  knowledge of cartographic or geospatial analysis concepts is needed.
+  tutorial](https://bodkan.net/slendr/articles/vignette-01-tutorial.html)).
+  No knowledge of cartographic or geospatial analysis concepts is
+  needed.
 
 - **Simulate these dynamic spatial demographic models using SLiM’s
   continuous-space simulation capabilities directly in R** **(again, no
   SLiM programming required).** The outputs from such simulations are
   saved as tree sequences and can be analysed using [standard R
   geospatial data analysis
-  libraries](https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5).
+  libraries](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5).
   This is because *slendr* performs the conversion of tree sequence
   tables to the appropriate spatial R data type automatically.
 
 - Specify within-population individual [dispersal
-  dynamics](https://slendr.net/articles/vignette-03-interactions.html)
+  dynamics](https://bodkan.net/slendr/articles/vignette-03-interactions.html)
   from the R interface by leveraging SLiM’s individual interaction
   parameters implemented in the SLiM back-end script.
 
@@ -122,8 +123,8 @@ analytic pipelines without the need to leave the R environment.**
 ### Testing the R package in an online RStudio session
 
 You can open an RStudio session and test examples from the
-[vignettes](https://slendr.net/articles/) directly in your web browser
-by clicking this button (no installation is needed!):
+[vignettes](https://bodkan.net/slendr/articles/) directly in your web
+browser by clicking this button (no installation is needed!):
 
 [![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio)
 
@@ -170,8 +171,8 @@ If you would like to stay updated:
     (you can find links on my [homepage](https://bodkan.net)).
 
 3.  From time to time, take a look at the
-    [changelog](https://slendr.net/news/index.html) where I will post
-    updates on new features, breaking changes, etc.
+    [changelog](https://bodkan.net/slendr/news/index.html) where I will
+    post updates on new features, breaking changes, etc.
 
 ------------------------------------------------------------------------
 
@@ -182,12 +183,12 @@ Here is a very brief demonstration of the kind of spatial model which
 that although this is a spatially-explicit population genetic model,
 *slendr* has an extensive support for [traditional, non-spatial
 simulations as
-well](https://slendr.net/articles/vignette-04-nonspatial-models.html).
+well](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html).
 Furthermore, this example only shows how to specify and simulate a model
 in R. It doesn’t show how to analyse tree-sequence outputs and compute
 population genetic statistics from them (this important feature is
 demonstrated in [this
-tutorial](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics)).
+tutorial](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics)).
 
 #### 1. Setup the spatial context
 
@@ -285,16 +286,16 @@ plot_map(africa, europe, anatolia)
 #### 3. Define demographic history and population boundaries
 
 The most important function in the *slendr* package is
-[`population()`](https://slendr.net/reference/population.md), which is
-used to define names, split times, sizes and spatial ranges of
+[`population()`](https://bodkan.net/slendr/reference/population.md),
+which is used to define names, split times, sizes and spatial ranges of
 populations. Here, we specify times in years before the present,
 distances in kilometers. If this makes more sense for your models, times
 can also be given in a forward direction.
 
 You will also note functions such as
-[`move()`](https://slendr.net/reference/move.md) or
-[`expand_range()`](https://slendr.net/reference/expand_range.md) which
-are designed to take a *slendr* population object and schedule its
+[`move()`](https://bodkan.net/slendr/reference/move.md) or
+[`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md)
+which are designed to take a *slendr* population object and schedule its
 spatial dynamics at appropriate times during the model simulation (which
 will happen at a later step).
 
@@ -398,14 +399,15 @@ model <- compile_model(
 
 Compiled model is kept as an R object which can be passed to different
 functions. In this example, we will simulate data with the
-[`slim()`](https://slendr.net/reference/slim.md) engine (but we could
-also run the simulation through the coalescent engine via the
-[`msprime()`](https://slendr.net/reference/msprime.md) function).
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) engine (but we
+could also run the simulation through the coalescent engine via the
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function).
 
 #### 6. Visualize the model
 
 The package provides an [R shiny](https://shiny.posit.co/)-based browser
-app [`explore_model()`](https://slendr.net/reference/explore_model.md)
+app
+[`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md)
 for checking the model dynamics interactively and visually. For more
 complex models, this is much better than static spatial plots such as
 the one we showed in step 2 above:
@@ -451,18 +453,18 @@ As specified here, *slendr*’s SLiM backend will simulate 10 Mb of
 sequence for each individual, and produce a tree sequence output from
 the simulation run which can be analysed by many [built-in population
 genetic
-functions](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics).
+functions](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics).
 By default, all individuals living at the end of the simulation are
 recorded as samples in the tree sequence. If a specific set of samples
 (ancient and modern) is needed, this can be defined accordingly using a
 [dedicated
-function](https://slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events).
+function](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events).
 
 Note that although we defined a spatial model, we could have just as
 easily simulated standard, non-spatial data by running the same model
 through *slendr*’s
-[`msprime()`](https://slendr.net/reference/msprime.md) back end without
-the need to make any changes:
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) back end
+without the need to make any changes:
 
 ``` r
 
@@ -473,7 +475,7 @@ Here is a very quick overview of the SLiM simulation run summarised as a
 GIF animation. Again, please note that the simulation is extremely
 simplified. We only simulated a very small number of individuals in each
 population, and we also didn’t specify any [dispersal
-dynamics](https://slendr.net/articles/vignette-03-interactions.html)
+dynamics](https://bodkan.net/slendr/articles/vignette-03-interactions.html)
 which is why the populations look so clumped.
 
 ``` r
@@ -484,9 +486,9 @@ animate_model(model = model, file = locations_file, steps = 50, width = 500, hei
 
 At this point, you could either compute some [population genetic
 statistics of
-interest](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics)
+interest](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics)
 or perhaps analyse the [spatial features of the
-genealogies](https://slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships)
+genealogies](https://bodkan.net/slendr/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships)
 simulated by your model.
 
 ## Further information
@@ -501,25 +503,25 @@ the full functionality of the *slendr* package. There is much more to
   can see that in the animation above, the African population forms a
   single “blob” that really isn’t spread out across its entire
   population range. Tweaking the dispersal parameters as show [this
-  vignette](https://slendr.net/articles/vignette-03-interactions.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-03-interactions.html)
   helps avoid that.
 
 - You can use *slendr* to program non-spatial models, which means that
   any conceivable traditional, random-mating demographic model can be
   simulated with only a few lines of R code. You can learn more in [this
-  vignette](https://slendr.net/articles/vignette-04-nonspatial-models.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
   (and in more detail in [this
-  vignette](https://slendr.net/articles/vignette-05-tree-sequences.html)).
+  vignette](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html)).
   Because SLiM simulations can be often quite slow compared to their
   coalescent counterparts, we also provide functionality allowing to
   simulate *slendr* models (without any change!) using a built-in
   *msprime* back end script. See [this
-  vignette](https://slendr.net/articles/vignette-07-backends.html) for a
-  tutorial on how this works.
+  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html)
+  for a tutorial on how this works.
 
 - You can extend traditional, non-spatial SLiM-based *slendr* models
   with customized SLiM code and [simulate various selection
-  scenarios](https://slendr.net/articles/vignette-11-extensions.html)
+  scenarios](https://bodkan.net/slendr/articles/vignette-11-extensions.html)
   supported by SLiM while still leveraging *slendr*’s easy-to-use
   interface for programming demographic models.
 
@@ -527,7 +529,7 @@ the full functionality of the *slendr* package. There is much more to
   assuming any real geographic location), including traditional
   simulations of demes in a lattice structure. A complete example is
   shown [this
-  vignette](https://slendr.net/articles/vignette-02-grid-model.html).
+  vignette](https://bodkan.net/slendr/articles/vignette-02-grid-model.html).
 
 - Because *slendr* & SLiM save data in a tree-sequence file format,
   thanks to the R package
@@ -538,258 +540,258 @@ the full functionality of the *slendr* package. There is much more to
   manipulating tree-sequence data right at our fingertips, all within
   the convenient environment of R. An extended example can be found in
   [this
-  vignette](https://slendr.net/articles/vignette-05-tree-sequences.html).
+  vignette](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html).
 
 - For spatially explicit population models, the *slendr* package
   automatically converts the simulated output data to a format which
   makes it possible to analyse it with many available R packages for
   geospatial data analysis. A brief description of this functionality
   can be found in [this
-  vignette](https://slendr.net/articles/vignette-06-locations.html).
+  vignette](https://bodkan.net/slendr/articles/vignette-06-locations.html).
 
 - You can find complete reproducible code behind the examples in our
   [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/)
   in a dedicated R vignette
-  [here](https://slendr.net/articles/vignette-09-paper.html).
+  [here](https://bodkan.net/slendr/articles/vignette-09-paper.html).
 
 # Package index
 
 ## Compiling and running population genetic models
 
-- [`slim()`](https://slendr.net/reference/slim.md) : Run a slendr model
-  in SLiM
-- [`msprime()`](https://slendr.net/reference/msprime.md) : Run a slendr
-  model in msprime
-- [`compile_model()`](https://slendr.net/reference/compile_model.md) :
-  Compile a slendr demographic model
-- [`read_model()`](https://slendr.net/reference/read_model.md) : Read a
-  previously serialized model configuration
-- [`schedule_sampling()`](https://slendr.net/reference/schedule_sampling.md)
+- [`slim()`](https://bodkan.net/slendr/reference/slim.md) : Run a slendr
+  model in SLiM
+- [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) : Run a
+  slendr model in msprime
+- [`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
+  : Compile a slendr demographic model
+- [`read_model()`](https://bodkan.net/slendr/reference/read_model.md) :
+  Read a previously serialized model configuration
+- [`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
   : Define sampling events for a given set of populations
-- [`substitute_values()`](https://slendr.net/reference/substitute_values.md)
+- [`substitute_values()`](https://bodkan.net/slendr/reference/substitute_values.md)
   : Substitute values of parameters in a SLiM extension template
 
 ## Installation and configuration of external dependencies
 
-- [`setup_env()`](https://slendr.net/reference/setup_env.md) : Setup a
-  dedicated Python virtual environment for slendr
-- [`init_env()`](https://slendr.net/reference/init_env.md) : Activate
-  slendr's own dedicated Python environment
-- [`check_env()`](https://slendr.net/reference/check_env.md) : Check
-  that the active Python environment is setup for slendr
-- [`clear_env()`](https://slendr.net/reference/clear_env.md) : Remove
-  the automatically created slendr Python environment
-- [`get_python()`](https://slendr.net/reference/get_python.md) : Get a
-  path to internal Python interpreter of slendr
-- [`check_dependencies()`](https://slendr.net/reference/check_dependencies.md)
+- [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) :
+  Setup a dedicated Python virtual environment for slendr
+- [`init_env()`](https://bodkan.net/slendr/reference/init_env.md) :
+  Activate slendr's own dedicated Python environment
+- [`check_env()`](https://bodkan.net/slendr/reference/check_env.md) :
+  Check that the active Python environment is setup for slendr
+- [`clear_env()`](https://bodkan.net/slendr/reference/clear_env.md) :
+  Remove the automatically created slendr Python environment
+- [`get_python()`](https://bodkan.net/slendr/reference/get_python.md) :
+  Get a path to internal Python interpreter of slendr
+- [`check_dependencies()`](https://bodkan.net/slendr/reference/check_dependencies.md)
   : Check that the required dependencies are available for slendr to
   work
 
 ## Model components
 
-- [`population()`](https://slendr.net/reference/population.md) : Define
-  a population
-- [`world()`](https://slendr.net/reference/world.md) : Define a world
-  map for all spatial operations
+- [`population()`](https://bodkan.net/slendr/reference/population.md) :
+  Define a population
+- [`world()`](https://bodkan.net/slendr/reference/world.md) : Define a
+  world map for all spatial operations
 
 ## Spatial population dynamics
 
-- [`move()`](https://slendr.net/reference/move.md) : Move the population
-  to a new location in a given amount of time
-- [`expand_range()`](https://slendr.net/reference/expand_range.md) :
-  Expand the population range
-- [`shrink_range()`](https://slendr.net/reference/shrink_range.md) :
-  Shrink the population range
-- [`set_range()`](https://slendr.net/reference/set_range.md) : Update
-  the population range
-- [`set_dispersal()`](https://slendr.net/reference/set_dispersal.md) :
-  Change dispersal parameters
+- [`move()`](https://bodkan.net/slendr/reference/move.md) : Move the
+  population to a new location in a given amount of time
+- [`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md)
+  : Expand the population range
+- [`shrink_range()`](https://bodkan.net/slendr/reference/shrink_range.md)
+  : Shrink the population range
+- [`set_range()`](https://bodkan.net/slendr/reference/set_range.md) :
+  Update the population range
+- [`set_dispersal()`](https://bodkan.net/slendr/reference/set_dispersal.md)
+  : Change dispersal parameters
 
 ## Non-spatial population dynamics
 
-- [`gene_flow()`](https://slendr.net/reference/gene_flow.md) : Define a
-  gene-flow event between two populations
-- [`resize()`](https://slendr.net/reference/resize.md) : Change the
-  population size
+- [`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md) :
+  Define a gene-flow event between two populations
+- [`resize()`](https://bodkan.net/slendr/reference/resize.md) : Change
+  the population size
 
 ## Manipulation of spatial objects
 
-- [`region()`](https://slendr.net/reference/region.md) : Define a
+- [`region()`](https://bodkan.net/slendr/reference/region.md) : Define a
   geographic region
 
-- [`join()`](https://slendr.net/reference/join.md) :
+- [`join()`](https://bodkan.net/slendr/reference/join.md) :
 
   Merge two spatial `slendr` objects into one
 
-- [`overlap()`](https://slendr.net/reference/overlap.md) :
+- [`overlap()`](https://bodkan.net/slendr/reference/overlap.md) :
 
   Generate the overlap of two `slendr` objects
 
-- [`subtract()`](https://slendr.net/reference/subtract.md) :
+- [`subtract()`](https://bodkan.net/slendr/reference/subtract.md) :
 
   Generate the difference between two `slendr` objects
 
-- [`reproject()`](https://slendr.net/reference/reproject.md) : Reproject
-  coordinates between coordinate systems
+- [`reproject()`](https://bodkan.net/slendr/reference/reproject.md) :
+  Reproject coordinates between coordinate systems
 
-- [`distance()`](https://slendr.net/reference/distance.md) : Calculate
-  the distance between a pair of spatial boundaries
+- [`distance()`](https://bodkan.net/slendr/reference/distance.md) :
+  Calculate the distance between a pair of spatial boundaries
 
-- [`area()`](https://slendr.net/reference/area.md) : Calculate the area
-  covered by the given slendr object
+- [`area()`](https://bodkan.net/slendr/reference/area.md) : Calculate
+  the area covered by the given slendr object
 
 ## Model visualization and diagnostics
 
-- [`plot_map()`](https://slendr.net/reference/plot_map.md) :
+- [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) :
 
   Plot `slendr` geographic features on a map
 
-- [`plot_model()`](https://slendr.net/reference/plot_model.md) : Plot
-  demographic history encoded in a slendr model
+- [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) :
+  Plot demographic history encoded in a slendr model
 
-- [`animate_model()`](https://slendr.net/reference/animate_model.md) :
-  Animate the simulated population dynamics
+- [`animate_model()`](https://bodkan.net/slendr/reference/animate_model.md)
+  : Animate the simulated population dynamics
 
-- [`explore_model()`](https://slendr.net/reference/explore_model.md) :
-  Open an interactive browser of the spatial model
+- [`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md)
+  : Open an interactive browser of the spatial model
 
-- [`print(`*`<slendr_pop>`*`)`](https://slendr.net/reference/print.slendr_pop.md)
-  [`print(`*`<slendr_region>`*`)`](https://slendr.net/reference/print.slendr_pop.md)
-  [`print(`*`<slendr_map>`*`)`](https://slendr.net/reference/print.slendr_pop.md)
-  [`print(`*`<slendr_model>`*`)`](https://slendr.net/reference/print.slendr_pop.md)
+- [`print(`*`<slendr_pop>`*`)`](https://bodkan.net/slendr/reference/print.slendr_pop.md)
+  [`print(`*`<slendr_region>`*`)`](https://bodkan.net/slendr/reference/print.slendr_pop.md)
+  [`print(`*`<slendr_map>`*`)`](https://bodkan.net/slendr/reference/print.slendr_pop.md)
+  [`print(`*`<slendr_model>`*`)`](https://bodkan.net/slendr/reference/print.slendr_pop.md)
   :
 
   Print a short summary of a `slendr` object
 
-- [`print(`*`<slendr_ts>`*`)`](https://slendr.net/reference/print.slendr_ts.md)
+- [`print(`*`<slendr_ts>`*`)`](https://bodkan.net/slendr/reference/print.slendr_ts.md)
   : Print tskit's summary table of the Python tree-sequence object
 
-- [`summary(`*`<slendr_nodes>`*`)`](https://slendr.net/reference/summary.slendr_nodes.md)
+- [`summary(`*`<slendr_nodes>`*`)`](https://bodkan.net/slendr/reference/summary.slendr_nodes.md)
   :
 
   Summarise the contents of a `ts_nodes` result
 
-- [`extract_parameters()`](https://slendr.net/reference/extract_parameters.md)
+- [`extract_parameters()`](https://bodkan.net/slendr/reference/extract_parameters.md)
   : Extract information from a compiled model or a simulated tree
   sequence
 
 ## Processing tree sequences
 
-- [`ts_read()`](https://slendr.net/reference/ts_read.md) : Read a tree
-  sequence from a file
-- [`ts_write()`](https://slendr.net/reference/ts_write.md) : Save a tree
-  sequence to a file
-- [`ts_recapitate()`](https://slendr.net/reference/ts_recapitate.md) :
-  Recapitate the tree sequence
-- [`ts_simplify()`](https://slendr.net/reference/ts_simplify.md) :
-  Simplify the tree sequence down to a given set of individuals
-- [`ts_mutate()`](https://slendr.net/reference/ts_mutate.md) : Add
-  mutations to the given tree sequence
-- [`ts_samples()`](https://slendr.net/reference/ts_samples.md) : Extract
-  names and times of individuals of interest in the current tree
+- [`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md) : Read a
+  tree sequence from a file
+- [`ts_write()`](https://bodkan.net/slendr/reference/ts_write.md) : Save
+  a tree sequence to a file
+- [`ts_recapitate()`](https://bodkan.net/slendr/reference/ts_recapitate.md)
+  : Recapitate the tree sequence
+- [`ts_simplify()`](https://bodkan.net/slendr/reference/ts_simplify.md)
+  : Simplify the tree sequence down to a given set of individuals
+- [`ts_mutate()`](https://bodkan.net/slendr/reference/ts_mutate.md) :
+  Add mutations to the given tree sequence
+- [`ts_samples()`](https://bodkan.net/slendr/reference/ts_samples.md) :
+  Extract names and times of individuals of interest in the current tree
   sequence (either all sampled individuals or those that the user
   simplified to)
-- [`ts_names()`](https://slendr.net/reference/ts_names.md) : Extract
-  names of individuals in a tree sequence
-- [`ts_coalesced()`](https://slendr.net/reference/ts_coalesced.md) :
-  Check that all trees in the tree sequence are fully coalesced
-- [`ts_save()`](https://slendr.net/reference/ts_save.md) : Write a tree
-  sequence to a file
-- [`ts_load()`](https://slendr.net/reference/ts_load.md) : Read a tree
-  sequence from a file
+- [`ts_names()`](https://bodkan.net/slendr/reference/ts_names.md) :
+  Extract names of individuals in a tree sequence
+- [`ts_coalesced()`](https://bodkan.net/slendr/reference/ts_coalesced.md)
+  : Check that all trees in the tree sequence are fully coalesced
+- [`ts_save()`](https://bodkan.net/slendr/reference/ts_save.md) : Write
+  a tree sequence to a file
+- [`ts_load()`](https://bodkan.net/slendr/reference/ts_load.md) : Read a
+  tree sequence from a file
 
 ## Tree sequence format conversion
 
-- [`ts_genotypes()`](https://slendr.net/reference/ts_genotypes.md) :
-  Extract genotype table from the tree sequence
-- [`ts_eigenstrat()`](https://slendr.net/reference/ts_eigenstrat.md) :
-  Convert genotypes to the EIGENSTRAT file format
-- [`ts_vcf()`](https://slendr.net/reference/ts_vcf.md) : Save genotypes
-  from the tree sequence as a VCF file
+- [`ts_genotypes()`](https://bodkan.net/slendr/reference/ts_genotypes.md)
+  : Extract genotype table from the tree sequence
+- [`ts_eigenstrat()`](https://bodkan.net/slendr/reference/ts_eigenstrat.md)
+  : Convert genotypes to the EIGENSTRAT file format
+- [`ts_vcf()`](https://bodkan.net/slendr/reference/ts_vcf.md) : Save
+  genotypes from the tree sequence as a VCF file
 
 ## Accessing tree sequence components
 
-- [`ts_nodes()`](https://slendr.net/reference/ts_nodes.md) : Extract
-  combined annotated table of individuals and nodes
+- [`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) :
+  Extract combined annotated table of individuals and nodes
 
-- [`ts_edges()`](https://slendr.net/reference/ts_edges.md) : Extract
-  spatio-temporal edge annotation table from a given tree or tree
+- [`ts_edges()`](https://bodkan.net/slendr/reference/ts_edges.md) :
+  Extract spatio-temporal edge annotation table from a given tree or
+  tree sequence
+
+- [`ts_table()`](https://bodkan.net/slendr/reference/ts_table.md) : Get
+  the table of individuals/nodes/edges/mutations/sites from the tree
   sequence
 
-- [`ts_table()`](https://slendr.net/reference/ts_table.md) : Get the
-  table of individuals/nodes/edges/mutations/sites from the tree
-  sequence
-
-- [`ts_phylo()`](https://slendr.net/reference/ts_phylo.md) :
+- [`ts_phylo()`](https://bodkan.net/slendr/reference/ts_phylo.md) :
 
   Convert a tree in the tree sequence to an object of the class `phylo`
 
-- [`ts_tree()`](https://slendr.net/reference/ts_tree.md) : Get a tree
-  from a given tree sequence
+- [`ts_tree()`](https://bodkan.net/slendr/reference/ts_tree.md) : Get a
+  tree from a given tree sequence
 
-- [`ts_draw()`](https://slendr.net/reference/ts_draw.md) : Plot a
+- [`ts_draw()`](https://bodkan.net/slendr/reference/ts_draw.md) : Plot a
   graphical representation of a single tree
 
-- [`ts_metadata()`](https://slendr.net/reference/ts_metadata.md) :
-  Extract list with tree sequence metadata saved by SLiM
+- [`ts_metadata()`](https://bodkan.net/slendr/reference/ts_metadata.md)
+  : Extract list with tree sequence metadata saved by SLiM
 
-- [`ts_ancestors()`](https://slendr.net/reference/ts_ancestors.md) :
-  Extract (spatio-)temporal ancestral history for given
+- [`ts_ancestors()`](https://bodkan.net/slendr/reference/ts_ancestors.md)
+  : Extract (spatio-)temporal ancestral history for given
   nodes/individuals
 
-- [`ts_descendants()`](https://slendr.net/reference/ts_descendants.md) :
-  Extract all descendants of a given tree-sequence node
+- [`ts_descendants()`](https://bodkan.net/slendr/reference/ts_descendants.md)
+  : Extract all descendants of a given tree-sequence node
 
 ## Tree sequence statistics
 
-- [`ts_f2()`](https://slendr.net/reference/ts_f4ratio.md)
-  [`ts_f3()`](https://slendr.net/reference/ts_f4ratio.md)
-  [`ts_f4()`](https://slendr.net/reference/ts_f4ratio.md)
-  [`ts_f4ratio()`](https://slendr.net/reference/ts_f4ratio.md) :
+- [`ts_f2()`](https://bodkan.net/slendr/reference/ts_f4ratio.md)
+  [`ts_f3()`](https://bodkan.net/slendr/reference/ts_f4ratio.md)
+  [`ts_f4()`](https://bodkan.net/slendr/reference/ts_f4ratio.md)
+  [`ts_f4ratio()`](https://bodkan.net/slendr/reference/ts_f4ratio.md) :
   Calculate the f2, f3, f4, and f4-ratio statistics
-- [`ts_afs()`](https://slendr.net/reference/ts_afs.md) : Compute the
-  allele frequency spectrum (AFS)
-- [`ts_divergence()`](https://slendr.net/reference/ts_divergence.md) :
-  Calculate pairwise divergence between sets of individuals
-- [`ts_diversity()`](https://slendr.net/reference/ts_diversity.md) :
-  Calculate diversity in given sets of individuals
-- [`ts_fst()`](https://slendr.net/reference/ts_fst.md) : Calculate
-  pairwise statistics between sets of individuals
-- [`ts_tajima()`](https://slendr.net/reference/ts_tajima.md) : Calculate
-  Tajima's D for given sets of individuals
-- [`ts_segregating()`](https://slendr.net/reference/ts_segregating.md) :
-  Calculate the density of segregating sites for the given sets of
+- [`ts_afs()`](https://bodkan.net/slendr/reference/ts_afs.md) : Compute
+  the allele frequency spectrum (AFS)
+- [`ts_divergence()`](https://bodkan.net/slendr/reference/ts_divergence.md)
+  : Calculate pairwise divergence between sets of individuals
+- [`ts_diversity()`](https://bodkan.net/slendr/reference/ts_diversity.md)
+  : Calculate diversity in given sets of individuals
+- [`ts_fst()`](https://bodkan.net/slendr/reference/ts_fst.md) :
+  Calculate pairwise statistics between sets of individuals
+- [`ts_tajima()`](https://bodkan.net/slendr/reference/ts_tajima.md) :
+  Calculate Tajima's D for given sets of individuals
+- [`ts_segregating()`](https://bodkan.net/slendr/reference/ts_segregating.md)
+  : Calculate the density of segregating sites for the given sets of
   individuals
-- [`ts_ibd()`](https://slendr.net/reference/ts_ibd.md) : Collect
+- [`ts_ibd()`](https://bodkan.net/slendr/reference/ts_ibd.md) : Collect
   Identity-by-Descent (IBD) segments (EXPERIMENTAL)
-- [`ts_tracts()`](https://slendr.net/reference/ts_tracts.md) : Extract
-  ancestry tracts from a tree sequence (EXPERIMENTAL)
+- [`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) :
+  Extract ancestry tracts from a tree sequence (EXPERIMENTAL)
 
 # Articles
 
 ### All vignettes
 
 - [Installation
-  instructions](https://slendr.net/articles/vignette-00-installation.md):
+  instructions](https://bodkan.net/slendr/articles/vignette-00-installation.md):
 - [Introduction and basic
-  tutorial](https://slendr.net/articles/vignette-01-tutorial.md):
+  tutorial](https://bodkan.net/slendr/articles/vignette-01-tutorial.md):
 - [Demes on a regular spatial
-  grid](https://slendr.net/articles/vignette-02-grid-model.md):
+  grid](https://bodkan.net/slendr/articles/vignette-02-grid-model.md):
 - [Programming dispersion
-  dynamics](https://slendr.net/articles/vignette-03-interactions.md):
+  dynamics](https://bodkan.net/slendr/articles/vignette-03-interactions.md):
 - [Traditional, non-spatial
-  models](https://slendr.net/articles/vignette-04-nonspatial-models.md):
+  models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.md):
 - [Tree-sequence processing and
-  statistics](https://slendr.net/articles/vignette-05-tree-sequences.md):
+  statistics](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.md):
 - [Spatially annotated tree
-  sequences](https://slendr.net/articles/vignette-06-locations.md):
+  sequences](https://bodkan.net/slendr/articles/vignette-06-locations.md):
 - [Simulations using SLiM and msprime
-  engines](https://slendr.net/articles/vignette-07-engines.md):
+  engines](https://bodkan.net/slendr/articles/vignette-07-engines.md):
 - [Analyzing non-slendr tree
-  sequences](https://slendr.net/articles/vignette-08-nonslendr-tskit.md):
+  sequences](https://bodkan.net/slendr/articles/vignette-08-nonslendr-tskit.md):
 - [Examples from the slendr
-  paper](https://slendr.net/articles/vignette-09-paper.md):
+  paper](https://bodkan.net/slendr/articles/vignette-09-paper.md):
 - [Extracting true ancestry
-  tracts](https://slendr.net/articles/vignette-10-tracts.md):
+  tracts](https://bodkan.net/slendr/articles/vignette-10-tracts.md):
 - [Extending models with custom SLiM
-  code](https://slendr.net/articles/vignette-11-extensions.md):
+  code](https://bodkan.net/slendr/articles/vignette-11-extensions.md):

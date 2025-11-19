@@ -151,7 +151,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpMH77Q5/filee81225dbf6f9");
+    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//Rtmp6Er0QG/file157739844d09");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -215,7 +215,7 @@ function, by first creating a list of lists with node IDs
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> p3    0.000<span style="text-decoration: underline;">463</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> p4    0.000<span style="text-decoration: underline;">201</span></span></span></code></pre></div>
 <p>Just as with <em>slendr</em> tree sequences (as demonstrated in our
-<a href="https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5">paper</a>)
+<a href="https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5">paper</a>)
 we can get a individual trees too, extracted in the in the phylogenetic
 format provided by the <a href="https://CRAN.R-project.org/package=ape" class="external-link">ape</a> R package. Here we
 first simplify the tree sequence even further to just 10 nodes to make
@@ -307,8 +307,8 @@ and analyze it with the slendr functionality:</p>
 <h4 id="spatial-slim-non-slendr-tree-sequences">Spatial SLiM (non-slendr) tree sequences<a class="anchor" aria-label="anchor" href="#spatial-slim-non-slendr-tree-sequences"></a>
 </h4>
 <p>Furthermore, the generalized interface also supports
-<em>slendr</em>’s <a href="https://slendr.net/articles/vignette-06-locations.html">spatial
-tree-sequence features</a>, with all the <a href="https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5">bells
+<em>slendr</em>’s <a href="https://bodkan.net/slendr/articles/vignette-06-locations.html">spatial
+tree-sequence features</a>, with all the <a href="https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5">bells
 and whistles</a>.</p>
 <p>For instance, lets take the following spatial SLiM script (modified
 from the SLiM manual) and execute it with SLiM the usual way:</p>
@@ -344,7 +344,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpMH77Q5/filee812328c678");
+    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//Rtmp6Er0QG/file15771c175cc7");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
@@ -393,7 +393,7 @@ all the way to the root, with each “link” in the plot signifying
 parent-child edge somewhere along the tree sequence) and plot it on a 2D
 surface (x and y dimensions [0, 1]). The plot is a little chaotic, but
 hopefully conveys the idea (the “focal node” 0 is highlighted in red).
-This is essentially the same plot we have in <a href="https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5">the
+This is essentially the same plot we have in <a href="https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5">the
 last figure of our paper</a>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ancestral_links</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_ancestors.html">ts_ancestors</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fl">0</span><span class="op">)</span></span>

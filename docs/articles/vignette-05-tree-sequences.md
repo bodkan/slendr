@@ -25,15 +25,15 @@ Python modules `pyslim`, `tskit` and `msprime` already installed.
 
 Because setting up Python environments can be quite a
 [hassle](https://xkcd.com/1987/), *slendr* provides a single function
-[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) to make
-things easier. If you call it without any arguments, *slendr* will
+[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) to
+make things easier. If you call it without any arguments, *slendr* will
 automatically download, install, and setup a **completely separate**
 Python environment (based on the “miniconda” distribution) just for
 *slendr* and activate it in the background.
 
 It is important to stress that
-[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) will not
-interfere in any way with any of the Python installations you might
+[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) will
+not interfere in any way with any of the Python installations you might
 already have on your computer. The Python installation and environment
 will be entirely isolated and used just for the purpose of *slendr*
 workflows.
@@ -54,8 +54,9 @@ init_env()
     #> The interface to all required Python modules has been activated.
 
 We can use another built-in function
-[`check_env()`](https://bodkan.net/slendr/reference/check_env.md) to make sure
-that *slendr* installed and configured the correct environment for us:
+[`check_env()`](https://bodkan.net/slendr/reference/check_env.md) to
+make sure that *slendr* installed and configured the correct environment
+for us:
 
 ``` r
 
@@ -265,20 +266,20 @@ schedule_sampling(model, times = 10000, list(nea, 1), strict = TRUE)
 Now that we already have the `model` object ready, we can simulate data
 from it, sampling individuals according to our sampling schedule.
 Although we could use the
-[`slim()`](https://bodkan.net/slendr/reference/slim.md) function shown in
-previous vignettes, in this case we will run the simulation with the
-[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) coalescent back
-end. After all, our model is non-spatial and using a coalescent
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) function shown
+in previous vignettes, in this case we will run the simulation with the
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) coalescent
+back end. After all, our model is non-spatial and using a coalescent
 simulator will be much more efficient than the forward simulation.
 Switching between the msprime and SLiM back ends of slendr is
 demonstrated in much more detail in a [dedicated
 vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html).
 
 The simulation back end utilized by the
-[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function (as well
-as the [`slim()`](https://bodkan.net/slendr/reference/slim.md) function)
-produces a tree-sequence output which is immediately loaded and ready
-for a downstream analysis.
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function
+(as well as the [`slim()`](https://bodkan.net/slendr/reference/slim.md)
+function) produces a tree-sequence output which is immediately loaded
+and ready for a downstream analysis.
 
 ``` r
 
@@ -333,8 +334,8 @@ schedule really is just a data frame and we can manipulate it as such).
 In addition to automatically named symbolic names, *slendr* also
 supports fully customized sample names (see
 [here](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
-and [here](https://bodkan.net/slendr/reference/schedule_sampling.html) for a
-bit more detail). This is particularly convenient for referring to
+and [here](https://bodkan.net/slendr/reference/schedule_sampling.html)
+for a bit more detail). This is particularly convenient for referring to
 simulated individuals by their “real-world names”.
 
 ## R interface for *tskit* and *pyslim*
@@ -369,9 +370,10 @@ simulation.
 
 ## Loading and processing tree-sequence output files
 
-By default, any [`msprime()`](https://bodkan.net/slendr/reference/msprime.md)
-or [`slim()`](https://bodkan.net/slendr/reference/slim.md) run will produce a
-tree-sequence object (saved to a temporary file) and immediately load
+By default, any
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) or
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) run will produce
+a tree-sequence object (saved to a temporary file) and immediately load
 it. Thus, in most use-cases, explicit loading of a simulated tree
 sequence is not needed. That said, for the sake of completeness, let’s
 run the simulation again but save the tree-sequence file ourselves.
@@ -391,22 +393,22 @@ ts_write(ts, output_file)
 output_file
 ```
 
-    #> [1] "/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmprT5j85/fileb46b4872f1a5"
+    #> [1] "/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpbHCipp/file125db75335db"
 
 In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the *slendr* function
-[`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md). If we’re dealing
-with a tree sequence produced by the SLiM back end (which is not the
-case here), we can also instruct this function to simplify the
+[`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md). If we’re
+dealing with a tree sequence produced by the SLiM back end (which is not
+the case here), we can also instruct this function to simplify the
 tree-sequence to only the individuals that we explicitly sampled (recall
 the sampling schedule we set up with the
 [`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
 function above). Note that we have to provide the `model` object
 generated by
-[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md) above
-in order to have all model annotation information for the simulated
-tree-sequence data (we have to do this only once, and only during
-loading):
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
+above in order to have all model annotation information for the
+simulated tree-sequence data (we have to do this only once, and only
+during loading):
 
 ``` r
 
@@ -449,9 +451,10 @@ ts
 
 Not surprisingly, we get the same output which we got above when we
 printed the tree sequence returned by the
-[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function. This
-shows that under normal circumstances, loading the output manually via
-[`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md) is not needed.
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function.
+This shows that under normal circumstances, loading the output manually
+via [`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md) is not
+needed.
 
 If we try to simplify an *msprime*-generated tree sequence, we get a
 warning. This is because such tree sequence is already in a simplified
@@ -501,8 +504,8 @@ sampling), which is true for every *msprime* tree sequence.
 Alternatively, we can also narrow down the simplification to a defined
 set of individuals using the `simplify_to =` argument. Internally,
 simplification is implemented in a dedicated function
-[`ts_simplify()`](https://bodkan.net/slendr/reference/ts_simplify.md) which we
-can always call explicitly, like this:
+[`ts_simplify()`](https://bodkan.net/slendr/reference/ts_simplify.md)
+which we can always call explicitly, like this:
 
 ``` r
 
@@ -544,8 +547,8 @@ ts_small
     #> ╚═══════════╧═══════╧═════════╧════════════╝
 
 Similarly, *slendr* provides a function
-[`ts_recapitate()`](https://bodkan.net/slendr/reference/ts_recapitate.md) which
-performs
+[`ts_recapitate()`](https://bodkan.net/slendr/reference/ts_recapitate.md)
+which performs
 \[recapitation\]<https://tskit.dev/pyslim/docs/latest/tutorial.html#recapitation>).
 Again, this is not needed for an *msprime* tree sequence, which is fully
 coalesced (and recapitated) by definition. If we do this on our current
@@ -559,8 +562,8 @@ ts <- ts_recapitate(ts, recombination_rate = 1e-8, Ne = 10000)
 
 We can make sure that our tree sequence is fully coalesced by calling
 another *slendr* function
-[`ts_coalesced()`](https://bodkan.net/slendr/reference/ts_coalesced.md). This
-is useful when dealing with
+[`ts_coalesced()`](https://bodkan.net/slendr/reference/ts_coalesced.md).
+This is useful when dealing with
 [`slim()`](https://bodkan.net/slendr/reference/slim.md)-produced tree
 sequences:
 
@@ -632,9 +635,9 @@ appear as if they were regular R packages).
 ## Visualisation of trees and tree-sequences
 
 Now we introduce a function
-[`ts_phylo()`](https://bodkan.net/slendr/reference/ts_phylo.md) which can be
-used to extract one tree from the tree-sequence (either an *i*-th tree
-in the sequence, or a tree overlapping an *i*-th position of the
+[`ts_phylo()`](https://bodkan.net/slendr/reference/ts_phylo.md) which
+can be used to extract one tree from the tree-sequence (either an *i*-th
+tree in the sequence, or a tree overlapping an *i*-th position of the
 simulated genome, depending on the value of its `mode` argument) and
 convert it to a `phylo` class, which is a standard format for
 phylogenetic trees in the R world. For more on the `phylo` format, see
@@ -719,8 +722,8 @@ access Python methods and object variables directly, using the `$`
 operator.
 
 As an example, instead of calling the function
-[`ts_coalesced()`](https://bodkan.net/slendr/reference/ts_coalesced.md) on the
-tree-sequence as we did above, we could check that all trees are
+[`ts_coalesced()`](https://bodkan.net/slendr/reference/ts_coalesced.md)
+on the tree-sequence as we did above, we could check that all trees are
 coalesced by running the following snippet instead (note that this is
 very inefficient and we’re only doing the operation for the first one
 hundred trees):
@@ -860,8 +863,8 @@ For instance, we have functions such as
 [`ts_f2()`](https://bodkan.net/slendr/reference/ts_f4ratio.md),
 [`ts_f3()`](https://bodkan.net/slendr/reference/ts_f4ratio.md),
 [`ts_f4()`](https://bodkan.net/slendr/reference/ts_f4ratio.md) and
-[`ts_f4ratio()`](https://bodkan.net/slendr/reference/ts_f4ratio.md) which
-calculate the well-known set of Patterson’s $`f`$-statistics:
+[`ts_f4ratio()`](https://bodkan.net/slendr/reference/ts_f4ratio.md)
+which calculate the well-known set of Patterson’s $`f`$-statistics:
 
 ``` r
 
@@ -924,7 +927,8 @@ which individuals are which based on the specified sampling schedule
 (the names are assigned to individuals based on the order of their
 sampling). We can get an overview of the individuals scheduled for
 sampling (i.e. permanently remembered) and their names with a helper
-function [`ts_samples()`](https://bodkan.net/slendr/reference/ts_samples.md):
+function
+[`ts_samples()`](https://bodkan.net/slendr/reference/ts_samples.md):
 
 ``` r
 
@@ -955,7 +959,8 @@ character names in each function’s interface.
 Let’s try to put these new tools to practice and estimate the proportion
 of Neanderthal ancestry in Africans and Europeans in our simulated data.
 We can do this using the Patterson’s $`f_4`$-ratio statistic implemented
-in the [`ts_f4ratio()`](https://bodkan.net/slendr/reference/ts_f4ratio.md)
+in the
+[`ts_f4ratio()`](https://bodkan.net/slendr/reference/ts_f4ratio.md)
 function in *slendr* (you can find more information about this
 particular version of the statistic in Petr *et al.*, PNAS 2019):
 
@@ -1147,8 +1152,8 @@ The $`F_{st}`$ statistic is implemented by the function
 
 If a single genome-wide $`F_{st}`$ is to be calculated (i.e. not a
 window-based calculation), the
-[`ts_fst()`](https://bodkan.net/slendr/reference/ts_fst.md) returns a simple
-three-column data frame
+[`ts_fst()`](https://bodkan.net/slendr/reference/ts_fst.md) returns a
+simple three-column data frame
 
 ``` r
 
@@ -1195,14 +1200,14 @@ ts_fst(ts, sample_sets = list(afr = c("AFR_1", "AFR_2", "AFR_3"),
 
 As with many other statistics implemented by
 [*tskit*](https://tskit.dev/tskit/docs/stable/python-api.html)*,*
-[`ts_fst()`](https://bodkan.net/slendr/reference/ts_fst.md) accepts a `windows`
-argument, specifying the breakpoints between windows. In this case, the
-`Fst` column in the resulting data frame is a so called “list-column”,
-with each item in the column being a vector of $`F_{st}`$ values, one
-per each window. List-columns can be a little confusing for new R users,
-but we highly encourage you to get used to them as they allow extremely
-concise and elegant handling of structured data within normal data
-frames (you can start with
+[`ts_fst()`](https://bodkan.net/slendr/reference/ts_fst.md) accepts a
+`windows` argument, specifying the breakpoints between windows. In this
+case, the `Fst` column in the resulting data frame is a so called
+“list-column”, with each item in the column being a vector of $`F_{st}`$
+values, one per each window. List-columns can be a little confusing for
+new R users, but we highly encourage you to get used to them as they
+allow extremely concise and elegant handling of structured data within
+normal data frames (you can start with
 [this](https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html)
 introduction).
 
@@ -1246,8 +1251,9 @@ win_fst[1, ]$Fst
 
 ### Tajima’s $`D`$
 
-The function [`ts_tajima()`](https://bodkan.net/slendr/reference/ts_tajima.md)
-has nearly the same interface as
+The function
+[`ts_tajima()`](https://bodkan.net/slendr/reference/ts_tajima.md) has
+nearly the same interface as
 [`ts_fst()`](https://bodkan.net/slendr/reference/ts_fst.md) shown above.
 
 If a non-window version is to be calculated, we get a single genome-wide
@@ -1284,16 +1290,16 @@ ts_tajima(ts, list(afr = c("AFR_1", "AFR_2"), eur = c("EUR_1", "EUR_2")), window
 
 We can calculate diversity within given groups of individuals with the
 function
-[`ts_diversity()`](https://bodkan.net/slendr/reference/ts_diversity.md). For
-instance, even in our extremely simplified example, we would expect the
-highest levels of diversity in Africans, followed by Europeans,
+[`ts_diversity()`](https://bodkan.net/slendr/reference/ts_diversity.md).
+For instance, even in our extremely simplified example, we would expect
+the highest levels of diversity in Africans, followed by Europeans,
 Neanderthals and the “degenerate” single individual outgroup
 “chimpanzee”. Is this true? Let’s find out.
 
 First we extract individuals from all populations, creating a list of
 character vectors for each group (which is what functions such as
-[`ts_diversity()`](https://bodkan.net/slendr/reference/ts_diversity.md) expects
-as an input):
+[`ts_diversity()`](https://bodkan.net/slendr/reference/ts_diversity.md)
+expects as an input):
 
 ``` r
 
@@ -1388,5 +1394,5 @@ our [GitHub page](https://github.com/bodkan/slendr/issues).
 Finally, if you would like to see more examples of *tskit* interface in
 action, take a look at the vignette which describes [switching between
 the SLiM and *msprime* back
-ends](https://bodkan.net/slendr/articles/vignette-07-backends.html) of the
-*slendr* package.
+ends](https://bodkan.net/slendr/articles/vignette-07-backends.html) of
+the *slendr* package.

@@ -5,15 +5,15 @@
 *slendr* is a toolbox for running population genomic simulations
 entirely in R. Our original motivation for developing it was to provide
 a framework for [simulating spatially-explicit genomic
-data](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) on real
-geographic landscapes, however, it has grown to be much more than that
-since then: *slendr* can now simulate data from [traditional,
+data](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) on
+real geographic landscapes, however, it has grown to be much more than
+that since then: *slendr* can now simulate data from [traditional,
 non-spatial demographic
 models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
 using *msprime* as a simulation engine, and it even supports selection
 scenarios via [user-defined SLiM estension
-snippets](https://bodkan.net/slendr/articles/vignette-11-extensions.html). In
-addition to model definition and simulation, *slendr* also provides a
+snippets](https://bodkan.net/slendr/articles/vignette-11-extensions.html).
+In addition to model definition and simulation, *slendr* also provides a
 set of function for efficient [analysis of tree-sequence genomic
 data](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html),
 utilizing the [*tskit*](https://tskit.dev) module for underlying
@@ -94,8 +94,9 @@ package allows you to:
   a brief example of such model
   [here](https://bodkan.net/slendr/articles/vignette-06-locations.html#model-specification),
   and a more extended explanation in [this
-  tutorial](https://bodkan.net/slendr/articles/vignette-01-tutorial.html)). No
-  knowledge of cartographic or geospatial analysis concepts is needed.
+  tutorial](https://bodkan.net/slendr/articles/vignette-01-tutorial.html)).
+  No knowledge of cartographic or geospatial analysis concepts is
+  needed.
 
 - **Simulate these dynamic spatial demographic models using SLiM’s
   continuous-space simulation capabilities directly in R** **(again, no
@@ -122,8 +123,8 @@ analytic pipelines without the need to leave the R environment.**
 ### Testing the R package in an online RStudio session
 
 You can open an RStudio session and test examples from the
-[vignettes](https://bodkan.net/slendr/articles/) directly in your web browser
-by clicking this button (no installation is needed!):
+[vignettes](https://bodkan.net/slendr/articles/) directly in your web
+browser by clicking this button (no installation is needed!):
 
 [![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio)
 
@@ -170,8 +171,8 @@ If you would like to stay updated:
     (you can find links on my [homepage](https://bodkan.net)).
 
 3.  From time to time, take a look at the
-    [changelog](https://bodkan.net/slendr/news/index.html) where I will post
-    updates on new features, breaking changes, etc.
+    [changelog](https://bodkan.net/slendr/news/index.html) where I will
+    post updates on new features, breaking changes, etc.
 
 ------------------------------------------------------------------------
 
@@ -285,16 +286,16 @@ plot_map(africa, europe, anatolia)
 #### 3. Define demographic history and population boundaries
 
 The most important function in the *slendr* package is
-[`population()`](https://bodkan.net/slendr/reference/population.md), which is
-used to define names, split times, sizes and spatial ranges of
+[`population()`](https://bodkan.net/slendr/reference/population.md),
+which is used to define names, split times, sizes and spatial ranges of
 populations. Here, we specify times in years before the present,
 distances in kilometers. If this makes more sense for your models, times
 can also be given in a forward direction.
 
 You will also note functions such as
 [`move()`](https://bodkan.net/slendr/reference/move.md) or
-[`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md) which
-are designed to take a *slendr* population object and schedule its
+[`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md)
+which are designed to take a *slendr* population object and schedule its
 spatial dynamics at appropriate times during the model simulation (which
 will happen at a later step).
 
@@ -398,14 +399,15 @@ model <- compile_model(
 
 Compiled model is kept as an R object which can be passed to different
 functions. In this example, we will simulate data with the
-[`slim()`](https://bodkan.net/slendr/reference/slim.md) engine (but we could
-also run the simulation through the coalescent engine via the
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) engine (but we
+could also run the simulation through the coalescent engine via the
 [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function).
 
 #### 6. Visualize the model
 
 The package provides an [R shiny](https://shiny.posit.co/)-based browser
-app [`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md)
+app
+[`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md)
 for checking the model dynamics interactively and visually. For more
 complex models, this is much better than static spatial plots such as
 the one we showed in step 2 above:
@@ -461,8 +463,8 @@ function](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#sch
 Note that although we defined a spatial model, we could have just as
 easily simulated standard, non-spatial data by running the same model
 through *slendr*’s
-[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) back end without
-the need to make any changes:
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) back end
+without the need to make any changes:
 
 ``` r
 
@@ -514,8 +516,8 @@ the full functionality of the *slendr* package. There is much more to
   coalescent counterparts, we also provide functionality allowing to
   simulate *slendr* models (without any change!) using a built-in
   *msprime* back end script. See [this
-  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html) for a
-  tutorial on how this works.
+  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html)
+  for a tutorial on how this works.
 
 - You can extend traditional, non-spatial SLiM-based *slendr* models
   with customized SLiM code and [simulate various selection
