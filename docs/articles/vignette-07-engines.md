@@ -7,7 +7,7 @@ models directly from an R environment could be often quite useful. This
 is why *slendr* supports also non-spatial SLiM models, which can be
 executed by *slendr* simply by excluding the map component from a SLiM
 simulation (briefly discussed in [this
-vignette](https://slendr.net/articles/vignette-04-nonspatial-models.md)).
+vignette](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.md)).
 
 In some cases, the forward nature of a SLiM simulation (meaning that
 many individuals need to be tracked in each generation) makes the
@@ -33,7 +33,7 @@ To start off, let’s load the *slendr* package together with some
 standard R data analysis packages, and instruct *reticulate* where to
 look for a Python environment with all necessary Python dependencies
 (see
-[this](https://slendr.net/articles/vignette-05-tree-sequences.html#r-interface-for-tskit-and-pyslim-1)
+[this](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#r-interface-for-tskit-and-pyslim-1)
 section of another vignette for instructions how to setup the Python
 environment the easiest way possible):
 
@@ -60,16 +60,16 @@ We now define up a simple *non-spatial* model of gene flow between
 populations (also known as population admixture or introgression). This
 will involve essentially the same procedure which we have shown in
 another vignette introducing [non-spatial *slendr*
-models](https://slendr.net/articles/vignette-04-nonspatial-models.md).
+models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.md).
 Note that this is no different from how we would normally specify a
 spatial model, except that we left out the `map` argument in making the
-[`population()`](https://slendr.net/reference/population.md) calls.
+[`population()`](https://bodkan.net/slendr/reference/population.md) calls.
 
 To demonstrate additional features of the *slendr* interface to the
 [*tskit*](https://tskit.dev/tskit/docs/stable/introduction.html) Python
 library, we will perform gene flow detection test using the so-called
 $`f_4`$ and $`f_4`$-ratio statistics (very briefly introduces in [this
-vignette](https://slendr.net/articles/vignette-05-tree-sequences.md)).
+vignette](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.md)).
 To make things a little more interesting, we will define two population
 models: one model without any gene flow, and another which includes gene
 flow. In defining this model and expressing the $`f`$-statistics we will
@@ -209,7 +209,7 @@ msprime_gf <- ts_mutate(msprime_gf, mut_rate, random_seed = seed)
 
 As we can see below, the tree sequence summary of the data loaded and
 processed by *slendr*’s
-[`ts_read()`](https://slendr.net/reference/ts_read.md) function (data
+[`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md) function (data
 produced by the SLiM backend) is very similar to what we got “manually”
 for the msprime-produced tree sequence using the custom defined
 functions. This is somehow obvious but it is a nice and cheap sanity

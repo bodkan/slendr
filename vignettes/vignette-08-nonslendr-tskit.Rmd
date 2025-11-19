@@ -133,7 +133,7 @@ sample_sets <- split(data$node_id, data$pop)
 ts_diversity(ts, sample_sets)
 ```
 
-Just as with _slendr_ tree sequences (as demonstrated in our [paper](https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5)) we can get a individual trees too, extracted in the in the phylogenetic format provided by the [ape](https://CRAN.R-project.org/package=ape) R package. Here we first simplify the tree sequence even further to just 10 nodes to make things manageable:
+Just as with _slendr_ tree sequences (as demonstrated in our [paper](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5)) we can get a individual trees too, extracted in the in the phylogenetic format provided by the [ape](https://CRAN.R-project.org/package=ape) R package. Here we first simplify the tree sequence even further to just 10 nodes to make things manageable:
 
 ```{r}
 samples <- sample(data$node_id, 10)
@@ -188,7 +188,7 @@ ts_nodes(ts)
 
 #### Spatial SLiM (non-slendr) tree sequences
 
-Furthermore, the generalized interface also supports _slendr_'s [spatial tree-sequence features](https://slendr.net/articles/vignette-06-locations.html), with all the [bells and whistles](https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5).
+Furthermore, the generalized interface also supports _slendr_'s [spatial tree-sequence features](https://bodkan.net/slendr/articles/vignette-06-locations.html), with all the [bells and whistles](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5).
 
 For instance, lets take the following spatial SLiM script (modified from the SLiM manual) and execute it with SLiM the usual way:
 
@@ -260,7 +260,7 @@ To briefly demonstrate what this means, we can trivially plot the location of ea
 ggplot() + geom_sf(data = data, aes(color = time), alpha = 0.5)
 ```
 
-We can also collect spatio-temporal ancestry information of a particular node (i.e. the times and locations of all of its ancestors all the way to the root, with each "link" in the plot signifying parent-child edge somewhere along the tree sequence) and plot it on a 2D surface (x and y dimensions [0, 1]). The plot is a little chaotic, but hopefully conveys the idea (the "focal node" 0 is highlighted in red). This is essentially the same plot we have in [the last figure of our paper](https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5).
+We can also collect spatio-temporal ancestry information of a particular node (i.e. the times and locations of all of its ancestors all the way to the root, with each "link" in the plot signifying parent-child edge somewhere along the tree sequence) and plot it on a 2D surface (x and y dimensions [0, 1]). The plot is a little chaotic, but hopefully conveys the idea (the "focal node" 0 is highlighted in red). This is essentially the same plot we have in [the last figure of our paper](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5).
 
 ```{r, nonslendr_ancestries}
 ancestral_links <- ts_ancestors(ts, 0)

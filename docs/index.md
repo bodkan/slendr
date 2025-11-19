@@ -1,21 +1,21 @@
 # *slendr*: Population Genetic Simulations in R
 
-### *Overview* [](https://slendr.net)
+### *Overview* [](https://bodkan.net/slendr)
 
 *slendr* is a toolbox for running population genomic simulations
 entirely in R. Our original motivation for developing it was to provide
 a framework for [simulating spatially-explicit genomic
-data](https://slendr.net/articles/vignette-01-tutorial.html) on real
+data](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) on real
 geographic landscapes, however, it has grown to be much more than that
 since then: *slendr* can now simulate data from [traditional,
 non-spatial demographic
-models](https://slendr.net/articles/vignette-04-nonspatial-models.html)
+models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
 using *msprime* as a simulation engine, and it even supports selection
 scenarios via [user-defined SLiM estension
-snippets](https://slendr.net/articles/vignette-11-extensions.html). In
+snippets](https://bodkan.net/slendr/articles/vignette-11-extensions.html). In
 addition to model definition and simulation, *slendr* also provides a
 set of function for efficient [analysis of tree-sequence genomic
-data](https://slendr.net/articles/vignette-05-tree-sequences.html),
+data](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html),
 utilizing the [*tskit*](https://tskit.dev) module for underlying
 computation.
 
@@ -23,7 +23,7 @@ This page briefly summarizes *slendr*’s most important features. A more
 detailed description of the *slendr* architecture and an extensive set
 of practical code examples can be found in our
 [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/)
-in the PCI journal and on our [website](https://slendr.net).
+in the PCI journal and on our [website](https://bodkan.net/slendr).
 
 ------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ package allows you to:
 - **Program demographic models**, including population splits,
   population size changes, and gene-flow events **using an extremely
   simple declarative language entirely in R** ([see this
-  vignette](https://slendr.net/articles/vignette-04-nonspatial-models.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
   for an example of the model-definition interface). Even complex models
   can be written with only a very little code and require only a bare
   minimum of R programming knowledge (the only thing the user needs to
@@ -69,22 +69,22 @@ package allows you to:
   built-in R interface to the tree-sequence library
   [*tskit*](https://tskit.dev/tskit/docs/)*.* You can compute many
   [population genetic
-  statistics](https://slendr.net/reference/index.html#tree-sequence-statistics)
+  statistics](https://bodkan.net/slendr/reference/index.html#tree-sequence-statistics)
   in R immediately after the simulation finishes [directly on the output
   tree
-  sequences](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics),
+  sequences](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics),
   without having to convert files to other formats (VCF, EIGENSTRAT) for
   analysis in different software.
 
 - Although it originally assumed neutrality of simulated models,
   *slendr* now provides a simple extension mechanism for [customization
   of SLiM-based models using user-defined SLiM
-  code](https://slendr.net/articles/vignette-11-extensions.html).
+  code](https://bodkan.net/slendr/articles/vignette-11-extensions.html).
   Simulations of selection models of arbitrary complexity is now
   entirely possible.
 
 - [**Schedule sampling
-  events**](https://slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events)
+  events**](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events)
   which specify how many individuals’ genomes, from which populations,
   and at which times (optionally, at which locations) should be recorded
   by the simulation engine (SLiM or *msprime*) in the output
@@ -92,9 +92,9 @@ package allows you to:
 
 - **Encode complex models of population movements on a landscape** (see
   a brief example of such model
-  [here](https://slendr.net/articles/vignette-06-locations.html#model-specification),
+  [here](https://bodkan.net/slendr/articles/vignette-06-locations.html#model-specification),
   and a more extended explanation in [this
-  tutorial](https://slendr.net/articles/vignette-01-tutorial.html)). No
+  tutorial](https://bodkan.net/slendr/articles/vignette-01-tutorial.html)). No
   knowledge of cartographic or geospatial analysis concepts is needed.
 
 - **Simulate these dynamic spatial demographic models using SLiM’s
@@ -102,12 +102,12 @@ package allows you to:
   SLiM programming required).** The outputs from such simulations are
   saved as tree sequences and can be analysed using [standard R
   geospatial data analysis
-  libraries](https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5).
+  libraries](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5).
   This is because *slendr* performs the conversion of tree sequence
   tables to the appropriate spatial R data type automatically.
 
 - Specify within-population individual [dispersal
-  dynamics](https://slendr.net/articles/vignette-03-interactions.html)
+  dynamics](https://bodkan.net/slendr/articles/vignette-03-interactions.html)
   from the R interface by leveraging SLiM’s individual interaction
   parameters implemented in the SLiM back-end script.
 
@@ -122,7 +122,7 @@ analytic pipelines without the need to leave the R environment.**
 ### Testing the R package in an online RStudio session
 
 You can open an RStudio session and test examples from the
-[vignettes](https://slendr.net/articles/) directly in your web browser
+[vignettes](https://bodkan.net/slendr/articles/) directly in your web browser
 by clicking this button (no installation is needed!):
 
 [![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/bodkan/slendr/main?urlpath=rstudio)
@@ -170,7 +170,7 @@ If you would like to stay updated:
     (you can find links on my [homepage](https://bodkan.net)).
 
 3.  From time to time, take a look at the
-    [changelog](https://slendr.net/news/index.html) where I will post
+    [changelog](https://bodkan.net/slendr/news/index.html) where I will post
     updates on new features, breaking changes, etc.
 
 ------------------------------------------------------------------------
@@ -182,12 +182,12 @@ Here is a very brief demonstration of the kind of spatial model which
 that although this is a spatially-explicit population genetic model,
 *slendr* has an extensive support for [traditional, non-spatial
 simulations as
-well](https://slendr.net/articles/vignette-04-nonspatial-models.html).
+well](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html).
 Furthermore, this example only shows how to specify and simulate a model
 in R. It doesn’t show how to analyse tree-sequence outputs and compute
 population genetic statistics from them (this important feature is
 demonstrated in [this
-tutorial](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics)).
+tutorial](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics)).
 
 #### 1. Setup the spatial context
 
@@ -285,15 +285,15 @@ plot_map(africa, europe, anatolia)
 #### 3. Define demographic history and population boundaries
 
 The most important function in the *slendr* package is
-[`population()`](https://slendr.net/reference/population.md), which is
+[`population()`](https://bodkan.net/slendr/reference/population.md), which is
 used to define names, split times, sizes and spatial ranges of
 populations. Here, we specify times in years before the present,
 distances in kilometers. If this makes more sense for your models, times
 can also be given in a forward direction.
 
 You will also note functions such as
-[`move()`](https://slendr.net/reference/move.md) or
-[`expand_range()`](https://slendr.net/reference/expand_range.md) which
+[`move()`](https://bodkan.net/slendr/reference/move.md) or
+[`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md) which
 are designed to take a *slendr* population object and schedule its
 spatial dynamics at appropriate times during the model simulation (which
 will happen at a later step).
@@ -398,14 +398,14 @@ model <- compile_model(
 
 Compiled model is kept as an R object which can be passed to different
 functions. In this example, we will simulate data with the
-[`slim()`](https://slendr.net/reference/slim.md) engine (but we could
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) engine (but we could
 also run the simulation through the coalescent engine via the
-[`msprime()`](https://slendr.net/reference/msprime.md) function).
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function).
 
 #### 6. Visualize the model
 
 The package provides an [R shiny](https://shiny.posit.co/)-based browser
-app [`explore_model()`](https://slendr.net/reference/explore_model.md)
+app [`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md)
 for checking the model dynamics interactively and visually. For more
 complex models, this is much better than static spatial plots such as
 the one we showed in step 2 above:
@@ -451,17 +451,17 @@ As specified here, *slendr*’s SLiM backend will simulate 10 Mb of
 sequence for each individual, and produce a tree sequence output from
 the simulation run which can be analysed by many [built-in population
 genetic
-functions](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics).
+functions](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics).
 By default, all individuals living at the end of the simulation are
 recorded as samples in the tree sequence. If a specific set of samples
 (ancient and modern) is needed, this can be defined accordingly using a
 [dedicated
-function](https://slendr.net/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events).
+function](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#scheduling-of-sampling-events).
 
 Note that although we defined a spatial model, we could have just as
 easily simulated standard, non-spatial data by running the same model
 through *slendr*’s
-[`msprime()`](https://slendr.net/reference/msprime.md) back end without
+[`msprime()`](https://bodkan.net/slendr/reference/msprime.md) back end without
 the need to make any changes:
 
 ``` r
@@ -473,7 +473,7 @@ Here is a very quick overview of the SLiM simulation run summarised as a
 GIF animation. Again, please note that the simulation is extremely
 simplified. We only simulated a very small number of individuals in each
 population, and we also didn’t specify any [dispersal
-dynamics](https://slendr.net/articles/vignette-03-interactions.html)
+dynamics](https://bodkan.net/slendr/articles/vignette-03-interactions.html)
 which is why the populations look so clumped.
 
 ``` r
@@ -484,9 +484,9 @@ animate_model(model = model, file = locations_file, steps = 50, width = 500, hei
 
 At this point, you could either compute some [population genetic
 statistics of
-interest](https://slendr.net/articles/vignette-05-tree-sequences.html#calculating-f-statistics)
+interest](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics)
 or perhaps analyse the [spatial features of the
-genealogies](https://slendr.net/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships)
+genealogies](https://bodkan.net/slendr/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships)
 simulated by your model.
 
 ## Further information
@@ -501,25 +501,25 @@ the full functionality of the *slendr* package. There is much more to
   can see that in the animation above, the African population forms a
   single “blob” that really isn’t spread out across its entire
   population range. Tweaking the dispersal parameters as show [this
-  vignette](https://slendr.net/articles/vignette-03-interactions.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-03-interactions.html)
   helps avoid that.
 
 - You can use *slendr* to program non-spatial models, which means that
   any conceivable traditional, random-mating demographic model can be
   simulated with only a few lines of R code. You can learn more in [this
-  vignette](https://slendr.net/articles/vignette-04-nonspatial-models.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
   (and in more detail in [this
-  vignette](https://slendr.net/articles/vignette-05-tree-sequences.html)).
+  vignette](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html)).
   Because SLiM simulations can be often quite slow compared to their
   coalescent counterparts, we also provide functionality allowing to
   simulate *slendr* models (without any change!) using a built-in
   *msprime* back end script. See [this
-  vignette](https://slendr.net/articles/vignette-07-backends.html) for a
+  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html) for a
   tutorial on how this works.
 
 - You can extend traditional, non-spatial SLiM-based *slendr* models
   with customized SLiM code and [simulate various selection
-  scenarios](https://slendr.net/articles/vignette-11-extensions.html)
+  scenarios](https://bodkan.net/slendr/articles/vignette-11-extensions.html)
   supported by SLiM while still leveraging *slendr*’s easy-to-use
   interface for programming demographic models.
 
@@ -527,7 +527,7 @@ the full functionality of the *slendr* package. There is much more to
   assuming any real geographic location), including traditional
   simulations of demes in a lattice structure. A complete example is
   shown [this
-  vignette](https://slendr.net/articles/vignette-02-grid-model.html).
+  vignette](https://bodkan.net/slendr/articles/vignette-02-grid-model.html).
 
 - Because *slendr* & SLiM save data in a tree-sequence file format,
   thanks to the R package
@@ -538,16 +538,16 @@ the full functionality of the *slendr* package. There is much more to
   manipulating tree-sequence data right at our fingertips, all within
   the convenient environment of R. An extended example can be found in
   [this
-  vignette](https://slendr.net/articles/vignette-05-tree-sequences.html).
+  vignette](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html).
 
 - For spatially explicit population models, the *slendr* package
   automatically converts the simulated output data to a format which
   makes it possible to analyse it with many available R packages for
   geospatial data analysis. A brief description of this functionality
   can be found in [this
-  vignette](https://slendr.net/articles/vignette-06-locations.html).
+  vignette](https://bodkan.net/slendr/articles/vignette-06-locations.html).
 
 - You can find complete reproducible code behind the examples in our
   [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/)
   in a dedicated R vignette
-  [here](https://slendr.net/articles/vignette-09-paper.html).
+  [here](https://bodkan.net/slendr/articles/vignette-09-paper.html).

@@ -25,7 +25,7 @@ ts_draw(
 - x:
 
   A single tree extracted by
-  [`ts_tree`](https://slendr.net/reference/ts_tree.md)
+  [`ts_tree`](https://bodkan.net/slendr/reference/ts_tree.md)
 
 - width, height:
 

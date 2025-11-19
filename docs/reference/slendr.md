@@ -22,7 +22,7 @@ data analysis.
 ## Details
 
 You can find installation instructions, reference manual, and tutorials
-at <https://slendr.net>.
+at <https://bodkan.net/slendr>.
 
 ## See also
 

@@ -73,7 +73,7 @@ msprime(
   return this path invisibly. Note that if a tree-sequence file should
   be simulated (along with other files, potentially), that tree-sequence
   file (named 'msprime.trees' by default) will have to be explicitly
-  loaded using [`ts_read()`](https://slendr.net/reference/ts_read.md).
+  loaded using [`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md).
 
 - coalescent_only:
 

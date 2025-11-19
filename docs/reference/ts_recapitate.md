@@ -46,7 +46,7 @@ the `ts_` prefix.
 
 ## See also
 
-[`ts_nodes`](https://slendr.net/reference/ts_nodes.md) for extracting
+[`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) for extracting
 useful information about individuals, nodes, coalescent times and
 geospatial locations of nodes on a map
 

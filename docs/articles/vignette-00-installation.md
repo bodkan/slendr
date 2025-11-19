@@ -12,7 +12,7 @@ directly from GitHub by executing
 (you can gen *devtools* by running `install.packages("devtools")`). In
 fact, if you decide to try *slendr*, please make sure to update it
 regularly and keep an eye on the
-[changelog](https://slendr.net/news/index.html) on a regular basis! This
+[changelog](https://bodkan.net/slendr/news/index.html) on a regular basis! This
 is where you can find information about latest bugfixes and potential
 breaking changes.
 
@@ -230,7 +230,7 @@ be able to set the path to SLiM using the command
 have to do this at the beginning of each of your slendr R scripts
 though.
 
-Alternatively, the [`slim()`](https://slendr.net/reference/slim.md)
+Alternatively, the [`slim()`](https://bodkan.net/slendr/reference/slim.md)
 function has an argument `slim_path=` where you can specify the full
 path to the `slim` or `slim.exe` binaries directly (not the directory as
 it’s the case with the `$PATH`! the full path to the `slim`/`slim.exe`
@@ -251,7 +251,7 @@ for R users who might not use Python in their daily work.
 In order to make sure that the R package has the most appropriate
 version of Python available, with the correct versions of all of its
 Python module dependencies, *slendr* provides a dedicated function
-[`setup_env()`](https://slendr.net/reference/setup_env.md) which
+[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) which
 automatically **downloads a completely separate Python distribution and
 installs the required versions of *tskit*, *msprime*, and *pyslim*
 modules into a dedicated virtual environment**. Moreover, this Python
@@ -263,31 +263,31 @@ modules required by *slendr*.
 **Next time you call
 [`library(slendr)`](https://github.com/bodkan/slendr), you will need to
 activate this environment automatically by calling
-[`init_env()`](https://slendr.net/reference/init_env.md)**. If you’re
+[`init_env()`](https://bodkan.net/slendr/reference/init_env.md)**. If you’re
 not comfortable with Python you don’t need to worry beyond calling
-[`setup_env()`](https://slendr.net/reference/setup_env.md) and
-[`init_env()`](https://slendr.net/reference/init_env.md), no interaction
+[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) and
+[`init_env()`](https://bodkan.net/slendr/reference/init_env.md), no interaction
 with Python is necessary for working with *slendr* in R.
 
 #### Failing *conda*?
 
 In order to support Windows, *slendr* uses conda to download a Python
 interpreter as explained above. Given this fact, when you run
-[`setup_env()`](https://slendr.net/reference/setup_env.md), *slendr*
+[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md), *slendr*
 tries to leverage conda being present to install its Python dependencies
 (*msprime*, *tskit*, *pyslim*, *pandas*) via conda itself.
 
 Unfortunately, conda can break for frustratingly many random reasons
 which completely trips up
-[`setup_env()`](https://slendr.net/reference/setup_env.md). If you run
+[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md). If you run
 into this issue, **there is a fallback option to install Python
 dependencies *msprime*, *tskit*, *pyslim*, and *pandas* via `pip`**
 which, unlike conda, works practically every time. If your
-[`setup_env()`](https://slendr.net/reference/setup_env.md) fails for
+[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) fails for
 some conda-related reason, first clear the broken environment by calling
-[`clear_env()`](https://slendr.net/reference/clear_env.md), restart your
+[`clear_env()`](https://bodkan.net/slendr/reference/clear_env.md), restart your
 R session, and then **call `setup_env(pip = TRUE)`** instead of the
-default [`setup_env()`](https://slendr.net/reference/setup_env.md). Note
+default [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md). Note
 that **this might require you to install the
 [GSL](https://www.gnu.org/software/gsl/) numerical library, but that’s a
 trivial issue on macOS (`brew install gsl`) and Linux (on Ubuntu, for
@@ -307,9 +307,9 @@ intervention.
 If you’re running into this error, it means that *slendr* was prevented
 from activating its internal Python virtual environment. Most likely you
 either didn’t run
-[`setup_env()`](https://slendr.net/reference/setup_env.md) as described
+[`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) as described
 above, or you forgot to run
-[`init_env()`](https://slendr.net/reference/init_env.md) before
+[`init_env()`](https://bodkan.net/slendr/reference/init_env.md) before
 attempting to simulate tree sequence data, or the Python environment got
 somehow corrupted. All of these cause *slendr*’s internal machinery to
 fail to pick up it’s Python dependencies for tree-sequence simulation

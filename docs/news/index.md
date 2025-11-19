@@ -7,26 +7,26 @@ CRAN release: 2025-11-11
 - In order to minimize the dependency burden for users even further,
   packages *shiny* and *shinyWidgets* are now not installed by default.
   The function
-  [`explore_model()`](https://slendr.net/reference/explore_model.md)
+  [`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md)
   function now checks if those packages are present upon calling it. If
   not, the user is informed that they should install those packages
   first. ([\#60fbdf](https://github.com/bodkan/slendr/commit/60fbdf))
 
-- [`plot_map()`](https://slendr.net/reference/plot_map.md) now has an
+- [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) now has an
   option `arrows` which instructs the function whether (`arrows = TRUE`)
   or not (`arrows = FALSE`) should “spatial gene-flow links” between
   demes feature arrowheads. This is intended to help with visualizations
   of many spatial demes, such as in models with very dense spatial deme
   lattices. To this end, the *sf* / *ggplot2* layout produced by
-  [`plot_map()`](https://slendr.net/reference/plot_map.md) has been also
+  [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) has been also
   tweaked accordingly.
   ([\#ebbaad](https://github.com/bodkan/slendr/commit/ebbaad))
 
 - The internal dependencies of *slendr* have been upgraded. SLiM v5.1 is
   now required; and
-  [`init_env()`](https://slendr.net/reference/init_env.md) will instruct
+  [`init_env()`](https://bodkan.net/slendr/reference/init_env.md) will instruct
   users that a new Python environment needs to be created with
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) to update
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) to update
   *pyslim* to v1.1.0. Additionally, (though rather inconsequential for
   *slendr* users), the Python environment now utilizes Python 3.13.
   ([issue](https://github.com/bodkan/slendr/issues/186)
@@ -54,7 +54,7 @@ CRAN release: 2025-07-31
 
 - *slendr* now allows recording of specific singular samples under
   unique names. See the documentation to
-  [`schedule_sampling()`](https://slendr.net/reference/schedule_sampling.md)
+  [`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
   for an example. ([PR](https://github.com/bodkan/slendr/pull/181)
   [\#181](https://github.com/bodkan/slendr/issues/181))
 
@@ -65,7 +65,7 @@ CRAN release: 2025-07-31
   [\#180](https://github.com/bodkan/slendr/issues/180))
 
 - Fixed an issue with setting `lock = TRUE` in the
-  [`set_range()`](https://slendr.net/reference/set_range.md) function
+  [`set_range()`](https://bodkan.net/slendr/reference/set_range.md) function
   (issue [\#176](https://github.com/bodkan/slendr/issues/176) reported
   by [@Sgornard](https://github.com/Sgornard) – thank you!).
   ([\#6d01e407](https://github.com/bodkan/slendr/commit/6d01e407))
@@ -74,15 +74,15 @@ CRAN release: 2025-07-31
   population, *slendr* gives an informative error message.
   ([\#6bb646](https://github.com/bodkan/slendr/commit/6bb646))
 
-- [`plot_model()`](https://slendr.net/reference/plot_model.md) now uses
+- [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) now uses
   the same color for population ranges and population labels.
   ([\#c54632e5](https://github.com/bodkan/slendr/commit/c54632e5))
 
-- [`plot_map()`](https://slendr.net/reference/plot_map.md) can now
+- [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) can now
   optionally visualize splits in a spatial setting
   ([\#4664388c](https://github.com/bodkan/slendr/commit/4664388c))
 
-- [`plot_model()`](https://slendr.net/reference/plot_model.md) now plots
+- [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) now plots
   y-axis time using a more readable integer scale.
   ([\#6b0e7fcc](https://github.com/bodkan/slendr/commit/6b0e7fcc))
 
@@ -96,19 +96,19 @@ with the recent release of SLiM 5.0 and new releases of *msprime* and
 particularly its new “SLiM extension” mechanism) requires SLiM 5.0
 
 - SLiM 5 is now required to run
-  [`slim()`](https://slendr.net/reference/slim.md) simulations with
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) simulations with
   *slendr*. Similarly, *tskit* and *msprime* have been upgraded to
   versions 0.6.4 and 1.3.4, respectively.
   ([PR](https://github.com/bodkan/slendr/pull/173)
   [\#173](https://github.com/bodkan/slendr/issues/173))
 
-- [`schedule_sampling()`](https://slendr.net/reference/schedule_sampling.md)
+- [`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
   now checks that all sampled populations are actually present in the
   compiled model
   ([\#97abf75](https://github.com/bodkan/slendr/commit/97abf75))
 
 - Data frames produced by
-  [`ts_tracts()`](https://slendr.net/reference/ts_tracts.md) on
+  [`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) on
   *slendr*-produced tree sequences now include a time of a recorded
   sample carrying a given tract
   ([\#a28b264](https://github.com/bodkan/slendr/commit/a28b264)) and a
@@ -117,19 +117,19 @@ particularly its new “SLiM extension” mechanism) requires SLiM 5.0
   the tract belongs (i.e., either number 1 or 2, depending on the
   respective chromosome of a simulated individual).
 
-- [`ts_vcf()`](https://slendr.net/reference/ts_vcf.md) is now more
+- [`ts_vcf()`](https://bodkan.net/slendr/reference/ts_vcf.md) is now more
   robust (and more useful) in handling both *slendr* and non-*slendr*
   tree sequences. However, please take note of some potentially
   problematic situations involved in the *tskit* VCF conversion method,
   and solutions discussed
   [here](https://github.com/bodkan/slendr/issues/167). Until this is all
-  resolve, consider [`ts_vcf()`](https://slendr.net/reference/ts_vcf.md)
+  resolve, consider [`ts_vcf()`](https://bodkan.net/slendr/reference/ts_vcf.md)
   in its current form rather experimental. Also, as a reminder, note
   that you can always use Python *tskit* functionality functionality
   directly from R, using the *reticulate* interface.
   ([\#c26907](https://github.com/bodkan/slendr/commit/c26907))
 
-- By default, [`ts_vcf()`](https://slendr.net/reference/ts_vcf.md) now
+- By default, [`ts_vcf()`](https://bodkan.net/slendr/reference/ts_vcf.md) now
   automatically transforms a site with coordinate 0 to 1. This is done
   to make sure that the produced VCF file adheres to the VCF
   specification. See [relevant
@@ -137,7 +137,7 @@ particularly its new “SLiM extension” mechanism) requires SLiM 5.0
   *tskit* repository for more information.
   ([\#3a8c7a](https://github.com/bodkan/slendr/commit/3a8c7a))
 
-- [`get_python()`](https://slendr.net/reference/get_python.md) now
+- [`get_python()`](https://bodkan.net/slendr/reference/get_python.md) now
   replaces a `get_env()` function introduced in an earlier release. This
   function returns the full path to a Python binary which is part of the
   *slendr* virtual Python environment. As such, it can be directly ran
@@ -147,7 +147,7 @@ particularly its new “SLiM extension” mechanism) requires SLiM 5.0
   ([\#a76d3f](https://github.com/bodkan/slendr/commit/a76d3f))
 
 - A new option `quiet =` now controls whether or not should
-  [`ts_genotypes()`](https://slendr.net/reference/ts_genotypes.md) write
+  [`ts_genotypes()`](https://bodkan.net/slendr/reference/ts_genotypes.md) write
   a message if any multiallelic sites are encountered during conversion
   from a tree-sequence object.
   ([\#9260c6](https://github.com/bodkan/slendr/commit/9260c6))
@@ -158,11 +158,11 @@ CRAN release: 2024-11-22
 
 - **A massive update introducing the possibility of simulating
   non-neutral *slendr* models with
-  [`slim()`](https://slendr.net/reference/slim.md) has been introduced.
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) has been introduced.
   This update is too big to describe in the changelog – for more
   information and motivation, see the [description in the associated
   PR](https://github.com/bodkan/slendr/pull/155), or [the new extensive
-  vignette](https://slendr.net/articles/vignette-11-extensions.html) on
+  vignette](https://bodkan.net/slendr/articles/vignette-11-extensions.html) on
   the topic. ([PR](https://github.com/bodkan/slendr/pull/155)
   [\#155](https://github.com/bodkan/slendr/issues/155))**
 
@@ -174,29 +174,29 @@ missing features, and bug reports are highly appreciated!**
 Other changes:
 
 - The behavior previously implemented via the `output =` and `ts =`
-  arguments of [`slim()`](https://slendr.net/reference/slim.md) (and
-  [`msprime()`](https://slendr.net/reference/msprime.md)) has been
+  arguments of [`slim()`](https://bodkan.net/slendr/reference/slim.md) (and
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md)) has been
   changed to facilitate more straightforward handling of output paths in
   user-defined SLiM extensions and other packages leveraging *slendr*
-  for inference. The [`slim()`](https://slendr.net/reference/slim.md)
-  and [`msprime()`](https://slendr.net/reference/msprime.md) function
+  for inference. The [`slim()`](https://bodkan.net/slendr/reference/slim.md)
+  and [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function
   interfaces are now simplified in the following way:
 
-  - [`slim()`](https://slendr.net/reference/slim.md): the `ts` argument
+  - [`slim()`](https://bodkan.net/slendr/reference/slim.md): the `ts` argument
     is now logical. `TRUE` switches on tree-sequence recording, `FALSE`
     switches it off. If tree-sequence recording is on (the default
     setting), the function automatically returns a tree-sequence R
     object. If users want to save it to a custom location, they should
     use the function
-    [`ts_write()`](https://slendr.net/reference/ts_write.md) on the
+    [`ts_write()`](https://bodkan.net/slendr/reference/ts_write.md) on the
     returned tree-sequence object. If customized output files are to be
     produced via user-defined extension scripts, those scripts can use a
     *slendr*/SLiM constant `PATH`, which is always available in the
     built-in SLiM script and which can be set from R via
     `slim(..., path = <path to a directory>)`. In that case, the
-    [`slim()`](https://slendr.net/reference/slim.md) function always
+    [`slim()`](https://bodkan.net/slendr/reference/slim.md) function always
     returns that path back. Crucially, in this case
-    [`slim()`](https://slendr.net/reference/slim.md) will not return a
+    [`slim()`](https://bodkan.net/slendr/reference/slim.md) will not return a
     tree sequence object, but that object can be loaded by
     `ts_read("<path to a directory>/slim.trees")`. In other words,
     nothing changes for the usual SLiM-based *slendr* workflow, but for
@@ -204,30 +204,30 @@ Other changes:
     needed to load the tree sequence – the tree-sequence file outputs
     are therefore treated exactly the same way as non-tree-sequence
     user-defined output files. As a result of these changes,
-    [`slim()`](https://slendr.net/reference/slim.md) no longer accepts a
+    [`slim()`](https://bodkan.net/slendr/reference/slim.md) no longer accepts a
     `load = TRUE|FALSE` argument.
 
 The above is implemented in PR
 [\#157](https://github.com/bodkan/slendr/pull/157).
 
-- [`ts_genotypes()`](https://slendr.net/reference/ts_genotypes.md) now
+- [`ts_genotypes()`](https://bodkan.net/slendr/reference/ts_genotypes.md) now
   works even for non-*slendr* tree sequences, which do not have *slendr*
   individual names of samples in the
-  [`ts_nodes()`](https://slendr.net/reference/ts_nodes.md) output.
+  [`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) output.
   ([\#d348ec](https://github.com/bodkan/slendr/commit/d348ec))
 
 - Due to frequent issues with installation of Python dependencies of
   *slendr* in a completely platform independent way (in the latest
   instance this being conda installation of pyslim crashing on
   M-architecture Macs),
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) now only
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) now only
   uses conda to install *msprime* and *tskit* – *pyslim* and *tspop* are
   always installed via pip regardless of whether
   `setup_env(pip = FALSE)` (the default) or `setup_env(pip = TRUE)` is
   used. ([\#408948](https://github.com/bodkan/slendr/commit/408948))
 
 - A new function
-  [`extract_parameters()`](https://slendr.net/reference/extract_parameters.md)
+  [`extract_parameters()`](https://bodkan.net/slendr/reference/extract_parameters.md)
   can extract parameters of either a compiled *slendr* model object or a
   tree sequence simulated from a *slendr* model. This can be useful
   particularly for simulation-based inferences where model parameters
@@ -236,35 +236,35 @@ The above is implemented in PR
   been drawn.
   ([\#3632bd0](https://github.com/bodkan/slendr/commit/3632bd0))
 
-- [`compile_model()`](https://slendr.net/reference/compile_model.md) now
+- [`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md) now
   allows to specify a description of time units used while scheduling
   *slendr* model events. This has purely descriptive purpose – in
   particular, these units are used in model plotting functions, etc.
   ([\#9b5b7ea0](https://github.com/bodkan/slendr/commit/9b5b7ea0))
 
 - The `slim_script` argument of
-  [`compile_model()`](https://slendr.net/reference/compile_model.md) has
+  [`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md) has
   been replaced by `extension` argument, which allows users to provide
   their custom-designed SLiM snippets for extending the behavior of
   *slendr*’s SLiM simulation engine.
   ([\#d11ac7](https://github.com/bodkan/slendr/commit/d11ac7))
 
 - The `sim_length` argument of
-  [`compile_model()`](https://slendr.net/reference/compile_model.md) has
+  [`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md) has
   been removed following a long period of deprecatiaon.
   ([\#12da50](https://github.com/bodkan/slendr/commit/12da50))
 
 - When a named list of samples is used as `X` input to
-  [`ts_f4ratio()`](https://slendr.net/reference/ts_f4ratio.md), the name
+  [`ts_f4ratio()`](https://bodkan.net/slendr/reference/ts_f4ratio.md), the name
   of the element is used in the `X` column of the resulting data frame.
   ([\#0571a6](https://github.com/bodkan/slendr/commit/0571a6))
 
-- [`ts_table()`](https://slendr.net/reference/ts_table.md) can now
+- [`ts_table()`](https://bodkan.net/slendr/reference/ts_table.md) can now
   extract the “sites” *tskit* table as `ts_table(ts, "sites")`.
   ([\#e708f2](https://github.com/bodkan/slendr/commit/e708f2))
 
 - When applied to *slendr* tree sequences,
-  [`ts_recapitate()`](https://slendr.net/reference/ts_recapitate.md) no
+  [`ts_recapitate()`](https://bodkan.net/slendr/reference/ts_recapitate.md) no
   longer issues the warning:
   `TimeUnitsMismatchWarning: The initial_state has time_units=ticks but time is measured in generations in msprime. This may lead to significant discrepancies between the timescales. If you wish to suppress this warning, you can use, e.g., warnings.simplefilter('ignore', msprime.TimeUnitsMismatchWarning)`.
   For *slendr* tree sequences, ticks are the same thing as generations
@@ -285,24 +285,24 @@ CRAN release: 2024-02-21
   *slendr* Python environment (without activating it).
   ([\#162ccc](https://github.com/bodkan/slendr/commit/162ccc))
 
-- [`clear_env()`](https://slendr.net/reference/clear_env.md) now has a
+- [`clear_env()`](https://bodkan.net/slendr/reference/clear_env.md) now has a
   new argument `all = (TRUE|FALSE)` which allows deleting all *slendr*
   Python environments. Previously, the function always removed only the
   recent environment, which lead to the accumulation of potentially
   large number of *slendr* environments over time.
   ([\#8707b9](https://github.com/bodkan/slendr/commit/8707b9))
 
-- [`plot_model()`](https://slendr.net/reference/plot_model.md) has a new
+- [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) has a new
   optional argument `samples =` which will – when set to a result of a
   sampling schedule created by
-  [`schedule_sampling()`](https://slendr.net/reference/schedule_sampling.md)
+  [`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
   – visualize the counts of samples to be recorded at each given
   time-point.
   ([\#d72ac5](https://github.com/bodkan/slendr/commit/d72ac5))
 
 - The *msprime* dependency of *slendr* has been updated to version
   1.3.1. As a result,
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) will have
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) will have
   to be re-run to update the internal *slendr* Python environment.
   ([\#dcb83d](https://github.com/bodkan/slendr/commit/dcb83d))
 
@@ -319,13 +319,13 @@ CRAN release: 2024-02-08
   of the SLiM manual and other means of installing SLiM (such as via
   conda) might require additional adjustments. A fallback option in the
   form of the `slim_path=` argument of the
-  [`slim()`](https://slendr.net/reference/slim.md) function can be used
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) function can be used
   in non-standard SLiM installation circumstances. For most convenience,
   please add the path to the directory containing the `slim.exe` binary
   to the `PATH` variable by editing the
   `C:/Users/<username>/Documents/.Renviron` file accordingly. See the
   relevant section on Windows installation in the [*slendr*
-  documentation](https://slendr.net/articles/vignette-00-installation.html)
+  documentation](https://bodkan.net/slendr/articles/vignette-00-installation.html)
   for additional information. Feedback on the Windows functionality and
   bug reports are highly appreciated via
   [GitHub](https://github.com/bodkan/slendr/issues) issues! **Many
@@ -344,7 +344,7 @@ CRAN release: 2024-02-08
 - The *msprime* internal dependency of *slendr* was updated to 1.3.0,
   and Python to 3.12. As a result, after loading *slendr*, users will be
   prompted to re-run
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) to make
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) to make
   sure that the dedicated *slendr* Python environment is fully updated.
   At the same time, this prevents a failing installation on (at the very
   least) M1 macOS using `pip`.
@@ -365,7 +365,7 @@ CRAN release: 2024-01-15
   changelog for the previous version) caused GLIBCXX-related errors
   between conda and pip dependencies related to the pandas Python
   package. To work around this issue,
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) no longer
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) no longer
   installs *pandas* from conda regardless of the setting of the
   `pip = TRUE|FALSE` parameter. Instead, *pandas* is installed via pip
   in a single step when *tspop* is being installed.
@@ -377,12 +377,12 @@ CRAN release: 2024-01-15
 [backwards incompatible
 changes](https://github.com/MesserLab/SLiM/releases/tag/v4.1) related to
 the implementation of spatial maps which prevent the current version of
-*slendr*’s [`slim()`](https://slendr.net/reference/slim.md) function
+*slendr*’s [`slim()`](https://bodkan.net/slendr/reference/slim.md) function
 from working correctly. If you rely on the functionality provided by the
-[`slim()`](https://slendr.net/reference/slim.md) function, you will have
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) function, you will have
 to use SLiM 4.0. (Note that if you want to have multiple versions of
 SLiM on your system, you can either use the `slim_path =` argument of
-[`slim()`](https://slendr.net/reference/slim.md) or specify the `$PATH`
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) or specify the `$PATH`
 to the required version of SLiM in your `~/.Renviron` file just like you
 do under normal circumstances). Porting *slendr* for SLiM 4.1 is being
 worked on.
@@ -392,10 +392,10 @@ worked on.
 CRAN release: 2023-12-07
 
 - In order to support the new
-  [`ts_tracts()`](https://slendr.net/reference/ts_tracts.md) function
+  [`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md) function
   backed by the *tspop* module (see the item below), a new *slendr*
   Python environment is required. As such, users will have to run
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) to get all
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) to get all
   the required Python dependencies which will be now installed in the
   internal virtual environment named
   `Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2`.
@@ -405,7 +405,7 @@ CRAN release: 2023-12-07
   [*tspop*](https://tspop.readthedocs.io/en/latest/) `link-ancestors`
   algorithm for detection of ancestry tracts in the form of a new
   *slendr* function
-  [`ts_tracts()`](https://slendr.net/reference/ts_tracts.md). Only works
+  [`ts_tracts()`](https://bodkan.net/slendr/reference/ts_tracts.md). Only works
   on *slendr*-generated *msprime* tree sequences and “pure” *msprime*
   and SLiM tree sequences (not *slendr*-generated SLiM tree sequences),
   and has been only tested on a few toy models. **Note:** the *tspop*
@@ -430,7 +430,7 @@ CRAN release: 2023-12-07
 CRAN release: 2023-08-08
 
 - A new function
-  [`ts_names()`](https://slendr.net/reference/ts_names.md) has been
+  [`ts_names()`](https://bodkan.net/slendr/reference/ts_names.md) has been
   added, avoiding the need for the extremely frequent (and,
   unfortunately, cumbersome) trick of getting named lists of individual
   symbolic names
@@ -443,14 +443,14 @@ CRAN release: 2023-08-08
   single-element lists of character vectors.
   ([\#b3c650](https://github.com/bodkan/slendr/commit/b3c650))
 
-- [`plot_model()`](https://slendr.net/reference/plot_model.md) now has
+- [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) now has
   an argument `file =`, making it possible to save a visualization of a
   model without actually opening a plotting device. This can be useful
   particularly while working on a remote server, in order to avoid the
   often slow X11 rendering.
   ([\#e60078](https://github.com/bodkan/slendr/commit/e60078))
 
-- [`plot_model()`](https://slendr.net/reference/plot_model.md) now has
+- [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) now has
   an argument `order =` allowing to override the default
   [in-order](https://en.wikipedia.org/wiki/Tree_traversal#Inorder_traversal)
   ordering of populations along the x-axis.
@@ -475,8 +475,8 @@ CRAN release: 2023-07-14
 
 If spatial dependencies are not present but a spatial *slendr* function
 is called regardless (such as
-[`world()`](https://slendr.net/reference/world.md),
-[`move()`](https://slendr.net/reference/move.md), etc.), an error
+[`world()`](https://bodkan.net/slendr/reference/world.md),
+[`move()`](https://bodkan.net/slendr/reference/move.md), etc.), an error
 message is printed with an information on how to install spatial
 dependencies via
 [`install.packages()`](https://rdrr.io/r/utils/install.packages.html) as
@@ -494,7 +494,7 @@ force *every* user to go through the process of their installation
 whether they need the spatial features or not.
 
 - A function
-  [`check_dependencies()`](https://slendr.net/reference/check_dependencies.md)
+  [`check_dependencies()`](https://bodkan.net/slendr/reference/check_dependencies.md)
   is now exported and can be used to check whether a *slendr* Python
   environment () or SLiM () are present. This is useful for other
   software building upon *slendr*, normal users can freely ignore this.
@@ -531,7 +531,7 @@ thread by pyslim’s developer and its formal announcement
 [here](https://groups.google.com/g/slim-discuss/c/Rtkkx_8pW58/m/PRyu9kpBAAAJ).
 
 - This change will require you to re-run
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) in order to
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) in order to
   update slendr’s Python internals by creating a new internal Python
   virtual environment.
   ([\#45539a](https://github.com/bodkan/slendr/commit/45539a))
@@ -539,20 +539,20 @@ thread by pyslim’s developer and its formal announcement
 - A potential issue with a parent population being scheduled for removal
   before a daughter population splits from it is now caught at the
   moment of the daughter
-  [`population()`](https://slendr.net/reference/population.md) call
+  [`population()`](https://bodkan.net/slendr/reference/population.md) call
   rather than during a simulation
-  [`slim()`](https://slendr.net/reference/slim.md) run.
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) run.
   ([\#0791b5](https://github.com/bodkan/slendr/commit/0791b5))
 
 - The function
-  [`plot_model()`](https://slendr.net/reference/plot_model.md) has a new
+  [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) has a new
   argument `gene_flow=<TRUE|FALSE>` which determines whether gene-flow
   arrows will be visualized or not.
   ([\#104aa6](https://github.com/bodkan/slendr/commit/104aa6))
 
 - The possibility to perform recapitation, simplification, or mutation
   of a tree sequence right inside a call to
-  [`ts_read()`](https://slendr.net/reference/ts_read.md) (by providing
+  [`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md) (by providing
   `recapitate = TRUE`, `simplify = TRUE`, and `mutate = TRUE`, together
   with their own arguments) has now been removed. The motivation for
   this change is the realization that there is no benefit of doing
@@ -595,13 +595,13 @@ release in which the IBD functionality will be more stable, or use the
 underlying, battle-tested [Python implementation in
 *tskit*](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments).
 
-- [`ts_ibd()`](https://slendr.net/reference/ts_ibd.md) now returns the
+- [`ts_ibd()`](https://bodkan.net/slendr/reference/ts_ibd.md) now returns the
   ID number of a MRCA node of a pair of nodes sharing a given IBD
   segment, as well as the TMRCA of that node.
   ([\#7e2825](https://github.com/bodkan/slendr/commit/7e2825))
 
 - Trivial parameter errors are caught during
-  [`population()`](https://slendr.net/reference/population.md) calls
+  [`population()`](https://bodkan.net/slendr/reference/population.md) calls
   rather than during simulation (solving minor issues discovered via big
   simulation runs during the development of
   [*demografr*](https://github.com/bodkan/demografr)).
@@ -610,7 +610,7 @@ underlying, battle-tested [Python implementation in
 - Fix error in plotting exponential resizes which do not last until “the
   present”. ([\#4c49a4](https://github.com/bodkan/slendr/commit/4c49a4))
 
-- [`ts_ibd()`](https://slendr.net/reference/ts_ibd.md) no longer gives
+- [`ts_ibd()`](https://bodkan.net/slendr/reference/ts_ibd.md) no longer gives
   obscure error when `between =` is provided as a named list of
   individuals’ names (instead of an expected unnamed list). The names of
   list elements are not used in any way, but the error happens somewhere
@@ -634,13 +634,13 @@ underlying, battle-tested [Python implementation in
   ([\#4ef518](https://github.com/bodkan/slendr/commit/4ef518))
 
 - The layout algorithm of
-  [`plot_model()`](https://slendr.net/reference/plot_model.md) has been
+  [`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) has been
   improved significantly. (PR
   [\#135](https://github.com/bodkan/slendr/pull/135)).
 
 - A new optional argument `run =` has been added to
-  [`slim()`](https://slendr.net/reference/slim.md) and
-  [`msprime()`](https://slendr.net/reference/msprime.md). If set to
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) and
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md). If set to
   `TRUE` (the default), the engines will operate the usual way. If set
   to `FALSE`, no simulation will be run and the functions will simply
   print a command-line command to execute the engine in question
@@ -661,18 +661,18 @@ underlying, battle-tested [Python implementation in
         (This note will be removed in the next major version of slendr.)
 
 Users have to call
-[`init_env()`](https://slendr.net/reference/init_env.md) to manually
+[`init_env()`](https://bodkan.net/slendr/reference/init_env.md) to manually
 activate the Python environment of slendr (see note under version 0.5.0
 below for an extended explanation).
 
-- [`ts_simplify()`](https://slendr.net/reference/ts_simplify.md) now
+- [`ts_simplify()`](https://bodkan.net/slendr/reference/ts_simplify.md) now
   accepts optional arguments `keep_unary` and
   `keep_unary_in_individuals` (see the official [tskit
   docs](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify)
   for more detail)
   ([\#1b2112](https://github.com/bodkan/slendr/commit/1b2112))
 
-- Fix for [`ts_read()`](https://slendr.net/reference/ts_read.md) failing
+- Fix for [`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md) failing
   to load *slendr*-produced tree sequences after they were simplified
   down to a smaller set of sampled individuals (reported
   [here](https://github.com/bodkan/slendr/issues/136)). The issue was
@@ -687,19 +687,19 @@ below for an extended explanation).
   operations. (PR [\#137](https://github.com/bodkan/slendr/pull/137))
 
 - Metadata summary of
-  [`ts_nodes()`](https://slendr.net/reference/ts_nodes.md) results is no
+  [`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) results is no
   longer printed whenever typed into the R console. Instead, summary can
   be obtained by explicit call to
   [`summary()`](https://rdrr.io/r/base/summary.html) on the
-  [`ts_nodes()`](https://slendr.net/reference/ts_nodes.md) tables.
+  [`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md) tables.
   ([\#01af51](https://github.com/bodkan/slendr/commit/01af51)
 
-- [`ts_tree()`](https://slendr.net/reference/ts_tree.md) and
-  [`ts_phylo()`](https://slendr.net/reference/ts_phylo.md) now extract
+- [`ts_tree()`](https://bodkan.net/slendr/reference/ts_tree.md) and
+  [`ts_phylo()`](https://bodkan.net/slendr/reference/ts_phylo.md) now extract
   trees based on tskit’s own zero-based indexing
   [\#554e13](https://github.com/bodkan/slendr/commit/554e13).
 
-- [`ts_simplify()`](https://slendr.net/reference/ts_simplify.md) now
+- [`ts_simplify()`](https://bodkan.net/slendr/reference/ts_simplify.md) now
   accepts `filter_nodes = TRUE|FALSE`, with the same behavior to tskit’s
   [own
   method](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify)
@@ -713,10 +713,10 @@ CRAN release: 2023-03-09
   which suddenly popped up in latest CRAN checks.
   ([\#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
 
-- A new function [`ts_ibd()`](https://slendr.net/reference/ts_ibd.md)
+- A new function [`ts_ibd()`](https://bodkan.net/slendr/reference/ts_ibd.md)
   has been added, representing an R interface to the *tskit* method
   `TreeSequence.ibd_segments()`. However, note that
-  [`ts_ibd()`](https://slendr.net/reference/ts_ibd.md) returns IBD
+  [`ts_ibd()`](https://bodkan.net/slendr/reference/ts_ibd.md) returns IBD
   results as a data frame (optionally, a spatially annotated *sf* data
   frame). The function does not operate around iteration, as does its
   Python counterpart in *tskit*. Until the next major version of
@@ -732,7 +732,7 @@ CRAN release: 2023-02-02
   [`library(slendr)`](https://github.com/bodkan/slendr)! Using the
   coalescent *msprime* back end and *slendr*’s tree-sequence functions
   now requires making an explicit call to a new function
-  [`init_env()`](https://slendr.net/reference/init_env.md) after
+  [`init_env()`](https://bodkan.net/slendr/reference/init_env.md) after
   [`library(slendr)`](https://github.com/bodkan/slendr) is executed.**
   (PR [\#102](https://github.com/bodkan/slendr/pull/118))
 
@@ -768,7 +768,7 @@ how the R-Python interface works. And nor should they! After all,
 *slendr* is an R package.
 
 Splitting the Python virtual environment activation step into its own
-[`init_env()`](https://slendr.net/reference/init_env.md) function means
+[`init_env()`](https://bodkan.net/slendr/reference/init_env.md) function means
 that [`library(slendr)`](https://github.com/bodkan/slendr) now always
 succeeds (regardless of potential underlying Python issues on a user’s
 sytem), making it much easier to diagnose and fix Python problems from R
@@ -778,7 +778,7 @@ So, to recap: [`library(slendr)`](https://github.com/bodkan/slendr) no
 longer activates *slendr*’s isolated Python virtual environment. In
 order to simulate tree sequences and analyse them using its interface to
 *tskit*, it is necessary to call
-[`init_env()`](https://slendr.net/reference/init_env.md). This function
+[`init_env()`](https://bodkan.net/slendr/reference/init_env.md). This function
 performs the same Python-activation steps that
 [`library(slendr)`](https://github.com/bodkan/slendr) used to call
 automagically in earlier *slendr* versions. No other change to your
@@ -788,7 +788,7 @@ scripts is necessary.
   msprime 1.2.0, tskit 0.5.4, and pyslim 1.0.1, to keep up with recent
   releases of its Python dependencies. Again, this presents no hassle to
   the user, and the only thing required is re-running
-  [`setup_env()`](https://slendr.net/reference/setup_env.md). (PR
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md). (PR
   [\#112](https://github.com/bodkan/slendr/pull/121)).
 
 - When a named list is provided as a `sample_sets =` argument to a
@@ -801,7 +801,7 @@ scripts is necessary.
   spatial components of the model will be plotted and *slendr* will give
   a warning. To be absolutely sure that users intends to do this,
   *slendr* will also give a warning when running
-  [`compile_model()`](https://slendr.net/reference/compile_model.md) on
+  [`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md) on
   models like this. Please consider this option experimental for the
   time-being as it is hard to predict which edge cases might break
   because of this (all unit tests and documentation tests are passing
@@ -841,12 +841,12 @@ named `list` functionality in R:
 This is more readable and in line with some other *tskit*-interface
 functions of *slendr* which used this functionality via their
 `sample_sets =` argument
-([`ts_divergence()`](https://slendr.net/reference/ts_divergence.md),
-[`ts_diversity()`](https://slendr.net/reference/ts_diversity.md), etc.).
+([`ts_divergence()`](https://bodkan.net/slendr/reference/ts_divergence.md),
+[`ts_diversity()`](https://bodkan.net/slendr/reference/ts_diversity.md), etc.).
 ([\#ac5e484](https://github.com/bodkan/slendr/commit/ac5e484))
 
 - The default state of the `parent =` argument of
-  [`population()`](https://slendr.net/reference/population.md) is now
+  [`population()`](https://bodkan.net/slendr/reference/population.md) is now
   `NULL` instead of `"ancestor"`. This prevents silly surprising clashes
   in situation where some population’s name really *is* “ancestor”. The
   only change internally is that for populations which are ancestral,
@@ -862,12 +862,12 @@ functions of *slendr* which used this functionality via their
 
 CRAN release: 2022-09-30
 
-- The [`msprime()`](https://slendr.net/reference/msprime.md) function
+- The [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function
   now makes sure that a given *slendr* model can fully coalesce to a
   single common ancestor population. Previously, having multiple
   ancestral populations created with `parent = "ancestor"` would cause
   an infinite simulation when plugged into the
-  [`msprime()`](https://slendr.net/reference/msprime.md) backend.
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) backend.
   ([\#095b124](https://github.com/bodkan/slendr/commit/095b124))
 
 - The initial size of a population which emerges from a split from
@@ -897,23 +897,23 @@ CRAN release: 2022-09-30
   ([\#79adf14](https://github.com/bodkan/slendr/commit/79adf14)).
 
 - Relative paths are now expanded in
-  [`ts_write()`](https://slendr.net/reference/ts_write.md)
+  [`ts_write()`](https://bodkan.net/slendr/reference/ts_write.md)
   ([\#382e0b7](https://github.com/bodkan/slendr/commit/382e0b7)).
 
 - *slendr* models can now be optionally compiled without serialization
   to disk. This only works with the
-  [`msprime()`](https://slendr.net/reference/msprime.md) coalescent back
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) coalescent back
   end but will be much faster in cases where a huge number of
   simulations needs to be run because for non-serialized models,
-  [`msprime()`](https://slendr.net/reference/msprime.md) now calls the
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) now calls the
   back end engine directly through the R-Python interface (rather than
   on the command line) and output tree sequences are not saved to disk,
   rather than passed through the Python-R interface directly in memory
   (PR [\#112](https://github.com/bodkan/slendr/pull/112)).
 
 - Deprecated argument `sampling =` of the functions
-  [`slim()`](https://slendr.net/reference/slim.md) and
-  [`msprime()`](https://slendr.net/reference/msprime.md) has now been
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) and
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) has now been
   permanently removed in favour of the `samples =` argument
   ([\#0757b6e](https://github.com/bodkan/slendr/commit/0757b6e)).
 
@@ -939,7 +939,7 @@ CRAN release: 2022-09-30
 CRAN release: 2022-08-19
 
 - SLiM 4.0 is now required for running simulations with the
-  [`slim()`](https://slendr.net/reference/slim.md) engine. If you want
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) engine. If you want
   to run *slendr* simulations with SLiM (spatial or non-spatial), you
   will need to upgrade you SLiM installation. SLiM 3.7.1 version is no
   longer supported as the upcoming new *slendr* spatial features will
@@ -954,7 +954,7 @@ CRAN release: 2022-08-19
   [`library(slendr)`](https://github.com/bodkan/slendr), you will be
   prompted to setup a new updated Python environment which you can do
   easily by running
-  [`setup_env()`](https://slendr.net/reference/setup_env.md).
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md).
 
 - Experimental support for running coalescent msprime simulations and
   analysing tree-sequence data using tskit on the Windows platform has
@@ -972,14 +972,14 @@ CRAN release: 2022-08-09
   comment](https://github.com/bodkan/slendr/pull/100#issue-1310869866)
   for an extended description and examples of the change. (PR
   [\#100](https://github.com/bodkan/slendr/pull/100)). Briefly,
-  simulation functions [`slim()`](https://slendr.net/reference/slim.md)
-  and [`msprime()`](https://slendr.net/reference/msprime.md) now return
+  simulation functions [`slim()`](https://bodkan.net/slendr/reference/slim.md)
+  and [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) now return
   a tree-sequence object by default (can be switched off by setting
   `load = FALSE`), avoiding the need to always run
   `ts <- ts_read(model)` as previously. At the same time, a parameter
   `output =` can be now used in
-  [`slim()`](https://slendr.net/reference/slim.md) and
-  [`msprime()`](https://slendr.net/reference/msprime.md) to specify the
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) and
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) to specify the
   location where a tree-sequence file should be saved (temporary file by
   default).
 
@@ -1009,7 +1009,7 @@ CRAN release: 2022-08-09
   ([\#985b451](https://github.com/bodkan/slendr/commit/985b451))
 
 - When setting up an isolated Python environment using
-  [`setup_env()`](https://slendr.net/reference/setup_env.md), *slendr*
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md), *slendr*
   now makes a decision whether to install Python dependencies using pip
   (critical on osx-arm64 for which the conda msprime/tskit are
   unfortunately currently broken) or with conda (every other platform).
@@ -1031,35 +1031,35 @@ CRAN release: 2022-08-09
   tskit R package, which will share the same Python environment with
   *slendr* (because both R packages will go hand in hand). This isn’t
   really a user-facing change, except that calling
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) will
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) will
   suggests creating a new Python environment and
   [`library(slendr)`](https://github.com/bodkan/slendr) will appear as
   if a *slendr* environment is not yet present. Calling
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) and
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) and
   creating a new Python environment from scratch will solve the problem.
   ([\#eb05180](https://github.com/bodkan/slendr/commit/eb05180))
 
 - `xrange` and `yrange` parameters of
-  [`world()`](https://slendr.net/reference/world.md) are now enforced to
+  [`world()`](https://bodkan.net/slendr/reference/world.md) are now enforced to
   be two-dimensional numeric vectors, avoiding unnecessary issues with
   misspecified longitude/latitude
   ([\#df95369](https://github.com/bodkan/slendr/commit/df95369))
 
 - The argument `sampling =` in
-  [`slim()`](https://slendr.net/reference/slim.md) and
-  [`msprime()`](https://slendr.net/reference/msprime.md) is now renamed
+  [`slim()`](https://bodkan.net/slendr/reference/slim.md) and
+  [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) is now renamed
   to `samples =`
   ([\#adf4e0d](https://github.com/bodkan/slendr/commit/adf4e0d)).
 
 - The automated
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) function
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) function
   for creating dedicated mini Python environments for *slendr* now
   installs packages using *pip* by default. Reason: The rate of conda
   failures and dependency conflicts (even in the trivial case of
   installing nothing more than *msprime* + *tskit* + *pyslim* +
   *pandas*) is too high to rely on it. The option to use conda for
   package installations with
-  [`setup_env()`](https://slendr.net/reference/setup_env.md) is still
+  [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) is still
   there, but the users must explicitly call `setup_env(pip = FALSE)` to
   get this behavior. Note that conda is still used as a means to install
   Python itself! This change only affects the way how Python modules are
@@ -1078,7 +1078,7 @@ CRAN release: 2022-08-09
   on our part.
   ([\#81be1a7](https://github.com/bodkan/slendr/commit/81be1a7))
 
-- The code of [`setup_env()`](https://slendr.net/reference/setup_env.md)
+- The code of [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md)
   was simplified to bare essentials. Now it *only* serves as a way to
   auto-setup a dedicated, isolated Python installation and *slendr*
   environment. The interface to install Python modules into
@@ -1092,7 +1092,7 @@ CRAN release: 2022-08-09
 
 - If some Python users want to use custom Python environments with
   *msprime*, *tskit*, and *pyslim*, they can silence the suggestion to
-  use [`setup_env()`](https://slendr.net/reference/setup_env.md) printed
+  use [`setup_env()`](https://bodkan.net/slendr/reference/setup_env.md) printed
   by the [`library(slendr)`](https://github.com/bodkan/slendr) call by
   setting `options(slendr.custom_env = TRUE)`.
   ([\#30f24b9](https://github.com/bodkan/slendr/commit/30f24b9))

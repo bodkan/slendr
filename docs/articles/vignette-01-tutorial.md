@@ -60,7 +60,7 @@ interconnected units:
     do not need an explicit geographic map and can be simulated either
     with the same built-in SLiM back end script, or with a more
     efficient [*msprime* back
-    end](https://slendr.net/articles/vignette-07-backends.html) which is
+    end](https://bodkan.net/slendr/articles/vignette-07-backends.html) which is
     also provided with the package.
 
 The most important design objective was to make the integration of
@@ -103,7 +103,7 @@ development version (for instance, if you need the latest bugfixes), you
 can get it via R package *devtools* by executing
 `devtools::install_github("bodkan/slendr")` in your R terminal. You can
 find more detailed installation instructions in [this
-vignette](https://slendr.net/articles/vignette-00-installation.md).
+vignette](https://bodkan.net/slendr/articles/vignette-00-installation.md).
 
 Once you get *slendr* installed, you just need to load it:
 
@@ -193,14 +193,14 @@ map
 ## Plotting geographic features and population ranges
 
 The *slendr* package implements its own plotting function called
-[`plot_map()`](https://slendr.net/reference/plot_map.md).
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md).
 
 We do this in order to make it easier and more convenient to iteratively
 build more complex models. The function can intelligently decide (based
 on given input arguments) the right way to present the data to the user,
 which helps to define models more quickly without relying on the
 lower-level mechanisms of the `sf` package. You will see some examples
-of [`plot_map()`](https://slendr.net/reference/plot_map.md) in action
+of [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) in action
 below.
 
 ## Defining smaller geographic regions
@@ -238,7 +238,7 @@ boundaries that can be used later. They are not attached to any
 population at this point.
 
 Again, the object returned by the
-[`region()`](https://slendr.net/reference/region.md) function is
+[`region()`](https://bodkan.net/slendr/reference/region.md) function is
 actually an `sf` object, but carries some additional annotation such as
 the name of the region (here “Anatolia”):
 
@@ -264,13 +264,13 @@ class(anatolia)
     #> [1] "slendr"        "slendr_region" "sf"            "data.frame"
 
 Furthermore, note that in all
-[`region()`](https://slendr.net/reference/region.md) calls we specified
+[`region()`](https://bodkan.net/slendr/reference/region.md) calls we specified
 the `map` object that we defined at the very beginning. This object is
 added as a hidden attribute to each `slendr` object and represents the
 context for all geospatial transformations, expansions, and plots.
 
 We can use the generic
-[`plot_map()`](https://slendr.net/reference/plot_map.md) function to
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function to
 plot these geographic regions in the context of the defined section of
 the world map:
 
@@ -283,7 +283,7 @@ plot_map(africa, europe, anatolia, title = "Geographic regions")
 
 Note that the `map` object is no longer explicitly specified. It is not
 needed, because each other class of objects provided to the
-[`plot_map()`](https://slendr.net/reference/plot_map.md) function must
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function must
 carry it as a “map” attribute. In fact, each such object must carry the
 same map context — *slendr* complains whenever this is not the case.
 
@@ -310,7 +310,7 @@ all(attr(anatolia, "map") == map)
 One of the aims of the *slendr* package is to formalize the
 specification of spatial population boundaries and their changes over
 time. The core function for this is
-[`population()`](https://slendr.net/reference/population.md), which
+[`population()`](https://bodkan.net/slendr/reference/population.md), which
 takes a population `name`, the `time` at which we want to enforce that
 population’s boundary, the effective population size of the population
 at that time, and the `map` object described above. We also have to
@@ -322,9 +322,9 @@ the actual spatial boundaries, we have several options.
 
 We can define detailed population boundaries using a polygon geometry
 object or a region object created by the
-[`region()`](https://slendr.net/reference/region.md) function above,
+[`region()`](https://bodkan.net/slendr/reference/region.md) function above,
 using a `polygon =` argument to
-[`population()`](https://slendr.net/reference/population.md). Again, as
+[`population()`](https://bodkan.net/slendr/reference/population.md). Again, as
 a reminder, note that all coordinates are described in the context of
 the geographic CRS.
 
@@ -361,7 +361,7 @@ ooa <- population(
 )
 ```
 
-If we call the [`plot_map()`](https://slendr.net/reference/plot_map.md)
+If we call the [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md)
 function on the returned object, we have the option to either plot the
 population range in its “raw” form or in its “intersected” form, in
 which case the raw boundary is intersected with the “background”
@@ -369,7 +369,7 @@ landscape (removing large bodies of water, etc.).
 
 The intersected form is what is ultimately exported in a serialized
 format (see below) to be loaded as a spatial map into SLiM. This is why
-the [`plot_map()`](https://slendr.net/reference/plot_map.md) function
+the [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function
 renders intersected population ranges by default.
 
 ``` r
@@ -382,7 +382,7 @@ plot_map(ooa, intersect = TRUE, title = "'Intersected' population range")
 ## Population movement across a landscape
 
 To describe a directional population movement, we can use the function
-[`move()`](https://slendr.net/reference/move.md). This accepts the
+[`move()`](https://bodkan.net/slendr/reference/move.md). This accepts the
 coordinates of the destination points along the way (`trajectory`) and
 the `duration` of the migration, and automatically generates a number of
 intermediate spatial maps along the trajectory of movement to produce a
@@ -398,7 +398,7 @@ ooa <- ooa %>% move(
 ```
 
 We can inspect the object returned by the
-[`move()`](https://slendr.net/reference/move.md) function and see that
+[`move()`](https://bodkan.net/slendr/reference/move.md) function and see that
 it now contains not just the first YAM population range at 7000 years
 ago, but also the ranges of the intermediate locations:
 
@@ -459,7 +459,7 @@ eur <- population( # European population
 ## Spatial population expansion
 
 We can simulate the expanding range of a population using the function
-[`expand_range()`](https://slendr.net/reference/expand_range.md), which
+[`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md), which
 accepts parameters specifying how many kilometers the boundary should
 expand by (the `by` argument), how long should the expansion should take
 (the `duration` argument) and how many intermediate spatial map
@@ -489,7 +489,7 @@ history of a population in a single pipeline using the pipe operator
 `%>%`.
 
 Again, we can inspect the object returned by the
-[`expand_range()`](https://slendr.net/reference/expand_range.md)
+[`expand_range()`](https://bodkan.net/slendr/reference/expand_range.md)
 function and see that it contains the spatial maps (“snapshots”) of the
 expansion process across time:
 
@@ -559,7 +559,7 @@ plot_map(yam)
 ## Plotting multiple *slendr* objects
 
 In addition to plotting individual population ranges, the generic
-function [`plot_map()`](https://slendr.net/reference/plot_map.md) can
+function [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) can
 handle a combination of population ranges, and can also partition them
 into individual facets. This is useful for visual inspection of the
 specified model, and for looking for potential issues before the export
@@ -579,7 +579,7 @@ interactively.
 ## Defining gene flow events
 
 The way *slendr* implements gene flow events is by calling the
-[`gene_flow()`](https://slendr.net/reference/gene_flow.md) function.
+[`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md) function.
 This function has a very straightforward interface, shown below.
 
 One thing to note is that by default, the `from` and `to` populations
@@ -608,7 +608,7 @@ gf <- gene_flow(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
 
 The error message instructs us to visually verify that this is the case,
 which can be done by *slendr*’s
-[`plot_map()`](https://slendr.net/reference/plot_map.md) function and
+[`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md) function and
 the optional parameter `pop_facets = F` (which is set to `TRUE` by
 default).
 
@@ -624,9 +624,9 @@ gf <- list(
 )
 ```
 
-The [`gene_flow()`](https://slendr.net/reference/gene_flow.md) function
+The [`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md) function
 simply returns a data frame collecting all the geneflow parameters for
-the [`compile_model()`](https://slendr.net/reference/compile_model.md)
+the [`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
 step below:
 
 ``` r
@@ -649,7 +649,7 @@ gf
 ## Compile the whole model and load it in SLiM
 
 The most crucial function of *slendr* is
-[`compile_model()`](https://slendr.net/reference/compile_model.md). It
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md). It
 takes all population ranges defined across space and time, together with
 a list of gene flow events (optional, since some models won’t include
 gene flow), and then proceeds by converting all vectorized spatial
@@ -741,7 +741,7 @@ read.table(file.path(model_dir, "geneflow.tsv"), header = TRUE)
   updates (this table is rather large, so we’re not showing it here).
 
 The object returned by the
-[`compile_model()`](https://slendr.net/reference/compile_model.md)
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
 function (called `model` here) binds all of this information together.
 In fact, for easier debugging and sanity checking, it carries the
 locations of these tables (as well as other important information)
@@ -750,7 +750,7 @@ etc.
 
 In case you’d want to separate model specification and running into
 different scripts, *slendr* includes a function
-[`read_model()`](https://slendr.net/reference/read_model.md) just for
+[`read_model()`](https://bodkan.net/slendr/reference/read_model.md) just for
 this purpose:
 
 ``` r
@@ -769,7 +769,7 @@ to really visualize everything that will happen on the SLiM side after
 the simulation starts just from the code alone.
 
 For this purpose, the package includes a function named
-[`plot_model()`](https://slendr.net/reference/plot_model.md) which takes
+[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) which takes
 in all the information about the relationships between populations
 (i.e., the population and gene flow objects we defined above) and plots
 it all in the form of a so-called *admixture graph* (see
@@ -795,7 +795,7 @@ plot_model(model, proportions = TRUE)
 
 A slightly fancier way to visualize models is implemented in the
 function
-[`explore_model()`](https://slendr.net/reference/explore_model.md). This
+[`explore_model()`](https://bodkan.net/slendr/reference/explore_model.md). This
 function accepts a compiled model as its only parameter and spawns an [R
 shiny](https://shiny.posit.co/)-based browser app which makes it
 possible to click through the time snapshots interactively and visualize
@@ -818,9 +818,9 @@ Interactive explorer of the spatial dynamics
 ## Running the simulation
 
 The way we feed the entire serialized model into SLiM is through the
-[`slim()`](https://slendr.net/reference/slim.md) function, which
+[`slim()`](https://bodkan.net/slendr/reference/slim.md) function, which
 understands the format of the model directory created by the
-[`compile_model()`](https://slendr.net/reference/compile_model.md)
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md)
 function and generates a SLiM script (using a back end skeleton script
 which is a part of this package and can be found by calling
 `system.file("scripts/script.slim", package = "slendr")`, in case you’d
@@ -883,7 +883,7 @@ than what we demonstrated here. For instance:
 - You can tweak parameters influencing dispersal dynamics (how “clumpy”
   populations are, how far offspring can migrate from their parents,
   etc.) and change how those dynamics evolve over time. See [this
-  vignette](https://slendr.net/articles/vignette-03-interactions.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-03-interactions.html)
   for more information.
 
 - You can use *slendr* to program non-spatial models, which means that
@@ -893,16 +893,16 @@ than what we demonstrated here. For instance:
   Computation](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation)
   pipeline or other analyses leveraging readily available R packages.
   You can find more in [this
-  vignette](https://slendr.net/articles/vignette-04-nonspatial-models.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
   and a much more detailed example in a vignette about [SLiM and
   *msprime* back
-  ends](https://slendr.net/articles/vignette-07-backends.html).
+  ends](https://bodkan.net/slendr/articles/vignette-07-backends.html).
 
 - You can build complex spatial models which are still abstract (not
   assuming any real geographic location), including traditional
   simulations of demes in a lattice structure. A complete example is
   shown [in this
-  vignette](https://slendr.net/articles/vignette-02-grid-model.html).
+  vignette](https://bodkan.net/slendr/articles/vignette-02-grid-model.html).
 
 - Because SLiM saves data in the `.trees` tree-sequence file format,
   thanks to the R package
@@ -913,5 +913,5 @@ than what we demonstrated here. For instance:
   process simulated data at a massive scale right at your fingertips,
   all within the convenient environment of R. See a much more detailed
   example in a vignette about [this
-  vignette](https://slendr.net/articles/vignette-07-backends.html) for
+  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html) for
   an extensive tutorial of this feature.

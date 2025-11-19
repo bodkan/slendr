@@ -2,7 +2,7 @@
 
 In addition to building models that capture movement or expansion using
 a set of [simple R
-functions](https://slendr.net/reference/index.html#section-population-dynamics),
+functions](https://bodkan.net/slendr/reference/index.html#section-population-dynamics),
 *slendr* makes it possible to program more subtle parameters of spatial
 population dynamics.
 
@@ -27,14 +27,14 @@ kinds of parameters influencing spatial interactions and dispersal:
 
 All three parameters can be specified for each simulated population
 individually in the
-[`population()`](https://slendr.net/reference/population.md) call.
+[`population()`](https://bodkan.net/slendr/reference/population.md) call.
 Alternatively, default values for these parameters can be given in a
-[`compile_model()`](https://slendr.net/reference/compile_model.md) call
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md) call
 and are then used for all populations in the model. Importantly, each
 population must be given values for all three of these parameters,
 whether as specific values for that particular population or as default
 values passed to
-[`compile_model()`](https://slendr.net/reference/compile_model.md).
+[`compile_model()`](https://bodkan.net/slendr/reference/compile_model.md).
 
 Finally, as with other functions for programming model spatial dynamics,
 the *slendr* package provides a simple way to change the spatial
@@ -217,7 +217,7 @@ dynamics, formation of “tribes”, etc.).
 
 It needs to be said that unlike the spatial population dynamics
 functionality described in the main
-[tutorial](https://slendr.net/articles/vignette-01-tutorial.md), which
+[tutorial](https://bodkan.net/slendr/articles/vignette-01-tutorial.md), which
 is a unique feature of *slendr*, the example in this vignette could be
 reproduced in pure SLiM using vanilla Eidos code. However, I think it is
 fair to say that the *slendr* R code is much more flexible and easier to

@@ -80,7 +80,7 @@ for slendr models, it is specifically designed to only return ancestry
 tracts originating to a an ancestral population which contributed its
 ancestry during a gene-flow event which started at a specific time
 (i.e., scheduled in a model via the
-[`gene_flow()`](https://slendr.net/reference/gene_flow.md)) function. It
+[`gene_flow()`](https://bodkan.net/slendr/reference/gene_flow.md)) function. It
 does not return every single ancestry tracts present in the tree
 sequence for every single sample node (and every single potential
 ancestry population) as does the `tspop.get_pop_ancestry()` Python

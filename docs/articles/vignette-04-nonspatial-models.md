@@ -17,7 +17,7 @@ in *slendr*. However, we should start by noting that there is almost no
 difference between code for non-spatial and spatial models in *slendr*.
 The only visible difference is that spatial models include a `map =`
 argument in the
-[`population()`](https://slendr.net/reference/population.md) constructor
+[`population()`](https://bodkan.net/slendr/reference/population.md) constructor
 function of ancestral population(s), and non-spatial models do not.
 That’s it, that’s the difference. Switching between spatial and
 non-spatial models is performed internally by the package, without any
@@ -89,17 +89,17 @@ model <- compile_model(
 )
 ```
 
-Using the [`plot_map()`](https://slendr.net/reference/plot_map.md)
+Using the [`plot_map()`](https://bodkan.net/slendr/reference/plot_map.md)
 function doesn’t make sense, as there are no spatial maps to plot.
 However, we can still plot the demographic graph, verifying that the
 model has been specified correctly using the function
-[`plot_model()`](https://slendr.net/reference/plot_model.md) as shown
+[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md) as shown
 below.
 
 Let’s say we also want to schedule specific sampling events at specific
 times (which record only specified individuals in a tree sequence). We
 can use
-[`schedule_sampling()`](https://slendr.net/reference/schedule_sampling.md)
+[`schedule_sampling()`](https://bodkan.net/slendr/reference/schedule_sampling.md)
 to do just that:
 
 ``` r
@@ -113,7 +113,7 @@ samples <- schedule_sampling(
 
 Because it’s not just the model itself that’s useful to visually verify
 (which is the main purpose of
-[`plot_model()`](https://slendr.net/reference/plot_model.md)) but also
+[`plot_model()`](https://bodkan.net/slendr/reference/plot_model.md)) but also
 the sampling scheme, *slendr* makes it possible to overlay the numbers
 of individuals scheduled for tree-sequence recording from each lineage
 at each timepoint:
@@ -126,7 +126,7 @@ plot_model(model, samples = samples)
 ![](vignette-04-nonspatial-models_files/figure-html/non-spatial-graph_sampling-1.png)
 
 Even the final step—execution of the model in SLiM—is the same, using
-the built-in [`slim()`](https://slendr.net/reference/slim.md) function:
+the built-in [`slim()`](https://bodkan.net/slendr/reference/slim.md) function:
 
 ``` r
 
@@ -152,18 +152,18 @@ ts_msprime <- msprime(model, sequence_length = 100000, recombination_rate = 0)
 In fact, because both SLiM and *msprime* back ends save outputs in a
 tree sequence format, we can analyse them using the same tools. See
 [this
-vignette](https://slendr.net/articles/vignette-05-tree-sequences.html)
+vignette](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html)
 for more information about tree sequence analysis with *slendr*, and for
 more discussion on alternative simulation back ends and more extensive
 examples of data analysis with tree sequences you can read [this
-tutorial](https://slendr.net/articles/vignette-07-backends.html).
+tutorial](https://bodkan.net/slendr/articles/vignette-07-backends.html).
 
 ## Extracting parameters from a model or tree sequences
 
 In some situations (such as when model parameters are drawn from random
 distributions and we need to know which parameters had been used *after*
 the simulations), function
-[`extract_parameters()`](https://slendr.net/reference/extract_parameters.md)
+[`extract_parameters()`](https://bodkan.net/slendr/reference/extract_parameters.md)
 can be used. This function peeks into a *slendr* tree sequence object
 and extract parameters of the original *slendr* model:
 
@@ -216,7 +216,7 @@ extract_parameters(introgression_model)
     #> 1  NEA EUR 55000 45000 0.03
 
 As we can see,
-[`extract_parameters()`](https://slendr.net/reference/extract_parameters.md)
+[`extract_parameters()`](https://bodkan.net/slendr/reference/extract_parameters.md)
 returns a list of data frames, one data frame for each aspect of a
 demographic model (where applicable).
 

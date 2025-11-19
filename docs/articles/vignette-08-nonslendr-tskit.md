@@ -29,7 +29,7 @@ will be used by those already familiar with msprime or SLiM. Similarly,
 we won’t cover the R-tskit functionality of *slendr* in detail either,
 simply because the contents of this vignette is already covered by
 [other tutorials provided by
-*slendr*](https://slendr.net/articles/index.md).
+*slendr*](https://bodkan.net/slendr/articles/index.md).
 
 ``` r
 
@@ -84,10 +84,10 @@ population `p1` (lets save it to `/tmp/nonspatial.slim`):
 After we run this script in SLiM, we can use *slendr* to load the output
 tree sequence (saved to `/tmp/nonspatial-slim.trees`), simplify it, and
 overlay mutations on it using the [standard
-functionality](https://slendr.net/articles/vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files)
+functionality](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#loading-and-processing-tree-sequence-output-files)
 originally developed for *slendr* tree sequences. Note that this is the
 same command we would use for loading *slendr* tree sequences, except we
-direct the [`ts_read()`](https://slendr.net/reference/ts_read.md)
+direct the [`ts_read()`](https://bodkan.net/slendr/reference/ts_read.md)
 function straight to the tree-sequence output file rather than using the
 `ts_read(<model-object>)` format used when working with standard
 *slendr* simulations. This way, *slendr*
@@ -101,7 +101,7 @@ ts <- ts_read(nonspatial_trees_file) %>%
 
 We can extract information about individual’s names, nodes, population
 assignments, etc. just as with any *slendr* tree sequence with the
-function [`ts_nodes()`](https://slendr.net/reference/ts_nodes.md). As
+function [`ts_nodes()`](https://bodkan.net/slendr/reference/ts_nodes.md). As
 with standard *slendr* models, this function loads the “raw” node and
 individual [tree-sequences
 tables](https://tskit.dev/tutorials/tables_and_editing.html), performs a
@@ -135,7 +135,7 @@ extract a list of nodes belonging to each population (this is what
 various tskit tree-sequence statistics operate on, and *slendr* follows
 that design). Here we are computing the nucleotide diversity in each of
 the four populations using the
-[`ts_diversity()`](https://slendr.net/reference/ts_diversity.md)
+[`ts_diversity()`](https://bodkan.net/slendr/reference/ts_diversity.md)
 function, by first creating a list of lists with node IDs
 (i.e. chromosomes) of individuals in each population:
 
@@ -156,7 +156,7 @@ ts_diversity(ts, sample_sets)
 ```
 
 Just as with *slendr* tree sequences (as demonstrated in our
-[paper](https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5))
+[paper](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5))
 we can get a individual trees too, extracted in the in the phylogenetic
 format provided by the [ape](https://CRAN.R-project.org/package=ape) R
 package. Here we first simplify the tree sequence even further to just
@@ -265,9 +265,9 @@ ts_nodes(ts)
 
 Furthermore, the generalized interface also supports *slendr*’s [spatial
 tree-sequence
-features](https://slendr.net/articles/vignette-06-locations.html), with
+features](https://bodkan.net/slendr/articles/vignette-06-locations.html), with
 all the [bells and
-whistles](https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5).
+whistles](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5).
 
 For instance, lets take the following spatial SLiM script (modified from
 the SLiM manual) and execute it with SLiM the usual way:
@@ -369,7 +369,7 @@ somewhere along the tree sequence) and plot it on a 2D surface (x and y
 dimensions \[0, 1\]). The plot is a little chaotic, but hopefully
 conveys the idea (the “focal node” 0 is highlighted in red). This is
 essentially the same plot we have in [the last figure of our
-paper](https://slendr.net/articles/vignette-09-paper.html#example-4-figure-5).
+paper](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5).
 
 ``` r
 
@@ -386,7 +386,7 @@ ggplot() +
 ## Conclusion
 
 In this vignette we gave a brief overview of using *slendr*’s [R-tskit
-interface](https://slendr.net/reference/index.html#tree-sequence-loading-and-processing)
+interface](https://bodkan.net/slendr/reference/index.html#tree-sequence-loading-and-processing)
 for loading, processing, and analyzing “pure” non-*slendr* tree
 sequences produced by msprime and SLiM scripts.
 

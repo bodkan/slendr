@@ -27,7 +27,7 @@ ts_simplify(
 
   A character vector of individual names. If NULL, all explicitly
   remembered individuals (i.e. those specified via the
-  [`schedule_sampling`](https://slendr.net/reference/schedule_sampling.md)
+  [`schedule_sampling`](https://bodkan.net/slendr/reference/schedule_sampling.md)
   function will be left in the tree sequence after the simplification.
 
 - keep_input_roots:
@@ -76,7 +76,7 @@ individuals (i.e. ancient DNA samples) is in the pyslim documentation at
 
 ## See also
 
-[`ts_nodes`](https://slendr.net/reference/ts_nodes.md) for extracting
+[`ts_nodes`](https://bodkan.net/slendr/reference/ts_nodes.md) for extracting
 useful information about individuals, nodes, coalescent times and
 geospatial locations of nodes on a map
 
