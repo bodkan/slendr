@@ -1,6 +1,8 @@
 title: slendr
 url: https://bodkan.net/slendr
 
+llm-docs: false
+
 template:
   bootstrap: 5
   params:
