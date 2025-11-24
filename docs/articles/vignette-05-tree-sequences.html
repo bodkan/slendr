@@ -398,7 +398,7 @@ file ourselves.</p>
 <span><span class="fu"><a href="../reference/ts_write.html">ts_write</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">output_file</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">output_file</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; [1] "/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpbHCipp/file125db75335db"</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] "/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpH7jxnD/fileb4a749c79d6e"</span></span></code></pre>
 <p>In case have the tree-sequence output saved in a custom location on
 disk, we can load the tree sequence using the <em>slendr</em> function
 <code><a href="../reference/ts_read.html">ts_read()</a></code>. If we’re dealing with a tree sequence produced
@@ -941,14 +941,6 @@ like this (<em>admixr</em> calls this proportion
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">snps</span>, X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>,</span>
 <span>        A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">3</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">12</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> " "</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">chr</span> (8): X1, X2, X3, X4, X5, X6, X7, X8</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (4): X9, X10, X11, X12</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
 <span><span class="co">#&gt;   A     B     X     C     O       alpha  stderr Zscore</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -957,24 +949,16 @@ like this (<em>admixr</em> calls this proportion
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> NEA_1 NEA_2 AFR_2 AFR_1 CH_1  0.004<span style="text-decoration: underline;">08</span> 0.002<span style="text-decoration: underline;">08</span>   1.96</span></span></code></pre>
 <p>In fact, lets compare the values obtained by both <em>tskit</em> and
 <em>admixr</em>/ADMIXTOOLS for all individuals:</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">europeans</span> <span class="op">&lt;-</span> <span class="va">inds</span><span class="op">[</span><span class="va">inds</span><span class="op">$</span><span class="va">pop</span> <span class="op">==</span> <span class="st">"EUR"</span>, <span class="op">]</span><span class="op">$</span><span class="va">name</span></span>
 <span></span>
 <span><span class="co"># tskit result</span></span>
 <span><span class="va">result_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_f4ratio.html">ts_f4ratio</a></span><span class="op">(</span><span class="va">ts</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_ts <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># result obtained by admixr/ADMIXTOOLS</span></span>
-<span><span class="va">result_admixr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span><span class="va">snps</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_admixr <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">50</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">12</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> " "</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">chr</span> (8): X1, X2, X3, X4, X5, X6, X7, X8</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (4): X9, X10, X11, X12</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `spec()` to retrieve the full column specification for this data.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span></span></code></pre>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">result_admixr</span>, <span class="va">result_ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">result_admixr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/admixr/man/f4ratio.html" class="external-link">f4ratio</a></span><span class="op">(</span><span class="va">snps</span>, X <span class="op">=</span> <span class="va">europeans</span>, A <span class="op">=</span> <span class="st">"NEA_1"</span>, B <span class="op">=</span> <span class="st">"NEA_2"</span>, C <span class="op">=</span> <span class="st">"AFR_1"</span>, O <span class="op">=</span> <span class="st">"CH_1"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>alpha_admixr <span class="op">=</span> <span class="va">alpha</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">result_admixr</span>, <span class="va">result_ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">alpha_ts</span>, <span class="va">alpha_admixr</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, linetype <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"red"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -991,11 +975,11 @@ due to an extremely small amount of sequence data simulated here.</p>
 <p>In case you need to process simulated data in some other software,
 you can use the function <code><a href="../reference/ts_vcf.html">ts_vcf()</a></code> to save the simulated
 genotypes in a VCF format:</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_vcf.html">ts_vcf</a></span><span class="op">(</span><span class="va">ts</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output.vcf.gz"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You can also specify only a subset of individuals to be saved in the
 VCF:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_vcf.html">ts_vcf</a></span><span class="op">(</span><span class="va">ts</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output_subset.vcf.gz"</span><span class="op">)</span>,</span>
 <span>       individuals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CH_1"</span>, <span class="st">"NEA_1"</span>, <span class="st">"EUR_1"</span>, <span class="st">"AFR_1"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -1021,7 +1005,7 @@ statistic is implemented by the function <code><a href="../reference/ts_fst.html
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>s</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">F_{st}</annotation></semantics></math>
 is to be calculated (i.e. not a window-based calculation), the
 <code><a href="../reference/ts_fst.html">ts_fst()</a></code> returns a simple three-column data frame</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
@@ -1029,7 +1013,7 @@ is to be calculated (i.e. not a window-based calculation), the
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> afr   eur   0.049<span style="text-decoration: underline;">5</span></span></span></code></pre>
 <p>In case a non-named list of sample sets was provided, set names are
 generated automatically:</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y        Fst</span></span>
@@ -1039,7 +1023,7 @@ generated automatically:</p>
 the sample sets appropriately.</p>
 <p>In case more than two sample sets are specified, all pairwise
 statistics are computed:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_fst.html">ts_fst</a></span><span class="op">(</span><span class="va">ts</span>, sample_sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>,</span>
 <span>                              eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span>,</span>
 <span>                              nea <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NEA_1"</span>, <span class="st">"NEA_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -1060,7 +1044,7 @@ new R users, but we highly encourage you to get used to them as they
 allow extremely concise and elegant handling of structured data within
 normal data frames (you can start with <a href="https://jennybc.github.io/purrr-tutorial/ls13_list-columns.html" class="external-link">this</a>
 introduction).</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define breakpoints between 20 windows</span></span>
 <span><span class="va">breakpoints</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">ts</span><span class="op">$</span><span class="va">sequence_length</span>, length.out <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></span>
 <span></span>
@@ -1084,7 +1068,7 @@ introduction).</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mi>s</mi></msub><mi>t</mi></mrow><annotation encoding="application/x-tex">F_st</annotation></semantics></math>
 values for the <code>afr-vs-eur</code> calculation (first row of the
 table above):</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">win_fst</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">$</span><span class="va">Fst</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $`1`</span></span>
 <span><span class="co">#&gt;  [1] 0.04241163 0.06803338 0.04129167 0.06031210 0.05516414 0.03059425</span></span>
@@ -1101,7 +1085,7 @@ as <code><a href="../reference/ts_fst.html">ts_fst()</a></code> shown above.</p>
 <p>If a non-window version is to be calculated, we get a single
 genome-wide values for each sample set (named or non-named list of
 character vectors with individual names):</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span>, <span class="st">"AFR_3"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
 <span><span class="co">#&gt;   set           D</span></span>
@@ -1114,7 +1098,7 @@ column as a list column of vectors with
 element being the Tajima’s D value for the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
 window:</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_tajima.html">ts_tajima</a></span><span class="op">(</span><span class="va">ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>afr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AFR_1"</span>, <span class="st">"AFR_2"</span><span class="op">)</span>, eur <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EUR_1"</span>, <span class="st">"EUR_2"</span><span class="op">)</span><span class="op">)</span>, windows <span class="op">=</span> <span class="va">breakpoints</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
 <span><span class="co">#&gt;   set   D           </span></span>
@@ -1134,7 +1118,7 @@ Let’s find out.</p>
 <p>First we extract individuals from all populations, creating a list of
 character vectors for each group (which is what functions such as
 <code><a href="../reference/ts_diversity.html">ts_diversity()</a></code> expects as an input):</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get sampled individuals from all populations</span></span>
 <span><span class="va">sample_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ts_samples.html">ts_samples</a></span><span class="op">(</span><span class="va">ts</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">.</span><span class="op">$</span><span class="va">pop</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -1160,7 +1144,7 @@ character vectors for each group (which is what functions such as
 <span><span class="co">#&gt; [1] "NEA_1" "NEA_2"</span></span></code></pre>
 <p>Now we can calculate diversity in each population and sort the
 results in an increasing order of diversity:</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_diversity.html">ts_diversity</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">diversity</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
 <span><span class="co">#&gt;   set   diversity</span></span>
@@ -1183,7 +1167,7 @@ would expect the lowest divergence between the two modern human groups
 two modern humans, and all three groups (<code>AFR</code>,
 <code>EUR</code> and <code>NEA</code>) should have equal, much deeper
 divergence from the outgroup chimpanzee <code>CH</code>.</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/ts_divergence.html">ts_divergence</a></span><span class="op">(</span><span class="va">ts</span>, <span class="va">sample_sets</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">divergence</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
 <span><span class="co">#&gt;   x     y     divergence</span></span>
