@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 set.seed(314159)
 ```
 
-# _slendr_: Population Genetic Simulations in R
+# _slendr_: a simulation framework for population genetics
 
 <!-- badges: start -->
 
@@ -22,7 +22,7 @@ set.seed(314159)
 
 <!-- badges: end -->
 
-### *Overview* <a href='https://bodkan.net/slendr'></a>
+### Overview
 
 _slendr_ is a toolbox for running population genomic simulations entirely in R. Our original motivation for developing it was to provide a framework for [simulating spatially-explicit genomic data](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) on real geographic landscapes, however, it has grown to be much more than that since then: _slendr_ can now simulate data from [traditional, non-spatial demographic models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html) using *msprime* as a simulation engine, and it even supports selection scenarios via [user-defined SLiM estension snippets](https://bodkan.net/slendr/articles/vignette-11-extensions.html). In addition to model definition and simulation, _slendr_ also provides a set of function for efficient [analysis of tree-sequence genomic data](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html), utilizing the [*tskit*](https://tskit.dev) module for underlying computation.
 
@@ -36,9 +36,9 @@ The _slendr_ paper is now [published in the Peer Community Journal](https://peer
 
 If you use _slendr_ in your work, please cite it as:
 
-> Petr, Martin; Haller, Benjamin C.; Ralph, Peter L.; Racimo, Fernando. slendr: a framework for spatio-temporal population genomic simulations on geographic landscapes. Peer Community Journal, Volume 3 (2023), article no. e121. doi : 10.24072/pcjournal.354.
+> Petr, Martin; Haller, Benjamin C.; Ralph, Peter L.; Racimo, Fernando. slendr: a framework for spatio-temporal population genomic simulations on geographic landscapes. Peer Community Journal, Volume 3 (2023), article no. e121. doi: 10.24072/pcjournal.354.
 
-Citations help me justify further development and fixing bugs! Thank you! ❤️
+Citations help me justify further development and fixing bugs! Thank you! 🖤
 
 ------------------------------------------------------------------------
 

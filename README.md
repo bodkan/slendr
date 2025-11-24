@@ -2,7 +2,7 @@
 
 
 
-# _slendr_: Population Genetic Simulations in R
+# _slendr_: a simulation framework for population genetics
 
 <!-- badges: start -->
 
@@ -10,7 +10,7 @@
 
 <!-- badges: end -->
 
-### *Overview* <a href='https://bodkan.net/slendr'></a>
+### Overview
 
 _slendr_ is a toolbox for running population genomic simulations entirely in R. Our original motivation for developing it was to provide a framework for [simulating spatially-explicit genomic data](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) on real geographic landscapes, however, it has grown to be much more than that since then: _slendr_ can now simulate data from [traditional, non-spatial demographic models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html) using *msprime* as a simulation engine, and it even supports selection scenarios via [user-defined SLiM estension snippets](https://bodkan.net/slendr/articles/vignette-11-extensions.html). In addition to model definition and simulation, _slendr_ also provides a set of function for efficient [analysis of tree-sequence genomic data](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html), utilizing the [*tskit*](https://tskit.dev) module for underlying computation.
 
@@ -24,9 +24,9 @@ The _slendr_ paper is now [published in the Peer Community Journal](https://peer
 
 If you use _slendr_ in your work, please cite it as:
 
-> Petr, Martin; Haller, Benjamin C.; Ralph, Peter L.; Racimo, Fernando. slendr: a framework for spatio-temporal population genomic simulations on geographic landscapes. Peer Community Journal, Volume 3 (2023), article no. e121. doi : 10.24072/pcjournal.354.
+> Petr, Martin; Haller, Benjamin C.; Ralph, Peter L.; Racimo, Fernando. slendr: a framework for spatio-temporal population genomic simulations on geographic landscapes. Peer Community Journal, Volume 3 (2023), article no. e121. doi: 10.24072/pcjournal.354.
 
-Citations help me justify further development and fixing bugs! Thank you! ❤️
+Citations help me justify further development and fixing bugs! Thank you! 🖤
 
 ------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ Imagine that we wanted to simulate spatio-temporal genomic data from a toy model
 First, we define the spatial context of the simulation. This will represent the "world" which will be occupied by populations in our model.
 
 
-```r
+``` r
 library(slendr)
 
 # this sets up internal Python environment and needs to be ran only once!
@@ -125,7 +125,7 @@ map <- world(
 We can visualize the defined world map using the function `plot_map` provided by the package.
 
 
-```r
+``` r
 plot_map(map)
 ```
 
@@ -142,7 +142,7 @@ Note that all coordinates in _slendr_ are specified in the geographic coordinate
 This makes it easier for us to define spatial features simply by reading the coordinates from a regular map but the internal projected CRS makes simulations more accurate (distances and shapes are not distorted because we can use a CRS tailored to the region of the world we are working with). The projected CRS takes care of the projection of the part of the world we're interested in from the three-dimensional Earth surface to a two-dimensional map.
 
 
-```r
+``` r
 africa <- region(
   "Africa", map,
   polygon = list(c(-18, 20), c(38, 20), c(30, 33),
@@ -165,7 +165,7 @@ anatolia <- region(
 Again, we can use the generic `plot_map` function to visualize these objects, making sure we specified them correctly:
 
 
-```r
+``` r
 plot_map(africa, europe, anatolia)
 ```
 
@@ -180,7 +180,7 @@ You will also note functions such as `move()` or `expand_range()` which are desi
 Note that in order to make this example executable in a reasonable time on my extremely old laptop, I decreased the sizes of all populations to unrealistic levels. This will speed up the SLiM simulation at a later step.
 
 
-```r
+``` r
 afr <- population( # African ancestral population
   "AFR", time = 52000, N = 3000, map = map, polygon = africa
 )
@@ -226,7 +226,7 @@ yam <- population( # Yamnaya steppe population
 We can use the function `plot_map` again to get a "compressed" overview of all spatio-temporal range dynamics encoded by the model so far (prior to the simulation itself).
 
 
-```r
+``` r
 plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
 
@@ -237,7 +237,7 @@ plot_map(afr, ooa, ehg, eur, ana, yam)
 By default, populations in _slendr_ do not mix even if they are overlapping. In order to schedule an gene-flow event between two populations, we can use the function `gene_flow`. If we want to specify multiple such events at once, we can collect these events in a simple R list:
 
 
-```r
+``` r
 gf <- list(
   gene_flow(from = ana, to = yam, rate = 0.5, start = 6500, end = 6400, overlap = FALSE),
   gene_flow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
@@ -250,7 +250,7 @@ gf <- list(
 Before we run the simulation, we compile all individual model components (population objects and gene-flow events) to a single R object, specifying some additional model parameters. Additionally, this performs internal consistency checks, making sure the model parameters (split times, gene flow times, etc.) make sense before the (potentially quite computationally costly) simulation is even run.
 
 
-```r
+``` r
 model <- compile_model(
   populations = list(afr, ooa, ehg, eur, ana, yam), # populations defined above
   gene_flow = gf,
@@ -268,7 +268,7 @@ Compiled model is kept as an R object which can be passed to different functions
 The package provides an [R shiny](https://shiny.posit.co/)-based browser app `explore_model()` for checking the model dynamics interactively and visually. For more complex models, this is much better than static spatial plots such as the one we showed in step 2 above:
 
 
-```r
+``` r
 explore_model(model)
 ```
 
@@ -289,7 +289,7 @@ Finally, we can execute the compiled model in SLiM. Here we run the simulation i
 The `slim` function generates a complete SLiM script tailored to run the spatial model we defined above. This saves you, the user, a tremendous amount of time, because you don't have to write new SLiM code every time you design a new demographic model. The output of the simulation run from any _slendr_ model is always a [tree sequence](https://tskit.dev/learn/), here loaded into an object `ts_slim`.
 
 
-```r
+``` r
 ts_slim <- slim(model, sequence_length = 10e6, recombination_rate = 1e-8,
                 method = "batch", random_seed = 314159)
 ```
@@ -301,16 +301,8 @@ As specified here, _slendr_'s SLiM backend will simulate 10 Mb of sequence for e
 Note that although we defined a spatial model, we could have just as easily simulated standard, non-spatial data by running the same model through _slendr_'s `msprime()` back end without the need to make any changes:
 
 
-```r
+``` r
 ts_msprime <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
-```
-
-Here is a very quick overview of the SLiM simulation run summarised as a GIF animation. Again, please note that the simulation is extremely simplified. We only simulated a very small number of individuals in each population, and we also didn't specify any [dispersal dynamics](https://bodkan.net/slendr/articles/vignette-03-interactions.html) which is why the populations look so clumped.
-
-
-```r
-animate_model(model = model, file = locations_file, steps = 50, width = 500, height = 300)
-#> Error in eval(expr, envir, enclos): R: UnableToWritePixelCache `/var/folders/70/b_q2zdh116b9pfg29p03sx600000gn/T//RtmpyLwlps/magick-UHJ_3VsqZdrkY5sTCDUuYTjjSKmibs4k': No space left on device @ error/cache.c/WritePixelCachePixels/6023
 ```
 
 At this point, you could either compute some [population genetic statistics of interest](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics) or perhaps analyse the [spatial features of the genealogies](https://bodkan.net/slendr/articles/vignette-06-locations.html#extracting-spatio-temporal-ancestral-relationships) simulated by your model.
