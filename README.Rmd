@@ -36,7 +36,7 @@ The _slendr_ paper is now [published in the Peer Community Journal](https://peer
 
 If you use _slendr_ in your work, please cite it as:
 
-> Petr, Martin; Haller, Benjamin C.; Ralph, Peter L.; Racimo, Fernando. slendr: a framework for spatio-temporal population genomic simulations on geographic landscapes. Peer Community Journal, Volume 3 (2023), article no. e121. doi: 10.24072/pcjournal.354.
+> Petr, Martin; Haller, Benjamin C.; Ralph, Peter L.; Racimo, Fernando. _slendr_: a framework for spatio-temporal population genomic simulations on geographic landscapes. Peer Community Journal, Volume 3 (2023), article no. e121. doi: 10.24072/pcjournal.354.
 
 Citations help me justify further development and fixing bugs! Thank you! 🖤
 
