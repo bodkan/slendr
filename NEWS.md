@@ -1,3 +1,14 @@
+# slendr (development version)
+
+- Due to issues on a user's system with the Python 3.13 binary installed by
+conda (related to the built-in `pyexpat` module), _slendr_ now reverted to Python
+3.12. As far as we can tell, this is related to either a broken Python 3.13
+distributed by conda for some architectures, or an issue with _reticulate_'s
+interaction with this Python version. Either way, downgrading to Python 3.12 does
+not affect any of the functionality of _slendr_ and so its worth doing as a
+defensive measure in case users in the future run into a similar problem.
+([#b2e5c6](https://github.com/bodkan/slendr/commit/b2e5c6))
+
 # slendr 1.3.0
 
 - In order to minimize the dependency burden for users even further, packages _shiny_ and _shinyWidgets_ are now not installed by default. The function `explore_model()` function now checks if those packages are present upon calling it. If not, the user is informed that they should install those packages first. ([#60fbdf](https://github.com/bodkan/slendr/commit/60fbdf))
