@@ -13,7 +13,7 @@ PYTHON_ENV <-
   c("msprime==1.3.4", "tskit==0.6.4", "pyslim==1.1.0", "tspop==0.0.2") %>%
   gsub("==", "-", .) %>%
   paste(collapse = "_") %>%
-  paste0("Python-3.13_", .)
+  paste0("Python-3.12_", .)
 
 .onAttach <- function(libname, pkgname) {
   if (Sys.info()[["sysname"]] == "Windows") {
