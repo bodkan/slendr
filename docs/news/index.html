@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,10 @@
       <small>Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li>Due to issues on a user’s system with the Python 3.13 binary installed by conda (related to the built-in <code>pyexpat</code> module), <em>slendr</em> now reverted to Python 3.12. As far as we can tell, this is related to either a broken Python 3.13 distributed by conda for some architectures, or an issue with <em>reticulate</em>’s interaction with this Python version. Either way, downgrading to Python 3.12 does not affect any of the functionality of <em>slendr</em> and so its worth doing as a defensive measure in case users in the future run into a similar problem. (<a href="https://github.com/bodkan/slendr/commit/b2e5c6" class="external-link">#b2e5c6</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.0" id="slendr-130">slendr 1.3.0<a class="anchor" aria-label="anchor" href="#slendr-130"></a></h2><p class="text-muted">CRAN release: 2025-11-11</p>
 <ul><li><p>In order to minimize the dependency burden for users even further, packages <em>shiny</em> and <em>shinyWidgets</em> are now not installed by default. The function <code><a href="../reference/explore_model.html">explore_model()</a></code> function now checks if those packages are present upon calling it. If not, the user is informed that they should install those packages first. (<a href="https://github.com/bodkan/slendr/commit/60fbdf" class="external-link">#60fbdf</a>)</p></li>
