@@ -87,10 +87,6 @@ this aspect of _slendr_, please take a look at
 and [this](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
 vignette.
 
-(Note that the final outcome of the simulation is a tree sequence, which makes
-it trivial to compute nearly any conceivable population genetic statistic
-directly in R.)
-
 
 ``` r
 library(slendr)
@@ -121,10 +117,17 @@ plot_model(
   order = c("AFR", "EUR", "nonAFR", "PAP", "ancestor_all",
             "DEN", "ancestor_archaics", "NEA")
 )
-
-ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
 ```
 
+Note that the final outcome of the simulation is a tree sequence (here
+produced by _slendr_'s simulation engine written in _msprime), which makes
+it trivial to compute nearly any conceivable population genetic statistic
+directly in R (as demonstrated [here](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics)).
+
+
+``` r
+ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
+```
 
 ------------------------------------------------------------------------
 
