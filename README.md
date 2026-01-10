@@ -119,8 +119,10 @@ plot_model(
 )
 ```
 
+![](man/figures/README-unnamed-chunk-2-1.png)
+
 Note that the final outcome of the simulation is a tree sequence (here
-produced by _slendr_'s simulation engine written in _msprime), which makes
+produced by _slendr_'s simulation engine written in _msprime_), which makes
 it trivial to compute nearly any conceivable population genetic statistic
 directly in R (as demonstrated [here](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html#calculating-f-statistics)).
 
@@ -168,6 +170,8 @@ We can visualize the defined world map using the function `plot_map` provided by
 plot_map(map)
 ```
 
+![](man/figures/README-plot_world-1.png)
+
 Although in this example we use a real Earth landscape, the `map` can be completely abstract (either blank or with user-defined landscape features such as continents, islands, corridors and barriers).
 
 #### 2. Define broader geographic regions
@@ -205,6 +209,8 @@ Again, we can use the generic `plot_map` function to visualize these objects, ma
 ``` r
 plot_map(africa, europe, anatolia)
 ```
+
+![](man/figures/README-plot_regions-1.png)
 
 #### 3. Define demographic history and population boundaries
 
@@ -264,6 +270,8 @@ We can use the function `plot_map` again to get a "compressed" overview of all s
 ``` r
 plot_map(afr, ooa, ehg, eur, ana, yam)
 ```
+
+![](man/figures/README-plot_popmaps-1.png)
 
 #### 4. Define gene-flow events
 
