@@ -119,7 +119,7 @@ set_geneflow <- function(i, n_side, proportion, start, end, populations) {
 Let's test this function. What would be the gene flow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above.
 
 ```{r}
-set_geneflow(1, n, rate = 0.1, start = 2, end = 1000, populations)
+set_geneflow(1, n, proportion = 0.1, start = 2, end = 1000, populations)
 ```
 
 Looks right! Let's generate the entire set of continuous gene flow events:
@@ -127,7 +127,7 @@ Looks right! Let's generate the entire set of continuous gene flow events:
 ```{r}
 geneflows <-
   seq(1, n * n) %>%
-  lapply(set_geneflow, n, rate = 0.05, start = 2, end = 1000, populations) %>%
+  lapply(set_geneflow, n, proportion = 0.05, start = 2, end = 1000, populations) %>%
   do.call(rbind, .) %>%
   unique # filter out duplicate events due to symmetries
 ```
