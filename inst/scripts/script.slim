@@ -600,8 +600,8 @@ function (void) set_geneflow(object<Dictionary> event, f$ proportion) {
     } else {
         rate = 0.0;
         write_log("geneflow " + from + "(p" + from_id + ")" +
-    }
                              " -> " + to + "(p" + to_id + ")" + " set to 0%");
+    }
 
     population(to_id).setMigrationRates(from_id, rate);
 }
