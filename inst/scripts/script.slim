@@ -191,7 +191,7 @@ s2 late() /* Geneflow events */ {
     events = filter_rows(GENE_FLOWS, "tstart_gen", community.tick - BURNIN_LENGTH);
     for (i in seqLen(num_rows(events))) {
         event = events.getRowValues(i);
-        set_geneflow(event, event.getValue("rate"));
+        set_geneflow(event, event.getValue("proportion"));
     }
 }
 
@@ -587,18 +587,20 @@ function (void) create_pop(object<Dictionary> pop) {
 }
 
 // Start or stop geneflow
-function (void) set_geneflow(object<Dictionary> event, f$ rate) {
+function (void) set_geneflow(object<Dictionary> event, f$ proportion) {
     from = event.getValue("from"); to = event.getValue("to");
     from_id = event.getValue("from_id"); to_id = event.getValue("to_id");
 
-    if (rate > 0) {
+    if (proportion > 0) {
         span = event.getValue("tend_gen") - event.getValue("tstart_gen");
-        rate = rate / span;
+        rate = proportion / span;
         write_log("geneflow " + from + "(p" + from_id + ")" +
                              " -> " + to + "(p" + to_id + ")" +
                              " (" + rate + "% over " + span + " generations)");
-    } else
+    } else {
+        rate = 0.0;
         write_log("geneflow " + from + "(p" + from_id + ")" +
+    }
                              " -> " + to + "(p" + to_id + ")" + " set to 0%");
 
     population(to_id).setMigrationRates(from_id, rate);
@@ -827,7 +829,7 @@ function (ifsl) convert_type(s$ column_name, s string_values) {
                 "tsplit_orig", "tsplit_gen", "tdispersal_orig", "tdispersal_gen",
                 "tremove_orig", "tremove_gen", "tstart_orig", "tstart_gen",
                 "tend_orig", "tend_gen", "tresize_orig", "tresize_gen");
-    float = c("rate", "competition", "mating", "dispersal", "n",
+    float = c("proportion", "competition", "mating", "dispersal", "n",
               "x", "y", "x_orig", "y_orig");
     logical = c("overlap");
 
