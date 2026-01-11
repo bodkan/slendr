@@ -618,12 +618,12 @@ set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = 
 #' Define a gene-flow event between two populations
 #'
 #' @param from,to Objects of the class \code{slendr_pop}
-#' @param migration_rate Scalar value specifying the rate of gene flow per
-#'  unit of time of the given gene-flow time window
+#' @param start,end Start and end of the gene-flow event
 #' @param proportion Scalar value in the range (0, 1] specifying the
 #'   total proportion of ancestry of the receiving population which will come
 #'   from the source population over the entire gene-flow time window
-#' @param start,end Start and end of the gene-flow event
+#' @param migration_rate Scalar value specifying the rate of gene flow per
+#'  unit of time of the given gene-flow time window
 #' @param overlap Require spatial overlap between admixing
 #'   populations?  (default \code{TRUE})
 #' @param rate DEPRECATED (Old name for what is now the \code{proportion} argument)
@@ -634,7 +634,7 @@ set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = 
 #' @export
 #'
 #' @example man/examples/model_definition.R
-gene_flow <- function(from, to, migration_rate, proportion, start, end, overlap = TRUE, rate = NULL) {
+gene_flow <- function(from, to, start, end, proportion = NULL, migration_rate = NULL, overlap = TRUE, rate = NULL) {
   if (!is.null(rate)) {
     warning(paste0(
       "The argument `rate` is about to be deprecated because of its confusing\n",
@@ -650,13 +650,13 @@ gene_flow <- function(from, to, migration_rate, proportion, start, end, overlap 
     proportion <- rate
   }
 
-  if (missing(migration_rate) && missing(proportion)) {
+  if (is.null(migration_rate) && is.null(proportion)) {
     stop("Either `migration_rate` or `proportion` arguments must be\n",
          "specified. Please see the documentation available under `?gene_flow`\n",
          "for details.", call. = FALSE)
   }
 
-  if (missing(proportion)) {
+  if (is.null(proportion)) {
     proportion <- migration_rate * abs(start - tend)
   }
 
