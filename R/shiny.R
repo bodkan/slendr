@@ -42,7 +42,7 @@ the demographic history encapsulated in your model.",
     geneflow_starts <- model$geneflow
     geneflow_starts$event <- with(
       geneflow_starts,
-      sprintf("geneflow %s -> %s, %.2f%%", from, to, 100 * rate)
+      sprintf("geneflow %s -> %s, %.2f%%", from, to, 100 * proportion)
     )
     geneflow_starts <- geneflow_starts[, c("tstart_orig", "event")]
     colnames(geneflow_starts) <- c("time", "event")
@@ -235,19 +235,19 @@ the demographic history encapsulated in your model.",
     output$geneflows_table <- shiny::renderTable({
       if (!is.null(model$geneflow)) {
         migr_df <- get_geneflows(model, input$time_slider)
-        table <- migr_df[, c("from", "to", "tstart_orig", "tend_orig", "rate")]
-        table$rate_gen <- sprintf("%.1f%%", table$rate / model$generation_time * 100)
+        table <- migr_df[, c("from", "to", "tstart_orig", "tend_orig", "proportion")]
+        table$prop_gen <- sprintf("%.1f%%", table$proportion / model$generation_time * 100)
         table$tstart_orig <- as.integer(table$tstart_orig)
         table$tend_orig <- as.integer(table$tend_orig)
-        table$rate <- sprintf("%.1f%%", table$rate * 100)
-        colnames(table) <- c("source", "target", "start", "end", "rate", "rate per gen.")
+        table$proportion <- sprintf("%.1f%%", table$proportion * 100)
+        colnames(table) <- c("source", "target", "start", "end", "proportion", "proportion per gen.")
         table$overlapping <- ifelse(migr_df$overlap, "yes", "no")
         if (!nrow(table)) return(NULL)
         table
       } else return(NULL)
     }, sanitize.text.function = identity)
 
-    output$slendr_graph <- shiny::renderPlot({ plot_model(model) }, height = 600)
+    output$slendr_graph <- shiny::renderPlot({ plot_model(model, proportions = TRUE) }, height = 600)
 
   }
 
