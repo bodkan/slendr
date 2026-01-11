@@ -11,10 +11,10 @@ eur <- population("EUR", parent = nonafr, time = 45e3, N = 5000)
 pap <- population("PAP", parent = nonafr, time = 45e3, N = 5000)
 
 gf <- list(
-  gene_flow(from = nea, to = nonafr, rate = 0.03, start = 55000, end = 50000),
-  gene_flow(from = nea, to = pap, rate = 0.01, start = 35000, end = 30000),
-  gene_flow(from = nea, to = eur, rate = 0.01, start = 35000, end = 30000),
-  gene_flow(from = den, to = pap, rate = 0.07, start = 35000, end = 30000)
+  gene_flow(from = nea, to = nonafr, proportion = 0.03, start = 55000, end = 50000),
+  gene_flow(from = nea, to = pap, proportion = 0.01, start = 35000, end = 30000),
+  gene_flow(from = nea, to = eur, proportion = 0.01, start = 35000, end = 30000),
+  gene_flow(from = den, to = pap, proportion = 0.07, start = 35000, end = 30000)
 )
 
 model <- compile_model(

@@ -382,9 +382,9 @@ yam <- population("YAM", time = 8000, N = 500, parent = ehg, remove = 2500)
 
 # define gene-flow events
 gf <- list(
-  gene_flow(from = ana, to = yam, rate = 0.4, start = 7900, end = 7800),
-  gene_flow(from = ana, to = eur, rate = 0.5, start = 6000, end = 5000),
-  gene_flow(from = yam, to = eur, rate = 0.65, start = 4000, end = 3500)
+  gene_flow(from = ana, to = yam, proportion = 0.4, start = 7900, end = 7800),
+  gene_flow(from = ana, to = eur, proportion = 0.5, start = 6000, end = 5000),
+  gene_flow(from = yam, to = eur, proportion = 0.65, start = 4000, end = 3500)
 )
 ```
 
@@ -704,7 +704,7 @@ Let's take the following _slendr_ model of Neanderthal introgression:
 
 <!-- # 3% Neanderthal introgression into Europeans between 55-50 ky ago -->
 
-<!-- gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 54500) -->
+<!-- gf <- gene_flow(from = nea, to = eur, proportion = 0.05, start = 55000, end = 54500) -->
 
 <!-- ``` -->
 
@@ -722,7 +722,7 @@ eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
 nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 40e3)
 
 # 5% Neanderthal introgression into Europeans between 55-50 ky ago
-gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 45000)
+gf <- gene_flow(from = nea, to = eur, proportion = 0.05, start = 55000, end = 45000)
 
 model <- compile_model(
   populations = list(chimp, nea, afr, eur), gene_flow = gf,
@@ -742,7 +742,7 @@ cowplot::plot_grid(
 eur <- population("EUR", time = 100e3, N = 10000)
 nea <- population("NEA", time = 100e3, N = 1000, remove = 40000)
 
-gf <- gene_flow(from = nea, to = eur, rate = 0.05, start = 55000, end = 54500)
+gf <- gene_flow(from = nea, to = eur, proportion = 0.05, start = 55000, end = 54500)
 ```
 
 Now we put together SLiM extension code to set up a non-neutral _slendr_ simulation:

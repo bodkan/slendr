@@ -13,7 +13,7 @@ test_that("forward and backward time model objects are equivalent", {
   p4 <- population(name = "p4", parent = p3, time = 4, N = 1, center = c(1, 1), radius = 1)
   p5 <- population(name = "p5", parent = p2, time = 5, N = 1, center = c(1, 1), radius = 1)
 
-  geneflows <- gene_flow(p1, p2, start = 3, end = 4, rate = 0.5, overlap = FALSE)
+  geneflows <- gene_flow(p1, p2, start = 3, end = 4, proportion = 0.5, overlap = FALSE)
 
   forward <- compile_model(
     path = file.path(tempdir(), "tmp-forward"),
@@ -31,7 +31,7 @@ test_that("forward and backward time model objects are equivalent", {
   p4 <- population(name = "p4", parent = p3, time = 2, N = 1, center = c(1, 1), radius = 1)
   p5 <- population(name = "p5", parent = p2, time = 1, N = 1, center = c(1, 1), radius = 1)
 
-  geneflows <- gene_flow(p1, p2, start = 3, end = 2, rate = 0.5, overlap = FALSE)
+  geneflows <- gene_flow(p1, p2, start = 3, end = 2, proportion = 0.5, overlap = FALSE)
 
   backward <- compile_model(
     path = file.path(tempdir(), "tmp-backward"),
@@ -65,8 +65,8 @@ test_that("forward and backward models yield the same simulation result", {
     move(trajectory = list(c(-5, 33), c(-5, 40)), start = 301, end = 400, snapshots = 20)
 
   geneflow <- list(
-    gene_flow(from = p5, to = p4, rate = 0.2, start = 310, end = 350, overlap = F),
-    gene_flow(from = p5, to = p3, rate = 0.3, start = 340, end = 480, overlap = F)
+    gene_flow(from = p5, to = p4, proportion = 0.2, start = 310, end = 350, overlap = F),
+    gene_flow(from = p5, to = p3, proportion = 0.3, start = 340, end = 480, overlap = F)
   )
 
   forward <- compile_model(
@@ -90,8 +90,8 @@ test_that("forward and backward models yield the same simulation result", {
     move(trajectory = list(c(-5, 33), c(-5, 40)), start = 180, end = 81, snapshots = 20)
 
   geneflow <- list(
-    gene_flow(from = p5, to = p4, rate = 0.2, start = 171, end = 131, overlap = F),
-    gene_flow(from = p5, to = p3, rate = 0.3, start = 141, end = 1, overlap = F)
+    gene_flow(from = p5, to = p4, proportion = 0.2, start = 171, end = 131, overlap = F),
+    gene_flow(from = p5, to = p3, proportion = 0.3, start = 141, end = 1, overlap = F)
   )
 
   backward <- compile_model(
@@ -142,8 +142,8 @@ test_that("forward and backward models yield the same simulation result (nonspat
   p5 <- population(name = "pop5", parent = p1, time = 300, N = 100)
 
   geneflow <- list(
-    gene_flow(from = p5, to = p4, rate = 0.2, start = 310, end = 350, overlap = F),
-    gene_flow(from = p5, to = p3, rate = 0.3, start = 340, end = 480, overlap = F)
+    gene_flow(from = p5, to = p4, proportion = 0.2, start = 310, end = 350, overlap = F),
+    gene_flow(from = p5, to = p3, proportion = 0.3, start = 340, end = 480, overlap = F)
   )
 
   forward <- compile_model(
@@ -163,8 +163,8 @@ test_that("forward and backward models yield the same simulation result (nonspat
   p5 <- population(name = "pop5", parent = p1, time = 181, N = 100)
 
   geneflow <- list(
-    gene_flow(from = p5, to = p4, rate = 0.2, start = 171, end = 131, overlap = F),
-    gene_flow(from = p5, to = p3, rate = 0.3, start = 141, end = 1, overlap = F)
+    gene_flow(from = p5, to = p4, proportion = 0.2, start = 171, end = 131, overlap = F),
+    gene_flow(from = p5, to = p3, proportion = 0.3, start = 141, end = 1, overlap = F)
   )
 
   backward <- compile_model(

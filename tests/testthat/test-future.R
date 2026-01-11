@@ -113,7 +113,7 @@ test_that("forward models not starting from 1 given the same outcome (gene flows
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
     resize(time = 1800, N = 10, how = "step")
 
-  gf <- gene_flow(pop1, pop2, rate = 0.1, start = 1800, end = 1900)
+  gf <- gene_flow(pop1, pop2, proportion = 0.1, start = 1800, end = 1900)
 
   model <- compile_model(list(pop1, pop2), gene_flow = gf, generation_time = 20, simulation_length = 1000)
 
@@ -133,7 +133,7 @@ test_that("forward models starting from 1 given the same outcome (gene flows)", 
   pop2 <- population("pop2", time = 1700, N = 100, parent = pop1) %>%
     resize(time = 1800, N = 10, how = "step")
 
-  gf <- gene_flow(pop1, pop2, rate = 0.1, start = 1800, end = 1900)
+  gf <- gene_flow(pop1, pop2, proportion = 0.1, start = 1800, end = 1900)
 
   model <- compile_model(list(pop1, pop2), gene_flow = gf, generation_time = 20, simulation_length = 1000)
 

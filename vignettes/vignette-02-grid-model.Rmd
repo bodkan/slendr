@@ -87,7 +87,7 @@ do.call(plot_map, populations) + ggplot2::theme(legend.position = "none")
 So far, the way the model is specified, each population would be stuck on its own circular "island". We can change that by programming gene flow events using the _slendr_ function `gene_flow()`. Again, let's first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index *i*).
 
 ```{r}
-set_geneflow <- function(i, n_side, rate, start, end, populations) {
+set_geneflow <- function(i, n_side, proportion, start, end, populations) {
   pop <- populations[[i]]
 
   # get the position of the i-th population on the n*n grid
@@ -106,8 +106,8 @@ set_geneflow <- function(i, n_side, rate, start, end, populations) {
     if (is.null(neighbor)) return(NULL)
 
     rbind(
-      gene_flow(from = pop, to = neighbor, rate = rate, start = start, end = end, overlap = FALSE),
-      gene_flow(from = neighbor, to = pop, rate = rate, start = start, end = end, overlap = FALSE)
+      gene_flow(from = pop, to = neighbor, proportion = proportion, start = start, end = end, overlap = FALSE),
+      gene_flow(from = neighbor, to = pop, proportion = proportion, start = start, end = end, overlap = FALSE)
     )
   }) %>%
     do.call(rbind, .)
