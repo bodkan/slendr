@@ -41,7 +41,7 @@ test_that("gene-flow rate must be a value between 0 and 1", {
   pop1 <- population("pop1", N = 100, time = 100)
   pop2 <- population("pop2", N = 100, time = 100)
 
-  error_msg <- "Gene-flow rate must be a numeric value between 0 and 1"
+  error_msg <- "The total amount of ancestry of the `to` population coming\nfrom the `from` population must be between 0 and 1"
   expect_error(gene_flow(from = pop1, to = pop2, start = 1000, end = 0, proportion = -0.1), error_msg)
   expect_error(gene_flow(from = pop1, to = pop2, start = 1000, end = 0, proportion = 25), error_msg)
 })
