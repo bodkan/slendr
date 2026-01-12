@@ -657,7 +657,7 @@ gene_flow <- function(from, to, start, end, proportion = NULL, migration_rate = 
   }
 
   if (is.null(proportion)) {
-    proportion <- migration_rate * abs(start - tend)
+    proportion <- migration_rate * abs(start - end)
   }
 
   if (!inherits(from, "slendr_pop") || !inherits(to, "slendr_pop"))
