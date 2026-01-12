@@ -13,8 +13,8 @@ test_that("ts_save() deprecated in favour of ts_write()", {
   expect_warning(ts_save(ts, tempfile()))
 })
 
-pop1 <- population("pop1", N = 100, time = 100)
-pop2 <- population("pop2", N = 100, time = 100)
+pop1 <- population("pop1", N = 100, time = 500)
+pop2 <- population("pop2", N = 100, parent = pop1, time = 120)
 
 test_that("using the rate argument gives a warning", {
   msg <- "The argument `rate` is about to be deprecated"
@@ -35,9 +35,16 @@ test_that("default gene-flow parameter is still the proportion", {
 })
 
 test_that("rate argument is correctly distributed into an overall proportion", {
-  tstart <- 10; tend <- 0; rate <- 0.01
+  tstart <- 10; tend <- 0; rate <- 0.012
   gf <- gene_flow(from = pop1, to = pop2, start = tstart, end = tend, migration_rate = rate)
 
-  model <- compile_model(list(pop1, pop2), gene_flow = gf, generation_time = 1, simulation_length = 100)
+  model <- compile_model(list(pop1, pop2), gene_flow = gf, generation_time = 1)
+
+  # make sure the aggregate proportion is encoded in the serialized model
   expect_true(model$geneflow$proportion[1] == abs(tend - tstart) * rate)
+
+  # and to doubple check this, make sure that the original migration rate is
+  # also given in the log output of the slim run
+  log <- suppressMessages(capture.output(slim(model, sequence_length = 1, recombination_rate = 0, verbose = TRUE)))
+  expect_true(sum(grepl("0.012% over 10 generations", log)) == 1)
 })
