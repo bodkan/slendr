@@ -1,5 +1,15 @@
 # slendr (development version)
 
+
+- Two new arguments of `gene_flow()` specifying the magnitude of migration have been implemented, clarifying confusion in the original implementation (see [#99](https://github.com/bodkan/slendr/issues/99) for an example):
+
+1. `migration_rate` specifies the rate of gene flow per unit of time of the given gene-flow time window;
+2. `proportion` specifies the total amount of ancestry received by a population from the given source population over the time span of the gene-flow event (this is, effectively, what the `rate` argument meant until this point, somewhat confusingly unless the user looked at the manpage of the `gene_flow()` function).
+
+  - As far as the original argument `rate` is concerned, setting the value of this argument in a `gene_flow()` call will now issue an informative warning message about its deprecation in a future major release. However, old code will remain working without any change for the foreseeable future. Furthermore, `gene_flow()` now includes a guard against a given `migration_rate` potentially resulting in a `proportion` of ancestry higher than 1.0 (when aggregated over the total span of the gene-flow window), meaning than users' code will not run into hidden bugs even after the eventual deprecation of `rate`.
+
+([PR #188](https://github.com/bodkan/slendr/pull/188))
+
 - Due to issues on a user's system with the Python 3.13 binary installed by
 conda (related to the built-in `pyexpat` module), _slendr_ now reverted to Python
 3.12. As far as we can tell, this is related to either a broken Python 3.13
