@@ -1,6 +1,5 @@
 # slendr (development version)
 
-
 - Two new arguments of `gene_flow()` specifying the magnitude of migration have been implemented, clarifying confusion in the original implementation (see [#99](https://github.com/bodkan/slendr/issues/99) for an example):
 
 1. `migration_rate` specifies the rate of gene flow per unit of time of the given gene-flow time window;
