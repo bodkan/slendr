@@ -52,7 +52,16 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gene_flow</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span>, <span class="va">rate</span>, <span class="va">start</span>, <span class="va">end</span>, overlap <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gene_flow</span><span class="op">(</span></span>
+<span>  <span class="va">from</span>,</span>
+<span>  <span class="va">to</span>,</span>
+<span>  <span class="va">start</span>,</span>
+<span>  <span class="va">end</span>,</span>
+<span>  proportion <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  migration_rate <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overlap <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  rate <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,18 +72,28 @@
 <dd><p>Objects of the class <code>slendr_pop</code></p></dd>
 
 
-<dt id="arg-rate">rate<a class="anchor" aria-label="anchor" href="#arg-rate"></a></dt>
-<dd><p>Scalar value in the range (0, 1] specifying the
-proportion of migration over given time period</p></dd>
-
-
 <dt id="arg-start-end">start, end<a class="anchor" aria-label="anchor" href="#arg-start-end"></a></dt>
 <dd><p>Start and end of the gene-flow event</p></dd>
+
+
+<dt id="arg-proportion">proportion<a class="anchor" aria-label="anchor" href="#arg-proportion"></a></dt>
+<dd><p>Scalar value in the range (0, 1] specifying the
+total proportion of ancestry of the receiving population which will come
+from the source population over the entire gene-flow time window</p></dd>
+
+
+<dt id="arg-migration-rate">migration_rate<a class="anchor" aria-label="anchor" href="#arg-migration-rate"></a></dt>
+<dd><p>Scalar value specifying the rate of gene flow per
+unit of time of the given gene-flow time window</p></dd>
 
 
 <dt id="arg-overlap">overlap<a class="anchor" aria-label="anchor" href="#arg-overlap"></a></dt>
 <dd><p>Require spatial overlap between admixing
 populations?  (default <code>TRUE</code>)</p></dd>
+
+
+<dt id="arg-rate">rate<a class="anchor" aria-label="anchor" href="#arg-rate"></a></dt>
+<dd><p>DEPRECATED (Old name for what is now the <code>proportion</code> argument)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -166,6 +185,22 @@ gene-flow event.</p>
 <span class="r-in"><span>  <span class="fu">gene_flow</span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop1</span>, to <span class="op">=</span> <span class="va">pop3</span>, start <span class="op">=</span> <span class="fl">150</span>, end <span class="op">=</span> <span class="fl">200</span>, rate <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu">gene_flow</span><span class="op">(</span>from <span class="op">=</span> <span class="va">pop1</span>, to <span class="op">=</span> <span class="va">pop2</span>, start <span class="op">=</span> <span class="fl">300</span>, end <span class="op">=</span> <span class="fl">330</span>, rate <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The argument `rate` is about to be deprecated because of its confusing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> naming and behavior. If you want to specify the rate of migration per</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> unit of time, please use the new argument `migration_rate`. If you want</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> to specify the total amount of ancestry which the `to` population should</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> received from the `from` population, use the new argument `proportion`</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (this corresponds to the original interpretation of the deprecated `rate`</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> argument, and a simple replacement of `rate` with `proportion` will thus</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> retain the original meaning of your code all).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The argument `rate` is about to be deprecated because of its confusing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> naming and behavior. If you want to specify the rate of migration per</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> unit of time, please use the new argument `migration_rate`. If you want</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> to specify the total amount of ancestry which the `to` population should</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> received from the `from` population, use the new argument `proportion`</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (this corresponds to the original interpretation of the deprecated `rate`</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> argument, and a simple replacement of `rate` with `proportion` will thus</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> retain the original meaning of your code all).</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compilation -------------------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
