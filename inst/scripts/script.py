@@ -137,7 +137,7 @@ def simulate(
       logging.info(f"Gene flow from {event._1} to {event.to} between {tstart} and {tend}")
       demography.add_migration_rate_change(
           time=tstart,
-          rate=event.rate / (tend - tstart),
+          rate=event.proportion / (tend - tstart),
           source=event.to,
           dest=event._1    # sadly, pandas renames 'from' to '_1'
       )

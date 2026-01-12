@@ -8,7 +8,7 @@ eur <- population("EUR", parent = ehg, time = 25000, N = 200) %>%
   resize(N = 10000, how = "exponential", time = 5000, end = 0)
 ana <- population("ANA", time = 28000, N = 300, parent = ooa, remove = 40)
 
-gf <- gene_flow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000)
+gf <- gene_flow(from = ana, to = eur, proportion = 0.5, start = 8000, end = 6000)
 
 test_that("non-serialized models are correctly simulated with msprime (but not SLiM)", {
   model <- compile_model(

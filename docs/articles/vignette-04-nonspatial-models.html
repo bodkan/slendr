@@ -135,9 +135,9 @@ events (note the missing <code>map</code> argument, which is set to
 spatial model:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">yam</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">6500</span>, end <span class="op">=</span> <span class="fl">6400</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.75</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">yam</span>, proportion <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">6500</span>, end <span class="op">=</span> <span class="fl">6400</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, proportion <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span>from <span class="op">=</span> <span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, proportion <span class="op">=</span> <span class="fl">0.75</span>, start <span class="op">=</span> <span class="fl">4000</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The compilation step is also the same. The only (internal) difference
 is that we skip the rasterization of vector maps that is performed for
@@ -215,10 +215,10 @@ original <em>slendr</em> model:</p>
 <span><span class="co">#&gt; 6 YAM    EHG  500   7000   2500</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $gene_flows</span></span>
-<span><span class="co">#&gt;   from  to start  end rate</span></span>
-<span><span class="co">#&gt; 1  ANA YAM  6500 6400 0.50</span></span>
-<span><span class="co">#&gt; 2  ANA EUR  8000 6000 0.50</span></span>
-<span><span class="co">#&gt; 3  YAM EUR  4000 3000 0.75</span></span>
+<span><span class="co">#&gt;   from  to start  end proportion</span></span>
+<span><span class="co">#&gt; 1  ANA YAM  6500 6400       0.50</span></span>
+<span><span class="co">#&gt; 2  ANA EUR  8000 6000       0.50</span></span>
+<span><span class="co">#&gt; 3  YAM EUR  4000 3000       0.75</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $resizes</span></span>
 <span><span class="co">#&gt;   pop         how     N  time end</span></span>
@@ -240,8 +240,8 @@ built-in <em>slendr</em> introgression model by running:</p>
 <span><span class="co">#&gt; 4 EUR    AFR 5000   70000     NA</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $gene_flows</span></span>
-<span><span class="co">#&gt;   from  to start   end rate</span></span>
-<span><span class="co">#&gt; 1  NEA EUR 55000 45000 0.03</span></span></code></pre>
+<span><span class="co">#&gt;   from  to start   end proportion</span></span>
+<span><span class="co">#&gt; 1  NEA EUR 55000 45000       0.03</span></span></code></pre>
 <p>As we can see, <code><a href="../reference/extract_parameters.html">extract_parameters()</a></code> returns a list of
 data frames, one data frame for each aspect of a demographic model
 (where applicable).</p>

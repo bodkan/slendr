@@ -544,7 +544,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
     p <- p + geom_point(data = gene_flow, aes(x = x, y = y))
     if (proportions) {
       p <- p + geom_label(data = gene_flow,
-                          aes(label = sprintf("%s%%", 100 * rate),
+                          aes(label = sprintf("%s%%", 100 * proportion),
                               x = xend - (xend - x) / 2,
                               y = y + (yend + log10_ydelta - y) / 2), size = 3)
     }

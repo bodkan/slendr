@@ -378,9 +378,9 @@ applicable, its just the presentation which has changed.</p>
 <span>  <span class="fu"><a href="../reference/move.html">move</a></span><span class="op">(</span>trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>, start <span class="op">=</span> <span class="fl">5000</span>, end <span class="op">=</span> <span class="fl">3000</span>, snapshots <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">gf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span><span class="va">ana</span>, to <span class="op">=</span> <span class="va">yam</span>, rate <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">6500</span>, end <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span><span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.6</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span><span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, rate <span class="op">=</span> <span class="fl">0.7</span>, start <span class="op">=</span> <span class="fl">3500</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span><span class="va">ana</span>, to <span class="op">=</span> <span class="va">yam</span>, proportion <span class="op">=</span> <span class="fl">0.5</span>, start <span class="op">=</span> <span class="fl">6500</span>, end <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span><span class="va">ana</span>, to <span class="op">=</span> <span class="va">eur</span>, proportion <span class="op">=</span> <span class="fl">0.6</span>, start <span class="op">=</span> <span class="fl">8000</span>, end <span class="op">=</span> <span class="fl">6000</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/gene_flow.html">gene_flow</a></span><span class="op">(</span><span class="va">yam</span>, to <span class="op">=</span> <span class="va">eur</span>, proportion <span class="op">=</span> <span class="fl">0.7</span>, start <span class="op">=</span> <span class="fl">3500</span>, end <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compile_model.html">compile_model</a></span><span class="op">(</span></span>
@@ -577,22 +577,22 @@ Apple M1 Pro chip (2021 model), 32 GB RAM, running macOS Ventura Version
 <tbody>
 <tr class="odd">
 <td align="left">ex1</td>
-<td align="right">5.9025068</td>
+<td align="right">6.640296</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex2</td>
-<td align="right">11.6858117</td>
+<td align="right">11.755811</td>
 <td align="left">mins</td>
 </tr>
 <tr class="odd">
 <td align="left">ex3</td>
-<td align="right">2.2968679</td>
+<td align="right">2.275801</td>
 <td align="left">mins</td>
 </tr>
 <tr class="even">
 <td align="left">ex4</td>
-<td align="right">0.3812199</td>
+<td align="right">0.408987</td>
 <td align="left">secs</td>
 </tr>
 </tbody>

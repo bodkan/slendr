@@ -88,7 +88,7 @@ samples <- schedule_sampling(
 )
 
 # model with gene flow
-gf <- gene_flow(from = b, to = x1, start = 4100, end = 4400, rate = 0.1)
+gf <- gene_flow(from = b, to = x1, start = 4100, end = 4400, proportion = 0.1)
 
 model_gf <- compile_model(populations = list(a, b, x1, x2, c, o), gene_flow = gf, generation_time = 1, simulation_length = 4500)
 

@@ -150,9 +150,9 @@ ana <- population("ANA", time = 28000, N = 3000, parent = ooa, remove = 4000)
 yam <- population("YAM", time = 7000, N = 500, parent = ehg, remove = 2500)
 
 gf <- list(
-  gene_flow(from = ana, to = yam, rate = 0.5, start = 6500, end = 6400),
-  gene_flow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
-  gene_flow(from = yam, to = eur, rate = 0.75, start = 4000, end = 3000)
+  gene_flow(from = ana, to = yam, proportion = 0.5, start = 6500, end = 6400),
+  gene_flow(from = ana, to = eur, proportion = 0.5, start = 8000, end = 6000),
+  gene_flow(from = yam, to = eur, proportion = 0.75, start = 4000, end = 3000)
 )
 
 # full model

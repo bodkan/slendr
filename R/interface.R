@@ -618,11 +618,15 @@ set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = 
 #' Define a gene-flow event between two populations
 #'
 #' @param from,to Objects of the class \code{slendr_pop}
-#' @param rate Scalar value in the range (0, 1] specifying the
-#'   proportion of migration over given time period
 #' @param start,end Start and end of the gene-flow event
+#' @param proportion Scalar value in the range (0, 1] specifying the
+#'   total proportion of ancestry of the receiving population which will come
+#'   from the source population over the entire gene-flow time window
+#' @param migration_rate Scalar value specifying the rate of gene flow per
+#'  unit of time of the given gene-flow time window
 #' @param overlap Require spatial overlap between admixing
 #'   populations?  (default \code{TRUE})
+#' @param rate DEPRECATED (Old name for what is now the \code{proportion} argument)
 #'
 #' @return Object of the class data.frame containing parameters of the specified
 #'   gene-flow event.
@@ -630,7 +634,32 @@ set_dispersal <- function(pop, time, competition = NA, mating = NA, dispersal = 
 #' @export
 #'
 #' @example man/examples/model_definition.R
-gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
+gene_flow <- function(from, to, start, end, proportion = NULL, migration_rate = NULL, overlap = TRUE, rate = NULL) {
+  if (!is.null(rate)) {
+    warning(paste0(
+      "The argument `rate` is about to be deprecated because of its confusing\n",
+      "naming and behavior. If you want to specify the rate of migration per\n",
+      "unit of time, please use the new argument `migration_rate`. If you want\n",
+      "to specify the total amount of ancestry which the `to` population should\n",
+      "received from the `from` population, use the new argument `proportion`\n",
+      "(this corresponds to the original interpretation of the deprecated `rate`\n",
+      "argument, and a simple replacement of `rate` with `proportion` will thus\n",
+      "retain the original meaning of your code all)."),
+      call. = FALSE
+    )
+    proportion <- rate
+  }
+
+  if (is.null(migration_rate) && is.null(proportion)) {
+    stop("Either `migration_rate` or `proportion` arguments must be\n",
+         "specified. Please see the documentation available under `?gene_flow`\n",
+         "for details.", call. = FALSE)
+  }
+
+  if (is.null(proportion)) {
+    proportion <- migration_rate * abs(start - end)
+  }
+
   if (!inherits(from, "slendr_pop") || !inherits(to, "slendr_pop"))
     stop("Both 'from' and 'to' arguments must be slendr population objects",
          call. = FALSE)
@@ -643,8 +672,10 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
     stop("Both or neither populations must be spatial", call. = FALSE)
 
   # make sure that gene flow has a sensible value between 0 and 1
-  if (rate < 0 || rate > 1)
-    stop("Gene-flow rate must be a numeric value between 0 and 1", call. = FALSE)
+  if (proportion < 0 || proportion > 1) {
+    stop("The total amount of ancestry of the `to` population coming\n",
+         "from the `from` population must be between 0 and 1", call. = FALSE)
+  }
 
   from_name <- unique(from$pop)
   to_name <- unique(to$pop)
@@ -720,7 +751,7 @@ gene_flow <- function(from, to, rate, start, end, overlap = TRUE) {
     to_name = to_name,
     tstart = start,
     tend = end,
-    rate = rate,
+    proportion = proportion,
     overlap = overlap,
     stringsAsFactors = FALSE
   )

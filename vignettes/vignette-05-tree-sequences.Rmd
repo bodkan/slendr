@@ -73,7 +73,7 @@ eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
 nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 40e3)
 
 # 3% Neanderthal introgression into Europeans between 55-50 ky ago
-gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 55000, end = 45000)
+gf <- gene_flow(from = nea, to = eur, proportion = 0.03, start = 55000, end = 45000)
 
 model <- compile_model(
   populations = list(chimp, nea, afr, eur), gene_flow = gf,

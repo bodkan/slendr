@@ -4,18 +4,33 @@
 \alias{gene_flow}
 \title{Define a gene-flow event between two populations}
 \usage{
-gene_flow(from, to, rate, start, end, overlap = TRUE)
+gene_flow(
+  from,
+  to,
+  start,
+  end,
+  proportion = NULL,
+  migration_rate = NULL,
+  overlap = TRUE,
+  rate = NULL
+)
 }
 \arguments{
 \item{from, to}{Objects of the class \code{slendr_pop}}
 
-\item{rate}{Scalar value in the range (0, 1] specifying the
-proportion of migration over given time period}
-
 \item{start, end}{Start and end of the gene-flow event}
+
+\item{proportion}{Scalar value in the range (0, 1] specifying the
+total proportion of ancestry of the receiving population which will come
+from the source population over the entire gene-flow time window}
+
+\item{migration_rate}{Scalar value specifying the rate of gene flow per
+unit of time of the given gene-flow time window}
 
 \item{overlap}{Require spatial overlap between admixing
 populations?  (default \code{TRUE})}
+
+\item{rate}{DEPRECATED (Old name for what is now the \code{proportion} argument)}
 }
 \value{
 Object of the class data.frame containing parameters of the specified

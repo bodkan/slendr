@@ -19,7 +19,7 @@ import numpy
 import pandas
 import tskit
 
-VERSION = "slendr_1.3.0"
+VERSION = "slendr_1.3.0.9000"
 
 
 def simulate(
@@ -137,7 +137,7 @@ def simulate(
       logging.info(f"Gene flow from {event._1} to {event.to} between {tstart} and {tend}")
       demography.add_migration_rate_change(
           time=tstart,
-          rate=event.rate / (tend - tstart),
+          rate=event.proportion / (tend - tstart),
           source=event.to,
           dest=event._1    # sadly, pandas renames 'from' to '_1'
       )
@@ -193,7 +193,7 @@ def simulate(
   # compile a set of slendr metadata to be stored in the tree sequence
   slendr_metadata = {
       "slendr": {
-          "version": "slendr_1.3.0",
+          "version": "slendr_1.3.0.9000",
           "backend": "msprime",
           "description": description,
           "sampling": {

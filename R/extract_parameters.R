@@ -44,7 +44,7 @@ extract_parameters <- function(data) {
 
   if (!is.null(model$geneflow))
     result[["gene_flows"]] <- model$geneflow %>%
-      dplyr::select(from, to, start = tstart_orig, end = tend_orig, rate)
+      dplyr::select(from, to, start = tstart_orig, end = tend_orig, proportion)
 
   if (!is.null(model$resizes))
     result[["resizes"]] <- model$resizes %>%

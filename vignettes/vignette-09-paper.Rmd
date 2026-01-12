@@ -331,9 +331,9 @@ yam <- population(
   move(trajectory = list(c(15, 50)), start = 5000, end = 3000, snapshots = 10)
 
 gf <- list(
-  gene_flow(ana, to = yam, rate = 0.5, start = 6500, end = 5000),
-  gene_flow(ana, to = eur, rate = 0.6, start = 8000, end = 6000),
-  gene_flow(yam, to = eur, rate = 0.7, start = 3500, end = 3000)
+  gene_flow(ana, to = yam, proportion = 0.5, start = 6500, end = 5000),
+  gene_flow(ana, to = eur, proportion = 0.6, start = 8000, end = 6000),
+  gene_flow(yam, to = eur, proportion = 0.7, start = 3500, end = 3000)
 )
 
 model <- compile_model(

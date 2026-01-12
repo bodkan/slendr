@@ -87,7 +87,7 @@ do.call(plot_map, populations) + ggplot2::theme(legend.position = "none")
 So far, the way the model is specified, each population would be stuck on its own circular "island". We can change that by programming gene flow events using the _slendr_ function `gene_flow()`. Again, let's first program a simple helper function which will generate gene flow events according to neighborhood relationships on the two-dimensional grid, allowing each population to exchange migrants with each of its neighbors (making sure the coordinates of each population stay within the grid using simple modulo arithmetic on the population index *i*).
 
 ```{r}
-set_geneflow <- function(i, n_side, rate, start, end, populations) {
+set_geneflow <- function(i, n_side, proportion, start, end, populations) {
   pop <- populations[[i]]
 
   # get the position of the i-th population on the n*n grid
@@ -106,8 +106,8 @@ set_geneflow <- function(i, n_side, rate, start, end, populations) {
     if (is.null(neighbor)) return(NULL)
 
     rbind(
-      gene_flow(from = pop, to = neighbor, rate = rate, start = start, end = end, overlap = FALSE),
-      gene_flow(from = neighbor, to = pop, rate = rate, start = start, end = end, overlap = FALSE)
+      gene_flow(from = pop, to = neighbor, proportion = proportion, start = start, end = end, overlap = FALSE),
+      gene_flow(from = neighbor, to = pop, proportion = proportion, start = start, end = end, overlap = FALSE)
     )
   }) %>%
     do.call(rbind, .)
@@ -119,7 +119,7 @@ set_geneflow <- function(i, n_side, rate, start, end, populations) {
 Let's test this function. What would be the gene flow events of the population in the lower left corner of the grid (so, the very first population in the series)? If everything works, this population should only be allowed to exchange migrants with its neighbor to the right (population number 2) and its neighbor above.
 
 ```{r}
-set_geneflow(1, n, rate = 0.1, start = 2, end = 1000, populations)
+set_geneflow(1, n, proportion = 0.1, start = 2, end = 1000, populations)
 ```
 
 Looks right! Let's generate the entire set of continuous gene flow events:
@@ -127,7 +127,7 @@ Looks right! Let's generate the entire set of continuous gene flow events:
 ```{r}
 geneflows <-
   seq(1, n * n) %>%
-  lapply(set_geneflow, n, rate = 0.05, start = 2, end = 1000, populations) %>%
+  lapply(set_geneflow, n, proportion = 0.05, start = 2, end = 1000, populations) %>%
   do.call(rbind, .) %>%
   unique # filter out duplicate events due to symmetries
 ```
@@ -256,38 +256,38 @@ Furthermore, let's say we have a fairly good idea about a very complex interacti
 
 ```{r}
 gf <- list(
-  gene_flow(p1, p2, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p2, p1, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p1, p3, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p3, p1, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p2, p3, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p3, p2, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p2, p7, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p7, p2, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p3, p7, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p7, p3, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p7, p8, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p8, p7, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p4, p7, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p7, p4, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p4, p5, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p5, p4, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p5, p6, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p6, p5, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p3, p4, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p4, p3, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p1, p9, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p9, p1, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p3, p9, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p9, p3, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p4, p9, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p9, p4, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p10, p4, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p4, p10, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p10, p8, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p8, p10, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p10, p5, 0.1, 1000, 2000, overlap = FALSE),
-  gene_flow(p5, p10, 0.1, 1000, 2000, overlap = FALSE)
+  gene_flow(p1, p2, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p2, p1, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p1, p3, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p3, p1, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p2, p3, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p3, p2, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p2, p7, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p7, p2, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p3, p7, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p7, p3, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p7, p8, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p8, p7, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p4, p7, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p7, p4, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p4, p5, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p5, p4, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p5, p6, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p6, p5, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p3, p4, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p4, p3, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p1, p9, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p9, p1, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p3, p9, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p9, p3, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p4, p9, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p9, p4, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p10, p4, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p4, p10, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p10, p8, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p8, p10, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p10, p5, 1000, 2000, proportion = 0.1, overlap = FALSE),
+  gene_flow(p5, p10, 1000, 2000, proportion = 0.1, overlap = FALSE)
 )
 ```
 

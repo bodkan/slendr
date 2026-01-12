@@ -312,7 +312,7 @@ One thing to note is that by default, the `from` and `to` populations for gene f
 For example, if you look at the spatial boundaries plotted above, you'll see that the European and African populations don't have any overlap in population ranges. If we try to instruct _slendr_ to simulate geneflow between them, we will get an error:
 
 ```{r eval = FALSE}
-gf <- gene_flow(from = eur, to = afr, rate = 0.1, start = 20000, end = 15000)
+gf <- gene_flow(from = eur, to = afr, proportion = 0.1, start = 20000, end = 15000)
 ```
 
     Error: No overlap between population ranges of EUR and AFR at time 20000.
@@ -329,9 +329,9 @@ Many models will include multiple gene flow events, which we can collect in a si
 
 ```{r}
 gf <- list(
-  gene_flow(from = ana, to = yam, rate = 0.5, start = 6500, end = 6400, overlap = FALSE),
-  gene_flow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
-  gene_flow(from = yam, to = eur, rate = 0.75, start = 4000, end = 3000)
+  gene_flow(from = ana, to = yam, proportion = 0.5, start = 6500, end = 6400, overlap = FALSE),
+  gene_flow(from = ana, to = eur, proportion = 0.5, start = 8000, end = 6000),
+  gene_flow(from = yam, to = eur, proportion = 0.75, start = 4000, end = 3000)
 )
 ```
 
