@@ -27,10 +27,10 @@ jobs:
 
       - name: Install R dependencies (Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get install libpng-dev
+        run: sudo apt-get update && sudo apt-get install libpng-dev
 
       - name: Install ADMIXTOOLS dependencies (Linux)
-        run: sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
+        run: sudo apt-get update && sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
 
       - name: Compile and install ADMIXTOOLS
         run: |
