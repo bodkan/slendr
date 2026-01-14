@@ -344,7 +344,7 @@ plot_model <- function(model, sizes = TRUE, proportions = FALSE, gene_flow = TRU
 
   # extract times at which each population will be removed from the simulation
   if (model$direction == "backward")
-    default_end <- log10_ydelta
+    default_end <- get_oldest_time(model$populations, model$direction) - model$orig_length + log10_ydelta
   else
     default_end <- get_oldest_time(model$populations, model$direction) + model$orig_length
 
