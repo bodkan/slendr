@@ -805,6 +805,7 @@ utils::globalVariables(
     "N", "center", "child_node_id", "child_phylo_id", "geometry", "parent_node_id",
     "parent_phylo_id", "set_boundary", "xend", "xmax", "xmin", "yend",
     "arc_degree", "node1", "node2", "mrca", "node1_time", "node2_time", "tmrca",
-    "count", "total", "tsplit_orig", "tremove_orig", "tresize_orig", "how", "end"
+    "count", "total", "tsplit_orig", "tremove_orig", "tresize_orig", "how", "end",
+    "proportion"
   ), package = "slendr"
 )

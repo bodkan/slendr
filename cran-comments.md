@@ -1,3 +1,6 @@
+A fix for a couple of "Found the following (possibly) invalid URLs..." NOTEs
+that recently popped on the CRAN Package Check Results page, plus other minor updates.
+
 # R CMD check results
 
 There were no ERRORs, no WARNINGs, no NOTEs.
