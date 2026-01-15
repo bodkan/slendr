@@ -273,6 +273,6 @@ ggplot() +
 
 ## Conclusion
 
-In this vignette we gave a brief overview of using _slendr_'s [R-tskit interface](../reference/index.html#tree-sequence-loading-and-processing) for loading, processing, and analyzing "pure" non-_slendr_ tree sequences produced by msprime and SLiM scripts.
+In this vignette we gave a brief overview of using _slendr_'s [R-tskit interface](https://bodkan.net/slendr/reference/index.html#tree-sequence-loading-and-processing) for loading, processing, and analyzing "pure" non-_slendr_ tree sequences produced by msprime and SLiM scripts.
 
 Although we have only touched upon the most basic features of its R-tskit interface for standard tree sequences, it is important to note that as far as _slendr_ is concerned, it does not matter how a tree sequence was produced, as long as it conforms to the tskit specification. This means that regardless of the source of your tree sequence data, you should be able to use _slendr_'s tskit functionality to run your analyses.

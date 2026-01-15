@@ -48,7 +48,7 @@ set.seed(seed)
 <!-- check_env() -->
 <!-- ``` -->
 
-We begin by specifying our spatial model. We will use the same demographic model of modern human history in West Eurasia, which we extensively discussed in the [introductory tutorial](vignette-01-tutorial.html) and on the main [landing page](../index.html). Here is a complete model definition script, without further comments:
+We begin by specifying our spatial model. We will use the same demographic model of modern human history in West Eurasia, which we extensively discussed in the [introductory tutorial](vignette-01-tutorial.html) and on the main [landing page](https://bodkan.net/slendr/). Here is a complete model definition script, without further comments:
 
 ```{r, results = FALSE}
 # simulated world map

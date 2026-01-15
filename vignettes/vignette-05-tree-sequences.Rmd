@@ -257,7 +257,7 @@ nodelabels()
 
 ## Accessing *tskit* functionality directly
 
-As we mentioned in the previous section, the goal of this vignette is to show how to use _slendr_ to perform the main tree-sequence operations using a convenient R interface to *tskit*. However, you should always keep in mind that you are not restricted to a subset of *tskit* functionality that _slendr_ translated to R (i.e. [all functions](../reference/index.html) with the prefix `ts_`). Thanks to the incredible R package [*reticulate*](https://rstudio.github.io/reticulate/index.html), you can access Python methods and object variables directly, using the `$` operator.
+As we mentioned in the previous section, the goal of this vignette is to show how to use _slendr_ to perform the main tree-sequence operations using a convenient R interface to *tskit*. However, you should always keep in mind that you are not restricted to a subset of *tskit* functionality that _slendr_ translated to R (i.e. [all functions](https://bodkan.net/slendr/reference/) with the prefix `ts_`). Thanks to the incredible R package [*reticulate*](https://rstudio.github.io/reticulate/index.html), you can access Python methods and object variables directly, using the `$` operator.
 
 As an example, instead of calling the function `ts_coalesced()` on the tree-sequence as we did above, we could check that all trees are coalesced by running the following snippet instead (note that this is very inefficient and we're only doing the operation for the first one hundred trees):
 
@@ -507,6 +507,6 @@ After sorting the table based on the value in the divergence column, we can see 
 
 ## More information
 
-These were only a couple of examples of statistical functions implemented in *tskit* for which we provide a native R interface in _slendr_. You can find more tree-sequence statistics in the [reference manual](../reference/index.html#section-tree-sequence-statistics) on the project website. Not [all statistics](https://tskit.dev/tskit/docs/stable/stats.html#available-statistics) from the *tskit* library are implemented, but we intend to expand the selection provided by _slendr_ in the near future. If there is some functionality that you would like to use in your project missing in _slendr_, please don't hesitate to let us now by creating an issue on our [GitHub page](https://github.com/bodkan/slendr/issues).
+These were only a couple of examples of statistical functions implemented in *tskit* for which we provide a native R interface in _slendr_. You can find more tree-sequence statistics in the [reference manual](https://bodkan.net/slendr/reference/index.html#section-tree-sequence-statistics) on the project website. Not [all statistics](https://tskit.dev/tskit/docs/stable/stats.html#available-statistics) from the *tskit* library are implemented, but we intend to expand the selection provided by _slendr_ in the near future. If there is some functionality that you would like to use in your project missing in _slendr_, please don't hesitate to let us now by creating an issue on our [GitHub page](https://github.com/bodkan/slendr/issues).
 
 Finally, if you would like to see more examples of *tskit* interface in action, take a look at the vignette which describes [switching between the SLiM and *msprime* back ends](https://bodkan.net/slendr/articles/vignette-07-backends.html) of the _slendr_ package.
