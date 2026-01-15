@@ -25,7 +25,7 @@ tools for population genetic simulations and data analysis.
 }
 \details{
 You can find installation instructions, reference manual, and tutorials at
-\url{https://bodkan.net/slendr}.
+\url{https://bodkan.net/slendr/}.
 }
 \seealso{
 Useful links:

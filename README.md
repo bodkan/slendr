@@ -14,7 +14,7 @@
 
 _slendr_ is a toolbox for running population genomic simulations entirely in R. Our original motivation for developing it was to provide a framework for [simulating spatially-explicit genomic data](https://bodkan.net/slendr/articles/vignette-01-tutorial.html) on real geographic landscapes, however, it has grown to be much more than that since then: _slendr_ can now simulate data from [traditional, non-spatial demographic models](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html) using _msprime_ as a simulation engine, and it even supports selection scenarios via [user-defined SLiM estension snippets](https://bodkan.net/slendr/articles/vignette-11-extensions.html). In addition to defining models and simulation data from them, _slendr_ also provides a set of functions for computing [population genetic statistics](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html), utilizing the [_tskit_](https://tskit.dev) module for underlying computation.
 
-This page briefly summarizes _slendr_'s most important features. A more detailed description of the _slendr_ architecture and an extensive set of practical code examples can be found in our [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/) in the PCI journal and on our [website](https://bodkan.net/slendr).
+This page briefly summarizes _slendr_'s most important features. A more detailed description of the _slendr_ architecture and an extensive set of practical code examples can be found in our [paper](https://peercommunityjournal.org/articles/10.24072/pcjournal.354/) in the PCI journal and on our [website](https://bodkan.net/slendr/).
 
 ------------------------------------------------------------------------
 
@@ -105,6 +105,22 @@ gf <- list(
   gene_flow(from = nea, to = nonafr, rate = 0.02, start = 55000, end = 50000),
   gene_flow(from = den, to = pap, rate = 0.05, start = 35000, end = 30000)
 )
+#> Warning: The argument `rate` is about to be deprecated because of its confusing
+#> naming and behavior. If you want to specify the rate of migration per
+#> unit of time, please use the new argument `migration_rate`. If you want
+#> to specify the total amount of ancestry which the `to` population should
+#> received from the `from` population, use the new argument `proportion`
+#> (this corresponds to the original interpretation of the deprecated `rate`
+#> argument, and a simple replacement of `rate` with `proportion` will thus
+#> retain the original meaning of your code all).
+#> Warning: The argument `rate` is about to be deprecated because of its confusing
+#> naming and behavior. If you want to specify the rate of migration per
+#> unit of time, please use the new argument `migration_rate`. If you want
+#> to specify the total amount of ancestry which the `to` population should
+#> received from the `from` population, use the new argument `proportion`
+#> (this corresponds to the original interpretation of the deprecated `rate`
+#> argument, and a simple replacement of `rate` with `proportion` will thus
+#> retain the original meaning of your code all).
 
 model <- compile_model(
   populations = list(anc_all, afr, anc_arch, nea, den, nonafr, eur, pap),
@@ -284,6 +300,30 @@ gf <- list(
   gene_flow(from = ana, to = eur, rate = 0.5, start = 8000, end = 6000),
   gene_flow(from = yam, to = eur, rate = 0.75, start = 4000, end = 3000)
 )
+#> Warning: The argument `rate` is about to be deprecated because of its confusing
+#> naming and behavior. If you want to specify the rate of migration per
+#> unit of time, please use the new argument `migration_rate`. If you want
+#> to specify the total amount of ancestry which the `to` population should
+#> received from the `from` population, use the new argument `proportion`
+#> (this corresponds to the original interpretation of the deprecated `rate`
+#> argument, and a simple replacement of `rate` with `proportion` will thus
+#> retain the original meaning of your code all).
+#> Warning: The argument `rate` is about to be deprecated because of its confusing
+#> naming and behavior. If you want to specify the rate of migration per
+#> unit of time, please use the new argument `migration_rate`. If you want
+#> to specify the total amount of ancestry which the `to` population should
+#> received from the `from` population, use the new argument `proportion`
+#> (this corresponds to the original interpretation of the deprecated `rate`
+#> argument, and a simple replacement of `rate` with `proportion` will thus
+#> retain the original meaning of your code all).
+#> Warning: The argument `rate` is about to be deprecated because of its confusing
+#> naming and behavior. If you want to specify the rate of migration per
+#> unit of time, please use the new argument `migration_rate`. If you want
+#> to specify the total amount of ancestry which the `to` population should
+#> received from the `from` population, use the new argument `proportion`
+#> (this corresponds to the original interpretation of the deprecated `rate`
+#> argument, and a simple replacement of `rate` with `proportion` will thus
+#> retain the original meaning of your code all).
 ```
 
 #### 5. Compile the model to a set of configuration files
