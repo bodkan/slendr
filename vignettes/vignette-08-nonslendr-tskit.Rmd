@@ -1,5 +1,5 @@
 ---
-title: "Analyzing non-slendr tree sequences"
+title: "Pure SLiM and _msprime_ tree sequences"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
@@ -62,7 +62,7 @@ SEED <- 42
 set.seed(SEED)
 ```
 
-#### Non-spatial SLiM tree sequences
+## SLiM tree sequences
 
 Consider the following SLiM script, which creates a couple of populations (with different $N_e$) splitting from an ancestral population `p1` (lets save it to `/tmp/nonspatial.slim`):
 
@@ -162,7 +162,7 @@ nodelabels()
 tiplabels()
 ```
 
-#### msprime (non-slendr) tree sequences
+## msprime tree sequences
 
 The same as above applies also to msprime tree sequences (which is really not that surprising, given that it's all tskit under the hood).
 
@@ -186,7 +186,7 @@ ts <- ts_read(msprime_trees_file)
 ts_nodes(ts)
 ```
 
-#### Spatial SLiM (non-slendr) tree sequences
+## Spatial SLiM tree sequences
 
 Furthermore, the generalized interface also supports _slendr_'s [spatial tree-sequence features](https://bodkan.net/slendr/articles/vignette-06-locations.html), with all the [bells and whistles](https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5).
 
