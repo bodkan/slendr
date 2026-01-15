@@ -9,6 +9,12 @@
 
 ([PR #188](https://github.com/bodkan/slendr/pull/188))
 
+- _tskit_ used by _slendr_'s internal Python environment has been updated to
+version 1.0.0. As a result, updating _slendr_ to version 1.4.0 will require
+re-running `setup_env()`. We note that the _tskit_ update does not come with
+any apparent backwards incompatibility issues.
+([PR #190](https://github.com/bodkan/slendr/pull/190))
+
 - Due to issues on a user's system with the Python 3.13 binary installed by
 conda (related to the built-in `pyexpat` module), _slendr_ now reverted to Python
 3.12. As far as we can tell, this is related to either a broken Python 3.13
