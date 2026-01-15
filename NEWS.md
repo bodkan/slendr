@@ -1,4 +1,4 @@
-# slendr (development version)
+# slendr 1.4.0
 
 - Two new arguments of `gene_flow()` specifying the magnitude of migration have been implemented, clarifying confusion in the original implementation (see [#99](https://github.com/bodkan/slendr/issues/99) for an example):
 
