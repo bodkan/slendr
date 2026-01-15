@@ -273,7 +273,7 @@ back end. After all, our model is non-spatial and using a coalescent
 simulator will be much more efficient than the forward simulation.
 Switching between the msprime and SLiM back ends of slendr is
 demonstrated in much more detail in a [dedicated
-vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html).
+vignette](https://bodkan.net/slendr/articles/vignette-07-engines.html).
 
 The simulation back end utilized by the
 [`msprime()`](https://bodkan.net/slendr/reference/msprime.md) function
@@ -1394,5 +1394,5 @@ our [GitHub page](https://github.com/bodkan/slendr/issues).
 Finally, if you would like to see more examples of *tskit* interface in
 action, take a look at the vignette which describes [switching between
 the SLiM and *msprime* back
-ends](https://bodkan.net/slendr/articles/vignette-07-backends.html) of
+ends](https://bodkan.net/slendr/articles/vignette-07-engines.html) of
 the *slendr* package.

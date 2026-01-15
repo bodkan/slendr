@@ -158,7 +158,7 @@ vignette](https://bodkan.net/slendr/articles/vignette-05-tree-sequences.html)
 for more information about tree sequence analysis with *slendr*, and for
 more discussion on alternative simulation back ends and more extensive
 examples of data analysis with tree sequences you can read [this
-tutorial](https://bodkan.net/slendr/articles/vignette-07-backends.html).
+tutorial](https://bodkan.net/slendr/articles/vignette-07-engines.html).
 
 ## Extracting parameters from a model or tree sequences
 

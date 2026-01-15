@@ -516,7 +516,7 @@ the full functionality of the *slendr* package. There is much more to
   coalescent counterparts, we also provide functionality allowing to
   simulate *slendr* models (without any change!) using a built-in
   *msprime* back end script. See [this
-  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-07-engines.html)
   for a tutorial on how this works.
 
 - You can extend traditional, non-spatial SLiM-based *slendr* models

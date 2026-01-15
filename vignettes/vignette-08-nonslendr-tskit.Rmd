@@ -144,7 +144,7 @@ tree <- ts_phylo(ts_small, 42 - 1)
 tree
 ```
 
-Once we have that R tree object, we can use packages like [ggtree](https://yulab-smu.top/treedata-book/) to visualize the tree (any other phylogenetic package would work too). Note that because nodes of 'ape phylo' trees must conform to a strict format (they must be labelled `1...N`), we will extract the information about the node IDs in the tskit tree-sequence data to be able to plot them in the tree.
+Once we have that R tree object, we can use packages like _gtree_ to visualize the tree (any other phylogenetic package would work too). Note that because nodes of 'ape phylo' trees must conform to a strict format (they must be labelled `1...N`), we will extract the information about the node IDs in the tskit tree-sequence data to be able to plot them in the tree.
 
 ```{r, nonslendr_tree, eval = slendr::check_dependencies(python = TRUE, slim = TRUE) && Sys.getenv("R_HAS_GGTREE") == TRUE && Sys.getenv("RUNNER_OS") != "Windows"}
 library(ggtree)

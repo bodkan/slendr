@@ -60,7 +60,7 @@ interconnected units:
     do not need an explicit geographic map and can be simulated either
     with the same built-in SLiM back end script, or with a more
     efficient [*msprime* back
-    end](https://bodkan.net/slendr/articles/vignette-07-backends.html)
+    end](https://bodkan.net/slendr/articles/vignette-07-engines.html)
     which is also provided with the package.
 
 The most important design objective was to make the integration of
@@ -900,7 +900,7 @@ than what we demonstrated here. For instance:
   vignette](https://bodkan.net/slendr/articles/vignette-04-nonspatial-models.html)
   and a much more detailed example in a vignette about [SLiM and
   *msprime* back
-  ends](https://bodkan.net/slendr/articles/vignette-07-backends.html).
+  ends](https://bodkan.net/slendr/articles/vignette-07-engines.html).
 
 - You can build complex spatial models which are still abstract (not
   assuming any real geographic location), including traditional
@@ -917,5 +917,5 @@ than what we demonstrated here. For instance:
   process simulated data at a massive scale right at your fingertips,
   all within the convenient environment of R. See a much more detailed
   example in a vignette about [this
-  vignette](https://bodkan.net/slendr/articles/vignette-07-backends.html)
+  vignette](https://bodkan.net/slendr/articles/vignette-07-engines.html)
   for an extensive tutorial of this feature.
