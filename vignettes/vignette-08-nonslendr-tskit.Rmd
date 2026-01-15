@@ -1,9 +1,9 @@
 ---
-title: "Pure SLiM and _msprime_ tree sequences"
+title: "Standard SLiM and msprime tree sequences"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
-  %\VignetteIndexEntry{Analyzing non-slendr tree sequences}
+  %\VignetteIndexEntry{Standard SLiM and msprime tree sequences}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
