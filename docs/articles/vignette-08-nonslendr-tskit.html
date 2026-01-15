@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Analyzing non-slendr tree sequences • slendr</title>
+<title>Standard SLiM and msprime tree sequences • slendr</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Analyzing non-slendr tree sequences">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Standard SLiM and msprime tree sequences">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -47,7 +47,7 @@
     <li><a class="dropdown-item" href="../articles/vignette-05-tree-sequences.html">Tree sequence processing and statistics</a></li>
     <li><a class="dropdown-item" href="../articles/vignette-06-locations.html">Spatially annotated tree sequences</a></li>
     <li><a class="dropdown-item" href="../articles/vignette-07-backends.html">Simulating data with SLiM and msprime backends</a></li>
-    <li><a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Analyzing non-slendr tree sequences</a></li>
+    <li><a class="dropdown-item" href="../articles/vignette-08-nonslendr-tskit.html">Standard SLiM and msprime tree sequences</a></li>
     <li><a class="dropdown-item" href="../articles/vignette-09-paper.html">Examples from the slendr paper</a></li>
     <li><a class="dropdown-item" href="../articles/vignette-10-tracts.html">Extracting true ancestry tracts</a></li>
     <li><a class="dropdown-item" href="../articles/vignette-11-extensions.html">Extending models with custom SLiM code</a></li>
@@ -69,7 +69,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Analyzing non-slendr tree sequences</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Standard SLiM and msprime tree sequences</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/vignettes/vignette-08-nonslendr-tskit.Rmd" class="external-link"><code>vignettes/vignette-08-nonslendr-tskit.Rmd</code></a></small>
@@ -116,9 +116,9 @@ provided by <em>slendr</em></a>.</p>
 <span></span>
 <span><span class="va">SEED</span> <span class="op">&lt;-</span> <span class="fl">42</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="va">SEED</span><span class="op">)</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="non-spatial-slim-tree-sequences">Non-spatial SLiM tree sequences<a class="anchor" aria-label="anchor" href="#non-spatial-slim-tree-sequences"></a>
-</h4>
+<div class="section level2">
+<h2 id="slim-tree-sequences">SLiM tree sequences<a class="anchor" aria-label="anchor" href="#slim-tree-sequences"></a>
+</h2>
 <p>Consider the following SLiM script, which creates a couple of
 populations (with different
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>e</mi></msub><annotation encoding="application/x-tex">N_e</annotation></semantics></math>)
@@ -151,7 +151,7 @@ splitting from an ancestral population <code>p1</code> (lets save it to
 }
 
 6000 late() {
-    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//Rtmp3YB6g0/file10162575f4533");
+    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpdTZaNc/file12a8060f99cc9");
 }</code></pre>
 <p>After we run this script in SLiM, we can use <em>slendr</em> to load
 the output tree sequence (saved to
@@ -272,9 +272,9 @@ tree.</p>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html" class="external-link">nodelabels</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html" class="external-link">tiplabels</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="msprime-non-slendr-tree-sequences">msprime (non-slendr) tree sequences<a class="anchor" aria-label="anchor" href="#msprime-non-slendr-tree-sequences"></a>
-</h4>
+<div class="section level2">
+<h2 id="msprime-tree-sequences">msprime tree sequences<a class="anchor" aria-label="anchor" href="#msprime-tree-sequences"></a>
+</h2>
 <p>The same as above applies also to msprime tree sequences (which is
 really not that surprising, given that it’s all tskit under the
 hood).</p>
@@ -303,9 +303,9 @@ and analyze it with the slendr functionality:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 0         <span style="color: #BB0000;">NA</span>       9     0          0 TRUE         0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 189 more rows</span></span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="spatial-slim-non-slendr-tree-sequences">Spatial SLiM (non-slendr) tree sequences<a class="anchor" aria-label="anchor" href="#spatial-slim-non-slendr-tree-sequences"></a>
-</h4>
+<div class="section level2">
+<h2 id="spatial-slim-tree-sequences">Spatial SLiM tree sequences<a class="anchor" aria-label="anchor" href="#spatial-slim-tree-sequences"></a>
+</h2>
 <p>Furthermore, the generalized interface also supports
 <em>slendr</em>’s <a href="https://bodkan.net/slendr/articles/vignette-06-locations.html">spatial
 tree-sequence features</a>, with all the <a href="https://bodkan.net/slendr/articles/vignette-09-paper.html#example-4-figure-5">bells
@@ -344,7 +344,7 @@ modifyChild() {
 }
 
 10000 late() {
-    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//Rtmp3YB6g0/file101626a7dd72c");
+    sim.treeSeqOutput("/var/folders/lq/bl36db_s6w908hnjkntdp4140000gn/T//RtmpdTZaNc/file12a80549a4cc");
 }</code></pre>
 <p>We can then load and simplify the output tree sequence in just as we
 did above in this vignette (or anywhere in the <em>slendr</em>
