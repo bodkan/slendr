@@ -1,9 +1,7 @@
 # In this script we test that all deprecated functions and arguments issue
 # a proper warning for users
 
-skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
-
 init_env(quiet = TRUE)
 
 test_that("ts_load() deprecated in favour of ts_read()", {

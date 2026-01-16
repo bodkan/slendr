@@ -1,4 +1,3 @@
-skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
 
 test_that("minimal tree sequence (nodes+edges) is correctly loaded", {

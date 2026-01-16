@@ -1,4 +1,3 @@
-skip_on_cran()
 skip_if(!check_dependencies(python = TRUE, slim = TRUE))
 
 init_env(quiet = TRUE)

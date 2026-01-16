@@ -1,3 +1,5 @@
+skip_on_cran()
+
 map <- readRDS("map.rds")
 pop <- population("pop1", N = 100, time = 100,
                   center = c(0, 25), radius = 100000, map = map, intersect = FALSE)

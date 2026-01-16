@@ -1,4 +1,3 @@
-skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
 
 # Run a given forward/backward simulation with different combinations

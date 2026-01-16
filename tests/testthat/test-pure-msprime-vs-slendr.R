@@ -1,9 +1,7 @@
 # This unit test script makes sure that a trivially simple slendr model gives exactly the same
 # result (i.e. tree sequence tables) after loading than a pure SLiM script
 
-skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
-
 init_env(quiet = TRUE)
 
 # number of individuals in a populations
