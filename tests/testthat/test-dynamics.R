@@ -1,3 +1,5 @@
+skip_on_cran()
+
 map <- readRDS("map.rds")
 
 test_that("move requires overlap between 0 and 1", {

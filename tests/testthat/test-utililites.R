@@ -1,3 +1,5 @@
+skip_on_cran()
+
 test_that("distances beyond the world dimension throw and error", {
   map <- readRDS("map.rds")
   xrange <- diff(sf::st_bbox(map)[c("xmin", "xmax")])

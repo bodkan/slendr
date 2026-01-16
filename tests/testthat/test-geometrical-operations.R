@@ -1,3 +1,5 @@
+skip_on_cran()
+
 test_that("circular ranges need two parameters", {
   map <- readRDS("map.rds")
   expect_error(

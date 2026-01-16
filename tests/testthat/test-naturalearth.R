@@ -1,3 +1,5 @@
+skip_on_cran()
+
 test_that("all three variants of the Natural Earth data can be downloaded", {
   invisible(capture.output(small <- world(xrange = c(-15, 40), yrange = c(30, 60), crs = "EPSG:3035")))
   invisible(capture.output(small2 <- world(xrange = c(-15, 40), yrange = c(30, 60), crs = "EPSG:3035", scale = "small")))

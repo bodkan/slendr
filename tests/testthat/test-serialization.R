@@ -1,3 +1,5 @@
+skip_on_cran()
+
 # spatial models ----------------------------------------------------------
 
 test_that("read_model() restores a single-map model object", {
