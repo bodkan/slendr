@@ -1,3 +1,4 @@
+skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
 
 pop <- population("POP", time = 1, N = 100)

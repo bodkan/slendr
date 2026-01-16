@@ -1,3 +1,4 @@
+skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
 
 map <- world(xrange = c(0, 1e6), yrange = c(0, 1e6), landscape = "blank")

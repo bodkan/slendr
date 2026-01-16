@@ -1,4 +1,6 @@
+skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
+
 init_env(quiet = TRUE)
 
 pop <- population("pop", time = 1, N = 10)

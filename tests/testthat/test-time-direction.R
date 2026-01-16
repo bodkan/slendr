@@ -1,6 +1,6 @@
-# skip_if(TRUE)
-
+skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
+
 init_env(quiet = TRUE)
 
 test_that("forward and backward time model objects are equivalent", {

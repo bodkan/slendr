@@ -1,8 +1,9 @@
-msg <- "Cannot schedule sampling"
-
+skip_on_cran()
 skip_if(!check_dependencies(python = TRUE))
 
 init_env(quiet = TRUE)
+
+msg <- "Cannot schedule sampling"
 
 test_that("sampling from a population which is not present is prevented (forward)", {
   map <- world(xrange = c(0, 100), yrange = c(0, 100), landscape = "blank")
