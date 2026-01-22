@@ -626,6 +626,9 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 #' ts_ext
 #' @export
 ts_extend <- function(ts, iterations = 10) {
+  if (!is.numeric(iterations) || iterations %% 1 != 0 || iterations <= 0)
+    stop("Iterations number must be a non-negative, non-zero integer", call. = FALSE)
+
   check_ts_class(ts)
 
   model <- attr(ts, "model")
