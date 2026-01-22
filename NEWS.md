@@ -1,3 +1,10 @@
+# slendr (development version)
+
+- The release of pandas 3.0.0 has caused a breakage at the interface between Python
+and R in the internals of slendr. Because the exact version of pandas does not
+concern slendr users, we have resorted to locking pandas to version 2.3.3
+for the time being. ([PR #192](https://github.com/bodkan/slendr/pull/192))
+
 # slendr 1.4.0
 
 - An issue with plotting "truncated" backwards time models using `plot_model()` has been fixed.
