@@ -589,10 +589,10 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   ts_new
 }
 
-#' Extend the span of sequence covered by ancestral nodes (EXPERIMENTAL)
+#' Extend the span of sequences covered by ancestral nodes (EXPERIMENTAL)
 #'
-#' Perform the "extend haplotypes" algorithm to extend the span of sequence
-#' covered by ancestral nodes as implemented by the tskit method
+#' Run the "extend haplotypes" algorithm to extend the span of sequence
+#' covered by ancestral nodes, as implemented by the tskit method
 #' \code{TreeSequence.extend_haplotypes}.
 #'
 #' For more details about this functionality, please read the following
@@ -602,8 +602,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 #' \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.extend_haplotypes}
 #'
 #' Note that this function has been currently tested exclusively on tree
-#' sequences simulated by slendr's simulation engine implemented by the function
-#' \code{msprime()} executed with \code{coalescent_only = FALSE}.
+#' sequences simulated by slendr's \code{msprime()} simulation engine.
 #'
 #' @param ts Tree sequence object
 #' @param iterations Maximum number of iterations over the tree sequence

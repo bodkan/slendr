@@ -2,7 +2,7 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_extend}
 \alias{ts_extend}
-\title{Extend the span of sequence covered by ancestral nodes (EXPERIMENTAL)}
+\title{Extend the span of sequences covered by ancestral nodes (EXPERIMENTAL)}
 \usage{
 ts_extend(ts, iterations = 10)
 }
@@ -16,8 +16,8 @@ ts_extend(ts, iterations = 10)
 Tree-sequence object of the class \code{slendr_ts}
 }
 \description{
-Perform the "extend haplotypes" algorithm to extend the span of sequence
-covered by ancestral nodes as implemented by the tskit method
+Run the "extend haplotypes" algorithm to extend the span of sequence
+covered by ancestral nodes, as implemented by the tskit method
 \code{TreeSequence.extend_haplotypes}.
 }
 \details{
@@ -30,8 +30,7 @@ resources:
 }
 
 Note that this function has been currently tested exclusively on tree
-sequences simulated by slendr's simulation engine implemented by the function
-\code{msprime()} executed with \code{coalescent_only = FALSE}.
+sequences simulated by slendr's \code{msprime()} simulation engine.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
