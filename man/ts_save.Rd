@@ -7,7 +7,7 @@
 ts_save(ts, file)
 }
 \arguments{
-\item{ts}{Tree sequence object loaded by \code{ts_read}}
+\item{ts}{Tree sequence object}
 
 \item{file}{File to which the tree sequence should be saved}
 }

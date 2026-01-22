@@ -136,7 +136,7 @@ ts_load <- function(file, model = NULL) {
 
 #' Save a tree sequence to a file
 #'
-#' @param ts Tree sequence object loaded by \code{ts_read}
+#' @param ts Tree sequence object
 #' @param file File to which the tree sequence should be saved
 #'
 #' @return No return value, called for side effects
@@ -191,7 +191,7 @@ ts_write <- function(ts, file) {
 #'
 #' Deprecated function. Please use \code{ts_write} instead.
 #'
-#' @param ts Tree sequence object loaded by \code{ts_read}
+#' @param ts Tree sequence object
 #' @param file File to which the tree sequence should be saved
 #'
 #' @export
@@ -209,7 +209,7 @@ ts_save <- function(ts, file) {
 
 #' Recapitate the tree sequence
 #'
-#' @param ts Tree sequence object loaded by \code{ts_read}
+#' @param ts Tree sequence object
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
 #' @param demography Ancestral demography to be passed internally to
