@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">slendr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,10 @@
       <small>Source: <a href="https://github.com/bodkan/slendr/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="slendr-development-version">slendr (development version)<a class="anchor" aria-label="anchor" href="#slendr-development-version"></a></h2>
+<ul><li>The release of pandas 3.0.0 has caused a breakage at the interface between Python and R in the internals of slendr. Because the exact version of pandas does not concern slendr users, we have resorted to locking pandas to version 2.3.3 for the time being. (<a href="https://github.com/bodkan/slendr/pull/192" class="external-link">PR </a><a href="https://github.com/bodkan/slendr/issues/192" class="external-link">#192</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.4.0" id="slendr-140">slendr 1.4.0<a class="anchor" aria-label="anchor" href="#slendr-140"></a></h2><p class="text-muted">CRAN release: 2026-01-16</p>
 <ul><li><p>An issue with plotting “truncated” backwards time models using <code><a href="../reference/plot_model.html">plot_model()</a></code> has been fixed. (issue <a href="https://github.com/bodkan/slendr/issues/189" class="external-link">#189</a></p></li>

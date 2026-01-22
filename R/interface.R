@@ -1534,9 +1534,9 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
       # on M-architecture Macs, so they will need to be installed by pip
       # no matter the user's preference (given by the pip function argument value)
       # TODO: check at some point later if tspop / pyslim are on conda for all systems
-      which_tspop_and_pyslim <- grepl("tspop|pyslim", package_versions)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!which_tspop_and_pyslim], pip = pip)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = c(package_versions[which_tspop_and_pyslim], "pyarrow"), pip = TRUE)
+      which_tspop_pyslim_pandas <- grepl("tspop|pyslim", package_versions)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!which_tspop_pyslim_pandas], pip = pip)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = c(package_versions[which_tspop_pyslim_pandas], "pandas==2.3.3", "pyarrow"), pip = TRUE)
 
       if (!quiet) {
         message("======================================================================")
