@@ -597,7 +597,7 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
 #'
 #' For more details about this functionality, please read the following
 #' resources:
-#' 1. Paper by Fritz et al. 2025 (\doi{10.1093/genetics/iyaf198})
+#' 1. Paper by Fritze et al. 2025 (\doi{10.1093/genetics/iyaf198})
 #' 2. Official tskit documentation at
 #' \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.extend_haplotypes}
 #'

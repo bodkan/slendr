@@ -24,7 +24,7 @@ covered by ancestral nodes, as implemented by the tskit method
 For more details about this functionality, please read the following
 resources:
 \enumerate{
-\item Paper by Fritz et al. 2025 (\doi{10.1093/genetics/iyaf198})
+\item Paper by Fritze et al. 2025 (\doi{10.1093/genetics/iyaf198})
 \item Official tskit documentation at
 \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.extend_haplotypes}
 }
