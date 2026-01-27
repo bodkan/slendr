@@ -13,7 +13,7 @@ ts_recapitate(
 )
 }
 \arguments{
-\item{ts}{Tree sequence object loaded by \code{ts_read}}
+\item{ts}{Tree sequence object}
 
 \item{recombination_rate}{A constant value of the recombination rate}
 

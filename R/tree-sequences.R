@@ -136,7 +136,7 @@ ts_load <- function(file, model = NULL) {
 
 #' Save a tree sequence to a file
 #'
-#' @param ts Tree sequence object loaded by \code{ts_read}
+#' @param ts Tree sequence object
 #' @param file File to which the tree sequence should be saved
 #'
 #' @return No return value, called for side effects
@@ -191,7 +191,7 @@ ts_write <- function(ts, file) {
 #'
 #' Deprecated function. Please use \code{ts_write} instead.
 #'
-#' @param ts Tree sequence object loaded by \code{ts_read}
+#' @param ts Tree sequence object
 #' @param file File to which the tree sequence should be saved
 #'
 #' @export
@@ -209,7 +209,7 @@ ts_save <- function(ts, file) {
 
 #' Recapitate the tree sequence
 #'
-#' @param ts Tree sequence object loaded by \code{ts_read}
+#' @param ts Tree sequence object
 #' @param recombination_rate A constant value of the recombination rate
 #' @param Ne Effective population size during the recapitation process
 #' @param demography Ancestral demography to be passed internally to
@@ -583,6 +583,80 @@ ts_mutate <- function(ts, mutation_rate, random_seed = NULL,
   attr(ts_new, "nodes") <- attr(ts, "nodes")
 
   attr(ts_new, "path") <- attr(ts, "path")
+
+  class(ts_new) <- c("slendr_ts", class(ts_new))
+
+  ts_new
+}
+
+#' Extend the span of sequences covered by ancestral nodes (EXPERIMENTAL)
+#'
+#' Run the "extend haplotypes" algorithm to extend the span of sequence
+#' covered by ancestral nodes, as implemented by the tskit method
+#' \code{TreeSequence.extend_haplotypes}.
+#'
+#' For more details about this functionality, please read the following
+#' resources:
+#' 1. Paper by Fritze et al. 2025 (\doi{10.1093/genetics/iyaf198})
+#' 2. Official tskit documentation at
+#' \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.extend_haplotypes}
+#'
+#' Note that this function has been currently tested exclusively on tree
+#' sequences simulated by slendr's \code{msprime()} simulation engine.
+#'
+#' @param ts Tree sequence object
+#' @param iterations Maximum number of iterations over the tree sequence
+#'   (default is 10)
+#'
+#' @return Tree-sequence object of the class \code{slendr_ts}
+#'
+#' @examples
+#' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
+#' }
+#' init_env()
+#'
+#' # load an example model with an already simulated tree sequence
+#' slendr_ts <- system.file("extdata/models/introgression_msprime.trees", package = "slendr")
+#' model <- read_model(path = system.file("extdata/models/introgression", package = "slendr"))
+#'
+#' ts <- ts_read(slendr_ts, model)
+#' ts_ext <- ts_extend(ts, iterations = 10)
+#'
+#' ts_ext
+#' @export
+ts_extend <- function(ts, iterations = 10) {
+  if (!is.numeric(iterations) || iterations %% 1 != 0 || iterations <= 0)
+    stop("Iterations number must be a non-negative, non-zero integer", call. = FALSE)
+
+  check_ts_class(ts)
+
+  model <- attr(ts, "model")
+  type <- attr(ts, "type")
+  spatial <- attr(ts, "spatial")
+
+  ts_new <- ts$extend_haplotypes(as.integer(iterations))
+
+  # copy attributes over to the new tree-sequence object or generate updates
+  # ones where necessary
+  attr(ts_new, "model") <- model
+  attr(ts_new, "type") <- type
+  attr(ts_new, "spatial") <- spatial
+  attr(ts_new, "metadata") <- attr(ts, "metadata")
+
+  attr(ts_new, "recapitated") <- TRUE
+  attr(ts_new, "simplified") <- attr(ts, "simplified")
+  attr(ts_new, "mutated") <- attr(ts, "mutated")
+
+  attr(ts_new, "raw_nodes") <- get_ts_raw_nodes(ts_new)
+  attr(ts_new, "raw_edges") <- get_ts_raw_edges(ts_new)
+
+  attr(ts_new, "raw_individuals") <- get_ts_raw_individuals(ts_new)
+  attr(ts_new, "raw_mutations") <- get_ts_raw_mutations(ts_new)
+  attr(ts_new, "raw_sites") <- get_ts_raw_sites(ts_new)
+
+  attr(ts_new, "path") <- attr(ts, "path")
+
+  attr(ts_new, "nodes") <- if (type == "SLiM") get_pyslim_table_data(ts_new) else get_tskit_table_data(ts_new)
 
   class(ts_new) <- c("slendr_ts", class(ts_new))
 
