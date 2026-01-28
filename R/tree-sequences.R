@@ -88,9 +88,12 @@ ts_read <- function(file, model = NULL) {
 
   attr(ts, "metadata") <- get_slendr_metadata(ts)
 
+  # TODO: These probably should be read from the serialized tree sequence in some
+  #       form?
   attr(ts, "recapitated") <- FALSE
   attr(ts, "simplified") <- FALSE
   attr(ts, "mutated") <- FALSE
+  attr(ts, "extended") <- FALSE
 
   class(ts) <- c("slendr_ts", class(ts))
 
@@ -646,6 +649,7 @@ ts_extend <- function(ts, iterations = 10) {
   attr(ts_new, "recapitated") <- TRUE
   attr(ts_new, "simplified") <- attr(ts, "simplified")
   attr(ts_new, "mutated") <- attr(ts, "mutated")
+  attr(ts_new, "extended") <- TRUE
 
   attr(ts_new, "raw_nodes") <- get_ts_raw_nodes(ts_new)
   attr(ts_new, "raw_edges") <- get_ts_raw_edges(ts_new)
@@ -1799,58 +1803,49 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
     return(FALSE)
 }
 
-#' Collect Identity-by-Descent (IBD) segments (EXPERIMENTAL)
+#' Extract Identity-by-Descent (IBD) segments (EXPERIMENTAL)
 #'
-#' This function iterates over a tree sequence and returns IBD tracts between
-#' pairs of individuals or nodes
+#' This function extracts IBD segments between pairs of individuals or nodes
+#' from a given tree sequence.
 #'
-#' This function is considered experimental. For full control over IBD segment
+#' This function is considered highly experimental. For full control over IBD segment
 #' detection in tree-sequence data, users can (and perhaps, for the time being,
 #' should) rely on the tskit method \code{ibd_segments}
-#' (see <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments>).
+#' (see <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments>)
+#' rather than on this R function.
 #'
-#' Iternally, this function leverages the tskit \code{TreeSequence} method
-#' \code{ibd_segments}. However, note that the \code{ts_ibd} function always
-#' returns a data frame of IBD tracts, it does not provide an option to iterate
-#' over individual IBD segments as shown in the official tskit documentation
-#' at <https://tskit.dev/tskit/docs/stable/ibd.html>. In general, R handles
-#' heavy iteration poorly, and this function does not attempt to serve as
-#' a full wrapper to \code{ibd_segments}.
-#'
-#' Unfortunately, the distinction between "squashed IBD" (what many would consider
-#' to be the expected definition of IBD) and tskit’s IBD which is defined via
-#' distinct genealogical paths (see <https://github.com/tskit-dev/tskit/issues/2459>
-#' for a discussion of the topic), makes the meaning of the filtering parameter
-#' of the \code{ibd_segments()} method of tskit \code{minimum_length} somewhat
-#' unintuitive. As of this moment, this function argument filters on IBD segments
-#' on the tskit level, not the level of the squashed IBD segments!
+#' This is particularly because of the fact that, similarly to many other
+#' tskit-based functions provided by slendr, \code{ts_ibd()} has a very
+#' opinionated interface and makes strong assumptions about the kind of IBD
+#' segments the user is interested in extracting. Briefly, \code{ts_ibd()}
+#' only extracts IBD segments in a "squashed" form, and thus does not provide
+#' means to filter out IBD segments based on their lengths as one might do
+#' in a tskit's own assumption of what is considered to be a unique IBD segment.
+#' See <https://github.com/tskit-dev/tskit/issues/2459> for more context.
+#' Furthermore, in order to return IBD segments as close to their traditional
+#' definition (which is slightly different from tskit's own definition), this
+#' function implicitly assumes that the given tree sequence has been processed
+#' by the "extend haplotypes" algorithm as described by Fritze et al. 2025
+#' (\doi{10.1093/genetics/iyaf198}) and available under the slendr function
+#' \code{ts_extend()}.
 #'
 #' @param ts Tree sequence object of the class \code{slendr_ts}
-#' @param coordinates Should coordinates of all detected IBD tracts be reported?
-#'   If \code{FALSE} (the default), only the total length of shared IBD segments
-#'   and their numbers are reported. If \code{TRUE}, coordinates of each segment
-#'   will be returned (but note that this can have a massive impact on memory
-#'   usage). See details for more information.
 #' @param within A character vector with individual names or an integer vector with
 #'   node IDs indicating a set of nodes within which to look for IBD segments.
 #' @param between A list of lists of character vectors with individual names or
 #'   integer vectors with node IDs, indicating a set of nodes between which to
 #'   look for shared IBD segments.
-#' @param squash Should adjacent IBD segments for pairs of nodes be squashed if they
-#'   only differ by their 'genealogical paths' but not by their MRCA? Default is
-#'   \code{FALSE}. For more context, see <https://github.com/tskit-dev/tskit/issues/2459>.
-#'   This option is EXPERIMENTAL!
-#' @param minimum_length Minimum length of an IBD segment to return in results.
-#'   This is useful for reducing the total amount of IBD returned (but see Details).
 #' @param maximum_time Oldest MRCA of a node to be considered as an IBD ancestor
 #'   to return that IBD segment in results. This is useful for reducing the total
 #'   amount of IBD returned.
 #' @param sf If IBD segments in a spatial tree sequence are being analyzed, should
 #'   the returned table be a spatial sf object? Default is \code{TRUE}.
 #'
-#' @return A data frame with IBD results (either coordinates of each IBD segment
-#'   shared by a pair of nodes, or summary statistics about the total IBD sharing
-#'   for that pair)
+#' @return A data frame with IBD coordinates of each IBD segment shared by a
+#'   pair of nodes
+#'
+#' @seealso \code{\link{ts_extend}} for information about the "extend haplotypes"
+#'   procedure
 #'
 #' @examples
 #' \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
@@ -1872,28 +1867,20 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'   minimum_length = 40000
 #' )
 #' @export
-ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squash = FALSE,
-                   minimum_length = NULL, maximum_time = NULL, sf = TRUE) {
+ts_ibd <- function(ts, within = NULL, between = NULL, maximum_time = NULL, sf = TRUE) {
   # make sure warnings are reported immediately
   opts <- options(warn = 1)
   on.exit(options(opts))
 
-  if (squash && !is.null(minimum_length)) {
-    warning("Please note that when 'squashed' IBD segments are requested,\n",
-            "the minimum IBD length cut off involves the 'distinct genealogical path'\n",
-            "IBD segments at the tskit level, not the length of the squashed IBD\n",
-            "segments. See the documentation of `ts_ibd()` for more detail and\n",
-            "additional information.", call. = FALSE)
-  }
-
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
 
-  if (is.null(minimum_length) && is.null(maximum_time))
-    warning("No minimum IBD length (minimum_length) or maximum age of an IBD\nancestor ",
-            "(maximum_time) has been provided. As a result all IBD tracts will be\n",
-            "reported. Depending on the size of your tree sequence, this might produce\n",
-            "extremely huge amount of data.", call. = FALSE)
+  if (!attr(ts, "extended")) {
+    warning("It looks like the tree sequence was not processed by the 'extend\n",
+            "haplotypes' algorithm (`ts_extend()`) before attempting to extract IBD\n",
+            "segments. Make sure this is what you intended.", call. = FALSE)
+  }
+
   if (!is.null(within))
     within <- unlist(purrr::map(within, ~ get_node_ids(ts, .x)))
   else if (!is.null(between)) {
@@ -1904,18 +1891,14 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
     # names(between) <- NULL
   }
 
-  result <- reticulate::py[["__slendr_collect_ibd"]](
-      ts,
-      coordinates = coordinates,
-      within = within,
-      between = between,
-      min_span = minimum_length,
-      max_time = maximum_time,
-      squash = squash
-  )
+  # reticulate::py_run_file("inst/pylib/pylib.py")
+  # reticulate::repl_python()
+  # __slendr_collect_ibd(r.ts, within=None, between=None, max_timeNone)
+  result <- reticulate::py[["__slendr_collect_ibd"]](ts, within, between, maximum_time)
 
-  # drop a useless internal attribute (not a loss of information -- *we* are the ones
+  # drop a useless internal attribute (not a loss of information -- we are the ones
   # who created the pandas DataFrame in the first place)
+  # TODO: after pandas 3.0.0 this is broken (most likely problem on reticulate's part)
   attr(result, "pandas.index") <- NULL
 
   if (!nrow(result)) return(result)
@@ -1940,7 +1923,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
       dplyr::rename(node2_location = location)
 
     result <- purrr::map2(
-      result$node1_location, result$node2_location, ~
+      result$node1_location, result$node2_location, ~ {
         if (.x == .y)
           sf::st_sf(connection = sf::st_sfc(sf::st_linestring()), crs = sf::st_crs(nodes))
         else {
@@ -1949,7 +1932,7 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
           sf::st_sfc() %>%
           sf::st_sf(connection = ., crs = sf::st_crs(nodes))
         }
-      ) %>%
+      }) %>%
       dplyr::bind_rows() %>%
       dplyr::bind_cols(result, .) %>%
         sf::st_set_geometry("connection") %>%
@@ -1963,12 +1946,8 @@ ts_ibd <- function(ts, coordinates = FALSE, within = NULL, between = NULL, squas
     result[["pop2"]] <- sapply(result$node2, function(i) nodes[nodes$node_id == i, ]$pop)
   }
 
-  if (coordinates)
-    result <- dplyr::mutate(result, length = right - left) %>%
-      dplyr::select(node1, node2, length, mrca, node1_time, node2_time, tmrca, dplyr::everything())
-  else
-    result <- dplyr::select(result, node1, node2, count, total, node1_time, node2_time,
-                                    dplyr::everything())
+  result <- dplyr::mutate(result, length = right - left) %>%
+    dplyr::select(node1, node2, length, mrca, node1_time, node2_time, tmrca, dplyr::everything())
 
   result
 }

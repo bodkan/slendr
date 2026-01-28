@@ -2,27 +2,12 @@
 % Please edit documentation in R/tree-sequences.R
 \name{ts_ibd}
 \alias{ts_ibd}
-\title{Collect Identity-by-Descent (IBD) segments (EXPERIMENTAL)}
+\title{Extract Identity-by-Descent (IBD) segments (EXPERIMENTAL)}
 \usage{
-ts_ibd(
-  ts,
-  coordinates = FALSE,
-  within = NULL,
-  between = NULL,
-  squash = FALSE,
-  minimum_length = NULL,
-  maximum_time = NULL,
-  sf = TRUE
-)
+ts_ibd(ts, within = NULL, between = NULL, maximum_time = NULL, sf = TRUE)
 }
 \arguments{
 \item{ts}{Tree sequence object of the class \code{slendr_ts}}
-
-\item{coordinates}{Should coordinates of all detected IBD tracts be reported?
-If \code{FALSE} (the default), only the total length of shared IBD segments
-and their numbers are reported. If \code{TRUE}, coordinates of each segment
-will be returned (but note that this can have a massive impact on memory
-usage). See details for more information.}
 
 \item{within}{A character vector with individual names or an integer vector with
 node IDs indicating a set of nodes within which to look for IBD segments.}
@@ -30,14 +15,6 @@ node IDs indicating a set of nodes within which to look for IBD segments.}
 \item{between}{A list of lists of character vectors with individual names or
 integer vectors with node IDs, indicating a set of nodes between which to
 look for shared IBD segments.}
-
-\item{squash}{Should adjacent IBD segments for pairs of nodes be squashed if they
-only differ by their 'genealogical paths' but not by their MRCA? Default is
-\code{FALSE}. For more context, see \url{https://github.com/tskit-dev/tskit/issues/2459}.
-This option is EXPERIMENTAL!}
-
-\item{minimum_length}{Minimum length of an IBD segment to return in results.
-This is useful for reducing the total amount of IBD returned (but see Details).}
 
 \item{maximum_time}{Oldest MRCA of a node to be considered as an IBD ancestor
 to return that IBD segment in results. This is useful for reducing the total
@@ -47,35 +24,34 @@ amount of IBD returned.}
 the returned table be a spatial sf object? Default is \code{TRUE}.}
 }
 \value{
-A data frame with IBD results (either coordinates of each IBD segment
-shared by a pair of nodes, or summary statistics about the total IBD sharing
-for that pair)
+A data frame with IBD coordinates of each IBD segment shared by a
+pair of nodes
 }
 \description{
-This function iterates over a tree sequence and returns IBD tracts between
-pairs of individuals or nodes
+This function extracts IBD segments between pairs of individuals or nodes
+from a given tree sequence.
 }
 \details{
-This function is considered experimental. For full control over IBD segment
+This function is considered highly experimental. For full control over IBD segment
 detection in tree-sequence data, users can (and perhaps, for the time being,
 should) rely on the tskit method \code{ibd_segments}
-(see \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments}).
+(see \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments})
+rather than on this R function.
 
-Iternally, this function leverages the tskit \code{TreeSequence} method
-\code{ibd_segments}. However, note that the \code{ts_ibd} function always
-returns a data frame of IBD tracts, it does not provide an option to iterate
-over individual IBD segments as shown in the official tskit documentation
-at \url{https://tskit.dev/tskit/docs/stable/ibd.html}. In general, R handles
-heavy iteration poorly, and this function does not attempt to serve as
-a full wrapper to \code{ibd_segments}.
-
-Unfortunately, the distinction between "squashed IBD" (what many would consider
-to be the expected definition of IBD) and tskit’s IBD which is defined via
-distinct genealogical paths (see \url{https://github.com/tskit-dev/tskit/issues/2459}
-for a discussion of the topic), makes the meaning of the filtering parameter
-of the \code{ibd_segments()} method of tskit \code{minimum_length} somewhat
-unintuitive. As of this moment, this function argument filters on IBD segments
-on the tskit level, not the level of the squashed IBD segments!
+This is particularly because of the fact that, similarly to many other
+tskit-based functions provided by slendr, \code{ts_ibd()} has a very
+opinionated interface and makes strong assumptions about the kind of IBD
+segments the user is interested in extracting. Briefly, \code{ts_ibd()}
+only extracts IBD segments in a "squashed" form, and thus does not provide
+means to filter out IBD segments based on their lengths as one might do
+in a tskit's own assumption of what is considered to be a unique IBD segment.
+See \url{https://github.com/tskit-dev/tskit/issues/2459} for more context.
+Furthermore, in order to return IBD segments as close to their traditional
+definition (which is slightly different from tskit's own definition), this
+function implicitly assumes that the given tree sequence has been processed
+by the "extend haplotypes" algorithm as described by Fritze et al. 2025
+(\doi{10.1093/genetics/iyaf198}) and available under the slendr function
+\code{ts_extend()}.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
@@ -96,4 +72,8 @@ ts_ibd(
   between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")),
   minimum_length = 40000
 )
+}
+\seealso{
+\code{\link{ts_extend}} for information about the "extend haplotypes"
+procedure
 }

@@ -29,53 +29,41 @@ def __slendr_get_ancestral_states(ts):
   # https://github.com/rstudio/reticulate/issues/323)
   return [site.ancestral_state for site in ts.sites()]
 
-def __slendr_collect_ibd(ts, coordinates = False, within=None, between=None,
-               min_span=None, max_time=None, squash=False):
-    """Extract IBD fragments (or the summary of pairwise IBD sharing) from
-    a tree sequence.
-    """
-    # ts = r.ts
-    # coordinates = False; within=None; between=None;
-    # min_span=3e6; max_time=None; squash=True
+def __slendr_collect_ibd(ts, within=None, between=None, max_time=None):
+    """Extract (squashed) IBD tracts from the given tree sequence"""
     ibd_segments = ts.ibd_segments(
         within=within,
         between=between,
         store_pairs=True,
-        store_segments=coordinates,
-        min_span=min_span,
+        store_segments=True,
+        min_span=None,
         max_time=max_time
     )
+
     result = []
     for pair, ibd in ibd_segments.items():
-        if coordinates:
-            # sort all IBD segments between a given pair of nodes based on their position
-            # along the chromosome
-            ibd = sorted(ibd, key=lambda segment: segment.left)
-            if squash:
-                curr_left = ibd[0].left
-                curr_right = ibd[0].right
-                curr_mrca = ibd[0].node
-                for segment in ibd:
-                    next_mrca = segment.node
-                    if next_mrca != curr_mrca:
-                        result.append((pair[0], pair[1],
-                                       curr_mrca, ts.node(curr_mrca).time, curr_left, curr_right))
-                        curr_left, curr_mrca = segment.left, next_mrca
-                    curr_right = segment.right
-                result.append((pair[0], pair[1],
-                               curr_mrca, ts.node(curr_mrca).time, curr_left, segment.right))
-            else:
-                for segment in ibd:
-                    mrca = segment.node
-                    tmrca = ts.node(mrca).time
-                    result.append((pair[0], pair[1],
-                                mrca, tmrca, segment.left, segment.right))
-        else:
-            result.append((pair[0], pair[1], len(ibd), ibd.total_span))
+        # sort all segments for the given pair of nodes along the chromosome
+        ibd = sorted(ibd, key=lambda segment: segment.left)
 
-    if coordinates:
-        columns = ["node1", "node2", "mrca", "tmrca", "left", "right"]
-    else:
-        columns = ["node1", "node2", "count", "total"]
+        # initialize the information about the first IBD tract
+        prev_left = ibd[0].left
+        prev_right = ibd[0].right
+        prev_mrca = ibd[0].node
 
-    return pd.DataFrame(result, columns=columns)
+        for segment in ibd[1:]:
+            next_mrca = segment.node
+            # if the MRCA node of the next segment is different than that of
+            # the previous segment, the previous IBD tract has ended
+            if next_mrca != prev_mrca:
+                result.append((pair[0], pair[1], prev_mrca, ts.node(prev_mrca).time, prev_left, prev_right))
+                # ... then begin recording information about the following IBD
+                prev_left, prev_mrca = segment.left, next_mrca
+            # the right end of the current segment is the rightmost possible
+            # coordinate of the IBD segment that's being currently collected
+            prev_right = segment.right
+
+        # finally, record the last (yet unfinished) IBD tract based on the
+        # information from the final processed segment
+        result.append((pair[0], pair[1], prev_mrca, ts.node(prev_mrca).time, prev_left, segment.right))
+
+    return pd.DataFrame(result, columns=["node1", "node2", "mrca", "tmrca", "left", "right"])
