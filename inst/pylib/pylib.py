@@ -29,7 +29,7 @@ def __slendr_get_ancestral_states(ts):
   # https://github.com/rstudio/reticulate/issues/323)
   return [site.ancestral_state for site in ts.sites()]
 
-def __slendr_collect_ibd(ts, within=None, between=None, max_time=None):
+def __slendr_collect_ibd(ts, within=None, between=None, max_time=None, min_len=0):
     """Extract (squashed) IBD tracts from the given tree sequence"""
     ibd_segments = ts.ibd_segments(
         within=within,
@@ -55,7 +55,8 @@ def __slendr_collect_ibd(ts, within=None, between=None, max_time=None):
             # if the MRCA node of the next segment is different than that of
             # the previous segment, the previous IBD tract has ended
             if next_mrca != prev_mrca:
-                result.append((pair[0], pair[1], prev_mrca, ts.node(prev_mrca).time, prev_left, prev_right))
+                if prev_right - prev_left > min_len:
+                    result.append((pair[0], pair[1], prev_mrca, ts.node(prev_mrca).time, prev_left, prev_right))
                 # ... then begin recording information about the following IBD
                 prev_left, prev_mrca = segment.left, next_mrca
             # the right end of the current segment is the rightmost possible

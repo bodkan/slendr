@@ -1838,6 +1838,8 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' @param maximum_time Oldest MRCA of a node to be considered as an IBD ancestor
 #'   to return that IBD segment in results. This is useful for reducing the total
 #'   amount of IBD returned.
+#' @param minimum_length Minimum length of a ("squashed") IBD segment for it to
+#'   be included
 #' @param sf If IBD segments in a spatial tree sequence are being analyzed, should
 #'   the returned table be a spatial sf object? Default is \code{TRUE}.
 #'
@@ -1867,7 +1869,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'   minimum_length = 40000
 #' )
 #' @export
-ts_ibd <- function(ts, within = NULL, between = NULL, maximum_time = NULL, sf = TRUE) {
+ts_ibd <- function(ts, within = NULL, between = NULL, maximum_time = NULL, minimum_length = 0, sf = TRUE) {
   # make sure warnings are reported immediately
   opts <- options(warn = 1)
   on.exit(options(opts))
@@ -1894,7 +1896,7 @@ ts_ibd <- function(ts, within = NULL, between = NULL, maximum_time = NULL, sf = 
   # reticulate::py_run_file("inst/pylib/pylib.py")
   # reticulate::repl_python()
   # __slendr_collect_ibd(r.ts, within=None, between=None, max_timeNone)
-  result <- reticulate::py[["__slendr_collect_ibd"]](ts, within, between, maximum_time)
+  result <- reticulate::py[["__slendr_collect_ibd"]](ts, within, between, maximum_time, minimum_length)
 
   # drop a useless internal attribute (not a loss of information -- we are the ones
   # who created the pandas DataFrame in the first place)
