@@ -60,8 +60,10 @@ to be the expected definition of IBD) and tskit’s IBD which is defined via
 distinct genealogical paths (see \url{https://github.com/tskit-dev/tskit/issues/2459}
 for a discussion of the topic), makes the meaning of the filtering parameter
 of the \code{ibd_segments()} method of tskit \code{minimum_length} somewhat
-unintuitive. As of this moment, this function argument filters on IBD segments
-on the tskit level, not the level of the squashed IBD segments!
+unintuitive. As of this moment, the minimum length argument filters on IBD segments
+on the "squashed" level, not the level of smaller individual IBD segments
+which the tskit machinery operates with. Again, for more details, refer to the
+resources linked above.
 }
 \examples{
 \dontshow{check_dependencies(python = TRUE, quit = TRUE) # dependencies must be present
