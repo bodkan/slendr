@@ -1808,7 +1808,7 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' This function extracts IBD segments between pairs of individuals or nodes
 #' from a given tree sequence.
 #'
-#' This function is considered highly experimental. For full control over IBD segment
+#' The interface of this function is highly experimental. For full control over IBD segment
 #' detection in tree-sequence data, users can (and perhaps, for the time being,
 #' should) directly use the underlying tskit method \code{ibd_segments}
 #' (see <https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments>).
