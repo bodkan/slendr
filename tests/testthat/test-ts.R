@@ -719,8 +719,8 @@ test_that("all names of individuals must be present in the tree sequence", {
 test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (no CRS)", {
   suppressWarnings(ts_slim <- ts_read(model, file = slim_ts) %>% ts_simplify())
 
-  suppressWarnings(slim_ibd_sf <- ts_ibd(ts_slim, coordinates = TRUE))
-  suppressWarnings(slim_ibd_nosf <- ts_ibd(ts_slim, coordinates = TRUE, sf = FALSE))
+  suppressWarnings(slim_ibd_sf <- ts_ibd(ts_slim))
+  suppressWarnings(slim_ibd_nosf <- ts_ibd(ts_slim, sf = FALSE))
 
   # returned object is of a sf class (or not), as requested by the user
   expect_s3_class(slim_ibd_sf, "sf")
@@ -743,8 +743,8 @@ test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (no CRS
 test_that("ts_ibd() on msprime/slendr tree sequences works properly", {
   ts_msprime <- ts_read(model, file = msprime_ts)
 
-  suppressWarnings(msprime_ibd_sf <- ts_ibd(ts_msprime, coordinates = TRUE))
-  suppressWarnings(msprime_ibd_nosf <- ts_ibd(ts_msprime, coordinates = TRUE, sf = FALSE))
+  suppressWarnings(msprime_ibd_sf <- ts_ibd(ts_msprime))
+  suppressWarnings(msprime_ibd_nosf <- ts_ibd(ts_msprime, sf = FALSE))
 
   # returned object is of a sf class (or not), as requested by the user
   expect_true(!inherits(msprime_ibd_sf, "sf"))
@@ -766,8 +766,8 @@ test_that("ts_ibd() on spatial SLiM/slendr tree sequences works properly (with C
   set.seed(42)
   samples <- sample(ts_samples(ts)$name, 20)
 
-  suppressWarnings(ibd_sf <- ts_ibd(ts, coordinates = TRUE, within = samples))
-  suppressWarnings(ibd_nosf <- ts_ibd(ts, coordinates = TRUE, within = samples, sf = FALSE))
+  suppressWarnings(ibd_sf <- ts_ibd(ts, within = samples))
+  suppressWarnings(ibd_nosf <- ts_ibd(ts, within = samples, sf = FALSE))
 
   # returned object is of a sf class (or not), as requested by the user
   expect_s3_class(ibd_sf, "sf")
