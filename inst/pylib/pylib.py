@@ -46,25 +46,25 @@ def __slendr_collect_ibd(ts, within=None, between=None, max_time=None, min_len=0
         ibd = sorted(ibd, key=lambda segment: segment.left)
 
         # initialize the information about the first IBD tract
-        prev_left = ibd[0].left
-        prev_right = ibd[0].right
-        prev_mrca = ibd[0].node
+        current_left = ibd[0].left
+        current_right = ibd[0].right
+        current_mrca = ibd[0].node
 
         for segment in ibd[1:]:
             next_mrca = segment.node
             # if the MRCA node of the next segment is different than that of
             # the previous segment, the previous IBD tract has ended
-            if next_mrca != prev_mrca:
-                if prev_right - prev_left > min_len:
-                    result.append((pair[0], pair[1], prev_mrca, ts.node(prev_mrca).time, prev_left, prev_right))
+            if next_mrca != current_mrca:
+                if current_right - current_left > min_len:
+                    result.append((pair[0], pair[1], current_mrca, ts.node(current_mrca).time, current_left, current_right))
                 # ... then begin recording information about the following IBD
-                prev_left, prev_mrca = segment.left, next_mrca
+                current_left, current_mrca = segment.left, next_mrca
             # the right end of the current segment is the rightmost possible
             # coordinate of the IBD segment that's being currently collected
-            prev_right = segment.right
+            current_right = segment.right
 
         # finally, record the last (yet unfinished) IBD tract based on the
         # information from the final processed segment
-        result.append((pair[0], pair[1], prev_mrca, ts.node(prev_mrca).time, prev_left, segment.right))
+        result.append((pair[0], pair[1], current_mrca, ts.node(current_mrca).time, current_left, segment.right))
 
     return pd.DataFrame(result, columns=["node1", "node2", "mrca", "tmrca", "left", "right"])
