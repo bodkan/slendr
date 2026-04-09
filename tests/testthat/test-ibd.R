@@ -2,7 +2,7 @@
 # IBD results etc., which is no longer relevant.
 #
 # TODO: revise this and implement new tests as needed
-skip_if(TURE)
+skip_if(TRUE)
 
 skip_if(!check_dependencies(python = TRUE))
 init_env(quiet = TRUE)
