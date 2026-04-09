@@ -65,6 +65,6 @@ def __slendr_collect_ibd(ts, within=None, between=None, max_time=None, min_len=0
 
         # finally, record the last (yet unfinished) IBD tract based on the
         # information from the final processed segment
-        result.append((pair[0], pair[1], current_mrca, ts.node(current_mrca).time, current_left, segment.right))
+        result.append((pair[0], pair[1], current_mrca, ts.node(current_mrca).time, current_left, current_right))
 
     return pd.DataFrame(result, columns=["node1", "node2", "mrca", "tmrca", "left", "right"])

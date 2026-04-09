@@ -274,8 +274,8 @@ test_that("ts_ibd() on non-spatial msprime tree sequences gives a correct object
   ts_file <- msprime_ts_sim_ancestry(100)
   suppressMessages(ts <- ts_read(ts_file))
 
-  ibd_sf <- ts_ibd(ts, minimum_length = 0)
-  ibd_nosf <- ts_ibd(ts, minimum_length = 0, sf = FALSE)
+  ibd_sf <- ts_ibd(ts_extend(ts, 10), minimum_length = 0)
+  ibd_nosf <- ts_ibd(ts_extend(ts, 10), minimum_length = 0, sf = FALSE)
 
   # returned object is never of a sf class as it's not from a spatial tree sequence
   expect_true(!inherits(ibd_sf, "sf"))

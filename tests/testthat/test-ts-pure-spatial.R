@@ -75,7 +75,8 @@ test_that("ts_ibd() on spatial SLiM tree sequences gives a correct sf object", {
   expect_true(!inherits(ibd_nosf, "sf"))
 
   # except for the spatial columns, the IBD results are the same
-  expect_equal(as.data.frame(ibd_sf)[, c("node1", "node2", "count", "total",
-                                         "node1_time", "node2_time")],
+  expect_equal(as.data.frame(ibd_sf)[, c("node1", "node2", "length", "mrca",
+                                         "node1_time", "node2_time", "tmrca", "left", "right")],
                as.data.frame(ibd_nosf))
 })
+

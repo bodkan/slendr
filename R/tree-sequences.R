@@ -1879,11 +1879,11 @@ ts_ibd <- function(ts, within = NULL, between = NULL, maximum_time = NULL, minim
   model <- attr(ts, "model")
   spatial <- attr(ts, "spatial")
 
-  if (!attr(ts, "extended")) {
-    warning("It looks like the tree sequence was not processed by the 'extend\n",
-            "haplotypes' algorithm (`ts_extend()`) before attempting to extract IBD\n",
-            "segments. Make sure this is what you intended.", call. = FALSE)
-  }
+# if (!attr(ts, "extended")) {
+#   warning("It looks like the tree sequence was not processed by the 'extend\n",
+#           "haplotypes' algorithm (`ts_extend()`) before attempting to extract IBD\n",
+#           "segments. Make sure this is what you intended.", call. = FALSE)
+# }
 
   if (!is.null(within))
     within <- unlist(purrr::map(within, ~ get_node_ids(ts, .x)))
