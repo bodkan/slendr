@@ -28,14 +28,14 @@ to return that IBD segment in results. This is useful for reducing the total
 amount of IBD returned.}
 
 \item{minimum_length}{Minimum length of a ("squashed") IBD segment for it to
-be included}
+be included in the results}
 
 \item{sf}{If IBD segments in a spatial tree sequence are being analyzed, should
 the returned table be a spatial sf object? Default is \code{TRUE}.}
 }
 \value{
-A data frame with IBD coordinates of each IBD segment shared by a
-pair of nodes
+A data frame with IBD coordinates of each IBD segment shared by any
+pair of nodes in the tree sequence
 }
 \description{
 This function extracts IBD segments between pairs of individuals or nodes

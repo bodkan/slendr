@@ -1841,12 +1841,12 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #'   to return that IBD segment in results. This is useful for reducing the total
 #'   amount of IBD returned.
 #' @param minimum_length Minimum length of a ("squashed") IBD segment for it to
-#'   be included
+#'   be included in the results
 #' @param sf If IBD segments in a spatial tree sequence are being analyzed, should
 #'   the returned table be a spatial sf object? Default is \code{TRUE}.
 #'
-#' @return A data frame with IBD coordinates of each IBD segment shared by a
-#'   pair of nodes
+#' @return A data frame with IBD coordinates of each IBD segment shared by any
+#'   pair of nodes in the tree sequence
 #'
 #' @seealso \code{\link{ts_extend}} for information about the "extend haplotypes"
 #'   procedure
@@ -1897,12 +1897,13 @@ ts_ibd <- function(ts, within = NULL, between = NULL, maximum_time = NULL, minim
 
   # reticulate::py_run_file("inst/pylib/pylib.py")
   # reticulate::repl_python()
-  # __slendr_collect_ibd(r.ts, within=None, between=None, max_timeNone)
+  # __slendr_collect_ibd(r.ts, within=None, between=None, max_time=None, minimum_length=0)
   result <- reticulate::py[["__slendr_collect_ibd"]](ts, within, between, maximum_time, minimum_length)
 
   # drop a useless internal attribute (not a loss of information -- we are the ones
   # who created the pandas DataFrame in the first place)
-  # TODO: after pandas 3.0.0 this is broken (most likely problem on reticulate's part)
+  # TODO: after pandas 3.0.0 this is broken (most likely problem on reticulate's part),
+  #       which is why setup_env() currently pins pandas==2.3.3
   attr(result, "pandas.index") <- NULL
 
   if (!nrow(result)) return(result)
