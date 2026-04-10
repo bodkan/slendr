@@ -80,7 +80,6 @@ ts <- ts_read(slendr_ts, model)
 # find IBD segments between specified Neanderthals and Europeans
 ts_ibd(
   ts,
-  coordinates = TRUE,
   between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")),
   minimum_length = 40000
 )

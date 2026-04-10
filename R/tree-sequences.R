@@ -1866,7 +1866,6 @@ ts_coalesced <- function(ts, return_failed = FALSE) {
 #' # find IBD segments between specified Neanderthals and Europeans
 #' ts_ibd(
 #'   ts,
-#'   coordinates = TRUE,
 #'   between = list(c("NEA_1", "NEA_2"), c("EUR_1", "EUR_2")),
 #'   minimum_length = 40000
 #' )
