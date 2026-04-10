@@ -7,17 +7,8 @@ library(here)
 set.seed(3141592)
 
 ne_dir <- tempdir()
-ne_file <- file.path(ne_dir, "ne_110m_land.zip")
-download.file(
-  url = "https://naturalearth.s3.amazonaws.com/110m_physical/ne_110m_land.zip",
-  destfile = ne_file, quiet = TRUE
-)
-unzip(ne_file, exdir = ne_dir)
-map <- rnaturalearth::ne_load(
-  scale = "small", type = "land", category = "physical",
-  returnclass = "sf", destdir = ne_dir
-) %>% st_make_valid
-
+map <- sf::read_sf(system.file("naturalearth/ne_110m_land.gpkg", package = "slendr")) %>%
+  st_make_valid()
 st_agr(map) <- "constant"
 map <- st_crop(
   map,
