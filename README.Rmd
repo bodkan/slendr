@@ -113,8 +113,8 @@ eur <- population("EUR", parent = nonafr, time = 45e3, N = 5000)
 pap <- population("PAP", parent = nonafr, time = 45e3, N = 5000)
 
 gf <- list(
-  gene_flow(from = nea, to = nonafr, migration_rate = 0.02, start = 55000, end = 50000),
-  gene_flow(from = den, to = pap, migration_rate = 0.05, start = 35000, end = 30000)
+  gene_flow(from = nea, to = nonafr, proportion = 0.02, start = 55000, end = 50000),
+  gene_flow(from = den, to = pap, proportion = 0.05, start = 35000, end = 30000)
 )
 
 model <- compile_model(
@@ -275,9 +275,9 @@ By default, populations in _slendr_ do not mix even if they are overlapping. In 
 
 ```{r}
 gf <- list(
-  gene_flow(from = ana, to = yam, migration_rate = 0.5, start = 6500, end = 6400, overlap = FALSE),
-  gene_flow(from = ana, to = eur, migration_rate = 0.5, start = 8000, end = 6000),
-  gene_flow(from = yam, to = eur, migration_rate = 0.75, start = 4000, end = 3000)
+  gene_flow(from = ana, to = yam, proportion = 0.5, start = 6500, end = 6400, overlap = FALSE),
+  gene_flow(from = ana, to = eur, proportion = 0.5, start = 8000, end = 6000),
+  gene_flow(from = yam, to = eur, proportion = 0.75, start = 4000, end = 3000)
 )
 ```
 
