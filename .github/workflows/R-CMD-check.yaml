@@ -216,11 +216,12 @@ jobs:
 #         /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import pandas; print(pandas.__version__)'
 #         /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import tspop; print(tspop)'
 #         R -e 'print(reticulate::conda_list()$name)'
-#         R -e 'install.packages("remotes")'
 #         R -e 'remotes::install_github("bodkan/slendr")'
 #         R -e 'Sys.setenv(RETICULATE_PYTHON="/home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python"); library(slendr); init_env()'
 #         R -e 'library(slendr); tryCatch(init_env(), error = function(e) { print(reticulate::py_config()); stop(e) })'
-          R -e 'remotes::install_github("bodkan/slendr"); slendr::setup_env(agree = TRUE, pip = TRUE)'
+          R -e 'install.packages("remotes")'
+          R -e 'remotes::install_github("bodkan/slendr")'
+          R -e 'library(slendr); setup_env(agree = TRUE, pip = TRUE)'
           R -e 'library(slendr); init_env()'
 
       - uses: r-lib/actions/check-r-package@v2
