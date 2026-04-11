@@ -216,9 +216,9 @@ jobs:
           /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import pandas; print(pandas.__version__)'
           /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import tspop; print(tspop)'
           R -e 'print(reticulate::conda_list()$name)'
-          R -e 'Sys.setenv(RETICULATE_PYTHON="/home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python"); library(slendr); init_env()'
 #         R -e 'reticulate::py_config()'
-#         R -e 'install.packages("slendr"); library(slendr)'
+          R -e 'install.packages("devtools"); devtools::install_github("bodkan/slendr")'
+          R -e 'Sys.setenv(RETICULATE_PYTHON="/home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python"); library(slendr); init_env()'
 #         R -e 'slendr::setup_env(agree = TRUE)'
 #         R -e 'slendr::check_env()'
 
