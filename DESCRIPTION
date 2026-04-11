@@ -44,7 +44,6 @@ Imports:
     ape,
     scales,
     digest,
-    lwgeom,
     ggrepel
 Suggests:
     testthat (>= 3.0.0),
