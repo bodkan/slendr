@@ -213,6 +213,7 @@ jobs:
           R -e 'install.packages("remotes")'
           R -e 'remotes::install_github("bodkan/slendr")'
           R -e 'library(slendr); setup_env(agree = TRUE, pip = TRUE)'
-          R -e 'library(slendr); init_env()'
+          R -e 'library(slendr)'
+          R -e 'slendr::init_env()'
 
       - uses: r-lib/actions/check-r-package@v2
