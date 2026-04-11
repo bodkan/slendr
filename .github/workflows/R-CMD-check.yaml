@@ -202,6 +202,15 @@ jobs:
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2", "pyslim==1.1.1", "pandas==2.3.3", "pyarrow"), pip = TRUE)
         shell: Rscript {0}
 
+      - name: Attempt to import Python modules
+        if: runner.os == 'Linux'
+        run: |
+          /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import tskit; print(tskit.__version__)'
+          /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import msprime; print(msprime.__version__)'
+          /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import pyslim; print(pyslim.__version__)'
+          /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import pandas; print(pandas.__version__)'
+          /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import tspop; print(tspop)'
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
