@@ -210,15 +210,6 @@ jobs:
       - name: Attempt to import Python modules
         if: runner.os == 'Linux'
         run: |
-#         /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import tskit; print(tskit.__version__)'
-#         /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import msprime; print(msprime.__version__)'
-#         /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import pyslim; print(pyslim.__version__)'
-#         /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import pandas; print(pandas.__version__)'
-#         /home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python -c 'import tspop; print(tspop)'
-#         R -e 'print(reticulate::conda_list()$name)'
-#         R -e 'remotes::install_github("bodkan/slendr")'
-#         R -e 'Sys.setenv(RETICULATE_PYTHON="/home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/python"); library(slendr); init_env()'
-#         R -e 'library(slendr); tryCatch(init_env(), error = function(e) { print(reticulate::py_config()); stop(e) })'
           R -e 'install.packages("remotes")'
           R -e 'remotes::install_github("bodkan/slendr")'
           R -e 'library(slendr); setup_env(agree = TRUE, pip = TRUE)'
