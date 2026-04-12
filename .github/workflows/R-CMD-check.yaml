@@ -216,6 +216,7 @@ jobs:
           R -e 'slendr::init_env()'
 
       - name: Print detailed reticulate info
+        if: runner.os == 'Linux'
         run: |
           library(slendr)
           reticulate::use_condaenv(slendr:::PYTHON_ENV, required = TRUE)
