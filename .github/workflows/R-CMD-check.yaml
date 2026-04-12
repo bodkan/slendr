@@ -229,6 +229,7 @@ jobs:
           msg <- paste(msg, "\n\n", print(slendr:::tskit))
           msg <- paste(msg, "\n\n", print(slendr:::msp))
           msg <- paste(msg, "\n\n", print(slendr:::pyslim))
+          reticulate::py_require("tspop")
           msg <- paste(msg, "\n\n", print(slendr:::tspop))
         shell: Rscript {0}
 
