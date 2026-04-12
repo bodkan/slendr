@@ -190,6 +190,11 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
       - name: Setup dedicated Python environment for slendr
         run: |
           install.packages("remotes")
@@ -203,11 +208,6 @@ jobs:
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("pyslim==1.1.1", "pandas==2.3.3", "pyarrow"), pip = TRUE)
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2"), pip = TRUE)
         shell: Rscript {0}
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck
-          needs: check
 
       - name: Attempt to import Python modules
         if: runner.os == 'Linux'
