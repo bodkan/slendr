@@ -1438,9 +1438,7 @@ init_env <- function(quiet = FALSE) {
         !reticulate::py_module_available("pyslim") ||
         !reticulate::py_module_available("tspop")) {
       msg <- as.character(reticulate::conda_list())
-      cat("\n")
       msg <- paste(msg, "\n\n", as.character(reticulate::py_config()))
-      cat("\n")
       msg <- paste(msg, "\n\n", print(tskit))
       msg <- paste(msg, "\n\n", print(msp))
       msg <- paste(msg, "\n\n", print(pyslim))
