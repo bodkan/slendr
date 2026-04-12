@@ -215,12 +215,10 @@ jobs:
           R -e 'remotes::install_github("bodkan/slendr")'
           R -e 'library(slendr)'
           R -e 'slendr::init_env()'
-        shell: Rscript {0}
 
       - name: Print detailed reticulate info
         if: runner.os == 'Linux'
         run: |
           R -e 'slendr::init_env()'
-        shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
