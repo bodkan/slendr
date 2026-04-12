@@ -192,7 +192,7 @@ jobs:
 
       - name: Setup dedicated Python environment for slendr
         run: |
-          install.packages("reticulate", repos = "http://cran.rstudio.com")
+          remotes::install_github("rstudio/reticulate") #install.packages("reticulate", repos = "http://cran.rstudio.com")
           reticulate::install_miniconda()
           deps <- c("msprime==1.4.1", "tskit==1.0.2", "pyslim==1.1.1")
           PYTHON_ENV <- paste0("Python-3.12_", paste(gsub("==", "-", c(deps, "tspop==0.0.2")), collapse = "_"))
@@ -219,18 +219,7 @@ jobs:
       - name: Print detailed reticulate info
         if: runner.os == 'Linux'
         run: |
-          system("/home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/pip install tspop")
-          library(slendr)
-          reticulate::use_condaenv(slendr:::PYTHON_ENV, required = TRUE)
-          msg <- as.character(reticulate::conda_list())
-          cat("\n")
-          msg <- paste(msg, "\n\n", as.character(reticulate::py_config()))
-          cat("\n")
-          msg <- paste(msg, "\n\n", print(slendr:::tskit))
-          msg <- paste(msg, "\n\n", print(slendr:::msp))
-          msg <- paste(msg, "\n\n", print(slendr:::pyslim))
-          reticulate::py_require("tspop")
-          msg <- paste(msg, "\n\n", print(slendr:::tspop))
+          R -e 'slendr::init_env()'
         shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
