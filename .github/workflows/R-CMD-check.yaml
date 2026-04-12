@@ -219,6 +219,7 @@ jobs:
       - name: Print detailed reticulate info
         if: runner.os == 'Linux'
         run: |
+          system("/home/runner/.local/share/r-miniconda/envs/Python-3.12_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/pip install tspop")
           library(slendr)
           reticulate::use_condaenv(slendr:::PYTHON_ENV, required = TRUE)
           msg <- as.character(reticulate::conda_list())
