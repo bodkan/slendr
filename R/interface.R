@@ -1437,16 +1437,15 @@ init_env <- function(quiet = FALSE) {
         !reticulate::py_module_available("tskit") ||
         !reticulate::py_module_available("pyslim") ||
         !reticulate::py_module_available("tspop")) {
-      print(reticulate::conda_list())
+      msg <- as.character(reticulate::conda_list())
       cat("\n")
-      print(reticulate::py_discover_config())
+      msg <- paste(msg, "\n\n", as.character(reticulate::py_config()))
       cat("\n")
-      print(tskit)
-      print(msp)
-      print(pyslim)
-      print(tspop)
-      cat("\n")
-      stop("Python environment ", PYTHON_ENV, " has been found but it",
+      msg <- paste(msg, "\n\n", print(tskit))
+      msg <- paste(msg, "\n\n", print(msp))
+      msg <- paste(msg, "\n\n", print(pyslim))
+      msg <- paste(msg, "\n\n", print(tspop))
+      stop(msg, "\n\n\n", "Python environment ", PYTHON_ENV, " has been found but it",
            " does not appear to have msprime, tskit, pyslim and tspop modules all",
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
