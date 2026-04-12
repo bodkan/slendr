@@ -1432,18 +1432,19 @@ init_env <- function(quiet = FALSE) {
     #                                                              for ind in ts.individuals()]")
     # (moved from ts_read() here because this is a better place for loading our Python functions)
     reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
-    msg <- as.character(reticulate::conda_list())
-    cat("\n")
-    msg <- paste(msg, "\n\n", as.character(reticulate::py_config()))
-    cat("\n")
-    msg <- paste(msg, "\n\n", print(tskit))
-    msg <- paste(msg, "\n\n", print(msp))
-    msg <- paste(msg, "\n\n", print(pyslim))
-    msg <- paste(msg, "\n\n", print(tspop))
+
     if (!reticulate::py_module_available("msprime") ||
         !reticulate::py_module_available("tskit") ||
         !reticulate::py_module_available("pyslim") ||
         !reticulate::py_module_available("tspop")) {
+      msg <- as.character(reticulate::conda_list())
+      cat("\n")
+      msg <- paste(msg, "\n\n", as.character(reticulate::py_config()))
+      cat("\n")
+      msg <- paste(msg, "\n\n", print(tskit))
+      msg <- paste(msg, "\n\n", print(msp))
+      msg <- paste(msg, "\n\n", print(pyslim))
+      msg <- paste(msg, "\n\n", print(tspop))
       stop(msg, "\n\n\n", "Python environment ", PYTHON_ENV, " has been found but it",
            " does not appear to have msprime, tskit, pyslim and tspop modules all",
            " installed. Perhaps the environment got corrupted somehow?",
@@ -1455,10 +1456,8 @@ init_env <- function(quiet = FALSE) {
       #   path = system.file("python", package = "slendr"),
       #   delay_load = TRUE
       # )
-      if (!quiet) {
+      if (!quiet)
         message("The interface to all required Python modules has been activated.")
-        cat(msg, "\n")
-      }
     }
   }
 }
