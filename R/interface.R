@@ -1420,7 +1420,6 @@ init_env <- function(quiet = FALSE) {
          "To set up a dedicated Python environment you first need to run setup_env().", call. = FALSE)
   else {
     reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
-    reticulate::py_require("tspop")
 
     # this is an awful workaround around the reticulate/Python bug which prevents
     # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
@@ -1441,7 +1440,6 @@ init_env <- function(quiet = FALSE) {
       "tspop" = !reticulate::py_module_available("tspop")
     )
 
-    reticulate::py_run_string("import tspop")
     if (any(missing)) {
       which_missing <- paste(names(missing)[missing], collapse = ", ")
       packages <- reticulate::py_list_packages()[c("package", "version")]
