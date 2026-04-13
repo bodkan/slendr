@@ -1444,7 +1444,7 @@ init_env <- function(quiet = FALSE) {
       msg <- paste(msg, "\n\n", print(tskit))
       msg <- paste(msg, "\n\n", print(msp))
       msg <- paste(msg, "\n\n", print(pyslim))
-      msg <- paste(msg, "\n\n", print(tspop))
+      #msg <- paste(msg, "\n\n", print(tspop))
       stop(msg, "\n\n\n", "Python environment ", PYTHON_ENV, " has been found but it",
            " does not appear to have msprime, tskit, pyslim and tspop modules all",
            " installed. Perhaps the environment got corrupted somehow?",
