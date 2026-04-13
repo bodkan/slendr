@@ -1443,12 +1443,13 @@ init_env <- function(quiet = FALSE) {
 
     if (any(missing)) {
       which_missing <- paste(names(missing)[missing], collapse = ", ")
-      env_list <- paste(capture.output(reticulate::py_list_packages()), collapse = "\n")
+      packages <- reticulate::py_list_packages()[c("package", "version")]
       stop("Python environment ", PYTHON_ENV, " has been found but it",
            " does not appear to have ", which_missing,
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
-           " environment is recommended.\nContents of the environment:\n", env_list,
+           " environment is recommended.\nContents of the environment:\n",
+           paste(capture.output(packages), collapse = "\n"),
            call. = FALSE)
     } else {
       # pylib <<- reticulate::import_from_path(
