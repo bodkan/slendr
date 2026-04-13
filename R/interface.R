@@ -1437,7 +1437,7 @@ init_env <- function(quiet = FALSE) {
       "msprime" = !reticulate::py_module_available("msprime"),
       "tskit" = !reticulate::py_module_available("tskit"),
       "pyslim" = !reticulate::py_module_available("pyslim"),
-      "tspop" = FALSE #!reticulate::py_module_available("tspop")
+      "tspop" = !reticulate::py_module_available("tspop")
     )
 
     if (any(missing)) {
