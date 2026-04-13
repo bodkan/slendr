@@ -1441,6 +1441,7 @@ init_env <- function(quiet = FALSE) {
       "tspop" = !reticulate::py_module_available("tspop")
     )
 
+    reticulate::py_run_string("import tspop")
     if (any(missing)) {
       which_missing <- paste(names(missing)[missing], collapse = ", ")
       packages <- reticulate::py_list_packages()[c("package", "version")]
