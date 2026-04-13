@@ -1434,12 +1434,17 @@ init_env <- function(quiet = FALSE) {
     # (moved from ts_read() here because this is a better place for loading our Python functions)
     reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
-    if (!reticulate::py_module_available("msprime") ||
-        !reticulate::py_module_available("tskit") ||
-        !reticulate::py_module_available("pyslim") ||
-        !reticulate::py_module_available("tspop")) {
+    missing <- c(
+      "msprime" = !reticulate::py_module_available("msprime"),
+      "tskit" = !reticulate::py_module_available("tskit"),
+      "pyslim" = !reticulate::py_module_available("pyslim"),
+      "tspop" = !reticulate::py_module_available("tspop")
+    )
+
+    if (any(missing)) {
+      which_missing <- paste(names(missing)[missing], collapse = ", ")
       stop("Python environment ", PYTHON_ENV, " has been found but it",
-           " does not appear to have msprime, tskit, pyslim and tspop modules all",
+           " does not appear to have ", which_missing, 
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
            " environment is recommended.", call. = FALSE)
