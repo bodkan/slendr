@@ -1420,7 +1420,7 @@ init_env <- function(quiet = FALSE) {
          "To set up a dedicated Python environment you first need to run setup_env().", call. = FALSE)
   else {
     reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
-    print(reticulate::py_list_packages(slendr:::PYTHON_ENV))
+    reticulate::py_require("tspop")
 
     # this is an awful workaround around the reticulate/Python bug which prevents
     # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
@@ -1438,14 +1438,7 @@ init_env <- function(quiet = FALSE) {
         !reticulate::py_module_available("tskit") ||
         !reticulate::py_module_available("pyslim") ||
         !reticulate::py_module_available("tspop")) {
-      msg <- paste(capture.output(print(reticulate::py_list_packages(slendr:::PYTHON_ENV))), collapse = "\n")
-      msg <- paste(msg, "\n\n", as.character(reticulate::conda_list()))
-      msg <- paste(msg, "\n\n", as.character(reticulate::py_config()))
-      msg <- paste(msg, "\n\n", print(tskit))
-      msg <- paste(msg, "\n\n", print(msp))
-      msg <- paste(msg, "\n\n", print(pyslim))
-      #msg <- paste(msg, "\n\n", print(tspop))
-      stop(msg, "\n\n\n", "Python environment ", PYTHON_ENV, " has been found but it",
+      stop("Python environment ", PYTHON_ENV, " has been found but it",
            " does not appear to have msprime, tskit, pyslim and tspop modules all",
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
