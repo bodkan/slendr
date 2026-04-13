@@ -206,13 +206,6 @@ jobs:
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("msprime==1.4.1", "tskit==1.0.2"), pip = TRUE)
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("pyslim==1.1.1", "pandas==2.3.3", "pyarrow"), pip = TRUE)
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2"), pip = TRUE)
-          writeLines(sprintf("RETICULATE_PYTHON=%s", python_path), Sys.getenv("GITHUB_ENV"))
         shell: Rscript {0}
-
-      - name: Install tspop manually outside of reticulate
-        run: |
-          git clone https://github.com/gtsambos/tspop
-          cd tspop
-          $RETICULATE_PYTHON -m pip install .
 
       - uses: r-lib/actions/check-r-package@v2

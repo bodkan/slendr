@@ -1420,6 +1420,7 @@ init_env <- function(quiet = FALSE) {
          "To set up a dedicated Python environment you first need to run setup_env().", call. = FALSE)
   else {
     reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
+    print(reticulate::py_list_packages(slendr:::PYTHON_ENV))
 
     # this is an awful workaround around the reticulate/Python bug which prevents
     # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
