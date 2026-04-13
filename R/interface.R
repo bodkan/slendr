@@ -1438,7 +1438,8 @@ init_env <- function(quiet = FALSE) {
         !reticulate::py_module_available("tskit") ||
         !reticulate::py_module_available("pyslim") ||
         !reticulate::py_module_available("tspop")) {
-      msg <- as.character(reticulate::conda_list())
+      msg <- paste(capture.output(print(reticulate::py_list_packages(slendr:::PYTHON_ENV))), collapse = "\n")
+      msg <- paste(msg, "\n\n", as.character(reticulate::conda_list()))
       msg <- paste(msg, "\n\n", as.character(reticulate::py_config()))
       msg <- paste(msg, "\n\n", print(tskit))
       msg <- paste(msg, "\n\n", print(msp))
