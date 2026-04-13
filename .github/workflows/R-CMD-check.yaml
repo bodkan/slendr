@@ -208,4 +208,10 @@ jobs:
           reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2"), pip = TRUE)
         shell: Rscript {0}
 
+      - name: Install tspop manually outside of reticulate
+        run: |
+          git clone https://github.com/gtsambos/tspop
+          cd tspop
+          /home/runner/.local/share/r-miniconda/envs/Python-3.13_msprime-1.4.1_tskit-1.0.2_pyslim-1.1.1_tspop-0.0.2/bin/pip install .
+
       - uses: r-lib/actions/check-r-package@v2
