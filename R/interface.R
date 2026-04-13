@@ -1451,7 +1451,7 @@ init_env <- function(quiet = FALSE) {
            "\n\n\nPython environment summary:\n",
            paste(capture.output(reticulate::py_config()), collapse = "\n"),
            "\n\n\nInstalled Python modules:\n",
-           paste(capture.output(packages), collapse = "\n"),
+           paste(utils::capture.output(packages), collapse = "\n"),
            call. = FALSE)
     } else {
       # pylib <<- reticulate::import_from_path(
