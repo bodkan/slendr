@@ -38,8 +38,9 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install libopenblas-dev libgsl-dev liblapack-dev
 
-      - name: Compile and install ADMIXTOOLS
-        run: |
+      - name: Compile and install ADMIXTOOLS (Linux) # + macOS)
+        # if: runner.os != 'Windows'
+        if: runner.os == 'Linux'
           # create a single directory for all external software
           mkdir -p ~/deps
           cd ~/deps
