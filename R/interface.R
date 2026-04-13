@@ -1448,7 +1448,7 @@ init_env <- function(quiet = FALSE) {
            " does not appear to have ", which_missing,
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
-           " environment is recommended.\nContents of the environment:\n",
+           " environment is recommended.\n\nContents of the environment:\n",
            paste(capture.output(packages), collapse = "\n"),
            call. = FALSE)
     } else {
