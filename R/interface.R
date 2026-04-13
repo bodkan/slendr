@@ -1449,9 +1449,9 @@ init_env <- function(quiet = FALSE) {
            " installed. Perhaps the environment got corrupted somehow?",
            " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
            " environment is recommended.",
-           "\n\nPython environment summary:\n",
+           "\n\n\nPython environment summary:\n",
            paste(capture.output(reticulate::py_config()), collapse = "\n"),
-           "\n\nInstalled Python modules:\n",
+           "\n\n\nInstalled Python modules:\n",
            paste(capture.output(packages), collapse = "\n"),
            call. = FALSE)
     } else {
