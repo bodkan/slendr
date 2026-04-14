@@ -88,7 +88,7 @@ WORKDIR $PROJECT
 RUN R -e 'install.packages(c("pak", "devtools"))'
 COPY ./ /tmp/slendr
 RUN R -e 'pak::local_install("/tmp/slendr", dependencies = TRUE)'
-RUN R -e 'slendr::setup_env(agree = TRUE, pip = TRUE); remove.packages("slendr")'
+RUN R -e 'slendr::setup_env(agree = TRUE); remove.packages("slendr")'
 
 # make sure all software is available in R
 RUN echo "PATH=$PATH" >> ${HOME}/.Renviron
