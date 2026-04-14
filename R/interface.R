@@ -1533,7 +1533,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
       # dependencies are defined all in one place)
       versions <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
       python_version <- gsub("Python==", "", versions[1])
-      package_versions <- versions[-1]
+      package_versions <- c(versions[-1], "pandas==2.3.3")
 
       reticulate::conda_create(envname = PYTHON_ENV, python_version = python_version)
       reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
@@ -1548,9 +1548,9 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
       # on M-architecture Macs, so they will need to be installed by pip
       # no matter the user's preference (given by the pip function argument value)
       # TODO: check at some point later if tspop / pyslim are on conda for all systems
-      which_tspop_pyslim_pandas <- grepl("tspop|pyslim", package_versions)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!which_tspop_pyslim_pandas], pip = pip)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = c(package_versions[which_tspop_pyslim_pandas], "pandas==2.3.3", "pyarrow"), pip = TRUE)
+      pip_only <- grepl("pandas|tspop|pyslim", package_versions)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!pip_only], pip = pip)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[pip_only], pip = TRUE)
 
       if (!quiet) {
         message("======================================================================")
