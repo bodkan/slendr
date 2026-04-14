@@ -41,7 +41,7 @@ clean:
 
 $(pkg): README.md
 	R -e 'devtools::document()'
-	unset R_HAS_GGTREE; mkdir -p build; cd build; R CMD build --log ../../slendr
+	unset R_HAS_GGTREE; mkdir -p build; cd build; R CMD build --log ../../$(notdir $(CURDIR))
 
 README.md: README.Rmd $(logo)
 	R -e 'devtools::install(upgrade = FALSE)'

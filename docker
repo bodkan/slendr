@@ -1,0 +1,100 @@
+##################################################################
+# Docker shortcuts for make
+#
+# Usage examples:
+#
+#   make -f docker build    # builds a slendr Docker image
+#   make -f docker bash     # creates an interactive shell
+#   make -f docker R        # creates an interactive R session
+#   make -f docker rstudio  # creates an RStudio Server instance
+#
+
+# check the OS type to assign appropriate Docker image tag
+ifeq ($(shell uname -s), Darwin)
+    PLATFORM ?= arm64
+else
+    PLATFORM ?= amd64
+endif
+
+IMAGE := bodkan/$(shell basename $(shell pwd)):$(PLATFORM)
+CONTAINER := $(shell basename $(shell pwd))
+
+# if present, extract GitHub access token
+TOKEN := $(shell if [[ -f ~/.GITHUB_PAT ]]; then more ~/.GITHUB_PAT; else echo ""; fi)
+
+.PHONY: rstudio bash r build push pull local-webapp remote-webapp
+
+bash:
+	docker run --rm -ti -v $(shell pwd):/project -w /project --name $(CONTAINER) $(IMAGE) bash
+
+r:
+	docker run --rm -ti -v $(shell pwd):/project -w /project --name $(CONTAINER) $(IMAGE) R
+
+attach:
+	container_id=`docker ps | awk -v name="$$(basename "$$PWD")" '$$2 ~ name {print $$1}'`; \
+	docker exec -it $$container_id /bin/bash
+
+rstudio:
+ifndef PORT
+	$(error PORT variable must be set explicitly)
+endif
+	docker run --rm -ti -p $(PORT):8787 -e RUNROOTLESS=true -e DISABLE_AUTH=true -v $(shell pwd):/project --name $(CONTAINER) $(IMAGE)
+
+build:
+	docker build --build-arg GITHUB_PAT=$(TOKEN) -t $(IMAGE) .
+
+build-clean:
+	@echo $(IMAGE)
+	docker build --no-cache --build-arg GITHUB_PAT=$(TOKEN) -t $(IMAGE) .
+
+push:
+	docker push $(IMAGE)
+
+pull:
+	docker pull $(IMAGE)
+
+stop:
+	docker stop $(CONTAINER) || true
+
+local-webapp:
+ifndef PORT
+	$(error PORT variable must be set explicitly)
+endif
+	chromium --app=http://localhost:$(PORT) &
+
+remote-webapp:
+ifndef SERVER
+	$(error SERVER variable must be set to start a web app)
+endif
+ifndef PORT
+	$(error PORT variable must be set explicitly)
+endif
+	@if [[ "$(SERVER)" != "localhost" ]]; then \
+	    PID=$$(lsof -ti:$(PORT)); \
+	    if [[ -n "$$PID" ]]; then \
+		kill -9 $$PID; \
+	    fi; \
+	    autossh -M 0 -f -N -L localhost:$(PORT):localhost:$(PORT) $(SERVER) || { \
+		echo "SSH connection failed. Exiting."; \
+		exit 1; \
+	    }; \
+	fi; \
+	chromium --app=http://localhost:$(PORT) &
+
+port-forward:
+ifndef SERVER
+	$(error SERVER variable must be set to start a web app)
+endif
+ifndef PORT
+	$(error PORT variable must be set explicitly)
+endif
+	@if [[ "$(SERVER)" != "localhost" ]]; then \
+	    PID=$$(lsof -ti:$(PORT)); \
+	    if [[ -n "$$PID" ]]; then \
+		kill -9 $$PID; \
+	    fi; \
+	    autossh -M 0 -f -N -L localhost:$(PORT):localhost:$(PORT) $(SERVER) || { \
+		echo "SSH connection failed. Exiting."; \
+		exit 1; \
+	    }; \
+	fi
