@@ -27,17 +27,10 @@ check_dependencies <- function(python = FALSE, slim = FALSE, quit = FALSE) {
   fail <- missing_slim || missing_python
 
   if (fail) {
-    if (interactive()) {
-      error_slim <- if (missing_slim) "  - SLiM binary not found in the path" else ""
-      error_python <- if (missing_python) "  - Python environment (did you run setup_env()?)" else ""
-      stop(sprintf("Missing requirements of slendr:\n%s\n%s",
-                   error_slim, error_python), call. = FALSE)
-    } else {
-      if (quit)
-        q()
-      else
-        return(FALSE)
-    }
+    if (quit)
+      q()
+    else
+      return(FALSE)
   } else {
     return(invisible(TRUE))
   }

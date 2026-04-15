@@ -1407,64 +1407,67 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
 #' This function attempts to activate a dedicated slendr Miniconda Python
 #' environment previously set up via \code{setup_env}.
 #'
+#' @param uv Should an ephemeral Python environment be created via uv (instead
+#'   of activating a permanent virtual environment created via \code{setup_env})?
 #' @param quiet Should informative messages be printed to the console? Default
 #'   is \code{FALSE}.
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-init_env <- function(quiet = FALSE) {
-  if (!check_dependencies(python = TRUE))
-    stop("Could not activate slendr's Python environment because it is not\npresent ",
-         "on your system ('", PYTHON_ENV, "').\n\n",
-         "To set up a dedicated Python environment you first need to run setup_env().", call. = FALSE)
-  else {
+init_env <- function(uv = FALSE, quiet = FALSE) {
+  if (uv) {
+    reticulate::py_require(PYTHON_DEPS, PYTHON_VERSION)
+  } else if (!check_dependencies(python = TRUE)) {
+    stop("Could not activate slendr's Python environment because it is\n",
+         "not present on your system:\n\n", PYTHON_ENV, "\n\n",
+         "To set up a Python environment you first need to run `setup_env()` or\n",
+         "call `init_env(uv = TRUE)` to create an ephemeral Python environment.",
+         call. = FALSE)
+  } else {
     reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
+  }
 
-    # this is an awful workaround around the reticulate/Python bug which prevents
-    # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
-    #   Error in py_call_impl(callable, dots$args, dots$keywords) :
-    #     TypeError: integer argument expected, got float
-    # in places with no integer/float conversion in sight
-    #
-    # at least it prevents having to do things like:
-    # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
-    #                                                              for ind in ts.individuals()]")
-    # (moved from ts_read() here because this is a better place for loading our Python functions)
-    reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
+  # this is an awful workaround around the reticulate/Python bug which prevents
+  # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
+  #   Error in py_call_impl(callable, dots$args, dots$keywords) :
+  #     TypeError: integer argument expected, got float
+  # in places with no integer/float conversion in sight
+  #
+  # at least it prevents having to do things like:
+  # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
+  #                                                              for ind in ts.individuals()]")
+  # (moved from ts_read() here because this is a better place for loading our Python functions)
+  reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
 
-    missing <- c(
-      "msprime" = !reticulate::py_module_available("msprime"),
-      "tskit" = !reticulate::py_module_available("tskit"),
-      "pyslim" = !reticulate::py_module_available("pyslim"),
-      "tspop" = !reticulate::py_module_available("tspop")
-    )
+  missing <- c(
+    "msprime" = !reticulate::py_module_available("msprime"),
+    "tskit" = !reticulate::py_module_available("tskit"),
+    "pyslim" = !reticulate::py_module_available("pyslim"),
+    "tspop" = !reticulate::py_module_available("tspop")
+  )
 
-    if (any(missing)) {
-      which_missing <- paste(names(missing)[missing], collapse = ", ")
-      packages <- reticulate::py_list_packages()[c("package", "version")]
-      default_val <- getOption("warning.length")
-      options(warning.length = 7000L)
-      on.exit(options(warning.length = default_val))
-      stop("Python environment ", PYTHON_ENV, " has been found but it",
-           " does not appear to have ", which_missing,
-           " installed. Perhaps the environment got corrupted somehow?",
-           " Running `clear_env()` and `setup_env()` to reset the slendr's Python",
-           " environment is recommended.",
-           "\n\nPython environment summary:\n",
-           paste(capture.output(reticulate::py_config()), collapse = "\n"),
-           "\n\nInstalled Python modules:\n",
-           paste(utils::capture.output(print(packages)), collapse = "\n"),
-           call. = FALSE)
-    } else {
-      # pylib <<- reticulate::import_from_path(
-      #   "pylib",
-      #   path = system.file("python", package = "slendr"),
-      #   delay_load = TRUE
-      # )
-      if (!quiet)
-        message("The interface to all required Python modules has been activated.")
-    }
+  if (any(missing)) {
+    which_missing <- paste(names(missing)[missing], collapse = ", ")
+    packages <- reticulate::py_list_packages()[c("package", "version")]
+    default_val <- getOption("warning.length")
+    options(warning.length = 7000L)
+    on.exit(options(warning.length = default_val))
+    stop("A Python environment for slendr has been created but the following",
+         "modules appear to be missing:", which_missing,
+         "\n\nPython environment summary:\n",
+         paste(capture.output(reticulate::py_config()), collapse = "\n"),
+         "\n\nInstalled Python modules:\n",
+         paste(utils::capture.output(print(packages)), collapse = "\n"),
+         call. = FALSE)
+  } else {
+    # pylib <<- reticulate::import_from_path(
+    #   "pylib",
+    #   path = system.file("python", package = "slendr"),
+    #   delay_load = TRUE
+    # )
+    if (!quiet)
+      message("Python virtual environment for slendr has been activated.")
   }
 }
 
@@ -1528,14 +1531,7 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
       if (!dir.exists(reticulate::miniconda_path()))
         reticulate::install_miniconda()
 
-      # parse the Python env name back to the list of dependencies
-      # (the environment is defined in .onAttach(), and this makes sure the
-      # dependencies are defined all in one place)
-      versions <- PYTHON_ENV %>% gsub("-", "==", .) %>% strsplit("_") %>% .[[1]]
-      python_version <- gsub("Python==", "", versions[1])
-      package_versions <- c(versions[-1], "pandas==2.3.3")
-
-      reticulate::conda_create(envname = PYTHON_ENV, python_version = python_version)
+      reticulate::conda_create(envname = PYTHON_ENV, python_version = PYTHON_VERSION)
       reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
 
       # # some Python dependencies are  broken on M1 Mac architecture, so fallback
@@ -1548,9 +1544,9 @@ setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
       # on M-architecture Macs, so they will need to be installed by pip
       # no matter the user's preference (given by the pip function argument value)
       # TODO: check at some point later if tspop / pyslim are on conda for all systems
-      pip_only <- grepl("pandas|tspop|pyslim", package_versions)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[!pip_only], pip = pip)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = package_versions[pip_only], pip = TRUE)
+      pip_only <- grepl("pandas|tspop|pyslim", PYTHON_DEPS)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = PYTHON_DEPS[!pip_only], pip = pip)
+      reticulate::conda_install(envname = PYTHON_ENV, packages = PYTHON_DEPS[pip_only], pip = TRUE)
 
       if (!quiet) {
         message("======================================================================")
