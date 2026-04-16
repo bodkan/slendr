@@ -1,6 +1,4 @@
-path <- "~/Code/slendr"
-
-devtools::load_all(path)
+devtools::load_all()
 
 init_env()
 
@@ -25,7 +23,7 @@ model <- compile_model(
   populations = list(chimp, nea, afr, eur), gene_flow = gf,
   generation_time = 30,
   time_units = "years before present",
-  path = file.path(path, "inst/extdata/models/introgression"),
+  path = "inst/extdata/models/introgression",
   overwrite = TRUE, force = TRUE
 )
 
