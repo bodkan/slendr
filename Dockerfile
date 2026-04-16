@@ -96,9 +96,6 @@ RUN cd /tmp/slendr; \
     if [ "$VERSION" != "dev" ]; then git checkout $VERSION; fi; \
     R -e 'pak::local_install(".", dependencies = TRUE)'
 
-# set the necessary R environment variables for the container
-RUN printf "PATH=$PATH\nSLENDR_UV=TRUE\n" > ${HOME}/.Renviron
-
 ############################################################
 # final configuration steps
 ############################################################
@@ -106,6 +103,9 @@ RUN printf "PATH=$PATH\nSLENDR_UV=TRUE\n" > ${HOME}/.Renviron
 # clone shell configuration files into the container
 RUN cd ${HOME}; git clone https://github.com/bodkan/dotfiles .dotfiles/; rm -f .bashrc .profile; \
     cd .dotfiles; ./install.sh
+
+# set the necessary R environment variables for the container
+RUN printf "PATH=$PATH\nSLENDR_UV=TRUE\n" > ${HOME}/.Renviron
 
 # make sure the project is ready when RStudio Server session starts
 # https://docs.posit.co/ide/server-pro/admin/rstudio_pro_sessions/session_startup_scripts.html
