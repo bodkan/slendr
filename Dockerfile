@@ -93,8 +93,8 @@ RUN cd /tmp/slendr; \
     if [ "$VERSION" != "dev" ]; then git checkout $VERSION; fi; \
     R -e 'pak::local_install(".", dependencies = TRUE)'
 
-# make sure all software is available in R
-RUN echo "PATH=$PATH" >> ${HOME}/.Renviron
+# set the necessary R environment variables for the container
+RUN echo -e "PATH=$PATH\nSLENDR_UV=TRUE" >> ${HOME}/.Renviron
 
 ############################################################
 # final configuration steps
