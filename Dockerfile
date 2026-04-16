@@ -60,7 +60,8 @@ RUN apt-get update -y \
         unminimize \
         vim \
         wget \
-        zlib1g-dev
+        zlib1g-dev; \
+        tlmgr install inconsolata
 
 # fix 'Errors were encountered while processing: fontconfig' during unminimize
 RUN fc-cache -f; yes | unminimize
