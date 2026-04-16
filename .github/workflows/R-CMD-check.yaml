@@ -161,9 +161,9 @@ jobs:
               "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/"),
               "\n",
-              "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning"
+              "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning",
               "\n",
-              "SLENDR_UV=TRUE
+              "SLENDR_UV=TRUE"
             ),
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
