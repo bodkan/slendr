@@ -90,7 +90,7 @@ ENV PROJECT=/project
 WORKDIR $PROJECT
 
 # install dependencies and setup the slendr Python environment
-RUN R -e 'install.packages(c("pak", "devtools", "tinytex")); tinytex::install_tinytex()'
+RUN R -e 'install.packages(c("pak", "devtools"))'
 COPY ./ /tmp/slendr
 RUN cd /tmp/slendr; \
     if [ "$VERSION" != "dev" ]; then git checkout $VERSION; fi; \

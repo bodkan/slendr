@@ -25,7 +25,7 @@ test:
 build: $(pkg)
 
 check: $(pkg)
-	unset R_HAS_GGTREE; cd build; R CMD check --as-cran $(notdir $<)
+	unset R_HAS_GGTREE; cd build; R CMD check --as-cran $(notdir $<) --no-manual
 
 winrel: README.md
 	unset R_HAS_GGTREE; R -e 'devtools::check_win_release()'
