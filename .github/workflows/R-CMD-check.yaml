@@ -117,11 +117,12 @@ jobs:
           cmake .
           make slim
 
-      - name: Populate PATH with compiled binaries on Unix
+      - name: Set necessary variables in ~/.Renviron on Unix
         if: runner.os != 'Windows'
         run: |
           export PATH="$HOME/deps/SLiM:$HOME/deps/AdmixTools-7.0.2/bin:$PATH"
           echo "PATH=$PATH" >> ~/.Renviron
+          echo "SLENDR_UV=TRUE" >> ~/.Renviron
 
       - name: Install SLiM on Windows
         if: runner.os == 'Windows'
@@ -151,7 +152,7 @@ jobs:
       #  run: dir ${{ runner.temp }}\msys64\usr\bin
       #  shell: cmd
 
-      - name: Populate PATH with compiled binaries on Windows
+      - name: Set necessary variables in ~/.Renviron on Windows
         if: runner.os == 'Windows'
         run: |
           writeLines(
@@ -161,6 +162,8 @@ jobs:
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/"),
               "\n",
               "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning"
+              "\n",
+              "SLENDR_UV=TRUE
             ),
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
@@ -176,12 +179,6 @@ jobs:
       #     cat(Sys.getenv("RSTUDIO_PANDOC"), "\n")
       #   shell: Rscript {0}
 
-      - name: Set R_LIBS path on unix
-        if: runner.os == 'Windows'
-        run: |
-          mkdir ~/R_LIBS
-          echo "GTIFF_SRS_SOURCE='EPSG'" >> ~/.Renviron
-
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
@@ -194,18 +191,5 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
-
-      - name: Setup dedicated Python environment for slendr
-        run: |
-          install.packages("reticulate", repos = "http://cran.rstudio.com")
-          reticulate::install_miniconda()
-          deps <- c("msprime==1.4.1", "tskit==1.0.2", "pyslim==1.1.1")
-          PYTHON_ENV <- paste0("Python-3.12_", paste(gsub("==", "-", c(deps, "tspop==0.0.2")), collapse = "_"))
-          reticulate::conda_create(envname = PYTHON_ENV, python_version = '3.12')
-          reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
-          reticulate::conda_install(envname = PYTHON_ENV, packages = c("msprime==1.4.1", "tskit==1.0.2"), pip = TRUE)
-          reticulate::conda_install(envname = PYTHON_ENV, packages = c("pyslim==1.1.1", "pandas==2.3.3", "pyarrow"), pip = TRUE)
-          reticulate::conda_install(envname = PYTHON_ENV, packages = c("tspop==0.0.2"), pip = TRUE)
-        shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
