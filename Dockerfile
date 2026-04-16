@@ -89,7 +89,7 @@ WORKDIR $PROJECT
 # install dependencies and setup the slendr Python environment
 RUN R -e 'install.packages(c("pak", "devtools"))'
 COPY ./ /tmp/slendr
-RUN if [ "$VERSION" != "dev" ] git checkout $VERSION; fi; \
+RUN if [ "$VERSION" != "dev" ]; then git checkout $VERSION; fi; \
     R -e 'pak::local_install("/tmp/slendr", dependencies = TRUE)'
 
 # make sure all software is available in R
