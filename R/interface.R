@@ -1437,7 +1437,13 @@ init_env <- function(uv = FALSE, quiet = FALSE) {
 
   if (any(missing)) {
     which_missing <- paste(names(missing)[missing], collapse = ", ")
+    tryCatch({
     packages <- reticulate::py_list_packages()[c("package", "version")]
+    }, error = function(msg) { 
+      stop("uv value:", uv, "\n", "env value:", Sys.getenv("SLENDR_UV"), "\n",
+       # cat(paste(capture.output(reticulate::py_config()), collapse = "\n")),
+        call. = FALSE)
+    })
     default_val <- getOption("warning.length")
     options(warning.length = 7000L)
     on.exit(options(warning.length = default_val))
