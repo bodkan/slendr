@@ -1454,7 +1454,7 @@ init_env <- function(uv = FALSE, quiet = FALSE) {
     options(warning.length = 7000L)
     on.exit(options(warning.length = default_val))
     stop("A Python environment for slendr has been created but the following",
-         "modules appear to be missing:", which_missing,
+         " modules appear to be missing: ", which_missing,
          "\n\nPython environment summary:\n",
          paste(capture.output(reticulate::py_config()), collapse = "\n"),
          "\n\nInstalled Python modules:\n",
