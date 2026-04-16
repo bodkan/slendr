@@ -54,14 +54,12 @@ RUN apt-get update -y \
         man-db \
         parallel \
         rename \
-        texlive \
         tmux \
         tree \
         unminimize \
         vim \
         wget \
         zlib1g-dev
-RUN tlmgr install inconsolata
 
 # fix 'Errors were encountered while processing: fontconfig' during unminimize
 RUN fc-cache -f; yes | unminimize
@@ -92,7 +90,7 @@ ENV PROJECT=/project
 WORKDIR $PROJECT
 
 # install dependencies and setup the slendr Python environment
-RUN R -e 'install.packages(c("pak", "devtools"))'
+RUN R -e 'install.packages(c("pak", "devtools", "tinytex")); tinytex::install_tinytex()'
 COPY ./ /tmp/slendr
 RUN cd /tmp/slendr; \
     if [ "$VERSION" != "dev" ]; then git checkout $VERSION; fi; \
