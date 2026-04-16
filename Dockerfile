@@ -94,7 +94,7 @@ RUN cd /tmp/slendr; \
     R -e 'pak::local_install(".", dependencies = TRUE)'
 
 # set the necessary R environment variables for the container
-RUN echo -e "PATH=$PATH\nSLENDR_UV=TRUE" >> ${HOME}/.Renviron
+RUN printf "PATH=$PATH\nSLENDR_UV=TRUE\n" > ${HOME}/.Renviron
 
 ############################################################
 # final configuration steps
