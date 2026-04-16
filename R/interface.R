@@ -1428,18 +1428,6 @@ init_env <- function(uv = FALSE, quiet = FALSE) {
     reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
   }
 
-  # this is an awful workaround around the reticulate/Python bug which prevents
-  # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
-  #   Error in py_call_impl(callable, dots$args, dots$keywords) :
-  #     TypeError: integer argument expected, got float
-  # in places with no integer/float conversion in sight
-  #
-  # at least it prevents having to do things like:
-  # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
-  #                                                              for ind in ts.individuals()]")
-  # (moved from ts_read() here because this is a better place for loading our Python functions)
-  reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
-
   missing <- c(
     "msprime" = !reticulate::py_module_available("msprime"),
     "tskit" = !reticulate::py_module_available("tskit"),
@@ -1461,11 +1449,24 @@ init_env <- function(uv = FALSE, quiet = FALSE) {
          paste(utils::capture.output(print(packages)), collapse = "\n"),
          call. = FALSE)
   } else {
+    # this is an awful workaround around the reticulate/Python bug which prevents
+    # import_from_path (see zzz.R) from working properly -- I'm getting nonsensical
+    #   Error in py_call_impl(callable, dots$args, dots$keywords) :
+    #     TypeError: integer argument expected, got float
+    # in places with no integer/float conversion in sight
+    #
+    # at least it prevents having to do things like:
+    # reticulate::py_run_string("def get_pedigree_ids(ts): return [ind.metadata['pedigree_id']
+    #                                                              for ind in ts.individuals()]")
+    # (moved from ts_read() here because this is a better place for loading our Python functions)
+    reticulate::source_python(file = system.file("pylib/pylib.py", package = "slendr"))
+
     # pylib <<- reticulate::import_from_path(
     #   "pylib",
     #   path = system.file("python", package = "slendr"),
     #   delay_load = TRUE
     # )
+
     if (!quiet)
       message("Python virtual environment for slendr has been activated.")
   }
