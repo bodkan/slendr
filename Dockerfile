@@ -54,6 +54,7 @@ RUN apt-get update -y \
         man-db \
         parallel \
         rename \
+        texlive \
         tmux \
         tree \
         unminimize \
