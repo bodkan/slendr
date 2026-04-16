@@ -2,6 +2,8 @@ FROM rocker/rstudio:4.5.3
 
 LABEL maintainer="Martin Petr <mp@bodkan.net>"
 
+ARG VERSION
+
 ############################################################
 # setup the base system
 ############################################################
@@ -87,8 +89,8 @@ WORKDIR $PROJECT
 # install dependencies and setup the slendr Python environment
 RUN R -e 'install.packages(c("pak", "devtools"))'
 COPY ./ /tmp/slendr
-RUN R -e 'pak::local_install("/tmp/slendr", dependencies = TRUE)'
-RUN R -e 'slendr::setup_env(agree = TRUE); remove.packages("slendr")'
+RUN if [ "$VERSION" != "dev" ] git checkout $VERSION; fi; \
+    R -e 'pak::local_install("/tmp/slendr", dependencies = TRUE)'
 
 # make sure all software is available in R
 RUN echo "PATH=$PATH" >> ${HOME}/.Renviron

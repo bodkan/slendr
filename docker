@@ -9,6 +9,8 @@
 #   make -f docker rstudio  # creates an RStudio Server instance
 #
 
+VERSION := dev
+
 # check the OS type to assign appropriate Docker image tag
 ifeq ($(shell uname -s), Darwin)
     PLATFORM ?= arm64
@@ -16,11 +18,11 @@ else
     PLATFORM ?= amd64
 endif
 
-IMAGE := bodkan/$(shell basename $(shell pwd)):$(PLATFORM)
+IMAGE := bodkan/$(shell basename $(shell pwd))-$(VERSION):$(PLATFORM)
 CONTAINER := $(shell basename $(shell pwd))
 
 # if present, extract GitHub access token
-TOKEN := $(shell if [[ -f ~/.GITHUB_PAT ]]; then more ~/.GITHUB_PAT; else echo ""; fi)
+TOKEN := $(shell if [ -f ~/.GITHUB_PAT ]; then more ~/.GITHUB_PAT; else echo ""; fi)
 
 .PHONY: rstudio bash r build push pull local-webapp remote-webapp
 
@@ -41,7 +43,7 @@ endif
 	docker run --rm -ti -p $(PORT):8787 -e RUNROOTLESS=true -e DISABLE_AUTH=true -v $(shell pwd):/project --name $(CONTAINER) $(IMAGE)
 
 build:
-	docker build --build-arg GITHUB_PAT=$(TOKEN) -t $(IMAGE) .
+	docker build --build-arg GITHUB_PAT=$(TOKEN) --build-arg VERSION=$(VERSION) -t $(IMAGE) .
 
 build-clean:
 	@echo $(IMAGE)
