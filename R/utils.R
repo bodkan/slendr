@@ -22,7 +22,7 @@ set_random_seed <- function(seed) {
 check_dependencies <- function(python = FALSE, slim = FALSE, quit = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
   missing_slim <- if (slim) !is_slim_present() else FALSE
-  missing_python <- if (python) !is_slendr_env_present() else FALSE
+  missing_python <- if (python) (Sys.getenv("SLENDR_UV") == "TRUE" || !is_slendr_env_present()) else FALSE
 
   fail <- missing_slim || missing_python
 
