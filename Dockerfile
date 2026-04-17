@@ -53,6 +53,7 @@ RUN apt-get update -y \
         libzstd-dev \
         man-db \
         parallel \
+        qpdf \
         rename \
         tmux \
         tree \
