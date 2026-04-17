@@ -163,6 +163,8 @@ jobs:
               "\n",
               "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning",
               "\n",
+              "RETICULATE_PYTHON='managed'",
+              "\n",
               "SLENDR_UV=TRUE"
             ),
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
