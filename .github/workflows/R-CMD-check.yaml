@@ -161,34 +161,28 @@ jobs:
               "\n",
               "RSTUDIO_PANDOC=", normalizePath(dirname(pandoc::pandoc_bin()), winslash = "/"),
               "\n",
-              "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning",
-              "\n",
-              "RETICULATE_PYTHON='managed'",
-              "\n",
-              "SLENDR_UV=TRUE"
+              "GTIFF_SRS_SOURCE=EPSG # silence GDAL warning"
             ),
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
 
-      - name: Setup PowerShell
+      - name: Setup dedicated Python environment for slendr
         if: runner.os == 'Windows'
         run: |
-          winget search Microsoft.PowerShell
-          winget install --id Microsoft.PowerShell --source winget
-        shell: cmd
-
-      - name: Install reticulate
-        if: runner.os == 'Windows'
-        run: |
-          install.packages("reticulate", repos = "http://cran.rstudio.com")
-        shell: Rscript {0}
-
-      - name: Setup uv
-        if: runner.os == 'Windows'
-        run: |
+          install.packages(c("magrittr", "reticulate"), repos = "http://cran.rstudio.com")
           library(reticulate)
-          py_require("tskit")
-          print(py_module_available("tskit"))
+          library(magrittr)
+          install_miniconda()
+          PYTHON_VERSION <- "3.12"
+          PYTHON_DEPS <- c("msprime==1.4.1", "tskit==1.0.2", "pyslim==1.1.1", "tspop==0.0.2")
+          PYTHON_ENV <-
+            PYTHON_DEPS %>%
+            gsub("==", "-", .) %>%
+            paste(collapse = "_") %>%
+            paste0("Python-", PYTHON_VERSION, "_", .)
+          conda_create(envname = PYTHON_ENV, python_version = PYTHON_VERSION)
+          use_condaenv(PYTHON_ENV, required = TRUE)
+          conda_install(envname = PYTHON_ENV, packages = PYTHON_DEPS, pip = TRUE)
         shell: Rscript {0}
 
         # The Windows GDAL GitHub Actions warning solved by setting 'GTIFF_SRS_SOURCE' above
