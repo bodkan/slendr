@@ -170,6 +170,13 @@ jobs:
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
 
+      - name: Setup PowerShell
+        if: runner.os == 'Windows'
+        run: |
+          winget search Microsoft.PowerShell
+          winget install --id Microsoft.PowerShell --source winget
+        shell: cmd
+
       - name: Install reticulate
         if: runner.os == 'Windows'
         run: |
