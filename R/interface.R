@@ -1417,7 +1417,7 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
 #' @export
 init_env <- function(uv = FALSE, quiet = FALSE) {
   if (uv || Sys.getenv("SLENDR_UV") == "TRUE") {
-    reticulate::py_require(PYTHON_DEPS, PYTHON_VERSION)
+    reticulate::py_require(packages = PYTHON_DEPS, python_version = PYTHON_VERSION)
   } else if (!check_dependencies(python = TRUE)) {
     stop("Could not activate slendr's Python environment because it is\n",
          "not present on your system:\n\n", PYTHON_ENV, "\n\n",
