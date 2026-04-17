@@ -22,22 +22,15 @@ set_random_seed <- function(seed) {
 check_dependencies <- function(python = FALSE, slim = FALSE, quit = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
   missing_slim <- if (slim) !is_slim_present() else FALSE
-  missing_python <- if (python) !is_slendr_env_present() else FALSE
+  missing_python <- if (python) (Sys.getenv("SLENDR_UV") != "TRUE" && !is_slendr_env_present()) else FALSE
 
   fail <- missing_slim || missing_python
 
   if (fail) {
-    if (interactive()) {
-      error_slim <- if (missing_slim) "  - SLiM binary not found in the path" else ""
-      error_python <- if (missing_python) "  - Python environment (did you run setup_env()?)" else ""
-      stop(sprintf("Missing requirements of slendr:\n%s\n%s",
-                   error_slim, error_python), call. = FALSE)
-    } else {
-      if (quit)
-        q()
-      else
-        return(FALSE)
-    }
+    if (quit)
+      q()
+    else
+      return(FALSE)
   } else {
     return(invisible(TRUE))
   }

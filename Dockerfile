@@ -71,6 +71,9 @@ ENV HOME="/root"
 # compile and install third-party software dependencies
 ############################################################
 
+# compile fzf
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git ${HOME}/.fzf; ${HOME}/.fzf/install
+
 # compile SLiM
 RUN cd /tmp; wget https://github.com/MesserLab/SLiM/archive/refs/tags/v5.1.tar.gz -O slim.tar.gz; \
     tar xf slim.tar.gz; cd SLiM-*; mkdir build; cd build; cmake ..; make slim eidos
@@ -89,15 +92,20 @@ WORKDIR $PROJECT
 # install dependencies and setup the slendr Python environment
 RUN R -e 'install.packages(c("pak", "devtools"))'
 COPY ./ /tmp/slendr
-RUN if [ "$VERSION" != "dev" ]; then git checkout $VERSION; fi; \
-    R -e 'pak::local_install("/tmp/slendr", dependencies = TRUE)'
-
-# make sure all software is available in R
-RUN echo "PATH=$PATH" >> ${HOME}/.Renviron
+RUN cd /tmp/slendr; \
+    if [ "$VERSION" != "dev" ]; then git checkout $VERSION; fi; \
+    R -e 'pak::local_install(".", dependencies = TRUE)'
 
 ############################################################
 # final configuration steps
 ############################################################
+
+# clone shell configuration files into the container
+RUN cd ${HOME}; git clone https://github.com/bodkan/dotfiles .dotfiles/; rm -f .bashrc .profile; \
+    cd .dotfiles; ./install.sh
+
+# set the necessary R environment variables for the container
+RUN printf "PATH=$PATH\nSLENDR_UV=TRUE\n" > ${HOME}/.Renviron
 
 # make sure the project is ready when RStudio Server session starts
 # https://docs.posit.co/ide/server-pro/admin/rstudio_pro_sessions/session_startup_scripts.html
