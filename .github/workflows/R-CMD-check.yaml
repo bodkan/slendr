@@ -170,6 +170,20 @@ jobs:
             con = paste0(normalizePath(path.expand("~"), winslash = "/"), "/.Renviron"))
         shell: Rscript {0}
 
+      - name: Install reticulate
+        if: runner.os == 'Windows'
+        run: |
+          install.packages("reticulate", repos = "http://cran.rstudio.com")
+        shell: Rscript {0}
+
+      - name: Setup uv
+        if: runner.os == 'Windows'
+        run: |
+          library(reticulate)
+          py_require("tskit")
+          print(py_module_available("tskit"))
+        shell: Rscript {0}
+
         # The Windows GDAL GitHub Actions warning solved by setting 'GTIFF_SRS_SOURCE' above
         # is actually not the first time this happened, interesting:
         # https://github.com/bodkan/slendr/blob/3e02fa2ad7fb085ccbcc23df518bca6b72e782b1/R/compilation.R#L730
