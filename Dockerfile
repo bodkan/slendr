@@ -53,6 +53,9 @@ RUN apt-get update -y \
         libzstd-dev \
         man-db \
         parallel \
+        python3-venv \
+        python3-pip \
+        python3-dev \
         qpdf \
         rename \
         tmux \
