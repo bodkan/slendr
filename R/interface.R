@@ -1496,24 +1496,32 @@ get_python <- function() {
 
 #' Setup a dedicated Python virtual environment for slendr
 #'
-#' This function will automatically download a Python miniconda distribution
-#' dedicated to an R-Python interface. It will also create a slendr-specific
-#' Python environment with all the required Python dependencies.
+#' This function will setup a dedicated Python virtual environment for slendr,
+#' either via a dedicated miniconda distribution or using a Python installation
+#' already available on the system.
 #'
+#' @param env Should the Python virtual environment be created with conda (default)
+#'   or using an already available Python interpreter and its built-in pip module?
 #' @param quiet Should informative messages be printed to the console? Default
 #'   is \code{FALSE}.
 #' @param agree Automatically agree to all questions?
 #' @param pip Should pip be used instead of conda for installing slendr's Python
-#'   dependencies?
+#'   dependencies? (DEPRECATED)
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-setup_env <- function(quiet = FALSE, agree = FALSE, env = c("conda", "venv")) {
+setup_env <- function(env = c("conda", "venv"), agree = FALSE, quiet = FALSE, pip = NULL) {
+  if (!is.null(pip)) {
+    warning("The `pip =` argument of `setup_env()` has been deprecated. If you\n",
+            "want to create a slendr Python virtual environment without conda\n",
+            "and using pip instead, please run `setup_env(env = \"venv\")`.", call. = FALSE)
+  }
+
   env <- match.arg(env, choices = c("conda", "venv"))
   if (is_slendr_condaenv_present() || is_slendr_virtualenv_present()) {
-    message("A required slendr Python environment is already present. You can activate\n",
-            "it by calling init_env().")
+    message("A Python virtual environment of slendr is already present. You can\n",
+            "activate it by calling `init_env()`.")
   } else {
     if (agree)
       answer <- 2
