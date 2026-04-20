@@ -53,6 +53,7 @@ RUN apt-get update -y \
         libzstd-dev \
         man-db \
         parallel \
+        python3.12-venv \
         qpdf \
         rename \
         tmux \
@@ -90,7 +91,7 @@ RUN cd /tmp; cp SLiM-*/build/slim SLiM-*/build/eidos /usr/bin
 ENV PROJECT=/project
 WORKDIR $PROJECT
 
-# install dependencies and setup the slendr Python environment
+# install slendr and its dependencies
 RUN R -e 'install.packages(c("pak", "devtools"))'
 COPY ./ /tmp/slendr
 RUN cd /tmp/slendr; \
