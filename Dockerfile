@@ -53,7 +53,6 @@ RUN apt-get update -y \
         libzstd-dev \
         man-db \
         parallel \
-        python3.12-venv \
         qpdf \
         rename \
         tmux \
@@ -107,7 +106,7 @@ RUN cd ${HOME}; git clone https://github.com/bodkan/dotfiles .dotfiles/; rm -f .
     cd .dotfiles; ./install.sh
 
 # set the necessary R environment variables for the container
-RUN printf "PATH=$PATH\nSLENDR_UV=TRUE\n" > ${HOME}/.Renviron
+RUN printf "PATH=$PATH\n" > ${HOME}/.Renviron
 
 # make sure the project is ready when RStudio Server session starts
 # https://docs.posit.co/ide/server-pro/admin/rstudio_pro_sessions/session_startup_scripts.html
