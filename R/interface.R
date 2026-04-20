@@ -1646,9 +1646,10 @@ clear_env <- function(force = FALSE, all = FALSE) {
 check_env <- function(verbose = TRUE) {
   # if there is no Python available on user's system, don't immediately
   # jump to installing miniconda (let's deal with that in setup_env())
-  orig_env <- Sys.getenv("RETICULATE_MINICONDA_ENABLED")
-  Sys.setenv(RETICULATE_MINICONDA_ENABLED = FALSE)
-  on.exit(Sys.setenv(RETICULATE_MINICONDA_ENABLED = orig_env))
+  # TODO: is this still needed now that reticulate prefers uv?
+# orig_env <- Sys.getenv("RETICULATE_MINICONDA_ENABLED")
+# Sys.setenv(RETICULATE_MINICONDA_ENABLED = FALSE)
+# on.exit(Sys.setenv(RETICULATE_MINICONDA_ENABLED = orig_env))
 
   py <- reticulate::py_discover_config()
 
