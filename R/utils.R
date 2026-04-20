@@ -725,10 +725,10 @@ ask_install <- function(module) {
 }
 
 is_slendr_condaenv_present <- function() {
-  tryCatch({ PYTHON_ENV %in% reticulate::conda_list$name }, error = function(cond) FALSE) }
+  tryCatch({ PYTHON_ENV %in% reticulate::conda_list()$name }, error = function(cond) FALSE) }
 
 is_slendr_virtualenv_present <- function() {
-  tryCatch({ PYTHON_ENV %in% reticulate::virtualenv_list$name }, error = function(cond) FALSE)
+  tryCatch({ PYTHON_ENV %in% reticulate::virtualenv_list() }, error = function(cond) FALSE)
 }
 
 is_slim_present <- function() {
