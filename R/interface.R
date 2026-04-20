@@ -1402,10 +1402,10 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   schedule
 }
 
-#' Activate slendr's own dedicated Python environment
+#' Activate the Python environment of slendr
 #'
-#' This function attempts to activate a dedicated slendr Miniconda Python
-#' environment previously set up via \code{setup_env}.
+#' This function activates a dedicated slendr Python environment set up via
+#' \code{setup_env}, or creates an ephemeral Python environment with uv.
 #'
 #' @param uv Should an ephemeral Python environment be created via uv (instead
 #'   of activating a permanent virtual environment created via \code{setup_env})?
@@ -1530,10 +1530,10 @@ setup_env <- function(quiet = FALSE, agree = FALSE, env = c("conda", "venv")) {
           "Do you wish to proceed with the automated Python environment setup?")
         )
     if (answer == 2) {
-      message("=======================================================================")
+      message("======================================================================")
       message("Installing a Python environment for slendr. Please wait until")
-      message("the installation procedure finishes. Do NOT interrupt the")
-      message("process while the installation is still running.")
+      message("the installation procedure finishes. Interrupting this process")
+      message("could leave the installation in an inconsistent state.")
       message("======================================================================\n")
       Sys.sleep(10)
 

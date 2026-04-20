@@ -4,7 +4,7 @@
 \alias{setup_env}
 \title{Setup a dedicated Python virtual environment for slendr}
 \usage{
-setup_env(quiet = FALSE, agree = FALSE, pip = FALSE)
+setup_env(quiet = FALSE, agree = FALSE, env = c("conda", "venv"))
 }
 \arguments{
 \item{quiet}{Should informative messages be printed to the console? Default
