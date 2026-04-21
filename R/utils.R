@@ -21,8 +21,13 @@ set_random_seed <- function(seed) {
 #' @export
 check_dependencies <- function(python = FALSE, slim = FALSE, quit = FALSE) {
   # check whether SLiM and Python are present (only if needed!)
-  missing_slim <- if (slim) !is_slim_present() else FALSE
-  missing_python <- if (python) (Sys.getenv("SLENDR_UV") != "TRUE" && !is_slendr_env_present()) else FALSE
+  missing_slim <- slim && !is_slim_present()
+  missing_python <- (
+    python &&
+      Sys.getenv("SLENDR_UV") != "TRUE" &&
+      !is_slendr_condaenv_present() &&
+      !is_slendr_virtualenv_present()
+    )
 
   fail <- missing_slim || missing_python
 
@@ -724,11 +729,11 @@ ask_install <- function(module) {
   answer == 2
 }
 
-is_slendr_env_present <- function() {
-  tryCatch({
-    PYTHON_ENV %in% reticulate::conda_list()$name
-  }, error = function(cond) FALSE
-  )
+is_slendr_condaenv_present <- function() {
+  tryCatch({ PYTHON_ENV %in% reticulate::conda_list()$name }, error = function(cond) FALSE) }
+
+is_slendr_virtualenv_present <- function() {
+  tryCatch({ PYTHON_ENV %in% reticulate::virtualenv_list() }, error = function(cond) FALSE)
 }
 
 is_slim_present <- function() {

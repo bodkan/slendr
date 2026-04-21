@@ -2,7 +2,7 @@
 % Please edit documentation in R/interface.R
 \name{init_env}
 \alias{init_env}
-\title{Activate slendr's own dedicated Python environment}
+\title{Activate the Python environment of slendr}
 \usage{
 init_env(uv = FALSE, quiet = FALSE)
 }
@@ -17,6 +17,6 @@ is \code{FALSE}.}
 No return value, called for side effects
 }
 \description{
-This function attempts to activate a dedicated slendr Miniconda Python
-environment previously set up via \code{setup_env}.
+This function activates a dedicated slendr Python environment set up via
+\code{setup_env}, or creates an ephemeral Python environment with uv.
 }

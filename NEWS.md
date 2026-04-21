@@ -1,11 +1,46 @@
-# slendr (development version)
+# _slendr_ (development version)
 
-- The release of pandas 3.0.0 has caused a breakage at the interface between Python
-and R in the internals of slendr. Because the exact version of pandas does not
-concern slendr users, we have resorted to locking pandas to version 2.3.3
-for the time being. ([PR #192](https://github.com/bodkan/slendr/pull/192))
+This release implements a number of important changes to installing and handling Python
+environments of slendr:
 
-# slendr 1.4.0
+1. We now support ephemeral Python virtual environments based on uv, [recently
+   introduced by the reticulate
+   package](https://posit.co/blog/reticulate-1-41). This is mostly useful as a
+   fallback option in situations in which standard process based on
+   `setup_env()` (described below) causes issues. In order to use this feature,
+   users no longer need to create a permanent Python virtual environment with
+   the `setup_env()` function. Instead, calling `init_env(uv = TRUE)` in place
+   of the usual `init_env()` call will instruct _slendr_ to create an ephemeral
+   Python environment with all the required Python modules via the
+   reticulate-based uv interface. In other words, only two R commands
+   `library(slendr); init_env(uv = TRUE)` are now all that is needed for all of
+   the msprime- and tskit-based functionality of slendr. In situations in which
+   having to set `uv = TRUE` in every `init_env()` call becomes frustrating,
+   the uv-based ephemeral environments can be made default by setting the
+   environment variable `SLENDR_UV="TRUE"`, eg. in the `~/.Renviron` file.
+
+2. The `setup_env()` function now accepts a new argument `env =` with the
+   following behavior:
+
+- When called as `setup_env(env = "conda")`, _slendr_ downloads a
+  conda-provided Python interpreter and creates a virtual environment with all
+  of its Python dependencies. The `env = "conda"` mode is therefore equivalent
+  to the plain (and still default) call `setup_env()`.
+
+- Alternatively, running `setup_env(env = "venv")` will use a Python
+  interpreter already available on the user's system discovered by the
+  reticulate package, and create a standard Python virtual environment using
+  the built-in Python module `venv` containing all of _slendr_'s Python
+  dependencies.
+
+3. Given the expanded possibilities offered by the `setup_env(env = "conda|venv")`
+options, the `pip = TRUE` argument of `setup_env()` is now deprecated.
+
+
+In either of the above cases, calling `init_env()` will activate the Python
+virtual environment thus created, just like before.
+
+# _slendr_ 1.4.0
 
 - An issue with plotting "truncated" backwards time models using `plot_model()` has been fixed.
 (issue [#189](https://github.com/bodkan/slendr/issues/189)
@@ -34,7 +69,7 @@ not affect any of the functionality of _slendr_ and so its worth doing as a
 defensive measure in case users in the future run into a similar problem.
 ([#b2e5c6](https://github.com/bodkan/slendr/commit/b2e5c6))
 
-# slendr 1.3.0
+# _slendr_ 1.3.0
 
 - In order to minimize the dependency burden for users even further, packages _shiny_ and _shinyWidgets_ are now not installed by default. The function `explore_model()` function now checks if those packages are present upon calling it. If not, the user is informed that they should install those packages first. ([#60fbdf](https://github.com/bodkan/slendr/commit/60fbdf))
 
@@ -42,7 +77,7 @@ defensive measure in case users in the future run into a similar problem.
 
 - The internal dependencies of _slendr_ have been upgraded. SLiM v5.1 is now required; and `init_env()` will instruct users that a new Python environment needs to be created with `setup_env()` to update _pyslim_ to v1.1.0. Additionally, (though rather inconsequential for _slendr_ users), the Python environment now utilizes Python 3.13. ([issue #186](https://github.com/bodkan/slendr/issues/186)).
 
-# slendr 1.2.0
+# _slendr_ 1.2.0
 
 - Due to new issues related to conda activating environments in an incorrect path which [started to pop up](https://github.com/bodkan/slendr/issues/179) (possibly due to a misfeature in the _reticulate_ package), activating procedure in _slendr_ was reverted to a slower, but apparently [more robust approach](https://github.com/bodkan/slendr/pull/182/commits/de868c160fb8eafd278676b98fd99edc90373c61). This will unfortunately make running massively parallelized simulations on Windows problematic due to a suspected-but-hard-to-detect race condition in conda on Windows, which manifested when executing many parallel environment activations (one for each simulation process) on this platform. For the time being, users are advised to execute big parallelized simulations (we're talking thousands of simulations in an ABC setting) on unix systems. ([PR #182](https://github.com/bodkan/slendr/pull/182))
 
@@ -60,7 +95,7 @@ defensive measure in case users in the future run into a similar problem.
 
 - `plot_model()` now plots y-axis time using a more readable integer scale.  ([#6b0e7fcc](https://github.com/bodkan/slendr/commit/6b0e7fcc))
 
-# slendr 1.1.0
+# _slendr_ 1.1.0
 
 A relatively modest release, mostly pushed out to keep _slendr_ in step with the recent release of SLiM 5.0 and new releases of  _msprime_ and _tskit_. As a result, _slendr_'s SLiM-based functionality (and particularly its new "SLiM extension" mechanism) requires SLiM 5.0
 
@@ -78,7 +113,7 @@ A relatively modest release, mostly pushed out to keep _slendr_ in step with the
 
 - A new option `quiet =` now controls whether or not should `ts_genotypes()` write a message if any multiallelic sites are encountered during conversion from a tree-sequence object. ([#9260c6](https://github.com/bodkan/slendr/commit/9260c6))
 
-# slendr 1.0.0
+# _slendr_ 1.0.0
 
 - **A massive update introducing the possibility of simulating non-neutral _slendr_ models with `slim()` has been introduced. This update is too big to describe in the changelog -- for more information and motivation, see the [description in the associated PR](https://github.com/bodkan/slendr/pull/155), or [the new extensive vignette](https://bodkan.net/slendr/articles/vignette-11-extensions.html) on the topic. ([PR #155](https://github.com/bodkan/slendr/pull/155))**
 
@@ -112,7 +147,7 @@ The above is implemented in PR [#157](https://github.com/bodkan/slendr/pull/157)
 
 - Running `slim(..., method = "gui")` was broken due to recent changes to make _slendr_ work on Windows. A path to a generated SLiM script executed in SLiMgui was incorrectly normalized. Non-SLiMgui runs were not affected. ([#ccae1df](https://github.com/bodkan/slendr/commit/ccae1df))
 
-# slendr 0.9.1
+# _slendr_ 0.9.1
 
 - A new helper function `get_env()` now returns the name of the built-in _slendr_ Python environment (without activating it). ([#162ccc](https://github.com/bodkan/slendr/commit/162ccc))
 
@@ -122,15 +157,15 @@ The above is implemented in PR [#157](https://github.com/bodkan/slendr/pull/157)
 
 - The _msprime_ dependency of _slendr_ has been updated to version 1.3.1. As a result, `setup_env()` will have to be re-run to update the internal _slendr_ Python environment. ([#dcb83d](https://github.com/bodkan/slendr/commit/dcb83d))
 
-# slendr 0.9.0
+# _slendr_ 0.9.0
 
 - A full support for running SLiM and _msprime_ simulations with _slendr_ and for analyzing tree sequences using its [_tskit_](https://tskit.dev) interface has been implemented. Please note that the Windows support is still rather experimental -- the internal _slendr_ test suite currently assumes that SLiM has been installed using the _msys2_ system as described in the section 2.3.1 of the SLiM manual and other means of installing SLiM (such as via conda) might require additional adjustments. A fallback option in the form of the `slim_path=` argument of the `slim()` function can be used in non-standard SLiM installation circumstances. For most convenience, please add the path to the directory containing the `slim.exe` binary to the `PATH` variable by editing the `C:/Users/<username>/Documents/.Renviron` file accordingly. See the relevant section on Windows installation in the [_slendr_ documentation](https://bodkan.net/slendr/articles/vignette-00-installation.html) for additional information. Feedback on the Windows functionality and bug reports are highly appreciated via [GitHub](https://github.com/bodkan/slendr/issues) issues! **Many thanks to @GKresearch and @rdinnager for their huge help in making the Windows port happen!** (PR #149)
 
-- A trivial change has been made to _slendr_'s SLiM back-end script fixing the issue introduced in a SLiM 4.1 upgrade (see changelog for version 0.8.1 below). This is not expected to lead to different simulation outputs between the two versions of slendr (0.8.2 vs 0.8.1) or SLiM (4.1 vs 4.0.1) used. (PR #148)
+- A trivial change has been made to _slendr_'s SLiM back-end script fixing the issue introduced in a SLiM 4.1 upgrade (see changelog for version 0.8.1 below). This is not expected to lead to different simulation outputs between the two versions of _slendr_ (0.8.2 vs 0.8.1) or SLiM (4.1 vs 4.0.1) used. (PR #148)
 
 - The _msprime_ internal dependency of _slendr_ was updated to 1.3.0, and Python to 3.12. As a result, after loading _slendr_, users will be prompted to re-run `setup_env()` to make sure that the dedicated _slendr_ Python environment is fully updated. At the same time, this prevents a failing installation on (at the very least) M1 macOS using `pip`. ([#5ce212](https://github.com/bodkan/slendr/commit/5ce212), [#a210d4](https://github.com/bodkan/slendr/commit/a210d4))
 
-# slendr 0.8.1
+# _slendr_ 0.8.1
 
 - Fixed an [issue](https://github.com/bodkan/slendr/issues/143) of apparent contradiction in time direction in models where range expansion was scheduled within some time interval together with associated "locked-in" changes in population size over that time interval. ([#d2a29e](https://github.com/bodkan/slendr/commit/d2a29e))
 
@@ -140,7 +175,7 @@ The above is implemented in PR [#157](https://github.com/bodkan/slendr/pull/157)
 
 **WARNING**: SLiM 4.1 which has just been released includes a couple of [backwards incompatible changes](https://github.com/MesserLab/SLiM/releases/tag/v4.1) related to the implementation of spatial maps which prevent the current version of _slendr_'s `slim()` function from working correctly. If you rely on the functionality provided by the `slim()` function, you will have to use SLiM 4.0. (Note that if you want to have multiple versions of SLiM on your system, you can either use the `slim_path =` argument of `slim()` or specify the `$PATH` to the required version of SLiM in your `~/.Renviron` file just like you do under normal circumstances). Porting _slendr_ for SLiM 4.1 is being worked on.
 
-# slendr 0.8.0
+# _slendr_ 0.8.0
 
 - In order to support the new `ts_tracts()` function backed by the _tspop_ module (see the item below), a new _slendr_ Python environment is required. As such, users will have to run `setup_env()` to get all the required Python dependencies which will be now installed in the internal virtual environment named `Python-3.11_msprime-1.2.0_tskit-0.5.6_pyslim-1.0.4_tspop-0.0.2`. ([#b5330c](https://github.com/bodkan/slendr/commit/b5330c))
 
@@ -150,7 +185,7 @@ The above is implemented in PR [#157](https://github.com/bodkan/slendr/pull/157)
 
 - Experimental support for [manually created](https://github.com/bodkan/slendr/pull/144) spatial tree sequences. (PR #144)
 
-# slendr 0.7.2
+# _slendr_ 0.7.2
 
 - A new function `ts_names()` has been added, avoiding the need for the extremely frequent (and, unfortunately, cumbersome) trick of getting named lists of individual symbolic names `ts_samples(ts) %>% split(., .[[split]]) %>% lapply(`[[`, "name")` which is very confusing for all but the more experienced R users. ([#7db6ea](https://github.com/bodkan/slendr/commit/7db6ea))
 
@@ -160,7 +195,7 @@ The above is implemented in PR [#157](https://github.com/bodkan/slendr/pull/157)
 
 - `plot_model()` now has an argument `order =` allowing to override the default [in-order](https://en.wikipedia.org/wiki/Tree_traversal#Inorder_traversal) ordering of populations along the x-axis. ([#7a10ea](https://github.com/bodkan/slendr/commit/7a10ea))
 
-# slendr 0.7.1
+# _slendr_ 0.7.1
 
 - **Starting from this release, the \*spatial\* simulation and data analysis functionality of _slendr_ is conditional on the presence of R geospatial packages _sf_, _stars_, and _rnaturalearth_ on the system. This means that users will be able to install _slendr_ (and use all of its non-spatial functionality) even without having these R packages installed. That said, nothing really changes in practice: spatial features of _slendr_ are just one `install.packages(c("sf", "stars", "rnaturalearth"))` away! The difference is that _slendr_ doesn't try to do this during its own installation, but users are instructed to do this themselves (if needed) when the package is loaded.** ([#7a10ea](https://github.com/bodkan/slendr/commit/7a10ea))
 
@@ -178,7 +213,7 @@ If spatial dependencies are not present but a spatial _slendr_ function is calle
 
 
 
-# slendr 0.7.0
+# _slendr_ 0.7.0
 
 **This is an emergency upgrade to match the latest pyslim 1.0.3 due to a serious bug in recapitation.** See [here](https://github.com/tskit-dev/pyslim/issues/307) and [here](https://github.com/bodkan/slendr/issues/141) for an extensive discussion during the process of identification of the bug and its eventual fix. For a brief summary of the practical consequences of this bug, see [this](https://ecoevo.social/@petrelharp/110583379684954818) thread by pyslim's developer and its formal announcement [here](https://groups.google.com/g/slim-discuss/c/Rtkkx_8pW58/m/PRyu9kpBAAAJ).
 
@@ -192,7 +227,7 @@ If spatial dependencies are not present but a spatial _slendr_ function is calle
 
 **Note:** Loading `library(slendr)` will prompt a message _"The legacy packages maptools, rgdal, and rgeos, underpinning the sp package, which was just loaded, will retire in October 2023. [...]."_ This is an internal business of packages used by _slendr_ which unfortunately cannot be silenced from _slendr_'s side. There's no reason to panic, you can safely ignore them. Apologies for the unnecessary noise.
 
-# slendr 0.6.0
+# _slendr_ 0.6.0
 
 This is a relatively large update, which unfortunately had to be released in haste due to the [retirement of the _rgdal_ package](https://r-spatial.org/r/2023/05/15/evolution4.html) -- a significant dependency of the entire spatial R ecosystem which is being phased out in the effort to move towards modern low-level geospatial architecture. Although _slendr_ itself does not depend on _rgdal_, many of its dependencies used to (but won't in the short term, hence the push to remove the _rgdal_ dependency). The most significant update has been the addition of IBD functionality of _tskit_, as described below. However, large part of this functionality has not been extensively tested and should be considered extremely experimental at this stage. If you would like to use it, it might be safer to either wait for a later release in which the IBD functionality will be more stable, or use the underlying, battle-tested [Python implementation in _tskit_](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.ibd_segments).
 
@@ -224,7 +259,7 @@ This is a relatively large update, which unfortunately had to be released in has
     (This note will be removed in the next major version of slendr.)
 ```
 
-Users have to call `init_env()` to manually activate the Python environment of slendr (see note under version 0.5.0 below for an extended explanation).
+Users have to call `init_env()` to manually activate the Python environment of _slendr_ (see note under version 0.5.0 below for an extended explanation).
 
 - `ts_simplify()` now accepts optional arguments `keep_unary` and `keep_unary_in_individuals` (see the official [tskit docs](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify) for more detail) ([#1b2112](https://github.com/bodkan/slendr/commit/1b2112))
 
@@ -236,14 +271,14 @@ Users have to call `init_env()` to manually activate the Python environment of s
 
 - `ts_simplify()` now accepts `filter_nodes = TRUE|FALSE`, with the same behavior to tskit's [own method](https://tskit.dev/tskit/docs/stable/python-api.html#tskit.TreeSequence.simplify) [#f07ffed](https://github.com/bodkan/slendr/commit/f07ffed).
 
-# slendr 0.5.1
+# _slendr_ 0.5.1
 
 - This minor release implements an emergency fix for a CRAN warning which suddenly popped up in latest CRAN checks. ([#5600a4](https://github.com/bodkan/slendr/commit/5600a4))
 
 - A new function `ts_ibd()` has been added, representing an R interface to the _tskit_ method `TreeSequence.ibd_segments()`. However, note that `ts_ibd()` returns IBD results as a data frame (optionally, a spatially annotated _sf_ data frame). The function does not operate around iteration, as does its Python counterpart in _tskit_. Until the next major version of _slendr_, this function should be considered experimental. (PR [#123](https://github.com/bodkan/slendr/pull/123))
 
 
-# slendr 0.5.0
+# _slendr_ 0.5.0
 
 - **<u>Minor breaking change!</u> Python environments of _slendr_ are no longer automatically activated upon calling `library(slendr)`! Using the coalescent _msprime_ back end and _slendr_'s tree-sequence functions now requires making an explicit call to a new function `init_env()` after `library(slendr)` is executed.** (PR [#102](https://github.com/bodkan/slendr/pull/118))
 
@@ -292,7 +327,7 @@ This is more readable and in line with some other _tskit_-interface functions of
 
 - The default state of the `parent = ` argument of `population()` is now `NULL` instead of `"ancestor"`. This prevents silly surprising clashes in situation where some population's name really _is_ "ancestor". The only change internally is that for populations which are ancestral, the `splits` data frame element of a _slendr_ model object which includes this population carries a formal "ancestral parent population" as `"__pop_is_ancestor"` instead of just `"ancestor"`. Note that this is an internal implementation detail and not something that particularly has to involve the user. Still, if you have been somehow using _slendr_'s internal data structures, keep this in mind. ([#f8a39a2](https://github.com/bodkan/slendr/commit/f8a39a2))
 
-# slendr 0.4.0
+# _slendr_ 0.4.0
 
 - The `msprime()` function now makes sure that a given _slendr_ model can fully coalesce to a single common ancestor population. Previously, having multiple ancestral populations created with `parent = "ancestor"` would cause an infinite simulation when plugged into the `msprime()` backend. ([#095b124](https://github.com/bodkan/slendr/commit/095b124))
 
@@ -314,7 +349,7 @@ This is more readable and in line with some other _tskit_-interface functions of
 
 - Computing population genetic statistics on named samples that are not present in a tree sequence (most likely typos) is now correctly caught and reported as an error ([#da7e0bb](https://github.com/bodkan/slendr/commit/da7e0bb)).
 
-# slendr 0.3.0
+# _slendr_ 0.3.0
 
 -   SLiM 4.0 is now required for running simulations with the `slim()` engine. If you want to run _slendr_ simulations with SLiM (spatial or non-spatial), you will need to upgrade you SLiM installation. SLiM 3.7.1 version is no longer supported as the upcoming new _slendr_ spatial features will depend on SLiM 4.x and maintaining two functionally identical yet syntactically different back ends is not feasible (PR [#104](https://github.com/bodkan/slendr/pull/104)).
 
@@ -322,7 +357,7 @@ This is more readable and in line with some other _tskit_-interface functions of
 
 -   Experimental support for running coalescent msprime simulations and analysing tree-sequence data using tskit on the Windows platform has now been implemented (PR [#102](https://github.com/bodkan/slendr/pull/102)).
 
-# slendr 0.2.0
+# _slendr_ 0.2.0
 
 -   _slendr_ is now [on CRAN](https://CRAN.R-project.org/package=slendr)!
 
@@ -354,6 +389,6 @@ This is more readable and in line with some other _tskit_-interface functions of
 
 -   Extensive set of runnable examples including figures and a built-in pre-compiled example model have been added to the documentation. ([#395df62c](https://github.com/bodkan/slendr/commit/395df62c))
 
-# slendr 0.1.0
+# _slendr_ 0.1.0
 
 -   First numbered version of _slendr_ to celebrate its bioRxiv preprint! 🥳 🎉

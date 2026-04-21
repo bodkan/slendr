@@ -53,6 +53,9 @@ RUN apt-get update -y \
         libzstd-dev \
         man-db \
         parallel \
+        python3-venv \
+        python3-pip \
+        python3-dev \
         qpdf \
         rename \
         tmux \
@@ -95,7 +98,8 @@ RUN R -e 'install.packages(c("pak", "devtools"))'
 COPY ./ /tmp/slendr
 RUN cd /tmp/slendr; \
     if [ "$VERSION" != "dev" ]; then git checkout $VERSION; fi; \
-    R -e 'pak::local_install(".", dependencies = TRUE)'
+    R -e 'pak::local_install(".", dependencies = TRUE)'; \
+    R -e 'slendr::setup_env(agree = TRUE, env = "venv")'
 
 ############################################################
 # final configuration steps

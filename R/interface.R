@@ -1402,10 +1402,10 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
   schedule
 }
 
-#' Activate slendr's own dedicated Python environment
+#' Activate the Python environment of slendr
 #'
-#' This function attempts to activate a dedicated slendr Miniconda Python
-#' environment previously set up via \code{setup_env}.
+#' This function activates a dedicated slendr Python environment set up via
+#' \code{setup_env}, or creates an ephemeral Python environment with uv.
 #'
 #' @param uv Should an ephemeral Python environment be created via uv (instead
 #'   of activating a permanent virtual environment created via \code{setup_env})?
@@ -1418,14 +1418,16 @@ schedule_sampling <- function(model, times, ..., locations = NULL, strict = FALS
 init_env <- function(uv = FALSE, quiet = FALSE) {
   if (uv || Sys.getenv("SLENDR_UV") == "TRUE") {
     reticulate::py_require(packages = PYTHON_DEPS, python_version = PYTHON_VERSION)
-  } else if (!check_dependencies(python = TRUE)) {
-    stop("Could not activate slendr's Python environment because it is\n",
+  } else if (is_slendr_condaenv_present()) {
+    reticulate::use_condaenv(PYTHON_ENV)
+  } else if (is_slendr_virtualenv_present()) {
+    reticulate::use_virtualenv(PYTHON_ENV)
+  } else {
+    stop("Could not activate a Python environment for slendr because it is\n",
          "not present on your system:\n\n", PYTHON_ENV, "\n\n",
-         "To set up a Python environment you first need to run `setup_env()` or\n",
+         "To set up a Python environment, you first need to run `setup_env()` or\n",
          "call `init_env(uv = TRUE)` to create an ephemeral Python environment.",
          call. = FALSE)
-  } else {
-    reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
   }
 
   missing <- c(
@@ -1494,77 +1496,84 @@ get_python <- function() {
 
 #' Setup a dedicated Python virtual environment for slendr
 #'
-#' This function will automatically download a Python miniconda distribution
-#' dedicated to an R-Python interface. It will also create a slendr-specific
-#' Python environment with all the required Python dependencies.
+#' This function will setup a dedicated Python virtual environment for slendr,
+#' either via a dedicated miniconda distribution or using a Python installation
+#' already available on the system.
 #'
+#' @param env Should the Python virtual environment be created with conda (default)
+#'   or using an already available Python interpreter and its built-in pip module?
 #' @param quiet Should informative messages be printed to the console? Default
 #'   is \code{FALSE}.
 #' @param agree Automatically agree to all questions?
 #' @param pip Should pip be used instead of conda for installing slendr's Python
-#'   dependencies?
+#'   dependencies? (DEPRECATED)
 #'
 #' @return No return value, called for side effects
 #'
 #' @export
-setup_env <- function(quiet = FALSE, agree = FALSE, pip = FALSE) {
-  if (is_slendr_env_present()) {
-    message("A required slendr Python environment is already present. You can activate\n",
-            "it by calling init_env().")
+setup_env <- function(env = c("conda", "venv"), agree = FALSE, quiet = FALSE, pip = NULL) {
+  if (!is.null(pip)) {
+    warning("The `pip =` argument of `setup_env()` has been deprecated. If you\n",
+            "want to create a slendr Python virtual environment without conda\n",
+            "and using pip instead, please run `setup_env(env = \"venv\")`.", call. = FALSE)
+  }
+
+  env <- match.arg(env, choices = c("conda", "venv"))
+  if (is_slendr_condaenv_present() || is_slendr_virtualenv_present()) {
+    message("A Python virtual environment of slendr is already present. You can\n",
+            "activate it by calling `init_env()`.")
   } else {
-    Sys.setenv(CONDA_PLUGINS_AUTO_ACCEPT_TOS = "yes")
     if (agree)
       answer <- 2
     else
       answer <- utils::menu(
         c("No", "Yes"),
         title = paste0(
-          "This function will install a completely isolated Miniconda Python distribution\n",
-          "just for slendr and create an environment with all required Python modules.\n",
-          "\nEverything will be installed into a completely separate location into an\n",
-          "isolated environment in an R library directory. This won't affect your other\n",
-          "Python installations at all. You can always wipe out the automatically created\n",
+          "This function will create a completely isolated Python environment\n",
+          "with the necessary Python dependencies for slendr.\n",
+          "\nEverything will be installed into a completely separate location\n",
+          "and your other Python installations won't be affected at all.\n",
+          "Additionally, you can always wipe out the automatically created\n",
           "environment by running clear_env().\n\n",
           "Do you wish to proceed with the automated Python environment setup?")
         )
     if (answer == 2) {
-      message("=======================================================================")
-      message("Installing slendr's Python environment. Please wait until")
-      message("the installation procedure finishes. Do NOT interrupt the")
-      message("process while the installation is still running.")
+      message("======================================================================")
+      message("Installing a Python environment for slendr. Please wait until")
+      message("the installation procedure finishes. Interrupting this process")
+      message("could leave the installation in an inconsistent state.")
       message("======================================================================\n")
       Sys.sleep(10)
 
-      if (!dir.exists(reticulate::miniconda_path()))
-        reticulate::install_miniconda()
+      if (env == "conda") {
+        Sys.setenv(CONDA_PLUGINS_AUTO_ACCEPT_TOS = "yes")
 
-      reticulate::conda_create(envname = PYTHON_ENV, python_version = PYTHON_VERSION)
-      reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
+        if (!dir.exists(reticulate::miniconda_path()))
+          reticulate::install_miniconda()
 
-      # # some Python dependencies are  broken on M1 Mac architecture, so fallback
-      # # to pip in cases like this (otherwise use conda to avoid any potential
-      # # compilation issues such as missing libgsl)
-      # if (is.null(pip))
-      #   pip <- all(Sys.info()[c("sysname", "machine")] == c("Darwin", "arm64"))
+        reticulate::conda_create(PYTHON_ENV, python_version = PYTHON_VERSION)
+        reticulate::use_condaenv(PYTHON_ENV, required = TRUE)
 
-      # tspop isn't available on conda and pyslim gives installation errors with conda
-      # on M-architecture Macs, so they will need to be installed by pip
-      # no matter the user's preference (given by the pip function argument value)
-      # TODO: check at some point later if tspop / pyslim are on conda for all systems
-      pip_only <- grepl("pandas|tspop|pyslim", PYTHON_DEPS)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = PYTHON_DEPS[!pip_only], pip = pip)
-      reticulate::conda_install(envname = PYTHON_ENV, packages = PYTHON_DEPS[pip_only], pip = TRUE)
+        # tspop isn't available on conda and pyslim gives installation errors with conda
+        # on M-architecture Macs, so they will need to be installed by pip
+        # no matter the user's preference (given by the pip function argument value)
+        # TODO: check at some point later if tspop / pyslim are on conda for all systems
+        pip_only <- grepl("tspop|pyslim", PYTHON_DEPS)
+        reticulate::conda_install(envname = PYTHON_ENV, packages = PYTHON_DEPS[!pip_only], pip = FALSE)
+        reticulate::conda_install(envname = PYTHON_ENV, packages = PYTHON_DEPS[pip_only], pip = TRUE)
+      } else {
+        reticulate::virtualenv_create(PYTHON_ENV, packages = PYTHON_DEPS)
+        reticulate::use_virtualenv(PYTHON_ENV, required = TRUE)
+      }
 
       if (!quiet) {
         message("======================================================================")
-        message("Python environment for slendr has been successfuly created, and ",
-                "the R\ninterface to msprime, tskit, and pyslim modules has been activated.\n")
+        message("Python environment for slendr has been successfuly created and its\n",
+                "interface to msprime, tskit, tspop, and pyslim has been activated.\n")
         message("In future sessions, activate this environment by calling init_env().")
         message("=======================================================================")
       }
-    } else
-      warning("Your Python environment is not set up correctly which means that the tree\n",
-              "sequence functionality of slendr will not work.", call. = FALSE)
+    }
   }
 }
 
@@ -1645,9 +1654,10 @@ clear_env <- function(force = FALSE, all = FALSE) {
 check_env <- function(verbose = TRUE) {
   # if there is no Python available on user's system, don't immediately
   # jump to installing miniconda (let's deal with that in setup_env())
-  orig_env <- Sys.getenv("RETICULATE_MINICONDA_ENABLED")
-  Sys.setenv(RETICULATE_MINICONDA_ENABLED = FALSE)
-  on.exit(Sys.setenv(RETICULATE_MINICONDA_ENABLED = orig_env))
+  # TODO: is this still needed now that reticulate prefers uv?
+# orig_env <- Sys.getenv("RETICULATE_MINICONDA_ENABLED")
+# Sys.setenv(RETICULATE_MINICONDA_ENABLED = FALSE)
+# on.exit(Sys.setenv(RETICULATE_MINICONDA_ENABLED = orig_env))
 
   py <- reticulate::py_discover_config()
 
