@@ -124,10 +124,18 @@ jobs:
           echo "PATH=$PATH" >> ~/.Renviron
           echo "SLENDR_UV=TRUE" >> ~/.Renviron
 
-          # NOTE for new SLiM releases in the local UTM-based Windows VM:
-          # 1. pacman -Suy to update packages
-          # 2. the above step should also update SLiM itself
-          #    -- otherwise run pacman -S mingw-w64-x86_64-slim-simulator
+        # NOTE: for new SLiM releases in the local UTM-based Windows VM:
+        # 1. pacman -Suy to update packages
+        # 2. the above step should also update SLiM itself
+        #    -- otherwise run pacman -S mingw-w64-x86_64-slim-simulator
+        #
+        # NOTE: if slim.exe needs to be added to path
+        # 1. find location of the slim.exe binary with
+        # 2. in the mingw directory, run pwd -W to get the absolute Windows path
+        # 3. modify PATH in usethis::edit_r_environ() by appending it to the
+        #    Sys.getenv("PATH") output
+        #
+        # More info on pacman here: https://www.msys2.org/docs/package-management/
       - name: Install SLiM on Windows
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
