@@ -124,6 +124,10 @@ jobs:
           echo "PATH=$PATH" >> ~/.Renviron
           echo "SLENDR_UV=TRUE" >> ~/.Renviron
 
+          # NOTE for new SLiM releases in the local UTM-based Windows VM:
+          # 1. pacman -Suy to update packages
+          # 2. the above step should also update SLiM itself
+          #    -- otherwise run pacman -S mingw-w64-x86_64-slim-simulator
       - name: Install SLiM on Windows
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
